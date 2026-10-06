@@ -1,0 +1,17 @@
+# goal2
+
+A faithful rebuild of *goal (version 2)* (New Era Software, 1993), and the bot that maximises its
+World Cup win rate. Everything here is built from the evidence of the private
+[goal2-archaeology](https://github.com/diegoami/goal2-archaeology) repository: its findings (`F0nn`,
+each with listing lines and run records), its task records and its releases.
+
+- **Language**: Python. The archaeology runtime's models drop in as the engine truth.
+- **Engine truth is vendored** under `goal2/engine/`, pinned in `PROVENANCE.md` (file, source
+  commit, findings). Vendored files are never edited here.
+- **Evidence tags** (`CLAUDE.md` rule 1): every behaviour claim in code or docs is `[confirmed]`,
+  `[derived]` or `[designed]`.
+- **Private forever**: nothing of the original GOAL2 — no asset, savestate or executable byte — is
+  committed; states load from local caches and the archaeology releases by path, git-ignored
+  (game-archaeologist U17/U21).
+
+Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
