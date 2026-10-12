@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Relative Markdown links resolve and JSON files parse.
+      - run: python3 tools/check_links.py
+      # The copied harness tools run here (harness.lock pins them).
+      - run: node tools/harness/review.mjs --self-test
+      - run: grep -E '^[0-9a-f]{64}  ' harness.lock | sha256sum -c --quiet
+      # The OpenCode reviewer's grants (CLAUDE.md "Choosing models" rule 4).
+      - run: python3 -m unittest tests.test_agent_permissions -v
+      # Nothing of the original is ever in the tree (CLAUDE.md rule 19).
+      - run: "! git ls-files | grep -iE '\\.(exe|dat|hlp|hil|pif|bat|sav|gl)$'"

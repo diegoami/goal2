@@ -8,7 +8,7 @@ each with listing lines and run records), its task records and its releases.
 - **Language**: Python. The archaeology runtime's models drop in as the engine truth.
 - **Engine truth is vendored** under `goal2/engine/`, pinned in `PROVENANCE.md` (file, source
   commit, findings). Vendored files are never edited here.
-- **Evidence tags** (`CLAUDE.md` rule 1): every behaviour claim in code or docs is `[confirmed]`,
+- **Evidence tags** (`CLAUDE.md` rule 17): every behaviour claim in code or docs is `[confirmed]`,
   `[derived]` or `[designed]`.
 - **Private forever**: nothing of the original GOAL2 — no asset, savestate or executable byte — is
   committed; states load from local caches and the archaeology releases by path, git-ignored

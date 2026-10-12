@@ -1,0 +1,139 @@
+{
+  "rules": "The roster is the owner's to change (CLAUDE.md \"Choosing models\", the owner, 2026-10-11), through switch-model.mjs and the /switch-model skill: implementer.default is a Claude Code alias or a model id the session's provider serves, on which the implementer subagent is spawned inside Claude Code (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or `session`: the main session implements directly where the provider cannot spawn one; either runs through the session's Anthropic environment, so its family is the session's (ANTHROPIC_BASE_URL, or HARNESS_SESSION_FAMILY). reviewer.default is the OpenCode model that reviews unless the user names another (review.mjs --reviewer). The main session asks the user before each implementation and each review, proposing these defaults. blocked lists families or id fragments that never run. Never the session's family as reviewer; no chains, no chooser, no quota check.",
+  "worktreeRoot": "../{repo}-work",
+  "implementer": {
+    "default": "sonnet",
+    "agent": "implementer",
+    "choices": [
+      "sonnet",
+      "opus",
+      "haiku",
+      "fable",
+      "<any model id the session's provider serves>",
+      "session"
+    ]
+  },
+  "reviewer": {
+    "agent": "reviewer",
+    "default": "luna",
+    "startupTimeoutSec": 180,
+    "idleTimeoutSec": 600,
+    "totalTimeoutSec": 3600
+  },
+  "blocked": [
+    "deepseek"
+  ],
+  "models": {
+    "mimo-flash": {
+      "id": "opencode-go/mimo-v2.6-flash",
+      "family": "mimo",
+      "note": "MiMo v2.6 Flash on OpenCode Go, no variant (it offers none); its own family (mimo). Login: XDG_DATA_HOME=<scripts data dir> opencode console login."
+    },
+    "luna": {
+      "id": "openai/gpt-5.6-luna",
+      "family": "openai",
+      "variant": "high",
+      "note": "GPT-5.6 Luna on the direct OpenAI route, the default reviewer: fast, proves findings by mutation; fine for a narrow final check (T12). Never a Luna on OpenCode Go (L27)."
+    },
+    "luna-6": {
+      "id": "openai/gpt-6-luna",
+      "family": "openai",
+      "variant": "high",
+      "note": "GPT-6 Luna: registered only; it shares OpenAI's pool with Sol."
+    },
+    "sol": {
+      "id": "openai/gpt-6-sol",
+      "family": "openai",
+      "variant": "low",
+      "note": "GPT-6 Sol, the hard reviewer before 6.1; kept for an explicit --reviewer."
+    },
+    "sol-6.1": {
+      "id": "openai/gpt-6.1-sol",
+      "family": "openai",
+      "variant": "low",
+      "note": "GPT-6.1 Sol at effort low: the adversarial reviewer for hard research (every finding proven live on T08, T10, T12, T29); it holds to proof-level completeness, so the brief says \"practical, not theoretical\"."
+    },
+    "sol-6.1-medium": {
+      "id": "openai/gpt-6.1-sol",
+      "family": "openai",
+      "variant": "medium",
+      "note": "The same model at effort medium, for a last-round re-check when the owner asks (T38)."
+    },
+    "mimo-pro": {
+      "id": "opencode-go/mimo-v2.6-pro",
+      "family": "mimo",
+      "note": "MiMo v2.6 Pro on OpenCode Go, heavy, no variant; its own family (mimo)."
+    },
+    "glm": {
+      "id": "zai-coding-plan/glm-5.3",
+      "family": "glm",
+      "variant": "low",
+      "note": "GLM-5.3 on the Z.AI coding plan at low (it offers no medium): thorough on evidence as a reviewer (T06, T07). 3x in weekday peak from 8 Oct 2026."
+    },
+    "glm-flash": {
+      "id": "zai-coding-plan/glm-5.3-flash",
+      "family": "glm",
+      "variant": "high",
+      "note": "GLM-5.3 Flash on the Z.AI coding plan: a light reviewer for small PRs; it once approved with a proven bypass rated non-blocking (L47), so the brief says what blocking means."
+    },
+    "ali-glm": {
+      "id": "alibaba-token-plan/glm-5.3",
+      "family": "glm",
+      "variant": "low",
+      "note": "GLM-5.3 on the Alibaba Token Plan at low: the same model as glm on another route. Alibaba only when the user asks; key: the env var ALIBABA_TOKEN_PLAN_API_KEY, never opencode auth login it."
+    },
+    "ali-qwen-max": {
+      "id": "alibaba-token-plan/qwen3.8-max",
+      "family": "qwen",
+      "variant": "low",
+      "note": "Qwen 3.8 Max on the Alibaba Token Plan at low; heavy; a family nothing else here shares. Alibaba only when the user asks; key as ali-glm."
+    },
+    "ali-qwen-flash": {
+      "id": "alibaba-token-plan/qwen3.8-flash",
+      "family": "qwen",
+      "variant": "medium",
+      "note": "Qwen 3.8 Flash on the Alibaba Token Plan at medium (no plain high); light. Alibaba only when the user asks; key as ali-glm."
+    },
+    "mm-m3": {
+      "id": "minimax/MiniMax-M3",
+      "family": "minimax",
+      "variant": "thinking",
+      "note": "MiniMax-M3, variant thinking (it offers only none and thinking), heavy; a family of its own. Key: the env var MINIMAX_API_KEY (pass it to the unit with -E); never opencode auth login it."
+    },
+    "mm-m2.7": {
+      "id": "minimax/MiniMax-M2.7",
+      "family": "minimax",
+      "note": "MiniMax-M2.7, light, no variant (it offers none). Key as mm-m3."
+    }
+  },
+  "jail": {
+    "enabled": false
+  },
+  "jev": {
+    "model": "jev-1.13",
+    "baseUrl": "https://openrouter.ai/api",
+    "apiKeyEnv": "OPENROUTER_API_KEY",
+    "timeoutSec": 30,
+    "targetPrecision": 0.95,
+    "decisions": {
+      "breaks-play": {
+        "type": "noul",
+        "instructionsFile": "docs/jev/breaks-play.md"
+      },
+      "blocks-release": {
+        "type": "noul",
+        "instructionsFile": "docs/jev/blocks-release.md"
+      }
+    }
+  },
+  "providers": {
+    "openrouter": {
+      "baseUrl": "https://openrouter.ai/api",
+      "apiKeyEnv": "OPENROUTER_API_KEY"
+    },
+    "elevenlabs": {
+      "baseUrl": "https://api.elevenlabs.io",
+      "apiKeyEnv": "ELEVENLABS_API_KEY"
+    }
+  }
+}
