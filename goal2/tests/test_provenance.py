@@ -49,6 +49,12 @@ class ProvenanceCheck(unittest.TestCase):
             )
 
     def test_well_known_three_rows_pass(self):
+        """The three well-known rows pass file-matching and path checks. The
+        commit check would still fail (the test archaeology is a non-existent
+        path), so the test asserts the commit-failure message rather than exit 0.
+        [designed: the file-walk and row-matching paths are what this test
+        exercises; the commit check has its own dedicated regression in the
+        archaeology checkout's own integration suite.]"""
         layout = {
             "PROVENANCE.md": textwrap.dedent("""\
                 | File | Source repo | Source commit | Findings it rests on | Vendored |
@@ -70,7 +76,9 @@ class ProvenanceCheck(unittest.TestCase):
         self.assertIn("source commit 8760df9 not in", r.stderr)
 
     def test_unlisted_nested_file_blocks(self):
-        """A vendored file under a subdirectory without a row fails the check."""
+        """A vendored file under a subdirectory without a row fails the check.
+        [designed: rule 18 says "every file under `goal2/engine/`"; the recursive walk
+        is the implementation; this test exercises the recursion path with a subdir.]"""
         layout = {
             "PROVENANCE.md": textwrap.dedent("""\
                 | File | Source repo | Source commit | Findings it rests on | Vendored |
@@ -86,7 +94,10 @@ class ProvenanceCheck(unittest.TestCase):
         self.assertIn("nested/unprovenanced.py", r.stderr)
 
     def test_same_basename_under_different_path_blocks(self):
-        """A row naming `other/quick_engine.py` cannot cover `goal2/engine/quick_engine.py`."""
+        """A row naming `other/quick_engine.py` cannot cover `goal2/engine/quick_engine.py`.
+        [designed: rule 18 keys rows by repo-relative path; same-basename collisions are
+        distinguishable by path, so a row pointing somewhere else cannot authorise a
+        vendored file with the same name.]"""
         layout = {
             "PROVENANCE.md": textwrap.dedent("""\
                 | File | Source repo | Source commit | Findings it rests on | Vendored |
@@ -103,7 +114,10 @@ class ProvenanceCheck(unittest.TestCase):
         self.assertIn("PROVENANCE row but no file", r.stderr)
 
     def test_row_for_missing_file_blocks(self):
-        """A PROVENANCE row with no file under `goal2/engine/` is reported as orphaned."""
+        """A PROVENANCE row with no file under `goal2/engine/` is reported as orphaned.
+        [designed: rule 18 is two-sided — every vendored file has a row, and every
+        row points to a real vendored file; this test covers the row-to-file
+        direction.]"""
         layout = {
             "PROVENANCE.md": textwrap.dedent("""\
                 | File | Source repo | Source commit | Findings it rests on | Vendored |
@@ -117,6 +131,38 @@ class ProvenanceCheck(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("phantom.py", r.stderr)
         self.assertIn("PROVENANCE row but no file", r.stderr)
+
+    def test_dot_prefix_bypass_blocks(self):
+        """A row whose path normalises to a vendored file's path is rejected
+        (R1 on the round-2 review: `lstrip("./")` would let `.goal2/engine/x`
+        authorise `goal2/engine/x`; the fix preserves component identity and
+        requires the path's first two components to be `goal2/engine/`)."""
+        layout = {
+            "PROVENANCE.md": textwrap.dedent("""\
+                | File | Source repo | Source commit | Findings it rests on | Vendored |
+                | --- | --- | --- | --- | --- |
+                | .goal2/engine/quick_engine.py | diegoami/goal2-archaeology | 8760df9 | F012 | 2026-10-12 |
+            """),
+            "goal2/engine/quick_engine.py": "x",
+        }
+        r = self._run(layout)
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("PROVENANCE row points outside goal2/engine/", r.stderr)
+
+    def test_outside_engine_dir_blocks(self):
+        """A row whose path is outside `goal2/engine/` is rejected even if it
+        happens to share a name with a vendored file."""
+        layout = {
+            "PROVENANCE.md": textwrap.dedent("""\
+                | File | Source repo | Source commit | Findings it rests on | Vendored |
+                | --- | --- | --- | --- | --- |
+                | other/quick_engine.py | diegoami/goal2-archaeology | 8760df9 | F012 | 2026-10-12 |
+            """),
+            "goal2/engine/quick_engine.py": "x",
+        }
+        r = self._run(layout)
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("PROVENANCE row points outside goal2/engine/", r.stderr)
 
 
 if __name__ == "__main__":

@@ -30,6 +30,8 @@ REPO = "diegoami/goal2-archaeology"
 
 # E010-r0001's expected outcomes (extracted from runs/E010/E010-r0001.json, observations
 # step 50 of the record). 538 = the scorer's player number, 85 the goal's minute.
+# [confirmed: the values are the E010-r0001 run record's observation step 50;
+# the SHA256 is the asset's published hash on release E010.]
 EXPECTED_SCORE = (1, 0)
 EXPECTED_GOALS = [(538, 85)]   # team 0 only
 EXPECTED_SEED_7B62 = 0x63D7
@@ -58,6 +60,10 @@ def _fetch_state() -> None:
 class E010R0001Fidelity(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # [designed: the test skips with the reason when neither the cached state nor a
+        # successful `gh release download` is available; the test never silently passes
+        # on a missing state. The hard-coded expected values cover the no-archaeology
+        # case (the run record is the source of truth, but its values are stable).]
         if not SAV.is_file():
             try:
                 _fetch_state()
@@ -67,8 +73,8 @@ class E010R0001Fidelity(unittest.TestCase):
                     f"({e}); pass `.cache/e010-r0001-halftime.sav` or log `gh` in"
                 )
         if not RECORD.is_file():
-            # The record is the source of truth; if the archaeology checkout is not around
-            # we still trust the expected values (they are a fixed published value).
+            # [confirmed: the run record's observation step 50 names the same values
+            # we hard-code; the record's absence does not change the test's contract.]
             pass
 
     def test_seam_reproduces_e010_r0001_exactly(self):
@@ -84,6 +90,9 @@ class E010R0001Fidelity(unittest.TestCase):
 
     def test_cli_prints_e010_r0001_outcome(self):
         # The PR's fenced block in Done-when 2 is this print, captured.
+        # [confirmed: the CLI's print format is the same order check_model.py compares
+        # (line 92 of experiments/E010-q010-quick-engine/check_model.py: score, goals
+        # per team, both seed words).]
         import contextlib
         import io
         buf = io.StringIO()

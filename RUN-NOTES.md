@@ -8,25 +8,37 @@ The walking skeleton: the package, the quick-engine seam, one fixture end to end
    `runtime/model/quick_engine.py`, `runtime/driver/savestate.py`, `runtime/driver/players.py`
    (F012, F001, F002 / F007). All three are byte-identical to the archaeology's
    `git show 8760df9:<path>` (sha256 verified before each `git show` extraction and after).
-2. PROVENANCE.md rows for each (CLAUDE.md rule 18).
+   [confirmed: each file is `git show 8760df9:<path>`; the sha256s are pinned in
+   PROVENANCE.md.]
+2. PROVENANCE.md rows for each. [designed: the table's columns are this rebuild's
+   format; the source commit is `[confirmed]` per row.]
 3. `goal2/__init__.py`, `goal2/cli.py`, `goal2/play.py`: the package and the CLI. The
    vendored `quick_engine.py` does `import players` after a sys.path insert; the
    archaeology layout has `runtime/model/` and `runtime/driver/`, here both files sit in
    `goal2/engine/`, so `cli.py` puts the engine dir on `sys.path` before the import.
+   [designed: the package layout, the engine-dir import, and the entry-point shim
+   are this rebuild's choices; the vendored engine's import is `[confirmed]`.]
 4. `tools/check_provenance.py`: a small parser for PROVENANCE.md's table; exits 0 when
    every file under `goal2/engine/` has a row and every source commit exists in the
-   archaeology checkout.
-5. Tests:
+   archaeology checkout. [designed: the table parser, the recursive walk, and the
+   `git cat-file -e` commit check are this rebuild's; rule 18 is `[confirmed]`.]
+5. Tests: [designed: the test layout, the E010 release download, and the test
+   mechanics are this rebuild's choices.]
    - `goal2/tests/test_imports.py` — the engine imports; exposes `simulate`, `Savestate`,
-     `FoulPathNotModelled`, `ExtraTimeNotModelled`.
+     `FoulPathNotModelled`, `ExtraTimeNotModelled`. [confirmed: the names come from
+     the vendored modules at 8760df9.]
    - `goal2/tests/test_savestate.py` — the vendored savestate reader: zip format, BDA
-     fields at the right offsets, out-of-range reads raise.
+     fields at the right offsets, out-of-range reads raise. [confirmed: the layout
+     constants are F001's calibration on DOSBox-X 2024.03.01.]
    - `goal2/tests/test_cli.py` — the CLI's error and refusal paths (mocks the engine's
-     `simulate` to raise each refusal exception; the CLI returns 3).
+     `simulate` to raise each refusal exception; the CLI returns 3). [designed: the
+     error/refusal contract is this rebuild's; the engine's exceptions are
+     `[confirmed]`.]
    - `goal2/tests/test_fidelity.py` — the seam reproduces E010-r0001 seed-exactly:
      downloads the published half-time state from `gh release download E010` into
      `.cache/e010-r0001-halftime.sav`, then asserts score, goals, and seed words equal
-     the run record.
+     the run record. [confirmed: the expected values are the E010-r0001 run record's
+     observations step 50; the comparison is the same shape `check_model.py` uses.]
 
 ## Progress
 

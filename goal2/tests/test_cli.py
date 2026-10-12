@@ -42,34 +42,52 @@ class CliEntryPoint(unittest.TestCase):
 
     def test_refusal_propagates_exit_3(self):
         """The engine's refusal path also propagates through `python -m goal2.play`.
-        The script-driven subprocess mocks `quick_engine.simulate` to raise and asserts
-        the entry point exits 3 — proving the same propagation as the missing-file test.
-        [designed: the entry point's exit code is whatever `main()` returns; this test
-        fixes that contract for the refusal path.]"""
-        import subprocess
+        The subprocess runs `goal2.play` as `__main__` (which executes the
+        `if __name__ == "__main__": sys.exit(main())` shim) after a mock that
+        raises `ExtraTimeNotModelled` from `quick_engine.simulate`. R2 on the
+        round-2 review: the prior test inlined `cli.main(...)` with its own
+        `sys.exit`, so a regression that removed `sys.exit` from `play.py` would
+        still pass; this test runs the actual entry point under the mock.
+        [designed: the entry point's exit code is whatever `play.py`'s
+        `if __name__ == "__main__"` block returns; this test proves the refusal
+        path propagates through it.]"""
+        import os
+        import runpy
         import sys
         import tempfile
-        script = (
-            "import sys\n"
-            "from unittest import mock\n"
-            "from goal2 import cli\n"
-            "with mock.patch.object(cli.savestate, 'Savestate'), "
-            "     mock.patch.object(cli.quick_engine, 'simulate', "
-            "       side_effect=cli.quick_engine.ExtraTimeNotModelled('DS:7C36 set')):\n"
-            "    sys.exit(cli.main(sys.argv[1:]))\n"
-        )
-        with tempfile.NamedTemporaryFile() as tf:
-            r = subprocess.run(
-                [sys.executable, "-c", script, tf.name],
-                capture_output=True, text=True, cwd=".",
-            )
-        self.assertEqual(r.returncode, 3, f"stderr={r.stderr!r}")
-        self.assertIn("DS:7C36 set", r.stderr)
+        from unittest import mock
+        from goal2 import cli
+        # A path that exists at the moment main() runs. NamedTemporaryFile with
+        # delete=False keeps it on disk; we clean it up explicitly.
+        fd, path = tempfile.mkstemp(suffix=".sav")
+        os.write(fd, b"not a savestate")
+        os.close(fd)
+        try:
+            with mock.patch.object(cli.savestate, "Savestate"), \
+                 mock.patch.object(cli.quick_engine, "simulate",
+                                   side_effect=cli.quick_engine.ExtraTimeNotModelled("DS:7C36 set")):
+                # `goal2.play` is a module whose top-level code is `if __name__ ==
+                # "__main__": sys.exit(main())`. runpy with `run_name="__main__"`
+                # runs that block, so play.py's shim is what raises SystemExit.
+                # Patch sys.argv so argparse sees the path.
+                saved_argv = sys.argv
+                sys.argv = ["goal2.play", path]
+                try:
+                    with self.assertRaises(SystemExit) as cm:
+                        runpy.run_module("goal2.play", run_name="__main__")
+                finally:
+                    sys.argv = saved_argv
+            self.assertEqual(cm.exception.code, 3, f"got {cm.exception.code}")
+        finally:
+            os.unlink(path)
 
 
 class CliRefusal(unittest.TestCase):
     def test_extra_time_state_refuses(self):
-        """`DS:7C36` set at half time → ExtraTimeNotModelled → CLI returns 3."""
+        """`DS:7C36` set at half time → ExtraTimeNotModelled → CLI returns 3.
+        [confirmed: the vendored engine raises `ExtraTimeNotModelled` when `DS:7C36`
+        is non-zero at the half-time stall (quick_engine.py:122, the
+        `if self.sevenc36: raise ExtraTimeNotModelled(...)` check).]"""
         import tempfile
         with tempfile.NamedTemporaryFile() as tf:
             with mock.patch.object(cli.savestate, "Savestate"), \
@@ -79,7 +97,11 @@ class CliRefusal(unittest.TestCase):
         self.assertEqual(rc, 3)
 
     def test_foul_path_refuses(self):
-        """`DS:9A3D` set on a competitive match → FoulPathNotModelled → CLI returns 3."""
+        """`DS:9A3D` set on a competitive match → FoulPathNotModelled → CLI returns 3.
+        [confirmed: the vendored engine raises `FoulPathNotModelled` from `d5c1` when
+        `DS:9A3D` is non-zero and the roll reaches the `7EEF` branch (quick_engine.py
+        `d5c1`, the `raise FoulPathNotModelled("D5C1 reached the 278A/7EEF branch
+        with 9A3D set")` line).]"""
         import tempfile
         with tempfile.NamedTemporaryFile() as tf:
             with mock.patch.object(cli.savestate, "Savestate"), \

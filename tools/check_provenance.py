@@ -89,8 +89,20 @@ def _commit_exists(archaeology: Path, repo: str, commit: str) -> bool:
 
 
 def _normalize(path: str) -> str:
-    """A canonical POSIX-style path with no leading `./`, for matching across layouts."""
-    return str(Path(path)).replace("\\", "/").lstrip("./")
+    """A canonical POSIX-style path: each component is preserved; only a single leading
+    `./` is stripped (a `lstrip("./")` would remove arbitrary leading dots and slashes,
+    normalising `.goal2/engine/x` to `goal2/engine/x` and matching a real file)."""
+    p = str(Path(path)).replace("\\", "/")
+    if p.startswith("./"):
+        p = p[2:]
+    return p
+
+
+def _under_engine(path: str) -> bool:
+    """The path's first component is `goal2`, the second is `engine`, and the rest is
+    an actual subpath of it. A row pointing outside `goal2/engine/` is rejected."""
+    parts = Path(_normalize(path)).parts
+    return len(parts) >= 2 and parts[0] == "goal2" and parts[1] == "engine"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -104,15 +116,19 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     rows = _parse_table(PROVENANCE.read_text())
+    failures: list[str] = []
     # The "File" column is a path. A row covers a vendored file when its canonical path
-    # matches a vendored path. We key on the path under the repo root (`goal2/engine/...`),
-    # or the path's basename relative to its first component, but never just the basename
-    # (a basename match is bypassed by another path that ends with the same name).
+    # matches a vendored path, AND the row's path is actually under `goal2/engine/`
+    # (a row pointing somewhere else cannot authorize a vendored file, even if the
+    # path normalises to the same string).
     by_row_path: dict[str, dict] = {}
     for r in rows:
-        by_row_path[_normalize(r["file"])] = r
+        norm = _normalize(r["file"])
+        if not _under_engine(norm):
+            failures.append(f"{r['file']}: PROVENANCE row points outside goal2/engine/")
+            continue
+        by_row_path[norm] = r
 
-    failures: list[str] = []
     # Walk the vendored directory recursively (R1: nested files must also have a row).
     # Generated Python artifacts (`__pycache__/`, `*.pyc`) are excluded — they are produced
     # by the interpreter when the engine modules are imported, never vendored, and
