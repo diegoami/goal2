@@ -7,4 +7,4 @@ status; this index carries none.
 | --- | --- | --- | --- |
 | T01 | The walking skeleton: the package, the quick-engine seam, one fixture end to end | — | — |
 | T10 | The screen framework: the character grid (80×25) and a plain-text renderer | #24 | T09 |
-| T11 | The country select screen: 128 countries, cursor + keys, write the choice to the state adapter | #<new> | T10 |
+| T11 | The country select screen: 128 countries, cursor + keys, write the choice to the state adapter | #26 | T10 |
