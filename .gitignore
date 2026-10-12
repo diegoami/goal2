@@ -4,3 +4,11 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+
+# DOSBox-X savestates (rule 19)
+*.sav
+
+
+# Implementation notes (per docs/running-notes.md)
+RUN-NOTES.md
+
