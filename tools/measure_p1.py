@@ -37,8 +37,13 @@ MANAGED_COUNTRY = 7
 
 PLAYER = 0x14
 N_PLAYERS = 3061
+# [confirmed: F007, F008] Structural fields that don't depend on the LCG draws.
 STRUCTURAL_FIELDS = (0, 3, 6, 7, 0x12, 0x13)
+# [confirmed: F007] LCG-driven fields (the known gap, issue #11).
 LCG_FIELDS = (1, 2, 5, 0x0C)
+# [derived from F007, E006] The current LCG gap is ~7,500 of 12,244 bytes.
+LCG_GAP_LOW = 6_000
+LCG_GAP_HIGH = 9_000
 
 
 def _ensure_dat() -> bytes:
@@ -146,12 +151,29 @@ def main() -> int:
 
     print()
     print(f"Player array: {N_PLAYERS} records ({N_PLAYERS * PLAYER} bytes)")
+    # [confirmed: F007] 2560 squad players (128 countries x 20) + 80 managed-country
+    # players + 1 record 0 + 420 trailing zero records = 3061.
+    print(f"Squad players: 2560 (128 countries x 20)")
+    print(f"Managed-country players: 80 (records 2561..2640)")
+    print(f"Zero records: 421 (record 0 + 2641..3060)")
     print(f"Structural fields: {structural_matches} of {structural_total} match")
-    print(f"LCG-driven fields: {lcg_mismatches} of {N_PLAYERS * len(LCG_FIELDS)} differ (known gap, #11)")
+    # LCG gap bounds: a degenerate LCG would push the count to ~12,000+ or ~0.
+    lcg_status = "OK" if LCG_GAP_LOW <= lcg_mismatches <= LCG_GAP_HIGH else "OUT OF BOUNDS"
+    print(f"LCG-driven fields: {lcg_mismatches} of {N_PLAYERS * len(LCG_FIELDS)} differ "
+          f"({lcg_status}; expected range {LCG_GAP_LOW}..{LCG_GAP_HIGH}, known gap #11)")
     if skill_total > 0:
         print(f"Skill bars: {skill_matches} of {skill_total} match ({skill_matches // 12} of {skill_total // 12} players)")
     else:
         print(f"Skill bars: E007 not available, skipped")
+
+    # [designed] Country/player sanity check: print the 4 countries' first
+    # player bytes (record 1, 21, 41, 61) for a visual check.
+    print()
+    print("Sanity check — first player of each country (record 1, 21, 41, 61):")
+    country_names = {1: "country 1", 2: "country 2", 3: "country 3", 4: "country 4"}
+    for c in range(1, 5):
+        rec = actual[(c - 1) * 20 + 1]  # +1 because record 0 is the placeholder
+        print(f"  {country_names[c]}: {bytes(rec).hex()}")
     return 0
 
 

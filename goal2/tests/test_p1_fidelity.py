@@ -41,9 +41,17 @@ MANAGED_COUNTRY = 7
 PLAYER = 0x14
 N_PLAYERS = 3061
 # [confirmed: F007, F008] Structural fields that don't depend on the LCG draws.
+# +0x00 country, +0x03 potential (squad players only), +0x06/+0x07 position,
+# +0x12/+0x13 fitness word.
 STRUCTURAL_FIELDS = (0, 3, 6, 7, 0x12, 0x13)
 # [confirmed: F007] LCG-driven fields (the known gap, issue #11).
+# +0x01 age, +0x02 peak, +0x05, +0x0C.
 LCG_FIELDS = (1, 2, 5, 0x0C)
+# [derived from F007, E006] The current LCG gap is ~7,500 of 12,244 bytes.
+# A degenerate LCG (always-1 or always-0) would push this to ~12,000+ or ~0;
+# a working LCG stays in the 6,000–9,000 range.
+LCG_GAP_LOW = 6_000
+LCG_GAP_HIGH = 9_000
 
 
 def _fetch_dat() -> bytes:
@@ -216,11 +224,16 @@ class LCGGapMeasurement(unittest.TestCase):
                 if actual_rec[off] != expected_rec[off]:
                     mismatches += 1
         print(f"\nLCG-driven byte mismatches: {mismatches} of {N_PLAYERS * len(LCG_FIELDS)}")
-        # Soft check: a sudden drop to 0 would mean the LCG was reconciled
-        # (issue #11 done); a sudden jump to >50,000 would mean a regression.
-        self.assertLess(
-            mismatches, 50_000,
-            f"LCG-driven mismatches {mismatches} exceeds threshold; possible regression",
+        # Tight bounds: a degenerate LCG (always-1 or always-0) would push
+        # the count to ~12,000+ or ~0; a working LCG stays in the 6,000–9,000
+        # range (issue #11 tracks the byte-exact reconciliation).
+        self.assertGreaterEqual(
+            mismatches, LCG_GAP_LOW,
+            f"LCG-driven mismatches {mismatches} below {LCG_GAP_LOW}; LCG may be degenerate",
+        )
+        self.assertLessEqual(
+            mismatches, LCG_GAP_HIGH,
+            f"LCG-driven mismatches {mismatches} above {LCG_GAP_HIGH}; LCG may be degenerate",
         )
 
 
