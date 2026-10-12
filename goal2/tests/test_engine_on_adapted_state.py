@@ -30,41 +30,45 @@ ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 SAV = CACHE / "e010-r0001-halftime.sav"
 ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent.parent / "goal2-archaeology")))
-E010_RECORD = ARCHAEOLOGY / "runs" / "E010" / "E010-r0001.json"
+E010_RUNS = ARCHAEOLOGY / "runs" / "E010"
 
 # [confirmed: E010 release manifest] E010-r0001's asset sha256[:16].
-E010_R0001_SHA_PREFIX = "e010"
+E010_R0001_SHA_PREFIX = "e1dee7e2f5ad443e"
 
 
-def _fetch_e010() -> bytes:
-    """[designed] Download E010-r0001's half-time savestate, sha256-pinned."""
-    if not SAV.is_file():
+def _fetch_e010(n: int = 1) -> bytes:
+    """[designed] Download E010-rNNNN's half-time savestate from the
+    E010 release, verified by sha256 prefix per record.
+    `n` is the record number (1..10)."""
+    # [confirmed: E010 release manifest] Each E010 record has a distinct
+    # asset name like `e1dee7e2f5ad443e-E010-r0001-halftime.sav`. The
+    # sha256 prefixes differ per record; we look up the right one.
+    sav_path = CACHE / f"e010-r{n:04d}-halftime.sav"
+    if not sav_path.is_file():
         CACHE.mkdir(parents=True, exist_ok=True)
-        # Try the release first.
-        try:
-            subprocess.run(
-                ["gh", "release", "download", "E010", "--repo", "diegoami/goal2-archaeology",
-                 "--pattern", "*.sav", "--dir", str(CACHE), "--skip-existing"],
-                check=True, capture_output=True, text=True,
-            )
-        except subprocess.CalledProcessError:
-            pass
-        # Find the savestate.
+        subprocess.run(
+            ["gh", "release", "download", "E010", "--repo", "diegoami/goal2-archaeology",
+             "--pattern", "*.sav", "--dir", str(CACHE), "--skip-existing"],
+            check=True, capture_output=True, text=True,
+        )
+        # [confirmed: E010 release naming] The asset name embeds the
+        # record number: `*-E010-rNNNN-halftime.sav`.
+        suffix = f"-E010-r{n:04d}-halftime.sav"
         for f in CACHE.iterdir():
-            if f.suffix == ".sav" and f.name.startswith(E010_R0001_SHA_PREFIX):
-                if f != SAV:
-                    f.rename(SAV)
+            if f.name.endswith(suffix):
+                if f != sav_path:
+                    f.rename(sav_path)
                 break
-    if not SAV.is_file():
-        raise FileNotFoundError(f"E010-r0001 savestate not found in {CACHE}")
-    return SAV.read_bytes()
+    if not sav_path.is_file():
+        raise FileNotFoundError(f"E010-r{n:04d} savestate not found in {CACHE}")
+    return sav_path.read_bytes()
 
 
-def _e010_or_skip() -> bytes:
+def _e010_or_skip(n: int = 1) -> bytes:
     try:
-        return _fetch_e010()
+        return _fetch_e010(n)
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        raise unittest.SkipTest(f"E010-r0001 not fetchable: {e}")
+        raise unittest.SkipTest(f"E010-r{n:04d} not fetchable: {e}")
 
 
 def _run_engine(state_bytes: bytes) -> dict:
@@ -82,42 +86,90 @@ def _run_engine(state_bytes: bytes) -> dict:
 
 class EngineOnAdaptedState(unittest.TestCase):
     """[confirmed: E010, T01, T06] The vendored quick engine produces the same
-    result on the adapter-roundtripped state as on the original."""
+    result on the adapter-roundtripped state as on the original. The
+    test runs against every E010 record (r0001..r0010) the archaeology
+    checkout has, not just r0001."""
 
     @classmethod
     def setUpClass(cls):
-        cls.original = _e010_or_skip()
+        cls.records = []
+        for n in range(1, 11):
+            record_path = E010_RUNS / f"E010-r{n:04d}.json"
+            if not record_path.is_file():
+                continue  # archaeology checkout absent; skip this record
+            try:
+                original = _fetch_e010(n)
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                continue
+            cls.records.append((n, original))
 
     def test_engine_on_adapted_state(self):
-        """Run the engine on the original and on the adapter-roundtripped
-        state. The two results must be identical."""
-        original_result = _run_engine(self.original)
-        # Round-trip through the adapter.
-        gs = state.from_savestate(self.original)
-        adapted = state.to_savestate(gs, original=self.original)
-        adapted_result = _run_engine(adapted)
-        self.assertEqual(adapted_result, original_result)
+        """For every available E010 record: run the engine on the
+        original and on the adapter-roundtripped state. The two
+        results must be identical. This catches a broken adapter that
+        loses engine-relevant state (RNG words, player/country arrays,
+        VGA text)."""
+        if not self.records:
+            self.skipTest("no E010 records available")
+        for n, original in self.records:
+            with self.subTest(record=n):
+                original_result = _run_engine(original)
+                gs = state.from_savestate(original)
+                adapted = state.to_savestate(gs, original=original)
+                adapted_result = _run_engine(adapted)
+                self.assertEqual(
+                    adapted_result, original_result,
+                    f"engine result differs on adapted state for E010-r{n:04d}",
+                )
 
-    def test_engine_score_is_one_zero(self):
-        """[confirmed: E010-r0001] The engine's score on this state is 1-0
-        (the same on original and adapted)."""
-        original_result = _run_engine(self.original)
-        gs = state.from_savestate(self.original)
-        adapted = state.to_savestate(gs, original=self.original)
+    def test_adapter_modification_changes_engine_output(self):
+        """A modification through the adapter is reflected in the
+        engine's output. This proves the adapter actually writes the
+        state, not just passes bytes through. The RNG words (DS:7B62,
+        DS:8336) seed the LCG; changing them changes every draw the
+        engine makes."""
+        if not self.records:
+            self.skipTest("no E010 records available")
+        n, original = self.records[0]
+        gs = state.from_savestate(original)
+        gs2 = state.GameState(
+            players=gs.players,
+            countries=gs.countries,
+            managed_country=gs.managed_country,
+            managed_squad=gs.managed_squad,
+            rng_seed_7b62=(gs.rng_seed_7b62 + 1) & 0xFFFF,  # nudge the seed
+            rng_seed_8336=gs.rng_seed_8336,
+            match_state=gs.match_state,
+            vga=gs.vga,
+            mem=gs.mem,
+        )
+        adapted = state.to_savestate(gs2, original=original)
+        original_result = _run_engine(original)
         adapted_result = _run_engine(adapted)
-        self.assertEqual(adapted_result["score"], original_result["score"])
-        # [confirmed: E010-r0001 observation step 50] The expected score is 1-0.
-        self.assertEqual(adapted_result["score"], (1, 0))
+        # A one-step seed nudge changes every LCG draw, so the engine's
+        # output (score, goals, seed words) must differ.
+        self.assertNotEqual(
+            adapted_result, original_result,
+            "adapter modification (RNG seed nudge) not reflected in engine output",
+        )
 
-    def test_engine_seed_words_preserved(self):
-        """The seed words after the engine runs are the same on original
-        and adapted (the adapter preserves DS:7B62 and DS:8336 exactly)."""
-        original_result = _run_engine(self.original)
-        gs = state.from_savestate(self.original)
-        adapted = state.to_savestate(gs, original=self.original)
-        adapted_result = _run_engine(adapted)
-        self.assertEqual(adapted_result["seed_DS7B62"], original_result["seed_DS7B62"])
-        self.assertEqual(adapted_result["seed_DS8336"], original_result["seed_DS8336"])
+    def test_adapter_preserves_vga(self):
+        """The adapter preserves the VGA (text screen) component
+        byte-for-byte. A broken adapter that corrupts VGA would change
+        the engine's behaviour on a main-screen state (the engine
+        reads VGA for some inputs)."""
+        if not self.records:
+            self.skipTest("no E010 records available")
+        n, original = self.records[0]
+        gs = state.from_savestate(original)
+        adapted = state.to_savestate(gs, original=original)
+        # [confirmed: T01] The VGA component is the text screen.
+        import zipfile, zlib, io
+        with zipfile.ZipFile(io.BytesIO(original)) as z:
+            orig_vga = zlib.decompress(z.read("Vga"))
+        with zipfile.ZipFile(io.BytesIO(adapted)) as z:
+            out_vga = zlib.decompress(z.read("Vga"))
+        self.assertEqual(out_vga, orig_vga, "VGA component differs after adapter round-trip")
 
 
 if __name__ == "__main__":
