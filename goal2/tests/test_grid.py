@@ -20,7 +20,12 @@ class TestGrid(unittest.TestCase):
         text = "HELLO"
         grid.draw_text(0, 0, text, fg=7, bg=1)
         result = render(grid)
-        # [R1 fix]: result ends with "\n", split gives 26 elements
+        # [R2-round-3 fix]: assert the trailing newline, not just the
+        # first row. Without the trailing "\n", a renderer that returned
+        # "row0\nrow1\n...row24" (no trailing) would also split into the
+        # same first row and miss the requirement.
+        self.assertTrue(result.endswith("\n"))
+        self.assertEqual(len(result), 25 * (WIDTH + 1))  # 25 × 81 = 2025
         first_row = result.split("\n")[0]
         expected = text + " " * (WIDTH - len(text))
         self.assertEqual(first_row, expected)

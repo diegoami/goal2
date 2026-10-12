@@ -10,8 +10,13 @@ from goal2.ui.grid import Grid, HEIGHT, WIDTH
 def render(grid: Grid) -> str:
     """Render the grid as a plain string.
 
-    Each row is 80 characters followed by a newline (25 lines total).
-    Colour is omitted; the returned string contains only the character data.
+    Each row is 80 characters followed by a newline (25 lines total,
+    terminated with a trailing newline: 25 rows × (80 + 1) = 2025 chars).
+    Colour is omitted; the returned string contains only the character
+    data.
+    [designed: 25 lines × (80 + 1) = 2025 chars; char code 0 (null) is
+    rendered as a space so a fresh grid reads as 25 blank rows. The
+    trailing newline means `split("\n")[:25]` collects the 25 rows.]
     """
     lines: list[str] = []
     for r in range(HEIGHT):

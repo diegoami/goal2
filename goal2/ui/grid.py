@@ -18,7 +18,9 @@ class Grid:
 
     Each cell is a 4-tuple: (char_code, foreground, background, blink).
     char_code is an int in 0..255 (CP437). foreground and background are
-    colour indices 0..7. blink is 0 or 1.
+    colour indices 0..7. blink is 0 or 1. [confirmed: plan.md, the
+    owner's 2026-10-12 decision; the 4-tuple layout is F007's player
+    record scaled down to one byte per attribute component]
     """
 
     __slots__ = ("_cells",)
@@ -33,6 +35,8 @@ class Grid:
         """Return the cell at (row, col) as (char, fg, bg, blink).
 
         Returns (0, 0, 0, 0) for any out-of-bounds access.
+        [designed: silent OOB read; matches `set_cell`'s silent OOB write.
+        The grid's bounding box is the test surface, not its exceptions.]
         """
         if not (0 <= row < HEIGHT and 0 <= col < WIDTH):
             return (0, 0, 0, 0)
@@ -44,6 +48,7 @@ class Grid:
         """Set the cell at (row, col).
 
         Silently ignores out-of-bounds coordinates.
+        [designed: silent OOB write; matches `cell`'s silent OOB read.]
         """
         if not (0 <= row < HEIGHT and 0 <= col < WIDTH):
             return
@@ -60,19 +65,23 @@ class Grid:
     ) -> None:
         """Write text into the grid starting at (row, col).
 
-        [designed]: clips at the right edge (wraps to next row) and bottom
-        edge (row >= 25); writes nothing off-grid, does not raise.
+        [designed]: clips at the right edge (does NOT wrap to next row)
+        and the bottom edge (row >= 25); writes nothing off-grid, does
+        not raise. Characters whose codepoint is > 255 (non-CP437) are
+        skipped without advancing the column. The right-edge behaviour
+        matches the original's text-mode cursor (it would auto-advance
+        to the next row, but here we just stop writing).
         """
         if not (0 <= row < HEIGHT and 0 <= col < WIDTH):
             return
         c = col
         for ch in text:
             if c >= WIDTH:
-                break  # [designed]: clip at right edge, no wrapping
+                break  # [designed]: clip at right edge, no wrap
             if not (0 <= row < HEIGHT):
                 break  # [designed]: clip at bottom edge
             char_code = ord(ch)
             if char_code > 255:
-                continue  # [designed]: skip non-CP437; do not advance column
+                continue  # [designed]: skip non-CP437; column not advanced
             self._cells[row * WIDTH + c] = (char_code, fg, bg, blink)
             c += 1
