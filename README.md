@@ -14,4 +14,5 @@ each with listing lines and run records), its task records and its releases.
   committed; states load from local caches and the archaeology releases by path, git-ignored
   (game-archaeologist U17/U21).
 
-Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
+The plan is [`docs/plan.md`](docs/plan.md); every rule the rebuild plays by, and where it comes
+from, is in [`docs/assumptions.md`](docs/assumptions.md). Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
