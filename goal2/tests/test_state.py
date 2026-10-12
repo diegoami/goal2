@@ -1,9 +1,10 @@
 """Tests for `goal2.engine.state` (T06 scope, the state adapter).
 
 The round-trip test loads E006-r0001, calls `from_savestate` then
-`to_savestate`, and asserts every byte matches the original. It also
-verifies that a modification to a known field is reflected in the
-output (the adapter actually writes the fields, not just the raw bytes).
+`to_savestate`, and asserts the decompressed content matches the
+original. It also verifies that a modification to a known field is
+reflected in the output (the adapter actually writes the fields, not
+just the raw bytes).
 
 [confirmed: E006, T01, F002, F007, F008] The layout is the original's
 memory image; the vendored `Savestate` and `players` readers parse it.
@@ -13,6 +14,9 @@ import os
 import subprocess
 import sys
 import unittest
+import zipfile
+import zlib
+import io
 from pathlib import Path
 
 from goal2.engine import state
@@ -52,96 +56,127 @@ def _e006_or_skip() -> bytes:
         raise unittest.SkipTest(f"E006-r0001 not fetchable: {e}")
 
 
+def _decompressed_vga_and_mem(sav_bytes: bytes) -> tuple[bytes, bytes]:
+    """[designed] Decompress the VGA and Memory components of a savestate."""
+    with zipfile.ZipFile(io.BytesIO(sav_bytes)) as z:
+        vga = zlib.decompressobj().decompress(z.read("Vga"))
+        mem = zlib.decompressobj().decompress(z.read("Memory"))
+    return vga, mem
+
+
+def _zip_entries(sav_bytes: bytes) -> set[str]:
+    """[designed] The set of entry names in a savestate zip."""
+    with zipfile.ZipFile(io.BytesIO(sav_bytes)) as z:
+        return {info.filename for info in z.infolist()}
+
+
+def _modified_state(gs: state.GameState, **changes) -> state.GameState:
+    """[designed] Return a copy of gs with the given fields replaced."""
+    from dataclasses import replace
+    return replace(gs, **changes)
+
+
 class RoundTrip(unittest.TestCase):
-    """[confirmed: E006, T01] The adapter must round-trip E006-r0001
-    byte-for-byte. It also must write known fields (a modification to
-    a player byte is reflected in the output)."""
+    """[confirmed: E006, T01, F007, F008] The adapter must round-trip
+    E006-r0001's decompressed content exactly, preserve all 25 zip
+    entries, and write known fields (a modification to a player byte,
+    country byte, or RNG word is reflected in the output)."""
 
     @classmethod
     def setUpClass(cls):
         cls.original = _e006_or_skip()
 
     def test_round_trip_decompressed_match(self):
-        """[designed] from_savestate → to_savestate reproduces the original's
-        decompressed VGA and Memory components exactly. (The raw zip bytes
-        differ because Python's zlib.compress uses different deflate
-        settings than DOSBox-X.)"""
-        import zipfile, zlib, io
+        """from_savestate → to_savestate reproduces the original's
+        decompressed VGA and Memory components exactly."""
         gs = state.from_savestate(self.original)
         out = state.to_savestate(gs, original=self.original)
-        with zipfile.ZipFile(io.BytesIO(self.original)) as zin:
-            orig_vga = zlib.decompress(zin.read("Vga"))
-            orig_mem = zlib.decompress(zin.read("Memory"))
-        with zipfile.ZipFile(io.BytesIO(out)) as zout:
-            out_vga = zlib.decompress(zout.read("Vga"))
-            out_mem = zlib.decompress(zout.read("Memory"))
+        orig_vga, orig_mem = _decompressed_vga_and_mem(self.original)
+        out_vga, out_mem = _decompressed_vga_and_mem(out)
         self.assertEqual(out_vga, orig_vga, "VGA component differs after round-trip")
         self.assertEqual(out_mem, orig_mem, "Memory component differs after round-trip")
 
-    def test_modify_player_byte_round_trip(self):
-        """Modify a known field (player 1's +0x01 age) and verify the
-        modification is reflected in the output. This proves the adapter
-        writes the fields, not just the raw bytes."""
+    def test_round_trip_preserves_all_zip_entries(self):
+        """The output zip has the same 25 entries as the original
+        (CMOS, CPU, DMA, Vga, Memory, etc.)."""
         gs = state.from_savestate(self.original)
-        # Modify player 1's +0x01 age to 0x42 (66).
-        modified_players = bytearray(gs.players)
-        modified_players[1 * 0x14 + 1] = 0x42
-        gs2 = state.GameState(
-            players=bytes(modified_players),
-            countries=gs.countries,
-            rng_seed_7b62=gs.rng_seed_7b62,
-            rng_seed_8336=gs.rng_seed_8336,
-            vga=gs.vga,
-            mem=gs.mem,
-        )
+        out = state.to_savestate(gs, original=self.original)
+        self.assertEqual(_zip_entries(out), _zip_entries(self.original))
+
+    def test_to_savestate_requires_original(self):
+        """to_savestate raises when original is None (it can't preserve
+        the zip structure without the original bytes)."""
+        gs = state.from_savestate(self.original)
+        with self.assertRaises(ValueError):
+            state.to_savestate(gs, original=None)
+
+    def test_modify_player_byte_round_trip(self):
+        """Modify player 1's +0x01 age and verify the change is in the output."""
+        gs = state.from_savestate(self.original)
+        modified_players = list(gs.players)
+        modified_players[1] = bytes([1, 0x42]) + gs.players[1][2:]
+        gs2 = _modified_state(gs, players=modified_players)
         out = state.to_savestate(gs2, original=self.original)
-        # The output should differ from the original.
-        self.assertNotEqual(out, self.original)
-        # Read the modified savestate and verify the change.
         gs3 = state.from_savestate(out)
-        self.assertEqual(gs3.players[1 * 0x14 + 1], 0x42)
+        self.assertEqual(gs3.players[1][1], 0x42)
+
+    def test_modify_country_byte_round_trip(self):
+        """Modify country 1's +0x2B byte and verify the change is in the output."""
+        gs = state.from_savestate(self.original)
+        modified_countries = list(gs.countries)
+        rec = bytearray(modified_countries[1])
+        rec[0x2B] = 0x42
+        modified_countries[1] = bytes(rec)
+        gs2 = _modified_state(gs, countries=modified_countries)
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        self.assertEqual(gs3.countries[1][0x2B], 0x42)
 
     def test_modify_rng_word_round_trip(self):
         """Modify an RNG word and verify the change is reflected."""
         gs = state.from_savestate(self.original)
-        gs2 = state.GameState(
-            players=gs.players,
-            countries=gs.countries,
-            rng_seed_7b62=0xBEEF,
-            rng_seed_8336=gs.rng_seed_8336,
-            vga=gs.vga,
-            mem=gs.mem,
-        )
+        gs2 = _modified_state(gs, rng_seed_7b62=0xBEEF)
         out = state.to_savestate(gs2, original=self.original)
         gs3 = state.from_savestate(out)
         self.assertEqual(gs3.rng_seed_7b62, 0xBEEF)
 
-    def test_player_array_size(self):
-        """The player array is 0xEF24 = 61220 bytes (3061 records × 0x14)."""
+    def test_managed_country_squad(self):
+        """The managed country's 20-player squad is country 7's first
+        20 players: records 121..140 in the player array."""
         gs = state.from_savestate(self.original)
-        self.assertEqual(len(gs.players), 0xEF24)
+        self.assertEqual(gs.managed_country, 7)
+        self.assertEqual(len(gs.managed_squad), 20)
+        self.assertEqual(gs.managed_squad, list(range(121, 141)))
 
-    def test_country_array_size(self):
-        """The country array is 0x603F = 24639 bytes (129 records × 0xBF)."""
+    def test_player_array_record_count(self):
+        """The player array has 3061 records of 20 bytes each."""
         gs = state.from_savestate(self.original)
-        self.assertEqual(len(gs.countries), 0x603F)
+        self.assertEqual(len(gs.players), 3061)
+        for rec in gs.players:
+            self.assertEqual(len(rec), 0x14)
+
+    def test_country_array_record_count(self):
+        """The country array has 129 records of 0xBF bytes each."""
+        gs = state.from_savestate(self.original)
+        self.assertEqual(len(gs.countries), 129)
+        for rec in gs.countries:
+            self.assertEqual(len(rec), 0xBF)
 
     def test_player_1_first_byte_is_country(self):
         """Player 1's +0x00 byte is 1 (country 1)."""
         gs = state.from_savestate(self.original)
-        self.assertEqual(gs.players[0x14 + 0], 1)
+        self.assertEqual(gs.players[1][0], 1)
 
 
 class DW3Example(unittest.TestCase):
     """[designed] The DW3 example: print the first 6 bytes of country 1's
-    first player."""
+    first player (record 1, bytes 0..5)."""
 
     def test_dw3_example_runs(self):
-        from goal2.engine import state as state_mod
         code = (
             "from goal2.engine import state; "
             "s = state.from_savestate(open('.cache/e006-r0001-main.sav','rb').read()); "
-            "print(s.players[0x14:0x14+6].hex())"
+            "print(s.players[1][:6].hex())"
         )
         r = subprocess.run(
             [sys.executable, "-c", code],
