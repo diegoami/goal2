@@ -92,6 +92,34 @@ class TestPickComputerEleven(unittest.TestCase):
             pick_computer_eleven(records, list(range(10)))
         self.assertIn("at least 11", str(ctx.exception))
 
+    def test_tie_break_prefers_earlier_squad_index(self):
+        # All 11 squad members have the same ability, given in reversed squad order.
+        # Without a tie-break (stable sort on ability only), the reversed order is
+        # preserved and the result is [10, 9, ..., 0].  With ascending-index
+        # tie-break the result must be [0, 1, ..., 10].
+        abilities = [5] * 11
+        records = _make_records(abilities)
+        squad = list(range(10, -1, -1))     # reversed: [10, 9, ..., 0]
+        result = pick_computer_eleven(records, squad)
+        self.assertEqual(result, list(range(11)))
+
+    def test_tie_break_with_distinct_pairs(self):
+        # Two pairs of equal ability, given in reversed squad order:
+        #   ability 7 at reversed indices 5 and 4  -> index 4 wins (lower)
+        #   ability 3 at reversed indices 9 and 8  -> index 8 wins (lower)
+        # Without tie-break, stable sort preserves reversed input order:
+        #   [5, 4, ... 9, 8, ...].  With tie-break: [4, 5, 8, 9, ...].
+        # Top 11 by descending ability, tie-break ascending index:
+        #   10(idx0), 9(idx1), 8(idx2), 7(idx3), 7(idx4), 6(idx5),
+        #   5(idx6), 4(idx7), 3(idx8), 3(idx9), 2(idx10)
+        abilities = [10, 9, 8, 7, 7, 6, 5, 4, 3, 3, 2,
+                     1, 0, 0, 0, 0, 0, 0, 0, 0]
+        records = _make_records(abilities)
+        squad = list(range(19, -1, -1))     # reversed: [19, 18, ..., 0]
+        result = pick_computer_eleven(records, squad)
+        expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        self.assertEqual(result, expected)
+
 
 # ── get_computer_tactics ─────────────────────────────────────────────────────
 
