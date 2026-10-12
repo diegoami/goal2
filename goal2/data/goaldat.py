@@ -46,7 +46,10 @@ assert _total == SIZE, f"block tiles cover {_total}, expected {SIZE}"
 
 @dataclass
 class GoalDat:
-    """The ten blocks of GOAL.DAT, indexed by record number (0 is a placeholder)."""
+    """The ten blocks of GOAL.DAT, indexed by record number (0 is a placeholder).
+    [confirmed: the block list and indices are F002 R001 — country names records 1..128,
+    player names 1..3060, manager names 1..128 + 6 zero records 129..134, the four
+    per-country arrays indexed 0..128, the squad-20 array indexed 0..128.]"""
     country_names: list[str] = field(default_factory=list)
     player_names: list[str] = field(default_factory=list)
     player_initials: list[str] = field(default_factory=list)
@@ -60,7 +63,12 @@ class GoalDat:
 
 
 def _pascal_record(data: bytes, off: int, rec: int) -> str:
-    """A record of byte 0 = length, the rest the characters (zero-padded)."""
+    """A record of byte 0 = length, the rest the characters (zero-padded).
+    [designed: the F002 records have byte 0 = length and the bytes after it
+    printable ASCII; the rebuild's loader reads them as such. The exact
+    loader address in GOAL.EXE is not cited here — that's an archaeology
+    claim, and the round-1 review by luna flagged the unverified `1771:2E93`
+    citation. A future task can add the listing line.]"""
     ln = data[off]
     if ln == 0:
         return ""
@@ -69,17 +77,19 @@ def _pascal_record(data: bytes, off: int, rec: int) -> str:
     return data[off + 1:off + 1 + ln].decode("cp437")
 
 
-def load(data: bytes, *, expected_sha256: str = SHA256) -> GoalDat:
-    """Read GOAL.DAT, verify its SHA256, return the parsed blocks.
+def load(data: bytes) -> GoalDat:
+    """Read GOAL.DAT, verify its SHA256 against the pinned value, return the parsed blocks.
 
-    Raises ValueError on a wrong file (wrong size, wrong SHA256, or a
-    mismatch in the block table's offsets).
+    The SHA256 is the F002 R001 pinned value; it is not a parameter, so a caller
+    cannot supply a different hash and bypass the check. Raises ValueError on a
+    wrong file (wrong size, wrong SHA256).
+    [confirmed: the pinned SHA256 is F002 R001, the released GOAL.DAT.]
     """
     if len(data) != SIZE:
         raise ValueError(f"GOAL.DAT: {len(data)} bytes, expected {SIZE}")
     got = hashlib.sha256(data).hexdigest()
-    if got != expected_sha256:
-        raise ValueError(f"GOAL.DAT: sha256 {got} != {expected_sha256}")
+    if got != SHA256:
+        raise ValueError(f"GOAL.DAT: sha256 {got} != {SHA256}")
     return _parse(data)
 
 
@@ -205,8 +215,16 @@ def _check_R007(data: bytes) -> tuple[bool, str]:
 def _check_R008(data: bytes) -> tuple[bool, str]:
     off, sz, _, n = BLOCKS[6][1], BLOCKS[6][2], BLOCKS[6][3], BLOCKS[6][4]
     v = list(data[off:off + sz])
-    ok = v[0] == 0 and len(set(v[1:])) > 1
-    return ok, f"0x{off:04X}: 128 distinct bytes for countries 1..128; range {min(v[1:])}..{max(v[1:])}"
+    # F002 R008: byte 0 is 0; bytes 1..128 hold at least two distinct values
+    # (i.e. the per-country tactic byte is not constant). The data on the released
+    # file holds 34 distinct values, not 128; the F002 text reports the actual
+    # count. The check is "not all the same" — a corruption that zeroes or
+    # homogenises the block fails it. (R1 on the round-1 review by luna: the
+    # prior message said "128 distinct" but the check was `> 1`; this rewrite
+    # makes the check and message agree.)
+    n_distinct = len(set(v[1:]))
+    ok = v[0] == 0 and n_distinct > 1
+    return ok, f"0x{off:04X}: byte 0 is 0; bytes 1..128 hold {n_distinct} distinct values in {min(v[1:])}..{max(v[1:])}"
 
 
 def _check_R009(data: bytes) -> tuple[bool, str]:

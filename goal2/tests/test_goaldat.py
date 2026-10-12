@@ -104,6 +104,22 @@ class BlockShape(unittest.TestCase):
         ok, text = gd._check_R008(self.data)
         self.assertTrue(ok, text)
 
+    def test_R008_detects_homogenised_block(self):
+        # R1 on the round-1 review by luna: the prior check `> 1` was satisfied
+        # by 127 identical + 1 different values, while the message claimed
+        # "128 distinct" — a mismatch between the check and the message. The
+        # regression here makes every per-country_a byte the same and asserts
+        # R008 fails. The mutation only touches bytes 1..128 of the block
+        # (record 0 stays 0, which the check separately requires).
+        from goal2.data.goaldat import BLOCKS
+        _, off, size, _, _ = BLOCKS[6]
+        mutated = bytearray(self.data)
+        for i in range(1, 129):  # bytes 1..128 inclusive (the 128 country bytes)
+            mutated[off + i] = 0
+        ok, text = gd._check_R008(bytes(mutated))
+        self.assertFalse(ok, text)
+        self.assertIn("1 distinct", text)
+
     def test_R009_per_country_b(self):
         ok, text = gd._check_R009(self.data)
         self.assertTrue(ok, text)

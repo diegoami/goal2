@@ -6,6 +6,8 @@ tests use, the script form is what CI and humans run.
 [designed: the script mirrors `python -m goal2.data --check`; the duplication
 keeps the script callable from a fresh checkout without the package on
 sys.path (the script adjusts sys.path before importing).]
+[confirmed: the checks it runs are F002 R001–R011; the script's exit codes
+are 0 (all pass), 1 (any R check fails), or 2 (a missing or unreadable file).]
 """
 from __future__ import annotations
 

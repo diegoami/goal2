@@ -7,6 +7,8 @@ Runs the R001–R011 block-shape checks against the file at `<path>` and exits
 check: `R001 OK  …`, `R001 FAIL …`, etc.
 
 [designed: a thin wrapper around `goal2.data.goaldat.run_checks`.]
+[confirmed: the R001–R011 checks are F002's; the one-line-per-check output
+format is what `tools/static/goaldat.py` in goal2-archaeology produces.]
 """
 from __future__ import annotations
 
