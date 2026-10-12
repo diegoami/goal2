@@ -13,10 +13,18 @@ argument is accepted for API parity with T11/T12/T13 only.
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
 from typing import Iterable
 
+# Ensure the vendored engine's `import players` resolves to goal2/engine/players.py.
+_ENGINE_DIR = str(Path(__file__).resolve().parents[1] / "engine")
+if _ENGINE_DIR not in sys.path:
+    sys.path.insert(0, _ENGINE_DIR)
+
 from goal2.engine.state import GameState
-from goal2.engine.quick_engine import FoulPathNotModelled, ExtraTimeNotModelled, simulate
+from goal2.engine.quick_engine import FoulPathNotModelled, ExtraTimeNotModelled
+from goal2.engine import quick_engine as _qe
 from goal2.engine.savestate import Savestate
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
@@ -49,7 +57,7 @@ def run_result(
     # Load the savestate and run the engine.
     sav = Savestate(savestate_path)
     try:
-        result = simulate(sav)
+        result = _qe.simulate(sav)
     except (FoulPathNotModelled, ExtraTimeNotModelled) as exc:
         result = None
         refusal_msg = str(exc)
@@ -73,18 +81,13 @@ def run_result(
             return False
 
 
-def _cp437(byte_val: int) -> str:
-    """Render a byte as a CP437 character (the original's character set)."""
-    return chr(byte_val)
-
-
 def _build_grid(result: dict | None, refusal_msg: str | None) -> Grid:
     """Render the result screen into a Grid and return it.
 
     Row 0:     "RESULT  STAND-IN" (blue bg)
     Row 2:     "FINAL SCORE  H-A"  or  "REFUSED: <message>"
-    Rows 4..:  goal rows  " MM  team T  scorer P"
-               or "  no goals"
+    Rows 4..:  goal rows  " MM  team T  scorer N"
+               or (only in non-refusal path) "  no goals"
     Then:      seed words row
     Row 24:    "ENTER CONTINUE  ESC QUIT"
     """
@@ -98,32 +101,30 @@ def _build_grid(result: dict | None, refusal_msg: str | None) -> Grid:
     if refusal_msg is not None:
         msg = f"REFUSED: {refusal_msg}"
         grid.draw_text(2, 0, msg.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
+        # In the refusal path, do not render goal rows or seed rows —
+        # a refusal has no result to display. Only the title and footer
+        # are shown (the footer is drawn below).
     elif result is not None:
         score = result["score"]
         score_text = f"FINAL SCORE  {score[0]}-{score[1]}"
         grid.draw_text(2, 0, score_text.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
-    # else: leave row 2 blank (should not occur in practice)
 
-    # ── Goals / seed rows (rows 4+) ─────────────────────────────────────────
-    row = 4
-
-    if result is not None and result["goals"]:
-        for goal in result["goals"]:
-            minute = goal["minute"]
-            team = goal["team"]
-            player_byte = goal["player"]
-            scorer_char = _cp437(player_byte)
-            line = f" {minute:>2}  team {team}  scorer {scorer_char}"
-            grid.draw_text(row, 0, line.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
+        # ── Goals rows (rows 4+) ───────────────────────────────────────────
+        row = 4
+        if result["goals"]:
+            for goal in result["goals"]:
+                minute = goal["minute"]
+                team = goal["team"]
+                player_index = goal["player"]
+                line = f" {minute:>2}  team {team}  scorer {player_index}"
+                grid.draw_text(row, 0, line.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
+                row += 1
+        else:
+            grid.draw_text(row, 0, "  no goals".ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
             row += 1
-    else:
-        # No goals.
-        grid.draw_text(row, 0, "  no goals".ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
-        row += 1
 
-    # ── Seed words row ─────────────────────────────────────────────────────
-    row += 1  # blank row before seeds
-    if result is not None:
+        # ── Seed words row ─────────────────────────────────────────────────
+        row += 1  # blank row before seeds
         seed_text = (
             f"SEED DS:7B62  0x{result['seed_DS7B62']:04X}  "
             f"DS:8336  0x{result['seed_DS8336']:04X}"
@@ -148,7 +149,7 @@ def _render(savestate_path: str) -> Grid:
     """
     sav = Savestate(savestate_path)
     try:
-        result = simulate(sav)
+        result = _qe.simulate(sav)
     except (FoulPathNotModelled, ExtraTimeNotModelled) as exc:
         return _build_grid(None, str(exc))
     return _build_grid(result, None)

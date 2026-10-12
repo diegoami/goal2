@@ -7,7 +7,7 @@ with commentary lines (goals, scorers, minutes), labelled a stand-in.
 `goals`, and the two seed words (`seed_DS7B62`, `seed_DS8336`).
 
 [designed: T14 screen layout] Title row 0: "RESULT  STAND-IN". Score row 2:
-"FINAL SCORE  H-A". Goals rows 4..4+N-1: " MM  team T  scorer P". No goals
+"FINAL SCORE  H-A". Goals rows 4..4+N-1: " MM  team T  scorer N". No goals
 row: "  no goals". Seed row. Footer row 24: "ENTER CONTINUE  ESC QUIT".
 
 [designed: T14] The screen never mutates `state`. Esc and Enter return
@@ -38,11 +38,13 @@ ARCHAEOLOGY = Path(
 )
 
 
+# ── Fixture loading ────────────────────────────────────────────────────────
+
 def _fetch_e010_r0001() -> bytes:
     """Fetch E010-r0001's half-time savestate from the archaeology release.
 
-    [confirmed: E010 release] Asset name embeds the record number:
-    `*-E010-r0001-halftime.sav`.
+    This is the half-time savestate the engine is seeded-exact for (T01).
+    E010-r0001 is also the primary record used by T01/T07/T09 tests.
     """
     sav_path = CACHE / "e010-r0001-halftime.sav"
     if not sav_path.is_file():
@@ -71,12 +73,54 @@ def _fetch_e010_r0001() -> bytes:
     return sav_path.read_bytes()
 
 
+def _fetch_e006_r0001_main() -> bytes:
+    """Fetch E006-r0001's main-screen savestate from the archaeology release.
+
+    This is the main-screen savestate published in the E006 release (the
+    'goal2-original' savestate for E006, which triggers ExtraTimeNotModelled
+    in the quick engine — the T01 refusal exception).
+    """
+    sav_path = CACHE / "e006-r0001-main.sav"
+    if not sav_path.is_file():
+        CACHE.mkdir(parents=True, exist_ok=True)
+        try:
+            subprocess.run(
+                [
+                    "gh", "release", "download", "E006",
+                    "--repo", "diegoami/goal2-archaeology",
+                    "--pattern", "*.sav",
+                    "--dir", str(CACHE),
+                    "--skip-existing",
+                ],
+                check=True, capture_output=True, text=True,
+            )
+        except subprocess.CalledProcessError:
+            raise FileNotFoundError("E006 release not fetchable")
+        for f in CACHE.iterdir():
+            if f.name.endswith("-E006-r0001-main.sav"):
+                if f != sav_path:
+                    f.rename(sav_path)
+                break
+    if not sav_path.is_file():
+        raise FileNotFoundError("E006-r0001-main savestate not in cache")
+    return sav_path.read_bytes()
+
+
 def _e010_or_skip() -> bytes:
-    """Return E010-r0001 savestate bytes, or skip the test."""
+    """Return E010-r0001 half-time savestate bytes, or skip the test."""
     try:
         return _fetch_e010_r0001()
     except FileNotFoundError as e:
         raise unittest.SkipTest(f"E010-r0001 not fetchable: {e}")
+
+
+def _e006_or_skip() -> bytes:
+    """Return E006-r0001 main-screen savestate bytes (triggers ExtraTimeNotModelled),
+    or skip the test."""
+    try:
+        return _fetch_e006_r0001_main()
+    except FileNotFoundError as e:
+        raise unittest.SkipTest(f"E006-r0001-main not fetchable: {e}")
 
 
 def _run_engine(state_bytes: bytes) -> dict:
@@ -89,27 +133,6 @@ def _run_engine(state_bytes: bytes) -> dict:
 def _keys(*items: Key):
     """Return an iterator that yields Key values then stops cleanly."""
     return iter(items)
-
-
-# ── Savestate fixture for the refusal path ────────────────────────────────────
-
-def _foul_path_savestate() -> bytes:
-    """Return a savestate that triggers FoulPathNotModelled.
-
-    We build a minimal synthetic savestate by editing the E010 half-time
-    savestate: set DS:9A3D != 0 (the foul-path gate at D5C1).
-    """
-    e010 = _e010_or_skip()
-    # DS:9A3D is at offset 0x9A3D in the data segment.
-    # Find the program base in the savestate to locate DS:0.
-    sav = Savestate(e010)
-    ds_base = sav.program().ds_base
-    # The offset within the Memory component for DS:9A3D.
-    addr = ds_base + 0x9A3D
-    # Edit the memory: set byte at DS:9A3D to 1 (the foul-path gate value).
-    from goal2.engine.savestate import with_memory
-    edited = with_memory(e010, addr, bytes([1]))
-    return edited
 
 
 # ── run_result tests ─────────────────────────────────────────────────────────
@@ -175,15 +198,16 @@ class TestRunResult(unittest.TestCase):
         )
 
     def test_refusal_path_returns_false(self):
-        """Done-when 5: a savestate that triggers FoulPathNotModelled
-        causes run_result to return False with 'REFUSED: <substring>' on row 2."""
+        """Done-when 5: a savestate that triggers ExtraTimeNotModelled
+        causes run_result to return False with 'REFUSED: <substring>' on row 2,
+        and row 4 is blank (no goal rows rendered in refusal path)."""
         try:
-            foul_bytes = _foul_path_savestate()
+            refusal_bytes = _e006_or_skip()
         except unittest.SkipTest:
-            self.skipTest("E010-r0001 not available for refusal fixture")
+            self.skipTest("E006-r0001-main not available for refusal fixture")
 
-        # Run the engine on the foul-path savestate to confirm it refuses.
-        sav = Savestate(foul_bytes)
+        # Verify the engine actually refuses on this savestate.
+        sav = Savestate(refusal_bytes)
         exc_type = None
         exc_msg = ""
         try:
@@ -193,29 +217,34 @@ class TestRunResult(unittest.TestCase):
             exc_msg = str(e)
 
         if exc_type is None:
-            self.skipTest("foul-path fixture did not trigger an exception")
+            self.skipTest("E006-r0001-main did not trigger a refusal exception")
 
         # Now run the screen.
-        result = run_result(foul_bytes, _keys(Key.ESC))
+        result = run_result(refusal_bytes, _keys(Key.ESC))
         self.assertFalse(result)
 
         # Build the grid to check row 2 content.
-        grid = _render(foul_bytes)
+        grid = _render(refusal_bytes)
         lines = render(grid).split("\n")
         self.assertIn("REFUSED:", lines[2])
         # The substring of the exception message should appear.
         self.assertIn(exc_msg, lines[2])
+        # R5: row 4 must be blank (no goal rows in refusal path).
+        self.assertEqual(
+            lines[4].strip(), "",
+            f"row 4 should be blank in refusal path, got {lines[4]!r}",
+        )
 
     def test_refusal_row_contains_substring(self):
         """Done-when 5: row 2 contains 'REFUSED: ' followed by a substring
         of the engine's exception message."""
         try:
-            foul_bytes = _foul_path_savestate()
+            refusal_bytes = _e006_or_skip()
         except unittest.SkipTest:
-            self.skipTest("E010-r0001 not available for refusal fixture")
+            self.skipTest("E006-r0001-main not available for refusal fixture")
 
         # Get the expected exception message.
-        sav = Savestate(foul_bytes)
+        sav = Savestate(refusal_bytes)
         expected_msg = ""
         try:
             simulate(sav)
@@ -223,9 +252,9 @@ class TestRunResult(unittest.TestCase):
             expected_msg = str(e)
 
         if not expected_msg:
-            self.skipTest("foul-path fixture did not trigger an exception")
+            self.skipTest("E006-r0001-main did not trigger a refusal exception")
 
-        grid = _render(foul_bytes)
+        grid = _render(refusal_bytes)
         lines = render(grid).split("\n")
         # The REFUSED line should contain the exception message as a substring.
         self.assertIn(
@@ -262,13 +291,13 @@ class TestRenderSurface(unittest.TestCase):
             f"row 2 should contain '{expected_fragment}', got {lines[2]!r}",
         )
 
-    def test_goal_rows_contain_team_and_scorer(self):
+    def test_goal_rows_contain_team_and_scorer_index(self):
         """Done-when 6c: if result["goals"] is non-empty, rows 4..4+N-1
         each contain 'team ' and 'scorer ' (the engine's goal dict keys
-        'team' and the scorer's player word, rendered as 'scorer P')."""
+        'team' and the scorer's player word as a decimal integer)."""
         expected_result = _run_engine(self.state_bytes)
         if not expected_result["goals"]:
-            self.skipTest("E010-r0001 produced no goals")
+            self.skipTest("fixture produced no goals")
 
         grid = _render(self.state_bytes)
         lines = render(grid).split("\n")
@@ -278,6 +307,12 @@ class TestRenderSurface(unittest.TestCase):
                           f"goal row {4+i} should contain 'team ', got {goal_line!r}")
             self.assertIn("scorer ", goal_line,
                           f"goal row {4+i} should contain 'scorer ', got {goal_line!r}")
+            # The scorer integer must appear in the row text.
+            expected_scorer = str(expected_result["goals"][i]["player"])
+            self.assertIn(
+                expected_scorer, goal_line,
+                f"goal row {4+i} should contain scorer index {expected_scorer}, got {goal_line!r}",
+            )
 
     def test_no_goals_shows_no_goals_row(self):
         """If the engine result has 0 goals, _build_grid renders '  no goals' at row 4."""
