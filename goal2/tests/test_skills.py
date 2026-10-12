@@ -167,7 +167,10 @@ class TableLoaders(unittest.TestCase):
 
     def test_loaded_tables_match_e007(self):
         """The tables loaded from the E006-r0001 savestate must match the
-        tables recorded in E007-r0009's observations (same DOS session)."""
+        tables recorded in E007-r0009's observations (same DOS session).
+        Skips when E007 runs are not available."""
+        if not E007_RUNS.is_dir():
+            raise unittest.SkipTest(f"E007 runs not found at {E007_RUNS}")
         d = json.loads((E007_RUNS / "E007-r0009.json").read_text())
         tables_bytes = bytes.fromhex(_get_observation(d["observations"], "DS:6D20..6EB3"))
         class_expected = tables_bytes[5:5 + 169]
