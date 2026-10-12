@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import sys
 from enum import Enum
+from typing import BinaryIO
 
 
 class Key(Enum):
@@ -35,35 +36,35 @@ _KEY_SEQUENCES: dict[bytes, Key] = {
 }
 
 
-def read_key() -> Key:
+def read_key(_stdin: BinaryIO | None = None) -> Key:
     """Read one key from stdin and return its Key value.
 
     Raises EOFError when stdin closes without a full key sequence.
     [designed] Arrow keys arrive as \\x1b[A / \\x1b[B; PageUp/PageDown as
     \\x1b[5~ / \\x1b[6~; Enter as \\n or \\r; Esc as \\x1b.
+
+    R1 fix: read byte-by-byte after \\x1b, not read(5) which would
+    consume the next key. Build the sequence until it matches or diverges.
+    _stdin is for unit-test injection only (not part of the public API).
     """
-    ch = sys.stdin.buffer.read(1)
+    buf = _stdin if _stdin is not None else sys.stdin.buffer
+    ch = buf.read(1)
     if not ch:
         raise EOFError("stdin closed")
-    # Esc is either a bare \x1b or the start of a sequence
     if ch == b"\x1b":
-        # Peek: read up to 5 more bytes to form a sequence
-        seq = ch + sys.stdin.buffer.read(5)
-        for length in range(2, len(seq) + 1):
-            prefix = seq[:length]
-            if prefix in _KEY_SEQUENCES:
-                # Consume only what was read for this key
-                _consume(len(prefix) - 1)
-                return _KEY_SEQUENCES[prefix]
-        # Bare Esc (no sequence)
-        return Key.ESC
+        seq = ch
+        while True:
+            nxt = buf.read(1)
+            if not nxt:
+                return Key.ESC  # EOF mid-escape — treat as bare Esc
+            seq += nxt
+            if seq in _KEY_SEQUENCES:
+                return _KEY_SEQUENCES[seq]
+            # If seq is no longer a prefix of any known sequence, it's a bare
+            # Esc followed by something else; treat as Esc.
+            if not any(s.startswith(seq) for s in _KEY_SEQUENCES):
+                return Key.ESC
     if ch == b"\n" or ch == b"\r":
         return Key.ENTER
     # Unknown byte — treat it as a no-op and read the next key
-    return read_key()
-
-
-def _consume(n: int) -> None:
-    """Read and discard n bytes from stdin."""
-    if n > 0:
-        sys.stdin.buffer.read(n)
+    return read_key(_stdin)

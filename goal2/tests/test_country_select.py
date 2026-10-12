@@ -18,11 +18,18 @@ from goal2.ui.plain_renderer import render
 
 def _make_goaldat(names: list[str]) -> MagicMock:
     """Return a GoalDat-like mock whose country_names and squad_20
-    have the given names (indices 1..N) and trivial squad bytes."""
+    have the given names (indices 1..N) and squad bytes that are
+    distinctive by country index (for R3: deleting the assignment fails).
+
+    squad_20[i] = [i * 7] * 20  — country 0 → [0,0,...], country 1 →
+    [7,7,...], country 2 → [14,14,...], etc.
+    """
     gd = MagicMock()
-    # country_names[0] is the placeholder; names[0] is country 1, etc.
     gd.country_names = [""] + names
-    gd.squad_20 = [[i % 256 for i in range(20)]] * (len(names) + 1)
+    squad = []
+    for i in range(len(names) + 1):
+        squad.append([i * 7] * 20)
+    gd.squad_20 = squad
     return gd
 
 
@@ -50,7 +57,6 @@ def _keys(*items: Key):
 
 class TestRunCountrySelect(unittest.TestCase):
     def setUp(self):
-        # 3 countries so DOWN from 1 lands on 2, DOWN from 2 lands on 3
         self.gd3 = _make_goaldat(["ALPHA", "BRAVO", "CHARLIE"])
         self.gd128 = _make_goaldat([f"C{i}" for i in range(1, 129)])
         self.state = _make_state()
@@ -62,14 +68,19 @@ class TestRunCountrySelect(unittest.TestCase):
         self.assertEqual(self.state.managed_country, 2)
 
     def test_esc_returns_none_and_does_not_touch_state(self):
-        """Done-when 2b: ESC from country 5 returns None and does not touch state."""
+        """Done-when 2b / R4: ESC returns None and does not touch state.
+
+        R4 fix: state is now passed to run_country_select so Esc's
+        preservation guarantee is verified. State is pre-set to a known
+        value and checked unchanged after the call.
+        """
         state = _make_state()
-        state.managed_country = 5
-        state.managed_squad = list(range(20))
-        result = run_country_select(self.gd3, _keys(Key.ESC), initial_country=5)
+        state.managed_country = 7
+        state.managed_squad = [7] * 20
+        result = run_country_select(self.gd3, _keys(Key.ESC), initial_country=5, state=state)
         self.assertIsNone(result)
-        self.assertEqual(state.managed_country, 5)
-        self.assertEqual(state.managed_squad, list(range(20)))
+        self.assertEqual(state.managed_country, 7)
+        self.assertEqual(state.managed_squad, [7] * 20)
 
     def test_page_down_from_1_returns_21(self):
         """Done-when 2c: PAGE_DOWN from country 1 (page_size=20) returns 21."""
@@ -83,22 +94,44 @@ class TestRunCountrySelect(unittest.TestCase):
         result = run_country_select(self.gd3, _keys(Key.UP, Key.UP, Key.ENTER), initial_country=1)
         self.assertEqual(result, 1)
 
-    def test_managed_squad_is_20_bytes(self):
-        """Done-when 5: Enter sets managed_squad to a 20-element list."""
+    def test_down_up_movement(self):
+        """R2: Down then Up moves to 2 then back to 1; Enter returns 1.
+
+        Mutation: if the Up handler is removed (made a no-op), Down+Up
+        leaves cursor at 2 and Enter returns 2, failing the assertion.
+        """
+        result = run_country_select(self.gd3, _keys(Key.DOWN, Key.UP, Key.ENTER), initial_country=1)
+        self.assertEqual(result, 1)
+
+    def test_down_down_up_movement(self):
+        """R2: Down×2 moves to 3, Up moves back to 2; Enter returns 2.
+
+        Mutation: if the Up handler is removed, cursor stays at 3 and
+        Enter returns 3, failing the assertion.
+        """
+        result = run_country_select(self.gd3, _keys(Key.DOWN, Key.DOWN, Key.UP, Key.ENTER), initial_country=1)
+        self.assertEqual(result, 2)
+
+    def test_managed_squad_is_20_distinctive_bytes(self):
+        """Done-when 5 / R3: Enter sets managed_squad to a 20-element list.
+
+        R3 fix: squads are now distinctive ([i*7]*20), so deleting the
+        assignment leaves state.managed_squad as the pre-set [99]*20,
+        which fails the equality assertion. len() guards the 20-byte
+        requirement (F011: squad_20 is exactly 20 bytes).
+        """
         state = _make_state()
-        # gd128.squad_20[2] is the bytes for country 2
-        self.assertEqual(len(self.gd128.squad_20[2]), 20)
-        run_country_select(self.gd128, _keys(Key.DOWN, Key.ENTER), initial_country=1, state=state)
+        state.managed_squad = [99] * 20  # clearly different from any valid squad
+        # gd3 country 2 has squad_20[2] = [14]*20 (2*7)
+        self.assertEqual(self.gd3.squad_20[2], [14] * 20)
+        run_country_select(self.gd3, _keys(Key.DOWN, Key.ENTER), initial_country=1, state=state)
         self.assertEqual(len(state.managed_squad), 20)
-        self.assertEqual(state.managed_squad, list(self.gd128.squad_20[2]))
+        self.assertEqual(state.managed_squad, [14] * 20)
 
 
 # ── Render surface tests ────────────────────────────────────────────────────
 
 class TestRenderSurface(unittest.TestCase):
-    def setUp(self):
-        self.gd3 = _make_goaldat(["ALPHA", "BRAVO", "CHARLIE"])
-
     def test_cursor_row_has_country_name_at_index_7(self):
         """Done-when 3: cursor row's first cell holds country 7's name.
 
@@ -108,34 +141,42 @@ class TestRenderSurface(unittest.TestCase):
         gd128 = _make_goaldat([f"C{i}" for i in range(1, 129)])
         cursor = 7
         grid = _render(gd128, cursor=cursor, page_size=20)
-        # Country 7 is on page 1 (rows 1..20); its row index = 1 + (7-1) = 7
         cell_char = grid.cell(7, 0)[0]
         expected_char = ord(gd128.country_names[cursor][0])
         self.assertEqual(cell_char, expected_char)
 
-    def test_title_shows_cursor_number(self):
-        """Done-when 3: title row holds 'SELECT COUNTRY  N/128' with N=cursor.
+    def test_title_shows_cursor_7(self):
+        """Done-when 3 / R5: title row holds cursor number derived from argument.
 
-        The expected number is derived from the input, not a literal.
-        Deleting the cursor argument leaves a different number in the title.
+        R5 fix: checks cursor=7 case. The expected title is computed from
+        the cursor argument, not a hardcoded literal.
         """
         cursor = 7
         gd128 = _make_goaldat([f"C{i}" for i in range(1, 129)])
         grid = _render(gd128, cursor=cursor, page_size=20)
-        # Render the grid and check the title row
         output = render(grid)
-        title_row = output.split("\n")[0]
-        # Title contains the cursor number (padded to 3 chars by the format)
-        self.assertIn(f"SELECT COUNTRY", title_row)
-        self.assertIn(f"/{128}", title_row)
-        # The number 7 appears in the title row (derived from cursor, not a literal)
-        self.assertIn(str(cursor), title_row)
+        lines = output.split("\n")
+        # Title format: "SELECT COUNTRY  " + 3-digit cursor + "/128"
+        # col 16..19 = the 3-char padded cursor number
+        self.assertEqual(lines[0][16:19], f"{cursor:3d}")
+
+    def test_title_shows_cursor_42(self):
+        """R5: second cursor case (42) catches a hardcoded "7" in the title.
+
+        Mutation: if the title used hardcoded "  7" instead of {cursor:3d},
+        this test fails (42 != 7).
+        """
+        cursor = 42
+        gd128 = _make_goaldat([f"C{i}" for i in range(1, 129)])
+        grid = _render(gd128, cursor=cursor, page_size=20)
+        output = render(grid)
+        lines = output.split("\n")
+        self.assertEqual(lines[0][16:19], f"{cursor:3d}")
 
     def test_cursor_row_reversed_video(self):
         """Cursor row uses fg=0, bg=7 (reversed video); other rows do not."""
         gd128 = _make_goaldat([f"C{i}" for i in range(1, 129)])
         grid = _render(gd128, cursor=5, page_size=20)
-        # Country 5 is row 1 + (5-1) = 5
         cursor_cell = grid.cell(5, 0)
         normal_cell = grid.cell(4, 0)  # country 4, previous row
         self.assertEqual(cursor_cell[1], 0)   # fg = 0 (black)
