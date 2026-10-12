@@ -40,7 +40,12 @@ DS_118C = (0x11, 0x14)
 # The 3558 routine's T lookup.
 DS_0E82 = (0x10, 0x0D)
 
+# [confirmed: F007] PLAYER_SIZE = 0x14: each player record is 20 bytes
+# (+0x00 country ... +0x12/+0x13 fitness word, per F007's byte layout).
 PLAYER_SIZE = 0x14
+# [confirmed: F007] N_PLAYERS = 3061: the full player array holds 3061 records
+# (record 0 all zero + 128 countries × 20 squad players + 80 managed-country
+# players + 420 trailing zero records).
 N_PLAYERS = 3061
 
 

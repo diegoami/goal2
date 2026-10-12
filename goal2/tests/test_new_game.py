@@ -131,16 +131,16 @@ class CountryRank(unittest.TestCase):
     def setUp(self):
         self.d = goaldat.load(_dat_or_skip())
 
-    def test_denmark_country_record_values(self):
-        # F007: Denmark's country record reads +0x2A..+0x2F = `1c 50 1c 50 01 f7 01 04`
-        # → +0x2A=28, +0x2B=80, +0x2C=1.
+    def test_country_1_country_record_values(self):
+        # F007: country 1's record reads +0x2A..+0x2F = `1c 50 1c 50 01 f7 01 04`
+        # → +0x2A=28, +0x2B=80, +0x2C=1. (Country 7 is Denmark; country 1 is
+        # the first country in the data tables.)
         world, continent, within = new_game.country_rank(self.d, 1)
         self.assertEqual((world, continent, within), (80, 1, 28))
 
-    def test_germany_position_in_block_8(self):
-        # F007: "Germany reads 1, 1, 2" is the main-screen display, not the
-        # +0x2B byte the rating formula reads. The function reads the
-        # permutation positions; this only asserts they are positive ints.
+    def test_country_2_rank_is_in_range(self):
+        # The function reads the permutation positions for any country;
+        # this only asserts they are positive ints within their domains.
         world, continent, within = new_game.country_rank(self.d, 2)
         self.assertGreater(world, 0)
         self.assertGreaterEqual(continent, 1)
@@ -148,7 +148,7 @@ class CountryRank(unittest.TestCase):
         self.assertGreaterEqual(within, 1)
         self.assertLessEqual(within, 32)
 
-    def test_rating_for_denmark(self):
+    def test_rating_for_country_1(self):
         # F007: rating = ((5-1)(33-28) + (129-80)) / 2 = 34 (= 0xA1 - 0x7F).
         self.assertEqual(new_game.rating(self.d, 1), 34)
 
@@ -281,6 +281,64 @@ class E006Fidelity(unittest.TestCase):
             len(c_values), 30,
             f"only {len(c_values)} distinct +0x0C values; LCG appears degenerate"
         )
+
+
+class LCGDrawOrderRegression(unittest.TestCase):
+    """[designed] Regression guard: pin the LCG-driven fields of country 1's
+    first 10 players. Catches a draw-order swap (e.g. exchanging the two
+    `rand(7)` calls in the age formula would change player 1's age from
+    0x1a to 0x1e and fail this test). These values are the current model's
+    output; they are NOT the final E006 byte-exact oracle. When the LCG
+    draw order is reconciled against E006 (the T03 follow-up), this test
+    must be updated to the reconciled values.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.d = goaldat.load(_dat_or_skip())
+        cls.players = new_game.make_all_players(cls.d, managed_country=MANAGED_COUNTRY)
+
+    # Pinned: (record_index, +0x01 age, +0x02 peak, +0x05, +0x0C, +0x0D, +0x0E)
+    PINNED = (
+        (1,  0x1a, 0x1b, 0x0e, 0x08, 0x20, 0x20),
+        (2,  0x22, 0x1f, 0x03, 0x05, 0x12, 0x12),
+        (3,  0x23, 0x1d, 0x0f, 0x1e, 0x11, 0x11),
+        (4,  0x1d, 0x1d, 0x02, 0x18, 0x17, 0x17),
+        (5,  0x21, 0x20, 0x01, 0x13, 0x20, 0x20),
+        (6,  0x1c, 0x1d, 0x0e, 0x04, 0x20, 0x20),
+        (7,  0x1b, 0x1e, 0x0b, 0x11, 0x20, 0x20),
+        (8,  0x21, 0x1e, 0x03, 0x1e, 0x14, 0x14),
+        (9,  0x1f, 0x20, 0x0c, 0x10, 0x20, 0x20),
+        (10, 0x24, 0x1d, 0x05, 0x1a, 0x16, 0x16),
+    )
+
+    def test_lcg_driven_fields_match_pinned_values(self):
+        for idx, age, peak, b5, bC, bD, bE in self.PINNED:
+            rec = self.players[idx]
+            self.assertEqual(
+                rec[1], age,
+                f"player {idx} +0x01 age: model=0x{rec[1]:02x} pinned=0x{age:02x}",
+            )
+            self.assertEqual(
+                rec[2], peak,
+                f"player {idx} +0x02 peak: model=0x{rec[2]:02x} pinned=0x{peak:02x}",
+            )
+            self.assertEqual(
+                rec[5], b5,
+                f"player {idx} +0x05: model=0x{rec[5]:02x} pinned=0x{b5:02x}",
+            )
+            self.assertEqual(
+                rec[0x0C], bC,
+                f"player {idx} +0x0C: model=0x{rec[0x0C]:02x} pinned=0x{bC:02x}",
+            )
+            self.assertEqual(
+                rec[0x0D], bD,
+                f"player {idx} +0x0D: model=0x{rec[0x0D]:02x} pinned=0x{bD:02x}",
+            )
+            self.assertEqual(
+                rec[0x0E], bE,
+                f"player {idx} +0x0E: model=0x{rec[0x0E]:02x} pinned=0x{bE:02x}",
+            )
 
 
 class DW3Example(unittest.TestCase):
