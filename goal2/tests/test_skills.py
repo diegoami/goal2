@@ -166,12 +166,13 @@ class TableLoaders(unittest.TestCase):
         self.assertEqual(len(self.profile_loaded), 205)
 
     def test_loaded_tables_match_e007(self):
-        """The tables loaded from the E006-r0001 savestate must match the
-        tables recorded in E007-r0009's observations (same DOS session).
-        Skips when E007 runs are not available."""
-        if not E007_RUNS.is_dir():
-            raise unittest.SkipTest(f"E007 runs not found at {E007_RUNS}")
-        d = json.loads((E007_RUNS / "E007-r0009.json").read_text())
+        """[confirmed: F008, E007] The tables loaded from the E006-r0001
+        savestate must match the tables recorded in E007-r0009's observations
+        (same DOS session). Skips when the E007 run file is absent."""
+        run_path = E007_RUNS / "E007-r0009.json"
+        if not run_path.is_file():
+            raise unittest.SkipTest(f"E007 run not found at {run_path}")
+        d = json.loads(run_path.read_text())
         tables_bytes = bytes.fromhex(_get_observation(d["observations"], "DS:6D20..6EB3"))
         class_expected = tables_bytes[5:5 + 169]
         profile_expected = tables_bytes[0xAD:0xAD + 205]
@@ -231,8 +232,12 @@ class E007Fidelity(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if not E007_RUNS.is_dir():
-            raise unittest.SkipTest(f"E007 runs not found at {E007_RUNS}")
+        # [confirmed: F008, E007] Skip if any of the 4 required E007 run files
+        # are absent; a partial directory is not enough.
+        for rec_num in range(9, 13):  # r0009..r0012
+            rec_path = E007_RUNS / f"E007-r{rec_num:04d}.json"
+            if not rec_path.is_file():
+                raise unittest.SkipTest(f"E007 run not found at {rec_path}")
         state = _e006_or_skip()
         cls.class_table = skills.load_class_table(state)
         cls.profile_table = skills.load_profile_table(state)
