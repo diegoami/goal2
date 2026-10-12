@@ -81,6 +81,10 @@ class GameState:
     # [designed] The captain's player number (0 means "not yet picked").
     # Set by the squad select screen (T12); read by the match screen (T14).
     captain: int = 0
+    # [designed] The 8-bit team tactics byte for the managed country.
+    # Set by the tactics screen (T13); read by the match screen (T14).
+    # Default 0 means all bits clear.
+    country_tactics: int = 0
 
 
 def from_savestate(state_bytes: bytes) -> GameState:

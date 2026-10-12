@@ -11,10 +11,10 @@ from goal2.ui.input import Key, read_key
 
 
 class TestKey(unittest.TestCase):
-    def test_six_enum_values(self):
-        """Done-when 4: Key has the six expected enum values."""
+    def test_seven_enum_values(self):
+        """Done-when 4: Key has the seven expected enum values (T13 adds SPACE)."""
         names = {k.name for k in Key}
-        self.assertEqual(names, {"UP", "DOWN", "ENTER", "ESC", "PAGE_UP", "PAGE_DOWN"})
+        self.assertEqual(names, {"UP", "DOWN", "ENTER", "ESC", "PAGE_UP", "PAGE_DOWN", "SPACE"})
 
     def test_read_key_callable(self):
         """Done-when 4: read_key is importable and callable (not invoked)."""
@@ -37,6 +37,13 @@ class TestReadKey(unittest.TestCase):
         fake_stdin = io.BytesIO(b"\x1b[5~")
         k = read_key(fake_stdin)
         self.assertEqual(k, Key.PAGE_UP)
+
+    def test_space_key(self):
+        """R4: space byte returns Key.SPACE. Mutation: removing the SPACE branch
+        from read_key makes this fail."""
+        fake_stdin = io.BytesIO(b" ")
+        k = read_key(fake_stdin)
+        self.assertEqual(k, Key.SPACE)
 
 
 if __name__ == "__main__":
