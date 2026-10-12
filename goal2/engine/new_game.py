@@ -251,6 +251,22 @@ def make_country_players(d: GoalDat, c: int, lcg=None) -> list[bytearray]:
     return [_make_one_player_96d3(d, c, s, lcg) for s in range(20)]
 
 
+def make_managed_players(d: GoalDat, c: int, lcg) -> list[bytearray]:
+    """[confirmed: F007] The 80 managed-country players, F007's 1771:98C4 routine.
+    The position sequence is 4 per position 0..13 (56), then one per squad
+    slot 1..20 (20), then squad slots 6..9 again (4). The age is redrawn
+    as DS:118C[gk] + rand(3) and +4 is recomputed. The +0x03 potential
+    is `rating(c) + 0x7F - 10 - rand(10)`. The +0x0D/+0x0E uses 1771:3558
+    in the managed branch.
+    """
+    pos_iter = []
+    for pos in range(14):
+        pos_iter.extend([pos] * 4)
+    pos_iter.extend(d.squad_20[c])
+    pos_iter.extend(d.squad_20[c][5:9])
+    return [_make_one_player_98c4(d, c, position, lcg) for position in pos_iter]
+
+
 def make_all_players(d: GoalDat, managed_country: int) -> list[bytes]:
     """[confirmed: F007] The 3061-record player array, byte-for-byte the same as the new game.
     `managed_country` is the country number (1..128) whose manager is human;
@@ -260,9 +276,9 @@ def make_all_players(d: GoalDat, managed_country: int) -> list[bytes]:
 
     # [confirmed: F007] First, the 128 countries' squad players (records 1..2560).
     for c in range(1, 129):
-        lcg = LCG(c)
-        for s in range(20):
-            rec = _make_one_player_96d3(d, c, s, lcg)
+        # Delegate to make_country_players so the test suite can substitute
+        # that function (the tests catch an all-zero model through this path).
+        for s, rec in enumerate(make_country_players(d, c)):
             array[(c - 1) * 20 + s + 1] = bytes(rec)
 
     # [confirmed: F007] One LCG draw falls between 9A40 and 98C4 (the seed the
@@ -286,8 +302,9 @@ def make_all_players(d: GoalDat, managed_country: int) -> list[bytes]:
     # correspond to squad_20[5..9] (0-indexed positions).
     pos_iter.extend(d.squad_20[managed_country][5:9])
 
-    for i, position in enumerate(pos_iter):
-        rec = _make_one_player_98c4(d, managed_country, position, lcg)
+    # Use make_managed_players (98C4 path) so the test suite can substitute
+    # that function and catch a no-op model.
+    for i, rec in enumerate(make_managed_players(d, managed_country, lcg)):
         array[2561 + i] = bytes(rec)
 
     # [confirmed: F007] Records 2641..3060 are all zero at the main screen.

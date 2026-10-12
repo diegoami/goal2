@@ -266,6 +266,22 @@ class E006Fidelity(unittest.TestCase):
                 # 2641..3060 are all zero
                 self.assertEqual(actual[i][0], 0)
 
+    def test_lcg_produces_varied_values(self):
+        """The LCG drives +0x01, +0x02, +0x05, +0x0C, +0x0D/+0x0E. A
+        degenerate LCG (always returns 0 or 1) would produce a model with
+        zero variance in these fields. This test catches that: across the
+        2560 squad players, the +0x0C values (one LCG draw per player)
+        must include at least 30 distinct values out of 32 possible. An
+        all-1 or all-0 LCG would fail; a working LCG passes."""
+        actual = new_game.make_all_players(self.d, managed_country=MANAGED_COUNTRY)
+        c_values = set()
+        for i in range(1, 2561):
+            c_values.add(actual[i][0x0C])
+        self.assertGreaterEqual(
+            len(c_values), 30,
+            f"only {len(c_values)} distinct +0x0C values; LCG appears degenerate"
+        )
+
 
 class DW3Example(unittest.TestCase):
     """[designed] The DW3 example: a one-liner that prints a player's bytes."""
