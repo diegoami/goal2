@@ -170,9 +170,16 @@ class RoundTrip(unittest.TestCase):
 
 class DW3Example(unittest.TestCase):
     """[designed] The DW3 example: print the first 6 bytes of country 1's
-    first player (record 1, bytes 0..5)."""
+    first player (record 1, bytes 0..5). Skips when the fixture is absent."""
 
     def test_dw3_example_runs(self):
+        # Skip if the E006-r0001 fixture is absent (clean checkout).
+        if not SAV.is_file():
+            # Try to download it; skip on any failure.
+            try:
+                _fetch_e006()
+            except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
+                raise unittest.SkipTest(f"E006-r0001 not fetchable: {e}")
         code = (
             "from goal2.engine import state; "
             "s = state.from_savestate(open('.cache/e006-r0001-main.sav','rb').read()); "
