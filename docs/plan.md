@@ -12,7 +12,7 @@ The owner's decisions of 2026-10-12 (goal2 #2):
 4. **The main session drafts** this plan and the register.
 
 Every rule the rebuild plays by is in [`assumptions.md`](assumptions.md), tagged by where it comes
-from. Code carries CLAUDE.md rule 1's evidence tags; the register is where an `assumed` rule
+from. Code carries CLAUDE.md's evidence tags; the register is where an `assumed` rule
 names what replaces it.
 
 ## How the rebuild is built
@@ -34,7 +34,7 @@ names what replaces it.
   straight to a terminal. Renderers: a plain-text one for tests and logs, and a window one that
   scales (zoom), uses a readable font, and can later add what the original lacks. A screen is
   tested by its grid, not its pixels.
-- **Nothing of the original is committed** (CLAUDE.md rule 3). `GOAL.DAT`, the source of the
+- **Nothing of the original is committed** (CLAUDE.md: nothing of the original game is committed). `GOAL.DAT`, the source of the
   country and player data, is read at run time from `.cache/`, fetched from goal2-archaeology's
   release by hash, like every savestate.
 
@@ -80,7 +80,7 @@ recorded as `assumed`, with why and what replaces it.
 
 | Risk | What we do |
 | --- | --- |
-| Every finding is still `proposed` (none promoted to goal2-archaeology's `spec/` as of `d6ad065`) | the register names each finding's status; a vendored model is held to its own seed-exact check (rule 4); a finding that changes reopens its rows |
+| Every finding is still `proposed` (none promoted to goal2-archaeology's `spec/` as of `d6ad065`) | the register names each finding's status; a vendored model is held to its own seed-exact check (CLAUDE.md: the fidelity test is the arbiter); a finding that changes reopens its rows |
 | The state adapter misplaces a field the models read | round-trip tests against the published savestates, field by field, before any model runs on goal2's state |
 | The first half differs from the second in a way the model does not show (kick-off, the half's start) | A-MATCH-1 is tested against a whole recorded quick match as soon as one exists with a kick-off state |
 | The help file and the code disagree (substitutions: 2/5 in the help, 5 in the owner's play; the pool: 100 in the help, 20 + 80 in the code) | the code wins when a finding says so; until then the register says which source is live and why |
