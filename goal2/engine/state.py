@@ -75,6 +75,17 @@ class GameState:
     # The adapter modifies known fields in this buffer, then writes it
     # back to the zip.
     mem: bytes = field(repr=False)
+    # [designed] The 11 player numbers of the chosen starting lineup.
+    # Set by the squad select screen (T12); read by the tactics screen (T13).
+    starting_eleven: list[int] = field(default_factory=list)
+    # [designed] The captain's player number (0 means "not yet picked").
+    # Set by the squad select screen (T12); read by the match screen (T14).
+    captain: int = 0
+    vga: bytes = field(repr=False)
+    # [designed] The raw decompressed Memory component (guest memory).
+    # The adapter modifies known fields in this buffer, then writes it
+    # back to the zip.
+    mem: bytes = field(repr=False)
 
 
 def from_savestate(state_bytes: bytes) -> GameState:
