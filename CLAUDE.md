@@ -37,7 +37,7 @@ skills and agents cite them by number.
 6. The reviewer is never the implementer's model family. It re-runs every Done-when line itself.
 7. Merge only with an approving review and green CI. Two rework rounds, then escalate. (L38's
    ladder is superseded: the same implementer fixes the class of the findings, not each instance.) With both, merge at once
-   without asking (the owner, 2026-10-04): `--squash` (rule 22: one task, one branch, one PR).
+   without asking (the owner, 2026-10-04): `--squash` (goal2 keeps no research history to preserve).
    The main session may grant a third, narrow round itself when the remaining findings are small
    and change no result (the owner, 2026-10-05). When it escalates over small exact corrections,
    it offers "small fix + delta review": it applies the corrections in the task's worktree and
@@ -65,7 +65,7 @@ skills and agents cite them by number.
 
 
 ## This project
-17. **Evidence tags** [evidence-driven]. Every behaviour claim in code or docs is tagged `[confirmed]`
+17. **Evidence tags.** Every behaviour claim in code or docs is tagged `[confirmed]`
     (cites the goal2-archaeology finding(s) and commit it rests on), `[derived]` (follows from
     confirmed claims) or `[designed]` (a choice of this rebuild, no original evidence). No untagged
     behaviour claims; a `[designed]` choice that later contradicts a finding is a bug.
@@ -80,9 +80,9 @@ skills and agents cite them by number.
     disagree on a case the model is seed-exact for, the rebuild is wrong until proven otherwise. A
     fidelity test that has never failed proves nothing (state the case it fails without the fix).
 21. **Tests fail before and pass after.** Every new behaviour arrives with the test that visits it;
-    the PR says how the failure was shown (rule 9).
+    the PR says how the failure was shown.
 22. **One task, one branch, one PR.** Task files say what is in scope; a Done-when line that cannot
-    be met stops the task and reports, never weakens the line (rule 5). PRs merge with `--squash`.
+    be met stops the task and reports, never weakens the line.
 
 ## Choosing models: who implements, who reviews (the owner, 2026-10-11 and 2026-10-12)
 These rules replace every other model-choice rule in this project (goal2-archaeology's, adopted

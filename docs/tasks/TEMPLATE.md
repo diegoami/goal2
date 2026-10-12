@@ -7,7 +7,7 @@
 - **Evidence**: the goal2-archaeology findings (F-numbers + commits) and the goal2 state this task
   rests on, with the evidence tags its claims will carry (CLAUDE.md rule 17).
 - **Owns**: directories or files, e.g. `src/Calendar/**`, `tests/Calendar/**`. A task that measures
-  owns a tracked path for its outputs, e.g. `runs/E<nnn>/**` or `spike/measurements/**`: they are
+  owns a tracked path for its outputs, e.g. `measurements/T<nn>/**`: they are
   pushed after each batch and every 30 minutes, never deleted or overwritten; originals stay out,
   their hashes recorded (L40).
 - **Scope**: what to build, in a few sentences. What is out of scope, if it is easy to confuse. A task

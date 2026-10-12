@@ -55,17 +55,16 @@ Scope, Done when, Hazards, Implementer, Reviewer, Merge after. Rules:
   other layer's tests still pass without it, and the other layer is still useful in the field. When
   a task touches more than 3 orthogonal layers, **split it into T<nn>a, T<nn>b, ...** before
   dispatch. Each sub-task is its own mergeable PR with its own Done-when, reviewer, and merge
-  cycle. T34 (recorder 2) is the canonical case: 5 orthogonal layers (privacy & nested-display key
+  cycle. goal2-archaeology's T34 (recorder 2) is the canonical case: 5 orthogonal layers (privacy & nested-display key
   logger; burst detection; scheduler timing; keymap & acceptance guard; CI apt step & latency
   probe) sat on one PR; the rework rounds each surfaced a defect in a different layer, the L38
   / family-rule bind fired per-round for the whole ticket, the 900 s idle limit per round had to
   cover all 5 layers, and the r3 round died without pushing. Per-layer splits would have closed
   each layer in 1 round. Defensive check: when reviewing a task file, ask "could this be two or
   three tasks instead?" If yes, split. The cost of splitting is small (more task files, more
-  PRs); the cost of not splitting is what we saw on T34. The retrospective is at
-  `goal2-archaeology-work/lessons/T34-too-big-split-by-orthogonal-layer.md`. (L104)
+  PRs); the cost of not splitting is what goal2-archaeology saw on T34. (L104)
 - **Numbering.** Before writing a task file, `git pull` and take the next free number in
-  `docs/tasks/`: another session may have written one (T14 was overwritten once, 2026-10-05).
+  `docs/tasks/`: another session may have written one (goal2-archaeology's T14 was overwritten once, 2026-10-05).
 
 ## 3. The loop
 
@@ -87,12 +86,12 @@ What the review script guarantees, and why:
   at high), in the scripts' own data directory (L27, L29). One model, one run; no chain. The model
   is `reviewer.default`, or `--reviewer` (a harness.json key or `provider/model[@variant]`).
 - Exit 0: posted and labelled. 2: a refused model (DeepSeek, an unknown name). 3: no review, nothing
-  posted: read the final message (rule 12), fix the cause, run again. 4: posted under a note, no
+  posted: read the final message ("Choosing models" rule 12), fix the cause, run again. 4: posted under a note, no
   label: the main session reads it and decides.
 
 How the main session launches and watches a run (L103):
 - Detached from its own session, so a restart of Claude Code does not kill the run, in the form of
-  CLAUDE.md's monitoring rule 9: `systemd-run --user --unit=goal2r-<task> --collect -E PATH="$PATH"
+  CLAUDE.md's "Choosing models" rule 9: `systemd-run --user --unit=goal2r-<task> --collect -E PATH="$PATH"
   -E MINIMAX_API_KEY -E ANTHROPIC_BASE_URL -E HARNESS_SESSION_FAMILY -p WorkingDirectory=<repo> -p StandardInput=null -p StandardOutput=file:<log>
   -p StandardError=file:<log> <review.mjs command>`. A unit gets only the
   environment it is given, so each key a run needs is passed with `-E`; never a `bash -c` or

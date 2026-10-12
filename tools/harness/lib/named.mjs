@@ -2,7 +2,7 @@
 // harness.json's keys stay as short names; any other name of the form `provider/model`, with an
 // optional `@variant`, is taken as the OpenCode model id the user chose. Its family, for the
 // reviewer-family rule, is read from the model's own name. harness.json's blocked list is refused
-// (rule 4); Alibaba runs only when named, which this is.
+// ("Choosing models" rule 3); Alibaba runs only when named, which this is.
 
 // The one classifier of model ids (Sol's round-1 R2 on PR 149: switch.mjs kept a second one, and
 // codex/chatgpt ids fell through here). switch.mjs and review.mjs both use it.

@@ -73,7 +73,7 @@ the plan.
 
 **History (the owner, 2026-10-11):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
 
-Alibaba is used only when the user asks (CLAUDE.md "Choosing models" rule 4). On an Alibaba quota or
+Alibaba is used only when the user asks (CLAUDE.md "Choosing models" rule 3). On an Alibaba quota or
 rate error, stop using it until the next day, tell the owner, and do not retry: its monthly pool is
 small and is not monitored.
 
@@ -172,9 +172,8 @@ login. Where the service is not installed, go on without it, and count a usage-l
 
 ## A shared machine
 
-goal2-archaeology's and isle-wars' sessions run on the same machine (DOSBox-X, Xvfb, OpenCode
-reviews). Stop only processes you started, by PID; name systemd units `goal2r-<name>`, apart from
-goal2-archaeology's `goal2-<name>`.
+Other projects' sessions run on the same machine. Stop only processes you started, by PID; name
+this repository's systemd units `goal2r-<name>`, so they never collide with another project's.
 
 ## OpenCode's agent permissions
 

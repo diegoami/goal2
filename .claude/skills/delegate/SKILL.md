@@ -50,7 +50,7 @@ another way, or tell the user what is missing (`docs/environment.md`).
 
    Vendor benchmarks come last.
 4. **Record the choice where it is used.** Who implements and who reviews, on which model, and the
-   suggestion's reasons go in a comment on the issue or PR (rule 5). A generated asset gets a sidecar next to it, `<asset>.json`, with the provider, the
+   suggestion's reasons go in a comment on the issue or PR (CLAUDE.md "Choosing models" rule 2). A generated asset gets a sidecar next to it, `<asset>.json`, with the provider, the
    model id, the prompt, the date and the cost. That records where it came from, and lets it be
    made again.
 5. **Say the cost first.** Before a batch (many images, a long narration), tell the user the
