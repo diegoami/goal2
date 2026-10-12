@@ -136,7 +136,10 @@ class ProvenanceCheck(unittest.TestCase):
         """A row whose path normalises to a vendored file's path is rejected
         (R1 on the round-2 review: `lstrip("./")` would let `.goal2/engine/x`
         authorise `goal2/engine/x`; the fix preserves component identity and
-        requires the path's first two components to be `goal2/engine/`)."""
+        requires the path's first two components to be `goal2/engine/`).
+        [designed: the `_normalize` helper's single `./` strip and the
+        `_under_engine` two-component check are this rebuild's; rule 18 is the
+        reason any of this matters.]"""
         layout = {
             "PROVENANCE.md": textwrap.dedent("""\
                 | File | Source repo | Source commit | Findings it rests on | Vendored |
@@ -151,7 +154,11 @@ class ProvenanceCheck(unittest.TestCase):
 
     def test_outside_engine_dir_blocks(self):
         """A row whose path is outside `goal2/engine/` is rejected even if it
-        happens to share a name with a vendored file."""
+        happens to share a name with a vendored file.
+        [designed: same guard as `test_dot_prefix_bypass_blocks` — a row
+        pointing somewhere else cannot authorise a vendored file with the
+        same name; rule 18 names the engine directory as the only place a
+        row is allowed to point.]"""
         layout = {
             "PROVENANCE.md": textwrap.dedent("""\
                 | File | Source repo | Source commit | Findings it rests on | Vendored |
