@@ -17,7 +17,7 @@ class Key(Enum):
     """The keys the screen layer understands.
 
     [designed] Arrow keys move the cursor; PageUp/PageDown jump by a page;
-    Enter confirms; Esc cancels.
+    Enter confirms; Esc cancels; Space toggles the current tactic.
     """
     UP = "up"
     DOWN = "down"
@@ -25,6 +25,7 @@ class Key(Enum):
     ESC = "esc"
     PAGE_UP = "page_up"
     PAGE_DOWN = "page_down"
+    SPACE = "space"
 
 
 # ANSI escape sequences for special keys (Linux terminal).
@@ -66,5 +67,7 @@ def read_key(_stdin: BinaryIO | None = None) -> Key:
                 return Key.ESC
     if ch == b"\n" or ch == b"\r":
         return Key.ENTER
+    if ch == b" ":
+        return Key.SPACE
     # Unknown byte — treat it as a no-op and read the next key
     return read_key(_stdin)
