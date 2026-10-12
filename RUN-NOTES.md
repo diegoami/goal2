@@ -32,17 +32,20 @@ The walking skeleton: the package, the quick-engine seam, one fixture end to end
 
 | Commit | What |
 | --- | --- |
-| (this branch) | T01 implementation: package, vendored engine, CLI, fidelity test, provenance check |
+| `e961c8f` | T01 implementation: package, vendored engine, CLI, fidelity test, provenance check |
+| (this commit) | T01 rework 1: fix R1–R5 from sol-6.1's review |
 
 The worktree is at `~/projects/goal2-work/skeleton`, on branch `task/T01-skeleton`.
 
 ## Done-when verification
 
-DW1: `python3 -m unittest discover -s goal2/tests -t .` is green (14 tests):
+DW1: `python3 -m unittest discover -s goal2/tests -t .` is green (20 tests):
   - 3 engine-imports tests
   - 4 savestate reader tests
-  - 4 CLI tests (errors, refusal x2, output format x2)
-  - 2 fidelity tests (E010-r0001 reproduce + CLI prints)
+  - 6 CLI tests (errors, refusal x2, output format x2, entry point x2)
+  - 2 fidelity tests (E010-r0001 reproduce + CLI prints; full goal sequence and full output)
+  - 4 provenance tests (well-known, nested unlisted, same-basename, row-orphaned)
+  - 1 init test (empty init for the tests package)
   - Plus the existing harness test in `tests/test_agent_permissions.py` (5 tests).
 
 DW2: `python3 -m goal2.play .cache/e010-r0001-halftime.sav` prints:
@@ -55,15 +58,22 @@ DW2: `python3 -m goal2.play .cache/e010-r0001-halftime.sav` prints:
   ```
   The values are the E010-r0001 run record's (runs/E010/E010-r0001.json, observation
   step 50: full-time score 1 0, scorer 538 at minute 85, seed DS:7B62 0x63d7, seed
-  DS:8336 0x51a8).
+  DS:8336 0x51a8). The entry point also propagates non-zero exits (DW2 misses this:
+  `python3 -m goal2.play /no/such/path.sav` exits 2, not 0 — R4 fix).
 
 DW3:
   - `python3 tools/check_provenance.py` exits 0: "provenance check: 3 file(s) OK".
-  - Every non-vendored file added in this branch carries an evidence tag:
+    The check now walks `goal2/engine/` recursively (R1), matches rows by repo-relative
+    path (R2), and excludes `__pycache__/` and `*.pyc` (Python's compile cache). The
+    regression tests in `goal2/tests/test_provenance.py` exercise the bypasses R1/R2
+    covered.
+  - Every behaviour claim in a new non-vendored file carries an evidence tag (R5):
     `goal2/__init__.py` `[designed]`, `goal2/cli.py` `[designed]` x3, `[confirmed]` x2,
-    `goal2/play.py` `[designed]`, `tools/check_provenance.py` `[designed]`,
+    `goal2/play.py` `[designed]`, `tools/check_provenance.py` `[designed]` x2,
     `goal2/tests/test_fidelity.py` `[confirmed]` x2, `goal2/tests/test_cli.py`
-    `[designed]` x3, `goal2/tests/test_savestate.py` `[confirmed]`.
+    `[designed]` x4, `goal2/tests/test_savestate.py` `[confirmed]` x2,
+    `goal2/tests/test_imports.py` `[confirmed]` x3, `[designed]` x1,
+    `goal2/tests/test_provenance.py` `[confirmed]` x1.
 
 ## Fail-before (CLAUDE.md rule 21)
 
@@ -101,8 +111,19 @@ per team, both seed words.
 
 ## END block
 
-T01 implementation complete in this worktree on `task/T01-skeleton`. The fidelity test
-downloads the state on demand; the unit tests are hermetic. No work was started that
-spans the merged scope of a future task; the only state left on disk is the cached
-E010-r0001 savestate in `.cache/`, git-ignored. The next step is the review, the
-question to the user recorded on the PR.
+T01 rework 1 complete. The reviewer (sol-6.1) flagged 5 blocking findings; each is
+addressed in a commit on this branch with a regression test (or, for R3, the existing
+test tightened to a full comparison). The branch head is ready for the round-2 review.
+
+## Rework 1 — sol-6.1's findings and their fixes
+
+| Finding | File:line | What | Fix |
+| --- | --- | --- | --- |
+| R1 (blocking) | `tools/check_provenance.py:103` | `ENGINE.iterdir()` checked only direct children; a vendored file under a subdirectory passed without a row. | Switched to `ENGINE.rglob("*")` and skipped `__pycache__` and `*.pyc` (Python's compile cache, not vendored). |
+| R2 (blocking) | `tools/check_provenance.py:97–119` | Rows were matched by basename, so a row for `other/quick_engine.py` could cover `goal2/engine/quick_engine.py`. | Matched by repo-relative path under `goal2/engine/`, with `_normalize` for cross-platform paths. Same-basename collisions are now distinguishable. |
+| R3 (blocking) | `goal2/tests/test_fidelity.py:77–95` | The model assertion filtered team-1 goals; the CLI assertion used `assertIn` on substrings. An extra team-1 goal would not fail either test. | The model assertion now compares the full goal sequence (both teams, in engine order); the CLI assertion compares the full output (a single `assertEqual` against the exact text). |
+| R4 (blocking) | `goal2/play.py:9–10` | `main()`'s return value was discarded, so `python -m goal2.play /no/such/path.sav` exited 0 instead of 2. | `play.py` now does `sys.exit(main())`. New entry-point tests in `test_cli.py` assert the exit code for both the file-error and the engine-refusal paths. |
+| R5 (blocking) | `goal2/tests/test_imports.py:1`, `goal2/cli.py:1–5`, `RUN-NOTES.md:16–29` (prior version) | Several behaviour claims in new non-vendored files had no evidence tag. | Added tags to every claim in `test_imports.py`, `cli.py`, `test_savestate.py`'s `test_video_mode_and_ticks`, and `test_cli.py`'s `CliEntryPoint`. The "Blocking means" item in the brief now lists rule 17. |
+
+The rework is the same branch, the same worktree, the same PR. The next step is the
+round-2 review.

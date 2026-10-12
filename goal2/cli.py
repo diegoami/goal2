@@ -3,6 +3,9 @@
 `python -m goal2.play <savestate>` loads the savestate, runs `quick_engine.simulate(state)`, and
 prints the final score, the second half's goal minutes with their scorers, and the two seed
 words after the match (T01; CLAUDE.md rule 17, rule 18, rule 19).
+[designed: the CLI is a thin wrapper around the vendored engine's `simulate`; it does not
+re-interpret the result, only prints it in the order `check_model.py` compares. The refusal
+path surfaces the engine's own exceptions as a non-zero exit code.]
 """
 from __future__ import annotations
 

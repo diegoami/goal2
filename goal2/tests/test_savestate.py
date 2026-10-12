@@ -36,7 +36,8 @@ class SavestateLoad(unittest.TestCase):
         self.assertGreater(len(s.mem), 0)
 
     def test_video_mode_and_ticks(self):
-        """The BDA fields are read at well-known offsets."""
+        """The BDA fields are read at well-known offsets. [confirmed: BDA_VIDEO_MODE = 0x449,
+        BDA_TICKS = 0x46C, per F001 (DOSBox-X 2024.03.01 calibration).]"""
         vga = b"\x00" * (0x86024 + 8 * 25 * 80)
         mem = bytearray(0x78 + 0x1000)
         # BDA video mode = 0x449: 0x03 (text mode)

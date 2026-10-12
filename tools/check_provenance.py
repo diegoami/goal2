@@ -3,9 +3,11 @@
 in goal2-archaeology (CLAUDE.md rule 18). Exit 0 on success, non-zero on any mismatch.
 
 The PROVENANCE.md columns are: `File`, `Source repo`, `Source commit`, `Findings`, `Vendored`.
-The script parses the table, checks every file in `goal2/engine/` is listed, and that
-the source commit exists in the archaeology checkout (the goal2-archaeology sibling
-checkout by default, or `$GOAL2_ARCHAEOLOGY`).
+The script parses the table, walks the vendored directory recursively (every file under it
+must have a row, and vice versa: a row must point at a real file under `goal2/engine/`),
+and that the source commit exists in the archaeology checkout (`$GOAL2_ARCHAEOLOGY` or a
+sibling/grandparent default).
+
 [designed: the table parser is a small hand-rolled reader, not a Markdown library, so the
 script has no third-party dependency and runs the same on every host.]
 """
@@ -29,6 +31,8 @@ def _archaeology() -> Path:
 
     Order: `$GOAL2_ARCHAEOLOGY`, the sibling of the main checkout (when run from there),
     the grandparent of a worktree under `<repo>-work/<name>/`, or the path's parent.
+    [designed: looks for the archaeology checkout by walking up from the worktree or main
+    checkout. The user can override with `$GOAL2_ARCHAEOLOGY` for unusual layouts.]
     """
     env = os.environ.get("GOAL2_ARCHAEOLOGY")
     if env:
@@ -84,6 +88,11 @@ def _commit_exists(archaeology: Path, repo: str, commit: str) -> bool:
     return r.returncode == 0
 
 
+def _normalize(path: str) -> str:
+    """A canonical POSIX-style path with no leading `./`, for matching across layouts."""
+    return str(Path(path)).replace("\\", "/").lstrip("./")
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.parse_args(argv)
@@ -95,27 +104,45 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     rows = _parse_table(PROVENANCE.read_text())
-    # The "File" column is the path the row is about; the row covers a file in `goal2/engine/`
-    # when its basename matches. The full path is kept in the table for readability.
-    by_basename = {Path(r["file"]).name: r for r in rows}
+    # The "File" column is a path. A row covers a vendored file when its canonical path
+    # matches a vendored path. We key on the path under the repo root (`goal2/engine/...`),
+    # or the path's basename relative to its first component, but never just the basename
+    # (a basename match is bypassed by another path that ends with the same name).
+    by_row_path: dict[str, dict] = {}
+    for r in rows:
+        by_row_path[_normalize(r["file"])] = r
 
     failures: list[str] = []
-    files = sorted(p for p in ENGINE.iterdir() if p.is_file())
+    # Walk the vendored directory recursively (R1: nested files must also have a row).
+    # Generated Python artifacts (`__pycache__/`, `*.pyc`) are excluded — they are produced
+    # by the interpreter when the engine modules are imported, never vendored, and
+    # `.gitignore` already covers them. The vendored directory holds source files only.
+    def _is_vendored(p: Path) -> bool:
+        if not p.is_file():
+            return False
+        parts = set(p.relative_to(ENGINE).parts)
+        return not (parts & {"__pycache__"} or p.suffix == ".pyc")
+
+    files = sorted(p for p in ENGINE.rglob("*") if _is_vendored(p))
     if not files:
         print(f"error: {ENGINE} is empty; vendor files before checking provenance", file=sys.stderr)
         return 2
     seen: set[str] = set()
+    archaeology = _archaeology()
     for path in files:
-        seen.add(path.name)
-        if path.name not in by_basename:
-            failures.append(f"{path.name}: no PROVENANCE row")
+        # The repo-relative path under ROOT, normalised (R2: same-basename collisions are
+        # distinguishable by path).
+        rel = path.relative_to(ROOT)
+        seen.add(_normalize(rel))
+        row = by_row_path.get(_normalize(rel))
+        if row is None:
+            failures.append(f"{rel}: no PROVENANCE row")
             continue
-        row = by_basename[path.name]
-        archaeology = _archaeology()
         if not _commit_exists(archaeology, row["repo"], row["commit"]):
-            failures.append(f"{path.name}: source commit {row['commit']} not in {archaeology}")
+            failures.append(f"{rel}: source commit {row['commit']} not in {archaeology}")
     for r in rows:
-        if Path(r["file"]).name not in seen and not r["file"].startswith("_"):
+        norm = _normalize(r["file"])
+        if norm not in seen and not r["file"].startswith("_"):
             failures.append(f"{r['file']}: PROVENANCE row but no file under {ENGINE}")
 
     if failures:

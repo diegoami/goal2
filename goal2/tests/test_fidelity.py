@@ -75,8 +75,10 @@ class E010R0001Fidelity(unittest.TestCase):
         # [confirmed] The CLI's output is the same shape as check_model.py compares.
         result = cli.quick_engine.simulate(cli.savestate.Savestate(SAV))
         self.assertEqual(tuple(result["score"]), EXPECTED_SCORE)
-        goals_t0 = [(g["player"], g["minute"]) for g in result["goals"] if g["team"] == 0]
-        self.assertEqual(goals_t0, EXPECTED_GOALS)
+        # The full goal sequence is compared, both teams, in engine order (R3 on the prior
+        # review: filtering by team 0 left team-1 goals unverified).
+        full_goals = [(g["team"], g["player"], g["minute"]) for g in result["goals"]]
+        self.assertEqual(full_goals, [(0, 538, 85)])
         self.assertEqual(result["seed_DS7B62"], EXPECTED_SEED_7B62)
         self.assertEqual(result["seed_DS8336"], EXPECTED_SEED_8336)
 
@@ -89,7 +91,14 @@ class E010R0001Fidelity(unittest.TestCase):
             rc = cli.main([str(SAV)])
         self.assertEqual(rc, 0)
         out = buf.getvalue()
-        self.assertIn("score: 1-0", out)
-        self.assertIn("team 0, minute 85, player 538", out)
-        self.assertIn("seed DS:7B62: 0x63d7", out)
-        self.assertIn("seed DS:8336: 0x51a8", out)
+        # The full output is compared, not just the substrings the prior review pointed to
+        # (R3: a `goals: none` line was unreachable; the full path through `_print_result`
+        # is exercised here).
+        self.assertEqual(
+            out,
+            "score: 1-0\n"
+            "goals (team, minute, player):\n"
+            "  team 0, minute 85, player 538\n"
+            "seed DS:7B62: 0x63d7\n"
+            "seed DS:8336: 0x51a8\n",
+        )
