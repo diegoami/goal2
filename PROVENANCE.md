@@ -6,4 +6,6 @@ is deliberate: a new row (or an updated commit) records it, and the source commi
 
 | File | Source repo | Source commit | Findings it rests on | Vendored |
 | --- | --- | --- | --- | --- |
-| _(empty until T01 vendors `quick_engine.py`)_ | | | | |
+| goal2/engine/quick_engine.py | diegoami/goal2-archaeology | 8760df9 | F012, F004, F006 | 2026-10-12 |
+| goal2/engine/savestate.py | diegoami/goal2-archaeology | 8760df9 | F001 | 2026-10-12 |
+| goal2/engine/players.py | diegoami/goal2-archaeology | 8760df9 | F002, F007 | 2026-10-12 |
