@@ -76,8 +76,9 @@ def _fetch_e010_r0001() -> bytes:
 def _fetch_e006_r0001_main() -> bytes:
     """Fetch E006-r0001's main-screen savestate from the archaeology release.
 
+    The E006 release asset is named `e0afff...-e006-1000-r0001.sav`.
     This is the main-screen savestate published in the E006 release (the
-    'goal2-original' savestate for E006, which triggers ExtraTimeNotModelled
+    'goal2-original' savestate for E006), which triggers ExtraTimeNotModelled
     in the quick engine — the T01 refusal exception).
     """
     sav_path = CACHE / "e006-r0001-main.sav"
@@ -97,7 +98,8 @@ def _fetch_e006_r0001_main() -> bytes:
         except subprocess.CalledProcessError:
             raise FileNotFoundError("E006 release not fetchable")
         for f in CACHE.iterdir():
-            if f.name.endswith("-E006-r0001-main.sav"):
+            # E006 asset names end with `-e006-1000-r0001.sav`.
+            if f.name.endswith("-e006-1000-r0001.sav"):
                 if f != sav_path:
                     f.rename(sav_path)
                 break
