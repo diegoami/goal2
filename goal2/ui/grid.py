@@ -60,13 +60,19 @@ class Grid:
     ) -> None:
         """Write text into the grid starting at (row, col).
 
-        [designed: clips at the right edge (col >= 80) and bottom edge
-        (row >= 25); writes nothing off-grid, does not raise.]
+        [designed]: clips at the right edge (wraps to next row) and bottom
+        edge (row >= 25); writes nothing off-grid, does not raise.
         """
         if not (0 <= row < HEIGHT and 0 <= col < WIDTH):
             return
-        for i, ch in enumerate(text):
-            c = col + i
+        c = col
+        for ch in text:
             if c >= WIDTH:
-                break
-            self._cells[row * WIDTH + c] = (ord(ch), fg, bg, blink)
+                break  # [designed]: clip at right edge, no wrapping
+            if not (0 <= row < HEIGHT):
+                break  # [designed]: clip at bottom edge
+            char_code = ord(ch)
+            if char_code > 255:
+                continue  # [designed]: skip non-CP437; do not advance column
+            self._cells[row * WIDTH + c] = (char_code, fg, bg, blink)
+            c += 1

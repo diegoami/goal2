@@ -21,4 +21,4 @@ def render(grid: Grid) -> str:
             # Char code 0 (null) renders as a space in plain text
             row_chars.append(chr(char_code) if char_code != 0 else " ")
         lines.append("".join(row_chars))
-    return "\n".join(lines)
+    return "\n".join(lines) + "\n"
