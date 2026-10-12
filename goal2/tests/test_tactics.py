@@ -62,6 +62,13 @@ class TestRunTacticsSelect(unittest.TestCase):
         self.gd = _make_goaldat()
         self.state = _make_state()
 
+    @staticmethod
+    def _expected_byte(initial: int, display_row: int) -> int:
+        """Compute expected byte after toggling the element at display_row."""
+        element = _DISPLAY_ORDER[display_row - 1]
+        bit = _BIT_OF_ELEMENT[element]
+        return initial ^ (1 << bit)
+
     def test_space_enter_from_row1_toggles_bit4_and_writes_0x10(self):
         """Done-when 2b: SPACE+ENTER at display row 1 toggles element 5 (bit 4)
         and writes 0x10 to state.country_tactics.
@@ -75,7 +82,7 @@ class TestRunTacticsSelect(unittest.TestCase):
             state=self.state, initial_tactics=0x00,
         )
         self.assertTrue(result)
-        self.assertEqual(self.state.country_tactics, 0x10)
+        self.assertEqual(self.state.country_tactics, self._expected_byte(0x00, 1))
 
     def test_down_space_enter_from_row1_toggles_bit5_and_writes_0x20(self):
         """Done-when 2b: DOWN+SPACE+ENTER from display row 1 toggles element 6
@@ -91,7 +98,7 @@ class TestRunTacticsSelect(unittest.TestCase):
             state=self.state, initial_tactics=0x00,
         )
         self.assertTrue(result)
-        self.assertEqual(self.state.country_tactics, 0x20)
+        self.assertEqual(self.state.country_tactics, self._expected_byte(0x00, 2))
 
     def test_downx3_space_enter_toggles_bit0_and_writes_0x01(self):
         """Done-when 2b: DOWN×3+SPACE+ENTER from row 1 toggles element 1 (bit 0).
@@ -105,7 +112,7 @@ class TestRunTacticsSelect(unittest.TestCase):
             state=self.state, initial_tactics=0x00,
         )
         self.assertTrue(result)
-        self.assertEqual(self.state.country_tactics, 0x01)
+        self.assertEqual(self.state.country_tactics, self._expected_byte(0x00, 4))
 
     def test_esc_returns_false_and_does_not_touch_state(self):
         """Done-when 2c: Esc returns False and does not touch state.country_tactics.
@@ -132,7 +139,7 @@ class TestRunTacticsSelect(unittest.TestCase):
             state=self.state, initial_tactics=0x00,
         )
         self.assertTrue(result)
-        self.assertEqual(self.state.country_tactics, 0x10)
+        self.assertEqual(self.state.country_tactics, self._expected_byte(0x00, 1))
 
     def test_down_clamped_at_row8_toggles_bit7(self):
         """Done-when hazards / R6: DOWN×10 from row 1 clamps at display row 8;
@@ -143,7 +150,7 @@ class TestRunTacticsSelect(unittest.TestCase):
             state=self.state, initial_tactics=0x00,
         )
         self.assertTrue(result)
-        self.assertEqual(self.state.country_tactics, 0x80)
+        self.assertEqual(self.state.country_tactics, self._expected_byte(0x00, 8))
 
     def test_enter_after_toggle_is_one_of_256_values(self):
         """Done-when 4: state.country_tactics is in [0, 255] after Enter."""
@@ -173,6 +180,28 @@ class TestRunTacticsSelect(unittest.TestCase):
         result = run_tactics_select(self.gd, _keys(Key.ENTER), state=state)
         self.assertTrue(result)
         self.assertEqual(state.country_tactics, 0x55)
+
+    def test_page_up_toggles_at_row1(self):
+        """R1: PAGE_UP at row 1 toggles (non-movement key). Clamped at row 1;
+        toggling bit 4 from 0x00 → 0x10.
+        """
+        result = run_tactics_select(
+            self.gd, _keys(Key.PAGE_UP, Key.ENTER),
+            state=self.state, initial_tactics=0x00,
+        )
+        self.assertTrue(result)
+        self.assertEqual(self.state.country_tactics, self._expected_byte(0x00, 1))
+
+    def test_page_down_toggles_at_row2(self):
+        """R1: PAGE_DOWN at row 2 toggles (non-movement key).
+        DOWN moves to row 2; PAGE_DOWN is also a toggle → element 6 (bit 5).
+        """
+        result = run_tactics_select(
+            self.gd, _keys(Key.DOWN, Key.PAGE_DOWN, Key.ENTER),
+            state=self.state, initial_tactics=0x00,
+        )
+        self.assertTrue(result)
+        self.assertEqual(self.state.country_tactics, self._expected_byte(0x00, 2))
 
 
 # ── Render surface tests ─────────────────────────────────────────────────────

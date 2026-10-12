@@ -20,7 +20,7 @@ from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
 
 
-# Colour constants: VGA palette (matches DS:0x720 in the original).
+# [derived: standard VGA text-mode palette; F010 cites DS:0x720]
 # 0 = black, 7 = white, 1 = blue.
 _FG_NORMAL = 7
 _BG_NORMAL = 0
@@ -29,14 +29,15 @@ _BG_CURSOR = 7
 _FG_TITLE  = 7
 _BG_TITLE  = 1
 
-# Display order per F010's DS:6BC0: element 5 first, then 6, 7, 1, 2, 3, 4, 8.
+# [confirmed: F010's DS:6BC0 = 5, 6, 7, 1, 2, 3, 4, 8] Display order:
+# element 5 first, then 6, 7, 1, 2, 3, 4, 8.
 _DISPLAY_ORDER = (5, 6, 7, 1, 2, 3, 4, 8)
 
-# Bit position = element - 1.
+# [confirmed: F010 "element k at bit k − 1"] Bit position = element - 1.
 _BIT_OF_ELEMENT = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7}
 
-# Element labels (display order). Elements 1-4 are [confirmed: F010];
-# elements 5-8 are [designed].
+# [confirmed: F010's element labels for 1-4] [designed: F010 says
+# "the screen labels of 5..7 are not read"; element 8 label not read either]
 _ELEMENT_LABELS: dict[int, tuple[str, str]] = {
     # Element 5: [designed; F010 notes labels of 5..7 are not read]
     5: ("half pitch", "full pitch"),
@@ -110,8 +111,9 @@ def run_tactics_select(
             return True
         elif key == Key.ESC:
             return False
-        elif key == Key.SPACE:
-            # Toggle the bit at the cursor's element.
+        else:
+            # Any non-movement/non-confirmation key toggles the bit at the
+            # cursor's element. This includes SPACE, PAGE_UP, PAGE_DOWN, etc.
             element = _DISPLAY_ORDER[cursor - 1]
             bit = _BIT_OF_ELEMENT[element]
             current_byte ^= (1 << bit)

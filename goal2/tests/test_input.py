@@ -38,6 +38,13 @@ class TestReadKey(unittest.TestCase):
         k = read_key(fake_stdin)
         self.assertEqual(k, Key.PAGE_UP)
 
+    def test_space_key(self):
+        """R4: space byte returns Key.SPACE. Mutation: removing the SPACE branch
+        from read_key makes this fail."""
+        fake_stdin = io.BytesIO(b" ")
+        k = read_key(fake_stdin)
+        self.assertEqual(k, Key.SPACE)
+
 
 if __name__ == "__main__":
     unittest.main()
