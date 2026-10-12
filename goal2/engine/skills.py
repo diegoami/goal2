@@ -53,25 +53,25 @@ PROFILE_TABLE_CLASSES = 12
 
 
 def load_class_table(state: "Savestate") -> bytes:
-    """[confirmed: F008] Read the 14×12 class table from DS:6D25 of the savestate.
+    """[confirmed: F008] Read the 14-position class table from DS:6D25 of the savestate.
     The entries are 1-indexed: `class[12 * position + i]` (for i=1..12) gives the
     class index for skill i at that position. The first byte of each position
-    block (index 12*position) is unused.
+    block (index 12*position) is unused. Returns 14*12+1 = 169 bytes so the
+    last entry (position 13, skill 12, offset 168) is included.
     """
-    return state.ds_bytes(CLASS_TABLE_OFFSET, CLASS_TABLE_POSITIONS * CLASS_TABLE_ROWS)
+    return state.ds_bytes(CLASS_TABLE_OFFSET, CLASS_TABLE_POSITIONS * CLASS_TABLE_ROWS + 1)
 
 
 def load_profile_table(state: "Savestate") -> bytes:
-    """[confirmed: F008] Read the 16×12 profile table from DS:6DCD of the savestate.
+    """[confirmed: F008] Read the 16-profile table from DS:6DCD of the savestate.
     The entries are 1-indexed: `profile[12 * profile_index + class]` (for class
     1..12) gives the curve value for that profile and class (values 5..26).
-    The first byte of each profile block is unused.
+    The first byte of each profile block is unused. Returns 17*12+1 = 205
+    bytes so the last entry (profile 16, class 12, offset 204) is included.
     """
-    # Read enough to cover all 16 profiles × 12 classes (192 bytes) plus the
-    # unused first byte of each profile block.
     return state.ds_bytes(
         PROFILE_TABLE_OFFSET,
-        PROFILE_TABLE_PROFILES * PROFILE_TABLE_CLASSES + 1,
+        (PROFILE_TABLE_PROFILES + 1) * PROFILE_TABLE_CLASSES + 1,
     )
 
 
