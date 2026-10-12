@@ -87,8 +87,11 @@ def _run_engine(state_bytes: bytes) -> dict:
 class EngineOnAdaptedState(unittest.TestCase):
     """[confirmed: E010, T01, T06] The vendored quick engine produces the same
     result on the adapter-roundtripped state as on the original. The
-    test runs against every E010 record (r0001..r0010) the archaeology
-    checkout has, not just r0001."""
+    primary record is E010-r0001 (per the task's DW2); other records
+    are tested when available but the test skips with a clear reason
+    when r0001 is absent (not silently passing on r0002)."""
+
+    PRIMARY_RECORD = 1  # E010-r0001, the primary record per the task's DW2.
 
     @classmethod
     def setUpClass(cls):
@@ -102,6 +105,14 @@ class EngineOnAdaptedState(unittest.TestCase):
             except (subprocess.CalledProcessError, FileNotFoundError):
                 continue
             cls.records.append((n, original))
+        # [designed] The primary record (r0001) is required; if it's
+        # absent, the suite cannot meaningfully exercise the adapter on
+        # the expected input. Skip with a clear reason rather than
+        # silently passing on a different record.
+        if not any(n == cls.PRIMARY_RECORD for n, _ in cls.records):
+            raise unittest.SkipTest(
+                f"E010-r{cls.PRIMARY_RECORD:04d} (the primary record) is not available"
+            )
 
     def test_engine_on_adapted_state(self):
         """For every available E010 record: run the engine on the
