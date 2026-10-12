@@ -122,10 +122,12 @@ def _build_grid(
         player_num = squad[idx]
         initial = goaldat.player_initials[player_num] if player_num < len(goaldat.player_initials) else ""
         name = goaldat.player_names[player_num] if player_num < len(goaldat.player_names) else ""
-        # Format: " NN  I SURNAME" (padded to 12 chars) + optional captain marker
-        row_text = f" {row:2d}  {initial} {name:<12}"
+        # Format: " NN  I SURNAME" (padded to 12 chars) + captain marker at col 78
+        row_text = f" {row:2d}  {initial} {name:<12}".ljust(78)
         if state is not None and state.captain == player_num:
-            row_text = row_text.rstrip() + " C"
+            row_text = row_text + " C"   # marker at columns 78-79 (right edge)
+        else:
+            row_text = row_text + "  "   # no marker
 
         is_cursor = (row == cursor)
         if is_cursor:

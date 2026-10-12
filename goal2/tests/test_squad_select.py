@@ -153,28 +153,31 @@ class TestRenderSurface(unittest.TestCase):
         captain_row = state.managed_squad.index(state.captain) + 1  # row number (1-indexed)
         grid = _render(self.gd, state, cursor=captain_row, page_size=20)
         lines = render(grid).split("\n")
-        # The captain row ends with " C" (marker at right edge)
-        self.assertTrue(
-            lines[captain_row].rstrip().endswith(" C"),
-            f"captain row {captain_row} doesn't end with ' C': {lines[captain_row]!r}",
+        # The captain row has " C" at columns 78-79 (right edge of 80-col grid)
+        self.assertEqual(
+            lines[captain_row][78:80],
+            " C",
+            f"captain row {captain_row} cols 78-79 should be ' C': {lines[captain_row][78:80]!r}",
         )
-        # A non-captain row (row 5) does NOT end with " C"
+        # A non-captain row (row 5) has spaces at cols 78-79
         non_captain_row = 5
         if non_captain_row != captain_row:
-            self.assertFalse(
-                lines[non_captain_row].rstrip().endswith(" C"),
-                f"non-captain row {non_captain_row} should not end with ' C': {lines[non_captain_row]!r}",
+            self.assertEqual(
+                lines[non_captain_row][78:80],
+                "  ",
+                f"non-captain row {non_captain_row} cols 78-79 should be '  ': {lines[non_captain_row][78:80]!r}",
             )
 
     def test_no_captain_marker_before_enter(self):
-        """Before Enter, no row ends with the captain marker."""
+        """Before Enter, no row has ' C' at the right edge (cols 78-79)."""
         state = _make_state()
         grid = _render(self.gd, state, cursor=1, page_size=20)
         lines = render(grid).split("\n")
         for row in range(1, 21):
-            self.assertFalse(
-                lines[row].rstrip().endswith(" C"),
-                f"row {row} should not end with ' C' before Enter: {lines[row]!r}",
+            self.assertNotIn(
+                " C",
+                lines[row][78:80],
+                f"row {row} cols 78-79 should not be ' C' before Enter: {lines[row][78:80]!r}",
             )
 
 
