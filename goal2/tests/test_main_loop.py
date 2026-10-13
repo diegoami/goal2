@@ -15,7 +15,9 @@ from goal2.main_loop import run_main_loop
 from goal2.engine.state import to_savestate
 from goal2.ui.input import Key
 
-# Stable placeholder bytes passed as the original_savestate_bytes argument.
+# [designed: _PLACEHOLDER_BYTES is a non-empty bytes string that the
+# patched to_savestate replaces with b"saved"; run_result receives the
+# mocked-saved bytes (not _PLACEHOLDER_BYTES), proving the wire-up.]
 _PLACEHOLDER_BYTES = b"<placeholder>"
 
 
@@ -116,7 +118,14 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         def spy_re(*args, **kwargs):
             call_order.append("result")
             tracker["re_state"] = kwargs.get("state")
+            tracker["re_arg"] = args[0] if args else None
             return True
+        # [designed: re_arg captures the first positional arg — the savestate bytes
+        # (saved) — so the assertion below proves run_result received the saved
+        # bytes, not the original bytes passed into run_main_loop.]
+        # [design check: mutate main_loop.py to pass original_savestate_bytes to
+        # run_result instead of saved; this assertion fails, and so does the
+        # corresponding order/state test below.]
 
         with patch("goal2.main_loop.run_country_select", spy_cs), \
              patch("goal2.main_loop.run_squad_select", spy_sq), \
@@ -127,13 +136,17 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
             run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=_keys(Key.ENTER))
 
         self.assertEqual(call_order, ["country_select", "squad_select", "tactics_select", "result"])
-        # to_savestate was called with the state and original bytes
+        # [derived: T17 — to_savestate's contract is (state, original=bytes);
+        # the assertion below proves run_main_loop calls it with the in-memory
+        # state and the original savestate bytes.]
         mock_save.assert_called_once_with(state, original=_PLACEHOLDER_BYTES)
         # All four calls received the same state object
         self.assertIs(tracker["cs_state"], state)
         self.assertIs(tracker["sq_state"], state)
         self.assertIs(tracker["ta_state"], state)
         self.assertIs(tracker["re_state"], state)
+        # [R1 fix] run_result received the SAVED bytes (b"saved"), not the originals
+        self.assertEqual(tracker["re_arg"], b"saved")
 
 
 class TestEscAbortsLoop(unittest.TestCase):

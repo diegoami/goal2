@@ -369,8 +369,10 @@ class EnginePicksUpModifiedTactics(unittest.TestCase):
         return d
 
     def test_engine_reads_modified_tactics_byte(self):
-        """Set country_tactics=0x42, save, reload through Savestate — the
-        engine reads 0x42 from the memory component."""
+        """[derived: T17 — country_tactics write at +0x2D round-trips through
+        Savestate's memory-component read; quick_engine.py:189 reads that
+        same byte. With country_tactics=0x42 set and saved, the engine
+        reads 0x42 from the memory component.]"""
         self._engine_dir()
         gs = state.from_savestate(self.original)
         gs2 = _modified_state(gs, country_tactics=0x42)
@@ -384,9 +386,13 @@ class EnginePicksUpModifiedTactics(unittest.TestCase):
         self.assertEqual(qm.countries[mc]["tactics"], 0x42)
 
     def test_engine_reads_original_byte_when_save_skipped(self):
-        """[mutation] Skip to_savestate; pass original bytes directly to
-        Savestate. The engine reads the original tactics byte (not 0x42) —
-        proving the save is what changes the byte the engine reads."""
+        """[designed: mutation test — skip to_savestate; pass original bytes
+        directly to Savestate. The engine reads the original tactics byte
+        (not 0x42). The original byte in E010-r0001 must not be 0x42 (the
+        assertion uses assertNotEqual to fail-fast on this); if E010's
+        original byte is already 0x42, the test author must pick a
+        different value. Proves the save is what changes the byte the
+        engine reads.]"""
         self._engine_dir()
         gs = state.from_savestate(self.original)
         gs2 = _modified_state(gs, country_tactics=0x42)
@@ -402,9 +408,13 @@ class EnginePicksUpModifiedTactics(unittest.TestCase):
             "E010's original tactics byte is already 0x42; pick a different value")
 
     def test_modified_tactics_produces_different_result(self):
-        """With country_tactics=0x42, the engine's first-half simulation
-        produces a different result than with the original — proving the
-        engine actually uses the tactics byte."""
+        """[derived: A-MATCH-0 — the quick engine reads the tactics byte per
+        attack; quick_engine.py:189 ("tactics": carr[base + 0x2D]). With
+        country_tactics=0x42, the engine's first-half simulation produces
+        a different RNG state than with the original byte — proving the
+        engine actually uses the tactics byte. The score may not differ
+        (kick-off order can stay the same); what must differ is the
+        post-half seed.]"""
         self._engine_dir()
         from goal2.engine.savestate import Savestate
         from goal2.engine.quick_engine import QuickMatch

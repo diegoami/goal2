@@ -63,6 +63,9 @@ def run_main_loop(
     if not ok:
         return 0
 
+    # [derived: T17 vendoring — to_savestate writes the user's state choices
+    # to the savestate bytes; passing the result (not the original) to
+    # run_result means the engine reads the modified savestate.]
     # Step 4: save user choices then run result
     saved = to_savestate(state, original=original_savestate_bytes)
     ok = run_result(saved, keys, state=state)
