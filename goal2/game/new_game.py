@@ -101,10 +101,11 @@ def _current_ability(age: int, peak: int, pot: int) -> int:
 
 # [designed] The vendored quick_engine.py does `import players` after a sys.path
 # insert; the same trick is needed when new_game is imported outside of cli.py
-# (e.g. `python -c "from goal2.engine import new_game; ..."`). The engine directory
+# (e.g. `python -c "from goal2.game import new_game; ..."`). The engine directory
 # is the vendored source; goal2/cli.py puts it on sys.path for itself, but a
-# direct import bypasses cli.
-_ENGINE_DIR = str(Path(__file__).resolve().parent)
+# direct import bypasses cli. After T21 moved this file out of `goal2/engine/`,
+# its sibling dir is `goal2/game/`, so the engine dir is one level up.
+_ENGINE_DIR = str(Path(__file__).resolve().parent.parent / "engine")
 if _ENGINE_DIR not in sys.path:
     sys.path.insert(0, _ENGINE_DIR)
 
