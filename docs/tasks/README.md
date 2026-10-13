@@ -12,3 +12,7 @@ status; this index carries none.
 | T13 | The tactics screen: 8 team tactics bits, toggleable, write to state | #30 | T12 |
 | T14 | The result screen: run the vendored engine, display score + goals, label as stand-in | #32 | T13 |
 | T15 | The computer's eleven + tactics: A-CPU-1 + A-CPU-2 stand-ins | #34 | T14 |
+| T16 | The main loop driver | #36 | T15 |
+| T17 | State adapter writes starting_eleven / captain / country_tactics | #38 | T16 |
+| T18 | Main loop saves user state before run_result | #40 | T17 |
+| T19 | Diagnose the LCG draw-order divergence against E006 byte-exact | #11 | T18 |
