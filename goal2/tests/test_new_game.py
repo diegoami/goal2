@@ -110,13 +110,20 @@ def _e006_player_array(state_bytes: bytes) -> bytes:
 
 
 class DataTables(unittest.TestCase):
-    """[confirmed: F007, ds_2581_01.hex] The constants the model reads."""
+    """[confirmed: F007, ds_2581_01.hex; T19 report §3.1] The constants the model
+    reads, indexed by `gk` (1 = goalkeeper, position 0; 0 = outfield)."""
 
     def test_DS_118A(self):
-        self.assertEqual(new_game.DS_118A, (0x1F, 0x1C))
+        # [confirmed: T19 report §3.1; ds_2581_01.hex row 1180: 118A=0x1C,
+        # 118B=0x1F] The age base: outfield (gk=0) reads DS:118A = 0x1C,
+        # goalkeeper (gk=1) reads DS:118B = 0x1F.
+        self.assertEqual(new_game.DS_118A, (0x1C, 0x1F))
 
     def test_DS_0E80(self):
-        self.assertEqual(new_game.DS_0E80, (0x1E, 0x1B))
+        # [confirmed: T19 report §3.1; ds_2581_01.hex row 0E80: 0E80=0x1B,
+        # 0E81=0x1E] The peak base: outfield (gk=0) reads DS:0E80 = 0x1B,
+        # goalkeeper (gk=1) reads DS:0E81 = 0x1E.
+        self.assertEqual(new_game.DS_0E80, (0x1B, 0x1E))
 
     def test_DS_118C(self):
         self.assertEqual(new_game.DS_118C, (0x11, 0x14))
@@ -185,10 +192,10 @@ class PlayerOneCountry(unittest.TestCase):
 
 
 class E006Fidelity(unittest.TestCase):
-    """[confirmed: F007, E006] The fidelity test: the model's player array vs
-    E006-r0001's published array. The structural fields match; the LCG-driven
-    fields (age, peak, +0x05) are a T03 follow-up (the draw order needs the
-    E006 `summarise.py`'s LCG call sequence to be reconciled)."""
+    """[confirmed: F007, E006; T19 report §2] The fidelity test: the model's
+    player array vs E006-r0001's published array. Since T20 the comparison is
+    byte-exact over all 3061 records x 20 bytes; the structural no-op-model
+    checks below still stand on their own."""
 
     @classmethod
     def setUpClass(cls):
@@ -200,37 +207,59 @@ class E006Fidelity(unittest.TestCase):
         self.assertEqual(len(self.expected), 0xEF24)
 
     def test_structural_fields_match_e006(self):
-        """The structural fields (country, +0x03 potential, +0x06/+0x07
-        position, +0x12 fitness) match the E006 array for the 2560 squad
-        players (records 1..2560). This catches no-op models. +0x03 for
-        records 2561..2640 is excluded (the managed-country 98C4 routine
-        uses `rating + 0x7F - 10 - rand(10)`, which depends on the LCG).
-        +0x0F is excluded because it depends on +0x05 (an LCG draw). The
-        LCG-driven fields (+0x01 age, +0x02 peak, +0x05) are not checked
-        here — they're the T03 follow-up's source of truth."""
+        """[confirmed: E006-r0001; T19 report §2's replication] Byte-exact
+        fidelity: `make_all_players` equals the E006-r0001 expected array on
+        ALL 3061 records x 20 bytes (0 differing; `matching_players == 3061`
+        is the pass condition, issue #11 step 3). Before T20's fix the same
+        comparison had 11,002 differing bytes of 61,220 (T19 report §1) —
+        that is the case this test fails without the fix (rule 20/21)."""
         actual = new_game.make_all_players(self.d, managed_country=MANAGED_COUNTRY)
         PLAYER = 0x14
-        # +0x03 is LCG-independent for squad players (rating + 0x7F), but
-        # LCG-dependent for managed-country players (- 10 - rand(10)).
-        STRUCTURAL = (0, 6, 7, 0x12, 0x13)
+        matching_players = 0
         for i in range(0xEF24 // PLAYER):
-            actual_rec = actual[i]
+            actual_rec = bytes(actual[i])
             expected_rec = self.expected[i * PLAYER:(i + 1) * PLAYER]
-            for off in STRUCTURAL:
+            if actual_rec == expected_rec:
+                matching_players += 1
+                continue
+            for off in range(PLAYER):
                 if actual_rec[off] != expected_rec[off]:
                     self.fail(
                         f"record {i} byte +0x{off:02x}: model={actual_rec[off]:#04x} "
                         f"expected={expected_rec[off]:#04x}; full record: "
-                        f"model={bytes(actual_rec).hex()} "
-                        f"expected={bytes(expected_rec).hex()}"
+                        f"model={actual_rec.hex()} expected={expected_rec.hex()}"
                     )
-            # +0x03 only for squad players (records 1..2560)
-            if 1 <= i <= 2560:
-                if actual_rec[3] != expected_rec[3]:
-                    self.fail(
-                        f"record {i} byte +0x03: model={actual_rec[3]:#04x} "
-                        f"expected={expected_rec[3]:#04x}"
+        self.assertEqual(
+            matching_players, 3061,
+            f"only {matching_players} of 3061 records match E006 byte-for-byte",
+        )
+
+    def test_issue11_fields_zero_differing_bytes(self):
+        """[derived: T19 report §4.5] The four issue-#11 LCG fields
+        (+0x01 age, +0x02 peak, +0x05, +0x0C) and the fields that depend on
+        them (+0x03 managed potential, +0x04, +0x0D/+0x0E, +0x0F) show 0
+        differing bytes in this test's own accounting over all 3061 records.
+        On the pre-T20 model these were the 11,002 differing bytes (T19
+        report §1); this names them field by field."""
+        FIELDS = (0x01, 0x02, 0x03, 0x04, 0x05, 0x0C, 0x0D, 0x0E, 0x0F)
+        actual = new_game.make_all_players(self.d, managed_country=MANAGED_COUNTRY)
+        PLAYER = 0x14
+        differing = {f: [] for f in FIELDS}
+        for i in range(0xEF24 // PLAYER):
+            actual_rec = actual[i]
+            expected_rec = self.expected[i * PLAYER:(i + 1) * PLAYER]
+            for f in FIELDS:
+                if actual_rec[f] != expected_rec[f]:
+                    differing[f].append(
+                        f"record {i}: model={actual_rec[f]:#04x} "
+                        f"expected={expected_rec[f]:#04x}"
                     )
+        for f in FIELDS:
+            self.assertEqual(
+                len(differing[f]), 0,
+                f"+0x{f:02x}: {len(differing[f])} differing bytes; "
+                f"first: {differing[f][0] if differing[f] else '-'}",
+            )
 
     def test_record_0_is_all_zero(self):
         actual = new_game.make_all_players(self.d, managed_country=MANAGED_COUNTRY)
@@ -284,61 +313,55 @@ class E006Fidelity(unittest.TestCase):
 
 
 class LCGDrawOrderRegression(unittest.TestCase):
-    """[designed] Regression guard: pin the LCG-driven fields of country 1's
-    first 10 players. Catches a draw-order swap (e.g. exchanging the two
-    `rand(7)` calls in the age formula would change player 1's age from
-    0x1a to 0x1e and fail this test). These values are the current model's
-    output; they are NOT the final E006 byte-exact oracle. When the LCG
-    draw order is reconciled against E006 (the T03 follow-up), this test
-    must be updated to the reconciled values.
+    """[confirmed: E006-r0001; T19 report §3.2] Regression guard: pin the
+    LCG-driven fields of country 1's first 10 players to the reconciled
+    draw order's output, and assert the pins against BOTH the model's output
+    and the E006 expected bytes (T20 Done-when 5). Catches a draw-order swap
+    (e.g. moving the +0x05 `rand(16)` back after the age's `rand(7)` pair
+    changes player 1's +0x05 and fails this test on both assertions).
     """
 
     @classmethod
     def setUpClass(cls):
         cls.d = goaldat.load(_dat_or_skip())
         cls.players = new_game.make_all_players(cls.d, managed_country=MANAGED_COUNTRY)
+        cls.expected = _e006_player_array(_state_or_skip())
 
     # Pinned: (record_index, +0x01 age, +0x02 peak, +0x05, +0x0C, +0x0D, +0x0E)
+    # [confirmed: E006-r0001] each pin equals the E006 expected byte as well as
+    # the reconciled model's output (both asserted below).
     PINNED = (
-        (1,  0x1a, 0x1b, 0x0e, 0x08, 0x20, 0x20),
-        (2,  0x22, 0x1f, 0x03, 0x05, 0x12, 0x12),
-        (3,  0x23, 0x1d, 0x0f, 0x1e, 0x11, 0x11),
-        (4,  0x1d, 0x1d, 0x02, 0x18, 0x17, 0x17),
-        (5,  0x21, 0x20, 0x01, 0x13, 0x20, 0x20),
-        (6,  0x1c, 0x1d, 0x0e, 0x04, 0x20, 0x20),
-        (7,  0x1b, 0x1e, 0x0b, 0x11, 0x20, 0x20),
-        (8,  0x21, 0x1e, 0x03, 0x1e, 0x14, 0x14),
-        (9,  0x1f, 0x20, 0x0c, 0x10, 0x20, 0x20),
-        (10, 0x24, 0x1d, 0x05, 0x1a, 0x16, 0x16),
+        (1,  0x20, 0x1e, 0x0a, 0x08, 0x20, 0x20),
+        (2,  0x1d, 0x19, 0x0f, 0x05, 0x12, 0x12),
+        (3,  0x1a, 0x1d, 0x0c, 0x1e, 0x14, 0x14),
+        (4,  0x1d, 0x1a, 0x0b, 0x18, 0x17, 0x17),
+        (5,  0x1a, 0x19, 0x06, 0x13, 0x20, 0x20),
+        (6,  0x1b, 0x1d, 0x02, 0x04, 0x20, 0x20),
+        (7,  0x20, 0x1c, 0x03, 0x11, 0x20, 0x20),
+        (8,  0x1b, 0x1b, 0x07, 0x1e, 0x14, 0x14),
+        (9,  0x21, 0x1b, 0x10, 0x10, 0x20, 0x20),
+        (10, 0x19, 0x1b, 0x0d, 0x1a, 0x1b, 0x1b),
     )
 
     def test_lcg_driven_fields_match_pinned_values(self):
-        for idx, age, peak, b5, bC, bD, bE in self.PINNED:
+        PLAYER = 0x14
+        FIELDS = ((0x01, "+0x01 age"), (0x02, "+0x02 peak"), (0x05, "+0x05"),
+                  (0x0C, "+0x0C"), (0x0D, "+0x0D"), (0x0E, "+0x0E"))
+        for row in self.PINNED:
+            idx, pinned = row[0], row[1:]
             rec = self.players[idx]
-            self.assertEqual(
-                rec[1], age,
-                f"player {idx} +0x01 age: model=0x{rec[1]:02x} pinned=0x{age:02x}",
-            )
-            self.assertEqual(
-                rec[2], peak,
-                f"player {idx} +0x02 peak: model=0x{rec[2]:02x} pinned=0x{peak:02x}",
-            )
-            self.assertEqual(
-                rec[5], b5,
-                f"player {idx} +0x05: model=0x{rec[5]:02x} pinned=0x{b5:02x}",
-            )
-            self.assertEqual(
-                rec[0x0C], bC,
-                f"player {idx} +0x0C: model=0x{rec[0x0C]:02x} pinned=0x{bC:02x}",
-            )
-            self.assertEqual(
-                rec[0x0D], bD,
-                f"player {idx} +0x0D: model=0x{rec[0x0D]:02x} pinned=0x{bD:02x}",
-            )
-            self.assertEqual(
-                rec[0x0E], bE,
-                f"player {idx} +0x0E: model=0x{rec[0x0E]:02x} pinned=0x{bE:02x}",
-            )
+            exp = self.expected[idx * PLAYER:(idx + 1) * PLAYER]
+            for (off, name), want in zip(FIELDS, pinned):
+                self.assertEqual(
+                    rec[off], want,
+                    f"player {idx} {name}: model=0x{rec[off]:02x} pinned=0x{want:02x}",
+                )
+                # The pins are the E006 bytes, not just the model's: a pin
+                # that matches the model but not the expected array fails.
+                self.assertEqual(
+                    exp[off], want,
+                    f"player {idx} {name}: e006=0x{exp[off]:02x} pinned=0x{want:02x}",
+                )
 
 
 class DW3Example(unittest.TestCase):
