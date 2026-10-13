@@ -13,10 +13,13 @@ You implement one task (or one fix). The brief is the task file pasted in full; 
 the rest of the contract. Your Bash commands pass through a hook (tools/harness/guard.mjs) that
 refuses git stash, git worktree, any force-push and gh pr merge.
 
+- The main session spawns you with the Agent tool's `isolation: "worktree"` parameter; that
+  gives you your own git worktree, separate from the main checkout (L107). The worktree root
+  is your working directory. The guard refuses `git worktree`, so creating one is not yours to
+  do — it is already done for you. Run every command from the worktree root with relative
+  paths; never `cd`, and never `..` (L31). Never touch another branch or the main checkout.
 - Create the branch the task file names (`task/T<nn>-<slug>`, or `fix/<issue>-<slug>`) from
-  `origin/main`, push it, and commit and push after every meaningful step. Never touch another
-  branch or the main checkout. Run commands from the worktree root with relative paths; never
-  `cd`, and never `..` (L31).
+  `origin/main`, push it, and commit and push after every meaningful step.
 - When done: open the PR (`gh pr create`) with the body below, and make your final message the
   report: what you built, each Done-when line with the command you ran and its result, anything
   you could not verify. The main session reviews and merges; you never merge.
