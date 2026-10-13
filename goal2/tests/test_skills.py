@@ -1,4 +1,4 @@
-"""Tests for `goal2.engine.skills` (T04 scope, the 12 skills derivation).
+"""Tests for `goal2.game.skills` (T04 scope, the 12 skills derivation).
 
 The fidelity test reads E007-r0009..r0012's player screens from the
 archaeology repo, parses the 12 skill bars from each screen, and
@@ -17,7 +17,7 @@ import sys
 import unittest
 from pathlib import Path
 
-from goal2.engine import skills
+from goal2.game import skills
 from goal2.engine.savestate import Savestate
 
 

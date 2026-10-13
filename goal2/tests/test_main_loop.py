@@ -10,9 +10,9 @@ from unittest.mock import MagicMock, patch, call
 
 from goal2 import loop as goal2_loop
 from goal2.data.goaldat import GoalDat
-from goal2.engine.state import GameState
+from goal2.game.state import GameState
 from goal2.main_loop import run_main_loop
-from goal2.engine.state import to_savestate
+from goal2.game.state import to_savestate
 from goal2.ui.input import Key
 
 # [designed: _PLACEHOLDER_BYTES is a non-empty bytes string that the

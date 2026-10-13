@@ -1,4 +1,4 @@
-"""Tests for `goal2.engine.new_game` (T03 scope, the new-game player model).
+"""Tests for `goal2.game.new_game` (T03 scope, the new-game player model).
 
 The fidelity test downloads E006-r0001's published main-screen savestate from
 archaeology's E006 release, reads the player array the original game made,
@@ -18,7 +18,7 @@ import zlib
 from pathlib import Path
 
 from goal2.data import goaldat
-from goal2.engine import new_game
+from goal2.game import new_game
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -368,11 +368,11 @@ class DW3Example(unittest.TestCase):
     """[designed] The DW3 example: a one-liner that prints a player's bytes."""
 
     def test_dw3_example_runs(self):
-        # DW3: `python3 -c "from goal2.engine import new_game; ..."` must work.
+        # DW3: `python3 -c "from goal2.game import new_game; ..."` must work.
         # This test runs the same Python and asserts the output is non-empty.
         code = (
             "from goal2.data import goaldat; "
-            "from goal2.engine import new_game; "
+            "from goal2.game import new_game; "
             "d = goaldat.load(open('.cache/GOAL.DAT', 'rb').read()); "
             "ps = new_game.make_all_players(d, managed_country=7); "
             "print(bytes(ps[0]).hex(), bytes(ps[1]).hex())"

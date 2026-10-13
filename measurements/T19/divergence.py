@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""T19 (issue #11): where `goal2.engine.new_game.make_all_players` diverges from E006-r0001.
+"""T19 (issue #11): where `goal2.game.new_game.make_all_players` diverges from E006-r0001.
 
 Runs the model on the E006-r0001 inputs (fixtures loaded through `goal2/tests/test_new_game.py`,
 the same loaders the fidelity test uses) and diffs its 3061-record player array against the
@@ -29,11 +29,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from goal2.data import goaldat  # noqa: E402
-from goal2.engine import new_game  # noqa: E402
+from goal2.game import new_game  # noqa: E402
 from goal2.tests import test_new_game as tng  # noqa: E402  (fixture loaders, reused)
 
 ARCHAEOLOGY_ENV = os.environ.get("GOAL2_ARCHAEOLOGY")
-_CANDIDATES = ([] if not ARCHAEOLOGY_ENV else [Path(ARCHAEOLOGY)]) + [
+_CANDIDATES = ([] if not ARCHAEOLOGY_ENV else [Path(ARCHAEOLOGY_ENV)]) + [
     ROOT.parent / "goal2-archaeology",
     ROOT.parents[2].parent / "goal2-archaeology",  # a .claude/worktrees/<name> worktree
     Path("/home/diego/projects/goal2-archaeology"),
@@ -378,7 +378,7 @@ def main() -> int:
     # -- the report ---------------------------------------------------------------------------------
     L = []
     pr = L.append
-    pr("# T19 — the LCG draw-order divergence of `goal2.engine.new_game` against E006-r0001")
+    pr("# T19 — the LCG draw-order divergence of `goal2.game.new_game` against E006-r0001")
     pr("")
     pr("Written by `measurements/T19/divergence.py`; re-running it rewrites this file with")
     pr("the same numbers. Fixtures (git-ignored, rule 19):")

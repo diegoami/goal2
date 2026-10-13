@@ -8,7 +8,7 @@ country_tactics field on GameState.]
 import unittest
 from unittest.mock import MagicMock
 
-from goal2.engine.state import GameState
+from goal2.game.state import GameState
 from goal2.ui.tactics import (
     _BIT_OF_ELEMENT,
     _DISPLAY_ORDER,

@@ -21,7 +21,7 @@ from pathlib import Path
 # resolves to goal2/engine/players.py).
 from goal2 import cli  # noqa: F401
 
-from goal2.engine import state
+from goal2.game import state
 from goal2.engine.quick_engine import simulate
 from goal2.engine.savestate import Savestate
 

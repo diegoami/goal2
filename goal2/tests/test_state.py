@@ -1,4 +1,4 @@
-"""Tests for `goal2.engine.state` (T06 scope, the state adapter).
+"""Tests for `goal2.game.state` (T06 scope, the state adapter).
 
 The round-trip test loads E006-r0001, calls `from_savestate` then
 `to_savestate`, and asserts the decompressed content matches the
@@ -19,7 +19,7 @@ import zlib
 import io
 from pathlib import Path
 
-from goal2.engine import state
+from goal2.game import state
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -214,7 +214,7 @@ class DW3Example(unittest.TestCase):
             except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
                 raise unittest.SkipTest(f"E006-r0001 not fetchable: {e}")
         code = (
-            "from goal2.engine import state; "
+            "from goal2.game import state; "
             "s = state.from_savestate(open('.cache/e006-r0001-main.sav','rb').read()); "
             "print(s.players[1][:6].hex())"
         )
@@ -242,7 +242,7 @@ class VendorRoundTrip(unittest.TestCase):
     def _original_country_record(self, gs: state.GameState) -> bytes:
         """Return the managed country's record bytes from the original savestate."""
         orig_vga, orig_mem = _decompressed_vga_and_mem(self.original)
-        from goal2.engine.state import _wrap_raw, _countries_bytes
+        from goal2.game.state import _wrap_raw, _countries_bytes
         s = _wrap_raw(orig_vga, orig_mem)
         raw = bytes(_countries_bytes(s))
         mc = gs.managed_country

@@ -1,4 +1,4 @@
-# T19 — the LCG draw-order divergence of `goal2.engine.new_game` against E006-r0001
+# T19 — the LCG draw-order divergence of `goal2.game.new_game` against E006-r0001
 
 Written by `measurements/T19/divergence.py`; re-running it rewrites this file with
 the same numbers. Fixtures (git-ignored, rule 19):

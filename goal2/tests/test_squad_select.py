@@ -7,7 +7,7 @@ T11 (input layer, screen pattern).]
 import unittest
 from unittest.mock import MagicMock
 
-from goal2.engine.state import GameState
+from goal2.game.state import GameState
 from goal2.ui.squad import _render, run_squad_select
 from goal2.ui.grid import Grid, WIDTH
 from goal2.ui.input import Key
