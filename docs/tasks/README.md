@@ -16,3 +16,4 @@ status; this index carries none.
 | T17 | State adapter writes starting_eleven / captain / country_tactics | #38 | T16 |
 | T18 | Main loop saves user state before run_result | #40 | T17 |
 | T19 | Diagnose the LCG draw-order divergence against E006 byte-exact | #11 | T18 |
+| T20 | Reconcile the LCG draw order and base-table indexing against E006 byte-exact | #11 | T19 |
