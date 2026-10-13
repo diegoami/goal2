@@ -33,7 +33,7 @@ from goal2.game import new_game  # noqa: E402
 from goal2.tests import test_new_game as tng  # noqa: E402  (fixture loaders, reused)
 
 ARCHAEOLOGY_ENV = os.environ.get("GOAL2_ARCHAEOLOGY")
-_CANDIDATES = ([] if not ARCHAEOLOGY_ENV else [Path(ARCHAEOLOGY)]) + [
+_CANDIDATES = ([] if not ARCHAEOLOGY_ENV else [Path(ARCHAEOLOGY_ENV)]) + [
     ROOT.parent / "goal2-archaeology",
     ROOT.parents[2].parent / "goal2-archaeology",  # a .claude/worktrees/<name> worktree
     Path("/home/diego/projects/goal2-archaeology"),
