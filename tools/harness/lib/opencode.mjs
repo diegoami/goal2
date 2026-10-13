@@ -180,20 +180,29 @@ export function openCodeHome(env = process.env, { log = () => {} } = {}) {
   return { env: { ...env, ...dirs }, root, dataHome: dirs.XDG_DATA_HOME };
 }
 
-// The OpenCode version the runner drives ("1.18.34"), or null when `--version` gives none. The
-// harness was checked on the 1.18 line, the public CLI. The desktop app ships a 2.x CLI whose run
-// flags, session fields and agent format differ (#26), so any major but 1 is refused before
-// anything is billed.
-export const SUPPORTED_MAJOR = 1;
+// The OpenCode majors the runner drives. 1.x is the tested path (1.18.34). 2.x is allowed if
+// the run produces the same artefacts as a 1.x run (lesson L110, owner 2026-10-13): the desktop
+// app's 2.x CLI differs in run flags, session fields and agent format (#26), so a 2.x run that
+// diverges is caught by the run's own artefacts rather than by this gate. Anything else is
+// refused before anything is billed.
+export const SUPPORTED_MAJOR = [1, 2];
+// OpenCode 1.x prints `<major>.<minor>.<patch>` on `--version`; 2.x prints `opencode v<major>.<minor>.<patch>`.
+// The non-digit prefix (`opencode` / `v` / whitespace) is consumed by the (?:^|v|\s) alternation,
+// and the trailing \b keeps the match anchored at end. We also accept any exit code (1.x and 2.x have
+// both exited 0 here, but a future patch to the wrapper could change that) provided stdout has the string.
 export async function openCodeVersion(cmd, { env, cwd, timeoutMs = 30_000 }) {
   const r = await execBounded(cmd, ['--version'], { cwd, env, timeoutMs });
-  return r && r.code === 0 ? r.stdout.match(/\b(\d+)\.(\d+)\.(\d+)\b/)?.[0] ?? null : null;
+  if (!r) return null;
+  const m = r.stdout.match(/(?:^|v|\s)(\d+)\.(\d+)\.(\d+)\b/);
+  return m ? `${m[1]}.${m[2]}.${m[3]}` : null;
 }
 export function versionProblem(version, exe) {
-  if (version && Number(version.split('.')[0]) === SUPPORTED_MAJOR) return null;
-  return `OpenCode ${version ?? 'gave no version'} at ${exe} is not supported: the harness runs on the public `
-    + `${SUPPORTED_MAJOR}.x CLI (checked on 1.18), and the desktop app's 2.x CLI differs (#26). Point it at a 1.18 CLI: `
-    + '~/.opencode/bin/opencode, npm opencode-ai@1.18, or HARNESS_OPENCODE_EXE';
+  const major = Number((version ?? '').split('.')[0]);
+  if (version && SUPPORTED_MAJOR.includes(major)) return null;
+  return `OpenCode ${version ?? 'gave no version'} at ${exe} is not supported: the harness drives the public `
+    + `1.x CLI (the tested path on 1.18.34) and permits 2.x if the run produces the same artefacts (L110). Anything `
+    + `else is refused before billing. Point it at a 1.18 CLI: ~/.opencode/bin/opencode, npm opencode-ai@1.18, `
+    + `or HARNESS_OPENCODE_EXE (which may point at 2.x).`;
 }
 
 // The efforts (variants) OpenCode offers for a model, from `opencode models <provider> --verbose`,
@@ -214,22 +223,46 @@ export async function modelVariants(cmd, id, { env, cwd, timeoutMs = 60_000 }) {
   return null;
 }
 
-// The model ids OpenCode lists for these providers in this environment (`opencode models <p>`), so
-// an unknown id or a provider that is not logged in stops a run before anything is billed. A
-// provider with no login exits 1 with "Provider not found" (OpenCode 1.18.34); any other failure,
-// or a timeout, is OpenCode's own and lands in `errors`, so it is never reported as a login.
+// The model ids OpenCode lists for these providers in this environment, so an unknown id or a
+// provider that is not logged in stops a run before anything is billed.
+// Both 1.x and 2.x accept `opencode models` with no positional argument and return one
+// `<provider>/<model>` per line (1.x: 1.18.34; 2.x: 2.0.28). The older per-provider shape
+// `opencode models <provider>` was 1.x-only — 2.x rejects it as "Unexpected positional
+// argument". Client-side filter by `<provider>/` keeps the per-provider contract.
+// 2.x also tries to talk to its background service on a fixed port; a stale instance
+// (often left behind by an earlier harness run) holds the port and the bare call
+// fails with "Managed service port NNNN ... already in use". Retrying with
+// `--standalone` runs the command on a private server instead and works on 2.x while
+// 1.x ignores the flag (1.18.34 rejects it as unknown, so we only swap in the retry
+// if the bare call fails).
 // Returns { listed: Set, errors: Map provider -> message }.
 export async function listedModels(cmd, providers, { env, cwd, timeoutMs = 60_000 }) {
   const listed = new Set();
   const errors = new Map();
+  let r = await execBounded(cmd, ['models'], { cwd, env, timeoutMs });
+  if (!r || r.code !== 0) {
+    // 1.x rejects `--standalone` as unknown; the retry would still fail and r stays
+    // as the original failure. 2.x runs the command on its own server.
+    const retry = await execBounded(cmd, ['models', '--standalone'], { cwd, env, timeoutMs });
+    if (retry && retry.code === 0) r = retry;
+  }
+  if (!r) {
+    for (const p of new Set(providers)) errors.set(p, `\`opencode models\` did not finish in ${Math.round(timeoutMs / 1000)} s`);
+    return { listed, errors };
+  }
+  if (r.code === 0) {
+    for (const l of r.stdout.split(/\r?\n/)) {
+      const t = l.trim();
+      if (t) listed.add(t);
+    }
+  } else {
+    const last = r.stderr.replace(/\x1b\[[0-9;]*m/g, '').trim().split(/\r?\n/).at(-1) || '(no output)';
+    for (const p of new Set(providers)) errors.set(p, `\`opencode models\` failed with exit ${r.code}: ${last}`);
+    return { listed, errors };
+  }
   for (const p of new Set(providers)) {
-    const r = await execBounded(cmd, ['models', p], { cwd, env, timeoutMs });
-    if (!r) { errors.set(p, `\`opencode models ${p}\` did not finish in ${Math.round(timeoutMs / 1000)} s`); continue; }
-    if (r.code === 0) {
-      for (const l of r.stdout.split(/\r?\n/)) if (l.trim()) listed.add(l.trim());
-    } else if (!/provider not found/i.test(r.stderr)) {
-      const last = r.stderr.replace(/\x1b\[[0-9;]*m/g, '').trim().split(/\r?\n/).at(-1) || '(no output)';
-      errors.set(p, `\`opencode models ${p}\` failed with exit ${r.code}: ${last}`);
+    if (![...listed].some((id) => id.startsWith(`${p}/`))) {
+      errors.set(p, `\`opencode models\` lists no \`${p}/*\` models: provider not logged in?`);
     }
   }
   return { listed, errors };
