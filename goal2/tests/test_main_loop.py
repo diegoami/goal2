@@ -12,7 +12,11 @@ from goal2 import loop as goal2_loop
 from goal2.data.goaldat import GoalDat
 from goal2.engine.state import GameState
 from goal2.main_loop import run_main_loop
+from goal2.engine.state import to_savestate
 from goal2.ui.input import Key
+
+# Stable placeholder bytes passed as the original_savestate_bytes argument.
+_PLACEHOLDER_BYTES = b"<placeholder>"
 
 
 def _keys(*items: Key):
@@ -60,7 +64,7 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
 
             mock_cs.return_value = None  # Esc immediately
 
-            run_main_loop(gd, state, "/fake/savestate", keys=_keys(Key.ESC))
+            run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=_keys(Key.ESC))
 
             mock_cs.assert_called_once()
             _, kwargs = mock_cs.call_args
@@ -82,7 +86,7 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
             mock_sq.return_value = False  # Esc on squad
 
             # DOWN×6 + ENTER from country 1 lands on country 7
-            run_main_loop(gd, state, "/fake/savestate", keys=_keys(*([Key.DOWN] * 6), Key.ENTER))
+            run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=_keys(*([Key.DOWN] * 6), Key.ENTER))
 
             self.assertEqual(state.managed_country, 7)
 
@@ -117,9 +121,10 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select", spy_cs), \
              patch("goal2.main_loop.run_squad_select", spy_sq), \
              patch("goal2.main_loop.run_tactics_select", spy_ta), \
-             patch("goal2.main_loop.run_result", spy_re):
+             patch("goal2.main_loop.run_result", spy_re), \
+             patch("goal2.main_loop.to_savestate", return_value=b"saved") as mock_save:
 
-            run_main_loop(gd, state, "/fake/savestate", keys=_keys(Key.ENTER))
+            run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=_keys(Key.ENTER))
 
         self.assertEqual(call_order, ["country_select", "squad_select", "tactics_select", "result"])
         # All four calls received the same state object
@@ -144,7 +149,7 @@ class TestEscAbortsLoop(unittest.TestCase):
 
             mock_cs.return_value = None  # Esc
 
-            rc = run_main_loop(gd, state, "/fake/savestate", keys=_keys(Key.ESC))
+            rc = run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=_keys(Key.ESC))
 
         self.assertEqual(rc, 0)
         mock_sq.assert_not_called()
@@ -164,7 +169,7 @@ class TestEscAbortsLoop(unittest.TestCase):
             mock_cs.return_value = 7
             mock_sq.return_value = False  # Esc
 
-            rc = run_main_loop(gd, state, "/fake/savestate",
+            rc = run_main_loop(gd, state, _PLACEHOLDER_BYTES,
                                keys=_keys(Key.ENTER, Key.ESC))
 
         self.assertEqual(rc, 0)
@@ -187,7 +192,7 @@ class TestEscAbortsLoop(unittest.TestCase):
             mock_sq.return_value = True
             mock_tac.return_value = False  # Esc
 
-            rc = run_main_loop(gd, state, "/fake/savestate",
+            rc = run_main_loop(gd, state, _PLACEHOLDER_BYTES,
                                keys=_keys(Key.ENTER, Key.ENTER, Key.ESC))
 
         self.assertEqual(rc, 0)
@@ -201,14 +206,15 @@ class TestEscAbortsLoop(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
-             patch("goal2.main_loop.run_result") as mock_res:
+             patch("goal2.main_loop.run_result") as mock_res, \
+             patch("goal2.main_loop.to_savestate", return_value=b"saved"):
 
             mock_cs.return_value = 7
             mock_sq.return_value = True
             mock_tac.return_value = True
             mock_res.return_value = False  # Esc
 
-            rc = run_main_loop(gd, state, "/fake/savestate",
+            rc = run_main_loop(gd, state, _PLACEHOLDER_BYTES,
                                keys=_keys(Key.ENTER, Key.ENTER, Key.ENTER, Key.ESC))
 
         self.assertEqual(rc, 0)
@@ -237,7 +243,8 @@ class TestNextFixturePlaceholder(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
-             patch("goal2.main_loop.run_result") as mock_res:
+             patch("goal2.main_loop.run_result") as mock_res, \
+             patch("goal2.main_loop.to_savestate", return_value=b"saved"):
 
             mock_cs.return_value = 7
             mock_sq.return_value = True
@@ -245,7 +252,7 @@ class TestNextFixturePlaceholder(unittest.TestCase):
             mock_res.return_value = True
 
             rc, output = self._capture_stdout(
-                run_main_loop, gd, state, "/fake/savestate",
+                run_main_loop, gd, state, _PLACEHOLDER_BYTES,
                 keys=_keys(Key.ENTER, Key.ENTER, Key.ENTER, Key.ENTER))
 
         self.assertEqual(rc, 0)
@@ -261,7 +268,8 @@ class TestNextFixturePlaceholder(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
-             patch("goal2.main_loop.run_result") as mock_res:
+             patch("goal2.main_loop.run_result") as mock_res, \
+             patch("goal2.main_loop.to_savestate", return_value=b"saved"):
 
             mock_cs.return_value = 42
             mock_sq.return_value = True
@@ -269,7 +277,7 @@ class TestNextFixturePlaceholder(unittest.TestCase):
             mock_res.return_value = True
 
             rc, output = self._capture_stdout(
-                run_main_loop, gd, state, "/fake/savestate",
+                run_main_loop, gd, state, _PLACEHOLDER_BYTES,
                 keys=_keys(Key.ENTER, Key.ENTER, Key.ENTER, Key.ENTER))
 
         self.assertEqual(rc, 0)
@@ -287,7 +295,8 @@ class TestEndToEnd(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
-             patch("goal2.main_loop.run_result") as mock_res:
+             patch("goal2.main_loop.run_result") as mock_res, \
+             patch("goal2.main_loop.to_savestate", return_value=b"saved"):
 
             # Empty keys: each screen's key_iter hits StopIteration and breaks,
             # acting as if Enter was pressed on every screen.
@@ -296,7 +305,7 @@ class TestEndToEnd(unittest.TestCase):
             mock_tac.return_value = True
             mock_res.return_value = True
 
-            rc = run_main_loop(gd, state, "/fake/savestate", keys=iter([]))
+            rc = run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=iter([]))
 
         self.assertEqual(rc, 0)
         mock_cs.assert_called_once()
@@ -359,7 +368,8 @@ class TestKeysAreConsumedSequentially(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select", make_spy("cs")), \
              patch("goal2.main_loop.run_squad_select", make_spy("sq")), \
              patch("goal2.main_loop.run_tactics_select", make_spy("ta")), \
-             patch("goal2.main_loop.run_result", make_spy("re")):
+             patch("goal2.main_loop.run_result", make_spy("re")), \
+             patch("goal2.main_loop.to_savestate", return_value=b"saved"):
 
             gd = _make_goaldat()
             state = _make_state()
@@ -367,7 +377,7 @@ class TestKeysAreConsumedSequentially(unittest.TestCase):
             # would replay the full list. With the fix, the wrapper turns
             # this into an iterator that cs drains; sq/ta/re see [].
             scripted = [Key.ENTER, Key.ENTER, Key.ENTER, Key.ENTER]
-            run_main_loop(gd, state, "/fake/savestate", keys=scripted)
+            run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=scripted)
 
         # cs drains the iterator completely (saw all 4)
         self.assertEqual(len(keys_seen["cs"]), 4)

@@ -48,7 +48,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: {savestate_file}: {e}", file=sys.stderr)
         return 2
 
-    return run_main_loop(goaldat, state, savestate_path)
+    return run_main_loop(goaldat, state, state_bytes)
 
 
 if __name__ == "__main__":

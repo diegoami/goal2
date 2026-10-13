@@ -39,14 +39,15 @@ _BG_TITLE  = 1
 
 
 def run_result(
-    savestate_path: str,
+    savestate_path_or_bytes: str | bytes,
     keys: Iterable[Key] | None,
     *,
     state: GameState | None = None,
 ) -> bool:
     """Show the quick-engine result and return True on Enter, False on Esc.
 
-    `savestate_path` is the path to a DOSBox-X half-time savestate.
+    `savestate_path_or_bytes` is either a path to a DOSBox-X half-time
+    savestate or the savestate bytes directly (Savestate accepts both).
     `keys` is an optional iterable of Key values (for scripted tests); when
     None the screen reads from stdin.
     `state`, if given, is unused by this screen (accepted for API parity
@@ -55,7 +56,7 @@ def run_result(
     Returns True on Enter (continue to next fixture), False on Esc.
     """
     # Load the savestate and run the engine.
-    sav = Savestate(savestate_path)
+    sav = Savestate(savestate_path_or_bytes)
     try:
         result = _qe.simulate(sav)
     except (FoulPathNotModelled, ExtraTimeNotModelled) as exc:
@@ -140,14 +141,14 @@ def _build_grid(result: dict | None, refusal_msg: str | None) -> Grid:
 
 # ── Test helper (not part of the public API) ────────────────────────────────
 
-def _render(savestate_path: str) -> Grid:
+def _render(savestate_path_or_bytes: str | bytes) -> Grid:
     """Load the savestate, run the engine, and render the result grid.
 
     This is the test surface: the engine runs once inside this helper,
     and the result is rendered without showing the screen. Raises if the
     savestate file is absent.
     """
-    sav = Savestate(savestate_path)
+    sav = Savestate(savestate_path_or_bytes)
     try:
         result = _qe.simulate(sav)
     except (FoulPathNotModelled, ExtraTimeNotModelled) as exc:
