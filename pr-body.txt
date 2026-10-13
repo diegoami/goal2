@@ -1,45 +1,59 @@
-Closes #30
+Closes #40
 
 ## Scope
+- `goal2/main_loop.py`: changed `savestate_path: str` to `original_savestate_bytes: bytes`; added `state.to_savestate` call before step 4
+- `goal2/loop.py`: passes `state_bytes` instead of `savestate_path`
+- `goal2/ui/result.py`: docstring and parameter name clarify `savestate_path_or_bytes` accepts both str and bytes
+- `goal2/tests/test_main_loop.py`: all path args replaced with `_PLACEHOLDER_BYTES`; `patch("goal2.main_loop.to_savestate")` added to tests reaching step 4
+- `goal2/tests/test_state.py`: new `EnginePicksUpModifiedTactics` class with three tests proving the engine reads the modified tactics byte after save
 
-- **goal2/ui/tactics.py** — the tactics screen; `run_tactics_select(goaldat, keys, *, state, initial_tactics) -> bool`; `_render(goaldat, state, byte, cursor) -> Grid` (test surface)
-- **goal2/tests/test_tactics.py** — 16 tests covering all Done-when lines and hazard cases
-- **goal2/engine/state.py** — `GameState` gains `country_tactics: int = 0` (safe default; existing tests pass)
-- **goal2/ui/input.py** — `Key.SPACE` added for the tactics toggle; `read_key` maps `\x20` to `Key.SPACE`
-- **goal2/tests/test_input.py** — Key count updated 6→7 for SPACE (T13 extends the input layer)
+## Done-when results
 
-## Done-when
-
+DW1: test_main_loop is green
 ```
-$ python3 -m unittest discover -s goal2/tests 2>&1 | tail -5
-Ran 151 tests in 5.320s
-OK
+$ python3 -m unittest goal2.tests.test_main_loop -v
+Ran 12 tests in 0.013s OK
 ```
 
+DW2: test_state is green (includes new end-to-end test)
 ```
-$ python3 -m unittest goal2.tests.test_tactics -v 2>&1 | grep -E "^(test_|Ran|OK|FAIL)"
-test_cursor_row_marker_from_input_byte ... ok
-test_cursor_row_reversed_video ... ok
-test_footer_on_row_24 ... ok
-test_initial_0x00_renders_all_bits_clear ... ok
-test_initial_0xFF_renders_all_bits_set ... ok
-test_title_byte_0x55_is_not_hardcoded ... ok
-test_title_shows_byte_from_input ... ok
-test_down_clamped_at_row8_toggles_bit7 ... ok
-test_down_space_enter_from_row1_toggles_bit5_and_writes_0x20 ... ok
-test_downx3_space_enter_toggles_bit0_and_writes_0x01 ... ok
-test_enter_after_toggle_is_one_of_256_values ... ok
-test_esc_returns_false_and_does_not_touch_state ... ok
-test_no_state_means_no_write ... ok
-test_space_enter_from_row1_toggles_bit4_and_writes_0x10 ... ok
-test_state_country_tactics_read_when_no_initial_tactics_given ... ok
-test_up_clamped_at_row1_toggles_bit4 ... ok
-Ran 16 tests in 0.022s
-OK
+$ python3 -m unittest goal2.tests.test_state -v
+Ran 21 tests in 5.265s OK
+```
+
+DW3: engine reads 0x42 after to_savestate+Savestate reload
+```
+$ python3 -m unittest goal2.tests.test_state.EnginePicksUpModifiedTactics.test_engine_reads_modified_tactics_byte -v
+ok
+```
+
+DW4: engine reads original byte when save is skipped (mutation)
+```
+$ python3 -m unittest goal2.tests.test_state.EnginePicksUpModifiedTactics.test_engine_reads_original_byte_when_save_skipped -v
+ok
+```
+
+DW5: pre-merge checks
+```
+$ python3 tools/check_links.py
+links and JSON ok (121 files)
+$ node tools/harness/review.mjs --self-test
+self-test: 35 of 35 samples read as expected
+$ grep -E '^[0-9a-f]{64}  ' harness.lock | sha256sum -c --quiet
+(clean)
+$ python3 -m unittest tests.test_agent_permissions -v
+Ran 5 tests in 0.001s OK
+$ git ls-files | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl)$'
+(no output — no forbidden files)
+```
+
+DW6: full suite
+```
+$ python3 -m unittest discover -s goal2/tests -p "test_*.py"
+Ran 185 tests in 7.135s OK (skipped=6)
 ```
 
 ## Docs changed
-
-No docs changed.
+No documentation files changed.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

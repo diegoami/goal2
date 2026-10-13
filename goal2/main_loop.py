@@ -36,8 +36,10 @@ def run_main_loop(
        modified bytes so the quick engine reads the updated tactics byte.
     5. Prints a one-line next-fixture placeholder using state.managed_country.
 
-    [confirmed: A-WATCH-1 — result is T14's stand-in, running the quick engine
-    on the original savestate; GA-4 — keys flow through the driver to each screen.]
+    [confirmed: A-WATCH-1 — result is T14's stand-in, running the quick engine;
+    GA-4 — keys flow through the driver to each screen.
+    derived: after step 4 saves, the engine reads the modified savestate
+    (user choices applied via to_savestate), not the original.]
     [derived: T17's state adapter writes country_tactics at country record +0x2D;
     the quick engine reads that same byte (quick_engine.py:189).]
     """

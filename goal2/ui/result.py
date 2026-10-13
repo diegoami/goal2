@@ -47,7 +47,9 @@ def run_result(
     """Show the quick-engine result and return True on Enter, False on Esc.
 
     `savestate_path_or_bytes` is either a path to a DOSBox-X half-time
-    savestate or the savestate bytes directly (Savestate accepts both).
+    savestate or the savestate bytes directly
+    [confirmed: `goal2/engine/savestate.py::Savestate.__init__` accepts
+    `path_or_bytes` — the zip is opened from a path or BytesIO].
     `keys` is an optional iterable of Key values (for scripted tests); when
     None the screen reads from stdin.
     `state`, if given, is unused by this screen (accepted for API parity

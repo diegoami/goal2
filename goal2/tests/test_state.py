@@ -27,8 +27,10 @@ CACHE = ROOT / ".cache"
 SAV = CACHE / "e006-r0001-main.sav"
 # [confirmed: E006 release manifest] E006-r0001's asset sha256.
 E006_R0001_SHA = "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
-# E010 halftime: quick engine runs on a half-time stall of a quick match (DS:7C36 = 0).
+# [confirmed: E010-r0001 recorded run; the halftime stall has DS:7C36 = 0
+# so the quick engine does not refuse it with ExtraTimeNotModelled.]
 E010_SAV = CACHE / "e010-r0001-halftime.sav"
+# [confirmed: E010 release manifest] E010-r0001-halftime.sav asset sha256.
 E010_SHA = "e1dee7e2f5ad443ee0d62eb6dd203394ef81f43732845aa04d969f422b556920"
 
 
