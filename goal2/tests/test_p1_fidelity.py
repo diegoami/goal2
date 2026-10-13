@@ -44,14 +44,9 @@ N_PLAYERS = 3061
 # +0x00 country, +0x03 potential (squad players only), +0x06/+0x07 position,
 # +0x12/+0x13 fitness word.
 STRUCTURAL_FIELDS = (0, 3, 6, 7, 0x12, 0x13)
-# [confirmed: F007] LCG-driven fields (the known gap, issue #11).
+# [confirmed: F007] LCG-driven fields (the former gap, issue #11, closed by T20).
 # +0x01 age, +0x02 peak, +0x05, +0x0C.
 LCG_FIELDS = (1, 2, 5, 0x0C)
-# [derived from F007, E006] The current LCG gap is ~7,500 of 12,244 bytes.
-# A degenerate LCG (always-1 or always-0) would push this to ~12,000+ or ~0;
-# a working LCG stays in the 6,000–9,000 range.
-LCG_GAP_LOW = 6_000
-LCG_GAP_HIGH = 9_000
 
 
 def _fetch_dat() -> bytes:
@@ -203,9 +198,9 @@ class SkillFidelity(unittest.TestCase):
 
 
 class LCGGapMeasurement(unittest.TestCase):
-    """[confirmed: F007, E006] The LCG-driven fields are a known gap
-    (issue #11). This test measures the mismatch count and prints it; it
-    does not fail on mismatches."""
+    """[confirmed: F007, E006; T20] The LCG-driven fields were a known gap
+    (issue #11, ~7,500 of 12,244 bytes before T20). Since T20's reconciliation
+    they match E006 byte-for-byte; this test pins that closed gap."""
 
     @classmethod
     def setUpClass(cls):
@@ -214,7 +209,8 @@ class LCGGapMeasurement(unittest.TestCase):
 
     def test_lcg_gap_measurement(self):
         """Count byte mismatches in the LCG-driven fields across all 3061
-        records. The current model has ~11,000 mismatches (tracked in #11)."""
+        records. 0 mismatches since T20 (issue #11's byte-exact
+        reconciliation)."""
         actual = new_game.make_all_players(self.d, managed_country=MANAGED_COUNTRY)
         mismatches = 0
         for i in range(N_PLAYERS):
@@ -224,16 +220,14 @@ class LCGGapMeasurement(unittest.TestCase):
                 if actual_rec[off] != expected_rec[off]:
                     mismatches += 1
         print(f"\nLCG-driven byte mismatches: {mismatches} of {N_PLAYERS * len(LCG_FIELDS)}")
-        # Tight bounds: a degenerate LCG (always-1 or always-0) would push
-        # the count to ~12,000+ or ~0; a working LCG stays in the 6,000–9,000
-        # range (issue #11 tracks the byte-exact reconciliation).
-        self.assertGreaterEqual(
-            mismatches, LCG_GAP_LOW,
-            f"LCG-driven mismatches {mismatches} below {LCG_GAP_LOW}; LCG may be degenerate",
-        )
-        self.assertLessEqual(
-            mismatches, LCG_GAP_HIGH,
-            f"LCG-driven mismatches {mismatches} above {LCG_GAP_HIGH}; LCG may be degenerate",
+        # [confirmed: T19 report §4.5] The reconciled model matches E006 on
+        # every modelled byte; anything above 0 — a degenerate LCG included —
+        # fails. Before T20 this count was 7,510 (T19 report §1), inside the
+        # old 6,000-9,000 "working LCG" bounds.
+        self.assertEqual(
+            mismatches, 0,
+            f"LCG-driven mismatches {mismatches} of {N_PLAYERS * len(LCG_FIELDS)}; "
+            "expected 0 since T20 (issue #11)",
         )
 
 
