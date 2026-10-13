@@ -10,6 +10,10 @@ sibling/grandparent default).
 
 [designed: the table parser is a small hand-rolled reader, not a Markdown library, so the
 script has no third-party dependency and runs the same on every host.]
+
+[confirmed: T21 — the written-here modules (T03 `new_game`, T04 `skills`, T06/T17 `state`)
+were moved out of `goal2/engine/` to `goal2/game/`; this directory is now vendored-only,
+and every row in `PROVENANCE.md` points at a vendored file that matches `goal2/engine/`.]
 """
 from __future__ import annotations
 

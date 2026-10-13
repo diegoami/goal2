@@ -1,7 +1,7 @@
 """The CLI entry point: `python -m goal2.loop <savestate> <goal.dat>`.
 
 Mirrors `python -m goal2.play` (T01's contract). Loads GOAL.DAT via
-goal2.data.goaldat.load; loads the savestate via goal2.engine.state.from_savestate;
+goal2.data.goaldat.load; loads the savestate via goal2.game.state.from_savestate;
 calls run_main_loop; exits with its return code.
 [designed]
 """
@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 from goal2.data.goaldat import load as load_goaldat
-from goal2.engine.state import from_savestate
+from goal2.game.state import from_savestate
 from goal2.main_loop import run_main_loop
 
 

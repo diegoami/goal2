@@ -7,7 +7,7 @@ plan.md item 4 (a screen is a Grid with draw_text rows, T10 framework).]
 import unittest
 from unittest.mock import MagicMock
 
-from goal2.engine.state import GameState
+from goal2.game.state import GameState
 from goal2.ui.country_select import _render, run_country_select
 from goal2.ui.grid import Grid, WIDTH
 from goal2.ui.input import Key

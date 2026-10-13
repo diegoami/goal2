@@ -14,7 +14,7 @@ from __future__ import annotations
 from typing import Iterable
 
 from goal2.data import GoalDat
-from goal2.engine.state import GameState
+from goal2.game.state import GameState
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
 

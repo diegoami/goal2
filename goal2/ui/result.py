@@ -22,7 +22,7 @@ _ENGINE_DIR = str(Path(__file__).resolve().parents[1] / "engine")
 if _ENGINE_DIR not in sys.path:
     sys.path.insert(0, _ENGINE_DIR)
 
-from goal2.engine.state import GameState
+from goal2.game.state import GameState
 from goal2.engine.quick_engine import FoulPathNotModelled, ExtraTimeNotModelled
 from goal2.engine import quick_engine as _qe
 from goal2.engine.savestate import Savestate

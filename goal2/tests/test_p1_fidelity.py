@@ -20,7 +20,7 @@ import unittest
 from pathlib import Path
 
 from goal2.data import goaldat
-from goal2.engine import new_game, skills
+from goal2.game import new_game, skills
 from goal2.engine.savestate import Savestate
 
 

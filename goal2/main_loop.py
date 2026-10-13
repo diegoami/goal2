@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Iterable
 
 from goal2.data.goaldat import GoalDat
-from goal2.engine.state import GameState, to_savestate
+from goal2.game.state import GameState, to_savestate
 from goal2.ui.country_select import run_country_select
 from goal2.ui.input import Key
 from goal2.ui.result import run_result
