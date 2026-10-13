@@ -226,7 +226,9 @@ class VendorRoundTrip(unittest.TestCase):
         self.assertEqual(gs3.country_tactics, 0x8B)
 
     def test_country_tactics_mutation(self):
-        """Without the write, country_tactics is the original byte, not 0x42."""
+        """[confirmed: F010 — country record's tactics byte is at +0x2D;
+        E006-r0001 records 0x8B there.] Without the write, country_tactics
+        is the original byte, not 0x42."""
         gs = state.from_savestate(self.original)
         orig_byte = self._original_country_record(gs)[0x2D]
         # E006-r0001's +0x2D is 0x8B; use 0x42 as a distinct test value.
@@ -251,7 +253,9 @@ class VendorRoundTrip(unittest.TestCase):
         self.assertEqual(gs3.captain, captain_player)
 
     def test_captain_mutation(self):
-        """Without the write, captain is the original byte, not the set value."""
+        """[designed: +0x2F chosen as a free byte in the country record;
+        E006-r0001's value at that offset happens to be 4.] Without the write,
+        captain is the original byte, not the set value."""
         gs = state.from_savestate(self.original)
         orig_rec = self._original_country_record(gs)
         orig_captain = orig_rec[0x2F]

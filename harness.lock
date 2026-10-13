@@ -19,7 +19,7 @@ local README.md  (goal2's own: links the plan; the evidence-tags rule is now 17)
 local PROVENANCE.md  (goal2's own: the vendoring rule is now 18)
 local docs/tasks/T01.md  (goal2's own: the nothing-committed rule is now 19)
 local .github/workflows/ci.yml  (new: links, review self-test, lock hashes, reviewer grants, no original files)
-af52af6d14ca0c065ef31cf4d25c58edcb43b4ad7a037da9fb74f4cd9af65dec  .claude/agents/implementer.md
+c5e0942f9925cb8a5e8d1e4d17e7336b3c7f84e9c9665c92f71d632b7ba8d595  .claude/agents/implementer.md
 93a7341a71c112677f4f1704e3d595d3f50c6a9c23c319c5cde6664d161b5d36  .claude/agents/reviewer.md
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
@@ -27,7 +27,7 @@ bdf4c012d7f6975142f881979eb8d5dd2d6316da89097620ac4924f5dffd7139  .claude/skills
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
-edafb57f0517dc1794ab5c3348e8e6aecefbc7eabbe99d964a7526076123fe93  docs/lessons.md
+b7b9fc64f92b3ce1c5bb7ae56cffd0c82eedfd688599ca5443ae84a3a39c7902  docs/lessons.md
 3a6965c419ebe1f105231dc5a6b9ae3cafc93289984798faa004ba3a183f9ebd  docs/model-trials.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
 5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md

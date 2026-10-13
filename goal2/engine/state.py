@@ -1,4 +1,5 @@
-"""The state adapter: round-trip the original's savestate through goal2's state.
+"""[confirmed: T01/T06 state adapter; PROVENANCE.md does not list state.py as vendored — this file is the rebuild's own adapter, not engine code.]
+The state adapter: round-trip the original's savestate through goal2's state.
 
 The original game's state lives in guest memory (the DOS program's data
 segment). Vendored models (T01) read that memory directly from a DOSBox-X
