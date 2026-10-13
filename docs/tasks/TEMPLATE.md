@@ -20,3 +20,14 @@
   2. …
   3. The build and the test suite are green.
 - **Hazards**: the mistake an implementer is most likely to make here, and how to avoid it.
+- **Notes for the main session**:
+  - The only Python interpreter on this machine is `python3` (the `python` alias is unavailable).
+    Use `python3 -m unittest …` in Done-when commands, not `python -m unittest …`. (L108 captures
+    the rule that surfaced in T16 R3 and T17 R3 — both rounds returned `python -m unittest …` as
+    "command cannot be run as written" until DW1 was amended on main.)
+  - If the task touches any file whose SHA-256 is listed in `harness.lock` (e.g.
+    `.claude/agents/implementer.md`, `docs/lessons.md`, …), the implementer must update the
+    `harness.lock` entries on the PR branch before claiming the pre-merge
+    `grep -E '^[0-9a-f]{64}  ' harness.lock | sha256sum -c --quiet` passes (rule-5 of the
+    ci.yml checks). Compute `sha256sum <file>`, replace the old hash line in `harness.lock`,
+    commit + push. L108 captures the pattern that surfaced in T17 R2.
