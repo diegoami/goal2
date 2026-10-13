@@ -472,6 +472,26 @@ class BEC7HeightBothContributions(unittest.TestCase):
         converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
         self.assertEqual(converted, [_SLOT3])
 
+    def test_overlapping_bits_at_0x40_plus_0x40_crosses_0x48(self):
+        """[designed] Both tables contribute 0x40 to the same slot — `0x40 + 0x40 = 0x80`,
+        which crosses the 0x48 boundary, so the player converts to 12. The
+        `two_fad -> two_fad_a | two_fad_b` mutation ORs the overlapping bits,
+        yielding 0x40 (< 0x48), leaving the player at code 9 (no conversion). The
+        prior height cases used disjoint set bits (0x40 vs 0x07 / 0x08), so the
+        `+` vs `|` mutations gave the same total — this case with overlapping bits
+        is what pins the docstring's "added, not ORed" claim."""
+        two_fad_a = [0] * 12
+        two_fad_a[_SLOT3 % 12] = 0x40
+        two_fad_b = [0] * 16
+        two_fad_b[1] = 0x40                                # +7 = 1 for stub players
+        qm = self._match(two_fad_a, two_fad_b)
+        qm.score = [0, 3]
+        qm.c173()
+        self.assertEqual(qm.playerrec[_SLOT3][6], 12)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 10)  # untouched
+        converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
+        self.assertEqual(converted, [_SLOT3])
+
 
 class BEC7ReSortAfterConversion(unittest.TestCase):
     """[confirmed: vendored quick_engine.py at 8760df9] C01A calls BEC7 then
@@ -509,16 +529,26 @@ class BEC7ReSortAfterConversion(unittest.TestCase):
         self.assertEqual(qm.pitch[21]["player"], _SLOT7)
 
     def test_apply_230c_keeps_pitch_aligned_with_squad(self):
-        """For every pitch slot on the trailing side, the pitch's player equals the
-        squad word at the corresponding index. This proves 230C's pitch sort ran
-        (the squad and pitch move together via the 2218 swap at 23C4)."""
+        """[designed] For every pitch slot on the trailing side, the pitch's player
+        equals the squad word at the corresponding index — AND the sort moved at
+        least one player on the trailing side. Without `apply_230c` the alignment
+        holds but no swap happens, so the pre/post arrays match; the companion
+        `test_apply_230c_moves_converted_player_to_back_of_pitch` covers specific
+        slot positions, this one is the corresponding claim about the array as a
+        whole."""
         qm = self._match()
+        base = qm.side_base[0]
+        pre_pitch = [qm.pitch[base + 1 + i]["player"] for i in range(11)]
         qm.score = [0, 3]
         qm.c173()
-        base = qm.side_base[0]
+        # Alignment after the 2218 swap at 23C4.
         squad = qm._country(C0)["squad"]
         for i, slot in enumerate(range(base + 1, base + 12)):
             self.assertEqual(qm.pitch[slot]["player"], squad[i])
+        # The 230C re-sort MUST have moved at least one player; without
+        # apply_230c the post-state array equals the pre-state array.
+        post_pitch = [qm.pitch[base + 1 + i]["player"] for i in range(11)]
+        self.assertNotEqual(pre_pitch, post_pitch)
 
 
 if __name__ == "__main__":
