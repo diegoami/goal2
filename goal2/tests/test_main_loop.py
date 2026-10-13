@@ -329,3 +329,49 @@ class TestLoopCLI(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestKeysAreConsumedSequentially(unittest.TestCase):
+    """Regression: keys must be consumed sequentially across screens.
+
+    Each screen does `iter(keys)` internally, so passing a list `keys`
+    would replay it from the start for every screen. The fix wraps
+    `keys` once at the top of run_main_loop, so all four screens share
+    a single iterator. (Luna R2, 2026-10-13)
+
+    Mutation: remove the `keys = iter(keys) if keys is not None else None`
+    line in run_main_loop. Each screen receives the raw list; each spy
+    drains the full list and the test fails because squad / tactics /
+    result see 4 keys (not 0 after the country-select spy drained them).
+    """
+
+    def test_keys_consumed_sequentially_across_screens(self):
+        """With a shared iterator, screens consume keys in order; each
+        subsequent screen sees only what is left after the previous one."""
+        keys_seen = {}
+
+        def make_spy(name):
+            def spy(goaldat, keys, *, state=None):
+                keys_seen[name] = list(keys) if keys is not None else []
+                return 7 if name == "cs" else True
+            return spy
+
+        with patch("goal2.main_loop.run_country_select", make_spy("cs")), \
+             patch("goal2.main_loop.run_squad_select", make_spy("sq")), \
+             patch("goal2.main_loop.run_tactics_select", make_spy("ta")), \
+             patch("goal2.main_loop.run_result", make_spy("re")):
+
+            gd = _make_goaldat()
+            state = _make_state()
+            # A list (not yet an iterator): without the fix, each screen
+            # would replay the full list. With the fix, the wrapper turns
+            # this into an iterator that cs drains; sq/ta/re see [].
+            scripted = [Key.ENTER, Key.ENTER, Key.ENTER, Key.ENTER]
+            run_main_loop(gd, state, "/fake/savestate", keys=scripted)
+
+        # cs drains the iterator completely (saw all 4)
+        self.assertEqual(len(keys_seen["cs"]), 4)
+        # subsequent screens see no keys (the iterator is exhausted)
+        self.assertEqual(keys_seen["sq"], [])
+        self.assertEqual(keys_seen["ta"], [])
+        self.assertEqual(keys_seen["re"], [])

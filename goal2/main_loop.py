@@ -38,6 +38,11 @@ def run_main_loop(
     [confirmed: A-WATCH-1 — result is T14's stand-in, running the quick engine
     on the original savestate; GA-4 — keys flow through the driver to each screen.]
     """
+    # Normalise keys to a single iterator once: each screen does iter(keys),
+    # so passing a list would replay it from the start for every screen.
+    # (Luna R2, 2026-10-13)
+    keys = iter(keys) if keys is not None else None
+
     # Step 1: country select
     chosen = run_country_select(goaldat, keys, state=state)
     if chosen is None:
