@@ -4,7 +4,8 @@ behaviour (A-CPU-2's change side), driving ``QuickMatch.c173()`` on a synthetic 
 [confirmed: F028 (E028)] C01A, behind by more than 2: include ``rand(5)`` five times, then
 element 6, write ``+0x2D`` through BBFF, at most once per stretch (the ``DS:8332`` flag);
 then the slot-9 position test and the BEC7 conversion (the FIRST available code-9/10/11
-squad member becomes 12 at height >= 0x48, else 13), then the 230C re-sort.
+squad member becomes 12 at height >= 0x48, else 13; height = ``DS:0E46[+7] +
+DS:0E54[n mod 12]`` via 1771:2FAD), then the 230C re-sort.
 [confirmed: routines.tsv (0791:C0DF)] C0DF, ahead by more than 2: exclude ``rand(5)`` five
 times, then element 6, through BBFF, once per stretch (the ``DS:8334`` flag).
 [confirmed: vendored quick_engine.py at 8760df9] C173 after every goal: margin <2 -> BD83
@@ -52,12 +53,16 @@ def squad_words(c):
     return list(range(20 * c + 1, 20 * c + 21))
 
 
-def _player_record(position=5):
+def _player_record(position=5, byte_overrides=None):
     """[designed] A synthetic available outfield player record (0x14 bytes): two-footed
     (1771:3041: (+5) + (+2) == 0x1E), hardness >= 4 (1771:2FFB: (+5) - ((+3) & 1), so
     BBFF's 3431 call writes nothing), position 5 (no special set membership), +7 = 1 so
     wrong-foot (1771:3179) is False. Identical records on both sides keep the BD03
-    strength sums equal, so team_stronger is false and BD83 adds no conditional draws."""
+    strength sums equal, so team_stronger is false and BD83 adds no conditional draws.
+
+    ``byte_overrides`` is an optional {byte_offset: value} map applied after the defaults,
+    so a test can mark a player as unavailable (+0xE == 0x00) without disturbing the rest
+    of the synthetic shape."""
     p = bytearray(0x14)
     p[2] = 0x0A
     p[4] = 0x40
@@ -66,6 +71,9 @@ def _player_record(position=5):
     p[7] = 1
     p[0xC] = 0x10
     p[0xE] = 0x20                                # energy >= 1: available (1771:3216)
+    if byte_overrides:
+        for off, val in byte_overrides.items():
+            p[off] = val & 0xFF
     return p
 
 
@@ -101,7 +109,8 @@ class StubState:
 
 def build_state(seed=SEED, tactics=(0x00, 0x00), managed=(0x00, 0x00),
                 once_8332=(0, 0), once_8334=(0, 0), r008=(0x00, 0x00),
-                positions=None, two_fad_a=None):
+                positions=None, two_fad_a=None, two_fad_b=None,
+                player_byte_overrides=None):
     """[designed] A stub state for a quick match between C0 and C1 at 0-0 (tests set
     ``qm.score`` themselves after construction), both unmanaged, no extra time, the foul
     gate clear, five substitution points each, and the pitch slots pointing at the first
@@ -109,7 +118,10 @@ def build_state(seed=SEED, tactics=(0x00, 0x00), managed=(0x00, 0x00),
     the DS:0668 bytes [11, 0]).
 
     ``positions`` maps a player word to its +6 byte (default 5); ``two_fad_a`` overrides
-    the 12 bytes at DS:0E54 (1771:2FAD's per-(word mod 12) height table)."""
+    the 12 bytes at DS:0E54 (1771:2FAD's per-(word mod 12) height table); ``two_fad_b``
+    overrides the 16 bytes at DS:0E46 (1771:2FAD's per-(+7) height table);
+    ``player_byte_overrides`` is {player_word: {byte_offset: value}} for further
+    tweaking (e.g., marking a player as unavailable)."""
     st = StubState()
     st.put_far(players.PLAYERS_PTR, PLAYERS_ADDR)
     st.put_far(players.COUNTRIES_PTR, COUNTRIES_ADDR)
@@ -139,6 +151,8 @@ def build_state(seed=SEED, tactics=(0x00, 0x00), managed=(0x00, 0x00),
     st.put(QuickMatch.R008 + C1, bytes([r008[1]]))
     if two_fad_a is not None:
         st.put(QuickMatch.F2FAD_A, bytes(two_fad_a))
+    if two_fad_b is not None:
+        st.put(QuickMatch.F2FAD_B, bytes(two_fad_b))
     # the country records: squad words, the +0x2D tactics byte, the +0x2E managed byte
     for c, tac, man in ((C0, tactics[0], managed[0]), (C1, tactics[1], managed[1])):
         base = COUNTRIES_ADDR + players.COUNTRY_SIZE * c
@@ -148,10 +162,12 @@ def build_state(seed=SEED, tactics=(0x00, 0x00), managed=(0x00, 0x00),
         st.put(base + 0x2E, bytes([man]))
     # the player records
     positions = positions or {}
+    player_byte_overrides = player_byte_overrides or {}
     for c in (C0, C1):
         for w in squad_words(c):
             st.put(PLAYERS_ADDR + players.PLAYER_SIZE * w,
-                   _player_record(positions.get(w, 5)))
+                   _player_record(positions.get(w, 5),
+                                  byte_overrides=player_byte_overrides.get(w)))
     # the pitch records (8062: 813B-8148): slot 1..22 at 0x80E8 + 0x16*slot
     for slot in range(1, 23):
         base = 0x80E8 + 0x16 * slot
@@ -292,43 +308,217 @@ class ManagedByteExclusion(unittest.TestCase):
         self.assertEqual(qm.once_8332[0], 1)
 
 
-class BEC7Conversion(unittest.TestCase):
-    """[confirmed: F028 (E028)] When C01A pushed the trailing side up and its slot-9
-    player's position is outside {12,13}, BEC7 re-places the FIRST available code-9/10/11
-    squad member (the lowest squad slot): code 12 at a 1771:2FAD height >= 0x48, else 13;
-    the write is followed by a jump to the return, so exactly one conversion happens."""
+# [designed] Squad layout for country C0: slot 3 (word 23) is the first qualifying
+# player (code 9), slot 7 (word 27) the second (code 10), slot 9 (word 29) is the
+# squad[8] C01A reads (C0A9-C0BB). 23 % 12 = 11 and 27 % 12 = 3 index the 2FAD height
+# table. The BEC7 matrix below exercises each control of the conversion flow:
+# the slot-9 gate in c01a (BEC7Slot9PositionGate), the unavailable-skip in bec7
+# (BEC7FirstAvailable), the height calculation in two_fad with both tables contributing
+# (BEC7HeightBothContributions), and the 230C re-sort after the conversion
+# (BEC7ReSortAfterConversion). Each class is the parameterised equivalent of the single
+# case DW8 had pinned: an R<n> mutation that removes the control fails at least one test
+# in the corresponding class.
+_SLOT3, _SLOT7, _SLOT9 = 23, 27, 29
 
-    # [designed] Squad layout for country C0: slot 3 (word 23) is the first qualifying
-    # player, slot 7 (word 27) the second; slot 9 (word 29) sits outside {12,13} so C01A
-    # calls BEC7. 23 % 12 = 11 and 27 % 12 = 3 index the 2FAD height table.
-    SLOT3, SLOT7, SLOT9 = 23, 27, 29
 
-    def _match(self, height_slot3, height_slot7):
+class BEC7Slot9PositionGate(unittest.TestCase):
+    """[confirmed: F028 (E028)] C01A's slot-9 gate: BEC7/230C run only when the slot-9
+    player's position is outside {12, 13}. Each test sets slot 9 to a member of {12, 13}
+    and provides an eligible code-9/10/11 candidate further down the squad; the
+    candidate must NOT be converted, proving the gate is enforced.
+
+    [designed] The R1 mutation — replacing the gate with `if True` — would call BEC7
+    unconditionally, converting SLOT3 in both cases. The assertions below catch that.
+    """
+
+    def _match(self, slot9_position, slot3_height=0x48):
         two_fad_a = [0] * 12
-        two_fad_a[self.SLOT3 % 12] = height_slot3
-        two_fad_a[self.SLOT7 % 12] = height_slot7
-        return new_match(positions={self.SLOT3: 9, self.SLOT7: 10, self.SLOT9: 5},
+        two_fad_a[_SLOT3 % 12] = slot3_height
+        return new_match(positions={_SLOT3: 9, _SLOT7: 10, _SLOT9: slot9_position},
                          two_fad_a=two_fad_a)
 
-    def test_first_qualifying_player_tall_becomes_12(self):
-        """Height exactly 0x48 (the boundary the class docstring asserts) -> code 12."""
-        qm = self._match(height_slot3=0x48, height_slot7=0x60)
-        qm.score = [0, 3]
-        qm.c173()
-        self.assertEqual(qm.playerrec[self.SLOT3][6], 12)
-        self.assertEqual(qm.playerrec[self.SLOT7][6], 10)  # untouched
-        converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
-        self.assertEqual(converted, [self.SLOT3])
+    def test_slot9_pos_12_blocks_bec7(self):
+        """Slot 9 already at code 12: the gate suppresses BEC7, SLOT3 stays at 9.
 
-    def test_first_qualifying_player_short_becomes_13(self):
-        """Height 0x47, one below the boundary, -> code 13; the second player untouched."""
-        qm = self._match(height_slot3=0x47, height_slot7=0x60)
+        [designed] SLOT9 itself is at 12 by setup, so the "converted" check counts
+        only SLOT3 and SLOT7 (the BEC7 candidates) — none of those flipped to 12/13."""
+        qm = self._match(slot9_position=12)
         qm.score = [0, 3]
         qm.c173()
-        self.assertEqual(qm.playerrec[self.SLOT3][6], 13)
-        self.assertEqual(qm.playerrec[self.SLOT7][6], 10)  # untouched
+        self.assertEqual(qm.playerrec[_SLOT3][6], 9)    # untouched (gate held)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 10)
+        for w in (_SLOT3, _SLOT7):
+            self.assertNotIn(qm.playerrec[w][6], {12, 13})
+
+    def test_slot9_pos_13_blocks_bec7(self):
+        """Slot 9 already at code 13: the gate suppresses BEC7, SLOT3 stays at 9."""
+        qm = self._match(slot9_position=13)
+        qm.score = [0, 3]
+        qm.c173()
+        self.assertEqual(qm.playerrec[_SLOT3][6], 9)    # untouched (gate held)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 10)
+        for w in (_SLOT3, _SLOT7):
+            self.assertNotIn(qm.playerrec[w][6], {12, 13})
+
+
+class BEC7FirstAvailable(unittest.TestCase):
+    """[confirmed: vendored quick_engine.py at 8760df9] BEC7's `if self.unavailable(w):
+    continue` skip: when an unavailable code-9/10/11 squad member sits BEFORE an available
+    candidate, BEC7 MUST skip the unavailable player and convert the first AVAILABLE
+    candidate, not the first matching code (BF56 is the only write, BF5A the only break).
+
+    [designed] The R2 mutation — removing the `unavailable` skip — would convert the
+    unavailable SLOT3 (first matching), leaving SLOT7 untouched. The assertions below
+    catch that.
+    """
+
+    def _match(self, height_slot3=0x48, height_slot7=0x48,
+               slot3_unavailable=False):
+        two_fad_a = [0] * 12
+        two_fad_a[_SLOT3 % 12] = height_slot3
+        two_fad_a[_SLOT7 % 12] = height_slot7
+        overrides = {_SLOT3: {0xE: 0}} if slot3_unavailable else None
+        return new_match(positions={_SLOT3: 9, _SLOT7: 10, _SLOT9: 5},
+                         two_fad_a=two_fad_a,
+                         player_byte_overrides=overrides)
+
+    def test_unavailable_first_skipped_available_second_converted(self):
+        """SLOT3 (first qualifying code-9) is unavailable; SLOT7 (second qualifying
+        code-10) is available. BEC7 must convert SLOT7, not SLOT3."""
+        qm = self._match(slot3_unavailable=True)
+        qm.score = [0, 3]
+        qm.c173()
+        self.assertEqual(qm.playerrec[_SLOT3][6], 9)    # untouched (unavailable, skipped)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 12)   # FIRST AVAILABLE: converted
         converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
-        self.assertEqual(converted, [self.SLOT3])
+        self.assertEqual(converted, [_SLOT7])
+
+
+class BEC7HeightBothContributions(unittest.TestCase):
+    """[confirmed: vendored quick_engine.py at 8760df9] 1771:2FAD's
+    `E54[w % 12] + E46[+7]` uses BOTH the per-(word mod 12) table and the per-(+7)
+    table. The class doc-tests variants in two dimensions: which table contributes and
+    whether the total is at or just below 0x48. The +0x54 table contributes non-zero in
+    one boundary case, the +0x46 table contributes non-zero in the other.
+
+    [designed] The R3 mutation — replacing the body with only `self.t_2fad_a[w % 12]`
+    — would make the total depend solely on the +0x54 table. The "two_fad_a below,
+    two_fad_b picks up to 0x48" case below catches that (with the mutation the total
+    stays at 0x40, so the assertion `qm.playerrec[SLOT3][6] == 12` fails)."""
+
+    def _match(self, two_fad_a, two_fad_b=None):
+        if two_fad_b is None:
+            two_fad_b = [0] * 16
+        return new_match(positions={_SLOT3: 9, _SLOT7: 10, _SLOT9: 5},
+                         two_fad_a=two_fad_a,
+                         two_fad_b=two_fad_b)
+
+    def test_two_fad_a_alone_at_0x48_becomes_12(self):
+        """Height exactly 0x48 (the boundary the BEC7 docstring asserts) -> code 12.
+        +0x54 contributes 0x48 alone; +0x46 contributes 0."""
+        two_fad_a = [0] * 12
+        two_fad_a[_SLOT3 % 12] = 0x48
+        qm = self._match(two_fad_a)
+        qm.score = [0, 3]
+        qm.c173()
+        self.assertEqual(qm.playerrec[_SLOT3][6], 12)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 10)  # untouched
+        converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
+        self.assertEqual(converted, [_SLOT3])
+
+    def test_two_fad_a_alone_below_0x48_becomes_13(self):
+        """Height 0x47, one below the boundary, -> code 13; the second player
+        untouched. +0x54 alone reaches 0x47."""
+        two_fad_a = [0] * 12
+        two_fad_a[_SLOT3 % 12] = 0x47
+        qm = self._match(two_fad_a)
+        qm.score = [0, 3]
+        qm.c173()
+        self.assertEqual(qm.playerrec[_SLOT3][6], 13)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 10)  # untouched
+        converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
+        self.assertEqual(converted, [_SLOT3])
+
+    def test_two_fad_a_and_two_fad_b_both_contribute_to_cross_0x48(self):
+        """+0x54 alone is 0x40 (below the boundary); +0x46 contributes 0x08; the sum
+        crosses to 0x48 -> code 12. With the R3 mutation (drop +0x46) the total stays
+        at 0x40 -> code 13, failing the assertion."""
+        two_fad_a = [0] * 12
+        two_fad_a[_SLOT3 % 12] = 0x40
+        two_fad_b = [0] * 16
+        two_fad_b[1] = 0x08                                # +7 = 1 for stub players
+        qm = self._match(two_fad_a, two_fad_b)
+        qm.score = [0, 3]
+        qm.c173()
+        self.assertEqual(qm.playerrec[_SLOT3][6], 12)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 10)
+        converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
+        self.assertEqual(converted, [_SLOT3])
+
+    def test_two_fad_a_and_two_fad_b_both_contribute_stay_below_0x48(self):
+        """+0x54 alone is 0x40; +0x46 contributes 0x07; the sum is 0x47 (just below
+        the boundary) -> code 13. Confirms the +0x46 contribution is added, not ORed
+        in: removing it makes the total 0x40 (also below 0x48) but for a different
+        reason — the boundary visit is what the prior assertion needs."""
+        two_fad_a = [0] * 12
+        two_fad_a[_SLOT3 % 12] = 0x40
+        two_fad_b = [0] * 16
+        two_fad_b[1] = 0x07
+        qm = self._match(two_fad_a, two_fad_b)
+        qm.score = [0, 3]
+        qm.c173()
+        self.assertEqual(qm.playerrec[_SLOT3][6], 13)
+        self.assertEqual(qm.playerrec[_SLOT7][6], 10)
+        converted = [w for w in squad_words(C0) if qm.playerrec[w][6] in {12, 13}]
+        self.assertEqual(converted, [_SLOT3])
+
+
+class BEC7ReSortAfterConversion(unittest.TestCase):
+    """[confirmed: vendored quick_engine.py at 8760df9] C01A calls BEC7 then
+    `apply_230c()`: the 230C re-sort moves the BEC7-converted player up the pitch order
+    so its squad slot reflects the new position. Without apply_230c the squad/pitch
+    order stays in its pre-conversion layout (SLOT3 still at squad[2] / pitch[14]).
+
+    [designed] The R4 mutation — removing `self.apply_230c()` after BEC7 — leaves
+    the pitch and squad order untouched. The assertions below catch that: the
+    converted player (position 12, the highest) must be at squad[10] (the back of the
+    trailing side's pitch) and at pitch[22] (the highest pitch slot for the trailing
+    side), and the original slot for SLOT3 must hold a different player.
+    """
+
+    def _match(self, slot3_height=0x48):
+        two_fad_a = [0] * 12
+        two_fad_a[_SLOT3 % 12] = slot3_height
+        return new_match(positions={_SLOT3: 9, _SLOT7: 10, _SLOT9: 5},
+                         two_fad_a=two_fad_a)
+
+    def test_apply_230c_moves_converted_player_to_back_of_pitch(self):
+        """SLOT3 becomes code 12 (the highest position key); apply_230c's pitch sort
+        (jb at 23B2) bubbles it to the back of the trailing side's pitch slots
+        (12..22)."""
+        qm = self._match()
+        qm.score = [0, 3]
+        qm.c173()
+        # The trailing side is teams[0] = C0; its pitch slots are side_base[0] + 1..+11
+        # = 12..22.
+        self.assertEqual(qm._country(C0)["squad"][10], _SLOT3)  # squad slot = position
+        self.assertEqual(qm.pitch[22]["player"], _SLOT3)         # pitch slot 22 holds it
+        self.assertNotEqual(qm.pitch[14]["player"], _SLOT3)      # original slot vacated
+        # SLOT7 (position 10, the second-highest) is now at the slot just before 22.
+        self.assertEqual(qm._country(C0)["squad"][9], _SLOT7)
+        self.assertEqual(qm.pitch[21]["player"], _SLOT7)
+
+    def test_apply_230c_keeps_pitch_aligned_with_squad(self):
+        """For every pitch slot on the trailing side, the pitch's player equals the
+        squad word at the corresponding index. This proves 230C's pitch sort ran
+        (the squad and pitch move together via the 2218 swap at 23C4)."""
+        qm = self._match()
+        qm.score = [0, 3]
+        qm.c173()
+        base = qm.side_base[0]
+        squad = qm._country(C0)["squad"]
+        for i, slot in enumerate(range(base + 1, base + 12)):
+            self.assertEqual(qm.pitch[slot]["player"], squad[i])
 
 
 if __name__ == "__main__":
