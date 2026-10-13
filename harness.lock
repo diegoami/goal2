@@ -19,7 +19,7 @@ local README.md  (goal2's own: links the plan; the evidence-tags rule is now 17)
 local PROVENANCE.md  (goal2's own: the vendoring rule is now 18)
 local docs/tasks/T01.md  (goal2's own: the nothing-committed rule is now 19)
 local .github/workflows/ci.yml  (new: links, review self-test, lock hashes, reviewer grants, no original files)
-2239887c734fb22df5117f395c82b1f7aa05cc41323c1ffe0d7415bd17fbdfd5  .claude/agents/implementer.md
+3d39f6f226d5690b5c6c10a01a8692182f5bbf4d528a5410fea2bf3cf509c35f  .claude/agents/implementer.md
 93a7341a71c112677f4f1704e3d595d3f50c6a9c23c319c5cde6664d161b5d36  .claude/agents/reviewer.md
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
