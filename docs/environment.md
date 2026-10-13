@@ -73,9 +73,8 @@ the plan.
 
 **History (the owner, 2026-10-11):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
 
-Alibaba is used only when the user asks (CLAUDE.md "Choosing models" rule 3). On an Alibaba quota or
-rate error, stop using it until the next day, tell the owner, and do not retry: its monthly pool is
-small and is not monitored.
+Alibaba is usable (the owner lifted the ask-first gate, 2026-10-13). On an Alibaba quota or rate
+error, stop and tell the owner, and do not retry: its monthly pool is small and is not monitored.
 
 Registered 2026-10-05/06 (the owner), all on watch in `harness.json`, no chain seats. The key is the
 env var `ALIBABA_TOKEN_PLAN_API_KEY` (or `MINIMAX_API_KEY`) from `~/.config/ai-keys.env` — never
@@ -96,8 +95,8 @@ below are the owner's live checks.
 
 Alibaba is one monthly pool for all its models (`curl -s localhost:8765/quota/alibaba`;
 `pricing.discount_now` says whether the night discount is live, 22:00–08:00 UTC+8: qwen3.8 60% off,
-`glm-5.3` none — prefer long alibaba runs while it is true). DeepSeek is blacklisted on any
-route as of 2026-10-09. MiniMax has 5-hour and weekly windows
+`glm-5.3` none — prefer long alibaba runs while it is true). DeepSeek is usable on any route (the
+owner lifted the blacklist, 2026-10-13). MiniMax has 5-hour and weekly windows
 (`curl -s localhost:8765/quota/minimax`). Alibaba's Kimi and MiniMax models are Team-edition only
 and fail; not registered.
 

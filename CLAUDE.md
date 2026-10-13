@@ -134,8 +134,10 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
    questions on the issue or PR.
 3. **The fixed rules:** the reviewer is never of the session's family (`review.mjs` refuses it
    from the environment; a `/code-review` or the `reviewer` agent, which are that family, run
-   only when the user asks); a model on `harness.json`'s `blocked` list never runs (DeepSeek
-   today; `/switch-model --block` and `--unblock` change it); Alibaba only when the user asks.
+   only when the user asks). No model or provider is otherwise gated: the owner emptied
+   `harness.json`'s `blocked` list and lifted every provider limitation — DeepSeek, Alibaba,
+   OpenCode routes, OpenAI — on 2026-10-13 ("Limitations on deepseek and alibaba and opencode
+   and openai must go"); `/switch-model --block` re-adds a block only by the owner's word.
 4. **Permissions, not briefs:** an agent gets the permissions its work needs, in its agent file
    (`.opencode/agents/reviewer.md`: all of `/tmp` and the goal2-archaeology checkout, which `tools/check_provenance.py` reads; `.claude/agents/*.md`:
    the guard hook refuses only a force-push, `git stash`, `git worktree`, a merge and, for the
