@@ -10,4 +10,5 @@ status; this index carries none.
 | T11 | The country select screen: 128 countries, cursor + keys, write the choice to the state adapter | #26 | T10 |
 | T12 | The squad select screen: 20 players, pick captain, write the eleven + captain to the state adapter | #28 | T11 |
 | T13 | The tactics screen: 8 team tactics bits, toggleable, write to state | #30 | T12 |
-| T14 | The result screen: run the vendored engine, display score + goals, label as stand-in | #<new> | T13 |
+| T14 | The result screen: run the vendored engine, display score + goals, label as stand-in | #32 | T13 |
+| T15 | The computer's eleven + tactics: A-CPU-1 + A-CPU-2 stand-ins | #34 | T14 |
