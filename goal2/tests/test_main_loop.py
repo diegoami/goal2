@@ -123,9 +123,9 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         # [designed: re_arg captures the first positional arg — the savestate bytes
         # (saved) — so the assertion below proves run_result received the saved
         # bytes, not the original bytes passed into run_main_loop.]
-        # [design check: mutate main_loop.py to pass original_savestate_bytes to
+        # NOTE: mutate main_loop.py to pass original_savestate_bytes to
         # run_result instead of saved; this assertion fails, and so does the
-        # corresponding order/state test below.]
+        # corresponding order/state test below.
 
         with patch("goal2.main_loop.run_country_select", spy_cs), \
              patch("goal2.main_loop.run_squad_select", spy_sq), \
@@ -145,7 +145,7 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         self.assertIs(tracker["sq_state"], state)
         self.assertIs(tracker["ta_state"], state)
         self.assertIs(tracker["re_state"], state)
-        # [R1 fix] run_result received the SAVED bytes (b"saved"), not the originals
+        # NOTE: run_result received the SAVED bytes (b"saved"), not the originals
         self.assertEqual(tracker["re_arg"], b"saved")
 
 
