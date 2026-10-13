@@ -18,6 +18,14 @@ refuses git stash, git worktree, any force-push and gh pr merge.
   is your working directory. The guard refuses `git worktree`, so creating one is not yours to
   do — it is already done for you. Run every command from the worktree root with relative
   paths; never `cd`, and never `..` (L31). Never touch another branch or the main checkout.
+- If your task touches any file whose SHA-256 is listed in `harness.lock`
+  (e.g. `.claude/agents/implementer.md`, `docs/lessons.md`, `tools/harness/*`), refresh the
+  corresponding `harness.lock` entry on your PR branch before claiming the pre-merge
+  `grep -E '^[0-9a-f]{64}  ' harness.lock | sha256sum -c --quiet` passes (rule-5 of
+  `.github/workflows/ci.yml`). Compute `sha256sum <file>`, replace the old hash line in
+  `harness.lock`, commit + push on the PR branch. L108. The main session also refreshes the
+  lock on `main` separately, but the PR branch needs its own refresh — the review worktree
+  reads its own `harness.lock`.
 - Create the branch the task file names (`task/T<nn>-<slug>`, or `fix/<issue>-<slug>`) from
   `origin/main`, push it, and commit and push after every meaningful step.
 - When done: open the PR (`gh pr create`) with the body below, and make your final message the
