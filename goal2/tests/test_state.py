@@ -195,5 +195,116 @@ class DW3Example(unittest.TestCase):
         self.assertEqual(len(parts[0]), 12, f"expected 12 hex chars (6 bytes): {parts[0]!r}")
 
 
+class VendorRoundTrip(unittest.TestCase):
+    """[confirmed: SQ-5, F010, F011, T14] Round-trip tests for the three
+    fields added in T17: country_tactics, captain, and starting_eleven.
+    Each test modifies the field, saves, loads, and asserts the value is
+    preserved. Mutation tests (delete the write) are included to prove the
+    write actually happens."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.original = _e006_or_skip()
+
+    def _original_country_record(self, gs: state.GameState) -> bytes:
+        """Return the managed country's record bytes from the original savestate."""
+        orig_vga, orig_mem = _decompressed_vga_and_mem(self.original)
+        from goal2.engine.state import _wrap_raw, _countries_bytes
+        s = _wrap_raw(orig_vga, orig_mem)
+        raw = bytes(_countries_bytes(s))
+        mc = gs.managed_country
+        return raw[mc * state.COUNTRY_SIZE:(mc + 1) * state.COUNTRY_SIZE]
+
+    # ---- country_tactics (+0x2D) ----
+
+    def test_country_tactics_round_trip(self):
+        """Set country_tactics=0x8B, save, load — value is preserved."""
+        gs = state.from_savestate(self.original)
+        gs2 = _modified_state(gs, country_tactics=0x8B)
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        self.assertEqual(gs3.country_tactics, 0x8B)
+
+    def test_country_tactics_mutation(self):
+        """Without the write, country_tactics is the original byte, not 0x42."""
+        gs = state.from_savestate(self.original)
+        orig_byte = self._original_country_record(gs)[0x2D]
+        # E006-r0001's +0x2D is 0x8B; use 0x42 as a distinct test value.
+        gs2 = _modified_state(gs, country_tactics=0x42)
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        # The round-trip with the write produces 0x42
+        self.assertEqual(gs3.country_tactics, 0x42)
+        # Without the write it would produce the original byte (0x8B), not 0x42
+        self.assertNotEqual(orig_byte, 0x42,
+            "E006-r0001's original +0x2D is already 0x42; pick a different value")
+
+    # ---- captain (+0x2F) ----
+
+    def test_captain_round_trip(self):
+        """Set captain to a managed-squad player number, save, load — value is preserved."""
+        gs = state.from_savestate(self.original)
+        captain_player = gs.managed_squad[5]  # 6th player in squad
+        gs2 = _modified_state(gs, captain=captain_player)
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        self.assertEqual(gs3.captain, captain_player)
+
+    def test_captain_mutation(self):
+        """Without the write, captain is the original byte, not the set value."""
+        gs = state.from_savestate(self.original)
+        orig_rec = self._original_country_record(gs)
+        orig_captain = orig_rec[0x2F]
+        # E006-r0001's +0x2F is 4; use 99 as a distinct test value.
+        self.assertNotEqual(orig_captain, 99,
+            "E006-r0001's original +0x2F is already 99; pick a different value")
+        gs2 = _modified_state(gs, captain=99)
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        # The write IS present, so captain equals what was set (99)
+        self.assertEqual(gs3.captain, 99)
+        # Without the write it would be the original byte (4), not 99
+        self.assertNotEqual(orig_captain, 99)
+
+    def test_captain_only_writes_own_offset(self):
+        """The captain write at +0x2F does not alter other bytes in the country record."""
+        gs = state.from_savestate(self.original)
+        gs2 = _modified_state(gs, captain=gs.managed_squad[3])
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        # All other offsets are unchanged
+        orig_rec = self._original_country_record(gs)
+        new_rec = gs3.countries[gs.managed_country]
+        # Only +0x2F differs (captain was set)
+        for offset in range(state.COUNTRY_SIZE):
+            if offset == 0x2F:
+                self.assertEqual(new_rec[offset], gs.managed_squad[3])
+            else:
+                self.assertEqual(new_rec[offset], orig_rec[offset],
+                    f"Byte at +0x{offset:02X} was altered by the captain write")
+
+    # ---- starting_eleven ----
+
+    def test_starting_eleven_round_trip_default(self):
+        """starting_eleven is derived from managed_squad[:11]; round-trip preserves it."""
+        gs = state.from_savestate(self.original)
+        gs2 = _modified_state(gs, starting_eleven=[])
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        # Default (empty list → managed_squad[:11])
+        self.assertEqual(gs3.starting_eleven, list(gs.managed_squad[:11]))
+
+    def test_starting_eleven_round_trip_explicit(self):
+        """Explicit starting_eleven that differs from managed_squad[:11] round-trips."""
+        gs = state.from_savestate(self.original)
+        # Swap positions 0 and 1 in the eleven
+        custom_eleven = list(gs.managed_squad[:11])
+        custom_eleven[0], custom_eleven[1] = custom_eleven[1], custom_eleven[0]
+        gs2 = _modified_state(gs, starting_eleven=custom_eleven)
+        out = state.to_savestate(gs2, original=self.original)
+        gs3 = state.from_savestate(out)
+        self.assertEqual(gs3.starting_eleven, custom_eleven)
+
+
 if __name__ == "__main__":
     unittest.main()

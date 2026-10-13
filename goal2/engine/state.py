@@ -112,6 +112,12 @@ def from_savestate(state_bytes: bytes) -> GameState:
     # first 20 words.
     managed_country = 7
     managed_squad = list(_squad(raw_countries, managed_country))
+    # [confirmed: F010] The tactics byte is at country record offset +0x2D.
+    country_tactics = raw_countries[managed_country * COUNTRY_SIZE + 0x2D]
+    # [designed: chosen +0x2F, free byte in country record per F011] The
+    # captain byte; the engine does not read it in v1 (T14), so this is
+    # for state-fidelity / UI round-trip only.
+    captain = raw_countries[managed_country * COUNTRY_SIZE + 0x2F]
     # [designed] Read the DOS clock word at DS:0E6C as a stand-in for
     # match state (score, minute, half). The quick engine (T01) doesn't
     # read this; the watched engine will.
@@ -127,6 +133,9 @@ def from_savestate(state_bytes: bytes) -> GameState:
         match_state=match_state,
         vga=vga,
         mem=mem,
+        starting_eleven=list(managed_squad[:11]),
+        captain=captain,
+        country_tactics=country_tactics,
     )
 
 
@@ -155,14 +164,26 @@ def to_savestate(game_state: GameState, original: bytes) -> bytes:
     for i, n in enumerate(game_state.managed_squad):
         mc = game_state.managed_country
         raw_countries_arr[mc * COUNTRY_SIZE + 2 * i:mc * COUNTRY_SIZE + 2 * i + 2] = n.to_bytes(2, "little")
-    raw_countries = bytes(raw_countries_arr)
+    # [confirmed: F010] Write the tactics byte at country record +0x2D.
+    mc = game_state.managed_country
+    raw_countries_arr[mc * COUNTRY_SIZE + 0x2D] = game_state.country_tactics & 0xFF
+    # [designed: chosen +0x2F, free byte in country record per F011] Write
+    # the captain byte. The engine does not read it in v1 (T14); this is
+    # for state-fidelity / UI round-trip only.
+    raw_countries_arr[mc * COUNTRY_SIZE + 0x2F] = game_state.captain & 0xFF
+    # [designed] Write the starting eleven only when it differs from the
+    # managed squad's first 11 (SQ-5: the eleven is squad order). If it
+    # equals managed_squad[:11] the squad write already stored it correctly.
+    if game_state.starting_eleven and game_state.starting_eleven != list(game_state.managed_squad[:11]):
+        for i, n in enumerate(game_state.starting_eleven[:11]):
+            raw_countries_arr[mc * COUNTRY_SIZE + 2 * i:mc * COUNTRY_SIZE + 2 * i + 2] = n.to_bytes(2, "little")
     # Write to Memory.
     mem = bytearray(game_state.mem)
     state = _wrap_raw(game_state.vga, mem)
     # [confirmed: T01] Write the player array.
     _write_players(state, raw_players)
     # [confirmed: T01] Write the country array.
-    _write_countries(state, raw_countries)
+    _write_countries(state, bytes(raw_countries_arr))
     # [confirmed: F004] Write the RNG seeds (DS-relative offsets).
     state.ds_write(0x7B62, game_state.rng_seed_7b62.to_bytes(2, "little"))
     state.ds_write(0x8336, game_state.rng_seed_8336.to_bytes(2, "little"))
