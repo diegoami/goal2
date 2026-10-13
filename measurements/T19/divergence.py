@@ -363,14 +363,17 @@ def main() -> int:
                              for n, i in enumerate(range(SQUAD_FIRST, SQUAD_LAST + 1)))
 
     # Managed ablation: the model's 98C4 call sequence on the word new_game.py:295
-    # actually starts from (0xF5DB). If the oracle's seed search finds that word, this
-    # run's footprint must equal the model's measured managed footprint.
+    # actually starts from (0xF5DB). The consistency claim is per-record byte
+    # equality against the model's own managed records (all 80 x 20 bytes; equal
+    # mismatch COUNTS alone would not prove it — two swapped records keep every
+    # count while breaking byte equality). The counts stay below as extra output.
     model_managed = model_style_managed(0xF5DB, d, tng.MANAGED_COUNTRY)
     model_managed_diff = {f: sum(1 for n in range(80)
                                  if model_managed[n][f] != managed_expected[n][f])
                           for f in MODELLED}
     consistency_managed = (0xF5DB in extra_seeds and
-                           all(model_managed_diff[f] == managed_counts[f] for f in MODELLED))
+                           all(model_managed[n] == actual[MANAGED_FIRST + n]
+                               for n in range(80)))
 
     # -- the report ---------------------------------------------------------------------------------
     L = []
