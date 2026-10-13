@@ -1,12 +1,12 @@
 """goal2.ai: computer-opponent logic (stand-ins).
 
-[derived: assumptions.md A-CPU-1, "The computer's eleven: the best-rated
+[designed: assumptions.md A-CPU-1, "The computer's eleven: the best-rated
 player per position of the country's formation, fit players only.
 [assumed: Q035 is open; the owner's C key is the game's own choice]"]
 T15 ships a stand-in: the top 11 of the country's 20 squad members by
 ability, ignoring formation (the per-position refinement waits for Q035).
 
-[derived: assumptions.md A-CPU-2, "The computer's tactics: its country's
+[designed: assumptions.md A-CPU-2, "The computer's tactics: its country's
 stored set; it changes tactics when more than 2 goals behind (F021's note
 (230C/20E3)); assumed for what it changes to"]
 T15 ships the read side (return the country's stored byte from

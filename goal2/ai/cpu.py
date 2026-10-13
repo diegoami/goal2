@@ -9,7 +9,7 @@ from __future__ import annotations
 
 
 def pick_computer_eleven(player_records: list[bytes], squad_indices: list[int]) -> list[int]:
-    """[derived: assumptions.md A-CPU-1, F007] Return the top 11 squad members by ability.
+    """[designed: assumptions.md A-CPU-1, F007] Return the top 11 squad members by ability.
 
     Sorts ``squad_indices`` by descending player ability (player_records[i][1])
     per F007, then ascending squad index (tie-break: lower index wins).
@@ -30,7 +30,7 @@ def pick_computer_eleven(player_records: list[bytes], squad_indices: list[int]) 
 
 
 def get_computer_tactics(country_record: bytes) -> int:
-    """[derived: assumptions.md A-CPU-2 read side, F010] Return the country's stored tactics byte.
+    """[designed: assumptions.md A-CPU-2 read side, F010] Return the country's stored tactics byte.
 
     Returns the byte at ``country_record[0x2D]`` (0..255) per F010, one of
     the 8 tactics bits.
