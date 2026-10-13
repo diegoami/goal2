@@ -555,8 +555,10 @@ def main() -> int:
     report = Path(__file__).resolve().parent / "report.md"
     report.write_text("\n".join(L), encoding="utf-8")
     print(f"wrote {report}")
+    first_txt = (f"first record {first_rec} +0x{first_off:02x}"
+                 if first_rec is not None else "first record none")
     print(f"overall {overall}/{N_RECORDS * PLAYER}  lcg-fields {lcg_diff}/{N_RECORDS * 4}"
-          f"  first record {first_rec} +0x{first_off:02x}")
+          f"  {first_txt}")
     print(f"oracle replication: squads "
           f"{sum(oracle_squad_equal.values())}/{SQUAD_LAST * len(MODELLED)} modelled bytes, "
           f"managed {sum(oracle_managed_equal.values())}/{80 * len(MODELLED)}; "

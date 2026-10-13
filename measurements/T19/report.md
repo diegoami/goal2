@@ -12,9 +12,8 @@ the same numbers. Fixtures (git-ignored, rule 19):
 
 ## 1. The four numbers
 
-- overall differing bytes: **11002 of 61220** (3061 records x 0x14 bytes)
-- LCG-field differing bytes (+0x01/+0x02/+0x05/+0x0C): **7510 of 12244** (3061 records x 4 fields)
-- first diverging record and field: **record 1 (squad player of country 1, slot 1), byte +0x01**
+- overall differing bytes: **0 of 61220** (3061 records x 0x14 bytes)
+- LCG-field differing bytes (+0x01/+0x02/+0x05/+0x0C): **0 of 12244** (3061 records x 4 fields)
 
 Per-field differing-byte counts (of 3061 records; squads = records 1..2560,
 managed = records 2561..2640):
@@ -22,21 +21,21 @@ managed = records 2561..2640):
 | field | differs (all) | differs (squads) | differs (managed) | shape |
 |---|---|---|---|---|
 | +0x00 | 0 | 0 | 0 | equal |
-| +0x01 | 2479 | 2408 | 71 | scattered (best shift +2 match rate 0.08) |
-| +0x02 | 2462 | 2386 | 76 | scattered (best shift -2 match rate 0.08) |
-| +0x03 | 75 | 0 | 75 | scattered (best shift -20 match rate 0.13) |
-| +0x04 | 1330 | 1250 | 80 | scattered (best shift -1 match rate 0.40) |
-| +0x05 | 2490 | 2415 | 75 | scattered (best shift -1 match rate 0.07) |
+| +0x01 | 0 | 0 | 0 | equal |
+| +0x02 | 0 | 0 | 0 | equal |
+| +0x03 | 0 | 0 | 0 | equal |
+| +0x04 | 0 | 0 | 0 | equal |
+| +0x05 | 0 | 0 | 0 | equal |
 | +0x06 | 0 | 0 | 0 | equal |
 | +0x07 | 0 | 0 | 0 | equal |
 | +0x08 | 0 | 0 | 0 | equal |
 | +0x09 | 0 | 0 | 0 | equal |
 | +0x0a | 0 | 0 | 0 | equal |
 | +0x0b | 0 | 0 | 0 | equal |
-| +0x0c | 79 | 0 | 79 | scattered (best shift -2 match rate 0.06) |
-| +0x0d | 556 | 497 | 59 | scattered (best shift -20 match rate 0.15) |
-| +0x0e | 556 | 497 | 59 | scattered (best shift -20 match rate 0.15) |
-| +0x0f | 975 | 948 | 27 | scattered (best shift -20 match rate 0.36) |
+| +0x0c | 0 | 0 | 0 | equal |
+| +0x0d | 0 | 0 | 0 | equal |
+| +0x0e | 0 | 0 | 0 | equal |
+| +0x0f | 0 | 0 | 0 | equal |
 | +0x10 | 0 | 0 | 0 | equal |
 | +0x11 | 0 | 0 | 0 | equal |
 | +0x12 | 0 | 0 | 0 | equal |
@@ -101,7 +100,7 @@ steps from that word to each managed seed:
 Four divergences. The first three are measured by a cumulative ablation chain
 over the squad records (each step reverts one aspect of the oracle to
 `new_game.py`'s encoding; step 3 reproduces the model's 2560 squad records
-byte-for-byte: yes):
+byte-for-byte: NO):
 
 1. [confirmed: experiments/E006-q004-skills/summarise.py L120-121 vs `goal2/engine/new_game.py:31,34`;
    ds_2581_01.hex row 1180 (118A=0x1C, 118B=0x1F) and row 0E80 (0E80=0x1B,
@@ -152,23 +151,23 @@ byte-for-byte: yes):
 
 For the 80 managed records, re-running the model's own 98C4 call sequence on the
 oracle's seed 0xf5db reproduces the model's managed records
-byte-for-byte (consistency: yes), which pins divergence 4 as
+byte-for-byte (consistency: NO), which pins divergence 4 as
 the managed records' only cause:
 
 | field | model-style 98C4 on oracle seed differs (of 80) | model differs (of 80) |
 |---|---|---|
 | +0x00 | 0 | 0 |
-| +0x01 | 71 | 71 |
-| +0x02 | 76 | 76 |
-| +0x03 | 75 | 75 |
-| +0x04 | 80 | 80 |
-| +0x05 | 75 | 75 |
+| +0x01 | 71 | 0 |
+| +0x02 | 56 | 0 |
+| +0x03 | 75 | 0 |
+| +0x04 | 80 | 0 |
+| +0x05 | 75 | 0 |
 | +0x06 | 0 | 0 |
 | +0x07 | 0 | 0 |
-| +0x0c | 79 | 79 |
-| +0x0d | 59 | 59 |
-| +0x0e | 59 | 59 |
-| +0x0f | 27 | 27 |
+| +0x0c | 79 | 0 |
+| +0x0d | 59 | 0 |
+| +0x0e | 59 | 0 |
+| +0x0f | 27 | 0 |
 | +0x12 | 0 | 0 |
 | +0x13 | 0 | 0 |
 
