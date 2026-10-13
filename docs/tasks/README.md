@@ -17,3 +17,5 @@ status; this index carries none.
 | T18 | Main loop saves user state before run_result | #40 | T17 |
 | T19 | Diagnose the LCG draw-order divergence against E006 byte-exact | #11 | T18 |
 | T20 | Reconcile the LCG draw order and base-table indexing against E006 byte-exact | #11 | T19 |
+| T21 | Move new_game/skills/state out of goal2/engine/ | #43 | T20 |
+| T22 | Pin the vendored engine's change-tactics-when-behind behaviour (A-CPU-2 change side) | #51 | T21 |
