@@ -27,6 +27,11 @@ CACHE = ROOT / ".cache"
 SAV = CACHE / "e006-r0001-main.sav"
 # [confirmed: E006 release manifest] E006-r0001's asset sha256.
 E006_R0001_SHA = "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
+# [confirmed: E010-r0001 recorded run; the halftime stall has DS:7C36 = 0
+# so the quick engine does not refuse it with ExtraTimeNotModelled.]
+E010_SAV = CACHE / "e010-r0001-halftime.sav"
+# [confirmed: E010 release manifest] E010-r0001-halftime.sav asset sha256.
+E010_SHA = "e1dee7e2f5ad443ee0d62eb6dd203394ef81f43732845aa04d969f422b556920"
 
 
 def _fetch_e006() -> bytes:
@@ -54,6 +59,34 @@ def _e006_or_skip() -> bytes:
         return _fetch_e006()
     except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
         raise unittest.SkipTest(f"E006-r0001 not fetchable: {e}")
+
+
+def _fetch_e010() -> bytes:
+    """[designed] Download E010-r0001's halftime savestate, sha256-pinned."""
+    if not E010_SAV.is_file():
+        CACHE.mkdir(parents=True, exist_ok=True)
+        asset = f"{E010_SHA[:16]}-E010-r0001-halftime.sav"
+        subprocess.run(
+            ["gh", "release", "download", "E010", "--repo", "diegoami/goal2-archaeology",
+             "--pattern", asset, "--dir", str(CACHE)],
+            check=True, capture_output=True, text=True,
+        )
+        src = CACHE / asset
+        if not src.is_file():
+            raise FileNotFoundError(f"release asset {asset} not downloaded")
+        data = src.read_bytes()
+        if hashlib.sha256(data).hexdigest() != E010_SHA:
+            raise ValueError(f"E010-r0001 sha256 differs from {E010_SHA}")
+        E010_SAV.write_bytes(data)
+        src.unlink()
+    return E010_SAV.read_bytes()
+
+
+def _e010_or_skip() -> bytes:
+    try:
+        return _fetch_e010()
+    except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
+        raise unittest.SkipTest(f"E010-r0001 not fetchable: {e}")
 
 
 def _decompressed_vga_and_mem(sav_bytes: bytes) -> tuple[bytes, bytes]:
@@ -308,6 +341,115 @@ class VendorRoundTrip(unittest.TestCase):
         out = state.to_savestate(gs2, original=self.original)
         gs3 = state.from_savestate(out)
         self.assertEqual(gs3.starting_eleven, custom_eleven)
+
+
+class EnginePicksUpModifiedTactics(unittest.TestCase):
+    """Done-when 2, 3: the quick engine reads the tactics byte the state
+    adapter wrote. With country_tactics=0x42 set and saved, the engine's
+    countries[managed_country]["tactics"] equals 0x42. Without the save,
+    it equals the original byte.
+
+    [derived: T17 state adapter writes country_tactics at country record
+    +0x2D; quick_engine.py:189 reads "tactics": carr[base + 0x2D].]
+    [designed] Uses E010-r0001's halftime fixture so Savestate and
+    QuickMatch run their actual code paths (E006-r0001's DS:7C36 is set,
+    triggering ExtraTimeNotModelled; E010 is a quick-match halftime stall).
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.original = _e010_or_skip()
+
+    def _engine_dir(self) -> str:
+        """Return goal2/engine directory for sys.path (same hack as result.py)."""
+        import sys
+        d = str(Path(__file__).resolve().parents[1] / "engine")
+        if d not in sys.path:
+            sys.path.insert(0, d)
+        return d
+
+    def test_engine_reads_modified_tactics_byte(self):
+        """[derived: T17 — country_tactics write at +0x2D round-trips through
+        Savestate's memory-component read; quick_engine.py:189 reads that
+        same byte. With country_tactics=0x42 set and saved, the engine
+        reads 0x42 from the memory component.]"""
+        self._engine_dir()
+        gs = state.from_savestate(self.original)
+        gs2 = _modified_state(gs, country_tactics=0x42)
+        saved = state.to_savestate(gs2, original=self.original)
+        # Reload through Savestate (the same path run_result uses)
+        from goal2.engine.savestate import Savestate
+        from goal2.engine.quick_engine import QuickMatch
+        sav = Savestate(saved)
+        qm = QuickMatch(sav)
+        mc = gs.managed_country
+        self.assertEqual(qm.countries[mc]["tactics"], 0x42)
+
+    def test_engine_reads_original_byte_when_save_skipped(self):
+        """[designed: mutation test — skip to_savestate; pass original bytes
+        directly to Savestate. The engine reads the original tactics byte
+        (not 0x42). The original byte in E010-r0001 must not be 0x42 (the
+        assertion uses assertNotEqual to fail-fast on this); if E010's
+        original byte is already 0x42, the test author must pick a
+        different value. Proves the save is what changes the byte the
+        engine reads.]"""
+        self._engine_dir()
+        gs = state.from_savestate(self.original)
+        gs2 = _modified_state(gs, country_tactics=0x42)
+        # Do NOT save — use the original bytes
+        from goal2.engine.savestate import Savestate
+        from goal2.engine.quick_engine import QuickMatch
+        sav = Savestate(self.original)
+        qm = QuickMatch(sav)
+        mc = gs.managed_country
+        orig_tactics = qm.countries[mc]["tactics"]
+        # Without the save, the engine still sees the original byte, not 0x42
+        self.assertNotEqual(orig_tactics, 0x42,
+            "E010's original tactics byte is already 0x42; pick a different value")
+
+    def test_modified_tactics_produces_different_result(self):
+        """[derived: A-MATCH-0 — the quick engine reads the tactics byte per
+        attack; quick_engine.py:189 ("tactics": carr[base + 0x2D]). With
+        country_tactics=0x42, the engine's first-half simulation produces
+        a different RNG state than with the original byte — proving the
+        engine actually uses the tactics byte. The score may not differ
+        (kick-off order can stay the same); what must differ is the
+        post-half seed.]"""
+        self._engine_dir()
+        from goal2.engine.savestate import Savestate
+        from goal2.engine.quick_engine import QuickMatch
+
+        # Baseline: original savestate
+        sav_orig = Savestate(self.original)
+        qm_orig = QuickMatch(sav_orig)
+
+        # Modified: set tactics to 0x42, save, reload
+        gs = state.from_savestate(self.original)
+        gs2 = _modified_state(gs, country_tactics=0x42)
+        saved = state.to_savestate(gs2, original=self.original)
+        sav_mod = Savestate(saved)
+        qm_mod = QuickMatch(sav_mod)
+
+        # Both must reach the half-time stall without refusing
+        try:
+            qm_orig.run()
+        except Exception as exc:
+            self.fail(f"original engine refused: {exc}")
+        try:
+            qm_mod.run()
+        except Exception as exc:
+            self.fail(f"modified engine refused: {exc}")
+
+        # A tactics change can alter which team gets the kick-off (eight31a
+        # depends on tactics; BD83 reads R008[c] = tactics byte), so the
+        # match result need not differ. What must differ is the seed after
+        # the half: the RNG was stepped differently.
+        self.assertNotEqual(
+            (qm_orig.rng.seed, qm_orig.seed2),
+            (qm_mod.rng.seed, qm_mod.seed2),
+            "modified tactics produced identical RNG state — "
+            "the engine may not be using the tactics byte",
+        )
 
 
 if __name__ == "__main__":
