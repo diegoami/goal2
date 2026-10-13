@@ -20,9 +20,7 @@
     "idleTimeoutSec": 600,
     "totalTimeoutSec": 3600
   },
-  "blocked": [
-    "deepseek"
-  ],
+  "blocked": [],
   "models": {
     "mimo-flash": {
       "id": "opencode-go/mimo-v2.6-flash",
