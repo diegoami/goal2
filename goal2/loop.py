@@ -16,6 +16,8 @@ from goal2.main_loop import run_main_loop
 
 
 def main(argv: list[str] | None = None) -> int:
+    if argv is None:
+        argv = sys.argv
     if len(argv) != 3:
         print("usage: python -m goal2.loop <savestate> <goal.dat>", file=sys.stderr)
         return 2

@@ -8,6 +8,7 @@ next-fixture placeholder text.]
 import unittest
 from unittest.mock import MagicMock, patch, call
 
+from goal2 import loop as goal2_loop
 from goal2.data.goaldat import GoalDat
 from goal2.engine.state import GameState
 from goal2.main_loop import run_main_loop
@@ -302,6 +303,28 @@ class TestEndToEnd(unittest.TestCase):
         mock_sq.assert_called_once()
         mock_tac.assert_called_once()
         mock_res.assert_called_once()
+
+
+class TestLoopCLI(unittest.TestCase):
+    """Regression: `python -m goal2.loop` calls main() with argv=None; the
+    handler must not raise TypeError on `len(None)` (Luna R1, 2026-10-13)."""
+
+    def test_main_with_none_argv_does_not_raise_typeerror(self):
+        """loop.main(None) must handle the missing argv without TypeError.
+
+        With the regression present (no `if argv is None: argv = sys.argv`
+        guard), the call raises `TypeError: object of type 'NoneType' has no
+        len()`. With the fix, argv falls back to sys.argv and the function
+        proceeds (returning 2 when sys.argv has no script-relative arguments,
+        or running the loop when it does).
+        """
+        try:
+            goal2_loop.main(None)
+        except TypeError as exc:
+            self.fail(
+                f"loop.main(None) raised TypeError ({exc}); the "
+                f"`if argv is None: argv = sys.argv` guard is missing"
+            )
 
 
 if __name__ == "__main__":
