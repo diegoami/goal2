@@ -145,8 +145,8 @@ class TestRunCountrySelect(unittest.TestCase):
 # ── Render surface tests ────────────────────────────────────────────────────
 
 class TestRenderSurface(unittest.TestCase):
-    def test_cursor_row_has_country_name_at_index_7(self):
-        """Done-when 3: cursor row's first cell holds country 7's name.
+    def test_cursor_row_has_marker_and_country_name_at_index_7(self):
+        """Done-when 3: cursor row starts with the marker and country 7's name.
 
         The expected name is derived from the input (cursor=7), not a literal.
         Deleting the cursor argument from _render leaves a different row affected.
@@ -154,7 +154,9 @@ class TestRenderSurface(unittest.TestCase):
         gd128 = _make_goaldat([f"C{i}" for i in range(1, 129)])
         cursor = 7
         grid = _render(gd128, cursor=cursor, page_size=20)
-        cell_char = grid.cell(7, 0)[0]
+        self.assertEqual(grid.cell(7, 0)[0], ord(">"))
+        self.assertEqual(grid.cell(7, 1)[0], ord(" "))
+        cell_char = grid.cell(7, 2)[0]
         expected_char = ord(gd128.country_names[cursor][0])
         self.assertEqual(cell_char, expected_char)
 

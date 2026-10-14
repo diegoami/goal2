@@ -124,7 +124,8 @@ def _build_grid(
     """Render the country select screen into a Grid and return it.
 
     Row 0:     title "SELECT COUNTRY  NNN/128" (blue bg)
-    Rows 1..page_size: country names; cursor row in reversed video
+    Rows 1..page_size: country names, prefixed with "> " on the cursor row
+        and two spaces elsewhere; cursor row in reversed video
     Row 24:    footer "↑↓ SELECT  PgUp/PgDn PAGE  ENTER PICK  ESC QUIT"
     """
     grid = Grid()
@@ -144,10 +145,13 @@ def _build_grid(
     for country_num in range(start, end + 1):
         name = goaldat.country_names[country_num]
         is_cursor = (country_num == cursor)
+        # [designed: T27] Reserve two columns for the plain-text cursor and
+        # preserve the country's visible label across the remaining row.
+        row_text = ("> " if is_cursor else "  ") + name
         if is_cursor:
-            grid.draw_text(row, 0, name.ljust(WIDTH), fg=_FG_CURSOR, bg=_BG_CURSOR)
+            grid.draw_text(row, 0, row_text.ljust(WIDTH), fg=_FG_CURSOR, bg=_BG_CURSOR)
         else:
-            grid.draw_text(row, 0, name.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
+            grid.draw_text(row, 0, row_text.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
         row += 1
 
     # ── Footer (row 24) ───────────────────────────────────────────────────

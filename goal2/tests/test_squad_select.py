@@ -113,8 +113,8 @@ class TestRenderSurface(unittest.TestCase):
         # Fresh state for each test (tests share self.gd but not self.state)
         self.state = _make_state()
 
-    def test_cursor_row_starts_with_row_number(self):
-        """Done-when 3a: cursor row's content starts with the row number (from input).
+    def test_cursor_row_starts_with_marker_then_row_number(self):
+        """Done-when 3a: cursor row has marker then row number (from input).
 
         Mutation: hardcoding the row number or reading from the wrong row fails.
         """
@@ -123,8 +123,12 @@ class TestRenderSurface(unittest.TestCase):
             grid = _render(self.gd, state, cursor=cursor, page_size=20)
             lines = render(grid).split("\n")
             self.assertTrue(
-                lines[cursor].startswith(f" {cursor:2d}  "),
+                lines[cursor].startswith("> "),
                 f"cursor={cursor}: row {cursor!r} doesn't start with {cursor!r}",
+            )
+            self.assertTrue(
+                lines[cursor][2:].startswith(f"{cursor:2d}  "),
+                f"cursor={cursor}: row number is missing after marker",
             )
 
     def test_title_shows_cursor_number_from_input(self):

@@ -26,9 +26,9 @@ Run the screen chain with local game data and a savestate:
 python3 -m goal2.loop .cache/<savestate>.sav .cache/GOAL.DAT
 ```
 
-[designed: T23] Interactive screens print and flush plain-text frames before
-reading input. Frames append to stdout; colours and cursor highlighting are
-omitted. Scripted key iterables remain silent.
+[designed: T23, T27] Interactive screens print and flush plain-text frames
+before reading input. Frames append to stdout; VGA colours are omitted, and
+selection rows show an ASCII `>` marker. Scripted key iterables remain silent.
 
 [designed: T25] On POSIX terminals, the interactive screen chain reads keys
 immediately in cbreak mode and restores the saved terminal settings when it
