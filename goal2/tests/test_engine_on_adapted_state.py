@@ -14,7 +14,9 @@ import os
 import subprocess
 import sys
 import unittest
+from types import SimpleNamespace
 from pathlib import Path
+from unittest.mock import patch
 
 # [designed] Import cli first to trigger its sys.path setup for the
 # vendored engine directory (so `import players` inside quick_engine
@@ -22,8 +24,11 @@ from pathlib import Path
 from goal2 import cli  # noqa: F401
 
 from goal2.game import state
-from goal2.engine.quick_engine import simulate
+from goal2.engine.quick_engine import QuickMatch, simulate
 from goal2.engine.savestate import Savestate
+from goal2.game.quick_match import run_full_match
+from goal2.ui.input import Key
+from goal2.ui.squad import run_squad_select
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -163,6 +168,43 @@ class EngineOnAdaptedState(unittest.TestCase):
             adapted_result, original_result,
             "adapter modification (RNG seed nudge) not reflected in engine output",
         )
+
+    def test_custom_eleven_reaches_full_friendly_after_adapter_roundtrip(self):
+        """[designed: T28] The confirmed custom XI reaches the full runner via the state adapter."""
+        original = next(data for n, data in self.records if n == self.PRIMARY_RECORD)
+        game = state.from_savestate(original)
+        names = [""] * 3061
+        initials = [""] * 3061
+        for player in game.managed_squad:
+            names[player] = f"Player{player}"
+            initials[player] = "P"
+        goaldat = SimpleNamespace(player_names=names, player_initials=initials)
+        keys = [Key.SPACE, *([Key.DOWN] * 11), Key.SPACE, Key.ENTER]
+
+        self.assertTrue(run_squad_select(goaldat, keys, state=game))
+        expected = game.managed_squad[1:12]
+        self.assertEqual(game.starting_eleven, expected)
+
+        adapted = state.to_savestate(game, original=original)
+        roundtripped = state.from_savestate(adapted)
+        self.assertEqual(roundtripped.starting_eleven, expected)
+        seen = []
+        original_d733 = QuickMatch.d733
+
+        def inspect_lineup(qm, minute, countdown):
+            if minute == 0:
+                managed_side = qm.teams.index(game.managed_country)
+                lineup = [qm.pitch[slot]["player"] for slot in range(
+                    qm.side_base[managed_side] + 1, qm.side_base[managed_side] + 12
+                )]
+                self.assertEqual(lineup, expected)
+                self.assertEqual(qm._country(game.managed_country)["squad"][:11], expected)
+            seen.append(minute)
+            return original_d733(qm, minute, countdown)
+
+        with patch.object(QuickMatch, "d733", inspect_lineup):
+            run_full_match(Savestate(adapted), game)
+        self.assertEqual(seen, list(range(92)))
 
     def test_adapter_preserves_vga(self):
         """The adapter preserves the VGA (text screen) component

@@ -36,6 +36,7 @@ code runs now.
 | SQ-4 | Picks come from the national pool only; there are no transfers between countries | owner B2, C7 | — (P3) | — |
 | SQ-5 | The stored eleven, substitutes included, starts the next match | goal2-archaeology run record E015-r0010, no finding yet (owner A3 thought otherwise; the record wins) | — (P3) | — |
 | SQ-6 | No training or fitness choice; recovery is automatic | owner B3 | — (P4) | — |
+| SQ-7 | The squad screen starts from a valid existing eleven or the first eleven, lets the user draft any 11 squad members, keeps their squad order, and accepts only an included captain; edits commit on valid Enter | [designed: owner authorization T28] | `goal2/ui/squad.py` | — |
 
 ## The match
 

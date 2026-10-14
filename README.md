@@ -30,6 +30,12 @@ python3 -m goal2.loop .cache/<savestate>.sav .cache/GOAL.DAT
 before reading input. Frames append to stdout; VGA colours are omitted, and
 selection rows show an ASCII `>` marker. Scripted key iterables remain silent.
 
+[designed: T28] On the squad screen, ↑/↓ moves through the squad and Space
+toggles inclusion in a local starting-eleven draft. Enter confirms exactly 11
+players and makes the highlighted included player captain; invalid confirmation
+shows a reason and leaves the draft open. Esc or exhausted scripted input
+discards the draft.
+
 [designed: T25] On POSIX terminals, the interactive screen chain reads keys
 immediately in cbreak mode and restores the saved terminal settings when it
 ends. A bare or incomplete Escape waits up to 0.15 seconds for an ANSI key
