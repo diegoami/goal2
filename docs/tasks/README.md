@@ -23,3 +23,4 @@ status; this index carries none.
 | T24 | Support Codex alongside the existing Claude workflow | #56 | T23 |
 | T25 | Make terminal keys immediate and restore input settings | #59 | T24 |
 | T26 | Run a complete friendly through both halves | #62 | T25 |
+| T27 | Make navigation visible in plain terminal output | #67 | T26, fix #65 |
