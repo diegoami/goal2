@@ -102,7 +102,8 @@ def _build_grid(
     """Render the squad select screen into a Grid and return it.
 
     Row 0:     title "SELECT CAPTAIN  N" (blue bg)
-    Rows 1..page_size: player rows; cursor row in reversed video;
+    Rows 1..page_size: player rows with "> " on the cursor row and two
+        spaces elsewhere; cursor row in reversed video;
         the captain row (if captain is set) has " C" suffix
     Row 24:    footer "↑↓ CAPTAIN  ENTER PICK  ESC QUIT"
     """
@@ -125,8 +126,10 @@ def _build_grid(
         player_num = squad[idx]
         initial = goaldat.player_initials[player_num] if player_num < len(goaldat.player_initials) else ""
         name = goaldat.player_names[player_num] if player_num < len(goaldat.player_names) else ""
-        # Format: " NN  I SURNAME" (padded to 12 chars) + captain marker at col 78
-        row_text = f" {row:2d}  {initial} {name:<12}".ljust(78)
+        # [designed: T27] Reserve columns 0-1 for navigation; keep the
+        # captain marker fixed at columns 78-79.
+        row_text = f"> " if row == cursor else "  "
+        row_text += f"{row:2d}  {initial} {name:<12}"[:76].ljust(76)
         if state is not None and state.captain == player_num:
             row_text = row_text + " C"   # marker at columns 78-79 (right edge)
         else:

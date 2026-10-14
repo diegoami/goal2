@@ -135,7 +135,8 @@ def _build_grid(current_byte: int, cursor: int) -> Grid:
     """Render the tactics screen into a Grid and return it.
 
     Row 0:     title "TACTICS  0xNN" where NN is current_byte in hex (blue bg)
-    Rows 1..8: one element per row; cursor row in reversed video
+    Rows 1..8: one element per row, prefixed with "> " on the cursor row
+        and two spaces elsewhere; cursor row in reversed video
     Row 24:    footer "↑↓ MOVE  SPACE TOGGLE  ENTER PICK  ESC QUIT"
     """
     grid = Grid()
@@ -151,7 +152,9 @@ def _build_grid(current_byte: int, cursor: int) -> Grid:
         is_set = bool(current_byte & (1 << bit))
         clear_label, set_label = _ELEMENT_LABELS[element]
         marker = "X" if is_set else " "
-        row_text = f"[{marker}]  {clear_label} / {set_label}"
+        # [designed: T27] Keep the navigation cursor distinct from [X]/[ ]
+        # tactic state by reserving columns 0-1 for it.
+        row_text = ("> " if display_row == cursor else "  ") + f"[{marker}]  {clear_label} / {set_label}"
 
         if display_row == cursor:
             grid.draw_text(display_row, 0, row_text.ljust(WIDTH), fg=_FG_CURSOR, bg=_BG_CURSOR)
