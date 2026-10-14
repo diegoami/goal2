@@ -18,6 +18,7 @@ from typing import Iterable
 from goal2.game.state import GameState
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
+from goal2.ui.plain_renderer import render
 
 
 # [derived: standard VGA text-mode palette; F010 cites DS:0x720]
@@ -99,6 +100,8 @@ def run_tactics_select(
             except StopIteration:
                 break
         else:
+            # [designed: T23] Display and flush the current frame before input.
+            print(render(grid), end="", flush=True)
             key = read_key()
 
         if key == Key.UP:

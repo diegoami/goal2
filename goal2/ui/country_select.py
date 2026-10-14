@@ -3,7 +3,7 @@
 [designed] The screen renders a paginated country list and writes the
 chosen country to the GameState adapter (managed_country + managed_squad).
 It builds on the T10 screen framework: a Grid plus the plain renderer for
-tests.
+tests and interactive stdout frames.
 
 The screen takes an optional `keys` iterable for scripted tests; when None it
 reads from stdin in a loop. [designed: scripted keys for tests, stdin for
@@ -17,6 +17,7 @@ from goal2.data import GoalDat
 from goal2.game.state import GameState
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
+from goal2.ui.plain_renderer import render
 
 
 # Colour constants: VGA palette (matches DS:0x720 in the original).
@@ -77,6 +78,8 @@ def run_country_select(
                 # a correctly-shaped generator that yields Enter)
                 break
         else:
+            # [designed: T23] Display and flush the current frame before input.
+            print(render(grid), end="", flush=True)
             key = read_key()
 
         if key == Key.UP:
