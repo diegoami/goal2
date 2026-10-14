@@ -114,8 +114,8 @@ class TestVisibleNavigation(unittest.TestCase):
 
     def test_squad_marker_preserves_player_number_name_and_captain_columns(self):
         self.data.captain = 2
-        steps = ((1, " 1  A Player01"), (2, " 2  B Player02"),
-                 (1, " 1  A Player01"))
+        steps = ((1, "[x]  1  A Player01"), (2, "[x]  2  B Player02"),
+                 (1, "[x]  1  A Player01"))
         result, output = _drive(
             squad,
             lambda: squad.run_squad_select(self.data, None, state=self.data),
@@ -127,20 +127,21 @@ class TestVisibleNavigation(unittest.TestCase):
         frame = output.splitlines()[-25:]
         self.assertEqual(frame[2][78:80], " C")
         self.assertEqual(frame[1][78:80], "  ")
-        self.assertTrue(frame[1].startswith(">  1  A Player01"))
+        self.assertTrue(frame[1].startswith("> [x]  1  A Player01"))
 
     def test_squad_marker_stays_visible_at_both_movement_bounds(self):
-        steps = [(1, " 1  A Player01"), (1, " 1  A Player01")]
-        steps += [(row, f"{row:2d}  {chr(64 + row)} Player{row:02d}")
+        steps = [(1, "[x]  1  A Player01"), (1, "[x]  1  A Player01")]
+        steps += [(row, f"{'[x]' if row <= 11 else '[ ]'} {row:2d}  "
+                         f"{chr(64 + row)} Player{row:02d}")
                   for row in range(2, 20)]
-        steps += [(20, "20  T Player20"), (20, "20  T Player20")]
-        keys = [Key.UP, Key.DOWN] + [Key.DOWN] * 19 + [Key.ENTER]
+        steps += [(20, "[ ] 20  T Player20"), (20, "[ ] 20  T Player20")]
+        keys = [Key.UP, Key.DOWN] + [Key.DOWN] * 19 + [Key.ESC]
         result, _ = _drive(
             squad,
             lambda: squad.run_squad_select(self.data, None, state=self.data),
             keys, list(range(1, 21)), steps,
         )
-        self.assertTrue(result)
+        self.assertFalse(result)
 
     def test_tactics_marker_tracks_rows_without_replacing_checkbox(self):
         steps = ((1, "[ ]  half pitch / full pitch"),
