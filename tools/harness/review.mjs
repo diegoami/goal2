@@ -139,7 +139,7 @@ const named = [...(a.exclude ? a.exclude.split(',').map((s) => s.trim()).filter(
   ...[...labelsOf('pr', a.pr), ...(a.issue ? labelsOf('issue', a.issue) : [])]
     .filter((l) => l.startsWith('model:')).map((l) => l.slice(6))];
 const own = sessionFamily();
-if (!own) die(2, `The session's family cannot be told from ANTHROPIC_BASE_URL=${process.env.ANTHROPIC_BASE_URL}: set HARNESS_SESSION_FAMILY.`);
+if (!own) die(2, `The session's family cannot be told from the client/provider settings: check HARNESS_CLIENT and HARNESS_SESSION_FAMILY.`);
 const implementedBy = [...new Set([...named, own])];
 // The reviewer: the one named, else harness.json's reviewer.default; a harness.json key, or any
 // OpenCode id the user names, provider/model[@variant] (lib/named.mjs).
@@ -151,7 +151,7 @@ if (!model) die(2, `Unknown reviewer ${reviewer}: give a harness.json key or an 
 config.models[reviewer] = model;
 // the session's own family stays in, whatever a harness.json key of that name holds (Sol's round-2 R1)
 const families = [...new Set([canonicalFamily(own), ...implementedBy.flatMap((n) => familiesOfName(n, config.models))])];
-say(`implemented by: ${implementedBy.join(', ')} (${own}: the session's family, from the Anthropic environment)`);
+say(`implemented by: ${implementedBy.join(', ')} (${own}: the session's family, from client/provider settings)`);
 if (familiesOfModel(model).some((f) => families.includes(f))) die(1, `Refused: ${reviewer} is the implementer's model family (${families.join(', ')}). Nothing posted.`);
 const fallback = 'Nothing posted. Read the run\'s final message (CLAUDE.md, "Choosing models" rule 12) and fix the cause; another reviewer is the user\'s call.';
 // OpenCode is looked for only now, so that its absence is reported with the same fallback (Sol's R1 on PR 41).

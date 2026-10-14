@@ -115,8 +115,21 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
   return { env: oc.env, usable, problems, version };
 }
 
+// [designed: T24] Identify the implementation client independently of provider settings.
+// Explicit selection supports detached jobs; Codex session markers support native tools.
+// CODEX_HOME alone is an installation/config location, not evidence of the active client.
+export function sessionClient(env = process.env) {
+  if (env.HARNESS_CLIENT) {
+    const client = env.HARNESS_CLIENT.trim().toLowerCase();
+    return ['codex', 'claude'].includes(client) ? client : null;
+  }
+  return env.CODEX_THREAD_ID || env.CODEX_SESSION_ID ? 'codex' : 'claude';
+}
+
+// [designed: T24] Codex implements with OpenAI; conflicting overrides fail closed.
+// Claude retains the endpoint/override rules below.
 // The family of the main session, and so of every Claude Code agent it spawns (an agent runs through
-// the same endpoint). The session is set only by the Anthropic environment variables: with
+// the same endpoint). For Claude, the session is set by the Anthropic environment variables: with
 // ANTHROPIC_BASE_URL unset or at anthropic.com it is Claude; when Claude's tokens are out the owner
 // points it at another provider that speaks the same API: Z.AI's GLM, MiniMax, or Moonshot's Kimi
 // (the owner, 2026-10-12), and the family rule must then keep that family out of the reviewer's
@@ -129,6 +142,12 @@ const ENDPOINT_FAMILIES = [[['anthropic.com'], 'claude'], [['z.ai', 'bigmodel.cn
   [['minimax.io', 'minimaxi.com'], 'minimax'], [['moonshot.ai', 'moonshot.cn', 'kimi.com'], 'kimi'],
   [['deepseek.com'], 'deepseek'], [['aliyuncs.com'], 'qwen'], [['xiaomimimo.com'], 'mimo']];
 export function sessionFamily(env = process.env) {
+  const client = sessionClient(env);
+  if (!client) return null;
+  if (client === 'codex') {
+    const override = env.HARNESS_SESSION_FAMILY?.trim().toLowerCase();
+    return !override || override === 'openai' ? 'openai' : null;
+  }
   if (env.HARNESS_SESSION_FAMILY) return env.HARNESS_SESSION_FAMILY.trim().toLowerCase();
   if (!env.ANTHROPIC_BASE_URL) return 'claude';
   let host;

@@ -10,10 +10,21 @@ The harness (`tools/harness/`, the skills, the agents) comes from goal2-archaeol
 (`harness.lock`); rules 1-16 and "Choosing models" are its rules, numbered as there, because the
 skills and agents cite them by number.
 
+## Supported clients
+
+[designed: owner, 2026-10-14] Codex and Claude Code share the rules below and
+docs/process.md. Codex starts at AGENTS.md; Claude retains this entrypoint and
+its native skills/hooks. Codex implements directly or with native Codex subagents;
+Claude retains its existing aliases and isolated Agent dispatch. OpenCode reviews
+only after the implementation PR exists, using the model the owner chooses.
+Existing implementation authorization persists; do not ask again for an already
+authorized step. harness.json retains Claude's implementer.default and adds the
+Codex default at implementer.defaultsByClient.codex. See process §1 for dispatch.
+
 ## Rules
 1. The main session plans, runs `/run-task`, triages and talks to the user. A subagent it spawns
-   implements (or it does itself), and OpenCode reviews, asking the user before each ("Choosing
-   models" below); repeated decisions
+   implements (or it does itself); honor authorized implementation choices and ask the user
+   which OpenCode model reviews after the validated PR exists ("Choosing models" below). Repeated decisions
    go to Jev after a trial, and images and audio to OpenRouter or ElevenLabs models, whose ids come
    from live lists, never memory (`/delegate`).
 2. Nobody works in the main checkout: the main session, when it implements, works in its own git
@@ -93,7 +104,12 @@ it cannot spawn one), and a separate OpenCode process of another family reviews.
 defaults and the blocked list live in `harness.json` and change through `/switch-model`, never by
 a rule that names a model. No quota, tier or difficulty table picks a model.
 
-0. **The orchestrator is set by the Anthropic environment variables alone** (`ANTHROPIC_BASE_URL`,
+0. **Client detection precedes provider detection.** [designed: T24]
+   `HARNESS_CLIENT=codex|claude` selects explicitly; otherwise nonempty
+   `CODEX_THREAD_ID` / `CODEX_SESSION_ID` selects Codex, else Claude. Codex is family
+   `openai`; a conflicting `HARNESS_SESSION_FAMILY` is refused. Pass
+   `HARNESS_CLIENT=codex` to detached Codex review jobs.
+   For Claude Code, **the orchestrator is set by the Anthropic environment variables** (`ANTHROPIC_BASE_URL`,
    `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`): Claude by default; when Claude's tokens are out, GLM-5.3
    through Z.AI's Anthropic-compatible endpoint, or MiniMax, or Moonshot's Kimi, which then work
    like Claude. These
@@ -103,13 +119,18 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
    to review until it is set), because every subagent the session spawns, whatever its model,
    runs through the same endpoint and is of that provider's family. Pass `ANTHROPIC_BASE_URL` and `HARNESS_SESSION_FAMILY` to
    a review's systemd unit (rule 9).
-1. **Before each implementation, ask the user ONE question** with the question tool: which
+1. **Implementation choice.** [designed: owner, 2026-10-14] Honor a choice already
+   authorized in the session. Codex defaults to the native session (or a native
+   Codex subagent when authorized), in a worktree prepared by the main session
+   under worktreeRoot. Do not dispatch Claude aliases through Codex or claim
+   Claude hooks protect it. The following alias/Agent instructions are for Claude:
+   when not already authorized, **ask the user ONE question** with the question tool: which
    **subagent** implements, or does the main session implement directly? The implementer is
    normally a subagent spawned inside Claude Code with the Agent tool
    (`subagent_type: "implementer"`, `.claude/agents/implementer.md`, **always pass
    `isolation: "worktree"` — L107: the guard refuses `git worktree`, so the worktree must
    come from the spawn, not the agent**) on a model of its own, not the orchestrator's:
-   Opus orchestrates and spawns Sonnet. The model is a
+   Opus orchestrates and spawns Sonnet. The Claude implementer model is a
    Claude Code alias (`sonnet`, `opus`, `haiku`, `fable`) or any model id the session's provider
    serves; under another Anthropic-compatible provider (Z.AI's GLM, MiniMax, Kimi) the same alias
    resolves to whatever that provider maps it to (GLM-5.3 Flash for `sonnet` on Z.AI), or the id
@@ -123,9 +144,9 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
    the plan, a progress line per commit, an END block before stopping), pushes after every
    commit, and opens the PR. When a subagent ends, the main session reads its final report before
    acting and posts its notes on the issue.
-2. **Before each review, ask the user ONE question:** which OpenCode model reviews? Propose
+2. **After creating and validating the PR, ask the user ONE question:** which OpenCode model reviews? Propose
    `harness.json`'s `reviewer.default` first (GPT-5.6 Luna today; `sol-6.1`, GPT-6.1 Sol at
-   `low`, for hard reviews: an engine seam, a fidelity test, a vendored model), and list the registered models that are neither of the
+   `low`, for hard reviews: an engine seam, a fidelity test, a vendored model), only if eligible for this client, and list the registered models that are neither of the
    session's family nor blocked. Then `tools/harness/review.mjs --pr <n> --brief <file> --issue
    <n> --apply-label [--reviewer <name>]`, one review per PR unless the user asks for more; its
    findings are relayed in full (rule 8). OpenCode's models do not always follow the brief: the
@@ -160,7 +181,7 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
    (`kill -0 <pid>`), never with `pgrep -f`, which matches the watching shell's own command line
    and never sees the job end (L48; isle-wars lost 1.5 h to it, 2026-10-11). A unit gets only the
    environment it is given: `systemd-run --user --unit=goal2r-<name> --collect -E PATH="$PATH"
-   -E MINIMAX_API_KEY -E ANTHROPIC_BASE_URL -E HARNESS_SESSION_FAMILY -p WorkingDirectory=<dir> -p StandardInput=null -p StandardOutput=file:<log>
+   -E MINIMAX_API_KEY -E ANTHROPIC_BASE_URL -E HARNESS_CLIENT -E HARNESS_SESSION_FAMILY -p WorkingDirectory=<dir> -p StandardInput=null -p StandardOutput=file:<log>
    -p StandardError=file:<log> <command>` (without the key a MiniMax run stops with "minimax lists
    no models", 2026-10-11; never a `bash -c` script). It covers:
    - the session started (`opencode session list` in the run's directory, or the run's

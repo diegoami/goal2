@@ -1,5 +1,5 @@
 {
-  "rules": "The roster is the owner's to change (CLAUDE.md \"Choosing models\", the owner, 2026-10-11), through switch-model.mjs and the /switch-model skill: implementer.default is a Claude Code alias or a model id the session's provider serves, on which the implementer subagent is spawned inside Claude Code (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or `session`: the main session implements directly where the provider cannot spawn one; either runs through the session's Anthropic environment, so its family is the session's (ANTHROPIC_BASE_URL, or HARNESS_SESSION_FAMILY). reviewer.default is the OpenCode model that reviews unless the user names another (review.mjs --reviewer). The main session asks the user before each implementation and each review, proposing these defaults. blocked lists families or id fragments that never run. Never the session's family as reviewer; no chains, no chooser, no quota check.",
+  "rules": "The owner chooses the roster and each OpenCode reviewer. Codex implements directly or through native Codex subagents (implementer.defaultsByClient.codex); Claude Code retains implementer.default and its aliases/provider IDs. OpenCode never implements. Client/family detection is in lib/common.mjs: HARNESS_CLIENT or Codex session markers, then Claude's existing Anthropic endpoint/override rules. Ask about implementation only when the existing session has not already authorized it. Build and validate in isolated worktrees under worktreeRoot, open the PR, then ask the owner which OpenCode model reviews. reviewer.default is proposed only when eligible; never the implementer's family or a blocked entry. No quota chooser, chain, or automatic model substitution. Defaults change through switch-model.mjs and the switch-model skill. (Owner, 2026-10-14; CLAUDE.md Choosing models.)",
   "worktreeRoot": "../{repo}-work",
   "implementer": {
     "default": "sonnet",
@@ -11,7 +11,10 @@
       "fable",
       "<any model id the session's provider serves>",
       "session"
-    ]
+    ],
+    "defaultsByClient": {
+      "codex": "session"
+    }
   },
   "reviewer": {
     "agent": "reviewer",

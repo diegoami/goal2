@@ -15,30 +15,38 @@ adapt docs/process.md  (without §11 (reverse engineering) and §13 (the named v
 adapt docs/tasks/TEMPLATE.md  (goal2's Kind and Evidence lines; a measuring task owns measurements/T<nn>/**)
 adapt tests/test_agent_permissions.py  (checks the goal2-archaeology checkout grant)
 adapt tools/harness/lib/named.mjs  (the blocked list cites "Choosing models" rule 3 (a comment))
+adapt tools/harness/lib/common.mjs  (T24 client detection; preserve legacy Claude endpoints and OpenAI review boundary)
+adapt tools/harness/lib/switch.mjs  (T24 separate Codex implementer default and native model validation)
+adapt tools/harness/switch-model.mjs  (T24 pass the detected client to model switching)
+adapt tools/harness/review.mjs  (T24 client/provider diagnostics; retain reviewer family guard)
+adapt harness.json  (T24 Codex defaultsByClient.codex; retain Claude default and reviewer roster)
+adapt .claude/skills/switch-model/SKILL.md  (T24 client-specific defaults, retain Claude dispatch)
 local README.md  (goal2's own: links the plan; the evidence-tags rule is now 17)
 local PROVENANCE.md  (goal2's own: the vendoring rule is now 18)
+local AGENTS.md  (Codex entrypoint sharing the numbered rules and task process)
+local tests/harness_clients.test.mjs  (Codex/Claude compatibility and CLI family-boundary regressions)
 local docs/tasks/T01.md  (goal2's own: the nothing-committed rule is now 19)
 local .github/workflows/ci.yml  (new: links, review self-test, lock hashes, reviewer grants, no original files)
 3d39f6f226d5690b5c6c10a01a8692182f5bbf4d528a5410fea2bf3cf509c35f  .claude/agents/implementer.md
 93a7341a71c112677f4f1704e3d595d3f50c6a9c23c319c5cde6664d161b5d36  .claude/agents/reviewer.md
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
-bdf4c012d7f6975142f881979eb8d5dd2d6316da89097620ac4924f5dffd7139  .claude/skills/switch-model/SKILL.md
+85487b7c9488e8349ac91a7145ca40db476e86193b668eea6197325d1d154a6d  .claude/skills/switch-model/SKILL.md
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
-6f50b2fcc7137b9282fdfcaa66da54ac68cf6d19b8dd5ff34abbf9e3fea79693  docs/lessons.md
-3a6965c419ebe1f105231dc5a6b9ae3cafc93289984798faa004ba3a183f9ebd  docs/model-trials.md
+469843d97a900a8e4c1e83760ee28b1d65640cf9a5ecdb4561a61fd639f6def9  docs/lessons.md
+51383eedd9b19972bbd20a879ae6164e341f8a3d44ab87422a2a08be3c0618e7  docs/model-trials.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
 5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md
-d7d8b3258f0e0621f0b1c672ea2b5cd844eddcfaac424c8e0ffc5fe8e5be1181  harness.json
+71b5d239921fc91bbd6c7dd1beee20f0076835b2ddd6d17e682b83754ae7c0a0  harness.json
 4867325747c19a6f7beee6b8f1a3be22575a6396fc89a915a5ee8ed88ffab4cd  tools/check_links.py
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
 4fe177771b1e387af7dc013e29a4d03102416ffcb27bbf5cdf3e830c4170e15d  tools/harness/lib/chain.mjs
 b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1  tools/harness/lib/claim.mjs
-7dd90f6b7c5ee095a021cad8bcb2b7300b0a497e94effa409d6898fab3bc824f  tools/harness/lib/common.mjs
+99c9d024d8b9197a004edbfb0cf71ab40109eedd032331c8563e6e54d00e38ee  tools/harness/lib/common.mjs
 411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1  tools/harness/lib/guard.mjs
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
@@ -46,9 +54,11 @@ a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/
 d8bf2b4ced9dac1b01b1e41b41838d16f2176a9131ed748ae2a81823c80fe8bb  tools/harness/lib/opencode.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
-92025ebf5c187054c3a405aac5b68b4613232eb8e867bb26863ae152254ed0d2  tools/harness/lib/switch.mjs
+7e842f5068ecf64e94248410328c8bb6ebf01b5787e4d0510dd64c7885d9a85e  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 3919efa4b957459a97da2cdae4b9e13d7f5397410df5500f31746eb46e57876c  tools/harness/peek.sh
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-51e85d4ae00746f2ae20fed13cdd6a918c809488ba2492998e80faddbf0e3e5a  tools/harness/review.mjs
-a778836225b6407d09220f034fe30b09018e0dc607e868eb4b3a81364164191c  tools/harness/switch-model.mjs
+5a6db60a3de0c60a47d11578f52a0891d13788352ce90e147cdc77a87c663e4d  tools/harness/review.mjs
+6fcb82342aafb2875bb7b2eb474d345aefcb9884adae3920452adddf4323dd9a  tools/harness/switch-model.mjs
+5355fd481b439a15011066b45ac861763c9bdcefa1db00eb11b163f3401840e9  AGENTS.md
+b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs

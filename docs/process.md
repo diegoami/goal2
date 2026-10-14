@@ -20,20 +20,43 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 
 ## 1. Roles
 
+[designed: owner, 2026-10-14] The Codex main session may implement directly or
+dispatch a native Codex subagent into a worktree it prepared under the configured
+worktreeRoot. Claude Code retains its native `implementer` Agent with
+`isolation: "worktree"`, aliases and hooks. In the table's Claude-specific
+dispatch below, substitute the Codex branch only when client=codex; all task,
+evidence, review and merge checks are shared. OpenCode never implements.
+
+Client-aware defaults and commands:
+
+- `node tools/harness/switch-model.mjs --show` reports active client/family/defaults.
+- `HARNESS_CLIENT=codex` selects native Codex; its implementation default is
+  `implementer.defaultsByClient.codex` (`session`). Native OpenAI model IDs select
+  Codex subagents; Claude aliases and OpenCode provider/model routes are refused.
+- `HARNESS_CLIENT=claude` selects the existing Claude/provider workflow even if
+  stale Codex markers remain. Its `implementer.default` and aliases are unchanged.
+- Codex session markers select Codex automatically; installed CODEX_HOME alone
+  does not. A Codex family override other than openai is refused, not trusted.
+- Keep authorized implementation choices; ask only if not already authorized.
+  Open the validated PR first, then ask which eligible OpenCode model reviews.
+  Same-family defaults are not proposed or silently replaced.
+
 | Role | Who | Does |
 | --- | --- | --- |
-| Main session | Claude, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
-| Implementer | The **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or **the main session** directly, in its own worktree, where the provider cannot spawn one; asked before each implementation (CLAUDE.md "Choosing models" rule 1). *Superseded: OpenCode via `implement.mjs` (removed), the GLM/DeepSeek/Sonnet chain (L42), L46's heavier-model rule, the user asked before each run.* | One task, one branch, one PR, in its own worktree |
-| Reviewer | **One OpenCode run** via `tools/harness/review.mjs`, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first (`sol-6.1` for hard reviews: an engine seam, a fidelity test, a vendored model); never the session's family (L27), never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the quota-checked Sol / Luna / Opus order (L50, L51, L101), the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
+| Main session | Codex or Claude Code, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
+| Implementer | Codex: native main session or authorized native Codex subagent in a prepared worktree. Claude: the **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or **the main session** directly, in its own worktree, where the provider cannot spawn one; asked when not already authorized (CLAUDE.md "Choosing models" rule 1). *Superseded: OpenCode via `implement.mjs` (removed), the GLM/DeepSeek/Sonnet chain (L42), L46's heavier-model rule, the user asked before each run.* | One task, one branch, one PR, in its own worktree |
+| Reviewer | **One OpenCode run** via `tools/harness/review.mjs`, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first only if eligible (`sol-6.1` for hard reviews: an engine seam, a fidelity test, a vendored model); never the session's family (L27), never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the quota-checked Sol / Luna / Opus order (L50, L51, L101), the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
 
-Before each implementation and each review the main session asks the user one question, with
-`harness.json`'s default proposed first (CLAUDE.md "Choosing models"); no quota, tier or chain picks a model, and the
-roster changes through `/switch-model`. The implementer's family is the session's, read from the
-Anthropic environment variables (`lib/common.mjs` `sessionFamily`; the orchestrator is Claude, or GLM
-through Z.AI, MiniMax or Kimi when Claude's tokens are out), and the reviewer is never of it. Model ids come
-from `harness.json`, `models.mjs` or `opencode models`, never memory (L25).
+Implementation choice is requested only when not already authorized. After the
+validated PR exists, ask which OpenCode model reviews; propose the configured
+default only if eligible. No quota, tier or chain picks a model; the roster changes
+through `/switch-model`. `lib/common.mjs` reports Codex as OpenAI and retains
+Claude's existing Anthropic endpoint/override detection for its provider family.
+The reviewer is never that family. Reviewer IDs come from `harness.json`,
+`models.mjs` or `opencode models`; native implementer IDs come from the client's
+supported models, never from an OpenCode route or an invented alias (L25).
 
 ## 2. Task files
 
@@ -90,9 +113,9 @@ What the review script guarantees, and why:
   label: the main session reads it and decides.
 
 How the main session launches and watches a run (L103):
-- Detached from its own session, so a restart of Claude Code does not kill the run, in the form of
+- Detached from its own session, so a restart of Codex or Claude Code does not kill the run, in the form of
   CLAUDE.md's "Choosing models" rule 9: `systemd-run --user --unit=goal2r-<task> --collect -E PATH="$PATH"
-  -E MINIMAX_API_KEY -E ANTHROPIC_BASE_URL -E HARNESS_SESSION_FAMILY -p WorkingDirectory=<repo> -p StandardInput=null -p StandardOutput=file:<log>
+  -E MINIMAX_API_KEY -E ANTHROPIC_BASE_URL -E HARNESS_CLIENT -E HARNESS_SESSION_FAMILY -p WorkingDirectory=<repo> -p StandardInput=null -p StandardOutput=file:<log>
   -p StandardError=file:<log> <review.mjs command>`. A unit gets only the
   environment it is given, so each key a run needs is passed with `-E`; never a `bash -c` or
   `bash -lc` script (the safety check flags it).
@@ -103,6 +126,12 @@ How the main session launches and watches a run (L103):
 - An implementer's PR may be a draft; the main session runs `gh pr ready <pr>` before the review.
 
 ## 4. The implementer brief
+
+[designed: T24] Both clients use this same contract. Codex native subagents
+receive the full task and this block; the main session supplies the worktree,
+because native Codex dispatch does not invoke Claude's isolation parameter or
+PreToolUse hooks. No-stash, no-force-push, scope and main-session-only merge rules
+remain instructions under Codex's native approval/sandbox controls.
 
 The brief is the task file pasted in full, then this block, then on a rework round the review's URL.
 The `implementer` agent file repeats the run mechanics; this block is the contract, for the main

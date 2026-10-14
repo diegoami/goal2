@@ -22,6 +22,8 @@ jobs:
       - run: python3 tools/check_links.py
       # The copied harness tools run here (harness.lock pins them).
       - run: node tools/harness/review.mjs --self-test
+      # Both implementation clients and the independent-review family boundary.
+      - run: node --test tests/harness_clients.test.mjs
       - run: grep -E '^[0-9a-f]{64}  ' harness.lock | sha256sum -c --quiet
       # The OpenCode reviewer's grants (CLAUDE.md "Choosing models" rule 4).
       - run: python3 -m unittest tests.test_agent_permissions -v

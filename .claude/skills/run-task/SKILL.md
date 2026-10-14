@@ -1,22 +1,35 @@
 ---
 name: run-task
-description: Run tasks or fixes end to end. A subagent spawned on a model of its own (or the main session directly) implements and one OpenCode model of another family reviews, each after one question to the user; the main session watches, merges and reports. Main session only.
+description: Run tasks or fixes end to end. A subagent spawned on a model of its own (or the main session directly) implements and one OpenCode model of another family reviews, honoring existing implementation authorization and asking the owner for review only after a validated PR exists; the main session watches, merges and reports. Main session only.
 ---
 
 # /run-task [T<nn> | #<issue> ...]
+
+[designed: owner, 2026-10-14] This procedure is shared by Codex and Claude.
+Read AGENTS.md in Codex and CLAUDE.md in both; process §1 defines client dispatch.
+Existing authorization persists: implementation questions below apply only when
+the session has not already authorized a choice. A review question always comes
+after the validated PR exists. Propose a default only if it is eligible.
+
+**Codex dispatch for step 2:** implement in the native main session by default,
+or a native Codex subagent if authorized. The main session prepares its branch and
+worktree under harness.json's worktreeRoot before dispatch; paste the complete task
+and process §4 contract. Claude Agent aliases, isolation parameters and hooks do
+not apply to native Codex tools. Keep the same notes, validation, push and PR rules.
+For detached step-3 jobs set `HARNESS_CLIENT=codex`; OpenAI reviewers are refused.
+The Claude-specific step-2 dispatch below remains in force for Claude Code.
 
 Read `docs/process.md` §3–§6 first. Given ids, run them in order; given none, take the first
 `status:ready` task in `docs/tasks/README.md`. Report after each task; stop at any escalation.
 For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the branch is
 `fix/<issue>-<slug>`, and there is one review round.
 
-Two questions per task, and no other choice of model (CLAUDE.md "Choosing models", the owner, 2026-10-12):
-before the implementation, which subagent implements (the `implementer` agent on a model of its
-own: an alias or a model id the session's provider serves) or whether the main session does it
-directly; before each review, which OpenCode model reviews. Each question
-proposes `harness.json`'s default first; the roster changes through `/switch-model`, never here.
-No quota is checked. The implementer's family is the session's, read from the Anthropic
-environment (`switch-model.mjs --show` prints it); the reviewer is never of that family.
+Implementation choice is requested only when not already authorized. For each
+review, ask which OpenCode model after the validated PR exists. Propose only an
+eligible configured default. The roster changes through `/switch-model`; no quota
+is checked. `switch-model.mjs --show` reports the client and family: native Codex
+is OpenAI, while Claude retains its Anthropic provider mapping. The reviewer is
+never the implementer's family.
 
 0. **Check.** The issue is `status:ready` and every Merge-after task is merged. Run
    `gh issue list --label triage:needed --state open`; triage anything that names this task first.
@@ -30,7 +43,7 @@ environment (`switch-model.mjs --show` prints it); the reviewer is never of that
    rework) the review comment's URL. Never a pointer to the task file. The main session
    implementing itself reads the same block as its contract.
 
-2. **Implement.** First ask the user ONE question with the question tool (CLAUDE.md "Choosing models"
+2. **Implement (Claude dispatch).** Unless already authorized, ask the user ONE question with the question tool (CLAUDE.md "Choosing models"
    rule 1): which subagent implements (the `implementer` agent on `sonnet`, `opus`, `haiku`, `fable`
    or a model id the session's provider serves), or does the main session implement directly (only
    where the provider cannot spawn one)? Put `harness.json`'s `implementer.default` first. A model on
@@ -63,11 +76,11 @@ environment (`switch-model.mjs --show` prints it); the reviewer is never of that
    Name the PR's head in the brief only after the push has landed (`git rev-parse <branch>`); a
    brief naming another commit exits 2 before anything runs (L33). Then, as a systemd unit
    (CLAUDE.md "Choosing models" rule 9: `systemd-run --user --unit=goal2r-<task> --collect -E PATH="$PATH"
-   -E MINIMAX_API_KEY -E ANTHROPIC_BASE_URL -E HARNESS_SESSION_FAMILY -p WorkingDirectory=<repo>
+   -E MINIMAX_API_KEY -E ANTHROPIC_BASE_URL -E HARNESS_CLIENT -E HARNESS_SESSION_FAMILY -p WorkingDirectory=<repo>
    -p StandardInput=null -p StandardOutput=file:<log> -p StandardError=file:<log>
    node tools/harness/review.mjs --pr <pr> --brief <file> --issue <n> --apply-label
    [--reviewer <the answer>]`), watched ("Choosing models" rules 9-11). The script reads the session's family from
-   `ANTHROPIC_BASE_URL`, so the unit must carry it.
+   client/provider settings, so the unit must carry HARNESS_CLIENT (Codex) or the Anthropic endpoint/override (Claude).
    One review per PR unless the user asks for more. Relay its findings in full (rule 8).
    - Exit 0: posted and labelled.
    - Exit 2: a refused model (blocked in `harness.json`, or an unknown name): tell the user.

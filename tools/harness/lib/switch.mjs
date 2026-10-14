@@ -1,6 +1,8 @@
 // Switching the defaults in harness.json, kept free of OpenCode and git so it can be tested directly;
 // switch-model.mjs runs the checks that need OpenCode. The roster is the owner's to change (the
 // owner, 2026-10-11), through this script and the /switch-model skill:
+// [designed: T24] Codex defaults are separate (defaultsByClient.codex), session or native OpenAI IDs.
+// The legacy Claude branch remains:
 // - implementer.default: a Claude Code model alias (sonnet, opus, haiku, fable) or any model id the
 //   session's provider serves, on which the `implementer` subagent is spawned (Opus spawns Sonnet;
 //   under Z.AI `sonnet` is GLM-5.3 Flash); or `session`, the main session implementing directly
@@ -15,6 +17,11 @@ import { canonicalFamily, familiesOfModel, familyOfId, knownFamilyOfId, blockedH
 export const ROLES = ['implementer', 'reviewer'];
 export const IMPLEMENTER_ALIASES = ['sonnet', 'opus', 'haiku', 'fable'];
 export const IMPLEMENTER_CHOICES = ['session', ...IMPLEMENTER_ALIASES];
+
+// [designed: T24] A Codex default never overwrites Claude's existing alias/default.
+export const implementerDefault = (config, client = 'claude') => client === 'codex'
+  ? config.implementer?.defaultsByClient?.codex ?? 'session'
+  : config.implementer?.default ?? 'session';
 
 // A model's family, from its id: the family rule (L3) compares these, by named.mjs's one classifier
 // (the vendor, not the route: "opencode-go/gpt-6-luna" and "openai/gpt-6-luna" are both openai).
@@ -70,9 +77,10 @@ export function nameOf(config, id) {
  * never carry a model past the family rule (Luna's R1 on PR 17).
  * Returns { config, name, entry, before, after } or throws with the reason.
  */
-export function planSwitch(config, { role = 'reviewer', id, variant, name, family, force = false, sessionFamily = 'claude' }) {
+export function planSwitch(config, { role = 'reviewer', id, variant, name, family, force = false, sessionFamily = 'claude', client = 'claude' }) {
   if (!ROLES.includes(role)) throw new Error(`--role must be one of ${ROLES.join(', ')}; got ${role}`);
-  if (role === 'implementer') return planImplementer(config, id, sessionFamily);
+  if (!['codex', 'claude'].includes(client)) throw new Error('Refused: unknown implementation client; set HARNESS_CLIENT=codex or claude.');
+  if (role === 'implementer') return planImplementer(config, id, sessionFamily, client);
   // `variant` has no default: a model that offers no variants (MiniMax-M2.7) must switch without
   // one, not inherit 'high' (Luna's round-2 R1, PR 115). Callers pass defaultVariant's answer.
   if (!/^[\w.-]+\/[\w./-]+$/.test(String(id ?? ''))) throw new Error(`--model must be a provider/model id, e.g. openai/gpt-5.6-luna; got ${id}`);
@@ -99,13 +107,18 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
 // The implementer's default: the implementer subagent on a Claude Code alias or a model id the
 // session's provider serves, or `session` (the main session implements directly). A model id is
 // taken as given: the next run shows whether the provider honours it.
-function planImplementer(config, choice, sessionFamily) {
+function planImplementer(config, choice, sessionFamily, client) {
   const c = String(choice ?? '').trim();
   const lower = c.toLowerCase();
   if (!IMPLEMENTER_CHOICES.includes(lower) && !/^[\w.:-]+$/.test(c)) {
     throw new Error(`--model for the implementer is session, one of ${IMPLEMENTER_ALIASES.join(', ')}, or a model id the session's provider serves; got ${choice}`);
   }
   const value = IMPLEMENTER_CHOICES.includes(lower) ? lower : c;
+  // [designed: T24] Native Codex model IDs, not Claude aliases or OpenCode routes.
+  if (client === 'codex' && (canonicalFamily(sessionFamily) !== 'openai'
+      || (value !== 'session' && knownFamilyOfId(value) !== 'openai'))) {
+    throw new Error(`Refused: Codex implements with session or a native OpenAI model ID; got ${value} (family ${sessionFamily}).`);
+  }
   // the blocked list holds for the implementer too (Sol's R3 on PR 149): a model id by its own
   // family and name; an alias or `session` by the session's family, whose endpoint serves it
   // (Sol's round-1 R1: a DeepSeek endpoint's `sonnet` was accepted)
@@ -119,8 +132,10 @@ function planImplementer(config, choice, sessionFamily) {
     if (blocked) throw new Error(`Refused: ${blocked}.`);
   }
   const next = structuredClone(config);
-  next.implementer = { ...next.implementer, default: value };
-  return { config: next, name: value, entry: { id: value }, before: describeImplementer(config), after: describeImplementer(next) };
+  next.implementer = client === 'codex'
+    ? { ...next.implementer, defaultsByClient: { ...next.implementer?.defaultsByClient, codex: value } }
+    : { ...next.implementer, default: value };
+  return { config: next, name: value, entry: { id: value }, before: describeImplementer(config, client), after: describeImplementer(next, client) };
 }
 
 // harness.json's blocked list (named.mjs blockedHit): the reason, or null. An entry is checked by
@@ -154,19 +169,22 @@ const describeReviewer = (c) => {
   const e = c.models?.[d];
   return d ? `reviewer: ${d} (${e?.id ?? '?'}, ${e?.variant ?? 'no variant'}, family ${e?.family ?? '?'})` : 'reviewer: (none)';
 };
-const describeImplementer = (c) => {
-  const d = c.implementer?.default ?? 'session';
-  return `implementer: ${d === 'session' ? 'the main session, directly' : `the implementer subagent on ${d}`} (the session's family, through its endpoint)`;
+const describeImplementer = (c, client = 'claude') => {
+  const d = implementerDefault(c, client);
+  const route = client === 'codex' ? 'native Codex, family openai' : "the session's family, through its endpoint";
+  return `implementer: ${d === 'session' ? 'the main session, directly' : `the implementer subagent on ${d}`} (${route})`;
 };
 
 // What runs now: the session's family, both defaults, the blocked list, then the other models
 // registered for an explicit --reviewer.
-export function showRoles(config, { sessionFamily = null } = {}) {
+export function showRoles(config, { sessionFamily = null, client = 'claude' } = {}) {
   const d = config.reviewer?.default;
   const others = Object.entries(config.models ?? {}).filter(([m]) => m !== d).map(([m, x]) => `${m} = ${x.id}`);
   return [
-    `session: family ${sessionFamily ?? 'unknown (set HARNESS_SESSION_FAMILY)'}, from the Anthropic environment`,
-    describeImplementer(config), describeReviewer(config),
+    `session: client ${client ?? 'unknown'}, family ${sessionFamily ?? 'unknown (check HARNESS_CLIENT / HARNESS_SESSION_FAMILY)'}`,
+    describeImplementer(config, client), describeReviewer(config),
+    ...(config.models?.[d] && familiesOfModel(config.models[d]).includes(canonicalFamily(sessionFamily))
+      ? ['default reviewer is of the implementer family; ask the owner for another --reviewer after the PR exists'] : []),
     `blocked: ${(config.blocked ?? []).join(', ') || 'nothing'}`,
     ...(others.length ? [`also registered, for --reviewer: ${others.join(', ')}`] : []),
   ].join('\n');

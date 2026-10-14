@@ -8,6 +8,8 @@
 //     [--variant high] [--name NAME] [--family FAMILY] [--probe] [--dry-run] [--force]
 //   node tools/harness/switch-model.mjs --block FAMILY-OR-ID-FRAGMENT | --unblock ... [--dry-run]
 //
+// [designed: T24] Codex switches its own defaultsByClient.codex, session or native OpenAI IDs.
+// The following provider/alias dispatch describes the retained Claude branch.
 // The implementer is the `implementer` subagent spawned inside Claude Code on a Claude Code alias
 // or a model id the session's provider serves (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3
 // Flash), or `session`: the main session implements directly where the provider cannot spawn one.
@@ -33,7 +35,7 @@ import path from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, modelVariants } from './lib/opencode.mjs';
 import { planSwitch, planBlock, showRoles, defaultVariant } from './lib/switch.mjs';
-import { sh, repoPaths, loadConfig, parseArgs, prepareOpenCode, sessionFamily } from './lib/common.mjs';
+import { sh, repoPaths, loadConfig, parseArgs, prepareOpenCode, sessionFamily, sessionClient } from './lib/common.mjs';
 
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
@@ -43,7 +45,8 @@ const top = sh('git', ['rev-parse', '--show-toplevel']);
 const file = path.join(top, 'harness.json');
 const config = loadConfig(top);
 const own = sessionFamily();
-if (a.show) { say(showRoles(config, { sessionFamily: own })); process.exit(0); }
+const client = sessionClient();
+if (a.show) { say(showRoles(config, { sessionFamily: own, client })); process.exit(0); }
 const write = (next, before, after) => {
   say(`before: ${before}`);
   say(`after:  ${after}`);
@@ -58,19 +61,20 @@ if (a.block || a.unblock) {
   write(plan.config, plan.before, plan.after);
   process.exit(0);
 }
+if (!client) die(1, 'Unknown implementation client; set HARNESS_CLIENT=codex or claude. Nothing written.');
 if (!a.role || !a.model) die(2, 'Usage: switch-model.mjs --role implementer|reviewer --model ... [--probe] [--dry-run], --block X, --unblock X, or --show');
 if (a.role === 'implementer') {
   let plan;
-  try { plan = planSwitch(config, { role: 'implementer', id: a.model, sessionFamily: own }); } catch (e) { die(/^Refused/.test(e.message) ? 1 : 2, e.message); }
+  try { plan = planSwitch(config, { role: 'implementer', id: a.model, sessionFamily: own, client }); } catch (e) { die(/^Refused/.test(e.message) ? 1 : 2, e.message); }
   write(plan.config, plan.before, plan.after);
   process.exit(0);
 }
-if (!own) die(1, `The session's family cannot be told from ANTHROPIC_BASE_URL=${process.env.ANTHROPIC_BASE_URL}: set HARNESS_SESSION_FAMILY, so the reviewer can be kept out of it.`);
+if (!own) die(1, `The session's family cannot be told from the client/provider settings: check HARNESS_CLIENT and HARNESS_SESSION_FAMILY, so the reviewer can be kept out of it.`);
 
 let plan;
 try {
   plan = planSwitch(config, {
-    role: a.role, id: a.model, variant: a.variant ?? defaultVariant(a.model, null), name: a.name, family: a.family, force: a.force, sessionFamily: own,
+    role: a.role, id: a.model, variant: a.variant ?? defaultVariant(a.model, null), name: a.name, family: a.family, force: a.force, sessionFamily: own, client,
   });
 } catch (e) { die(/^Refused/.test(e.message) ? 1 : 2, e.message); }
 say(`${a.role}: ${plan.name} = ${plan.entry.id} (${plan.entry.variant ?? 'no variant'}, family ${plan.entry.family})`);
@@ -89,7 +93,7 @@ if (!a.variant) {
   const offered = await modelVariants(opencode, plan.entry.id, { env: pre.env, cwd: top });
   const v = defaultVariant(plan.entry.id, offered);
   if (v !== plan.entry.variant) {
-    plan = planSwitch(config, { role: a.role, id: a.model, variant: v, name: a.name, family: a.family, force: a.force, sessionFamily: own });
+    plan = planSwitch(config, { role: a.role, id: a.model, variant: v, name: a.name, family: a.family, force: a.force, sessionFamily: own, client });
     say(`${a.role}: ${plan.name} = ${plan.entry.id} (${plan.entry.variant}, family ${plan.entry.family}): the lowest effort it offers (L54)`);
   }
 }
