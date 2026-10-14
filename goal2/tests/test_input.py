@@ -45,6 +45,26 @@ class TestReadKey(unittest.TestCase):
         k = read_key(fake_stdin)
         self.assertEqual(k, Key.SPACE)
 
+    def test_escape_timeout_for_injected_stream(self):
+        """[designed] A stream that stays open cannot hold a bare Escape forever."""
+        import threading
+        reader, writer = __import__("os").pipe()
+        stream = __import__("os").fdopen(reader, "rb", buffering=0)
+        worker = None
+        try:
+            __import__("os").write(writer, b"\x1b")
+            result = []
+            worker = threading.Thread(target=lambda: result.append(read_key(stream)))
+            worker.start()
+            worker.join(1)
+            self.assertFalse(worker.is_alive(), "Escape read did not have a finite timeout")
+            self.assertEqual(result, [Key.ESC])
+        finally:
+            __import__("os").close(writer)
+            if worker is not None:
+                worker.join(1)
+            stream.close()
+
 
 if __name__ == "__main__":
     unittest.main()
