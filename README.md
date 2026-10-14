@@ -1,5 +1,8 @@
 # goal2
 
+Agent instructions: [AGENTS.md](AGENTS.md) for Codex, [CLAUDE.md](CLAUDE.md) for
+Claude Code; both follow [docs/process.md](docs/process.md).
+
 A faithful rebuild of *goal (version 2)* (New Era Software, 1993), and the bot that maximises its
 World Cup win rate. Everything here is built from the evidence of the private
 [goal2-archaeology](https://github.com/diegoami/goal2-archaeology) repository: its findings (`F0nn`,

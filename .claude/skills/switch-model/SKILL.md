@@ -1,9 +1,16 @@
 ---
 name: switch-model
-description: Change who implements and who reviews by default, and which models are blocked (harness.json, through switch-model.mjs), safely - live ids, the right login, the effort rule, the session's family read from the Anthropic environment, and a one-word probe before anything is written. Use when the user wants another default implementer (the implementer subagent on sonnet, opus, haiku, fable or a model id the session's provider serves, or the main session directly) or reviewer, wants a model blocked or unblocked, when the reviewer keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real reviews.
+description: Change who implements and who reviews by default, and which models are blocked (harness.json, through switch-model.mjs), safely - live ids, the right login, the effort rule, the client/family detected from Codex session markers or Claude's Anthropic environment, and a one-word probe before anything is written. Use when the user wants another default implementer (the implementer subagent on sonnet, opus, haiku, fable or a model id the session's provider serves, or the main session directly) or reviewer, wants a model blocked or unblocked, when the reviewer keeps failing (exit 3, early stops, Bad Request), or before trying a new model on real reviews.
 ---
 
 # /switch-model: change the defaults, or the blocked list
+
+[designed: T24] In Codex, implementation uses native `session` or a native OpenAI
+model ID. `switch-model.mjs --role implementer` writes
+`implementer.defaultsByClient.codex`, preserving Claude's `implementer.default`.
+`--show` detects the client; HARNESS_CLIENT=codex|claude selects it explicitly.
+The Claude aliases and Anthropic endpoint rules below apply to Claude only.
+Reviewer switching remains shared and refuses the current implementer family.
 
 The roster is the owner's and changes often (CLAUDE.md "Choosing models"): it lives in `harness.json`, and
 this skill is how it changes. Three things can change:
@@ -17,8 +24,9 @@ this skill is how it changes. Three things can change:
   user names another at the question before a review; never the session's family;
 - **the blocked list** (`blocked`): families (`deepseek`) or id fragments that never run anywhere.
 
-The orchestrator itself is never switched here: it is set by the Anthropic environment variables
-alone ("Choosing models" rule 0), and `--show` prints the family the harness reads from them.
+The orchestrator itself is never switched here: Codex uses its native session;
+Claude uses the Anthropic environment ("Choosing models" rule 0). `--show` prints
+the client/family detected by the harness.
 
 A switch is the user's decision, so you propose it and the user says yes. A one-off choice needs
 no switch: the question before each implementation and review takes any option.

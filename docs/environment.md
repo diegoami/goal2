@@ -1,7 +1,43 @@
 # Environment
 
 What a session needs so the main session can delegate. Everything here is optional: each missing
-piece turns one delegate off, and the main session falls back to Claude (the scripts exit 3).
+piece turns one delegate off. The scripts exit 3; the main session diagnoses the cause
+and asks the owner before substituting a reviewer.
+
+## Codex and Claude
+
+[designed: owner, 2026-10-14] Codex starts at AGENTS.md and uses the shared process.
+Claude's entrypoint, aliases, SessionStart hook and isolated Agent dispatch remain
+available. Native Codex uses its own tools/sandbox; Claude hooks do not enforce
+Codex calls. Use the harness-configured worktreeRoot for task worktrees.
+
+`HARNESS_CLIENT=codex|claude` selects the implementation client. Without it,
+nonempty CODEX_THREAD_ID or CODEX_SESSION_ID selects Codex, else legacy Claude
+endpoint detection applies. Codex is family openai; conflicting family overrides
+are refused. Pass HARNESS_CLIENT=codex to detached review units because they do
+not inherit the interactive session markers. Keep provider keys in the unit's
+environment, never logs. `switch-model.mjs --show` reports the detected defaults.
+
+[confirmed: T23 / PR #54, 2026-10-14] The installed Linux OpenCode 2.0.28 rejects
+the current harness's `run --dir` and `--variant` flags before creating a session.
+The existing 1.18.32 backup completed the GLM 5.3 Flash review (535 s). Where that
+backup exists, select it per run without changing the default installation:
+
+```bash
+HARNESS_CLIENT=codex HARNESS_OPENCODE_EXE="$HOME/.opencode/bin/opencode.1.18.32.bak" \
+  node tools/harness/review.mjs --pr <pr> --brief <brief> --issue <issue> \
+  --apply-label --reviewer <owner-selected-model>
+OPENCODE_BIN="$HOME/.opencode/bin/opencode.1.18.32.bak" tools/harness/peek.sh <session>
+```
+
+[confirmed: local 2.0.28 command help and
+[official OpenCode v2 commands](https://dev.opencode.ai/v2/docs/cli/commands/)]
+V2 selects effort as `provider/model#variant`, uses the working directory, and
+exports via `opencode session export`. Its configuration uses ordered
+`permissions` rules. [designed: T24] Allowing major version 2 is not proof of
+compatible run/session/config/permission semantics; migration must preserve
+the independent-review boundary and main-checkout configuration grants. This
+task documents the differences and backup, without implementing a v2 adapter.
 
 ## On your desktop
 
@@ -225,7 +261,8 @@ Never paste a key into a chat, and never commit one.
 | `ELEVENLABS_API_KEY` | ElevenLabs: speech, voices, sound effects, music (`/delegate`, `models.mjs elevenlabs`) | no generated audio; the main session says so |
 | `GH_TOKEN` | `gh`, inside the tools and inside OpenCode's runs: finding the PR, `gh pr create`, posting a review, labels | the scripts cannot find or post to PRs |
 | `ANTHROPIC_BASE_URL` (with `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`) | the orchestrator itself: unset or Anthropic's for Claude; Z.AI's for GLM, MiniMax's, or Moonshot's for Kimi when Claude's tokens are out. `review.mjs` and `switch-model.mjs` read the session's family from it (CLAUDE.md "Choosing models" rule 0); pass it to a review's unit with `-E` | the session is Claude |
-| `HARNESS_SESSION_FAMILY` | overrides that family when the endpoint is one the harness does not know | an unknown endpoint refuses to review until it is set |
+| `HARNESS_CLIENT` | [designed: T24] selects codex or claude explicitly; pass it to detached review units | Codex session markers select codex, otherwise legacy Claude detection |
+| `HARNESS_SESSION_FAMILY` | overrides the Claude/provider family when the endpoint is unknown; a conflicting Codex family is refused | an unknown endpoint refuses to review until it is set |
 
 For `GH_TOKEN`, use a fine-grained token limited to the project's repository, with read and write on
 Contents, Pull requests and Issues.
