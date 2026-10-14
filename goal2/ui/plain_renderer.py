@@ -1,8 +1,8 @@
 """Plain-text renderer for the character grid.
 
-[designed: the renderer is for tests and logs, not the user; colour is
-omitted in the rendered output — the grid still holds the colour so a
-later window renderer can use it.]
+[designed: T23 uses this renderer for interactive stdout frames as well as
+tests and logs. Colour is omitted in the rendered output; the grid still
+holds the colour so a later window renderer can use it.]
 """
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 

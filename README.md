@@ -16,3 +16,19 @@ each with listing lines and run records), its task records and its releases.
 
 The plan is [`docs/plan.md`](docs/plan.md); every rule the rebuild plays by, and where it comes
 from, is in [`docs/assumptions.md`](docs/assumptions.md). Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
+
+Run the screen chain with local game data and a savestate:
+
+```bash
+python3 -m goal2.loop .cache/<savestate>.sav .cache/GOAL.DAT
+```
+
+[designed: T23] Interactive screens print and flush plain-text frames before
+reading input. Frames append to stdout; colours and cursor highlighting are
+omitted. Scripted key iterables remain silent.
+
+[derived: `goal2/ui/input.py`, `goal2/ui/result.py`, `goal2/main_loop.py`]
+Terminal raw mode and standalone-Escape timing are still missing. The result
+screen runs the vendored half-time simulation on the adapted snapshot; fixture
+progression ends at a placeholder. This command is the current screen-chain
+prototype.
