@@ -118,6 +118,7 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         def spy_re(*args, **kwargs):
             call_order.append("result")
             tracker["re_state"] = kwargs.get("state")
+            tracker["full_match"] = kwargs.get("full_match")
             tracker["re_arg"] = args[0] if args else None
             return True
         # [designed: re_arg captures the first positional arg — the savestate bytes
@@ -147,6 +148,7 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         self.assertIs(tracker["re_state"], state)
         # NOTE: run_result received the SAVED bytes (b"saved"), not the originals
         self.assertEqual(tracker["re_arg"], b"saved")
+        self.assertTrue(tracker["full_match"])
 
 
 class TestEscAbortsLoop(unittest.TestCase):
@@ -379,8 +381,10 @@ class TestKeysAreConsumedSequentially(unittest.TestCase):
         keys_seen = {}
 
         def make_spy(name):
-            def spy(goaldat, keys, *, state=None):
+            def spy(goaldat, keys, *, state=None, full_match=False):
                 keys_seen[name] = list(keys) if keys is not None else []
+                if name == "re":
+                    self.assertTrue(full_match)
                 return 7 if name == "cs" else True
             return spy
 

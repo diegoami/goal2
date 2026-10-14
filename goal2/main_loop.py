@@ -68,7 +68,9 @@ def run_main_loop(
     # run_result means the engine reads the modified savestate.]
     # Step 4: save user choices then run result
     saved = to_savestate(state, original=original_savestate_bytes)
-    ok = run_result(saved, keys, state=state)
+    # [designed: T26, A-MATCH-1] Interactive play uses the complete
+    # assumed friendly; the result screen's default remains a half replay.
+    ok = run_result(saved, keys, state=state, full_match=True)
     if not ok:
         return 0
 

@@ -1,11 +1,8 @@
-"""T08: both halves of a quick match from goal2's own state (A-MATCH-1).
+"""[derived: T26] T08's independent second-half replay regression.
 
-A-MATCH-1 ("the first half assumed to run as the second") means the
-same vendored quick-engine code runs both halves. The test demonstrates
-this by running the engine on the same half-time state twice (by
-re-reading the savestate before each run) and verifying the results
-are identical. The reproducibility proves the engine is deterministic
-from its seed words and that the same code path produces both halves.
+This test runs the vendored engine twice on the same E010 half-time input.
+It proves deterministic replay of the second half. T26's full-match test
+exercises consecutive halves on one mutable engine instance.
 
 [confirmed: E010, T01, T07] The engine is the vendored quick_engine
 (T01); the adapter is the state adapter (T06/T07). E010-r0001 is a
@@ -66,12 +63,7 @@ def _run_half(state_bytes: bytes) -> dict:
 
 
 class BothHalvesReproducibility(unittest.TestCase):
-    """[confirmed: E010, T01, A-MATCH-1] A-MATCH-1 says "the first half
-    assumed to run as the second": the same code runs both halves. The
-    test demonstrates this by running the engine twice on the same
-    half-time state and verifying the results are identical. The
-    reproducibility proves the engine is deterministic from its seed
-    words and that the same code path produces both halves."""
+    """[derived: E010/T01] Independent replays of one half are identical."""
 
     PRIMARY_RECORD = 1  # E010-r0001, the primary record.
 
@@ -95,8 +87,7 @@ class BothHalvesReproducibility(unittest.TestCase):
         """[confirmed: F004, T01] For every available E010 record: run
         the engine on the half-time state, then re-read the savestate
         and run it again. The two results must be identical. This
-        proves A-MATCH-1: the same code runs both halves and is
-        deterministic from the seed words."""
+        proves deterministic second-half replay from the seed words."""
         for n, state_bytes in self.records:
             with self.subTest(record=n):
                 first = _run_half(state_bytes)

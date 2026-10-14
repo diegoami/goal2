@@ -23,6 +23,7 @@ if _ENGINE_DIR not in sys.path:
     sys.path.insert(0, _ENGINE_DIR)
 
 from goal2.game.state import GameState
+from goal2.game.quick_match import run_full_match
 from goal2.engine.quick_engine import FoulPathNotModelled, ExtraTimeNotModelled
 from goal2.engine import quick_engine as _qe
 from goal2.engine.savestate import Savestate
@@ -44,6 +45,7 @@ def run_result(
     keys: Iterable[Key] | None,
     *,
     state: GameState | None = None,
+    full_match: bool = False,
 ) -> bool:
     """Show the quick-engine result and return True on Enter, False on Esc.
 
@@ -61,15 +63,21 @@ def run_result(
     # Load the savestate and run the engine.
     sav = Savestate(savestate_path_or_bytes)
     try:
-        result = _qe.simulate(sav)
-    except (FoulPathNotModelled, ExtraTimeNotModelled) as exc:
+        if full_match:
+            if state is None:
+                raise ValueError("full match requires adapted game state")
+            result = run_full_match(sav, state)
+        else:
+            result = _qe.simulate(sav)
+    except (FoulPathNotModelled, ExtraTimeNotModelled, ValueError) as exc:
         result = None
         refusal_msg = str(exc)
 
     key_iter = iter(keys) if keys is not None else None
 
     while True:
-        grid = _build_grid(result, refusal_msg if result is None else None)
+        grid = _build_grid(result, refusal_msg if result is None else None,
+                           full_match=full_match)
 
         if key_iter is not None:
             try:
@@ -87,7 +95,8 @@ def run_result(
             return False
 
 
-def _build_grid(result: dict | None, refusal_msg: str | None) -> Grid:
+def _build_grid(result: dict | None, refusal_msg: str | None,
+                *, full_match: bool = False) -> Grid:
     """Render the result screen into a Grid and return it.
 
     Row 0:     "RESULT  STAND-IN" (blue bg)
@@ -100,7 +109,8 @@ def _build_grid(result: dict | None, refusal_msg: str | None) -> Grid:
     grid = Grid()
 
     # ── Title (row 0) ──────────────────────────────────────────────────────
-    title = "RESULT  STAND-IN"
+    # [designed: T26] The interactive path states its assumed setup.
+    title = "RESULT  ASSUMED FRIENDLY" if full_match else "RESULT  STAND-IN"
     grid.draw_text(0, 0, title.ljust(WIDTH), fg=_FG_TITLE, bg=_BG_TITLE)
 
     # ── Score / refusal row (row 2) ─────────────────────────────────────────
@@ -118,11 +128,13 @@ def _build_grid(result: dict | None, refusal_msg: str | None) -> Grid:
         # ── Goals rows (rows 4+) ───────────────────────────────────────────
         row = 4
         if result["goals"]:
-            for goal in result["goals"]:
+            first_count = len(result["halves"][0]["goals"]) if full_match else 0
+            for i, goal in enumerate(result["goals"]):
                 minute = goal["minute"]
                 team = goal["team"]
                 player_index = goal["player"]
-                line = f" {minute:>2}  team {team}  scorer {player_index}"
+                half = f" H{1 if i < first_count else 2}" if full_match else ""
+                line = f" {minute:>2}{half}  team {team}  scorer {player_index}"
                 grid.draw_text(row, 0, line.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
                 row += 1
         else:
