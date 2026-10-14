@@ -7,7 +7,7 @@ source diegoami/goal2-archaeology 8dc4dc1 (#149: the session or its agent implem
 copied 2026-10-12 (the owner: "Bring the harness to goal too")
 adapt .claude/hooks/session-start.sh  (Sol for hard reviews)
 adapt .claude/skills/delegate/SKILL.md  (recording the answers cites "Choosing models" rule 2)
-adapt .claude/skills/run-task/SKILL.md  (squash merges (rule 7); Sol for hard reviews; no Ghidra; monitoring rules cited as "Choosing models" rules; units goal2r-<name>)
+adapt .claude/skills/run-task/SKILL.md  (squash merges (rule 7); preserve local branches and worktrees; Sol for hard reviews; no Ghidra; monitoring rules cited as "Choosing models" rules; units goal2r-<name>)
 adapt .opencode/agents/reviewer.md  (the grant outside /tmp is the goal2-archaeology checkout (tools/check_provenance.py reads it), not the DOSBox-X bundle)
 adapt CLAUDE.md  (goal2-archaeology's rules 1-16 and "Choosing models" (numbered as there, the skills cite them; rule 7 squash-only), then goal2's own six rules word for word as 17-22)
 adapt docs/environment.md  (without the DOSBox-X and Ghidra sections; a shared machine without project specifics; the reviewer's grant is the goal2-archaeology checkout; Alibaba cites "Choosing models" rule 3)
@@ -35,8 +35,8 @@ local .github/workflows/ci.yml  (new: links, review self-test, lock hashes, revi
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
-bd98929924fbacd9c071c6d79f343614362f35df962bbfa882101767d0dd5f79  docs/lessons.md
-51383eedd9b19972bbd20a879ae6164e341f8a3d44ab87422a2a08be3c0618e7  docs/model-trials.md
+158ea1caef71b752048c1d3cc4cf40879fcb5da76396ee78797692fdc62a358b  docs/lessons.md
+d71dcb43a177115b468a541d25d6edfaa57f0b91378ca6d84647003e9e314944  docs/model-trials.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
 5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md
 ce585e0292cb3771833831022a3b3d8274767fdb903c345b82b3b71ae4b94ee2  harness.json
