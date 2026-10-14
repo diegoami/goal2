@@ -19,3 +19,4 @@ status; this index carries none.
 | T20 | Reconcile the LCG draw order and base-table indexing against E006 byte-exact | #11 | T19 |
 | T21 | Move new_game/skills/state out of goal2/engine/ | #43 | T20 |
 | T22 | Pin the vendored engine's change-tactics-when-behind behaviour (A-CPU-2 change side) | #51 | T21 |
+| T23 | Display interactive grids before reading input | #53 | T22 |
