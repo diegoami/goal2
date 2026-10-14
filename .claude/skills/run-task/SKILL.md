@@ -7,8 +7,9 @@ description: Run tasks or fixes end to end. A subagent spawned on a model of its
 
 [designed: owner, 2026-10-14] This procedure is shared by Codex and Claude.
 Read AGENTS.md in Codex and CLAUDE.md in both; process §1 defines client dispatch.
-Existing authorization persists: implementation questions below apply only when
-the session has not already authorized a choice. A review question always comes
+Ask for an implementer/model before each new task and wait; a task request alone
+does not select one. A choice explicitly made for that task persists through
+implementation/rework. A review question always comes
 after the validated PR exists. Propose a default only if it is eligible.
 
 **Codex dispatch for step 2:** implement in the native main session by default,
@@ -24,7 +25,8 @@ Read `docs/process.md` §3–§6 first. Given ids, run them in order; given none
 For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the branch is
 `fix/<issue>-<slug>`, and there is one review round.
 
-Implementation choice is requested only when not already authorized. For each
+Ask for the implementer/model before each new task unless the owner has already
+explicitly chosen it for that task, then wait for the answer. For each
 review, ask which OpenCode model after the validated PR exists. Propose only an
 eligible configured default. The roster changes through `/switch-model`; no quota
 is checked. `switch-model.mjs --show` reports the client and family: native Codex

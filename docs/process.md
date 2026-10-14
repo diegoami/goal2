@@ -37,7 +37,8 @@ Client-aware defaults and commands:
   stale Codex markers remain. Its `implementer.default` and aliases are unchanged.
 - Codex session markers select Codex automatically; installed CODEX_HOME alone
   does not. A Codex family override other than openai is refused, not trusted.
-- Keep authorized implementation choices; ask only if not already authorized.
+- Ask for the implementer/model before each new task and wait; a task request
+  alone does not select a model. Keep the choice already made for that task.
   Open the validated PR first, then ask which eligible OpenCode model reviews.
   Same-family defaults are not proposed or silently replaced.
 
@@ -49,7 +50,8 @@ Client-aware defaults and commands:
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
 
-Implementation choice is requested only when not already authorized. After the
+Ask for an implementer/model choice before each new task and wait for the answer;
+keep a choice already explicitly made for that task through rework. After the
 validated PR exists, ask which OpenCode model reviews; propose the configured
 default only if eligible. No quota, tier or chain picks a model; the roster changes
 through `/switch-model`. `lib/common.mjs` reports Codex as OpenAI and retains

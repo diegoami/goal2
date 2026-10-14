@@ -15,7 +15,9 @@ dispatch; it does not replace the shared evidence, provenance or merge rules.
 
 1. Codex or a native Codex subagent implements. Use the current native Codex model
    by default; the Codex implementer default is `session` in harness.json.
-   Existing authorization persists; do not ask again to implement authorized work.
+   Ask the owner to choose the implementer/model before starting each new task,
+   and wait for the answer; requesting a task alone does not select a model.
+   Once chosen for that task, keep the choice for its implementation/rework.
 2. Select/record a task, follow its scope and Done-when, and work in an isolated
    task branch/worktree under harness.json's `worktreeRoot`. Resolve it with
    `repoPaths` in tools/harness/lib/common.mjs; never use /tmp for task worktrees.

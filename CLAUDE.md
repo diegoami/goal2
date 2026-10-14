@@ -17,8 +17,9 @@ docs/process.md. Codex starts at AGENTS.md; Claude retains this entrypoint and
 its native skills/hooks. Codex implements directly or with native Codex subagents;
 Claude retains its existing aliases and isolated Agent dispatch. OpenCode reviews
 only after the implementation PR exists, using the model the owner chooses.
-Existing implementation authorization persists; do not ask again for an already
-authorized step. harness.json retains Claude's implementer.default and adds the
+Ask for an implementer/model choice before each new task and wait; a task request
+alone is not a model choice (owner, 2026-10-14). Once chosen for that task, the
+authorization persists through implementation/rework. harness.json retains Claude's implementer.default and adds the
 Codex default at implementer.defaultsByClient.codex. See process §1 for dispatch.
 
 ## Rules
@@ -119,8 +120,10 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
    to review until it is set), because every subagent the session spawns, whatever its model,
    runs through the same endpoint and is of that provider's family. Pass `ANTHROPIC_BASE_URL` and `HARNESS_SESSION_FAMILY` to
    a review's systemd unit (rule 9).
-1. **Implementation choice.** [designed: owner, 2026-10-14] Honor a choice already
-   authorized in the session. Codex defaults to the native session (or a native
+1. **Implementation choice.** [designed: owner, 2026-10-14] Ask the owner which
+   implementer/model to use before starting each new task, and wait. Keep a choice
+   already explicitly made for that task through its implementation/rework.
+   Codex defaults to the native session (or a native
    Codex subagent when authorized), in a worktree prepared by the main session
    under worktreeRoot. Do not dispatch Claude aliases through Codex or claim
    Claude hooks protect it. The following alias/Agent instructions are for Claude:
