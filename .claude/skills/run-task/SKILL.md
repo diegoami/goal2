@@ -122,8 +122,11 @@ never the implementer's family.
         proves the task) on the PR's head yourself. A different result is rework, not a merge (L46).
         Read the non-blocking findings too: a proven way past what the task protects is rework
         whatever the reviewer rated it (L47).
-     3. `gh pr merge <pr> --squash --delete-branch` (every PR squashes here, CLAUDE.md rule 7), then
-        label `status:merged`.
+     3. The main session merges the exact reviewed head with
+        `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>` (every PR squashes here,
+        CLAUDE.md rule 7). Omit `--delete-branch`: it can delete the local task branch and its
+        worktree. Keep the task branch, worktree, ignored RUN-NOTES.md and cached assets; any
+        optional cleanup must affect only the remote branch. Then label `status:merged`.
      4. File one `T<nn> follow-up` issue (`triage:needed`) for the non-blocking findings.
      5. Unblock the tasks whose Merge-after are now all merged.
      6. Leave the task's worktrees: never remove one (CLAUDE.md rule 2a); the sweep removes old ones.

@@ -98,6 +98,12 @@ Rework sends the full review back to the same branch, at most two rounds (one fo
 escalates. The implementer script resumes a pushed branch; it never starts over. Before a merge the
 main session re-runs the check the approval rests on most; a different result is rework. (L46)
 
+[designed: owner, 2026-10-14; L114] Only the main session merges, using
+`gh pr merge <pr> --squash --match-head-commit <reviewed-sha>` so the command is bound to the
+approved head. Omit `--delete-branch`, which can delete the local task branch and worktree. Keep
+the task worktree, ignored RUN-NOTES.md and cached assets after the merge; optional cleanup may
+remove only the remote branch.
+
 What the review script guarantees, and why:
 - OpenCode starts with stdin closed; without it a run hangs before it starts. (L10)
 - No session in 180 s, no progress in 600 s, or no exit in 1 h kills the run's process tree (L10);
