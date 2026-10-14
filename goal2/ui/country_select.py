@@ -93,7 +93,15 @@ def run_country_select(
         elif key == Key.ENTER:
             if state is not None:
                 state.managed_country = cursor
-                state.managed_squad = list(goaldat.squad_20[cursor])
+                # [derived: T06/F011] The runtime country record begins with
+                # twenty little-endian player numbers. GOAL.DAT's squad_20
+                # bytes encode a position pattern, so the engine must use
+                # the adapted country record for its active player IDs.
+                record = state.countries[cursor]
+                state.managed_squad = [
+                    int.from_bytes(record[2 * i:2 * i + 2], "little")
+                    for i in range(20)
+                ]
             return cursor
         elif key == Key.ESC:
             return None

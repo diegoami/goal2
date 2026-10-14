@@ -36,6 +36,8 @@ class TestScreenOutput(unittest.TestCase):
         self.state = SimpleNamespace(
             managed_country=1, managed_squad=list(range(1, 21)),
             starting_eleven=[], captain=0, country_tactics=0,
+            countries=[b"".join(p.to_bytes(2, "little") for p in range(20 * c + 1, 20 * c + 21))
+                       + bytes(0xBF - 40) for c in range(129)],
         )
         self.match_result = {
             "score": (2, 1),
