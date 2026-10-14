@@ -112,21 +112,34 @@ class TestRunCountrySelect(unittest.TestCase):
         result = run_country_select(self.gd3, _keys(Key.DOWN, Key.DOWN, Key.UP, Key.ENTER), initial_country=1)
         self.assertEqual(result, 2)
 
-    def test_managed_squad_is_20_distinctive_bytes(self):
-        """Done-when 5 / R3: Enter sets managed_squad to a 20-element list.
-
-        R3 fix: squads are now distinctive ([i*7]*20), so deleting the
-        assignment leaves state.managed_squad as the pre-set [99]*20,
-        which fails the equality assertion. len() guards the 20-byte
-        requirement (F011: squad_20 is exactly 20 bytes).
-        """
+    def test_managed_squad_is_20_runtime_player_ids(self):
+        """[derived: T06/F011] Enter sets the 20 runtime player IDs."""
         state = _make_state()
         state.managed_squad = [99] * 20  # clearly different from any valid squad
-        # gd3 country 2 has squad_20[2] = [14]*20 (2*7)
-        self.assertEqual(self.gd3.squad_20[2], [14] * 20)
+        roster = list(range(41, 61))
+        records = list(state.countries)
+        records[2] = b"".join(p.to_bytes(2, "little") for p in roster) + bytes(0xBF - 40)
+        state.countries = records
         run_country_select(self.gd3, _keys(Key.DOWN, Key.ENTER), initial_country=1, state=state)
         self.assertEqual(len(state.managed_squad), 20)
-        self.assertEqual(state.managed_squad, [14] * 20)
+        self.assertEqual(state.managed_squad, roster)
+
+    def test_enter_uses_runtime_player_words_instead_of_position_bytes(self):
+        """[derived: T06/F011] The active squad holds player IDs from Memory.
+
+        GOAL.DAT's twenty bytes are position patterns; duplicated values
+        cannot be the engine's twenty player numbers. This fails with the
+        former GOAL.DAT assignment even though it has the right length.
+        """
+        state = _make_state()
+        roster = list(range(41, 61))
+        records = list(state.countries)
+        records[2] = b"".join(p.to_bytes(2, "little") for p in roster) + bytes(0xBF - 40)
+        state.countries = records
+        self.assertEqual(self.gd3.squad_20[2], [14] * 20)
+        run_country_select(self.gd3, _keys(Key.DOWN, Key.ENTER), state=state)
+        self.assertEqual(state.managed_country, 2)
+        self.assertEqual(state.managed_squad, roster)
 
 
 # ── Render surface tests ────────────────────────────────────────────────────

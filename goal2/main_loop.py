@@ -3,8 +3,9 @@
 [derived: T15's `pick_computer_eleven` and `get_computer_tactics` are not on
 T16's path in v1; GA-4 keys flow through the driver to each screen.]
 [designed: the placeholder next-fixture line uses state.managed_country.]
-[confirmed: A-WATCH-1 — the result screen is T14's stand-in; A-MATCH-2/3 —
-refusals are surfaced by run_result itself.]
+[confirmed: A-WATCH-1 — the result screen is a quick-engine stand-in;
+A-MATCH-2/3 — refusals are surfaced by run_result itself.]
+[designed: T26, A-MATCH-1 — interactive result runs both halves on one instance.]
 """
 from __future__ import annotations
 
@@ -32,11 +33,11 @@ def run_main_loop(
     2. run_squad_select: on False (Esc) returns 0.
     3. run_tactics_select: on False (Esc) returns 0.
     4. Save user choices (country_tactics, captain, starting_eleven) back into
-       the savestate bytes via `state.to_savestate`, then run_result with the
-       modified bytes so the quick engine reads the updated tactics byte.
+       the savestate bytes via `state.to_savestate`, then run_result in full
+       friendly mode with the adapted state and modified bytes.
     5. Prints a one-line next-fixture placeholder using state.managed_country.
 
-    [confirmed: A-WATCH-1 — result is T14's stand-in, running the quick engine;
+    [confirmed: A-WATCH-1 — result is a stand-in, running the quick engine;
     GA-4 — keys flow through the driver to each screen.
     derived: after step 4 saves, the engine reads the modified savestate
     (user choices applied via to_savestate), not the original.]
@@ -68,7 +69,9 @@ def run_main_loop(
     # run_result means the engine reads the modified savestate.]
     # Step 4: save user choices then run result
     saved = to_savestate(state, original=original_savestate_bytes)
-    ok = run_result(saved, keys, state=state)
+    # [designed: T26, A-MATCH-1] Interactive play uses the complete
+    # assumed friendly; the result screen's default remains a half replay.
+    ok = run_result(saved, keys, state=state, full_match=True)
     if not ok:
         return 0
 
