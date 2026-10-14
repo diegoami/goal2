@@ -1,5 +1,9 @@
 # goal2 — Codex entrypoint
 
+[designed: T24] These dispatch instructions apply to Codex implementation
+sessions. OpenCode review sessions follow their read-only reviewer agent and
+supplied review brief; they do not implement or invoke the dispatch steps here.
+
 [confirmed: [official OpenAI AGENTS.md documentation](https://learn.chatgpt.com/docs/agent-configuration/agents-md)]
 Codex reads repository AGENTS.md instructions.
 
@@ -15,8 +19,8 @@ dispatch; it does not replace the shared evidence, provenance or merge rules.
 2. Select/record a task, follow its scope and Done-when, and work in an isolated
    task branch/worktree under harness.json's `worktreeRoot`. Resolve it with
    `repoPaths` in tools/harness/lib/common.mjs; never use /tmp for task worktrees.
-   A Codex subagent has no implicit worktree isolation: the main session prepares
-   its worktree before dispatch and pastes the full task plus process §4 contract.
+   For a native Codex subagent, the main session prepares its worktree before
+   dispatch; do not assume the dispatch tool created one and pastes the full task plus process §4 contract.
    The main session may implement directly without a subagent.
 3. Follow the shared run-task procedure in
    [.claude/skills/run-task/SKILL.md](.claude/skills/run-task/SKILL.md), using its
