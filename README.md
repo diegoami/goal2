@@ -30,8 +30,12 @@ python3 -m goal2.loop .cache/<savestate>.sav .cache/GOAL.DAT
 reading input. Frames append to stdout; colours and cursor highlighting are
 omitted. Scripted key iterables remain silent.
 
+[designed: T25] On POSIX terminals, the interactive screen chain reads keys
+immediately in cbreak mode and restores the saved terminal settings when it
+ends. A bare or incomplete Escape waits up to 0.15 seconds for an ANSI key
+sequence continuation. Scripted keys and redirected input remain supported.
+
 [derived: `goal2/ui/input.py`, `goal2/ui/result.py`, `goal2/main_loop.py`]
-Terminal raw mode and standalone-Escape timing are still missing. The result
-screen runs the vendored half-time simulation on the adapted snapshot; fixture
-progression ends at a placeholder. This command is the current screen-chain
-prototype.
+The result screen runs the vendored half-time simulation on the adapted
+snapshot; fixture progression ends at a placeholder. This command is the
+current screen-chain prototype.

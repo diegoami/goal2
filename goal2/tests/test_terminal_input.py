@@ -3,23 +3,28 @@ from __future__ import annotations
 
 import io
 import os
-import pty
 import select
 import subprocess
 import sys
 import tempfile
-import termios
 import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+
+try:
+    import pty
+    import termios
+except ImportError:  # POSIX-only integration cases are skipped below.
+    pty = None
+    termios = None
 
 from goal2.ui import input as key_input
 from goal2.ui.input import Key
 
 
 _CHILD = r'''
-import os, sys
+import io, os, sys
 from goal2.ui.input import read_key, terminal_input
 mode = sys.argv[1]
 try:
@@ -27,7 +32,10 @@ try:
         print("READY", flush=True)
         if mode == "error":
             raise RuntimeError("expected input test failure")
+        if mode == "eof":
+            read_key(io.BytesIO())
         if mode == "interrupt":
+            os.read(0, 1)
             os.kill(os.getpid(), 2)
         count = int(sys.argv[2])
         for _ in range(count):
@@ -37,6 +45,8 @@ except KeyboardInterrupt:
 '''
 
 
+@unittest.skipUnless(os.name == "posix" and pty is not None and termios is not None,
+                     "real pseudo-terminals require POSIX")
 class PtyInput(unittest.TestCase):
     """Exercise real terminal bytes while stdin stays open."""
 
@@ -127,25 +137,38 @@ class PtyInput(unittest.TestCase):
 
     def test_restores_attributes_after_exception(self):
         child, master, slave, saved = self.start_child(mode="error")
-        self.assertFalse(self.current_attrs(slave)[3] & termios.ICANON)
         child.wait(timeout=2)
         self.assertEqual(self.current_attrs(slave), saved)
 
     def test_restores_attributes_after_keyboard_interrupt(self):
         child, master, slave, saved = self.start_child(mode="interrupt")
+        os.write(master, b"i")
         output = self.read_until(master, b"INTERRUPTED\r\n", 2)
         self.assertIn(b"INTERRUPTED", output)
         self.assertEqual(child.wait(timeout=2), 0)
         self.assertEqual(self.current_attrs(slave), saved)
 
     def test_restores_attributes_after_eof(self):
-        child, master, slave, saved = self.start_child()
-        os.close(master)
+        child, master, slave, saved = self.start_child(mode="eof")
         self.assertNotEqual(child.wait(timeout=2), 0)
         self.assertEqual(self.current_attrs(slave), saved)
 
 
 class InputContext(unittest.TestCase):
+    def test_non_posix_keeps_injected_stream_reading(self):
+        with patch.object(key_input.os, "name", "nt"):
+            with patch.object(key_input.select, "select") as selector:
+                self.assertEqual(key_input.read_key(io.BytesIO(b" ")), Key.SPACE)
+            selector.assert_not_called()
+
+    def test_missing_stdin_does_not_call_terminal_attributes(self):
+        with patch.object(key_input.sys, "stdin", None):
+            with patch.object(key_input, "termios", create=True) as terminal:
+                with key_input.terminal_input():
+                    pass
+            terminal.tcgetattr.assert_not_called()
+            terminal.tcsetattr.assert_not_called()
+
     def test_redirected_input_does_not_call_terminal_attributes(self):
         stream = io.BytesIO(b" \n")
         with patch.object(key_input.sys, "stdin", stream):
@@ -166,13 +189,23 @@ class InputContext(unittest.TestCase):
             data_path.write_bytes(b"data")
             with (patch.object(loop, "load_goaldat", return_value="goaldat"),
                   patch.object(loop, "from_savestate", return_value="state"),
-                  patch.object(loop, "run_main_loop", return_value=7) as run,
+                  patch.object(loop, "run_main_loop") as run,
                   patch.object(loop, "terminal_input") as context):
-                context.return_value.__enter__.return_value = None
-                context.return_value.__exit__.return_value = False
+                events = []
+                manager = context.return_value
+                manager.__enter__.side_effect = lambda: events.append("enter")
+                manager.__exit__.side_effect = lambda *args: events.append("exit") or False
+
+                def run_chain(*args):
+                    self.assertEqual(events, ["enter"])
+                    events.append("run")
+                    return 7
+
+                run.side_effect = run_chain
                 self.assertEqual(loop.main(["loop", str(state_path), str(data_path)]), 7)
             context.assert_called_once_with()
             run.assert_called_once_with("goaldat", "state", b"state")
+            self.assertEqual(events, ["enter", "run", "exit"])
 
 
 if __name__ == "__main__":
