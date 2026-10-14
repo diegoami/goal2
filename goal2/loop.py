@@ -13,6 +13,7 @@ from pathlib import Path
 from goal2.data.goaldat import load as load_goaldat
 from goal2.game.state import from_savestate
 from goal2.main_loop import run_main_loop
+from goal2.ui.input import terminal_input
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -48,7 +49,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: {savestate_file}: {e}", file=sys.stderr)
         return 2
 
-    return run_main_loop(goaldat, state, state_bytes)
+    # [designed: T25] Keep immediate key input scoped to the interactive chain
+    # and restore terminal attributes when that chain returns or raises.
+    with terminal_input():
+        return run_main_loop(goaldat, state, state_bytes)
 
 
 if __name__ == "__main__":

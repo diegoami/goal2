@@ -8,9 +8,25 @@ Linux terminal.
 """
 from __future__ import annotations
 
+import os
+import select
 import sys
+import time
+from contextlib import contextmanager
 from enum import Enum
-from typing import BinaryIO
+from typing import BinaryIO, Iterator
+
+try:  # [designed] Keep imports usable on platforms without POSIX terminal APIs.
+    import termios
+    import tty
+except ImportError:  # pragma: no cover - exercised on non-POSIX platforms.
+    termios = None
+    tty = None
+
+
+# [designed: T25] Use 150 ms for the absolute continuation window: the task
+# specifies a finite wait but supplies no original timeout measurement.
+ESCAPE_TIMEOUT = 0.15
 
 
 class Key(Enum):
@@ -28,7 +44,7 @@ class Key(Enum):
     SPACE = "space"
 
 
-# ANSI escape sequences for special keys (Linux terminal).
+# [designed] ANSI escape sequences for the supported special keys.
 _KEY_SEQUENCES: dict[bytes, Key] = {
     b"\x1b[A": Key.UP,
     b"\x1b[B": Key.DOWN,
@@ -37,37 +53,70 @@ _KEY_SEQUENCES: dict[bytes, Key] = {
 }
 
 
+@contextmanager
+def terminal_input() -> Iterator[None]:
+    """[designed] Use cbreak input on a POSIX TTY and restore its exact state."""
+    stream = sys.stdin
+    if (os.name != "posix" or termios is None or tty is None or stream is None
+            or not getattr(stream, "isatty", lambda: False)()):
+        yield
+        return
+    fd = stream.fileno()
+    saved = termios.tcgetattr(fd)
+    try:
+        # [designed: T25] cbreak disables canonical input and echo, preserving ISIG.
+        tty.setcbreak(fd, termios.TCSANOW)
+        yield
+    finally:
+        termios.tcsetattr(fd, termios.TCSANOW, saved)
+
+
+def _read_byte(stream: BinaryIO, fd: int | None, timeout: float | None) -> bytes:
+    """[designed: T25] Read descriptors directly to avoid buffered/select races."""
+    if fd is not None:
+        readable, _, _ = select.select([fd], [], [], timeout)
+        if not readable:
+            return b""
+        return os.read(fd, 1)
+    return stream.read(1)
+
+
 def read_key(_stdin: BinaryIO | None = None) -> Key:
-    """Read one key from stdin and return its Key value.
+    """Read one key from stdin; a timed-out Escape continuation returns ``ESC``.
 
-    Raises EOFError when stdin closes without a full key sequence.
-    [designed] Arrow keys arrive as \\x1b[A / \\x1b[B; PageUp/PageDown as
-    \\x1b[5~ / \\x1b[6~; Enter as \\n or \\r; Esc as \\x1b.
-
-    R1 fix: read byte-by-byte after \\x1b, not read(5) which would
-    consume the next key. Build the sequence until it matches or diverges.
-    _stdin is for unit-test injection only (not part of the public API).
+    [designed: T25] Raises EOFError when stdin closes before a key. Arrow sequences
+    are ``\x1b[A`` / ``\x1b[B`` and PageUp/PageDown are ``\x1b[5~`` / ``\x1b[6~``.
+    Escape continuation bytes share an absolute ``ESCAPE_TIMEOUT`` window.
+    [designed: T25] ``_stdin`` supports injected streams; descriptor-backed streams use
+    select/os.read, while in-memory streams retain their ordinary read path.
     """
-    buf = _stdin if _stdin is not None else sys.stdin.buffer
-    ch = buf.read(1)
-    if not ch:
-        raise EOFError("stdin closed")
-    if ch == b"\x1b":
-        seq = ch
-        while True:
-            nxt = buf.read(1)
-            if not nxt:
-                return Key.ESC  # EOF mid-escape — treat as bare Esc
-            seq += nxt
-            if seq in _KEY_SEQUENCES:
-                return _KEY_SEQUENCES[seq]
-            # If seq is no longer a prefix of any known sequence, it's a bare
-            # Esc followed by something else; treat as Esc.
-            if not any(s.startswith(seq) for s in _KEY_SEQUENCES):
-                return Key.ESC
-    if ch == b"\n" or ch == b"\r":
-        return Key.ENTER
-    if ch == b" ":
-        return Key.SPACE
-    # Unknown byte — treat it as a no-op and read the next key
-    return read_key(_stdin)
+    stream = _stdin if _stdin is not None else getattr(sys.stdin, "buffer", sys.stdin)
+    if os.name == "posix":
+        try:
+            fd = stream.fileno()
+        except (AttributeError, OSError, ValueError):
+            fd = None
+    else:
+        fd = None
+
+    while True:
+        ch = _read_byte(stream, fd, None)
+        if not ch:
+            raise EOFError("stdin closed")
+        if ch == b"\x1b":
+            seq = ch
+            deadline = time.monotonic() + ESCAPE_TIMEOUT
+            while any(candidate.startswith(seq) for candidate in _KEY_SEQUENCES):
+                remaining = max(0.0, deadline - time.monotonic())
+                nxt = _read_byte(stream, fd, remaining)
+                if not nxt:
+                    return Key.ESC
+                seq += nxt
+                if seq in _KEY_SEQUENCES:
+                    return _KEY_SEQUENCES[seq]
+            return Key.ESC
+        if ch in (b"\n", b"\r"):
+            return Key.ENTER
+        if ch == b" ":
+            return Key.SPACE
+        # [designed: T25] Ignore unknown bytes without recursing on long streams.
