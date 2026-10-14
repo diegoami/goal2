@@ -92,11 +92,16 @@ class TestRunSquadSelect(unittest.TestCase):
         self.assertTrue(result)
         self.assertEqual(self.state.captain, 1)
 
-    def test_down_clamped_at_20(self):
-        """Done-when 2e: DOWN×30 at cursor=20 stays at 20; Enter returns True with captain=20."""
-        result = run_squad_select(self.gd, _keys(*([Key.DOWN] * 30), Key.ENTER), state=self.state)
-        self.assertTrue(result)
-        self.assertEqual(self.state.captain, 20)
+    def test_down_clamped_at_20_can_be_cancelled_without_committing(self):
+        """[designed: T28] An excluded cursor at row 20 cannot be confirmed as captain."""
+        self.state.starting_eleven = [-1] * 11
+        self.state.captain = -1
+        result = run_squad_select(
+            self.gd, _keys(*([Key.DOWN] * 30), Key.ENTER, Key.ESC), state=self.state
+        )
+        self.assertFalse(result)
+        self.assertEqual(self.state.starting_eleven, [-1] * 11)
+        self.assertEqual(self.state.captain, -1)
 
     def test_captain_is_in_managed_squad(self):
         """Done-when 4: captain is one of the 20 managed_squad entries."""
@@ -113,8 +118,8 @@ class TestRenderSurface(unittest.TestCase):
         # Fresh state for each test (tests share self.gd but not self.state)
         self.state = _make_state()
 
-    def test_cursor_row_starts_with_marker_then_row_number(self):
-        """Done-when 3a: cursor row has marker then row number (from input).
+    def test_cursor_row_starts_with_marker_and_inclusion_then_row_number(self):
+        """[designed: T28] Cursor row marks inclusion before its squad number.
 
         Mutation: hardcoding the row number or reading from the wrong row fails.
         """
@@ -126,13 +131,15 @@ class TestRenderSurface(unittest.TestCase):
                 lines[cursor].startswith("> "),
                 f"cursor={cursor}: row {cursor!r} doesn't start with {cursor!r}",
             )
+            inclusion = "[x] " if cursor <= 11 else "[ ] "
             self.assertTrue(
-                lines[cursor][2:].startswith(f"{cursor:2d}  "),
+                lines[cursor][2:].startswith(inclusion)
+                and lines[cursor][6:].startswith(f"{cursor:2d}  "),
                 f"cursor={cursor}: row number is missing after marker",
             )
 
-    def test_title_shows_cursor_number_from_input(self):
-        """Done-when 3b: title row holds the cursor number derived from the input.
+    def test_title_shows_selected_count(self):
+        """[designed: T28] The title shows how many players are selected.
 
         Two distinct cursor values (1 and 15) catch a hardcoded cursor in the title.
         Mutation: replacing {cursor} with a literal fails the second test case.
@@ -141,7 +148,7 @@ class TestRenderSurface(unittest.TestCase):
             state = _make_state()
             grid = _render(self.gd, state, cursor=cursor, page_size=20)
             lines = render(grid).split("\n")
-            self.assertIn(f"SELECT CAPTAIN  {cursor}", lines[0])
+            self.assertIn("SELECT ELEVEN  11/11", lines[0])
 
     def test_captain_marker_after_enter(self):
         """Done-when 4: after Enter, the captain row in the rendered grid shows ' C'.
@@ -172,17 +179,14 @@ class TestRenderSurface(unittest.TestCase):
                 f"non-captain row {non_captain_row} cols 78-79 should be '  ': {lines[non_captain_row][78:80]!r}",
             )
 
-    def test_no_captain_marker_before_enter(self):
-        """Before Enter, no row has ' C' at the right edge (cols 78-79)."""
+    def test_captain_candidate_status_names_cursor_and_inclusion(self):
+        """[designed: T28] Status names the cursor player as captain candidate."""
         state = _make_state()
         grid = _render(self.gd, state, cursor=1, page_size=20)
         lines = render(grid).split("\n")
-        for row in range(1, 21):
-            self.assertNotIn(
-                " C",
-                lines[row][78:80],
-                f"row {row} cols 78-79 should not be ' C' before Enter: {lines[row][78:80]!r}",
-            )
+        self.assertIn("CAPTAIN: P1 (included)", lines[21])
+        for row in range(2, 21):
+            self.assertEqual(lines[row][78:80], "  ")
 
 
 if __name__ == "__main__":
