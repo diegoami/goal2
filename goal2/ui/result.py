@@ -7,9 +7,10 @@ the **stand-in** result screen; the real watched engine (M1-M6) is a follow-up.
 [confirmed: T01] `quick_engine.simulate(state)` returns a dict with `score`,
 `goals`, and the two seed words (`seed_DS7B62`, `seed_DS8336`).
 
-[designed: T14 screen layout] Title row 0, score row 2, goals rows 4..4+N-1,
-seed row, footer row 24. The screen never mutates `state`. The `state`
-argument is accepted for API parity with T11/T12/T13 only.
+[designed: T14 screen layout] Default half-time replay: title row 0, score
+row 2, goals from row 4, seed row, footer row 24. The default does not mutate
+`state`. [designed: T26] Full-friendly mode uses the selected state, labels its
+assumed setup and pages goals from both halves.
 """
 from __future__ import annotations
 
@@ -55,8 +56,9 @@ def run_result(
     `path_or_bytes` — the zip is opened from a path or BytesIO].
     `keys` is an optional iterable of Key values (for scripted tests); when
     None the screen reads from stdin.
-    `state`, if given, is unused by this screen (accepted for API parity
-    with T11/T12/T13).
+    [designed: T26] With `full_match=True`, `state` supplies the selected
+    country, eleven and tactics for an assumed complete friendly. The default
+    remains the seed-exact second-half replay path.
 
     Returns True on Enter (continue to next fixture), False on Esc.
     """
@@ -69,15 +71,21 @@ def run_result(
             result = run_full_match(sav, state)
         else:
             result = _qe.simulate(sav)
-    except (FoulPathNotModelled, ExtraTimeNotModelled, ValueError) as exc:
+    except (FoulPathNotModelled, ExtraTimeNotModelled) as exc:
+        result = None
+        refusal_msg = str(exc)
+    except ValueError as exc:
+        if not full_match:
+            raise
         result = None
         refusal_msg = str(exc)
 
     key_iter = iter(keys) if keys is not None else None
+    page = 0
 
     while True:
         grid = _build_grid(result, refusal_msg if result is None else None,
-                           full_match=full_match)
+                           full_match=full_match, page=page)
 
         if key_iter is not None:
             try:
@@ -93,10 +101,14 @@ def run_result(
             return True
         elif key == Key.ESC:
             return False
+        elif full_match and result is not None and key == Key.PAGE_DOWN:
+            page = min(page + 1, max(0, (len(result["goals"]) - 1) // 16))
+        elif full_match and key == Key.PAGE_UP:
+            page = max(page - 1, 0)
 
 
 def _build_grid(result: dict | None, refusal_msg: str | None,
-                *, full_match: bool = False) -> Grid:
+                *, full_match: bool = False, page: int = 0) -> Grid:
     """Render the result screen into a Grid and return it.
 
     Row 0:     "RESULT  STAND-IN" (blue bg)
@@ -129,7 +141,14 @@ def _build_grid(result: dict | None, refusal_msg: str | None,
         row = 4
         if result["goals"]:
             first_count = len(result["halves"][0]["goals"]) if full_match else 0
-            for i, goal in enumerate(result["goals"]):
+            # [designed: T26] Sixteen rows leave room for score, seeds,
+            # page guidance and footer; PageDown exposes later goals.
+            start = 16 * page if full_match else 0
+            visible = result["goals"][start:start + 16] if full_match else result["goals"]
+            if full_match:
+                pages = max(1, (len(result["goals"]) + 15) // 16)
+                grid.draw_text(3, 0, f"GOALS {page + 1}/{pages}  PGUP/PGDN".ljust(WIDTH))
+            for i, goal in enumerate(visible, start):
                 minute = goal["minute"]
                 team = goal["team"]
                 player_index = goal["player"]
