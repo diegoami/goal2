@@ -2,9 +2,8 @@
 
 The template supplies tables, players and seeds. Its half-time match state is
 not a kick-off state; setup and first-half play here are an explicit stand-in.
-E010 "Match clock & loop" confirms D733 timing and kick-off side selection,
-but no whole-match
-seed-exact claim follows from this wrapper.
+E010 "Match clock & loop" at archaeology 1b694ed confirms D733 timing and
+kick-off side selection, but no whole-match seed-exact claim follows.
 """
 from __future__ import annotations
 
@@ -35,9 +34,10 @@ def _snapshot(qm: QuickMatch, start: int) -> dict:
 def run_full_match(template, game_state) -> dict:
     """Run an assumed full friendly from a normal friendly template.
 
-    [confirmed: E010 notes, "Match clock & loop"] D733 receives minute 0..45 then 46..91,
-    with countdown 91-minute; 998C uses the first kick-off side and 9A32
-    the opposite side. [designed: T26] We keep one QuickMatch instance so
+    [confirmed: E010 notes, "Match clock & loop" at 1b694ed] D733 receives
+    minute 0..45 then 46..91, with countdown 91-minute; 998C uses the first
+    kick-off side and 9A32 the opposite side. [designed: T26] We keep one
+    QuickMatch instance so
     its RNG, score, goals, and mutable player/pitch/country state continue.
     """
     qm = QuickMatch(template)  # Preserves the vendored extra-time refusal.
@@ -69,8 +69,9 @@ def run_full_match(template, game_state) -> dict:
     own_country = qm._country(selected)
     own_country["squad"] = eleven + [p for p in selected_squad if p not in eleven]
     own_country["tactics"] = game_state.country_tactics & 0xFF
-    # [confirmed: E010 notes, "Match clock & loop"; vendored 1771:0B77] A byte above 0x80 marks
-    # the human side for the quick engine's automatic tactics/subs gates.
+    # [confirmed: E010 notes, "Match clock & loop" at 1b694ed; vendored
+    # QuickMatch at 8760df9, 1771:0B77] A byte above 0x80 marks the
+    # human side for the quick engine's automatic tactics/subs gates.
     # [designed] 0xFF is our marker when the chosen country came from a
     # template where it was a computer country.
     if own_country["managed"] <= 0x80:
@@ -105,8 +106,9 @@ def run_full_match(template, game_state) -> dict:
         qm.d733(minute, 91 - minute)
     first = _snapshot(qm, 0)
 
-    # [confirmed: E010 notes, "Match clock & loop", 9A32] The second-half kick-off uses the
-    # inverted first-half side. There is no RNG reset or new QuickMatch.
+    # [confirmed: E010 notes, "Match clock & loop", 9A32 at 1b694ed]
+    # The second-half kick-off uses the inverted first-half side.
+    # There is no RNG reset or new QuickMatch.
     qm.eight30b = (qm.side_base[1 - qm.eight31a] + 10) & 0xFF
     second_kickoff = qm.eight30b
     for minute in range(46, 92):
