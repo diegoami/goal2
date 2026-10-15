@@ -169,8 +169,8 @@ class WebSession:
         if not isinstance(match, dict):
             raise ValueError("saved last match must be an object")
         state = state or self.state
-        required = {"teams", "score", "goals", "halves", "seed_DS7B62", "seed_DS8336", "draws"}
-        optional = {"managed_side", "match_count"}
+        required = {"teams", "score", "goals", "halves", "seed_DS7B62", "seed_DS8336"}
+        optional = {"managed_side", "match_count", "draws"}
         if not required.issubset(match) or set(match) - required - optional:
             raise ValueError("saved last match has missing or unknown fields")
         teams = match["teams"]
@@ -187,15 +187,24 @@ class WebSession:
         if not isinstance(goals, list):
             raise ValueError("saved last match goals are invalid")
         for goal in goals:
-            if not isinstance(goal, dict) or set(goal) != {"team", "minute", "player"}:
+            required_goal_fields = {"team", "minute", "player"}
+            optional_goal_fields = {"squad_slot", "stored_byte"}
+            if (not isinstance(goal, dict) or not required_goal_fields.issubset(goal)
+                    or set(goal) - required_goal_fields - optional_goal_fields):
                 raise ValueError("saved last match goal is invalid")
             if (isinstance(goal["team"], bool) or not isinstance(goal["team"], int)
                     or goal["team"] not in (0, 1)
                     or isinstance(goal["minute"], bool) or not isinstance(goal["minute"], int)
-                    or not 0 <= goal["minute"] <= 90
+                    or goal["minute"] < 0
                     or isinstance(goal["player"], bool) or not isinstance(goal["player"], int)
                     or not 1 <= goal["player"] < len(state.players)):
                 raise ValueError("saved last match goal fields are invalid")
+            if "squad_slot" in goal and (isinstance(goal["squad_slot"], bool)
+                    or not isinstance(goal["squad_slot"], int) or not 1 <= goal["squad_slot"] <= 20):
+                raise ValueError("saved last match goal squad slot is invalid")
+            if "stored_byte" in goal and (isinstance(goal["stored_byte"], bool)
+                    or not isinstance(goal["stored_byte"], int) or not 0 <= goal["stored_byte"] <= 255):
+                raise ValueError("saved last match goal stored byte is invalid")
         halves = match["halves"]
         if not isinstance(halves, (list, tuple)) or len(halves) != 2:
             raise ValueError("saved last match halves are invalid")
@@ -228,11 +237,11 @@ class WebSession:
             {"id": team, "name": self.goaldat.country_names[team]}
             for team in teams
         ]
-        goals = []
+        named_goals = []
         for goal in goals:
             team = teams[goal["team"]]
             player = goal["player"]
-            goals.append({
+            named_goals.append({
                 "team": team,
                 "team_name": self.goaldat.country_names[team],
                 "minute": goal["minute"],
@@ -243,7 +252,7 @@ class WebSession:
             "teams": named_teams,
             "managed_side": managed_side,
             "score": list(score),
-            "goals": goals,
+            "goals": named_goals,
             "halftime_scores": halftime_scores,
             "seeds": list(seeds),
             "match_count": match_count,

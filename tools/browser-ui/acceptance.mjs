@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
 import { setTimeout as delay } from 'node:timers/promises';
 import path from 'node:path';
 
@@ -24,7 +25,7 @@ let base = valueAfter('--url');
 let saveDirectory;
 let savePath;
 if (scenario === 'persistence') {
-  saveDirectory = await mkdtemp(path.join('/tmp', 'goal2-browser-save-'));
+  saveDirectory = await mkdtemp(path.join(tmpdir(), 'goal2-browser-save-'));
   savePath = path.join(saveDirectory, 'session.g2save');
 }
 async function startServer(resume = false) {
@@ -203,7 +204,7 @@ try {
   } else if (scenario === 'persistence') {
     const initial = await getSession();
     const countries = await getCountries();
-    const country = countries.countries.find(item => item.id !== initial.country.id && item.name !== 'Denmark');
+    const country = countries.countries.find(item => item.id === 13);
     assert(country, 'a non-Denmark management choice exists');
     browser = await chromium.launch({ headless: true });
     let context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -269,8 +270,13 @@ try {
     assert.equal(resumed.match_count, 1, 'resuming does not simulate a match');
     assert.deepEqual(resumed.last_match.score, beforeSave.last_match.score, 'fresh browser shows the retained result');
     assert.deepEqual(resumed.last_match.seeds, beforeSave.last_match.seeds, 'fresh browser shows retained seeds');
+    assert.deepEqual(resumed.last_match.goals, beforeSave.last_match.goals,
+      'fresh browser restores every engine goal with its name and team');
+    assert(resumed.last_match.goals.length > 0, 'cached country 13 continuation includes named goal events');
     assert.equal(await page.locator('#match-tag').textContent(), 'MATCH 1', 'dashboard displays saved result');
     assert.equal(await page.locator('#match-score').textContent(), `${beforeSave.last_match.score[0]} – ${beforeSave.last_match.score[1]}`);
+    assert.equal(await page.locator('#goal-events li').count(), beforeSave.last_match.goals.length,
+      'dashboard renders every resumed goal event');
     await page.locator('#play-button').click();
     await page.waitForFunction(() => document.querySelector('#match-tag')?.textContent === 'MATCH 2');
     assert.equal((await getSession()).match_count, 2, 'explicit Play advances the resumed session');

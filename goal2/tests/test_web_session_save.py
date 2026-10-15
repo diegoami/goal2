@@ -11,16 +11,24 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from unittest.mock import patch
 
-from goal2.game.session_save import encode
+from goal2.engine.savestate import Savestate
+from goal2.game.quick_match import run_full_match
+from goal2.game.session_save import decode, encode, save as save_session_save
+from goal2.game.state import from_savestate, to_savestate
 from goal2.web.server import Handler, WebSession, main
 from goal2.tests.test_web_team_management import make_session
+
+
+FIXTURE = Path(__file__).resolve().parents[2] / ".cache" / "e010-r0001-halftime.sav"
+GOALDAT = Path(__file__).resolve().parents[2] / ".cache" / "GOAL.DAT"
 
 
 class WebSessionSaveTests(unittest.TestCase):
     def setUp(self):
         self.session = make_session()
         self.session.template_bytes = b"validated-template"
-        self.session.save_path = Path(tempfile.mkdtemp()) / "session.g2save"
+        self.temp = tempfile.TemporaryDirectory()
+        self.session.save_path = Path(self.temp.name) / "session.g2save"
         self.server = HTTPServer(("127.0.0.1", 0), type("TestHandler", (Handler,), {"session": self.session}))
         self.thread = Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -42,6 +50,7 @@ class WebSessionSaveTests(unittest.TestCase):
         self.server.shutdown()
         self.server.server_close()
         self.thread.join(timeout=2)
+        self.temp.cleanup()
 
     def request(self, endpoint, payload=None):
         data = json.dumps(payload or {}).encode()
@@ -77,6 +86,9 @@ class WebSessionSaveTests(unittest.TestCase):
         self.assertEqual((status, result), (200, {"saved": True}))
         saved_bytes = self.session.save_path.read_bytes()
         self.assertIn(b'"format":"goal2-session"', saved_bytes)
+        decoded, decoded_template = decode(saved_bytes)
+        self.assertEqual(encode(decoded, decoded_template), saved_bytes,
+                         "canonical re-encoding covers every saved GameState field and template")
 
         self.session.state.managed_country = 8
         self.session.state.starting_eleven = list(range(280, 291))
@@ -102,7 +114,7 @@ class WebSessionSaveTests(unittest.TestCase):
         self.session.save_path.write_bytes(b"original-live-save")
         before = self.session.state
         try:
-            for content in (b"not json", b'{"format":"goal2-session","version":99}'):
+            for content in (b"\xff\xfe\x00\x01binary original savestate", b'{"format":"goal2-session","version":99}'):
                 self.session.save_path.write_bytes(content)
                 saved = self.session.save_path.read_bytes()
                 status, result = self.request("/api/load")
@@ -121,6 +133,16 @@ class WebSessionSaveTests(unittest.TestCase):
         self.assertEqual(status, 400)
         self.assertIn("invalid continuation", result["error"])
         self.assertIs(self.session.state, before)
+
+    def test_invalid_template_is_rejected_during_preload_validation(self):
+        self.session.save_path.write_bytes(encode(self.session.state, self.session.template_bytes))
+        before = self.session.state
+        with patch("goal2.web.server.from_savestate", side_effect=ValueError("invalid saved template")) as validate:
+            status, result = self.request("/api/load")
+        self.assertEqual(status, 400)
+        self.assertIn("invalid saved template", result["error"])
+        self.assertIs(self.session.state, before)
+        validate.assert_called_once_with(self.session.template_bytes)
 
     def test_malformed_last_result_is_rejected_before_state_publication(self):
         invalid = self.session.state
@@ -157,6 +179,47 @@ class WebSessionSaveTests(unittest.TestCase):
         status, result = self.request("/api/save")
         self.assertEqual((status, result), (200, {"saved": True}))
         self.assertNotEqual(self.session.save_path.read_bytes(), previous)
+
+
+@unittest.skipUnless(FIXTURE.is_file() and GOALDAT.is_file(),
+                     "cached E010 savestate and GOAL.DAT are not staged")
+class E010WebSaveContinuation(unittest.TestCase):
+    def test_cached_e010_resumed_browser_session_matches_uninterrupted_continuation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            template_bytes = FIXTURE.read_bytes()
+            uninterrupted = from_savestate(template_bytes)
+            country = 13  # The staged roster has eligible captain IDs above 255.
+            squad = [int.from_bytes(uninterrupted.countries[country][offset:offset + 2], "little")
+                     for offset in range(0, 40, 2)]
+            uninterrupted.managed_country = country
+            uninterrupted.managed_squad = squad
+            uninterrupted.starting_eleven = squad[:11]
+            uninterrupted.captain = squad[-1]
+            uninterrupted.country_tactics = 0xA5
+            self.assertGreater(uninterrupted.captain, 255)
+
+            first_template = to_savestate(uninterrupted, original=template_bytes)
+            first = run_full_match(Savestate(first_template), uninterrupted, retain_state=True)
+            uninterrupted.last_match["managed_side"] = first["managed_side"]
+            uninterrupted.last_match["match_count"] = uninterrupted.match_count
+            save_path = Path(temporary) / "session.g2save"
+            save_session_save(save_path, uninterrupted, template_bytes)
+
+            resumed_session = WebSession.resume(save_path, GOALDAT)
+            resumed = resumed_session.state
+            self.assertEqual(resumed.managed_country, country)
+            self.assertEqual(resumed.managed_squad, squad)
+            self.assertEqual(resumed.starting_eleven, squad[:11])
+            self.assertEqual(resumed.captain, squad[-1])
+            self.assertEqual(resumed.country_tactics, 0xA5)
+            self.assertEqual(resumed.last_match["managed_side"], first["managed_side"])
+
+            resumed_next = to_savestate(resumed, original=resumed_session.template_bytes)
+            resumed_result = run_full_match(Savestate(resumed_next), resumed, retain_state=True)
+            uninterrupted_next = to_savestate(uninterrupted, original=template_bytes)
+            uninterrupted_result = run_full_match(Savestate(uninterrupted_next), uninterrupted, retain_state=True)
+            self.assertEqual(resumed_result, uninterrupted_result)
+            self.assertEqual(resumed, uninterrupted)
 
 
 if __name__ == "__main__":
