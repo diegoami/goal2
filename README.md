@@ -56,10 +56,14 @@ the template and uses the current computer-selection stand-in. The result
 title labels the setup as assumed; it names both teams in engine score order,
 identifies the managed team, shows halftime and fulltime scores, and lists
 each goal with its team, scorer, half and minute. PageUp/PageDown pages
-overflow; Enter finishes and Esc quits. The template supplies players, tables
-and seeds; inherited player energy remains, and the original match setup and
-half-time energy recovery are not yet reproduced. Technical seed values stay
-available in the recorded-half replay screen, which `python -m goal2.play`
-continues to show from a half-time savestate. Issue #73's observed replay and
-commentary controls inform the UI work; this result summary does not add replay
-prompts or fixture progression.
+overflow; Enter finishes and Esc quits. After a successful friendly, the next
+screen offers another friendly or quit. Another friendly keeps the chosen
+country, squad, eleven, captain and tactics, and starts with retained player
+records and both final RNG words. The squad screen shows each player's current
+energy. The template supplies initial players, tables and seeds; original
+match setup and half-time energy recovery are not reproduced. These retained
+changes define this rebuild's consecutive-friendly loop and make no claim about
+original between-fixture fidelity. Technical seed values stay available in the
+recorded-half replay screen, which `python -m goal2.play` continues to show
+from a half-time savestate. Issue #73's observed replay and commentary controls
+inform the UI.

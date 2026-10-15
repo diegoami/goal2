@@ -145,7 +145,13 @@ def _build_grid(
         # captain marker fixed at columns 78-79.
         included = player_num in selected
         row_text = f"> " if row == cursor else "  "
-        row_text += f"{'[x]' if included else '[ ]'} {row:2d}  {initial} {name:<12}"[:76].ljust(76)
+        player_records = getattr(state, "players", ()) if state is not None else ()
+        energy = (player_records[player_num][0x0E]
+                  if player_num < len(player_records) else 0)
+        row_text += (
+            f"{'[x]' if included else '[ ]'} {row:2d}  {initial} "
+            f"{name:<12} Energy:{energy:02d}"
+        )[:76].ljust(76)
         row_text += " C" if state is not None and state.captain == player_num else "  "
 
         is_cursor = (row == cursor)
