@@ -18,7 +18,7 @@ from typing import Iterable
 from goal2.game.state import GameState
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
-from goal2.ui.plain_renderer import render
+from goal2.ui.plain_renderer import display
 
 
 # Colour constants: VGA palette (matches DS:0x720 in the original).
@@ -71,8 +71,8 @@ def run_squad_select(
             except StopIteration:
                 return False
         else:
-            # [designed: T23] Display and flush the current frame before input.
-            print(render(grid), end="", flush=True)
+            # [designed: T31] Display and flush the current frame before input.
+            display(grid)
             key = read_key()
 
         if key == Key.UP:
@@ -162,8 +162,8 @@ def _build_grid(
     grid.draw_text(21, 0, f"CAPTAIN: {cursor_name} ({captain_state})".ljust(WIDTH))
     grid.draw_text(22, 0, error[:WIDTH].ljust(WIDTH), fg=_FG_TITLE if error else _FG_NORMAL,
                    bg=_BG_TITLE if error else _BG_NORMAL)
-    grid.draw_text(23, 0, "SPACE toggles the highlighted player.".ljust(WIDTH))
-    footer = "↑↓ MOVE  SPACE TOGGLE  ENTER CONFIRM  ESC CANCEL"
+    grid.draw_text(23, 0, "UP/DOWN MOVE  SPACE toggles highlighted player.".ljust(WIDTH))
+    footer = "UP/DOWN MOVE  SPACE TOGGLE  ENTER CONFIRM  ESC CANCEL"
     grid.draw_text(HEIGHT - 1, 0, footer.ljust(WIDTH), fg=_FG_TITLE, bg=_BG_TITLE)
 
     return grid

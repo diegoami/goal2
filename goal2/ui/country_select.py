@@ -17,7 +17,7 @@ from goal2.data import GoalDat
 from goal2.game.state import GameState
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
-from goal2.ui.plain_renderer import render
+from goal2.ui.plain_renderer import display
 
 
 # Colour constants: VGA palette (matches DS:0x720 in the original).
@@ -78,8 +78,8 @@ def run_country_select(
                 # a correctly-shaped generator that yields Enter)
                 break
         else:
-            # [designed: T23] Display and flush the current frame before input.
-            print(render(grid), end="", flush=True)
+            # [designed: T31] Display and flush the current frame before input.
+            display(grid)
             key = read_key()
 
         if key == Key.UP:
@@ -126,7 +126,7 @@ def _build_grid(
     Row 0:     title "SELECT COUNTRY  NNN/128" (blue bg)
     Rows 1..page_size: country names, prefixed with "> " on the cursor row
         and two spaces elsewhere; cursor row in reversed video
-    Row 24:    footer "↑↓ SELECT  PgUp/PgDn PAGE  ENTER PICK  ESC QUIT"
+    Row 24:    footer "UP/DOWN MOVE  PgUp/PgDn PAGE  ENTER SELECT  ESC QUIT"
     """
     grid = Grid()
     total = 128
@@ -155,7 +155,7 @@ def _build_grid(
         row += 1
 
     # ── Footer (row 24) ───────────────────────────────────────────────────
-    footer = "↑↓ SELECT  PgUp/PgDn PAGE  ENTER PICK  ESC QUIT"
+    footer = "UP/DOWN MOVE  PgUp/PgDn PAGE  ENTER SELECT  ESC QUIT"
     grid.draw_text(HEIGHT - 1, 0, footer.ljust(WIDTH), fg=_FG_TITLE, bg=_BG_TITLE)
 
     return grid

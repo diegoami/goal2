@@ -30,7 +30,7 @@ from goal2.engine import quick_engine as _qe
 from goal2.engine.savestate import Savestate
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
-from goal2.ui.plain_renderer import render
+from goal2.ui.plain_renderer import display
 
 
 # Colour constants: VGA palette (matches DS:0x720 in the original).
@@ -96,8 +96,8 @@ def run_result(
             except StopIteration:
                 break
         else:
-            # [designed: T23] Display and flush the current frame before input.
-            print(render(grid), end="", flush=True)
+            # [designed: T31] Display and flush the current frame before input.
+            display(grid)
             key = read_key()
 
         if key == Key.ENTER:
@@ -233,7 +233,7 @@ def _build_full_friendly_grid(result: dict | None, refusal_msg: str | None, *,
         else:
             grid.draw_text(5, 0, "NO GOALS".ljust(WIDTH))
 
-    grid.draw_text(HEIGHT - 1, 0, "ENTER FINISH  ESC QUIT".ljust(WIDTH),
+    grid.draw_text(HEIGHT - 1, 0, "PGUP/PGDN PAGE  ENTER FINISH  ESC QUIT".ljust(WIDTH),
                    fg=_FG_TITLE, bg=_BG_TITLE)
     return grid
 

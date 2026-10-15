@@ -5,6 +5,9 @@ tests and logs. Colour is omitted in the rendered output; the grid still
 holds the colour so a later window renderer can use it.]
 """
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
+import os
+import sys
+from typing import TextIO
 
 
 def render(grid: Grid) -> str:
@@ -27,3 +30,20 @@ def render(grid: Grid) -> str:
             row_chars.append(chr(char_code) if char_code != 0 else " ")
         lines.append("".join(row_chars))
     return "\n".join(lines) + "\n"
+
+
+def display(grid: Grid, stream: TextIO | None = None) -> None:
+    """Write one frame, redrawing in place on an ANSI-capable terminal.
+
+    [designed: T31] Interactive terminals clear and home before each frame;
+    redirected and dumb-terminal output remains the plain append-only frame.
+    The terminal frame omits its last newline so row 25 does not scroll.
+    """
+    output = sys.stdout if stream is None else stream
+    frame = render(grid)
+    is_terminal = output.isatty() and os.environ.get("TERM", "") not in ("", "dumb")
+    if is_terminal:
+        output.write("\x1b[2J\x1b[H" + frame.rstrip("\n"))
+    else:
+        output.write(frame)
+    output.flush()

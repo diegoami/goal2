@@ -13,7 +13,7 @@ from goal2.game.state import GameState
 from goal2.engine.savestate import Savestate
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
-from goal2.ui.plain_renderer import render
+from goal2.ui.plain_renderer import display
 
 
 _FG_NORMAL = 7
@@ -47,7 +47,7 @@ def run_match_preview(goaldat, savestate_path_or_bytes, keys: Iterable[Key] | No
             except StopIteration:
                 return False
         else:
-            print(render(grid), end="", flush=True)
+            display(grid)
             key = read_key()
 
         if key == Key.ESC:
@@ -75,7 +75,7 @@ def _build_grid(goaldat, state: GameState, teams, managed_side, opponent,
     if refusal is not None:
         grid.draw_text(2, 0, f"REFUSED: {refusal}"[:WIDTH].ljust(WIDTH))
         grid.draw_text(4, 0, "MATCH NOT STARTED".ljust(WIDTH))
-        footer = "ESC QUIT"
+        footer = "MATCH UNAVAILABLE  ESC QUIT"
     else:
         country_name = lambda country: _country_name(goaldat, country)
         grid.draw_text(2, 0, f"YOUR TEAM: {country_name(state.managed_country)}".ljust(WIDTH))

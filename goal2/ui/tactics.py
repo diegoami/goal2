@@ -18,7 +18,7 @@ from typing import Iterable
 from goal2.game.state import GameState
 from goal2.ui.grid import Grid, HEIGHT, WIDTH
 from goal2.ui.input import Key, read_key
-from goal2.ui.plain_renderer import render
+from goal2.ui.plain_renderer import display
 
 
 # [derived: standard VGA text-mode palette; F010 cites DS:0x720]
@@ -100,8 +100,8 @@ def run_tactics_select(
             except StopIteration:
                 break
         else:
-            # [designed: T23] Display and flush the current frame before input.
-            print(render(grid), end="", flush=True)
+            # [designed: T31] Display and flush the current frame before input.
+            display(grid)
             key = read_key()
 
         if key == Key.UP:
@@ -137,7 +137,7 @@ def _build_grid(current_byte: int, cursor: int) -> Grid:
     Row 0:     title "TACTICS  0xNN" where NN is current_byte in hex (blue bg)
     Rows 1..8: one element per row, prefixed with "> " on the cursor row
         and two spaces elsewhere; cursor row in reversed video
-    Row 24:    footer "↑↓ MOVE  SPACE TOGGLE  ENTER PICK  ESC QUIT"
+    Row 24:    footer "UP/DOWN MOVE  SPACE TOGGLE  ENTER CONFIRM  ESC QUIT"
     """
     grid = Grid()
 
@@ -162,7 +162,7 @@ def _build_grid(current_byte: int, cursor: int) -> Grid:
             grid.draw_text(display_row, 0, row_text.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
 
     # ── Footer (row 24) ───────────────────────────────────────────────────
-    footer = "↑↓ MOVE  SPACE TOGGLE  ENTER PICK  ESC QUIT"
+    footer = "UP/DOWN MOVE  SPACE TOGGLE  ENTER CONFIRM  ESC QUIT"
     grid.draw_text(HEIGHT - 1, 0, footer.ljust(WIDTH), fg=_FG_TITLE, bg=_BG_TITLE)
 
     return grid
