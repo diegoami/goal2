@@ -20,6 +20,33 @@ if _ENGINE_DIR not in sys.path:
 from goal2.engine.quick_engine import QuickMatch  # noqa: E402
 
 
+def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, int]:
+    """[designed: T29] Resolve the actual engine teams for a full friendly.
+
+    Returns ``(teams, managed_side, opponent)`` using the same replacement
+    rule consumed by both the preview and the runner. This reads template
+    setup but does not simulate the match.
+    """
+    qm = QuickMatch(template)
+    if qm.ninea3d != 0 or qm.eight319 != 0x2D:
+        raise ValueError("full friendly needs a normal friendly template")
+    if qm.eight31a not in (0, 1):
+        raise ValueError("invalid kick-off side in template")
+
+    selected = game_state.managed_country
+    if not 1 <= selected <= 128:
+        raise ValueError("managed country must be 1..128")
+    original_teams = tuple(qm.teams)
+    managed_side = original_teams.index(selected) if selected in original_teams else 0
+    opponent_side = 1 - managed_side
+    opponent = original_teams[opponent_side]
+    if opponent == selected:
+        raise ValueError("template needs a distinct opponent")
+    teams = list(original_teams)
+    teams[managed_side] = selected
+    return tuple(teams), managed_side, opponent
+
+
 def _snapshot(qm: QuickMatch, start: int) -> dict:
     """[designed] Copy cumulative fields before the next half mutates them."""
     return {
@@ -40,22 +67,12 @@ def run_full_match(template, game_state) -> dict:
     QuickMatch instance so
     its RNG, score, goals, and mutable player/pitch/country state continue.
     """
+    # [designed: T29] Resolve through the same rule the preview displays.
+    teams, managed_side, opponent = resolve_full_matchup(template, game_state)
     qm = QuickMatch(template)  # Preserves the vendored extra-time refusal.
-    if qm.ninea3d != 0 or qm.eight319 != 0x2D:
-        raise ValueError("full friendly needs a normal friendly template")
-    if qm.eight31a not in (0, 1):
-        raise ValueError("invalid kick-off side in template")
-
+    qm.teams[:] = teams
     selected = game_state.managed_country
-    if not 1 <= selected <= 128:
-        raise ValueError("managed country must be 1..128")
-    original_teams = tuple(qm.teams)
-    managed_side = original_teams.index(selected) if selected in original_teams else 0
     opponent_side = 1 - managed_side
-    opponent = original_teams[opponent_side]
-    if opponent == selected:
-        raise ValueError("template needs a distinct opponent")
-    qm.teams[managed_side] = selected
 
     # [designed: T26] The selected eleven and top-ability computer eleven
     # replace the inherited half-time pitch; remaining squad members stay

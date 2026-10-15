@@ -52,7 +52,7 @@ def _make_state() -> GameState:
 
 
 class TestRunMainLoopOrderAndState(unittest.TestCase):
-    """Done-when 2, 3, 4: call order and shared state."""
+    """Done-when 2, 3, 4: call order and shared state through preview."""
 
     def test_country_select_called_first_with_state(self):
         """Done-when 2: run_country_select is called first and receives state."""
@@ -92,8 +92,8 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
 
             self.assertEqual(state.managed_country, 7)
 
-    def test_all_four_screens_called_in_order_with_same_state(self):
-        """Done-when 4: squad, tactics, result called in order, all with the same state object."""
+    def test_screens_called_in_order_with_same_state(self):
+        """Done-when 4: selection, preview and result share state in order."""
         gd = _make_goaldat()
         state = _make_state()
         # Mutable tracker so plain-function spies can update it
@@ -115,6 +115,11 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
             tracker["ta_state"] = kwargs.get("state")
             return True
 
+        def spy_preview(*args, **kwargs):
+            call_order.append("preview")
+            tracker["preview_state"] = kwargs.get("state")
+            return True
+
         def spy_re(*args, **kwargs):
             call_order.append("result")
             tracker["re_state"] = kwargs.get("state")
@@ -131,12 +136,13 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select", spy_cs), \
              patch("goal2.main_loop.run_squad_select", spy_sq), \
              patch("goal2.main_loop.run_tactics_select", spy_ta), \
+             patch("goal2.main_loop.run_match_preview", spy_preview), \
              patch("goal2.main_loop.run_result", spy_re), \
              patch("goal2.main_loop.to_savestate", return_value=b"saved") as mock_save:
 
             run_main_loop(gd, state, _PLACEHOLDER_BYTES, keys=_keys(Key.ENTER))
 
-        self.assertEqual(call_order, ["country_select", "squad_select", "tactics_select", "result"])
+        self.assertEqual(call_order, ["country_select", "squad_select", "tactics_select", "preview", "result"])
         # [derived: T17 — to_savestate's contract is (state, original=bytes);
         # the assertion below proves run_main_loop calls it with the in-memory
         # state and the original savestate bytes.]
@@ -145,6 +151,7 @@ class TestRunMainLoopOrderAndState(unittest.TestCase):
         self.assertIs(tracker["cs_state"], state)
         self.assertIs(tracker["sq_state"], state)
         self.assertIs(tracker["ta_state"], state)
+        self.assertIs(tracker["preview_state"], state)
         self.assertIs(tracker["re_state"], state)
         # NOTE: run_result received the SAVED bytes (b"saved"), not the originals
         self.assertEqual(tracker["re_arg"], b"saved")
@@ -223,6 +230,7 @@ class TestEscAbortsLoop(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
+             patch("goal2.main_loop.run_match_preview", return_value=True), \
              patch("goal2.main_loop.run_result") as mock_res, \
              patch("goal2.main_loop.to_savestate", return_value=b"saved") as mock_save:
 
@@ -261,6 +269,7 @@ class TestNextFixturePlaceholder(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
+             patch("goal2.main_loop.run_match_preview", return_value=True), \
              patch("goal2.main_loop.run_result") as mock_res, \
              patch("goal2.main_loop.to_savestate", return_value=b"saved") as mock_save:
 
@@ -287,6 +296,7 @@ class TestNextFixturePlaceholder(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
+             patch("goal2.main_loop.run_match_preview", return_value=True), \
              patch("goal2.main_loop.run_result") as mock_res, \
              patch("goal2.main_loop.to_savestate", return_value=b"saved") as mock_save:
 
@@ -315,6 +325,7 @@ class TestEndToEnd(unittest.TestCase):
         with patch("goal2.main_loop.run_country_select") as mock_cs, \
              patch("goal2.main_loop.run_squad_select") as mock_sq, \
              patch("goal2.main_loop.run_tactics_select") as mock_tac, \
+             patch("goal2.main_loop.run_match_preview", return_value=True), \
              patch("goal2.main_loop.run_result") as mock_res, \
              patch("goal2.main_loop.to_savestate", return_value=b"saved") as mock_save:
 
@@ -366,13 +377,13 @@ class TestKeysAreConsumedSequentially(unittest.TestCase):
 
     Each screen does `iter(keys)` internally, so passing a list `keys`
     would replay it from the start for every screen. The fix wraps
-    `keys` once at the top of run_main_loop, so all four screens share
-    a single iterator. (Luna R2, 2026-10-13)
+    `keys` once at the top of run_main_loop, so every stage including the
+    preview shares one iterator. (Luna R2, 2026-10-13; T29)
 
     Mutation: remove the `keys = iter(keys) if keys is not None else None`
     line in run_main_loop. Each screen receives the raw list; each spy
-    drains the full list and the test fails because squad / tactics /
-    result see 4 keys (not 0 after the country-select spy drained them).
+    drains the full list and the test fails because later stages see the
+    same keys again instead of the remaining shared iterator contents.
     """
 
     def test_keys_consumed_sequentially_across_screens(self):
@@ -388,9 +399,14 @@ class TestKeysAreConsumedSequentially(unittest.TestCase):
                 return 7 if name == "cs" else True
             return spy
 
+        def preview_spy(goaldat, savestate, keys, *, state):
+            keys_seen["preview"] = list(keys) if keys is not None else []
+            return True
+
         with patch("goal2.main_loop.run_country_select", make_spy("cs")), \
              patch("goal2.main_loop.run_squad_select", make_spy("sq")), \
              patch("goal2.main_loop.run_tactics_select", make_spy("ta")), \
+             patch("goal2.main_loop.run_match_preview", preview_spy), \
              patch("goal2.main_loop.run_result", make_spy("re")), \
              patch("goal2.main_loop.to_savestate", return_value=b"saved") as mock_save:
 
@@ -407,5 +423,6 @@ class TestKeysAreConsumedSequentially(unittest.TestCase):
         # subsequent screens see no keys (the iterator is exhausted)
         self.assertEqual(keys_seen["sq"], [])
         self.assertEqual(keys_seen["ta"], [])
+        self.assertEqual(keys_seen["preview"], [])
         self.assertEqual(keys_seen["re"], [])
         mock_save.assert_called_once_with(state, original=_PLACEHOLDER_BYTES)
