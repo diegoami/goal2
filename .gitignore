@@ -7,6 +7,7 @@ dist/
 
 # DOSBox-X savestates (rule 19)
 *.sav
+*.g2save
 
 
 # Implementation notes (per docs/running-notes.md)

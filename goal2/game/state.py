@@ -86,8 +86,8 @@ class GameState:
     # Set by the tactics screen (T13); read by the match screen (T14).
     # Default 0 means all bits clear.
     country_tactics: int = 0
-    # [designed: T32] Successful interactive assumed friendlies retain a
-    # compact result and a count in memory; neither field is serialized.
+    # [designed: T32, T33] Successful interactive assumed friendlies retain
+    # a compact result and count; the rebuild session save serializes both.
     match_count: int = 0
     last_match: dict | None = None
 
