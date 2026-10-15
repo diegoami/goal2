@@ -12,9 +12,7 @@ the source, none a `finding` (no method has checked them):
 - A-WATCH-5 substitutions: requested during play, carried out when the game stops.
 - A-WATCH-6 offside: called often, also against the team that is not attacking.
 - A-WATCH-7 a sending off in a watched match (match type not recorded).
-- GA-7 the prompts around a match and after a goal, and that they time out.
-- GA-8 the match-screen keys and the four player display modes.
-- GA-9 the owner's pre-match edits: positions, full-back tactics, marking, team tactics, formation.
+- GA-7 the owner's pre-match edits: positions, full-back tactics, marking, team tactics, formation.
 - GA-4 corrected by the owner: **Y shows a replay, N skips it** (the row said Y skips). No code
   cites the old meaning (checked with grep for "replay"), but T29 and later screens should use the
   corrected one.
@@ -26,7 +24,7 @@ in the records' observations; the raw savestates stay on the owner's machine.
 ## What to do
 
 1. Read the rows against `goal2/` and `docs/tasks/T29.md` (in progress): does T29's match preview
-   or kickoff confirmation touch GA-7 ("really watch it?", captain, goal-kick taker)? If so, the
+   or kickoff confirmation touch the original's prompts ("really watch it?", captain, goal-kick taker)? If so, the
    task says so and cites the row.
 2. Open a PR for the branch through the normal process: a docs-only change, reviewed by an OpenCode
    model of another family (the owner chooses, rule 2). Merge as rule 7 says.
@@ -39,7 +37,7 @@ Written by a Sonnet subagent from the findings, checked by the main session agai
 and F027 for the claims that change a rule (the 5-or-2 substitution budget, no coin in the stage
 code, `D47E` for silent results, no end condition). All sources say `(proposed, read from the
 listing)`: nothing was run against the original unless the row says so. Ids of the sitting rows above
-were renumbered to avoid the collision (A-WATCH-5..7, GA-7..9).
+were renumbered to avoid the collision (A-WATCH-5..7, GA-7).
 
 - Changed: NG-6 (the start year also sets the first stage), A-MATCH-2 (the foul path is gated by the
   fixture kind), A-MATCH-3 (extra time and a shoot-out for kinds {4, 8..203}), A-MATCH-5 (a host flag
@@ -62,6 +60,16 @@ were renumbered to avoid the collision (A-WATCH-5..7, GA-7..9).
   A-WATCH-4 gives only the flipped side's numbers.
 - Nothing in the register describes goal2 code as live that these findings contradict. The new rows
   have Live "-" or a phase tag.
+
+## The original's UI is not the rebuild's UI (owner decision, 2026-10-15)
+
+The owner: the target game's UI has nothing to do with the original's, and the original's keys are not to be
+mapped in the new game at all. They matter only for automating the original (the driver and any bot that
+plays it). So the sitting rows about prompts, time-outs and match-screen keys were removed from this branch
+(they live in goal2-archaeology's coverage map and in finding F030 when T56 lands), and GA-4 is marked "not a
+rebuild rule". `docs/plan.md` P6 says "the original's screens ... in the original's layout and keys": the goal2
+session reconciles that with this decision. Recorded in goal2-archaeology
+`experiments/E015-human-playthrough/owner-questions-2026-10-11.md` (5782be9).
 
 ## Owner wishes (not rules, for P6, wording as given)
 
