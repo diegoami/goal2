@@ -9,7 +9,9 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import secrets
 import sys
+from threading import Lock
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any
@@ -18,11 +20,16 @@ from urllib.parse import urlsplit
 from goal2.data.goaldat import GoalDat, load as load_goaldat
 from goal2.engine.savestate import Savestate
 from goal2.game.quick_match import resolve_full_matchup
-from goal2.game.state import GameState, from_savestate
+from goal2.game.quick_match import run_full_match
+from goal2.game.state import GameState, from_savestate, to_savestate
 
 
 STATIC_FILES = frozenset({"/", "/index.html", "/app.mjs", "/styles.css"})
 MAX_BODY = 4096
+
+
+class StalePlaySubmission(Exception):
+    """The browser supplied a token that has already been consumed."""
 
 # [confirmed: F010] Labels for tactics elements 1–4. [designed: F010] The
 # labels for elements 5–8 are not read from the original screen; these retain
@@ -42,10 +49,14 @@ TACTICS = (
 class WebSession:
     """[designed: T35] Keep one loaded session in memory for this process."""
 
-    def __init__(self, state: GameState, goaldat: GoalDat, template: Savestate):
+    def __init__(self, state: GameState, goaldat: GoalDat, template: Savestate,
+                 template_bytes: bytes | None = None):
         self.state = state
         self.goaldat = goaldat
         self.template = template
+        self.template_bytes = template_bytes
+        self._play_lock = Lock()
+        self._play_token = secrets.token_urlsafe(24)
 
     @classmethod
     def load(cls, savestate_path: Path, goaldat_path: Path) -> "WebSession":
@@ -66,7 +77,7 @@ class WebSession:
             raise ValueError(f"GOAL.DAT: {exc}") from exc
         if not 1 <= state.managed_country <= 128:
             raise ValueError("savestate managed country must be 1..128")
-        return cls(state, goaldat, template)
+        return cls(state, goaldat, template, savestate_bytes)
 
     def countries_view(self) -> dict[str, Any]:
         return {
@@ -78,7 +89,68 @@ class WebSession:
         }
 
     def view(self) -> dict[str, Any]:
-        return self._view_for(self.state, list(self.state.managed_squad))
+        return self._session_view(self.state, list(self.state.managed_squad))
+
+    def _session_view(self, state: GameState, squad: list[int]) -> dict[str, Any]:
+        view = self._view_for(state, squad)
+        view["play_token"] = self._play_token
+        view["match_count"] = getattr(state, "match_count", 0)
+        view["last_match"] = self._named_match(getattr(state, "last_match", None))
+        return view
+
+    def _named_match(self, match: dict[str, Any] | None) -> dict[str, Any] | None:
+        if match is None:
+            return None
+        teams = match["teams"]
+        named_teams = [
+            {"id": team, "name": self.goaldat.country_names[team]}
+            for team in teams
+        ]
+        goals = []
+        for goal in match["goals"]:
+            team = teams[goal["team"]]
+            player = goal["player"]
+            goals.append({
+                "team": team,
+                "team_name": self.goaldat.country_names[team],
+                "minute": goal["minute"],
+                "player": player,
+                "player_name": self.goaldat.player_names[player],
+            })
+        return {
+            "teams": named_teams,
+            "managed_side": match.get("managed_side", 0),
+            "score": list(match["score"]),
+            "goals": goals,
+            "halftime_scores": [list(half["score"]) for half in match["halves"]],
+            "seeds": [match["seed_DS7B62"], match["seed_DS8336"]],
+            "match_count": match.get("match_count", getattr(self.state, "match_count", 0)),
+        }
+
+    def play(self, raw: Any) -> dict[str, Any]:
+        """[designed: T37] Consume one explicit browser submission atomically."""
+        if not isinstance(raw, dict) or set(raw) != {"play_token"}:
+            raise ValueError("request must contain only a play_token")
+        token = raw["play_token"]
+        with self._play_lock:
+            if not isinstance(token, str) or not secrets.compare_digest(token, self._play_token):
+                raise StalePlaySubmission("play request was already used or is stale")
+            # Rotate before simulation. A replay cannot submit this action
+            # again, including while a long match is running.
+            self._play_token = secrets.token_urlsafe(24)
+            if self.template_bytes is None:
+                raise ValueError("original savestate bytes are required to prepare a friendly")
+            candidate = copy.deepcopy(self.state)
+            adapted = Savestate(to_savestate(candidate, original=self.template_bytes))
+            result = run_full_match(adapted, candidate, retain_state=True)
+            if not isinstance(candidate.last_match, dict):
+                raise ValueError("friendly runner did not retain a match summary")
+            candidate.last_match["managed_side"] = result["managed_side"]
+            candidate.last_match["match_count"] = candidate.match_count
+            # Validate the full next browser view before making candidate state authoritative.
+            response = self._session_view(candidate, list(candidate.managed_squad))
+            self.state = candidate
+            return response
 
     def _view_for(self, state: GameState, squad: list[int]) -> dict[str, Any]:
         country = state.managed_country
@@ -86,9 +158,9 @@ class WebSession:
             raise ValueError(f"country {country} has no GOAL.DAT name")
         players = []
         for player_id in squad:
-            if not 1 <= player_id < len(self.state.players):
+            if not 1 <= player_id < len(state.players):
                 raise ValueError(f"country {country} contains invalid player ID {player_id}")
-            record = self.state.players[player_id]
+            record = state.players[player_id]
             if len(record) < 0x0F:
                 raise ValueError(f"player {player_id} record is too short")
             if player_id >= len(self.goaldat.player_names):
@@ -174,10 +246,12 @@ class WebSession:
         candidate.starting_eleven = list(eleven)
         candidate.captain = captain
         candidate.country_tactics = tactics
-        result = self._view_for(candidate, list(candidate.managed_squad))
+        result = self._session_view(candidate, list(candidate.managed_squad))
         self.state.starting_eleven = candidate.starting_eleven
         self.state.captain = candidate.captain
         self.state.country_tactics = candidate.country_tactics
+        self._play_token = secrets.token_urlsafe(24)
+        result["play_token"] = self._play_token
         return result
 
     def select_country(self, raw_country: Any) -> dict[str, Any]:
@@ -203,12 +277,14 @@ class WebSession:
             # [confirmed: F010] Keep this country's stored tactics byte; old
             # country tactics are not carried over during a country change.
             candidate_state.country_tactics = candidate[0x2D]
-            result = self._view_for(candidate_state, squad)
+            result = self._session_view(candidate_state, squad)
             self.state.managed_country = candidate_state.managed_country
             self.state.managed_squad = candidate_state.managed_squad
             self.state.starting_eleven = candidate_state.starting_eleven
             self.state.captain = candidate_state.captain
             self.state.country_tactics = candidate_state.country_tactics
+            self._play_token = secrets.token_urlsafe(24)
+            result["play_token"] = self._play_token
             return result
         return self.view()
 
@@ -249,7 +325,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         path = urlsplit(self.path).path
-        if path not in ("/api/country", "/api/management"):
+        if path not in ("/api/country", "/api/management", "/api/play"):
             self._json(404, {"error": "not found"})
             return
         try:
@@ -261,13 +337,30 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(body, dict) or set(body) != {"country"}:
                     raise ValueError("request must contain only a country field")
                 result = self.session.select_country(body["country"])
-            else:
+            elif path == "/api/management":
                 result = self.session.confirm_management(body)
+            else:
+                result = self.session.play(body)
+        except StalePlaySubmission as exc:
+            self._json(409, {"error": str(exc), "play_token": self.session.view()["play_token"]})
+            return
         except (ValueError, json.JSONDecodeError, UnicodeDecodeError) as exc:
-            self._json(400, {"error": str(exc)})
+            payload = {"error": str(exc)}
+            if path == "/api/play":
+                payload["play_token"] = self.session.view()["play_token"]
+            self._json(500 if path == "/api/play" else 400, payload)
             return
         except (IndexError, TypeError) as exc:
-            self._json(400, {"error": str(exc)})
+            payload = {"error": str(exc)}
+            if path == "/api/play":
+                payload["play_token"] = self.session.view()["play_token"]
+            self._json(500 if path == "/api/play" else 400, payload)
+            return
+        except Exception as exc:
+            payload = {"error": str(exc)}
+            if path == "/api/play":
+                payload["play_token"] = self.session.view()["play_token"]
+            self._json(500, payload)
             return
         self._json(200, result)
 

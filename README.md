@@ -85,7 +85,7 @@ python3 -m http.server 8000 --directory docs/prototypes/browser-ui
 
 Then open `http://localhost:8000`.
 
-[designed: T35, T36] Start the live browser view with a local halftime savestate and
+[designed: T35–T37] Start the live browser view with a local halftime savestate and
 the matching local GOAL.DAT:
 
 ```bash
@@ -96,12 +96,18 @@ Open `http://127.0.0.1:8000`. Pass `--host` or `--port` to choose a different
 bind address or port. The server loads both files once and keeps one in-memory
 session. Choose a country, edit the starting eleven, captain and eight tactics
 bits, then use **Confirm team** to update that session. **Cancel draft** restores
-the confirmed choices. The overview shows the confirmed team and the named
-matchup from the shared resolver. This flow does not simulate or save a match;
-reload keeps confirmed choices while this server process remains running.
+the confirmed choices. The overview shows the confirmed team and named matchup
+from the shared resolver. Press **Play friendly** to run one complete assumed
+friendly using the confirmed team. The result shows the ordered team names,
+managed side, half-time and full-time scores, named goal events, match count and
+both retained seeds. Reload and navigation do not run a match. Use **Another
+friendly · Manage team** to return to the same country's team management with
+updated player energy and choices, then play again. The session remains in
+memory for this server process; closing it discards the browser changes.
 
-Run the real-browser country and management checks with Playwright installed:
+Run the real-browser country, management and friendly checks with Playwright installed:
 
 ```bash
 PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario management
+PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario friendlies
 ```
