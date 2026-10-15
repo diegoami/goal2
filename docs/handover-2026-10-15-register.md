@@ -78,7 +78,7 @@ were renumbered to avoid the collision (A-WATCH-5..7, GA-7).
 ## Owner wishes (not rules, for P6, wording as given)
 
 - A better way to search the national pool for players.
-- Players' names should not be the same for each team (the exact meaning was not clarified: ask).
+- Players' names: every nation has a national pool, aside from the default squad, and the pool players are named alike no matter the country (clarified by the owner, 2026-10-15). Confirmed in the original: the squad's 20 players per country have their own names, but the pool's 80 per manager are made from the 500 unassigned names of `GOAL.DAT` (2561..3060), the same list for every country (F011, F007). A remaster wish: pool names that fit the country.
 
 ## What goal2-archaeology does next, and what will come back
 
