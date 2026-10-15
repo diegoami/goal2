@@ -24,6 +24,20 @@ from goal2.game.state import GameState, from_savestate
 STATIC_FILES = frozenset({"/", "/index.html", "/app.mjs", "/styles.css"})
 MAX_BODY = 4096
 
+# [confirmed: F010] Labels for tactics elements 1–4. [designed: F010] The
+# labels for elements 5–8 are not read from the original screen; these retain
+# the rebuild's existing terminal wording.
+TACTICS = (
+    {"element": 5, "clear": "half pitch", "set": "full pitch", "evidence": "designed"},
+    {"element": 6, "clear": "short kicks", "set": "long kicks", "evidence": "designed"},
+    {"element": 7, "clear": "stay back", "set": "push forward", "evidence": "designed"},
+    {"element": 1, "clear": "stay back", "set": "push forward", "evidence": "confirmed"},
+    {"element": 2, "clear": "keep ball", "set": "quick pass", "evidence": "confirmed"},
+    {"element": 3, "clear": "short passes", "set": "long passes", "evidence": "confirmed"},
+    {"element": 4, "clear": "avoid injury", "set": "go in hard", "evidence": "confirmed"},
+    {"element": 8, "clear": "zone", "set": "man to man", "evidence": "designed"},
+)
+
 
 class WebSession:
     """[designed: T35] Keep one loaded session in memory for this process."""
@@ -120,8 +134,51 @@ class WebSession:
             # displayed eleven; only expose captain choices that are eligible.
             "captain": captain,
             "tactics": state.country_tactics,
+            "tactics_options": list(TACTICS),
+            "confirmed": {
+                "starting_eleven": list(starting_eleven),
+                "captain": captain,
+                "tactics": state.country_tactics,
+            },
             "matchup": matchup,
         }
+
+    def confirm_management(self, raw: Any) -> dict[str, Any]:
+        """[designed: T36] Validate a complete browser draft before assignment."""
+        if not isinstance(raw, dict) or set(raw) != {"country", "starting_eleven", "captain", "tactics"}:
+            raise ValueError("request must contain country, starting_eleven, captain, and tactics")
+        country = raw["country"]
+        if isinstance(country, bool) or not isinstance(country, int) or country != self.state.managed_country:
+            raise ValueError("draft country changed; reload the current squad")
+        eleven = raw["starting_eleven"]
+        if not isinstance(eleven, list) or len(eleven) != 11:
+            raise ValueError("starting eleven must contain exactly 11 players")
+        if any(isinstance(player, bool) or not isinstance(player, int) for player in eleven):
+            raise ValueError("starting eleven player IDs must be integers")
+        if len(set(eleven)) != 11:
+            raise ValueError("starting eleven must contain 11 distinct players")
+        squad = set(self.state.managed_squad)
+        if any(player not in squad for player in eleven):
+            raise ValueError("starting eleven must use players from the managed squad")
+        captain = raw["captain"]
+        if isinstance(captain, bool) or not isinstance(captain, int) or captain not in eleven:
+            raise ValueError("captain must be one of the starting eleven")
+        tactics = raw["tactics"]
+        if isinstance(tactics, bool) or not isinstance(tactics, int) or not 0 <= tactics <= 0xFF:
+            raise ValueError("tactics must be an eight-bit integer from 0 to 255")
+
+        # Build the response against a detached candidate too, so a bad roster
+        # record cannot leave a partly confirmed state. Keep Python integers
+        # intact; player IDs can exceed the legacy one-byte captain adapter.
+        candidate = copy.copy(self.state)
+        candidate.starting_eleven = list(eleven)
+        candidate.captain = captain
+        candidate.country_tactics = tactics
+        result = self._view_for(candidate, list(candidate.managed_squad))
+        self.state.starting_eleven = candidate.starting_eleven
+        self.state.captain = candidate.captain
+        self.state.country_tactics = candidate.country_tactics
+        return result
 
     def select_country(self, raw_country: Any) -> dict[str, Any]:
         """[designed: T35] Validate a complete candidate before changing state."""
@@ -191,7 +248,8 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(content)
 
     def do_POST(self) -> None:  # noqa: N802
-        if urlsplit(self.path).path != "/api/country":
+        path = urlsplit(self.path).path
+        if path not in ("/api/country", "/api/management"):
             self._json(404, {"error": "not found"})
             return
         try:
@@ -199,9 +257,12 @@ class Handler(BaseHTTPRequestHandler):
             if not 0 <= length <= MAX_BODY:
                 raise ValueError("request body is too large or missing")
             body = json.loads(self.rfile.read(length))
-            if not isinstance(body, dict) or set(body) != {"country"}:
-                raise ValueError("request must contain only a country field")
-            result = self.session.select_country(body["country"])
+            if path == "/api/country":
+                if not isinstance(body, dict) or set(body) != {"country"}:
+                    raise ValueError("request must contain only a country field")
+                result = self.session.select_country(body["country"])
+            else:
+                result = self.session.confirm_management(body)
         except (ValueError, json.JSONDecodeError, UnicodeDecodeError) as exc:
             self._json(400, {"error": str(exc)})
             return

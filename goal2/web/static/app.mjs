@@ -1,7 +1,8 @@
 // [designed: T35] Browser selections are drafts; the Python session owns country and roster data.
 let session = null;
 let countries = [];
-let draft = { selected: new Set(), captain: null };
+let draft = { selected: new Set(), captain: null, tactics: 0 };
+let busy = false;
 const $ = selector => document.querySelector(selector);
 const rows = $('#squad-rows');
 
@@ -19,11 +20,27 @@ function selectionMessage() {
   if (count < 11) return `Choose ${11 - count} more player${11 - count === 1 ? '' : 's'} to complete the draft.`;
   return `Remove ${count - 11} player${count - 11 === 1 ? '' : 's'} to complete the draft.`;
 }
-function resetDraft() {
-  draft.selected = new Set(session.starting_eleven.slice(0, 11));
-  draft.captain = session.captain && draft.selected.has(session.captain)
-    ? session.captain : [...draft.selected][0] ?? null;
+function tacticsMessage(value) {
+  return session.tactics_options.map(option => {
+    const set = Boolean(value & (1 << (option.element - 1)));
+    return `${set ? option.set : option.clear} (element ${option.element})`;
+  }).join(' · ');
 }
+function resetDraft() {
+  draft.selected = new Set(session.confirmed.starting_eleven);
+  draft.captain = session.confirmed.captain && draft.selected.has(session.confirmed.captain)
+    ? session.confirmed.captain : [...draft.selected][0] ?? null;
+  draft.tactics = session.confirmed.tactics;
+}
+function setBusy(value) {
+  busy = value;
+  $('#country-select').disabled = value;
+  $('#confirm-button').disabled = value || !draftIsValid();
+  $('#cancel-button').disabled = value;
+  $('#reset-button').disabled = value;
+  if (value) document.querySelectorAll('.player-check, [data-captain], #captain-select, [data-tactic-bit]').forEach(control => { control.disabled = true; });
+}
+function draftIsValid() { return draft.selected.size === 11 && draft.selected.has(draft.captain); }
 function showPage(name) {
   const isSquad = name === 'squad';
   $('#dashboard-page').classList.toggle('hidden', isSquad);
@@ -77,7 +94,24 @@ function render() {
     $('#match-status').textContent = 'This matchup is unavailable for the loaded game.';
   }
   paintCountryPicker();
+  const confirmedPlayers = session.players.filter(player => session.confirmed.starting_eleven.includes(player.id));
+  $('#confirmed-eleven').textContent = confirmedPlayers.map(player => player.name).join(', ') || 'Not set';
+  $('#confirmed-captain').textContent = session.players.find(player => player.id === session.confirmed.captain)?.name ?? 'Not set';
+  $('#confirmed-tactics').textContent = tacticsMessage(session.confirmed.tactics);
+  renderTactics();
   renderSquad();
+}
+function renderTactics(focusBit = null) {
+  $('#tactics-controls').innerHTML = session.tactics_options.map(option => {
+    const bit = option.element - 1;
+    const selected = Boolean(draft.tactics & (1 << bit));
+    const clear = safe(option.clear);
+    const set = safe(option.set);
+    const label = selected ? set : clear;
+    const evidence = option.evidence === 'confirmed' ? 'F010 confirmed label' : 'Rebuild label';
+    return `<label class="tactic-option"><input type="checkbox" data-tactic-bit="${bit}" aria-label="Element ${option.element}: ${clear} or ${set}" ${selected ? 'checked' : ''} ${busy ? 'disabled' : ''}><span><strong>${label}</strong><small>Element ${option.element} · ${evidence}</small></span></label>`;
+  }).join('');
+  if (focusBit !== null) $(`[data-tactic-bit="${focusBit}"]`)?.focus({ preventScroll: true });
 }
 function renderSquad(focusSelector = null) {
   if (!session) return;
@@ -86,12 +120,12 @@ function renderSquad(focusSelector = null) {
     const isSelected = draft.selected.has(player.id);
     const captain = isSelected && player.id === draft.captain;
     return `<tr class="${isSelected ? 'is-selected' : ''}">
-      <td class="select-col"><input class="player-check" type="checkbox" aria-label="Select ${safe(player.name)} for starting eleven draft" data-select="${player.id}" ${isSelected ? 'checked' : ''}></td>
+      <td class="select-col"><input class="player-check" type="checkbox" aria-label="Select ${safe(player.name)} for starting eleven draft" data-select="${player.id}" ${isSelected ? 'checked' : ''} ${busy ? 'disabled' : ''}></td>
       <td><div class="player-cell"><span class="player-number">${String(player.number).padStart(2, '0')}</span><span class="player-initials">${safe(player.initials)}</span><span class="player-name">${safe(player.name)}${captain ? '<span class="captain-mark" aria-label="Draft captain">C</span>' : ''}</span></div></td>
       <td><span class="position-cell"><span class="role-chip">${Number(player.position).toString(16).toUpperCase()}</span>code ${player.position}</span></td>
       <td><span class="rating-value">${player.ability}</span></td>
       <td><span class="energy-value">${player.energy}</span></td>
-      <td class="captain-cell"><input type="radio" name="captain" aria-label="Make ${safe(player.name)} draft captain" data-captain="${player.id}" ${captain ? 'checked' : ''} ${isSelected ? '' : 'disabled'}></td>
+      <td class="captain-cell"><input type="radio" name="captain" aria-label="Make ${safe(player.name)} draft captain" data-captain="${player.id}" ${captain ? 'checked' : ''} ${isSelected && !busy ? '' : 'disabled'}></td>
     </tr>`;
   }).join('');
   const energy = selected.length ? Math.round(selected.reduce((sum, player) => sum + player.energy, 0) / selected.length) : '—';
@@ -105,10 +139,14 @@ function renderSquad(focusSelector = null) {
   $('#squad-energy').textContent = energy;
   $('#selection-count').classList.toggle('complete', selected.length === 11);
   const captainSelect = $('#captain-select');
-  captainSelect.disabled = selected.length === 0;
+  captainSelect.disabled = selected.length === 0 || busy;
   captainSelect.innerHTML = selected.length
     ? selected.map(player => `<option value="${player.id}" ${player.id === draft.captain ? 'selected' : ''}>${safe(player.name)}</option>`).join('')
     : '<option value="" selected>No selected players</option>';
+  $('#confirm-button').disabled = busy || !draftIsValid();
+  $('#management-feedback').textContent = draftIsValid()
+    ? 'Draft valid. Confirm to update the local game session, or cancel to restore confirmed choices.'
+    : selectionMessage() + (draft.selected.has(draft.captain) ? '' : ' Choose a captain from the eleven.');
   if (focusSelector) $(focusSelector)?.focus({ preventScroll: true });
 }
 async function fetchJson(url, options = {}) {
@@ -120,7 +158,7 @@ async function fetchJson(url, options = {}) {
 async function chooseCountry(countryId) {
   const picker = $('#country-select');
   const previous = session.country.id;
-  picker.disabled = true;
+  setBusy(true);
   try {
     session = await fetchJson('/api/country', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -134,7 +172,37 @@ async function chooseCountry(countryId) {
     $('#load-error').textContent = `Country change failed: ${error.message}`;
     $('#load-error').hidden = false;
   } finally {
-    picker.disabled = false;
+    setBusy(false);
+    renderTactics();
+    renderSquad();
+  }
+}
+async function confirmDraft() {
+  setBusy(true);
+  $('#management-feedback').textContent = 'Confirming team choices…';
+  let confirmed = false;
+  let failure = null;
+  try {
+    session = await fetchJson('/api/management', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        country: session.country.id,
+        starting_eleven: session.players.filter(player => draft.selected.has(player.id)).map(player => player.id),
+        captain: draft.captain,
+        tactics: draft.tactics,
+      }),
+    });
+    resetDraft();
+    render();
+    confirmed = true;
+  } catch (error) {
+    failure = `Team was not confirmed: ${error.message}`;
+  } finally {
+    setBusy(false);
+    renderTactics();
+    renderSquad();
+    if (confirmed) $('#management-feedback').textContent = 'Team confirmed in the local game session.';
+    if (failure) $('#management-feedback').textContent = failure;
   }
 }
 
@@ -163,7 +231,21 @@ $('#captain-select').addEventListener('change', event => {
   const id = Number(event.target.value);
   if (draft.selected.has(id)) { draft.captain = id; renderSquad('#captain-select'); }
 });
-$('#reset-button').addEventListener('click', () => { resetDraft(); renderSquad(); });
+$('#reset-button').addEventListener('click', () => { resetDraft(); renderTactics(); renderSquad(); });
+$('#cancel-button').addEventListener('click', () => {
+  resetDraft();
+  renderTactics();
+  renderSquad();
+  $('#management-feedback').textContent = 'Draft canceled. Confirmed team choices restored.';
+});
+$('#confirm-button').addEventListener('click', confirmDraft);
+$('#tactics-controls').addEventListener('change', event => {
+  if (event.target.dataset.tacticBit === undefined) return;
+  const bit = Number(event.target.dataset.tacticBit);
+  draft.tactics = event.target.checked ? draft.tactics | (1 << bit) : draft.tactics & ~(1 << bit);
+  renderTactics(bit);
+  $('#management-feedback').textContent = 'Tactics draft changed. Confirm to update the local game session.';
+});
 
 try {
   [countries, session] = await Promise.all([fetchJson('/api/countries').then(data => data.countries), fetchJson('/api/session')]);
