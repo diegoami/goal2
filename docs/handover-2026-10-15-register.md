@@ -67,9 +67,11 @@ The owner: the target game's UI has nothing to do with the original's, and the o
 mapped in the new game at all. They matter only for automating the original (the driver and any bot that
 plays it). So the sitting rows about prompts, time-outs and match-screen keys were removed from this branch
 (they live in goal2-archaeology's coverage map and in finding F030 when T56 lands), and GA-4 is marked "not a
-rebuild rule". `docs/plan.md` P6 says "the original's screens ... in the original's layout and keys": the goal2
-session reconciles that with this decision. Recorded in goal2-archaeology
-`experiments/E015-human-playthrough/owner-questions-2026-10-11.md` (5782be9).
+rebuild rule". goal2's `docs/plan.md` P6 (at a2ac625) already says the catalogue identifies
+information/actions "rather than requiring the original layout/keys": consistent with this. The owner reacted to
+an older wording and said P6 "must go, it is unpractical"; whether the remaining use of the screen catalogue
+in P6 should go too is a question for the owner, not decided. Recorded in goal2-archaeology
+`experiments/E015-human-playthrough/owner-questions-2026-10-11.md`.
 
 ## Owner wishes (not rules, for P6, wording as given)
 
