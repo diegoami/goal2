@@ -250,6 +250,8 @@ class WebSession:
         self.state.starting_eleven = candidate.starting_eleven
         self.state.captain = candidate.captain
         self.state.country_tactics = candidate.country_tactics
+        self._play_token = secrets.token_urlsafe(24)
+        result["play_token"] = self._play_token
         return result
 
     def select_country(self, raw_country: Any) -> dict[str, Any]:
@@ -281,6 +283,8 @@ class WebSession:
             self.state.starting_eleven = candidate_state.starting_eleven
             self.state.captain = candidate_state.captain
             self.state.country_tactics = candidate_state.country_tactics
+            self._play_token = secrets.token_urlsafe(24)
+            result["play_token"] = self._play_token
             return result
         return self.view()
 

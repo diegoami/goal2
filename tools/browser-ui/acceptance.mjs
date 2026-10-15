@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// [designed: T35] Real Chromium acceptance against the Python-owned live session.
+// [designed: T35, T37] Real Chromium acceptance against the Python-owned live session.
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { mkdir } from 'node:fs/promises';
@@ -10,7 +10,7 @@ import path from 'node:path';
 const args = process.argv.slice(2);
 const valueAfter = flag => { const at = args.indexOf(flag); return at >= 0 ? args[at + 1] : undefined; };
 const scenario = valueAfter('--scenario');
-assert(args.includes('--scenario') && ['countries', 'management'].includes(scenario), 'use --scenario countries|management');
+assert(args.includes('--scenario') && ['countries', 'management', 'friendlies'].includes(scenario), 'use --scenario countries|management|friendlies');
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 assert(modulePath, 'set PLAYWRIGHT_MODULE to the installed Playwright entrypoint');
 const require = createRequire(import.meta.url);
@@ -182,6 +182,98 @@ try {
     assert.deepEqual(pageErrors, [], 'management browser has no page errors');
     await context.close();
     console.log(`PASS management: ${choice.name}, confirmed eleven/captain/all tactic bits, reload, cancel, invalid states, keyboard and mobile layout`);
+  } else if (scenario === 'friendlies') {
+    const initial = await getSession();
+    const choices = await getCountries();
+    const country = choices.countries.find(item => item.id !== initial.country.id && item.name !== 'Denmark');
+    assert(country, 'a non-Denmark management choice exists');
+    browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const page = await context.newPage();
+    const pageErrors = [];
+    let playPosts = 0;
+    page.on('pageerror', error => pageErrors.push(error.message));
+    page.on('request', request => { if (request.url().endsWith('/api/play')) playPosts += 1; });
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    await page.locator('#club-country').waitFor({ state: 'visible' });
+    await page.locator('#country-select').selectOption(String(country.id));
+    await page.waitForFunction(expected => document.querySelector('#club-country')?.textContent === expected, country.name);
+    await page.locator('[data-page="squad"]').click();
+    let current = await getSession();
+    const target = current.players.slice(2, 13).map(player => player.id);
+    for (const player of current.players) {
+      const checkbox = page.locator(`[data-select="${player.id}"]`);
+      if (await checkbox.isChecked() !== target.includes(player.id)) await checkbox.setChecked(target.includes(player.id));
+    }
+    await page.locator('#captain-select').selectOption(String(target[4]));
+    const tactics = 0x5A;
+    for (let bit = 0; bit < 8; bit += 1) await page.locator(`[data-tactic-bit="${bit}"]`).setChecked(Boolean(tactics & (1 << bit)));
+    await page.locator('#confirm-button').click();
+    await page.waitForFunction(() => document.querySelector('#management-feedback')?.textContent.includes('Team confirmed'));
+    current = await getSession();
+    assert.deepEqual(current.confirmed.starting_eleven, target, 'custom eleven is confirmed before Play');
+    assert.equal(current.confirmed.captain, target[4], 'custom captain is confirmed before Play');
+    assert.equal(current.confirmed.tactics, tactics, 'custom tactics are confirmed before Play');
+    await page.locator('[data-page="dashboard"]').click();
+    assert.equal(await page.locator('#match-score').textContent(), 'VS', 'preview does not simulate a match');
+    assert.equal(await page.locator('#play-button').isEnabled(), true, 'explicit Play is available for the resolved matchup');
+    const beforeFailure = await getSession();
+    await page.route('**/api/play', async route => {
+      const payload = JSON.parse(route.request().postData());
+      await route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({
+        error: 'synthetic browser refusal', play_token: payload.play_token,
+      }) });
+      await page.unroute('**/api/play');
+    });
+    await page.locator('#play-button').click();
+    await page.waitForFunction(() => document.querySelector('#match-feedback')?.textContent.includes('Friendly failed: synthetic browser refusal'));
+    assert.equal((await getSession()).match_count, beforeFailure.match_count, 'failed browser request leaves authoritative match count unchanged');
+    assert.equal(await page.locator('#play-button').isEnabled(), true, 'visible failure leaves explicit Play usable');
+    await page.locator('#play-button').click();
+    await page.waitForFunction(() => document.querySelector('#match-tag')?.textContent.startsWith('MATCH '));
+    let completed = await getSession();
+    assert.equal(completed.match_count, 1, 'one explicit click completes one match');
+    assert.equal(completed.last_match.match_count, 1);
+    assert.equal(completed.last_match.teams[completed.last_match.managed_side].id, country.id, 'result uses selected managed country');
+    assert.equal(await page.locator('#home-team').textContent(), completed.last_match.teams[0].name, 'first engine team is shown first');
+    assert.equal(await page.locator('#away-team').textContent(), completed.last_match.teams[1].name, 'second engine team is shown second');
+    assert.equal(await page.locator('#home-side').textContent(), completed.last_match.managed_side === 0 ? 'MANAGED TEAM · TEAM A' : 'TEAM A', 'managed side is identified in ordered result');
+    assert.match(await page.locator('#match-score').textContent(), /^\d+ – \d+$/, 'full-time ordered score is visible');
+    assert.match(await page.locator('#match-status').textContent(), /Half-time/, 'half-time score is visible');
+    const eventRows = await page.locator('#goal-events li').allTextContents();
+    if (completed.last_match.goals.length) {
+      assert.equal(eventRows.length, completed.last_match.goals.length, 'every engine goal event is shown');
+      for (const goal of completed.last_match.goals) assert(eventRows.some(row => row.includes(goal.player_name) && row.includes(goal.team_name)), 'goal scorer and team are named');
+    } else assert.deepEqual(eventRows, ['No goals'], 'a scoreless match says there were no goals');
+    assert((await page.locator('#result-detail').textContent()).includes(completed.last_match.seeds.join(' / ')), 'both retained seeds are visible');
+    assert.equal(playPosts, 2, 'failed request and explicit retry are separate browser submissions');
+    assert.equal(await page.locator('#play-button').isEnabled(), true, 'Play is re-enabled after the match finishes');
+    await page.reload({ waitUntil: 'networkidle' });
+    completed = await getSession();
+    assert.equal(completed.match_count, 1, 'reload does not simulate another match');
+    assert.equal(playPosts, 2, 'reload does not submit a match request');
+    assert.equal(await page.locator('#match-tag').textContent(), 'MATCH 1', 'reload displays the retained result');
+    await page.locator('#another-button').click();
+    assert.equal(await page.locator('#topbar-page').textContent(), 'Squad', 'another friendly returns to team management');
+    const retained = await getSession();
+    assert.equal(retained.country.id, country.id, 'management remains on the same country');
+    assert.deepEqual(retained.confirmed.starting_eleven, target, 'confirmed lineup is carried into repeat management');
+    assert.equal(retained.confirmed.captain, target[4]);
+    assert.equal(retained.confirmed.tactics, tactics);
+    assert.equal(await page.locator(`[data-select="${target[0]}"]`).isEnabled(), true, 'management roster is usable after returning');
+    assert.equal(await page.locator('[data-tactic-bit="0"]').isEnabled(), true, 'management tactics are usable after returning');
+    for (const player of retained.players) {
+      assert.equal(await page.locator(`[data-select="${player.id}"]`).isChecked(), target.includes(player.id), 'management shows the retained eleven');
+      assert.equal((await page.locator(`[data-select="${player.id}"]`).locator('xpath=ancestor::tr').locator('.energy-value').textContent()).trim(), String(player.energy), 'management energy reflects retained player records');
+    }
+    await page.locator('[data-page="dashboard"]').click();
+    await page.locator('#play-button').click();
+    await page.waitForFunction(() => document.querySelector('#match-tag')?.textContent === 'MATCH 2');
+    assert.equal((await getSession()).match_count, 2, 'a second explicit Play advances the retained session');
+    assert.equal(playPosts, 3, 'two successful explicit clicks produce two matches');
+    assert.deepEqual(pageErrors, [], 'friendly browser has no page errors');
+    await context.close();
+    console.log(`PASS friendlies: ${country.name}, confirmed custom team/tactics, explicit play, named result, reload, management return and repeat`);
   } else {
   const initial = await getSession();
   const countryView = await getCountries();

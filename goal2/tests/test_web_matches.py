@@ -16,7 +16,7 @@ from goal2.game.state import GameState
 from goal2.engine.savestate import Savestate
 from goal2.game.quick_match import run_full_match
 from goal2.game.state import from_savestate, to_savestate
-from goal2.web.server import Handler, WebSession
+from goal2.web.server import Handler, StalePlaySubmission, WebSession
 
 
 def make_session() -> WebSession:
@@ -163,6 +163,47 @@ class BrowserMatchesTests(unittest.TestCase):
                 server.server_close()
                 thread.join(timeout=2)
 
+    def test_confirmed_state_changes_invalidate_prior_explicit_play_token(self):
+        old_token = self.session.view()["play_token"]
+        confirmed = self.session.confirm_management({
+            "country": 7, "starting_eleven": list(range(281, 292)),
+            "captain": 290, "tactics": 0x5A,
+        })
+        self.assertNotEqual(confirmed["play_token"], old_token)
+        def simulate(_template, candidate, *, retain_state):
+            candidate.match_count += 1
+            candidate.last_match = {
+                "teams": (7, 1), "score": (0, 0), "goals": [],
+                "halves": ({"score": (0, 0)}, {"score": (0, 0)}),
+                "seed_DS7B62": 3, "seed_DS8336": 4,
+            }
+            return {"managed_side": 0}
+
+        with patch("goal2.web.server.to_savestate", return_value=b"adapted"), \
+             patch("goal2.web.server.Savestate", return_value=object()), \
+             patch("goal2.web.server.run_full_match", side_effect=simulate) as runner:
+            with self.assertRaisesRegex(StalePlaySubmission, "already used or is stale"):
+                self.session.play({"play_token": old_token})
+            runner.assert_not_called()
+
+        country_record = bytearray(0xBF)
+        for index, player in enumerate(range(1, 21)):
+            country_record[index * 2:index * 2 + 2] = player.to_bytes(2, "little")
+        country_record[0x2D] = 0xA5
+        countries = list(self.session.state.countries)
+        countries[8] = bytes(country_record)
+        self.session.state.countries = countries
+        before_country_change = confirmed["play_token"]
+        changed = self.session.select_country(8)
+        self.assertEqual(changed["country"]["id"], 8)
+        self.assertNotEqual(changed["play_token"], before_country_change)
+        with patch("goal2.web.server.to_savestate", return_value=b"adapted"), \
+             patch("goal2.web.server.Savestate", return_value=object()), \
+             patch("goal2.web.server.run_full_match", side_effect=simulate) as runner:
+            with self.assertRaisesRegex(StalePlaySubmission, "already used or is stale"):
+                self.session.play({"play_token": before_country_change})
+            runner.assert_not_called()
+
     def test_simulation_failure_discards_candidate_and_keeps_session_usable(self):
         before = copy.deepcopy(self.session.state)
         token = self.session.view()["play_token"]
@@ -211,9 +252,16 @@ class BrowserMatchesTests(unittest.TestCase):
             direct.last_match["managed_side"] = direct_result["managed_side"]
             direct.last_match["match_count"] = direct.match_count
             web_result = session.play({"play_token": session.view()["play_token"]})
-            self.assertEqual(session.state.players, direct.players)
-            self.assertEqual((session.state.rng_seed_7b62, session.state.rng_seed_8336),
-                             (direct.rng_seed_7b62, direct.rng_seed_8336))
+            player_mismatches = [player for player, (web_record, direct_record)
+                                 in enumerate(zip(session.state.players, direct.players))
+                                 if web_record != direct_record]
+            self.assertEqual({
+                "player_mismatches": player_mismatches,
+                "seeds": (session.state.rng_seed_7b62, session.state.rng_seed_8336),
+            }, {
+                "player_mismatches": [],
+                "seeds": (direct.rng_seed_7b62, direct.rng_seed_8336),
+            }, "browser continuation must use retained records and both carried RNG seeds")
             self.assertEqual(session.state.match_count, direct.match_count)
             self.assertEqual(session.state.last_match, direct.last_match)
             self.assertEqual(web_result["last_match"]["seeds"], [

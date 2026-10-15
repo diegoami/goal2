@@ -1,4 +1,4 @@
-// [designed: T35] Browser selections are drafts; the Python session owns country and roster data.
+// [designed: T35, T37] Browser selections are drafts; the Python session owns country, roster and friendly actions.
 let session = null;
 let countries = [];
 let draft = { selected: new Set(), captain: null, tactics: 0 };
@@ -36,6 +36,8 @@ function setBusy(value) {
   busy = value;
   $('#country-select').disabled = value;
   $('#confirm-button').disabled = value || !draftIsValid();
+  $('#play-button').disabled = value || !session?.matchup.available;
+  $('#another-button').disabled = value;
   $('#cancel-button').disabled = value;
   $('#reset-button').disabled = value;
   if (value) document.querySelectorAll('.player-check, [data-captain], #captain-select, [data-tactic-bit]').forEach(control => { control.disabled = true; });
@@ -56,7 +58,7 @@ function paintCountryPicker() {
   $('#country-select').innerHTML = countries.map(country =>
     `<option value="${country.id}" ${country.id === session.country.id ? 'selected' : ''}>${safe(country.name)}</option>`
   ).join('');
-  $('#country-select').disabled = false;
+  $('#country-select').disabled = busy;
 }
 function render() {
   if (!session) return;
@@ -84,7 +86,7 @@ function render() {
     $('#away-monogram').textContent = monogram(opponent.name);
     $('#home-side').textContent = matchup.managed_side === 0 ? 'TEAM A' : 'TEAM B';
     $('#away-side').textContent = matchup.managed_side === 0 ? 'TEAM B' : 'TEAM A';
-    $('#match-status').textContent = 'Opponent identified';
+    $('#match-status').textContent = 'Ready for an explicit Play action';
   } else {
     $('#match-title').textContent = 'Matchup unavailable';
     $('#away-team').textContent = 'Unavailable';
@@ -93,6 +95,39 @@ function render() {
     $('#away-side').textContent = 'OPPONENT';
     $('#match-status').textContent = 'This matchup is unavailable for the loaded game.';
   }
+  const lastMatch = session.last_match;
+  $('#match-result').hidden = !lastMatch;
+  $('#another-button').hidden = !lastMatch;
+  $('#match-eyebrow').textContent = lastMatch ? 'COMPLETED FRIENDLY' : 'FRIENDLY MATCHUP';
+  $('#match-tag').textContent = lastMatch ? `MATCH ${lastMatch.match_count}` : 'READY';
+  $('#match-feedback').textContent = lastMatch ? 'Result retained in this session.' : 'No match has been simulated';
+  if (lastMatch) {
+    const managed = lastMatch.teams[lastMatch.managed_side];
+    const firstTeam = lastMatch.teams[0];
+    const secondTeam = lastMatch.teams[1];
+    $('#match-title').textContent = `${firstTeam.name} vs ${secondTeam.name}`;
+    $('#home-team').textContent = firstTeam.name;
+    $('#away-team').textContent = secondTeam.name;
+    $('#home-side').textContent = lastMatch.managed_side === 0 ? 'MANAGED TEAM · TEAM A' : 'TEAM A';
+    $('#away-side').textContent = lastMatch.managed_side === 1 ? 'MANAGED TEAM · TEAM B' : 'TEAM B';
+    $('#home-monogram').textContent = monogram(firstTeam.name);
+    $('#away-monogram').textContent = monogram(secondTeam.name);
+    $('#score-caption').textContent = 'FULL TIME';
+    $('#match-score').textContent = `${lastMatch.score[0]} – ${lastMatch.score[1]}`;
+    $('#match-status').textContent = `Half-time ${lastMatch.halftime_scores[0].join('–')} · full-time ${lastMatch.halftime_scores[1].join('–')}`;
+    $('#result-heading').textContent = `Managed side: ${managed.name} · ${firstTeam.name} ${lastMatch.score[0]}–${lastMatch.score[1]} ${secondTeam.name}`;
+    $('#goal-events').innerHTML = lastMatch.goals.length
+      ? lastMatch.goals.map(goal => `<li>${goal.minute}' · ${safe(goal.player_name)} · ${safe(goal.team_name)}</li>`).join('')
+      : '<li>No goals</li>';
+    $('#result-detail').textContent = `Match ${lastMatch.match_count} · half-time ${lastMatch.halftime_scores[0].join('–')} · seeds ${lastMatch.seeds.join(' / ')}`;
+  } else {
+    $('#score-caption').textContent = 'EXPLICIT PLAY REQUIRED';
+    $('#match-score').textContent = 'VS';
+    $('#goal-events').replaceChildren();
+    $('#result-detail').textContent = '';
+  }
+  $('#play-button').disabled = busy || !session.matchup.available;
+  $('#play-button').textContent = lastMatch ? 'Play another friendly' : 'Play friendly';
   paintCountryPicker();
   const confirmedPlayers = session.players.filter(player => session.confirmed.starting_eleven.includes(player.id));
   $('#confirmed-eleven').textContent = confirmedPlayers.map(player => player.name).join(', ') || 'Not set';
@@ -144,6 +179,7 @@ function renderSquad(focusSelector = null) {
     ? selected.map(player => `<option value="${player.id}" ${player.id === draft.captain ? 'selected' : ''}>${safe(player.name)}</option>`).join('')
     : '<option value="" selected>No selected players</option>';
   $('#confirm-button').disabled = busy || !draftIsValid();
+  $('#play-button').disabled = busy || !session.matchup.available;
   $('#management-feedback').textContent = draftIsValid()
     ? 'Draft valid. Confirm to update the local game session, or cancel to restore confirmed choices.'
     : selectionMessage() + (draft.selected.has(draft.captain) ? '' : ' Choose a captain from the eleven.');
@@ -152,7 +188,11 @@ function renderSquad(focusSelector = null) {
 async function fetchJson(url, options = {}) {
   const response = await fetch(url, options);
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+  if (!response.ok) {
+    const error = new Error(data.error || `Request failed (${response.status})`);
+    error.data = data;
+    throw error;
+  }
   return data;
 }
 async function chooseCountry(countryId) {
@@ -205,6 +245,25 @@ async function confirmDraft() {
     if (failure) $('#management-feedback').textContent = failure;
   }
 }
+async function playFriendly() {
+  if (busy || !session?.matchup.available) return;
+  setBusy(true);
+  $('#match-feedback').textContent = 'Playing friendly…';
+  try {
+    session = await fetchJson('/api/play', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ play_token: session.play_token }),
+    });
+    render();
+  } catch (error) {
+    if (error.data?.play_token) session.play_token = error.data.play_token;
+    $('#match-feedback').textContent = `Friendly failed: ${error.message}`;
+  } finally {
+    setBusy(false);
+    renderTactics();
+    renderSquad();
+  }
+}
 
 document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showPage('squad')));
@@ -239,6 +298,7 @@ $('#cancel-button').addEventListener('click', () => {
   $('#management-feedback').textContent = 'Draft canceled. Confirmed team choices restored.';
 });
 $('#confirm-button').addEventListener('click', confirmDraft);
+$('#play-button').addEventListener('click', playFriendly);
 $('#tactics-controls').addEventListener('change', event => {
   if (event.target.dataset.tacticBit === undefined) return;
   const bit = Number(event.target.dataset.tacticBit);
