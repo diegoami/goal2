@@ -20,11 +20,19 @@ each with listing lines and run records), its task records and its releases.
 The plan is [`docs/plan.md`](docs/plan.md); every rule the rebuild plays by, and where it comes
 from, is in [`docs/assumptions.md`](docs/assumptions.md). Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
 
-Run the screen chain with local game data and a savestate:
+Run the screen chain with local game data and a halftime savestate. The loop
+keeps its rebuild-owned continuation save at `.cache/session.g2save` by
+default. After a friendly, choose **Save and quit**; resume with the save and
+the local GOAL.DAT:
 
 ```bash
 python3 -m goal2.loop .cache/<savestate>.sav .cache/GOAL.DAT
+python3 -m goal2.loop --resume .cache/session.g2save .cache/GOAL.DAT
 ```
+
+Pass `--save PATH` to choose another session-save path. Session saves use a
+versioned explicit-data format for this rebuild and do not claim compatibility
+with the original game's save formats. [designed: T33]
 
 [designed: T31] Interactive screens flush each 80×25 frame before reading
 input. ANSI-capable terminals clear and redraw in place without a trailing
@@ -57,8 +65,8 @@ title labels the setup as assumed; it names both teams in engine score order,
 identifies the managed team, shows halftime and fulltime scores, and lists
 each goal with its team, scorer, half and minute. PageUp/PageDown pages
 overflow; Enter finishes and Esc quits. After a successful friendly, the next
-screen offers another friendly or quit. Another friendly keeps the chosen
-country, squad, eleven, captain and tactics, and starts with retained player
+screen offers another friendly, Save and quit, or Quit. Another friendly keeps
+the chosen country, squad, eleven, captain and tactics, and starts with retained player
 records and both final RNG words. The squad screen shows each player's current
 energy. The template supplies initial players, tables and seeds; original
 match setup and half-time energy recovery are not reproduced. These retained

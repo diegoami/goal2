@@ -1,4 +1,4 @@
-"""The main loop driver: country → squad → tactics → preview → result.
+"""The main loop driver: country → squad → tactics → preview → result. [designed: T33]
 
 [derived: T15's `pick_computer_eleven` and `get_computer_tactics` are not on
 T16's path in v1; GA-4 keys flow through the driver to each screen.]
@@ -8,7 +8,7 @@ A-MATCH-2/3 — refusals are surfaced by run_result itself.]
 """
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Callable, Iterable
 
 from goal2.data.goaldat import GoalDat
 from goal2.game.state import GameState, to_savestate
@@ -26,6 +26,9 @@ def run_main_loop(
     state: GameState,
     original_savestate_bytes: bytes,
     keys: Iterable[Key] | None = None,
+    *,
+    on_save: Callable[[], None] | None = None,
+    resume: bool = False,
 ) -> int:
     """Run the country → squad → tactics → preview → result loop.
 
@@ -37,6 +40,8 @@ def run_main_loop(
        run_result in full-friendly mode.
     5. After a successful friendly, offer another friendly or quit. Repeats
        retain the selected country and current squad/tactics choices.
+    A resumed session opens the next-action menu first and preserves its
+    managed country without revisiting country selection. [designed: T33]
 
     [confirmed: A-WATCH-1 — result is a stand-in, running the quick engine;
     GA-4 — keys flow through the driver to each screen.
@@ -50,10 +55,19 @@ def run_main_loop(
     # to a single iterator once. (Luna R2, 2026-10-13)
     keys = iter(keys) if keys is not None else None
 
-    # Step 1: country select
-    chosen = run_country_select(goaldat, keys, state=state)
-    if chosen is None:
-        return 0
+    # A resumed save first asks for an explicit next action. It keeps the
+    # saved managed country and never re-enters country selection. [designed: T33]
+    if resume:
+        if on_save is None:
+            proceed = run_next_action(keys)
+        else:
+            proceed = run_next_action(keys, on_save=on_save)
+        if not proceed:
+            return 0
+    else:
+        chosen = run_country_select(goaldat, keys, state=state)
+        if chosen is None:
+            return 0
 
     while True:
         # Re-entering the loop keeps managed_country and all confirmed choices.
@@ -81,5 +95,7 @@ def run_main_loop(
         if state.match_count == count_before:
             # A refusal or other unsuccessful simulation has no next fixture.
             return 0
-        if not run_next_action(keys):
+        next_action = (run_next_action(keys) if on_save is None
+                       else run_next_action(keys, on_save=on_save))
+        if not next_action:
             return 0

@@ -196,15 +196,18 @@ class InputContext(unittest.TestCase):
                 manager.__enter__.side_effect = lambda: events.append("enter")
                 manager.__exit__.side_effect = lambda *args: events.append("exit") or False
 
-                def run_chain(*args):
+                def run_chain(*args, **kwargs):
                     self.assertEqual(events, ["enter"])
                     events.append("run")
+                    self.assertTrue(callable(kwargs["on_save"]))
                     return 7
 
                 run.side_effect = run_chain
                 self.assertEqual(loop.main(["loop", str(state_path), str(data_path)]), 7)
             context.assert_called_once_with()
-            run.assert_called_once_with("goaldat", "state", b"state")
+            run.assert_called_once()
+            self.assertEqual(run.call_args.args, ("goaldat", "state", b"state"))
+            self.assertTrue(callable(run.call_args.kwargs["on_save"]))
             self.assertEqual(events, ["enter", "run", "exit"])
 
 
