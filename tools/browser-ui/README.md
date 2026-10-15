@@ -1,6 +1,6 @@
 # Live browser management, friendlies and acceptance
 
-[designed: T35–T37] `acceptance.mjs` drives a real Chromium browser against the
+[designed: T35–T38] `acceptance.mjs` drives a real Chromium browser against the
 Python server. The `management` scenario checks a non-Denmark country,
 lineup/captain/eight tactics confirmation, the confirmed preview, reload, draft
 cancellation, rejected invalid states, keyboard focus and mobile layout. The
@@ -14,6 +14,8 @@ GOAL.DAT bytes.
 ```sh
 PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs \
   node tools/browser-ui/acceptance.mjs --scenario management
+PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs \
+  node tools/browser-ui/acceptance.mjs --scenario persistence
 ```
 
 The default smoke uses `.cache/e010-r0001-halftime.sav` and `.cache/GOAL.DAT`.
@@ -35,7 +37,13 @@ full-time score, named goal events, match count and both retained seeds. Use
 **Another friendly · Manage team** to return to the same country's squad with
 the updated player energy and confirmed choices, then play again.
 
-The view is local and in-memory: closing the server discards browser-session
-changes. The server continues to require an existing compatible friendly
-savestate and GOAL.DAT; it does not construct a new game or recover unsupported
-template states.
+**Save session** writes `.cache/session.g2save` (or the path given with
+`--save`); **Load saved session** checks its full state and continuation before
+changing the live session. A new game starts with the existing savestate and
+GOAL.DAT command above. Resume with
+`python3 -m goal2.web --resume .cache/session.g2save .cache/GOAL.DAT`; this
+requires the save and GOAL.DAT, but no original savestate path. To transfer a
+session, copy the `.g2save` file to the other computer and pass that path to
+`--resume`; keep a local GOAL.DAT there too. `.g2save` is the rebuild's versioned
+JSON session format and does not claim compatibility with original binary
+`.sav` files.

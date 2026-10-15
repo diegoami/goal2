@@ -40,6 +40,8 @@ function setBusy(value) {
   $('#another-button').disabled = value;
   $('#cancel-button').disabled = value;
   $('#reset-button').disabled = value;
+  $('#save-session-button').disabled = value;
+  $('#load-session-button').disabled = value;
   if (value) document.querySelectorAll('.player-check, [data-captain], #captain-select, [data-tactic-bit]').forEach(control => { control.disabled = true; });
 }
 function draftIsValid() { return draft.selected.size === 11 && draft.selected.has(draft.captain); }
@@ -265,6 +267,42 @@ async function playFriendly() {
   }
 }
 
+async function saveSession() {
+  setBusy(true);
+  $('#save-feedback').textContent = 'Saving session…';
+  try {
+    await fetchJson('/api/save', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
+    });
+    $('#save-feedback').textContent = 'Session saved. Copy the .g2save file to move it to another computer.';
+  } catch (error) {
+    $('#save-feedback').textContent = `Save failed: ${error.message}`;
+  } finally {
+    setBusy(false);
+    renderTactics();
+    renderSquad();
+  }
+}
+async function loadSession() {
+  setBusy(true);
+  $('#save-feedback').textContent = 'Checking saved session…';
+  try {
+    session = await fetchJson('/api/load', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
+    });
+    resetDraft();
+    showPage('dashboard');
+    render();
+    $('#save-feedback').textContent = 'Saved session loaded. No match was simulated.';
+  } catch (error) {
+    $('#save-feedback').textContent = `Load failed; current session is unchanged: ${error.message}`;
+  } finally {
+    setBusy(false);
+    renderTactics();
+    renderSquad();
+  }
+}
+
 document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showPage('squad')));
 $('.brand').addEventListener('click', event => { event.preventDefault(); showPage('dashboard'); });
@@ -299,6 +337,8 @@ $('#cancel-button').addEventListener('click', () => {
 });
 $('#confirm-button').addEventListener('click', confirmDraft);
 $('#play-button').addEventListener('click', playFriendly);
+$('#save-session-button').addEventListener('click', saveSession);
+$('#load-session-button').addEventListener('click', loadSession);
 $('#tactics-controls').addEventListener('change', event => {
   if (event.target.dataset.tacticBit === undefined) return;
   const bit = Number(event.target.dataset.tacticBit);

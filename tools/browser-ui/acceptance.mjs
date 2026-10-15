@@ -2,7 +2,7 @@
 // [designed: T35, T37] Real Chromium acceptance against the Python-owned live session.
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { setTimeout as delay } from 'node:timers/promises';
 import path from 'node:path';
@@ -10,7 +10,7 @@ import path from 'node:path';
 const args = process.argv.slice(2);
 const valueAfter = flag => { const at = args.indexOf(flag); return at >= 0 ? args[at + 1] : undefined; };
 const scenario = valueAfter('--scenario');
-assert(args.includes('--scenario') && ['countries', 'management', 'friendlies'].includes(scenario), 'use --scenario countries|management|friendlies');
+assert(args.includes('--scenario') && ['countries', 'management', 'friendlies', 'persistence'].includes(scenario), 'use --scenario countries|management|friendlies|persistence');
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 assert(modulePath, 'set PLAYWRIGHT_MODULE to the installed Playwright entrypoint');
 const require = createRequire(import.meta.url);
@@ -21,8 +21,16 @@ const goaldat = valueAfter('--goaldat') || '.cache/GOAL.DAT';
 const screenshotDir = process.env.SCREENSHOT_DIR;
 let child;
 let base = valueAfter('--url');
-if (!base) {
-  child = spawn(process.env.PYTHON || 'python3', ['-m', 'goal2.web', savestate, goaldat, '--host', '127.0.0.1', '--port', '0'], {
+let saveDirectory;
+let savePath;
+if (scenario === 'persistence') {
+  saveDirectory = await mkdtemp(path.join('/tmp', 'goal2-browser-save-'));
+  savePath = path.join(saveDirectory, 'session.g2save');
+}
+async function startServer(resume = false) {
+  child = spawn(process.env.PYTHON || 'python3', resume
+    ? ['-m', 'goal2.web', '--resume', savePath, goaldat, '--host', '127.0.0.1', '--port', '0']
+    : ['-m', 'goal2.web', savestate, goaldat, ...(savePath ? ['--save', savePath] : []), '--host', '127.0.0.1', '--port', '0'], {
     cwd, env: { ...process.env, PYTHONDONTWRITEBYTECODE: '1' }, stdio: ['ignore', 'pipe', 'pipe'],
   });
   let stdout = '';
@@ -31,11 +39,21 @@ if (!base) {
   child.stderr.setEncoding('utf8').on('data', chunk => { stderr += chunk; });
   for (let attempt = 0; attempt < 100; attempt += 1) {
     const match = stdout.match(/http:\/\/127\.0\.0\.1:(\d+)\//);
-    if (match) { base = `http://127.0.0.1:${match[1]}`; break; }
+    if (match) { base = `http://127.0.0.1:${match[1]}`; return; }
     if (child.exitCode !== null) throw new Error(`Python server exited: ${stdout}\n${stderr}`);
     await delay(50);
   }
-  assert(base, `Python server did not report its address: ${stderr}`);
+  throw new Error(`Python server did not report its address: ${stderr}`);
+}
+async function stopServer() {
+  if (child && child.exitCode === null) {
+    child.kill('SIGTERM');
+    await new Promise(resolve => child.once('exit', resolve));
+  }
+  child = null;
+}
+if (!base) {
+  await startServer();
 }
 const getSession = async () => {
   const response = await fetch(`${base}/api/session`);
@@ -182,6 +200,83 @@ try {
     assert.deepEqual(pageErrors, [], 'management browser has no page errors');
     await context.close();
     console.log(`PASS management: ${choice.name}, confirmed eleven/captain/all tactic bits, reload, cancel, invalid states, keyboard and mobile layout`);
+  } else if (scenario === 'persistence') {
+    const initial = await getSession();
+    const countries = await getCountries();
+    const country = countries.countries.find(item => item.id !== initial.country.id && item.name !== 'Denmark');
+    assert(country, 'a non-Denmark management choice exists');
+    browser = await chromium.launch({ headless: true });
+    let context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    let page = await context.newPage();
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    await page.locator('#club-country').waitFor({ state: 'visible' });
+    await page.locator('#country-select').selectOption(String(country.id));
+    await page.waitForFunction(expected => document.querySelector('#club-country')?.textContent === expected, country.name);
+    let current = await getSession();
+    const target = current.players.slice(1, 12).map(player => player.id);
+    await page.locator('[data-page="squad"]').click();
+    for (const player of current.players) {
+      const shouldSelect = target.includes(player.id);
+      const control = page.locator(`[data-select="${player.id}"]`);
+      if (await control.isChecked() !== shouldSelect) await control.setChecked(shouldSelect);
+    }
+    await page.locator('#captain-select').selectOption(String(target[10]));
+    const tactics = 0xA5;
+    for (let bit = 0; bit < 8; bit += 1) await page.locator(`[data-tactic-bit="${bit}"]`).setChecked(Boolean(tactics & (1 << bit)));
+    await page.locator('#confirm-button').click();
+    await page.waitForFunction(() => document.querySelector('#management-feedback')?.textContent.includes('Team confirmed'));
+    current = await getSession();
+    assert.deepEqual(current.confirmed.starting_eleven, target);
+    assert.equal(current.confirmed.captain, target[10]);
+    assert.equal(current.confirmed.tactics, tactics);
+    await page.locator('[data-page="dashboard"]').click();
+    await page.locator('#play-button').click();
+    await page.waitForFunction(() => document.querySelector('#match-tag')?.textContent === 'MATCH 1');
+    const beforeSave = await getSession();
+    await page.locator('#save-session-button').click();
+    await page.waitForFunction(() => document.querySelector('#save-feedback')?.textContent.includes('Session saved'));
+    const savedBytes = await readFile(savePath);
+    assert(savedBytes.includes(Buffer.from('goal2-session')), 'saved bytes use the existing rebuild session format');
+
+    // An invalid candidate must be visible and leave the active live state intact.
+    try {
+      await writeFile(savePath, Buffer.from('{"format":"goal2-session","version":999}'));
+      await page.locator('#load-session-button').click();
+      await page.waitForFunction(() => document.querySelector('#save-feedback')?.textContent.includes('Load failed'));
+      assert.match(await page.locator('#save-feedback').innerText(), /unsupported session save version/);
+      assert.equal((await getSession()).match_count, beforeSave.match_count, 'invalid load keeps current game state');
+      assert.equal((await getSession()).country.id, beforeSave.country.id, 'invalid load keeps current country');
+    } finally {
+      await writeFile(savePath, savedBytes);
+    }
+    assert.deepEqual(await getSession(), beforeSave, 'invalid load left the complete active state unchanged');
+
+    await context.close();
+    await stopServer();
+    await startServer(true);
+    context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    page = await context.newPage();
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    await page.locator('#club-country').waitFor({ state: 'visible' });
+    const resumed = await getSession();
+    assert.equal(resumed.country.id, country.id, 'fresh server resumes the saved managed country');
+    assert.deepEqual(resumed.confirmed.starting_eleven, target, 'fresh server resumes the complete custom eleven');
+    assert.equal(resumed.confirmed.captain, target[10], 'fresh server retains a full captain ID');
+    assert.equal(resumed.confirmed.tactics, tactics, 'fresh server retains all tactics bits');
+    assert.equal(resumed.match_count, 1, 'resuming does not simulate a match');
+    assert.deepEqual(resumed.last_match.score, beforeSave.last_match.score, 'fresh browser shows the retained result');
+    assert.deepEqual(resumed.last_match.seeds, beforeSave.last_match.seeds, 'fresh browser shows retained seeds');
+    assert.equal(await page.locator('#match-tag').textContent(), 'MATCH 1', 'dashboard displays saved result');
+    assert.equal(await page.locator('#match-score').textContent(), `${beforeSave.last_match.score[0]} – ${beforeSave.last_match.score[1]}`);
+    await page.locator('#play-button').click();
+    await page.waitForFunction(() => document.querySelector('#match-tag')?.textContent === 'MATCH 2');
+    assert.equal((await getSession()).match_count, 2, 'explicit Play advances the resumed session');
+    assert.deepEqual(pageErrors, [], 'persistence browser has no page errors');
+    await context.close();
+    console.log(`PASS persistence: ${country.name}, save after friendly, invalid-load preservation, fresh-server resume, explicit next friendly`);
   } else if (scenario === 'friendlies') {
     const initial = await getSession();
     const choices = await getCountries();
@@ -349,4 +444,5 @@ try {
 } finally {
   if (browser) await browser.close();
   if (child && child.exitCode === null) { child.kill('SIGTERM'); await new Promise(resolve => child.once('exit', resolve)); }
+  if (saveDirectory) await rm(saveDirectory, { recursive: true, force: true });
 }
