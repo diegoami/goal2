@@ -61,17 +61,20 @@ were renumbered to avoid the collision (A-WATCH-5..7, GA-7).
 - Nothing in the register describes goal2 code as live that these findings contradict. The new rows
   have Live "-" or a phase tag.
 
-## The original's UI is not the rebuild's UI (owner decision, 2026-10-15)
+## Decisions of the owner for the remaster (2026-10-15), recorded here because they are goal2's
 
-The owner: the target game's UI has nothing to do with the original's, and the original's keys are not to be
-mapped in the new game at all. They matter only for automating the original (the driver and any bot that
-plays it). So the sitting rows about prompts, time-outs and match-screen keys were removed from this branch
-(they live in goal2-archaeology's coverage map and in finding F030 when T56 lands), and GA-4 is marked "not a
-rebuild rule". goal2's `docs/plan.md` P6 (at a2ac625) already says the catalogue identifies
-information/actions "rather than requiring the original layout/keys": consistent with this. The owner reacted to
-an older wording and said P6 "must go, it is unpractical"; whether the remaining use of the screen catalogue
-in P6 should go too is a question for the owner, not decided. Recorded in goal2-archaeology
-`experiments/E015-human-playthrough/owner-questions-2026-10-11.md`.
+- **Substitutions (BM-7):** unlimited in a friendly, 5 in every other match, a deliberate rule that differs
+  from the original (5 per side in a friendly, 2 per side otherwise, finding F027 §4). The owner: "That was a
+  limitation I did not like about the game."
+- **Ties (A-COMP-3, A-COMP-4):** follow the code, no coin (F023 §6 and §8).
+- **The original's UI is not the remaster's UI:** the original's keys, prompts and time-outs are not mapped in
+  goal2; they matter only for exploring and automating the original, which is the work of goal2-archaeology.
+  The rows about prompts and match-screen keys were removed from this branch and GA-4 is marked "not a rebuild
+  rule".
+- **P6 stays** in `docs/plan.md` (the owner, 2026-10-15): this repository (goal2-archaeology) explores the
+  original and delivers findings; decisions about the remaster are made here, in goal2. goal2's P6 (a2ac625)
+  uses the catalogue to identify information/actions, not the original's layout or keys.
+- Evidence store (goal2-archaeology's own matter): one zip per run.
 
 ## Owner wishes (not rules, for P6, wording as given)
 
