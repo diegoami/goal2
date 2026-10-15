@@ -16,6 +16,7 @@ from goal2.ui.country_select import run_country_select
 from goal2.ui.input import Key
 from goal2.ui.preview import run_match_preview
 from goal2.ui.result import run_result
+from goal2.ui.next_action import run_next_action
 from goal2.ui.squad import run_squad_select
 from goal2.ui.tactics import run_tactics_select
 
@@ -34,7 +35,8 @@ def run_main_loop(
     3. run_tactics_select: on False (Esc) returns 0.
     4. Save user choices and show a matchup preview; only Play proceeds to
        run_result in full-friendly mode.
-    5. Finish the current friendly and return to the caller.
+    5. After a successful friendly, offer another friendly or quit. Repeats
+       retain the selected country and current squad/tactics choices.
 
     [confirmed: A-WATCH-1 — result is a stand-in, running the quick engine;
     GA-4 — keys flow through the driver to each screen.
@@ -53,30 +55,31 @@ def run_main_loop(
     if chosen is None:
         return 0
 
-    # Step 2: squad select
-    ok = run_squad_select(goaldat, keys, state=state)
-    if not ok:
-        return 0
+    while True:
+        # Re-entering the loop keeps managed_country and all confirmed choices.
+        ok = run_squad_select(goaldat, keys, state=state)
+        if not ok:
+            return 0
 
-    # Step 3: tactics select
-    ok = run_tactics_select(goaldat, keys, state=state)
-    if not ok:
-        return 0
+        ok = run_tactics_select(goaldat, keys, state=state)
+        if not ok:
+            return 0
 
-    # [derived: T17 vendoring — to_savestate writes the user's state choices
-    # to the savestate bytes; passing the result (not the original) to
-    # run_result means the engine reads the modified savestate.]
-    # Step 4: save user choices, preview the same matchup the runner will use,
-    # and require an explicit Play confirmation before running simulation.
-    saved = to_savestate(state, original=original_savestate_bytes)
-    # [designed: T29] Exhaustion and Esc stop before run_result can simulate.
-    ok = run_match_preview(goaldat, saved, keys, state=state)
-    if not ok:
-        return 0
-    # [designed: T26, A-MATCH-1] Interactive play uses the complete
-    # assumed friendly; the result screen's default remains a half replay.
-    ok = run_result(saved, keys, state=state, full_match=True, goaldat=goaldat)
-    if not ok:
-        return 0
+        # [derived: T17] Serialize the current state so each simulation reads
+        # the retained player records and both final seed words.
+        saved = to_savestate(state, original=original_savestate_bytes)
+        ok = run_match_preview(goaldat, saved, keys, state=state)
+        if not ok:
+            return 0
 
-    return 0
+        count_before = state.match_count
+        # [designed: T26, A-MATCH-1] Interactive play uses the complete
+        # assumed friendly; its successful state changes are retained.
+        ok = run_result(saved, keys, state=state, full_match=True, goaldat=goaldat)
+        if not ok:
+            return 0
+        if state.match_count == count_before:
+            # A refusal or other unsuccessful simulation has no next fixture.
+            return 0
+        if not run_next_action(keys):
+            return 0

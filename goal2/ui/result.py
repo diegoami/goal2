@@ -71,7 +71,10 @@ def run_result(
         if full_match:
             if state is None:
                 raise ValueError("full match requires adapted game state")
-            result = run_full_match(sav, state)
+            # [designed: T32] The interactive full-friendly path retains
+            # successful engine changes for the next friendly. Direct runner
+            # callers keep the default stateless behavior.
+            result = run_full_match(sav, state, retain_state=True)
         else:
             result = _qe.simulate(sav)
     except (FoulPathNotModelled, ExtraTimeNotModelled) as exc:

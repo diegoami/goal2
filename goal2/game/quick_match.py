@@ -58,7 +58,7 @@ def _snapshot(qm: QuickMatch, start: int) -> dict:
     }
 
 
-def run_full_match(template, game_state) -> dict:
+def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
     """Run an assumed full friendly from a normal friendly template.
 
     [confirmed: E010 notes, "Match clock & loop" at 1b694ed] D733 receives
@@ -66,6 +66,9 @@ def run_full_match(template, game_state) -> dict:
     kick-off side and 9A32 the opposite side. [designed: T26] We keep one
     QuickMatch instance so
     its RNG, score, goals, and mutable player/pitch/country state continue.
+    [designed: T32] `retain_state=True` commits the final RNG words and
+    engine-mutated player records to `game_state` after both halves finish.
+    The default preserves the prior stateless API.
     """
     # [designed: T29] Resolve through the same rule the preview displays.
     teams, managed_side, opponent = resolve_full_matchup(template, game_state)
@@ -131,7 +134,7 @@ def run_full_match(template, game_state) -> dict:
     for minute in range(46, 92):
         qm.d733(minute, 91 - minute)
     second = _snapshot(qm, len(first["goals"]))
-    return {
+    result = {
         "score": second["score"],
         "goals": first["goals"] + second["goals"],
         "seed_DS7B62": second["seed_DS7B62"],
@@ -142,3 +145,30 @@ def run_full_match(template, game_state) -> dict:
         "managed_side": managed_side,
         "kickoffs": (first_kickoff, second_kickoff),
     }
+    if retain_state:
+        # Prepare a complete candidate before changing GameState, so engine
+        # refusals and any failure above leave retained state untouched.
+        players = list(game_state.players)
+        for number, record in qm.playerrec.items():
+            players[number] = bytes(record)
+        retained_result = {
+            "score": tuple(result["score"]),
+            "goals": [dict(goal) for goal in result["goals"]],
+            "teams": tuple(result["teams"]),
+            "seed_DS7B62": result["seed_DS7B62"],
+            "seed_DS8336": result["seed_DS8336"],
+            "draws": result["draws"],
+            "halves": tuple({
+                "score": tuple(half["score"]),
+                "goals": [dict(goal) for goal in half["goals"]],
+                "seed_DS7B62": half["seed_DS7B62"],
+                "seed_DS8336": half["seed_DS8336"],
+                "draws": half["draws"],
+            } for half in result["halves"]),
+        }
+        game_state.players = players
+        game_state.rng_seed_7b62 = result["seed_DS7B62"]
+        game_state.rng_seed_8336 = result["seed_DS8336"]
+        game_state.match_count = getattr(game_state, "match_count", 0) + 1
+        game_state.last_match = retained_result
+    return result
