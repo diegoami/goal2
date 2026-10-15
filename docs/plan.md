@@ -19,7 +19,7 @@ names what replaces it.
 
 ## How the rebuild is built
 
-- **Engine parts behind interfaces.** Each rule area (new game, the quick match, energy,
+- **Designed architecture: engine parts behind interfaces.** Each rule area (new game, the quick match, energy,
   confidence, ageing, retirement, competitions, the computer's choices) is a small interface with
   one implementation. A part is an `assumed` stand-in, or a vendored goal2-archaeology model
   (`goal2/engine/`, `PROVENANCE.md`). When a finding lands, its model replaces the stand-in behind
@@ -58,15 +58,62 @@ and refined against completed predecessors before dispatch; their existence does
 | **P6 Interface coverage** | [designed: owner, 2026-10-15] browser management and match flows, using the catalogue to identify information/actions rather than requiring the original layout/keys; match visualization follows available engine evidence | [browser UI roadmap](browser-ui-roadmap.md), `docs/screens.md`, owner B6, D1 and 2026-10-15 UI decision |
 | **P7 Several managers** | up to 6 human managers in one game (the pool's 80 per manager) | F011; owner B7 |
 
-The engine's other half comes from goal2-archaeology, milestone by milestone, and replaces the
-stand-ins without changing the loop:
+Original-engine evidence and reusable model code come from goal2-archaeology, milestone by
+milestone. Each source must be adapted or deliberately vendored and tested before it replaces a
+stand-in; a finding or a static reading alone is not executable support:
 
 | From goal2-archaeology | Replaces here |
 | --- | --- |
 | the quick engine's foul path, extra time and penalties (`FoulPathNotModelled`, `ExtraTimeNotModelled`) | A-MATCH-2, A-MATCH-3: competitive fixtures, knockouts |
 | Q035/Q036, the computer's choices | A-CPU-1..3 |
-| Q030–Q032, Q020: the fixtures, draws, hosts, the other results, the rankings as the code has them | A-COMP-* |
+| Q030–Q032, Q020: the fixtures, draws, hosts, the other results, the rankings as the code has them | A-COMP-*; F023/F024 findings are proposed evidence, not a complete Python competition model |
 | M1–M6, the watched engine (`0791:9564`) | A-WATCH-1: the stand-in becomes the real watched match |
+
+## Campaign implementation map
+
+[derived: T39 audit of the goal2 tree at `fccff58` and goal2-archaeology `origin/main` at
+`0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb`] The upstream findings F022–F029 are still proposed.
+F023's competition builders and F024's silent-result path are static readings; no campaign
+fixture builder, standings model, competitive resolver, energy/recovery adapter, or player
+lifecycle adapter is vendored or implemented here. The only vendored executable engine module is
+`goal2/engine/quick_engine.py`; `savestate.py` and `players.py` support state/data work, not a full
+campaign model. Keep those source categories separate when implementing the map below.
+
+| Area | Existing seam and available evidence | Implementation order and boundary |
+| --- | --- | --- |
+| Calendar and fresh start | `goal2/game/state.py`, `new_game.py`, `session_save.py`; F023 statically reads stages, fixture kinds/counts, groups and ordering. No calendar builder exists. | T40 owns campaign state, seed/year opening-stage selection, ordered fixtures and persistence. F023 §9 reads stage 2 when the start year is divisible by 4 (1992/1996/2000) and stage 5 when it is 2 mod 4 (1990/1994/1998/2002). Stage 2 interleaves kind-2 qualifiers with kind-1 friendlies. T41 may resolve kind 1 only; it must stop clearly at kind 2 until the competitive path exists. T50 cannot depend on friendly simulation of qualifiers. |
+| Condition and availability | Quick engine reads energy/form; F018–F020 and F027 read expenditure, recovery, confidence, morale, injury and ban paths. Upstream `runtime/model/energy.py`, `confidence.py`, `morale.py` and `condition.py` contain reusable entry points, but they are not vendored here and require campaign callers, ordered draws and event sequencing. | T42–T44 adapt those upstream models behind explicit energy/recovery, result-update and selection seams. Keep the unresolved friendly-kind mapping (BM-4), ban timing and fixture-kind injury mapping visible; do not state isolated probes prove fixture-end behavior. |
+| Competitions | F023 statically reads stage builders and 2/1/0 tables; F024 reads D47E and synthetic-fixture behavior. Neither is an importable Python model in goal2. | T48 models computer fixtures at the D47E seam, not through the quick engine. T49 applies the code's no-coin table keys. T50–T54 add qualifying, deciders and finals only once an actual competitive result path is reachable. The owner-selected code behavior governs knockout and table ties; kind-specific deciders still need implementation. |
+| Player lifecycle | F016/F017 are evidence for ageing, retirement, ranking input and recreation. Upstream `runtime/model/ageing.py` and `recreate.py` contain reusable record-level models, but they are not vendored here and need campaign tables, country state and RNG continuity. | T55–T57 adapt those models for rankings, stage-boundary ageing, retirement/recreation and managed-pool handling. F017 reports placement bonuses 800/600/400/200 and +200 per `5E3A` call; F023 §§4/7 confirms kind-3/7 group fixtures call it and receive +200 each, so the findings show no numeric conflict. Keep the source's “knockout fixture” label distinct from the broader call-site coverage and verify the full update chain. T58 owns year/cycle continuation and the no-end behavior; sacking remains a distinct rule to implement from GA-5/6 only after its confidence seam is reconciled. |
+
+[designed: owner decisions recorded in issue #73, 2026-10-15] Keep the rebuild substitution budget
+unlimited for friendlies and five for every other match, despite the original's five/two budget.
+Follow code for table and playoff ties, with no added coin. These choices do not establish the
+original model's behavior or make its unported evidence executable.
+
+### Open rules and replacement seams
+
+[derived: pinned F022–F029 and register rows] Resolve each item at its named seam before claiming
+that the campaign implements it:
+
+- Q030/Q031/Q032: opening stage, actual fixture lists and draws; exact table ordering under equal
+  keys; silent-result behavior against a recorded fixture. Replacement seams: T40 calendar, T49
+  standings, T48 other-country result.
+- Q020: verify the full ranking update chain and its effect on ratings. F017 reports 800/600/400/200
+  placement bonuses and +200 per `5E3A` call; F023 §§4/7 confirms the same +200 for kind-3/7 group
+  calls, so no numeric disagreement is identified. Replacement seam: T55 ranking adapter.
+- F023's initial order arrays and RNG uniformity, host flag's match effect, and the home-side
+  interpretation of stage-6 aggregate ties; replacement seams: T40/T50 scheduling and T51 result
+  resolution.
+- BM-4 confidence fixture-kind mapping; BM-6/BM-8 ban service at fixture end and load/new-game
+  behavior; BM-9 injury duration by actual competition kind; replacement seams: T42–T44.
+- F027's event during added time, extra-time clock and managed stoppage timing; replacement seam:
+  T51 for competitive matches and a later watched-engine task for continuous play.
+- GA-5's threshold edge and group exemption, GA-6's relation to BM-3 confidence, and end-of-cycle
+  sacking behavior; replacement seam: T58 lifecycle transition after the confidence model is
+  reconciled.
+- F026's positional signs/marking overrides, F024 formation choice and F024's heuristic absence of
+  squad-transfer routines; replacement seam: T46/T45 with focused evidence.
 
 **The bot (G-M5)** starts once P5 plays a whole cycle unattended. It needs the loop, the computer
 choice to compare against (`C`), and the determinism above. Its plan is a later issue.
@@ -85,7 +132,7 @@ recorded as `assumed`, with why and what replaces it.
 
 | Risk | What we do |
 | --- | --- |
-| Every finding is still `proposed` (none promoted to goal2-archaeology's `spec/` as of `d6ad065`) | the register names each finding's status; a vendored model is held to its own seed-exact check (CLAUDE.md: the fidelity test is the arbiter); a finding that changes reopens its rows |
+| Campaign findings F022–F029 remain `proposed` at the T39 source pin | the register distinguishes static readings, measured samples and owner choices; an adapted or vendored model is held to its own relevant check (CLAUDE.md: the fidelity test is the arbiter); a finding that changes reopens its rows |
 | The state adapter misplaces a field the models read | round-trip tests against the published savestates, field by field, before any model runs on goal2's state |
 | The first half differs from the second in a way the model does not show (kick-off, the half's start) | A-MATCH-1 is tested against a whole recorded quick match as soon as one exists with a kick-off state |
-| The help file and the code disagree (substitutions: 2/5 in the help, 5 in the owner's play; the pool: 100 in the help, 20 + 80 in the code) | the code wins when a finding says so; until then the register says which source is live and why |
+| The help file and the original code disagree on pool wording (100 vs 20 + 80); the rebuild deliberately changes the original substitution budget (5/2) to unlimited friendlies / five otherwise | the register marks evidence and rebuild policy separately; the designed substitution decision is recorded in issue #73 |
