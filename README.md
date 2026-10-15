@@ -26,9 +26,11 @@ Run the screen chain with local game data and a savestate:
 python3 -m goal2.loop .cache/<savestate>.sav .cache/GOAL.DAT
 ```
 
-[designed: T23, T27] Interactive screens print and flush plain-text frames
-before reading input. Frames append to stdout; VGA colours are omitted, and
-selection rows show an ASCII `>` marker. Scripted key iterables remain silent.
+[designed: T31] Interactive screens flush each 80×25 frame before reading
+input. ANSI-capable terminals clear and redraw in place without a trailing
+newline that scrolls the last row; redirected output and dumb terminals append
+plain frames. VGA colours are omitted, and selection rows show an ASCII `>`
+marker. Scripted key iterables remain silent.
 
 [designed: T28] On the squad screen, ↑/↓ moves through the squad and Space
 toggles inclusion in a local starting-eleven draft. Enter confirms exactly 11
