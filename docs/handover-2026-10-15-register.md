@@ -32,15 +32,18 @@ Measured sample results remain separate from static rules and from rebuild desig
 T39 register preserves the sitting and pass-one finding rows while correcting or qualifying these
 claims:
 
-- NG-6 now records that the opening stage depends on the start year (F023/F025); it no longer says
-  every new game begins with friendlies.
+- NG-6 now records that the opening stage is stage 2 when the start year is divisible by 4, and
+  stage 5 when it is 2 mod 4 (F023/F025); F025's examples are 1992/1996/2000 -> stage 2 and
+  1990/1994/1998/2002 -> stage 5. It no longer says every new game begins with friendlies.
 - A-MATCH-2/3 no longer turn competitive fixtures into friendlies or use a coin for all drawn
   knockouts. The quick foul gate, watched deciders, silent D47E path and their distinct evidence
   are stated separately.
 - A-MATCH-5 leaves home advantage unresolved. F024 locates a host flag but does not establish its
   match effect.
 - A-COMP-3/4 preserve the owner's code-based no-coin choices. A-COMP-6 identifies silent D47E
-  results. A-COMP-7 keeps the F017/F023 ranking-points conflict open.
+  results. A-COMP-7 retains F017's placement bonus amounts and +200 per `5E3A` call; F023 §4/§7
+  confirms kind-3/7 group fixtures use that call and receive +200 each. No numeric conflict is
+  shown; F017's “knockout fixture” label does not describe every call site in F023.
 - A-COMP-10..14 capture calendar, groups, finals, two-leg play-offs and table ordering as proposed
   static readings. Stage 2 includes both kind-2 qualifiers and kind-1 friendlies.
 - A-CPU-1..5 separate original lineup/tactic findings from the existing quick-match selection
@@ -94,9 +97,9 @@ campaign in the following order, while keeping each rule behind a replaceable ad
 | Calendar and fresh start (T40) | `CampaignState`, ordered fixture records and save/load integrated with `goal2/game/state.py` and `session_save.py` | F023 is a static builder reading. Stage 2 interleaves 384 kind-2 fixtures with 384 kind-1 friendlies. T41 can resolve friendlies only and must stop clearly at an unsupported competitive fixture. Qualification cannot be advanced as a friendly. |
 | Condition and availability (T42–T44) | Energy/recovery, confidence/morale and injury/ban adapters around existing match results and selection | F018–F020 and F027 are proposed; isolated probes do not prove fixture-end processing. BM-4 confidence kinds, ban service at fixture end, and BM-9's mapping from competition kinds to injury rules remain unresolved. |
 | Competitions (T48–T54) | Other-country result, standings, qualification, decider and finals adapters | F023 is not an executable model. F024's D47E is a static reading plus synthetic Unicorn probes; use it as a documented seam, not as the quick engine. Resolve task dependencies so T50 does not require competitive play before the task that supplies that resolver. |
-| Lifecycle (T55–T58) | Ranking, stage-boundary ageing, retirement/recreation, sacking and next-cycle transitions | F016/F017/F025 are evidence, not local modules. Resolve the F017/F023 points discrepancy before ranking bonuses; reconcile GA-6's signed sum with BM-3 confidence before implementing sacking. |
+| Lifecycle (T55–T58) | Ranking, stage-boundary ageing, retirement/recreation, sacking and next-cycle transitions | F016/F017/F025 are evidence, not local modules. F017 reports 800/600/400/200 placement bonuses and +200 per `5E3A`; F023 §§4/7 confirms +200 on kind-3/7 group calls, with no numeric conflict shown. Verify the full ranking update chain; reconcile GA-6's signed sum with BM-3 confidence before implementing sacking. |
 
-[confirmed: finding F023 §§2, 9 at the pin above, still proposed and read from the listing] The
+[derived: finding F023 §§2, 9 at the pin above, proposed and read from the listing] The
 calendar synopsis below is a static builder reading; counts were checked arithmetically against
 decoded tables. The fixture list has a play order, not dates. Kind-1 friendlies and competition
 kinds share the same ordered fixture records.
@@ -118,10 +121,14 @@ friendly would corrupt fixture kind, result handling and later tables.
 
 Open rules that must remain explicit until the named seam resolves them:
 
-- Q020: ranking points for kinds 3 and 7 differ between F017 and F023 (T55).
+- Q020: verify the full ranking update chain and its effect on ratings (T55). F017 reports
+  800/600/400/200 placement bonuses and +200 per `5E3A`; F023 §§4/7 confirms `5E3A` is also used
+  for kind-3/7 group fixtures with +200 each. No numeric disagreement is identified, though
+  F017's “knockout fixture” wording does not describe every call site.
 - Q028 and F023/F024 host references: home advantage and host-flag effect (T51/T52).
-- Q030–Q032: new-game stage and actual fixture lists, draw behavior and silent results against
-  recorded campaign fixtures (T40/T48/T50).
+- Q030–Q032: actual fixture lists, draw behavior and silent results against recorded campaign
+  fixtures (T40/T48/T50). The start-stage predicate is statically read: start years divisible by
+  4 begin at stage 2; years 2 mod 4 begin at stage 5.
 - Q031 and F023 §8: exact ordering when all three table keys tie; the source says no further key,
   but does not establish stable ordering (T49).
 - Q033, F027 and BM-4/BM-8/BM-9: ban and injury processing at fixture ends, load/new-game behavior
