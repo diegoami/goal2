@@ -6,9 +6,11 @@ The owner's decisions of 2026-10-12 (goal2 #2):
 2. **The watched match is a stand-in** until goal2-archaeology's M2–M5 land: the quick engine's
    result, shown with commentary lines, labelled as a stand-in. Nothing about how a watched match
    plays is invented.
-3. **The UI keeps the original's text look, drawn so it can grow**: zoomable, more readable,
-   extensible (the owner's words: "project in way that we can extend it and make zoomable and more
-   readable"). Screens draw into a character grid; a renderer turns the grid into pixels.
+3. **The interface should be clear and easy to extend.** [designed: owner, 2026-10-15]
+   The playable UI uses ordinary browser controls backed by Python; it does not need a custom
+   text look. This supersedes the earlier text-renderer requirement for the primary UI. Existing
+   terminal screens remain available. Match-engine visualization comes later; see the concrete
+   [browser UI roadmap](browser-ui-roadmap.md).
 4. **The main session drafts** this plan and the register.
 
 Every rule the rebuild plays by is in [`assumptions.md`](assumptions.md), tagged by where it comes
@@ -30,10 +32,10 @@ names what replaces it.
   bytes field by field.
 - **Determinism.** One LCG stream, seeded as F004 says. No wall clock and no unseeded randomness
   in any rule. A whole campaign replays from its seed and its inputs. The bot (G-M5) needs this.
-- **Screens draw into a character grid** (80×25 cells: character, foreground, background), never
-  straight to a terminal. Renderers: a plain-text one for tests and logs, and a window one that
-  scales (zoom), uses a readable font, and can later add what the original lacks. A screen is
-  tested by its grid, not its pixels.
+- **Browser controls call the game through a small Python server.** [designed: owner, 2026-10-15]
+  HTML/CSS/JavaScript show real session data and explicit actions. Test Python state transitions
+  and actual browser interactions. The existing 80×25 character grid remains the terminal UI's
+  rendering/test surface; it does not constrain the browser layout.
 - **Nothing of the original is committed** (CLAUDE.md: nothing of the original game is committed). `GOAL.DAT`, the source of the
   country and player data, is read at run time from `.cache/`, fetched from goal2-archaeology's
   release by hash, like every savestate.
@@ -51,7 +53,7 @@ milestone before them is merged; the scopes below are the plan, not the tasks.
 | **P3 The loop** | country select → squad (20 + the 80-player pool) → pick an eleven and tactics → match → result screen with the stand-in commentary → the next fixture; the computer's eleven and its tactics as stand-ins (A-CPU-1, A-CPU-2) | F010, F011, F014 (ratings), the help file |
 | **P4 Between matches** | energy spent and restored, confidence after results and events, team morale (display only), injuries keeping a player out, substitutions | F018, F019, F020, F021; owner C2/C3; the help file |
 | **P5 The 4-year cycle** | friendlies, continental qualifying and finals, World Cup qualifying and finals, play-offs, groups and their tie-breaks, rankings, ageing at its stages, retirements and new players, the next cycle | the help file (formats); F016, F017; Q020/Q030–Q032 open |
-| **P6 The original's screens** | the screen kinds of goal2-archaeology's catalogue (`static/screens/kinds.tsv`, T39a), in the original's layout and keys; the window renderer's zoom and readability | `docs/screens.md`, owner B6, D1 |
+| **P6 Interface coverage** | [designed: owner, 2026-10-15] browser management and match flows, using the catalogue to identify information/actions rather than requiring the original layout/keys; match visualization follows available engine evidence | [browser UI roadmap](browser-ui-roadmap.md), `docs/screens.md`, owner B6, D1 and 2026-10-15 UI decision |
 | **P7 Several managers** | up to 6 human managers in one game (the pool's 80 per manager) | F011; owner B7 |
 
 The engine's other half comes from goal2-archaeology, milestone by milestone, and replaces the
@@ -69,8 +71,9 @@ choice to compare against (`C`), and the determinism above. Its plan is a later 
 
 ## Order of work, and what waits
 
-P0 → P1 → P2 → P3 → P4 → P5. P6 can start alongside P4, since screens draw into the grid from
-P3. P7 comes after P5. A milestone does not wait for a finding: it ships with its `assumed` rows,
+P0 → P1 → P2 → P3 → P4 → P5. [designed: owner, 2026-10-15] Browser tasks T35–T38 connect the
+existing friendly loop before further interface visualization. P6 coverage can grow alongside
+game rules. P7 comes after P5. A milestone does not wait for a finding: it ships with its `assumed` rows,
 and the finding replaces them when it lands.
 
 Design questions go to the owner one at a time. A guess about mechanics is never asked: it is

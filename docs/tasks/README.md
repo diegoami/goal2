@@ -31,3 +31,7 @@ status; this index carries none.
 | T32 | Repeat friendlies with retained state | #80 | T31 |
 | T33 | Save and resume a friendly session | #83 | T32 |
 | T34 | Browser dashboard and squad prototype | #86 | T33 |
+| T35 | Browser country selection and real squad data | #88 | T34 |
+| T36 | Browser lineup, captain, tactics and preview | #89 | T35 |
+| T37 | Play and repeat friendlies in the browser | #90 | T36 |
+| T38 | Browser save and resume | #91 | T37 |
