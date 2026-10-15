@@ -47,13 +47,17 @@ ends. A bare or incomplete Escape waits up to 0.15 seconds for an ANSI key
 sequence continuation. Scripted keys and redirected input remain supported.
 
 [derived: `goal2/ui/input.py`, `goal2/ui/preview.py`, `goal2/ui/result.py`, `goal2/main_loop.py`]
-[designed: T26, A-MATCH-1] The interactive result screen runs a complete
+[designed: T26, A-MATCH-1, T30] The interactive result screen runs a complete
 friendly through both halves on one vendored quick-engine instance. It starts
 at 0–0 with the selected country, eleven and tactics; the opponent comes from
-the template and uses the current computer-selection stand-in. The screen
-labels its setup as assumed and shows first- and second-half goals, with
-PageUp/PageDown for overflow. The template supplies players, tables and seeds;
-its inherited player energy remains, and the original match setup and
-half-time energy recovery are not yet reproduced. `python -m goal2.play`
-continues to replay a recorded second half from a half-time savestate.
-Fixture progression ends at a placeholder.
+the template and uses the current computer-selection stand-in. The result
+title labels the setup as assumed; it names both teams in engine score order,
+identifies the managed team, shows halftime and fulltime scores, and lists
+each goal with its team, scorer, half and minute. PageUp/PageDown pages
+overflow; Enter finishes and Esc quits. The template supplies players, tables
+and seeds; inherited player energy remains, and the original match setup and
+half-time energy recovery are not yet reproduced. Technical seed values stay
+available in the recorded-half replay screen, which `python -m goal2.play`
+continues to show from a half-time savestate. Issue #73's observed replay and
+commentary controls inform the UI work; this result summary does not add replay
+prompts or fixture progression.

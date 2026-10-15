@@ -143,6 +143,10 @@ class TestRunResult(unittest.TestCase):
     def setUp(self):
         self.state_bytes = _e010_or_skip()
 
+    def test_legacy_footer_remains_continue(self):
+        grid = _render(self.state_bytes)
+        self.assertIn("ENTER CONTINUE  ESC QUIT", render(grid).splitlines()[-1])
+
     def test_enter_returns_true(self):
         """Done-when 3: run_result with ENTER returns True and the title
         row starts with 'RESULT  STAND-IN'."""

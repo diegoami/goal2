@@ -246,8 +246,8 @@ class TestEscAbortsLoop(unittest.TestCase):
         mock_save.assert_called_once()
 
 
-class TestNextFixturePlaceholder(unittest.TestCase):
-    """Done-when 6: placeholder line printed to stdout using managed_country."""
+class TestResultFinish(unittest.TestCase):
+    """[designed: T30] Finishing a friendly is silent and receives naming data."""
 
     def _capture_stdout(self, fn, *args, **kwargs):
         import io, sys
@@ -260,8 +260,7 @@ class TestNextFixturePlaceholder(unittest.TestCase):
             sys.stdout = old
         return rc, captured.getvalue()
 
-    def test_placeholder_contains_country_number(self):
-        """Done-when 6: placeholder contains the country number chosen (7)."""
+    def test_finish_does_not_promise_fixture_and_passes_goaldat(self):
         gd = _make_goaldat()
         state = _make_state()
         state.managed_country = 7
@@ -283,12 +282,11 @@ class TestNextFixturePlaceholder(unittest.TestCase):
                 keys=_keys(Key.ENTER, Key.ENTER, Key.ENTER, Key.ENTER))
 
         self.assertEqual(rc, 0)
-        self.assertIn("7", output)
-        self.assertIn("Next fixture", output)
+        self.assertEqual(output, "")
+        self.assertIs(mock_res.call_args.kwargs["goaldat"], gd)
         mock_save.assert_called_once_with(state, original=_PLACEHOLDER_BYTES)
 
-    def test_placeholder_missing_fails(self):
-        """Deleting the placeholder line makes stdout empty and this test fails."""
+    def test_finish_has_no_fixture_number_output(self):
         gd = _make_goaldat()
         state = _make_state()
         state.managed_country = 42
@@ -310,7 +308,8 @@ class TestNextFixturePlaceholder(unittest.TestCase):
                 keys=_keys(Key.ENTER, Key.ENTER, Key.ENTER, Key.ENTER))
 
         self.assertEqual(rc, 0)
-        self.assertIn("42", output)
+        self.assertEqual(output, "")
+        self.assertIs(mock_res.call_args.kwargs["goaldat"], gd)
         mock_save.assert_called_once_with(state, original=_PLACEHOLDER_BYTES)
 
 
@@ -392,7 +391,7 @@ class TestKeysAreConsumedSequentially(unittest.TestCase):
         keys_seen = {}
 
         def make_spy(name):
-            def spy(goaldat, keys, *, state=None, full_match=False):
+            def spy(data_arg, keys, *, state=None, full_match=False, **kwargs):
                 keys_seen[name] = list(keys) if keys is not None else []
                 if name == "re":
                     self.assertTrue(full_match)

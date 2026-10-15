@@ -106,30 +106,33 @@ class TestScreenOutput(unittest.TestCase):
         engine.assert_called_once()
 
     def test_full_friendly_pages_through_both_halves_before_input(self):
-        """[designed: T26] Later H2 goals remain visible beyond 16 rows."""
+        """[designed: T30] Later H2 goals remain visible beyond 18 rows."""
         goals = [{"team": 0, "minute": i + 1, "player": i + 1}
                  for i in range(16)]
         goals += [{"team": 1, "minute": 46 + i, "player": 101 + i}
                   for i in range(4)]
         full = {
+            "teams": (1, 2), "managed_side": 0,
             "score": (16, 4), "goals": goals, "seed_DS7B62": 1,
             "seed_DS8336": 2,
-            "halves": ({"goals": goals[:16]}, {"goals": goals[16:]}),
+            "halves": ({"score": (16, 0), "goals": goals[:16]},
+                       {"score": (16, 4), "goals": goals[16:]}),
         }
-        frames = [render(result._build_grid(full, None, full_match=True, page=i))
+        frames = [render(result._build_grid(full, None, full_match=True, page=i,
+                                            goaldat=self.data, state=self.state))
                   for i in (0, 1)]
         self.assertIn("GOALS 1/2", frames[0])
         self.assertIn("H1", frames[0])
         self.assertIn("GOALS 2/2", frames[1])
-        self.assertIn("H2  team 1  scorer 101", frames[1])
-        self.assertIn("SEED DS:7B62", frames[0])
-        self.assertIn("SEED DS:7B62", frames[1])
+        self.assertIn("48 H2 Country2: Player 103", frames[1])
+        self.assertNotIn("SEED DS:7B62", frames[0])
+        self.assertNotIn("SEED DS:7B62", frames[1])
         with patch.object(result, "Savestate"), \
              patch.object(result, "run_full_match", return_value=full) as engine:
             self.assertTrue(self.assert_interactive(
                 result,
                 lambda: result.run_result(b"synthetic", None, state=self.state,
-                                          full_match=True),
+                                          full_match=True, goaldat=self.data),
                 frames, [Key.PAGE_DOWN, Key.ENTER],
             ))
         engine.assert_called_once()
