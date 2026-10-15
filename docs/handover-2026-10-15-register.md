@@ -49,10 +49,11 @@ were renumbered to avoid the collision (A-WATCH-5..7, GA-7..9).
   what each tactic does, measured effects), BM-8, BM-9 (ban machine, injury duration), A-COMP-10..14
   (calendar, groups, finals, play-offs, table sort), A-CPU-4, A-CPU-5, GA-5, GA-6 (sacking and the
   confidence sum).
-- **Conflicts with `owner` or `help file` rows, marked and not resolved (the owner decides):**
-  BM-7 (owner C2: 5 substitutions per match; F027 §4: 5 per side in a friendly, 2 per side otherwise,
-  and the help file says the same), A-COMP-3 (help file: a coin on a play-off tie; F023 §6: never a
-  coin), A-COMP-4 (help file: a coin after goals scored; F023 §8: no coin in the code).
+- **The three conflicts were decided by the owner on 2026-10-15** (recorded in goal2-archaeology
+  `experiments/E015-human-playthrough/owner-questions-2026-10-11.md`, fff9dc6) and the rows now say so:
+  BM-7: substitutions unlimited in a friendly, 5 in every other match, a deliberate rebuild rule that
+  differs from the original (5 per side in a friendly, 2 otherwise, F027 §4); A-COMP-3 and A-COMP-4: follow
+  the code, no coin.
 - Not settled, left unchanged: A-COMP-7 (200 points per knockout fixture; F023 says kinds 3 and 7 also
   add 200: unclear against F017 §7), A-COMP-8/9, A-CPU-2, BM-3/5 (GA-6's confidence sum may be a
   different quantity from BM-3's).
