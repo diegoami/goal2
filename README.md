@@ -51,10 +51,13 @@ sequence continuation. Scripted keys and redirected input remain supported.
 friendly through both halves on one vendored quick-engine instance. It starts
 at 0–0 with the selected country, eleven and tactics; the opponent comes from
 the template and uses the current computer-selection stand-in. The result
-names both teams in engine score order, identifies the managed team, shows
-halftime and fulltime scores, and lists each goal with its team, scorer, half
-and minute. PageUp/PageDown pages overflow; Enter finishes and Esc quits.
-Technical seed values stay available in the recorded-half replay screen,
-which `python -m goal2.play` continues to show from a half-time savestate.
-Issue #73's observed replay and commentary controls inform the UI work; this
-result summary does not add replay prompts or fixture progression.
+title labels the setup as assumed; it names both teams in engine score order,
+identifies the managed team, shows halftime and fulltime scores, and lists
+each goal with its team, scorer, half and minute. PageUp/PageDown pages
+overflow; Enter finishes and Esc quits. The template supplies players, tables
+and seeds; inherited player energy remains, and the original match setup and
+half-time energy recovery are not yet reproduced. Technical seed values stay
+available in the recorded-half replay screen, which `python -m goal2.play`
+continues to show from a half-time savestate. Issue #73's observed replay and
+commentary controls inform the UI work; this result summary does not add replay
+prompts or fixture progression.

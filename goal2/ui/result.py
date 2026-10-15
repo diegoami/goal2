@@ -122,7 +122,7 @@ def _build_grid(result: dict | None, refusal_msg: str | None,
     Rows 4..:  goal rows  " MM  team T  scorer N"
                or (only in non-refusal path) "  no goals"
     Then:      seed words row
-    Row 24:    "ENTER FINISH  ESC QUIT"
+    Row 24:    "ENTER CONTINUE  ESC QUIT"
     """
     if full_match:
         return _build_full_friendly_grid(result, refusal_msg, page=page,
@@ -179,7 +179,7 @@ def _build_grid(result: dict | None, refusal_msg: str | None,
         grid.draw_text(row, 0, seed_text.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
 
     # ── Footer (row 24) ───────────────────────────────────────────────────
-    footer = "ENTER FINISH  ESC QUIT"
+    footer = "ENTER CONTINUE  ESC QUIT"
     grid.draw_text(HEIGHT - 1, 0, footer.ljust(WIDTH), fg=_FG_TITLE, bg=_BG_TITLE)
 
     return grid
@@ -189,7 +189,7 @@ def _build_full_friendly_grid(result: dict | None, refusal_msg: str | None, *,
                               page: int, state: GameState | None, goaldat) -> Grid:
     """[designed: T30] Show a named, score-ordered assumed friendly result."""
     grid = Grid()
-    grid.draw_text(0, 0, "FULL FRIENDLY RESULT".ljust(WIDTH),
+    grid.draw_text(0, 0, "FRIENDLY RESULT - ASSUMED SETUP".ljust(WIDTH),
                    fg=_FG_TITLE, bg=_BG_TITLE)
     if refusal_msg is not None:
         grid.draw_text(2, 0, f"REFUSED: {refusal_msg}".ljust(WIDTH))

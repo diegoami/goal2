@@ -80,6 +80,7 @@ class TestClearResults(unittest.TestCase):
                                    {"score": (18, 0), "goals": goals[9:]}))
         first, second = self.frame(result_data, page=0), self.frame(result_data, page=1)
         self.assertIn("GOALS 1/2", first)
+        self.assertIn("FRIENDLY RESULT - ASSUMED SETUP", second)
         self.assertIn("GOALS 2/2", second)
         self.assertIn("20 H2 Argentina: Ada Striker", second)
         self.assertIn("ENTER FINISH", second)
