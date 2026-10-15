@@ -85,7 +85,7 @@ python3 -m http.server 8000 --directory docs/prototypes/browser-ui
 
 Then open `http://localhost:8000`.
 
-[designed: T35–T37] Start the live browser view with a local halftime savestate and
+[designed: T35–T38] Start a new live browser session with a local halftime savestate and
 the matching local GOAL.DAT:
 
 ```bash
@@ -94,7 +94,10 @@ python3 -m goal2.web .cache/<savestate>.sav .cache/GOAL.DAT
 
 Open `http://127.0.0.1:8000`. Pass `--host` or `--port` to choose a different
 bind address or port. The server loads both files once and keeps one in-memory
-session. Choose a country, edit the starting eleven, captain and eight tactics
+session. **Save session** writes the existing versioned `.g2save` format to
+`.cache/session.g2save`; **Load saved session** validates that file and its next
+friendly before replacing the live session. A failed save leaves the previous
+file intact and can be retried. Choose a country, edit the starting eleven, captain and eight tactics
 bits, then use **Confirm team** to update that session. **Cancel draft** restores
 the confirmed choices. The overview shows the confirmed team and named matchup
 from the shared resolver. Press **Play friendly** to run one complete assumed
@@ -102,12 +105,23 @@ friendly using the confirmed team. The result shows the ordered team names,
 managed side, half-time and full-time scores, named goal events, match count and
 both retained seeds. Reload and navigation do not run a match. Use **Another
 friendly · Manage team** to return to the same country's team management with
-updated player energy and choices, then play again. The session remains in
-memory for this server process; closing it discards the browser changes.
+updated player energy and choices, then play again. To resume after closing the
+server, run:
+
+```bash
+python3 -m goal2.web --resume .cache/session.g2save .cache/GOAL.DAT
+```
+
+For a different save location, pass `--save /path/to/session.g2save` both when
+starting a new game and when resuming. To move a session to another computer,
+copy the `.g2save` file there and use its path with `--resume`; that computer
+also needs its local `GOAL.DAT`. A `.g2save` is the rebuild's JSON session
+format, distinct from original binary `.sav` inputs.
 
 Run the real-browser country, management and friendly checks with Playwright installed:
 
 ```bash
 PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario management
 PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario friendlies
+PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario persistence
 ```
