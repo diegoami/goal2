@@ -47,6 +47,7 @@ def run_result(
     *,
     state: GameState | None = None,
     full_match: bool = False,
+    goaldat=None,
 ) -> bool:
     """Show the quick-engine result and return True on Enter, False on Esc.
 
@@ -59,8 +60,10 @@ def run_result(
     [designed: T26] With `full_match=True`, `state` supplies the selected
     country, eleven and tactics for an assumed complete friendly. The default
     remains the seed-exact second-half replay path.
+    [designed: T30] `goaldat` supplies country and player names for the
+    full-friendly result summary.
 
-    Returns True on Enter (continue to next fixture), False on Esc.
+    Returns True on Enter (finish), False on Esc (quit).
     """
     # Load the savestate and run the engine.
     sav = Savestate(savestate_path_or_bytes)
@@ -85,7 +88,7 @@ def run_result(
 
     while True:
         grid = _build_grid(result, refusal_msg if result is None else None,
-                           full_match=full_match, page=page)
+                           full_match=full_match, page=page, state=state, goaldat=goaldat)
 
         if key_iter is not None:
             try:
@@ -102,22 +105,29 @@ def run_result(
         elif key == Key.ESC:
             return False
         elif full_match and result is not None and key == Key.PAGE_DOWN:
-            page = min(page + 1, max(0, (len(result["goals"]) - 1) // 16))
+            page = min(page + 1, max(0, (len(result["goals"]) - 1) // 18))
         elif full_match and key == Key.PAGE_UP:
             page = max(page - 1, 0)
 
 
 def _build_grid(result: dict | None, refusal_msg: str | None,
-                *, full_match: bool = False, page: int = 0) -> Grid:
+                *, full_match: bool = False, page: int = 0,
+                state: GameState | None = None, goaldat=None) -> Grid:
     """Render the result screen into a Grid and return it.
+
+    The full-friendly path delegates to `_build_full_friendly_grid`.
 
     Row 0:     "RESULT  STAND-IN" (blue bg)
     Row 2:     "FINAL SCORE  H-A"  or  "REFUSED: <message>"
     Rows 4..:  goal rows  " MM  team T  scorer N"
                or (only in non-refusal path) "  no goals"
     Then:      seed words row
-    Row 24:    "ENTER CONTINUE  ESC QUIT"
+    Row 24:    "ENTER FINISH  ESC QUIT"
     """
+    if full_match:
+        return _build_full_friendly_grid(result, refusal_msg, page=page,
+                                         state=state, goaldat=goaldat)
+
     grid = Grid()
 
     # ── Title (row 0) ──────────────────────────────────────────────────────
@@ -169,9 +179,62 @@ def _build_grid(result: dict | None, refusal_msg: str | None,
         grid.draw_text(row, 0, seed_text.ljust(WIDTH), fg=_FG_NORMAL, bg=_BG_NORMAL)
 
     # ── Footer (row 24) ───────────────────────────────────────────────────
-    footer = "ENTER CONTINUE  ESC QUIT"
+    footer = "ENTER FINISH  ESC QUIT"
     grid.draw_text(HEIGHT - 1, 0, footer.ljust(WIDTH), fg=_FG_TITLE, bg=_BG_TITLE)
 
+    return grid
+
+
+def _build_full_friendly_grid(result: dict | None, refusal_msg: str | None, *,
+                              page: int, state: GameState | None, goaldat) -> Grid:
+    """[designed: T30] Show a named, score-ordered assumed friendly result."""
+    grid = Grid()
+    grid.draw_text(0, 0, "FULL FRIENDLY RESULT".ljust(WIDTH),
+                   fg=_FG_TITLE, bg=_BG_TITLE)
+    if refusal_msg is not None:
+        grid.draw_text(2, 0, f"REFUSED: {refusal_msg}".ljust(WIDTH))
+    elif result is not None:
+        teams = tuple(result["teams"])
+        managed_side = result.get("managed_side")
+        if managed_side not in (0, 1) and state is not None:
+            managed_side = teams.index(state.managed_country) if state.managed_country in teams else 0
+        managed_side = managed_side if managed_side in (0, 1) else 0
+        names = getattr(goaldat, "country_names", [])
+
+        def team_name(side: int) -> str:
+            number = teams[side]
+            return names[number] if 0 <= number < len(names) and names[number] else f"Team {number}"
+
+        def score_line(label: str, score: tuple[int, int]) -> str:
+            return f"{label}: {team_name(0)} {score[0]} - {score[1]} {team_name(1)}"
+
+        managed_name = team_name(managed_side)
+        grid.draw_text(1, 0, f"MANAGED: {managed_name}".ljust(WIDTH))
+        halftime = result["halves"][0]["score"]
+        grid.draw_text(2, 0, score_line("HALF TIME", halftime).ljust(WIDTH))
+        grid.draw_text(3, 0, score_line("FULL TIME", result["score"]).ljust(WIDTH))
+
+        goals = result["goals"]
+        first_count = len(result["halves"][0]["goals"])
+        page_size = 18
+        pages = max(1, (len(goals) + page_size - 1) // page_size)
+        page = min(page, pages - 1)
+        if goals:
+            grid.draw_text(4, 0, f"GOALS {page + 1}/{pages}  PGUP/PGDN".ljust(WIDTH))
+            players = getattr(goaldat, "player_names", [])
+            start = page * page_size
+            for row, index in enumerate(range(start, min(start + page_size, len(goals))), 5):
+                goal = goals[index]
+                player_id = goal["player"]
+                player_name = players[player_id] if 0 <= player_id < len(players) and players[player_id] else f"Player {player_id}"
+                half = 1 if index < first_count else 2
+                line = f"{int(goal['minute']):>2} H{half} {team_name(goal['team'])}: {player_name}"
+                grid.draw_text(row, 0, line.ljust(WIDTH))
+        else:
+            grid.draw_text(5, 0, "NO GOALS".ljust(WIDTH))
+
+    grid.draw_text(HEIGHT - 1, 0, "ENTER FINISH  ESC QUIT".ljust(WIDTH),
+                   fg=_FG_TITLE, bg=_BG_TITLE)
     return grid
 
 

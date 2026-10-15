@@ -2,7 +2,6 @@
 
 [derived: T15's `pick_computer_eleven` and `get_computer_tactics` are not on
 T16's path in v1; GA-4 keys flow through the driver to each screen.]
-[designed: the placeholder next-fixture line uses state.managed_country.]
 [confirmed: A-WATCH-1 — the result screen is a quick-engine stand-in;
 A-MATCH-2/3 — refusals are surfaced by run_result itself.]
 [designed: T26, A-MATCH-1 — interactive result runs both halves on one instance.]
@@ -35,7 +34,7 @@ def run_main_loop(
     3. run_tactics_select: on False (Esc) returns 0.
     4. Save user choices and show a matchup preview; only Play proceeds to
        run_result in full-friendly mode.
-    5. Prints a one-line next-fixture placeholder using state.managed_country.
+    5. Finish the current friendly and return to the caller.
 
     [confirmed: A-WATCH-1 — result is a stand-in, running the quick engine;
     GA-4 — keys flow through the driver to each screen.
@@ -76,10 +75,8 @@ def run_main_loop(
         return 0
     # [designed: T26, A-MATCH-1] Interactive play uses the complete
     # assumed friendly; the result screen's default remains a half replay.
-    ok = run_result(saved, keys, state=state, full_match=True)
+    ok = run_result(saved, keys, state=state, full_match=True, goaldat=goaldat)
     if not ok:
         return 0
 
-    # Step 5: next fixture placeholder (derived from state.managed_country)
-    print(f"Next fixture: {state.managed_country}")
     return 0

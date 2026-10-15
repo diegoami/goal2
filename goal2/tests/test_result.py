@@ -8,7 +8,7 @@ with commentary lines (goals, scorers, minutes), labelled a stand-in.
 
 [designed: T14 screen layout] Title row 0: "RESULT  STAND-IN". Score row 2:
 "FINAL SCORE  H-A". Goals rows 4..4+N-1: " MM  team T  scorer N". No goals
-row: "  no goals". Seed row. Footer row 24: "ENTER CONTINUE  ESC QUIT".
+row: "  no goals". Seed row. Footer row 24: "ENTER FINISH  ESC QUIT".
 
 [designed: T14] The screen never mutates `state`. Esc and Enter return
 without writing. The `state` argument is accepted for API parity only.
