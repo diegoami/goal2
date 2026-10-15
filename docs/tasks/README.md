@@ -30,3 +30,4 @@ status; this index carries none.
 | T31 | Clear terminal presentation | #78 | T30 |
 | T32 | Repeat friendlies with retained state | #80 | T31 |
 | T33 | Save and resume a friendly session | #83 | T32 |
+| T34 | Browser dashboard and squad prototype | #86 | T33 |
