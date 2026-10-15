@@ -85,7 +85,7 @@ python3 -m http.server 8000 --directory docs/prototypes/browser-ui
 
 Then open `http://localhost:8000`.
 
-[designed: T35] Start the live browser view with a local halftime savestate and
+[designed: T35, T36] Start the live browser view with a local halftime savestate and
 the matching local GOAL.DAT:
 
 ```bash
@@ -94,6 +94,14 @@ python3 -m goal2.web .cache/<savestate>.sav .cache/GOAL.DAT
 
 Open `http://127.0.0.1:8000`. Pass `--host` or `--port` to choose a different
 bind address or port. The server loads both files once and keeps one in-memory
-session. Country selection and roster data come from that session; lineup and
-captain controls are browser drafts until a later task adds confirmation. The
-match card resolves the loaded template and does not simulate or save a match.
+session. Choose a country, edit the starting eleven, captain and eight tactics
+bits, then use **Confirm team** to update that session. **Cancel draft** restores
+the confirmed choices. The overview shows the confirmed team and the named
+matchup from the shared resolver. This flow does not simulate or save a match;
+reload keeps confirmed choices while this server process remains running.
+
+Run the real-browser country and management checks with Playwright installed:
+
+```bash
+PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario management
+```

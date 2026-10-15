@@ -2,10 +2,15 @@
 from __future__ import annotations
 
 import unittest
+import json
+from http.server import HTTPServer
+from threading import Thread
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
 from unittest.mock import patch
 
 from goal2.game.state import GameState
-from goal2.web.server import WebSession
+from goal2.web.server import Handler, WebSession
 
 
 def make_session() -> WebSession:
@@ -93,13 +98,22 @@ class TeamManagementTests(unittest.TestCase):
         valid = self.payload()
         invalid = [
             ("count", {"starting_eleven": valid["starting_eleven"][:10]}),
-            ("duplicate", {"starting_eleven": [281] * 11}),
+            ("count_type", {"starting_eleven": "eleven"}),
+            ("duplicate", {"starting_eleven": [281] * 11, "captain": 281}),
             ("foreign", {"starting_eleven": [*range(281, 291), 999]}),
+            ("player_string", {"starting_eleven": [*range(281, 291), "291"]}),
+            ("player_float", {"starting_eleven": [*range(281, 291), 291.0]}),
+            ("player_bool", {"starting_eleven": [*range(281, 291), True]}),
             ("captain", {"captain": 280}),
             ("captain_bool", {"captain": True}),
+            ("captain_string", {"captain": "290"}),
+            ("captain_float", {"captain": 290.0}),
             ("tactics_low", {"tactics": -1}),
             ("tactics_high", {"tactics": 256}),
             ("tactics_bool", {"tactics": True}),
+            ("tactics_string", {"tactics": "165"}),
+            ("tactics_float", {"tactics": 165.0}),
+            ("tactics_list", {"tactics": [1, 0, 1]}),
             ("stale_country", {"country": 6}),
         ]
         try:
@@ -121,11 +135,52 @@ class TeamManagementTests(unittest.TestCase):
                 self.session.confirm_management(self.payload())
         self.assertEqual(self.snapshot(), before)
 
-    def test_cancel_is_no_request_and_leaves_confirmed_state_unchanged(self):
+    def test_http_management_confirmation_and_reload_readback(self):
+        handler = type("TestHandler", (Handler,), {"session": self.session})
+        server = HTTPServer(("127.0.0.1", 0), handler)
+        thread = Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        base = f"http://127.0.0.1:{server.server_port}"
         before = self.snapshot()
-        # Cancellation is represented by retaining/discarding only the browser
-        # draft; this authoritative API is never called for Cancel.
-        self.assertEqual(self.snapshot(), before)
+        try:
+            # Reading the session, as the browser does when restoring a
+            # canceled draft, leaves the confirmed choices untouched.
+            with urlopen(base + "/api/session") as response:
+                initial_view = json.load(response)
+            self.assertEqual(initial_view["confirmed"], {
+                "starting_eleven": before[0], "captain": before[1], "tactics": before[2],
+            })
+            self.assertEqual(self.snapshot(), before)
+
+            def post(payload):
+                request = Request(base + "/api/management", data=json.dumps(payload).encode(),
+                                  headers={"Content-Type": "application/json"}, method="POST")
+                try:
+                    with urlopen(request) as response:
+                        return response.status, json.load(response)
+                except HTTPError as error:
+                    try:
+                        return error.code, json.load(error)
+                    finally:
+                        error.close()
+
+            status, confirmed = post(self.payload())
+            self.assertEqual(status, 200)
+            self.assertEqual(confirmed["confirmed"]["captain"], 290)
+            with urlopen(base + "/api/session") as response:
+                self.assertEqual(json.load(response)["confirmed"], confirmed["confirmed"])
+            invalid = self.payload(tactics=256)
+            status, _ = post(invalid)
+            self.assertEqual(status, 400)
+            with urlopen(base + "/api/session") as response:
+                self.assertEqual(json.load(response)["confirmed"], confirmed["confirmed"])
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=2)
+            self.session.state.starting_eleven = list(self.initial["starting_eleven"])
+            self.session.state.captain = self.initial["captain"]
+            self.session.state.country_tactics = self.initial["tactics"]
 
 
 if __name__ == "__main__":
