@@ -29,3 +29,4 @@ status; this index carries none.
 | T30 | Understand the match result | #76 | T29 |
 | T31 | Clear terminal presentation | #78 | T30 |
 | T32 | Repeat friendlies with retained state | #80 | T31 |
+| T33 | Save and resume a friendly session | #83 | T32 |
