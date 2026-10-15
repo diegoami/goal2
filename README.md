@@ -36,12 +36,17 @@ players and makes the highlighted included player captain; invalid confirmation
 shows a reason and leaves the draft open. Esc or exhausted scripted input
 discards the draft.
 
+[designed: T29] After tactics, the match preview names the managed team, its
+opponent, the selected eleven and captain. Enter starts the assumed friendly;
+Esc or exhausted scripted input quits before simulation. Unsupported match
+templates show a refusal and cannot be confirmed. Scripted input stays silent.
+
 [designed: T25] On POSIX terminals, the interactive screen chain reads keys
 immediately in cbreak mode and restores the saved terminal settings when it
 ends. A bare or incomplete Escape waits up to 0.15 seconds for an ANSI key
 sequence continuation. Scripted keys and redirected input remain supported.
 
-[derived: `goal2/ui/input.py`, `goal2/ui/result.py`, `goal2/main_loop.py`]
+[derived: `goal2/ui/input.py`, `goal2/ui/preview.py`, `goal2/ui/result.py`, `goal2/main_loop.py`]
 [designed: T26, A-MATCH-1] The interactive result screen runs a complete
 friendly through both halves on one vendored quick-engine instance. It starts
 at 0–0 with the selected country, eleven and tactics; the opponent comes from

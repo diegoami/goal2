@@ -1,4 +1,4 @@
-"""The main loop driver: country → squad → tactics → result → next fixture.
+"""The main loop driver: country → squad → tactics → preview → result.
 
 [derived: T15's `pick_computer_eleven` and `get_computer_tactics` are not on
 T16's path in v1; GA-4 keys flow through the driver to each screen.]
@@ -15,6 +15,7 @@ from goal2.data.goaldat import GoalDat
 from goal2.game.state import GameState, to_savestate
 from goal2.ui.country_select import run_country_select
 from goal2.ui.input import Key
+from goal2.ui.preview import run_match_preview
 from goal2.ui.result import run_result
 from goal2.ui.squad import run_squad_select
 from goal2.ui.tactics import run_tactics_select
@@ -26,15 +27,14 @@ def run_main_loop(
     original_savestate_bytes: bytes,
     keys: Iterable[Key] | None = None,
 ) -> int:
-    """Run the country → squad → tactics → result loop and return the exit code.
+    """Run the country → squad → tactics → preview → result loop.
 
     Steps:
     1. run_country_select: on None (Esc) returns 0 without calling later screens.
     2. run_squad_select: on False (Esc) returns 0.
     3. run_tactics_select: on False (Esc) returns 0.
-    4. Save user choices (country_tactics, captain, starting_eleven) back into
-       the savestate bytes via `state.to_savestate`, then run_result in full
-       friendly mode with the adapted state and modified bytes.
+    4. Save user choices and show a matchup preview; only Play proceeds to
+       run_result in full-friendly mode.
     5. Prints a one-line next-fixture placeholder using state.managed_country.
 
     [confirmed: A-WATCH-1 — result is a stand-in, running the quick engine;
@@ -67,8 +67,13 @@ def run_main_loop(
     # [derived: T17 vendoring — to_savestate writes the user's state choices
     # to the savestate bytes; passing the result (not the original) to
     # run_result means the engine reads the modified savestate.]
-    # Step 4: save user choices then run result
+    # Step 4: save user choices, preview the same matchup the runner will use,
+    # and require an explicit Play confirmation before running simulation.
     saved = to_savestate(state, original=original_savestate_bytes)
+    # [designed: T29] Exhaustion and Esc stop before run_result can simulate.
+    ok = run_match_preview(goaldat, saved, keys, state=state)
+    if not ok:
+        return 0
     # [designed: T26, A-MATCH-1] Interactive play uses the complete
     # assumed friendly; the result screen's default remains a half replay.
     ok = run_result(saved, keys, state=state, full_match=True)
