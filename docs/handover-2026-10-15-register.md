@@ -47,8 +47,7 @@ were renumbered to avoid the collision (A-WATCH-5..7, GA-7).
   what each tactic does, measured effects), BM-8, BM-9 (ban machine, injury duration), A-COMP-10..14
   (calendar, groups, finals, play-offs, table sort), A-CPU-4, A-CPU-5, GA-5, GA-6 (sacking and the
   confidence sum).
-- **The three conflicts were decided by the owner on 2026-10-15** (recorded in goal2-archaeology
-  `experiments/E015-human-playthrough/owner-questions-2026-10-11.md`, fff9dc6) and the rows now say so:
+- **The three conflicts were decided by the owner on 2026-10-15** (recorded in this handover, section "Decisions of the owner for the remaster") and the rows now say so:
   BM-7: substitutions unlimited in a friendly, 5 in every other match, a deliberate rebuild rule that
   differs from the original (5 per side in a friendly, 2 otherwise, F027 §4); A-COMP-3 and A-COMP-4: follow
   the code, no coin.
