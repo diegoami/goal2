@@ -42,8 +42,10 @@ names what replaces it.
 
 ## Milestones
 
-Each milestone ends playable or testable on its own. Its tasks get `T<nn>` files when the
-milestone before them is merged; the scopes below are the plan, not the tasks.
+Each milestone ends playable or testable on its own. [designed: owner, 2026-10-15]
+The sequenced [full-cycle backlog](full-cycle-backlog.md) expands P4/P5 into T39–T59,
+with per-task dependencies, difficulty and acceptance contracts. Later contracts are checked
+and refined against completed predecessors before dispatch; their existence does not start work.
 
 | Milestone | What works at the end | Rests on |
 | --- | --- | --- |

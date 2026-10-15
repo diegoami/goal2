@@ -35,3 +35,24 @@ status; this index carries none.
 | T36 | Browser lineup, captain, tactics and preview | #89 | T35 |
 | T37 | Play and repeat friendlies in the browser | #90 | T36 |
 | T38 | Browser save and resume | #91 | T37 |
+| [T39](T39.md) | Reconcile the campaign evidence register (medium) | [#73](https://github.com/diegoami/goal2/issues/73) | — |
+| [T40](T40.md) | Campaign state, calendar and fresh start (hard) | [#100](https://github.com/diegoami/goal2/issues/100) | T39 |
+| [T41](T41.md) | Play scheduled friendlies in the browser (medium) | [#101](https://github.com/diegoami/goal2/issues/101) | T40 |
+| [T42](T42.md) | Apply match energy and between-fixture recovery (medium) | [#102](https://github.com/diegoami/goal2/issues/102) | T41 |
+| [T43](T43.md) | Update confidence and display team morale (medium) | [#103](https://github.com/diegoami/goal2/issues/103) | T42 |
+| [T44](T44.md) | Enforce injuries and suspensions at selection (medium) | [#104](https://github.com/diegoami/goal2/issues/104) | T43 |
+| [T45](T45.md) | Manage the national pool and twenty-player squad (medium) | [#105](https://github.com/diegoami/goal2/issues/105) | T44 |
+| [T46](T46.md) | Prepare computer teams for campaign fixtures (medium) | [#106](https://github.com/diegoami/goal2/issues/106) | T45 |
+| [T47](T47.md) | Allow halftime substitutions in campaign matches (hard) | [#107](https://github.com/diegoami/goal2/issues/107) | T46 |
+| [T48](T48.md) | Resolve other countries’ scheduled fixtures (medium) | [#108](https://github.com/diegoami/goal2/issues/108) | T47 |
+| [T49](T49.md) | Build competition tables and code-based tie-breaks (medium) | [#109](https://github.com/diegoami/goal2/issues/109) | T48 |
+| [T50](T50.md) | Play continental qualifying campaigns (hard) | [#110](https://github.com/diegoami/goal2/issues/110) | T49 |
+| [T51](T51.md) | Resolve competitive matches, extra time and penalties (hard) | [#111](https://github.com/diegoami/goal2/issues/111) | T50 |
+| [T52](T52.md) | Play continental finals through a champion (hard) | [#112](https://github.com/diegoami/goal2/issues/112) | T51 |
+| [T53](T53.md) | Play World Cup qualifying and regional playoffs (hard) | [#113](https://github.com/diegoami/goal2/issues/113) | T52 |
+| [T54](T54.md) | Play World Cup finals through a champion (hard) | [#114](https://github.com/diegoami/goal2/issues/114) | T53 |
+| [T55](T55.md) | Apply competition points and world rankings (medium) | [#115](https://github.com/diegoami/goal2/issues/115) | T54 |
+| [T56](T56.md) | Age players at campaign stage boundaries (medium) | [#116](https://github.com/diegoami/goal2/issues/116) | T55 |
+| [T57](T57.md) | Retire and replace players without breaking squads (hard) | [#117](https://github.com/diegoami/goal2/issues/117) | T56 |
+| [T58](T58.md) | Finish a cycle and begin the next one (medium) | [#118](https://github.com/diegoami/goal2/issues/118) | T57 |
+| [T59](T59.md) | Validate a complete playable four-year cycle (medium) | [#119](https://github.com/diegoami/goal2/issues/119) | T58 |

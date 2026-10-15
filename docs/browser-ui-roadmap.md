@@ -15,8 +15,8 @@ The sequence below makes each integration slice independently reviewable. Task s
 
 [designed] Keep the existing Python GameState, matchup resolver, full-friendly runner and session-save format authoritative. A small Python standard-library server serves packaged HTML/CSS/JavaScript and explicit JSON actions; no frontend framework or production dependency is needed. Use a documented single-session model, with localhost as the default bind address and an explicit host option for access from another computer. Static sample preview and live gameplay have distinct launch commands.
 
-[designed] Only T35 is currently requested for implementation by the owner's instruction accompanying this roadmap. Later task files define the work and dependencies; their existence does not start them. Record the owner's implementer/reviewer choices before dispatch, retaining any explicit batch choice.
+[designed] Task files define scope and dependencies; their existence does not start implementation. Record the owner’s implementer/reviewer choices before dispatch, retaining any explicit batch choice for its stated tasks.
 
 [designed: owner, 2026-10-15] Luna High implements and MiniMax M3 reviews T35–T38. T37/T38 estimates are medium because they reuse the existing runner and session format; their main risks are integration, duplicate requests and failure handling.
 
-[designed] After this sequence, plan match visualization against the available engine events and archaeological evidence. Do not invent ball positions or present a result summary as a live visual engine. Campaign rules, recovery, competitions and multiple managers remain separate game milestones.
+[designed] Campaign rules, recovery, competitions and cycle rollover are sequenced in the [full-cycle backlog](full-cycle-backlog.md). Plan match visualization separately against available engine events and archaeological evidence; do not invent ball positions or present a result summary as a live visual engine. Multiple managers remain a later game milestone.
