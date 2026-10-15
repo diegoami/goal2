@@ -25,3 +25,4 @@ status; this index carries none.
 | T26 | Run a complete friendly through both halves | #62 | T25 |
 | T27 | Make navigation visible in plain terminal output | #67 | T26, fix #65 |
 | T28 | Choose the starting eleven | #70 | T27 |
+| T29 | Match preview before kickoff | #72 | T28 |
