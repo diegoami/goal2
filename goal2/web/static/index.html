@@ -1,0 +1,54 @@
+<!doctype html>
+<!-- [designed: T35] Browser presentation for a single Python-managed local session. -->
+<!-- [confirmed: F002, F007, F008] Country/player names and displayed record fields come from loaded data. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6f3">
+  <title>goal2 — team overview</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#dashboard" aria-label="goal2 home"><span class="brand-mark" aria-hidden="true">g2</span><span>goal2<span class="brand-sub">FOOTBALL MANAGER</span></span></a>
+      <p class="nav-label">YOUR TEAM</p>
+      <nav class="primary-nav">
+        <button class="nav-link active" data-page="dashboard" aria-current="page"><span aria-hidden="true">▦</span> Overview</button>
+        <button class="nav-link" data-page="squad"><span aria-hidden="true">♙</span> Squad</button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <label class="country-picker-label" for="country-select">COUNTRY</label>
+      <select id="country-select" aria-label="Choose country" disabled><option>Loading countries…</option></select>
+      <div class="club-card"><span class="club-monogram" id="club-monogram" aria-hidden="true">G</span><span><strong id="club-country">Loading…</strong><small>National team</small></span><span class="chevron" aria-hidden="true">⌄</span></div>
+      <p class="sidebar-foot">LOCAL SESSION <span>·</span> DRAFT VIEW</p>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar"><div class="breadcrumb"><span id="breadcrumb-country">Loading…</span><span class="slash">/</span><span id="topbar-page">Overview</span></div><div class="topbar-right"><span class="preview-pill"><span class="live-dot"></span> LOCAL DATA</span><span class="manager-avatar" id="team-monogram" aria-label="Team">G</span></div></header>
+      <div class="load-error" id="load-error" role="alert" hidden></div>
+
+      <section class="page" id="dashboard-page">
+        <div class="page-heading"><div><p class="eyebrow">INTERNATIONAL TEAM</p><h1>Team overview</h1><p class="subheading" id="dashboard-subheading">Your team at a glance.</p></div><span class="country-badge"><span class="country-monogram" id="country-monogram">G</span><span id="badge-country">Loading…</span></span></div>
+        <section class="match-card" aria-labelledby="match-title"><div class="match-top"><div><p class="eyebrow light">UPCOMING MATCHUP</p><h2 id="match-title">Matchup preview</h2></div><span class="match-tag">PREVIEW</span></div><div class="match-body"><div class="team home-team"><span class="team-monogram" id="home-monogram">G</span><strong id="home-team">Loading…</strong><small id="home-side">YOUR TEAM</small></div><div class="match-center"><span>MATCHUP PREVIEW</span><div class="versus">VS</div><span id="match-status">Finding opponent…</span></div><div class="team"><span class="team-monogram" id="away-monogram">?</span><strong id="away-team">Opponent</strong><small id="away-side">OPPONENT</small></div></div><div class="match-footer"><span><span class="status-dot"></span> No match has been simulated</span><button class="text-button" data-go="squad">Review squad <span aria-hidden="true">→</span></button></div></section>
+        <div class="section-title"><div><p class="eyebrow">TEAM STATUS</p><h2>Squad at a glance</h2></div><button class="subtle-button" data-go="squad">Manage squad <span aria-hidden="true">→</span></button></div>
+        <section class="summary-grid" aria-label="Squad summary"><article class="summary-card"><div class="summary-icon green" aria-hidden="true">XI</div><div><p>Starting eleven draft</p><strong id="summary-xi">— <small>/ 11 selected</small></strong><span class="summary-note" id="summary-xi-note">Loading roster</span></div></article><article class="summary-card"><div class="summary-icon navy" aria-hidden="true">C</div><div><p>Draft captain</p><strong id="summary-captain">—</strong><span class="summary-note">Draft choice</span></div></article><article class="summary-card"><div class="summary-icon amber" aria-hidden="true">↗</div><div><p>Mean energy value</p><strong id="summary-energy">—</strong><span class="summary-note">Mean for selected players</span></div></article></section>
+        <section class="dashboard-bottom"><div class="panel focus-panel"><div class="panel-heading"><div><p class="eyebrow">NEXT STEP</p><h2>Review your starting eleven</h2></div><span class="small-icon" aria-hidden="true">✦</span></div><p>Choose your country above; lineup changes stay a draft for review.</p><button class="primary-button" data-go="squad">Open squad <span aria-hidden="true">→</span></button></div><div class="panel identity-panel"><p class="eyebrow">TEAM IDENTITY</p><div class="identity-content"><span class="large-monogram" id="large-monogram">G</span><div><h2 id="identity-country">Loading…</h2><p>Country squad <span class="identity-separator">·</span> <span id="dashboard-roster-size">20</span> players</p></div></div><div class="identity-rule"></div><p class="identity-caption">Country players and their values come from the loaded game.</p></div></section>
+        <footer class="page-foot">goal2 local browser view <span>·</span> Your country choice stays selected as you work</footer>
+      </section>
+
+      <section class="page hidden" id="squad-page">
+        <div class="page-heading"><div><p class="eyebrow" id="squad-eyebrow">TEAM MANAGEMENT</p><h1>Your squad</h1><p class="subheading">Select eleven players for your draft.</p></div><button class="reset-button" id="reset-button"><span aria-hidden="true">↺</span> Reset draft</button></div>
+        <div class="notice"><span class="notice-icon" aria-hidden="true">i</span><p><strong>Draft choices</strong> — select players and a captain for review. These choices are not yet applied to the game.</p></div>
+        <section class="squad-summary-bar" aria-label="Selection status"><div class="selection-count"><span class="count-icon" aria-hidden="true">XI</span><div><strong id="selection-count">Loading roster</strong><span id="selection-guidance">Loading your squad…</span></div></div><div class="captain-control"><label for="captain-select">Draft captain</label><select id="captain-select" aria-label="Choose draft captain" disabled></select></div><div class="energy-summary"><span>MEAN ENERGY</span><strong id="squad-energy">—</strong></div></section>
+        <div class="table-heading"><div><p class="eyebrow">PLAYER ROSTER</p><h2>Available players <span id="roster-size">20</span></h2></div><span class="table-hint">Player values come from the loaded game</span></div>
+        <div class="table-wrap"><table><thead><tr><th scope="col" class="select-col"><span class="sr-only">Starting eleven draft</span></th><th scope="col">PLAYER</th><th scope="col">POSITION CODE</th><th scope="col" class="ability-heading">ABILITY</th><th scope="col" class="energy-heading">ENERGY</th><th scope="col" class="captain-heading">CAPTAIN</th></tr></thead><tbody id="squad-rows"></tbody></table></div>
+        <div class="squad-footnote"><span class="footnote-dot"></span> Position codes come from the loaded game data.</div>
+        <footer class="page-foot">Draft choices are temporary <span>·</span> Nothing is saved or played</footer>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

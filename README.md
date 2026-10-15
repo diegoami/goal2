@@ -84,3 +84,16 @@ python3 -m http.server 8000 --directory docs/prototypes/browser-ui
 ```
 
 Then open `http://localhost:8000`.
+
+[designed: T35] Start the live browser view with a local halftime savestate and
+the matching local GOAL.DAT:
+
+```bash
+python3 -m goal2.web .cache/<savestate>.sav .cache/GOAL.DAT
+```
+
+Open `http://127.0.0.1:8000`. Pass `--host` or `--port` to choose a different
+bind address or port. The server loads both files once and keeps one in-memory
+session. Country selection and roster data come from that session; lineup and
+captain controls are browser drafts until a later task adds confirmation. The
+match card resolves the loaded template and does not simulate or save a match.
