@@ -27,3 +27,4 @@ status; this index carries none.
 | T28 | Choose the starting eleven | #70 | T27 |
 | T29 | Match preview before kickoff | #72 | T28 |
 | T30 | Understand the match result | #76 | T29 |
+| T31 | Clear terminal presentation | #78 | T30 |
