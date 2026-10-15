@@ -17,9 +17,9 @@
 | 9 | [T47](tasks/T47.md) · [#107](https://github.com/diegoami/goal2/issues/107) — Allow halftime substitutions in campaign matches | Hard | T46 |
 | 10 | [T48](tasks/T48.md) · [#108](https://github.com/diegoami/goal2/issues/108) — Resolve other countries’ scheduled fixtures | Medium | T47 |
 | 11 | [T49](tasks/T49.md) · [#109](https://github.com/diegoami/goal2/issues/109) — Build competition tables and code-based tie-breaks | Medium | T48 |
-| 12 | [T50](tasks/T50.md) · [#110](https://github.com/diegoami/goal2/issues/110) — Play continental qualifying campaigns | Hard | T49 |
-| 13 | [T51](tasks/T51.md) · [#111](https://github.com/diegoami/goal2/issues/111) — Resolve competitive matches, extra time and penalties | Hard | T50 |
-| 14 | [T52](tasks/T52.md) · [#112](https://github.com/diegoami/goal2/issues/112) — Play continental finals through a champion | Hard | T51 |
+| 12 | [T51](tasks/T51.md) · [#111](https://github.com/diegoami/goal2/issues/111) — Resolve competitive matches, extra time and penalties | Hard | T49 |
+| 13 | [T50](tasks/T50.md) · [#110](https://github.com/diegoami/goal2/issues/110) — Play continental qualifying campaigns | Hard | T51 |
+| 14 | [T52](tasks/T52.md) · [#112](https://github.com/diegoami/goal2/issues/112) — Play continental finals through a champion | Hard | T50 |
 | 15 | [T53](tasks/T53.md) · [#113](https://github.com/diegoami/goal2/issues/113) — Play World Cup qualifying and regional playoffs | Hard | T52 |
 | 16 | [T54](tasks/T54.md) · [#114](https://github.com/diegoami/goal2/issues/114) — Play World Cup finals through a champion | Hard | T53 |
 | 17 | [T55](tasks/T55.md) · [#115](https://github.com/diegoami/goal2/issues/115) — Apply competition points and world rankings | Medium | T54 |
@@ -32,10 +32,12 @@
 
 [designed] Difficulty describes integration and rule uncertainty, not elapsed time or a model choice. Medium tasks reuse existing seams with bounded state changes. Hard tasks introduce campaign state, interrupt/resume a match, or combine competition scheduling and advancement. Before dispatch, split any task likely to exceed one implementer run; task files specify the protected outcome and checks. Future test commands are acceptance contracts to be implemented and verified, not checks claimed to pass today.
 
-[derived: issue #73 and its register handover] T39 is the evidence gate. The main register contains stale assumptions, including coin-based tie-breaks and full quick-engine CPU results, while some Live cells name modules not actually vendored. Reconcile those against pinned findings and code before downstream implementation. Reuse [#73](https://github.com/diegoami/goal2/issues/73); do not duplicate or silently merge its branch. Proposed static readings remain distinct from executable, measured models.
+[derived: issue #73 and its register handover] T39 is the evidence gate. Audit the legacy coin-based tie-break and full quick-engine CPU-result assumptions, and check Live cells against the actual vendored modules. Use the reconciled register and pinned findings before downstream implementation. Reuse [#73](https://github.com/diegoami/goal2/issues/73); do not duplicate or silently merge its branch. Proposed static readings remain distinct from executable, measured models.
 
 [designed: owner decisions recorded in #73] Substitution limits are unlimited for friendlies and five otherwise; ties follow the code rather than a coin. T47 initially exposes substitutions at halftime, a real boundary of the current quick engine. Continuous watched-match stoppages require the separate engine/interface work. Unresolved mechanics receive explicit assumption rows and replaceable interfaces; any new product choice goes to the owner. T51 must establish actual competitive-path support before enabling competitive matches, with a narrower implementation task if a model import or rebuild is needed.
 
 [designed] Each new campaign transition includes persistent state and a narrow browser view when useful, so campaign data is not retrofitted at the end. Reads, refreshes and repeated actions must not simulate extra fixtures or reapply recovery, rankings, ageing or retirement. Save/resume checkpoints compare complete state and RNG continuation. Legacy friendly saves retain their meaning.
 
 [designed] Match-engine strategy and visualization stay on their separate track: [#97](https://github.com/diegoami/goal2/issues/97), the [close-enough estimate #98](https://github.com/diegoami/goal2/issues/98), and the [emulation estimate #99](https://github.com/diegoami/goal2/issues/99). This backlog does not decide those options or require watched-match visualization before campaign play. If the owner chooses a whole-game emulated core, re-scope these rule adapters before implementation rather than building competing cores. Multiple managers, nationalized pool names and existing nonblocking cleanup remain separate.
+
+[derived: T39 source audit of F023, archaeology 0ef880e] Stage 2 interleaves competitive qualifying fixtures with friendlies. Execute T51 after T49 and before T50; T52 follows T50. This avoids running qualifying fixtures with friendly rules. T40/T41 stop at unsupported fixture kinds until competitive support is available.
