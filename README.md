@@ -75,3 +75,12 @@ original between-fixture fidelity. Technical seed values stay available in the
 recorded-half replay screen, which `python -m goal2.play` continues to show
 from a half-time savestate. Issue #73's observed replay and commentary controls
 inform the UI.
+
+
+[designed: T34] A standalone browser interface preview is available in [`docs/prototypes/browser-ui/`](docs/prototypes/browser-ui/README.md). Start it from the repository root with:
+
+```bash
+python3 -m http.server 8000 --directory docs/prototypes/browser-ui
+```
+
+Then open `http://localhost:8000`.
