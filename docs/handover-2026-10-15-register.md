@@ -96,6 +96,26 @@ campaign in the following order, while keeping each rule behind a replaceable ad
 | Competitions (T48–T54) | Other-country result, standings, qualification, decider and finals adapters | F023 is not an executable model. F024's D47E is a static reading plus synthetic Unicorn probes; use it as a documented seam, not as the quick engine. Resolve task dependencies so T50 does not require competitive play before the task that supplies that resolver. |
 | Lifecycle (T55–T58) | Ranking, stage-boundary ageing, retirement/recreation, sacking and next-cycle transitions | F016/F017/F025 are evidence, not local modules. Resolve the F017/F023 points discrepancy before ranking bonuses; reconcile GA-6's signed sum with BM-3 confidence before implementing sacking. |
 
+[confirmed: finding F023 §§2, 9 at the pin above, still proposed and read from the listing] The
+calendar synopsis below is a static builder reading; counts were checked arithmetically against
+decoded tables. The fixture list has a play order, not dates. Kind-1 friendlies and competition
+kinds share the same ordered fixture records.
+
+| Stage | Campaign year | Competition fixture kinds and counts | Friendlies |
+| --- | --- | --- | --- |
+| 2 | 1 | kind 2: 384 (12 rounds × 4 continents × 8 groups) | 384 |
+| 3 | 2 | kind 3: 48 | 528 |
+| 4 | 2 | kind 101 × 8, 102 × 4, 103 × 4 | none |
+| 5 | 3 | kind 5: 384 | 256 |
+| 6 | 3 | kind 6: 16 | none |
+| 7 | 4 | kind 7: 48 | 320 |
+| 8 | 4 | kind 8 × 8, 200 × 4, 201 × 2, 202, 203 | none |
+
+Stage 2 is the immediate dependency risk: the 384 kind-2 qualifiers cannot be sent through the
+friendly runner. The downstream schedule must either supply a competitive resolver before it
+needs to advance past those records or clearly hold there; changing a competitive result to a
+friendly would corrupt fixture kind, result handling and later tables.
+
 Open rules that must remain explicit until the named seam resolves them:
 
 - Q020: ranking points for kinds 3 and 7 differ between F017 and F023 (T55).
