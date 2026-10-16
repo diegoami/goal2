@@ -1,0 +1,9 @@
+{"seed": "0x1234", "lean": false, "cpu_s": 9.9, "board": true, "score": [1, 1], "ticks": 4146, "seed_end": "0xf31f", "stats": -8723239491699083609}
+{"seed": "0x1234", "lean": true, "cpu_s": 9.7, "board": true, "score": [1, 1], "ticks": 4146, "seed_end": "0xf31f", "stats": -8723239491699083609}
+same: True
+{"seed": "0x2345", "lean": false, "cpu_s": 9.7, "board": true, "score": [0, 1], "ticks": 4138, "seed_end": "0x26d6", "stats": -3597930000365450766}
+{"seed": "0x2345", "lean": true, "cpu_s": 11.9, "board": true, "score": [0, 1], "ticks": 4138, "seed_end": "0x26d6", "stats": -3597930000365450766}
+same: True
+{"seed": "0x4c1d", "lean": false, "cpu_s": 14.6, "board": true, "score": [1, 0], "ticks": 4659, "seed_end": "0xee75", "stats": 5483914105677622538}
+{"seed": "0x4c1d", "lean": true, "cpu_s": 14.6, "board": true, "score": [1, 0], "ticks": 4659, "seed_end": "0xee75", "stats": 5483914105677622538}
+same: True
