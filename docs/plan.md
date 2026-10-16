@@ -40,6 +40,17 @@ names what replaces it.
   country and player data, is read at run time from `.cache/`, fetched from goal2-archaeology's
   release by hash, like every savestate.
 
+## Original watched-engine stage 1
+
+[designed: owner, 2026-10-16, decision #97 and handover #130] The next implementation
+sequence is the [original watched-engine backlog](watched-engine-backlog.md), T60–T66.
+It starts with a one-hour fixture-entry experiment, then upstream packaging, optional
+Unicorn vendoring, state/result integration and a browser watched friendly. Review/merge
+of decision PR #126 and estimate PRs #122/#123 gates implementation. This planning
+pointer records the owner's priority without treating those pending PRs as merged.
+The existing stand-in remains until the original path is proven. Campaign tasks are
+preserved; the owner chooses the later core/campaign route after stage 1.
+
 ## Milestones
 
 Each milestone ends playable or testable on its own. [designed: owner, 2026-10-15]
