@@ -146,11 +146,24 @@ class WebSessionSaveTests(unittest.TestCase):
         self.assertIs(self.session.state, before)
         validate.assert_called_once_with(self.session.template_bytes)
 
+    def canonical_campaign_candidate(self):
+        # [designed: T45] Campaign-specific tests use valid national pool identities.
+        candidate=copy.deepcopy(self.session.state)
+        candidate.managed_squad=list(range(121,141))
+        candidate.starting_eleven=candidate.managed_squad[:11]
+        candidate.captain=121
+        country=bytearray(candidate.countries[7])
+        country[:40]=b''.join(w.to_bytes(2,'little') for w in candidate.managed_squad)
+        candidate.countries[7]=bytes(country)
+        for w in candidate.managed_squad+list(range(2561,2641)):
+            record=bytearray(candidate.players[w]);record[0]=7;record[12:15]=bytes((16,16,16));candidate.players[w]=bytes(record)
+        return candidate
+
     def test_campaign_save_can_replace_active_friendly_session(self):
-        candidate = copy.deepcopy(self.session.state)
+        candidate = self.canonical_campaign_candidate()
         candidate.campaign = CampaignState(
             start_year=1992, cycle=1, year=1, stage=2, seed_7b62=123, seed_8336=456,
-            fixtures=(Fixture("friendly-1", 1, 1, 2, 1, 7, 8),),
+            fixtures=(Fixture("friendly-1", 1, 1, 2, 1, 7, 8),), reserve_ids=list(range(2561,2641)),
         )
         campaign_bytes = encode(candidate, b"campaign-template")
         self.session.save_path.write_bytes(campaign_bytes)
@@ -165,9 +178,9 @@ class WebSessionSaveTests(unittest.TestCase):
         self.assertEqual(self.session.save_path.read_bytes(), campaign_bytes)
 
     def test_malformed_campaign_candidate_preserves_active_state_and_save_bytes(self):
-        candidate = copy.deepcopy(self.session.state)
+        candidate = self.canonical_campaign_candidate()
         candidate.campaign = CampaignState(1992, 1, 1, 2, 123, 456,
-                                           (Fixture("friendly-1", 1, 1, 2, 1, 7, 8),))
+                                           (Fixture("friendly-1", 1, 1, 2, 1, 7, 8),), reserve_ids=list(range(2561,2641)))
         document = json.loads(encode(candidate, b"candidate template"))
         document["state"]["campaign"]["unexpected"] = True
         malformed = json.dumps(document).encode()

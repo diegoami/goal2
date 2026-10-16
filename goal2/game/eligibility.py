@@ -80,7 +80,7 @@ def finish(qm, state):
 
     B27F consumes no draws and touches only this player's status; applying it
     after all energy/confidence calls commutes with other players' operations.
-    Original national-pool callers remain T45. Candidate publication is atomic.
+    The disjoint national-pool caller lives in campaign_pool.py. Candidate publication is atomic.
     """
     if getattr(qm, '_campaign_eligibility_complete', False):
         raise ValueError('campaign eligibility was already applied')

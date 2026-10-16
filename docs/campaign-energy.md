@@ -40,8 +40,8 @@ checked by literal reference tests, including age thresholds and signed edges.
 [derived: F019/F018; designed: T43] The transition traverses side A then B,
 squad slot order. The campaign quick runner interleaves confidence draws with
 recovery: unused-bench confidence before energy, participant energy before
-confidence. The public energy-only adapter omits confidence; national-pool
-callers remain T45. T44 applies current-squad B27F in its separate eligibility
+confidence. The public energy-only adapter omits confidence and reserves; T45
+applies the disjoint reserve prefix on the joint campaign path. T44 applies current-squad B27F in its separate eligibility
 adapter. There is no claim of whole post-fixture RNG parity,
 calendar-day recovery, or complete watched-engine behavior. Energy changes are
 part of the detached match candidate: restore, recover, retain final RNG and
@@ -62,3 +62,8 @@ fixture submissions remain guarded by T41's transaction boundary.
 python3 -m unittest goal2.tests.test_campaign_energy -v
 python3 -m unittest goal2.tests.test_campaign_energy.CampaignContinuations -v
 ```
+
+[designed: T45] The disjoint eighty-reserve BA4E prefix now runs before the current
+squad operations described above. See [campaign-pool.md](campaign-pool.md) for
+ordered recovery/confidence/status calls, save membership and remaining boundaries.
+Standalone friendlies and original watched-result publication do not run this prefix.
