@@ -144,3 +144,8 @@ result-relative confidence with ordered bench draws and scorer-shadow restoratio
 Browser management shows player confidence and confirmed team morale; results show
 the recomputed morale. See [campaign confidence](docs/campaign-confidence.md) for
 evidence, saved continuation and the current national-pool/status limits.
+
+[derived: F027; designed: T44] Campaign selection now explains and refuses
+unavailable starters, allows lineup repair and filters computer starters.
+Played fixtures apply the status-byte ban/booking transition once; Save/Load
+preserve it without expiry. See [campaign eligibility](docs/campaign-eligibility.md).

@@ -14,6 +14,7 @@ function monogram(name) {
   return (words.length > 1 ? words[0][0] + words[1][0] : words[0]?.slice(0, 2) || '?').toUpperCase();
 }
 function chosenPlayers() { return session.players.filter(player => draft.selected.has(player.id)); }
+// [derived: F027; designed: T44] A complete draft still needs available starters.
 function selectionMessage() {
   const unavailable = chosenPlayers().filter(player => player.availability && !player.availability.available);
   if (unavailable.length) return `Replace unavailable players: ${unavailable.map(player => player.name).join(", ")}.`;
@@ -193,13 +194,13 @@ function renderSquad(focusSelector = null) {
   const energy = selected.length ? Math.round(selected.reduce((sum, player) => sum + player.energy, 0) / selected.length) : '—';
   const captain = selected.find(player => player.id === draft.captain);
   $('#summary-xi').innerHTML = `${selected.length} <small>/ 11 selected</small>`;
-  $('#summary-xi-note').textContent = selected.length === 11 ? 'Browser draft ready' : selectionMessage();
+  $('#summary-xi-note').textContent = draftIsValid() ? 'Browser draft ready' : selectionMessage();
   $('#summary-captain').textContent = captain?.name ?? 'Not set';
   $('#summary-energy').textContent = energy;
   $('#selection-count').textContent = `${selected.length} of 11 selected`;
   $('#selection-guidance').textContent = selectionMessage();
   $('#squad-energy').textContent = energy;
-  $('#selection-count').classList.toggle('complete', selected.length === 11);
+  $('#selection-count').classList.toggle('complete', draftIsValid());
   const captainSelect = $('#captain-select');
   captainSelect.disabled = selected.length === 0 || busy;
   captainSelect.innerHTML = selected.length

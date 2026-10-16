@@ -40,8 +40,9 @@ checked by literal reference tests, including age thresholds and signed edges.
 [derived: F019/F018; designed: T43] The transition traverses side A then B,
 squad slot order. The campaign quick runner interleaves confidence draws with
 recovery: unused-bench confidence before energy, participant energy before
-confidence. The public energy-only adapter omits confidence; national-pool and
-other status updates remain separate tasks. There is no claim of whole post-fixture RNG parity,
+confidence. The public energy-only adapter omits confidence; national-pool
+callers remain T45. T44 applies current-squad B27F in its separate eligibility
+adapter. There is no claim of whole post-fixture RNG parity,
 calendar-day recovery, or complete watched-engine behavior. Energy changes are
 part of the detached match candidate: restore, recover, retain final RNG and
 record the fixture identity, then validate/publish the browser state together

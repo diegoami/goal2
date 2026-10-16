@@ -59,7 +59,7 @@ if (scenario === 'campaign-eligibility') {
   const prepare = `from pathlib import Path
 import sys
 from goal2.web.server import WebSession
-s = WebSession.load(sys.argv[1], sys.argv[2])
+s = WebSession.load(Path(sys.argv[1]), Path(sys.argv[2]))
 s.new_campaign({'country':4,'start_year':1990,'seed_7b62':4660,'seed_8336':33590})
 for word, offset, value in ((s.state.starting_eleven[0],14,0),(s.state.starting_eleven[1],16,128),(s.state.managed_squad[-1],16,8)):
     r=bytearray(s.state.players[word]); r[offset]=value; s.state.players[word]=bytes(r)
@@ -111,6 +111,7 @@ try {
     await page.locator('#confirm-button').click();
     await page.waitForFunction(() => document.querySelector('#management-feedback').textContent.includes('Team confirmed'));
     assert.equal((await getSession()).matchup.available, true);
+    await page.locator('[data-page="dashboard"]').click();
     await page.locator('#save-session-button').click();
     await page.waitForFunction(() => document.querySelector('#save-feedback').textContent.startsWith('Session saved'));
     await page.locator('#load-session-button').click();

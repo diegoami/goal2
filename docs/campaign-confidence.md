@@ -60,7 +60,8 @@ uninterrupted two-fixture continuations compare complete state.
 
 [designed: T43 scope] Current campaigns use base20 squads. The separate managed
 national-pool route and its overlapping confidence/recovery draws remain T45;
-other discipline/status lifecycle remains T44. The energy-only public adapter
+T44 now applies current-squad B27F and availability gates; competitive event
+production remains T51. The energy-only public adapter
 can still run without confidence; the campaign quick runner requests the joint
 ordered path. No whole original fixture-tail RNG parity is claimed. The saved
 `campaign_energy` marker retains its earlier fields and adds `confidence_draws`.
