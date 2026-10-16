@@ -11,7 +11,7 @@ import path from 'node:path';
 const args = process.argv.slice(2);
 const valueAfter = flag => { const at = args.indexOf(flag); return at >= 0 ? args[at + 1] : undefined; };
 const scenario = valueAfter('--scenario');
-assert(args.includes('--scenario') && ['countries', 'management', 'friendlies', 'persistence'].includes(scenario), 'use --scenario countries|management|friendlies|persistence');
+assert(args.includes('--scenario') && ['countries', 'management', 'friendlies', 'persistence', 'campaign-friendlies'].includes(scenario), 'use --scenario countries|management|friendlies|persistence|campaign-friendlies');
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 assert(modulePath, 'set PLAYWRIGHT_MODULE to the installed Playwright entrypoint');
 const require = createRequire(import.meta.url);
@@ -24,7 +24,7 @@ let child;
 let base = valueAfter('--url');
 let saveDirectory;
 let savePath;
-if (scenario === 'persistence') {
+if (['persistence', 'campaign-friendlies'].includes(scenario)) {
   saveDirectory = await mkdtemp(path.join(tmpdir(), 'goal2-browser-save-'));
   savePath = path.join(saveDirectory, 'session.g2save');
 }
@@ -201,6 +201,81 @@ try {
     assert.deepEqual(pageErrors, [], 'management browser has no page errors');
     await context.close();
     console.log(`PASS management: ${choice.name}, confirmed eleven/captain/all tactic bits, reload, cancel, invalid states, keyboard and mobile layout`);
+  } else if (scenario === 'campaign-friendlies') {
+    // [designed: T41] Real UI creation, management, two scheduled actions and disk resume.
+    browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
+    const page = await context.newPage();
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    await page.locator('#campaign-country option').first().waitFor({ state: 'attached' });
+    await page.locator('#campaign-country').selectOption('4');
+    await page.locator('#campaign-year').fill('1990');
+    await page.locator('#campaign-seed').fill('4660');
+    await page.locator('#campaign-seed2').fill('33590');
+    await page.locator('#new-campaign-button').click();
+    await page.waitForFunction(() => document.querySelector('#campaign-feedback').textContent.startsWith('New campaign started'));
+    let current = await getSession();
+    assert.equal(current.country.id, 4);
+    assert.deepEqual(current.matchup.teams, [4, 1]);
+    assert.equal(current.campaign.next_fixture.fixture_id, 'original:1378');
+    assert.match(await page.locator('#campaign-next').innerText(), /team A.*team B.*Friendly/);
+    assert.equal(await page.locator('#country-select').isDisabled(), true);
+    await page.locator('[data-page="squad"]').click();
+    const captain = current.confirmed.starting_eleven[1];
+    await page.locator('#captain-select').selectOption(String(captain));
+    await page.locator('[data-tactic-bit="0"]').setChecked(!(current.confirmed.tactics & 1));
+    await page.locator('#confirm-button').click();
+    await page.waitForFunction(() => document.querySelector('#management-feedback').textContent.includes('Team confirmed'));
+    current = await getSession();
+    assert.equal(current.confirmed.captain, captain);
+    assert.equal(current.match_count, 0, 'management never advances schedule');
+    await page.locator('[data-page="dashboard"]').click();
+    for (const [index, pair] of [[4, 1], [9, 4]].entries()) {
+      const before = await getSession();
+      assert.deepEqual(before.matchup.teams, pair);
+      await page.locator('#play-button').click();
+      await page.waitForFunction(count => document.querySelectorAll('#campaign-history li').length === count, index + 1);
+      current = await getSession();
+      assert.equal(current.match_count, index + 1);
+      assert.deepEqual(current.last_match.teams.map(team => team.id), pair, 'actual runner uses source-ordered scheduled pair');
+      assert.equal(current.campaign.history.length, index + 1);
+      const replay = await page.evaluate(async body => {
+        const result = await fetch('/api/play', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        return result.status;
+      }, { play_token: before.play_token, fixture_id: before.campaign.next_fixture.fixture_id });
+      assert.equal(replay, 409, 'duplicate Play rejected');
+      await page.reload({ waitUntil: 'networkidle' });
+      assert.equal((await getSession()).match_count, index + 1, 'reload never advances schedule');
+    }
+    assert.equal(current.campaign.next_fixture.kind, 5);
+    assert.equal(await page.locator('#play-button').isDisabled(), true);
+    assert.match(await page.locator('#campaign-boundary').innerText(), /unsupported fixture kind 5/);
+    await page.locator('#save-session-button').click();
+    await page.waitForFunction(() => document.querySelector('#save-feedback').textContent.startsWith('Session saved'));
+    await page.locator('#load-session-button').click();
+    await page.waitForFunction(() => document.querySelector('#save-feedback').textContent.startsWith('Saved session loaded'));
+    assert.deepEqual((await getSession()).campaign, current.campaign, 'save and load preserve history and next identity');
+    if (screenshotDir) {
+      await mkdir(screenshotDir, { recursive: true });
+      await page.screenshot({ path: path.join(screenshotDir, 'campaign-desktop.png'), fullPage: true });
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'campaign controls fit mobile viewport');
+    if (screenshotDir) await page.screenshot({ path: path.join(screenshotDir, 'campaign-mobile.png'), fullPage: true });
+    await stopServer();
+    await startServer(true);
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    await page.locator('#campaign-history li').first().waitFor();
+    const resumed = await getSession();
+    assert.equal(resumed.match_count, 2, 'process restart never plays an extra fixture');
+    assert.deepEqual(resumed.campaign, current.campaign);
+    assert.deepEqual(resumed.confirmed, current.confirmed);
+    assert.equal(await page.locator('#play-button').isDisabled(), true);
+    assert.deepEqual(pageErrors, []);
+    await context.close();
+    console.log('PASS campaign-friendlies: creation, management, source pairs A/B, two matches, duplicate rejection, history, boundary, reload, save/load, process resume, mobile');
   } else if (scenario === 'persistence') {
     const initial = await getSession();
     const countries = await getCountries();

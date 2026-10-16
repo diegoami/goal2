@@ -100,6 +100,8 @@ class CampaignState:
     seed_8336: int
     fixtures: tuple[Fixture, ...] = ()
     completed_fixture_ids: list[str] = field(default_factory=list)
+    # [designed: T41] Minimal retained score history; no CPU fixtures are invented.
+    results: list[dict[str, Any]] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         _, opening_stage = opening_calendar(self.start_year)
@@ -147,6 +149,26 @@ class CampaignState:
             raise CampaignError("completed fixture ledger must be a fixture-order prefix")
         if any(f.kind != 1 for f in self.fixtures[:len(self.completed_fixture_ids)]):
             raise CampaignError("unsupported competitive fixture cannot appear in the completion ledger")
+        if not isinstance(self.results, list) or len(self.results) > len(self.completed_fixture_ids):
+            raise CampaignError("campaign result history must reference completed fixtures")
+        # Older T40 saves may have a completion prefix without retained scores.
+        result_ids = []
+        for row in self.results:
+            if not isinstance(row, dict) or set(row) != {"fixture_id", "teams", "score"}:
+                raise CampaignError("campaign result has missing or unknown fields")
+            fixture_id = row["fixture_id"]
+            if fixture_id not in self.completed_fixture_ids or fixture_id in result_ids:
+                raise CampaignError("campaign result references an incomplete or duplicate fixture")
+            fixture = next(f for f in self.fixtures if f.fixture_id == fixture_id)
+            if (not isinstance(row["teams"], list) or any(type(t) is not int for t in row["teams"])
+                    or row["teams"] != [fixture.side_a, fixture.side_b]):
+                raise CampaignError("campaign result teams differ from scheduled endpoints")
+            if (not isinstance(row["score"], list) or len(row["score"]) != 2
+                    or any(isinstance(v, bool) or not isinstance(v, int) or v < 0 for v in row["score"])):
+                raise CampaignError("campaign result score is invalid")
+            result_ids.append(fixture_id)
+        if result_ids != [f for f in self.completed_fixture_ids if f in result_ids]:
+            raise CampaignError("campaign result history is out of order")
         pending = self.next_fixture
         current = (self.cycle, self.stage)
         if pending is None:
@@ -209,13 +231,14 @@ class CampaignState:
             "stage": self.stage, "seed_7b62": self.seed_7b62, "seed_8336": self.seed_8336,
             "fixtures": [fixture.__dict__ for fixture in self.fixtures],
             "completed_fixture_ids": list(self.completed_fixture_ids),
+            "results": [dict(row, teams=list(row["teams"]), score=list(row["score"])) for row in self.results],
         }
 
     @classmethod
     def from_data(cls, data: Any) -> "CampaignState":
         keys = {"start_year", "cycle", "year", "stage", "seed_7b62", "seed_8336",
                 "fixtures", "completed_fixture_ids"}
-        if not isinstance(data, dict) or set(data) != keys:
+        if not isinstance(data, dict) or set(data) not in (keys, keys | {"results"}):
             raise CampaignError("campaign metadata has missing or unknown fields")
         if not isinstance(data["fixtures"], list):
             raise CampaignError("campaign fixtures must be a list")
@@ -228,7 +251,8 @@ class CampaignState:
         try:
             return cls(start_year=data["start_year"], cycle=data["cycle"], year=data["year"],
                        stage=data["stage"], seed_7b62=data["seed_7b62"], seed_8336=data["seed_8336"],
-                       fixtures=tuple(fixtures), completed_fixture_ids=data["completed_fixture_ids"])
+                       fixtures=tuple(fixtures), completed_fixture_ids=data["completed_fixture_ids"],
+                       results=data.get("results", []))
         except TypeError as exc:
             raise CampaignError(f"malformed campaign metadata: {exc}") from exc
 

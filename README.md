@@ -125,3 +125,10 @@ PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --sce
 PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario friendlies
 PLAYWRIGHT_MODULE=/path/to/playwright node tools/browser-ui/acceptance.mjs --scenario persistence
 ```
+
+[designed: T41] The live browser also offers **New campaign** with country, even
+start year and explicit seeds. **Play scheduled friendly** uses the next source
+fixture, retains score history, and stops at the unsupported qualifier boundary.
+Save/load and process resume preserve that position. See the
+[browser instructions](tools/browser-ui/README.md) and
+[campaign contract](docs/campaign-state.md) for the exact scope and acceptance.

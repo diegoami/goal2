@@ -54,7 +54,8 @@ class CampaignFriendlies(unittest.TestCase):
         with self.assertRaises(StalePlaySubmission):
             self.play(initial)
         self.assertEqual(self.session.state.match_count, 1)
-        self.session.confirm_management({"country": 4, **first["confirmed"]})
+        self.session.confirm_management({"country": 4, **first["confirmed"],
+                                         "captain": first["confirmed"]["starting_eleven"][0]})
         with self.assertRaises(StalePlaySubmission):
             self.play(first)
         self.assertEqual(self.session.state.match_count, 1)

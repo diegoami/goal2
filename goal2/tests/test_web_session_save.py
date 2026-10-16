@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 from goal2.engine.savestate import Savestate
 from goal2.game.quick_match import run_full_match
-from goal2.game.campaign import CampaignState, Fixture, UnsupportedCampaignTransition
+from goal2.game.campaign import CampaignState, Fixture
 from goal2.game.session_save import SessionSaveError, decode, encode, save as save_session_save
 from goal2.game.state import from_savestate, to_savestate
 from goal2.web.server import Handler, WebSession, main
@@ -146,7 +146,7 @@ class WebSessionSaveTests(unittest.TestCase):
         self.assertIs(self.session.state, before)
         validate.assert_called_once_with(self.session.template_bytes)
 
-    def test_campaign_save_is_refused_without_replacing_active_friendly_session(self):
+    def test_campaign_save_can_replace_active_friendly_session(self):
         candidate = copy.deepcopy(self.session.state)
         candidate.campaign = CampaignState(
             start_year=1992, cycle=1, year=1, stage=2, seed_7b62=123, seed_8336=456,
@@ -155,16 +155,13 @@ class WebSessionSaveTests(unittest.TestCase):
         campaign_bytes = encode(candidate, b"campaign-template")
         self.session.save_path.write_bytes(campaign_bytes)
         previous_state = self.session.state
-        previous_template = self.session.template
-        previous_template_bytes = self.session.template_bytes
         previous_token = self.session._play_token
 
-        with self.assertRaisesRegex(UnsupportedCampaignTransition, "campaign sessions need"):
-            self.session.load_from_configured_path()
-        self.assertIs(self.session.state, previous_state)
-        self.assertIs(self.session.template, previous_template)
-        self.assertEqual(self.session.template_bytes, previous_template_bytes)
-        self.assertEqual(self.session._play_token, previous_token)
+        response = self.session.load_from_configured_path()
+        self.assertIsNot(self.session.state, previous_state)
+        self.assertEqual(self.session.state.campaign, candidate.campaign)
+        self.assertEqual(response["campaign"]["next_fixture"]["fixture_id"], "friendly-1")
+        self.assertNotEqual(self.session._play_token, previous_token)
         self.assertEqual(self.session.save_path.read_bytes(), campaign_bytes)
 
     def test_malformed_campaign_candidate_preserves_active_state_and_save_bytes(self):

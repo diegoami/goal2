@@ -34,7 +34,9 @@ function resetDraft() {
 }
 function setBusy(value) {
   busy = value;
-  $('#country-select').disabled = value;
+  $('#country-select').disabled = value || Boolean(session?.campaign);
+  $('#new-campaign-button').disabled = value;
+  document.querySelectorAll('#campaign-form input, #campaign-form select').forEach(control => { control.disabled = value; });
   $('#confirm-button').disabled = value || !draftIsValid();
   $('#play-button').disabled = value || !session?.matchup.available;
   $('#another-button').disabled = value;
@@ -60,7 +62,7 @@ function paintCountryPicker() {
   $('#country-select').innerHTML = countries.map(country =>
     `<option value="${country.id}" ${country.id === session.country.id ? 'selected' : ''}>${safe(country.name)}</option>`
   ).join('');
-  $('#country-select').disabled = busy;
+  $('#country-select').disabled = busy || Boolean(session.campaign);
 }
 function render() {
   if (!session) return;
@@ -129,7 +131,25 @@ function render() {
     $('#result-detail').textContent = '';
   }
   $('#play-button').disabled = busy || !session.matchup.available;
-  $('#play-button').textContent = lastMatch ? 'Play another friendly' : 'Play friendly';
+  $('#play-button').textContent = session.campaign ? 'Play scheduled friendly' : lastMatch ? 'Play another friendly' : 'Play friendly';
+  $('#campaign-status').hidden = !session.campaign;
+  if (!$('#campaign-country').options.length) {
+    $('#campaign-country').innerHTML = countries.map(country =>
+      `<option value="${country.id}" ${country.id === session.country.id ? 'selected' : ''}>${safe(country.name)}</option>`
+    ).join('');
+  }
+  if (session.campaign) {
+    const campaign = session.campaign;
+    $('#campaign-stage').textContent = `Campaign ${campaign.start_year} · cycle ${campaign.cycle} · year ${campaign.year} · stage ${campaign.stage}`;
+    const fixture = campaign.next_fixture;
+    $('#campaign-next').textContent = fixture
+      ? `Next: ${fixture.teams[0].name} (team A) vs ${fixture.teams[1].name} (team B) · ${fixture.kind === 1 ? 'Friendly' : `Competitive kind ${fixture.kind}`} · stage ${fixture.stage} · ${fixture.fixture_id}`
+      : 'No next fixture is supplied.';
+    $('#campaign-boundary').textContent = matchup.available ? 'Only Play scheduled friendly advances the schedule.' : matchup.message;
+    $('#campaign-history').innerHTML = campaign.history.map(row =>
+      `<li>${safe(row.fixture_id)} · ${safe(row.teams[0].name)} ${row.score.join('–')} ${safe(row.teams[1].name)}</li>`
+    ).join('');
+  }
   paintCountryPicker();
   const confirmedPlayers = session.players.filter(player => session.confirmed.starting_eleven.includes(player.id));
   $('#confirmed-eleven').textContent = confirmedPlayers.map(player => player.name).join(', ') || 'Not set';
@@ -254,7 +274,9 @@ async function playFriendly() {
   try {
     session = await fetchJson('/api/play', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ play_token: session.play_token }),
+      body: JSON.stringify({ play_token: session.play_token,
+        ...(session.campaign ? { fixture_id: session.campaign.next_fixture.fixture_id } : {}),
+      }),
     });
     render();
   } catch (error) {
@@ -337,6 +359,28 @@ $('#cancel-button').addEventListener('click', () => {
 });
 $('#confirm-button').addEventListener('click', confirmDraft);
 $('#play-button').addEventListener('click', playFriendly);
+$('#campaign-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (busy) return;
+  setBusy(true);
+  try {
+    session = await fetchJson('/api/campaign', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ country: Number($('#campaign-country').value),
+        start_year: Number($('#campaign-year').value), seed_7b62: Number($('#campaign-seed').value),
+        seed_8336: Number($('#campaign-seed2').value) }),
+    });
+    resetDraft();
+    render();
+    $('#campaign-feedback').textContent = 'New campaign started. Manage your team, then play the scheduled friendly.';
+  } catch (error) {
+    $('#campaign-feedback').textContent = `Campaign was not started: ${error.message}`;
+  } finally {
+    setBusy(false);
+    renderTactics();
+    renderSquad();
+  }
+});
 $('#save-session-button').addEventListener('click', saveSession);
 $('#load-session-button').addEventListener('click', loadSession);
 $('#tactics-controls').addEventListener('change', event => {
