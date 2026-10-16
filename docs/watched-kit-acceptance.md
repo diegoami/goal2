@@ -44,10 +44,13 @@ python3 -m goal2.engine.original_match.check --cache .cache --family
 python3 tools/check_watched_records.py --seeds 10
 python3 tools/check_watched_upstream.py --suite tests
 python3 tools/check_watched_upstream.py --suite stamps
-python3 tools/check_watched_upstream.py --suite saves
+# Run each save case separately (0,1,2,3,4,5,6), keeping individual commands short:
+python3 tools/check_watched_upstream.py --suite saves --case 0
 python3 tools/check_watched_upstream.py --suite entry
 python3 tools/check_watched_upstream.py --suite example
-python3 tools/check_watched_upstream.py --suite mutations
+# Run each mutation batch separately (1,2,3):
+python3 tools/check_watched_upstream.py --suite mutations --batch 1
+python3 tools/prove_watched_acceptance.py
 python3 tools/check_provenance.py
 ```
 

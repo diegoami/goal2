@@ -28,7 +28,11 @@ def validate_entry(rows):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--suite", required=True, choices=("tests", "mutations", "stamps", "saves", "entry", "example"))
+    ap.add_argument("--case", type=int, choices=range(7), help="one accepted save scenario (0..6)")
+    ap.add_argument("--batch", type=int, choices=(1,2,3), help="mutation batches 1=0..9, 2=10..16, 3=17..19")
     args = ap.parse_args()
+    if args.case is not None and args.suite != "saves" or args.batch is not None and args.suite != "mutations":
+        ap.error("--case is for saves, --batch is for mutations")
     import unicorn
     if unicorn.__version__ != "2.1.4":
         raise RuntimeError("acceptance requires tested Unicorn2.1.4; pip install unicorn==2.1.4")
@@ -47,11 +51,33 @@ def main():
     # The checked package copy equals the vendored bytes before AND after the run.
     import os
     env = dict(os.environ, PYTHONPATH=str(folder / "runtime"), PYTHONDONTWRITEBYTECODE="1")
-    result = subprocess.run([sys.executable, "-B"] + commands[args.suite], cwd=folder, env=env)
+    command = commands[args.suite]
+    if args.case is not None or args.batch is not None:
+        # [designed] Select existing scenarios at runtime; the pinned upstream source remains byte-identical.
+        file = folder / command[0]
+        bootstrap = ("import importlib.util,sys; "
+                     "spec=importlib.util.spec_from_file_location('accepted_probe',sys.argv[1]); "
+                     "m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m); ")
+        if args.case is not None:
+            bootstrap += f"m.SCENARIOS=m.SCENARIOS[{args.case}:{args.case+1}]; "
+        else:
+            start,end = {1:(0,10),2:(10,17),3:(17,20)}[args.batch]
+            bootstrap += f"m.MUTATIONS=m.MUTATIONS[{start}:{end}]; "
+        bootstrap += "sys.argv=sys.argv[1:]; m.main()"
+        command = ["-c",bootstrap,str(file)] + command[1:]
+    process = subprocess.Popen([sys.executable,"-B"]+command,cwd=folder,env=env,
+                               stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+    output = []
+    for line in process.stdout:
+        output.append(line)
+        print(line,end="",flush=True)
+    returncode = process.wait()
+    if any("killed (time limit)" in line for line in output):
+        raise RuntimeError("a mutation timed out; timeout is not a proved behavioral failure")
     verify_vendor()
-    if result.returncode == 0 and args.suite == "entry":
+    if returncode == 0 and args.suite == "entry":
         validate_entry([json.loads(line) for line in log.read_text().splitlines()])
-    return result.returncode
+    return returncode
 
 
 if __name__ == "__main__":
