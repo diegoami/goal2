@@ -35,7 +35,7 @@ is `[designed]`: a judgement, not a measurement, except where a measurement is n
   an engine fast enough for the bot to search, build this event engine behind a seam that the exact
   port (C) or the original's code (D, #99) can also plug into later. **Do not** build a
   close-enough engine with positions on a pitch. It would cost about 55-75 hours, more than the
-  exact port, and would still have to be calibrated (section 4). If moving players matter, buy them
+  exact port, and would still have to be calibrated (section 3). If moving players matter, buy them
   from route C or D.
 
 ## 1. What "close enough" means here, as checks
