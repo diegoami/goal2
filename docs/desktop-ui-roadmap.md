@@ -66,3 +66,5 @@ with the engine image supplied from the private release at build time, never git
 No bundler is selected and cross-platform Unicorn/Qt packaging is not proven.
 Native mobile is outside this desktop plan until a separately chosen exact port;
 a phone web demo is optional, not a desktop acceptance requirement.
+
+[designed: T69] The [desktop management guide](desktop-management.md) defines the shell launch, optional dependency and direct-Python management/save boundary. Match execution, pool controls and watched integration retain their separate task contracts.
