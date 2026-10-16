@@ -25,7 +25,8 @@ def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, in
 
     Returns ``(teams, managed_side, opponent)`` using the same replacement
     rule consumed by both the preview and the runner. This reads template
-    setup but does not simulate the match.
+    setup but does not simulate the match. [designed: T41] Campaign mode instead
+    uses the exact next scheduled pair and refuses unsupported fixtures.
     """
     qm = QuickMatch(template)
     if qm.ninea3d != 0 or qm.eight319 != 0x2D:
@@ -36,6 +37,23 @@ def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, in
     selected = game_state.managed_country
     if not 1 <= selected <= 128:
         raise ValueError("managed country must be 1..128")
+    # [designed: T41] Campaign rows override both inherited template endpoints.
+    # [derived: F023 at 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb]
+    # Preserve source A/B order without inferring a home venue.
+    if getattr(game_state, "campaign", None) is not None:
+        campaign = game_state.campaign
+        fixture = campaign.next_fixture
+        if fixture is None:
+            raise ValueError("unsupported next stage: no fixture builder is available")
+        if fixture.kind != 1:
+            raise ValueError(f"unsupported fixture kind {fixture.kind}; competitive play is unavailable")
+        if (fixture.cycle, fixture.year, fixture.stage) != (campaign.cycle, campaign.year, campaign.stage):
+            raise ValueError("unsupported next stage: calendar transition is required")
+        teams = (fixture.side_a, fixture.side_b)
+        if selected not in teams:
+            raise ValueError("scheduled fixture does not include the managed country")
+        managed_side = teams.index(selected)
+        return teams, managed_side, teams[1 - managed_side]
     original_teams = tuple(qm.teams)
     managed_side = original_teams.index(selected) if selected in original_teams else 0
     opponent_side = 1 - managed_side

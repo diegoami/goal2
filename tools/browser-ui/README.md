@@ -47,3 +47,32 @@ session, copy the `.g2save` file to the other computer and pass that path to
 `--resume`; keep a local GOAL.DAT there too. `.g2save` is the rebuild's versioned
 JSON session format and does not claim compatibility with original binary
 `.sav` files.
+
+[designed: T41] **New campaign** creates a fresh managed team from country, even
+start year and two explicit seeds, replacing the current in-memory session.
+Save first to keep the previous session. Manage and confirm your team, then use
+**Play scheduled friendly**. The next-fixture panel shows source team A/B order,
+kind and stage; retained results stay in the campaign history across save/load
+and process resume. Unsupported qualifiers disable Play with an explanation.
+Country switching is fixed within a campaign; start another campaign to change
+manager. Ordinary friendly sessions retain their existing flow. Scores still use
+the existing assumed friendly runner while the original engine kit is integrated
+separately.
+
+```sh
+PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs \
+  node tools/browser-ui/acceptance.mjs --scenario campaign-friendlies
+python3 -m unittest goal2.tests.test_campaign_friendlies -v
+```
+
+[designed: T41] The campaign browser acceptance pins country 4, start year 1990,
+seeds 4660/33590: two friendlies with ordered pairs (4,1) then (9,4), followed
+by an unsupported kind-5 qualifier. It checks creation, confirmed management,
+duplicate rejection, history, reload, Save/Load, a fresh server resume and mobile
+layout. `SCREENSHOT_DIR` also captures the campaign at desktop and mobile sizes.
+
+[designed: T41] Run `python3 tools/browser-ui/prove-campaign.py` for five
+negative mutation proofs. It saves each source file before changing one site,
+runs the targeted test in a fresh Python process, requires an assertion failure,
+and restores the saved bytes in `finally`. Run it sequentially with other checks
+in a clean task checkout containing the ignored local inputs.

@@ -35,8 +35,9 @@ calendar advancement reports that the next builder is unavailable.
 Campaign saves use strict version 2 metadata, including both seeds, the source
 year, current cycle/year/stage, ordered fixtures and completion ledger. A
 malformed or unknown version-2 field is rejected before a candidate can replace
-an active session. Terminal and browser friendly paths reject campaign saves
-until campaign controls are implemented.
+an active session. Terminal friendly paths still reject campaign saves.
+[designed: T41] Browser controls accept campaign saves and validate the complete
+continuation before replacing the current session.
 
 [derived: F023, goal2-archaeology 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb]
 goal2.game.campaign_schedule.build_opening_campaign reads the stage-2 or
@@ -58,3 +59,21 @@ endpoints only; Fixture.side_a and Fixture.side_b expose that order without
 asserting which endpoint plays at home. Friendly kind 1 remains completable;
 the stage-2 or stage-5 qualifying kind remains a barrier until a competitive
 result handler is implemented.
+
+[designed: T41] Browser New campaign accepts country, an even source start year
+and both explicit 16-bit seeds. Play includes a one-use token and the exact next
+fixture identity. Both scheduled endpoints replace the template pair in the
+shared preview/runner resolver. A detached candidate receives engine changes,
+the completion ID and a retained score row; only a validated browser response
+publishes it. Refresh, preview, team confirmation, Save and Load do not complete
+fixtures. The manager remains fixed; New campaign can choose a different country.
+The browser displays source A/B order, stage, kind, named next opponent, retained
+scores and the unsupported qualifier boundary. Other-country results remain
+pending T48. Simulation uses the existing assumed full-friendly runner, with
+no claim of original full-match fidelity.
+
+[designed: T41] Version-2 campaign metadata adds optional `results` rows containing
+`fixture_id`, ordered country IDs and score. Old T40 saves without score history
+remain readable. New history must reference unique completed fixtures in queue
+order and match their scheduled endpoints. Saves retain this history and resume
+at the pending fixture without simulating another match.

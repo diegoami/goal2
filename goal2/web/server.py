@@ -22,7 +22,7 @@ from goal2.engine.savestate import Savestate
 from goal2.game.quick_match import resolve_full_matchup
 from goal2.game.quick_match import run_full_match
 from goal2.game.session_save import SessionSaveError, load as load_session_save, save as save_session_save
-from goal2.game.campaign import ensure_friendly_session
+from goal2.game.campaign_schedule import start_opening_campaign
 from goal2.game.state import GameState, from_savestate, to_savestate
 
 
@@ -87,7 +87,6 @@ class WebSession:
         """[designed: T38] Rebuild a session from its versioned save and GOAL.DAT."""
         try:
             state, template_bytes = load_session_save(save_path)
-            ensure_friendly_session(state)
             from_savestate(template_bytes)
             template = Savestate(template_bytes)
             # Check that this candidate can produce the next engine input before
@@ -122,7 +121,6 @@ class WebSession:
                 if str(exc).startswith("cannot read session save:"):
                     raise SessionSaveError("cannot read configured session save") from exc
                 raise
-            ensure_friendly_session(candidate)
             from_savestate(template_bytes)
             template = Savestate(template_bytes)
             continuation = to_savestate(candidate, original=template_bytes)
@@ -146,6 +144,41 @@ class WebSession:
             response["match_count"] = getattr(candidate, "match_count", 0)
             return response
 
+    def new_campaign(self, raw: Any) -> dict[str, Any]:
+        """[designed: T41] Publish a fresh scheduled campaign only after validation."""
+        if not isinstance(raw, dict) or set(raw) != {"country", "start_year", "seed_7b62", "seed_8336"}:
+            raise ValueError("new campaign requires country, start_year, seed_7b62 and seed_8336")
+        if self.template_bytes is None:
+            raise ValueError("original template bytes are required to create a campaign")
+        with self._play_lock:
+            candidate, _ = start_opening_campaign(
+                self.goaldat, self.template_bytes, managed_country=raw["country"],
+                start_year=raw["start_year"], seed_7b62=raw["seed_7b62"], seed_8336=raw["seed_8336"],
+            )
+            response = self._session_view(candidate, list(candidate.managed_squad))
+            self.state = candidate
+            self._play_token = secrets.token_urlsafe(24)
+            response["play_token"] = self._play_token
+            return response
+
+    def _campaign_view(self, state: GameState) -> dict[str, Any] | None:
+        """[designed: T41] Display source identities, pending boundary and score history."""
+        campaign = getattr(state, "campaign", None)
+        if campaign is None:
+            return None
+        fixture = campaign.next_fixture
+        def named(country):
+            return {"id": country, "name": self.goaldat.country_names[country]}
+        return {
+            "start_year": campaign.start_year, "cycle": campaign.cycle,
+            "year": campaign.year, "stage": campaign.stage,
+            "next_fixture": ({"fixture_id": fixture.fixture_id, "kind": fixture.kind,
+                              "stage": fixture.stage, "teams": [named(fixture.side_a), named(fixture.side_b)]}
+                             if fixture else None),
+            "history": [{"fixture_id": row["fixture_id"], "teams": [named(t) for t in row["teams"]],
+                         "score": list(row["score"])} for row in campaign.results],
+        }
+
     def countries_view(self) -> dict[str, Any]:
         return {
             "countries": [
@@ -162,6 +195,7 @@ class WebSession:
         view = self._view_for(state, squad)
         view["play_token"] = self._play_token
         view["match_count"] = getattr(state, "match_count", 0)
+        view["campaign"] = self._campaign_view(state)
         view["last_match"] = self._named_match(getattr(state, "last_match", None), state)
         return view
 
@@ -263,10 +297,18 @@ class WebSession:
 
     def play(self, raw: Any) -> dict[str, Any]:
         """[designed: T37] Consume one explicit browser submission atomically."""
-        if not isinstance(raw, dict) or set(raw) != {"play_token"}:
-            raise ValueError("request must contain only a play_token")
-        token = raw["play_token"]
+        if not isinstance(raw, dict):
+            raise ValueError("play request must be an object")
         with self._play_lock:
+            campaign = getattr(self.state, "campaign", None)
+            expected = {"play_token", "fixture_id"} if campaign is not None else {"play_token"}
+            if set(raw) != expected:
+                raise ValueError("play request must identify its token and scheduled fixture in campaign mode")
+            if campaign is not None:
+                pending = campaign.next_fixture
+                if pending is None or raw["fixture_id"] != pending.fixture_id:
+                    raise StalePlaySubmission("scheduled fixture changed or was already played")
+            token = raw["play_token"]
             if not isinstance(token, str) or not secrets.compare_digest(token, self._play_token):
                 raise StalePlaySubmission("play request was already used or is stale")
             # Rotate before simulation. A replay cannot submit this action
@@ -281,6 +323,16 @@ class WebSession:
                 raise ValueError("friendly runner did not retain a match summary")
             candidate.last_match["managed_side"] = result["managed_side"]
             candidate.last_match["match_count"] = candidate.match_count
+            if candidate.campaign is not None:
+                fixture = candidate.campaign.next_fixture
+                candidate.campaign.complete_fixture(fixture.fixture_id)
+                candidate.campaign.results.append({"fixture_id": fixture.fixture_id,
+                                                   "teams": list(result["teams"]), "score": list(result["score"])})
+                # [designed: T41] Move only into a supplied friendly stage. An
+                # unsupported competitive stage remains a visible boundary.
+                pending = candidate.campaign.next_fixture
+                if pending is not None and pending.stage != candidate.campaign.stage and pending.kind == 1:
+                    candidate.campaign.advance_calendar()
             # Validate the full next browser view before making candidate state authoritative.
             response = self._session_view(candidate, list(candidate.managed_squad))
             self.state = candidate
@@ -392,6 +444,8 @@ class WebSession:
         """[designed: T35] Validate a complete candidate before changing state."""
         if isinstance(raw_country, bool) or not isinstance(raw_country, int) or not 1 <= raw_country <= 128:
             raise ValueError("country must be an integer from 1 to 128")
+        if getattr(self.state, "campaign", None) is not None and raw_country != self.state.managed_country:
+            raise ValueError("campaign manager is fixed; use New campaign to choose another country")
         candidate = self.state.countries[raw_country]
         if raw_country >= len(self.goaldat.country_names):
             raise ValueError(f"country {raw_country} has no GOAL.DAT name")
@@ -459,7 +513,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         path = urlsplit(self.path).path
-        if path not in ("/api/country", "/api/management", "/api/play", "/api/save", "/api/load"):
+        if path not in ("/api/country", "/api/management", "/api/play", "/api/save", "/api/load", "/api/campaign"):
             self._json(404, {"error": "not found"})
             return
         try:
@@ -479,6 +533,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(body, dict) or set(body) != {"country"}:
                     raise ValueError("request must contain only a country field")
                 result = self.session.select_country(body["country"])
+            elif path == "/api/campaign":
+                result = self.session.new_campaign(body)
             elif path == "/api/management":
                 result = self.session.confirm_management(body)
             else:
