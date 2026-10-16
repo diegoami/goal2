@@ -25,7 +25,7 @@ committed).
 | **The whole match as the player knows it** (half-time and in-play changes, pitch playback, extra time and shoot-outs) | +14 h (9–24), 4 PRs. **Scope A in all: 27.5 h (17.5–46).** |
 | **The whole game as a headless core** (competitions, other results, ageing, retirements, rankings, 1–6 managers: the original's own rules under a new browser interface) | +37 h (25–60), 9 PRs. **A + whole game: 64.5 h (42.5–106).** About 20 h of it is browser UI any route needs. |
 | **Public distribution** (a player's own copy of GOAL2 booted without DOSBox-X) | +9.5 h (6–16), 2 PRs. Only if people other than the owner will play. |
-| **Run-time cost** | A watched match is **9.7–14.6 CPU s** here (5 seeds; PR 243: 8.3–16.8), loading the image 0.05 s. Not reducible by trimming the harness (measured below); about 250–370 watched matches per CPU hour. |
+| **Run-time cost** | A watched match is **9.7–14.6 CPU s** here (plain runs across 5 distinct seeds, combining `out-speed.txt` and `out-lean.txt`; PR 243: 8.3–16.8), loading the image 0.05 s. Not reducible by trimming the harness (measured below); about 250–370 watched matches per CPU hour. |
 | **The player supplies** | Owner: what goal2 already needs today (a savestate and `GOAL.DAT` from goal2-archaeology's private releases, by hash) plus `pip install unicorn`. Others (after the public stage): their own copy of GOAL2's `GOAL.EXE` and `GOAL.DAT`, checked by hash. |
 | **Three biggest uncertainties** | (1) whether `run_match` can be called on any fixture from a menu-state image without hidden preconditions; (2) how many undeclared key waits and timed prompts the whole game has (scope C); (3) whether copies of GOAL2 found online match the owner's hashes and how much DOS the boot needs (public stage). |
 
@@ -133,7 +133,7 @@ DOSBox-X session and no sitting of the owner is needed at any stage.
 
 | What | Cost | Basis |
 | --- | --- | --- |
-| A watched match | **9.7–14.6 CPU s** (5 seeds; wall time the same within 0.7 s) | `out-speed.txt`, `out-lean.txt`; PR 243 measured 8.3–16.8 |
+| A watched match | **9.7–14.6 CPU s** (plain runs across 5 distinct seeds, combining both scripts; recorded CPU/wall differences in `out-speed.txt` are at most 0.9 s) | `out-speed.txt`, `out-lean.txt`; PR 243 measured 8.3–16.8 |
 | Loading the image (1.1 MB of guest memory) | 0.05 s | `out-speed.txt` (`load_cpu_s`) |
 | Why it cannot be trimmed much | One match executes 47.2 million basic blocks (659 MB of code bytes, about 200 million instructions at an assumed 3 bytes each): Unicorn runs about 20 million instructions a second here. The harness's Python bookkeeping is not the cost: dropping the seed recording and replacing the key-poll hook by a native patch left the time unchanged (9.7–14.6 s, identical results). Skipping the removable display routines made it **slower** (12.7–16.1 s), because a Python hook costs more than the native code it replaces | `out-blocks.txt`, `out-lean.txt`, `out-speed.txt` |
 | A quick result through the original | not measured; assumed under 1 s (the quick engine `D733` runs instead of the per-tick watched engine). goal2's vendored quick engine stays available and is exact [confirmed: F012] | assumption |

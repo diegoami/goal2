@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import copy
 import tempfile
 import unittest
 from http.server import HTTPServer
@@ -13,7 +14,8 @@ from unittest.mock import patch
 
 from goal2.engine.savestate import Savestate
 from goal2.game.quick_match import run_full_match
-from goal2.game.session_save import decode, encode, save as save_session_save
+from goal2.game.campaign import CampaignState, Fixture, UnsupportedCampaignTransition
+from goal2.game.session_save import SessionSaveError, decode, encode, save as save_session_save
 from goal2.game.state import from_savestate, to_savestate
 from goal2.web.server import Handler, WebSession, main
 from goal2.tests.test_web_team_management import make_session
@@ -143,6 +145,46 @@ class WebSessionSaveTests(unittest.TestCase):
         self.assertIn("invalid saved template", result["error"])
         self.assertIs(self.session.state, before)
         validate.assert_called_once_with(self.session.template_bytes)
+
+    def test_campaign_save_is_refused_without_replacing_active_friendly_session(self):
+        candidate = copy.deepcopy(self.session.state)
+        candidate.campaign = CampaignState(
+            start_year=1992, cycle=1, year=1, stage=2, seed_7b62=123, seed_8336=456,
+            fixtures=(Fixture("friendly-1", 1, 1, 2, 1, 7, 8),),
+        )
+        campaign_bytes = encode(candidate, b"campaign-template")
+        self.session.save_path.write_bytes(campaign_bytes)
+        previous_state = self.session.state
+        previous_template = self.session.template
+        previous_template_bytes = self.session.template_bytes
+        previous_token = self.session._play_token
+
+        with self.assertRaisesRegex(UnsupportedCampaignTransition, "campaign sessions need"):
+            self.session.load_from_configured_path()
+        self.assertIs(self.session.state, previous_state)
+        self.assertIs(self.session.template, previous_template)
+        self.assertEqual(self.session.template_bytes, previous_template_bytes)
+        self.assertEqual(self.session._play_token, previous_token)
+        self.assertEqual(self.session.save_path.read_bytes(), campaign_bytes)
+
+    def test_malformed_campaign_candidate_preserves_active_state_and_save_bytes(self):
+        candidate = copy.deepcopy(self.session.state)
+        candidate.campaign = CampaignState(1992, 1, 1, 2, 123, 456,
+                                           (Fixture("friendly-1", 1, 1, 2, 1, 7, 8),))
+        document = json.loads(encode(candidate, b"candidate template"))
+        document["state"]["campaign"]["unexpected"] = True
+        malformed = json.dumps(document).encode()
+        self.session.save_path.write_bytes(malformed)
+        before = (self.session.state, self.session.template, self.session.template_bytes,
+                  self.session._play_token)
+
+        with self.assertRaisesRegex(SessionSaveError, "invalid campaign metadata"):
+            self.session.load_from_configured_path()
+        self.assertIs(self.session.state, before[0])
+        self.assertIs(self.session.template, before[1])
+        self.assertEqual(self.session.template_bytes, before[2])
+        self.assertEqual(self.session._play_token, before[3])
+        self.assertEqual(self.session.save_path.read_bytes(), malformed)
 
     def test_malformed_last_result_is_rejected_before_state_publication(self):
         invalid = self.session.state

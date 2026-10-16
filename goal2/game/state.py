@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from goal2.engine.savestate import Savestate
+    from goal2.game.campaign import CampaignState
 
 
 PLAYER_SIZE = 0x14
@@ -90,6 +91,9 @@ class GameState:
     # a compact result and count; the rebuild session save serializes both.
     match_count: int = 0
     last_match: dict | None = None
+    # [designed: T40] Campaign metadata remains separate from friendly match
+    # state; legacy sessions leave this unset and keep their v1 meaning.
+    campaign: "CampaignState | None" = None
 
 
 def from_savestate(state_bytes: bytes) -> GameState:
