@@ -73,6 +73,8 @@ stand-in; a finding or a static reading alone is not executable support:
 
 [derived: T39 audit of the goal2 tree at `fccff58` and goal2-archaeology `origin/main` at
 `0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb`] The upstream findings F022–F029 are still proposed.
+T40 adds campaign state, a caller-supplied ordered fixture seam, fresh-start reconstruction and
+version-2 campaign persistence; its interface and migration policy are in [campaign-state.md](campaign-state.md).
 F023's competition builders and F024's silent-result path are static readings; no campaign
 fixture builder, standings model, competitive resolver, energy/recovery adapter, or player
 lifecycle adapter is vendored or implemented here. The only vendored executable engine module is
