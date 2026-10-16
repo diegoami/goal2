@@ -12,6 +12,7 @@ from pathlib import Path
 
 from goal2.ai.cpu import get_computer_tactics, pick_computer_eleven
 from goal2.game import campaign_energy, campaign_confidence, eligibility
+from goal2.game.computer import prepare as prepare_computer
 
 # [designed: T01 vendored import layout] quick_engine imports sibling players.
 _ENGINE_DIR = str(Path(__file__).resolve().parents[1] / "engine")
@@ -55,6 +56,7 @@ def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, in
             raise ValueError("scheduled fixture does not include the managed country")
         managed_side = teams.index(selected)
         eligibility.validate_teams(game_state, teams, managed_side)
+        prepare_computer(game_state, teams[1-managed_side])
         return teams, managed_side, teams[1 - managed_side]
     original_teams = tuple(qm.teams)
     managed_side = original_teams.index(selected) if selected in original_teams else 0
@@ -120,15 +122,16 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
     if own_country["managed"] <= 0x80:
         own_country["managed"] = 0xFF
     opponent_country = qm._country(opponent)
-    computer_squad = opponent_country["squad"]
     if campaign is not None:
-        # [derived: F027/3216; designed: T44] Keep existing ranking policy.
-        computer_squad = eligibility.available_words(game_state.players, computer_squad)
-    computer_eleven = pick_computer_eleven(game_state.players, computer_squad)
-    opponent_country["squad"] = computer_eleven + [
-        p for p in opponent_country["squad"] if p not in computer_eleven
-    ]
-    opponent_country["tactics"] = get_computer_tactics(game_state.countries[opponent])
+        # [designed: T46] Preview and runner share authoritative campaign inputs.
+        prepared=prepare_computer(game_state,opponent)
+        computer_eleven=list(prepared['eleven'])
+        opponent_country['squad']=list(prepared['squad'])
+        opponent_country['tactics']=prepared['tactics']
+    else:
+        computer_eleven=pick_computer_eleven(game_state.players,opponent_country['squad'])
+        opponent_country['squad']=computer_eleven+[w for w in opponent_country['squad'] if w not in computer_eleven]
+        opponent_country['tactics']=get_computer_tactics(game_state.countries[opponent])
     if opponent_country["managed"] > 0x80:
         opponent_country["managed"] = opponent
     for side, lineup in ((managed_side, eleven), (opponent_side, computer_eleven)):
