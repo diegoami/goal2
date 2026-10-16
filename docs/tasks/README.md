@@ -39,7 +39,7 @@ status; this index carries none.
 | [T40](T40.md) | Campaign state, calendar and fresh start (hard) | [#100](https://github.com/diegoami/goal2/issues/100) | T39 |
 | [T41a](T41a.md) | Build opening campaign fixture metadata (hard) | [#125](https://github.com/diegoami/goal2/issues/125) | T40 |
 | [T41](T41.md) | Play scheduled friendlies in the browser (medium) | [#101](https://github.com/diegoami/goal2/issues/101) | T41a |
-| [T42](T42.md) | Apply match energy and between-fixture recovery (medium) | [#102](https://github.com/diegoami/goal2/issues/102) | T41 |
+| [T42](T42.md) | Apply match energy and between-fixture recovery (medium) | [#102](https://github.com/diegoami/goal2/issues/102) | T41 + T64; owner post-stage-1 route choice |
 | [T43](T43.md) | Update confidence and display team morale (medium) | [#103](https://github.com/diegoami/goal2/issues/103) | T42 |
 | [T44](T44.md) | Enforce injuries and suspensions at selection (medium) | [#104](https://github.com/diegoami/goal2/issues/104) | T43 |
 | [T45](T45.md) | Manage the national pool and twenty-player squad (medium) | [#105](https://github.com/diegoami/goal2/issues/105) | T44 |
@@ -64,10 +64,16 @@ See the [sequenced backlog](../watched-engine-backlog.md) for review gates, diff
 
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
-| [T60](T60.md) | Prove original watched-match fixture entry (Medium; feasibility uncertainty) | [#248](https://github.com/diegoami/goal2-archaeology/issues/248) | Decision/estimate PRs 122, 123 and 126 reviewed and merged |
-| [T61](T61.md) | Package reusable original watched-match calls (Medium) | [#249](https://github.com/diegoami/goal2-archaeology/issues/249) | T60 positive entry verdict; archaeology PR 243 reviewed and merged |
-| [T62](T62.md) | Vendor the optional watched runtime and verified assets (Easy–Medium) | [#132](https://github.com/diegoami/goal2/issues/132) | T61 merged at an accepted upstream commit |
+| [T60](T60.md) | Accept original watched-match entry evidence (Medium) | [#248](https://github.com/diegoami/goal2-archaeology/issues/248) | Decision/estimate gate; accepted PR #251 evidence with T62 |
+| [T61](T61.md) | Accept reusable original watched-match packaging (Medium) | [#249](https://github.com/diegoami/goal2-archaeology/issues/249) | T60 evidence; PR #251 approved/merged; acceptance with T62 |
+| [T62](T62.md) | Vendor optional watched kit and verify handoff (Easy–Medium) | [#132](https://github.com/diegoami/goal2/issues/132) | PR #251 approved/merged; T60/T61 coverage |
 | [T63](T63.md) | Adapt game state into an original watched fixture (Medium) | [#133](https://github.com/diegoami/goal2/issues/133) | T62 |
 | [T64](T64.md) | Commit watched results atomically and preserve saves (Medium) | [#134](https://github.com/diegoami/goal2/issues/134) | T63 |
 | [T65](T65.md) | Run watched matches in a worker with progress (Medium) | [#135](https://github.com/diegoami/goal2/issues/135) | T64 |
 | [T66](T66.md) | Watch an original friendly in the browser (Medium) | [#136](https://github.com/diegoami/goal2/issues/136) | T65 |
+
+## Planning maintenance
+
+| Task | Title | Issue | Merge after |
+| --- | --- | --- | --- |
+| [T67](T67.md) | Reconcile stage-1 backlog with the interactive kit | [#140](https://github.com/diegoami/goal2/issues/140) | Existing stage-1 backlog and kit handover |

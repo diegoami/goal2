@@ -12,7 +12,7 @@
 | 2 | [T40](tasks/T40.md) · [#100](https://github.com/diegoami/goal2/issues/100) — Campaign state, calendar and fresh start | Hard | T39 |
 | 3a | [T41a](tasks/T41a.md) · [#125](https://github.com/diegoami/goal2/issues/125) — Build opening campaign fixture metadata | Hard | T40 |
 | 3b | [T41](tasks/T41.md) · [#101](https://github.com/diegoami/goal2/issues/101) — Play scheduled friendlies in the browser | Medium | T41a |
-| 4 | [T42](tasks/T42.md) · [#102](https://github.com/diegoami/goal2/issues/102) — Apply match energy and between-fixture recovery | Medium | T41 |
+| 4 | [T42](tasks/T42.md) · [#102](https://github.com/diegoami/goal2/issues/102) — Apply match energy and between-fixture recovery | Medium | T41 + T64; owner post-stage-1 route choice |
 | 5 | [T43](tasks/T43.md) · [#103](https://github.com/diegoami/goal2/issues/103) — Update confidence and display team morale | Medium | T42 |
 | 6 | [T44](tasks/T44.md) · [#104](https://github.com/diegoami/goal2/issues/104) — Enforce injuries and suspensions at selection | Medium | T43 |
 | 7 | [T45](tasks/T45.md) · [#105](https://github.com/diegoami/goal2/issues/105) — Manage the national pool and twenty-player squad | Medium | T44 |
@@ -46,3 +46,11 @@
 [derived: T39 source audit of F023, archaeology 0ef880e] Stage 2 interleaves competitive qualifying fixtures with friendlies. Execute T51 after T49 and before T50; T52 follows T50. This avoids running qualifying fixtures with friendly rules. T40/T41 stop at unsupported fixture kinds until competitive support is available.
 
 [designed: preflight split, 2026-10-16] T41a supplies the source-read opening schedule before T41 browser actions. T40 intentionally supplies no generator. Each slice has a separate PR/review, retaining T41’s scheduled two-friendly browser outcome and the subsequent dependency order.
+
+[designed: owner-approved T67, 2026-10-16] The independent T41 browser task was
+a bounded authorization while the kit handoff was prepared. Defer T42 until
+T64 and the post-stage-1 route choice: original match setup/half/post-match
+energy effects must be carried from accepted runtime state once. Retain the
+T42 tests for those boundaries and for any separately evidenced between-fixture
+recovery; do not build a parallel Python match-effect pipeline. See the
+[kit coverage and acceptance gates](watched-engine-backlog.md).
