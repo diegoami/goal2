@@ -1,5 +1,7 @@
 # Full-cycle playable campaign backlog
 
+[designed: owner #97, 2026-10-16] The [stage-1 original watched-engine backlog](watched-engine-backlog.md) takes priority before starting the next campaign task. Retain this campaign sequence; after the first playable original watched friendly, the owner decides whether to continue these Python adapters or adopt more of the original core. This supersedes the earlier execution priority, not the preserved task scopes.
+
 [designed: owner, 2026-10-15] Turn P4/P5 of the [plan](plan.md) into a sequenced backlog following browser friendlies T35–T38. The target is one human manager who can start a fresh campaign, manage the squad, play scheduled fixtures, follow both competitions and continue into the next four-year cycle. Ordinary browser controls remain the primary interface.
 
 [designed] The table is execution order and dependency structure, not a status report. Each task merges separately after its predecessor. GitHub labels carry status. Creating these tasks does not start implementation or select implementer/reviewer models; the earlier Luna/MiniMax batch covered T35–T38.

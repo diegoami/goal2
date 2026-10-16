@@ -1,6 +1,6 @@
 # The plan: a playable rebuild on findings, with an assumption register
 
-The owner's decisions of 2026-10-12 (goal2 #2):
+The owner's decisions, starting 2026-10-12 (goal2 #2):
 1. **A playable loop first.** New game → country → squad → match → results → the 4-year cycle,
    on plain screens; the original's screens come after.
 2. **The watched match is a stand-in** until goal2-archaeology's M2–M5 land: the quick engine's
@@ -48,6 +48,17 @@ names what replaces it.
 - **Nothing of the original is committed** (CLAUDE.md: nothing of the original game is committed). `GOAL.DAT`, the source of the
   country and player data, is read at run time from `.cache/`, fetched from goal2-archaeology's
   release by hash, like every savestate.
+
+## Original watched-engine stage 1
+
+[designed: owner, 2026-10-16, decision #97 and handover #130] The next implementation
+sequence is the [original watched-engine backlog](watched-engine-backlog.md), T60–T66.
+It starts with a one-hour fixture-entry experiment, then upstream packaging, optional
+Unicorn vendoring, state/result integration and a browser watched friendly. Review/merge
+of decision PR #126 and estimate PRs #122/#123 gates implementation. This planning
+pointer records the owner's priority without treating those pending PRs as merged.
+The existing stand-in remains until the original path is proven. Campaign tasks are
+preserved; the owner chooses the later core/campaign route after stage 1.
 
 ## Milestones
 
