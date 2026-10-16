@@ -130,7 +130,11 @@ class CampaignContinuations(unittest.TestCase):
         self.assertEqual(metadata['confidence_draws'], 36)
         self.assertEqual(metadata['fixture_id'], 'original:1378')
         self.assertEqual(self.session.state.match_state.get('campaign_energy'), metadata)
-        self.assertEqual(self.session.state.rng_seed_7b62, expected)
+        # [designed: T48] CPU suffix advances live RNG after the managed tail.
+        self.assertEqual(self.session.state.last_match['seed_DS7B62'],expected)
+        world=self.session.state.campaign.world
+        self.assertEqual(world.results[17]['seed_after'],expected)
+        self.assertEqual(self.session.state.rng_seed_7b62,world.results[-1]['seed_after'])
         for player in result['players']:
             self.assertEqual(player['energy'], self.session.state.players[player['id']][14])
         before_replay = copy.deepcopy(self.session.state)

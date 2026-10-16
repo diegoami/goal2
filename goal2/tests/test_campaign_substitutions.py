@@ -15,6 +15,7 @@ from goal2.game.quick_match import begin_full_match
 from goal2.game.state import to_savestate
 from goal2.game.session_save import encode
 from goal2.game.substitutions import plan,swap
+from goal2.game.campaign_rounds import prepare as prepare_round
 ROOT=Path(__file__).resolve().parents[2]
 # [designed] Complete pre-T47 uninterrupted continuations, base65ab461, source
 # E010-r0008 template, country4, captain61/tactics165. Explicit JSON save hashes.
@@ -27,7 +28,7 @@ class HalftimeCases(unittest.TestCase):
         self.model=DesktopModel.open(ROOT/'.cache/e010-r0008-halftime.sav',ROOT/'.cache/GOAL.DAT',Path(self.folder.name)/'game.g2save',country=4)
         self.model.confirm(list(self.model.state.starting_eleven),61,165)
     def begin(self):
-        state=copy.deepcopy(self.model.state)
+        state=prepare_round(self.model.state,self.model.template_bytes)
         return begin_full_match(Savestate(to_savestate(state,original=self.model.template_bytes)),state)
     def job(self):
         job=QuickJobs(self.model);self.addCleanup(job.cancel);job.start(halftime=True);return job
@@ -39,12 +40,14 @@ class HalftimeCases(unittest.TestCase):
             time.sleep(.01)
         self.fail('worker deadline exceeded')
     def test_no_substitution_split_matches_prechange_complete_state_hashes_for_both_sides(self):
+        # [designed: T48] These pre-T47 bytes explicitly cover metadata-free legacy saves.
+        self.model.state.campaign.world=None
         for digest in GOLDEN:
             match=self.begin();qm=match.qm;before=copy.deepcopy(self.model.state)
             self.assertEqual(match.state,before);self.assertEqual(self.model.state,before)
             snapshot=match.preview();self.assertEqual(snapshot,match.preview())
             result=match.finish(retain_state=True);self.assertIs(match.qm,qm)
-            self.model.state=complete(match.state,result)
+            self.model.state=complete(match.state,result,template=self.model.template_bytes)
             self.assertEqual(hashlib.sha256(encode(self.model.state,self.model.template_bytes)).hexdigest(),digest)
             with self.assertRaisesRegex(ValueError,'already'):match.finish(retain_state=True)
             with self.assertRaisesRegex(ValueError,'already'):match.substitute(61,72)
@@ -76,7 +79,7 @@ class HalftimeCases(unittest.TestCase):
         self.assertEqual(qm._player(incoming)[6],position)
         self.assertIn(incoming,[qm.pitch[qm.side_base[match.managed_side]+n]['player'] for n in range(1,12)])
         self.assertNotIn(outgoing,match.plan['eleven'])
-        result=match.finish(retain_state=True);state=complete(match.state,result)
+        result=match.finish(retain_state=True);state=complete(match.state,result,template=self.model.template_bytes)
         self.assertIn(incoming,state.starting_eleven);self.assertNotIn(outgoing,state.starting_eleven)
         self.assertEqual(state.captain,2561);self.assertEqual(state.managed_squad[:11],state.starting_eleven)
         words=[int.from_bytes(state.countries[4][i:i+2],'little') for i in range(0,40,2)]

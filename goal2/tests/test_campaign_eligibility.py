@@ -117,6 +117,8 @@ class EligibilityContinuations(unittest.TestCase):
         self.assertTrue(set(captured).isdisjoint(squad[:2]))
         for word in squad[:10]: self.change(word, **{'16': 0x80})
         # Restore the first fixture as a direct candidate; this is explicit test state.
+        # [designed: T48] Explicit legacy candidate reset, not a committed world turn.
+        self.session.state.campaign.world=None
         self.session.state.campaign.completed_fixture_ids.clear()
         self.session.state.campaign.results.clear()
         self.session.state.match_state.clear()
