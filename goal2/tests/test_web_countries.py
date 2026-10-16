@@ -29,6 +29,7 @@ def make_session() -> server.WebSession:
         record = bytearray(20)
         record[4] = number % 256
         record[7] = number % 14
+        record[12] = number % 31 + 1  # [designed: T43] Distinct confidence fixture.
         record[14] = number % 26
         players.append(bytes(record))
     state = SimpleNamespace(
@@ -68,7 +69,7 @@ class WebCountryTests(unittest.TestCase):
         player = result["players"][0]
         self.assertEqual(player, {"id": 1101, "name": "Player 1101", "initials": "P", "number": 1,
                                  "ability": 1101 % 256, "position": 1101 % 14,
-                                 "energy": 1101 % 26})
+                                 "energy": 1101 % 26, "confidence": 17})
         self.assertEqual(result["matchup"]["opponent"], {"id": 7, "name": "Nation 007"})
 
     def test_same_country_preserves_choices_and_valid_captain(self):
