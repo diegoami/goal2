@@ -109,6 +109,23 @@ The old goal2 clock stand-in at DS:0E6C overlaps the original foot table: adapte
 must preserve the template's immutable bytes. T62's adapted-record guard test
 changes players/tactics/seed while retaining those bytes. T63 owns broader mapping.
 
-[designed] Acceptance measurements and any residual evidence gaps are recorded
-below after executing these commands. T60/T61 are accepted only if all mapped
-obligations pass; no score-only shortcut or waived missing evidence is allowed.
+## Recorded acceptance run
+
+[confirmed: T62 execution, full diagnostic hashes and per-case outcomes in
+[evidence/T62-watched-kit.json](evidence/T62-watched-kit.json)] Eight runtime tests,
+444 goal2 tests (no skips),24 accepted upstream tests, all four kit check steps,
+10 strict original records and their independent kit/state/event comparisons pass.
+All17 event stamp/order scenarios and all7 save scenarios pass; their union covers
+all18 public event kinds. The entry probe reproduces the reference match, ten seeds
+and repeated captain boundary; the interactive example completes. All20 accepted
+upstream mutations and3 goal2 acceptance-tool mutations are killed. Three further
+black-box controls reject omitted player updates and falsified seed/draw output; timeouts do
+not count as killed. Two retained Qt flows and all six browser scenarios pass.
+
+[derived: this mapped evidence and accepted source] T60/T61 handoff obligations
+are satisfied for the stated friendly fixture/pair/family and entry/calling scope.
+No unexplained difference remains in those inputs. Broader goal2 campaign-year,
+fixture identity, managed-side and field transfer belong to T63; once-only result
+publication/save compatibility belong to T64. Those remaining tasks are not waived
+or claimed by package acceptance. Timing in the report is measured on this shared
+machine and supplies no deadline guarantee.
