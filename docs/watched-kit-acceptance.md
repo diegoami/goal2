@@ -51,6 +51,7 @@ python3 tools/check_watched_upstream.py --suite example
 # Run each mutation batch separately (1,2,3):
 python3 tools/check_watched_upstream.py --suite mutations --batch 1
 python3 tools/prove_watched_acceptance.py
+python3 tools/prove_watched_records.py
 python3 tools/check_provenance.py
 ```
 

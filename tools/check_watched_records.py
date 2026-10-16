@@ -121,6 +121,7 @@ def main(argv=None):
                          for o in (0x7B62, 0x8336)]}
         if expected != got or result["seed_after"] != got["seeds"][0]:
             bad = [key for key in expected if expected[key] != got[key]]
+            if result["seed_after"] != got["seeds"][0]:bad.append("result.seed_after")
             raise ValueError(f"seed {seed:#06x}: original post-match state differs: {bad}; seeds reference={expected['seeds']} kit={got['seeds']}")
         # [designed] Re-run strict E032 on its TRUE watchstart input. Never borrow reference identity/inputs.
         watchraw = (folder / ".cache/dl/d68e48c734a742a6-E011-r0001-watchstart.sav").read_bytes()
