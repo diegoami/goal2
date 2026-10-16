@@ -1,0 +1,10 @@
+{"seed": "0x1234", "mode": "delay20", "load_cpu_s": 0.07, "cpu_s": 10.0, "wall_s": 9.4, "board": true, "score": [1, 1], "ticks": 4146, "digest": "74b8eb805a4e"}
+{"seed": "0x1234", "mode": "delay20+skip", "load_cpu_s": 0.05, "cpu_s": 15.1, "wall_s": 14.2, "board": true, "score": [1, 1], "ticks": 4146, "digest": "74b8eb805a4e"}
+{"seed": "0x2345", "mode": "delay20", "load_cpu_s": 0.05, "cpu_s": 10.1, "wall_s": 9.6, "board": true, "score": [0, 1], "ticks": 4138, "digest": "fdd36353b12d"}
+{"seed": "0x2345", "mode": "delay20+skip", "load_cpu_s": 0.06, "cpu_s": 12.7, "wall_s": 12.1, "board": true, "score": [0, 1], "ticks": 4138, "digest": "fdd36353b12d"}
+{"seed": "0x4c1d", "mode": "delay20", "load_cpu_s": 0.05, "cpu_s": 13.1, "wall_s": 12.5, "board": true, "score": [1, 0], "ticks": 4659, "digest": "062f3ec21511"}
+{"seed": "0x4c1d", "mode": "delay20+skip", "load_cpu_s": 0.04, "cpu_s": 16.1, "wall_s": 15.3, "board": true, "score": [1, 0], "ticks": 4659, "digest": "062f3ec21511"}
+{"seed": "0xc3c3", "mode": "delay20", "load_cpu_s": 0.05, "cpu_s": 12.0, "wall_s": 11.4, "board": true, "score": [2, 1], "ticks": 4262, "digest": "4273d8ff21af"}
+{"seed": "0xc3c3", "mode": "delay20+skip", "load_cpu_s": 0.06, "cpu_s": 15.3, "wall_s": 14.5, "board": true, "score": [2, 1], "ticks": 4262, "digest": "4273d8ff21af"}
+{"seed": "0xe719", "mode": "delay20", "load_cpu_s": 0.06, "cpu_s": 12.8, "wall_s": 12.1, "board": true, "score": [1, 0], "ticks": 4240, "digest": "21f4cfca112e"}
+{"seed": "0xe719", "mode": "delay20+skip", "load_cpu_s": 0.07, "cpu_s": 15.9, "wall_s": 15.1, "board": true, "score": [1, 0], "ticks": 4240, "digest": "21f4cfca112e"}
