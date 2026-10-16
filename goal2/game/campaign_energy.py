@@ -2,7 +2,7 @@
 Campaign quick-match energy boundaries. The vendored model owns 3651.
 
 [designed: T42] This adapter orders energy operations. T43 optionally interleaves confidence; pool
-and other status callers are separate tasks; no whole original fixture-tail RNG
+and current status callers are integrated separately; no whole original fixture-tail RNG
 parity is claimed. It is called by the quick runner, never on watched results.
 """
 from goal2.engine import energy
@@ -91,7 +91,7 @@ def finish(qm, state, *, with_confidence=False):
     [derived: F018/F027, B7FA/5A8F] Side A then B, nonzero squad words in
     slot order; XI or status-set element 3 (mask 0x04) participants use flag 1, unused bench 0.
     Default energy-only calls exclude confidence; campaign quick calls interleave
-    T43 confidence. Pool and other status callers remain separate tasks.
+    T43 confidence. T45 applies the disjoint reserve prefix before this current-squad tail.
     """
     fixture = ensure_pending(state)
     if tuple(qm.teams) != (fixture.side_a, fixture.side_b):
@@ -102,7 +102,10 @@ def finish(qm, state, *, with_confidence=False):
     words = [word for squad in squads for word in squad if word]
     if len(words) != len(set(words)) or any(not 1 <= word < len(state.players) for word in words):
         raise ValueError('campaign energy requires distinct valid squad words')
+    pool_transition = None
     if with_confidence:
+        from goal2.game import campaign_pool
+        pool_transition = campaign_pool.finish(qm, state)
         from goal2.game import campaign_confidence
         campaign_confidence.restore(qm)
         deltas = campaign_confidence.result_deltas(
@@ -146,4 +149,4 @@ def finish(qm, state, *, with_confidence=False):
             qm.playerrec[word] = bytearray(record)
     qm._campaign_energy_complete = True
     return {'fixture_id': fixture.fixture_id, 'engine': 'quick-energy-v1',
-            'recovery_draws': recovery_draws, 'confidence_draws': confidence_draws}
+            'recovery_draws': recovery_draws, 'confidence_draws': confidence_draws, **({'pool': pool_transition} if pool_transition is not None else {})}

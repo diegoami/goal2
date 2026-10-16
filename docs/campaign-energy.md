@@ -62,3 +62,8 @@ fixture submissions remain guarded by T41's transaction boundary.
 python3 -m unittest goal2.tests.test_campaign_energy -v
 python3 -m unittest goal2.tests.test_campaign_energy.CampaignContinuations -v
 ```
+
+[designed: T45] The disjoint eighty-reserve BA4E prefix now runs before the current
+squad operations described above. See [campaign-pool.md](campaign-pool.md) for
+ordered recovery/confidence/status calls, save membership and remaining boundaries.
+Standalone friendlies and original watched-result publication do not run this prefix.

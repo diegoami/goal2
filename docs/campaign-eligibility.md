@@ -59,3 +59,8 @@ original returned records. No complete original fixture-tail parity is claimed.
 python3 -m unittest goal2.tests.test_campaign_eligibility -v
 python3 tools/browser-ui/prove-campaign-eligibility.py
 ```
+
+[designed: T45] The disjoint eighty-reserve BA4E prefix now runs before the current
+squad operations described above. See [campaign-pool.md](campaign-pool.md) for
+ordered recovery/confidence/status calls, save membership and remaining boundaries.
+Standalone friendlies and original watched-result publication do not run this prefix.
