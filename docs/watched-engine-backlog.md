@@ -93,12 +93,12 @@ browser saves, pitch animation, competitive fixtures or whole-core support.
 The T41 source-ordered campaign queue, history and unsupported qualifier barrier
 remain part of browser acceptance; ordinary quick friendlies remain usable.
 
-[designed: owner authorization, 2026-10-16] Defer [T42](tasks/T42.md) energy work
-until T64 establishes exactly which effects the original already publishes and
-the owner selects the later campaign/core route after stage 1. T42 keeps its
-boundary/once-only/recovery assertions, focusing remaining integration on
-between-fixture effects outside the original tail. This prevents double updates.
-The independent T41 authorization was a bounded exception, not a dispatch of T42.
+[designed: owner correction of T67, 2026-10-16] Campaign work continues in
+parallel. [T42](tasks/T42.md) follows T41 without waiting for T64 or a later route
+choice. It integrates energy on the quick campaign path; T63/T64 must carry the
+original watched result's effects without running that Python path again.
+Continue the existing campaign dependencies while preserving the engine-kit
+acceptance gates for watched integration.
 
 ## Estimate and milestone
 

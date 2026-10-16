@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 from goal2.ai.cpu import get_computer_tactics, pick_computer_eleven
+from goal2.game import campaign_energy
 
 # [designed: T01 vendored import layout] quick_engine imports sibling players.
 _ENGINE_DIR = str(Path(__file__).resolve().parents[1] / "engine")
@@ -90,6 +91,9 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
     """
     # [designed: T29] Resolve through the same rule the preview displays.
     teams, managed_side, opponent = resolve_full_matchup(template, game_state)
+    campaign = getattr(game_state, 'campaign', None)
+    if campaign is not None:
+        campaign_energy.ensure_pending(game_state)
     qm = QuickMatch(template)  # Preserves the vendored extra-time refusal.
     qm.teams[:] = teams
     selected = game_state.managed_country
@@ -130,8 +134,9 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
             qm._player(player)
 
     # [designed: T26 friendly setup] These are match-initial fields. The
-    # original setup also changes other fields and half-time energy; those
-    # unmodelled steps are not inferred from a half-time template.
+    # original setup also changes other fields. [designed: T42] Campaign
+    # energy boundaries use the separate pinned adapter; standalone friendlies
+    # keep their established carryover behavior.
     qm.score = [0, 0]
     qm.goals = []
     qm.sub_budget = [5, 5]
@@ -147,17 +152,20 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
     # [confirmed: E010 notes, "Match clock & loop", 9A32 at 1b694ed]
     # The second-half kick-off uses the inverted first-half side.
     # There is no RNG reset or new QuickMatch.
+    if campaign is not None:
+        campaign_energy.half_time(qm)
     qm.eight30b = (qm.side_base[1 - qm.eight31a] + 10) & 0xFF
     second_kickoff = qm.eight30b
     for minute in range(46, 92):
         qm.d733(minute, 91 - minute)
     second = _snapshot(qm, len(first["goals"]))
+    energy_transition = campaign_energy.finish(qm, game_state) if campaign is not None else None
     result = {
         "score": second["score"],
         "goals": first["goals"] + second["goals"],
-        "seed_DS7B62": second["seed_DS7B62"],
+        "seed_DS7B62": qm.rng.seed,
         "seed_DS8336": second["seed_DS8336"],
-        "draws": second["draws"],
+        "draws": qm.rng.draws,
         "halves": (first, second),
         "teams": tuple(qm.teams),
         "managed_side": managed_side,
@@ -189,4 +197,6 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
         game_state.rng_seed_8336 = result["seed_DS8336"]
         game_state.match_count = getattr(game_state, "match_count", 0) + 1
         game_state.last_match = retained_result
+        if energy_transition is not None:
+            game_state.match_state = {**game_state.match_state, 'campaign_energy': energy_transition}
     return result

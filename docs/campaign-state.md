@@ -77,3 +77,8 @@ no claim of original full-match fidelity.
 remain readable. New history must reference unique completed fixtures in queue
 order and match their scheduled endpoints. Saves retain this history and resume
 at the pending fixture without simulating another match.
+
+[designed: T42] Campaign quick matches apply the source-backed energy boundaries
+and fixture recovery through the [energy adapter](campaign-energy.md), publishing
+energy metadata and final RNG with the completed fixture. This path is separate
+from the future original watched engine's post-match effects.

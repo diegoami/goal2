@@ -241,6 +241,7 @@ try {
       assert.equal(current.match_count, index + 1);
       assert.deepEqual(current.last_match.teams.map(team => team.id), pair, 'actual runner uses source-ordered scheduled pair');
       assert.equal(current.campaign.history.length, index + 1);
+      assert(current.players.some((player, position) => player.energy !== before.players[position].energy), 'scheduled recovery changes published squad energy');
       const replay = await page.evaluate(async body => {
         const result = await fetch('/api/play', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return result.status;
@@ -271,6 +272,8 @@ try {
     const resumed = await getSession();
     assert.equal(resumed.match_count, 2, 'process restart never plays an extra fixture');
     assert.deepEqual(resumed.campaign, current.campaign);
+    assert.deepEqual(resumed.players, current.players, 'campaign recovery energy survives process resume');
+    assert.deepEqual(resumed.last_match.seeds, current.last_match.seeds, 'post-recovery RNG survives process resume');
     assert.deepEqual(resumed.confirmed, current.confirmed);
     assert.equal(await page.locator('#play-button').isDisabled(), true);
     assert.deepEqual(pageErrors, []);
