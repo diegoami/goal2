@@ -51,6 +51,21 @@ class DesktopModel:
         self.view(candidate)
         self.state=candidate
 
+    def new_friendly(self,country):
+        """[designed: T70] Explicit fresh standalone mode, no campaign ledger."""
+        self.new_campaign(country)
+        self.state.campaign=None
+
+    def result_text(self,state=None):
+        """[designed: T70] Name retained quick results, never watched events."""
+        state=self.state if state is None else state
+        match=state.last_match
+        if match is None:return 'No match played'
+        teams=match['teams'];score=match['score']
+        text=f"{self.goaldat.country_names[teams[0]]} {score[0]} — {score[1]} {self.goaldat.country_names[teams[1]]}"
+        goals=[f"{g['minute']}′ {self.goaldat.player_names[g['player']]} ({self.goaldat.country_names[teams[g['team']]]})" for g in match['goals']]
+        return text+'\n'+('\n'.join(goals) if goals else 'No goals')
+
     def view(self,state=None):
         """[derived: F002/F007; designed] Resolve original names and live fields."""
         state=self.state if state is None else state

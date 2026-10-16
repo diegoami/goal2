@@ -39,8 +39,8 @@ draft, through the existing atomic writer. Resume validates the save, embedded
 template and rebuilt continuation before replacing active state. Invalid/missing
 local files leave the current game and prior good save intact. DesktopModel calls
 Python game/state/save interfaces directly and imports no web/Qt layer. Widget
-updates stay on the Qt thread. Match execution and responsive process work belong
-to T70; pool controls belong to T71, watched controls to T66. No server/hosting
+updates stay on the Qt thread. Quick match execution uses the responsive T70 process flow below; pool
+controls belong to T71, watched controls to T66. No server/hosting
 is involved in this management slice.
 
 [derived: official Qt API documentation] The shell uses
@@ -54,4 +54,34 @@ QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario mana
 xvfb-run -a env QT_QPA_PLATFORM=xcb python3 tools/desktop-ui/acceptance.py --scenario management --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 xvfb-run -a env QT_QPA_PLATFORM=xcb python3 tools/desktop-ui/acceptance.py --scenario launch --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 python3 tools/desktop-ui/prove-management.py
+```
+
+[designed: T70] Confirm management, then choose **Play quick friendly**. Simulation
+runs in a local process; the window stays responsive. Controls that change the
+game are disabled until completion. **Cancel match** or closing the window stops
+and reaps the process; a failed/cancelled/stale result never changes the active
+game. A completed result shows named teams, score and goal scorers. The setup is
+the rebuild quick simulation, not original watched commentary or visualization.
+
+[derived: T41–T46; designed: T70] Campaign play consumes only the next supported
+friendly in source A/B order, retaining condition, eligibility, RNG and history.
+Save and resume use the same complete continuation. The unsupported competitive
+fixture remains visible and refuses play. **New standalone friendly** explicitly
+creates fresh selected-country records without a campaign ledger; confirm its
+management before play. Repeat carries the prior result/player state forward.
+Creating either new mode replaces the active unsaved game only on that explicit
+action. Save writes confirmed state; unconfirmed management edits must be
+confirmed or discarded before playing.
+
+[designed: T70] The Qt-free worker exchanges explicit JSON session saves through
+private temporary files, with one job in flight and UI-thread publication once.
+A completion must match both the original state object and its complete encoded
+state/template. Cancellation waits at most half a second for termination before
+kill and a second bounded reap. Optional Qt remains outside headless imports.
+
+```bash
+python3 -m unittest goal2.tests.test_desktop_quick_jobs -v
+QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario campaign-friendlies --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario worker --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+python3 tools/desktop-ui/prove-friendlies.py
 ```
