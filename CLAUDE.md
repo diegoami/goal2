@@ -47,7 +47,7 @@ Codex default at implementer.defaultsByClient.codex. See process §1 for dispatc
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
 6. The reviewer is never the implementer's model family. It re-runs every Done-when line itself.
-7. Merge only with an approving review and the main session's pre-merge checks pass (process.md §3 — re-run the check the approval rests on, plus the rule-19 / harness.lock / harness self-test checks formerly in `.github/workflows/ci.yml`). Two rework rounds, then escalate. (L38's
+7. Merge only with an approving review and the main session's pre-merge checks pass (process.md §3 — re-run the check the approval rests on, plus `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean implementation checkout; Actions is manual-only optional verification (owner, #127, 2026-10-16)). Two rework rounds, then escalate. (L38's
    ladder is superseded: the same implementer fixes the class of the findings, not each instance.) With both, merge at once
    without asking (the owner, 2026-10-04): `--squash` (goal2 keeps no research history to preserve).
    The main session may grant a third, narrow round itself when the remaining findings are small

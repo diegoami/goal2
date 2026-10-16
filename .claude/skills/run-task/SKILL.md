@@ -117,7 +117,11 @@ never the implementer's family.
 
 4. **Decide** on the label the reviewer applied.
    - `status:approved`:
-     1. Wait for green CI.
+     1. Run `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean
+        implementation checkout and record the passing SHA on the PR. Task-specific
+        Done-when checks remain mandatory. Actions is manual-only optional fresh-runner
+        verification; absence or a billing-blocked run does not block a merge. Investigate
+        any actual defect reported by an optional run.
      2. Re-run the check the approval rests on most (the Done-when line or the mutation that
         proves the task) on the PR's head yourself. A different result is rework, not a merge (L46).
         Read the non-blocking findings too: a proven way past what the task protects is rework
@@ -156,7 +160,7 @@ never the implementer's family.
    label the task `status:blocked` and stop.
 
 Never:
-- merge without an approving review and green CI;
+- merge without an approving review, passing task checks and exact-head local validation;
 - weaken a Done-when;
 - let the implementer's model family review its PR;
 - relay part of a review;
