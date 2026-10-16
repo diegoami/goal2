@@ -87,7 +87,9 @@ class HalftimeCases(unittest.TestCase):
         self.assertFalse(state.players[61][16]&4)
     def test_live_engine_allows_six_friendly_swaps_and_rejects_reentry_atomically(self):
         match=self.begin();starters=list(match.plan['eleven']);bench=list(match.plan['bench'])
-        for outgoing,incoming in zip(starters[:6],bench[:6]):match.substitute(outgoing,incoming)
+        for outgoing,incoming in zip(starters[:6],bench[:6]):
+            try:match.substitute(outgoing,incoming)
+            except ValueError as exc:self.fail(f'Friendly substitution refused: {exc}')
         self.assertEqual(len(match.plan['changes']),6)
         before=match.preview();seed=match.qm.rng.seed
         with self.assertRaisesRegex(ValueError,'re-enter'):match.substitute(bench[0],starters[0])
@@ -111,6 +113,30 @@ class HalftimeCases(unittest.TestCase):
         self.assertIn(inc,model.state.starting_eleven);self.assertNotIn(out,model.state.starting_eleven)
         self.assertIsNone(job.poll());self.assertFalse(model.match_pending)
         model.save(model.save_path)
+    def test_bad_preview_failed_worker_and_bad_continuation_leave_game_and_save_untouched(self):
+        import json,sys
+        model=self.model;model.save(model.save_path);saved=model.save_path.read_bytes()
+        before=copy.deepcopy(model.state)
+        job=QuickJobs(model,command=[sys.executable,'-c','import time;time.sleep(60)']);self.addCleanup(job.cancel)
+        job.start(halftime=True);process=job.process
+        (job.directory/'halftime.json').write_text('{"bad":true}')
+        with self.assertRaisesRegex(ValueError,'Invalid halftime'):job.poll()
+        self.assertFalse(job.busy);self.assertIsNotNone(process.poll())
+        for failure in ('crash','command'):
+            job=self.job();self.until(job,lambda:job.halftime is not None)
+            if failure=='crash':job.process.kill()
+            else:(job.directory/'continue.json').write_text(json.dumps([[61,99999]]))
+            with self.assertRaisesRegex(ValueError,'worker failed'):
+                self.until(job,lambda:not job.busy)
+            self.assertEqual(model.state,before);self.assertEqual(model.save_path.read_bytes(),saved)
+            self.assertFalse(model.match_pending)
+
+    def test_standalone_mode_refuses_interactive_start_without_changing_state(self):
+        self.model.new_friendly(4);before=copy.deepcopy(self.model.state)
+        job=QuickJobs(self.model);self.addCleanup(job.cancel)
+        with self.assertRaisesRegex(ValueError,'requires a campaign'):job.start(halftime=True)
+        self.assertFalse(job.busy);self.assertEqual(self.model.state,before)
+
     def test_cancel_and_stale_halftime_preserve_the_active_game_and_prior_save(self):
         model=self.model;model.save(model.save_path);saved=model.save_path.read_bytes()
         for stale in (False,True):

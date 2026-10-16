@@ -21,6 +21,7 @@ class QuickJobs:
     def start(self,*,halftime=False):
         if self.busy:raise ValueError('A friendly is already running')
         model=self.model
+        if halftime and model.state.campaign is None:raise ValueError('Halftime interaction requires a campaign')
         self.interactive=halftime;self.halftime=None;self.continued=False
         resolve_full_matchup(Savestate(to_savestate(model.state,original=model.template_bytes)),model.state)
         self.original=model.state
@@ -47,7 +48,11 @@ class QuickJobs:
                 preview=self.directory/'halftime.json'
                 if preview.exists():
                     import json
-                    self.halftime=json.loads(preview.read_text())
+                    try:
+                        packet=json.loads(preview.read_text());self.validate_halftime(packet)
+                    except (OSError,ValueError,TypeError,KeyError) as exc:
+                        self.cancel();raise ValueError(f'Invalid halftime preview: {exc}') from exc
+                    self.halftime=packet
             return None
         try:
             self.errors.flush()
@@ -64,6 +69,23 @@ class QuickJobs:
             model.state=candidate
             return True
         finally:self._release()
+
+    def validate_halftime(self,packet):
+        """[designed: T47] Reject malformed IPC before showing editable controls."""
+        keys={'eleven','bench','available','captain','kind','removed','changes','score','teams'}
+        if not isinstance(packet,dict) or set(packet)!=keys:raise ValueError('missing preview fields')
+        for key in ('eleven','bench','available','score','teams'):
+            if not isinstance(packet[key],list) or any(type(w) is not int for w in packet[key]):
+                raise ValueError('invalid preview values')
+        words=packet['eleven']+packet['bench']
+        if (len(packet['eleven'])!=11 or len(packet['bench'])!=9 or len(set(words))!=20
+                or set(words)!=set(self.original.managed_squad) or not set(packet['available'])<=set(words)
+                or type(packet['captain']) is not int or packet['captain']!=self.original.captain
+                or type(packet['kind']) is not int or packet['kind']!=1 or packet['removed']!=[] or packet['changes']!=[]
+                or len(packet['score'])!=2 or min(packet['score'])<0):
+            raise ValueError('preview differs from the pending game')
+        fixture=self.original.campaign.next_fixture
+        if packet['teams']!=[fixture.side_a,fixture.side_b]:raise ValueError('preview fixture changed')
 
     def substitute(self,outgoing,incoming):
         """[designed: T47] Draft only; worker validates again on continuation."""
