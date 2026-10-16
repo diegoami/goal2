@@ -93,7 +93,9 @@ def _state_data(state: GameState, version: int) -> dict[str, Any]:
     if version == VERSION:
         if state.campaign is None:
             raise ValueError("version 2 session requires campaign metadata")
+        from goal2.game.campaign_pool import validate
         data["campaign"] = state.campaign.to_data()
+        data["campaign"]["reserve_ids"] = validate(state)
     elif state.campaign is not None:
         raise ValueError("campaign state cannot be encoded as a friendly version 1 save")
     return data
@@ -202,6 +204,12 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
         match_count=match_count, last_match=last_match,
         campaign=campaign,
     )
+    if campaign is not None:
+        try:
+            from goal2.game.campaign_pool import validate
+            campaign.reserve_ids = validate(state)
+        except ValueError as exc:
+            raise SessionSaveError(f'invalid campaign pool: {exc}') from exc
     return state, template
 
 

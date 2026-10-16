@@ -48,8 +48,8 @@ from the existing bits; no invented duration is stored. Full player records
 remain in the existing explicit save schema. A saved transition resumes with
 identical status, recovery, RNG and fixture history.
 
-[designed: T44 scope] Current campaigns use base20 squads. National-pool callers
-remain T45. This adapter consumes current player/event state; the friendly quick
+[designed: T45] Current campaigns use twenty squad and eighty disjoint reserve
+identities. The reserve B27F caller lives in campaign_pool.py. This adapter consumes current player/event state; the friendly quick
 runner produces no foul events. Tests inject explicit events/state without a
 production incident endpoint. Competitive event production remains T51, and an
 original watched-result publisher must not reapply Python status/recovery over
@@ -59,3 +59,8 @@ original returned records. No complete original fixture-tail parity is claimed.
 python3 -m unittest goal2.tests.test_campaign_eligibility -v
 python3 tools/browser-ui/prove-campaign-eligibility.py
 ```
+
+[designed: T45] The disjoint eighty-reserve BA4E prefix now runs before the current
+squad operations described above. See [campaign-pool.md](campaign-pool.md) for
+ordered recovery/confidence/status calls, save membership and remaining boundaries.
+Standalone friendlies and original watched-result publication do not run this prefix.

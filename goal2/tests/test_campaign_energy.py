@@ -92,14 +92,14 @@ class CampaignContinuations(unittest.TestCase):
     def test_boundaries_have_no_kickoff_bonus_then_half_bonus_and_fitness_restore(self):
         state = self.session.state
         player = state.starting_eleven[0]
-        state.players[player] = record(fitness=18, current=10)
+        state.players[player] = bytes((state.managed_country,)) + record(fitness=18, current=10)[1:]
         seen = {}
         restored = []
         def minute(qm, tick, countdown):
             if tick in (0, 45, 46, 91):
                 seen[tick] = qm._player(player)[14]
         def recover(r, *args, **kwargs):
-            if r[0] == 0 and r[13] == 18:
+            if r[0] == state.managed_country and r[13] == 18:
                 restored.append(r[14])
             return r
         with patch('goal2.game.quick_match.QuickMatch.d733', minute), patch.object(energy, 'recover_player', side_effect=recover):
@@ -122,8 +122,8 @@ class CampaignContinuations(unittest.TestCase):
         self.assertEqual(len(captures), 1)
         before, after, metadata = captures[0]
         expected = before
-        # [derived: T43/B7FA]60 energy draws plus36 bench-confidence draws.
-        for _ in range(96):
+        # [derived: T45/BA4E]320 reserve draws, then60 current energy plus36 bench confidence.
+        for _ in range(416):
             expected = (expected * 0x7ABD + 0x1B0F) & 65535
         self.assertEqual(after, expected)
         self.assertEqual(metadata['recovery_draws'], 60)

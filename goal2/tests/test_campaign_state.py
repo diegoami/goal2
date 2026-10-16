@@ -23,7 +23,7 @@ TEMPLATE_PATH = ROOT / ".cache" / "e010-r0001-halftime.sav"
 
 
 def _save_state(campaign=None):
-    return GameState(
+    state = GameState(
         players=[bytes(20) for _ in range(3061)],
         countries=[bytes(0xBF) for _ in range(129)],
         managed_country=7, managed_squad=list(range(121, 141)),
@@ -32,6 +32,12 @@ def _save_state(campaign=None):
         vga=b"synthetic VGA", mem=bytearray(b"synthetic Memory"),
         starting_eleven=list(range(121, 132)), campaign=campaign,
     )
+    if campaign is not None:
+        # [designed: T45] Synthetic campaign saves obey pool ownership/country words.
+        for w in list(range(121,141))+list(range(2561,2641)):
+            state.players[w]=bytes((7,))+bytes(19)
+        state.countries[7]=b''.join(w.to_bytes(2,'little') for w in state.managed_squad)+bytes(0xbf-40)
+    return state
 
 
 def _fixtures():
@@ -232,6 +238,7 @@ class FreshCampaign(unittest.TestCase):
                          bytes([rating(goaldat, 13)]))
         self.assertEqual(fresh_raw.memory(fresh_manager_address + 135 * 3, 1), b"\xA7")
 
+        first.starting_eleven[0] = 260
         first.captain = 260
         saved, template = decode(encode(first, dirty_template))
         self.assertEqual(saved, first)

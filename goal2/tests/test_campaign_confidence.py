@@ -135,7 +135,7 @@ class ConfidenceContinuations(unittest.TestCase):
         def recover(record, flag, rng, **kwargs):
             calls.append(('energy', bool(flag)))
             return bytes(record)
-        with patch.object(confidence, 'participant', side_effect=participant), patch.object(energy, 'recover_player', side_effect=recover):
+        with patch('goal2.game.campaign_pool.finish', return_value={}), patch.object(confidence, 'participant', side_effect=participant), patch.object(energy, 'recover_player', side_effect=recover):
             energy.finish(qm, self.session.state, with_confidence=True)
         self.assertEqual(calls[:2], [('energy', True), ('confidence', 'starter')])
         self.assertEqual(calls[22:26], [('energy', True), ('confidence', 'substitute'), ('confidence', 'unused'), ('energy', False)])
