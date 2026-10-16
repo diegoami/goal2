@@ -1,7 +1,7 @@
 # Original watched-engine backlog: stage 1
 
 [designed: owner #97/#130, 2026-10-16] Stage 1 is the original watched friendly
-under Unicorn in goal2's browser: select a team/lineup, watch, inspect results,
+under Unicorn in goal2's PySide6 desktop app: select a team/lineup, watch, inspect results,
 save and play another. Unicorn is optional and owner-approved. Original resources
 are supplied locally or fetched by full verified hash under ignored caches;
 none enter git. The [estimate](estimates/99-original-engine-plugged-in.md) and
@@ -36,8 +36,8 @@ These describe proposed coverage, not goal2 acceptance or arbitrary-fixture fide
 | T61 reusable caller | `runtime/original_match/`, example, focused tests, mutation checks and independent check | Accept calling/decision/post-match contracts and all ten strict records from the merged source. No second `runtime/emul/watched_match.py` caller. |
 | T62 optional install | Vendoring instructions, optional Unicorn import and verified existing image loader | Vendor exact accepted package, per-file provenance/full asset hashes, missing-dependency/build/hash failure checks and quick-only regression. No reduced binary or new asset is presumed necessary. |
 | T63 adapter | `Image.from_savestate`, `Fixture(first, second, index, kind)`, `Match(..., managed, captain)`, events/answers, full returned memory | Map actual goal2 fixture/year/team/management state; compare all ten direct records plus sensitive changed-input/side-B cases without publishing. |
-| T64 result/save | `result()` and full `memory_component()` after original player update; kit `Match.save/load` | Atomic goal2 publication, T41 queue/history, compatible completed-session saves and deterministic continuation. A kit checkpoint is not automatically a new browser save feature. |
-| T65/T66 worker/browser | Incremental original events and `decision`/answer interface | Responsive worker, explicit default answers, once-only completion and browser results/save/repeat. Interactive editing and animation remain later scope. |
+| T64 result/save | `result()` and full `memory_component()` after original player update; kit `Match.save/load` | Atomic goal2 publication, T41 queue/history, compatible completed-session saves and deterministic continuation. A kit checkpoint is not automatically a new desktop save feature. |
+| T65/T66 process worker/desktop | Incremental original events and `decision`/answer interface | Responsive worker, explicit default answers, once-only completion and desktop results/save/repeat. Interactive editing and animation remain later scope. |
 
 [designed: T67, acceptance of the
 [review at the candidate pin](https://github.com/diegoami/goal2-archaeology/pull/251#issuecomment-6215910890)]
@@ -67,7 +67,7 @@ choose its implementer; choose its independent reviewer for its validated PR.
 | 2 | [T63](tasks/T63.md) / [#133](https://github.com/diegoami/goal2/issues/133) — Adapt state/fixture/result | Medium | T62 |
 | 3 | [T64](tasks/T64.md) / [#134](https://github.com/diegoami/goal2/issues/134) — Atomic publication and compatible saves | Medium | T63 |
 | 4 | [T65](tasks/T65.md) / [#135](https://github.com/diegoami/goal2/issues/135) — Worker and progress | Medium | T64 |
-| 5 | [T66](tasks/T66.md) / [#136](https://github.com/diegoami/goal2/issues/136) — Original friendly in browser | Medium | T65 |
+| 5 | [T66](tasks/T66.md) / [#136](https://github.com/diegoami/goal2/issues/136) — Original friendly in desktop | Medium | T65, T70 |
 
 ## State and scope rules
 
@@ -88,10 +88,10 @@ tail and obtain a valid result. Do not apply Python match effects again.
 play-on policy (`m.answer()`), verifying it on accepted normal/injury paths.
 Unsupported/refused decisions get a bounded clear failure with active state
 unchanged; do not spin or invent substitutions. T66 consumes live events through
-ordinary browser controls but does not add halftime/in-play editing, mid-match
-browser saves, pitch animation, competitive fixtures or whole-core support.
+ordinary desktop controls but does not add halftime/in-play editing, mid-match
+desktop saves, pitch animation, competitive fixtures or whole-core support.
 The T41 source-ordered campaign queue, history and unsupported qualifier barrier
-remain part of browser acceptance; ordinary quick friendlies remain usable.
+remain part of desktop acceptance; ordinary quick friendlies remain usable.
 
 [designed: owner correction of T67, 2026-10-16] Campaign work continues in
 parallel. [T42](tasks/T42.md) follows T41 without waiting for T64 or a later route
@@ -110,8 +110,24 @@ preflight; this planning update supplies no new measured time estimate. Historic
 9.7–14.6 CPU seconds per watched match is not a hardware-independent deadline.
 
 [designed] Stage 1 still requires all ten strict original records through the
-adapter, once-only original post-match publication, and a real browser friendly
+adapter, once-only original post-match publication, and a real desktop friendly
 with original commentary/boards/ratings/man of the match, save/resume and another
 fixture. Keep the stand-in until that path is proven; update A-WATCH-1 only then.
-The owner selects subsequent Python campaign versus original-core work. Stage 3
-whole-core and stage 4 distribution are not authorized by this backlog.
+Further whole-core adoption remains an owner decision; campaign work continues under its separate authorization. Stage 3 whole-core work and stage 4 packaging implementation are not dispatched by this backlog.
+
+[designed: owner #148; T68] The desktop pivot preserves T60–T64 evidence and
+state contracts. T65 uses a local process and IPC, with no HTTP session layer;
+T66 joins it to T70's Qt loop. The engine kit comes first on this track, while
+portable campaign work continues. The historical browser estimate is not a new
+Qt estimate. Distribution is wanted but small, last and unscheduled (#130/#148):
+deliver the image from the private release at package build time, never git.
+No server, hosting or mobile requirement is introduced by stage 1.
+
+[designed: T68; derived: archaeology PR #251 review of candidate
+`8664eed22c9f2522f2a0a1e6af96beaf0211aa57`,
+[review evidence](https://github.com/diegoami/goal2-archaeology/pull/251#issuecomment-6219224724)]
+T62 also requires approved regression evidence that quick-result scratch score
+writes do not become public goals, and that disallowed-goal cancellations retain
+their actual order relative to commentary. Per-kind timestamp checks alone do
+not establish cross-kind event order. Pin the accepted regression commands during
+T62 preflight; these candidate findings do not authorize local kit fixes.

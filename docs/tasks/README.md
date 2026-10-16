@@ -42,9 +42,9 @@ status; this index carries none.
 | [T42](T42.md) | Apply match energy and between-fixture recovery (medium) | [#102](https://github.com/diegoami/goal2/issues/102) | T41 |
 | [T43](T43.md) | Update confidence and display team morale (medium) | [#103](https://github.com/diegoami/goal2/issues/103) | T42 |
 | [T44](T44.md) | Enforce injuries and suspensions at selection (medium) | [#104](https://github.com/diegoami/goal2/issues/104) | T43 |
-| [T45](T45.md) | Manage the national pool and twenty-player squad (medium) | [#105](https://github.com/diegoami/goal2/issues/105) | T44 |
+| [T45](T45.md) | Portable national pool and twenty-player squad (medium) | [#105](https://github.com/diegoami/goal2/issues/105) | T44 |
 | [T46](T46.md) | Prepare computer teams for campaign fixtures (medium) | [#106](https://github.com/diegoami/goal2/issues/106) | T45 |
-| [T47](T47.md) | Allow halftime substitutions in campaign matches (hard) | [#107](https://github.com/diegoami/goal2/issues/107) | T46 |
+| [T47](T47.md) | Allow halftime substitutions in campaign matches (hard) | [#107](https://github.com/diegoami/goal2/issues/107) | T46, T71 |
 | [T48](T48.md) | Resolve other countries’ scheduled fixtures (medium) | [#108](https://github.com/diegoami/goal2/issues/108) | T47 |
 | [T49](T49.md) | Build competition tables and code-based tie-breaks (medium) | [#109](https://github.com/diegoami/goal2/issues/109) | T48 |
 | [T51](T51.md) | Resolve competitive matches, extra time and penalties (hard) | [#111](https://github.com/diegoami/goal2/issues/111) | T49 |
@@ -70,10 +70,23 @@ See the [sequenced backlog](../watched-engine-backlog.md) for review gates, diff
 | [T63](T63.md) | Adapt game state into an original watched fixture (Medium) | [#133](https://github.com/diegoami/goal2/issues/133) | T62 |
 | [T64](T64.md) | Commit watched results atomically and preserve saves (Medium) | [#134](https://github.com/diegoami/goal2/issues/134) | T63 |
 | [T65](T65.md) | Run watched matches in a worker with progress (Medium) | [#135](https://github.com/diegoami/goal2/issues/135) | T64 |
-| [T66](T66.md) | Watch an original friendly in the browser (Medium) | [#136](https://github.com/diegoami/goal2/issues/136) | T65 |
+| [T66](T66.md) | Watch an original friendly in desktop (Medium) | [#136](https://github.com/diegoami/goal2/issues/136) | T65, T70 |
 
 ## Planning maintenance
 
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
 | [T67](T67.md) | Reconcile stage-1 backlog with the interactive kit | [#140](https://github.com/diegoami/goal2/issues/140) | Existing stage-1 backlog and kit handover |
+
+| [T68](T68.md) | Reconcile desktop pivot and campaign UI contracts (Medium) | [#148](https://github.com/diegoami/goal2/issues/148) | T44; owner desktop decision |
+
+## Desktop interface
+
+[designed: owner #148; T68] See the [desktop roadmap](../desktop-ui-roadmap.md).
+Historical browser contracts T34–T38 are preserved; these are separate implementation slices.
+
+| Task | Title | Issue | Difficulty | Merge after |
+| --- | --- | --- | --- |
+| [T69](T69.md) | Desktop country and management shell | [#149](https://github.com/diegoami/goal2/issues/149) | Medium | T44 |
+| [T70](T70.md) | Desktop quick friendly and campaign loop | [#150](https://github.com/diegoami/goal2/issues/150) | Medium | T69 |
+| [T71](T71.md) | Desktop national pool controls | [#151](https://github.com/diegoami/goal2/issues/151) | Medium | T45, T70 |

@@ -6,7 +6,7 @@ Proceed through the campaign dependencies; the engine-kit acceptance gate does
 not postpone them. Later adoption of more original-core code remains an owner
 decision, without a blanket scheduling pause.
 
-[designed: owner, 2026-10-15] Turn P4/P5 of the [plan](plan.md) into a sequenced backlog following browser friendlies T35–T38. The target is one human manager who can start a fresh campaign, manage the squad, play scheduled fixtures, follow both competitions and continue into the next four-year cycle. Ordinary browser controls remain the primary interface.
+[designed: owner, 2026-10-15] Turn P4/P5 of the [plan](plan.md) into a sequenced backlog following browser friendlies T35–T38. The target is one human manager who can start a fresh campaign, manage the squad, play scheduled fixtures, follow both competitions and continue into the next four-year cycle. [designed: owner #148, 2026-10-16] PySide6 desktop controls are now primary; see the [desktop roadmap](desktop-ui-roadmap.md). The browser milestones remain historical.
 
 [designed] The table is execution order and dependency structure, not a status report. Each task merges separately after its predecessor. GitHub labels carry status. Creating these tasks does not start implementation or select implementer/reviewer models; the earlier Luna/MiniMax batch covered T35–T38.
 
@@ -19,9 +19,9 @@ decision, without a blanket scheduling pause.
 | 4 | [T42](tasks/T42.md) · [#102](https://github.com/diegoami/goal2/issues/102) — Apply match energy and between-fixture recovery | Medium | T41 |
 | 5 | [T43](tasks/T43.md) · [#103](https://github.com/diegoami/goal2/issues/103) — Update confidence and display team morale | Medium | T42 |
 | 6 | [T44](tasks/T44.md) · [#104](https://github.com/diegoami/goal2/issues/104) — Enforce injuries and suspensions at selection | Medium | T43 |
-| 7 | [T45](tasks/T45.md) · [#105](https://github.com/diegoami/goal2/issues/105) — Manage the national pool and twenty-player squad | Medium | T44 |
+| 7 | [T45](tasks/T45.md) · [#105](https://github.com/diegoami/goal2/issues/105) — Portable national pool and twenty-player squad (desktop controls in T71) | Medium | T44 |
 | 8 | [T46](tasks/T46.md) · [#106](https://github.com/diegoami/goal2/issues/106) — Prepare computer teams for campaign fixtures | Medium | T45 |
-| 9 | [T47](tasks/T47.md) · [#107](https://github.com/diegoami/goal2/issues/107) — Allow halftime substitutions in campaign matches | Hard | T46 |
+| 9 | [T47](tasks/T47.md) · [#107](https://github.com/diegoami/goal2/issues/107) — Allow halftime substitutions in campaign matches | Hard | T46, T71 |
 | 10 | [T48](tasks/T48.md) · [#108](https://github.com/diegoami/goal2/issues/108) — Resolve other countries’ scheduled fixtures | Medium | T47 |
 | 11 | [T49](tasks/T49.md) · [#109](https://github.com/diegoami/goal2/issues/109) — Build competition tables and code-based tie-breaks | Medium | T48 |
 | 12 | [T51](tasks/T51.md) · [#111](https://github.com/diegoami/goal2/issues/111) — Resolve competitive matches, extra time and penalties | Hard | T49 |
@@ -43,7 +43,7 @@ decision, without a blanket scheduling pause.
 
 [designed: owner decisions recorded in #73] Substitution limits are unlimited for friendlies and five otherwise; ties follow the code rather than a coin. T47 initially exposes substitutions at halftime, a real boundary of the current quick engine. Continuous watched-match stoppages require the separate engine/interface work. Unresolved mechanics receive explicit assumption rows and replaceable interfaces; any new product choice goes to the owner. T51 must establish actual competitive-path support before enabling competitive matches, with a narrower implementation task if a model import or rebuild is needed.
 
-[designed] Each new campaign transition includes persistent state and a narrow browser view when useful, so campaign data is not retrofitted at the end. Reads, refreshes and repeated actions must not simulate extra fixtures or reapply recovery, rankings, ageing or retirement. Save/resume checkpoints compare complete state and RNG continuation. Legacy friendly saves retain their meaning.
+[designed] Each new campaign transition includes persistent state and a narrow desktop view when useful, so campaign data is not retrofitted at the end. Reads, redraws and repeated actions must not simulate extra fixtures or reapply recovery, rankings, ageing or retirement. Save/resume checkpoints compare complete state and RNG continuation. Legacy friendly saves retain their meaning.
 
 [designed] Match-engine strategy and visualization stay on their separate track: [#97](https://github.com/diegoami/goal2/issues/97), the [close-enough estimate #98](https://github.com/diegoami/goal2/issues/98), and the [emulation estimate #99](https://github.com/diegoami/goal2/issues/99). This backlog does not decide those options or require watched-match visualization before campaign play. If the owner chooses a whole-game emulated core, re-scope these rule adapters before implementation rather than building competing cores. Multiple managers, nationalized pool names and existing nonblocking cleanup remain separate.
 
@@ -56,3 +56,11 @@ continue campaign tasks in the main Codex session with MiniMax review. T42's
 quick-campaign energy path and the original watched-engine path remain separate;
 never apply Python match effects over original returned state. This once-only
 integration requirement does not make T64 a scheduling prerequisite for T42.
+
+[designed: owner #148; T68] T45 is the portable pool/state/save/condition slice;
+its former browser interaction outcome moves intact to T71. T69/T70 migrate the
+existing management and friendly loop to desktop without blocking T45/T46 on the
+kit. T47 and subsequent UI-bearing slices use desktop acceptance, with T71 as the
+first actual UI prerequisite. Existing Python/browser regression checks still
+protect retained behavior. Desktop tasks have their own difficulty/dependencies
+in the [roadmap](desktop-ui-roadmap.md); no browser feature work is dispatched.

@@ -6,19 +6,19 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
 2. **The watched match is a stand-in** until goal2-archaeology's M2–M5 land: the quick engine's
    result, shown with commentary lines, labelled as a stand-in. Nothing about how a watched match
    plays is invented.
-3. **The interface should be clear and easy to extend.** [designed: owner, 2026-10-15]
-   The playable UI uses ordinary browser controls backed by Python; it does not need a custom
-   text look. This supersedes the earlier text-renderer requirement for the primary UI. Existing
-   terminal screens remain available. Match-engine visualization comes later; see the concrete
-   [browser UI roadmap](browser-ui-roadmap.md).
+3. **The primary interface is a Python desktop application.** [designed: owner #148,
+   2026-10-16; session binding choice] Use PySide6 and ordinary Qt widgets, calling Python
+   game/state/save interfaces directly. This supersedes the browser UI decision of 2026-10-15.
+   The completed browser and terminal interfaces remain historical/secondary work; new primary
+   UI work follows the [desktop roadmap](desktop-ui-roadmap.md). No server or hosting is required.
 4. **The watched-match engine is the original's own, plugged in** [designed: owner, 2026-10-16, goal2 #97]. Stage 1 of
    [the estimate for issue 99](estimates/99-original-engine-plugged-in.md) now: the original's watched match
-   (`run_match`, `0791:F1F6`) runs in-process under Unicorn on goal2's own state inside the browser loop, with the original's
+   (`run_match`, `0791:F1F6`) runs under Unicorn on goal2's own state in a local worker process, with the original's
    score, scorers, cards, injuries, ratings, commentary lines and board statistics. The owner accepts the `unicorn` dependency
-   (goal2's first external one) and the original's game files at run time, supplied by the player and fetched by hash, never
+   (goal2's first external one) and the original's game files at run time, loaded locally or fetched by full verified hash, never
    committed (the owner: the game is abandonware, the registered version included). The exact port (goal2-archaeology PR 243)
    and the close-enough engine (estimates/98-close-enough-engine.md) stay open options, chosen after the first playable exists;
-   stage 3 (the whole game as a headless core) and stage 4 (public distribution) are decided later. This supersedes decision 2
+   stage 3 (the whole game as a headless core) stays a later owner decision. Stage 4 is small, last and unscheduled: the package will deliver the engine image from the private release at build time (#130/#148). This supersedes decision 2
    (the quick engine as the watched match's stand-in) once stage 1 lands; until then the stand-in stays.
 5. **The main session drafts** this plan and the register.
 
@@ -41,10 +41,12 @@ names what replaces it.
   bytes field by field.
 - **Determinism.** One LCG stream, seeded as F004 says. No wall clock and no unseeded randomness
   in any rule. A whole campaign replays from its seed and its inputs. The bot (G-M5) needs this.
-- **Browser controls call the game through a small Python server.** [designed: owner, 2026-10-15]
-  HTML/CSS/JavaScript show real session data and explicit actions. Test Python state transitions
-  and actual browser interactions. The existing 80×25 character grid remains the terminal UI's
-  rendering/test surface; it does not constrain the browser layout.
+- **Desktop controls call Python directly.** [designed: owner #148; PySide6 session choice]
+  Qt owns the window/event loop; a separate process runs costly match work and sends ordered
+  events/results over local IPC. The kit runs in that process, with no HTTP layer. The UI owns
+  active state and publishes a validated completed candidate once. Reuse the game logic, state
+  adapter, register and save format; build desktop controls rather than reusing the web layer.
+  Test actual Qt interactions and Python transitions; see the [desktop roadmap](desktop-ui-roadmap.md).
 - **Nothing of the original is committed** (CLAUDE.md: nothing of the original game is committed). `GOAL.DAT`, the source of the
   country and player data, is read at run time from `.cache/`, fetched from goal2-archaeology's
   release by hash, like every savestate.
@@ -54,7 +56,7 @@ names what replaces it.
 [designed: owner #97/#130 and approved T67 planning, 2026-10-16] Follow the
 [original watched-engine backlog](watched-engine-backlog.md): accept the kit
 proposed in archaeology #250/PR #251 against T60/T61, then T62 optional vendoring,
-T63 state/fixture adapter, T64 atomic publication/saves, T65 worker and T66 browser.
+T63 state/fixture adapter, T64 atomic publication/saves, T65 process worker and T66 desktop watched controls (also requiring T70).
 Do not duplicate upstream entry/packaging work. The decision/estimate PRs
 #122/#123/#126 define the original authorization; consuming the kit additionally
 requires independent upstream approval/merge, exact accepted pins and all handoff
@@ -79,7 +81,7 @@ and refined against completed predecessors before dispatch; their existence does
 | **P3 The loop** | country select → squad (20 + the 80-player pool) → pick an eleven and tactics → match → result screen with the stand-in commentary → the next fixture; the computer's eleven and its tactics as stand-ins (A-CPU-1, A-CPU-2) | F010, F011, F014 (ratings), the help file |
 | **P4 Between matches** | energy spent and restored, confidence after results and events, team morale (display only), injuries keeping a player out, substitutions | F018, F019, F020, F021; owner C2/C3; the help file |
 | **P5 The 4-year cycle** | friendlies, continental qualifying and finals, World Cup qualifying and finals, play-offs, groups and their tie-breaks, rankings, ageing at its stages, retirements and new players, the next cycle | the help file (formats); F016, F017; Q020/Q030–Q032 open |
-| **P6 Interface coverage** | [designed: owner, 2026-10-15] browser management and match flows, using the catalogue to identify information/actions rather than requiring the original layout/keys; match visualization follows available engine evidence | [browser UI roadmap](browser-ui-roadmap.md), `docs/screens.md`, owner B6, D1 and 2026-10-15 UI decision |
+| **P6 Interface coverage** | [designed: owner #148, 2026-10-16] desktop management and match flows, using the catalogue to identify information/actions rather than requiring the original layout/keys; match visualization follows available engine evidence | [desktop UI roadmap](desktop-ui-roadmap.md), `docs/screens.md`, owner #148 |
 | **P7 Several managers** | up to 6 human managers in one game (the pool's 80 per manager) | F011; owner B7 |
 
 Original-engine evidence and reusable model code come from goal2-archaeology, milestone by
@@ -146,9 +148,7 @@ choice to compare against (`C`), and the determinism above. Its plan is a later 
 
 ## Order of work, and what waits
 
-P0 → P1 → P2 → P3 → P4 → P5. [designed: owner, 2026-10-15] Browser tasks T35–T38 connect the
-existing friendly loop before further interface visualization. P6 coverage can grow alongside
-game rules. P7 comes after P5. A milestone does not wait for a finding: it ships with its `assumed` rows,
+P0 → P1 → P2 → P3 → P4 → P5. [designed: owner #148, 2026-10-16] T69 and T70 bring the existing friendly loop to desktop; T71 supplies pool controls after portable T45. T45/T46 can proceed without those UI tasks or the engine kit. P6 coverage grows alongside game rules. P7 comes after P5. A milestone does not wait for a finding: it ships with its `assumed` rows,
 and the finding replaces them when it lands.
 
 Design questions go to the owner one at a time. A guess about mechanics is never asked: it is

@@ -1,4 +1,8 @@
-# Browser UI: from prototype to playable friendlies
+# Browser UI: historical friendly-loop roadmap
+
+[designed: owner #148, 2026-10-16] Superseded for new primary UI work by the
+[PySide6 desktop roadmap](desktop-ui-roadmap.md). The text below records the earlier
+browser decision and completed task contracts; it does not dispatch more browser work.
 
 [designed: owner, 2026-10-15] Use the simplest clear browser interface rather than a custom text UI. Connect ordinary controls to the existing Python game. Match-engine visualization comes later. T34 established the dashboard and squad layout with explicitly fictional sample data; it did not connect gameplay.
 
