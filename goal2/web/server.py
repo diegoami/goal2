@@ -22,6 +22,7 @@ from goal2.engine.savestate import Savestate
 from goal2.game.quick_match import resolve_full_matchup
 from goal2.game.quick_match import run_full_match
 from goal2.game.session_save import SessionSaveError, load as load_session_save, save as save_session_save
+from goal2.game.campaign import ensure_friendly_session
 from goal2.game.state import GameState, from_savestate, to_savestate
 
 
@@ -86,6 +87,7 @@ class WebSession:
         """[designed: T38] Rebuild a session from its versioned save and GOAL.DAT."""
         try:
             state, template_bytes = load_session_save(save_path)
+            ensure_friendly_session(state)
             from_savestate(template_bytes)
             template = Savestate(template_bytes)
             # Check that this candidate can produce the next engine input before
@@ -120,6 +122,7 @@ class WebSession:
                 if str(exc).startswith("cannot read session save:"):
                     raise SessionSaveError("cannot read configured session save") from exc
                 raise
+            ensure_friendly_session(candidate)
             from_savestate(template_bytes)
             template = Savestate(template_bytes)
             continuation = to_savestate(candidate, original=template_bytes)

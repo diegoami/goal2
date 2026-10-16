@@ -12,6 +12,7 @@ from typing import Callable, Iterable
 
 from goal2.data.goaldat import GoalDat
 from goal2.game.state import GameState, to_savestate
+from goal2.game.campaign import ensure_friendly_session
 from goal2.ui.country_select import run_country_select
 from goal2.ui.input import Key
 from goal2.ui.preview import run_match_preview
@@ -50,6 +51,7 @@ def run_main_loop(
     [derived: T17's state adapter writes country_tactics at country record +0x2D;
     the quick engine reads that same byte (quick_engine.py:189).]
     """
+    ensure_friendly_session(state)
     # [designed: each screen does `iter(keys)` internally; passing a list
     # would replay it from the start for every screen.] Normalise `keys`
     # to a single iterator once. (Luna R2, 2026-10-13)

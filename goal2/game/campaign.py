@@ -1,0 +1,323 @@
+"""Campaign calendar and completion state. [designed: T40]
+
+The original calendar is a static builder reading (T39, F023), not an
+implemented local schedule. Callers supply ordered fixture identities until
+later tasks provide builders and competitive result handlers.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Any
+
+
+class CampaignError(ValueError):
+    """Invalid campaign metadata or operation."""
+
+
+class UnsupportedCampaignTransition(CampaignError):
+    """The next calendar stage has no supplied builder/result handler."""
+
+
+_STAGE_YEAR = {2: 1, 3: 2, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4}
+_NEXT_STAGE = {2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8}
+
+
+def _next_calendar_key(current: tuple[int, int]) -> tuple[int, int] | None:
+    cycle, stage = current
+    if stage in _NEXT_STAGE:
+        return cycle, _NEXT_STAGE[stage]
+    if stage == 8:
+        return cycle + 1, 2
+    return None
+
+
+def opening_calendar(start_year: int) -> tuple[int, int]:
+    """Return the source-year ordinal and opening stage. [confirmed: T39 F023/F025]
+
+    The campaign ordinal differs from the source year: even source years
+    divisible by four start at ordinal year 1/stage 2; years 2 mod 4 start
+    at ordinal year 3/stage 5. Other residues are not established by T39.
+    """
+    if isinstance(start_year, bool) or not isinstance(start_year, int):
+        raise CampaignError("start_year must be an integer")
+    if start_year < 1:
+        raise CampaignError("start_year must be positive")
+    if start_year % 4 == 0:
+        return 1, 2
+    if start_year % 4 == 2:
+        return 3, 5
+    raise CampaignError("T39 calendar evidence supports only even start years")
+
+
+@dataclass(frozen=True)
+class Fixture:
+    """Caller-supplied calendar row; IDs are stable within a campaign. [designed: T40]"""
+    fixture_id: str
+    cycle: int
+    year: int
+    stage: int
+    kind: int
+    home_country: int
+    away_country: int
+
+    def validate(self) -> None:
+        if not isinstance(self.fixture_id, str) or not self.fixture_id.strip():
+            raise CampaignError("fixture_id must be non-empty text")
+        for name, value, low, high in (
+            ("cycle", self.cycle, 1, 2**31 - 1),
+            ("year", self.year, 1, 4),
+            ("stage", self.stage, 2, 8),
+            ("kind", self.kind, 1, 255),
+            ("home_country", self.home_country, 1, 128),
+            ("away_country", self.away_country, 1, 128),
+        ):
+            if isinstance(value, bool) or not isinstance(value, int) or not low <= value <= high:
+                raise CampaignError(f"fixture {self.fixture_id}: {name} must be an integer in {low}..{high}")
+        if self.stage not in _STAGE_YEAR or self.year != _STAGE_YEAR[self.stage]:
+            raise CampaignError(f"fixture {self.fixture_id}: invalid year/stage pairing")
+        if self.home_country == self.away_country:
+            raise CampaignError(f"fixture {self.fixture_id}: countries must be distinct")
+
+
+@dataclass
+class CampaignState:
+    """Campaign ordinal, source year, ordered fixtures and completion ledger. [designed: T40]"""
+    start_year: int
+    cycle: int
+    year: int
+    stage: int
+    seed_7b62: int
+    seed_8336: int
+    fixtures: tuple[Fixture, ...] = ()
+    completed_fixture_ids: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        _, opening_stage = opening_calendar(self.start_year)
+        _integer(self.cycle, "cycle", 1, 2**31 - 1)
+        _integer(self.year, "year", 1, 4)
+        _integer(self.stage, "stage", 2, 8)
+        if self.stage not in _STAGE_YEAR or self.year != _STAGE_YEAR[self.stage]:
+            raise CampaignError("campaign year/stage pairing is invalid")
+        if (self.cycle, self.stage) < (1, opening_stage):
+            raise CampaignError("campaign position precedes its source start year")
+        _integer(self.seed_7b62, "seed_7b62", 0, 65535)
+        _integer(self.seed_8336, "seed_8336", 0, 65535)
+        self.fixtures = tuple(self.fixtures)
+        seen: set[str] = set()
+        previous: tuple[int, int] | None = None
+        for fixture in self.fixtures:
+            if not isinstance(fixture, Fixture):
+                raise CampaignError("fixtures must contain Fixture records")
+            fixture.validate()
+            if fixture.fixture_id in seen:
+                raise CampaignError(f"duplicate fixture ID {fixture.fixture_id!r}")
+            seen.add(fixture.fixture_id)
+            key = (fixture.cycle, fixture.stage)
+            if previous is None:
+                if fixture.cycle != 1 or fixture.stage != opening_stage:
+                    raise CampaignError("first fixture must match the source-year opening cycle/stage")
+            elif key < previous:
+                raise CampaignError("fixtures must be in calendar order")
+            elif key[0] == previous[0] and key[1] != previous[1]:
+                if _NEXT_STAGE.get(previous[1]) != key[1]:
+                    raise CampaignError("fixture queue skips or reverses a stage")
+            elif key[0] != previous[0] and (key[0] != previous[0] + 1 or previous[1] != 8 or key[1] != 2):
+                raise CampaignError("fixture queue has an invalid cycle boundary")
+            previous = key
+        if not isinstance(self.completed_fixture_ids, list):
+            raise CampaignError("completed_fixture_ids must be a list")
+        if any(not isinstance(item, str) for item in self.completed_fixture_ids):
+            raise CampaignError("completed fixture IDs must be text")
+        if len(set(self.completed_fixture_ids)) != len(self.completed_fixture_ids):
+            raise CampaignError("completed fixture IDs contain duplicates")
+        if not set(self.completed_fixture_ids).issubset(seen):
+            raise CampaignError("completed ledger references an unknown fixture")
+        expected = [f.fixture_id for f in self.fixtures[:len(self.completed_fixture_ids)]]
+        if self.completed_fixture_ids != expected:
+            raise CampaignError("completed fixture ledger must be a fixture-order prefix")
+        pending = self.next_fixture
+        current = (self.cycle, self.stage)
+        if pending is None:
+            expected_current = ((self.fixtures[-1].cycle, self.fixtures[-1].stage)
+                                if self.fixtures else (1, opening_stage))
+            if current != expected_current:
+                raise CampaignError("completed campaign position does not match its fixture queue")
+        else:
+            next_key = (pending.cycle, pending.stage)
+            if current == next_key:
+                pass
+            elif _next_calendar_key(current) != next_key:
+                raise CampaignError("current position and first incomplete fixture are inconsistent")
+        # Campaign year is an ordinal label for the stage, not the source year.
+        if self.year != _STAGE_YEAR[self.stage] or (pending and pending.year != _STAGE_YEAR[pending.stage]):
+            raise CampaignError("campaign ordinal year does not match stage")
+
+    @property
+    def next_fixture(self) -> Fixture | None:
+        completed = set(self.completed_fixture_ids)
+        return next((fixture for fixture in self.fixtures if fixture.fixture_id not in completed), None)
+
+    def complete_fixture(self, fixture_id: str) -> None:
+        """Complete the next friendly once; competition kinds await later adapters."""
+        pending = self.next_fixture
+        if fixture_id in self.completed_fixture_ids:
+            raise CampaignError(f"fixture {fixture_id!r} was already completed")
+        if pending is None:
+            raise UnsupportedCampaignTransition("no scheduled fixture is available")
+        if fixture_id != pending.fixture_id:
+            raise CampaignError(f"expected next fixture {pending.fixture_id!r}")
+        if (pending.cycle, pending.year, pending.stage) != (self.cycle, self.year, self.stage):
+            raise CampaignError("advance the calendar before completing a later-stage fixture")
+        if pending.kind != 1:
+            raise UnsupportedCampaignTransition(
+                f"fixture {pending.fixture_id!r} kind {pending.kind} needs a competitive result handler"
+            )
+        self.completed_fixture_ids.append(fixture_id)
+
+    def advance_calendar(self) -> None:
+        """Advance only into the next supplied stage, preserving unsupported gaps."""
+        pending = self.next_fixture
+        if pending is None:
+            raise UnsupportedCampaignTransition(
+                f"stage {self.stage} has no supplied next-stage fixture builder"
+            )
+        if (pending.cycle, pending.stage) == (self.cycle, self.stage):
+            raise CampaignError(f"stage {self.stage} still has an incomplete fixture")
+        if _next_calendar_key((self.cycle, self.stage)) != (pending.cycle, pending.stage):
+            raise CampaignError("calendar cannot skip an unimplemented stage")
+        self.cycle, self.year, self.stage = pending.cycle, pending.year, pending.stage
+
+    def to_data(self) -> dict[str, Any]:
+        return {
+            "start_year": self.start_year, "cycle": self.cycle, "year": self.year,
+            "stage": self.stage, "seed_7b62": self.seed_7b62, "seed_8336": self.seed_8336,
+            "fixtures": [fixture.__dict__ for fixture in self.fixtures],
+            "completed_fixture_ids": list(self.completed_fixture_ids),
+        }
+
+    @classmethod
+    def from_data(cls, data: Any) -> "CampaignState":
+        keys = {"start_year", "cycle", "year", "stage", "seed_7b62", "seed_8336",
+                "fixtures", "completed_fixture_ids"}
+        if not isinstance(data, dict) or set(data) != keys:
+            raise CampaignError("campaign metadata has missing or unknown fields")
+        if not isinstance(data["fixtures"], list):
+            raise CampaignError("campaign fixtures must be a list")
+        fixtures = []
+        fixture_keys = {"fixture_id", "cycle", "year", "stage", "kind", "home_country", "away_country"}
+        for index, row in enumerate(data["fixtures"]):
+            if not isinstance(row, dict) or set(row) != fixture_keys:
+                raise CampaignError(f"fixture {index}: missing or unknown fields")
+            fixtures.append(Fixture(**row))
+        try:
+            return cls(start_year=data["start_year"], cycle=data["cycle"], year=data["year"],
+                       stage=data["stage"], seed_7b62=data["seed_7b62"], seed_8336=data["seed_8336"],
+                       fixtures=tuple(fixtures), completed_fixture_ids=data["completed_fixture_ids"])
+        except TypeError as exc:
+            raise CampaignError(f"malformed campaign metadata: {exc}") from exc
+
+
+def start_campaign(
+    goaldat: Any,
+    engine_template: bytes,
+    *,
+    managed_country: int,
+    start_year: int,
+    seed_7b62: int,
+    seed_8336: int,
+    fixtures: tuple[Fixture, ...] | list[Fixture] = (),
+) -> "GameState":
+    """Build a fresh manager state from GOAL.DAT and a local layout template.
+
+    [designed: T40] The template supplies memory layout and opaque engine
+    tables. Player records and the 128 base squads are rebuilt from GOAL.DAT;
+    campaign seeds replace inherited match seeds; match results, choices,
+    counters, fitness and known manager/tactics/captain bytes are reset. The
+    existing byte-exact player generator retains its established fixed pool
+    seed, independent of the campaign RNG seeds.
+    """
+    from goal2.game.new_game import country_rank, make_all_players, rating
+    from goal2.game.state import MEM_BASE, SQUAD, GameState, _wrap_raw, from_savestate
+
+    _integer(managed_country, "managed_country", 1, 128)
+    _integer(seed_7b62, "seed_7b62", 0, 65535)
+    _integer(seed_8336, "seed_8336", 0, 65535)
+    ordinal, opening_stage = opening_calendar(start_year)
+    # Parse into a local candidate. No caller-owned active state is mutated.
+    state = from_savestate(engine_template)
+    state.players = make_all_players(goaldat, managed_country)
+    countries = [bytearray(len(state.countries[0])) for _ in state.countries]
+    for country in range(1, 129):
+        world_rank, continent, within = country_rank(goaldat, country)
+        for slot in range(SQUAD):
+            player_number = (country - 1) * SQUAD + slot + 1
+            countries[country][slot * 2:slot * 2 + 2] = player_number.to_bytes(2, "little")
+        # [confirmed: F007/T19 at the T39 pin] Rebuild the three country-rank
+        # inputs consumed by 10E7, and restore GOAL.DAT's default tactics.
+        countries[country][0x2A] = within
+        countries[country][0x2B] = world_rank
+        countries[country][0x2C] = continent
+        countries[country][0x28] = within
+        countries[country][0x29] = world_rank
+        countries[country][0x2D] = goaldat.per_country_a[country]
+        countries[country][0x2E] = country
+        countries[country][0x2F] = 0
+    # [confirmed: F007/T19] The sole managed country uses manager index 1
+    # with the original human-manager marker in its high bit.
+    countries[managed_country][0x2E] = 0x81
+    state.countries = [bytes(record) for record in countries]
+    state.managed_country = managed_country
+    state.managed_squad = list(range((managed_country - 1) * SQUAD + 1,
+                                     managed_country * SQUAD + 1))
+    state.starting_eleven = state.managed_squad[:11]
+    state.captain = 0
+    state.country_tactics = goaldat.per_country_a[managed_country]
+    state.rng_seed_7b62 = seed_7b62
+    state.rng_seed_8336 = seed_8336
+    state.match_state = {"clock": 0, "score": (0, 0), "minute": 0, "half": 0}
+    state.match_count = 0
+    state.last_match = None
+    # [confirmed: F002 R007] The first 129 3-byte manager entries are the
+    # per-country triples. Clear the unused tail, then restore those source
+    # records; this removes manager quality inherited from a match template.
+    raw_mem = bytearray(state.mem)
+    raw_state = _wrap_raw(state.vga, raw_mem)
+    pointer = raw_state.ds_bytes(0xA91F, 4)
+    offset, segment = int.from_bytes(pointer[:2], "little"), int.from_bytes(pointer[2:], "little")
+    manager_address = segment * 16 + offset
+    # [confirmed: F002] There are 129 country manager records and six human
+    # manager records (IDs 129..134), three bytes each: 405 bytes total.
+    raw_state.mem_write(manager_address, b"\0" * (135 * 3))
+    manager_records = b"".join(bytes(values) for values in goaldat.per_country_3)
+    raw_state.mem_write(manager_address, manager_records)
+    # [confirmed: F007 at the T39 pin] make_squad refreshes each manager
+    # record's ID and rank-derived quality after loading GOAL.DAT.
+    for country in range(1, 129):
+        raw_state.mem_write(manager_address + 3 * country,
+                            bytes((country, rating(goaldat, country),
+                                   goaldat.per_country_3[country][2])))
+    # [designed: T40] The original human-manager allocation path is not
+    # modeled yet; seed its sole slot from the selected country's fresh
+    # rank-derived quality so no template quality enters the campaign.
+    raw_state.mem_write(manager_address + 3 * 129,
+                        bytes((managed_country, rating(goaldat, managed_country), 0)))
+    state.mem = raw_mem
+    state.campaign = CampaignState(
+        start_year=start_year, cycle=1, year=ordinal, stage=opening_stage,
+        seed_7b62=seed_7b62, seed_8336=seed_8336, fixtures=tuple(fixtures),
+    )
+    return state
+
+
+def ensure_friendly_session(state: "GameState") -> None:
+    """Reject campaign data at friendly-only entry points. [designed: T40]"""
+    if state.campaign is not None:
+        raise UnsupportedCampaignTransition(
+            "campaign sessions need campaign fixture controls; friendly session paths cannot advance them"
+        )
+
+
+def _integer(value: Any, name: str, low: int, high: int) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or not low <= value <= high:
+        raise CampaignError(f"{name} must be an integer in {low}..{high}")
+    return value

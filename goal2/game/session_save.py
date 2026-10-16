@@ -20,7 +20,8 @@ from goal2.game.state import (
 
 
 FORMAT = "goal2-session"
-VERSION = 1
+VERSION = 2
+_FRIENDLY_VERSION = 1
 _TUPLE_TAG = "__goal2_session_tuple__"
 
 
@@ -72,8 +73,8 @@ def _unb64(value: Any, field: str) -> bytes:
         raise SessionSaveError(f"{field}: invalid base64 data") from exc
 
 
-def _state_data(state: GameState) -> dict[str, Any]:
-    return {
+def _state_data(state: GameState, version: int) -> dict[str, Any]:
+    data = {
         "players": [_b64(bytes(record)) for record in state.players],
         "countries": [_b64(bytes(record)) for record in state.countries],
         "managed_country": state.managed_country,
@@ -89,16 +90,24 @@ def _state_data(state: GameState) -> dict[str, Any]:
         "match_count": state.match_count,
         "last_match": _json_value(state.last_match),
     }
+    if version == VERSION:
+        if state.campaign is None:
+            raise ValueError("version 2 session requires campaign metadata")
+        data["campaign"] = state.campaign.to_data()
+    elif state.campaign is not None:
+        raise ValueError("campaign state cannot be encoded as a friendly version 1 save")
+    return data
 
 
 def encode(state: GameState, template: bytes) -> bytes:
     """Return a validated explicit-data save document. [designed: T33]"""
     try:
+        version = VERSION if state.campaign is not None else _FRIENDLY_VERSION
         document = {
             "format": FORMAT,
-            "version": VERSION,
+            "version": version,
             "template": _b64(bytes(template)),
-            "state": _state_data(state),
+            "state": _state_data(state, version),
         }
         raw = json.dumps(document, ensure_ascii=True, allow_nan=False,
                          separators=(",", ":")).encode("ascii")
@@ -142,7 +151,7 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
     if not isinstance(doc, dict) or doc.get("format") != FORMAT:
         raise SessionSaveError("not a goal2 session save")
     version = doc.get("version")
-    if isinstance(version, bool) or not isinstance(version, int) or version != VERSION:
+    if isinstance(version, bool) or not isinstance(version, int) or version not in (_FRIENDLY_VERSION, VERSION):
         raise SessionSaveError(f"unsupported session save version: {doc.get('version')!r}")
     if set(doc) != {"format", "version", "template", "state"}:
         raise SessionSaveError("session save has missing or unknown top-level fields")
@@ -153,6 +162,8 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
         "captain", "country_tactics", "rng_seed_7b62", "rng_seed_8336", "match_state",
         "vga", "mem", "match_count", "last_match",
     }
+    if version == VERSION:
+        required.add("campaign")
     if not isinstance(data, dict) or set(data) != required:
         raise SessionSaveError("session state has missing or unknown fields")
     players = _records(data["players"], "players", N_PLAYERS, PLAYER_SIZE)
@@ -176,12 +187,20 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
         mem = _unb64(data["mem"], "mem")
     except SessionSaveError:
         raise
+    campaign = None
+    if version == VERSION:
+        try:
+            from goal2.game.campaign import CampaignError, CampaignState
+            campaign = CampaignState.from_data(data["campaign"])
+        except CampaignError as exc:
+            raise SessionSaveError(f"invalid campaign metadata: {exc}") from exc
     state = GameState(
         players=players, countries=countries, managed_country=country,
         managed_squad=squad, rng_seed_7b62=seed_a, rng_seed_8336=seed_b,
         match_state=match_state, vga=vga, mem=bytearray(mem),
         starting_eleven=eleven, captain=captain, country_tactics=tactics,
         match_count=match_count, last_match=last_match,
+        campaign=campaign,
     )
     return state, template
 
