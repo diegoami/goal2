@@ -8,7 +8,8 @@
 | --- | --- | --- | --- |
 | 1 | [T39](tasks/T39.md) · [#73](https://github.com/diegoami/goal2/issues/73) — Reconcile the campaign evidence register | Medium | — |
 | 2 | [T40](tasks/T40.md) · [#100](https://github.com/diegoami/goal2/issues/100) — Campaign state, calendar and fresh start | Hard | T39 |
-| 3 | [T41](tasks/T41.md) · [#101](https://github.com/diegoami/goal2/issues/101) — Play scheduled friendlies in the browser | Medium | T40 |
+| 3a | [T41a](tasks/T41a.md) · [#125](https://github.com/diegoami/goal2/issues/125) — Build opening campaign fixture metadata | Hard | T40 |
+| 3b | [T41](tasks/T41.md) · [#101](https://github.com/diegoami/goal2/issues/101) — Play scheduled friendlies in the browser | Medium | T41a |
 | 4 | [T42](tasks/T42.md) · [#102](https://github.com/diegoami/goal2/issues/102) — Apply match energy and between-fixture recovery | Medium | T41 |
 | 5 | [T43](tasks/T43.md) · [#103](https://github.com/diegoami/goal2/issues/103) — Update confidence and display team morale | Medium | T42 |
 | 6 | [T44](tasks/T44.md) · [#104](https://github.com/diegoami/goal2/issues/104) — Enforce injuries and suspensions at selection | Medium | T43 |
@@ -41,3 +42,5 @@
 [designed] Match-engine strategy and visualization stay on their separate track: [#97](https://github.com/diegoami/goal2/issues/97), the [close-enough estimate #98](https://github.com/diegoami/goal2/issues/98), and the [emulation estimate #99](https://github.com/diegoami/goal2/issues/99). This backlog does not decide those options or require watched-match visualization before campaign play. If the owner chooses a whole-game emulated core, re-scope these rule adapters before implementation rather than building competing cores. Multiple managers, nationalized pool names and existing nonblocking cleanup remain separate.
 
 [derived: T39 source audit of F023, archaeology 0ef880e] Stage 2 interleaves competitive qualifying fixtures with friendlies. Execute T51 after T49 and before T50; T52 follows T50. This avoids running qualifying fixtures with friendly rules. T40/T41 stop at unsupported fixture kinds until competitive support is available.
+
+[designed: preflight split, 2026-10-16] T41a supplies the source-read opening schedule before T41 browser actions. T40 intentionally supplies no generator. Each slice has a separate PR/review, retaining T41’s scheduled two-friendly browser outcome and the subsequent dependency order.
