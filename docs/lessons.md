@@ -94,3 +94,4 @@ The owner chose mandatory local checks on the exact reviewed commit and
 manual-only optional Actions. Preserve every former hosted check in one command;
 keep task-specific checks and independent review. The historical L106 row above
 records the earlier post-merge trigger policy, now superseded by manual dispatch.
+| L115 | When a goal2 task needs something about the original that no finding answers, the session files an issue in goal2-archaeology (`triage:needed`, `from-goal2`) with the question, what it blocks, the assumption meanwhile, the evidence it would accept and the importance, and carries on with the assumption | The owner, 2026-10-16, after the engine-route decision: goal2 had no rule for asking goal2-archaeology for decompilation or exploration (CLAUDE.md rule 18 covers only defects in vendored code; the register's "Replaced by" column names a need but not the channel). Process section 11. |

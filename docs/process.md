@@ -263,6 +263,27 @@ the rework rate with the baseline in `docs/lessons.md` before changing models. (
 A rule enters `CLAUDE.md` or this file only with a lesson in `docs/lessons.md`: a failure in a real
 run, or the owner's decision with its basis. Plausible rules without either stay out. (L14)
 
+## 11. Asking goal2-archaeology about the original
+
+goal2 builds the remaster; goal2-archaeology explores the original and delivers findings. When a goal2 task
+is blocked by something about the original that no finding answers (a decompilation, a routine to read,
+a measurement to take), the session **files an issue in `diegoami/goal2-archaeology`** with the labels
+`triage:needed` and `from-goal2` (its sessions list `triage:needed` issues at the start). (L115, the owner,
+2026-10-16)
+
+The issue says, in this order:
+1. **The question**, in one or two sentences, with the screen, the byte or the routine if known.
+2. **What it blocks**: the goal2 task, register row or plan item, with its link.
+3. **The assumption goal2 will use meanwhile**, and what breaks if it is wrong.
+4. **What evidence goal2 would accept**: a finding, a measurement, a vendored model, a table.
+5. **Importance** (H: changes the playable loop or what the player sees; M: shapes play; L: a detail) so
+   archaeology can grade it by importance and cost.
+
+goal2 **does not wait**: it carries on with the assumption, tagged `assumed` or `[designed]` in the register and the
+code. archaeology answers on the issue (investigate, assume, or return it as a goal2 design decision); a finding
+comes back by the usual route (a register branch, the handover and an issue here). A request is never a
+design decision: the remaster's design stays in this repository (the owner, 2026-10-15).
+
 ## 12. Delegating decisions to Jev
 
 Jev takes a decision only when it recurs over many items, its answers are known up front, and a
