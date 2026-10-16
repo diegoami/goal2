@@ -24,7 +24,7 @@ year remains a separate value.
 
 [designed: T40] A caller supplies the ordered fixture records until later
 tasks add calendar builders. Each record has a stable ID, cycle, ordinal year,
-stage, kind and home/away country IDs. The model validates ID uniqueness,
+stage, kind and two ordered country IDs; the retained home/away field names are storage labels only. The model validates ID uniqueness,
 country ranges, stage/year pairing, ordering and a contiguous stage path. The
 completion ledger is an exact prefix of that queue. Only friendly kind 1 can
 be completed here; competitive fixtures stop with an explicit unsupported
@@ -37,3 +37,24 @@ year, current cycle/year/stage, ordered fixtures and completion ledger. A
 malformed or unknown version-2 field is rejected before a candidate can replace
 an active session. Terminal and browser friendly paths reject campaign saves
 until campaign controls are implemented.
+
+[derived: F023, goal2-archaeology 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb]
+goal2.game.campaign_schedule.build_opening_campaign reads the stage-2 or
+stage-5 initial rank order from GOAL.DAT and the slot, schedule, friendly,
+threshold and fixture-number tables from the supplied local template. It
+returns the 32 drawn groups and source-ordered opening fixture rows, keeping
+the original side A/B endpoint order, source group byte, draw-group context,
+round, continent, kind and fixture number. The static reconstruction follows
+the listing; it does not claim original-runtime corroboration. The draw uses
+an explicit seed and reports the post-draw seed. start_opening_campaign
+projects only the selected country's rows into a T40 campaign and starts its
+live primary RNG at that post-draw seed. Other countries' rows remain metadata;
+the projection does not complete CPU fixtures or simulate results.
+
+[designed: T41a] The T40 schema retains its existing home_country and
+away_country storage keys for version-2 compatibility. In opening metadata
+and campaign projections these fields carry the first and second ordered
+endpoints only; Fixture.side_a and Fixture.side_b expose that order without
+asserting which endpoint plays at home. Friendly kind 1 remains completable;
+the stage-2 or stage-5 qualifying kind remains a barrier until a competitive
+result handler is implemented.

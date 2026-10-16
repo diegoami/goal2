@@ -51,7 +51,7 @@ def opening_calendar(start_year: int) -> tuple[int, int]:
 
 @dataclass(frozen=True)
 class Fixture:
-    """Caller-supplied calendar row; IDs are stable within a campaign. [designed: T40]"""
+    """Ordered fixture endpoints; legacy field names are retained as storage keys. [designed: T40/T41a]"""
     fixture_id: str
     cycle: int
     year: int
@@ -59,6 +59,16 @@ class Fixture:
     kind: int
     home_country: int
     away_country: int
+
+    @property
+    def side_a(self) -> int:
+        """Return the first stored endpoint without assigning a pitch role. [designed: T41a]"""
+        return self.home_country
+
+    @property
+    def side_b(self) -> int:
+        """Return the second stored endpoint without assigning a pitch role. [designed: T41a]"""
+        return self.away_country
 
     def validate(self) -> None:
         if not isinstance(self.fixture_id, str) or not self.fixture_id.strip():
