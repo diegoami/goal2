@@ -18,9 +18,10 @@ each with listing lines and run records), its task records and its releases.
   (game-archaeologist U17/U21).
 
 [designed: owner #148, 2026-10-16; session binding choice] New primary UI work
-uses PySide6 desktop: [roadmap](docs/desktop-ui-roadmap.md). Existing browser and
-terminal launch instructions below describe the retained interfaces; the desktop
-launch command will arrive with its implementation tasks.
+uses PySide6 desktop: [roadmap](docs/desktop-ui-roadmap.md). The [desktop management shell](docs/desktop-management.md) supports country choice,
+lineup/captain/tactics and save/resume through `python3 -m goal2.desktop`; install
+`.[desktop]` first. Match execution follows separately in T70. Browser and terminal
+launch instructions below describe the retained interfaces.
 
 The plan is [`docs/plan.md`](docs/plan.md); every rule the rebuild plays by, and where it comes
 from, is in [`docs/assumptions.md`](docs/assumptions.md). Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
