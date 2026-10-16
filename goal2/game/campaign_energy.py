@@ -93,6 +93,8 @@ def finish(qm, state):
     Energy-only RNG order excludes the later confidence/pool/status callers.
     """
     fixture = ensure_pending(state)
+    if tuple(qm.teams) != (fixture.side_a, fixture.side_b):
+        raise ValueError('energy teams differ from the pending fixture')
     if getattr(qm, '_campaign_energy_complete', False):
         raise ValueError('campaign energy was already applied to this simulation')
     squads = [list(qm._squad(side)) for side in (0, 1)]

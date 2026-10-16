@@ -1,12 +1,15 @@
 """[designed: T42] Energy boundaries, literal F018 cases and campaign transactions."""
 import copy
 import tempfile
+from dataclasses import replace
+from types import SimpleNamespace
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 from goal2.game import campaign_energy as energy
 from goal2.game.quick_match import run_full_match
+from goal2.engine.quick_engine import LCG
 from goal2.game.state import to_savestate
 from goal2.engine.savestate import Savestate
 from goal2.web.server import WebSession, StalePlaySubmission
@@ -124,6 +127,7 @@ class CampaignContinuations(unittest.TestCase):
         self.assertEqual(after, expected)
         self.assertEqual(metadata['recovery_draws'], 60)
         self.assertEqual(metadata['fixture_id'], 'original:1378')
+        self.assertEqual(self.session.state.match_state.get('campaign_energy'), metadata)
         self.assertEqual(self.session.state.rng_seed_7b62, expected)
         for player in result['players']:
             self.assertEqual(player['energy'], self.session.state.players[player['id']][14])
@@ -148,6 +152,45 @@ class CampaignContinuations(unittest.TestCase):
             self.assertEqual(self.session.state, before)
             self.assertEqual(self.session.state.match_count, 2)
             self.assertEqual(self.session.state.match_state['campaign_energy']['fixture_id'], 'original:1471')
+
+    def test_gradual_selector_side_order_participating_bench_and_simulation_once(self):
+        state = self.session.state
+        first = state.campaign.fixtures[0]
+        state.campaign.fixtures = (replace(first, away_country=33),) + state.campaign.fixtures[1:]
+        squads = [state.managed_squad, [int.from_bytes(state.countries[33][i:i+2], 'little') for i in range(0, 40, 2)]]
+        records = {w: bytearray(state.players[w]) for squad in squads for w in squad}
+        for r in records.values():
+            r[14], r[0x10] = 10, 0
+        records[squads[0][11]][0x10] = 8
+        set_member = False
+        def table(offset, count):
+            return {0x0E82: bytes((16, 13)), 0x0E84: bytes((32, 24)), 0x0F3E: bytes((2 if set_member else 0,))}[offset]
+        def make_qm():
+            return SimpleNamespace(teams=[4, 33], playerrec=copy.deepcopy(records),
+                                   _squad=lambda side: squads[side], state=SimpleNamespace(ds_bytes=table),
+                                   rng=LCG(123))
+        for membership in (False, True):
+            set_member = membership
+            qm = make_qm()
+            qm._player = lambda word: qm.playerrec[word]
+            calls = []
+            original = energy.recover_player
+            def recover(record, flag, rng, **kwargs):
+                calls.append((record[0], bool(flag), kwargs['gradual']))
+                return original(record, flag, rng, **kwargs)
+            with patch.object(energy, 'recover_player', side_effect=recover):
+                energy.finish(qm, state)
+            self.assertEqual(len(calls), 40)
+            self.assertTrue(all(row[2] for row in calls[:20]))
+            self.assertEqual([row[2] for row in calls[20:]], [membership] * 20)
+            self.assertEqual([row[1] for row in calls[:20]], [True] * 12 + [False] * 8)
+            with self.assertRaisesRegex(ValueError, 'already'):
+                energy.finish(qm, state)
+
+    def test_stateless_campaign_simulation_keeps_complete_input_state(self):
+        before = copy.deepcopy(self.session.state)
+        run_full_match(Savestate(to_savestate(self.session.state, original=self.session.template_bytes)), self.session.state)
+        self.assertEqual(self.session.state, before)
 
     def test_recovery_failure_leaves_active_state_and_queue_intact(self):
         before = copy.deepcopy(self.session.state)

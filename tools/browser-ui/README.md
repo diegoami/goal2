@@ -76,3 +76,9 @@ negative mutation proofs. It saves each source file before changing one site,
 runs the targeted test in a fresh Python process, requires an assertion failure,
 and restores the saved bytes in `finally`. Run it sequentially with other checks
 in a clean task checkout containing the ignored local inputs.
+
+[designed: T42] The campaign scenario also checks published energy changes and
+that squad energy/post-recovery RNG survive process resume. Run
+`python3 tools/browser-ui/prove-campaign-energy.py` sequentially for seven
+behavioral mutation proofs; each restores saved source bytes in finally and
+leaves the vendored energy module unchanged.
