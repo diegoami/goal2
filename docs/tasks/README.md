@@ -37,7 +37,8 @@ status; this index carries none.
 | T38 | Browser save and resume | #91 | T37 |
 | [T39](T39.md) | Reconcile the campaign evidence register (medium) | [#73](https://github.com/diegoami/goal2/issues/73) | — |
 | [T40](T40.md) | Campaign state, calendar and fresh start (hard) | [#100](https://github.com/diegoami/goal2/issues/100) | T39 |
-| [T41](T41.md) | Play scheduled friendlies in the browser (medium) | [#101](https://github.com/diegoami/goal2/issues/101) | T40 |
+| [T41a](T41a.md) | Build opening campaign fixture metadata (hard) | [#125](https://github.com/diegoami/goal2/issues/125) | T40 |
+| [T41](T41.md) | Play scheduled friendlies in the browser (medium) | [#101](https://github.com/diegoami/goal2/issues/101) | T41a |
 | [T42](T42.md) | Apply match energy and between-fixture recovery (medium) | [#102](https://github.com/diegoami/goal2/issues/102) | T41 |
 | [T43](T43.md) | Update confidence and display team morale (medium) | [#103](https://github.com/diegoami/goal2/issues/103) | T42 |
 | [T44](T44.md) | Enforce injuries and suspensions at selection (medium) | [#104](https://github.com/diegoami/goal2/issues/104) | T43 |
@@ -56,3 +57,17 @@ status; this index carries none.
 | [T57](T57.md) | Retire and replace players without breaking squads (hard) | [#117](https://github.com/diegoami/goal2/issues/117) | T56 |
 | [T58](T58.md) | Finish a cycle and begin the next one (medium) | [#118](https://github.com/diegoami/goal2/issues/118) | T57 |
 | [T59](T59.md) | Validate a complete playable four-year cycle (medium) | [#119](https://github.com/diegoami/goal2/issues/119) | T58 |
+
+## Original watched-engine stage 1
+
+See the [sequenced backlog](../watched-engine-backlog.md) for review gates, difficulty and scope.
+
+| Task | Title | Issue | Merge after |
+| --- | --- | --- | --- |
+| [T60](T60.md) | Prove original watched-match fixture entry (Medium; feasibility uncertainty) | [#248](https://github.com/diegoami/goal2-archaeology/issues/248) | Decision/estimate PRs 122, 123 and 126 reviewed and merged |
+| [T61](T61.md) | Package reusable original watched-match calls (Medium) | [#249](https://github.com/diegoami/goal2-archaeology/issues/249) | T60 positive entry verdict; archaeology PR 243 reviewed and merged |
+| [T62](T62.md) | Vendor the optional watched runtime and verified assets (Easy–Medium) | [#132](https://github.com/diegoami/goal2/issues/132) | T61 merged at an accepted upstream commit |
+| [T63](T63.md) | Adapt game state into an original watched fixture (Medium) | [#133](https://github.com/diegoami/goal2/issues/133) | T62 |
+| [T64](T64.md) | Commit watched results atomically and preserve saves (Medium) | [#134](https://github.com/diegoami/goal2/issues/134) | T63 |
+| [T65](T65.md) | Run watched matches in a worker with progress (Medium) | [#135](https://github.com/diegoami/goal2/issues/135) | T64 |
+| [T66](T66.md) | Watch an original friendly in the browser (Medium) | [#136](https://github.com/diegoami/goal2/issues/136) | T65 |

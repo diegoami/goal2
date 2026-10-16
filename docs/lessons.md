@@ -86,3 +86,11 @@ incidents*, its PRs, and the audit `docs/workflow-audit-2026-09.md`) and the fie
 | L112 | [derived] OpenCode major-version acceptance does not establish CLI/config compatibility; verify the actual run artefacts and fix the cause without changing the selected reviewer. | T23 / PR #54: Linux 2.0.28 rejected --dir and --variant before creating a session. At the owner's direction, existing opencode.1.18.32.bak completed GLM 5.3 Flash's approving review, all 220 tests and 8 mutations. V2 uses model#variant, session export and different permissions; migration stays separate. |
 | L113 | [designed] Ask the owner to select the implementer/model before each new task and wait; a task request alone is not model authorization. Keep the explicit task choice for implementation/rework, and choose the OpenCode reviewer after its PR exists. | Owner, 2026-10-14: after T24 used the main Codex session, asked which OpenAI model had been selected, then said "Ask before starting to implement" and selected GPT Luna for T25. Narrows L111's persistent-authorization wording to an explicit choice for the current task. |
 | L114 | [designed] Squash merge the approved head from the main session without automatic branch deletion; preserve the local task branch, worktree, ignored notes and cache. | Main session's observed #65 / PR #63 failure, 2026-10-14: `gh pr merge 63 --squash --delete-branch --match-head-commit 0f0718d3eb3abbbb2e22b456a3fbedf0e18b6c8b` removed the local task branch and worktree. The main session restored the head, notes and 12 ignored assets. |
+
+[designed: owner, #127, 2026-10-16; L106 follow-up] The same account billing
+block recurred on T40: Actions jobs ended before any steps. Stale green-CI wording
+in process.md and run-task caused an unnecessary stop despite rule7 and L106.
+The owner chose mandatory local checks on the exact reviewed commit and
+manual-only optional Actions. Preserve every former hosted check in one command;
+keep task-specific checks and independent review. The historical L106 row above
+records the earlier post-merge trigger policy, now superseded by manual dispatch.

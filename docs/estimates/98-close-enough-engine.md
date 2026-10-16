@@ -196,13 +196,26 @@ for example the owner's taste or a new measurement of the original, not more mat
 One measurement, from a goal2 checkout whose `.cache/` holds the E010 state (no run of the original):
 
 ```text
-$ python3 -B -c "import sys,time; sys.path.insert(0,'goal2/engine')
-  from goal2.engine.savestate import Savestate; from goal2.engine.quick_engine import simulate
-  b=open('.cache/e010-r0001-halftime.sav','rb').read(); t=time.process_time()
-  [simulate(Savestate(b)) for _ in range(40)]; print((time.process_time()-t)/40)"
+$ python3 -B - <<'PY'
+import sys, time
+sys.path.insert(0, 'goal2/engine')
+from goal2.engine.savestate import Savestate
+from goal2.engine.quick_engine import simulate
+b = open('.cache/e010-r0001-halftime.sav', 'rb').read()
+t = time.process_time()
+[simulate(Savestate(b)) for _ in range(40)]
+print((time.process_time() - t) / 40)
+PY
 0.0253      # CPU s per second half: vendored quick engine, the real E010-r0001 half-time state
-$ # the same timing over goal2.game.quick_match.run_full_match on the synthetic state of
-$ # goal2/tests/test_full_match.py (seeds 0x1000 + 97k, k < 50)
+$ python3 -B - <<'PY'
+import time
+from goal2.tests.test_full_match import build_state, game_state
+from goal2.game.quick_match import run_full_match
+t = time.process_time()
+results = [run_full_match(build_state(seed=0x1000+97*k), game_state()) for k in range(50)]
+assert all(tuple(r['score']) == (0, 0) for r in results)
+print((time.process_time() - t) / len(results))
+PY
 0.0046      # CPU s per whole friendly; the synthetic squads score no goals, so this is a floor
 ```
 

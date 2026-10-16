@@ -40,6 +40,17 @@ names what replaces it.
   country and player data, is read at run time from `.cache/`, fetched from goal2-archaeology's
   release by hash, like every savestate.
 
+## Original watched-engine stage 1
+
+[designed: owner, 2026-10-16, decision #97 and handover #130] The next implementation
+sequence is the [original watched-engine backlog](watched-engine-backlog.md), T60–T66.
+It starts with a one-hour fixture-entry experiment, then upstream packaging, optional
+Unicorn vendoring, state/result integration and a browser watched friendly. Review/merge
+of decision PR #126 and estimate PRs #122/#123 gates implementation. This planning
+pointer records the owner's priority without treating those pending PRs as merged.
+The existing stand-in remains until the original path is proven. Campaign tasks are
+preserved; the owner chooses the later core/campaign route after stage 1.
+
 ## Milestones
 
 Each milestone ends playable or testable on its own. [designed: owner, 2026-10-15]
@@ -73,6 +84,8 @@ stand-in; a finding or a static reading alone is not executable support:
 
 [derived: T39 audit of the goal2 tree at `fccff58` and goal2-archaeology `origin/main` at
 `0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb`] The upstream findings F022–F029 are still proposed.
+T40 adds campaign state, a caller-supplied ordered fixture seam, fresh-start reconstruction and
+version-2 campaign persistence; its interface and migration policy are in [campaign-state.md](campaign-state.md).
 F023's competition builders and F024's silent-result path are static readings; no campaign
 fixture builder, standings model, competitive resolver, energy/recovery adapter, or player
 lifecycle adapter is vendored or implemented here. The only vendored executable engine module is

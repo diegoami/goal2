@@ -93,7 +93,7 @@ Scope, Done when, Hazards, Implementer, Reviewer, Merge after. Rules:
 
 ## 3. The loop
 
-`ready → implement → review → approved + green CI → squash merge → follow-up → unblock → report`.
+`ready → implement → review → approved + exact-head local checks → squash merge → follow-up → unblock → report`.
 Rework sends the full review back to the same branch, at most two rounds (one for a fix), then
 escalates. The implementer script resumes a pushed branch; it never starts over. Before a merge the
 main session re-runs the check the approval rests on most; a different result is rework. (L46)
@@ -103,6 +103,17 @@ main session re-runs the check the approval rests on most; a different result is
 approved head. Omit `--delete-branch`, which can delete the local task branch and worktree. Keep
 the task worktree, ignored RUN-NOTES.md and cached assets after the merge; optional cleanup may
 remove only the remote branch.
+
+[designed: owner, #127, 2026-10-16; L106] GitHub Actions is manual-only optional
+verification on a fresh runner. Before merging, the main session runs
+`python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean
+implementation checkout and records its successful SHA on the PR. This command
+preserves the former workflow checks; task-specific Done-when checks and the
+independent approving review remain mandatory. A missing or billing-blocked
+Actions run does not block a locally validated merge. An optional Actions run
+that exposes a real defect must be investigated; its optional trigger does not
+permit ignoring a known failing check. No hosted check replaces exact-head local
+validation.
 
 What the review script guarantees, and why:
 - OpenCode starts with stdin closed; without it a run hangs before it starts. (L10)

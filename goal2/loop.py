@@ -7,6 +7,7 @@ from pathlib import Path
 
 from goal2.data.goaldat import load as load_goaldat
 from goal2.game.state import from_savestate, to_savestate
+from goal2.game.campaign import ensure_friendly_session
 from goal2.game.session_save import SessionSaveError, load as load_session, save as save_session
 from goal2.main_loop import run_main_loop
 from goal2.ui.input import terminal_input
@@ -51,6 +52,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.resume:
         try:
             state, state_bytes = load_session(savestate_file)
+            ensure_friendly_session(state)
             # Validate both the original template and the loaded state through
             # the adapter before the user can enter play. Keep loaded metadata
             # authoritative; the parsed objects are validation-only. [designed: T33]

@@ -314,3 +314,25 @@ Node 20 or later.
    It should print `asked 2 of 2`.
 4. OpenCode: run `/run-task` on a small `fix`, and watch the first review: the tail of its log and
    the posted review.
+
+## Local pre-merge validation
+
+[designed: owner, #127, 2026-10-16] With Python 3.12 or later, Node 20 or later
+and git installed, run from the clean implementation checkout:
+
+```bash
+python3 tools/check_premerge.py --expected-head <reviewed-sha>
+```
+
+Use the full reviewed commit SHA. The command refuses a different HEAD, dirty
+tracked files, invalid lock hashes, tracked original/session assets or a failed
+child check. Existing untracked user files and ignored caches/notes are retained.
+It runs links/JSON, harness self-tests, client tests and permission/merge/validator
+regressions without GitHub API access, original-game assets or an archaeology
+checkout. Task-specific tests, fidelity/browser/provenance checks and independent
+review remain separate requirements as applicable to the task.
+
+Actions has only a manual `workflow_dispatch` trigger and runs the same command
+on its checked-out SHA. It is optional independent verification; billing or an
+absent hosted run does not block a locally validated merge. No self-hosted runner
+or account billing change is required.
