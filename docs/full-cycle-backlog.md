@@ -1,6 +1,10 @@
 # Full-cycle playable campaign backlog
 
-[designed: owner #97, 2026-10-16] The [stage-1 original watched-engine backlog](watched-engine-backlog.md) takes priority before starting the next campaign task. Retain this campaign sequence; after the first playable original watched friendly, the owner decides whether to continue these Python adapters or adopt more of the original core. This supersedes the earlier execution priority, not the preserved task scopes.
+[designed: owner clarification, 2026-10-16] Campaign tasks remain active in
+parallel with the [original watched-engine backlog](watched-engine-backlog.md).
+Proceed through the campaign dependencies; the engine-kit acceptance gate does
+not postpone them. Later adoption of more original-core code remains an owner
+decision, without a blanket scheduling pause.
 
 [designed: owner, 2026-10-15] Turn P4/P5 of the [plan](plan.md) into a sequenced backlog following browser friendlies T35–T38. The target is one human manager who can start a fresh campaign, manage the squad, play scheduled fixtures, follow both competitions and continue into the next four-year cycle. Ordinary browser controls remain the primary interface.
 
@@ -12,7 +16,7 @@
 | 2 | [T40](tasks/T40.md) · [#100](https://github.com/diegoami/goal2/issues/100) — Campaign state, calendar and fresh start | Hard | T39 |
 | 3a | [T41a](tasks/T41a.md) · [#125](https://github.com/diegoami/goal2/issues/125) — Build opening campaign fixture metadata | Hard | T40 |
 | 3b | [T41](tasks/T41.md) · [#101](https://github.com/diegoami/goal2/issues/101) — Play scheduled friendlies in the browser | Medium | T41a |
-| 4 | [T42](tasks/T42.md) · [#102](https://github.com/diegoami/goal2/issues/102) — Apply match energy and between-fixture recovery | Medium | T41 + T64; owner post-stage-1 route choice |
+| 4 | [T42](tasks/T42.md) · [#102](https://github.com/diegoami/goal2/issues/102) — Apply match energy and between-fixture recovery | Medium | T41 |
 | 5 | [T43](tasks/T43.md) · [#103](https://github.com/diegoami/goal2/issues/103) — Update confidence and display team morale | Medium | T42 |
 | 6 | [T44](tasks/T44.md) · [#104](https://github.com/diegoami/goal2/issues/104) — Enforce injuries and suspensions at selection | Medium | T43 |
 | 7 | [T45](tasks/T45.md) · [#105](https://github.com/diegoami/goal2/issues/105) — Manage the national pool and twenty-player squad | Medium | T44 |
@@ -47,10 +51,8 @@
 
 [designed: preflight split, 2026-10-16] T41a supplies the source-read opening schedule before T41 browser actions. T40 intentionally supplies no generator. Each slice has a separate PR/review, retaining T41’s scheduled two-friendly browser outcome and the subsequent dependency order.
 
-[designed: owner-approved T67, 2026-10-16] The independent T41 browser task was
-a bounded authorization while the kit handoff was prepared. Defer T42 until
-T64 and the post-stage-1 route choice: original match setup/half/post-match
-energy effects must be carried from accepted runtime state once. Retain the
-T42 tests for those boundaries and for any separately evidenced between-fixture
-recovery; do not build a parallel Python match-effect pipeline. See the
-[kit coverage and acceptance gates](watched-engine-backlog.md).
+[designed: owner correction of T67, 2026-10-16] T41 was not a one-task exception:
+continue campaign tasks in the main Codex session with MiniMax review. T42's
+quick-campaign energy path and the original watched-engine path remain separate;
+never apply Python match effects over original returned state. This once-only
+integration requirement does not make T64 a scheduling prerequisite for T42.

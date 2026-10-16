@@ -39,7 +39,7 @@ status; this index carries none.
 | [T40](T40.md) | Campaign state, calendar and fresh start (hard) | [#100](https://github.com/diegoami/goal2/issues/100) | T39 |
 | [T41a](T41a.md) | Build opening campaign fixture metadata (hard) | [#125](https://github.com/diegoami/goal2/issues/125) | T40 |
 | [T41](T41.md) | Play scheduled friendlies in the browser (medium) | [#101](https://github.com/diegoami/goal2/issues/101) | T41a |
-| [T42](T42.md) | Apply match energy and between-fixture recovery (medium) | [#102](https://github.com/diegoami/goal2/issues/102) | T41 + T64; owner post-stage-1 route choice |
+| [T42](T42.md) | Apply match energy and between-fixture recovery (medium) | [#102](https://github.com/diegoami/goal2/issues/102) | T41 |
 | [T43](T43.md) | Update confidence and display team morale (medium) | [#103](https://github.com/diegoami/goal2/issues/103) | T42 |
 | [T44](T44.md) | Enforce injuries and suspensions at selection (medium) | [#104](https://github.com/diegoami/goal2/issues/104) | T43 |
 | [T45](T45.md) | Manage the national pool and twenty-player squad (medium) | [#105](https://github.com/diegoami/goal2/issues/105) | T44 |

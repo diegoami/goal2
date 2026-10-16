@@ -59,8 +59,10 @@ Do not duplicate upstream entry/packaging work. The decision/estimate PRs
 #122/#123/#126 define the original authorization; consuming the kit additionally
 requires independent upstream approval/merge, exact accepted pins and all handoff
 checks. The proposed candidate is planning evidence only. Preserve the stand-in
-until the original path is proven. T42 energy work waits for T64 and the owner's
-post-stage-1 campaign/core route choice so original effects are not applied twice.
+until the original path is proven. [designed: owner correction, 2026-10-16]
+Campaign work continues in parallel: T42 follows T41 without a T64/route-choice
+scheduling gate. Keep quick Python effects separate from original watched-result
+publication so neither path applies match effects twice.
 
 ## Milestones
 

@@ -132,3 +132,9 @@ fixture, retains score history, and stops at the unsupported qualifier boundary.
 Save/load and process resume preserve that position. See the
 [browser instructions](tools/browser-ui/README.md) and
 [campaign contract](docs/campaign-state.md) for the exact scope and acceptance.
+
+[designed: T42] Scheduled campaign quick friendlies now apply half-time energy,
+post-match fitness restoration and ordered fixture recovery. Squad energy updates
+with the completed result, and save/resume preserves the transition once. See the
+[campaign energy scope and evidence](docs/campaign-energy.md); standalone friendly
+behavior and original watched-engine integration remain separate paths.
