@@ -40,7 +40,7 @@ template and rebuilt continuation before replacing active state. Invalid/missing
 local files leave the current game and prior good save intact. DesktopModel calls
 Python game/state/save interfaces directly and imports no web/Qt layer. Widget
 updates stay on the Qt thread. Quick match execution uses the responsive T70 process flow below; pool
-controls belong to T71, watched controls to T66. No server/hosting
+controls use the T71 flow below, watched controls belong to T66. No server/hosting
 is involved in this management slice.
 
 [derived: official Qt API documentation] The shell uses
@@ -84,4 +84,28 @@ python3 -m unittest goal2.tests.test_desktop_quick_jobs -v
 QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario campaign-friendlies --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario worker --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 python3 tools/desktop-ui/prove-friendlies.py
+```
+
+[derived: T45; designed: T71] The national pool sits beside the twenty-player
+squad. It shows eighty reserve identities with original names, source position
+code/group, ability, energy, confidence and availability. Search names and filter
+numeric position codes to find a reserve. These controls only filter the view.
+Select a row in each table, then **Exchange selected squad player and reserve**.
+The exchange uses the confirmed team and discards unconfirmed widget edits.
+T45 swaps full IDs, repairs a replaced starter/captain, and preserves player
+records. Confirm management, save/resume or play with the exchanged team.
+
+[assumed: T45 Q008/#254] The explanation above the reserves is authoritative:
+exchanges require a pending supported managed friendly outside the provisional
+tour boundary. This is the existing provisional rebuild policy, not established
+original window fidelity. Invalid or unavailable incoming players are refused
+without changing the game. Standalone mode has no national pool. Pool controls
+are disabled while a match process is running. Redraw/filter/resume never
+regenerate player identities; the existing ordered quick tail updates reserves
+once per completed fixture.
+
+```bash
+python3 -m unittest goal2.tests.test_desktop_pool -v
+QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario campaign-pool --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+python3 tools/desktop-ui/prove-pool.py
 ```

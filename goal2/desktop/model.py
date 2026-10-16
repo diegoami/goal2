@@ -56,6 +56,21 @@ class DesktopModel:
         self.new_campaign(country)
         self.state.campaign=None
 
+    def pool_view(self,*,query='',position=None):
+        """[derived: T45; designed: T71] Display-only source pool view."""
+        from goal2.game import campaign_pool
+        if self.state.campaign is None:return None
+        return campaign_pool.view(self.state,self.goaldat,query=query,position=position)
+
+    def exchange(self,outgoing,incoming):
+        """[derived: T45; designed: T71] Validate copied candidate before publication."""
+        from goal2.game import campaign_pool
+        candidate=copy.deepcopy(self.state)
+        campaign_pool.exchange(candidate,outgoing,incoming)
+        self.view(candidate)
+        campaign_pool.view(candidate,self.goaldat)
+        self.state=candidate
+
     def result_text(self,state=None):
         """[designed: T70] Name retained quick results, never watched events."""
         state=self.state if state is None else state
