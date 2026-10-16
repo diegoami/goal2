@@ -77,7 +77,6 @@ See the [sequenced backlog](../watched-engine-backlog.md) for review gates, diff
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
 | [T67](T67.md) | Reconcile stage-1 backlog with the interactive kit | [#140](https://github.com/diegoami/goal2/issues/140) | Existing stage-1 backlog and kit handover |
-
 | [T68](T68.md) | Reconcile desktop pivot and campaign UI contracts (Medium) | [#148](https://github.com/diegoami/goal2/issues/148) | T44; owner desktop decision |
 
 ## Desktop interface
@@ -86,7 +85,7 @@ See the [sequenced backlog](../watched-engine-backlog.md) for review gates, diff
 Historical browser contracts T34–T38 are preserved; these are separate implementation slices.
 
 | Task | Title | Issue | Difficulty | Merge after |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | [T69](T69.md) | Desktop country and management shell | [#149](https://github.com/diegoami/goal2/issues/149) | Medium | T44 |
 | [T70](T70.md) | Desktop quick friendly and campaign loop | [#150](https://github.com/diegoami/goal2/issues/150) | Medium | T69 |
 | [T71](T71.md) | Desktop national pool controls | [#151](https://github.com/diegoami/goal2/issues/151) | Medium | T45, T70 |
