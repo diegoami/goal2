@@ -1,6 +1,6 @@
 # The plan: a playable rebuild on findings, with an assumption register
 
-The owner's decisions of 2026-10-12 (goal2 #2):
+The owner's decisions, starting 2026-10-12 (goal2 #2):
 1. **A playable loop first.** New game → country → squad → match → results → the 4-year cycle,
    on plain screens; the original's screens come after.
 2. **The watched match is a stand-in** until goal2-archaeology's M2–M5 land: the quick engine's
@@ -11,7 +11,16 @@ The owner's decisions of 2026-10-12 (goal2 #2):
    text look. This supersedes the earlier text-renderer requirement for the primary UI. Existing
    terminal screens remain available. Match-engine visualization comes later; see the concrete
    [browser UI roadmap](browser-ui-roadmap.md).
-4. **The main session drafts** this plan and the register.
+4. **The watched-match engine is the original's own, plugged in** [designed: owner, 2026-10-16, goal2 #97]. Stage 1 of
+   [the estimate for issue 99](estimates/99-original-engine-plugged-in.md) now: the original's watched match
+   (`run_match`, `0791:F1F6`) runs in-process under Unicorn on goal2's own state inside the browser loop, with the original's
+   score, scorers, cards, injuries, ratings, commentary lines and board statistics. The owner accepts the `unicorn` dependency
+   (goal2's first external one) and the original's game files at run time, supplied by the player and fetched by hash, never
+   committed (the owner: the game is abandonware, the registered version included). The exact port (goal2-archaeology PR 243)
+   and the close-enough engine (estimates/98-close-enough-engine.md) stay open options, chosen after the first playable exists;
+   stage 3 (the whole game as a headless core) and stage 4 (public distribution) are decided later. This supersedes decision 2
+   (the quick engine as the watched match's stand-in) once stage 1 lands; until then the stand-in stays.
+5. **The main session drafts** this plan and the register.
 
 Every rule the rebuild plays by is in [`assumptions.md`](assumptions.md), tagged by where it comes
 from. Code carries CLAUDE.md's evidence tags; the register is where an `assumed` rule
