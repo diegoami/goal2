@@ -14,6 +14,7 @@ CASES=[
  ('save refusal','goal2/desktop/model.py',"if getattr(self,'match_pending',False):","if False:",'test_actual_worker_pauses_does_not_publish_or_overwrite_save_and_continues_once'),
  ('stale continuation','goal2/desktop/jobs.py','if self.model.state is not self.original or encode(self.model.state,self.model.template_bytes)!=self.snapshot:','if False:','test_cancel_and_stale_halftime_preserve_the_active_game_and_prior_save'),
  ('second-half RNG continuity','goal2/game/quick_match.py','second_kickoff = qm.eight30b','second_kickoff = qm.eight30b;qm.rng.seed=4660','test_no_substitution_split_matches_prechange_complete_state_hashes_for_both_sides'),
+ ('preview validation','goal2/desktop/jobs.py','self.validate_halftime(packet)','None','test_bad_preview_failed_worker_and_bad_continuation_leave_game_and_save_untouched'),
  ('Qt substitution wire','goal2/desktop/window.py','self.substitute.clicked.connect(self.substitute_halftime)','self.substitute.clicked.connect(lambda:None)',None),
  ('Qt continuation wire','goal2/desktop/window.py','self.continue_match.clicked.connect(self.continue_halftime)','self.continue_match.clicked.connect(lambda:None)',None),
 ]

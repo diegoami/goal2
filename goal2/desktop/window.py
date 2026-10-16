@@ -62,7 +62,9 @@ class ManagementWindow(QMainWindow):
         play_bar.addWidget(self.play);play_bar.addWidget(self.stop);layout.addLayout(play_bar)
         half_bar=QHBoxLayout();self.half_out=QComboBox();self.half_in=QComboBox()
         self.substitute=QPushButton('Substitute');self.continue_match=QPushButton('Continue second half')
-        for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):half_bar.addWidget(widget);widget.setEnabled(False)
+        half_bar.addWidget(QLabel('Off'));half_bar.addWidget(self.half_out);half_bar.addWidget(QLabel('On'));half_bar.addWidget(self.half_in)
+        half_bar.addWidget(self.substitute);half_bar.addWidget(self.continue_match)
+        for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(False)
         layout.addLayout(half_bar);self.half_preview=None
         self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
         self.result=QLabel();self.result.setWordWrap(True);self.result.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);layout.addWidget(self.result)
@@ -203,4 +205,7 @@ class ManagementWindow(QMainWindow):
 
     def continue_halftime(self):
         try:self.jobs.continue_match();self.show_halftime();self.status.setText('Playing second half…')
-        except ValueError as exc:self.status.setText(str(exc))
+        except ValueError as exc:
+            if not self.jobs.busy:
+                self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh(str(exc))
+            else:self.status.setText(str(exc))

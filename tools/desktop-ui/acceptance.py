@@ -303,6 +303,11 @@ def halftime(template,data,screenshot=None):
         # Next scheduled fixture uses the saved XI, then cancel without publication.
         click(window.play);wait_for(lambda:window.jobs.halftime is not None)
         assert 2561 in window.jobs.halftime['eleven'] and 61 not in window.jobs.halftime['eleven']
+        model.confirm(list(model.state.starting_eleven),model.state.captain,90)
+        snapshot=copy.deepcopy(model.state);process=window.jobs.process;click(window.continue_match)
+        assert model.state==snapshot and process.poll() is not None
+        assert not window.jobs.busy and window.play.isEnabled() and 'stale' in window.status.text()
+        click(window.play);wait_for(lambda:window.jobs.halftime is not None)
         snapshot=copy.deepcopy(model.state);process=window.jobs.process;start=time.monotonic()
         click(window.stop)
         assert time.monotonic()-start<2 and process.poll() is not None and model.state==snapshot

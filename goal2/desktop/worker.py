@@ -47,7 +47,8 @@ def main(argv=None):
     if len(args)==2:
         candidate=play(state,template)
     elif args[2:] == ['--halftime']:
-        candidate=copy.deepcopy(state)
+        # [designed: T47] load() created this private child-owned state from IPC.
+        candidate=state
         match=begin_full_match(Savestate(to_savestate(candidate,original=template)),candidate)
         directory=Path(target).parent
         write_json(directory/'halftime.json',match.preview())
