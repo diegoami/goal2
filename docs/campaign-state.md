@@ -50,7 +50,7 @@ the listing; it does not claim original-runtime corroboration. The draw uses
 an explicit seed and reports the post-draw seed. start_opening_campaign
 projects only the selected country's rows into a T40 campaign and starts its
 live primary RNG at that post-draw seed. Other countries' rows remain metadata;
-the projection does not complete CPU fixtures or simulate results.
+the managed projection itself does not simulate results; T48 retains full rows and resolves unattended results through the [atomic turn coordinator](campaign-silent-results.md).
 
 [designed: T41a] The T40 schema retains its existing home_country and
 away_country storage keys for version-2 compatibility. In opening metadata
@@ -68,7 +68,7 @@ the completion ID and a retained score row; only a validated browser response
 publishes it. Refresh, preview, team confirmation, Save and Load do not complete
 fixtures. The manager remains fixed; New campaign can choose a different country.
 The browser displays source A/B order, stage, kind, named next opponent, retained
-scores and the unsupported qualifier boundary. Other-country results remain
+scores and the unsupported qualifier boundary. Legacy managed-only saves omit other-country results; full-world T48 saves retain them separately. Other-country competition tables remain
 pending T48. Simulation uses the existing assumed full-friendly runner, with
 no claim of original full-match fidelity.
 
@@ -84,3 +84,9 @@ energy metadata and final RNG with the completed fixture. This path is separate
 from the future original watched engine's post-match effects.
 
 [derived: F019/F020; designed: T43] The quick campaign path now restores event-ordered scorer confidence and interleaves result/bench updates with recovery. Browser confidence comes from player +0x0C; team morale is recomputed from available confirmed starters. No country aggregate is persisted. See [campaign confidence](campaign-confidence.md) for exact ordering, source limits and the deferred national-pool/status callers.
+
+[designed: T48] Fresh opening campaigns add optional full-world schedule/result
+metadata. [Other-country result handling](campaign-silent-results.md) records
+source-order identities and per-result RNG accounting atomically with each
+managed result. Version2 saves without this metadata remain readable and keep
+their prior managed-only behavior; loading never reconstructs a missing schedule.

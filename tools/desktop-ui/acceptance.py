@@ -253,6 +253,7 @@ def halftime(template,data,screenshot=None):
     from goal2.game.state import to_savestate
     from goal2.engine.savestate import Savestate
     from goal2.desktop.worker import complete
+    from goal2.game.campaign_rounds import prepare as prepare_round
     import time
     app=QApplication.instance() or QApplication([])
     with tempfile.TemporaryDirectory() as folder:
@@ -285,9 +286,9 @@ def halftime(template,data,screenshot=None):
         assert window.half_in.findData(61)==-1
         assert model.state==before
         # Independent direct continuation with identical change; no engine restart.
-        candidate=copy.deepcopy(before)
+        candidate=prepare_round(before,model.template_bytes)
         match=begin_full_match(Savestate(to_savestate(candidate,original=model.template_bytes)),candidate)
-        match.substitute(61,2561);expected=complete(candidate,match.finish(retain_state=True))
+        match.substitute(61,2561);expected=complete(candidate,match.finish(retain_state=True),template=model.template_bytes)
         if screenshot:window.grab().save(str(screenshot))
         click(window.continue_match);assert window.jobs.process.pid==pid
         assert not window.continue_match.isEnabled()

@@ -7,30 +7,20 @@ from goal2.engine.savestate import Savestate
 from goal2.game.state import to_savestate
 from goal2.game.quick_match import run_full_match,begin_full_match
 from goal2.game.session_save import load, save
+from goal2.game.campaign_rounds import prepare as prepare_round,complete as complete_round
 
 
 def play(state, template):
     """[designed] Compute a complete candidate without touching the caller."""
-    candidate=copy.deepcopy(state)
+    candidate=prepare_round(state,template)
     adapted=Savestate(to_savestate(candidate,original=template))
     result=run_full_match(adapted,candidate,retain_state=True)
-    return complete(candidate,result)
+    return complete(candidate,result,template=template)
 
 
-def complete(candidate,result):
-    """[designed: T47] Shared once-only full-time ledger publication."""
-    if not isinstance(candidate.last_match,dict):
-        raise ValueError('Friendly runner did not retain its result')
-    candidate.last_match['managed_side']=result['managed_side']
-    candidate.last_match['match_count']=candidate.match_count
-    if candidate.campaign is not None:
-        campaign=candidate.campaign;fixture=campaign.next_fixture
-        campaign.complete_fixture(fixture.fixture_id)
-        campaign.results.append({'fixture_id':fixture.fixture_id,'teams':list(result['teams']),'score':list(result['score'])})
-        pending=campaign.next_fixture
-        if pending is not None and pending.stage!=campaign.stage and pending.kind==1:
-            campaign.advance_calendar()
-    return candidate
+def complete(candidate,result,*,template=None):
+    """[designed: T48] Shared atomic full-time and world-turn publication."""
+    return complete_round(candidate,result,template=template)
 
 
 def write_json(path,data):
@@ -48,7 +38,7 @@ def main(argv=None):
         candidate=play(state,template)
     elif args[2:] == ['--halftime']:
         # [designed: T47] load() created this private child-owned state from IPC.
-        candidate=state
+        candidate=prepare_round(state,template)
         match=begin_full_match(Savestate(to_savestate(candidate,original=template)),candidate)
         directory=Path(target).parent
         write_json(directory/'halftime.json',match.preview())
@@ -58,7 +48,7 @@ def main(argv=None):
         if (not isinstance(changes,list) or any(not isinstance(p,list) or len(p)!=2 for p in changes)):
             raise ValueError('Invalid halftime substitutions')
         for outgoing,incoming in changes:match.substitute(outgoing,incoming)
-        candidate=complete(candidate,match.finish(retain_state=True))
+        candidate=complete(candidate,match.finish(retain_state=True),template=template)
     else:raise ValueError('Invalid friendly worker mode')
     save(target,candidate,template)
 

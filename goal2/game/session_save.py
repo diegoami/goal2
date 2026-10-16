@@ -94,6 +94,8 @@ def _state_data(state: GameState, version: int) -> dict[str, Any]:
         if state.campaign is None:
             raise ValueError("version 2 session requires campaign metadata")
         from goal2.game.campaign_pool import validate
+        from goal2.game.campaign_rounds import validate_state
+        validate_state(state)
         data["campaign"] = state.campaign.to_data()
         data["campaign"]["reserve_ids"] = validate(state)
     elif state.campaign is not None:
@@ -208,6 +210,8 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
         try:
             from goal2.game.campaign_pool import validate
             campaign.reserve_ids = validate(state)
+            from goal2.game.campaign_rounds import validate_state
+            validate_state(state)
         except ValueError as exc:
             raise SessionSaveError(f'invalid campaign pool: {exc}') from exc
     return state, template

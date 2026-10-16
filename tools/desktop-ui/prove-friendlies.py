@@ -5,11 +5,11 @@ import subprocess
 import sys
 ROOT=Path(__file__).resolve().parents[2]
 CASES=[
- ('candidate isolation','goal2/desktop/worker.py','candidate=copy.deepcopy(state)','candidate=state','test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume'),
+ ('candidate isolation','goal2/game/campaign_rounds.py','candidate=copy.deepcopy(state)','candidate=state','test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume'),
  ('one in-flight','goal2/desktop/jobs.py',"if self.busy:raise ValueError('A friendly is already running')","if False:raise ValueError('A friendly is already running')",'test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume'),
  ('stale completion','goal2/desktop/jobs.py','if model.state is not self.original or encode(model.state,model.template_bytes)!=self.snapshot:','if False:','test_stale_completion_refuses_replaced_and_mutated_active_state'),
  ('publication','goal2/desktop/jobs.py','model.state=candidate','model.state=model.state','test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume'),
- ('history','goal2/desktop/worker.py',"campaign.results.append({'fixture_id':fixture.fixture_id,'teams':list(result['teams']),'score':list(result['score'])})",'pass','test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume'),
+ ('history','goal2/game/campaign_rounds.py',"campaign.results.append({'fixture_id':fixture.fixture_id,'teams':list(result['teams']),'score':list(result['score'])})",'pass','test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume'),
  ('Qt play wire','goal2/desktop/window.py','self.play.clicked.connect(self.start_match)','self.play.clicked.connect(lambda:None)',None),
  ('Qt cancel wire','goal2/desktop/window.py','self.stop.clicked.connect(self.cancel_match)','self.stop.clicked.connect(lambda:None)',None),
 ]

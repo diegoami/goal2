@@ -318,23 +318,11 @@ class WebSession:
             self._play_token = secrets.token_urlsafe(24)
             if self.template_bytes is None:
                 raise ValueError("original savestate bytes are required to prepare a friendly")
-            candidate = copy.deepcopy(self.state)
+            from goal2.game.campaign_rounds import prepare as prepare_round,complete as complete_round
+            candidate = prepare_round(self.state,self.template_bytes)
             adapted = Savestate(to_savestate(candidate, original=self.template_bytes))
             result = run_full_match(adapted, candidate, retain_state=True)
-            if not isinstance(candidate.last_match, dict):
-                raise ValueError("friendly runner did not retain a match summary")
-            candidate.last_match["managed_side"] = result["managed_side"]
-            candidate.last_match["match_count"] = candidate.match_count
-            if candidate.campaign is not None:
-                fixture = candidate.campaign.next_fixture
-                candidate.campaign.complete_fixture(fixture.fixture_id)
-                candidate.campaign.results.append({"fixture_id": fixture.fixture_id,
-                                                   "teams": list(result["teams"]), "score": list(result["score"])})
-                # [designed: T41] Move only into a supplied friendly stage. An
-                # unsupported competitive stage remains a visible boundary.
-                pending = candidate.campaign.next_fixture
-                if pending is not None and pending.stage != candidate.campaign.stage and pending.kind == 1:
-                    candidate.campaign.advance_calendar()
+            candidate = complete_round(candidate,result,template=self.template_bytes)
             # Validate the full next browser view before making candidate state authoritative.
             response = self._session_view(candidate, list(candidate.managed_squad))
             self.state = candidate

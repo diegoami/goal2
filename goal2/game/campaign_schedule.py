@@ -286,4 +286,9 @@ def start_opening_campaign(
     )
     state.rng_seed_7b62 = opening.post_draw_seed_7b62
     state.rng_seed_8336 = opening.post_draw_seed_8336
+    # [designed: T48] Persist the full immutable source rows; no regeneration on load.
+    from goal2.game.campaign_rounds import World,Scheduled
+    state.campaign.world=World(managed_country,opening.post_draw_seed_7b62,
+        tuple(Scheduled(r.fixture_id,r.kind,r.country_a,r.country_b,r.round) for r in opening.fixtures),[])
+    state.campaign.world.validate(state.campaign)
     return state, opening
