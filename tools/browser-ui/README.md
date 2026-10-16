@@ -82,3 +82,9 @@ that squad energy/post-recovery RNG survive process resume. Run
 `python3 tools/browser-ui/prove-campaign-energy.py` sequentially for eight
 behavioral mutation proofs; each restores saved source bytes in finally and
 leaves the vendored energy module unchanged.
+
+[designed: T43] Campaign acceptance checks changed confidence, player confidence
+rows, result/confirmed team morale and process-resume equality. Run
+`python3 tools/browser-ui/prove-campaign-confidence.py` sequentially for eight
+confidence mutations; each requires a targeted assertion failure and restores
+saved source bytes in finally. Neither vendored model is mutated.

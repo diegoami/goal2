@@ -82,3 +82,5 @@ at the pending fixture without simulating another match.
 and fixture recovery through the [energy adapter](campaign-energy.md), publishing
 energy metadata and final RNG with the completed fixture. This path is separate
 from the future original watched engine's post-match effects.
+
+[derived: F019/F020; designed: T43] The quick campaign path now restores event-ordered scorer confidence and interleaves result/bench updates with recovery. Browser confidence comes from player +0x0C; team morale is recomputed from available confirmed starters. No country aggregate is persisted. See [campaign confidence](campaign-confidence.md) for exact ordering, source limits and the deferred national-pool/status callers.

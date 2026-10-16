@@ -19,8 +19,9 @@ energy per five-minute pitch-slot visit while signed energy exceeds one. Before
 the second half, visit the current pitch and add two only for energy 1..30:
 zero, 31, 32 and negative encodings remain unchanged. At match end, restore
 fitness to signed-positive energy for both squads; this is not a constant-32
-refill. [designed: T42] Preserve current form until confidence/shadow integration;
-T42 does not claim the complete CB7D form behavior.
+refill. [derived: F019/F020; designed: T43] The campaign quick runner now restores
+the event-ordered confidence shadow as described in [campaign confidence](campaign-confidence.md);
+the public energy-only adapter still preserves current form.
 
 [derived: F018/F027, B7FA and 1771:5A8F/5A38/5A03] Recovery selects gradual
 3651 when the source result-kind set contains the fixture kind, or the current
@@ -36,9 +37,11 @@ an automatic refill. Redraw uses its managed/unmanaged branch and preserves the
 source's upper-clamp, energy-copy, lower-clamp order. Values and draw counts are
 checked by literal reference tests, including age thresholds and signed edges.
 
-[designed: T42] The energy-only transition traverses side A then B, squad slot
-order. Confidence, pool and status updates are separate campaign tasks and can
-add/interleave draws later. There is no claim of whole post-fixture RNG parity,
+[derived: F019/F018; designed: T43] The transition traverses side A then B,
+squad slot order. The campaign quick runner interleaves confidence draws with
+recovery: unused-bench confidence before energy, participant energy before
+confidence. The public energy-only adapter omits confidence; national-pool and
+other status updates remain separate tasks. There is no claim of whole post-fixture RNG parity,
 calendar-day recovery, or complete watched-engine behavior. Energy changes are
 part of the detached match candidate: restore, recover, retain final RNG and
 record the fixture identity, then validate/publish the browser state together
@@ -48,7 +51,8 @@ continues identically to an uninterrupted one. The existing squad view displays
 energy from the newly published player records.
 
 [designed: T42] `GameState.match_state.campaign_energy` stores the completed
-fixture identity, `quick-energy-v1` marker and recovery draw count. The existing
+fixture identity, `quick-energy-v1` marker and recovery draw count. T43 adds
+a separate confidence draw count while preserving those earlier fields. The existing
 explicit save format preserves it, without reinterpreting legacy v1/v2 data.
 A new pending fixture has a different identity; stale play tokens and duplicate
 fixture submissions remain guarded by T41's transaction boundary.
