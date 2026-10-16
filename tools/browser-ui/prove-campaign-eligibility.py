@@ -11,7 +11,7 @@ CASES = (
      'EligibilityContinuations.test_unavailable_starter_blocks_preview_and_play_without_state_change'),
     ('management gate', 'goal2/web/server.py', 'eligibility.require_available(self.state.players, eleven)', 'pass',
      'EligibilityContinuations.test_management_rejects_unavailable_eleven_then_allows_human_repair'),
-    ('computer filtering', 'goal2/game/quick_match.py', 'computer_squad = eligibility.available_words(game_state.players, computer_squad)', 'computer_squad = opponent_country["squad"]',
+    ('computer filtering', 'goal2/game/computer.py', 'eligible = available_words(state.players, squad)', 'eligible = squad',
      'EligibilityContinuations.test_computer_uses_only_available_players_and_refuses_fewer_than_eleven'),
     ('ban expiry', 'goal2/game/eligibility.py', 'status = out[16] & ~0x80', 'status = out[16]',
      'EligibilityReferenceCases.test_b27f_literal_transitions_preserve_all_other_bytes'),
