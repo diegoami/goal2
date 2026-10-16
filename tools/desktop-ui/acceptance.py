@@ -99,10 +99,76 @@ def launch(template,data):
     print('PASS launch: real desktop entry, country13, window close and clean Qt shutdown')
 
 
+def friendlies(template,data,screenshot=None,blocked=False):
+    # [designed: T70] Exercise actual buttons and real subprocesses; no HTTP.
+    from goal2.desktop.worker import play as direct_play
+    from goal2.desktop.jobs import QuickJobs
+    import time
+    app=QApplication.instance() or QApplication([])
+    with tempfile.TemporaryDirectory() as folder:
+        model=DesktopModel.open(template,data,Path(folder)/'game.g2save',country=4)
+        window=ManagementWindow(model);window.show();QTest.qWait(80)
+        def click(widget):QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+        def finish():
+            deadline=time.monotonic()+15
+            while window.jobs.busy and time.monotonic()<deadline:QTest.qWait(20)
+            assert not window.jobs.busy,'worker did not complete'
+        if blocked:
+            click(window.confirm)
+            before=copy.deepcopy(model.state)
+            window.jobs=QuickJobs(model,command=[sys.executable,'-c','import time;time.sleep(60)'])
+            beats=[];heartbeat=QTimer();heartbeat.setInterval(10);heartbeat.timeout.connect(lambda:beats.append(1));heartbeat.start()
+            click(window.play);assert window.jobs.busy
+            process=window.jobs.process
+            assert not window.confirm.isEnabled() and not window.new.isEnabled() and window.stop.isEnabled()
+            QTest.qWait(150);assert len(beats)>=5,'blocked worker stopped Qt heartbeat'
+            click(window.stop);assert process.poll() is not None and model.state==before
+            assert window.play.isEnabled() and 'cancelled' in window.status.text()
+            click(window.play);process=window.jobs.process
+            start=time.monotonic();window.close()
+            assert time.monotonic()-start<2 and process.poll() is not None and model.state==before
+            heartbeat.stop()
+        else:
+            # Country selection and confirmation through real controls.
+            window.country.setCurrentIndex(window.country.findData(4));click(window.new)
+            window.tactics[0][1].toggle();click(window.confirm)
+            direct=copy.deepcopy(model.state)
+            first=direct.campaign.next_fixture
+            for n in range(2):
+                expected=direct_play(direct,model.template_bytes)
+                click(window.play);assert window.jobs.busy
+                finish();assert model.state==expected,window.status.text()
+                assert model.state.match_count==n+1 and len(model.state.campaign.results)==n+1
+                match=model.state.last_match
+                assert model.goaldat.country_names[match['teams'][0]] in window.result.text()
+                assert f"{match['score'][0]} — {match['score'][1]}" in window.result.text()
+                for goal in match['goals']:assert model.goaldat.player_names[goal['player']] in window.result.text()
+                assert 'Quick simulation' in window.result.text()
+                direct=expected
+                click(window.save);snapshot=copy.deepcopy(model.state)
+                click(window.new);click(window.resume);assert model.state==snapshot
+            assert model.state.campaign.results[0]['teams']==[first.side_a,first.side_b]
+            before=copy.deepcopy(model.state);click(window.play)
+            assert not window.jobs.busy and model.state==before and 'unsupported' in window.status.text()
+            assert 'Unsupported fixture' in window.summary.text()
+            # Explicit standalone mode and repeat; full continuation remains saveable.
+            click(window.friendly);click(window.confirm);assert model.state.campaign is None
+            direct=copy.deepcopy(model.state)
+            for _ in range(2):
+                direct=direct_play(direct,model.template_bytes)
+                click(window.play);finish();assert model.state==direct,window.status.text()
+            click(window.save);click(window.new);click(window.resume);assert model.state==direct
+            if screenshot:window.grab().save(str(screenshot))
+            window.close()
+        window.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents();app.shutdown()
+    print('PASS worker' if blocked else 'PASS campaign-friendlies: two scheduled fixtures, complete state/RNG/history, save/resume, boundary and standalone repeat')
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch'],required=True)
+    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch','campaign-friendlies','worker'],required=True)
     p.add_argument('--template',required=True,type=Path);p.add_argument('--data',required=True,type=Path);p.add_argument('--screenshot',type=Path)
     args=p.parse_args()
     if args.scenario=='management':management(args.template,args.data,args.screenshot)
-    else:launch(args.template,args.data)
+    elif args.scenario=='launch':launch(args.template,args.data)
+    else:friendlies(args.template,args.data,args.screenshot,blocked=args.scenario=='worker')
 if __name__=='__main__':main()
