@@ -13,13 +13,15 @@ class QuickJobs:
     """[designed] One snapshot/job at a time, validated once-only publication."""
     def __init__(self,model,*,command=None):
         self.model=model;self.command=command;self.process=None;self.folder=None
+        self.halftime=None;self.continued=False;self.interactive=False
 
     @property
     def busy(self):return self.process is not None
 
-    def start(self):
+    def start(self,*,halftime=False):
         if self.busy:raise ValueError('A friendly is already running')
         model=self.model
+        self.interactive=halftime;self.halftime=None;self.continued=False
         resolve_full_matchup(Savestate(to_savestate(model.state,original=model.template_bytes)),model.state)
         self.original=model.state
         self.snapshot=encode(model.state,model.template_bytes)
@@ -30,8 +32,9 @@ class QuickJobs:
         self.errors=(self.directory/'error.txt').open('wb')
         try:
             command=([sys.executable,'-m','goal2.desktop.worker'] if self.command is None else list(self.command))
-            self.process=subprocess.Popen(command+[str(source),str(self.output)],cwd=Path(__file__).resolve().parents[2],
+            self.process=subprocess.Popen(command+[str(source),str(self.output)]+(['--halftime'] if halftime else []),cwd=Path(__file__).resolve().parents[2],
                                           stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=self.errors)
+            model.match_pending=True
         except Exception:
             self._release();raise
 
@@ -39,7 +42,13 @@ class QuickJobs:
         """[designed] Called by the UI thread; None while pending, True once."""
         if not self.busy:return None
         code=self.process.poll()
-        if code is None:return None
+        if code is None:
+            if self.interactive and not self.continued and self.halftime is None:
+                preview=self.directory/'halftime.json'
+                if preview.exists():
+                    import json
+                    self.halftime=json.loads(preview.read_text())
+            return None
         try:
             self.errors.flush()
             if code!=0:
@@ -56,8 +65,24 @@ class QuickJobs:
             return True
         finally:self._release()
 
+    def substitute(self,outgoing,incoming):
+        """[designed: T47] Draft only; worker validates again on continuation."""
+        if self.halftime is None or self.continued:raise ValueError('No pending halftime decision')
+        from goal2.game.substitutions import swap
+        self.halftime=swap(self.halftime,outgoing,incoming)
+
+    def continue_match(self):
+        """[designed: T47] One command for the same running child; stale fails closed."""
+        if not self.busy or self.halftime is None or self.continued:
+            raise ValueError('Halftime continuation was already used or is unavailable')
+        if self.model.state is not self.original or encode(self.model.state,self.model.template_bytes)!=self.snapshot:
+            self.cancel();raise ValueError('Halftime continuation is stale; active game changed')
+        from goal2.desktop.worker import write_json
+        write_json(self.directory/'continue.json',self.halftime['changes'])
+        self.continued=True;self.halftime=None
+
     def _release(self):
-        self.process=None
+        self.process=None;self.halftime=None;self.model.match_pending=False
         if self.folder is not None:
             self.errors.close();self.folder.cleanup();self.folder=None
 

@@ -109,3 +109,11 @@ python3 -m unittest goal2.tests.test_desktop_pool -v
 QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario campaign-pool --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 python3 tools/desktop-ui/prove-pool.py
 ```
+
+[designed: T47] Campaign matches now pause for explicit
+[halftime substitutions](campaign-halftime.md). Select an outgoing starter and
+available bench player, use **Substitute**, then **Continue second half**.
+No re-entry; friendly substitutions are unlimited. Saving is disabled while the
+match is pending; cancel keeps the previous game/save. Standalone quick play
+continues uninterrupted. Substituted XI/captain choices persist for later
+fixtures and through full-time save/resume.
