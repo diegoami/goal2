@@ -11,6 +11,8 @@ MUTATIONS=[
      'test_changed_vendor_bytes_and_added_files_are_rejected'),
     ("entry evidence failure","tools/check_watched_upstream.py",'if (len(faithful) != 1','if False and (len(faithful) != 1',
      'test_entry_probe_false_or_incomplete_evidence_is_rejected'),
+    ("save kind coverage","docs/evidence/T62-watched-kit.json",'"boundary": "goal_disallowed"','"boundary": "goal"',
+     'test_disallowed_goal_save_preserves_complete_match_and_closes_coverage'),
 ]
 for name,file,old,new,test in MUTATIONS:
     path=ROOT/file;saved=path.read_bytes()
@@ -25,4 +27,4 @@ for name,file,old,new,test in MUTATIONS:
             raise AssertionError(f"mutation did not fail targeted assertion: {name}\n{output}")
         print('PASS mutation: '+name,flush=True)
     finally:path.write_bytes(saved)
-print('PASS3 acceptance-tool mutations; saved bytes restored')
+print(f'PASS{len(MUTATIONS)} acceptance-tool mutations; saved bytes restored')

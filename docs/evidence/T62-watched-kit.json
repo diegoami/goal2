@@ -9,8 +9,8 @@
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
     "3789d8490d2b42d8-e006-2100-r0005.sav": "3789d8490d2b42d8a589fec2afeb51de0ace4b4c5d1e5e24ff232321874dd106"
   },
-  "runtime_tests": 8,
-  "python_tests": 444,
+  "runtime_tests": 9,
+  "python_tests": 445,
   "python_skips": 0,
   "upstream_tests": 24,
   "kit_check": {
@@ -1292,7 +1292,7 @@
     "all_checks_pass": true
   },
   "upstream_mutations": 20,
-  "acceptance_mutations": 3,
+  "acceptance_mutations": 4,
   "strict_checker_negatives": 3,
   "proofs_log_sha256": "d27ee7abe6a602bd5df48a4a232fe75340ef7ae5676f41252e84d79a3b709403",
   "strict_checker_proof_sha256": "90fafa37fe843e0a3e1b8264746664d6d66a10a5a6c9c4237579fc3dfe0113bf",
@@ -1313,5 +1313,77 @@
     "persistence",
     "campaign-friendlies",
     "campaign-eligibility"
-  ]
+  ],
+  "initial_validation": {
+    "code_commit": "b5967a2f5d4872b19d267aba0feb40eeb65398a5",
+    "runtime_tests": 8,
+    "python_tests": 444,
+    "python_skips": 0,
+    "acceptance_mutations": 3,
+    "proofs_log_sha256": "d27ee7abe6a602bd5df48a4a232fe75340ef7ae5676f41252e84d79a3b709403"
+  },
+  "disallowed_goal_save": {
+    "boundary": "goal_disallowed",
+    "seed": 70,
+    "checks": {
+      "events_equal": true,
+      "full_result_equal": true,
+      "complete_memory_equal": true
+    },
+    "event_sha256": "184d860d17b4da1820523a6c849673c9de188f24a89b4c8594e315f1e1b86c1a",
+    "result_sha256": "6f1057ccd960c8642b9593615df6c16152e6450cc8349179fb3f62920f84aff6",
+    "memory_sha256": "960f6bb02bddd37b63605094b1d08d48074a2f4bf52b7863aa737c595353f927"
+  },
+  "save_kind_coverage": {
+    "upstream_seven": [
+      "booking",
+      "commentary",
+      "decision",
+      "end",
+      "full_time",
+      "goal",
+      "half_time",
+      "injury",
+      "minute",
+      "player_tactics",
+      "position",
+      "refused",
+      "sending_off",
+      "substitution",
+      "substitution_requested",
+      "tactics",
+      "tick"
+    ],
+    "with_disallowed_goal_control": [
+      "booking",
+      "commentary",
+      "decision",
+      "end",
+      "full_time",
+      "goal",
+      "goal_disallowed",
+      "half_time",
+      "injury",
+      "minute",
+      "player_tactics",
+      "position",
+      "refused",
+      "sending_off",
+      "substitution",
+      "substitution_requested",
+      "tactics",
+      "tick"
+    ]
+  },
+  "coverage_correction": {
+    "base_head": "8b503a6155e4e92392e48179dfe672d0ff8181de",
+    "runtime_tests": 9,
+    "python_tests": 445,
+    "python_skips": 0,
+    "python_log_sha256": "b0ddf3fc4ba7bede772ae7a227e5bc2a489188c5adba33e8f37381d727ebbad1",
+    "acceptance_mutations": 4,
+    "acceptance_log_sha256": "b6cce877514be8676dea9da70f1beab9f6049f5950991a2d768fad230cf769fb",
+    "red_before_correction": "new coverage assertion fails: goal_disallowed absent from the seven upstream save scenarios",
+    "unchanged_checks": "kit/runtime sources, strict ten-record checker, accepted upstream probes/mutations, Qt2 and browser6: full Kimi review at base_head"
+  }
 }

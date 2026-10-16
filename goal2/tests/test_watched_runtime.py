@@ -128,6 +128,54 @@ print("quick-only PASS")
         self.assertNotEqual(state,before)
         self.assertEqual(Image.from_savestate(self.raw).build_problems(),[])
 
+    def test_disallowed_goal_save_preserves_complete_match_and_closes_coverage(self):
+        # [derived: accepted check.goals seed70 policy and README public-event list at3656a2d]
+        report = json.loads((ROOT / "docs/evidence/T62-watched-kit.json").read_text())
+        kinds = set().union(*(set(row["kinds"]) for row in report["save_scenarios"]))
+        control = report.get("disallowed_goal_save", {})
+        if control:
+            kinds.add(control["boundary"])
+        expected = {"minute", "commentary", "goal", "goal_disallowed", "booking", "sending_off",
+                    "injury", "substitution", "half_time", "full_time", "decision", "tactics",
+                    "position", "player_tactics", "substitution_requested", "refused", "end", "tick"}
+        self.assertEqual(kinds, expected, "recorded save coverage must include every claimed public kind")
+        self.assertEqual(control["checks"], {"events_equal": True, "full_result_equal": True,
+                                            "complete_memory_equal": True})
+        from goal2.engine.original_match.check import take_back_answers
+        def play(resume):
+            match = Match(self.image, Fixture(7,19,index=21), managed=7, seed=70)
+            events, paused, saved, seen = [], set(), False, False
+            while True:
+                for event in match.events():
+                    events.append((event.kind,event.minute,event.score,event.data))
+                    if event.kind == "minute" and event.minute in (20,60) and event.minute not in paused:
+                        paused.add(event.minute)
+                        match.pause()
+                    if event.kind == "decision":
+                        take_back_answers(match,event.data)
+                    if event.kind == "goal_disallowed":
+                        seen = True
+                        if resume and not saved:
+                            try:
+                                blob = match.save()
+                                loaded = Match.load(blob)
+                            except Exception as exc:
+                                self.fail(f"goal_disallowed must be a usable save boundary: {exc}")
+                            self.assertIsNot(loaded,match)
+                            match, saved = loaded, True
+                            break
+                else:
+                    break
+            self.assertTrue(seen, "the regression must actually visit a disallowed goal")
+            if resume:
+                self.assertTrue(saved)
+            return {"event_sha256": hashlib.sha256(json.dumps(events,sort_keys=True).encode()).hexdigest(),
+                    "result_sha256": hashlib.sha256(json.dumps(match.result(),sort_keys=True).encode()).hexdigest(),
+                    "memory_sha256": hashlib.sha256(match.memory_component()).hexdigest()}
+        straight, resumed = play(False), play(True)
+        self.assertEqual(straight,resumed)
+        self.assertEqual(straight,{key:control[key] for key in straight})
+
     def test_unsupported_fixtures_refuse_without_changing_image(self):
         before = self.image.memory_component()
         for kind in (0,2,4,16):

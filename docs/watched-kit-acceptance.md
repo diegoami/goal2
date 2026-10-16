@@ -112,15 +112,24 @@ changes players/tactics/seed while retaining those bytes. T63 owns broader mappi
 ## Recorded acceptance run
 
 [confirmed: T62 execution, full diagnostic hashes and per-case outcomes in
-[evidence/T62-watched-kit.json](evidence/T62-watched-kit.json)] Eight runtime tests,
-444 goal2 tests (no skips),24 accepted upstream tests, all four kit check steps,
+[evidence/T62-watched-kit.json](evidence/T62-watched-kit.json)] Nine runtime tests,
+445 goal2 tests (no skips),24 accepted upstream tests, all four kit check steps,
 10 strict original records and their independent kit/state/event comparisons pass.
-All17 event stamp/order scenarios and all7 save scenarios pass; their union covers
-all18 public event kinds. The entry probe reproduces the reference match, ten seeds
+All17 event stamp/order scenarios and all7 upstream save scenarios pass. The seven
+save scenarios cover17 public kinds; a focused seed70 take-back regression saves
+at an actual `goal_disallowed` event and completes coverage of all18 kinds. Its
+uninterrupted and resumed runs match the complete event stream, full result and
+entire returned memory. The entry probe reproduces the reference match, ten seeds
 and repeated captain boundary; the interactive example completes. All20 accepted
-upstream mutations and3 goal2 acceptance-tool mutations are killed. Three further
+upstream mutations and4 goal2 acceptance-tool mutations are killed. Three further
 black-box controls reject omitted player updates and falsified seed/draw output; timeouts do
 not count as killed. Two retained Qt flows and all six browser scenarios pass.
+
+[designed: T62] The report retains the initial acceptance counts/log hashes and
+adds the disallowed-goal control and corrected coverage union. Unchanged upstream
+engine, strict-record, desktop and browser checks carry forward from the full
+review; the added runtime regression, full Python suite and acceptance mutations
+are rerun for this correction.
 
 [derived: this mapped evidence and accepted source] T60/T61 handoff obligations
 are satisfied for the stated friendly fixture/pair/family and entry/calling scope.
