@@ -1,0 +1,1389 @@
+{
+  "source": "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607",
+  "code_commit": "b5967a2f5d4872b19d267aba0feb40eeb65398a5",
+  "python": "3.14.4",
+  "unicorn": "2.1.4",
+  "verified_vendor_files": 10,
+  "image_sha256": {
+    "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
+    "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    "3789d8490d2b42d8-e006-2100-r0005.sav": "3789d8490d2b42d8a589fec2afeb51de0ace4b4c5d1e5e24ff232321874dd106"
+  },
+  "runtime_tests": 9,
+  "python_tests": 445,
+  "python_skips": 0,
+  "upstream_tests": 24,
+  "kit_check": {
+    "engine": {
+      "pass": true,
+      "detail": {},
+      "wall_s": 8.4,
+      "cpu_s": 8.9
+    },
+    "interactive": {
+      "pass": true,
+      "detail": {
+        "straight": "0078fad9859d4b4083a88707785e2cf0a49e1b6cddfa48bfec5aa765590e592f",
+        "resumed": "0078fad9859d4b4083a88707785e2cf0a49e1b6cddfa48bfec5aa765590e592f",
+        "expected": "0078fad9859d4b4083a88707785e2cf0a49e1b6cddfa48bfec5aa765590e592f"
+      },
+      "wall_s": 19.3,
+      "cpu_s": 20.2
+    },
+    "goals": {
+      "pass": true,
+      "detail": {
+        "quick from minute 30": {
+          "score": [
+            1,
+            2
+          ],
+          "goals": 3,
+          "goal_events": 3,
+          "taken_back": 0,
+          "problems": []
+        },
+        "seed 70, a goal taken back": {
+          "score": [
+            1,
+            2
+          ],
+          "goals": 3,
+          "goal_events": 4,
+          "taken_back": 1,
+          "problems": []
+        }
+      },
+      "wall_s": 14.8,
+      "cpu_s": 15.6
+    },
+    "family": {
+      "pass": true,
+      "detail": {},
+      "wall_s": 130.8,
+      "cpu_s": 139.7
+    }
+  },
+  "strict_records": [
+    {
+      "seed": 257,
+      "players_sha256": "586da8021472078fd24d0faed95af3f58398c50eb5c8221d7ffcc6c07ae9c85e",
+      "countries_sha256": "3e293682f867ebdb392f19dfc9e7d9129396cef892ef3181156a24c9e0cfa359",
+      "seeds": [
+        25058,
+        61800
+      ],
+      "event_order": true,
+      "wall_s": 30.31
+    },
+    {
+      "seed": 4660,
+      "players_sha256": "4d41bcd17c6042de0d9fc1650997650ba82b48244c5c06f3d97d9f41051783ae",
+      "countries_sha256": "f9743396e77be9deec6d1642c7627c0c649d0b2ca9c0ff780f34928387d7372a",
+      "seeds": [
+        62399,
+        10535
+      ],
+      "event_order": true,
+      "wall_s": 36.88
+    },
+    {
+      "seed": 9029,
+      "players_sha256": "a5b8bd404bc6098d1ec28f21e7e0038d346d7402dca212417c52c91d163f682c",
+      "countries_sha256": "194b388dd6ddbeaed78547bd1665f00428b8767fccfdfe4fea70de927c2b43dc",
+      "seeds": [
+        24310,
+        42334
+      ],
+      "event_order": true,
+      "wall_s": 39.8
+    },
+    {
+      "seed": 11134,
+      "players_sha256": "3cebad1cbc5fa19a35dcecacdbf6538f0540baef0f17dfda5524b7d711cbb708",
+      "countries_sha256": "8fa507f122d022b084339fd65539a9e1d600a2967ffd6c47a83df8284d9cb9fc",
+      "seeds": [
+        23217,
+        50614
+      ],
+      "event_order": true,
+      "wall_s": 31.95
+    },
+    {
+      "seed": 19485,
+      "players_sha256": "ece05c677f9e8f99293f53b78df9afd945272e42305a7047c063b7ae0342dcd8",
+      "countries_sha256": "2dfb8fdd9e797d2833de7d833631f3d3595e06c1e5bf9d2d3b0311fc7d7f4be0",
+      "seeds": [
+        61973,
+        51400
+      ],
+      "event_order": true,
+      "wall_s": 38.42
+    },
+    {
+      "seed": 27187,
+      "players_sha256": "e9d12556879a7d6058fb6d003eab869c6405b1c31798cb0dd7b238447d178faf",
+      "countries_sha256": "65fbd889d5acbbb6b1d260a7ac613bd98565c04842f21aa80f9679ffb2faeb02",
+      "seeds": [
+        13314,
+        26369
+      ],
+      "event_order": true,
+      "wall_s": 37.81
+    },
+    {
+      "seed": 36357,
+      "players_sha256": "8913a25c97b35d48d29c568dfb15915d6ce8ba6c2575b047e3fd60ea03b54310",
+      "countries_sha256": "ac161762ccb6e98d44c92f9cfa2fa9a3e08fb8f8cbdca26a1be23d953a909c28",
+      "seeds": [
+        1550,
+        690
+      ],
+      "event_order": true,
+      "wall_s": 39.49
+    },
+    {
+      "seed": 41456,
+      "players_sha256": "46f049964848bbc9135aff85ee2381eda08b31739a5a47eaab0bd4bc9d112447",
+      "countries_sha256": "52f3f7dd8161ca2873b36065a6583e7ccb673cf284671c8e7f04875fe5c04e27",
+      "seeds": [
+        3419,
+        41710
+      ],
+      "event_order": true,
+      "wall_s": 38.74
+    },
+    {
+      "seed": 50115,
+      "players_sha256": "c3a895113d018f1dea8a481fc840ace5cb4f7e89df07a29f8cfca6954408ebbb",
+      "countries_sha256": "5794cd9e246cd2aa496217a6b8656dbf74a69b4161b057855234e317145d702b",
+      "seeds": [
+        2362,
+        27363
+      ],
+      "event_order": true,
+      "wall_s": 37.84
+    },
+    {
+      "seed": 59161,
+      "players_sha256": "cf527ddffbbc325cca5934a8cece011064856aa7d9d0973bd34cf72f84e12195",
+      "countries_sha256": "a53e3e20bab1fc40d2e6f782b44968b5ea8c95b761b5ccaae08d3e2fb49cc3f2",
+      "seeds": [
+        14240,
+        59514
+      ],
+      "event_order": true,
+      "wall_s": 38.24
+    }
+  ],
+  "strict_comparison": {
+    "expected": 10,
+    "passed": 10
+  },
+  "event_scenarios": [
+    {
+      "scenario": "reference",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1025,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 2,
+        "minute": 91,
+        "goal": 2,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1122
+      },
+      "mismatch": {},
+      "wall_s": 8.8
+    },
+    {
+      "scenario": "seed 0x0101",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 975,
+        "booking": 2,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 4,
+        "minute": 93,
+        "goal": 1,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1077
+      },
+      "mismatch": {},
+      "wall_s": 9.6
+    },
+    {
+      "scenario": "seed 0x1234",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1078,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 3,
+        "minute": 91,
+        "goal": 2,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1176
+      },
+      "mismatch": {},
+      "wall_s": 9.5
+    },
+    {
+      "scenario": "seed 0x2345",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 993,
+        "booking": 1,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 4,
+        "minute": 92,
+        "goal": 1,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1093
+      },
+      "mismatch": {},
+      "wall_s": 10.7
+    },
+    {
+      "scenario": "seed 0x2B7E",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1075,
+        "booking": 1,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 5,
+        "minute": 92,
+        "goal": 2,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1177
+      },
+      "mismatch": {},
+      "wall_s": 10.7
+    },
+    {
+      "scenario": "seed 0x4C1D",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1095,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 2,
+        "substitution": 5,
+        "minute": 93,
+        "goal": 1,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1198
+      },
+      "mismatch": {},
+      "wall_s": 13.2
+    },
+    {
+      "scenario": "seed 0x6A33",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1049,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 1,
+        "minute": 91,
+        "goal": 2,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1145
+      },
+      "mismatch": {},
+      "wall_s": 11.7
+    },
+    {
+      "scenario": "seed 0x8E05",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1045,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 5,
+        "minute": 91,
+        "goal": 1,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1144
+      },
+      "mismatch": {},
+      "wall_s": 12.1
+    },
+    {
+      "scenario": "seed 0xA1F0",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1047,
+        "booking": 1,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 2,
+        "minute": 92,
+        "goal": 1,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1145
+      },
+      "mismatch": {},
+      "wall_s": 13.5
+    },
+    {
+      "scenario": "seed 0xC3C3",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1058,
+        "booking": 2,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 2,
+        "minute": 93,
+        "goal": 3,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1160
+      },
+      "mismatch": {},
+      "wall_s": 13.1
+    },
+    {
+      "scenario": "seed 0xE719",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1030,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 2,
+        "minute": 91,
+        "goal": 1,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1126
+      },
+      "mismatch": {},
+      "wall_s": 15.1
+    },
+    {
+      "scenario": "decisions, seed 70",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1028,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 3,
+        "minute": 91,
+        "goal": 4,
+        "goal_disallowed": 1,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1129
+      },
+      "mismatch": {},
+      "wall_s": 14.2
+    },
+    {
+      "scenario": "seed 70 (an injury)",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1134,
+        "booking": 2,
+        "sending_off": 0,
+        "injury": 1,
+        "substitution": 3,
+        "minute": 94,
+        "goal": 3,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1239
+      },
+      "mismatch": {},
+      "wall_s": 13.9
+    },
+    {
+      "scenario": "go in hard, seed 4 (sendings off)",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 1132,
+        "booking": 2,
+        "sending_off": 2,
+        "injury": 0,
+        "substitution": 5,
+        "minute": 95,
+        "goal": 3,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 1241
+      },
+      "mismatch": {},
+      "wall_s": 13.0
+    },
+    {
+      "scenario": "quick from minute 30 (R1)",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 332,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 5,
+        "minute": 91,
+        "goal": 3,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 433
+      },
+      "mismatch": {},
+      "wall_s": 4.0
+    },
+    {
+      "scenario": "quick from minute 1, speed 0",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 11,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 5,
+        "minute": 91,
+        "goal": 2,
+        "goal_disallowed": 0,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 111
+      },
+      "mismatch": {},
+      "wall_s": 0.3
+    },
+    {
+      "scenario": "decisions then quick at 60, seed 70",
+      "kit": "/home/diego/projects/goal2-work/T62-watched-kit/.cache/watched-evidence-3656a2d26e0f/runtime",
+      "pass": true,
+      "counts": {
+        "commentary": 680,
+        "booking": 0,
+        "sending_off": 0,
+        "injury": 0,
+        "substitution": 4,
+        "minute": 91,
+        "goal": 4,
+        "goal_disallowed": 1,
+        "half_time": 1,
+        "full_time": 1,
+        "order": 782
+      },
+      "mismatch": {},
+      "wall_s": 8.1
+    }
+  ],
+  "save_scenarios": [
+    {
+      "scenario": "Denmark v 19 at 21",
+      "pass": true,
+      "events": 1124,
+      "boundaries": 9,
+      "kinds": [
+        "commentary",
+        "decision",
+        "end",
+        "full_time",
+        "goal",
+        "half_time",
+        "minute",
+        "substitution"
+      ],
+      "failures": [],
+      "rows": [
+        {
+          "at": 0,
+          "kind": "commentary",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 2,
+          "kind": "minute",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 207,
+          "kind": "goal",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 566,
+          "kind": "half_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 567,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 567,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 788,
+          "kind": "substitution",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1122,
+          "kind": "full_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1123,
+          "kind": "end",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        }
+      ],
+      "wall_s": 59.9
+    },
+    {
+      "scenario": "Denmark v 19 at 40, seed 0xE719",
+      "pass": true,
+      "events": 1148,
+      "boundaries": 9,
+      "kinds": [
+        "commentary",
+        "decision",
+        "end",
+        "full_time",
+        "goal",
+        "half_time",
+        "minute",
+        "substitution"
+      ],
+      "failures": [],
+      "rows": [
+        {
+          "at": 0,
+          "kind": "commentary",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 2,
+          "kind": "minute",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 66,
+          "kind": "goal",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 558,
+          "kind": "half_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 559,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 559,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 753,
+          "kind": "substitution",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1146,
+          "kind": "full_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1147,
+          "kind": "end",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        }
+      ],
+      "wall_s": 69.6
+    },
+    {
+      "scenario": "goal2 manages 19, at 21",
+      "pass": true,
+      "events": 1073,
+      "boundaries": 11,
+      "kinds": [
+        "booking",
+        "commentary",
+        "decision",
+        "end",
+        "full_time",
+        "goal",
+        "half_time",
+        "injury",
+        "minute",
+        "substitution"
+      ],
+      "failures": [],
+      "rows": [
+        {
+          "at": 0,
+          "kind": "commentary",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 2,
+          "kind": "minute",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 53,
+          "kind": "booking",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 275,
+          "kind": "goal",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 513,
+          "kind": "half_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 514,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 514,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 580,
+          "kind": "injury",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 582,
+          "kind": "substitution",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1071,
+          "kind": "full_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1072,
+          "kind": "end",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        }
+      ],
+      "wall_s": 91.1
+    },
+    {
+      "scenario": "seed 70: an injury, its notice answered",
+      "pass": true,
+      "events": 1196,
+      "boundaries": 13,
+      "kinds": [
+        "booking",
+        "commentary",
+        "decision",
+        "end",
+        "full_time",
+        "goal",
+        "half_time",
+        "injury",
+        "minute",
+        "substitution"
+      ],
+      "failures": [],
+      "rows": [
+        {
+          "at": 0,
+          "kind": "commentary",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 2,
+          "kind": "minute",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 74,
+          "kind": "goal",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 562,
+          "kind": "half_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 563,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 563,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 717,
+          "kind": "booking",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 852,
+          "kind": "substitution",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1065,
+          "kind": "injury",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1066,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1066,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1194,
+          "kind": "full_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1195,
+          "kind": "end",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        }
+      ],
+      "wall_s": 90.3
+    },
+    {
+      "scenario": "go in hard, seed 4: sendings off",
+      "pass": true,
+      "events": 1243,
+      "boundaries": 11,
+      "kinds": [
+        "booking",
+        "commentary",
+        "decision",
+        "end",
+        "full_time",
+        "goal",
+        "half_time",
+        "minute",
+        "sending_off",
+        "substitution"
+      ],
+      "failures": [],
+      "rows": [
+        {
+          "at": 0,
+          "kind": "commentary",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 2,
+          "kind": "minute",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 71,
+          "kind": "goal",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 208,
+          "kind": "booking",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 261,
+          "kind": "sending_off",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 552,
+          "kind": "half_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 553,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 553,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 727,
+          "kind": "substitution",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1241,
+          "kind": "full_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1242,
+          "kind": "end",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        }
+      ],
+      "wall_s": 98.7
+    },
+    {
+      "scenario": "every answer at a pause, a refused eleven",
+      "pass": true,
+      "events": 1239,
+      "boundaries": 22,
+      "kinds": [
+        "commentary",
+        "decision",
+        "end",
+        "full_time",
+        "goal",
+        "half_time",
+        "minute",
+        "player_tactics",
+        "position",
+        "refused",
+        "substitution",
+        "substitution_requested",
+        "tactics"
+      ],
+      "failures": [],
+      "rows": [
+        {
+          "at": 0,
+          "kind": "commentary",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 2,
+          "kind": "minute",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 191,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 191,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 192,
+          "kind": "refused",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 193,
+          "kind": "tactics",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 194,
+          "kind": "position",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 195,
+          "kind": "player_tactics",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 197,
+          "kind": "substitution_requested",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 227,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 227,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 228,
+          "kind": "substitution",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 273,
+          "kind": "goal",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 636,
+          "kind": "half_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 637,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 637,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 639,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 639,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 835,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 835,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1237,
+          "kind": "full_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1238,
+          "kind": "end",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        }
+      ],
+      "wall_s": 169.6
+    },
+    {
+      "scenario": "a quick result, tick events",
+      "pass": true,
+      "events": 1844,
+      "boundaries": 12,
+      "kinds": [
+        "commentary",
+        "decision",
+        "end",
+        "full_time",
+        "goal",
+        "half_time",
+        "minute",
+        "substitution",
+        "tick"
+      ],
+      "failures": [],
+      "rows": [
+        {
+          "at": 0,
+          "kind": "commentary",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1,
+          "kind": "tick",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 49,
+          "kind": "minute",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 918,
+          "kind": "goal",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1701,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1701,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1736,
+          "kind": "half_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1737,
+          "kind": "decision",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1737,
+          "kind": "decision",
+          "phase": "answered",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1763,
+          "kind": "substitution",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1842,
+          "kind": "full_time",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        },
+        {
+          "at": 1843,
+          "kind": "end",
+          "phase": "event",
+          "events_equal": true,
+          "result_equal": true
+        }
+      ],
+      "wall_s": 16.8
+    }
+  ],
+  "entry": {
+    "faithful": 1,
+    "family": 10,
+    "reseed_inputs": 2,
+    "all_checks_pass": true
+  },
+  "upstream_mutations": 20,
+  "acceptance_mutations": 4,
+  "strict_checker_negatives": 3,
+  "proofs_log_sha256": "d27ee7abe6a602bd5df48a4a232fe75340ef7ae5676f41252e84d79a3b709403",
+  "strict_checker_proof_sha256": "90fafa37fe843e0a3e1b8264746664d6d66a10a5a6c9c4237579fc3dfe0113bf",
+  "raw_diagnostic_sha256": {
+    "watched-records-1792186588514237522.json": "81f40cd284a8adaeaab84e17b3c390892bb32354dcb5017c64792a9cefc6634f",
+    "watched-stamps-1792186171464577466.jsonl": "193b55c1d794ec8e6c9ef253a5123b7161e5f9f7dae8e687c84a7f35a68baa44",
+    "watched-saves-1792186219936646392.jsonl": "1796686db1b3fa09474bd2e96063ae1d40053cf249f3ff971c5d449a69b469bf",
+    "watched-entry-1792186416246230475.jsonl": "6e3c88338aa8b9dbd731b28075f6984b9c6b1fe1e27fcf37551345d3a0a4174a"
+  },
+  "desktop_scenarios": [
+    "campaign-halftime",
+    "management"
+  ],
+  "browser_scenarios": [
+    "countries",
+    "management",
+    "friendlies",
+    "persistence",
+    "campaign-friendlies",
+    "campaign-eligibility"
+  ],
+  "initial_validation": {
+    "code_commit": "b5967a2f5d4872b19d267aba0feb40eeb65398a5",
+    "runtime_tests": 8,
+    "python_tests": 444,
+    "python_skips": 0,
+    "acceptance_mutations": 3,
+    "proofs_log_sha256": "d27ee7abe6a602bd5df48a4a232fe75340ef7ae5676f41252e84d79a3b709403"
+  },
+  "disallowed_goal_save": {
+    "boundary": "goal_disallowed",
+    "seed": 70,
+    "checks": {
+      "events_equal": true,
+      "full_result_equal": true,
+      "complete_memory_equal": true
+    },
+    "event_sha256": "184d860d17b4da1820523a6c849673c9de188f24a89b4c8594e315f1e1b86c1a",
+    "result_sha256": "6f1057ccd960c8642b9593615df6c16152e6450cc8349179fb3f62920f84aff6",
+    "memory_sha256": "960f6bb02bddd37b63605094b1d08d48074a2f4bf52b7863aa737c595353f927"
+  },
+  "save_kind_coverage": {
+    "upstream_seven": [
+      "booking",
+      "commentary",
+      "decision",
+      "end",
+      "full_time",
+      "goal",
+      "half_time",
+      "injury",
+      "minute",
+      "player_tactics",
+      "position",
+      "refused",
+      "sending_off",
+      "substitution",
+      "substitution_requested",
+      "tactics",
+      "tick"
+    ],
+    "with_disallowed_goal_control": [
+      "booking",
+      "commentary",
+      "decision",
+      "end",
+      "full_time",
+      "goal",
+      "goal_disallowed",
+      "half_time",
+      "injury",
+      "minute",
+      "player_tactics",
+      "position",
+      "refused",
+      "sending_off",
+      "substitution",
+      "substitution_requested",
+      "tactics",
+      "tick"
+    ]
+  },
+  "coverage_correction": {
+    "base_head": "8b503a6155e4e92392e48179dfe672d0ff8181de",
+    "runtime_tests": 9,
+    "python_tests": 445,
+    "python_skips": 0,
+    "python_log_sha256": "b0ddf3fc4ba7bede772ae7a227e5bc2a489188c5adba33e8f37381d727ebbad1",
+    "acceptance_mutations": 4,
+    "acceptance_log_sha256": "b6cce877514be8676dea9da70f1beab9f6049f5950991a2d768fad230cf769fb",
+    "red_before_correction": "new coverage assertion fails: goal_disallowed absent from the seven upstream save scenarios",
+    "unchanged_checks": "kit/runtime sources, strict ten-record checker, accepted upstream probes/mutations, Qt2 and browser6: full Kimi review at base_head"
+  }
+}
