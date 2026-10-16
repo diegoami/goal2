@@ -72,7 +72,7 @@ class DesktopModel:
         return {'countries':[(n,self.goaldat.country_names[n]) for n in range(1,129)],
                 'country':state.managed_country,'country_name':self.goaldat.country_names[state.managed_country],
                 'players':rows,'morale':team_morale(state.players,state.starting_eleven),
-                'fixture':None if fixture is None else f'{self.goaldat.country_names[fixture.side_a]} — {self.goaldat.country_names[fixture.side_b]} (kind {fixture.kind})'}
+                'fixture':None if fixture is None else f'{self.goaldat.country_names[fixture.side_a]} — {self.goaldat.country_names[fixture.side_b]} ({'Friendly' if fixture.kind==1 else 'Unsupported fixture'})'}
 
     def confirm(self,eleven,captain,tactics):
         """[designed: T69; derived: T36/T44] Validate before changing live state."""

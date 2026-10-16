@@ -34,7 +34,7 @@ class DesktopModelCases(unittest.TestCase):
         self.assertEqual(self.model.state.starting_eleven,eleven)
         self.assertEqual(self.model.state.captain,260)
         self.assertEqual(self.model.state.country_tactics,255)
-        for ids,cap,tactics in [(eleven[:-1],captain,1),([eleven[0]]*11,captain,1),(eleven,999,1),(eleven,captain,256),(eleven,captain,True)]:
+        for ids,cap,tactics in [(eleven[:-1],captain,1),([eleven[0]]*11,eleven[0],1),(eleven,999,1),(eleven,captain,256),(eleven,captain,True)]:
             before=copy.deepcopy(self.model.state)
             with self.assertRaises(ValueError):self.model.confirm(ids,cap,tactics)
             self.assertEqual(self.model.state,before)

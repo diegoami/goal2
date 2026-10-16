@@ -40,7 +40,7 @@ class ManagementWindow(QMainWindow):
             layout.addLayout(bar)
         save_bar=QHBoxLayout();save_bar.addWidget(QLabel('Save file'));self.path=QLineEdit(str(model.save_path));self.path.setObjectName('savePath');save_bar.addWidget(self.path,1)
         self.save=QPushButton('Save');self.save.setObjectName('save');self.resume=QPushButton('Resume');self.resume.setObjectName('resume');save_bar.addWidget(self.save);save_bar.addWidget(self.resume);layout.addLayout(save_bar)
-        self.status=QLabel('Management shell — match play follows in the next desktop slice.');self.status.setWordWrap(True);self.status.setObjectName('status');layout.addWidget(self.status)
+        self.status=QLabel('Choose your squad, confirm management, then save your game.');self.status.setWordWrap(True);self.status.setObjectName('status');layout.addWidget(self.status)
         self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData()),'New campaign created'))
         self.confirm.clicked.connect(self.confirm_draft);self.cancel.clicked.connect(lambda:self.refresh('Draft discarded'))
         self.save.clicked.connect(lambda:self.action(lambda:model.save(self.path.text()),'Game saved; unconfirmed edits are excluded'))

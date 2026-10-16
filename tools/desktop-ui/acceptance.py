@@ -7,7 +7,7 @@ import sys
 import tempfile
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt,QCoreApplication,QEvent,QTimer
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication
 from goal2.desktop.model import DesktopModel
@@ -75,12 +75,34 @@ def management(template,data,screenshot=None):
         assert model.state==snapshot
         assert str(model.view()['morale']) in window.summary.text()
         if screenshot:window.grab().save(str(screenshot))
-        window.close();app.processEvents()
+        window.close();window.deleteLater()
+        QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
+        app.processEvents()
+        app.shutdown()
     print('PASS management: real Qt country/draft/XI/captain260/all tactics, injury/ban repair, complete save/resume, failure rollback and pure redraw')
 
 
+def launch(template,data):
+    # [designed: T69] Exercise the real CLI entry and normal window close.
+    from goal2.desktop.__main__ import main as desktop_main
+    app=QApplication.instance() or QApplication([])
+    errors=[]
+    def close():
+        windows=[w for w in app.topLevelWidgets() if isinstance(w,ManagementWindow)]
+        if len(windows)!=1:errors.append('real entry did not create its management window')
+        elif windows[0].model.state.managed_country!=13:errors.append('real entry ignored selected country')
+        app.closeAllWindows();app.quit()
+    QTimer.singleShot(150,close)
+    with tempfile.TemporaryDirectory() as folder:
+        result=desktop_main(['--template',str(template),'--data',str(data),'--country','13','--save',str(Path(folder)/'game.g2save')])
+    assert result==0 and not errors,errors
+    print('PASS launch: real desktop entry, country13, window close and clean Qt shutdown')
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management'],required=True)
+    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch'],required=True)
     p.add_argument('--template',required=True,type=Path);p.add_argument('--data',required=True,type=Path);p.add_argument('--screenshot',type=Path)
-    args=p.parse_args();management(args.template,args.data,args.screenshot)
+    args=p.parse_args()
+    if args.scenario=='management':management(args.template,args.data,args.screenshot)
+    else:launch(args.template,args.data)
 if __name__=='__main__':main()

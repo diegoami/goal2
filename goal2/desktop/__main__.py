@@ -25,6 +25,13 @@ def main(argv=None):
         print(str(exc),file=sys.stderr);return 2
     app=QApplication.instance() or QApplication(sys.argv[:1])
     window=ManagementWindow(model);window.show()
-    return app.exec()
+    try:
+        return app.exec()
+    finally:
+        # [designed: T69] Destroy widgets before QApplication/X11 plugin teardown.
+        from PySide6.QtCore import QCoreApplication,QEvent
+        window.close();window.deleteLater()
+        QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
+        app.shutdown()
 
 if __name__=='__main__':raise SystemExit(main())
