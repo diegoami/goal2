@@ -27,8 +27,8 @@ T42 does not claim the complete CB7D form behavior.
 side's continent differs from the fixture's second country's continent for a
 friendly. The second side compares against itself. Otherwise use 3558 redraw.
 The adapter reads result-set membership and age-based bases/caps from the local
-image; no extracted original tables are committed. XI and status-bit-3 bench
-participants use flag one; unused bench uses zero.
+image; no extracted original tables are committed. XI and status-set element-3 bench
+participants (mask `0x04`, because `214B:0C57` decrements the element number) use flag one; unused bench uses zero.
 
 [derived: F018/F007] Gradual recovery consumes the actual rand(2)/rand(8) or
 rand(3)/rand(2) sequence and the healing draw when required; injured zero is not

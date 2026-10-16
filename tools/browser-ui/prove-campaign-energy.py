@@ -24,6 +24,8 @@ CASES = (
      'CampaignContinuations.test_real_campaign_recovery_consumes_sixty_ordered_draws_and_publishes_once'),
     ('recovery selection', 'goal2/game/campaign_energy.py', 'gradual = in_set or (state.countries[country][0x2C] != host_continent)', 'gradual = False',
      'CampaignContinuations.test_gradual_selector_side_order_participating_bench_and_simulation_once'),
+    ('participant set element', 'goal2/game/campaign_energy.py', 'bool(record[0x10] & 0x04)', 'bool(record[0x10] & 0x08)',
+     'CampaignContinuations.test_gradual_selector_side_order_participating_bench_and_simulation_once'),
     ('redraw cap', 'goal2/game/campaign_energy.py', 'if energy.signed(value) > 32:', 'if energy.signed(value) > 64:',
      'EnergyReferenceCases.test_redraw_managed_unmanaged_age_threshold_and_clamp_order'),
 )
@@ -43,4 +45,4 @@ for name, relative, before, after, test in CASES:
         print(f'PROVED {name}: targeted assertion failed')
     finally:
         path.write_bytes(saved)
-print('PASS 7 energy mutations; saved source bytes restored')
+print('PASS 8 energy mutations; saved source bytes restored')

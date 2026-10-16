@@ -79,6 +79,6 @@ in a clean task checkout containing the ignored local inputs.
 
 [designed: T42] The campaign scenario also checks published energy changes and
 that squad energy/post-recovery RNG survive process resume. Run
-`python3 tools/browser-ui/prove-campaign-energy.py` sequentially for seven
+`python3 tools/browser-ui/prove-campaign-energy.py` sequentially for eight
 behavioral mutation proofs; each restores saved source bytes in finally and
 leaves the vendored energy module unchanged.

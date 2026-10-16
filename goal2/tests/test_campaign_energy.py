@@ -161,7 +161,9 @@ class CampaignContinuations(unittest.TestCase):
         records = {w: bytearray(state.players[w]) for squad in squads for w in squad}
         for r in records.values():
             r[14], r[0x10] = 10, 0
-        records[squads[0][11]][0x10] = 8
+        # [derived: B7FA -> 214B:0C57] Set elements are one-based.
+        records[squads[0][11]][0x10] = 0x04
+        records[squads[0][12]][0x10] = 0x08  # element 4 is unused, not a participant
         set_member = False
         def table(offset, count):
             return {0x0E82: bytes((16, 13)), 0x0E84: bytes((32, 24)), 0x0F3E: bytes((2 if set_member else 0,))}[offset]

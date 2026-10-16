@@ -89,7 +89,7 @@ def finish(qm, state):
     """[designed: T42] Restore then recover this quick campaign candidate once.
 
     [derived: F018/F027, B7FA/5A8F] Side A then B, nonzero squad words in
-    slot order; XI or status-bit-3 participants use flag 1, unused bench 0.
+    slot order; XI or status-set element 3 (mask 0x04) participants use flag 1, unused bench 0.
     Energy-only RNG order excludes the later confidence/pool/status callers.
     """
     fixture = ensure_pending(state)
@@ -115,7 +115,7 @@ def finish(qm, state):
             if not word:
                 continue
             record = qm._player(word)
-            flag = slot <= 11 or bool(record[0x10] & 8)
+            flag = slot <= 11 or bool(record[0x10] & 0x04)
             qm.playerrec[word] = bytearray(recover_player(
                 record, flag, qm.rng, gradual=gradual,
                 managed=record[0] == state.managed_country, caps=caps, redraw_bases=bases))
