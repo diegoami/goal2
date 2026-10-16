@@ -44,6 +44,7 @@ class OpeningFixture:
 
     @property
     def friendly(self) -> bool:
+        """Whether this source kind is friendly kind 1. [derived: F023]"""
         return self.kind == 1
 
 
@@ -62,7 +63,7 @@ class OpeningCampaign:
     fixtures: tuple[OpeningFixture, ...]
 
     def managed_fixtures(self, managed_country: int) -> tuple[Fixture, ...]:
-        """Project only this country’s rows, retaining IDs, order and A/B endpoints."""
+        """Project this country’s rows, retaining IDs, order and A/B endpoints. [designed: T41a]"""
         if isinstance(managed_country, bool) or not isinstance(managed_country, int) or not 1 <= managed_country <= 128:
             raise CampaignError("managed_country must be an integer in 1..128")
         ordinal, stage = opening_calendar(self.start_year)
@@ -127,7 +128,7 @@ def _read_tables(template: bytes) -> tuple[tuple[tuple[int, ...], ...], dict[tup
 
 
 def _validated_orders(goaldat: Any) -> tuple[tuple[int, ...], tuple[int, ...], dict[int, int]]:
-    """Validate GOAL.DAT permutations and derive continent membership."""
+    """Validate GOAL.DAT rank permutations and derive continent membership. [derived: F023]"""
     try:
         world = tuple(goaldat.per_country_b[1:])
         continental = tuple(goaldat.per_country_c[1:])
