@@ -80,17 +80,11 @@ def _snapshot(qm: QuickMatch, start: int) -> dict:
     }
 
 
-def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
-    """Run an assumed full friendly from a normal friendly template.
+def begin_full_match(template, game_state):
+    """[designed: T47] Start an assumed friendly through the first-half boundary.
 
-    [confirmed: E010 notes, "Match clock & loop" at 1b694ed] D733 receives
-    minute 0..45 then 46..91, with countdown 91-minute; 998C uses the first
-    kick-off side and 9A32 the opposite side. [designed: T26] We keep one
-    QuickMatch instance so
-    its RNG, score, goals, and mutable player/pitch/country state continue.
-    [designed: T32] `retain_state=True` commits the final RNG words and
-    engine-mutated player records to `game_state` after both halves finish.
-    The default preserves the prior stateless API.
+    [confirmed: E010 notes at1b694ed] First-half minutes0..45, countdown91-minute.
+    The private engine is retained for one continuation; no result is published.
     """
     # [designed: T29] Resolve through the same rule the preview displays.
     teams, managed_side, opponent = resolve_full_matchup(template, game_state)
@@ -159,56 +153,108 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
         qm.d733(minute, 91 - minute)
     first = _snapshot(qm, 0)
 
-    # [confirmed: E010 notes, "Match clock & loop", 9A32 at 1b694ed]
-    # The second-half kick-off uses the inverted first-half side.
-    # There is no RNG reset or new QuickMatch.
-    if campaign is not None:
-        campaign_energy.half_time(qm)
-    qm.eight30b = (qm.side_base[1 - qm.eight31a] + 10) & 0xFF
-    second_kickoff = qm.eight30b
-    for minute in range(46, 92):
-        qm.d733(minute, 91 - minute)
-    second = _snapshot(qm, len(first["goals"]))
-    energy_transition = campaign_energy.finish(qm, game_state, with_confidence=True) if campaign is not None else None
-    if campaign is not None:
-        energy_transition["eligibility"] = eligibility.finish(qm, game_state)
-    result = {
-        "score": second["score"],
-        "goals": first["goals"] + second["goals"],
-        "seed_DS7B62": qm.rng.seed,
-        "seed_DS8336": second["seed_DS8336"],
-        "draws": qm.rng.draws,
-        "halves": (first, second),
-        "teams": tuple(qm.teams),
-        "managed_side": managed_side,
-        "kickoffs": (first_kickoff, second_kickoff),
-    }
-    if retain_state:
-        # Prepare a complete candidate before changing GameState, so engine
-        # refusals and any failure above leave retained state untouched.
-        players = list(game_state.players)
-        for number, record in qm.playerrec.items():
-            players[number] = bytes(record)
-        retained_result = {
-            "score": tuple(result["score"]),
-            "goals": [dict(goal) for goal in result["goals"]],
-            "teams": tuple(result["teams"]),
-            "seed_DS7B62": result["seed_DS7B62"],
-            "seed_DS8336": result["seed_DS8336"],
-            "draws": result["draws"],
-            "halves": tuple({
-                "score": tuple(half["score"]),
-                "goals": [dict(goal) for goal in half["goals"]],
-                "seed_DS7B62": half["seed_DS7B62"],
-                "seed_DS8336": half["seed_DS8336"],
-                "draws": half["draws"],
-            } for half in result["halves"]),
+    return PendingFriendly(qm,game_state,first,managed_side,first_kickoff)
+
+
+class PendingFriendly:
+    """[designed: T47] One live engine, one second half; never a replay/reseed."""
+    def __init__(self,qm,state,first,managed_side,kickoff):
+        self.qm=qm;self.state=state;self.first=first;self.managed_side=managed_side
+        self.first_kickoff=kickoff;self.finished=False
+        from goal2.game.substitutions import plan
+        squad=list(qm._squad(managed_side))
+        available=[w for w in squad if eligibility.info(qm._player(w))['available']]
+        self.plan=plan(squad[:11],squad[11:],available,getattr(state,'captain',0))
+
+    def substitute(self,outgoing,incoming):
+        """[derived: F029 E022/C5DC] Swap words then rebind/sort, no position copy."""
+        if self.finished:raise ValueError('Match continuation was already used')
+        from goal2.game.substitutions import swap
+        proposal=swap(self.plan,outgoing,incoming)
+        qm=self.qm;side=self.managed_side;squad=qm._squad(side)
+        chosen=squad.index(incoming)+1
+        slot=next(k for k in range(qm.side_base[side]+1,qm.side_base[side]+12) if qm.pitch[k]['player']==outgoing)
+        index=squad.index(outgoing)
+        squad[index],squad[chosen-1]=squad[chosen-1],squad[index]
+        # [designed: BM-7] Keep the original computer budget; managed limit is policy above.
+        budget=qm.sub_budget[side];qm.c5dc(chosen,slot,side,incoming);qm.sub_budget[side]=budget
+        proposal['eleven']=list(qm._squad(side)[:11]);proposal['bench']=list(qm._squad(side)[11:])
+        self.plan=proposal
+
+    def preview(self):
+        """[designed] Copy-only display data; no simulation or active publication."""
+        import copy
+        return {**copy.deepcopy(self.plan),'score':list(self.first['score']),'teams':list(self.qm.teams)}
+
+    def finish(self,*,retain_state=False):
+        if self.finished:raise ValueError('Match continuation was already used')
+        self.finished=True
+        qm=self.qm;game_state=self.state;campaign=getattr(game_state,'campaign',None)
+        first=self.first;managed_side=self.managed_side;first_kickoff=self.first_kickoff
+        # [confirmed: E010 notes, "Match clock & loop", 9A32 at 1b694ed]
+        # The second-half kick-off uses the inverted first-half side.
+        # There is no RNG reset or new QuickMatch.
+        if campaign is not None:
+            campaign_energy.half_time(qm)
+        qm.eight30b = (qm.side_base[1 - qm.eight31a] + 10) & 0xFF
+        second_kickoff = qm.eight30b
+        for minute in range(46, 92):
+            qm.d733(minute, 91 - minute)
+        second = _snapshot(qm, len(first["goals"]))
+        energy_transition = campaign_energy.finish(qm, game_state, with_confidence=True) if campaign is not None else None
+        if campaign is not None:
+            energy_transition["eligibility"] = eligibility.finish(qm, game_state)
+        result = {
+            "score": second["score"],
+            "goals": first["goals"] + second["goals"],
+            "seed_DS7B62": qm.rng.seed,
+            "seed_DS8336": second["seed_DS8336"],
+            "draws": qm.rng.draws,
+            "halves": (first, second),
+            "teams": tuple(qm.teams),
+            "managed_side": managed_side,
+            "kickoffs": (first_kickoff, second_kickoff),
         }
-        game_state.players = players
-        game_state.rng_seed_7b62 = result["seed_DS7B62"]
-        game_state.rng_seed_8336 = result["seed_DS8336"]
-        game_state.match_count = getattr(game_state, "match_count", 0) + 1
-        game_state.last_match = retained_result
-        if energy_transition is not None:
-            game_state.match_state = {**game_state.match_state, 'campaign_energy': energy_transition}
-    return result
+        if retain_state:
+            # Prepare a complete candidate before changing GameState, so engine
+            # refusals and any failure above leave retained state untouched.
+            players = list(game_state.players)
+            for number, record in qm.playerrec.items():
+                players[number] = bytes(record)
+            retained_result = {
+                "score": tuple(result["score"]),
+                "goals": [dict(goal) for goal in result["goals"]],
+                "teams": tuple(result["teams"]),
+                "seed_DS7B62": result["seed_DS7B62"],
+                "seed_DS8336": result["seed_DS8336"],
+                "draws": result["draws"],
+                "halves": tuple({
+                    "score": tuple(half["score"]),
+                    "goals": [dict(goal) for goal in half["goals"]],
+                    "seed_DS7B62": half["seed_DS7B62"],
+                    "seed_DS8336": half["seed_DS8336"],
+                    "draws": half["draws"],
+                } for half in result["halves"]),
+            }
+            game_state.players = players
+            game_state.rng_seed_7b62 = result["seed_DS7B62"]
+            game_state.rng_seed_8336 = result["seed_DS8336"]
+            if self.plan['changes']:
+                # [derived: F029; designed captain repair] Source squad words persist.
+                squad=list(qm._squad(managed_side))
+                game_state.managed_squad=squad;game_state.starting_eleven=squad[:11]
+                game_state.captain=self.plan['captain']
+                country=bytearray(game_state.countries[game_state.managed_country])
+                country[:40]=b''.join(w.to_bytes(2,'little') for w in squad)
+                game_state.countries=list(game_state.countries)
+                game_state.countries[game_state.managed_country]=bytes(country)
+            game_state.match_count = getattr(game_state, "match_count", 0) + 1
+            game_state.last_match = retained_result
+            if energy_transition is not None:
+                game_state.match_state = {**game_state.match_state, 'campaign_energy': energy_transition}
+        return result
+
+
+def run_full_match(template,game_state,*,retain_state=False):
+    """[designed: T47] Uninterrupted compatibility path through the same engine."""
+    return begin_full_match(template,game_state).finish(retain_state=retain_state)

@@ -111,7 +111,9 @@ def friendlies(template,data,screenshot=None,blocked=False):
         def click(widget):QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
         def finish():
             deadline=time.monotonic()+15
-            while window.jobs.busy and time.monotonic()<deadline:QTest.qWait(20)
+            while window.jobs.busy and time.monotonic()<deadline:
+                QTest.qWait(20)
+                if window.jobs.halftime is not None:click(window.continue_match)
             assert not window.jobs.busy,'worker did not complete'
         if blocked:
             click(window.confirm)
@@ -187,7 +189,9 @@ def pool(template,data,screenshot=None):
             app.processEvents()
         def finish():
             deadline=time.monotonic()+15
-            while window.jobs.busy and time.monotonic()<deadline:QTest.qWait(20)
+            while window.jobs.busy and time.monotonic()<deadline:
+                QTest.qWait(20)
+                if window.jobs.halftime is not None:click(window.continue_match)
             assert not window.jobs.busy,'worker deadline exceeded'
         before=copy.deepcopy(model.state)
         assert window.reserves.rowCount()==80 and window.table.rowCount()==20
@@ -243,12 +247,82 @@ def pool(template,data,screenshot=None):
     print('PASS campaign-pool: search/filter, 20/80 identities, exchange/captain2561, unavailable/closed refusal, save/resume, ordered condition and real play')
 
 
+def halftime(template,data,screenshot=None):
+    # [designed: T47] Real first/second-half worker with explicit Qt decisions.
+    from goal2.game.quick_match import begin_full_match
+    from goal2.game.state import to_savestate
+    from goal2.engine.savestate import Savestate
+    from goal2.desktop.worker import complete
+    import time
+    app=QApplication.instance() or QApplication([])
+    with tempfile.TemporaryDirectory() as folder:
+        model=DesktopModel.open(template,data,Path(folder)/'halftime.g2save',country=4)
+        model.exchange(80,2561);model.confirm(list(model.state.starting_eleven),61,165)
+        model.save(model.save_path);saved=model.save_path.read_bytes();before=copy.deepcopy(model.state)
+        window=ManagementWindow(model);window.show();QTest.qWait(60)
+        def click(widget):QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+        def wait_for(predicate):
+            deadline=time.monotonic()+15
+            while not predicate() and time.monotonic()<deadline:QTest.qWait(20)
+            assert predicate(),window.status.text()
+        click(window.play);pid=window.jobs.process.pid
+        wait_for(lambda:window.jobs.halftime is not None)
+        assert model.state==before and model.state.match_count==0
+        assert 'Halftime:' in window.result.text() and 'Saving is unavailable' in window.status.text()
+        assert not window.save.isEnabled() and not window.exchange.isEnabled()
+        try:model.save(model.save_path)
+        except ValueError as exc:assert 'Saving during' in str(exc)
+        else:raise AssertionError('half-time save unexpectedly accepted')
+        assert model.save_path.read_bytes()==saved
+        # Select full-ID reserve and the confirmed captain using real combo events.
+        window.half_out.setFocus();QTest.keyClick(window.half_out,Qt.Key.Key_Home)
+        assert window.half_out.currentData()==61
+        window.half_in.setFocus();QTest.keyClick(window.half_in,Qt.Key.Key_End)
+        assert window.half_in.currentData()==2561
+        click(window.substitute)
+        assert window.jobs.halftime['captain']==2561
+        assert 2561 in window.jobs.halftime['eleven'] and 61 in window.jobs.halftime['removed']
+        assert window.half_in.findData(61)==-1
+        assert model.state==before
+        # Independent direct continuation with identical change; no engine restart.
+        candidate=copy.deepcopy(before)
+        match=begin_full_match(Savestate(to_savestate(candidate,original=model.template_bytes)),candidate)
+        match.substitute(61,2561);expected=complete(candidate,match.finish(retain_state=True))
+        if screenshot:window.grab().save(str(screenshot))
+        click(window.continue_match);assert window.jobs.process.pid==pid
+        assert not window.continue_match.isEnabled()
+        try:window.jobs.continue_match()
+        except ValueError:pass
+        else:raise AssertionError('duplicate continuation accepted')
+        wait_for(lambda:not window.jobs.busy)
+        assert model.state==expected and model.state.captain==2561
+        assert model.state.match_count==1 and len(model.state.campaign.results)==1
+        assert model.state.managed_squad[:11]==model.state.starting_eleven
+        click(window.save);snapshot=copy.deepcopy(model.state);click(window.new);click(window.resume)
+        assert model.state==snapshot and model.state.captain==2561
+        # Next scheduled fixture uses the saved XI, then cancel without publication.
+        click(window.play);wait_for(lambda:window.jobs.halftime is not None)
+        assert 2561 in window.jobs.halftime['eleven'] and 61 not in window.jobs.halftime['eleven']
+        model.confirm(list(model.state.starting_eleven),model.state.captain,90)
+        snapshot=copy.deepcopy(model.state);process=window.jobs.process;click(window.continue_match)
+        assert model.state==snapshot and process.poll() is not None
+        assert not window.jobs.busy and window.play.isEnabled() and 'stale' in window.status.text()
+        click(window.play);wait_for(lambda:window.jobs.halftime is not None)
+        snapshot=copy.deepcopy(model.state);process=window.jobs.process;start=time.monotonic()
+        click(window.stop)
+        assert time.monotonic()-start<2 and process.poll() is not None and model.state==snapshot
+        assert window.save.isEnabled() and not window.continue_match.isEnabled()
+        window.close();window.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents();app.shutdown()
+    print('PASS campaign-halftime: real pause/substitute/captain2561/no re-entry/continue once, full state/save/resume/next XI, cancel and safe save refusal')
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch','campaign-friendlies','worker','campaign-pool'],required=True)
+    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch','campaign-friendlies','worker','campaign-pool','campaign-halftime'],required=True)
     p.add_argument('--template',required=True,type=Path);p.add_argument('--data',required=True,type=Path);p.add_argument('--screenshot',type=Path)
     args=p.parse_args()
     if args.scenario=='management':management(args.template,args.data,args.screenshot)
     elif args.scenario=='launch':launch(args.template,args.data)
     elif args.scenario=='campaign-pool':pool(args.template,args.data,args.screenshot)
+    elif args.scenario=='campaign-halftime':halftime(args.template,args.data,args.screenshot)
     else:friendlies(args.template,args.data,args.screenshot,blocked=args.scenario=='worker')
 if __name__=='__main__':main()

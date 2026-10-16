@@ -60,6 +60,13 @@ class ManagementWindow(QMainWindow):
         self.save=QPushButton('Save');self.save.setObjectName('save');self.resume=QPushButton('Resume');self.resume.setObjectName('resume');save_bar.addWidget(self.save);save_bar.addWidget(self.resume);layout.addLayout(save_bar)
         play_bar=QHBoxLayout();self.play=QPushButton('Play quick friendly');self.stop=QPushButton('Cancel match');self.stop.setEnabled(False)
         play_bar.addWidget(self.play);play_bar.addWidget(self.stop);layout.addLayout(play_bar)
+        half_bar=QHBoxLayout();self.half_out=QComboBox();self.half_in=QComboBox()
+        self.substitute=QPushButton('Substitute');self.continue_match=QPushButton('Continue second half')
+        half_bar.addWidget(QLabel('Off'));half_bar.addWidget(self.half_out);half_bar.addWidget(QLabel('On'));half_bar.addWidget(self.half_in)
+        half_bar.addWidget(self.substitute);half_bar.addWidget(self.continue_match)
+        for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(False)
+        layout.addLayout(half_bar);self.half_preview=None
+        self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
         self.result=QLabel();self.result.setWordWrap(True);self.result.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);layout.addWidget(self.result)
         self.status=QLabel('Confirm management, then play a quick friendly or save.');self.status.setWordWrap(True);self.status.setObjectName('status');layout.addWidget(self.status)
         self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData()),'New campaign created'))
@@ -134,18 +141,19 @@ class ManagementWindow(QMainWindow):
             state=self.model.state
             if (self.selected_ids()!=state.starting_eleven or self.captain.currentData()!=state.captain or bits!=state.country_tactics):
                 raise ValueError('Confirm or discard management edits before playing')
-            self.jobs.start();self.set_busy(True);self.status.setText('Playing quick friendly…');self.timer.start()
+            self.jobs.start(halftime=self.model.state.campaign is not None);self.set_busy(True);self.status.setText('Playing quick friendly…');self.timer.start()
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def poll_match(self):
         try:
             if self.jobs.poll():
-                self.timer.stop();self.set_busy(False);self.refresh('Friendly complete; confirm management before the next match')
+                self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh('Friendly complete; confirm management before the next match')
+            elif self.jobs.halftime is not self.half_preview:self.show_halftime()
         except (OSError,ValueError,IndexError,KeyError) as exc:
-            self.timer.stop();self.set_busy(False);self.status.setText(str(exc))
+            self.timer.stop();self.set_busy(False);self.show_halftime();self.status.setText(str(exc))
 
     def cancel_match(self):
-        self.timer.stop();self.jobs.cancel();self.set_busy(False);self.refresh('Friendly cancelled; game unchanged')
+        self.timer.stop();self.jobs.cancel();self.set_busy(False);self.show_halftime();self.refresh('Friendly cancelled; game unchanged')
 
     def closeEvent(self,event):
         self.timer.stop();self.jobs.cancel();super().closeEvent(event)
@@ -176,3 +184,28 @@ class ManagementWindow(QMainWindow):
         outgoing=self.table.item(row,0).data(Qt.ItemDataRole.UserRole)
         incoming=self.reserves.item(reserve,0).data(Qt.ItemDataRole.UserRole)
         self.action(lambda:self.model.exchange(outgoing,incoming),'Players exchanged; confirmed XI and captain repaired')
+
+    def show_halftime(self):
+        # [designed: T47] Widgets show private worker state; committed game stays unchanged.
+        self.half_preview=self.jobs.halftime;preview=self.half_preview
+        for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(preview is not None)
+        self.half_out.clear();self.half_in.clear()
+        if preview is None:return
+        for word in preview['eleven']:self.half_out.addItem(self.model.goaldat.player_names[word],word)
+        for word in preview['bench']:
+            if word in preview['available'] and word not in preview['removed']:
+                self.half_in.addItem(self.model.goaldat.player_names[word],word)
+        a,b=preview['teams'];x,y=preview['score']
+        self.result.setText(f"Halftime: {self.model.goaldat.country_names[a]} {x} — {y} {self.model.goaldat.country_names[b]}")
+        self.status.setText(f"Halftime: {len(preview['changes'])} substitutions selected. No re-entry. Saving is unavailable until full time; cancel preserves the previous game.")
+
+    def substitute_halftime(self):
+        try:self.jobs.substitute(self.half_out.currentData(),self.half_in.currentData());self.show_halftime()
+        except ValueError as exc:self.status.setText(str(exc))
+
+    def continue_halftime(self):
+        try:self.jobs.continue_match();self.show_halftime();self.status.setText('Playing second half…')
+        except ValueError as exc:
+            if not self.jobs.busy:
+                self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh(str(exc))
+            else:self.status.setText(str(exc))

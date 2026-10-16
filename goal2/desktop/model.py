@@ -133,6 +133,8 @@ class DesktopModel:
 
     def save(self,path):
         """[designed] Reuse the atomic explicit-data save writer."""
+        if getattr(self,'match_pending',False):
+            raise ValueError('Saving during a match is unavailable; cancel or finish first')
         try:
             save_state(Path(path),self.state,self.template_bytes)
         except (OSError,ValueError) as exc:
