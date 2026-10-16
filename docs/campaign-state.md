@@ -8,8 +8,10 @@ records, country squads/ranks/default tactics, and manager records from
 GOAL.DAT and the source-backed new-game adapter. It resets the match clock and
 result, team choices, counters, country status bytes, and player fitness by
 replacing those records. The existing new-game player generator keeps its
-established fixed managed-pool seed; campaign seeds are retained independently
-and placed in the live game RNG words. Bytes outside the recognized fresh-game
+established fixed managed-pool seed. Requested seeds are stored as campaign
+starting seeds and initialize the live game RNG words; `GameState` RNG words
+then advance with play while campaign metadata retains the initial seeds.
+Bytes outside the recognized fresh-game
 fields are retained as opaque template layout data.
 
 [confirmed: T39 handover, F023/F025 at archaeology pin

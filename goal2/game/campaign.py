@@ -135,6 +135,8 @@ class CampaignState:
         expected = [f.fixture_id for f in self.fixtures[:len(self.completed_fixture_ids)]]
         if self.completed_fixture_ids != expected:
             raise CampaignError("completed fixture ledger must be a fixture-order prefix")
+        if any(f.kind != 1 for f in self.fixtures[:len(self.completed_fixture_ids)]):
+            raise CampaignError("unsupported competitive fixture cannot appear in the completion ledger")
         pending = self.next_fixture
         current = (self.cycle, self.stage)
         if pending is None:
@@ -185,6 +187,10 @@ class CampaignState:
             raise CampaignError(f"stage {self.stage} still has an incomplete fixture")
         if _next_calendar_key((self.cycle, self.stage)) != (pending.cycle, pending.stage):
             raise CampaignError("calendar cannot skip an unimplemented stage")
+        if pending.kind != 1:
+            raise UnsupportedCampaignTransition(
+                f"stage {pending.stage} begins with unsupported fixture kind {pending.kind}"
+            )
         self.cycle, self.year, self.stage = pending.cycle, pending.year, pending.stage
 
     def to_data(self) -> dict[str, Any]:
@@ -237,7 +243,7 @@ def start_campaign(
     seed, independent of the campaign RNG seeds.
     """
     from goal2.game.new_game import country_rank, make_all_players, rating
-    from goal2.game.state import MEM_BASE, SQUAD, GameState, _wrap_raw, from_savestate
+    from goal2.game.state import SQUAD, GameState, _wrap_raw, from_savestate
 
     _integer(managed_country, "managed_country", 1, 128)
     _integer(seed_7b62, "seed_7b62", 0, 65535)
