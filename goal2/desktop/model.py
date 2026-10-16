@@ -61,7 +61,18 @@ class DesktopModel:
         state=self.state if state is None else state
         match=state.last_match
         if match is None:return 'No match played'
-        teams=match['teams'];score=match['score']
+        if not isinstance(match,dict):raise ValueError('Invalid saved match result')
+        teams=match.get('teams');score=match.get('score');goals=match.get('goals')
+        if (not isinstance(teams,(list,tuple)) or len(teams)!=2
+                or any(type(t) is not int or not 1<=t<=128 for t in teams) or teams[0]==teams[1]
+                or not isinstance(score,(list,tuple)) or len(score)!=2
+                or any(type(n) is not int or n<0 for n in score) or not isinstance(goals,list)):
+            raise ValueError('Invalid saved match result')
+        for goal in goals:
+            if (not isinstance(goal,dict) or type(goal.get('team')) is not int or goal['team'] not in (0,1)
+                    or type(goal.get('minute')) is not int or goal['minute']<0
+                    or type(goal.get('player')) is not int or not 1<=goal['player']<len(self.goaldat.player_names)):
+                raise ValueError('Invalid saved match goal')
         text=f"{self.goaldat.country_names[teams[0]]} {score[0]} — {score[1]} {self.goaldat.country_names[teams[1]]}"
         goals=[f"{g['minute']}′ {self.goaldat.player_names[g['player']]} ({self.goaldat.country_names[teams[g['team']]]})" for g in match['goals']]
         return text+'\n'+('\n'.join(goals) if goals else 'No goals')
@@ -83,6 +94,7 @@ class DesktopModel:
             rows.append({'id':word,'name':self.goaldat.player_names[word],
                          'position':groups[lines[record[6]]],'ability':record[4],'energy':record[14],
                          'confidence':record[12],'availability':eligibility.info(record)})
+        self.result_text(state)  # [designed: T70] Validate renderable results before publication.
         fixture=state.campaign.next_fixture if state.campaign else None
         return {'countries':[(n,self.goaldat.country_names[n]) for n in range(1,129)],
                 'country':state.managed_country,'country_name':self.goaldat.country_names[state.managed_country],

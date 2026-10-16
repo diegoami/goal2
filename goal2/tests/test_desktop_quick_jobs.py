@@ -98,6 +98,14 @@ class QuickJobCases(unittest.TestCase):
             self.assertEqual(expected,web.state)
             self.model.state=expected
 
+    def test_unrenderable_saved_result_is_rejected_before_resume_publication(self):
+        before=copy.deepcopy(self.model.state)
+        for match in ({'teams':(1,2)}, {'teams':(1,2),'score':(0,0),'goals':[{'team':3,'minute':1,'player':1}]}):
+            bad=copy.deepcopy(before);bad.last_match=match
+            self.model.save_path.write_bytes(encode(bad,self.model.template_bytes))
+            with self.assertRaisesRegex(ValueError,'saved match'):self.model.resume(self.model.save_path)
+            self.assertEqual(self.model.state,before)
+
     def test_worker_and_jobs_import_without_qt_unicorn_or_web(self):
         code="""import sys
 class Block:
