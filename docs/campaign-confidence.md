@@ -38,7 +38,8 @@ A participating bench player also receives a second independently clipped
 Unused bench receives `rand(2)-rand(4)` instead of the result term, before its
 energy recovery. This interleaving advances the same main RNG used by play;
 the second RNG retains its engine meaning. The focused real fixture consumes
-60 recovery draws plus36 bench-confidence draws after play. Literal tests
+60 current-squad recovery draws plus36 bench-confidence draws after the T45
+reserve prefix (160 recovery plus160 confidence draws for this same-continent fixture). Literal tests
 check both roles, independent clipping and adjacent set elements.
 
 [derived: F020, 1771:13D0/3216/214B:0C57] Displayed team morale is recomputed
@@ -58,8 +59,8 @@ and transition marker together. Exceptions discard the candidate; duplicate
 Play is refused. Reads, Save and Load do not update confidence. Saved and
 uninterrupted two-fixture continuations compare complete state.
 
-[designed: T43 scope] Current campaigns use base20 squads. The separate managed
-national-pool route and its overlapping confidence/recovery draws remain T45;
+[designed: T45] Current campaigns retain twenty squad and eighty disjoint reserve
+identities; the national-pool confidence/recovery prefix lives in campaign_pool.py;
 T44 now applies current-squad B27F and availability gates; competitive event
 production remains T51. The energy-only public adapter
 can still run without confidence; the campaign quick runner requests the joint

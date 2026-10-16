@@ -19,6 +19,7 @@ class PoolCases(unittest.TestCase):
         before=copy.deepcopy(self.state)
         view=pool.view(self.state,self.session.goaldat)
         self.assertEqual(len(view['squad']),20)
+        self.assertEqual([(x['position'],x['id']) for x in view['squad']],sorted((x['position'],x['id']) for x in view['squad']))
         self.assertEqual(len(view['reserves']),80)
         self.assertEqual(set(x['id'] for x in view['reserves']),set(range(2561,2641)))
         self.assertTrue(all(x['name']==self.session.goaldat.player_names[x['id']] for x in view['reserves']))
@@ -71,7 +72,8 @@ class PoolCases(unittest.TestCase):
     def test_provisional_window_tour_competitive_exhausted_and_standalone(self):
         self.assertTrue(pool.window(self.state)['allowed'])
         fixtures=self.state.campaign.fixtures
-        self.state.campaign.fixtures=(replace(fixtures[0],away_country=33),replace(fixtures[1],away_country=34))+fixtures[2:]
+        self.state.campaign.fixtures=(replace(fixtures[0],away_country=33),replace(fixtures[1],home_country=4,away_country=34))+fixtures[2:]
+        self.assertTrue(pool.window(self.state)['allowed'])
         self.state.campaign.complete_fixture(fixtures[0].fixture_id)
         self.assertFalse(pool.window(self.state)['allowed'])
         before=copy.deepcopy(self.state)

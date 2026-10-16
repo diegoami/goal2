@@ -77,7 +77,7 @@ def view(state, goaldat, *, query='', position=None):
                 'availability':eligibility.info(record)}
     rows=[row(w) for w in sorted(reserves,key=lambda w:(state.players[w][6],w))]
     rows=[x for x in rows if query.casefold() in x['name'].casefold() and (position is None or x['position']==position)]
-    return {'squad':[row(w) for w in state.managed_squad], 'reserves':rows,'window':window(state)}
+    return {'squad':[row(w) for w in sorted(state.managed_squad,key=lambda w:(state.players[w][6],w))], 'reserves':rows,'window':window(state)}
 
 
 def exchange(state, outgoing, incoming):

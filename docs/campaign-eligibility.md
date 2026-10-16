@@ -48,8 +48,8 @@ from the existing bits; no invented duration is stored. Full player records
 remain in the existing explicit save schema. A saved transition resumes with
 identical status, recovery, RNG and fixture history.
 
-[designed: T44 scope] Current campaigns use base20 squads. National-pool callers
-remain T45. This adapter consumes current player/event state; the friendly quick
+[designed: T45] Current campaigns use twenty squad and eighty disjoint reserve
+identities. The reserve B27F caller lives in campaign_pool.py. This adapter consumes current player/event state; the friendly quick
 runner produces no foul events. Tests inject explicit events/state without a
 production incident endpoint. Competitive event production remains T51, and an
 original watched-result publisher must not reapply Python status/recovery over
