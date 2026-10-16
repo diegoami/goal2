@@ -1,7 +1,7 @@
 """Computer-opponent stand-ins (A-CPU-1 + A-CPU-2).
 
-[designed] Two pure functions with no state mutation. The main loop (future
-task) calls them and writes the results into GameState. Per A-CPU-1
+[designed: T46] Two pure functions consumed by quick-match setup without state/RNG mutation.
+[derived: F007 at0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb] Ability is byte+4, age+1. Per A-CPU-1
 stand-in: picks top 11 by ability ignoring formation. Per A-CPU-2 read
 side: returns the country's stored tactics byte.
 """
@@ -11,7 +11,7 @@ from __future__ import annotations
 def pick_computer_eleven(player_records: list[bytes], squad_indices: list[int]) -> list[int]:
     """[designed: assumptions.md A-CPU-1, F007] Return the top 11 squad members by ability.
 
-    Sorts ``squad_indices`` by descending player ability (player_records[i][1])
+    Sorts ``squad_indices`` by descending player ability (player_records[i][4])
     per F007, then ascending squad index (tie-break: lower index wins).
     Returns the first 11 of the sorted list.
     Raises ValueError if fewer than 11 squad members are supplied.
@@ -23,7 +23,7 @@ def pick_computer_eleven(player_records: list[bytes], squad_indices: list[int]) 
         raise ValueError("country must have at least 11 squad members")
 
     def sort_key(idx: int) -> tuple[int, int]:
-        ability = player_records[idx][1]
+        ability = player_records[idx][4]
         return (-ability, idx)
 
     return sorted(squad_indices, key=sort_key)[:11]

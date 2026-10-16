@@ -131,7 +131,7 @@ class FullMatch(unittest.TestCase):
         game.starting_eleven = list(reversed(squad_words(C1)[:11]))
         records = list(game.players)
         strongest = squad_words(C0)[-1]
-        records[strongest] = bytes([0, 255]) + bytes(18)
+        records[strongest] = bytes([0, 16, 0, 0, 255]) + bytes(15)
         game.players = records
 
         def inspect(qm, minute, countdown):

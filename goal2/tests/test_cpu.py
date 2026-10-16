@@ -1,6 +1,6 @@
 """Tests for goal2.ai.cpu.
 
-[confirmed: F007] Player record: ability byte at +1, position byte at +6.
+[confirmed: F007] Player record: ability byte at +4, position byte at +6.
 [confirmed: F010] Country tactics byte at country[+0x2D].
 [derived: T15] pick_computer_eleven returns top 11 by ability (ignoring
 formation); tie-break by ascending squad index.
@@ -16,13 +16,14 @@ from goal2.ai.cpu import get_computer_tactics, pick_computer_eleven
 def _make_records(abilities: list[int]) -> list[bytes]:
     """Build a player-records list where each record's ability byte is abilities[i].
 
-    Record layout (20 bytes per F007): byte[0] = surname char, byte[1] = ability,
+    Record layout (20 bytes per F007): byte[0] = country, byte[1] = age, byte[4] = ability,
     byte[6] = position. We zero-fill the rest.
     """
     records = []
     for a in abilities:
         rec = bytearray(20)
-        rec[1] = a & 0xFF
+        rec[1] = 40 - (a % 25)
+        rec[4] = a & 0xFF
         records.append(bytes(rec))
     return records
 
