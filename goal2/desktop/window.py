@@ -4,7 +4,7 @@
 from PySide6.QtCore import Qt,QTimer
 from goal2.desktop.jobs import QuickJobs
 from PySide6.QtWidgets import (QCheckBox,QComboBox,QHeaderView,QHBoxLayout,QLabel,
- QLineEdit,QMainWindow,QPushButton,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget)
+ QLineEdit,QMainWindow,QPushButton,QSplitter,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget)
 
 # [confirmed: F010] Display order5,6,7,1,2,3,4,8. [designed] Labels5..8.
 TACTICS=((5,'Half pitch / full pitch'),(6,'Short kicks / long kicks'),(7,'Stay back / push forward'),
@@ -31,7 +31,22 @@ class ManagementWindow(QMainWindow):
         self.table.setHorizontalHeaderLabels(['XI','Player','Position','Ability','Energy','Confidence','Availability'])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.Stretch)
-        layout.addWidget(self.table,1)
+        # [designed: T71] Show the existing squad beside its source reserve pool.
+        split=QSplitter();split.addWidget(self.table)
+        pool_panel=QWidget();pool_layout=QVBoxLayout(pool_panel);self.pool_panel=pool_panel
+        self.pool_summary=QLabel();self.pool_summary.setWordWrap(True);pool_layout.addWidget(self.pool_summary)
+        filter_bar=QHBoxLayout();self.search=QLineEdit();self.search.setPlaceholderText('Search reserve name')
+        self.position=QComboBox();self.position.addItem('All position codes',None)
+        for code in range(14):self.position.addItem(f'Position code {code}',code)
+        filter_bar.addWidget(self.search,1);filter_bar.addWidget(self.position);pool_layout.addLayout(filter_bar)
+        self.reserves=QTableWidget(0,7);self.reserves.setObjectName('reserves')
+        self.reserves.setHorizontalHeaderLabels(['ID','Player','Position','Ability','Energy','Confidence','Availability'])
+        self.reserves.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows);self.reserves.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+        self.reserves.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        self.reserves.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.Stretch)
+        pool_layout.addWidget(self.reserves,1)
+        self.exchange=QPushButton('Exchange selected squad player and reserve');pool_layout.addWidget(self.exchange)
+        split.addWidget(pool_panel);split.setSizes([620,620]);layout.addWidget(split,1)
         captain_bar=QHBoxLayout();captain_bar.addWidget(QLabel('Captain'));self.captain=QComboBox();self.captain.setObjectName('captain');captain_bar.addWidget(self.captain,1)
         self.confirm=QPushButton('Confirm management');self.confirm.setObjectName('confirm');self.cancel=QPushButton('Discard draft')
         captain_bar.addWidget(self.cancel);captain_bar.addWidget(self.confirm);layout.addLayout(captain_bar)
@@ -53,6 +68,8 @@ class ManagementWindow(QMainWindow):
         self.confirm.clicked.connect(self.confirm_draft);self.cancel.clicked.connect(lambda:self.refresh('Draft discarded'))
         self.save.clicked.connect(lambda:self.action(lambda:model.save(self.path.text()),'Game saved; unconfirmed edits are excluded'))
         self.resume.clicked.connect(lambda:self.action(lambda:model.resume(self.path.text()),'Game resumed'))
+        self.search.textChanged.connect(self.refresh_pool);self.position.currentIndexChanged.connect(self.refresh_pool)
+        self.exchange.clicked.connect(self.exchange_selected)
         self.table.itemChanged.connect(self.selection_changed)
         self.refresh()
 
@@ -94,6 +111,7 @@ class ManagementWindow(QMainWindow):
         self.update_captain();self.captain.setCurrentIndex(max(0,self.captain.findData(state.captain)))
         for element,box in self.tactics:box.setChecked(bool(state.country_tactics & (1<<(element-1))))
         self.path.setText(str(self.model.save_path));self._refreshing=False
+        self.refresh_pool()
         if message:self.status.setText(message)
 
     def action(self,operation,message):
@@ -106,7 +124,7 @@ class ManagementWindow(QMainWindow):
 
     def set_busy(self,busy):
         # [designed: T70] Prevent conflicting edits while keeping the UI responsive.
-        for widget in (self.country,self.new,self.friendly,self.table,self.captain,self.confirm,self.cancel,self.save,self.resume,self.path):widget.setEnabled(not busy)
+        for widget in (self.country,self.new,self.friendly,self.table,self.captain,self.confirm,self.cancel,self.save,self.resume,self.path,self.pool_panel):widget.setEnabled(not busy)
         for _,box in self.tactics:box.setEnabled(not busy)
         self.play.setEnabled(not busy);self.stop.setEnabled(busy)
 
@@ -131,3 +149,30 @@ class ManagementWindow(QMainWindow):
 
     def closeEvent(self,event):
         self.timer.stop();self.jobs.cancel();super().closeEvent(event)
+
+    def refresh_pool(self):
+        if self._refreshing:return
+        try:
+            view=self.model.pool_view(query=self.search.text(),position=self.position.currentData())
+            self.reserves.setRowCount(0)
+            if view is None:
+                self.pool_summary.setText('National pool requires a campaign');self.exchange.setEnabled(False);return
+            self.pool_summary.setText(f"Squad 20 / Reserves 80 — showing {len(view['reserves'])}\n{view['window']['reason']}")
+            self.exchange.setEnabled(view['window']['allowed'] and not self.jobs.busy)
+            self.reserves.setRowCount(len(view['reserves']))
+            for row,p in enumerate(view['reserves']):
+                values=(p['id'],p['name'],f"{p['position']} — {p['position_group']}",p['ability'],p['energy'],p['confidence'],', '.join(p['availability']['reasons']) or 'Available')
+                for col,value in enumerate(values):
+                    item=QTableWidgetItem(str(value));item.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable)
+                    if col==0:item.setData(Qt.ItemDataRole.UserRole,p['id'])
+                    self.reserves.setItem(row,col,item)
+        except (ValueError,IndexError,KeyError) as exc:
+            self.exchange.setEnabled(False);self.pool_summary.setText(str(exc))
+
+    def exchange_selected(self):
+        row=self.table.currentRow();reserve=self.reserves.currentRow()
+        if row<0 or reserve<0:
+            self.status.setText('Select one squad player and one reserve');return
+        outgoing=self.table.item(row,0).data(Qt.ItemDataRole.UserRole)
+        incoming=self.reserves.item(reserve,0).data(Qt.ItemDataRole.UserRole)
+        self.action(lambda:self.model.exchange(outgoing,incoming),'Players exchanged; confirmed XI and captain repaired')

@@ -164,11 +164,91 @@ def friendlies(template,data,screenshot=None,blocked=False):
     print('PASS worker' if blocked else 'PASS campaign-friendlies: two scheduled fixtures, complete state/RNG/history, save/resume, boundary and standalone repeat')
 
 
+def pool(template,data,screenshot=None):
+    # [designed: T71] Real Qt search/position/exchange, full-ID save/play/resume.
+    from goal2.desktop.worker import play as direct_play
+    import time
+    app=QApplication.instance() or QApplication([])
+    with tempfile.TemporaryDirectory() as folder:
+        model=DesktopModel.open(template,data,Path(folder)/'pool.g2save',country=4)
+        window=ManagementWindow(model);window.resize(1500,900);window.show();QTest.qWait(80)
+        def click(widget):QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+        def select(table,row,col=1):
+            item=table.item(row,col);table.scrollToItem(item);app.processEvents()
+            QTest.mouseClick(table.viewport(),Qt.MouseButton.LeftButton,pos=table.visualItemRect(item).center());app.processEvents()
+        def search(text):
+            window.search.setFocus();QTest.keyClick(window.search,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier)
+            QTest.keyClick(window.search,Qt.Key.Key_Backspace)
+            if text:QTest.keyClicks(window.search,text)
+            app.processEvents()
+        def position(code):
+            window.position.setFocus();QTest.keyClick(window.position,Qt.Key.Key_Home)
+            for _ in range(0 if code is None else code+1):QTest.keyClick(window.position,Qt.Key.Key_Down)
+            app.processEvents()
+        def finish():
+            deadline=time.monotonic()+15
+            while window.jobs.busy and time.monotonic()<deadline:QTest.qWait(20)
+            assert not window.jobs.busy,'worker deadline exceeded'
+        before=copy.deepcopy(model.state)
+        assert window.reserves.rowCount()==80 and window.table.rowCount()==20
+        target=next(r for r in model.pool_view()['reserves'] if r['id']==2561)
+        search(target['name'].swapcase());position(target['position'])
+        assert model.state==before and window.reserves.rowCount()>0
+        ids=[window.reserves.item(i,0).data(Qt.ItemDataRole.UserRole) for i in range(window.reserves.rowCount())]
+        assert 2561 in ids
+        assert all(target['name'].casefold() in window.reserves.item(i,1).text().casefold() for i in range(window.reserves.rowCount()))
+        outgoing=model.state.starting_eleven[0]
+        window.captain.setCurrentIndex(window.captain.findData(outgoing));click(window.confirm)
+        records=list(model.state.players);seeds=(model.state.rng_seed_7b62,model.state.rng_seed_8336)
+        select(window.table,model.state.managed_squad.index(outgoing));select(window.reserves,ids.index(2561))
+        click(window.exchange)
+        assert 2561 in model.state.managed_squad and 2561 in model.state.starting_eleven
+        assert model.state.captain==2561 and outgoing in model.state.campaign.reserve_ids
+        assert model.state.players==records and seeds==(model.state.rng_seed_7b62,model.state.rng_seed_8336)
+        search('');position(None)
+        assert window.reserves.rowCount()==80 and '20 / Reserves 80' in window.pool_summary.text()
+        assert len(set(model.state.managed_squad+model.state.campaign.reserve_ids))==100
+        assert all(model.state.players[w][0]==4 for w in model.state.managed_squad+model.state.campaign.reserve_ids)
+        click(window.confirm);assert model.state.captain==2561
+        # Invalid selected IDs and unavailable incoming player refuse via real action.
+        snapshot=copy.deepcopy(model.state);window.reserves.clearSelection();window.reserves.setCurrentCell(-1,-1);click(window.exchange)
+        assert model.state==snapshot and 'Select one' in window.status.text()
+        rec=bytearray(model.state.players[2562]);rec[14]=0;rec[16]=0x80;model.state.players[2562]=bytes(rec)
+        window.refresh();ids=[window.reserves.item(i,0).data(Qt.ItemDataRole.UserRole) for i in range(80)]
+        select(window.table,0);select(window.reserves,ids.index(2562));snapshot=copy.deepcopy(model.state);click(window.exchange)
+        assert model.state==snapshot and 'unavailable' in window.status.text()
+        # Existing XI gate rejects a now-unavailable selected reserve, then repairs it.
+        rec=bytearray(model.state.players[2561]);old_record=bytes(rec);rec[14]=0;model.state.players[2561]=bytes(rec)
+        window.refresh();snapshot=copy.deepcopy(model.state);click(window.confirm)
+        assert model.state==snapshot and 'unavailable' in window.status.text()
+        model.state.players[2561]=old_record;window.refresh();click(window.confirm)
+        click(window.save);snapshot=copy.deepcopy(model.state)
+        click(window.new)
+        with patch('goal2.desktop.model.start_opening_campaign',side_effect=AssertionError('load regenerated')):click(window.resume)
+        assert model.state==snapshot and model.state.captain==2561
+        window.refresh();search('nobody matches this');search('');assert model.state==snapshot
+        expected=direct_play(snapshot,model.template_bytes)
+        click(window.play);assert window.jobs.busy and not window.pool_panel.isEnabled()
+        finish();assert model.state==expected,window.status.text()
+        effect=model.state.match_state['campaign_energy']['pool']
+        assert effect['confidence_draws']==160 and model.state.match_count==1
+        click(window.save);snapshot=copy.deepcopy(model.state);click(window.resume);assert model.state==snapshot
+        assert model.state.campaign.reserve_ids==expected.campaign.reserve_ids
+        expected=direct_play(model.state,model.template_bytes);click(window.play);finish();assert model.state==expected
+        assert 'pending managed friendly' in window.pool_summary.text() and not window.exchange.isEnabled()
+        snapshot=copy.deepcopy(model.state);click(window.exchange);assert model.state==snapshot
+        assert len(set(model.state.managed_squad+model.state.campaign.reserve_ids))==100
+        if screenshot:window.grab().save(str(screenshot))
+        window.close();window.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents();app.shutdown()
+    print('PASS campaign-pool: search/filter, 20/80 identities, exchange/captain2561, unavailable/closed refusal, save/resume, ordered condition and real play')
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch','campaign-friendlies','worker'],required=True)
+    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch','campaign-friendlies','worker','campaign-pool'],required=True)
     p.add_argument('--template',required=True,type=Path);p.add_argument('--data',required=True,type=Path);p.add_argument('--screenshot',type=Path)
     args=p.parse_args()
     if args.scenario=='management':management(args.template,args.data,args.screenshot)
     elif args.scenario=='launch':launch(args.template,args.data)
+    elif args.scenario=='campaign-pool':pool(args.template,args.data,args.screenshot)
     else:friendlies(args.template,args.data,args.screenshot,blocked=args.scenario=='worker')
 if __name__=='__main__':main()
