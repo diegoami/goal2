@@ -1,0 +1,110 @@
+# Original-match kit acceptance
+
+[designed: T62; owner #130/#148] This is the optional engine/runtime handoff.
+The application adapter, publication, process bridge and desktop watched controls
+remain T63–T66. Ordinary quick play does not import or require Unicorn.
+
+## Source and resources
+
+[confirmed: archaeology PR251, merge `3656a2d26e0f57a410d648edeaa6cd9eb7d1f607`]
+All ten files in `goal2/engine/original_match/` are byte copies of
+`runtime/original_match/` at that commit, including its README. PROVENANCE.md has
+one row per file; tools/watched-kit-hashes.json records all ten full SHA-256 values.
+`tools/watched_evidence.py` compares the file set, hashes AND exact source bytes,
+and verifies that the source is an ancestor of archaeology origin/main.
+No local change to a vendored file is permitted; fixes go upstream.
+
+[confirmed: accepted assets.py/E033 entry_probe.py and E011-r0001 run record at the same pin]
+Resources are supplied to ignored `.cache/`, checked by full SHA-256, never git:
+
+| Resource | Release asset | SHA-256 |
+| --- | --- | --- |
+| Kit reference menu | E006 / e0afff6751747233-e006-1000-r0001.sav | e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d |
+| Upstream entry probe menu | E006 / 3789d8490d2b42d8-e006-2100-r0005.sav | 3789d8490d2b42d8a589fec2afeb51de0ace4b4c5d1e5e24ff232321874dd106 |
+| Independent strict reference | E011 / d68e48c734a742a6-E011-r0001-watchstart.sav | d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9 |
+
+[designed] Install the optional tested dependency with `python3 -m pip install '.[watched]'`
+(Unicorn2.1.4); desktop plus runtime is `'.[desktop,watched]'`.
+This is local dependency setup, not a distribution package. The ordinary app/quick
+path needs neither Unicorn nor watched resources. Full runtime acceptance needs
+both and refuses missing inputs; it does not silently skip original runs.
+The upstream README documents the exact package API and build coverage.
+
+## Reproduce verification
+
+[designed] Commands run from the goal2 checkout, with the archaeology checkout
+available to tools/check_provenance.py (`GOAL2_ARCHAEOLOGY` can override its path).
+Verification exports exact accepted upstream sources to an ignored cache,
+without altering that checkout or installing a second production caller.
+Outputs in `.cache/watched-*` have unique names and include per-case diagnostics.
+
+```sh
+python3 -m unittest goal2.tests.test_watched_runtime -v
+python3 -m goal2.engine.original_match.check --cache .cache --family
+python3 tools/check_watched_records.py --seeds 10
+python3 tools/check_watched_upstream.py --suite tests
+python3 tools/check_watched_upstream.py --suite stamps
+python3 tools/check_watched_upstream.py --suite saves
+python3 tools/check_watched_upstream.py --suite entry
+python3 tools/check_watched_upstream.py --suite example
+python3 tools/check_watched_upstream.py --suite mutations
+python3 tools/check_provenance.py
+```
+
+[derived: accepted E032 compare.py/record_schema.py and E033 entry/stamps probes]
+The strict checker first repeats the original E032 runner on its actual hash-verified
+E011 watchstart input. The accepted recursive schema and comparator check all ten
+unique seeds: completion/error/strays, real start identity and declared inputs,
+score, ticks, draw count/digest, all eleven statistics rows and commentary template
+counts. A different menu image is never mislabeled as that watchstart.
+
+It separately checks the kit's menu-entry equivalence against those measured
+outcomes, with the explicit captain-boundary seed override and delay byte0.
+Independent guest-write hooks compare event minutes, scores and cross-kind order.
+A second original execution reuses E033 Entry on the SAME menu image and declared
+fixture; its existing guest continues through original B7FA using route_fixture's
+recorded far-call frame. All3061 player records, all129 country records and both
+final RNG words must match the kit's returned memory. The checker fails rather
+than omit a field. Only digests/diagnostics are persisted, never original images.
+
+[derived: E033 notes §2] E006-r0001 and r0005 share initial player/country arrays,
+but their calendars and secondary RNG state differ. Comparing final seeds across
+those different initial states is invalid. The additional state comparison uses
+r0001 for BOTH executions; upstream's entry evidence retains its original r0005.
+
+## Handoff coverage and limits
+
+[derived: accepted E033 notes, package and upstream review regressions]
+T60's supported entry is run_match0791:F1F6 with fixture far pointer and return
+000E:6F1D; entrySP3EC0/BP3EDE and captain-wait CC7B/CC2E are recorded upstream.
+The route fixture index plus engine year reseed the primary RNG before setup's
+256 draws. Identical entry inputs repeat; two different incoming primary seeds
+reach the same captain boundary. Kit reference inputs are Denmark7 versus19,
+fixture21, original image XI/tactics/captain/default play-on decisions. The ten
+reference runs override the seed explicitly at the captain boundary. They do
+not prove arbitrary fixtures, countries or campaign-year transfer (T63).
+
+T61 reuses the accepted package, existing screens and original post-match tail;
+no local match algorithm or second application caller is added. R1 meaningful
+code/data/relocation build mutations, R2 full-time save through the player-update
+tail, R3 write-time commentary stamps, quick-result scratch-score exclusion and
+cross-kind take-back order remain explicit acceptance checks. Original boards,
+summary responses, substitutions/refusals and normal completion use the upstream
+hooks, tests and worked example.
+
+[confirmed: merged README] Friendlies only (kind1), one human side. Competitive
+fixtures, extra time and shoot-outs are refused. Substitutions follow original
+stoppages; interactive editing and owner substitution-budget integration are
+outside T62. A full_time event precedes the post-match player update. Consumers
+must wait for completion/result and carry full returned memory; never add quick
+Python player updates over original effects.
+
+[confirmed: merged README build guard] Mutable player/country/seed inputs are
+permitted; immutable engine code and measured read-only data are protected.
+The old goal2 clock stand-in at DS:0E6C overlaps the original foot table: adapters
+must preserve the template's immutable bytes. T62's adapted-record guard test
+changes players/tactics/seed while retaining those bytes. T63 owns broader mapping.
+
+[designed] Acceptance measurements and any residual evidence gaps are recorded
+below after executing these commands. T60/T61 are accepted only if all mapped
+obligations pass; no score-only shortcut or waived missing evidence is allowed.

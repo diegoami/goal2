@@ -1,6 +1,7 @@
 """[designed: T62] Optional runtime, exact vendoring, verified resources and build boundaries."""
 import copy
 import hashlib
+import json
 import importlib.util
 from pathlib import Path
 import subprocess
@@ -46,6 +47,21 @@ class RuntimeTests(unittest.TestCase):
                 (readme.parent / "extra.py").write_text("pass")
                 with self.assertRaisesRegex(ValueError,"file set differs"):
                     verify_vendor()
+
+    def test_entry_probe_false_or_incomplete_evidence_is_rejected(self):
+        from check_watched_upstream import validate_entry
+        from watched_evidence import source_bytes
+        rows = [json.loads(line) for line in source_bytes(
+            "experiments/E033-original-match-kit/out/entry-probe-20261016.jsonl").decode().splitlines()]
+        validate_entry(rows)
+        for mode in ("comparison","duplicate","boundary","missing"):
+            changed = copy.deepcopy(rows)
+            if mode == "comparison":changed[2]["checks"]["score"] = False
+            if mode == "duplicate":changed[4] = copy.deepcopy(changed[3])
+            if mode == "boundary":changed[1]["captain_wait"]["seed"] += 1
+            if mode == "missing":changed.pop(3)
+            with self.assertRaisesRegex(ValueError,"entry evidence failed"):
+                validate_entry(changed)
 
     def test_missing_asset_and_wrong_hash_are_actionable(self):
         with tempfile.TemporaryDirectory() as folder:

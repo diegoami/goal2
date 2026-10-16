@@ -9,6 +9,22 @@ import time
 from watched_evidence import ROOT, stage, verify_vendor
 
 
+def validate_entry(rows):
+    """[designed] Historical entry probe exits0 even on false comparisons; require complete positive evidence."""
+    faithful = [row for row in rows if row.get("run") == "faithful"]
+    family = [row for row in rows if row.get("run") == "family"]
+    reseeds = [row for row in rows if row.get("run") == "reseed"]
+    # [confirmed: accepted E032 family] Seed identifiers, never original asset bytes.
+    seeds = {0x0101,0x1234,0x2345,0x2B7E,0x4C1D,0x6A33,0x8E05,0xA1F0,0xC3C3,0xE719}
+    if (len(faithful) != 1 or len(family) != 10 or {row["seed"] for row in family} != seeds
+            or not all(row["identical"] and row["checks"] and all(row["checks"].values()) for row in faithful+family)
+            or len(reseeds) != 2 or any(row["error"] is not None for row in reseeds)
+            or len({row["entry_seed"] for row in reseeds}) != 2
+            or any(row["first_seed_write"]["new"] != 21 for row in reseeds)
+            or reseeds[0]["captain_wait"] != reseeds[1]["captain_wait"]):
+        raise ValueError("original entry evidence failed: comparison, seed family or repeated boundary differs")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--suite", required=True, choices=("tests", "mutations", "stamps", "saves", "entry", "example"))
@@ -34,16 +50,7 @@ def main():
     result = subprocess.run([sys.executable, "-B"] + commands[args.suite], cwd=folder, env=env)
     verify_vendor()
     if result.returncode == 0 and args.suite == "entry":
-        # [designed] The historical probe reports comparisons but does not make false checks a nonzero exit.
-        rows = [json.loads(line) for line in log.read_text().splitlines()]
-        comparisons = [row for row in rows if row.get("run") in ("faithful","family")]
-        reseeds = [row for row in rows if row.get("run") == "reseed"]
-        if (len(comparisons) != 11 or not all(row["identical"] and all(row["checks"].values()) for row in comparisons)
-                or len(reseeds) != 2 or any(row["error"] is not None for row in reseeds)
-                or len({row["entry_seed"] for row in reseeds}) != 2
-                or any(row["first_seed_write"]["new"] != 21 for row in reseeds)
-                or reseeds[0]["captain_wait"] != reseeds[1]["captain_wait"]):
-            raise ValueError(f"original entry evidence failed: {log}")
+        validate_entry([json.loads(line) for line in log.read_text().splitlines()])
     return result.returncode
 
 

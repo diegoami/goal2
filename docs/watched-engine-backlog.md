@@ -131,3 +131,10 @@ writes do not become public goals, and that disallowed-goal cancellations retain
 their actual order relative to commentary. Per-kind timestamp checks alone do
 not establish cross-kind event order. Pin the accepted regression commands during
 T62 preflight; these candidate findings do not authorize local kit fixes.
+
+[derived: T62 accepted-source preflight, archaeology PR251 merge
+`3656a2d26e0f57a410d648edeaa6cd9eb7d1f607`] The exact handoff inputs,
+verification procedure and mapped evidence are in
+[watched-kit-acceptance.md](watched-kit-acceptance.md). Historical candidate pins
+above explain the planning/review gates; they are never production pins.
+Application integration still follows T63-T66 and their independent acceptance.

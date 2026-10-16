@@ -336,3 +336,14 @@ Actions has only a manual `workflow_dispatch` trigger and runs the same command
 on its checked-out SHA. It is optional independent verification; billing or an
 absent hosted run does not block a locally validated merge. No self-hosted runner
 or account billing change is required.
+
+## Optional original-match runtime
+
+[designed: T62] `python3 -m pip install '.[watched]'` installs tested Unicorn2.1.4;
+`'.[desktop,watched]'` installs Qt and the runtime together. Quick play remains
+usable without this optional dependency or its watched resources. For runtime
+tests/verified assets and exact upstream reproduction, follow
+[watched-kit-acceptance.md](watched-kit-acceptance.md). This installs the kit only;
+application watched controls are later tasks. Full runtime tests need the verified
+images and archaeology source described there; do not treat skipped upstream
+original tests as accepted evidence.
