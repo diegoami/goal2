@@ -25,7 +25,8 @@ def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, in
 
     Returns ``(teams, managed_side, opponent)`` using the same replacement
     rule consumed by both the preview and the runner. This reads template
-    setup but does not simulate the match.
+    setup but does not simulate the match. [designed: T41] Campaign mode instead
+    uses the exact next scheduled pair and refuses unsupported fixtures.
     """
     qm = QuickMatch(template)
     if qm.ninea3d != 0 or qm.eight319 != 0x2D:
@@ -39,7 +40,7 @@ def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, in
     # [designed: T41] Campaign rows override both inherited template endpoints.
     # [derived: F023 at 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb]
     # Preserve source A/B order without inferring a home venue.
-    if game_state.campaign is not None:
+    if getattr(game_state, "campaign", None) is not None:
         campaign = game_state.campaign
         fixture = campaign.next_fixture
         if fixture is None:

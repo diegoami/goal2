@@ -396,6 +396,7 @@ try {
   resetDraft();
   $('#load-error').hidden = true;
   render();
+  setBusy(false); // [designed: T41] Reload enables Save/Load without requiring a country change.
 } catch (error) {
   $('#load-error').textContent = `Could not load the local game session: ${error.message}`;
   $('#load-error').hidden = false;

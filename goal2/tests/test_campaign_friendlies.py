@@ -1,6 +1,7 @@
 """[designed: T41] Scheduled pair routing and atomic browser transactions."""
 import copy
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -59,6 +60,31 @@ class CampaignFriendlies(unittest.TestCase):
         with self.assertRaises(StalePlaySubmission):
             self.play(first)
         self.assertEqual(self.session.state.match_count, 1)
+
+    def test_concurrent_duplicate_submission_runs_once(self):
+        view = self.start()
+        def submit():
+            try:
+                self.play(view)
+                return "played"
+            except StalePlaySubmission:
+                return "stale"
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            outcomes = list(pool.map(lambda _: submit(), range(2)))
+        self.assertCountEqual(outcomes, ["played", "stale"])
+        self.assertEqual(self.session.state.match_count, 1)
+        self.assertEqual(len(self.session.state.campaign.results), 1)
+
+    def test_old_campaign_metadata_without_history_still_loads(self):
+        self.start()
+        self.play()
+        data = self.session.state.campaign.to_data()
+        del data["results"]
+        from goal2.game.campaign import CampaignState
+        restored = CampaignState.from_data(data)
+        self.assertEqual(restored.completed_fixture_ids, ["original:1378"])
+        self.assertEqual(restored.next_fixture.fixture_id, "original:1471")
+        self.assertEqual(restored.results, [])
 
     def test_failed_simulation_and_failed_response_never_publish(self):
         self.start()

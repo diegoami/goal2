@@ -163,7 +163,7 @@ class WebSession:
 
     def _campaign_view(self, state: GameState) -> dict[str, Any] | None:
         """[designed: T41] Display source identities, pending boundary and score history."""
-        campaign = state.campaign
+        campaign = getattr(state, "campaign", None)
         if campaign is None:
             return None
         fixture = campaign.next_fixture
@@ -300,7 +300,7 @@ class WebSession:
         if not isinstance(raw, dict):
             raise ValueError("play request must be an object")
         with self._play_lock:
-            campaign = self.state.campaign
+            campaign = getattr(self.state, "campaign", None)
             expected = {"play_token", "fixture_id"} if campaign is not None else {"play_token"}
             if set(raw) != expected:
                 raise ValueError("play request must identify its token and scheduled fixture in campaign mode")
@@ -444,7 +444,7 @@ class WebSession:
         """[designed: T35] Validate a complete candidate before changing state."""
         if isinstance(raw_country, bool) or not isinstance(raw_country, int) or not 1 <= raw_country <= 128:
             raise ValueError("country must be an integer from 1 to 128")
-        if self.state.campaign is not None and raw_country != self.state.managed_country:
+        if getattr(self.state, "campaign", None) is not None and raw_country != self.state.managed_country:
             raise ValueError("campaign manager is fixed; use New campaign to choose another country")
         candidate = self.state.countries[raw_country]
         if raw_country >= len(self.goaldat.country_names):

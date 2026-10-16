@@ -70,3 +70,9 @@ seeds 4660/33590: two friendlies with ordered pairs (4,1) then (9,4), followed
 by an unsupported kind-5 qualifier. It checks creation, confirmed management,
 duplicate rejection, history, reload, Save/Load, a fresh server resume and mobile
 layout. `SCREENSHOT_DIR` also captures the campaign at desktop and mobile sizes.
+
+[designed: T41] Run `python3 tools/browser-ui/prove-campaign.py` for five
+negative mutation proofs. It saves each source file before changing one site,
+runs the targeted test in a fresh Python process, requires an assertion failure,
+and restores the saved bytes in `finally`. Run it sequentially with other checks
+in a clean task checkout containing the ignored local inputs.
