@@ -84,7 +84,8 @@ Codex default at implementer.defaultsByClient.codex. See process §1 for dispatc
 18. **Engine truth is vendored, never edited.** Files under `goal2/engine/` are copies pinned in
     `PROVENANCE.md` (file, source repo, commit, findings). A defect in vendored code goes upstream to
     goal2-archaeology; the fix arrives here only as a deliberate re-vendor that records the new
-    commit. Engine files carry no evidence tags of their own: their provenance row is the citation.
+    commit. Needing something new about the original (decompilation, exploration) is asked there
+    by an issue: `docs/process.md` section 11. Engine files carry no evidence tags of their own: their provenance row is the citation.
 19. **Nothing of the original game is committed.** No GOAL2 asset, savestate or executable byte
     enters this repository (U17/U21). States load from local caches or the archaeology releases by
     path, git-ignored (`.cache/`).
