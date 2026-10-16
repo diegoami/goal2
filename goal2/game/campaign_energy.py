@@ -1,8 +1,8 @@
 """[derived: F018/F007/F027 at 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb]
-Energy-only campaign quick-match boundaries. The vendored model owns 3651.
+Campaign quick-match energy boundaries. The vendored model owns 3651.
 
-[designed: T42] This adapter orders energy operations only. Confidence, pool
-and status callers are separate tasks; no whole original fixture-tail RNG
+[designed: T42] This adapter orders energy operations. T43 optionally interleaves confidence; pool
+and other status callers are separate tasks; no whole original fixture-tail RNG
 parity is claimed. It is called by the quick runner, never on watched results.
 """
 from goal2.engine import energy
@@ -85,12 +85,13 @@ def half_time(qm):
         qm.playerrec[player] = bytearray(half_bonus(qm._player(player)))
 
 
-def finish(qm, state):
+def finish(qm, state, *, with_confidence=False):
     """[designed: T42] Restore then recover this quick campaign candidate once.
 
     [derived: F018/F027, B7FA/5A8F] Side A then B, nonzero squad words in
     slot order; XI or status-set element 3 (mask 0x04) participants use flag 1, unused bench 0.
-    Energy-only RNG order excludes the later confidence/pool/status callers.
+    Default energy-only calls exclude confidence; campaign quick calls interleave
+    T43 confidence. Pool and other status callers remain separate tasks.
     """
     fixture = ensure_pending(state)
     if tuple(qm.teams) != (fixture.side_a, fixture.side_b):
@@ -101,13 +102,18 @@ def finish(qm, state):
     words = [word for squad in squads for word in squad if word]
     if len(words) != len(set(words)) or any(not 1 <= word < len(state.players) for word in words):
         raise ValueError('campaign energy requires distinct valid squad words')
+    if with_confidence:
+        from goal2.game import campaign_confidence
+        campaign_confidence.restore(qm)
+        deltas = campaign_confidence.result_deltas(
+            state.countries, qm.teams, qm.score, fixture.kind, qm.state.ds_bytes(0x0F3E, 32))
     for word in words:
         qm.playerrec[word] = bytearray(restore_energy(qm._player(word)))
     bases = tuple(qm.state.ds_bytes(0x0E82, 2))
     caps = tuple(qm.state.ds_bytes(0x0E84, 2))
     in_set = bool(qm.state.ds_bytes(0x0F3E, 1)[0] & (1 << fixture.kind))
     host_continent = state.countries[fixture.side_b][0x2C]
-    before = qm.rng.draws
+    recovery_draws = confidence_draws = 0
     for side, squad in enumerate(squads):
         country = qm.teams[side]
         gradual = in_set or (state.countries[country][0x2C] != host_continent)
@@ -116,9 +122,28 @@ def finish(qm, state):
                 continue
             record = qm._player(word)
             flag = slot <= 11 or bool(record[0x10] & 0x04)
-            qm.playerrec[word] = bytearray(recover_player(
-                record, flag, qm.rng, gradual=gradual,
-                managed=record[0] == state.managed_country, caps=caps, redraw_bases=bases))
+            role = 'starter' if slot <= 11 else ('substitute' if flag else 'unused')
+            # [derived: F019/F018, B7FA] Unused bench changes C before recovery;
+            # participants recover first, then result C and used-bench noise.
+            def update_confidence(record):
+                nonlocal confidence_draws
+                before = qm.rng.draws
+                record = campaign_confidence.participant(record, deltas[side], role, qm.rng)
+                confidence_draws += qm.rng.draws - before
+                return record
+            if with_confidence and not flag:
+                record = update_confidence(record)
+            before = qm.rng.draws
+            record = recover_player(record, flag, qm.rng, gradual=gradual,
+                                    managed=record[0] == state.managed_country,
+                                    caps=caps, redraw_bases=bases)
+            recovery_draws += qm.rng.draws - before
+            if with_confidence and flag:
+                record = bytearray(update_confidence(record))
+                if slot > 11:
+                    # [derived: B957..B964] Consume the used-bench element3.
+                    record[16] &= ~0x04
+            qm.playerrec[word] = bytearray(record)
     qm._campaign_energy_complete = True
     return {'fixture_id': fixture.fixture_id, 'engine': 'quick-energy-v1',
-            'recovery_draws': qm.rng.draws - before}
+            'recovery_draws': recovery_draws, 'confidence_draws': confidence_draws}

@@ -27,8 +27,10 @@ class Draws:
     def __init__(self, values):
         self.values = iter(values)
         self.bounds = []
+        self.draws = 0
     def rand(self, bound):
         self.bounds.append(bound)
+        self.draws += 1
         return next(self.values)
 
 
@@ -89,6 +91,11 @@ class ConfidenceContinuations(unittest.TestCase):
         qm = QuickMatch(Savestate(to_savestate(self.session.state, original=self.session.template_bytes)))
         f = self.session.state.campaign.next_fixture
         qm.teams[:] = [f.side_a, f.side_b]
+        for side in (0, 1):
+            for index, word in enumerate(qm._squad(side)[:11], 1):
+                slot = qm.side_base[side] + index
+                qm.pitch[slot]["player"] = word
+                qm.pitch[slot]["slot_no"] = slot
         return qm
 
     def test_shadow_preserves_scorer_after_temporary_reaction_in_actual_event_order(self):
@@ -188,7 +195,7 @@ class ConfidenceContinuations(unittest.TestCase):
         self.assertEqual(self.session.state, before)
         word = state.starting_eleven[0]
         r = bytearray(state.players[word]); r[12] = 32; state.players[word] = bytes(r)
-        self.assertEqual(self.session.view()['team_morale'], 17)
+        self.assertEqual(self.session.view()['team_morale'], 18)  # (6 + 32 + 10*16) // 11
         self.assertNotIn('team_morale', state.match_state)
 
 

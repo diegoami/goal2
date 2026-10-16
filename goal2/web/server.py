@@ -19,6 +19,7 @@ from urllib.parse import urlsplit
 
 from goal2.data.goaldat import GoalDat, load as load_goaldat
 from goal2.engine.savestate import Savestate
+from goal2.game.campaign_confidence import team_morale
 from goal2.game.quick_match import resolve_full_matchup
 from goal2.game.quick_match import run_full_match
 from goal2.game.session_save import SessionSaveError, load as load_session_save, save as save_session_save
@@ -360,6 +361,7 @@ class WebSession:
                 "ability": record[0x04],
                 "position": record[0x07],
                 "energy": record[0x0E],
+                "confidence": record[0x0C],
             })
         try:
             teams, managed_side, opponent = resolve_full_matchup(self.template, state)
@@ -387,6 +389,8 @@ class WebSession:
             "country": {"id": country, "name": self.goaldat.country_names[country]},
             "countries": self.countries_view()["countries"],
             "players": players,
+            # [derived: F020; designed: T43] Recompute from confirmed starters.
+            "team_morale": team_morale(state.players, starting_eleven),
             "starting_eleven": starting_eleven,
             # [derived: F007, T35] A legacy byte may name a player outside the
             # displayed eleven; only expose captain choices that are eligible.

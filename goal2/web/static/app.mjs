@@ -152,6 +152,8 @@ function render() {
   }
   paintCountryPicker();
   const confirmedPlayers = session.players.filter(player => session.confirmed.starting_eleven.includes(player.id));
+  $('#team-morale').textContent = session.team_morale;
+  $('#result-morale').textContent = session.team_morale;
   $('#confirmed-eleven').textContent = confirmedPlayers.map(player => player.name).join(', ') || 'Not set';
   $('#confirmed-captain').textContent = session.players.find(player => player.id === session.confirmed.captain)?.name ?? 'Not set';
   $('#confirmed-tactics').textContent = tacticsMessage(session.confirmed.tactics);
@@ -182,6 +184,7 @@ function renderSquad(focusSelector = null) {
       <td><span class="position-cell"><span class="role-chip">${Number(player.position).toString(16).toUpperCase()}</span>code ${player.position}</span></td>
       <td><span class="rating-value">${player.ability}</span></td>
       <td><span class="energy-value">${player.energy}</span></td>
+      <td><span class="confidence-value">${player.confidence}</span></td>
       <td class="captain-cell"><input type="radio" name="captain" aria-label="Make ${safe(player.name)} draft captain" data-captain="${player.id}" ${captain ? 'checked' : ''} ${isSelected && !busy ? '' : 'disabled'}></td>
     </tr>`;
   }).join('');

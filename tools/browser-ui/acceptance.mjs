@@ -242,6 +242,15 @@ try {
       assert.deepEqual(current.last_match.teams.map(team => team.id), pair, 'actual runner uses source-ordered scheduled pair');
       assert.equal(current.campaign.history.length, index + 1);
       assert(current.players.some((player, position) => player.energy !== before.players[position].energy), 'scheduled recovery changes published squad energy');
+      assert(current.players.some((player, position) => player.confidence !== before.players[position].confidence), 'scheduled result changes published confidence');
+      assert.equal((await page.locator('#result-morale').textContent()).trim(), String(current.team_morale), 'result displays recomputed team morale');
+      await page.locator('[data-page="squad"]').click();
+      assert.equal((await page.locator('#team-morale').textContent()).trim(), String(current.team_morale), 'management displays confirmed team morale');
+      for (const player of current.players) {
+        const row = page.locator(`[data-select="${player.id}"]`).locator('xpath=ancestor::tr');
+        assert.equal((await row.locator('.confidence-value').textContent()).trim(), String(player.confidence), 'management displays retained player confidence');
+      }
+      await page.locator('[data-page="dashboard"]').click();
       const replay = await page.evaluate(async body => {
         const result = await fetch('/api/play', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         return result.status;
@@ -272,7 +281,8 @@ try {
     const resumed = await getSession();
     assert.equal(resumed.match_count, 2, 'process restart never plays an extra fixture');
     assert.deepEqual(resumed.campaign, current.campaign);
-    assert.deepEqual(resumed.players, current.players, 'campaign recovery energy survives process resume');
+    assert.deepEqual(resumed.players, current.players, 'campaign energy and confidence survive process resume');
+    assert.equal(resumed.team_morale, current.team_morale, 'derived morale survives process resume');
     assert.deepEqual(resumed.last_match.seeds, current.last_match.seeds, 'post-recovery RNG survives process resume');
     assert.deepEqual(resumed.confirmed, current.confirmed);
     assert.equal(await page.locator('#play-button').isDisabled(), true);
@@ -486,6 +496,7 @@ try {
       assert((await row.locator('.player-name').innerText()).startsWith(player.name), `roster name ${player.name}`);
       assert.equal((await row.locator('.rating-value').textContent()).trim(), String(player.ability), 'ability is record byte +4');
       assert.equal((await row.locator('.energy-value').textContent()).trim(), String(player.energy), 'energy is record byte +0xE');
+      assert.equal((await row.locator('.confidence-value').textContent()).trim(), String(player.confidence), 'confidence is record byte +0xC');
       assert((await row.locator('.position-cell').innerText()).includes(`code ${player.position}`), 'position is source code +7');
     }
     await page.locator('[data-page="dashboard"]').click();

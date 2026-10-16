@@ -16,7 +16,7 @@ CASES = (
      'CampaignContinuations.test_boundaries_have_no_kickoff_bonus_then_half_bonus_and_fitness_restore'),
     ('fitness restoration', 'goal2/game/campaign_energy.py', 'return energy.restore(record, record[12])', 'return bytes(record)',
      'EnergyReferenceCases.test_half_bonus_and_restoration_preserve_zero_negative_and_other_bytes'),
-    ('fixture recovery', 'goal2/game/quick_match.py', 'energy_transition = campaign_energy.finish(qm, game_state) if campaign is not None else None', 'energy_transition = None',
+    ('fixture recovery', 'goal2/game/quick_match.py', 'energy_transition = campaign_energy.finish(qm, game_state, with_confidence=True) if campaign is not None else None', 'energy_transition = None',
      'CampaignContinuations.test_real_campaign_recovery_consumes_sixty_ordered_draws_and_publishes_once'),
     ('completion guard', 'goal2/game/campaign_energy.py', "if prior.get('fixture_id') == fixture.fixture_id:", 'if False:',
      'CampaignContinuations.test_energy_completion_guard_refuses_a_second_transition'),

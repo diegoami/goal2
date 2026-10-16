@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 from goal2.ai.cpu import get_computer_tactics, pick_computer_eleven
-from goal2.game import campaign_energy
+from goal2.game import campaign_energy, campaign_confidence
 
 # [designed: T01 vendored import layout] quick_engine imports sibling players.
 _ENGINE_DIR = str(Path(__file__).resolve().parents[1] / "engine")
@@ -145,6 +145,8 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
     qm.eight30b = (qm.side_base[qm.eight31a] + 10) & 0xFF
     first_kickoff = qm.eight30b
 
+    if campaign is not None:
+        campaign_confidence.begin(qm)
     for minute in range(46):
         qm.d733(minute, 91 - minute)
     first = _snapshot(qm, 0)
@@ -159,7 +161,7 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
     for minute in range(46, 92):
         qm.d733(minute, 91 - minute)
     second = _snapshot(qm, len(first["goals"]))
-    energy_transition = campaign_energy.finish(qm, game_state) if campaign is not None else None
+    energy_transition = campaign_energy.finish(qm, game_state, with_confidence=True) if campaign is not None else None
     result = {
         "score": second["score"],
         "goals": first["goals"] + second["goals"],

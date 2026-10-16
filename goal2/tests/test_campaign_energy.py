@@ -112,9 +112,9 @@ class CampaignContinuations(unittest.TestCase):
         start = self.session.view()
         captures = []
         original = energy.finish
-        def finish(qm, state):
+        def finish(qm, state, **kwargs):
             before = qm.rng.seed
-            meta = original(qm, state)
+            meta = original(qm, state, **kwargs)
             captures.append((before, qm.rng.seed, meta))
             return meta
         with patch.object(energy, 'finish', side_effect=finish):
@@ -122,10 +122,12 @@ class CampaignContinuations(unittest.TestCase):
         self.assertEqual(len(captures), 1)
         before, after, metadata = captures[0]
         expected = before
-        for _ in range(60):
+        # [derived: T43/B7FA]60 energy draws plus36 bench-confidence draws.
+        for _ in range(96):
             expected = (expected * 0x7ABD + 0x1B0F) & 65535
         self.assertEqual(after, expected)
         self.assertEqual(metadata['recovery_draws'], 60)
+        self.assertEqual(metadata['confidence_draws'], 36)
         self.assertEqual(metadata['fixture_id'], 'original:1378')
         self.assertEqual(self.session.state.match_state.get('campaign_energy'), metadata)
         self.assertEqual(self.session.state.rng_seed_7b62, expected)

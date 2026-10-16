@@ -138,3 +138,9 @@ post-match fitness restoration and ordered fixture recovery. Squad energy update
 with the completed result, and save/resume preserves the transition once. See the
 [campaign energy scope and evidence](docs/campaign-energy.md); standalone friendly
 behavior and original watched-engine integration remain separate paths.
+
+[derived: F019/F020; designed: T43] Scheduled quick campaign friendlies now apply
+result-relative confidence with ordered bench draws and scorer-shadow restoration.
+Browser management shows player confidence and confirmed team morale; results show
+the recomputed morale. See [campaign confidence](docs/campaign-confidence.md) for
+evidence, saved continuation and the current national-pool/status limits.
