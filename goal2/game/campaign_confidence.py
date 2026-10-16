@@ -2,7 +2,8 @@
 Campaign quick-runner confidence and the transient team-panel aggregate.
 
 [designed: T43] Integrate current squads and actual quick scorer events only.
-National-pool callers and other status transitions remain later tasks; no full
+National-pool callers and competitive event production remain later tasks;
+current B27F status belongs to eligibility.py. No full
 original fixture-tail RNG parity or synthetic incident sequence is claimed.
 """
 from goal2.engine import confidence, morale

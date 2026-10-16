@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 from goal2.ai.cpu import get_computer_tactics, pick_computer_eleven
-from goal2.game import campaign_energy, campaign_confidence
+from goal2.game import campaign_energy, campaign_confidence, eligibility
 
 # [designed: T01 vendored import layout] quick_engine imports sibling players.
 _ENGINE_DIR = str(Path(__file__).resolve().parents[1] / "engine")
@@ -54,6 +54,7 @@ def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, in
         if selected not in teams:
             raise ValueError("scheduled fixture does not include the managed country")
         managed_side = teams.index(selected)
+        eligibility.validate_teams(game_state, teams, managed_side)
         return teams, managed_side, teams[1 - managed_side]
     original_teams = tuple(qm.teams)
     managed_side = original_teams.index(selected) if selected in original_teams else 0
@@ -119,7 +120,11 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
     if own_country["managed"] <= 0x80:
         own_country["managed"] = 0xFF
     opponent_country = qm._country(opponent)
-    computer_eleven = pick_computer_eleven(game_state.players, opponent_country["squad"])
+    computer_squad = opponent_country["squad"]
+    if campaign is not None:
+        # [derived: F027/3216; designed: T44] Keep existing ranking policy.
+        computer_squad = eligibility.available_words(game_state.players, computer_squad)
+    computer_eleven = pick_computer_eleven(game_state.players, computer_squad)
     opponent_country["squad"] = computer_eleven + [
         p for p in opponent_country["squad"] if p not in computer_eleven
     ]
@@ -162,6 +167,8 @@ def run_full_match(template, game_state, *, retain_state: bool = False) -> dict:
         qm.d733(minute, 91 - minute)
     second = _snapshot(qm, len(first["goals"]))
     energy_transition = campaign_energy.finish(qm, game_state, with_confidence=True) if campaign is not None else None
+    if campaign is not None:
+        energy_transition["eligibility"] = eligibility.finish(qm, game_state)
     result = {
         "score": second["score"],
         "goals": first["goals"] + second["goals"],

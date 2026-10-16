@@ -14,7 +14,10 @@ function monogram(name) {
   return (words.length > 1 ? words[0][0] + words[1][0] : words[0]?.slice(0, 2) || '?').toUpperCase();
 }
 function chosenPlayers() { return session.players.filter(player => draft.selected.has(player.id)); }
+// [derived: F027; designed: T44] A complete draft still needs available starters.
 function selectionMessage() {
+  const unavailable = chosenPlayers().filter(player => player.availability && !player.availability.available);
+  if (unavailable.length) return `Replace unavailable players: ${unavailable.map(player => player.name).join(", ")}.`;
   const count = draft.selected.size;
   if (count === 11) return 'Eleven selected; this remains a browser draft.';
   if (count < 11) return `Choose ${11 - count} more player${11 - count === 1 ? '' : 's'} to complete the draft.`;
@@ -46,7 +49,7 @@ function setBusy(value) {
   $('#load-session-button').disabled = value;
   if (value) document.querySelectorAll('.player-check, [data-captain], #captain-select, [data-tactic-bit]').forEach(control => { control.disabled = true; });
 }
-function draftIsValid() { return draft.selected.size === 11 && draft.selected.has(draft.captain); }
+function draftIsValid() { return draft.selected.size === 11 && draft.selected.has(draft.captain) && chosenPlayers().every(player => !player.availability || player.availability.available); }
 function showPage(name) {
   const isSquad = name === 'squad';
   $('#dashboard-page').classList.toggle('hidden', isSquad);
@@ -179,8 +182,8 @@ function renderSquad(focusSelector = null) {
     const isSelected = draft.selected.has(player.id);
     const captain = isSelected && player.id === draft.captain;
     return `<tr class="${isSelected ? 'is-selected' : ''}">
-      <td class="select-col"><input class="player-check" type="checkbox" aria-label="Select ${safe(player.name)} for starting eleven draft" data-select="${player.id}" ${isSelected ? 'checked' : ''} ${busy ? 'disabled' : ''}></td>
-      <td><div class="player-cell"><span class="player-number">${String(player.number).padStart(2, '0')}</span><span class="player-initials">${safe(player.initials)}</span><span class="player-name">${safe(player.name)}${captain ? '<span class="captain-mark" aria-label="Draft captain">C</span>' : ''}</span></div></td>
+      <td class="select-col"><input class="player-check" type="checkbox" aria-label="Select ${safe(player.name)} for starting eleven draft" data-select="${player.id}" ${isSelected ? 'checked' : ''} ${busy || (player.availability && !player.availability.available && !isSelected) ? 'disabled' : ''}></td>
+      <td><div class="player-cell"><span class="player-number">${String(player.number).padStart(2, '0')}</span><span class="player-initials">${safe(player.initials)}</span><span class="player-name">${safe(player.name)}${player.availability && !player.availability.available ? `<small class="availability-reason">${safe(player.availability.reasons.join(", "))}</small>` : player.availability?.carried_bookings ? '<small class="availability-reason">1 booking carried</small>' : ""}${captain ? '<span class="captain-mark" aria-label="Draft captain">C</span>' : ''}</span></div></td>
       <td><span class="position-cell"><span class="role-chip">${Number(player.position).toString(16).toUpperCase()}</span>code ${player.position}</span></td>
       <td><span class="rating-value">${player.ability}</span></td>
       <td><span class="energy-value">${player.energy}</span></td>
@@ -191,13 +194,13 @@ function renderSquad(focusSelector = null) {
   const energy = selected.length ? Math.round(selected.reduce((sum, player) => sum + player.energy, 0) / selected.length) : '—';
   const captain = selected.find(player => player.id === draft.captain);
   $('#summary-xi').innerHTML = `${selected.length} <small>/ 11 selected</small>`;
-  $('#summary-xi-note').textContent = selected.length === 11 ? 'Browser draft ready' : selectionMessage();
+  $('#summary-xi-note').textContent = draftIsValid() ? 'Browser draft ready' : selectionMessage();
   $('#summary-captain').textContent = captain?.name ?? 'Not set';
   $('#summary-energy').textContent = energy;
   $('#selection-count').textContent = `${selected.length} of 11 selected`;
   $('#selection-guidance').textContent = selectionMessage();
   $('#squad-energy').textContent = energy;
-  $('#selection-count').classList.toggle('complete', selected.length === 11);
+  $('#selection-count').classList.toggle('complete', draftIsValid());
   const captainSelect = $('#captain-select');
   captainSelect.disabled = selected.length === 0 || busy;
   captainSelect.innerHTML = selected.length

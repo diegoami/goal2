@@ -88,3 +88,9 @@ rows, result/confirmed team morale and process-resume equality. Run
 `python3 tools/browser-ui/prove-campaign-confidence.py` sequentially for eight
 confidence mutations; each requires a targeted assertion failure and restores
 saved source bytes in finally. Neither vendored model is mutated.
+
+[designed: T44] `campaign-eligibility` starts from explicit saved injury/ban/booking
+test state, repairs the eleven, proves Save/Load do not expire a ban, plays its
+expiry fixture and resumes the resulting records in a fresh process. No production
+incident endpoint is added. Run `python3 tools/browser-ui/prove-campaign-eligibility.py`
+sequentially for ten targeted assertion-failure proofs with saved-byte restoration.
