@@ -1,35 +1,117 @@
 # Original watched-engine backlog: stage 1
 
-[designed: owner, 2026-10-16] The [decision in #97](https://github.com/diegoami/goal2/issues/97#issuecomment-6209860384) and [handover #130](https://github.com/diegoami/goal2/issues/130) select the original watched-match routine under Unicorn for the next playable milestone: choose a team and lineup in our browser, watch an original friendly, inspect its results, save and play another. Original engine resources are supplied at runtime or fetched by verified hash; none are committed. Unicorn is approved as an optional dependency.
+[designed: owner #97/#130, 2026-10-16] Stage 1 is the original watched friendly
+under Unicorn in goal2's browser: select a team/lineup, watch, inspect results,
+save and play another. Unicorn is optional and owner-approved. Original resources
+are supplied locally or fetched by full verified hash under ignored caches;
+none enter git. The [estimate](estimates/99-original-engine-plugged-in.md) and
+[decision](plan.md) define the scope.
 
-## Sequence and difficulty
+## Upstream handoff and acceptance gate
 
-[designed] Execute in order, one task/PR at a time. The first two issues belong upstream; their local task files are handover contracts, not permission to implement archaeology code here. GitHub labels carry current status. Creating this backlog does not select models or begin implementation/reviews.
+[designed: owner authorization, T67] Reconcile the existing tasks with archaeology
+[#250](https://github.com/diegoami/goal2-archaeology/issues/250) and
+[PR #251](https://github.com/diegoami/goal2-archaeology/pull/251) before integration.
+Do not repeat the T60/T61 investigation/packaging already proposed there. Their
+existing issue identities remain evidence-acceptance obligations, with gaps
+explicitly blocking acceptance. Production consumption requires PR #251 to be
+independently approved and merged, exact accepted source/resource pins, and a
+reviewed T62 coverage report. Candidate source is never a production pin. Status
+lives in GitHub labels; this document defines conditional gates, not their status.
 
-| Order | Task | Difficulty | Repository | Depends on |
-| --- | --- | --- | --- | --- |
-| 1 | [T60](tasks/T60.md) · [#248](https://github.com/diegoami/goal2-archaeology/issues/248) — Prove original watched-match fixture entry | Medium; feasibility uncertainty | archaeology | Decision/estimate gate |
-| 2 | [T61](tasks/T61.md) · [#249](https://github.com/diegoami/goal2-archaeology/issues/249) — Package reusable original watched-match calls | Medium | archaeology | T60 + upstream review gate |
-| 3 | [T62](tasks/T62.md) · [#132](https://github.com/diegoami/goal2/issues/132) — Vendor the optional watched runtime and verified assets | Easy–Medium | goal2 | T61 |
-| 4 | [T63](tasks/T63.md) · [#133](https://github.com/diegoami/goal2/issues/133) — Adapt game state into an original watched fixture | Medium | goal2 | T62 |
-| 5 | [T64](tasks/T64.md) · [#134](https://github.com/diegoami/goal2/issues/134) — Commit watched results atomically and preserve saves | Medium | goal2 | T63 |
-| 6 | [T65](tasks/T65.md) · [#135](https://github.com/diegoami/goal2/issues/135) — Run watched matches in a worker with progress | Medium | goal2 | T64 |
-| 7 | [T66](tasks/T66.md) · [#136](https://github.com/diegoami/goal2/issues/136) — Watch an original friendly in the browser | Medium | goal2 | T65 |
+[derived: proposed kit README and E033 at archaeology candidate
+`c5b5402bf74a1592a8bbb799942839f41ad79361`]
+The proposed deliverable is `runtime/original_match/`, stdlib plus Unicorn,
+with a README, example and `check --family`. Its API accepts `Image`, `Fixture`
+and `Match`, yields events and original decision points, and returns `result()`
+and `memory_component()`. Consult the
+[pinned README](https://github.com/diegoami/goal2-archaeology/blob/c5b5402bf74a1592a8bbb799942839f41ad79361/runtime/original_match/README.md)
+and [entry](https://github.com/diegoami/goal2-archaeology/issues/248#issuecomment-6215687812)
+/[packaging handovers](https://github.com/diegoami/goal2-archaeology/issues/249#issuecomment-6215688224).
+These describe proposed coverage, not goal2 acceptance or arbitrary-fixture fidelity.
 
-[designed] Medium means ordinary integration with bounded state/parity checks. T60 has feasibility uncertainty rather than inherently difficult coding. T62 is primarily packaging and installation. Each task protects one outcome; before dispatch, validate its failing baseline and runnable acceptance commands and split any slice that exceeds a bounded implementer run. Proposed test names in the task files are acceptance contracts, not existing checks or completed evidence.
+| Existing obligation | Proposed upstream coverage | Goal2 acceptance / remaining work |
+| --- | --- | --- |
+| T60 fixture entry | E033 `entry_probe.py`, E011/E021 reference and E032 family; direct `run_match` entry with the caller frame | Account for every entry/boundary input, hashes and repeated-run parity. The tried friendly/pair does not prove arbitrary campaigns. Record gaps; do not dispatch a duplicate probe. |
+| T61 reusable caller | `runtime/original_match/`, example, focused tests, mutation checks and independent check | Accept calling/decision/post-match contracts and all ten strict records from the merged source. No second `runtime/emul/watched_match.py` caller. |
+| T62 optional install | Vendoring instructions, optional Unicorn import and verified existing image loader | Vendor exact accepted package, per-file provenance/full asset hashes, missing-dependency/build/hash failure checks and quick-only regression. No reduced binary or new asset is presumed necessary. |
+| T63 adapter | `Image.from_savestate`, `Fixture(first, second, index, kind)`, `Match(..., managed, captain)`, events/answers, full returned memory | Map actual goal2 fixture/year/team/management state; compare all ten direct records plus sensitive changed-input/side-B cases without publishing. |
+| T64 result/save | `result()` and full `memory_component()` after original player update; kit `Match.save/load` | Atomic goal2 publication, T41 queue/history, compatible completed-session saves and deterministic continuation. A kit checkpoint is not automatically a new browser save feature. |
+| T65/T66 worker/browser | Incremental original events and `decision`/answer interface | Responsive worker, explicit default answers, once-only completion and browser results/save/repeat. Interactive editing and animation remain later scope. |
 
-## Gates and evidence
+[designed: T67, acceptance of the
+[review at the candidate pin](https://github.com/diegoami/goal2-archaeology/pull/251#issuecomment-6215910890)]
+T62 must verify approved regression evidence for all three reported defects,
+not merely observe another passing reference score:
 
-[designed: #130] Before T60 implementation, review and merge the existing [close-enough estimate PR #122](https://github.com/diegoami/goal2/pull/122), [original-engine estimate PR #123](https://github.com/diegoami/goal2/pull/123), and [decision PR #126](https://github.com/diegoami/goal2/pull/126) through the normal process. The owner chooses the eligible OpenCode reviewer; the planning request does not select one. Choose the implementer/model before dispatching each new task.
+- **R1 build guard:** meaningful engine-code changes outside short routine prefixes
+  are rejected; legitimate adapted player/country state remains accepted.
+- **R2 full-time save:** saving at a public `full_time` event can resume through the
+  original player-update tail with the same complete outcome as uninterrupted play.
+- **R3 commentary timestamps:** original commentary minutes match guest writes;
+  an equal line count alone cannot establish correct timestamps.
 
-[derived: estimate #123] T60 starts with one hour to establish whether `run_match` at `0791:F1F6` accepts an arbitrary supplied fixture without hidden menu preconditions. Preserve a quantitative negative result if it does not. Entering one level higher through `000E:6E15` may add the estimated 3–6 hours; stop and re-scope that repair before proceeding. T61 requires a positive entry verdict. A failed probe is not a successful engine integration.
+## Implementation sequence and difficulty
 
-[designed] T61/T62 consume only a reviewed, merged upstream runtime and strict E032 comparator, including the relevant work from [archaeology PR #243](https://github.com/diegoami/goal2-archaeology/pull/243). Pin exact source commits and asset hashes at dispatch; do not treat an estimate branch as accepted production evidence. T60 may inspect the explicitly pinned research branch for its experiment. Reuse `runtime/emul/watched_match.py` and `watched.py` rather than reimplementing match mathematics.
+[designed] Keep the existing task/issue IDs; one goal2 implementation task/PR at a
+time. T60/T61 acceptance can be recorded within T62, without separate duplicate
+upstream implementation PRs. A demonstrated evidence gap is a bounded upstream
+question, not permission for an open-ended investigation. Before any new task,
+choose its implementer; choose its independent reviewer for its validated PR.
+
+| Order | Task | Difficulty | Repository / prerequisite |
+| --- | --- | --- | --- |
+| Gate | [T60](tasks/T60.md) / [#248](https://github.com/diegoami/goal2-archaeology/issues/248) — Accept entry evidence | Medium; evidence reconciliation | archaeology handoff; accepted with T62 |
+| Gate | [T61](tasks/T61.md) / [#249](https://github.com/diegoami/goal2-archaeology/issues/249) — Accept reusable kit | Medium; evidence reconciliation | archaeology PR #251 approval/merge; accepted with T62 |
+| 1 | [T62](tasks/T62.md) / [#132](https://github.com/diegoami/goal2/issues/132) — Vendor optional kit and verify handoff | Easy–Medium | accepted PR #251 + T60/T61 coverage |
+| 2 | [T63](tasks/T63.md) / [#133](https://github.com/diegoami/goal2/issues/133) — Adapt state/fixture/result | Medium | T62 |
+| 3 | [T64](tasks/T64.md) / [#134](https://github.com/diegoami/goal2/issues/134) — Atomic publication and compatible saves | Medium | T63 |
+| 4 | [T65](tasks/T65.md) / [#135](https://github.com/diegoami/goal2/issues/135) — Worker and progress | Medium | T64 |
+| 5 | [T66](tasks/T66.md) / [#136](https://github.com/diegoami/goal2/issues/136) — Original friendly in browser | Medium | T65 |
+
+## State and scope rules
+
+[derived: proposed E033 kit at the candidate pin] Setup reseeds with
+`index * (year + 1)`. The proposed `Fixture` has no year argument: T63 must pin
+which image field supplies the engine year and reconcile it with goal2's campaign
+ordinal/source-year metadata. Production defaults preserve the original reseed;
+reference-family overrides remain explicit test inputs. Inherited live RNG words
+must not silently replace this rule. Record final RNG for deterministic continuation.
+
+[derived: proposed README/E033] Setup changes the computer's country/squad/player
+records, and the post-match tail applies energy/form/confidence effects. T63/T64
+must preserve full `memory_component()` and countries as well as player bytes.
+A `full_time` event alone is not the completed publication boundary: finish the
+tail and obtain a valid result. Do not apply Python match effects again.
+
+[designed: T67] T65 consumes original decisions using the stage-1 automatic
+play-on policy (`m.answer()`), verifying it on accepted normal/injury paths.
+Unsupported/refused decisions get a bounded clear failure with active state
+unchanged; do not spin or invent substitutions. T66 consumes live events through
+ordinary browser controls but does not add halftime/in-play editing, mid-match
+browser saves, pitch animation, competitive fixtures or whole-core support.
+The T41 source-ordered campaign queue, history and unsupported qualifier barrier
+remain part of browser acceptance; ordinary quick friendlies remain usable.
+
+[designed: owner authorization, 2026-10-16] Defer [T42](tasks/T42.md) energy work
+until T64 establishes exactly which effects the original already publishes and
+the owner selects the later campaign/core route after stage 1. T42 keeps its
+boundary/once-only/recovery assertions, focusing remaining integration on
+between-fixture effects outside the original tail. This prevents double updates.
+The independent T41 authorization was a bounded exception, not a dispatch of T42.
 
 ## Estimate and milestone
 
-[derived: PR #123] The source estimate is **13.5 implementer hours, range 8.5–22**, across U1 upstream (5h), G1 vendoring (2.5h), G2 adapter (3h) and G3 browser (3h). This backlog splits those four packages into seven reviewable milestones: T60–T61 = U1, T62 = G1, T63–T64 = G2, T65–T66 = G3. These are not seven additional packages. More PRs add review/process time that the source's four-PR estimate did not quantify. Hidden-precondition repair and review/rework can extend elapsed time. The measured 9.7–14.6 CPU seconds per watched match is not a response-time guarantee.
+[derived: original estimate PR #123] The historical baseline is 13.5 implementer
+hours (8.5–22): U1 upstream 5h, G1 vendoring 2.5h, G2 adapter 3h, G3 browser 3h.
+T60/T61 originally split U1; the kit proposes to supply that work. Do not budget
+it a second time. Remaining effort must be re-estimated after accepted-kit
+preflight; this planning update supplies no new measured time estimate. Historical
+9.7–14.6 CPU seconds per watched match is not a hardware-independent deadline.
 
-[designed] Stage 1 is complete when ten strict original records reproduce through the adapter, original post-match effects publish exactly once, and a real browser friendly shows original commentary, boards, ratings and man of the match with save/resume and deterministic continuation. Quick play remains usable without the optional runtime. A-WATCH-1 changes only after this path is proven. No pitch animation, halftime editing or competitive/full-cycle support is implied.
-
-[designed: owner #97] This sequence takes priority over starting the next [campaign-backlog](full-cycle-backlog.md) implementation task. Preserve the campaign work and issues. After the first playable original watched friendly, the owner decides between continuing Python campaign adapters and adopting more of the original core. No stage-3 whole-core or stage-4 distribution tasks are created here; later watched UI work also remains outside this stage.
+[designed] Stage 1 still requires all ten strict original records through the
+adapter, once-only original post-match publication, and a real browser friendly
+with original commentary/boards/ratings/man of the match, save/resume and another
+fixture. Keep the stand-in until that path is proven; update A-WATCH-1 only then.
+The owner selects subsequent Python campaign versus original-core work. Stage 3
+whole-core and stage 4 distribution are not authorized by this backlog.
