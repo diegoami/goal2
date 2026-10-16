@@ -20,6 +20,7 @@ from urllib.parse import urlsplit
 from goal2.data.goaldat import GoalDat, load as load_goaldat
 from goal2.engine.savestate import Savestate
 from goal2.game.campaign_confidence import team_morale
+from goal2.game import eligibility
 from goal2.game.quick_match import resolve_full_matchup
 from goal2.game.quick_match import run_full_match
 from goal2.game.session_save import SessionSaveError, load as load_session_save, save as save_session_save
@@ -362,6 +363,8 @@ class WebSession:
                 "position": record[0x07],
                 "energy": record[0x0E],
                 "confidence": record[0x0C],
+                # [designed: T44] Campaign eligibility is authoritative at kickoff.
+                **({"availability": eligibility.info(record)} if getattr(state, "campaign", None) is not None else {}),
             })
         try:
             teams, managed_side, opponent = resolve_full_matchup(self.template, state)
@@ -422,6 +425,8 @@ class WebSession:
         squad = set(self.state.managed_squad)
         if any(player not in squad for player in eleven):
             raise ValueError("starting eleven must use players from the managed squad")
+        if getattr(self.state, "campaign", None) is not None:
+            eligibility.require_available(self.state.players, eleven)
         captain = raw["captain"]
         if isinstance(captain, bool) or not isinstance(captain, int) or captain not in eleven:
             raise ValueError("captain must be one of the starting eleven")

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // [designed: T35, T37] Real Chromium acceptance against the Python-owned live session.
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
@@ -11,7 +11,7 @@ import path from 'node:path';
 const args = process.argv.slice(2);
 const valueAfter = flag => { const at = args.indexOf(flag); return at >= 0 ? args[at + 1] : undefined; };
 const scenario = valueAfter('--scenario');
-assert(args.includes('--scenario') && ['countries', 'management', 'friendlies', 'persistence', 'campaign-friendlies'].includes(scenario), 'use --scenario countries|management|friendlies|persistence|campaign-friendlies');
+assert(args.includes('--scenario') && ['countries', 'management', 'friendlies', 'persistence', 'campaign-friendlies', 'campaign-eligibility'].includes(scenario), 'use --scenario countries|management|friendlies|persistence|campaign-friendlies|campaign-eligibility');
 const modulePath = process.env.PLAYWRIGHT_MODULE;
 assert(modulePath, 'set PLAYWRIGHT_MODULE to the installed Playwright entrypoint');
 const require = createRequire(import.meta.url);
@@ -24,7 +24,7 @@ let child;
 let base = valueAfter('--url');
 let saveDirectory;
 let savePath;
-if (['persistence', 'campaign-friendlies'].includes(scenario)) {
+if (['persistence', 'campaign-friendlies', 'campaign-eligibility'].includes(scenario)) {
   saveDirectory = await mkdtemp(path.join(tmpdir(), 'goal2-browser-save-'));
   savePath = path.join(saveDirectory, 'session.g2save');
 }
@@ -53,8 +53,23 @@ async function stopServer() {
   }
   child = null;
 }
+if (scenario === 'campaign-eligibility') {
+  assert(!base, 'campaign-eligibility needs its isolated local fixture server');
+  // [designed: T44] Explicit saved test state; no production incident endpoint.
+  const prepare = `from pathlib import Path
+import sys
+from goal2.web.server import WebSession
+s = WebSession.load(sys.argv[1], sys.argv[2])
+s.new_campaign({'country':4,'start_year':1990,'seed_7b62':4660,'seed_8336':33590})
+for word, offset, value in ((s.state.starting_eleven[0],14,0),(s.state.starting_eleven[1],16,128),(s.state.managed_squad[-1],16,8)):
+    r=bytearray(s.state.players[word]); r[offset]=value; s.state.players[word]=bytes(r)
+s.save_path=Path(sys.argv[3])
+s.save_to_configured_path()
+`;
+  execFileSync(process.env.PYTHON || 'python3', ['-c', prepare, savestate, goaldat, savePath], { cwd, env: { ...process.env, PYTHONDONTWRITEBYTECODE: '1' } });
+}
 if (!base) {
-  await startServer();
+  await startServer(scenario === 'campaign-eligibility');
 }
 const getSession = async () => {
   const response = await fetch(`${base}/api/session`);
@@ -69,7 +84,60 @@ const getCountries = async () => {
 
 let browser;
 try {
-  if (scenario === 'management') {
+  if (scenario === 'campaign-eligibility') {
+    const initial = await getSession();
+    const injured = initial.players.find(player => player.availability.reasons.includes('Injured'));
+    const suspended = initial.players.find(player => player.availability.ban_fixtures === 1);
+    const carried = initial.players.find(player => player.availability.carried_bookings === 1);
+    assert(injured && suspended && carried, 'explicit injury/ban/carried-booking fixture');
+    assert.equal(initial.matchup.available, false);
+    browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const page = await context.newPage();
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    assert.equal(await page.locator('#play-button').isDisabled(), true, 'unavailable confirmed starter blocks play');
+    await page.locator('[data-page="squad"]').click();
+    for (const [player, reason] of [[injured, 'Injured'], [suspended, 'Suspended']]) {
+      const row = page.locator(`[data-select="${player.id}"]`).locator('xpath=ancestor::tr');
+      assert.match(await row.locator('.availability-reason').innerText(), new RegExp(reason));
+      await page.locator(`[data-select="${player.id}"]`).uncheck();
+      assert.equal(await page.locator(`[data-select="${player.id}"]`).isDisabled(), true, 'unavailable player can be removed but not reselected');
+    }
+    const replacements = initial.players.filter(player => player.availability.available && !initial.confirmed.starting_eleven.includes(player.id)).slice(0, 2);
+    assert.equal(replacements.length, 2);
+    for (const player of replacements) await page.locator(`[data-select="${player.id}"]`).check();
+    await page.locator('#confirm-button').click();
+    await page.waitForFunction(() => document.querySelector('#management-feedback').textContent.includes('Team confirmed'));
+    assert.equal((await getSession()).matchup.available, true);
+    await page.locator('#save-session-button').click();
+    await page.waitForFunction(() => document.querySelector('#save-feedback').textContent.startsWith('Session saved'));
+    await page.locator('#load-session-button').click();
+    await page.waitForFunction(() => document.querySelector('#save-feedback').textContent.startsWith('Saved session loaded'));
+    let current = await getSession();
+    assert.equal(current.players.find(player => player.id === suspended.id).availability.ban_fixtures, 1, 'save/load serves no ban');
+    await page.locator('[data-page="dashboard"]').click();
+    await page.locator('#play-button').click();
+    await page.waitForFunction(() => document.querySelectorAll('#campaign-history li').length === 1);
+    current = await getSession();
+    assert.equal(current.players.find(player => player.id === suspended.id).availability.ban_fixtures, 0, 'played friendly serves old ban');
+    assert.equal(current.players.find(player => player.id === carried.id).availability.carried_bookings, 1, 'booking persists without another booking');
+    await page.locator('#save-session-button').click();
+    await page.waitForFunction(() => document.querySelector('#save-feedback').textContent.startsWith('Session saved'));
+    await stopServer();
+    await startServer(true);
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    const resumed = await getSession();
+    assert.deepEqual(resumed.players, current.players, 'status and recovery records survive process resume');
+    assert.deepEqual(resumed.campaign, current.campaign, 'eligibility transition and fixture history resume together');
+    await page.locator('[data-page="squad"]').click();
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+    assert.deepEqual(pageErrors, []);
+    await context.close();
+    console.log('PASS campaign-eligibility: injury/ban feedback, lineup repair, no expiry on save/load, played-fixture expiry, carried booking, process resume and mobile');
+  } else if (scenario === 'management') {
     const initial = await getSession();
     const countries = await getCountries();
     const choice = countries.countries.find(country => country.id !== initial.country.id && country.name !== 'Denmark');

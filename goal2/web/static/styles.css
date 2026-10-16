@@ -39,3 +39,6 @@
 #campaign-form input { width: 7rem; }
 #campaign-form select { width: 12rem; }
 #campaign-status { width: 100%; overflow-wrap: anywhere; }
+
+/* [designed: T44] Availability feedback stays with its player row. */
+.availability-reason { display: block; font-size: 0.75rem; color: #805514; }

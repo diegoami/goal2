@@ -29,6 +29,9 @@ class EligibilityReferenceCases(unittest.TestCase):
                             (record(status=0x04), ('Substituted off',)),
                             (record(status=0x08), ()), (record(status=0x10), ())]:
             self.assertEqual(eligibility.reasons(r), expected)
+        self.assertEqual(eligibility.info(record(status=0x88))['carried_bookings'], 1)
+        self.assertEqual(eligibility.info(record(status=0x88))['ban_fixtures'], 1)
+        self.assertEqual(eligibility.info(eligibility.after_fixture(record(status=0x88), 1))['ban_fixtures'], 0)
         self.assertEqual(eligibility.reasons(record(status=0xA4, current=0)),
                          ('Injured', 'Suspended', 'Sent off', 'Substituted off'))
 
@@ -90,10 +93,10 @@ class EligibilityContinuations(unittest.TestCase):
         payload = {'country': 4, 'starting_eleven': list(state.starting_eleven),
                    'captain': state.starting_eleven[1], 'tactics': state.country_tactics}
         with self.assertRaisesRegex(ValueError, 'unavailable'):
-            self.session.apply_management(payload)
+            self.session.confirm_management(payload)
         self.assertEqual(self.session.state, before)
         payload['starting_eleven'][0] = state.managed_squad[-1]
-        v = self.session.apply_management(payload)
+        v = self.session.confirm_management(payload)
         self.assertTrue(v['matchup']['available'])
         self.assertNotIn(word, self.session.state.starting_eleven)
         self.assertEqual(self.session.state.players[word][16], 0x80)
@@ -155,6 +158,23 @@ class EligibilityContinuations(unittest.TestCase):
         with patch.object(QuickMatch, 'd733', return_value=None): self.play()
         self.assertGreater(self.session.state.players[word][14], 0)
         self.assertTrue(next(p for p in self.session.view()['players'] if p['id'] == word)['availability']['available'])
+
+    def test_status_runs_once_and_only_for_fixture_countries(self):
+        other = 2001  # country101, outside the first fixture4/1
+        self.change(other, **{'16': 0x80})
+        before = self.session.state.players[other]
+        original = eligibility.finish
+        calls = []
+        def finish(qm, state):
+            result = original(qm, state)
+            calls.append(result)
+            with self.assertRaisesRegex(ValueError, 'already'):
+                original(qm, state)
+            return result
+        with patch.object(eligibility, 'finish', side_effect=finish): self.play()
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(self.session.state.players[other], before)
+        self.assertEqual(self.session.state.match_state['campaign_energy']['eligibility'], calls[0])
 
     def test_failure_discards_status_candidate_and_stateless_simulation(self):
         word = self.session.state.managed_squad[-1]
