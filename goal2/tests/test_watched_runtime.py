@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import watched_evidence
 from watched_evidence import IMAGES, verify_vendor
 from goal2.engine.original_match import Image, Match, Fixture
-from goal2.engine.original_match.assets import reference_image, AssetError
+from goal2.engine.original_match.assets import reference_image, AssetError, REFERENCE
 from goal2.game.state import from_savestate, to_savestate
 
 
@@ -52,12 +52,12 @@ class RuntimeTests(unittest.TestCase):
             with patch("goal2.engine.original_match.assets.subprocess.run", side_effect=FileNotFoundError("gh missing")):
                 with self.assertRaisesRegex(AssetError, "cannot download.*gh release download"):
                     reference_image(folder)
-            path = Path(folder) / next(iter(IMAGES))
+            path = Path(folder) / REFERENCE["asset"]
             path.write_bytes(b"wrong image")
             with patch("goal2.engine.original_match.assets.subprocess.run", side_effect=AssertionError("no network on cache hit")):
                 with self.assertRaisesRegex(AssetError, "SHA-256"):
                     reference_image(folder)
-        self.assertEqual(hashlib.sha256(self.raw).hexdigest(), next(iter(IMAGES.values())))
+        self.assertEqual(hashlib.sha256(self.raw).hexdigest(), REFERENCE["sha256"])
 
     def test_optional_dependency_failure_and_actual_quick_play(self):
         # [designed] A fresh interpreter with Unicorn imports refused, and no watched image in cwd.

@@ -40,6 +40,35 @@ def original_tail(probe):
             "seeds": [probe.rd(0x7B62), probe.rd(0x8336)]}
 
 
+def strict_original(entry, raw, seed):
+    """[derived: accepted E032 timing.py] Repeat its actual watchstart input and declared calibration write.
+    Keep actual start identity/inputs in the strict record; menu-entry equivalence is checked separately.
+    """
+    from unicorn import UC_HOOK_CODE
+    m = entry.WatchedMatch(raw)
+    m.set_seed(seed)
+    done = []
+    def at_tick(uc, address, size, data):
+        if done:
+            return
+        linear = m.DS * 16 + 0xA9FF
+        old = m.mem(linear,4)
+        uc.mem_write(linear,(20).to_bytes(4,"little"))
+        m.inputs.append({"what":"delay calibration dword DS:A9FF/AA01, at the first 0791:970C entry",
+                         "linear":linear,"old":old.hex(),"new":(20).to_bytes(4,"little").hex()})
+        done.append(True)
+    linear = m.lin("0791:970C")
+    m.mu.hook_add(UC_HOOK_CODE,at_tick,begin=linear,end=linear)
+    t,c = time.monotonic(),time.process_time()
+    m.run(timeout_s=60)
+    digest = hashlib.sha256("\n".join("%d %d %04x %04x" % d for d in m.draws).encode()).hexdigest()
+    return {"seed":seed,"error":None,"stopped_at_board":m.stopped_at_board,"strays":list(m.strays),
+            "cpu_s":time.process_time()-c,"wall_s":time.monotonic()-t,"start_record":"E011-r0001",
+            "watchstart_sha256":hashlib.sha256(raw).hexdigest(),"inputs":m.inputs,"delay_count":20,
+            "score":m.state()["score"],"ticks":len(m.tick_marks),"draws":len(m.draws),"draws_digest":digest,
+            "statistics_raw":m.statistics(),"templates":dict(collections.Counter(str(c["template"]) for c in m.commentary()))}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--seeds", type=int, choices=(1, 10), default=10)
@@ -92,23 +121,27 @@ def main(argv=None):
                          for o in (0x7B62, 0x8336)]}
         if expected != got or result["seed_after"] != got["seeds"][0]:
             bad = [key for key in expected if expected[key] != got[key]]
-            raise ValueError(f"seed {seed:#06x}: original post-match state differs: {bad}; seeds reference={expected["seeds"]} kit={got["seeds"]}")
-        # [derived: E032] The schema's identity/input metadata comes from the independently checked reference;
-        # ALL compared outcome fields below come from this live kit run, never from the reference.
-        rec = {k: refs[seed][k] for k in ("seed", "start_record", "watchstart_sha256", "inputs", "delay_count")}
-        rec.update(error=None, stopped_at_board=True, strays=[], cpu_s=time.process_time()-c0,
-                   wall_s=time.monotonic()-t0, score=result["score"], ticks=result["ticks"], draws=result["draws"],
-                   draws_digest=result["draws_digest"], statistics_raw=probe.board["statistics_raw"],
-                   templates=dict(collections.Counter(c["template"] for c in result["commentary"][-199:])))
-        # Board labels/addresses are the schema's; values are read independently from the KIT board.
-        stats = result["board"]["statistics"]
+            raise ValueError(f"seed {seed:#06x}: original post-match state differs: {bad}; seeds reference={expected['seeds']} kit={got['seeds']}")
+        # [designed] Re-run strict E032 on its TRUE watchstart input. Never borrow reference identity/inputs.
+        watchraw = (folder / ".cache/dl/d68e48c734a742a6-E011-r0001-watchstart.sav").read_bytes()
+        rec = strict_original(entry,watchraw,seed)
+        compare.validate(rec,f"fresh original seed {seed:#06x}")
+        candidate[seed] = rec
+        # [derived: E033] Explicit menu-entry equivalence: six measured outcomes, not an invented same-image claim.
+        stats_rows = []
         for row in rec["statistics_raw"]:
+            value = dict(row)
             field = "raw_bytes" if "raw_bytes" in row else "raw_words"
             label = row["row_label"]
-            row[field] = (result["board"]["bars"][0 if label == "Possession" else 1]
-                          if field == "raw_words" else stats[label.lower().replace(" ", "_")])
-        compare.validate(rec, f"live seed {seed:#06x}")
-        candidate[seed] = rec
+            value[field] = (result["board"]["bars"][0 if label == "Possession" else 1]
+                            if field == "raw_words" else result["board"]["statistics"][label.lower().replace(" ","_")])
+            stats_rows.append(value)
+        kit_fields = {"score":result["score"],"ticks":result["ticks"],"draws":result["draws"],
+                      "draws_digest":result["draws_digest"],"statistics_raw":stats_rows,
+                      "templates":dict(collections.Counter(str(c["template"]) for c in result["commentary"][-199:]))}
+        differences = [key for key in compare.FIELDS if rec[key] != kit_fields[key]]
+        if differences:
+            raise ValueError(f"seed {seed:#06x}: kit differs from strict original: {differences}")
         details.append({"seed":seed, "players_sha256":hashlib.sha256(got["players"]).hexdigest(),
                         "countries_sha256":hashlib.sha256(got["countries"]).hexdigest(), "seeds":got["seeds"],
                         "event_order":True, "wall_s":round(time.monotonic()-t0,2)})
