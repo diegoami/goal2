@@ -34,12 +34,16 @@ class SilentRoundCases(unittest.TestCase):
     def test_first_two_turns_are_one_source_prefix_and_no_unattended_full_quick_loops(self):
         before=copy.deepcopy(self.model.state)
         with patch.object(QuickMatch,'d733',side_effect=AssertionError('CPU full-match loop')):
-            prepared=prepare(before,self.model.template_bytes)
+            try:prepared=prepare(before,self.model.template_bytes)
+            except ValueError as exc:self.fail(f'Valid source prefix refused: {exc}')
         self.assertEqual(before,self.model.state);self.assertEqual(len(prepared.campaign.world.results),17)
         first=play(before,self.model.template_bytes);world=first.campaign.world
         self.assertEqual(len(world.results),110)
         self.assertEqual([r['fixture_id'] for r in world.results],[f'original:{n}' for n in range(1361,1471)])
         self.assertEqual(world.results[17]['mode'],'managed')
+        # [designed] Fixed fresh-policy regression: fixture order changes these draws.
+        self.assertEqual([(r['score'],r['seed_before'],r['seed_after'],r['draws']) for r in world.results[:3]],
+                         [([0,1],37972,63228,72),([3,0],63228,2060,80),([1,0],2060,1922,70)])
         self.assertEqual(sum(r['mode']=='silent' for r in world.results),109)
         self.assertEqual(len(first.campaign.results),1);self.assertEqual(first.match_count,1)
         self.assertEqual(first.last_match['seed_DS7B62'],world.results[17]['seed_after'])
@@ -91,17 +95,27 @@ class SilentRoundCases(unittest.TestCase):
         with patch.object(SilentResolver,'__call__',broken):
             with self.assertRaisesRegex(ValueError,'suffix'):web.play({'play_token':web._play_token,'fixture_id':state.campaign.next_fixture.fixture_id})
         self.assertEqual(web.state,before)
+    def test_invalid_resolver_output_is_rejected_without_mutating_the_source(self):
+        before=copy.deepcopy(self.model.state)
+        def invalid_factory(state,template):
+            return lambda fixture,seed:{'score':[-1,0],'winner':0,'seed_after':seed,'draws':0}
+        with self.assertRaisesRegex(ValueError,'world result'):
+            prepare(self.model.state,self.model.template_bytes,resolver_factory=invalid_factory)
+        self.assertEqual(self.model.state,before)
+
     def test_duplicate_order_and_rng_corruption_are_refused_by_save_decode(self):
         state=play(self.model.state,self.model.template_bytes)
         good=json.loads(encode(state,self.model.template_bytes))
-        for corruption in ('duplicate','reorder','seed','draws','country','score'):
+        for corruption in ('duplicate','reorder','seed','draws','country','score','counter','decider'):
             doc=copy.deepcopy(good);world=doc['state']['campaign']['world'];rows=world['results']
-            if corruption=='duplicate':rows[1]=copy.deepcopy(rows[0])
+            if corruption=='duplicate':rows[1]['fixture_id']=rows[0]['fixture_id']
             elif corruption=='reorder':rows[0],rows[1]=rows[1],rows[0]
             elif corruption=='seed':rows[0]['seed_after']^=1
             elif corruption=='draws':rows[0]['draws']+=1
             elif corruption=='country':world['managed_country']=5
-            else:rows[17]['score'][0]+=1
+            elif corruption=='score':rows[17]['score'][0]+=1
+            elif corruption=='counter':doc['state']['match_count']+=1
+            else:world['fixtures'][0]['kind']=4;rows[0]['score']=[0,0];rows[0]['winner']=2
             with self.assertRaises(SessionSaveError,msg=corruption):decode(json.dumps(doc).encode())
         from goal2.game.campaign_rounds import complete as complete_round
         result={**state.last_match,'managed_side':state.last_match['managed_side']}
@@ -110,7 +124,7 @@ class SilentRoundCases(unittest.TestCase):
         resolver=SilentResolver(self.model.state,self.model.template_bytes)
         fixture=Scheduled('probe',1,1,2,1)
         with patch.object(resolver.qm,'roll_quick_goals',return_value=[0,0]) as roll:
-            out=resolver(fixture,4660);self.assertEqual(roll.call_args_list,[( (12,), {})])
+            out=resolver(fixture,4660);roll.assert_called_once_with(12)
             self.assertEqual(out,{'score':[0,0],'winner':2,'seed_after':4660,'draws':0})
         fixture=Scheduled('decider',4,1,2,1)
         with patch.object(resolver.qm,'roll_quick_goals',side_effect=([0,0],[0,0])) as roll:
@@ -124,6 +138,7 @@ class SilentRoundCases(unittest.TestCase):
         before=copy.deepcopy(self.model.state);resolver=SilentResolver(before,self.model.template_bytes)
         fixture=before.campaign.world.fixtures[0]
         out=resolver(fixture,4660);self.assertEqual(resolver(fixture,4660),out)
+        self.assertEqual(out,{'score':[0,2],'winner':1,'seed_after':23212,'draws':88})
         self.assertEqual(before,self.model.state)
         self.assertEqual(advance(4660,out['draws']),out['seed_after'])
         self.assertGreaterEqual(out['draws'],48)

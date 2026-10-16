@@ -71,6 +71,7 @@ class World:
             a,b=row['score'];winner=2 if a==b else int(b>a)
             decider=fixture.kind==4 or 8<=fixture.kind<=203
             if (a!=b or not decider) and row['winner']!=winner:raise ValueError('world result winner differs from score')
+            if a==b and decider and row['winner']==2:raise ValueError('silent decider needs its winner coin')
             if expected=='managed':
                 if fixture.kind!=1:raise ValueError('unsupported managed fixture completed')
                 managed_ids.append(fixture.fixture_id)
@@ -98,7 +99,8 @@ def validate_state(state):
     world=state.campaign.world if state.campaign else None
     if world is not None:
         seed=world.validate(state.campaign)
-        if world.managed_country!=state.managed_country or seed!=state.rng_seed_7b62:
+        if (world.managed_country!=state.managed_country or seed!=state.rng_seed_7b62
+                or state.match_count!=len(state.campaign.completed_fixture_ids)):
             raise ValueError('world country or live RNG differs from saved continuation')
 
 
@@ -122,7 +124,7 @@ def silent_until_managed(state,template,resolver_factory):
 
 def prepare(state,template,*,resolver_factory=SilentResolver):
     """[designed] Pure atomic prefix; only caller-owned candidates leave this seam."""
-    candidate=copy.deepcopy(state)
+    candidate = copy.deepcopy(state)
     validate_state(candidate)
     if candidate.campaign is not None and candidate.campaign.world is not None:
         pending=candidate.campaign.next_fixture

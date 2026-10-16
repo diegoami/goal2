@@ -184,6 +184,8 @@ class OpeningCampaignSchedule(unittest.TestCase):
         self.assertEqual([fixture.kind for fixture in queue[:3]], [1, 1, 5])
         self.assertEqual([(fixture.side_a, fixture.side_b) for fixture in queue[:3]],
                          [(4, 1), (9, 4), (4, 26)])
+        # [designed: T48] This low-level ledger test is the legacy managed-only format.
+        state.campaign.world=None
         state.campaign.complete_fixture(queue[0].fixture_id)
         state.campaign.complete_fixture(queue[1].fixture_id)
         with self.assertRaises(UnsupportedCampaignTransition):
