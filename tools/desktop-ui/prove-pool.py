@@ -31,9 +31,7 @@ def main():
    else:command=['/tmp/T69-desktop-venv/bin/python','-B','tools/desktop-ui/acceptance.py','--scenario','campaign-pool','--template','.cache/e010-r0008-halftime.sav','--data','.cache/GOAL.DAT']
    result=subprocess.run(command,cwd=ROOT,env={**os.environ,'QT_QPA_PLATFORM':'offscreen','PYTHONDONTWRITEBYTECODE':'1'},capture_output=True,text=True,timeout=45)
    output=result.stdout+result.stderr
-   # A masked ID must refuse instead of silently exchange a different identity;
-   # count that ValueError as the observed missing full-ID behavior.
-   expected=('AssertionError' in output or (name=='full reserve ID' and 'ValueError: exchange needs one squad and one reserve ID' in output))
+   expected='AssertionError' in output and 'ERROR:' not in output
    if result.returncode==0 or not expected:raise AssertionError(f'{name} did not fail targeted check: {output[-1800:]}')
    print('PASS mutation:',name,flush=True)
   finally:path.write_bytes(saved)
