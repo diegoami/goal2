@@ -117,3 +117,16 @@ class WatchedPublicationTests(unittest.TestCase):
             with self.subTest(change=change):
                 with self.assertRaises(ValueError):pub.complete(job.token,bad)
                 self.assertEqual(owner.state,before)
+
+    def test_cancel_and_wrong_tokens_preserve_active_state(self):
+        owner=Owner(self.state(),self.raw);pub=WatchedPublication(owner)
+        before=copy.deepcopy(owner.state)
+        job=pub.begin(Fixture(7,19,21))
+        with self.assertRaises(ValueError):pub.complete('wrong token',None)
+        self.assertEqual(owner.state,before)
+        pub.cancel()
+        with self.assertRaises(ValueError):pub.complete(job.token,None)
+        replacement=pub.begin(Fixture(7,19,21))
+        self.assertNotEqual(replacement.token,job.token)
+        self.assertEqual(owner.state,before)
+        pub.cancel()

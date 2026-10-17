@@ -31,6 +31,7 @@ class WatchedSaveTests(unittest.TestCase):
                        lambda d:d['state']['last_match'].__setitem__('schema',99),
                        lambda d:d['state'].__setitem__('rng_seed_8336',1),
                        lambda d:d['state']['last_match'].pop('engine'),
+                       lambda d:d.__setitem__('version',1),
                        lambda d:d['state']['last_match']['original']['board']['statistics'].__setitem__('corners',[-1,0]),
                        lambda d:d['state']['last_match']['original'].__setitem__('goals',[{'bad':'record'}])):
             doc=json.loads(raw);mutate(doc)
@@ -90,6 +91,16 @@ class WatchedSaveTests(unittest.TestCase):
                 self.assertEqual(raw_template,template)
                 f2=resumed.campaign.next_fixture
                 self.assertIsNotNone(f2)
+                if year==1992:
+                    # [confirmed: actual T63 opening source schedule] The next managed row
+                    # is competitive kind2; save/reload must retain the same atomic refusal.
+                    self.assertEqual(f2.kind,2)
+                    for live in (owner,Owner(resumed,raw_template)):
+                        before_refusal=copy.deepcopy(live.state)
+                        with self.assertRaisesRegex(ValueError,'unsupported managed fixture'):
+                            WatchedPublication(live).begin(Fixture(f2.side_a,f2.side_b,int(f2.fixture_id.split(':')[1]),f2.kind))
+                        self.assertEqual(live.state,before_refusal)
+                    continue
                 self.assertEqual(f2.kind,1)
                 next_fixture=Fixture(f2.side_a,f2.side_b,int(f2.fixture_id.split(':')[1]))
                 next_jobs=[]
@@ -121,7 +132,11 @@ class WatchedSaveTests(unittest.TestCase):
             raw=session_save.encode(state,self.raw)
             self.assertEqual(json.loads(raw)['version'],1 if campaign is None else 2)
             resumed,template=session_save.decode(raw)
-            self.assertEqual(resumed,state);self.assertEqual(template,self.raw)
+            expected=copy.deepcopy(state)
+            if expected.campaign is not None:
+                from goal2.game.campaign_pool import validate
+                expected.campaign.reserve_ids=validate(state)
+            self.assertEqual(resumed,expected);self.assertEqual(template,self.raw)
             self.assertNotIn('engine',resumed.last_match)
 
     def test_watched_save_write_failure_keeps_existing_file_and_active_state(self):

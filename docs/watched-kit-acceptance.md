@@ -246,4 +246,6 @@ session schema.
 `python3 -m unittest goal2.tests.test_watched_save -v`. They cover all ten strict
 T63 seeds, actual fresh1990/1992 campaigns, returned state, once-only completion,
 failed publication, legacy saves, malformed watched saves and deterministic
-next-fixture continuation after save/reload.
+next-fixture continuation after save/reload. The actual1990 queue supplies a
+second friendly; the actual1992 queue supplies competitive kind2 next, so that
+case preserves the same explicit unsupported-fixture refusal after reload.

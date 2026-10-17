@@ -74,7 +74,7 @@ def _unb64(value: Any, field: str) -> bytes:
         raise SessionSaveError(f"{field}: invalid base64 data") from exc
 
 
-def _state_data(state: GameState, version: int) -> dict[str, Any]:
+def _state_data(state: GameState) -> dict[str, Any]:
     data = {
         "players": [_b64(bytes(record)) for record in state.players],
         "countries": [_b64(bytes(record)) for record in state.countries],
@@ -110,7 +110,7 @@ def encode(state: GameState, template: bytes) -> bytes:
             "format": FORMAT,
             "version": version,
             "template": _b64(bytes(template)),
-            "state": _state_data(state, version),
+            "state": _state_data(state),
         }
         raw = json.dumps(document, ensure_ascii=True, allow_nan=False,
                          separators=(",", ":")).encode("ascii")

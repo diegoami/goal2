@@ -92,7 +92,9 @@ def _details(result):
     for row in result['commentary']:
         _object(row,{'minute','template','players','team','text'})
         _number(row['minute']);_number(row['template'],0,255);_number(row['team'],0,255);_text(row['text'])
-        if not pair(row['players'],0,3060):raise ValueError('invalid watched commentary players')
+        # [confirmed: accepted E033 _flush] The ring carries two raw words;
+        # unused template arguments are not constrained to valid player IDs.
+        if not pair(row['players'],0,65535):raise ValueError('invalid watched commentary words')
     for row in result['inputs']:
         _object(row,{'what','linear','old','new'});_text(row['what']);_number(row['linear'],0,0x10ffff)
         for key in ('old','new'):
