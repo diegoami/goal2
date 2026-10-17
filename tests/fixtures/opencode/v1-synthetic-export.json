@@ -33,16 +33,32 @@
             "read": 3,
             "write": 1
           }
+        },
+        "parentID": "msg_fixture_user",
+        "mode": "reviewer",
+        "path": {
+          "cwd": "/home/diego/projects/goal2-work/T72a-opencode2-protocol",
+          "root": "/home/diego/projects/goal2-work/T72a-opencode2-protocol"
         }
       },
       "parts": [
         {
           "type": "text",
-          "text": "Header\napprove\n"
+          "text": "Header\napprove\n",
+          "id": "prt_fixture_0",
+          "sessionID": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+          "messageID": "msg_fixture_assistant"
         },
         {
           "type": "reasoning",
-          "text": "private reasoning sample"
+          "text": "private reasoning sample",
+          "id": "prt_fixture_1",
+          "sessionID": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+          "messageID": "msg_fixture_assistant",
+          "time": {
+            "start": 1792240887175,
+            "end": 1792240887177
+          }
         },
         {
           "type": "tool",
@@ -51,14 +67,21 @@
             "input": {
               "command": "cat /outside/file"
             },
-            "error": "The user rejected permission to use this specific tool call."
+            "error": "The user rejected permission to use this specific tool call.",
+            "time": {
+              "start": 1792240887175,
+              "end": 1792240887177
+            }
           },
           "time": {
             "created": 1792240887175,
             "completed": 1792240887176
           },
           "callID": "call_rejected",
-          "tool": "shell"
+          "tool": "shell",
+          "id": "prt_fixture_2",
+          "sessionID": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+          "messageID": "msg_fixture_assistant"
         },
         {
           "type": "tool",
@@ -67,18 +90,30 @@
             "input": {
               "command": "pwd"
             },
-            "output": "/fixture/project"
+            "output": "/fixture/project",
+            "time": {
+              "start": 1792240887175,
+              "end": 1792240887177
+            },
+            "title": "fixture pwd",
+            "metadata": {}
           },
           "time": {
             "created": 1792240887175,
             "completed": 1792240887176
           },
           "callID": "call_completed",
-          "tool": "shell"
+          "tool": "shell",
+          "id": "prt_fixture_3",
+          "sessionID": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+          "messageID": "msg_fixture_assistant"
         },
         {
           "type": "text",
-          "text": "Final pass done\napprove\n"
+          "text": "Final pass done\napprove\n",
+          "id": "prt_fixture_4",
+          "sessionID": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+          "messageID": "msg_fixture_assistant"
         }
       ]
     }

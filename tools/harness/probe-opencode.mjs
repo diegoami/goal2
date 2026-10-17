@@ -78,7 +78,7 @@ try {
   save('schema-root.json', { ...schema, paths: {}, components: { ...schema.components, schemas: {} } });
   const timeline = []; let agents; let models; let selected;
   const started = Date.now();
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 150 && Date.now() - started < 30000; i++) {
     agents = await request('/api/agent'); models = await request('/api/model');
     selected = models.data.find((m) => m.providerID === 'minimax' && m.id === 'MiniMax-M3' && m.enabled && m.variants.some((v) => v.id === 'thinking'));
     timeline.push({ elapsedMs: Date.now() - started, agents: agents.data.map((a) => a.id), selectedModelReady: Boolean(selected) });
@@ -132,11 +132,9 @@ try {
   if (child && child.exitCode === null) { child.kill('SIGTERM'); await Promise.race([exited, sleep(5000)]); }
   if (child && child.exitCode === null && child.signalCode === null) { child.kill('SIGKILL'); await exited; }
   lifecycle.ownedExit = child?.exitCode; lifecycle.ownedSignal = child?.signalCode;
-  assert(child?.exitCode !== null || child?.signalCode !== null, 'owned process must exit');
   if (url) {
     try { await fetch(url + '/api/info', { signal: AbortSignal.timeout(1500) }); lifecycle.ownedEndpointUnavailable = false; }
     catch { lifecycle.ownedEndpointUnavailable = true; }
-    assert(lifecycle.ownedEndpointUnavailable, 'owned endpoint must be unavailable after process shutdown');
   }
   lifecycle.unrelatedAfter = await (await fetch(unrelatedURL)).text(); unrelated.close();
   save('lifecycle.json', lifecycle);
@@ -144,6 +142,8 @@ try {
   save('serve-redacted.log', logs.replaceAll(password || '\0', '[REDACTED]'));
   save('manifest.json', { evidence: 'observed non-billing OpenCode2 protocol; no prompt/generate/run', binary: cmd.exe, binarySHA256: sha(fs.readFileSync(cmd.exe)), probeSHA256: sha(fs.readFileSync(new URL(import.meta.url))), artifacts });
 }
+assert(child?.exitCode !== null || child?.signalCode !== null, 'owned process must exit');
+assert(lifecycle.ownedEndpointUnavailable, 'owned endpoint must be unavailable after process shutdown');
 assert.equal(lifecycle.unrelatedAfter, lifecycle.unrelatedBefore);
 assert(lifecycle.zeroUsage, 'probe must finish its owned zero-usage lifecycle');
 console.log(`Protocol probe passed; safe artifacts retained in ${run}`);

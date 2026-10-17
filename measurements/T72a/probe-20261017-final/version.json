@@ -1,0 +1,8 @@
+{
+  "args": [
+    "--version"
+  ],
+  "code": 0,
+  "stdout": "opencode v2.0.28\n",
+  "stderr": ""
+}

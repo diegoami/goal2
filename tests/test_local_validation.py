@@ -111,7 +111,7 @@ class LocalValidationTests(unittest.TestCase):
 
         with patch.object(validator.subprocess, "run", side_effect=run):
             validator.validate(self.root, self.sha)
-        self.assertEqual(len(children), 4)
+        self.assertEqual(len(children), 5)
         self.assertTrue(any("tools/check_links.py" in c for c in children))
         self.assertTrue(any("--self-test" in c for c in children))
         self.assertTrue(any("tests/harness_clients.test.mjs" in c for c in children))
