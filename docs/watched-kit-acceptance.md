@@ -56,6 +56,8 @@ python3 tools/check_watched_upstream.py --suite competitive-stamps
 # Run each competitive save case separately (0,1,2):
 python3 tools/check_watched_upstream.py --suite competitive-saves --case 0
 python3 tools/prove_watched_competitive.py
+# Run source-mutating controls sequentially after all other suites:
+python3 tools/prove_watched_identity.py
 python3 tools/check_provenance.py
 ```
 
@@ -321,3 +323,24 @@ standalone and campaign saves with `python3 tools/export_watched_legacy.py --sou
 application into ignored `.cache/`, retains its source/input/output hashes, and
 never runs in or changes another task worktree. Original inputs and generated
 application saves remain ignored.
+
+[confirmed: T51a accepted-T64 export and real consumer execution]
+`python3 tools/export_watched_legacy.py --source 9fb725ac914afabfdaa830198fc3a514c87c243f`
+generates genuine kit1 standalone and1990 opening-campaign version3 saves using
+the reviewed T64 application and its original engine pin.
+`python3 -m unittest goal2.tests.test_watched_legacy_compatibility -v` checks
+byte-identical save roundtrips without rewriting old results, full real kit2
+result/event/Memory equality against a separate direct execution, mixed kit1/kit2
+history, watched-to-quick continuation and malformed identity rejection.
+The retained original primary seed belongs to returned Memory; later silent
+fixtures advance the live primary seed through the checked world ledger. The
+secondary seed remains checked against the retained original Memory.
+
+[confirmed: bounded T51 ownerbudget5 preflight at PR255]
+[evidence/T51a-watched-kit.json](evidence/T51a-watched-kit.json) records exact
+input/source/log hashes and measured outcomes for the parent dispatch. Budget5
+changes some original outcomes: index42 becomes a9-kick normal shoot-out,
+index9 keeps24-kick sudden death, index53 gives12-kick sudden death, and index40
+changes from the original-budget regulation win to an extra-time defeat. The
+explicit kind2/index21/reference-seed0x0101 case establishes a1–0 regulation win
+under5/5. These bounded diagnostics do not enable competitive application routing.
