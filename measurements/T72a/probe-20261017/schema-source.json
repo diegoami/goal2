@@ -1,0 +1,29 @@
+{
+  "source": "GET /openapi.json, installed2.0.28",
+  "sha256": "f42c5c90c758933da89505ebd6fdd434e1c4936f7c8e25edacc51886abbca394",
+  "selected_schema_files": [
+    "Session.Info",
+    "SessionTransfer.Data",
+    "Session.Message.Assistant",
+    "Session.Message.Assistant.Text",
+    "Session.Message.Assistant.Tool",
+    "Session.Message.ToolState.Error",
+    "Session.Message.ToolState.Completed",
+    "Session.StructuredError",
+    "TokenUsage.Info",
+    "Agent.Info",
+    "Config.AgentEncoded",
+    "Permission.Request",
+    "Permission.Rule",
+    "Permission.Reply",
+    "Permission.Source",
+    "Model.Info",
+    "Model.Ref",
+    "Model.Variant",
+    "SessionsResponse",
+    "SessionMessagesResponse",
+    "V2EventEncoded",
+    "SessionInterruptResponse"
+  ],
+  "classification": "actual schema; message/tool fixtures built from it are synthetic, not billed observation"
+}

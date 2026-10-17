@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "settings": {
+      "$ref": "#/components/schemas/Model.Settings"
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "body": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false
+}

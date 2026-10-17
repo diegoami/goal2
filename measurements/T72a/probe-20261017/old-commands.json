@@ -1,0 +1,21 @@
+{
+  "oldVariants": {
+    "args": [
+      "models",
+      "minimax",
+      "--verbose"
+    ],
+    "code": 1,
+    "stdout": "DESCRIPTION\n  List all available models\n\nUSAGE\n  opencode models [flags]\n\nFLAGS\n  --standalone       Run with a private server instead of the background service\n  --server string    Connect to a server URL instead of the background service\n\nGLOBAL FLAGS\n  --help, -h                                                          Show help information\n  --version, -v                                                       Show version information\n  --wizard                                                            Start wizard mode for a command\n  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)\n  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)\n  --print-logs                                                        Print logs to stderr (server logs require --standalone)\n",
+    "stderr": "\nERROR\n  Unrecognized flag: --verbose in command opencode models\n"
+  },
+  "oldExport": {
+    "args": [
+      "export",
+      "ses_eb61e5a91ffeR7ubYUG1t6O4Wt"
+    ],
+    "code": 1,
+    "stdout": "DESCRIPTION\n  OpenCode command line interface\n\nUSAGE\n  opencode <subcommand> [flags] [<directory>]\n\nARGUMENTS\n  directory string    Directory to start OpenCode in (optional)\n\nFLAGS\n  --standalone            Run with a private server instead of the background service\n  --server string         Connect to a server URL instead of the background service\n  --auto                  Auto-approve permissions that are not explicitly denied\n  --continue, -c          Continue the last session\n  --session, -s string    Session ID to continue, or to create if it does not exist\n  --prompt string         Prompt to use\n\nGLOBAL FLAGS\n  --help, -h                                                          Show help information\n  --version, -v                                                       Show version information\n  --wizard                                                            Start wizard mode for a command\n  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)\n  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)\n  --print-logs                                                        Print logs to stderr (server logs require --standalone)\n\nSUBCOMMANDS\n  upgrade, update    Upgrade OpenCode to the latest or a specific version\n  uninstall          Uninstall OpenCode, keeping session data, configuration, and state\n  acp                Start an Agent Client Protocol server\n  api                Make a request to the running server\n  debug              Debugging and troubleshooting tools\n  auth               manage integrations and credentials\n  mcp                Manage MCP (Model Context Protocol) servers\n  plugin             Manage plugins\n  models             List all available models\n  stats              Show shareable usage statistics\n  mini               Start the minimal interactive interface\n  run                Run OpenCode with a message\n  session            Manage sessions\n  service            Manage the background server\n  reload             Reload configuration\n  pair               Print one-time links to connect a browser or app\n  serve              Start the v2 API and web server\n",
+    "stderr": "\nERROR\n  Unexpected positional argument: \"ses_eb61e5a91ffeR7ubYUG1t6O4Wt\"\n"
+  }
+}

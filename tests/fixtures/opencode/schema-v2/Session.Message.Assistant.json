@@ -1,0 +1,113 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/components/schemas/Session.Message.ID"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "time": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "number"
+        },
+        "streamed": {
+          "type": "number"
+        },
+        "completed": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "created"
+      ],
+      "additionalProperties": false
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "assistant"
+      ]
+    },
+    "agent": {
+      "$ref": "#/components/schemas/Agent.ID"
+    },
+    "model": {
+      "$ref": "#/components/schemas/Model.Ref"
+    },
+    "content": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/Session.Message.Assistant.Text"
+          },
+          {
+            "$ref": "#/components/schemas/Session.Message.Assistant.Reasoning"
+          },
+          {
+            "$ref": "#/components/schemas/Session.Message.Assistant.Tool"
+          }
+        ]
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/components/schemas/Snapshot.ID"
+        },
+        "end": {
+          "$ref": "#/components/schemas/Snapshot.ID"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RelativePath"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "finish": {
+      "type": "string",
+      "enum": [
+        "stop",
+        "length",
+        "tool-calls",
+        "content-filter",
+        "error",
+        "unknown"
+      ]
+    },
+    "rawFinish": {
+      "type": "string"
+    },
+    "providerState": {
+      "$ref": "#/components/schemas/Session.Message.ProviderState_4"
+    },
+    "cost": {
+      "$ref": "#/components/schemas/Money.USD"
+    },
+    "tokens": {
+      "$ref": "#/components/schemas/TokenUsage.Info"
+    },
+    "error": {
+      "$ref": "#/components/schemas/Session.StructuredError"
+    },
+    "retry": {
+      "$ref": "#/components/schemas/Session.Message.Assistant.Retry"
+    }
+  },
+  "required": [
+    "id",
+    "time",
+    "type",
+    "agent",
+    "model",
+    "content"
+  ],
+  "additionalProperties": false
+}

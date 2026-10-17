@@ -1,0 +1,71 @@
+{
+  "location": {
+    "directory": "/home/diego/projects/goal2-work/T72a-opencode2-protocol"
+  },
+  "data": [
+    {
+      "id": "MiniMax-M3",
+      "modelID": "MiniMax-M3",
+      "providerID": "minimax",
+      "family": "minimax",
+      "enabled": true,
+      "variants": [
+        {
+          "id": "none"
+        },
+        {
+          "id": "thinking"
+        }
+      ]
+    },
+    {
+      "id": "MiniMax-M2.7",
+      "modelID": "MiniMax-M2.7",
+      "providerID": "minimax",
+      "family": "minimax",
+      "enabled": true,
+      "variants": []
+    },
+    {
+      "id": "MiniMax-M2.7-highspeed",
+      "modelID": "MiniMax-M2.7-highspeed",
+      "providerID": "minimax",
+      "family": "minimax",
+      "enabled": true,
+      "variants": []
+    },
+    {
+      "id": "MiniMax-M2.5-highspeed",
+      "modelID": "MiniMax-M2.5-highspeed",
+      "providerID": "minimax",
+      "family": "minimax",
+      "enabled": true,
+      "variants": []
+    },
+    {
+      "id": "MiniMax-M2.5",
+      "modelID": "MiniMax-M2.5",
+      "providerID": "minimax",
+      "family": "minimax",
+      "enabled": true,
+      "variants": []
+    },
+    {
+      "id": "MiniMax-M2.1",
+      "modelID": "MiniMax-M2.1",
+      "providerID": "minimax",
+      "family": "minimax",
+      "enabled": true,
+      "variants": []
+    },
+    {
+      "id": "MiniMax-M2",
+      "modelID": "MiniMax-M2",
+      "providerID": "minimax",
+      "family": "minimax",
+      "enabled": true,
+      "variants": []
+    }
+  ],
+  "projection": "request settings and unrelated providers excluded"
+}

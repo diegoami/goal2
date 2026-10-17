@@ -1,0 +1,11 @@
+{
+  "args": [
+    "session",
+    "export",
+    "--standalone",
+    "ses_eb61e5a91ffeR7ubYUG1t6O4Wt"
+  ],
+  "code": 0,
+  "stdout": "{\n  \"info\": {\n    \"id\": \"ses_eb61e5a91ffeR7ubYUG1t6O4Wt\",\n    \"projectID\": \"18205a66481f455f28fc093fd822a040e8af9580\",\n    \"agent\": \"reviewer\",\n    \"model\": {\n      \"id\": \"MiniMax-M3\",\n      \"providerID\": \"minimax\",\n      \"variant\": \"thinking\"\n    },\n    \"cost\": 0,\n    \"tokens\": {\n      \"input\": 0,\n      \"output\": 0,\n      \"reasoning\": 0,\n      \"cache\": {\n        \"read\": 0,\n        \"write\": 0\n      }\n    },\n    \"time\": {\n      \"created\": 1792240887175,\n      \"updated\": 1792240887175\n    },\n    \"title\": \"T72a-owned-empty-never-prompted\",\n    \"location\": {\n      \"directory\": \"/home/diego/projects/goal2-work/T72a-opencode2-protocol\"\n    }\n  },\n  \"messages\": []\n}\n",
+  "stderr": ""
+}

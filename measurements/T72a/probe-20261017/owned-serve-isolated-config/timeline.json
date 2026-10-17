@@ -1,0 +1,94 @@
+{
+  "pid": 3306961,
+  "port": 33297,
+  "samples": [
+    {
+      "elapsed": 0.1308552869995765,
+      "ids": []
+    },
+    {
+      "elapsed": 0.5011880589991051,
+      "ids": [
+        "build",
+        "general",
+        "explore",
+        "compaction",
+        "title",
+        "summary",
+        "plan"
+      ]
+    },
+    {
+      "elapsed": 0.9156350269986433,
+      "ids": [
+        "build",
+        "general",
+        "explore",
+        "compaction",
+        "title",
+        "summary",
+        "plan"
+      ]
+    },
+    {
+      "elapsed": 1.136405442000978,
+      "ids": [
+        "build",
+        "general",
+        "explore",
+        "compaction",
+        "title",
+        "summary",
+        "plan",
+        "migration_probe",
+        "reviewer"
+      ]
+    }
+  ],
+  "last_agent": {
+    "id": "migration_probe",
+    "name": "migration_probe",
+    "request": {
+      "settings": {},
+      "headers": {},
+      "body": {}
+    },
+    "system": "Do not run",
+    "description": "Nonbilling discovery only",
+    "mode": "all",
+    "hidden": false,
+    "permissions": [
+      {
+        "action": "*",
+        "resource": "*",
+        "effect": "allow"
+      },
+      {
+        "action": "read",
+        "resource": "*.env",
+        "effect": "ask"
+      },
+      {
+        "action": "read",
+        "resource": "*.env.*",
+        "effect": "ask"
+      },
+      {
+        "action": "read",
+        "resource": "*.env.example",
+        "effect": "allow"
+      },
+      {
+        "action": "*",
+        "resource": "*",
+        "effect": "deny"
+      },
+      {
+        "action": "browser",
+        "resource": "*",
+        "effect": "deny"
+      }
+    ]
+  },
+  "owned_exit": 130
+}

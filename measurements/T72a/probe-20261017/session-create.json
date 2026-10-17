@@ -1,0 +1,30 @@
+{
+  "data": {
+    "id": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+    "projectID": "18205a66481f455f28fc093fd822a040e8af9580",
+    "agent": "reviewer",
+    "model": {
+      "id": "MiniMax-M3",
+      "providerID": "minimax",
+      "variant": "thinking"
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "time": {
+      "created": 1792240887175,
+      "updated": 1792240887175
+    },
+    "title": "T72a-owned-empty-never-prompted",
+    "location": {
+      "directory": "/home/diego/projects/goal2-work/T72a-opencode2-protocol"
+    }
+  }
+}

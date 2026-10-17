@@ -1,0 +1,8 @@
+{
+  "type": "string",
+  "enum": [
+    "once",
+    "always",
+    "reject"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "interrupted": {
+      "type": "boolean",
+      "description": "Whether an active execution owned by this OpenCode process was interrupted."
+    }
+  },
+  "required": [
+    "interrupted"
+  ],
+  "additionalProperties": false
+}
