@@ -1,0 +1,30 @@
+✖ symlinked owned parent keeps canonical fresh and resumed production identity (907.204219ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 968.780657
+
+✖ failing tests:
+
+test at tests/opencode_workflow.test.mjs:113:1
+✖ symlinked owned parent keeps canonical fresh and resumed production identity (907.204219ms)
+  AssertionError [ERR_ASSERTION]: fresh owned root must have physical identity
+  + actual - expected
+  
+  + '/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/tmp/goal2-workflow-K2k6dD/runtime-alias/v2/runs/run-3wla7Q'
+  - '/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/tmp/goal2-workflow-K2k6dD/physical-runtime/v2/runs/run-3wla7Q'
+  
+      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:122:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/tmp/goal2-workflow-K2k6dD/runtime-alias/v2/runs/run-3wla7Q',
+    expected: '/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/tmp/goal2-workflow-K2k6dD/physical-runtime/v2/runs/run-3wla7Q',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

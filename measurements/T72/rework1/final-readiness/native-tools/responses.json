@@ -1,0 +1,142 @@
+[
+  [
+    {
+      "id": "fake",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "external-proc-metadata",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"cat /proc/self/comm\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 1,
+                "id": "external-cat",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"cat /etc/hostname\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 2,
+                "id": "external-quoted",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"cat \\\"/etc/hostname\\\"\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 3,
+                "id": "external-nested",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"echo $(cat /etc/hostname)\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 4,
+                "id": "external-relative",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"cat \\\"../../../../../../../../../../etc/hostname\\\"\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 5,
+                "id": "inside-cat",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"cat inside.txt\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 6,
+                "id": "tmp-cat",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"cat \\\"/tmp/T72-guard-4a669206e3b79acf.txt\\\"\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 7,
+                "id": "research-cat",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"cat \\\"/home/diego/projects/goal2-archaeology/.gitignore\\\"\",\"timeout\":2000}"
+                }
+              },
+              {
+                "index": 8,
+                "id": "git-deny",
+                "type": "function",
+                "function": {
+                  "name": "shell",
+                  "arguments": "{\"command\":\"git push T72-NO-REMOTE\",\"timeout\":2000}"
+                }
+              }
+            ]
+          },
+          "finish_reason": null
+        }
+      ]
+    },
+    {
+      "id": "fake",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {},
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  ],
+  [
+    {
+      "id": "fake",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {
+            "content": "Deterministic loopback probe complete."
+          },
+          "finish_reason": null
+        }
+      ]
+    },
+    {
+      "id": "fake",
+      "choices": [
+        {
+          "index": 0,
+          "delta": {},
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  ]
+]

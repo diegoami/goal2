@@ -11,6 +11,9 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
    game/state/save interfaces directly. This supersedes the browser UI decision of 2026-10-15.
    The completed browser and terminal interfaces remain historical/secondary work; new primary
    UI work follows the [desktop roadmap](desktop-ui-roadmap.md). No server or hosting is required.
+   [designed: owner, 2026-10-17] Keep Qt management and use a Pygame match view,
+   delivered gradually through the UI-independent worker and an original-event viewer first;
+   pitch animation follows separately validated coordinate mapping.
 4. **The watched-match engine is the original's own, plugged in** [designed: owner, 2026-10-16, goal2 #97]. Stage 1 of
    [the estimate for issue 99](estimates/99-original-engine-plugged-in.md) now: the original's watched match
    (`run_match`, `0791:F1F6`) runs under Unicorn on goal2's own state in a local worker process, with the original's
@@ -41,8 +44,9 @@ names what replaces it.
   bytes field by field.
 - **Determinism.** One LCG stream, seeded as F004 says. No wall clock and no unseeded randomness
   in any rule. A whole campaign replays from its seed and its inputs. The bot (G-M5) needs this.
-- **Desktop controls call Python directly.** [designed: owner #148; PySide6 session choice]
-  Qt owns the window/event loop; a separate process runs costly match work and sends ordered
+- **Desktop controls call Python directly.** [designed: owner #148; PySide6 session choice; Pygame match-view choice2026-10-17]
+  Qt owns management, active state and saves; a separate Pygame process/window presents matches.
+  A separate process runs costly match work and sends ordered
   events/results over local IPC. The kit runs in that process, with no HTTP layer. The UI owns
   active state and publishes a validated completed candidate once. Reuse the game logic, state
   adapter, register and save format; build desktop controls rather than reusing the web layer.

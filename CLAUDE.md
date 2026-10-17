@@ -173,11 +173,11 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
 6. These rules work whatever model the orchestrator itself runs on; they never name it.
 7. **Still in force:** the effort rule (a heavy model, Opus, GPT-6.1 Sol, GLM-5.3, MiMo v2.6 Pro
    or MiniMax-M3, at `medium` at most and `low` when medium is not needed; a light model at
-   `high`); every model id comes from a live list (`opencode models <provider>`), never memory;
+   `high`); every model id comes from a live list (`opencode models --standalone` on v2), never memory;
    the main session runs the lines an OpenCode reviewer cannot reach (L57).
 
 ### Monitoring OpenCode sessions (and any other background agent)
-8. Start every OpenCode run in the background, with stdin from a file (never an inherited pipe:
+8. [designed: T72] Start every OpenCode run in the background. The run client receives closed stdin; its private v2 server has a separately owned stdin lease. For direct v1 clients, use stdin from a file (never an inherited pipe:
    `opencode run` waits for stdin's end-of-file before it creates a session). Never wait on it blind.
 9. Watch it with one monitor that checks every 1-2 minutes. Test a job's life by its systemd unit
    (`systemctl --user is-active <unit>`: start every long job as its own unit, L103) or its PID
@@ -202,7 +202,7 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
     `tools/harness/peek.sh ses_… [-n 20]` (or the run log's path), and repeat the id in every update
     (the owner, 2026-10-11, after isle-wars-archaeology d1e0082).
 11. On a "possibly stuck" flag: check the process is alive, read its newest session messages
-    (`opencode export <ses_...>`, or `/run-task` step 3's session reader); a long build or test step
+    (`tools/harness/peek.sh <ses_...>` or its printed `run.json`; v1 uses explicit `--major 1`); a long build or test step
     is not stuck. A dead or 20-minute-silent run is stuck: stop it, but only if it is ours (the
     machine is shared).
 12. When a run ends, read its final message before doing anything else. A review that stopped on

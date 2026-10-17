@@ -1,0 +1,828 @@
+[
+  {
+    "id": "openai/gpt-6-luna-pro",
+    "modelID": "openai/gpt-6-luna-pro",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-6-luna",
+    "modelID": "openai/gpt-6-luna",
+    "providerID": "openrouter",
+    "family": "gpt-luna",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-6-sol-pro",
+    "modelID": "openai/gpt-6-sol-pro",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-6-sol",
+    "modelID": "openai/gpt-6-sol",
+    "providerID": "openrouter",
+    "family": "gpt-sol",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-6.1-sol-pro",
+    "modelID": "openai/gpt-6.1-sol-pro",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-6.1-sol",
+    "modelID": "openai/gpt-6.1-sol",
+    "providerID": "openrouter",
+    "family": "gpt-sol",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-audio-mini",
+    "modelID": "openai/gpt-audio-mini",
+    "providerID": "openrouter",
+    "family": "o-mini",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-audio",
+    "modelID": "openai/gpt-audio",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-chat-latest",
+    "modelID": "openai/gpt-chat-latest",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-oss-120b",
+    "modelID": "openai/gpt-oss-120b",
+    "providerID": "openrouter",
+    "family": "gpt-oss",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-oss-20b",
+    "modelID": "openai/gpt-oss-20b",
+    "providerID": "openrouter",
+    "family": "gpt-oss",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-oss-safeguard-20b",
+    "modelID": "openai/gpt-oss-safeguard-20b",
+    "providerID": "openrouter",
+    "family": "gpt-oss",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/o1-pro",
+    "modelID": "openai/o1-pro",
+    "providerID": "openrouter",
+    "family": "o-pro",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "openai/o1",
+    "modelID": "openai/o1",
+    "providerID": "openrouter",
+    "family": "o",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "openai/o3-mini-high",
+    "modelID": "openai/o3-mini-high",
+    "providerID": "openrouter",
+    "family": "o",
+    "enabled": true,
+    "variants": [
+      "high"
+    ]
+  },
+  {
+    "id": "openai/o3-mini",
+    "modelID": "openai/o3-mini",
+    "providerID": "openrouter",
+    "family": "o-mini",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "openai/o3-pro",
+    "modelID": "openai/o3-pro",
+    "providerID": "openrouter",
+    "family": "o-pro",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "openai/o3",
+    "modelID": "openai/o3",
+    "providerID": "openrouter",
+    "family": "o",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "openai/o4-mini-high",
+    "modelID": "openai/o4-mini-high",
+    "providerID": "openrouter",
+    "family": "o",
+    "enabled": true,
+    "variants": [
+      "high"
+    ]
+  },
+  {
+    "id": "openai/o4-mini",
+    "modelID": "openai/o4-mini",
+    "providerID": "openrouter",
+    "family": "o-mini",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "openrouter/auto",
+    "modelID": "openrouter/auto",
+    "providerID": "openrouter",
+    "family": "auto",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openrouter/bodybuilder",
+    "modelID": "openrouter/bodybuilder",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openrouter/free",
+    "modelID": "openrouter/free",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openrouter/fusion",
+    "modelID": "openrouter/fusion",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openrouter/pareto-code",
+    "modelID": "openrouter/pareto-code",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "perceptron/perceptron-mk1.5",
+    "modelID": "perceptron/perceptron-mk1.5",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "perceptron/perceptron-mk1",
+    "modelID": "perceptron/perceptron-mk1",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "perplexity/sonar-deep-research",
+    "modelID": "perplexity/sonar-deep-research",
+    "providerID": "openrouter",
+    "family": "sonar-deep-research",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "perplexity/sonar-pro-search",
+    "modelID": "perplexity/sonar-pro-search",
+    "providerID": "openrouter",
+    "family": "sonar-pro",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "perplexity/sonar-pro",
+    "modelID": "perplexity/sonar-pro",
+    "providerID": "openrouter",
+    "family": "sonar-pro",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "perplexity/sonar-reasoning-pro",
+    "modelID": "perplexity/sonar-reasoning-pro",
+    "providerID": "openrouter",
+    "family": "sonar-reasoning",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "perplexity/sonar",
+    "modelID": "perplexity/sonar",
+    "providerID": "openrouter",
+    "family": "sonar",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "poolside/laguna-s-2.1:free",
+    "modelID": "poolside/laguna-s-2.1:free",
+    "providerID": "openrouter",
+    "family": "laguna-s",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "poolside/laguna-s-2.1",
+    "modelID": "poolside/laguna-s-2.1",
+    "providerID": "openrouter",
+    "family": "laguna-s",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "poolside/laguna-xs-2.1:free",
+    "modelID": "poolside/laguna-xs-2.1:free",
+    "providerID": "openrouter",
+    "family": "laguna",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "poolside/laguna-xs-2.1",
+    "modelID": "poolside/laguna-xs-2.1",
+    "providerID": "openrouter",
+    "family": "laguna",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "prism-ml/ternary-bonsai-2-27b",
+    "modelID": "prism-ml/ternary-bonsai-2-27b",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": [
+      "none",
+      "medium",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "qwen/qwen-2.5-72b-instruct",
+    "modelID": "qwen/qwen-2.5-72b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen-2.5-7b-instruct",
+    "modelID": "qwen/qwen-2.5-7b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen-2.5-coder-32b-instruct",
+    "modelID": "qwen/qwen-2.5-coder-32b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen-plus",
+    "modelID": "qwen/qwen-plus",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen2.5-vl-72b-instruct",
+    "modelID": "qwen/qwen2.5-vl-72b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-14b",
+    "modelID": "qwen/qwen3-14b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3-235b-a22b-2507",
+    "modelID": "qwen/qwen3-235b-a22b-2507",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-235b-a22b-thinking-2507",
+    "modelID": "qwen/qwen3-235b-a22b-thinking-2507",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-30b-a3b-instruct-2507",
+    "modelID": "qwen/qwen3-30b-a3b-instruct-2507",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-30b-a3b",
+    "modelID": "qwen/qwen3-30b-a3b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3-32b",
+    "modelID": "qwen/qwen3-32b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3-coder-30b-a3b-instruct",
+    "modelID": "qwen/qwen3-coder-30b-a3b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-coder-flash",
+    "modelID": "qwen/qwen3-coder-flash",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-coder-next",
+    "modelID": "qwen/qwen3-coder-next",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-coder",
+    "modelID": "qwen/qwen3-coder",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-next-80b-a3b-instruct",
+    "modelID": "qwen/qwen3-next-80b-a3b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-next-80b-a3b-thinking",
+    "modelID": "qwen/qwen3-next-80b-a3b-thinking",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-vl-235b-a22b-instruct",
+    "modelID": "qwen/qwen3-vl-235b-a22b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-vl-30b-a3b-instruct",
+    "modelID": "qwen/qwen3-vl-30b-a3b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-vl-30b-a3b-thinking",
+    "modelID": "qwen/qwen3-vl-30b-a3b-thinking",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3-vl-8b-instruct",
+    "modelID": "qwen/qwen3-vl-8b-instruct",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "qwen/qwen3.5-122b-a10b",
+    "modelID": "qwen/qwen3.5-122b-a10b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.5-27b",
+    "modelID": "qwen/qwen3.5-27b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.5-35b-a3b",
+    "modelID": "qwen/qwen3.5-35b-a3b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.5-397b-a17b",
+    "modelID": "qwen/qwen3.5-397b-a17b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.5-9b",
+    "modelID": "qwen/qwen3.5-9b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.5-flash-02-23",
+    "modelID": "qwen/qwen3.5-flash-02-23",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.5-plus-02-15",
+    "modelID": "qwen/qwen3.5-plus-02-15",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.5-plus-20260420",
+    "modelID": "qwen/qwen3.5-plus-20260420",
+    "providerID": "openrouter",
+    "family": "qwen3.5",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.6-27b",
+    "modelID": "qwen/qwen3.6-27b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.6-35b-a3b",
+    "modelID": "qwen/qwen3.6-35b-a3b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.6-flash",
+    "modelID": "qwen/qwen3.6-flash",
+    "providerID": "openrouter",
+    "family": "qwen3.6",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.6-plus",
+    "modelID": "qwen/qwen3.6-plus",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.7-flash",
+    "modelID": "qwen/qwen3.7-flash",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.7-max",
+    "modelID": "qwen/qwen3.7-max",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.7-plus",
+    "modelID": "qwen/qwen3.7-plus",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.8-2.4t-a95b",
+    "modelID": "qwen/qwen3.8-2.4t-a95b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.8-27b",
+    "modelID": "qwen/qwen3.8-27b",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.8-flash",
+    "modelID": "qwen/qwen3.8-flash",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.8-max-0902",
+    "modelID": "qwen/qwen3.8-max-0902",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.8-max-prime",
+    "modelID": "qwen/qwen3.8-max-prime",
+    "providerID": "openrouter",
+    "family": "qwen3.8-max",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "qwen/qwen3.8-omni-flash",
+    "modelID": "qwen/qwen3.8-omni-flash",
+    "providerID": "openrouter",
+    "family": "qwen",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "qwen3.6-flash",
+    "modelID": "qwen3.6-flash",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "qwen3.6",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  }
+]

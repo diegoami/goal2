@@ -1,0 +1,20 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: external-proc-metadata must reject
++ actual - expected
+
++ 'completed'
+- 'error'
+
+    at file:///home/diego/projects/goal2-work/T72-opencode2-harness/tools/harness/probe-opencode-guard.mjs:146:56 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'completed',
+  expected: 'error',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

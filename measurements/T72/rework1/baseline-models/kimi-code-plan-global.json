@@ -1,0 +1,46 @@
+[
+  {
+    "id": "kimi-for-coding",
+    "modelID": "kimi-for-coding",
+    "providerID": "kimi-code-plan-global",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "k3-256k",
+    "modelID": "k3-256k",
+    "providerID": "kimi-code-plan-global",
+    "family": "kimi-k3",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "k3",
+    "modelID": "k3",
+    "providerID": "kimi-code-plan-global",
+    "family": "kimi-k3",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-for-coding-highspeed",
+    "modelID": "kimi-for-coding-highspeed",
+    "providerID": "kimi-code-plan-global",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": []
+  }
+]

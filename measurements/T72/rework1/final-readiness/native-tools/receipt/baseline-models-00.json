@@ -1,0 +1,919 @@
+[
+  {
+    "id": "~anthropic/claude-fable-latest",
+    "modelID": "~anthropic/claude-fable-latest",
+    "providerID": "openrouter",
+    "family": "claude-fable",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~anthropic/claude-haiku-latest",
+    "modelID": "~anthropic/claude-haiku-latest",
+    "providerID": "openrouter",
+    "family": "claude-haiku",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~anthropic/claude-opus-latest",
+    "modelID": "~anthropic/claude-opus-latest",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~anthropic/claude-sonnet-latest",
+    "modelID": "~anthropic/claude-sonnet-latest",
+    "providerID": "openrouter",
+    "family": "claude-sonnet",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~deepseek/deepseek-flash-latest",
+    "modelID": "~deepseek/deepseek-flash-latest",
+    "providerID": "openrouter",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "~deepseek/deepseek-pro-latest",
+    "modelID": "~deepseek/deepseek-pro-latest",
+    "providerID": "openrouter",
+    "family": "deepseek",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "~deepseek/deepseek-v4-flash-latest",
+    "modelID": "~deepseek/deepseek-v4-flash-latest",
+    "providerID": "openrouter",
+    "family": "deepseek",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "~google/gemini-flash-latest",
+    "modelID": "~google/gemini-flash-latest",
+    "providerID": "openrouter",
+    "family": "gemini-flash",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "~google/gemini-pro-latest",
+    "modelID": "~google/gemini-pro-latest",
+    "providerID": "openrouter",
+    "family": "gemini-pro",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "~moonshotai/kimi-latest",
+    "modelID": "~moonshotai/kimi-latest",
+    "providerID": "openrouter",
+    "family": "kimi",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "~openai/gpt-astra-latest",
+    "modelID": "~openai/gpt-astra-latest",
+    "providerID": "openrouter",
+    "family": "gpt-astra",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~openai/gpt-luna-latest",
+    "modelID": "~openai/gpt-luna-latest",
+    "providerID": "openrouter",
+    "family": "gpt-luna",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~openai/gpt-mini-latest",
+    "modelID": "~openai/gpt-mini-latest",
+    "providerID": "openrouter",
+    "family": "gpt-mini",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "~openai/gpt-sol-latest",
+    "modelID": "~openai/gpt-sol-latest",
+    "providerID": "openrouter",
+    "family": "gpt-sol",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~openai/gpt-terra-latest",
+    "modelID": "~openai/gpt-terra-latest",
+    "providerID": "openrouter",
+    "family": "gpt-terra",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "~unbiased/pareto-latest",
+    "modelID": "~unbiased/pareto-latest",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "~x-ai/grok-latest",
+    "modelID": "~x-ai/grok-latest",
+    "providerID": "openrouter",
+    "family": "grok",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "~z-ai/glm-flash-latest",
+    "modelID": "~z-ai/glm-flash-latest",
+    "providerID": "openrouter",
+    "family": "glm-flash",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "~z-ai/glm-latest",
+    "modelID": "~z-ai/glm-latest",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "aion-labs/aion-2.0",
+    "modelID": "aion-labs/aion-2.0",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "aion-labs/aion-3.0-mini",
+    "modelID": "aion-labs/aion-3.0-mini",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "aion-labs/aion-3.0",
+    "modelID": "aion-labs/aion-3.0",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "aion-labs/aion-3.5-mini",
+    "modelID": "aion-labs/aion-3.5-mini",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "aion-labs/aion-3.5",
+    "modelID": "aion-labs/aion-3.5",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "aion-labs/aion-rp-llama-3.1-8b",
+    "modelID": "aion-labs/aion-rp-llama-3.1-8b",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "amazon/nova-2-lite-v1",
+    "modelID": "amazon/nova-2-lite-v1",
+    "providerID": "openrouter",
+    "family": "nova",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "amazon/nova-lite-v1",
+    "modelID": "amazon/nova-lite-v1",
+    "providerID": "openrouter",
+    "family": "nova-lite",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "amazon/nova-micro-v1",
+    "modelID": "amazon/nova-micro-v1",
+    "providerID": "openrouter",
+    "family": "nova-micro",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "amazon/nova-premier-v1",
+    "modelID": "amazon/nova-premier-v1",
+    "providerID": "openrouter",
+    "family": "nova",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "amazon/nova-pro-v1",
+    "modelID": "amazon/nova-pro-v1",
+    "providerID": "openrouter",
+    "family": "nova-pro",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "anthracite-org/magnum-v4-72b",
+    "modelID": "anthracite-org/magnum-v4-72b",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "anthropic/claude-fable-5.1",
+    "modelID": "anthropic/claude-fable-5.1",
+    "providerID": "openrouter",
+    "family": "claude-fable",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-fable-5",
+    "modelID": "anthropic/claude-fable-5",
+    "providerID": "openrouter",
+    "family": "claude-fable",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-haiku-4.5",
+    "modelID": "anthropic/claude-haiku-4.5",
+    "providerID": "openrouter",
+    "family": "claude-haiku",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "anthropic/claude-haiku-5.5",
+    "modelID": "anthropic/claude-haiku-5.5",
+    "providerID": "openrouter",
+    "family": "claude-haiku",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-opus-4.1",
+    "modelID": "anthropic/claude-opus-4.1",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "anthropic/claude-opus-4.5",
+    "modelID": "anthropic/claude-opus-4.5",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "anthropic/claude-opus-4.6",
+    "modelID": "anthropic/claude-opus-4.6",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-opus-4.7",
+    "modelID": "anthropic/claude-opus-4.7",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-opus-4.8",
+    "modelID": "anthropic/claude-opus-4.8",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-opus-5.5",
+    "modelID": "anthropic/claude-opus-5.5",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-opus-5",
+    "modelID": "anthropic/claude-opus-5",
+    "providerID": "openrouter",
+    "family": "claude-opus",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-sonnet-4.5",
+    "modelID": "anthropic/claude-sonnet-4.5",
+    "providerID": "openrouter",
+    "family": "claude-sonnet",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "anthropic/claude-sonnet-4.6",
+    "modelID": "anthropic/claude-sonnet-4.6",
+    "providerID": "openrouter",
+    "family": "claude-sonnet",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-sonnet-5.5",
+    "modelID": "anthropic/claude-sonnet-5.5",
+    "providerID": "openrouter",
+    "family": "claude-sonnet",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "anthropic/claude-sonnet-5",
+    "modelID": "anthropic/claude-sonnet-5",
+    "providerID": "openrouter",
+    "family": "claude-sonnet",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "arcee-ai/trinity-large-thinking",
+    "modelID": "arcee-ai/trinity-large-thinking",
+    "providerID": "openrouter",
+    "family": "trinity",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "beam-free",
+    "modelID": "beam-free",
+    "providerID": "opencode",
+    "family": "beam",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "big-pickle",
+    "modelID": "big-pickle",
+    "providerID": "opencode",
+    "family": "big-pickle",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "bytedance-seed/seed-1.6-flash",
+    "modelID": "bytedance-seed/seed-1.6-flash",
+    "providerID": "openrouter",
+    "family": "seed",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "bytedance-seed/seed-1.6",
+    "modelID": "bytedance-seed/seed-1.6",
+    "providerID": "openrouter",
+    "family": "seed",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "bytedance-seed/seed-2-1-turbo",
+    "modelID": "bytedance-seed/seed-2-1-turbo",
+    "providerID": "openrouter",
+    "family": "seed",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "bytedance-seed/seed-2.0-code",
+    "modelID": "bytedance-seed/seed-2.0-code",
+    "providerID": "openrouter",
+    "family": "seed",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "bytedance-seed/seed-2.0-lite",
+    "modelID": "bytedance-seed/seed-2.0-lite",
+    "providerID": "openrouter",
+    "family": "seed",
+    "enabled": true,
+    "variants": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "bytedance-seed/seed-2.0-mini",
+    "modelID": "bytedance-seed/seed-2.0-mini",
+    "providerID": "openrouter",
+    "family": "seed",
+    "enabled": true,
+    "variants": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "bytedance/ui-tars-1.5-7b",
+    "modelID": "bytedance/ui-tars-1.5-7b",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "cognitivecomputations/dolphin-mistral-24b-venice-edition",
+    "modelID": "cognitivecomputations/dolphin-mistral-24b-venice-edition",
+    "providerID": "openrouter",
+    "family": "mistral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "cohere/command-a-plus",
+    "modelID": "cohere/command-a-plus",
+    "providerID": "openrouter",
+    "family": "command-a",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "cohere/command-a",
+    "modelID": "cohere/command-a",
+    "providerID": "openrouter",
+    "family": "command-a",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "cohere/command-r-08-2024",
+    "modelID": "cohere/command-r-08-2024",
+    "providerID": "openrouter",
+    "family": "command-r",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "cohere/command-r-plus-08-2024",
+    "modelID": "cohere/command-r-plus-08-2024",
+    "providerID": "openrouter",
+    "family": "command-r",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "cohere/command-r7b-12-2024",
+    "modelID": "cohere/command-r7b-12-2024",
+    "providerID": "openrouter",
+    "family": "command-r",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "cohere/north-mini-code:free",
+    "modelID": "cohere/north-mini-code:free",
+    "providerID": "openrouter",
+    "family": "north",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "deepseek-v3.2",
+    "modelID": "deepseek-v3.2",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "deepseek",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "deepseek-v3.2",
+    "modelID": "deepseek-v3.2",
+    "providerID": "alibaba-token-plan",
+    "family": "deepseek",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "deepseek-v4-flash-0731",
+    "modelID": "deepseek-v4-flash-0731",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4-flash-0731",
+    "modelID": "deepseek-v4-flash-0731",
+    "providerID": "alibaba-token-plan",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4-flash",
+    "modelID": "deepseek-v4-flash",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4-flash",
+    "modelID": "deepseek-v4-flash",
+    "providerID": "alibaba-token-plan",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4-pro-0813",
+    "modelID": "deepseek-v4-pro-0813",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "deepseek-thinking",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4-pro-0813",
+    "modelID": "deepseek-v4-pro-0813",
+    "providerID": "alibaba-token-plan",
+    "family": "deepseek-thinking",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4-pro",
+    "modelID": "deepseek-v4-pro",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "deepseek-thinking",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4-pro",
+    "modelID": "deepseek-v4-pro",
+    "providerID": "alibaba-token-plan",
+    "family": "deepseek-thinking",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4.1-flash-free",
+    "modelID": "deepseek-v4.1-flash-free",
+    "providerID": "opencode",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4.1-flash",
+    "modelID": "deepseek-v4.1-flash",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek-v4.1-flash",
+    "modelID": "deepseek-v4.1-flash",
+    "providerID": "alibaba-token-plan",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "deepseek/deepseek-chat-v3-0324",
+    "modelID": "deepseek/deepseek-chat-v3-0324",
+    "providerID": "openrouter",
+    "family": "deepseek",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "deepseek/deepseek-chat-v3.1",
+    "modelID": "deepseek/deepseek-chat-v3.1",
+    "providerID": "openrouter",
+    "family": "deepseek",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "deepseek/deepseek-chat",
+    "modelID": "deepseek/deepseek-chat",
+    "providerID": "openrouter",
+    "family": "deepseek",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "deepseek/deepseek-r1-0528",
+    "modelID": "deepseek/deepseek-r1-0528",
+    "providerID": "openrouter",
+    "family": "deepseek-thinking",
+    "enabled": true,
+    "variants": []
+  }
+]

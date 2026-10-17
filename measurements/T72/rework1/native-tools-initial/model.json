@@ -1,0 +1,12 @@
+{
+  "id": "guard",
+  "modelID": "guard",
+  "providerID": "t72-loopback",
+  "family": "minimax",
+  "variants": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "enabled": true
+}

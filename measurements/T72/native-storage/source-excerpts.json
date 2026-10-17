@@ -1,0 +1,42 @@
+{
+  "credential.ts": [
+    {
+      "start": 64,
+      "end": 90,
+      "text": "\nconst layer = Layer.effect(\n  Service,\n  Effect.gen(function* () {\n    const db = (yield* Database.Service).db\n    const bus = yield* Bus.Service\n    const decode = Schema.decodeUnknownSync(Value)\n    const stored = (row: typeof CredentialTable.$inferSelect) => {\n      if (!row.integration_id) return\n      return new Info({\n        id: row.id,\n        integrationID: row.integration_id,\n        label: row.label,\n        value: decode(row.value),\n      })\n    }\n    const storedRows = (rows: ReadonlyArray<typeof CredentialTable.$inferSelect>) =>\n      rows.flatMap((row) => {\n        const credential = stored(row)\n        return credential ? [credential] : []\n      })\n\n    return Service.of({\n      all: Effect.fn(\"Credential.all\")(() =>\n        db\n          .select()\n          .from(CredentialTable)"
+    }
+  ],
+  "packages_core_src_integration.ts": [
+    {
+      "start": 396,
+      "end": 409,
+      "text": "    const resolveConnections = (entry: Entry | undefined, saved: readonly Credential.Info[]) => {\n      const credentials = saved\n        .map((credential) => ({\n          type: \"credential\" as const,\n          id: credential.id,\n          label: credential.label,\n          method: credential.value.type,\n        }))\n        .toReversed()\n      const env = (entry?.methods ?? [])\n        .filter((method) => method.type === \"env\")\n        .flatMap((method) => method.names.filter((name) => process.env[name]))\n        .map((name) => ({ type: \"env\" as const, name }))\n      return [...credentials, ...env]"
+    },
+    {
+      "start": 720,
+      "end": 741,
+      "text": "          const entry = state.get().integrations.get(id)\n          return resolveConnections(entry, yield* credentials.list(id))[0]\n        }),\n        resolve: Effect.fn(\"Integration.connection.resolve\")(function* (connection) {\n          if (connection.type === \"env\") {\n            const key = process.env[connection.name]\n            return key ? Credential.Key.make({ type: \"key\", key }) : undefined\n          }\n          const credential = yield* credentials.get(connection.id)\n          if (!credential) return undefined\n          if (credential.value.type !== \"oauth\") return credential.value\n          const implementation = state\n            .get()\n            .integrations.get(credential.integrationID)\n            ?.implementations.get(credential.value.methodID)\n          if (!implementation?.refresh) return credential.value\n          const now = yield* Clock.currentTimeMillis\n          if (credential.value.expires > now + Duration.toMillis(Duration.minutes(5))) return credential.value\n          const value = yield* authorize(implementation.refresh(credential.value))\n          yield* credentials.update(credential.id, { value })\n          return value\n        }),"
+    }
+  ],
+  "packages_core_src_database_database.ts": [
+    {
+      "start": 67,
+      "end": 83,
+      "text": "export function layer(options: Options = { path: \":memory:\" }) {\n  return Layer.unwrap(\n    Effect.gen(function* () {\n      const provide = (filename: string) =>\n        databaseLayer(filename === \":memory:\" ? Semaphore.make(1) : Effect.succeed(lockFor(filename))).pipe(\n          Layer.provide(sqliteLayer({ filename })),\n        )\n      const filename = options.path ?? \":memory:\"\n      if (filename === \":memory:\") return provide(filename)\n      const file = isAbsolute(filename) ? filename : join((yield* Global.Service).data, filename)\n      yield* Effect.promise(() => restrictToOwner(file))\n      return provide(file)\n    }),\n  )\n}\n\n// SQLite creates new sidecars with the database's mode, but does not tighten existing sidecars."
+    }
+  ],
+  "packages_cli_src_database-path.ts": [
+    {
+      "start": 1,
+      "end": 14,
+      "text": "import path from \"node:path\"\nimport { OPENCODE_CHANNEL } from \"./version\"\n\nexport function databasePath(data: string) {\n  const filename =\n    process.env.OPENCODE_DB ??\n    ([\"latest\", \"dev\", \"beta\", \"next\", \"prod\"].includes(OPENCODE_CHANNEL) ||\n    process.env.OPENCODE_DISABLE_CHANNEL_DB === \"1\" ||\n    process.env.OPENCODE_DISABLE_CHANNEL_DB === \"true\"\n      ? \"opencode.db\"\n      : `opencode-${OPENCODE_CHANNEL.replace(/[^a-zA-Z0-9._-]/g, \"-\")}.db`)\n  return filename === \":memory:\" ? filename : path.resolve(data, filename)\n}"
+    }
+  ],
+  "global.ts": [
+    {
+      "start": 12,
+      "end": 27,
+      "text": "const app = \"opencode\"\nconst { data, cache, config, state, tmp } = roots(app)\n\nconst paths = {\n  get home() {\n    return process.env.OPENCODE_TEST_HOME ?? os.homedir()\n  },\n  data,\n  bin: path.join(cache, \"bin\"),\n  log: path.join(data, \"log\"),\n  repos: path.join(data, \"repos\"),\n  cache,\n  config,\n  state,\n  tmp,\n}"
+    }
+  ]
+}

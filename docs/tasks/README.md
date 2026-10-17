@@ -71,7 +71,7 @@ See the [sequenced backlog](../watched-engine-backlog.md) for review gates, diff
 | [T63](T63.md) | Adapt game state into an original watched fixture (Medium) | [#133](https://github.com/diegoami/goal2/issues/133) | T62 |
 | [T64](T64.md) | Commit watched results atomically and preserve saves (Medium) | [#134](https://github.com/diegoami/goal2/issues/134) | T63 |
 | [T65](T65.md) | Run watched matches in a worker with progress (Medium) | [#135](https://github.com/diegoami/goal2/issues/135) | T64 |
-| [T66](T66.md) | Watch an original friendly in desktop (Medium) | [#136](https://github.com/diegoami/goal2/issues/136) | T65, T70 |
+| [T66](T66.md) | Watch an original friendly in a Pygame match view (Medium) | [#136](https://github.com/diegoami/goal2/issues/136) | T65, T70 |
 
 ## Planning maintenance
 

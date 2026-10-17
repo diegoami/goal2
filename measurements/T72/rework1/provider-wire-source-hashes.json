@@ -1,0 +1,77 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/plugin/src/host.ts",
+    "path": ".cache/T72-r1/source/packages_plugin_src_host.ts",
+    "sha256": "caa1060da29c2e5a68f16e7c4d16d8302279fb62b616d0dd44f3f0f2e6f8d137"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/plugin/provider/configured.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_plugin_provider_configured.ts",
+    "sha256": "d22c7d9a000757bc229f4a06bde335b58ae605c9ae8d5c357f06bb52552ae924"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/plugin/provider/sdk-factory.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_plugin_provider_sdk-factory.ts",
+    "sha256": "ecfa59ea74ae7e9cb9e8803ec73bd51f2aaf4b1ca2b580cc1406a2f2d3c7ed8c"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/config/plugin/provider.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_config_plugin_provider.ts",
+    "sha256": "c7ac09db5ff88fb9552cc5aa642abd076bfe2d0f71178c53606dffe23a8a8b6d"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/provider.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_provider.ts",
+    "sha256": "b2e46926eae7fbd2af1ab1deb5d7f431a5bd92f59acbc597e01376b596eb2108"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/v1/config/provider.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_v1_config_provider.ts",
+    "sha256": "e3dd7c7534fdfd90610100a9dcfc8bd09dc0e9eb8d6805bb113f3f440e18318b"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/ai/src/providers/openai-compatible.ts",
+    "path": ".cache/T72-r1/source/packages_ai_src_providers_openai-compatible.ts",
+    "sha256": "5277e82e4b5f8c76b9d3b6176a1b3ab19f278d403034e32c65e8aee1a0a4e0b5"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/ai/src/protocols/openai-compatible-chat.ts",
+    "path": ".cache/T72-r1/source/packages_ai_src_protocols_openai-compatible-chat.ts",
+    "sha256": "9dada2acf6128c5f4711d2116d1a54a62a694521a2f36b7a69455f1c1d7cdedb"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/ai/src/protocols/openai-chat.ts",
+    "path": ".cache/T72-r1/source/packages_ai_src_protocols_openai-chat.ts",
+    "sha256": "5c2fa03e0878fdb3a9c72b0dc2bd13b5a224db138c543802fa06792bc936e87e"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/managed-policy.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_managed-policy.ts",
+    "sha256": "7c6af5e3024e53f38eaa05b71877daa0c299d5c94525c07bc3d07cc421f81918"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/schema/src/config.ts",
+    "path": ".cache/T72-r1/source/packages_schema_src_config.ts",
+    "sha256": "45b7c7f329891e8e8425c8eba6c9c5b28d75bbdc8fc9ed0244b2989f25d3b3b8"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/server/src/handlers/config.ts",
+    "path": ".cache/T72-r1/source/packages_server_src_handlers_config.ts",
+    "sha256": "618b441f7faaf35533f7634e999e5469eead2c65c9e70cc5fa38d888a9f67eaa"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/filesystem/watcher.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_filesystem_watcher.ts",
+    "sha256": "231cd7f1336d75ed831b821589bdc442d416f253e2c5e8b9a58c7c7e827cd129"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/core/src/shell/select.ts",
+    "path": ".cache/T72-r1/source/packages_core_src_shell_select.ts",
+    "sha256": "03427b391487a26cba5ca115bd294ebcbfecfdc98d03f5b9ea66ede151bda822"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.28/packages/schema/src/config/policy.ts",
+    "sha256": "15097b9423bc1d84dfe30ce0e0655b69cdabd296735609ab8cf6ae14dc1442f8",
+    "path": ".cache/T72-r1/source/packages_schema_src_config_policy.ts"
+  }
+]

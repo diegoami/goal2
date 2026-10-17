@@ -1,0 +1,32 @@
+[
+  {
+    "elapsed": 0.6952646909994655,
+    "modelCount": 506,
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "reviewerExists": false
+  },
+  {
+    "elapsed": 1.0126014369998302,
+    "modelCount": 506,
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "reviewerExists": false
+  },
+  {
+    "elapsed": 1.3285719190025702,
+    "modelCount": 506,
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "reviewerExists": false
+  },
+  {
+    "elapsed": 1.643404083999485,
+    "modelCount": 506,
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "reviewerExists": false
+  },
+  {
+    "elapsed": 1.958938224001031,
+    "modelCount": 506,
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "reviewerExists": false
+  }
+]

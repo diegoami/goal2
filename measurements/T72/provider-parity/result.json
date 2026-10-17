@@ -1,0 +1,197 @@
+{
+  "baseline": {
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "models": 506,
+    "providers": [
+      "alibaba-token-plan",
+      "alibaba-token-plan-cn",
+      "kimi-code-plan-cn",
+      "kimi-code-plan-global",
+      "minimax",
+      "minimax-cn",
+      "minimax-cn-coding-plan",
+      "minimax-coding-plan",
+      "opencode",
+      "opencode-go",
+      "openrouter"
+    ],
+    "trustedReviewer": false
+  },
+  "content-overlay": {
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "models": 506,
+    "providers": [
+      "alibaba-token-plan",
+      "alibaba-token-plan-cn",
+      "kimi-code-plan-cn",
+      "kimi-code-plan-global",
+      "minimax",
+      "minimax-cn",
+      "minimax-cn-coding-plan",
+      "minimax-coding-plan",
+      "opencode",
+      "opencode-go",
+      "openrouter"
+    ],
+    "trustedReviewer": true
+  },
+  "file-overlay": {
+    "catalogueSHA256": "1ad46522175157e0ac52348a749a2f7d1389e8c9f01d2fb0c22c897767da6f7d",
+    "models": 506,
+    "providers": [
+      "alibaba-token-plan",
+      "alibaba-token-plan-cn",
+      "kimi-code-plan-cn",
+      "kimi-code-plan-global",
+      "minimax",
+      "minimax-cn",
+      "minimax-cn-coding-plan",
+      "minimax-coding-plan",
+      "opencode",
+      "opencode-go",
+      "openrouter"
+    ],
+    "trustedReviewer": true
+  },
+  "config-dir": {
+    "catalogueSHA256": "105e4cda6ebdec962a60e2a90cc7e3927397caaccc8de63b66e34deda9c9d677",
+    "models": 477,
+    "providers": [
+      "alibaba-token-plan",
+      "alibaba-token-plan-cn",
+      "kimi-code-plan-cn",
+      "kimi-code-plan-global",
+      "minimax",
+      "minimax-cn",
+      "minimax-cn-coding-plan",
+      "minimax-coding-plan",
+      "opencode",
+      "openrouter"
+    ],
+    "trustedReviewer": true
+  },
+  "comparison": {
+    "baselineEqualsContent": true,
+    "baselineEqualsFile": true,
+    "lostWhenReplacingConfigDir": [
+      {
+        "providerID": "opencode-go",
+        "id": "beam-free"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "claude-haiku-5-5"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "deepseek-v4-pro"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "deepseek-v4.1-flash"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "gemini-4-argon-contributor"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "glm-5.2"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "glm-5.3"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "glm-5.3-flash"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "gpt-5.6-luna"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "gpt-6-luna"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "grok-4.7"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "hy3"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "hy4-preview"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "kimi-k2.7-code"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "kimi-k3"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "longcat-2.0"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "longcat-2.5-preview-free"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "mimo-v2.5"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "mimo-v2.5-pro"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "mimo-v2.6-flash"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "mimo-v2.6-pro"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "minimax-m3"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "muse-spark-1.2-contributor"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "muse-spark-1.3-contributor"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "qwen3.7-plus"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "qwen3.8-flash"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "qwen3.8-max"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "space-bunny"
+      },
+      {
+        "providerID": "opencode-go",
+        "id": "step-5-preview"
+      }
+    ],
+    "addedWhenReplacingConfigDir": [],
+    "classification": "Observed safe catalogue metadata parity, not model execution or credential verification; explicit config overlays contain no provider definitions."
+  }
+}

@@ -1,0 +1,199 @@
+[
+  {
+    "type": "tool",
+    "id": "external-cat",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "error",
+      "input": {
+        "command": "cat /etc/hostname",
+        "timeout": 2000
+      },
+      "error": {
+        "type": "permission.rejected",
+        "message": "This non-interactive run cannot ask the user for permission, so the request was rejected. Continue without this action."
+      }
+    },
+    "time": {
+      "created": 1792249519166,
+      "ran": 1792249519179,
+      "completed": 1792249519255
+    }
+  },
+  {
+    "type": "tool",
+    "id": "external-quoted",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "error",
+      "input": {
+        "command": "cat \"/etc/hostname\"",
+        "timeout": 2000
+      },
+      "error": {
+        "type": "permission.rejected",
+        "message": "This non-interactive run cannot ask the user for permission, so the request was rejected. Continue without this action."
+      }
+    },
+    "time": {
+      "created": 1792249519168,
+      "ran": 1792249519182,
+      "completed": 1792249519257
+    }
+  },
+  {
+    "type": "tool",
+    "id": "external-nested",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "error",
+      "input": {
+        "command": "echo $(cat /etc/hostname)",
+        "timeout": 2000
+      },
+      "error": {
+        "type": "permission.rejected",
+        "message": "This non-interactive run cannot ask the user for permission, so the request was rejected. Continue without this action."
+      }
+    },
+    "time": {
+      "created": 1792249519169,
+      "ran": 1792249519191,
+      "completed": 1792249519258
+    }
+  },
+  {
+    "type": "tool",
+    "id": "external-relative",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "error",
+      "input": {
+        "command": "cat \"../../../../../../../../../../etc/hostname\"",
+        "timeout": 2000
+      },
+      "error": {
+        "type": "permission.rejected",
+        "message": "This non-interactive run cannot ask the user for permission, so the request was rejected. Continue without this action."
+      }
+    },
+    "time": {
+      "created": 1792249519171,
+      "ran": 1792249519194,
+      "completed": 1792249519259
+    }
+  },
+  {
+    "type": "tool",
+    "id": "inside-cat",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat inside.txt",
+        "timeout": 2000
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "INSIDE_SENTINEL\n"
+        }
+      ],
+      "metadata": {
+        "status": "completed",
+        "truncated": false,
+        "exit": 0
+      }
+    },
+    "time": {
+      "created": 1792249519172,
+      "ran": 1792249519196,
+      "completed": 1792249519267
+    }
+  },
+  {
+    "type": "tool",
+    "id": "tmp-cat",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat \"/tmp/T72-guard-5ff7ab351ae353ab.txt\"",
+        "timeout": 2000
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "TMP_SENTINEL\n"
+        }
+      ],
+      "metadata": {
+        "status": "completed",
+        "truncated": false,
+        "exit": 0
+      }
+    },
+    "time": {
+      "created": 1792249519173,
+      "ran": 1792249519205,
+      "completed": 1792249519271
+    }
+  },
+  {
+    "type": "tool",
+    "id": "research-cat",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat \"/home/diego/projects/goal2-archaeology/.gitignore\"",
+        "timeout": 2000
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "scratch/\n.cache/\n__pycache__/\n.claude/settings.local.json*\nhs_err_pid*.log\n"
+        }
+      ],
+      "metadata": {
+        "status": "completed",
+        "truncated": false,
+        "exit": 0
+      }
+    },
+    "time": {
+      "created": 1792249519175,
+      "ran": 1792249519208,
+      "completed": 1792249519270
+    }
+  },
+  {
+    "type": "tool",
+    "id": "git-deny",
+    "name": "shell",
+    "executed": false,
+    "state": {
+      "status": "error",
+      "input": {
+        "command": "git push T72-NO-REMOTE",
+        "timeout": 2000
+      },
+      "error": {
+        "type": "permission.rejected",
+        "message": "Permission denied: shell"
+      }
+    },
+    "time": {
+      "created": 1792249519176,
+      "ran": 1792249519210,
+      "completed": 1792249519240
+    }
+  }
+]

@@ -3,6 +3,7 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { privateHome } from './opencode-transport.mjs';
 import { openCodeHome, listedModels, loginHint, openCodeVersion, versionProblem } from './opencode.mjs';
 
 // The command that runs a tool. HARNESS_GH_EXE names the gh to run (the tests' fake, #2); a .mjs or
@@ -100,8 +101,10 @@ export function ensureAgent({ top, commonDir, worktree, agent }) {
 // command that fixes it. Quota is not checked (the owner, 2026-10-11: the model named runs).
 // Returns { env, usable, problems }.
 export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }) {
-  const oc = openCodeHome(env, { log });
-  const version = await openCodeVersion(opencode, { env: oc.env, cwd });
+  const version = await openCodeVersion(opencode, { env, cwd });
+  // [designed: T72] Version before legacy data access; v2 never opens/migrates the v1 receipts DB.
+  const home = version?.startsWith('2.') ? privateHome(env) : null;
+  const oc = home ? { ...home, dataHome: home.env.XDG_DATA_HOME } : version?.startsWith('1.') ? openCodeHome(env, { log }) : { env, dataHome: '(not opened)' };
   log(`opencode: ${version ?? 'unknown version'} (${opencode.exe})`);
   const bad = versionProblem(version, opencode.exe);
   if (bad) return { env: oc.env, usable: [], problems: [bad], version };
@@ -109,7 +112,8 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
   const problems = [];
   const usable = chain.filter((m) => {
     if (listed.has(models[m].id)) return true;
-    problems.push(`${m}: ${loginHint(models[m].id, listed, oc.dataHome, errors)}`);
+    problems.push(version.startsWith('2.') ? `${m}: ${models[m].id} is not advertised by the private v2 catalogue. Check provider configuration/environment or native auth login --standalone with XDG_DATA_HOME=${oc.dataHome}; nothing billed, no fallback.`
+      : `${m}: ${loginHint(models[m].id, listed, oc.dataHome, errors)}`);
     return false;
   });
   return { env: oc.env, usable, problems, version };

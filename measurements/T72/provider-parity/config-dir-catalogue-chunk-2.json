@@ -1,0 +1,786 @@
+[
+  {
+    "id": "google/gemini-3.1-flash-lite-preview",
+    "modelID": "google/gemini-3.1-flash-lite-preview",
+    "providerID": "openrouter",
+    "family": "gemini-flash-lite",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "minimal",
+      "none"
+    ]
+  },
+  {
+    "id": "google/gemini-3.1-pro-preview",
+    "modelID": "google/gemini-3.1-pro-preview",
+    "providerID": "openrouter",
+    "family": "gemini-pro",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium"
+    ]
+  },
+  {
+    "id": "google/gemini-3.1-pro-preview-customtools",
+    "modelID": "google/gemini-3.1-pro-preview-customtools",
+    "providerID": "openrouter",
+    "family": "gemini-pro",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium"
+    ]
+  },
+  {
+    "id": "google/gemini-3.5-flash",
+    "modelID": "google/gemini-3.5-flash",
+    "providerID": "openrouter",
+    "family": "gemini-flash",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "minimal"
+    ]
+  },
+  {
+    "id": "google/gemini-3.5-flash-lite",
+    "modelID": "google/gemini-3.5-flash-lite",
+    "providerID": "openrouter",
+    "family": "gemini-flash-lite",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "minimal"
+    ]
+  },
+  {
+    "id": "google/gemini-3.6-flash",
+    "modelID": "google/gemini-3.6-flash",
+    "providerID": "openrouter",
+    "family": "gemini-flash",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "minimal"
+    ]
+  },
+  {
+    "id": "google/gemini-3.7-flash",
+    "modelID": "google/gemini-3.7-flash",
+    "providerID": "openrouter",
+    "family": "gemini-flash",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium"
+    ]
+  },
+  {
+    "id": "google/gemini-3.8-flash",
+    "modelID": "google/gemini-3.8-flash",
+    "providerID": "openrouter",
+    "family": "gemini-flash",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium"
+    ]
+  },
+  {
+    "id": "google/gemini-4-argon",
+    "modelID": "google/gemini-4-argon",
+    "providerID": "openrouter",
+    "family": "gemini",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium"
+    ]
+  },
+  {
+    "id": "google/gemini-nano-banana-2.1",
+    "modelID": "google/gemini-nano-banana-2.1",
+    "providerID": "openrouter",
+    "family": "gemini-flash",
+    "enabled": true,
+    "variants": [
+      "high",
+      "minimal",
+      "none"
+    ]
+  },
+  {
+    "id": "google/gemma-2-27b-it",
+    "modelID": "google/gemma-2-27b-it",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "google/gemma-3-12b-it",
+    "modelID": "google/gemma-3-12b-it",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "google/gemma-3-27b-it",
+    "modelID": "google/gemma-3-27b-it",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "google/gemma-3-4b-it",
+    "modelID": "google/gemma-3-4b-it",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "google/gemma-4-26b-a4b-it",
+    "modelID": "google/gemma-4-26b-a4b-it",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "google/gemma-4-26b-a4b-it:free",
+    "modelID": "google/gemma-4-26b-a4b-it:free",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "google/gemma-4-31b-it",
+    "modelID": "google/gemma-4-31b-it",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "google/gemma-4-31b-it:free",
+    "modelID": "google/gemma-4-31b-it:free",
+    "providerID": "openrouter",
+    "family": "gemma",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "google/lyria-3-clip-preview",
+    "modelID": "google/lyria-3-clip-preview",
+    "providerID": "openrouter",
+    "family": "lyria",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "google/lyria-3-pro-preview",
+    "modelID": "google/lyria-3-pro-preview",
+    "providerID": "openrouter",
+    "family": "lyria",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "gryphe/mythomax-l2-13b",
+    "modelID": "gryphe/mythomax-l2-13b",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "ibm-granite/granite-4.0-h-micro",
+    "modelID": "ibm-granite/granite-4.0-h-micro",
+    "providerID": "openrouter",
+    "family": "granite",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "ibm-granite/granite-4.2-8b",
+    "modelID": "ibm-granite/granite-4.2-8b",
+    "providerID": "openrouter",
+    "family": "granite",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "none"
+    ]
+  },
+  {
+    "id": "inception/mercury-2",
+    "modelID": "inception/mercury-2",
+    "providerID": "openrouter",
+    "family": "mercury",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "none"
+    ]
+  },
+  {
+    "id": "inception/mercury-2.5",
+    "modelID": "inception/mercury-2.5",
+    "providerID": "openrouter",
+    "family": "mercury",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "none"
+    ]
+  },
+  {
+    "id": "inclusionai/ling-3.0-flash",
+    "modelID": "inclusionai/ling-3.0-flash",
+    "providerID": "openrouter",
+    "family": "ling",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "inclusionai/ling-3.0-flash-vl",
+    "modelID": "inclusionai/ling-3.0-flash-vl",
+    "providerID": "openrouter",
+    "family": "ling",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "inclusionai/ling-3.1-flash",
+    "modelID": "inclusionai/ling-3.1-flash",
+    "providerID": "openrouter",
+    "family": "ling",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "inference-net/schematron-v2-small",
+    "modelID": "inference-net/schematron-v2-small",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "inference-net/schematron-v2-turbo",
+    "modelID": "inference-net/schematron-v2-turbo",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "liquid/lfm-2.5-2.6b:free",
+    "modelID": "liquid/lfm-2.5-2.6b:free",
+    "providerID": "openrouter",
+    "family": "liquid",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "liquid/lfm-2.5-24b-a2b",
+    "modelID": "liquid/lfm-2.5-24b-a2b",
+    "providerID": "openrouter",
+    "family": "liquid",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mancer/weaver",
+    "modelID": "mancer/weaver",
+    "providerID": "openrouter",
+    "family": "alpha",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meituan/longcat-2.0",
+    "modelID": "meituan/longcat-2.0",
+    "providerID": "openrouter",
+    "family": "longcat",
+    "enabled": true,
+    "variants": [
+      "high",
+      "max",
+      "none"
+    ]
+  },
+  {
+    "id": "meta-llama/llama-3.1-70b-instruct",
+    "modelID": "meta-llama/llama-3.1-70b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.1-8b-instruct",
+    "modelID": "meta-llama/llama-3.1-8b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.2-1b-instruct",
+    "modelID": "meta-llama/llama-3.2-1b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.2-3b-instruct",
+    "modelID": "meta-llama/llama-3.2-3b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.3-70b-instruct",
+    "modelID": "meta-llama/llama-3.3-70b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-4-maverick",
+    "modelID": "meta-llama/llama-4-maverick",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-4-scout",
+    "modelID": "meta-llama/llama-4-scout",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-guard-4-12b",
+    "modelID": "meta-llama/llama-guard-4-12b",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta/muse-glimmer-30b",
+    "modelID": "meta/muse-glimmer-30b",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.1",
+    "modelID": "meta/muse-spark-1.1",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "minimal",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.2",
+    "modelID": "meta/muse-spark-1.2",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "minimal",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.2-contributor",
+    "modelID": "meta/muse-spark-1.2-contributor",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "minimal",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.3",
+    "modelID": "meta/muse-spark-1.3",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "max",
+      "medium",
+      "minimal",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.3-contributor",
+    "modelID": "meta/muse-spark-1.3-contributor",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "max",
+      "medium",
+      "minimal",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-open",
+    "modelID": "meta/muse-spark-open",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "medium",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-wonder",
+    "modelID": "meta/muse-wonder",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "high",
+      "low",
+      "max",
+      "medium",
+      "minimal",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "microsoft/phi-4",
+    "modelID": "microsoft/phi-4",
+    "providerID": "openrouter",
+    "family": "phi",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "microsoft/wizardlm-2-8x22b",
+    "modelID": "microsoft/wizardlm-2-8x22b",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-01",
+    "modelID": "minimax/minimax-01",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-m1",
+    "modelID": "minimax/minimax-m1",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "minimax/minimax-m2",
+    "modelID": "minimax/minimax-m2",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-m2-her",
+    "modelID": "minimax/minimax-m2-her",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-m2.1",
+    "modelID": "minimax/minimax-m2.1",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-m2.5",
+    "modelID": "minimax/minimax-m2.5",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-m2.7",
+    "modelID": "minimax/minimax-m2.7",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-m3",
+    "modelID": "minimax/minimax-m3",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "mistralai/codestral-2508",
+    "modelID": "mistralai/codestral-2508",
+    "providerID": "openrouter",
+    "family": "codestral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/devstral-2512",
+    "modelID": "mistralai/devstral-2512",
+    "providerID": "openrouter",
+    "family": "devstral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/ministral-14b-2512",
+    "modelID": "mistralai/ministral-14b-2512",
+    "providerID": "openrouter",
+    "family": "ministral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/ministral-3b-2512",
+    "modelID": "mistralai/ministral-3b-2512",
+    "providerID": "openrouter",
+    "family": "ministral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/ministral-8b-2512",
+    "modelID": "mistralai/ministral-8b-2512",
+    "providerID": "openrouter",
+    "family": "ministral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-large",
+    "modelID": "mistralai/mistral-large",
+    "providerID": "openrouter",
+    "family": "mistral-large",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-large-2407",
+    "modelID": "mistralai/mistral-large-2407",
+    "providerID": "openrouter",
+    "family": "mistral-large",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-large-2512",
+    "modelID": "mistralai/mistral-large-2512",
+    "providerID": "openrouter",
+    "family": "mistral-large",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-large-4-0",
+    "modelID": "mistralai/mistral-large-4-0",
+    "providerID": "openrouter",
+    "family": "mistral-large",
+    "enabled": true,
+    "variants": [
+      "high",
+      "none"
+    ]
+  },
+  {
+    "id": "mistralai/mistral-medium-3",
+    "modelID": "mistralai/mistral-medium-3",
+    "providerID": "openrouter",
+    "family": "mistral-medium",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-medium-3-5",
+    "modelID": "mistralai/mistral-medium-3-5",
+    "providerID": "openrouter",
+    "family": "mistral-medium",
+    "enabled": true,
+    "variants": [
+      "high",
+      "none"
+    ]
+  },
+  {
+    "id": "mistralai/mistral-medium-3.1",
+    "modelID": "mistralai/mistral-medium-3.1",
+    "providerID": "openrouter",
+    "family": "mistral-medium",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-nemo",
+    "modelID": "mistralai/mistral-nemo",
+    "providerID": "openrouter",
+    "family": "mistral-nemo",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-saba",
+    "modelID": "mistralai/mistral-saba",
+    "providerID": "openrouter",
+    "family": "mistral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-small-24b-instruct-2501",
+    "modelID": "mistralai/mistral-small-24b-instruct-2501",
+    "providerID": "openrouter",
+    "family": "mistral-small",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-small-2603",
+    "modelID": "mistralai/mistral-small-2603",
+    "providerID": "openrouter",
+    "family": "mistral-small",
+    "enabled": true,
+    "variants": [
+      "high",
+      "none"
+    ]
+  },
+  {
+    "id": "mistralai/mistral-small-3.1-24b-instruct",
+    "modelID": "mistralai/mistral-small-3.1-24b-instruct",
+    "providerID": "openrouter",
+    "family": "mistral-small",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-small-3.2-24b-instruct",
+    "modelID": "mistralai/mistral-small-3.2-24b-instruct",
+    "providerID": "openrouter",
+    "family": "mistral-small",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mixtral-8x22b-instruct",
+    "modelID": "mistralai/mixtral-8x22b-instruct",
+    "providerID": "openrouter",
+    "family": "mistral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/voxtral-small-24b-2507",
+    "modelID": "mistralai/voxtral-small-24b-2507",
+    "providerID": "openrouter",
+    "family": "voxtral",
+    "enabled": true,
+    "variants": []
+  }
+]

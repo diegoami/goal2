@@ -1,0 +1,7 @@
+opencode: manifest /home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/receipts/T72-native-guard-016e5b707dbb-c96raR/run.json
+opencode: private server pid 198793
+opencode: session ses_eb582b738ffeRmrM8JtTi2p2ih started; manifest /home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/receipts/T72-native-guard-016e5b707dbb-c96raR/run.json
+opencode: session ses_eb582b738ffeRmrM8JtTi2p2ih progress
+opencode: session ses_eb582b738ffeRmrM8JtTi2p2ih progress
+{"root":"/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79","outcome":{"reason":"idle","message":"session idle; cancelling owned session"},"tools":[]}
+Native guard nonbilling proof passed: /home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79

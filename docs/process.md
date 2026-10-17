@@ -116,14 +116,17 @@ permit ignoring a known failing check. No hosted check replaces exact-head local
 validation.
 
 What the review script guarantees, and why:
-- OpenCode starts with stdin closed; without it a run hangs before it starts. (L10)
+- [designed: T72] The run client starts with stdin closed; the owned v2 server keeps a separate stdin lease open until export recovery and cancellation finish. (L10)
 - No session in 180 s, no progress in 600 s, or no exit in 1 h kills the run's process tree (L10);
   `--idle-timeout-sec` and `--total-timeout-sec` lengthen them for one run.
-- The agent is checked on OpenCode's session record (L11); a rejected tool call fails the run (L26),
+- [designed: T72] V2 verifies the trusted effective agent/permissions and native operand guard before generation, then validates exact session/cwd/model/effort/agent in complete exports; a rejected tool call fails the run (L11, L26),
   and the fix is a wider grant in the agent file, not a re-brief (CLAUDE.md "Choosing models" rule 4).
+- [designed: T72 rework1] Install the exact local grammar dependencies in each fresh reviewer checkout with `npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund` before offline checks. The validator verifies installed hashes and never fetches. Native source-target plugin policy, frozen config snapshots and repeated actual-server checks preserve the legacy static shell operand boundary; external executable plugins or widening plugin policies fail before billing. See docs/environment.md for the supported binary and explicit nonbilling native probes.
+- [designed: T72 rework1] Complete retained outputs and returned records redact the known generated private-server nonce if echoed; receipts disclose this exact redaction and hash safe artifacts afterward. Preserve every other message, tool outcome and final finding.
 - The brief passes by file: the runner writes it to `.harness-brief-<title>.md` at the review
   worktree's root and the command line carries only a pointer, so a long brief cannot exceed the
-  command-line limit; the file is never committed, and on failure it is kept with the logs. (L60)
+  command-line limit; the file is never committed and is retained with the logs on every outcome. (L60; designed: T72)
+- [designed: T72] Routine review uses installed current v2 and a privately owned execution server; its worktree, complete export/final and manifest are retained. Explicit v1 compatibility keeps its separate legacy DB. Follow the printed session or run.json with `tools/harness/peek.sh`.
 - The model runs at the effort its `harness.json` entry names (a heavy model at low, a light one
   at high), in the scripts' own data directory (L27, L29). One model, one run; no chain. The model
   is `reviewer.default`, or `--reviewer` (a harness.json key or `provider/model[@variant]`).

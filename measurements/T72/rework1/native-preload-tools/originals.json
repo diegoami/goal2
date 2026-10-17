@@ -1,0 +1,77 @@
+[
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/stdout.txt",
+    "sha256": "2120995558548ae6f32a2d1c02dab3376f60d2de155d5a5834a9040f5b84295c",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/stderr.txt",
+    "sha256": "e3ac66fa3eaa5fd346c864502ec9db8613c2956ef3a0c4a4a6d2e38e011f34d6",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/export-response.json",
+    "sha256": "28cfb06f18c99f8339e63d526d43409778176bb1d9b3a1196e25913fa52ffb19",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/export.json",
+    "sha256": "796d3d438412e6807fadf49113953b487b95829d784ba7f5367301081eee3e39",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/final.txt",
+    "sha256": "4a47b338aafa732a08bba75e55c6cca113b06dc240e8b8ad3b26ae444b9f25d1",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/assistant.txt",
+    "sha256": "4a47b338aafa732a08bba75e55c6cca113b06dc240e8b8ad3b26ae444b9f25d1",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/profile.json",
+    "sha256": "523daf5b3a9d80fe3c5b1294fd7364f80d237e8a0b9b679b967a3a0f27093a69",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/plugins.json",
+    "sha256": "6548d9f73b3c9a4e6122c243298c49139248430c2b5206e659e36bdb18f5e120",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/baseline.json",
+    "sha256": "8fca75d2b60a4a94e09424b564624003b2a054861a787bfc3071518da3cb7e7c",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/shell-guard.jsonl",
+    "sha256": "d81d405b208ffff26d8e95e9bc67c2b355d4c4a070accf9589a10c697a2d71ba",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/model.json",
+    "sha256": "14dbfc8e81f1ee99bab7f4f504e06f91a512ad7e775d19462755288c5b7da5c4",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/openapi.raw.json",
+    "sha256": "b0cdccd2c0c651f2adbded5efc6a77506521fbf509188c91712d5a854255feeb",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/server.json",
+    "sha256": "1139406cb2271f105a1f615119840e9786c0ae4e7418896aa9f46fb6f04e128c",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/brief.md",
+    "sha256": "87a2cf2630ab9b613d87001b784a2f6ead256debf6982c41e4278e112d0f8c69",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-7sKGt2/receipts/T72-native-guard-29d2517e43b1-hadmMc/run.json",
+    "sha256": "94bdfdbf427d5b1cd82a373708abdc32221a2c284d9d931b9520abdc34411c50",
+    "retained": true
+  }
+]
