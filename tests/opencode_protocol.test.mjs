@@ -101,9 +101,25 @@ test('full text usage and rejected tool outcomes survive both protocols', () => 
     const both = p.normalizeSession(major, multiple, expected);
     assert.equal(both.assistantText, normalized.assistantText.repeat(2), 'all assistant messages must survive');
     assert.equal(both.completed, true, 'final stop completes a tool-call sequence');
-    const user = major === 2 ? { id: 'msg_fixture_later_user', type: 'user' } : { info: { id: 'msg_fixture_later_user', sessionID: expected.sessionID, role: 'user' }, parts: [] };
+    const user = major === 2 ? { id: 'msg_fixture_later_user', type: 'user', time: { created: actual.info.time.created }, text: 'pending' } : { info: { id: 'msg_fixture_later_user', sessionID: expected.sessionID, role: 'user', time: { created: actual.info.time.created } }, parts: [] };
     multiple.messages.push(user);
     assert.equal(p.normalizeSession(major, multiple, expected).completed, false, 'later user input is not completed by prior approval');
+    if (major === 2) {
+      const idle = fixture('v2-synthetic-idle.json');
+      multiple.messages.push(idle);
+      assert.equal(p.normalizeSession(2, multiple, expected).completed, false, 'pending user followed by idle must not complete');
+      const stopped = fixture('v2-synthetic-export.json'); stopped.messages.push(idle);
+      assert.equal(p.normalizeSession(2, stopped, expected).completed, true);
+      for (const outcome of ['failed', 'interrupted']) {
+        stopped.messages.at(-1).outcome = outcome;
+        assert.equal(p.normalizeSession(2, stopped, expected).completed, false);
+      }
+      stopped.messages.at(-1).outcome = 'succeeded';
+      stopped.messages.at(-1).error = { type: 'APIError', message: 'failed' };
+      assert.equal(p.normalizeSession(2, stopped, expected).completed, false);
+      delete stopped.messages.at(-1).time;
+      assert.throws(() => p.normalizeSession(2, stopped, expected), /message time/);
+    }
   }
 });
 test('wrong session directory agent model and effort fail closed', () => {
@@ -194,6 +210,7 @@ test('mutation controls fail specific identity and rejection assertions', () => 
     { name: 'unfinished-completion', before: "assistants.at(-1).finish === 'stop'", after: 'true', pattern: 'actual v1 step metadata', assertion: /tool-calls is not final completion/ },
     { name: 'assistant-error-loss', before: '!assistants.some((m) => m.error)', after: 'true', pattern: 'actual v1 step metadata', assertion: /unfinished or assistant error must not complete/ },
     { name: 'step-metadata-loss', before: 'return structuredClone(part);', after: 'return { type: part.type };', pattern: 'actual v1 step metadata', assertion: /deep-equal|deeply|strictly deep/ },
+    { name: 'pending-user-idle-loss', before: "normalized[lastMeaningful]?.type === 'assistant' && trailingIdleSucceeded", after: "['assistant', 'idle'].includes(normalized.at(-1).type)", pattern: 'full text usage and rejected tool outcomes', assertion: /pending user followed by idle must not complete/ },
     { name: 'absent-effort-roundtrip-loss', before: "...(v.variant === undefined ? {} : { variant: string(v.variant, 'variant') })", after: "variant: v.variant === undefined ? null : string(v.variant, 'variant')", pattern: 'full text usage and rejected tool outcomes', assertion: /variant: null/ },
     { name: 'earlier-assistant-loss', before: "const assistants = normalized.filter((m) => m.type === 'assistant');", after: "const assistants = normalized.filter((m) => m.type === 'assistant').slice(-1);", pattern: 'full text usage and rejected tool outcomes', assertion: /all assistant messages must survive/ },
     { name: 'text-loss', before: ".filter((p) => p.type === 'text').map((p) => p.text)", after: ".filter((p) => p.type === 'text').slice(-1).map((p) => p.text)", pattern: 'full text usage and rejected tool outcomes', assertion: /complete assistant text/ },

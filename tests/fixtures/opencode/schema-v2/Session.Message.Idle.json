@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/components/schemas/Session.Message.ID"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "time": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "created"
+      ],
+      "additionalProperties": false
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "idle"
+      ]
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "succeeded",
+        "failed",
+        "interrupted"
+      ]
+    },
+    "error": {
+      "$ref": "#/components/schemas/Session.StructuredError"
+    }
+  },
+  "required": [
+    "id",
+    "time",
+    "type",
+    "outcome"
+  ],
+  "additionalProperties": false
+}

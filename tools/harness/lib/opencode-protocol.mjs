@@ -124,7 +124,17 @@ export function normalizeSession(major, record, expected) {
     const id = string(meta.id, 'message id');
     if (ids.has(id)) fail('duplicate message id'); ids.add(id);
     if (major === 1) equal(meta.sessionID, sessionID, 'message session');
-    if (type !== 'assistant') { normalized.push({ id, type, raw: structuredClone(message) }); continue; }
+    if (type !== 'assistant') {
+      object(meta.time, 'message time'); number(meta.time.created, 'message created');
+      if (major === 1) array(message.parts, 'message parts');
+      if (major === 2 && type === 'user' && typeof message.text !== 'string') fail('malformed user text');
+      if (type === 'idle') {
+        if (major !== 2) fail('v1 idle unsupported');
+        if (!['succeeded', 'failed', 'interrupted'].includes(message.outcome)) fail('malformed idle outcome');
+        if (message.error !== undefined) structuredError(message.error, 2);
+      }
+      normalized.push({ id, type, raw: structuredClone(message) }); continue;
+    }
     assistantCount++;
     equal(meta.agent, expected.agent, 'message agent');
     const model = identity(major === 2 ? meta.model : { providerID: meta.providerID, id: meta.modelID, variant: meta.variant }, expected.model);
@@ -150,11 +160,13 @@ export function normalizeSession(major, record, expected) {
   }
   const model = major === 2 ? identity(info.model, expected.model) : assistantCount ? ref(expected.model) : fail('v1 model identity unproven without assistant metadata');
   const assistants = normalized.filter((m) => m.type === 'assistant');
+  const lastMeaningful = normalized.findLastIndex((m) => m.type !== 'idle');
+  const trailingIdleSucceeded = normalized.slice(lastMeaningful + 1).every((m) => m.raw.outcome === 'succeeded' && !m.raw.error);
   return { major, sessionID, directory: dir, agent: info.agent, model, created: info.time.created, updated: info.time.updated,
     cost: major === 2 ? number(info.cost, 'session cost') : assistants.reduce((n, m) => n + m.cost, 0),
     tokens: major === 2 ? usage(info.tokens) : { ...(assistants.every((m) => m.tokens.total !== undefined) ? { total: assistants.reduce((sum, m) => sum + m.tokens.total, 0) } : {}), ...assistants.reduce((a, m) => ({ input: a.input + m.tokens.input, output: a.output + m.tokens.output, reasoning: a.reasoning + m.tokens.reasoning, cache: { read: a.cache.read + m.tokens.cache.read, write: a.cache.write + m.tokens.cache.write } }), { input: 0, output: 0, reasoning: 0, cache: { read: 0, write: 0 } }) },
     outcome: info.outcome ?? null, messages: normalized, assistantText: assistants.flatMap((m) => m.parts.filter((p) => p.type === 'text').map((p) => p.text)).join(''),
-    rejected: assistants.some((m) => m.parts.some((p) => p.type === 'tool' && p.rejected)), completed: assistants.length > 0 && assistants.at(-1).finish === 'stop' && !assistants.some((m) => m.error) && ['assistant', 'idle'].includes(normalized.at(-1).type) && !['failed', 'interrupted'].includes(info.outcome) };
+    rejected: assistants.some((m) => m.parts.some((p) => p.type === 'tool' && p.rejected)), completed: assistants.length > 0 && assistants.at(-1).finish === 'stop' && !assistants.some((m) => m.error) && normalized[lastMeaningful]?.type === 'assistant' && trailingIdleSucceeded && !['failed', 'interrupted'].includes(info.outcome) };
 }
 export function normalizeSessionList(major, record, directoryExpected) {
   majorProtocol(major);

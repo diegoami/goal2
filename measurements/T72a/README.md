@@ -62,3 +62,5 @@ Primary references: [migration](https://opencode.ai/v2/docs/migrate-v1/),
 [confirmed: mutation-controls-final-20261017.json] The final control batch additionally removes earlier assistant messages and fails the complete-transcript assertion. Both protocols preserve all assistant text across a tool-call sequence followed by a final stop; later user input leaves completion false.
 
 [confirmed: mutation-controls-roundtrip-20261017.json] The final eight-control batch also proves that absent effort stays absent through session normalization and command construction; inserting a null variant fails the roundtrip assertion. No effort is invented or silently substituted.
+
+[confirmed: mutation-controls-idle-20261017.json] The nine-control batch adds pending user followed by idle: reintroducing the last-record-only completion gate fails its specific assertion. Idle records require schema-shaped timestamps/outcome; failed or errored trailing idle prevents completion.

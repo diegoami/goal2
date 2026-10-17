@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/components/schemas/Session.Message.ID"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "time": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "created"
+      ],
+      "additionalProperties": false
+    },
+    "text": {
+      "type": "string"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Prompt.FileAttachment"
+      }
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Prompt.AgentAttachment"
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Prompt.SkillAttachment"
+      }
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "user"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "time",
+    "text",
+    "type"
+  ],
+  "additionalProperties": false
+}
