@@ -1,0 +1,186 @@
+[designed: T51] Accepted PR183 integration validation receipt.
+
+Product validation head: 22db43ab1b567d9a28dff2bd0da4e2eee5c3704b
+Original T51 head: c8c1916cfb50e08663839c8531c8fdd2adfdd560
+Accepted main/PR183: b93b72aebe952ab2feb1c5827c80595f8062ff06
+
+Ordinary merge preserved history. Final window.refresh uses display_model state for the existing watched-based Original engine / Quick simulation heading, then display.result_text(). Accepted country preview/draft/save/worker ownership remains intact.
+The intermediate display.result_text-only merge failed the retained campaign-friendlies Quick simulation assertion. A temporary model heading edit was restored using saved pre-edit bytes; final net model diff is zero. No assertion or expected result changed.
+
+Source identity (git tree/blob object IDs; before and after must match):
+{
+  "goal2/game": {
+    "before": "89250ef8e88807b0f9164a4ec4120cb39356e1b9",
+    "after": "89250ef8e88807b0f9164a4ec4120cb39356e1b9"
+  },
+  "goal2/engine": {
+    "before": "8eee0281bae9d867e6787abd01cd73172106e14b",
+    "after": "8eee0281bae9d867e6787abd01cd73172106e14b"
+  },
+  "goal2/tests": {
+    "before": "9783b4325bfa5962693f70a1d77237ed87247c9e",
+    "after": "9783b4325bfa5962693f70a1d77237ed87247c9e"
+  },
+  "goal2/desktop/model.py": {
+    "before": "6c73acc6b924b609de5e7e21e74dda746d4fbd09",
+    "after": "6c73acc6b924b609de5e7e21e74dda746d4fbd09"
+  }
+}
+
+git diff --name-only c8c1916 HEAD -- goal2: goal2/desktop/window.py only.
+git diff --quiet c8c1916 HEAD -- goal2/game goal2/engine goal2/tests goal2/desktop/model.py: exit0.
+
+Environment: validation-venv Python; Node24.21.0; QT_QPA_PLATFORM=offscreen; physical .cache/tmp; existing validated original caches remain ignored.
+
+CHECK country-selection: exit0; 4.791s
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B tools/desktop-ui/country-selection.py --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+Log SHA256: d1dc66be15b699ef19a340b2c8b05a93f43efe5a4e1defc6d1aa70b5239ba41a
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS country selection: header/all20 names/captain/tactics/morale/fixture/pool, draft return, explicit modes/resume, save bytes, busy ownership and retained results
+
+
+CHECK desktop-units: exit0; 19.585s
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B -m unittest goal2.tests.test_desktop_model goal2.tests.test_desktop_entry goal2.tests.test_desktop_pool goal2.tests.test_desktop_quick_jobs -v
+Log SHA256: c5cbe164063babc747b52554169b147da7063ce9017dd084cbba04639923e3ee
+test_confirm_full_ids_and_bits_is_atomic_and_rejects_unavailable (goal2.tests.test_desktop_model.DesktopModelCases.test_confirm_full_ids_and_bits_is_atomic_and_rejects_unavailable) ... ok
+test_fresh_country_matches_direct_python_and_reads_are_pure (goal2.tests.test_desktop_model.DesktopModelCases.test_fresh_country_matches_direct_python_and_reads_are_pure) ... ok
+test_malformed_local_template_is_readable_and_never_published (goal2.tests.test_desktop_model.DesktopModelCases.test_malformed_local_template_is_readable_and_never_published) ... ok
+test_save_failure_and_invalid_new_country_keep_active_state (goal2.tests.test_desktop_model.DesktopModelCases.test_save_failure_and_invalid_new_country_keep_active_state) ... ok
+test_save_resume_preserves_complete_state_without_regeneration_and_rejects_bad_input (goal2.tests.test_desktop_model.DesktopModelCases.test_save_resume_preserves_complete_state_without_regeneration_and_rejects_bad_input) ... ok
+test_headless_model_imports_without_qt_or_unicorn (goal2.tests.test_desktop_entry.DesktopEntryCases.test_headless_model_imports_without_qt_or_unicorn) ... ok
+test_missing_qt_reports_install_instruction_before_reading_assets (goal2.tests.test_desktop_entry.DesktopEntryCases.test_missing_qt_reports_install_instruction_before_reading_assets) ... ok
+test_exchange_invalidates_inflight_candidate_without_publication (goal2.tests.test_desktop_pool.DesktopPoolCases.test_exchange_invalidates_inflight_candidate_without_publication) ... ok
+test_invalid_unavailable_closed_and_validation_failure_are_atomic (goal2.tests.test_desktop_pool.DesktopPoolCases.test_invalid_unavailable_closed_and_validation_failure_are_atomic) ... ok
+test_view_filters_are_pure_and_exchange_matches_t45_full_identity_repair (goal2.tests.test_desktop_pool.DesktopPoolCases.test_view_filters_are_pure_and_exchange_matches_t45_full_identity_repair) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume) ... ok
+test_candidate_matches_existing_transport_independent_campaign_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_matches_existing_transport_independent_campaign_publication) ... ok
+test_failure_and_bad_output_leave_active_state_unchanged (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_failure_and_bad_output_leave_active_state_unchanged) ... ok
+test_launch_failure_and_unsupported_fixture_are_atomic (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_launch_failure_and_unsupported_fixture_are_atomic) ... ok
+test_stale_completion_refuses_replaced_and_mutated_active_state (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_stale_completion_refuses_replaced_and_mutated_active_state) ... ok
+test_standalone_repeat_retains_complete_state_without_campaign (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_standalone_repeat_retains_complete_state_without_campaign) ... ok
+test_unrenderable_saved_result_is_rejected_before_resume_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_unrenderable_saved_result_is_rejected_before_resume_publication) ... ok
+test_worker_and_jobs_import_without_qt_unicorn_or_web (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_worker_and_jobs_import_without_qt_unicorn_or_web) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 19.484s
+
+OK
+
+
+CHECK qt-management: exit0; 4.597s
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B tools/desktop-ui/acceptance.py --scenario management --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+Log SHA256: 7434d2c1b559ef6d3e8b2051cdf956598293f25633a65c5995c7488c4211556b
+This plugin does not support propagateSizeHints()
+PASS management: real Qt country/draft/XI/captain260/all tactics, injury/ban repair, complete save/resume, failure rollback and pure redraw
+
+
+CHECK qt-campaign-friendlies: exit0; 8.537s
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B tools/desktop-ui/acceptance.py --scenario campaign-friendlies --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+Log SHA256: ce43ec9e8a262af0669db038c32cd5cc8739690a76b3a2e83eec18a1d85f2a11
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS campaign-friendlies: two scheduled fixtures, complete state/RNG/history, save/resume, boundary and standalone repeat
+
+
+CHECK qt-competitive: exit0; 68.073s
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B tools/desktop-ui/competitive.py
+Log SHA256: a50e231a840c036559c59c736e48527e8703ecfd669ec7e22677ece76e55e2a9
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+[
+  {
+    "kind": 2,
+    "index": 21,
+    "phase": "published",
+    "label": "Original engine\nDenmark 1 \u2014 0 N.Ireland\n75\u2032 Larsen (Denmark)\nRegulation: 1 \u2014 0\nWinner: Denmark"
+  },
+  {
+    "kind": 2,
+    "index": 21,
+    "phase": "reloaded",
+    "label": "Original engine\nDenmark 1 \u2014 0 N.Ireland\n75\u2032 Larsen (Denmark)\nRegulation: 1 \u2014 0\nWinner: Denmark"
+  },
+  {
+    "kind": 200,
+    "index": 30,
+    "phase": "published",
+    "label": "Original engine\nDenmark 3 \u2014 2 N.Ireland\n8\u2032 Clarke (N.Ireland)\n51\u2032 Povlsen (Denmark)\n71\u2032 O'Neill (N.Ireland)\n85\u2032 Durnin (Denmark)\n107\u2032 Piechnik (Denmark)\nRegulation: 2 \u2014 2\nExtra time: 3 \u2014 2\nWinner: Denmark"
+  },
+  {
+    "kind": 200,
+    "index": 30,
+    "phase": "reloaded",
+    "label": "Original engine\nDenmark 3 \u2014 2 N.Ireland\n8\u2032 Clarke (N.Ireland)\n51\u2032 Povlsen (Denmark)\n71\u2032 O'Neill (N.Ireland)\n85\u2032 Durnin (Denmark)\n107\u2032 Piechnik (Denmark)\nRegulation: 2 \u2014 2\nExtra time: 3 \u2014 2\nWinner: Denmark"
+  },
+  {
+    "kind": 200,
+    "index": 42,
+    "phase": "published",
+    "label": "Original engine\nDenmark 0 \u2014 0 N.Ireland\nNo goals\nRegulation: 0 \u2014 0\nExtra time: 0 \u2014 0\nPenalties: 4 \u2014 3\nWinner: Denmark"
+  },
+  {
+    "kind": 200,
+    "index": 42,
+    "phase": "reloaded",
+    "label": "Original engine\nDenmark 0 \u2014 0 N.Ireland\nNo goals\nRegulation: 0 \u2014 0\nExtra time: 0 \u2014 0\nPenalties: 4 \u2014 3\nWinner: Denmark"
+  },
+  {
+    "kind": 5,
+    "index": 1475,
+    "phase": "published",
+    "label": "Original engine\nBulgaria 0 \u2014 3 Spain\n60\u2032 Beguristan (Spain)\n63\u2032 Dominguez (Spain)\n91\u2032 Beguristan (Spain)\nRegulation: 0 \u2014 3\nWinner: Spain"
+  },
+  {
+    "kind": 5,
+    "index": 1475,
+    "phase": "reloaded",
+    "label": "Original engine\nBulgaria 0 \u2014 3 Spain\n60\u2032 Beguristan (Spain)\n63\u2032 Dominguez (Spain)\n91\u2032 Beguristan (Spain)\nRegulation: 0 \u2014 3\nWinner: Spain"
+  }
+]
+PASS Qt competitive:4 actual original results,8 publication/reload named labels, scores/winner/identity; no live controls
+
+
+CHECK provenance: exit0; 0.046s
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B tools/check_provenance.py
+Log SHA256: 649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8
+provenance check: 16 file(s) OK
+
+
+CHECK links: exit0; 0.19s
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B tools/check_links.py
+Log SHA256: 27608d13eb78558ad9e41b5013435ddb3e9cca964dceb1a976d9e71fb5ea7255
+links and JSON ok (880 files)
+
+
+Diagnostic (843a037): retained assertion before heading correction, not a passing acceptance run.
+SHA256: 21e5133364ebf5029a0dcfb48f260ac64e6e81a7fe064ed35886905f2a75d3bb
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T51-competitive-matches/tools/desktop-ui/acceptance.py", line 329, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T51-competitive-matches/tools/desktop-ui/acceptance.py", line 328, in main
+    else:friendlies(args.template,args.data,args.screenshot,blocked=args.scenario=='worker')
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T51-competitive-matches/tools/desktop-ui/acceptance.py", line 148, in friendlies
+    assert 'Quick simulation' in window.result.text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Full500 and engine-mutation acceptance on the integrated head remain pending main adjudication and independent review. No new full suite, browser suite or engine mutation batch was run by this integration author.
+Exact-final-head premerge follows this evidence-only commit; final SHA and receipt remain in ignored RUN-NOTES/cache and PR to avoid a self-referential commit hash.
