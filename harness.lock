@@ -77,11 +77,11 @@ local tools/harness/lib/opencode-transport.mjs  (T72 private transport and permi
 local tools/harness/lib/opencode-policy.mjs  (T72 private transport and permission verification)
 74293db6682ce74c75dbea130185124331944709350e8358a9b6af8dcafcb47b  tools/harness/lib/opencode-policy.mjs
 local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
-cfcabca203b1940557086d6465a4246abade4a6be8a625177ce90a1305fd52fb  tools/harness/preflight-opencode.mjs
+25190e2558c5f44ff1d861bd5038bb1a829b06e06f950c65275446094f2cd450  tools/harness/preflight-opencode.mjs
 local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
-de6bcda6080f3cebc08c6046785009688d9bcb7d3d29c54430bec00d2b0f4a3e  tests/opencode_workflow.test.mjs
+785d0ed51b05edd4ffd668391d4f3c81e48e835c3349ad51677ce084106d0276  tests/opencode_workflow.test.mjs
 
-d7e8731a7b71f0dcad65c828eae7838a731362d59d3039147a46e899357220bf  tools/harness/lib/opencode-workflow.mjs
+2b424f52ca6d69a60ad7e6bdcd078c52cc5277be1e3d405a98aaae4238d24377  tools/harness/lib/opencode-workflow.mjs
 
 afc431481490e60e574691cd5f54b4fb940081452e9ebc441889169be940ddf6  tests/helpers/opencode-stub.mjs
 
@@ -90,10 +90,10 @@ afc431481490e60e574691cd5f54b4fb940081452e9ebc441889169be940ddf6  tests/helpers/
 9abb2d7a0c5385e46cd3d5edb7e7b74b171684a8bbfdcea7fb4cab4e8e8f47b2  tools/harness/peek.mjs
 
 local tests/opencode_guard.test.mjs  (T72 native shell operand compatibility guard)
-15ee818123210a04c5385c39b67f169f1d52d2e5767a47caf9a706d6f2690e26  tests/opencode_guard.test.mjs
+26c71b44bde50bd0dc36260e5e8650a1a17342e4b0a28c73b0ee421ce355aff6  tests/opencode_guard.test.mjs
 
 local tools/harness/lib/opencode-guard.mjs  (T72 native shell operand compatibility guard)
-40b7772dc27a2ffff3a8ed488f03e30909fca70b1cb8d90544a3a5c8c3b32e49  tools/harness/lib/opencode-guard.mjs
+78361df4c616b194908a805ad773ad3415e29912929d935060c496cf9fdc3480  tools/harness/lib/opencode-guard.mjs
 
 local tools/harness/opencode-guard/.gitignore  (T72 native shell operand compatibility guard)
 4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97  tools/harness/opencode-guard/.gitignore
@@ -134,6 +134,6 @@ cca236f12a826843a5ed0b7772c9c564321337a597e55955e13a4f5e01caf6ed  tools/harness/
 
 625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b  tools/harness/opencode-guard/LICENSE.opencode
 
-37d7cb74051894d8553340baf06904c0cc6bb290fe4867d63084da98ad68b6c3  tools/harness/opencode-guard/README.md
+41b510d0fc1b637a701f0170465ced2fdba3ee9a0b9792df7e77af2d734e08d8  tools/harness/opencode-guard/README.md
 
 1d7fc7b3eea2a7a6a26f59f3ac1bede3daf50dc543b9d21b3a7907b62be34569  tools/harness/probe-opencode-plugins.mjs

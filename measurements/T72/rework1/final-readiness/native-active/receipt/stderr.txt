@@ -1,0 +1,5 @@
+[0m
+> reviewer · guard
+[0m✗ [0m/home/diego/.nvm/versions/node/v24.21.0/bin/node -e "require('node:fs').writeFileSync('active.pid',String(process.pid));setInterval(()=>{},1000)" failed
+[91m[1mError: [0mTool execution interrupted
+[91m[1mError: [0mTransport: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()

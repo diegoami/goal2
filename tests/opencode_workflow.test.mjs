@@ -84,7 +84,7 @@ function workflowOptions(mode = 'complete') {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-workflow-'));
   return { args: ['run'], model: selection, agent: 'reviewer', agentFile,
     opencode: { exe: process.execPath, prefix: [stub] }, prompt: 'Synthetic nonbilling brief', workDir: dir, title: 'stub',
-    startupTimeoutMs: 700, totalTimeoutMs: 1800, idleTimeoutMs: 350, pollMs: 20,
+    startupTimeoutMs: mode === 'startup' ? 700 : 2500, totalTimeoutMs: 5000, idleTimeoutMs: 350, pollMs: 20,
     env: { ...process.env, HARNESS_OPENCODE_HOME: path.join(dir, 'runtime'), STUB_MODE: mode, STUB_TRACE: path.join(dir, 'trace.jsonl') } };
 }
 test('production major dispatch recovers complete export, usage and receipt; same owned session resumes', async () => {

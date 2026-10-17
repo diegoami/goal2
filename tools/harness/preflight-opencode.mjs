@@ -7,7 +7,7 @@ import { resolveOpenCode } from './lib/opencode.mjs';
 import { privateHome, startPrivateServer, settledCatalogue, capture, hash } from './lib/opencode-transport.mjs';
 import { peekRecord, renderPeek } from './lib/opencode-peek.mjs';
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from './lib/opencode-policy.mjs';
-import {stageGuard,baselinePlugins,readyPlugins,catalogueProjection,selectGuardPlugins,pinGuardBinary,inspectConfig} from './lib/opencode-guard.mjs';
+import {stageGuard,baselinePlugins,readyPlugins,catalogueProjection,selectGuardPlugins,pinGuardBinary,inspectConfig,catalogueParity} from './lib/opencode-guard.mjs';
 const outIndex = process.argv.indexOf('--out');
 assert(outIndex > 0 && process.argv[outIndex + 1], '--out is required');
 const out = path.resolve(process.argv[outIndex + 1]); fs.mkdirSync(out, { recursive: true });
@@ -21,12 +21,12 @@ let env = trustedReviewEnv(home.env, policy, 'reviewer', guard);
 const version = await capture(cmd, ['--version'], { env, cwd: process.cwd() });
 assert.equal(version.code, 0); assert.match(version.stdout, /(?:^|v)2\./);
 save('identity.json', { version: version.stdout.trim(), binary: cmd.exe, binarySHA256: hash(fs.readFileSync(cmd.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), policySHA256: policy.sourceSHA256, root: home.root, dataHome: home.env.XDG_DATA_HOME, database: home.env.OPENCODE_DB, sources: Object.fromEntries(['opencode-protocol.mjs', 'opencode-policy.mjs', 'opencode-transport.mjs', 'opencode-peek.mjs'].map((f) => [f, hash(fs.readFileSync(new URL('./lib/' + f, import.meta.url)))])), directory: process.cwd() });
-let server; let unrelated;
+let server; let unrelated; let baseline;
 try {
   const otherHome = privateHome({ ...process.env, HARNESS_OPENCODE_HOME: path.join(dest, 'unrelated') });
   unrelated = await startPrivateServer(cmd, { env: trustedReviewEnv(otherHome.env, policy), cwd: process.cwd() });
   const unrelatedBefore = await unrelated.request('/api/session');
-  const baseline = await baselinePlugins(cmd, { env: baseEnv, cwd: process.cwd(), guard });save('baseline.json', baseline);
+  baseline = await baselinePlugins(cmd, { env: baseEnv, cwd: process.cwd(), guard, retain: true });
   selectGuardPlugins(guard, baseline.plugins.map(p => p.id)); env = trustedReviewEnv(home.env, policy, 'reviewer', guard);
   server = await startPrivateServer(cmd, { env, cwd: process.cwd() });
   save('actual-config.json', inspectConfig(await server.request('/api/config'), guard));
@@ -35,7 +35,8 @@ try {
   const schema = path.join(originals, 'openapi.json'); await server.request('/openapi.json', { outFile: schema });
   save('schema-identity.json', { source: '/openapi.json', sha256: hash(fs.readFileSync(schema)), original: schema });
   const found = await settledCatalogue(server, { model: { id: 'minimax/MiniMax-M3', variant: 'thinking', family: 'minimax' }, agent: 'reviewer', verifyAgent: (profile) => verifyReviewer(profile, policy, 'reviewer') });
-  assert.deepEqual(catalogueProjection((await server.request('/api/model')).data), baseline.models, 'guard preserves safe global provider catalogue');
+  baseline.models = await catalogueParity(baseline.server, server, { timeoutMs: 30000 });
+  baseline.shutdown = await baseline.server.stop(); save('baseline.json', baseline); baseline = null;
   save('profile.json', { id: found.profile.id, mode: found.profile.mode, system: found.profile.system, permissions: found.profile.permissions });
   save('selected-model.json', { id: found.selected.id, providerID: found.selected.providerID, family: found.selected.family, variants: found.selected.variants.map((v) => v.id), enabled: found.selected.enabled });
   const model = { id: 'MiniMax-M3', providerID: 'minimax', variant: 'thinking' };
@@ -52,5 +53,5 @@ try {
   save('shutdown.json', await server.stop()); server = null;
   assert.deepEqual(await unrelated.request('/api/session'), unrelatedBefore);
   save('unrelated-survived.json', { before: unrelatedBefore, after: await unrelated.request('/api/session') });
-} finally { if (server) save('shutdown.json', await server.stop()); if (unrelated) save('unrelated-shutdown.json', await unrelated.stop()); }
+} finally { if (baseline?.server) { baseline.shutdown = await baseline.server.stop(); save('baseline.json', baseline); } if (server) save('shutdown.json', await server.stop()); if (unrelated) save('unrelated-shutdown.json', await unrelated.stop()); }
 console.log(`Non-billing reviewer preflight passed: ${dest}`);

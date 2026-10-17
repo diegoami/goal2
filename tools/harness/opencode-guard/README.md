@@ -74,3 +74,12 @@ node tools/harness/check-opencode-guard-controls.mjs --out .cache/T72-native-con
 
 The command restores each changed source in `finally`, retains full logs, and
 requires the intended native operand/import assertion to fail. It makes no paid calls.
+
+[confirmed: pinned ModelsDev source and final-readiness receipts] Cold startup can
+serve a bundled catalogue while a background remote refresh is in flight. The
+harness keeps its owned baseline lease alive until guarded startup and compares
+both complete live catalogues contemporaneously, including custom/nonselected
+providers. Exact parity must remain stable within the caller's startup/total
+budget; mismatch fails before generation. Both leases stop on every outcome.
+This verifies the current discovery snapshots; normal later native catalogue
+refreshes remain enabled.

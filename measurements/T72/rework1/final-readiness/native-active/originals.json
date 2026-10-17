@@ -1,0 +1,37 @@
+[
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/active-cancellation.json",
+    "sha256": "fb6cce94454ca370cc2bdac0c6aab2c2e25705ab54311a23a3ca7e7cf3453b9a",
+    "committed": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/outcome.json",
+    "sha256": "2fa6acabb7f1dd796f01623f3a30c7b66e9e6eecb0c2b1ce891cd8cd640f6242",
+    "committed": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/requests.json",
+    "sha256": "8019699cd6370e3db9f8c97f9f35e603dd7b33b5c8248845a92f83b3b60ccf50",
+    "committed": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/responses.json",
+    "sha256": "389827042cf1e9d809a5055fa751a2e8639b7b66f8c50a2d5b9851a278802238",
+    "committed": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/result.json",
+    "sha256": "038aecbac2c060f0e9f5741c4eb3fb908603fd3e2098ddd09d759bf23a3f36e0",
+    "committed": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/tool-outcomes.json",
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "committed": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/unrelated-shutdown.json",
+    "sha256": "45d8d76e8c3b9c022a4a310c59333f6519953619ab6d350ba5d99ce67959bbd5",
+    "committed": true
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "info": {
+    "id": "ses_eb582b738ffeRmrM8JtTi2p2ih",
+    "projectID": "18205a66481f455f28fc093fd822a040e8af9580",
+    "agent": "reviewer",
+    "model": {
+      "id": "guard",
+      "providerID": "t72-loopback",
+      "variant": "medium"
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 0,
+      "output": 0,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "time": {
+      "created": 1792251087070,
+      "updated": 1792251087257
+    },
+    "title": "T72-native-guard-016e5b707dbb",
+    "subpath": ".cache/T72-r1/ready-active/native-eV3V79/work",
+    "location": {
+      "directory": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/ready-active/native-eV3V79/work"
+    }
+  },
+  "messages": [
+    {
+      "id": "msg_14a7d4949001k6h4e92JVHEWmd",
+      "time": {
+        "created": 1792251087177
+      },
+      "type": "agent-switched",
+      "agent": "reviewer",
+      "previous": "reviewer"
+    },
+    {
+      "id": "msg_14a7d4947001wkdggvv3c6AdNx",
+      "time": {
+        "created": 1792251087204
+      },
+      "text": "\"Your complete brief is the file .harness-brief-T72-native-guard-016e5b707dbb.md at the root of this worktree. Read it in full first; never edit, commit or delete it.\"",
+      "files": [],
+      "type": "user"
+    }
+  ]
+}

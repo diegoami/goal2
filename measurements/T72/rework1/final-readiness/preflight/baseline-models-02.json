@@ -1,0 +1,752 @@
+[
+  {
+    "id": "k3",
+    "modelID": "k3",
+    "providerID": "kimi-code-plan-cn",
+    "family": "kimi-k3",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "k3",
+    "modelID": "k3",
+    "providerID": "kimi-code-plan-global",
+    "family": "kimi-k3",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-for-coding-highspeed",
+    "modelID": "kimi-for-coding-highspeed",
+    "providerID": "kimi-code-plan-cn",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "kimi-for-coding-highspeed",
+    "modelID": "kimi-for-coding-highspeed",
+    "providerID": "kimi-code-plan-global",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "kimi-for-coding",
+    "modelID": "kimi-for-coding",
+    "providerID": "kimi-code-plan-cn",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-for-coding",
+    "modelID": "kimi-for-coding",
+    "providerID": "kimi-code-plan-global",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-k2.5",
+    "modelID": "kimi-k2.5",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "kimi-k2.5",
+    "modelID": "kimi-k2.5",
+    "providerID": "alibaba-token-plan",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-k2.6",
+    "modelID": "kimi-k2.6",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "kimi-k2.6",
+    "modelID": "kimi-k2.6",
+    "providerID": "alibaba-token-plan",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-k2.7-code",
+    "modelID": "kimi-k2.7-code",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-k2.7-code",
+    "modelID": "kimi-k2.7-code",
+    "providerID": "alibaba-token-plan",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "kimi-k2.7-code",
+    "modelID": "kimi-k2.7-code",
+    "providerID": "opencode-go",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "kimi-k3",
+    "modelID": "kimi-k3",
+    "providerID": "opencode-go",
+    "family": "kimi-k3",
+    "enabled": true,
+    "variants": [
+      "max"
+    ]
+  },
+  {
+    "id": "liquid/lfm-2.5-2.6b:free",
+    "modelID": "liquid/lfm-2.5-2.6b:free",
+    "providerID": "openrouter",
+    "family": "liquid",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "liquid/lfm-2.5-24b-a2b",
+    "modelID": "liquid/lfm-2.5-24b-a2b",
+    "providerID": "openrouter",
+    "family": "liquid",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "longcat-2.0",
+    "modelID": "longcat-2.0",
+    "providerID": "opencode-go",
+    "family": "longcat",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "longcat-2.5-preview-free",
+    "modelID": "longcat-2.5-preview-free",
+    "providerID": "opencode-go",
+    "family": "longcat",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "longcat-2.5-preview-free",
+    "modelID": "longcat-2.5-preview-free",
+    "providerID": "opencode",
+    "family": "longcat",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mancer/weaver",
+    "modelID": "mancer/weaver",
+    "providerID": "openrouter",
+    "family": "alpha",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meituan/longcat-2.0",
+    "modelID": "meituan/longcat-2.0",
+    "providerID": "openrouter",
+    "family": "longcat",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "meta-llama/llama-3.1-70b-instruct",
+    "modelID": "meta-llama/llama-3.1-70b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.1-8b-instruct",
+    "modelID": "meta-llama/llama-3.1-8b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.2-1b-instruct",
+    "modelID": "meta-llama/llama-3.2-1b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.2-3b-instruct",
+    "modelID": "meta-llama/llama-3.2-3b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-3.3-70b-instruct",
+    "modelID": "meta-llama/llama-3.3-70b-instruct",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-4-maverick",
+    "modelID": "meta-llama/llama-4-maverick",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-4-scout",
+    "modelID": "meta-llama/llama-4-scout",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta-llama/llama-guard-4-12b",
+    "modelID": "meta-llama/llama-guard-4-12b",
+    "providerID": "openrouter",
+    "family": "llama",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "meta/muse-glimmer-30b",
+    "modelID": "meta/muse-glimmer-30b",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.1",
+    "modelID": "meta/muse-spark-1.1",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.2-contributor",
+    "modelID": "meta/muse-spark-1.2-contributor",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.2",
+    "modelID": "meta/muse-spark-1.2",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.3-contributor",
+    "modelID": "meta/muse-spark-1.3-contributor",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-1.3",
+    "modelID": "meta/muse-spark-1.3",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "meta/muse-spark-open",
+    "modelID": "meta/muse-spark-open",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "meta/muse-wonder",
+    "modelID": "meta/muse-wonder",
+    "providerID": "openrouter",
+    "family": "muse",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "microsoft/phi-4",
+    "modelID": "microsoft/phi-4",
+    "providerID": "openrouter",
+    "family": "phi",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "microsoft/wizardlm-2-8x22b",
+    "modelID": "microsoft/wizardlm-2-8x22b",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mimo-v2.5-pro",
+    "modelID": "mimo-v2.5-pro",
+    "providerID": "opencode-go",
+    "family": "mimo-v2.5-pro",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mimo-v2.5",
+    "modelID": "mimo-v2.5",
+    "providerID": "opencode-go",
+    "family": "mimo-v2.5",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mimo-v2.6-flash-free",
+    "modelID": "mimo-v2.6-flash-free",
+    "providerID": "opencode",
+    "family": "mimo",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mimo-v2.6-flash",
+    "modelID": "mimo-v2.6-flash",
+    "providerID": "opencode-go",
+    "family": "mimo",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mimo-v2.6-pro",
+    "modelID": "mimo-v2.6-pro",
+    "providerID": "opencode-go",
+    "family": "mimo",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.1",
+    "modelID": "MiniMax-M2.1",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.1",
+    "modelID": "MiniMax-M2.1",
+    "providerID": "minimax-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.1",
+    "modelID": "MiniMax-M2.1",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.1",
+    "modelID": "MiniMax-M2.1",
+    "providerID": "minimax",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5-highspeed",
+    "modelID": "MiniMax-M2.5-highspeed",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5-highspeed",
+    "modelID": "MiniMax-M2.5-highspeed",
+    "providerID": "minimax-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5-highspeed",
+    "modelID": "MiniMax-M2.5-highspeed",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5-highspeed",
+    "modelID": "MiniMax-M2.5-highspeed",
+    "providerID": "minimax",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5",
+    "modelID": "MiniMax-M2.5",
+    "providerID": "alibaba-token-plan-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5",
+    "modelID": "MiniMax-M2.5",
+    "providerID": "alibaba-token-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5",
+    "modelID": "MiniMax-M2.5",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5",
+    "modelID": "MiniMax-M2.5",
+    "providerID": "minimax-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5",
+    "modelID": "MiniMax-M2.5",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.5",
+    "modelID": "MiniMax-M2.5",
+    "providerID": "minimax",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7-highspeed",
+    "modelID": "MiniMax-M2.7-highspeed",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7-highspeed",
+    "modelID": "MiniMax-M2.7-highspeed",
+    "providerID": "minimax-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7-highspeed",
+    "modelID": "MiniMax-M2.7-highspeed",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7-highspeed",
+    "modelID": "MiniMax-M2.7-highspeed",
+    "providerID": "minimax",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7",
+    "modelID": "MiniMax-M2.7",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7",
+    "modelID": "MiniMax-M2.7",
+    "providerID": "minimax-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7",
+    "modelID": "MiniMax-M2.7",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2.7",
+    "modelID": "MiniMax-M2.7",
+    "providerID": "minimax",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2",
+    "modelID": "MiniMax-M2",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2",
+    "modelID": "MiniMax-M2",
+    "providerID": "minimax-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2",
+    "modelID": "MiniMax-M2",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M2",
+    "modelID": "MiniMax-M2",
+    "providerID": "minimax",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M3.1-Flash-Preview",
+    "modelID": "MiniMax-M3.1-Flash-Preview",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M3.1-Flash-Preview",
+    "modelID": "MiniMax-M3.1-Flash-Preview",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "MiniMax-M3",
+    "modelID": "MiniMax-M3",
+    "providerID": "minimax-cn-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "MiniMax-M3",
+    "modelID": "MiniMax-M3",
+    "providerID": "minimax-cn",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "MiniMax-M3",
+    "modelID": "MiniMax-M3",
+    "providerID": "minimax-coding-plan",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "MiniMax-M3",
+    "modelID": "MiniMax-M3",
+    "providerID": "minimax",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "minimax-m3",
+    "modelID": "minimax-m3",
+    "providerID": "opencode-go",
+    "family": "minimax-m3",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "minimax/minimax-01",
+    "modelID": "minimax/minimax-01",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "minimax/minimax-m1",
+    "modelID": "minimax/minimax-m1",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "minimax/minimax-m2-her",
+    "modelID": "minimax/minimax-m2-her",
+    "providerID": "openrouter",
+    "family": "minimax",
+    "enabled": true,
+    "variants": []
+  }
+]

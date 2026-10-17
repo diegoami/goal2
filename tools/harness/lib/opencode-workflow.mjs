@@ -5,7 +5,7 @@ import { randomBytes } from 'node:crypto';
 import { command, normalizeSession } from './opencode-protocol.mjs';
 import { privateHome, startPrivateServer, settledCatalogue, capture, spawnOwned, killOwned, delay, hash, OpenCodeInfraError } from './opencode-transport.mjs';
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from './opencode-policy.mjs';
-import { stageGuard, baselinePlugins, readyPlugins, verifyPlugins, catalogueProjection, selectGuardPlugins, pinGuardBinary, inspectConfig } from './opencode-guard.mjs';
+import { stageGuard, baselinePlugins, readyPlugins, verifyPlugins, catalogueProjection, selectGuardPlugins, pinGuardBinary, inspectConfig, catalogueParity } from './opencode-guard.mjs';
 const json = (file, value) => fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 export function finalReviewText(normalized) {
   const last = normalized.messages.filter((m) => m.type === 'assistant').at(-1);
@@ -38,7 +38,7 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
   const files = Object.fromEntries(['stdout.txt', 'stderr.txt', 'export-response.json', 'export.json', 'final.txt', 'assistant.txt', 'profile.json', 'plugins.json', 'baseline.json', 'shell-guard.jsonl', 'model.json', 'openapi.raw.json', 'server.json', 'brief.md', 'run.json'].map((name) => [name, path.join(artifactRoot, name)]));
   const briefFile = path.join(workDir, `.harness-brief-${runTitle}.md`); fs.writeFileSync(briefFile, prompt); fs.writeFileSync(files['brief.md'], prompt);
   const pointer = `Your complete brief is the file ${path.basename(briefFile)} at the root of this worktree. Read it in full first; never edit, commit or delete it.`;
-  const start = Date.now(); let server; let client; let clientClosed = false; let exitCode = null; let spawnError; let normalized; let raw; let failure;
+  const start = Date.now(); let server; let baseline; let client; let clientClosed = false; let exitCode = null; let spawnError; let normalized; let raw; let failure;
   const manifest = { major: 2, ...(reviewedHead ? { reviewedHead, reviewPR } : {}), title: runTitle, directory: workDir, agent, model, dataRoot: home.root, dataHome: home.env.XDG_DATA_HOME, policySHA256: policy.sourceSHA256, transportIdentity, guard, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.binary ?? opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), sources: Object.fromEntries(['opencode.mjs', 'opencode-workflow.mjs', 'opencode-transport.mjs', 'opencode-policy.mjs', 'opencode-guard.mjs', 'opencode-protocol.mjs', '../review.mjs'].map((name) => [name, hash(fs.readFileSync(new URL(name, import.meta.url)))])), phase: 'preflight', started: start, files, briefFile };
   const persist = () => {
     json(files['run.json'], server ? JSON.parse(server.redact(JSON.stringify(manifest))) : manifest);
@@ -58,19 +58,21 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
     manifest.usage = { cost: normalized.cost, tokens: normalized.tokens }; manifest.completed = normalized.completed; manifest.rejected = normalized.rejected;
   };
   try {
-    const baseline = await baselinePlugins(opencode, { env: baseEnv, cwd: workDir, guard, timeoutMs: Math.min(startupTimeoutMs, left()) });
+    baseline = await baselinePlugins(opencode, { env: baseEnv, cwd: workDir, guard, retain: true, timeoutMs: Math.min(startupTimeoutMs - (Date.now() - start), left()) });
     json(files['baseline.json'], baseline);
     selectGuardPlugins(guard, baseline.plugins.map(p => p.id), files['shell-guard.jsonl']);
     runEnv = trustedReviewEnv(home.env, policy, agent, guard);
-    server = await startPrivateServer(opencode, { env: runEnv, cwd: workDir, timeoutMs: Math.min(startupTimeoutMs, totalTimeoutMs), log });
+    server = await startPrivateServer(opencode, { env: runEnv, cwd: workDir, timeoutMs: Math.min(startupTimeoutMs - (Date.now() - start), left()), log });
     manifest.config = inspectConfig(await server.request('/api/config', { timeoutMs: left() }), guard);
     await server.request('/openapi.json', { timeoutMs: Math.min(startupTimeoutMs, left()), outFile: files['openapi.raw.json'] });
     manifest.schemaSHA256 = hash(fs.readFileSync(files['openapi.raw.json']));
     const found = await settledCatalogue(server, { timeoutMs: Math.min(startupTimeoutMs - (Date.now() - start), left()), model, agent, verifyAgent: (profile) => verifyReviewer(profile, policy, agent) });
-    const plugins = await readyPlugins(server, guard, { timeoutMs: Math.min(startupTimeoutMs, left()) });
+    const plugins = await readyPlugins(server, guard, { timeoutMs: Math.min(startupTimeoutMs - (Date.now() - start), left()) });
     json(files['plugins.json'], plugins);
-    const catalogue = catalogueProjection((await server.request('/api/model', { timeoutMs: left() })).data);
-    if (JSON.stringify(catalogue) !== JSON.stringify(baseline.models)) throw new OpenCodeInfraError('guard', 'trusted plugin activation changed provider catalogue');
+    baseline.models = await catalogueParity(baseline.server, server, { timeoutMs: Math.min(startupTimeoutMs - (Date.now() - start), left()) });
+    baseline.shutdown = await baseline.server.stop();
+    json(files['baseline.json'], baseline);
+    baseline = null;
     json(files['profile.json'], { id: found.profile.id, mode: found.profile.mode, hidden: found.profile.hidden, system: found.profile.system, permissions: found.profile.permissions });
     json(files['model.json'], { id: found.selected.id, modelID: found.selected.modelID, providerID: found.selected.providerID, family: found.selected.family, variants: found.selected.variants.map((v) => v.id), enabled: found.selected.enabled });
     let info;
@@ -124,6 +126,7 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
       if (!raw) try { await exportFinal(); } catch (e) { manifest.exportError = e.message; }
     }
   } finally {
+    if (baseline?.server) { baseline.shutdown = await baseline.server.stop(); json(files['baseline.json'], baseline); }
     if (server) try { json(files['server.json'], await server.stop()); } catch (e) { manifest.shutdownError = e.message; failure ||= e; }
     if (client && !clientClosed) {
       for (let i = 0; i < 20 && !clientClosed; i++) await delay(25);

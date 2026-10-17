@@ -139,25 +139,52 @@ export function inspectConfig(entries, guard) {
   }
   return { shell: shell ?? null, externalPluginDeclarations: 0 };
 }
-export async function baselinePlugins(command, { env, cwd, guard, timeoutMs = 30000 }) {
+export async function baselinePlugins(command, { env, cwd, guard, timeoutMs = 30000, retain = false }) {
+  const deadline = Date.now() + timeoutMs;
+  const left = () => Math.max(1, deadline - Date.now());
   // [designed: T72] Survey has no external setup activations; provider fields are discarded without inspection/persistence.
   const content = JSON.parse(env.OPENCODE_CONFIG_CONTENT);
   content.plugins = ['-*'];
-  let survey = await startPrivateServer(command, { env: { ...env, OPENCODE_CONFIG_CONTENT: JSON.stringify(content) }, cwd, timeoutMs });
+  let survey = await startPrivateServer(command, { env: { ...env, OPENCODE_CONFIG_CONTENT: JSON.stringify(content) }, cwd, timeoutMs: left() });
   let config;
   let surveyShutdown;
-  try { config = inspectConfig(await survey.request('/api/config', { timeoutMs }), guard); }
+  try { config = inspectConfig(await survey.request('/api/config', { timeoutMs: left() }), guard); }
   finally { surveyShutdown = await survey.stop(); survey = null; }
-  const server = await startPrivateServer(command, { env, cwd, timeoutMs });
+  const server = await startPrivateServer(command, { env, cwd, timeoutMs: left() });
   let result;
   try {
-    const actualConfig = inspectConfig(await server.request('/api/config', { timeoutMs }), guard);
-    const plugins = await readyPlugins(server, guard, { baseline: true, timeoutMs });
-    const models = catalogueProjection((await server.request('/api/model', { timeoutMs })).data);
+    const actualConfig = inspectConfig(await server.request('/api/config', { timeoutMs: left() }), guard);
+    const plugins = await readyPlugins(server, guard, { baseline: true, timeoutMs: left() });
+    const models = catalogueProjection((await server.request('/api/model', { timeoutMs: left() })).data);
     result = { plugins, models, config, actualConfig, surveyShutdown };
+    if (retain) Object.defineProperty(result, 'server', { value: server });
     return result;
   } finally {
-    const shutdown = await server.stop();
-    if (result) result.shutdown = shutdown;
+    if (!retain || !result) {
+      const shutdown = await server.stop();
+      if (result) result.shutdown = shutdown;
+    }
   }
+}
+
+// [derived: native ModelsDev background refresh; tests] Compare complete live inventories, not selected-model readiness.
+export async function catalogueParity(baseline, guarded, { timeoutMs, stableMs = 250, pollMs = 50 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  let previous;
+  let since = Date.now();
+  do {
+    const left = Math.max(1, deadline - Date.now());
+    const [before, after] = await Promise.all([
+      baseline.request('/api/model', { timeoutMs: left }),
+      guarded.request('/api/model', { timeoutMs: left }),
+    ]);
+    const models = catalogueProjection(before.data);
+    const snapshot = JSON.stringify(models);
+    if (snapshot === JSON.stringify(catalogueProjection(after.data))) {
+      if (snapshot !== previous) { previous = snapshot; since = Date.now(); }
+      if (Date.now() - since >= stableMs) return models;
+    } else { previous = undefined; since = Date.now(); }
+    await delay(Math.min(pollMs, Math.max(1, deadline - Date.now())));
+  } while (Date.now() < deadline);
+  throw new OpenCodeInfraError('guard', 'complete live provider catalogues did not reach stable parity before startup deadline');
 }
