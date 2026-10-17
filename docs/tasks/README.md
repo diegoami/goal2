@@ -104,4 +104,4 @@ Historical browser contracts T34–T38 are preserved; these are separate impleme
 
 | Task | Title | Issue | Difficulty | Merge after |
 | --- | --- | --- | --- | --- |
-| [T73](T73.md) | Add agy and run one Sonnet review trial | [#174](https://github.com/diegoami/goal2/issues/174) | Hard | T72 |
+| [T73](T73.md) | Add direct Claude CLI and run one Sonnet review trial | [#174](https://github.com/diegoami/goal2/issues/174) | Hard | T72 |
