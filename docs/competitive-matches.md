@@ -69,3 +69,14 @@ adapted application inputs, not an original new-game replay. New competition
 builders, route-level news/sacking, live workers, renderer and controls remain
 outside this interface. Friendly unlimited-substitution UI policy is separate
 from the accepted original friendly default5.
+
+[confirmed: accepted original setup observations and T51 tests; designed: T51]
+A next quick friendly uses a private input copy after a validated retained
+competitive profile and an actual pending kind1 row. The adapter verifies the
+complete input Memory equals the existing state's serialization before changing
+only three original setup mode bytes to friendly values: DS9A3D=0,8319=45,7C36=0.
+It retains the original kickoff side, source records, both seeds and saved Memory.
+Both quick constructors use that copy. Unknown identities, arbitrary templates,
+unsupported retained modes, nonfriendly pending rows and legacy extra-time
+templates retain their strict refusals. This is new-friendly setup, with no
+competitive quick-engine implementation or original Memory rewriting.

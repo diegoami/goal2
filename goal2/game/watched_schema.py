@@ -260,6 +260,15 @@ def validate_saved_watched(state):
                     raise ValueError('watched result differs from world continuation')
         for row in state.campaign.results:
             if watched(row):validate_history(row)
+        # [designed: T51] A no-World quick result can replace last_match while the
+        # latest original competitive Memory still backs its retained history.
+        originals=[row for row in state.campaign.results if watched(row)]
+        if world is None and not watched(last) and originals and originals[-1]['schema']==COMPETITIVE_SCHEMA:
+            row=originals[-1];image=_returned_image(state.mem);index=image.fixture_index()
+            if (row['fixture_id']!=f'original:{index}' or row['teams']!=_fixture_teams(image,index)
+                    or row['resolution']['kind']!=image.rd_far(0xA92B,8*(index-1)+2,1)
+                    or state.rng_seed_8336!=image.rd(0x8336)):
+                raise ValueError('retained competitive history differs from original Memory')
 
 
 def _fixture_teams(image,index):

@@ -20,6 +20,10 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE='f880138bbeaf612157d389cc235f9d7675aba696'
 MODULES=('test_campaign_competitive_match','test_campaign_competitive_publication','test_campaign_competitive_save')
 MUTATIONS=(
+ ('competitive-to-friendly setup bypass','goal2/game/quick_match.py',
+  "    campaign=getattr(game_state,'campaign',None)",
+  "    return template\n    campaign=getattr(game_state,'campaign',None)",
+  'goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals'),
  ('winner resolution bypass','goal2/game/watched_schema.py','if winner!=expected:','if False:',
   'goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage'),
  ('penalty kicks published as normal goals','goal2/game/watched_publication.py',

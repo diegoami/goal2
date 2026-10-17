@@ -82,8 +82,8 @@ class CompetitivePublicationTests(unittest.TestCase):
 
     def test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job(self):
         from goal2.game import session_save
-        from goal2.game.competitive_match import prepare_competitive
         s,raw,f=campaign(21,2);owner=Owner(s,raw);pub,job=self.begin(owner,f)
+        from goal2.game.competitive_match import prepare_competitive
         root=Path(__file__).resolve().parents[2]
         legacy,_=session_save.decode((root/'.cache/watched-legacy-v3-9fb725ac914a/standalone.g2save').read_bytes())
         original=legacy.last_match['original']

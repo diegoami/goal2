@@ -67,5 +67,178 @@
       "sha256": "1cae55707b536fa78d73fa9c16e6f19625680eb272724fa3a1bfd885bfb12ecc",
       "interpretation": "Remaining quick-after-competitive mode handoff fails strict guard; test next-free write missed Memory header, now uses Image API. No guard/assertion weakened."
     }
-  ]
+  ],
+  "mode_measurements": [
+    {
+      "artifact": ".cache/T51-original-mode-flags.json",
+      "sha256": "43dd1a835a7bc3c1c09004000a13c9cce6d82aae025da9875720dfae6a437829",
+      "measurement": {
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "cases": [
+          {
+            "phase": "original_setup",
+            "index": 1378,
+            "kind": 1,
+            "flags": {
+              "0x9a3d": 0,
+              "0x8319": 45,
+              "0x7c36": 0,
+              "0x831a": 0
+            }
+          },
+          {
+            "phase": "original_setup",
+            "index": 1471,
+            "kind": 1,
+            "flags": {
+              "0x9a3d": 0,
+              "0x8319": 45,
+              "0x7c36": 0,
+              "0x831a": 1
+            }
+          },
+          {
+            "phase": "original_setup",
+            "index": 1475,
+            "kind": 5,
+            "flags": {
+              "0x9a3d": 1,
+              "0x8319": 45,
+              "0x7c36": 0,
+              "0x831a": 1
+            }
+          },
+          {
+            "phase": "original_setup",
+            "index": 42,
+            "kind": 200,
+            "flags": {
+              "0x9a3d": 1,
+              "0x8319": 40,
+              "0x7c36": 1,
+              "0x831a": 1
+            }
+          },
+          {
+            "phase": "qualifier_returned",
+            "index": 1475,
+            "memory_sha256": "fe51d438c629881882ffd4f0a7364dd167d4e84a13fba0d42019ac126005de22",
+            "flags": {
+              "0x9a3d": 1,
+              "0x8319": 45,
+              "0x7c36": 0,
+              "0x831a": 1
+            }
+          },
+          {
+            "phase": "knockout_returned",
+            "index": 42,
+            "memory_sha256": "97a934c906a74dbb5d3e19231bc230f966dc509c5a517f7d532cfb63257cee8f",
+            "flags": {
+              "0x9a3d": 1,
+              "0x8319": 255,
+              "0x7c36": 1,
+              "0x831a": 1
+            }
+          }
+        ],
+        "actual_qualifier": {
+          "kind": 5,
+          "index": 1475,
+          "score": [
+            0,
+            3
+          ],
+          "winner": 1
+        },
+        "next_fixture": {
+          "fixture_id": "original:1567",
+          "cycle": 1,
+          "year": 3,
+          "stage": 5,
+          "kind": 1,
+          "home_country": 10,
+          "away_country": 4
+        }
+      }
+    },
+    {
+      "artifact": ".cache/T51-extra-time-mode-flags.json",
+      "sha256": "9ad6c88304cacd9b66fca2476060337f03b488a9768de98c0c370b132eec7b99",
+      "measurement": {
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "kind": 200,
+        "index": 30,
+        "managed": 7,
+        "budget": [
+          5,
+          5
+        ],
+        "policy": "play_on",
+        "memory_sha256": "d9e1c27c772bd71f3b7bca263180291a72bcbd4c5cc75c9bc6774eb008b2b0fd",
+        "score": [
+          3,
+          2
+        ],
+        "score_90": [
+          2,
+          2
+        ],
+        "flags": {
+          "0x9a3d": 1,
+          "0x8319": 15,
+          "0x7c36": 1,
+          "0x831a": 0
+        }
+      }
+    }
+  ],
+  "continuation_focused": {
+    "tests": 3,
+    "passed": true,
+    "seconds": 88.602,
+    "log": ".cache/T51-save-r3.log",
+    "sha256": "4ea8ad1dace62fdf965454998375e0e9e4694fe12a0da1aa13fe505548f98959"
+  },
+  "quick_tightening_focused": {
+    "tests": 2,
+    "passed": true,
+    "seconds": 29.656,
+    "log": ".cache/T51-quick-tightening.log",
+    "sha256": "cacc4dc7cdeac43777f7ac2bba3d1b9db283cfe6b07e9056a5ee3902fc2422ce"
+  },
+  "baseline_nine_tests": {
+    "summary": ".cache/T51-proofs-1792257017643213747/summary.json",
+    "data": [
+      {
+        "command": [
+          "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+          "-B",
+          "-m",
+          "unittest",
+          "goal2.tests.test_campaign_competitive_match",
+          "goal2.tests.test_campaign_competitive_publication",
+          "goal2.tests.test_campaign_competitive_save",
+          "-v"
+        ],
+        "exit_code": 1,
+        "wall_s": 21.932,
+        "log": ".cache/T51-proofs-1792257017643213747/baseline.log",
+        "log_sha256": "92bfb11a67fd944ca1500714d08c99aeed56387d6b66c6908621568a4db7dcf2",
+        "source": "f880138bbeaf612157d389cc235f9d7675aba696",
+        "archive_sha256": "df5df568e655a38a88d29e62f098322b61e0891a8d13feb37930ae7cdb3c0bbe",
+        "assertion_tests": [
+          "test_competitive_preparation_preserves_public_friendly_gate",
+          "test_owner_budget_cases_match_independent_execution_and_guest_stamps",
+          "test_source_context_is_explicit_and_invalid_changes_are_atomic",
+          "test_original_winner_and_full_tail_publish_once_without_quick_effects",
+          "test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic",
+          "test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job",
+          "test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues",
+          "test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage",
+          "test_quick_setup_is_private_and_preserves_strict_template_refusals"
+        ]
+      }
+    ]
+  }
 }

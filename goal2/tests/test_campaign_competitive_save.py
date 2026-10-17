@@ -91,7 +91,9 @@ class CompetitiveSaveTests(unittest.TestCase):
         from goal2.desktop.worker import play
         quick=[]
         for prior in (after,restored):
-            candidate=copy.deepcopy(prior);select(candidate);quick.append(play(candidate,raw))
+            candidate=copy.deepcopy(prior);select(candidate)
+            try:quick.append(play(candidate,raw))
+            except ValueError as exc:self.fail('next actual friendly cannot run after original competitive completion: '+str(exc))
         self.assertEqual(quick[0],quick[1]);self.assertNotIn('engine',quick[0].last_match)
         quick_saved=session_save.encode(quick[0],raw)
         self.assertEqual(session_save.decode(quick_saved)[0],quick[0])
@@ -100,12 +102,20 @@ class CompetitiveSaveTests(unittest.TestCase):
         print(f'T51 actual country4 qualifier kind={f.kind} index={f.index} score={out.result["score"]} winner={out.result["winner"]} next deterministic PASS',flush=True)
 
     def test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage(self):
-        s,raw,f=campaign();s.campaign.fixtures+=(Scheduled('original:43',1,1,2,1,7,19),)
+        s,raw,f=campaign();s.campaign.fixtures+=(Scheduled('original:43',1,1,2,1,7,19),Scheduled('original:44',1,1,2,1,7,19))
         owner=Owner(s,raw);pub=publication(owner)
         try:job=pub.begin(f)
         except ValueError as exc:self.fail('competitive history unavailable: '+str(exc))
         pub.complete(job.token,copy.deepcopy(completed()))
-        history=copy.deepcopy(owner.state.campaign.results[0]);select(owner.state)
+        history=copy.deepcopy(owner.state.campaign.results[0])
+        from goal2.desktop.worker import play
+        quick=copy.deepcopy(owner.state);retained_memory=quick.mem
+        for _ in range(2):
+            select(quick);quick=play(quick,raw)
+            self.assertEqual(quick.mem,retained_memory)
+            self.assertEqual(quick.campaign.results[0],history)
+            self.assertEqual(session_save.decode(session_save.encode(quick,raw))[0],quick)
+        select(owner.state)
         pub=WatchedPublication(owner);fixture=Fixture(7,19,43);job=pub.begin(fixture)
         pub.complete(job.token,run_watched_match(job.state,raw,fixture))
         self.assertEqual(owner.state.campaign.results[0],history)
@@ -121,6 +131,46 @@ class CompetitiveSaveTests(unittest.TestCase):
             else:row['resolution'][damage]={'winner':1,'penalties':[0,0],'kind':2,'extra_time':None}[damage]
             before=copy.deepcopy(owner.state)
             with self.subTest(damage=damage),self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(bad).encode())
+            self.assertEqual(owner.state,before)
+
+    def test_quick_setup_is_private_and_preserves_strict_template_refusals(self):
+        from goal2.engine.savestate import Savestate
+        from goal2.engine.quick_engine import ExtraTimeNotModelled
+        from goal2.game.state import to_savestate
+        from goal2.game.quick_match import resolve_full_matchup
+        from goal2.game import quick_match
+        _friendly_input=getattr(quick_match,'_friendly_input',lambda template,state:template)
+        s,raw,f=campaign();s.campaign.fixtures+=(Scheduled('original:43',1,1,2,1,7,19),Scheduled('original:44',1,1,2,1,7,19))
+        owner=Owner(s,raw);pub=publication(owner)
+        try:job=pub.begin(f)
+        except ValueError as exc:self.fail('competitive preparation unavailable: '+str(exc))
+        pub.complete(job.token,copy.deepcopy(completed()));select(owner.state)
+        adapted=Savestate(to_savestate(owner.state,original=raw));before=copy.deepcopy(owner.state)
+        original_memory=bytes(adapted.mem)
+        try:teams,side,opponent=resolve_full_matchup(adapted,owner.state)
+        except (ValueError,ExtraTimeNotModelled) as exc:self.fail('validated next friendly setup unavailable: '+str(exc))
+        self.assertEqual(teams,(7,19));self.assertEqual(side,0);self.assertEqual(opponent,19)
+        private=_friendly_input(adapted,owner.state)
+        self.assertIsNot(private,adapted);self.assertEqual(adapted.mem,original_memory);self.assertEqual(owner.state,before)
+        self.assertEqual(tuple(private.ds_bytes(o,1)[0] for o in (0x9A3D,0x8319,0x7C36)),(0,45,0))
+        self.assertEqual(private.ds_bytes(0x831A,1),adapted.ds_bytes(0x831A,1))
+        differences=[i for i,(a,b) in enumerate(zip(adapted.mem,private.mem)) if a!=b]
+        self.assertEqual(differences,[adapted.program().ds_base+0x78+o for o in sorted((0x7C36,0x8319,0x9A3D))])
+        for damage in ('identity','resolution','unrelated_template','kickoff','unsupported_next','standalone','retained_modes'):
+            state_bad=copy.deepcopy(owner.state);input_bad=copy.copy(adapted)
+            if damage=='identity':state_bad.last_match['engine']='unknown'
+            elif damage=='resolution':state_bad.campaign.results[0].pop('resolution')
+            elif damage in ('unrelated_template','kickoff'):
+                memory=bytearray(input_bad.mem);off=0x831A if damage=='kickoff' else 0x7B62
+                memory[input_bad.program().ds_base+0x78+off]^=0x7F;input_bad.mem=bytes(memory)
+            elif damage=='retained_modes':
+                image=Image(state_bad.mem);image.memory[image.DS*16+0x9A3D]=77;state_bad.mem=image.memory_component()
+                input_bad=Savestate(to_savestate(state_bad,original=raw))
+            elif damage=='unsupported_next':
+                state_bad.campaign.fixtures=(state_bad.campaign.fixtures[0],Scheduled('original:43',1,1,2,200,7,19))
+            else:state_bad.campaign=None;state_bad.last_match=None
+            with self.subTest(damage=damage),self.assertRaises((ValueError,ExtraTimeNotModelled)):
+                resolve_full_matchup(input_bad,state_bad)
             self.assertEqual(owner.state,before)
 
 

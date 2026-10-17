@@ -26,9 +26,10 @@ year remains a separate value.
 tasks add calendar builders. Each record has a stable ID, cycle, ordinal year,
 stage, kind and two ordered country IDs; the retained home/away field names are storage labels only. The model validates ID uniqueness,
 country ranges, stage/year pairing, ordering and a contiguous stage path. The
-completion ledger is an exact prefix of that queue. Only friendly kind 1 can
-be completed here; competitive fixtures stop with an explicit unsupported
-result-handler error. Empty or exhausted queues do not imply a finished stage:
+completion ledger is an exact prefix of that queue. Friendly kind1 keeps its original completion interface. [designed: T51]
+Competitive completion requires an explicit validated original resolution; the
+[competitive adapter](competitive-matches.md) supplies the completed tail and
+durable history. Calling the old friendly completion path still refuses it. Empty or exhausted queues do not imply a finished stage:
 calendar advancement reports that the next builder is unavailable.
 
 [designed: T40] Friendly session saves keep their version-1 schema and meaning.
@@ -56,9 +57,9 @@ the managed projection itself does not simulate results; T48 retains full rows a
 away_country storage keys for version-2 compatibility. In opening metadata
 and campaign projections these fields carry the first and second ordered
 endpoints only; Fixture.side_a and Fixture.side_b expose that order without
-asserting which endpoint plays at home. Friendly kind 1 remains completable;
-the stage-2 or stage-5 qualifying kind remains a barrier until a competitive
-result handler is implemented.
+asserting which endpoint plays at home. [designed: T51] The explicit original competitive publication interface also
+completes the supplied stage-2/stage-5 qualifiers. Quick/friendly-only entrypoints
+retain their refusal; no additional calendar builder is supplied.
 
 [designed: T41] Browser New campaign accepts country, an even source start year
 and both explicit 16-bit seeds. Play includes a one-use token and the exact next
@@ -90,3 +91,9 @@ metadata. [Other-country result handling](campaign-silent-results.md) records
 source-order identities and per-result RNG accounting atomically with each
 managed result. Version2 saves without this metadata remain readable and keep
 their prior managed-only behavior; loading never reconstructs a missing schedule.
+
+[designed: T64/T51] Original watched/competitive results keep session version3.
+Friendly result schema1 and historical kit1 identity remain exact; competitive
+schema2 retains its compact original resolution even after a later last result
+replaces it. See [competitive matches](competitive-matches.md) for continuation,
+publication and strict save validation.

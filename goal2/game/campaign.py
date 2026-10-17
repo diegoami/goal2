@@ -185,7 +185,7 @@ class CampaignState:
             raise CampaignError("campaign result history is out of order")
         for fixture in self.fixtures[:len(self.completed_fixture_ids)]:
             if fixture.kind!=1 and fixture.fixture_id not in result_ids:
-                raise CampaignError('completed competitive fixture lacks resolution history')
+                raise CampaignError('unsupported competitive fixture lacks original resolution history')
         pending = self.next_fixture
         current = (self.cycle, self.stage)
         if pending is None:
