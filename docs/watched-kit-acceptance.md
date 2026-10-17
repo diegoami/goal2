@@ -177,3 +177,28 @@ score/ticks/draw-digest records and independent direct kit runs for full results
 events and memory. Additional natural-seed/year/index, changed-squad/captain/tactics,
 side-B and invalid-input cases protect broader transfer. Original bytes remain in
 ignored caches using the resource hashes above.
+
+[confirmed: F023 §1–2/F025 §2–3 and1771:038C at the accepted pin]
+The original game-record `+0x28` is the next **free** fixture number. Its0x4B48-byte
+allocation holds regular rows1..2400, aggregate rows2401..2408 and sentinel2409.
+The adapter refuses aggregates/sentinel/next-free indexes. With a complete saved
+source world it stages the exact `max(source IDs)+1` count (stage2 opening769,
+stage5 opening2001), checking canonical contiguous IDs in the current source
+class (1..1360 for stages2–4;1361..2400 for5–8). Legacy inputs without that full
+schedule retain the template's bound and cannot silently expand it.
+
+[derived: the same source fields] Campaign images also transfer source base year
+to `+0x3A`, stage to `+0x3C` and class to `+0x40`; the independent year counter
+remains at `+0x38`. A stage2 template's base2028/count769 must not leak into a new
+1990 stage5 campaign. Other opaque memory is preserved; no full original new-game
+replay is claimed for the rebuild's designed fresh state.
+
+[designed: T63 actual-caller regression] Two fresh campaigns made by the desktop's
+`start_opening_campaign` using the retained E010-r0008 template and country4
+match direct original declared-image runs for complete results/events/memory:
+1990 uses fixture1378 (4 versus1), counter0/base1990/stage5/class1/next-free2001;
+1992 uses fixture3 (25 versus4), counter0/base1992/stage2/class0/next-free769.
+Both use default play-on answers and natural setup reseeding. The old adapter
+rejected1378 against the inherited769 bound; an omitted count transfer must fail
+the new field assertions before original execution. These cases extend, rather
+than replace, the ten strict reference controls above.

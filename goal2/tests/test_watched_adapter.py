@@ -35,6 +35,15 @@ def direct_image(state, year=None):
     if year is not None:
         p = image.far(0xA923) + 0x38
         image.memory[p:p + 2] = year.to_bytes(2, 'little')
+    if state.campaign is not None:
+        # [confirmed: F023/F025] Independent explicit original game-record writes.
+        c=state.campaign;game=image.far(0xA923)
+        image.memory[game+0x3A:game+0x3C]=c.start_year.to_bytes(2,'little')
+        image.memory[game+0x3C]=c.stage
+        image.memory[game+0x40]=int(c.stage>=5)
+        if c.world is not None:
+            next_free=max(int(f.fixture_id.split(':')[1]) for f in c.world.fixtures)+1
+            image.memory[game+0x28:game+0x2A]=next_free.to_bytes(2,'little')
     return image
 
 
@@ -59,10 +68,10 @@ class WatchedAdapter(unittest.TestCase):
         s.captain = 0  # [designed] Default original pick; +2F is an unrelated legacy placeholder.
         return s
 
-    def compare(self, state, fixture, *, year=None, seed=None, delay=None):
+    def compare(self, state, fixture, *, year=None, seed=None, delay=None, template=None):
         before = copy.deepcopy(state)
         expected, memory, events = direct(state, fixture, year, seed, delay)
-        got = run_watched_match(state, self.raw, fixture, reference_seed=seed, delay_byte=delay,
+        got = run_watched_match(state, template or self.raw, fixture, reference_seed=seed, delay_byte=delay,
                                 record_draws=True)
         self.assertEqual(got.result, expected)
         self.assertEqual(got.memory, memory)
@@ -77,7 +86,9 @@ class WatchedAdapter(unittest.TestCase):
         self.assertEqual(got.engine_year, after.year())
         self.assertTrue(got.result['decisions'])
         print(f'case first={fixture.first} second={fixture.second} index={fixture.index} '
-              f'year={got.engine_year} reference_seed={seed} seeds_after={got.seeds} '
+              f'year={got.engine_year} base_year={after.rd_far(0xA923,0x3A)} '
+              f'stage={after.rd_far(0xA923,0x3C,1)} class={after.rd_far(0xA923,0x40,1)} '
+              f'next_free={after.rd_far(0xA923,0x28)} reference_seed={seed} seeds_after={got.seeds} '
               f'decisions={[d["context"] for d in got.result["decisions"]]} PASS', flush=True)
         return got
 
@@ -120,6 +131,34 @@ class WatchedAdapter(unittest.TestCase):
         image.memory[p:p+2] = (7).to_bytes(2,'little'); s.mem = image.memory_component()
         self.compare(s,Fixture(7,19,22),year=7)
 
+    def test_real_fresh_campaigns_transfer_next_free_count_and_context(self):
+        from goal2.data.goaldat import load
+        from goal2.game.campaign_schedule import start_opening_campaign
+        from dataclasses import replace
+        template=(ROOT/'.cache/e010-r0008-halftime.sav').read_bytes()
+        data=load((ROOT/'.cache/GOAL.DAT').read_bytes())
+        for base_year,stage,kind_class,next_free in ((1990,5,1,2001),(1992,2,0,769)):
+            state,_=start_opening_campaign(data,template,managed_country=4,start_year=base_year,
+                                          seed_7b62=4660,seed_8336=33590)
+            pending=state.campaign.next_fixture
+            fixture=Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1]))
+            before=copy.deepcopy(state)
+            prepared=prepare_watched(state,template,fixture)
+            self.assertEqual(prepared.rd_far(0xA923,0x28),next_free)
+            self.assertEqual(prepared.rd_far(0xA923,0x3A),base_year)
+            self.assertEqual(prepared.rd_far(0xA923,0x3C,1),stage)
+            self.assertEqual(prepared.rd_far(0xA923,0x40,1),kind_class)
+            self.assertEqual(prepared.year(),0)
+            self.compare(state,fixture,year=0,template=template)
+            self.assertEqual(state,before)
+            # [confirmed: F023] Aggregate rows/sentinel are not regular played fixtures.
+            bad=copy.deepcopy(state);world=bad.campaign.world;rows=list(world.fixtures)
+            index=next(i for i,f in enumerate(rows) if bad.managed_country not in (f.side_a,f.side_b))
+            rows[index]=replace(rows[index],fixture_id='original:2401');world.fixtures=tuple(rows)
+            invalid_before=copy.deepcopy(bad)
+            with self.assertRaises(ValueError):prepare_watched(bad,template,fixture)
+            self.assertEqual(bad,invalid_before)
+
     def test_changed_squad_tactics_captain_side_b_and_opaque_memory(self):
         s = self.state()
         s.starting_eleven[10] = s.managed_squad[15]
@@ -146,7 +185,7 @@ class WatchedAdapter(unittest.TestCase):
             with self.assertRaises(ValueError):run_watched_match(s,self.raw,Fixture(7,19,21))
             self.assertEqual(s,before)
         for f in (Fixture(7,7,21),Fixture(7,19,None),Fixture(7,19,0),Fixture(7,19,21,2),
-                  Fixture(8,19,21),Fixture(True,19,21),Fixture(7,19,True)):
+                  Fixture(8,19,21),Fixture(True,19,21),Fixture(7,19,True),Fixture(7,19,769),Fixture(7,19,2401)):
             s=self.state();before=copy.deepcopy(s)
             with self.assertRaises(ValueError):run_watched_match(s,self.raw,f)
             self.assertEqual(s,before)

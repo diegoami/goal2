@@ -9,11 +9,18 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from goal2.engine.original_match import Image, Fixture, Match
+from goal2.engine.original_match.machine import MEM_SIZE
 from goal2.game.state import GameState, to_savestate, CLOCK_OFFSET
 
 if TYPE_CHECKING:
     from goal2.game.campaign import CampaignState
     from goal2.engine.original_match.match import Event
+
+
+# [confirmed: F023 §1; 1771:038C at the accepted source pin] The allocated
+# fixture block is 0x4B48 bytes: 2400 regular rows, eight aggregates and a sentinel.
+REGULAR_FIXTURES = 2400
+FIXTURE_STORAGE_BYTES = 0x4B48
 
 
 def _integer(value, low, high, name):
@@ -55,7 +62,11 @@ def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Imag
     if state.managed_country not in (fixture.first, fixture.second):
         raise ValueError('managed country must be a fixture endpoint')
     template = Image.from_memory_component(state.mem)
-    _integer(fixture.index,1,template.rd_far(0xA923,0x28),'source fixture index')
+    _integer(fixture.index,1,REGULAR_FIXTURES,'original regular fixture index')
+    if (template.far(0xA92B)+FIXTURE_STORAGE_BYTES > MEM_SIZE
+            or template.rd(0xA92B)+FIXTURE_STORAGE_BYTES > 65536):
+        raise ValueError('fixture storage lies outside the accepted guest allocation')
+    next_free = template.rd_far(0xA923,0x28)
     if len(state.players) != 3061 or any(len(p) != 20 for p in state.players):
         raise ValueError('players must contain 3061 records of 20 bytes')
     if len(state.countries) != 129 or any(len(c) != 0xBF for c in state.countries):
@@ -83,6 +94,24 @@ def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Imag
                 or (pending.side_a,pending.side_b,pending.kind) != (fixture.first,fixture.second,fixture.kind)
                 or pending.fixture_id != f'original:{fixture.index}'):
             raise ValueError('source fixture differs from the pending scheduled fixture')
+        _integer(campaign.start_year,1,65535,'source base year')
+        if campaign.world is not None:
+            # [confirmed: F023 §1] +28 is next free, including the class's source start.
+            numbers=[]
+            for row in campaign.world.fixtures:
+                try:number=int(row.fixture_id.removeprefix('original:'))
+                except ValueError as exc:raise ValueError('source world fixture IDs must be original:<number>') from exc
+                if row.fixture_id != f'original:{number}':
+                    raise ValueError('source world fixture IDs must be canonical original:<number>')
+                _integer(number,1,REGULAR_FIXTURES,'original regular fixture index')
+                low,high=(1,1360) if campaign.stage<5 else (1361,2400)
+                _integer(number,low,high,'source class fixture index')
+                numbers.append(number)
+            if numbers != list(range(numbers[0],numbers[-1]+1)):
+                raise ValueError('a complete source-ordered calendar is required')
+            next_free=numbers[-1]+1
+    _integer(next_free,2,REGULAR_FIXTURES+1,'declared next-free fixture')
+    _integer(fixture.index,1,next_free-1,'source fixture index')
     candidate = copy.deepcopy(state)
     # [derived: F029] XI is squad order; retain every bench word when moving a starter.
     candidate.managed_squad = list(state.starting_eleven) + [
@@ -94,8 +123,14 @@ def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Imag
     candidate.captain = state.countries[state.managed_country][0x2F]
     image = Image.from_savestate(to_savestate(candidate, original))
     if campaign is not None:
-        a = image.far(0xA923) + 0x38
-        image.memory[a:a+2] = engine_year(campaign).to_bytes(2,'little')
+        # [confirmed: F023 §1–2/F025 §2–3] Known source calendar fields;
+        # never inherit a stage-2 template's count/base/class into a stage-5 start.
+        game=image.far(0xA923)
+        image.memory[game+0x28:game+0x2A]=next_free.to_bytes(2,'little')
+        image.memory[game+0x38:game+0x3A]=engine_year(campaign).to_bytes(2,'little')
+        image.memory[game+0x3A:game+0x3C]=campaign.start_year.to_bytes(2,'little')
+        image.memory[game+0x3C]=campaign.stage
+        image.memory[game+0x40]=int(campaign.stage>=5)
     return image
 
 
