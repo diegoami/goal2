@@ -95,6 +95,7 @@ if (args[0] === 'serve') {
         msg.time = { created: Date.now(), completed: Date.now() };
         msg.content = mode === 'rejected' ? msg.content : msg.content.filter((p) => p.id !== 'call_rejected');
         msg.content.filter((p) => p.type === 'text')[0].text = 'Complete recovered final\n';
+        if (mode.startsWith('nonce')) msg.content[0].text = 'CONTROLLED_NONCE:' + process.env.OPENCODE_PASSWORD;
         if (process.env.STUB_FINAL) msg.content = [{ type: 'text', text: process.env.STUB_FINAL }, ...msg.content.filter((p) => p.type !== 'text')];
         record.messages.push(msg); record.info.cost = .002; record.info.tokens = tokens; record.info.time.updated = Date.now();
         if (mode === 'partial' || mode === 'active') msg.finish = 'tool-calls';
@@ -112,7 +113,13 @@ if (args[0] === 'serve') {
   else {
     await fetch(get('--server') + `/api/session/${get('--session')}/test-run`, { method: 'POST', body: JSON.stringify({ model: get('--model'), agent: get('--agent'), directory: process.cwd() }) });
     console.log('volatile output deliberately missing final');
+    if (mode.startsWith('nonce')) {
+      const value=process.env.OPENCODE_PASSWORD;
+      process.stdout.write('CONTROLLED_NONCE:'+value.slice(0,20));process.stderr.write('CONTROLLED_NONCE:'+value.slice(0,20));
+      await new Promise(r=>setTimeout(r,10));
+      process.stdout.write(value.slice(20));process.stderr.write(value.slice(20));
+    }
     if (mode === 'progress') await new Promise((r) => setTimeout(r, 150));
-    if (mode === 'active') setInterval(() => {}, 1000); else process.exit(mode === 'nonzero' ? 7 : 0);
+    if (mode === 'active') setInterval(() => {}, 1000); else process.exit((mode === 'nonzero' || mode === 'nonce-nonzero') ? 7 : 0);
   }
 } else { console.error('unsupported old command'); process.exit(2); }

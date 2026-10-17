@@ -1,4 +1,5 @@
 // [confirmed: OpenCode v1.18.32 packages/opencode/src/tool/shell.ts; rework1 source hashes]
+// Copyright (c) 2025 opencode; MIT notice retained in LICENSE.opencode.
 // Adapt its FILES/path operand selection, retaining best-effort static-path semantics, not an OS jail.
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -172,35 +173,61 @@ let ready;
 async function parsers() {
   return ready ||= (async () => {
     await Parser.init();
-    const root = (name) => path.dirname(require.resolve(name + '/package.json'));
-    const bash = new Parser(); bash.setLanguage(await Language.load(path.join(root('tree-sitter-bash'), 'tree-sitter-bash.wasm')));
-    const ps = new Parser(); ps.setLanguage(await Language.load(path.join(root('tree-sitter-powershell'), 'tree-sitter-powershell.wasm')));
+    const root = name => path.dirname(require.resolve(name + '/package.json'));
+    const bash = new Parser();
+    bash.setLanguage(await Language.load(path.join(root('tree-sitter-bash'), 'tree-sitter-bash.wasm')));
+    const ps = new Parser();
+    ps.setLanguage(await Language.load(path.join(root('tree-sitter-powershell'), 'tree-sitter-powershell.wasm')));
     return { bash, ps };
   })();
 }
-export const contains = (root, file) => { const rel=path.relative(root,file); return rel === '' || (rel !== '..' && !rel.startsWith('..'+path.sep) && !path.isAbsolute(rel)); };
-export const matches = (value, pattern) => new RegExp('^'+pattern.split('*').map(p=>p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('.*')+'$','s').test(value);
+export function contains(root, file) {
+  const relative = path.relative(root, file);
+  return relative === '' || (relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative));
+}
+// [confirmed: native2.0.28 util/wildcard.ts; source hashes] Same ordered-rule matching semantics.
+export function matches(input, pattern) {
+  const normalized = input.replaceAll('\\', '/');
+  let escaped = pattern.replaceAll('\\', '/').replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    .replace(/\*/g, '.*').replace(/\?/g, '.');
+  if (escaped.endsWith(' .*')) escaped = escaped.slice(0, -3) + '( .*)?';
+  return new RegExp('^' + escaped + '$', process.platform === 'win32' ? 'si' : 's').test(normalized);
+}
 export function externalEffect(directory, rules) {
-  const resource=path.join(directory,'*').replaceAll('\\','/');
-  return rules.findLast(r=>r.action==='external_directory' && matches(resource,r.resource))?.effect || 'ask';
+  const resource = path.join(directory, '*').replaceAll('\\', '/');
+  return rules.findLast(rule => rule.action === 'external_directory' && matches(resource, rule.resource))?.effect || 'ask';
 }
 export async function operandDirectories(command, cwd, roots, shell = process.platform === 'win32' ? 'powershell.exe' : '/bin/bash') {
   if (typeof command !== 'string' || typeof cwd !== 'string' || !path.isAbsolute(cwd)) throw Error('malformed shell scan input');
-  const ps = /(?:powershell|pwsh)(?:\.exe)?$/i.test(shell); const cmd=/(?:^|[\\/])cmd\.exe$/i.test(shell);
-  const p=await parsers(); const tree=(ps?p.ps:p.bash).parse(command);
-  if(!tree || tree.rootNode.hasError) { tree?.delete(); throw Error('unsupported shell grammar'); }
+  const ps = /(?:powershell|pwsh)(?:\.exe)?$/i.test(shell);
+  const cmd = /(?:^|[\\/])cmd\.exe$/i.test(shell);
+  const parser = await parsers();
+  const tree = (ps ? parser.ps : parser.bash).parse(command);
+  if (!tree || tree.rootNode.hasError) {
+    tree?.delete();
+    throw Error('unsupported shell grammar');
+  }
   const directories = new Set();
-  try { for(const node of tree.rootNode.descendantsOfType('command')) {
-    const list=parts(node); const name=ps||cmd?list[0]?.text.toLowerCase():list[0]?.text;
-    if (!FILES.has(name) && !(cmd && CMD_FILES.has(name))) continue;
-    for(const arg of pathArgs(list,ps,cmd)) {
-      const text=ps?expand(arg,cwd,shell):home(unquote(arg)); const file=text && prefix(text);
-      if (!file || dynamic(file,ps)) continue;
-      const next=ps?provider(file):file; if(!next) continue;
-      const absolute=path.resolve(cwd,next);
-      if(roots.some(root=>contains(root,absolute))) continue;
-      const isDir=await fs.stat(absolute).then(s=>s.isDirectory()).catch(e=>{if(e.code==='ENOENT'||e.code==='ENOTDIR')return false;throw e;});
-      directories.add(isDir?absolute:path.dirname(absolute));
+  try {
+    for (const node of tree.rootNode.descendantsOfType('command')) {
+      const list = parts(node);
+      const name = ps || cmd ? list[0]?.text.toLowerCase() : list[0]?.text;
+      if (!FILES.has(name) && !(cmd && CMD_FILES.has(name))) continue;
+      for (const arg of pathArgs(list, ps, cmd)) {
+        const text = ps ? expand(arg, cwd, shell) : home(unquote(arg));
+        const file = text && prefix(text);
+        if (!file || dynamic(file, ps)) continue;
+        const next = ps ? provider(file) : file;
+        if (!next) continue;
+        const absolute = path.resolve(cwd, next);
+        if (roots.some(root => contains(root, absolute))) continue;
+        const isDirectory = await fs.stat(absolute).then(stat => stat.isDirectory()).catch(error => {
+          if (error.code === 'ENOENT' || error.code === 'ENOTDIR') return false;
+          throw error;
+        });
+        directories.add(isDirectory ? absolute : path.dirname(absolute));
+      }
     }
-  } return [...directories]; } finally {tree.delete();}
+    return [...directories];
+  } finally { tree.delete(); }
 }

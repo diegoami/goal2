@@ -1,0 +1,16 @@
+✔ legacy FILES grammar finds quoted nested relative and multi-file operands while preserving ls behavior (44.374869ms)
+✔ same ordered external policy preserves exact tmp and research roots, rejects neighbors (0.726411ms)
+✔ native hooks tighten saved allow, preserve deny/ask and reject missing mismatched scan (2.070664ms)
+✔ actual shell and cwd select grammar; absent or unsupported native invocation cannot manufacture allow (1.01816ms)
+✔ trusted activation overlay pins dependencies and rejects foreign failed duplicate or missing plugins (71.351522ms)
+✔ safe native config survey rejects every potentially overlapping allow glob and unverified shells (53.746834ms)
+✔ real wrappers and unpinned binaries fail closed; missing dependency setup never fetches (121.315704ms)
+✔ guard mutation controls fail operand approval activation and source-target assertions (1389.312031ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1793.200626

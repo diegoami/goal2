@@ -68,6 +68,7 @@ def validate(root: Path, expected_head: str) -> None:
     check_lock(root)
     check_originals(root)
     commands = (
+        ("node", "tools/harness/check-opencode-guard.mjs"),
         (sys.executable, "tools/check_links.py"),
         ("node", "tools/harness/review.mjs", "--self-test"),
         ("node", "--test", "tests/harness_clients.test.mjs"),

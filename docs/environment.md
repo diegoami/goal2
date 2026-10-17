@@ -19,17 +19,26 @@ not inherit the interactive session markers. Keep provider keys in the unit's
 environment, never logs. `switch-model.mjs --show` reports the detected defaults.
 
 [designed: T72; confirmed: measurements/T72, tests/opencode_workflow.test.mjs]
-Routine review and peek use the installed current OpenCode (verified on 2.0.28),
+Routine review and peek use the installed current OpenCode (audited native2.0.28),
 without a backup override. V2 uses the real working directory, `provider/model#variant`
 and native ordered permissions; the harness starts its own `serve --stdio` execution
 server and polls effective model/agent readiness before any generation. The trusted
 launching checkout's reviewer overrides cwd config while global provider discovery
-is preserved. A stored agent string alone is insufficient proof of its permissions. The v2 runner
+is preserved. A stored agent string alone is insufficient proof of its permissions.
+The guard pins the audited native binary bytes/version; a newer or different build
+fails before billing until its native enforcement is revalidated. Production wrappers
+are refused; only the exact hashed nonbilling simulator is admitted inside Node tests. The v2 runner
 requires an explicit trusted agentFile; it never defaults to the PR worktree.
 Native model-series family labels are compared through the existing policy lineage
 classifier while raw advertised labels remain in receipts; no route is substituted.
 
+[designed: T72 rework1; confirmed: clean-install evidence under measurements/T72/rework1]
+Each fresh author/reviewer checkout needs the exact local WASM grammar dependencies.
+Setup is explicit; offline validation never fetches or installs them:
+
 ```bash
+npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund
+node tools/harness/check-opencode-guard.mjs
 HARNESS_CLIENT=codex node tools/harness/review.mjs --pr <pr> --brief <brief> \
   --issue <issue> --apply-label --reviewer <owner-selected-model>
 tools/harness/peek.sh <session-or-run.json-or-log> -n 20
@@ -38,8 +47,44 @@ node tools/harness/preflight-opencode.mjs --out .cache/opencode-preflight
 
 [designed: T72] Preflight is nonbilling: effective reviewer/MiniMax-M3 thinking,
 owned empty session/list/export/peek and zero usage. It does not prove model access
-or active-generation cancellation. Review uses the exact owner-selected model;
+or active-generation cancellation. The optional native probes below exercise
+real dispatch/cancellation with an explicitly selected loopback fake provider;
+reported fake token counts are simulated, and no external model call occurs:
+
+```bash
+node tools/harness/probe-opencode-guard.mjs --out .cache/opencode-native-proof
+node tools/harness/probe-opencode-guard.mjs --active-cancel --out .cache/opencode-native-proof
+node tools/harness/probe-opencode-plugins.mjs --out .cache/opencode-native-proof
+```
+
+[designed: T72] Review uses the exact owner-selected model;
 missing profile/effort/permissions fail before billing, without substitution.
+
+[confirmed: pinned v1/v2 sources and native dispatch evidence under measurements/T72/rework1]
+Native2.0.28 stopped scanning file operands of shell commands such as `cat`, `rm`,
+`cp` and `mv` for external-directory approval. A trusted local plugin restores
+that legacy grammar-based check using the final native shell and cwd. Inside-worktree
+paths and the exact existing tmp/research grants remain usable; other static file
+operands tighten the existing shell request to `ask`, which native noninteractive
+execution rejects. Native mutation denies remain intact. Both majors still give
+allowed shell commands host authority; this static check is not an OS filesystem jail.
+
+[designed: T72 rework1] A source-target native policy blocks external plugins before
+import, while a frozen per-run configuration snapshot prevents later hook reloads.
+A safe configuration survey and checks on both actual servers reject external
+executable plugins and higher-authority plugin-allow policies before generation.
+Native builtin disables are preserved; normal global provider metadata and native
+v2 login storage remain. An external provider/auth plugin requires explicit audit;
+the runner never silently drops it or substitutes a provider. This does not isolate
+arbitrary trusted host/global code. The supported configuration and tested native
+adversarial source/reload cases are documented in
+[the guard contract](../tools/harness/opencode-guard/README.md).
+
+[designed: T72 rework1] Retained transcripts, exports, finals and returned text redact
+only the known short-lived owned-server transport nonce if echoed. Receipts disclose
+that redaction and hash the resulting safe bytes; all other transcript content remains.
+Never publish credential-bearing historical raw exports; preserve originals privately
+and make a separate safe derivative when needed.
 
 [confirmed: T23/PR54 historical failure; T72a pinned fixtures] The old v1 `--dir`,
 `--variant` and top-level `export` commands fail on v2. Explicit v1 compatibility
@@ -74,12 +119,15 @@ which cannot use the run's Linux paths and survives the kill of a timed-out run:
 tests failed through it. The runner skips the shim and falls back to `~/.opencode/bin/opencode`;
 `HARNESS_OPENCODE_EXE` overrides both. WSL and Windows keep separate logins: log in from WSL.
 
-[designed: T72] On Windows or Linux, install the current native v2 CLI using the
+[designed: T72] Install the current native v2 CLI using the
 [official setup instructions](https://opencode.ai/v2/docs/). Retain existing v1 binaries;
 the hook reports version mismatches instead of installing/downgrading a binary.
+The native guard byte pin is currently the measured Linux/WSL2.0.28 build; another
+platform/build needs source and enforcement revalidation before v2 review activation.
 
 [designed: T72] Run the offline premerge checks and the nonbilling preflight above.
-Only an owner-authorized review calls a model; offline tests use protocol stubs.
+Only an owner-authorized review calls an external model; offline tests use protocol
+stubs, and the optional native probes use an explicit loopback deterministic fake.
 
 ## OpenCode Go
 

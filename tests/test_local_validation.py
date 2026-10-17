@@ -111,7 +111,9 @@ class LocalValidationTests(unittest.TestCase):
 
         with patch.object(validator.subprocess, "run", side_effect=run):
             validator.validate(self.root, self.sha)
-        self.assertEqual(len(children), 6)
+        self.assertEqual(len(children), 7)
+        self.assertTrue(any("tools/harness/check-opencode-guard.mjs" in c for c in children))
+        self.assertFalse(any("npm" in c for c in children), "offline validation never installs implicitly")
         self.assertTrue(any("tools/check_links.py" in c for c in children))
         self.assertTrue(any("--self-test" in c for c in children))
         self.assertTrue(any("tests/harness_clients.test.mjs" in c for c in children))

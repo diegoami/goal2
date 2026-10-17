@@ -188,6 +188,7 @@ test('production workflow identity and rejection deletion controls fail the inte
     ['rejection', 'opencode-workflow.mjs', 'if (normalized.rejected) throw', 'if (false) throw'],
     ['owned descendants', 'opencode-transport.mjs', 'if (!child?.pid) return;', 'if (!child?.pid || child.exitCode !== null || child.signalCode !== null) return;', 'capture deadline', 'owned descendant must terminate'],
     ['old run command', 'opencode-workflow.mjs', "args.splice(1, 1, '--server', server.url);", '', 'production major dispatch', 'exit 2'],
+    ['own nonce returned text', 'opencode-workflow.mjs', 'raw = JSON.parse(server.redact(JSON.stringify(result.data)));', 'raw = result.data;', 'known owned transport nonce', 'returned records must not expose own nonce'],
     ['complete final recovery', '../review.mjs', 'readReview(run.reviewText, header)', 'readReview(run.stdout, header)', 'review CLI uses', 'No review from'],
   ]) {
     const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-workflow-mutant-'));
@@ -324,4 +325,32 @@ test('relative explicit executable resolves once to a real absolute file before 
   assert.equal(cmd.prefix[0], fs.realpathSync(stub));
   assert(path.isAbsolute(cmd.exe));
   const result = await runOpenCodeWatched({ ...options, opencode: cmd }); assert.equal(result.exitCode, 0);
+});
+
+// [designed: T72 rework1] Only the harness-generated short-lived transport nonce is redacted; no credential store is read.
+test('known owned transport nonce is redacted from exports final returned text and hashes after split echoes', async () => {
+  for (const mode of ['nonce', 'nonce-nonzero']) {
+    const options = workflowOptions(mode);
+    options.totalTimeoutMs = 5000;
+    let result;
+    let failure;
+    try { result = await runOpenCodeWatched(options); }
+    catch (error) { failure = error; }
+    if (mode === 'nonce-nonzero') assert.equal(failure?.reason, 'non-zero-exit');
+    else assert(result);
+    const receipt = JSON.parse(fs.readFileSync((result ?? failure).manifest));
+    assert(receipt.redactions.some(value => value.includes('owned-server transport nonce')));
+    const safe = text => !/CONTROLLED_NONCE:[A-Za-z0-9_-]{43}/.test(text);
+    if (result) {
+      assert(safe(result.stdout) && safe(result.stderr) && safe(result.reviewText) && safe(result.normalized.assistantText), 'returned records must not expose own nonce');
+      assert(result.reviewText.includes('CONTROLLED_NONCE:[REDACTED]'));
+    }
+    const { createHash } = await import('node:crypto');
+    for (const file of [...Object.values(receipt.files), receipt.briefFile]) {
+      if (!fs.existsSync(file)) continue;
+      const text = fs.readFileSync(file, 'utf8');
+      assert(safe(text), 'every retained textual artifact must redact the known own nonce');
+      if (receipt.artifactSHA256[path.basename(file)]) assert.equal(createHash('sha256').update(text).digest('hex'), receipt.artifactSHA256[path.basename(file)]);
+    }
+  }
 });

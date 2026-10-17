@@ -1,0 +1,8 @@
+{
+  "command": "npm ci --prefix .cache/T72-r1/fresh-install --ignore-scripts --no-audit --no-fund",
+  "matchedDependencyFiles": 156,
+  "sourceHashes": {
+    "tools/harness/opencode-guard/package-lock.json": "5d0bf9e19446639804df3c525be8d788a501079cc874f43039325f32282e5ef5",
+    "tools/harness/opencode-guard/dependency-hashes.json": "7b97cbf74358f621328dece529f9d4f11d7518799180038a166cd3c380c1004a"
+  }
+}

@@ -7,11 +7,19 @@ import { hash, OpenCodeInfraError, startPrivateServer, delay } from './opencode-
 
 const source = fileURLToPath(new URL('../opencode-guard/', import.meta.url));
 export const pinnedBinarySHA256 = '20d305d0140bfe04df7264a4ecb014402b74b6ac0a0f6456ee07ef3325fb4a85';
+const testStubSHA256 = 'afc431481490e60e574691cd5f54b4fb940081452e9ebc441889169be940ddf6';
 export function pinGuardBinary(command) {
-  // [designed: T72; tests] Native hook semantics are pinned, not inferred from unchanged plugin IDs.
-  if (!command.prefix.length && hash(fs.readFileSync(command.binary ?? command.exe)) !== pinnedBinarySHA256) {
+  // [designed: T72; tests] Production wrappers are unsupported. Only the exact nonbilling simulator may run inside Node tests.
+  if (command.prefix.length) {
+    const simulated = process.env.NODE_TEST_CONTEXT && command.exe === process.execPath && command.prefix.length === 1
+      && hash(fs.readFileSync(command.prefix[0])) === testStubSHA256;
+    if (!simulated) throw new OpenCodeInfraError('guard', 'wrapped native binaries are not audited; use the current native binary directly');
+    return 'explicit hashed Node-test simulator; no native enforcement claim';
+  }
+  if (hash(fs.readFileSync(command.binary ?? command.exe)) !== pinnedBinarySHA256) {
     throw new OpenCodeInfraError('guard', 'native guard requires the audited OpenCode2.0.28 binary');
   }
+  return 'audited native OpenCode2.0.28 binary';
 }
 export function selectGuardPlugins(guard, nativeIDs, evidenceFile) {
   if (nativeIDs.some(id => !guard.availableNativeIDs.includes(id))) throw new OpenCodeInfraError('guard', 'unknown builtin');
@@ -26,13 +34,19 @@ export function selectGuardPlugins(guard, nativeIDs, evidenceFile) {
   }];
   return guard;
 }
-export function stageGuard(root, policy) {
+export function verifyGuardDependencies(directory = source) {
   const dependencies = JSON.parse(fs.readFileSync(path.join(source, 'dependency-hashes.json')));
-  for (const [file, expected] of Object.entries(dependencies)) {
-    if (hash(fs.readFileSync(path.join(source, file))) !== expected) {
-      throw new OpenCodeInfraError('guard', 'trusted guard dependency hash mismatch: ' + file);
+  try {
+    for (const [file, expected] of Object.entries(dependencies)) {
+      if (hash(fs.readFileSync(path.join(directory, file))) !== expected) throw Error('hash mismatch: ' + file);
     }
+  } catch {
+    throw new OpenCodeInfraError('guard', 'missing or changed guard dependencies; run npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund before offline validation');
   }
+  return dependencies;
+}
+export function stageGuard(root, policy) {
+  const dependencies = verifyGuardDependencies();
   const directory = fs.mkdtempSync(path.join(root, 'native-guard-'));
   fs.cpSync(source, directory, { recursive: true });
   const id = 'goal2.review.guard.' + randomBytes(12).toString('hex');
@@ -40,7 +54,7 @@ export function stageGuard(root, policy) {
   const availableNativeIDs = JSON.parse(fs.readFileSync(path.join(directory, 'native-plugins.json')));
   const files = Object.fromEntries([
     'guard.mjs', 'scanner.mjs', 'package.json', 'package-lock.json',
-    'dependency-hashes.json', 'native-plugins.json', 'server.js',
+    'dependency-hashes.json', 'native-plugins.json', 'server.js', 'LICENSE.opencode', 'README.md',
   ].map(file => [file, hash(fs.readFileSync(path.join(directory, file)))]));
   return selectGuardPlugins({
     id, directory, source: path.join(directory, 'server.js'), availableNativeIDs,
@@ -84,6 +98,14 @@ export const catalogueProjection = items => items.map(({ id, modelID, providerID
   id, modelID, providerID, family, enabled, variants: variants.map(v => v.id),
 })).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
 
+export function couldMatchPlugin(pattern) {
+  // [derived: native Wildcard.match; tests] A literal prefix incompatible with plugin: proves disjointness; all other globs fail closed.
+  pattern = pattern.replaceAll('\\', '/').toLowerCase();
+  const wildcard = pattern.search(/[?*]/);
+  if (wildcard < 0) return pattern.startsWith('plugin:');
+  const prefix = pattern.slice(0, wildcard);
+  return prefix.startsWith('plugin:') || 'plugin:'.startsWith(prefix);
+}
 export function inspectConfig(entries, guard) {
   if (!Array.isArray(entries)) throw new OpenCodeInfraError('guard', 'unverified config discovery');
   let shell;
@@ -92,7 +114,7 @@ export function inspectConfig(entries, guard) {
     if (entry.type === 'document') {
       if (entry.info.shell !== undefined) shell = entry.info.shell;
       for (const rule of entry.info.experimental?.policies ?? []) {
-        if (rule.action === 'integration.use' && rule.effect === 'allow' && (rule.resource === '*' || rule.resource.startsWith('plugin:'))) {
+        if (rule.action === 'integration.use' && rule.effect === 'allow' && couldMatchPlugin(rule.resource)) {
           throw new OpenCodeInfraError('guard', 'higher-authority plugin allow policy requires explicit audit');
         }
       }
@@ -129,9 +151,10 @@ export async function baselinePlugins(command, { env, cwd, guard, timeoutMs = 30
   const server = await startPrivateServer(command, { env, cwd, timeoutMs });
   let result;
   try {
+    const actualConfig = inspectConfig(await server.request('/api/config', { timeoutMs }), guard);
     const plugins = await readyPlugins(server, guard, { baseline: true, timeoutMs });
     const models = catalogueProjection((await server.request('/api/model', { timeoutMs })).data);
-    result = { plugins, models, config, surveyShutdown };
+    result = { plugins, models, config, actualConfig, surveyShutdown };
     return result;
   } finally {
     const shutdown = await server.stop();

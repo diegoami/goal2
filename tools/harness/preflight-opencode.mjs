@@ -7,7 +7,7 @@ import { resolveOpenCode } from './lib/opencode.mjs';
 import { privateHome, startPrivateServer, settledCatalogue, capture, hash } from './lib/opencode-transport.mjs';
 import { peekRecord, renderPeek } from './lib/opencode-peek.mjs';
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from './lib/opencode-policy.mjs';
-import {stageGuard,baselinePlugins,readyPlugins,catalogueProjection,selectGuardPlugins,pinGuardBinary} from './lib/opencode-guard.mjs';
+import {stageGuard,baselinePlugins,readyPlugins,catalogueProjection,selectGuardPlugins,pinGuardBinary,inspectConfig} from './lib/opencode-guard.mjs';
 const outIndex = process.argv.indexOf('--out');
 assert(outIndex > 0 && process.argv[outIndex + 1], '--out is required');
 const out = path.resolve(process.argv[outIndex + 1]); fs.mkdirSync(out, { recursive: true });
@@ -29,6 +29,7 @@ try {
   const baseline = await baselinePlugins(cmd, { env: baseEnv, cwd: process.cwd(), guard });save('baseline.json', baseline);
   selectGuardPlugins(guard, baseline.plugins.map(p => p.id)); env = trustedReviewEnv(home.env, policy, 'reviewer', guard);
   server = await startPrivateServer(cmd, { env, cwd: process.cwd() });
+  save('actual-config.json', inspectConfig(await server.request('/api/config'), guard));
   save('plugins.json', await readyPlugins(server, guard));save('guard.json', guard);
   const originals = path.join(dest, 'originals'); fs.mkdirSync(originals);
   const schema = path.join(originals, 'openapi.json'); await server.request('/openapi.json', { outFile: schema });

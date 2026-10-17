@@ -5,7 +5,7 @@ import { randomBytes } from 'node:crypto';
 import { command, normalizeSession } from './opencode-protocol.mjs';
 import { privateHome, startPrivateServer, settledCatalogue, capture, spawnOwned, killOwned, delay, hash, OpenCodeInfraError } from './opencode-transport.mjs';
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from './opencode-policy.mjs';
-import { stageGuard, baselinePlugins, readyPlugins, verifyPlugins, catalogueProjection, selectGuardPlugins, pinGuardBinary } from './opencode-guard.mjs';
+import { stageGuard, baselinePlugins, readyPlugins, verifyPlugins, catalogueProjection, selectGuardPlugins, pinGuardBinary, inspectConfig } from './opencode-guard.mjs';
 const json = (file, value) => fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 export function finalReviewText(normalized) {
   const last = normalized.messages.filter((m) => m.type === 'assistant').at(-1);
@@ -20,7 +20,7 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
     const proof = await capture({ exe: 'git', prefix: [] }, ['rev-parse', 'HEAD'], { cwd: workDir, env, timeoutMs: 5000 });
     if (proof.code !== 0 || proof.stdout.trim() !== reviewedHead) throw new OpenCodeInfraError('head', 'review worktree differs from exact PR head before billing');
   }
-  pinGuardBinary(opencode);
+  const transportIdentity = pinGuardBinary(opencode);
   const policy = reviewerPolicy(agentFile); let previous;
   if (sessionId) {
     if (!resumeManifest) throw new OpenCodeInfraError('ownership', 'v2 resume requires its retained run manifest');
@@ -39,7 +39,7 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
   const briefFile = path.join(workDir, `.harness-brief-${runTitle}.md`); fs.writeFileSync(briefFile, prompt); fs.writeFileSync(files['brief.md'], prompt);
   const pointer = `Your complete brief is the file ${path.basename(briefFile)} at the root of this worktree. Read it in full first; never edit, commit or delete it.`;
   const start = Date.now(); let server; let client; let clientClosed = false; let exitCode = null; let spawnError; let normalized; let raw; let failure;
-  const manifest = { major: 2, ...(reviewedHead ? { reviewedHead, reviewPR } : {}), title: runTitle, directory: workDir, agent, model, dataRoot: home.root, dataHome: home.env.XDG_DATA_HOME, policySHA256: policy.sourceSHA256, guard, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.binary ?? opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), sources: Object.fromEntries(['opencode.mjs', 'opencode-workflow.mjs', 'opencode-transport.mjs', 'opencode-policy.mjs', 'opencode-guard.mjs', 'opencode-protocol.mjs', '../review.mjs'].map((name) => [name, hash(fs.readFileSync(new URL(name, import.meta.url)))])), phase: 'preflight', started: start, files, briefFile };
+  const manifest = { major: 2, ...(reviewedHead ? { reviewedHead, reviewPR } : {}), title: runTitle, directory: workDir, agent, model, dataRoot: home.root, dataHome: home.env.XDG_DATA_HOME, policySHA256: policy.sourceSHA256, transportIdentity, guard, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.binary ?? opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), sources: Object.fromEntries(['opencode.mjs', 'opencode-workflow.mjs', 'opencode-transport.mjs', 'opencode-policy.mjs', 'opencode-guard.mjs', 'opencode-protocol.mjs', '../review.mjs'].map((name) => [name, hash(fs.readFileSync(new URL(name, import.meta.url)))])), phase: 'preflight', started: start, files, briefFile };
   const persist = () => {
     json(files['run.json'], server ? JSON.parse(server.redact(JSON.stringify(manifest))) : manifest);
     // [designed: T72] Per-run receipt index lets bare-SID peek find its own major/data root, without a shared service.
@@ -63,6 +63,7 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
     selectGuardPlugins(guard, baseline.plugins.map(p => p.id), files['shell-guard.jsonl']);
     runEnv = trustedReviewEnv(home.env, policy, agent, guard);
     server = await startPrivateServer(opencode, { env: runEnv, cwd: workDir, timeoutMs: Math.min(startupTimeoutMs, totalTimeoutMs), log });
+    manifest.config = inspectConfig(await server.request('/api/config', { timeoutMs: left() }), guard);
     await server.request('/openapi.json', { timeoutMs: Math.min(startupTimeoutMs, left()), outFile: files['openapi.raw.json'] });
     manifest.schemaSHA256 = hash(fs.readFileSync(files['openapi.raw.json']));
     const found = await settledCatalogue(server, { timeoutMs: Math.min(startupTimeoutMs - (Date.now() - start), left()), model, agent, verifyAgent: (profile) => verifyReviewer(profile, policy, agent) });
