@@ -598,5 +598,563 @@
       "sha256": "c7e0cc853923692ef9e25e08917b87f8ec3b49c05be088654e5e1642874206f5"
     },
     "writer_sweep": "Other adapter/World evidence writers retain correct declared input; unique time_ns paths and separate full/focus folders prevent overwritten receipts."
+  },
+  "final_focused_validation": [
+    {
+      "name": "adapter",
+      "head": "3f73182c2a2a23e93a54679c29b2f1998a24f34b",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_campaign_competitive_match",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_s": 174.632,
+      "log": ".cache/T51-focus-1792260218642049824/adapter.log",
+      "log_sha256": "364e9f75a0cf48d619186431e03e1f3f4be6d8c66bd3a2a85811d5061b0e2a68"
+    },
+    {
+      "name": "publication-save",
+      "head": "3f73182c2a2a23e93a54679c29b2f1998a24f34b",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_campaign_competitive_publication",
+        "goal2.tests.test_campaign_competitive_save",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_s": 160.268,
+      "log": ".cache/T51-focus-1792260218642049824/publication-save.log",
+      "log_sha256": "1b6be36446c37d9bf23cf7c5f726946f838d85d766eeec3be0feb1662790ff34"
+    },
+    {
+      "name": "unchanged-watched-runtime",
+      "head": "3f73182c2a2a23e93a54679c29b2f1998a24f34b",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_watched_runtime",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_s": 21.087,
+      "log": ".cache/T51-focus-1792260218642049824/unchanged-watched-runtime.log",
+      "log_sha256": "bca71bc181a85d5d89770383befa553964bfebbd1189ab0307cdffa3c572860d"
+    }
+  ],
+  "final_static_validation": [
+    {
+      "name": "provenance",
+      "exit": 0,
+      "seconds": 0.059,
+      "path": ".cache/T51-final-provenance.log",
+      "sha256": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8"
+    },
+    {
+      "name": "links",
+      "exit": 0,
+      "seconds": 0.171,
+      "path": ".cache/T51-final-links.log",
+      "sha256": "e2dbdadbd9f1c3ff389b11752b32145d1f85c26b17f46f1537b0f3ba701862b2"
+    }
+  ],
+  "final_adapter_cases": {
+    "artifact": {
+      "path": ".cache/T51-adapter-cases-1792260219340183070.jsonl",
+      "sha256": "673152ef566dd93a84991bdb5c71be98e2683567dac339c45d0729602a84d210"
+    },
+    "cases": [
+      {
+        "base_year": 2028,
+        "budget": [
+          5,
+          5
+        ],
+        "captain_override": null,
+        "class": 0,
+        "delay_byte": null,
+        "engine_year": 0,
+        "events_sha256": "1d008e28c4ee4c295efd5c92eb0a22c742ceead6f3954e4ad7ac0a59aaec7d2b",
+        "extra_time": false,
+        "guest_stamps_order_equal": true,
+        "image_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+        "incidents": {
+          "bookings": 2,
+          "goals": 1,
+          "goals_disallowed": 0,
+          "injuries": 0,
+          "sendings_off": 0,
+          "substitutions": 4
+        },
+        "independent_match_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/match.py",
+        "independent_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+        "independent_result_memory_events_equal": true,
+        "index": 21,
+        "kicks": null,
+        "kind": 2,
+        "managed": 7,
+        "memory_sha256": "3e23b231f242ae081bf43f12f6ae13c61c20a4b66b33e3226c7320f42dc22b59",
+        "next_free": 769,
+        "penalties": null,
+        "quick_at_half_time": false,
+        "reference_seed": 257,
+        "result_sha256": "67683d0a907b7bc4e3f00a37710fe5cff884fa6ff8073b800f66463c8ce1182a",
+        "score": [
+          1,
+          0
+        ],
+        "score_90": null,
+        "seeds": [
+          25058,
+          46908
+        ],
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "stage": 2,
+        "template_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+        "winner": 0
+      },
+      {
+        "base_year": 2028,
+        "budget": [
+          5,
+          5
+        ],
+        "captain_override": null,
+        "class": 0,
+        "delay_byte": null,
+        "engine_year": 0,
+        "events_sha256": "3cf8b2c456e8126cbc61294b3be79cd37d5d07f3eca9a670b0ba98c49d1ae1e7",
+        "extra_time": false,
+        "guest_stamps_order_equal": true,
+        "image_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+        "incidents": {
+          "bookings": 0,
+          "goals": 2,
+          "goals_disallowed": 0,
+          "injuries": 0,
+          "sendings_off": 0,
+          "substitutions": 2
+        },
+        "independent_match_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/match.py",
+        "independent_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+        "independent_result_memory_events_equal": true,
+        "index": 21,
+        "kicks": null,
+        "kind": 2,
+        "managed": 7,
+        "memory_sha256": "c46612552090c6aefb6674505ea0c39574cd3b9ff5cd03dba53c09fbb10f6980",
+        "next_free": 769,
+        "penalties": null,
+        "quick_at_half_time": false,
+        "reference_seed": null,
+        "result_sha256": "8e834fce4ec2991142c436d1c7784e72bff96e2dc41c071b469925ffd3921fbf",
+        "score": [
+          1,
+          1
+        ],
+        "score_90": null,
+        "seeds": [
+          16321,
+          53210
+        ],
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "stage": 2,
+        "template_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+        "winner": 2
+      },
+      {
+        "base_year": 2028,
+        "budget": [
+          5,
+          5
+        ],
+        "captain_override": null,
+        "class": 0,
+        "delay_byte": null,
+        "engine_year": 0,
+        "events_sha256": "5e62d94f86db45dd6863e10a2187d1b20db977da2d4aa3b8f8cbdbdc1fab15b3",
+        "extra_time": true,
+        "guest_stamps_order_equal": true,
+        "image_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+        "incidents": {
+          "bookings": 2,
+          "goals": 5,
+          "goals_disallowed": 0,
+          "injuries": 1,
+          "sendings_off": 0,
+          "substitutions": 4
+        },
+        "independent_match_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/match.py",
+        "independent_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+        "independent_result_memory_events_equal": true,
+        "index": 30,
+        "kicks": null,
+        "kind": 200,
+        "managed": 7,
+        "memory_sha256": "d9e1c27c772bd71f3b7bca263180291a72bcbd4c5cc75c9bc6774eb008b2b0fd",
+        "next_free": 769,
+        "penalties": null,
+        "quick_at_half_time": false,
+        "reference_seed": null,
+        "result_sha256": "ac90b1570b9272a79fe3d1f2ca69ea1c3931822f7a73bf499add9a984f25cb1b",
+        "score": [
+          3,
+          2
+        ],
+        "score_90": [
+          2,
+          2
+        ],
+        "seeds": [
+          913,
+          54310
+        ],
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "stage": 2,
+        "template_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+        "winner": 0
+      },
+      {
+        "base_year": 2028,
+        "budget": [
+          5,
+          5
+        ],
+        "captain_override": null,
+        "class": 0,
+        "delay_byte": null,
+        "engine_year": 0,
+        "events_sha256": "af4713bfb35d65c28bc2601e9a2a393bd02ea3802bc29c1d0e6b0b5babd4e443",
+        "extra_time": true,
+        "guest_stamps_order_equal": true,
+        "image_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+        "incidents": {
+          "bookings": 1,
+          "goals": 0,
+          "goals_disallowed": 0,
+          "injuries": 0,
+          "sendings_off": 1,
+          "substitutions": 4
+        },
+        "independent_match_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/match.py",
+        "independent_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+        "independent_result_memory_events_equal": true,
+        "index": 42,
+        "kicks": 9,
+        "kind": 200,
+        "managed": 7,
+        "memory_sha256": "97a934c906a74dbb5d3e19231bc230f966dc509c5a517f7d532cfb63257cee8f",
+        "next_free": 769,
+        "penalties": [
+          4,
+          3
+        ],
+        "quick_at_half_time": false,
+        "reference_seed": null,
+        "result_sha256": "26cc2b2b1b384332705d43296396d400a91ea0f19c3a3267fe5902bae00df1c0",
+        "score": [
+          0,
+          0
+        ],
+        "score_90": [
+          0,
+          0
+        ],
+        "seeds": [
+          35165,
+          20148
+        ],
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "stage": 2,
+        "template_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+        "winner": 0
+      },
+      {
+        "base_year": 2028,
+        "budget": [
+          5,
+          5
+        ],
+        "captain_override": null,
+        "class": 0,
+        "delay_byte": null,
+        "engine_year": 0,
+        "events_sha256": "e06304f1b88faeae22df34a03f0db415f934b52020b737e80edd29655c5c1250",
+        "extra_time": true,
+        "guest_stamps_order_equal": true,
+        "image_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+        "incidents": {
+          "bookings": 2,
+          "goals": 2,
+          "goals_disallowed": 1,
+          "injuries": 0,
+          "sendings_off": 1,
+          "substitutions": 5
+        },
+        "independent_match_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/match.py",
+        "independent_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+        "independent_result_memory_events_equal": true,
+        "index": 9,
+        "kicks": 24,
+        "kind": 200,
+        "managed": 7,
+        "memory_sha256": "9702a08c47e1cd84ea49aaead4bfb49170a730732110bc7786842cd225e72828",
+        "next_free": 769,
+        "penalties": [
+          9,
+          10
+        ],
+        "quick_at_half_time": true,
+        "reference_seed": null,
+        "result_sha256": "cd3a92cbbe605a548d6db55221a03ca3d71d1a38d2bd0a349d414eafd1e0b5ec",
+        "score": [
+          1,
+          1
+        ],
+        "score_90": [
+          1,
+          1
+        ],
+        "seeds": [
+          45154,
+          17075
+        ],
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "stage": 2,
+        "template_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+        "winner": 1
+      },
+      {
+        "base_year": 2028,
+        "budget": [
+          5,
+          5
+        ],
+        "captain_override": null,
+        "class": 0,
+        "delay_byte": null,
+        "engine_year": 0,
+        "events_sha256": "90b44e18a88416235621ac82a81db88958fa17641e357a98393d3ebbe8bed6e9",
+        "extra_time": true,
+        "guest_stamps_order_equal": true,
+        "image_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+        "incidents": {
+          "bookings": 1,
+          "goals": 4,
+          "goals_disallowed": 1,
+          "injuries": 0,
+          "sendings_off": 1,
+          "substitutions": 5
+        },
+        "independent_match_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/match.py",
+        "independent_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+        "independent_result_memory_events_equal": true,
+        "index": 53,
+        "kicks": 12,
+        "kind": 200,
+        "managed": 7,
+        "memory_sha256": "10272cfae9ff731c9014f6b3074b6a689683e7026c52148049fb48e364e45c1f",
+        "next_free": 769,
+        "penalties": [
+          3,
+          4
+        ],
+        "quick_at_half_time": true,
+        "reference_seed": null,
+        "result_sha256": "f14e2e950f03ec44284de1d466d0dc2eb6fdfcf1f2e2e368a9cee29f3c9014b1",
+        "score": [
+          2,
+          2
+        ],
+        "score_90": [
+          2,
+          2
+        ],
+        "seeds": [
+          20463,
+          59001
+        ],
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "stage": 2,
+        "template_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+        "winner": 1
+      },
+      {
+        "base_year": 2028,
+        "budget": [
+          5,
+          5
+        ],
+        "captain_override": null,
+        "class": 0,
+        "delay_byte": null,
+        "engine_year": 0,
+        "events_sha256": "0ef265433efc626e373aa995974bef65d2ff62bc1ce681be59de98da9c3e8e85",
+        "extra_time": true,
+        "guest_stamps_order_equal": true,
+        "image_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+        "incidents": {
+          "bookings": 0,
+          "goals": 0,
+          "goals_disallowed": 0,
+          "injuries": 0,
+          "sendings_off": 0,
+          "substitutions": 3
+        },
+        "independent_match_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/match.py",
+        "independent_module": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+        "independent_result_memory_events_equal": true,
+        "index": 42,
+        "kicks": 18,
+        "kind": 200,
+        "managed": 19,
+        "memory_sha256": "33f7c1335a5dd018bbb423e859fd57382d18edaaa84e90e840e42b2e96b93def",
+        "next_free": 769,
+        "penalties": [
+          7,
+          6
+        ],
+        "quick_at_half_time": true,
+        "reference_seed": null,
+        "result_sha256": "02e4e7a88ca5fe429e20d9880326c02d42e78a9daf40afc2d6db9cbfc8202271",
+        "score": [
+          0,
+          0
+        ],
+        "score_90": [
+          0,
+          0
+        ],
+        "seeds": [
+          3035,
+          12104
+        ],
+        "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+        "stage": 2,
+        "template_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+        "winner": 0
+      }
+    ]
+  },
+  "final_actual_qualifier": {
+    "artifact": {
+      "path": ".cache/T51-actual-qualifier-1792260536291884615.json",
+      "sha256": "c7e0cc853923692ef9e25e08917b87f8ec3b49c05be088654e5e1642874206f5"
+    },
+    "metadata": {
+      "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+      "fixture": {
+        "first": 4,
+        "second": 26,
+        "index": 1475,
+        "kind": 5
+      },
+      "managed": 4,
+      "budget": [
+        5,
+        5
+      ],
+      "captain": 61,
+      "eleven": [
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        73
+      ],
+      "policy": "play_on",
+      "reference_seed": null,
+      "delay_byte": null,
+      "engine_year": 0,
+      "base_year": 1990,
+      "stage": 5,
+      "class": 1,
+      "next_free": 2001,
+      "template_sha256": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+      "image_sha256": "eb20532f75d4c8ee0fb3ef08dd567b6d9b4484dcfcaafaef1b384f27215c0d6f",
+      "result_sha256": "e1714f9b4a30ac7162ee441b602f5fb0ac3ed64dc992b86684e13d548fa577e1",
+      "memory_sha256": "fe51d438c629881882ffd4f0a7364dd167d4e84a13fba0d42019ac126005de22",
+      "seeds": [
+        22804,
+        7490
+      ],
+      "resolution": {
+        "kind": 5,
+        "winner": 1,
+        "regulation": [
+          0,
+          3
+        ],
+        "extra_time": null,
+        "penalties": null
+      },
+      "independent_package": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+      "full_result_memory_equal": true,
+      "guest_stamps_order_equal": true,
+      "next_original_and_quick_deterministic": true
+    }
+  },
+  "final_world_knockout": {
+    "artifact": {
+      "path": ".cache/T51-world-knockout-1792260459859056217.json",
+      "sha256": "ab577194d42abd4d24433f9b8864800cb39a604b5b7c7a1141151d1230c2b551"
+    },
+    "metadata": {
+      "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+      "kind": 200,
+      "index": 42,
+      "managed": 7,
+      "budget": [
+        5,
+        5
+      ],
+      "policy": "play_on",
+      "captain_override": null,
+      "engine_year": 0,
+      "base_year": 2028,
+      "stage": 2,
+      "class": 0,
+      "next_free": 43,
+      "image_sha256": "b2693395ed3167efd1ec25a7d1a11b02b8a82f3b06d889e07c872a43796dacb3",
+      "result_sha256": "82c1393c7cf3909bddef19275b9de584c9914bc3bcc84983f426e20f84622830",
+      "memory_sha256": "919b8821c61defb120881c1c481feaf53bbc3e20379120b9f8ac0afc3148866e",
+      "seeds": [
+        35165,
+        20148
+      ],
+      "resolution": {
+        "kind": 200,
+        "winner": 0,
+        "regulation": [
+          0,
+          0
+        ],
+        "extra_time": [
+          0,
+          0
+        ],
+        "penalties": [
+          4,
+          3
+        ]
+      },
+      "independent_package": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+      "independent_result_memory_equal": true,
+      "guest_stamps_order_equal": true
+    }
   }
 }
