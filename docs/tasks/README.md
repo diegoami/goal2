@@ -99,3 +99,9 @@ Historical browser contracts T34–T38 are preserved; these are separate impleme
 | --- | --- | --- | --- | --- |
 | [T72a](T72a.md) | Pin OpenCode 2 protocol fixtures and adapter contract | [#173](https://github.com/diegoami/goal2/issues/173) | Hard | Existing reviewed harness |
 | [T72](T72.md) | Migrate review launch, monitoring and recovery to OpenCode 2 | [#168](https://github.com/diegoami/goal2/issues/168) | Hard | T72a |
+
+## Additional review transport
+
+| Task | Title | Issue | Difficulty | Merge after |
+| --- | --- | --- | --- | --- |
+| [T73](T73.md) | Add agy and run one Sonnet review trial | [#174](https://github.com/diegoami/goal2/issues/174) | Hard | T72 |
