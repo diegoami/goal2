@@ -116,6 +116,19 @@ class DesktopModel:
                 'players':rows,'morale':team_morale(state.players,state.starting_eleven),
                 'fixture':None if fixture is None else f'{self.goaldat.country_names[fixture.side_a]} — {self.goaldat.country_names[fixture.side_b]} ({'Friendly' if fixture.kind==1 else 'Unsupported fixture'})'}
 
+    def competition_table(self):
+        """[designed: T49; derived: F023] Pure named view of the managed opening group."""
+        from dataclasses import asdict
+        from goal2.game.standings import TableFixture,group_table,opening_group
+        group=opening_group(self.state,self.template_bytes)
+        if group is None:return None
+        campaign=self.state.campaign;world=campaign.world
+        fixtures=tuple(TableFixture(f.fixture_id,f.kind,f.side_a,f.side_b) for f in world.fixtures)
+        table=group_table(group['slots'],fixtures,world.results,stage=campaign.stage,places=group['places'])
+        rows=[dict(asdict(r),name=self.goaldat.country_names[r.country],played=r.played,
+                   goal_difference=r.goal_difference) for r in table]
+        return dict(group,stage=campaign.stage,rows=rows)
+
     def confirm(self,eleven,captain,tactics):
         """[designed: T69; derived: T36/T44] Validate before changing live state."""
         if (not isinstance(eleven,list) or len(eleven)!=11 or any(type(w) is not int for w in eleven)
