@@ -600,6 +600,7 @@ export async function runOpenCodeWatched(options) {
     if (get('--agent') !== agent || get('--model') !== model.id || get('--variant') !== (model.variant ?? undefined)) throw new OpenCodeInfraError('selection', 'v1 command differs from selected model/agent/effort');
     return runV1Watched({ ...options, model, agent, opencode: cmd });
   }
+  if (version !== '2.0.28') throw new OpenCodeInfraError('guard', 'native guard requires audited OpenCode2.0.28; revalidate before upgrading');
   if (!options.agentFile) throw new OpenCodeInfraError('selection', 'v2 requires the explicit trusted agentFile from the launching checkout');
   if (typeof model.family !== 'string' || !model.family) throw new OpenCodeInfraError('selection', 'v2 requires the selected policy family');
   return runV2Workflow({ ...options, model, agent,

@@ -25,21 +25,22 @@ test('same ordered external policy preserves exact tmp and research roots, rejec
 function context() {
   const o={id:'guard.test',source:'/guard/server.js',nativeIDs:['builtin'],permissions:policy.profile.permissions};
   const hooks={};const ctx={options:o,location:{directory:root},plugin:{list:async()=>({data:[{id:'builtin',source:{type:'builtin'},state:{status:'active'}},{id:o.id,source:{type:'local',path:o.source},state:{status:'active'}}]})}};
-  for(const d of ['tool','permission'])ctx[d]={hook:async(n,f)=>{hooks[d+'.'+n]=f;return{dispose:async()=>{delete hooks[d+'.'+n];}};}};
+  for(const d of ['tool','permission','shell'])ctx[d]={hook:async(n,f)=>{hooks[d+'.'+n]=f;return{dispose:async()=>{delete hooks[d+'.'+n];}};}};
   return{ctx,hooks};
 }
 test('native hooks tighten saved allow, preserve deny/ask and reject missing mismatched scan',async()=>{
-  const {ctx,hooks}=context();const cleanup=await setup(ctx);const call={tool:'shell',sessionID:'s',id:'c',agent:'reviewer',input:{command:`cat '${outside}/file'`}};
+  const {ctx,hooks}=context();const cleanup=await setup(ctx);const call={tool:'shell',sessionID:'s',id:'c',agent:'reviewer',input:{command:'cat /etc/hostname'}};
   await hooks['tool.execute.before'](call);
+  await hooks['shell.create.before']({command:call.input.command,cwd:root,shell:'/bin/bash'});
   for(const effect of ['allow','ask','deny']){const e={action:'shell',sessionID:'s',agent:'reviewer',source:{id:'c'},resources:[call.input.command],effect};await hooks['permission.evaluate'](e);assert.equal(e.effect,effect==='deny'?'deny':'ask');}
-  const call2={...call,id:'allowed',input:{command:'cat inside'}};await hooks['tool.execute.before'](call2);
+  const call2={...call,id:'allowed',input:{command:'cat inside'}};await hooks['tool.execute.before'](call2);await hooks['shell.create.before']({command:call2.input.command,cwd:root,shell:'/bin/sh'});
   const event={action:'shell',sessionID:'s',agent:'reviewer',source:{id:'allowed'},resources:['cat inside'],effect:'allow'};await hooks['permission.evaluate'](event);assert.equal(event.effect,'allow');
   for(const change of [{agent:'other'},{source:{id:'missing'}},{resources:['cat /etc/file']}]){const e={...event,...change,effect:'allow'};await hooks['permission.evaluate'](e);assert.equal(e.effect,'ask');}
   await hooks['tool.execute.after'](call2);const e={...event,effect:'allow'};await hooks['permission.evaluate'](e);assert.equal(e.effect,'ask');await cleanup();
 });
 test('trusted activation overlay pins dependencies and rejects foreign failed duplicate or missing plugins',()=>{
   const guard=stageGuard(root,policy);const env=trustedReviewEnv({},policy,'reviewer',guard);const plugins=JSON.parse(env.OPENCODE_CONFIG_CONTENT).plugins;
-  assert.equal(plugins[0],'-*','arbitrary global hooks must be disabled on every reload');assert(!plugins.includes('*'));assert(!plugins.includes('opencode.*'));
+  assert.equal(plugins[0],'-*','arbitrary global hooks must be disabled on every reload');assert(!plugins.includes('*'));assert(!plugins.includes('opencode.*'));assert.equal(plugins.at(-1).package,guard.directory,'trusted guard must be activated');
   const rows=guard.nativeIDs.map(id=>({id,source:{type:'builtin'},state:{status:'active'}}));rows.push({id:guard.id,source:{type:'local',path:guard.source},state:{status:'active'}});verifyPlugins(rows,guard);verifyInventory(rows,guard);
   for(const bad of [rows.slice(0,-1),[...rows,{id:'foreign',source:{type:'package'},state:{status:'active'}}],rows.map((r,i)=>i? r:{...r,state:{status:'failed'}}),rows.map((r,i)=>i?r:{...r,source:{type:'package'}})]) assert.throws(()=>verifyPlugins(bad,guard),/plugin|guard|builtin/);
 });

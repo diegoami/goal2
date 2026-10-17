@@ -5,7 +5,7 @@ import { randomBytes } from 'node:crypto';
 import { command, normalizeSession } from './opencode-protocol.mjs';
 import { privateHome, startPrivateServer, settledCatalogue, capture, spawnOwned, killOwned, delay, hash, OpenCodeInfraError } from './opencode-transport.mjs';
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from './opencode-policy.mjs';
-import { stageGuard, baselinePlugins, readyPlugins, verifyPlugins, catalogueProjection } from './opencode-guard.mjs';
+import { stageGuard, baselinePlugins, readyPlugins, verifyPlugins, catalogueProjection, selectGuardPlugins, pinGuardBinary } from './opencode-guard.mjs';
 const json = (file, value) => fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 export function finalReviewText(normalized) {
   const last = normalized.messages.filter((m) => m.type === 'assistant').at(-1);
@@ -20,6 +20,7 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
     const proof = await capture({ exe: 'git', prefix: [] }, ['rev-parse', 'HEAD'], { cwd: workDir, env, timeoutMs: 5000 });
     if (proof.code !== 0 || proof.stdout.trim() !== reviewedHead) throw new OpenCodeInfraError('head', 'review worktree differs from exact PR head before billing');
   }
+  pinGuardBinary(opencode);
   const policy = reviewerPolicy(agentFile); let previous;
   if (sessionId) {
     if (!resumeManifest) throw new OpenCodeInfraError('ownership', 'v2 resume requires its retained run manifest');
@@ -28,19 +29,19 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
   }
   const home = privateHome(env, { resumeRoot: previous?.dataRoot });
   const guard = stageGuard(home.root, policy);
-  const baseEnv = trustedReviewEnv(home.env, policy, agent);
-  const runEnv = trustedReviewEnv(home.env, policy, agent, guard);
+  const baseEnv = trustedReviewEnv(home.env, policy, agent, guard, { baseline: true });
+  let runEnv;
   const runTitle = `${title}-${randomBytes(6).toString('hex')}`;
   if (logDir) fs.mkdirSync(path.resolve(logDir), { recursive: true });
   const artifactRoot = logDir ? fs.mkdtempSync(path.join(path.resolve(logDir), `${runTitle}-`)) : path.join(home.root, 'artifacts', runTitle);
   fs.mkdirSync(artifactRoot, { recursive: true });
-  const files = Object.fromEntries(['stdout.txt', 'stderr.txt', 'export-response.json', 'export.json', 'final.txt', 'assistant.txt', 'profile.json', 'plugins.json', 'baseline.json', 'model.json', 'openapi.raw.json', 'server.json', 'brief.md', 'run.json'].map((name) => [name, path.join(artifactRoot, name)]));
+  const files = Object.fromEntries(['stdout.txt', 'stderr.txt', 'export-response.json', 'export.json', 'final.txt', 'assistant.txt', 'profile.json', 'plugins.json', 'baseline.json', 'shell-guard.jsonl', 'model.json', 'openapi.raw.json', 'server.json', 'brief.md', 'run.json'].map((name) => [name, path.join(artifactRoot, name)]));
   const briefFile = path.join(workDir, `.harness-brief-${runTitle}.md`); fs.writeFileSync(briefFile, prompt); fs.writeFileSync(files['brief.md'], prompt);
   const pointer = `Your complete brief is the file ${path.basename(briefFile)} at the root of this worktree. Read it in full first; never edit, commit or delete it.`;
   const start = Date.now(); let server; let client; let clientClosed = false; let exitCode = null; let spawnError; let normalized; let raw; let failure;
   const manifest = { major: 2, ...(reviewedHead ? { reviewedHead, reviewPR } : {}), title: runTitle, directory: workDir, agent, model, dataRoot: home.root, dataHome: home.env.XDG_DATA_HOME, policySHA256: policy.sourceSHA256, guard, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.binary ?? opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), sources: Object.fromEntries(['opencode.mjs', 'opencode-workflow.mjs', 'opencode-transport.mjs', 'opencode-policy.mjs', 'opencode-guard.mjs', 'opencode-protocol.mjs', '../review.mjs'].map((name) => [name, hash(fs.readFileSync(new URL(name, import.meta.url)))])), phase: 'preflight', started: start, files, briefFile };
   const persist = () => {
-    json(files['run.json'], manifest);
+    json(files['run.json'], server ? JSON.parse(server.redact(JSON.stringify(manifest))) : manifest);
     // [designed: T72] Per-run receipt index lets bare-SID peek find its own major/data root, without a shared service.
     const index = path.join(home.root, 'receipts'); fs.mkdirSync(index, { recursive: true });
     json(path.join(index, `${runTitle}.json`), { manifest: files['run.json'], sessionID: manifest.sessionID });
@@ -50,7 +51,7 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
   const expected = () => ({ sessionID: manifest.sessionID, directory: workDir, agent, model: { providerID: model.id.split('/')[0], id: model.id.slice(model.id.indexOf('/') + 1), ...(model.variant ? { variant: model.variant } : {}) } });
   const exportFinal = async () => {
     const result = await server.request(`/api/experimental/session/${manifest.sessionID}/export`, { timeoutMs: 5000, outFile: files['export-response.json'] });
-    raw = result.data; json(files['export.json'], raw);
+    raw = JSON.parse(server.redact(JSON.stringify(result.data))); json(files['export.json'], raw);
     normalized = normalizeSession(2, raw, expected());
     fs.writeFileSync(files['assistant.txt'], normalized.assistantText);
     fs.writeFileSync(files['final.txt'], finalReviewText(normalized));
@@ -59,6 +60,8 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
   try {
     const baseline = await baselinePlugins(opencode, { env: baseEnv, cwd: workDir, guard, timeoutMs: Math.min(startupTimeoutMs, left()) });
     json(files['baseline.json'], baseline);
+    selectGuardPlugins(guard, baseline.plugins.map(p => p.id), files['shell-guard.jsonl']);
+    runEnv = trustedReviewEnv(home.env, policy, agent, guard);
     server = await startPrivateServer(opencode, { env: runEnv, cwd: workDir, timeoutMs: Math.min(startupTimeoutMs, totalTimeoutMs), log });
     await server.request('/openapi.json', { timeoutMs: Math.min(startupTimeoutMs, left()), outFile: files['openapi.raw.json'] });
     manifest.schemaSHA256 = hash(fs.readFileSync(files['openapi.raw.json']));
@@ -128,7 +131,11 @@ export async function runV2Workflow({ opencode, model, agent, agentFile, prompt,
     }
     if (client) { killOwned(client); await delay(25); }
     // [designed: T72] Generated transport nonce is excluded even if a child echoes it in split chunks.
-    if (server) for (const file of [files['stdout.txt'], files['stderr.txt']]) if (fs.existsSync(file)) fs.writeFileSync(file, server.redact(fs.readFileSync(file, 'utf8')));
+    if (server) for (const file of [...Object.values(files).filter(f => f !== files['run.json']), briefFile]) if (fs.existsSync(file)) fs.writeFileSync(file, server.redact(fs.readFileSync(file, 'utf8')));
+    if (server) {
+      manifest.redactions = ['known generated owned-server transport nonce; no other text omitted'];
+      if (failure) failure.message = server.redact(failure.message);
+    }
     manifest.exitCode = exitCode; manifest.finished = Date.now(); manifest.durationMs = manifest.finished - start;
     manifest.artifactSHA256 = Object.fromEntries(Object.values(files).filter((f) => f !== files['run.json'] && fs.existsSync(f)).map((f) => [path.basename(f), hash(fs.readFileSync(f))]));
     persist();

@@ -56,6 +56,7 @@ if (args[0] === 'serve') {
       let answer;
       const item = () => sessions.find((s) => s.info.id === sid);
       if (url.pathname === '/openapi.json') answer = { openapi: '3.1.0', info: { title: 'T72 synthetic stub', version: '2.0.28' }, paths: {} };
+      else if (url.pathname === '/api/config') answer=[{type:'document',info:{shell:'/bin/bash'}},{type:'document',info:JSON.parse(process.env.OPENCODE_CONFIG_CONTENT)}];
       else if (url.pathname === '/api/plugin') {
         const ids=JSON.parse(fs.readFileSync(new URL('../../tools/harness/opencode-guard/native-plugins.json',import.meta.url)));
         const options=JSON.parse(process.env.OPENCODE_CONFIG_CONTENT||'{}').plugins?.at(-1)?.options;
