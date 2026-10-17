@@ -224,6 +224,10 @@ test('review CLI uses exact fetched head, trusted profile and complete export wh
   assert.doesNotMatch(result.stdout, /no review|volatile output/i);
   const trees = fs.readdirSync(cfg.worktreeRoot); assert.equal(trees.length, 1);
   const tree = path.join(cfg.worktreeRoot, trees[0]); assert(fs.existsSync(tree));
+  assert(runManifest.startsWith(path.join(tree, '.cache/harness-reviews') + path.sep), 'safe run/profile/source receipts must be inside the reviewer worktree grants');
+  const receipt = JSON.parse(fs.readFileSync(runManifest));
+  assert(fs.existsSync(receipt.files['profile.json'])); assert(fs.existsSync(receipt.files['model.json']));
+  assert(!receipt.dataHome.startsWith(tree), 'provider DB stays outside reviewer artifact grants');
   assert.equal(spawnSync('git', ['rev-parse', 'HEAD'], { cwd: tree, encoding: 'utf8' }).stdout.trim(), head);
   const stale = path.join(fixture, 'stale.md'); fs.writeFileSync(stale, 'T72 stub review (M3)\nHEAD is '+ 'a'.repeat(40)+'\n');
   const refused = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url)), '--pr', '1', '--brief', stale, '--reviewer', 'm3', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });

@@ -221,6 +221,8 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
   line per Done-when line, DW1 to DW${doneWhen}: "DW<k>: ran <command> → <result>", or
   "DW<k>: not run — <reason>". An approve with one missing, or one not run, is not applied.` : ''} A review that does not end with its verdict, or that has a
   finding after it, is posted flagged and acted on by no one until the main session reads it.
+- Safe source/model/profile/run receipts for this invocation are under .cache/harness-reviews/
+  in your worktree. Read those files directly when needed; do not query credentials or make a nested model call.
 - Your worktree is ${worktree} at ${headSha}, and it is already your working directory. Run git
   there without -C, and never type that path: a mistyped path ends the run. This rule is about
   your own worktree only (L61): a Done-when line may send git at a pinned repository outside it
@@ -233,7 +235,7 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
       let run;
       try {
         run = await runOpenCodeWatched({
-          args: ocArgs(worktree, rev.agent, model), model, agent: rev.agent, agentFile, reviewedHead: headSha, reviewPR: a.pr, prompt, workDir: worktree, title: `pr${a.pr}-${fileSafe(m)}`,
+          args: ocArgs(worktree, rev.agent, model), model, agent: rev.agent, agentFile, reviewedHead: headSha, reviewPR: a.pr, logDir: path.join(worktree, '.cache/harness-reviews'), prompt, workDir: worktree, title: `pr${a.pr}-${fileSafe(m)}`,
           startupTimeoutMs: rev.startupTimeoutSec * 1000, idleTimeoutMs: (idleSec ?? rev.idleTimeoutSec) * 1000,
           totalTimeoutMs: (totalSec ?? rev.totalTimeoutSec) * 1000, opencode, env: reviewEnv, log: say,
         });

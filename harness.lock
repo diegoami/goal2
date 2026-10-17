@@ -58,7 +58,7 @@ a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 c4abc459b7720a55a357371f38eb6fbda90ecf7aa40632f79238366f3939fb23  tools/harness/peek.sh
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-8bc5a8160087397fe4b5da36c3980111f76869f58f09daf9bd868ec3b4f634af  tools/harness/review.mjs
+3bd5eeb4a792cc04a36bfd513a121969a9c3bc9f3dc7715f98e92eeb42215702  tools/harness/review.mjs
 d89401578e18253ebfcb82494fbaba1f3825a02533fbd56dfabe0f11b7f41206  tools/harness/switch-model.mjs
 f42444fab83e28dffec60593f1c323e6e4c001d6bfdd780b2cdfff1090d5cd72  AGENTS.md
 b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs
@@ -79,7 +79,7 @@ b9a34f0718b82d87b2631277a9c8a33e83755fcffd6dbbc7e99bb53b7a43664a  tools/harness/
 local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
 4e1e1f54fdae0ca67c6c7de2968de37c1e4582f9ff8856cb8c295d66d20d6438  tools/harness/preflight-opencode.mjs
 local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
-564d74961574d7a704281bdf09d5ec633f912bda3a7aa1e153bcfeeb55166f00  tests/opencode_workflow.test.mjs
+5c751f98fd5ba2480be795983c20bed05a56eac80b5b3a566133d2b54a6dbe5a  tests/opencode_workflow.test.mjs
 
 ce7e391d991ddf7075855a87e1710310d01d5016d20ab204a772b9d70d920837  tools/harness/lib/opencode-workflow.mjs
 
