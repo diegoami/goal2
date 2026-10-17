@@ -7,7 +7,7 @@ import secrets
 from dataclasses import dataclass
 from goal2.engine.original_match import Image, Fixture
 from goal2.game import campaign_rounds
-from goal2.game.watched_match import prepare_watched, WatchedOutcome, engine_year
+from goal2.game.watched_match import prepare_watched, WatchedOutcome
 from goal2.game.watched_schema import ENGINE_ID, RESULT_SCHEMA, validate_result, validate_saved_watched
 
 
@@ -27,7 +27,10 @@ def completed_candidate(state,fixture,outcome,template):
             or (result['first'],result['second'],result['index'],result['managed'])!=
                 (fixture.first,fixture.second,fixture.index,state.managed_country)):
         raise ValueError('watched completion differs from the pending fixture or is incomplete')
-    expected_year=engine_year(state.campaign) if state.campaign is not None else Image(state.mem).year()
+    expected_image=prepare_watched(state,template,fixture)
+    if result['image_sha256'] != expected_image.sha256():
+        raise ValueError('watched completion differs from the declared input image')
+    expected_year=expected_image.year()
     if type(outcome.engine_year) is not int or outcome.engine_year!=expected_year:
         raise ValueError("watched completion changed engine year")
     image=Image.from_memory_component(outcome.memory)

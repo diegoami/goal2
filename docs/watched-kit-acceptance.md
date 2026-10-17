@@ -210,7 +210,8 @@ than replace, the ten strict reference controls above.
 [designed: T64] `goal2.game.watched_publication.WatchedPublication` accepts an
 owner with `state`, `template_bytes` and `view(candidate)`. `begin(Fixture(...))`
 returns a private job and one-use token; only `complete(token, WatchedOutcome)`
-validates the completed original result, builds all fields and history, validates
+validates the completed original result and its declared input-image hash,
+builds all fields and history, validates
 the owner's view, and swaps the active state. Cancellation, stale management
 changes, invalid fixture identities, unsupported kinds and failures before the
 swap leave the active state intact. A failed completion consumes its token.

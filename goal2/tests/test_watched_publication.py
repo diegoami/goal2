@@ -98,16 +98,24 @@ class WatchedPublicationTests(unittest.TestCase):
         self.assertEqual(owner.state,current)
 
     def test_changed_job_and_malformed_completions_cannot_publish(self):
-        from dataclasses import replace
+        from dataclasses import replace, FrozenInstanceError
         owner=Owner(self.state(),self.raw);pub=WatchedPublication(owner)
+        owner.state.starting_eleven[-1]=owner.state.managed_squad[15]
+        owner.state.captain=owner.state.starting_eleven[4]
+        source_state=copy.deepcopy(owner.state)
         source=Fixture(7,19,21);job=pub.begin(source)
         outcome=run_watched_match(job.state,self.raw,job.fixture)
-        source.index=22;job.fixture.index=23;job.state.country_tactics^=8
+        with self.assertRaises(FrozenInstanceError):source.index=22
+        with self.assertRaises(FrozenInstanceError):job.fixture.index=23
+        job.state.country_tactics^=8
         # [designed] Mutable caller copies do not alter the internal declared fixture/state.
         pub.complete(job.token,outcome)
         self.assertEqual(owner.state.last_match['original']['index'],21)
+        self.assertEqual(owner.state.managed_squad,Image(outcome.memory).squad(7))
+        self.assertEqual(owner.state.starting_eleven,source_state.starting_eleven)
+        self.assertEqual(owner.state.captain,source_state.captain)
         for change in ('index','managed','seed_after','events','memory','year'):
-            owner.state=self.state();before=copy.deepcopy(owner.state)
+            owner.state=copy.deepcopy(source_state);before=copy.deepcopy(owner.state)
             job=pub.begin(Fixture(7,19,21));bad=copy.deepcopy(outcome)
             if change in ('index','managed','seed_after'):
                 bad.result[change]={'index':22,'managed':19,'seed_after':-1}[change]
@@ -117,6 +125,10 @@ class WatchedPublicationTests(unittest.TestCase):
             with self.subTest(change=change):
                 with self.assertRaises(ValueError):pub.complete(job.token,bad)
                 self.assertEqual(owner.state,before)
+        owner.state=self.state();before=copy.deepcopy(owner.state)
+        job=pub.begin(Fixture(7,19,21))
+        with self.assertRaisesRegex(ValueError,'input image'):pub.complete(job.token,outcome)
+        self.assertEqual(owner.state,before)
 
     def test_cancel_and_wrong_tokens_preserve_active_state(self):
         owner=Owner(self.state(),self.raw);pub=WatchedPublication(owner)
