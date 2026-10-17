@@ -51,7 +51,7 @@ b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1  tools/harness/
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
-d8bf2b4ced9dac1b01b1e41b41838d16f2176a9131ed748ae2a81823c80fe8bb  tools/harness/lib/opencode.mjs
+49b8e7f3757a0d64b21c9284d923a75902086e655844f1a505917f6c5b898e57  tools/harness/lib/opencode.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
 7e842f5068ecf64e94248410328c8bb6ebf01b5787e4d0510dd64c7885d9a85e  tools/harness/lib/switch.mjs
@@ -72,3 +72,11 @@ local tools/check_premerge.py  (T72a explicit protocol contract and offline vali
 f6b0324a84b481f845523a970685ed6db24518f4dd288d61ca943e4b8749b062  tools/check_premerge.py
 local tests/test_local_validation.py  (T72a explicit protocol contract and offline validation)
 3792301a60e64ec8ff8da1bc91fa7bfa3e2e0065724860d431a2f9bc36443d16  tests/test_local_validation.py
+local tools/harness/lib/opencode-transport.mjs  (T72 private transport and permission verification)
+85dbb698108d8933d63c7ca60632b58bc59f51dca096fa95c4a6e1241ca15dac  tools/harness/lib/opencode-transport.mjs
+local tools/harness/lib/opencode-policy.mjs  (T72 private transport and permission verification)
+d8453bc37f2340f6e1913b2308c23f86c7b27783ff33838606d06fcdf0136973  tools/harness/lib/opencode-policy.mjs
+local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
+759db8b1e0fbf3d69d3d3d7cd266be6b5e76be90bdb5cd6be2a7cc82b5b106bf  tools/harness/preflight-opencode.mjs
+local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
+5e1b73259c090a6186a9c855c54b4632d7df19a320088d3274240749986823ec  tests/opencode_workflow.test.mjs

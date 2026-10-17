@@ -4,6 +4,7 @@ mode: all
 permission:
   edit: deny
   external_directory:
+    "*": ask
     "/tmp/opencode/*": allow
     "/tmp": allow
     "/tmp/*": allow

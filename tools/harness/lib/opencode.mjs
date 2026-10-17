@@ -31,13 +31,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-export class OpenCodeInfraError extends Error {
-  constructor(reason, message) {
-    super(message);
-    this.name = 'OpenCodeInfraError';
-    this.reason = reason;
-  }
-}
+import { OpenCodeInfraError } from './opencode-transport.mjs';
+export { OpenCodeInfraError };
 
 // A failed run on Alibaba's Token Plan whose stderr (OpenCode's own, not the model's output) says the
 // key was refused: an auth.json entry in the data
