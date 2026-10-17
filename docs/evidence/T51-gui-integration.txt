@@ -182,5 +182,5 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError
 
-Full500 and engine-mutation acceptance on the integrated head remain pending main adjudication and independent review. No new full suite, browser suite or engine mutation batch was run by this integration author.
-Exact-final-head premerge follows this evidence-only commit; final SHA and receipt remain in ignored RUN-NOTES/cache and PR to avoid a self-referential commit hash.
+This receipt records only the named fresh GUI checks and source-identity comparisons. It makes no claim that full500, browser or engine-mutation batches ran at the integration head; the c8c1916 engine evidence is separate.
+Exact-head premerge receipts are retained in the PR and ignored cache/RUN-NOTES, outside this tracked receipt, to avoid self-referential commit hashes.
