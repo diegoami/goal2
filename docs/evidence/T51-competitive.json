@@ -1180,5 +1180,13 @@
       "zero_skips": true
     }
   ],
-  "final_validation_scope": "Full500 zero-skips and focused3+7+9 ran exact functional source/tests3f73182. Later acceptance commits change only tracked metadata. UI product bytes unchanged since validated d513a19."
+  "final_validation_scope": "Full500 zero-skips and focused3+7+9 ran exact functional source/tests3f73182. Later acceptance commits change only tracked metadata. UI product bytes unchanged since validated d513a19.",
+  "premerge_validation": {
+    "head": "fdbce7965e7f7a3630a24e6fe46f09a4d1bb7fc3",
+    "exit_code": 0,
+    "wall_s": 61.272,
+    "log": ".cache/T51-premerge-fdbce7965e7f7a3630a24e6fe46f09a4d1bb7fc3.log",
+    "sha256": "cdf0fe5a9862abb5c89d60dfd2c4721a2a6cded23bb94fcb42c218f3ccce9566"
+  },
+  "premerge_final_policy": "This metadata-only receipt commit is followed by the same exact-head check on its final SHA; final command/log is retained in ignored cache and PR description."
 }
