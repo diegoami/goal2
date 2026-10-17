@@ -582,6 +582,32 @@
       "log": ".cache/T51a-final-links.log",
       "log_sha256": "e7bd5bd7eba02d2daf53da8df67660157e58158f0b3c9f31c9b2c58076190548",
       "output": "links and JSON ok (337 files)"
+    },
+    {
+      "name": "premerge-before-admin-sync",
+      "command": [
+        "python3",
+        "tools/check_premerge.py",
+        "--expected-head",
+        "f4163082b796536247d50212497993ebed409080"
+      ],
+      "exit_code": 1,
+      "log": ".cache/T51a-final-premerge.log",
+      "log_sha256": "52687c890003f99dc1610f7f7e0b19c8f274b8988ff5783706f2be4ab3594063",
+      "cause": "Main documentation update had a stale model-trials locked digest; main fixed only that digest in f756ebc, merged925d82b. Runtime/tests untouched."
+    },
+    {
+      "name": "premerge-after-admin-sync",
+      "command": [
+        "python3",
+        "tools/check_premerge.py",
+        "--expected-head",
+        "925d82b082874147d853021134ad44d6bcbad375"
+      ],
+      "exit_code": 0,
+      "log": ".cache/T51a-final-premerge-corrected.log",
+      "log_sha256": "ca8f0833a8fbf353888477accad17b233421c9e5bca6ac377dc5e1440c23238a",
+      "result": "PASS exacthead clean checkout;35 locked hashes, original-asset exclusion,337 link/JSON files,35 harness selftests,9 clienttests,17 Python premerge tests."
     }
   ],
   "negative_controls": {
