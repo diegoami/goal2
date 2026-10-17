@@ -1,0 +1,8 @@
+{
+  "id": "msg_fixture_idle",
+  "type": "idle",
+  "time": {
+    "created": 1792240887180
+  },
+  "outcome": "succeeded"
+}

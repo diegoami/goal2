@@ -1,0 +1,11 @@
+{
+  "unrelatedBefore": "unrelated-server-alive",
+  "sessionID": "ses_eb6164ca2ffeKH72yDUH4xN4Gh",
+  "zeroUsage": true,
+  "externalDirectoryDefaultGap": true,
+  "schemaSHA256": "b0cdccd2c0c651f2adbded5efc6a77506521fbf509188c91712d5a854255feeb",
+  "ownedExit": 130,
+  "ownedSignal": null,
+  "ownedEndpointUnavailable": true,
+  "unrelatedAfter": "unrelated-server-alive"
+}

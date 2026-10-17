@@ -1,0 +1,6 @@
+data: {"id":"evt_149e1a567001qLC57UNVbT2DVw","type":"server.connected","data":{}}
+
+: heartbeat
+
+data: {"id":"evt_149e1a587001wBi3JnFW0mBlfr","created":1792240887175,"type":"session.created","location":{"directory":"/home/diego/projects/goal2-work/T72a-opencode2-protocol"},"data":{"sessionID":"ses_eb61e5a91ffeR7ubYUG1t6O4Wt","slug":"quick-island","version":"2.0.28","projectID":"18205a66481f455f28fc093fd822a040e8af9580","location":{"directory":"/home/diego/projects/goal2-work/T72a-opencode2-protocol"},"subpath":"","title":"T72a-owned-empty-never-prompted","agent":"reviewer","model":{"id":"MiniMax-M3","providerID":"minimax","variant":"thinking"}},"durable":{"aggregateID":"ses_eb61e5a91ffeR7ubYUG1t6O4Wt","seq":0,"version":1}}
+

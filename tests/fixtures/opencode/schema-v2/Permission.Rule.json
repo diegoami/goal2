@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string"
+    },
+    "resource": {
+      "type": "string"
+    },
+    "effect": {
+      "$ref": "#/components/schemas/Permission.Effect"
+    }
+  },
+  "required": [
+    "action",
+    "resource",
+    "effect"
+  ],
+  "additionalProperties": false
+}

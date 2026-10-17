@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "#/components/schemas/Permission.ID"
+    },
+    "sessionID": {
+      "$ref": "#/components/schemas/Session.ID"
+    },
+    "action": {
+      "type": "string"
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "save": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "source": {
+      "$ref": "#/components/schemas/Permission.Source"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "sessionID",
+    "action",
+    "resources"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed"
+      ]
+    },
+    "input": {
+      "type": "object"
+    },
+    "content": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "$ref": "#/components/schemas/Tool.Content"
+        }
+      ],
+      "minItems": 1,
+      "items": {
+        "$ref": "#/components/schemas/Tool.Content"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "status",
+    "input",
+    "content"
+  ],
+  "additionalProperties": false
+}

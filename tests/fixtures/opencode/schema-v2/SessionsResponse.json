@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Session.Info"
+      }
+    },
+    "cursor": {
+      "type": "object",
+      "properties": {
+        "previous": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/SessionsCursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "next": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/SessionsCursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "data",
+    "cursor"
+  ],
+  "additionalProperties": false
+}
