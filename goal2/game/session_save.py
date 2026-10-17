@@ -20,7 +20,8 @@ from goal2.game.state import (
 
 
 FORMAT = "goal2-session"
-VERSION = 2
+VERSION = 3
+_CAMPAIGN_VERSION = 2
 _FRIENDLY_VERSION = 1
 _TUPLE_TAG = "__goal2_session_tuple__"
 
@@ -73,7 +74,7 @@ def _unb64(value: Any, field: str) -> bytes:
         raise SessionSaveError(f"{field}: invalid base64 data") from exc
 
 
-def _state_data(state: GameState, version: int) -> dict[str, Any]:
+def _state_data(state: GameState) -> dict[str, Any]:
     data = {
         "players": [_b64(bytes(record)) for record in state.players],
         "countries": [_b64(bytes(record)) for record in state.countries],
@@ -90,28 +91,26 @@ def _state_data(state: GameState, version: int) -> dict[str, Any]:
         "match_count": state.match_count,
         "last_match": _json_value(state.last_match),
     }
-    if version == VERSION:
-        if state.campaign is None:
-            raise ValueError("version 2 session requires campaign metadata")
+    if state.campaign is not None:
         from goal2.game.campaign_pool import validate
         from goal2.game.campaign_rounds import validate_state
         validate_state(state)
         data["campaign"] = state.campaign.to_data()
         data["campaign"]["reserve_ids"] = validate(state)
-    elif state.campaign is not None:
-        raise ValueError("campaign state cannot be encoded as a friendly version 1 save")
     return data
 
 
 def encode(state: GameState, template: bytes) -> bytes:
     """Return a validated explicit-data save document. [designed: T33]"""
     try:
-        version = VERSION if state.campaign is not None else _FRIENDLY_VERSION
+        from goal2.game.watched_schema import needs_version3, validate_saved_watched
+        validate_saved_watched(state)
+        version = VERSION if needs_version3(state) else (_CAMPAIGN_VERSION if state.campaign is not None else _FRIENDLY_VERSION)
         document = {
             "format": FORMAT,
             "version": version,
             "template": _b64(bytes(template)),
-            "state": _state_data(state, version),
+            "state": _state_data(state),
         }
         raw = json.dumps(document, ensure_ascii=True, allow_nan=False,
                          separators=(",", ":")).encode("ascii")
@@ -155,7 +154,7 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
     if not isinstance(doc, dict) or doc.get("format") != FORMAT:
         raise SessionSaveError("not a goal2 session save")
     version = doc.get("version")
-    if isinstance(version, bool) or not isinstance(version, int) or version not in (_FRIENDLY_VERSION, VERSION):
+    if isinstance(version, bool) or not isinstance(version, int) or version not in (_FRIENDLY_VERSION, _CAMPAIGN_VERSION, VERSION):
         raise SessionSaveError(f"unsupported session save version: {doc.get('version')!r}")
     if set(doc) != {"format", "version", "template", "state"}:
         raise SessionSaveError("session save has missing or unknown top-level fields")
@@ -166,7 +165,7 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
         "captain", "country_tactics", "rng_seed_7b62", "rng_seed_8336", "match_state",
         "vga", "mem", "match_count", "last_match",
     }
-    if version == VERSION:
+    if version == _CAMPAIGN_VERSION or (version == VERSION and isinstance(data,dict) and "campaign" in data):
         required.add("campaign")
     if not isinstance(data, dict) or set(data) != required:
         raise SessionSaveError("session state has missing or unknown fields")
@@ -192,7 +191,7 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
     except SessionSaveError:
         raise
     campaign = None
-    if version == VERSION:
+    if "campaign" in required:
         try:
             from goal2.game.campaign import CampaignError, CampaignState
             campaign = CampaignState.from_data(data["campaign"])
@@ -214,6 +213,13 @@ def decode(raw: bytes) -> tuple[GameState, bytes]:
             validate_state(state)
         except ValueError as exc:
             raise SessionSaveError(f'invalid campaign pool: {exc}') from exc
+    try:
+        from goal2.game.watched_schema import needs_version3, validate_saved_watched
+        validate_saved_watched(state)
+        if needs_version3(state) and version != VERSION:
+            raise ValueError("watched results require session version 3")
+    except (ValueError, IndexError, KeyError, TypeError) as exc:
+        raise SessionSaveError(f"invalid watched data: {exc}") from exc
     return state, template
 
 
