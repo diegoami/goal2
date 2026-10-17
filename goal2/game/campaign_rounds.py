@@ -60,11 +60,15 @@ class World:
             is_watched=isinstance(row,dict) and row.get('mode')=='watched'
             if is_watched:
                 from goal2.game.watched_schema import ENGINE_ID, RESULT_SCHEMA
+                scheduled=next((f for f in campaign.fixtures if f.fixture_id==fixture.fixture_id),None)
+                expected_year=((2*(scheduled.cycle-1)+int(scheduled.stage>=5)-int(campaign.start_year%4==2))&65535
+                               if scheduled is not None else None)
                 watched_keys={'fixture_id','teams','score','winner','mode','engine','schema','seed_before',
                     'seed_after','secondary_after','engine_year','index','setup_seed'}
                 if (set(row)!=watched_keys or row['engine']!=ENGINE_ID
                         or type(row['schema']) is not int or row['schema']!=RESULT_SCHEMA
                         or not integer(row['secondary_after'],0,65535) or not integer(row['engine_year'],0,65535)
+                        or row['engine_year']!=expected_year
                         or not integer(row['index'],1,2400) or fixture.fixture_id!=f"original:{row['index']}"
                         or not integer(row['setup_seed'],0,65535)
                         or row['setup_seed']!=row['index']*(row['engine_year']+1)&65535):
@@ -92,7 +96,9 @@ class World:
         if managed_ids!=campaign.completed_fixture_ids:raise ValueError('world and managed completion ledgers differ')
         for row in campaign.results:
             match=next((r for r in self.results if r['fixture_id']==row['fixture_id']),None)
-            if match is None or match['teams']!=row['teams'] or match['score']!=row['score']:
+            from goal2.game.watched_schema import watched
+            if (match is None or match['teams']!=row['teams'] or match['score']!=row['score']
+                    or watched(row)!=(match['mode']=='watched')):
                 raise ValueError('managed score differs from world result')
         return seed
 

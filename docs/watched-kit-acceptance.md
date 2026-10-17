@@ -204,3 +204,46 @@ Both use default play-on answers and natural setup reseeding. The old adapter
 rejected1378 against the inherited769 bound; an omitted count transfer must fail
 the new field assertions before original execution. These cases extend, rather
 than replace, the ten strict reference controls above.
+
+## Watched publication and session saves
+
+[designed: T64] `goal2.game.watched_publication.WatchedPublication` accepts an
+owner with `state`, `template_bytes` and `view(candidate)`. `begin(Fixture(...))`
+returns a private job and one-use token; only `complete(token, WatchedOutcome)`
+validates the completed original result, builds all fields and history, validates
+the owner's view, and swaps the active state. Cancellation, stale management
+changes, invalid fixture identities, unsupported kinds and failures before the
+swap leave the active state intact. A failed completion consumes its token.
+A `full_time` event is not a completed outcome: the adapter must exhaust the
+original events and successfully call `result()` after the original player tail.
+Worker and desktop integration remain T65/T66; this interface introduces no
+mid-match session save feature.
+
+[derived: accepted E033/T63; designed: T64] Publication retains the entire returned
+Memory, every country/player record, all twenty returned managed squad words,
+both returned RNG words and the full kit result. Selected eleven and captain
+remain management choices. Returned tactics are known engine fields. No quick
+Python energy, confidence, form, pool or eligibility tail runs over these bytes.
+T48's existing source-ordered CPU prefix/suffix still publishes atomically with
+the managed result. The live primary seed can therefore advance for those silent
+suffix results; the retained watched envelope always records both exact original
+returned seeds and Memory. This is separate from between-fixture player effects.
+
+[designed: T64] Watched envelopes and history use engine identity
+`original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1` and result schema1.
+Session saves containing watched results use version3. Legacy friendly version1
+and campaign version2 retain their quick result/history meanings and continue to
+load; new quick-only sessions retain those versions. A watched world row records
+the incoming seed, original fixture/year setup reseed and returned primary and
+secondary seeds explicitly. It never presents the setup reseed as an affine
+continuation of T48's quick draw ledger. Unknown engine identities, incompatible
+result schemas and malformed watched continuation data are rejected before an
+active state can be replaced. Original `Match.save()` blobs are unrelated to this
+session schema.
+
+[designed: T64] Focused acceptance commands:
+`python3 -m unittest goal2.tests.test_watched_publication -v` and
+`python3 -m unittest goal2.tests.test_watched_save -v`. They cover all ten strict
+T63 seeds, actual fresh1990/1992 campaigns, returned state, once-only completion,
+failed publication, legacy saves, malformed watched saves and deterministic
+next-fixture continuation after save/reload.

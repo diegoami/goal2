@@ -22,7 +22,8 @@ def completed_candidate(state,fixture,outcome,template):
     """[designed] Build every returned field and ledger privately, never quick Python effects."""
     if not isinstance(outcome,WatchedOutcome):raise ValueError('completed watched outcome required')
     result=outcome.result;validate_result(result)
-    if (not outcome.events or outcome.events[-1].kind!='end'
+    kinds=[getattr(event,'kind',None) for event in outcome.events]
+    if (not kinds or kinds[-1]!='end' or kinds.count('end')!=1 or kinds.count('full_time')!=1
             or (result['first'],result['second'],result['index'],result['managed'])!=
                 (fixture.first,fixture.second,fixture.index,state.managed_country)):
         raise ValueError('watched completion differs from the pending fixture or is incomplete')
@@ -80,10 +81,11 @@ class WatchedPublication:
 
     def begin(self,fixture):
         if self._pending is not None:raise ValueError('a watched job is already pending')
+        fixture=copy.deepcopy(fixture)
         original=self.owner.state;snapshot=copy.deepcopy(original)
         candidate=campaign_rounds.prepare(original,self.owner.template_bytes)
         prepare_watched(candidate,self.owner.template_bytes,fixture)
-        job=WatchedJob(secrets.token_hex(24),copy.deepcopy(candidate),fixture)
+        job=WatchedJob(secrets.token_hex(24),copy.deepcopy(candidate),copy.deepcopy(fixture))
         self._pending=(job.token,original,snapshot,candidate,fixture,bytes(self.owner.template_bytes))
         return job
 

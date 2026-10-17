@@ -41,12 +41,91 @@ def validate_result(result):
         if (not isinstance(words,list) or len(words)!=20 or any(not integer(w,1,3060) for w in words)
                 or len(set(words))!=20):raise ValueError('invalid watched squad words')
     if not isinstance(result['board'],dict):raise ValueError('invalid watched board')
+    _details(result)
+
+
+def _object(value,keys):
+    if not isinstance(value,dict) or set(value)!=set(keys):raise ValueError('invalid watched result record fields')
+
+
+def _number(value,low=0,high=65535):
+    if not integer(value,low,high):raise ValueError('invalid watched result number')
+
+
+def _text(value):
+    if not isinstance(value,str):raise ValueError('invalid watched result text')
+
+
+def _hash(value):
+    if not isinstance(value,str) or re.fullmatch('[0-9a-f]{64}',value) is None:
+        raise ValueError('invalid watched result digest')
+
+
+def _details(result):
+    """[derived: accepted E033 Match._finish/_board/_flush] Compatible result data shapes."""
+    _number(result['man_of_the_match'],0,3060);_text(result['man_of_the_match_name'])
+    board=result['board']
+    _object(board,{'statistics','bars','man_of_the_match','final_score','screen_sha256','ticks','seed'})
+    _object(board['statistics'],{'corners','free_kicks','penalties','shots','on_target','saves','fouls','bookings','red_cards','injuries'})
+    if any(not pair(v,0,255) for v in board['statistics'].values()):raise ValueError('invalid watched statistics')
+    if (not isinstance(board['bars'],list) or len(board['bars'])!=2
+            or any(not pair(v,0,65535) for v in board['bars'])
+            or not pair(board['final_score'],0,255) or board['final_score']!=result['score']
+            or board['ticks']!=result['ticks'] or board['man_of_the_match']!=result['man_of_the_match']):
+        raise ValueError('invalid watched final board')
+    _number(board['ticks'],0,2**31-1);_number(board['man_of_the_match'],0,3060)
+    _number(board['seed']);_hash(board['screen_sha256'])
+    for key in ('goals','goals_disallowed','bookings','sendings_off','injuries','substitutions'):
+        for row in result[key]:
+            if key=='substitutions':
+                _object(row,{'team','off','on','off_name','on_name','minute'})
+                for word in ('off','on'):_number(row[word],0,3060)
+                for name in ('off_name','on_name'):_text(row[name])
+            else:
+                keys={'team','player','name','minute'}
+                if key in ('goals','goals_disallowed'):keys|={'country','minute_byte'}
+                _object(row,keys);_number(row['team'],0,1);_number(row['player'],0,3060);_text(row['name'])
+                if 'country' in row:
+                    if row['country']!=result[('first','second')[row['team']]]:raise ValueError('invalid watched scorer country')
+                    if row['minute_byte'] is not None:_number(row['minute_byte'],0,255)
+            _number(row['team'],0,1);_number(row['minute'],0,65535)
+    for row in result['commentary']:
+        _object(row,{'minute','template','players','team','text'})
+        _number(row['minute']);_number(row['template'],0,255);_number(row['team'],0,255);_text(row['text'])
+        if not pair(row['players'],0,3060):raise ValueError('invalid watched commentary players')
+    for row in result['inputs']:
+        _object(row,{'what','linear','old','new'});_text(row['what']);_number(row['linear'],0,0x10ffff)
+        for key in ('old','new'):
+            if not isinstance(row[key],str) or re.fullmatch('(?:[0-9a-f]{2})*',row[key]) is None:
+                raise ValueError('invalid watched declared input')
+        if len(row['old'])!=len(row['new']):raise ValueError('invalid watched input lengths')
+    for row in result['decisions']:
+        _object(row,{'context','minute','answer'});_text(row['context']);_number(row['minute'])
+        answer=row['answer'];_object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'})
+        if type(answer['quick']) is not bool or (answer['speed'] is not None and not integer(answer['speed'],0,255)):
+            raise ValueError('invalid watched decision policy')
+        for key in ('substitutions','tactics','positions','marking','own_tactics'):
+            if not isinstance(answer[key],list):raise ValueError('invalid watched decision entries')
+            for entry in answer[key]:
+                if not isinstance(entry,(list,tuple)) or len(entry)!=2:raise ValueError('invalid watched decision pair')
+                _number(entry[0],1,3060)
+                if key=='tactics':
+                    if type(entry[1]) is not bool:raise ValueError('invalid watched tactics decision')
+                elif key=='own_tactics':
+                    if not isinstance(entry[1],(list,tuple)):raise ValueError('invalid watched own tactics decision')
+                    for setting in entry[1]:
+                        if (not isinstance(setting,(list,tuple)) or len(setting)!=2
+                                or not integer(setting[0],1,4) or (setting[1] is not None and type(setting[1]) is not bool)):
+                            raise ValueError('invalid watched own tactics setting')
+                else:_number(entry[1],0,3060)
 
 
 def watched(row):
     """[designed] Legacy quick records have no engine field and retain that meaning."""
     if not isinstance(row,dict):return False
-    if 'engine' not in row:return False
+    if 'engine' not in row:
+        if 'schema' in row or 'original' in row:raise ValueError('missing watched engine identity')
+        return False
     if row['engine']!=ENGINE_ID:raise ValueError('unsupported result engine identity')
     return True
 
@@ -60,7 +139,8 @@ def validate_saved_watched(state):
             raise ValueError('invalid watched result envelope')
         result=last['original'];validate_result(result)
         teams=[result['first'],result['second']]
-        if (last['teams']!=teams or last['score']!=list(result['score']) or last['goals']!=result['goals']
+        if (not pair(last['teams'],1,128) or last['teams']!=teams
+                or not pair(last['score'],0,255) or last['score']!=list(result['score']) or last['goals']!=result['goals']
                 or last['managed_side']!=teams.index(state.managed_country)
                 or not integer(last['managed_side'],0,1) or last['match_count']!=state.match_count
                 or not integer(last['match_count'],1,2**31-1) or not pair(last['seeds'],0,65535)
@@ -70,7 +150,7 @@ def validate_saved_watched(state):
         image=Image.from_memory_component(state.mem)
         # [designed] Management edits may change live fields after completion;
         # the retained returned memory still validates the original result independently.
-        if (any(image.squad(int(country))!=words for country,words in result['squads_after'].items())
+        if (image.build_problems() or any(image.squad(int(country))!=words for country,words in result['squads_after'].items())
                 or image.year()!=last['engine_year']
                 or tuple(last['seeds'])!=(image.rd(0x7B62),image.rd(0x8336))
                 or state.rng_seed_8336!=last['seeds'][1]):
@@ -78,6 +158,15 @@ def validate_saved_watched(state):
         if state.campaign is None or state.campaign.world is None:
             if state.rng_seed_7b62!=last['seeds'][0]:raise ValueError('watched primary RNG differs from returned memory')
     if state.campaign is not None:
+        if watched(last):
+            if not state.campaign.results or state.campaign.results[-1]['fixture_id']!=f"original:{last['original']['index']}":
+                raise ValueError('watched last result differs from campaign history')
+            world=state.campaign.world
+            if world is not None:
+                row=next((r for r in world.results if r['fixture_id']==f"original:{last['original']['index']}"),None)
+                if (row is None or row.get('mode')!='watched' or row['seed_after']!=last['seeds'][0]
+                        or row['secondary_after']!=last['seeds'][1] or row['engine_year']!=last['engine_year']):
+                    raise ValueError('watched result differs from world continuation')
         for row in state.campaign.results:
             if watched(row) and (set(row)!={'fixture_id','teams','score','engine','schema'}
                     or type(row['schema']) is not int or row['schema']!=RESULT_SCHEMA):
