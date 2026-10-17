@@ -1,0 +1,15 @@
+[designed: #181] Regression against main 941d6ec931ce78562c12246352830b953cc45342 window.py; restored saved bytes in finally.
+Command: /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -B tools/desktop-ui/country-selection.py --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+Exit: 1
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix-181-country-selector/tools/desktop-ui/country-selection.py", line 78, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/fix-181-country-selector/tools/desktop-ui/country-selection.py", line 47, in main
+    select(country);assert_display(expected)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/fix-181-country-selector/tools/desktop-ui/country-selection.py", line 31, in assert_display
+    assert window.title.text()==view['country_name'],'selected country header remains on previous country'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: selected country header remains on previous country
