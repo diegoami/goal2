@@ -252,3 +252,10 @@ failed publication, legacy saves, malformed watched saves and deterministic
 next-fixture continuation after save/reload. The actual1990 queue supplies a
 second friendly; the actual1992 queue supplies competitive kind2 next, so that
 case preserves the same explicit unsupported-fixture refusal after reload.
+
+[confirmed: T64 execution at code commit0e9938fb4457dcf332090065b395c87076c960f4]
+The focused publication/save commands pass6/5 tests, and the complete Python
+suite passes473 tests with no skips. All12 publication/save mutation controls,
+all6 browser scenarios and both retained Qt flows pass. Commands, durations,
+log digests, baseline failures and scope are recorded in
+[evidence/T64-watched-publication.json](evidence/T64-watched-publication.json).
