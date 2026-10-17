@@ -169,8 +169,11 @@ print("quick-only PASS")
             self.assertTrue(seen, "the regression must actually visit a disallowed goal")
             if resume:
                 self.assertTrue(saved)
-            # [designed: T51a] Keep the historical kit1 result digest as a friendly
-            # semantics control; full current results were already compared straight/resumed.
+            # [confirmed: Match.answer/save/load at accepted3656 and424 pins] Snapshot
+            # JSON turns sorted answer-item tuples into lists. Compare the COMPLETE
+            # serialized result, including all seven new fields, rather than native
+            # container identity. The historical kit1 digest remains an additional
+            # friendly semantics control; no field/value is omitted from the full JSON.
             result = match.result()
             self.assertEqual(result["kit"],"2")
             legacy = {key:value for key,value in result.items() if key not in
@@ -179,11 +182,11 @@ print("quick-only PASS")
             return {"event_sha256": hashlib.sha256(json.dumps(events,sort_keys=True).encode()).hexdigest(),
                     "result_sha256": hashlib.sha256(json.dumps(legacy,sort_keys=True).encode()).hexdigest(),
                     "memory_sha256": hashlib.sha256(match.memory_component()).hexdigest(),
-                    "current_result": result}
+                    "current_result_json": json.dumps(result,sort_keys=True)}
         straight, resumed = play(False), play(True)
         self.assertEqual(straight,resumed)
-        self.assertEqual({key:value for key,value in straight.items() if key != "current_result"},
-                         {key:control[key] for key in straight if key != "current_result"})
+        self.assertEqual({key:value for key,value in straight.items() if key != "current_result_json"},
+                         {key:control[key] for key in straight if key != "current_result_json"})
 
     def test_unsupported_fixtures_refuse_without_changing_image(self):
         before = self.image.memory_component()

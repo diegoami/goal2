@@ -67,112 +67,6 @@
           },
           "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
           "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
-          "incidents": {
-            "bookings": [
-              {
-                "minute": 75,
-                "name": "Olsen",
-                "player": 122,
-                "team": 0
-              },
-              {
-                "extra_time": true,
-                "minute": 118,
-                "name": "Laudrup",
-                "player": 130,
-                "team": 0
-              }
-            ],
-            "goals": [
-              {
-                "country": 19,
-                "minute": 8,
-                "minute_byte": 8,
-                "name": "Clarke",
-                "player": 370,
-                "team": 1
-              },
-              {
-                "country": 7,
-                "minute": 51,
-                "minute_byte": 51,
-                "name": "Povlsen",
-                "player": 131,
-                "team": 0
-              },
-              {
-                "country": 19,
-                "minute": 71,
-                "minute_byte": 199,
-                "name": "O'Neill",
-                "player": 380,
-                "team": 1
-              },
-              {
-                "country": 7,
-                "minute": 85,
-                "minute_byte": 213,
-                "name": "Durnin",
-                "player": 368,
-                "team": 0
-              },
-              {
-                "country": 7,
-                "extra_time": true,
-                "minute": 107,
-                "minute_byte": 107,
-                "name": "Piechnik",
-                "player": 123,
-                "team": 0
-              }
-            ],
-            "goals_disallowed": [],
-            "injuries": [
-              {
-                "minute": 16,
-                "name": "Rogan",
-                "player": 376,
-                "team": 1
-              }
-            ],
-            "sendings_off": [],
-            "substitutions": [
-              {
-                "minute": 16,
-                "off": 376,
-                "off_name": "Rogan",
-                "on": 366,
-                "on_name": "Donaghy",
-                "team": 1
-              },
-              {
-                "minute": 61,
-                "off": 379,
-                "off_name": "Morrow",
-                "on": 368,
-                "on_name": "Durnin",
-                "team": 1
-              },
-              {
-                "extra_time": true,
-                "minute": 105,
-                "off": 370,
-                "off_name": "Clarke",
-                "on": 371,
-                "on_name": "Dowie",
-                "team": 1
-              },
-              {
-                "extra_time": true,
-                "minute": 116,
-                "off": 380,
-                "off_name": "O'Neill",
-                "on": 369,
-                "on_name": "Hughes",
-                "team": 1
-              }
-            ]
-          },
           "kickoff_seed": 58654,
           "kit": "2",
           "managed": 7,
@@ -202,7 +96,16 @@
           "ticks": 5834,
           "timeout_s": 60,
           "wall_s": 23.13,
-          "winner": 0
+          "winner": 0,
+          "record_sha256": "ec5e9a0d2a1f5fb9380e4384963d60b63030b3f1f5a6d571fcfb5dcd24872554",
+          "incident_counts": {
+            "bookings": 2,
+            "goals": 5,
+            "goals_disallowed": 0,
+            "injuries": 1,
+            "sendings_off": 0,
+            "substitutions": 4
+          }
         },
         {
           "board_score": [
@@ -256,63 +159,6 @@
           },
           "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
           "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
-          "incidents": {
-            "bookings": [
-              {
-                "minute": 83,
-                "name": "Olsen",
-                "player": 122,
-                "team": 0
-              }
-            ],
-            "goals": [],
-            "goals_disallowed": [],
-            "injuries": [],
-            "sendings_off": [
-              {
-                "extra_time": true,
-                "minute": 97,
-                "name": "Olsen",
-                "player": 122,
-                "team": 0
-              }
-            ],
-            "substitutions": [
-              {
-                "minute": 58,
-                "off": 379,
-                "off_name": "Morrow",
-                "on": 368,
-                "on_name": "Durnin",
-                "team": 1
-              },
-              {
-                "minute": 58,
-                "off": 370,
-                "off_name": "Clarke",
-                "on": 371,
-                "on_name": "Dowie",
-                "team": 1
-              },
-              {
-                "minute": 84,
-                "off": 367,
-                "off_name": "Magilton",
-                "on": 377,
-                "on_name": "Wilson",
-                "team": 1
-              },
-              {
-                "extra_time": true,
-                "minute": 99,
-                "off": 380,
-                "off_name": "O'Neill",
-                "on": 369,
-                "on_name": "Hughes",
-                "team": 1
-              }
-            ]
-          },
           "kickoff_seed": 21802,
           "kit": "2",
           "managed": 7,
@@ -334,72 +180,12 @@
           "seed_after": 35165,
           "seed_override": null,
           "shootout": {
-            "kicks": [
-              {
-                "name": "Hughes",
-                "player": 369,
-                "round": 1,
-                "scored": false,
-                "team": 1
-              },
-              {
-                "name": "Schmeichel",
-                "player": 121,
-                "round": 1,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Taggart",
-                "player": 363,
-                "round": 2,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Piechnik",
-                "player": 123,
-                "round": 2,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "W'thington",
-                "player": 364,
-                "round": 3,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Christofte",
-                "player": 124,
-                "round": 3,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Dowie",
-                "player": 371,
-                "round": 4,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Andersen",
-                "player": 125,
-                "round": 4,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Black",
-                "player": 378,
-                "round": 5,
-                "scored": false,
-                "team": 1
-              }
-            ],
             "score": [
+              4,
+              3
+            ],
+            "kicks_count": 9,
+            "scored_kicks": [
               4,
               3
             ]
@@ -412,7 +198,16 @@
           "ticks": 5627,
           "timeout_s": 60,
           "wall_s": 24.8,
-          "winner": 0
+          "winner": 0,
+          "record_sha256": "fec6b8e73412549c256dbada2d29aaf242051b243fa6f509d458028ef7e4a06d",
+          "incident_counts": {
+            "bookings": 1,
+            "goals": 0,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 1,
+            "substitutions": 4
+          }
         },
         {
           "board_score": [
@@ -466,101 +261,6 @@
           },
           "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
           "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
-          "incidents": {
-            "bookings": [
-              {
-                "minute": 1,
-                "name": "Povlsen",
-                "player": 131,
-                "team": 0
-              },
-              {
-                "minute": 41,
-                "name": "Olsen",
-                "player": 122,
-                "team": 0
-              }
-            ],
-            "goals": [
-              {
-                "country": 7,
-                "minute": 15,
-                "minute_byte": 15,
-                "name": "Povlsen",
-                "player": 131,
-                "team": 0
-              },
-              {
-                "country": 19,
-                "minute": 45,
-                "minute_byte": 45,
-                "name": "Magilton",
-                "player": 367,
-                "team": 1
-              }
-            ],
-            "goals_disallowed": [
-              {
-                "country": 7,
-                "minute": 11,
-                "minute_byte": null,
-                "name": "",
-                "player": 0,
-                "team": 0
-              }
-            ],
-            "injuries": [],
-            "sendings_off": [
-              {
-                "minute": 59,
-                "name": "Povlsen",
-                "player": 131,
-                "team": 0
-              }
-            ],
-            "substitutions": [
-              {
-                "minute": 57,
-                "off": 363,
-                "off_name": "Taggart",
-                "on": 374,
-                "on_name": "Morrow",
-                "team": 1
-              },
-              {
-                "minute": 57,
-                "off": 370,
-                "off_name": "Clarke",
-                "on": 371,
-                "on_name": "Dowie",
-                "team": 1
-              },
-              {
-                "minute": 59,
-                "off": 380,
-                "off_name": "O'Neill",
-                "on": 369,
-                "on_name": "Hughes",
-                "team": 1
-              },
-              {
-                "minute": 71,
-                "off": 379,
-                "off_name": "Morrow",
-                "on": 368,
-                "on_name": "Durnin",
-                "team": 1
-              },
-              {
-                "minute": 84,
-                "off": 376,
-                "off_name": "Rogan",
-                "on": 366,
-                "on_name": "Donaghy",
-                "team": 1
-              }
-            ]
-          },
           "kickoff_seed": 8457,
           "kit": "2",
           "managed": 7,
@@ -582,177 +282,12 @@
           "seed_after": 45154,
           "seed_override": null,
           "shootout": {
-            "kicks": [
-              {
-                "name": "Hughes",
-                "player": 369,
-                "round": 1,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Schmeichel",
-                "player": 121,
-                "round": 1,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Magilton",
-                "player": 367,
-                "round": 2,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Olsen",
-                "player": 122,
-                "round": 2,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "W'thington",
-                "player": 364,
-                "round": 3,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Piechnik",
-                "player": 123,
-                "round": 3,
-                "scored": false,
-                "team": 0
-              },
-              {
-                "name": "Dowie",
-                "player": 371,
-                "round": 4,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Christofte",
-                "player": 124,
-                "round": 4,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Morrow",
-                "player": 374,
-                "round": 5,
-                "scored": false,
-                "team": 1
-              },
-              {
-                "name": "Andersen",
-                "player": 125,
-                "round": 5,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Black",
-                "player": 378,
-                "round": 6,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Sivebaek",
-                "player": 126,
-                "round": 6,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Donaghy",
-                "player": 366,
-                "round": 7,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Vilfort",
-                "player": 127,
-                "round": 7,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "McDonald",
-                "player": 365,
-                "round": 8,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Larsen",
-                "player": 128,
-                "round": 8,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Durnin",
-                "player": 368,
-                "round": 9,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Jensen",
-                "player": 129,
-                "round": 9,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Fleming",
-                "player": 362,
-                "round": 10,
-                "scored": false,
-                "team": 1
-              },
-              {
-                "name": "Laudrup",
-                "player": 130,
-                "round": 10,
-                "scored": false,
-                "team": 0
-              },
-              {
-                "name": "Kee",
-                "player": 372,
-                "round": 11,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Schmeichel",
-                "player": 121,
-                "round": 11,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Hughes",
-                "player": 369,
-                "round": 12,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Olsen",
-                "player": 122,
-                "round": 12,
-                "scored": false,
-                "team": 0
-              }
-            ],
             "score": [
+              9,
+              10
+            ],
+            "kicks_count": 24,
+            "scored_kicks": [
               9,
               10
             ]
@@ -765,7 +300,16 @@
           "ticks": 2290,
           "timeout_s": 60,
           "wall_s": 12.07,
-          "winner": 1
+          "winner": 1,
+          "record_sha256": "863a8fa795bced5e860f46f08f16de493a16741d4f5d8571b8c510564f56008a",
+          "incident_counts": {
+            "bookings": 2,
+            "goals": 2,
+            "goals_disallowed": 1,
+            "injuries": 0,
+            "sendings_off": 1,
+            "substitutions": 5
+          }
         },
         {
           "board_score": [
@@ -819,111 +363,6 @@
           },
           "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
           "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
-          "incidents": {
-            "bookings": [
-              {
-                "minute": 47,
-                "name": "Christofte",
-                "player": 124,
-                "team": 0
-              }
-            ],
-            "goals": [
-              {
-                "country": 19,
-                "minute": 31,
-                "minute_byte": 31,
-                "name": "Black",
-                "player": 378,
-                "team": 1
-              },
-              {
-                "country": 7,
-                "minute": 37,
-                "minute_byte": 37,
-                "name": "Laudrup",
-                "player": 130,
-                "team": 0
-              },
-              {
-                "country": 19,
-                "minute": 65,
-                "minute_byte": 65,
-                "name": "Dowie",
-                "player": 371,
-                "team": 1
-              },
-              {
-                "country": 7,
-                "minute": 67,
-                "minute_byte": 67,
-                "name": "Larsen",
-                "player": 128,
-                "team": 0
-              }
-            ],
-            "goals_disallowed": [
-              {
-                "country": 7,
-                "minute": 21,
-                "minute_byte": null,
-                "name": "",
-                "player": 0,
-                "team": 0
-              }
-            ],
-            "injuries": [],
-            "sendings_off": [
-              {
-                "minute": 75,
-                "name": "Christofte",
-                "player": 124,
-                "team": 0
-              }
-            ],
-            "substitutions": [
-              {
-                "minute": 57,
-                "off": 367,
-                "off_name": "Magilton",
-                "on": 377,
-                "on_name": "Wilson",
-                "team": 1
-              },
-              {
-                "minute": 57,
-                "off": 370,
-                "off_name": "Clarke",
-                "on": 371,
-                "on_name": "Dowie",
-                "team": 1
-              },
-              {
-                "minute": 61,
-                "off": 379,
-                "off_name": "Morrow",
-                "on": 368,
-                "on_name": "Durnin",
-                "team": 1
-              },
-              {
-                "minute": 63,
-                "off": 365,
-                "off_name": "McDonald",
-                "on": 375,
-                "on_name": "Hill",
-                "team": 1
-              },
-              {
-                "minute": 66,
-                "off": 363,
-                "off_name": "Taggart",
-                "on": 374,
-                "on_name": "Morrow",
-                "team": 1
-              }
-            ]
-          },
           "kickoff_seed": 4405,
           "kit": "2",
           "managed": 7,
@@ -945,93 +384,12 @@
           "seed_after": 20463,
           "seed_override": null,
           "shootout": {
-            "kicks": [
-              {
-                "name": "O'Neill",
-                "player": 380,
-                "round": 1,
-                "scored": false,
-                "team": 1
-              },
-              {
-                "name": "Schmeichel",
-                "player": 121,
-                "round": 1,
-                "scored": false,
-                "team": 0
-              },
-              {
-                "name": "W'thington",
-                "player": 364,
-                "round": 2,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Olsen",
-                "player": 122,
-                "round": 2,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Dowie",
-                "player": 371,
-                "round": 3,
-                "scored": false,
-                "team": 1
-              },
-              {
-                "name": "Piechnik",
-                "player": 123,
-                "round": 3,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Morrow",
-                "player": 374,
-                "round": 4,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Andersen",
-                "player": 125,
-                "round": 4,
-                "scored": false,
-                "team": 0
-              },
-              {
-                "name": "Black",
-                "player": 378,
-                "round": 5,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Sivebaek",
-                "player": 126,
-                "round": 5,
-                "scored": true,
-                "team": 0
-              },
-              {
-                "name": "Hill",
-                "player": 375,
-                "round": 6,
-                "scored": true,
-                "team": 1
-              },
-              {
-                "name": "Vilfort",
-                "player": 127,
-                "round": 6,
-                "scored": false,
-                "team": 0
-              }
-            ],
             "score": [
+              3,
+              4
+            ],
+            "kicks_count": 12,
+            "scored_kicks": [
               3,
               4
             ]
@@ -1044,7 +402,16 @@
           "ticks": 2194,
           "timeout_s": 60,
           "wall_s": 12.77,
-          "winner": 1
+          "winner": 1,
+          "record_sha256": "0ce9f7a1b2bf6dc71af6607669ec574b9b8a52f2dd5af7557d23ee8365201665",
+          "incident_counts": {
+            "bookings": 1,
+            "goals": 4,
+            "goals_disallowed": 1,
+            "injuries": 0,
+            "sendings_off": 1,
+            "substitutions": 5
+          }
         },
         {
           "board_score": [
@@ -1086,48 +453,6 @@
           },
           "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
           "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
-          "incidents": {
-            "bookings": [],
-            "goals": [
-              {
-                "country": 19,
-                "minute": 16,
-                "minute_byte": 16,
-                "name": "W'thington",
-                "player": 364,
-                "team": 1
-              },
-              {
-                "country": 7,
-                "minute": 23,
-                "minute_byte": 23,
-                "name": "Povlsen",
-                "player": 131,
-                "team": 0
-              }
-            ],
-            "goals_disallowed": [],
-            "injuries": [],
-            "sendings_off": [],
-            "substitutions": [
-              {
-                "minute": 62,
-                "off": 379,
-                "off_name": "Morrow",
-                "on": 368,
-                "on_name": "Durnin",
-                "team": 1
-              },
-              {
-                "minute": 62,
-                "off": 370,
-                "off_name": "Clarke",
-                "on": 371,
-                "on_name": "Dowie",
-                "team": 1
-              }
-            ]
-          },
           "kickoff_seed": 37141,
           "kit": "2",
           "managed": 7,
@@ -1154,7 +479,16 @@
           "ticks": 4149,
           "timeout_s": 60,
           "wall_s": 21.44,
-          "winner": 2
+          "winner": 2,
+          "record_sha256": "d8298df9c535304fb821e548a3bbac72f7dfded47f88a88becb02b66d6d5d888",
+          "incident_counts": {
+            "bookings": 0,
+            "goals": 2,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 0,
+            "substitutions": 2
+          }
         },
         {
           "board_score": [
@@ -1204,81 +538,6 @@
           },
           "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
           "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
-          "incidents": {
-            "bookings": [],
-            "goals": [
-              {
-                "country": 7,
-                "minute": 7,
-                "minute_byte": 7,
-                "name": "Andersen",
-                "player": 125,
-                "team": 0
-              },
-              {
-                "country": 7,
-                "minute": 14,
-                "minute_byte": 14,
-                "name": "Povlsen",
-                "player": 131,
-                "team": 0
-              },
-              {
-                "country": 19,
-                "minute": 55,
-                "minute_byte": 55,
-                "name": "Black",
-                "player": 378,
-                "team": 1
-              },
-              {
-                "country": 19,
-                "minute": 78,
-                "minute_byte": 78,
-                "name": "Black",
-                "player": 378,
-                "team": 1
-              },
-              {
-                "country": 19,
-                "extra_time": true,
-                "minute": 109,
-                "minute_byte": 109,
-                "name": "Rogan",
-                "player": 376,
-                "team": 1
-              }
-            ],
-            "goals_disallowed": [],
-            "injuries": [],
-            "sendings_off": [],
-            "substitutions": [
-              {
-                "minute": 59,
-                "off": 379,
-                "off_name": "Morrow",
-                "on": 368,
-                "on_name": "Durnin",
-                "team": 1
-              },
-              {
-                "minute": 59,
-                "off": 380,
-                "off_name": "O'Neill",
-                "on": 369,
-                "on_name": "Hughes",
-                "team": 1
-              },
-              {
-                "minute": 73,
-                "off": 370,
-                "off_name": "Clarke",
-                "on": 371,
-                "on_name": "Dowie",
-                "team": 1
-              }
-            ]
-          },
           "kickoff_seed": 60712,
           "kit": "2",
           "managed": 7,
@@ -1308,7 +567,16 @@
           "ticks": 6025,
           "timeout_s": 60,
           "wall_s": 26.34,
-          "winner": 1
+          "winner": 1,
+          "record_sha256": "10f8143fdaf8a9f4d4aa7f1d3d219e9d32fb19b66c541b80ba151fa5a11928e8",
+          "incident_counts": {
+            "bookings": 0,
+            "goals": 5,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 0,
+            "substitutions": 3
+          }
         }
       ]
     },
@@ -1363,69 +631,6 @@
           "full_result_sha256": "1906aa6b1803cbd26f188cbbb7f1f3bc164f56945612da1ee93c6f0c1b8cc575",
           "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
           "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
-          "incidents": {
-            "bookings": [
-              {
-                "minute": 25,
-                "name": "Sivebaek",
-                "player": 126,
-                "team": 0
-              },
-              {
-                "minute": 49,
-                "name": "Black",
-                "player": 378,
-                "team": 1
-              }
-            ],
-            "goals": [
-              {
-                "country": 7,
-                "minute": 75,
-                "minute_byte": 75,
-                "name": "Larsen",
-                "player": 128,
-                "team": 0
-              }
-            ],
-            "goals_disallowed": [],
-            "injuries": [],
-            "sendings_off": [],
-            "substitutions": [
-              {
-                "minute": 66,
-                "off": 379,
-                "off_name": "Morrow",
-                "on": 368,
-                "on_name": "Durnin",
-                "team": 1
-              },
-              {
-                "minute": 66,
-                "off": 378,
-                "off_name": "Black",
-                "on": 371,
-                "on_name": "Dowie",
-                "team": 1
-              },
-              {
-                "minute": 76,
-                "off": 376,
-                "off_name": "Rogan",
-                "on": 366,
-                "on_name": "Donaghy",
-                "team": 1
-              },
-              {
-                "minute": 78,
-                "off": 363,
-                "off_name": "Taggart",
-                "on": 374,
-                "on_name": "Morrow",
-                "team": 1
-              }
-            ]
-          },
           "kickoff_seed": 257,
           "kit": "2",
           "managed": 7,
@@ -1453,41 +658,18 @@
           "ticks": 4279,
           "timeout_s": 60,
           "wall_s": 10.44,
-          "winner": 0
+          "winner": 0,
+          "record_sha256": "646da48c112cb95049b8665f5825b28aa48f674f4e71d01b3f10092f8fc9d3f8",
+          "incident_counts": {
+            "bookings": 2,
+            "goals": 1,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 0,
+            "substitutions": 4
+          }
         }
       ]
-    }
-  ],
-  "validation": [
-    {
-      "head": "2361057ddf6c7f094a24fa06df917702f40bf269",
-      "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
-      "manifest_sha256": "e5dfc08ade7813f72dc36418f52785b869bcaa961ab2af32682bf10df88aec2c",
-      "vendor": {
-        "goal2/engine/original_match/README.md": "dbd20ff6d4fe1f1a38a5bb43abc59d8b4ad42e35cffb5cc1735d4c57b107daf1",
-        "goal2/engine/original_match/__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
-        "goal2/engine/original_match/assets.py": "a3dd00e87b213662c4188eecb9a4e2e88265ad6a8f2f6b84a70c3950895d43b7",
-        "goal2/engine/original_match/build.py": "3368801a8ef847cbb1b37f625bcb716fcd6b2aa1e08d94d9db8d3107f746e9e4",
-        "goal2/engine/original_match/check.py": "ab6f41283784a5b78dba23d05b8d39b65343a22a660bb41f3b35b915fb64f3ae",
-        "goal2/engine/original_match/example.py": "d17a104f8c08635fb8a3ff61f6113aa56a902b88aef5fcceaf32ab27790bbacf",
-        "goal2/engine/original_match/image.py": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
-        "goal2/engine/original_match/machine.py": "3951626402e0f5de690ca5400ad2c6d2fa7d7e26c4fb2143bf7abacac5631fa8",
-        "goal2/engine/original_match/match.py": "635f2dc9f54515452bd3c262c61899b1e36829186266af4d88db54c9b659bb45",
-        "goal2/engine/original_match/screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304"
-      },
-      "command": [
-        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
-        "-B",
-        "tools/check_watched_upstream.py",
-        "--suite",
-        "tests"
-      ],
-      "exit_code": 0,
-      "wall_s": 274.705,
-      "log": ".cache/T51a-upstream-tests-1792232359097952033.log",
-      "log_sha256": "3c8bfd6c072fa397561ce09d477d8314f16a2c4ef21c1b3d3db0f61d46863848",
-      "ran_32_tests": true,
-      "unittest_ok": true
     }
   ],
   "old_kit_baseline": {
@@ -1498,5 +680,31 @@
     "tests": 8,
     "errors": 8,
     "reason": "actual missing competitive kinds and substitutions argument; staged verified resources and E034 dependencies"
+  },
+  "old_kit_reproduced": {
+    "source": "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607",
+    "test_source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+    "old_vendor": {
+      "README.md": "974a43f31945e496404072d701ab5fa4a9106ddfdbecf88e5ad45ba9acd9b6d1",
+      "__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
+      "assets.py": "a3dd00e87b213662c4188eecb9a4e2e88265ad6a8f2f6b84a70c3950895d43b7",
+      "build.py": "3368801a8ef847cbb1b37f625bcb716fcd6b2aa1e08d94d9db8d3107f746e9e4",
+      "check.py": "01d60bb980d3271dd3dd099387b2bdf42698c51bb9b8ec74a207885c8b660708",
+      "example.py": "29f37f5a763ac99daca5b6763f47ef91c05b78a562f99ff4bb0c504c70969a9c",
+      "image.py": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
+      "machine.py": "3951626402e0f5de690ca5400ad2c6d2fa7d7e26c4fb2143bf7abacac5631fa8",
+      "match.py": "3de81f0dc02c88d35941bae98ba8b511c669430dc7fa316496880d875343cf5a",
+      "screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304"
+    },
+    "tests": 8,
+    "expected_capability_errors": 8,
+    "exit_code": 0,
+    "wall_s": 0.117,
+    "log": ".cache/watched-old-kit-proof-1792233432113442947/result.log",
+    "log_sha256": "4e49a46f63a7d8a7258af5fdeb25f2c7d6c81429aa2da55edf1d5e2686f5665f"
+  },
+  "reports": {
+    "validation": "T51a-watched-validation.json",
+    "matrices": "T51a-watched-matrices.json"
   }
 }

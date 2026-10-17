@@ -59,6 +59,7 @@ python3 tools/prove_watched_competitive.py
 python3 tools/prove_watched_old_kit.py
 # Run source-mutating controls sequentially after all other suites:
 python3 tools/prove_watched_identity.py
+python3 tools/prove_watched_serialized_result.py
 python3 tools/check_provenance.py
 ```
 
@@ -353,3 +354,22 @@ It requires eight capability errors (unsupported kind or substitution argument),
 zero skips and no unrelated dependency/resource failure. The current consumer
 vendor is never replaced. This makes the failing-before evidence reproducible
 without the original temporary dispatch baseline.
+
+[confirmed: exact3656 and424 Match.answer/save/load; T51a snapshot diagnostics]
+Both kits store sorted decision-item tuples and snapshot them through JSON. A
+resumed result can therefore contain a list where its uninterrupted result had
+a tuple. Complete result JSON, event JSON and entire Memory are identical in
+the measured disallowed-goal case; only the Python container type differs. The
+first490-test run’s newly added native-result comparison was too strict for
+this pre-existing transport. The main session’s [recorded decision](https://github.com/diegoami/goal2/pull/172#issuecomment-6233015137)
+authorizes comparing complete canonical result JSON, including every new field,
+while retaining all historical expected hashes and native schema/profile guards.
+`prove_watched_serialized_result.py` requires assertion failures when winner,
+shoot-out or player-energy values are changed only in the resumed result.
+
+[designed: T51a] The bounded evidence is split to keep each report readable:
+[source/legacy/owner-budget inputs](evidence/T51a-watched-kit.json),
+[commands and negative controls](evidence/T51a-watched-validation.json), and
+[stamp/save/strict-record matrices and snapshot diagnosis](evidence/T51a-watched-matrices.json).
+The first full-run failure and both source-pin diagnostics remain in these
+reports; the corrected fresh full-suite result is recorded separately.
