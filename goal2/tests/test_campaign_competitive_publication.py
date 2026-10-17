@@ -1,5 +1,9 @@
 """[designed: T51] Atomic competitive original publication and explicit option binding."""
 import copy
+import hashlib
+import json
+import sys
+import time
 from dataclasses import replace
 from functools import lru_cache
 import unittest
@@ -9,7 +13,7 @@ from goal2.game.campaign import CampaignState,Fixture as Scheduled
 from goal2.game import watched_publication
 from goal2.game.watched_match import WatchedOutcome
 from goal2.tests.test_watched_publication import Owner
-from goal2.tests.test_campaign_competitive_match import state,run
+from goal2.tests.test_campaign_competitive_match import state,run,independent_runtime
 
 
 def publication(owner):
@@ -95,6 +99,43 @@ class CompetitivePublicationTests(unittest.TestCase):
         before=copy.deepcopy(owner.state)
         with self.assertRaisesRegex(ValueError,'requires kit2'):pub.complete(job.token,replay)
         self.assertEqual(owner.state,before)
+
+    def test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals(self):
+        from goal2.game.campaign_rounds import World,Scheduled as WorldFixture
+        from goal2.tests.test_watched_adapter import direct_image
+        from goal2.game import session_save
+        s,raw,f=campaign();s.campaign.world=World(7,s.rng_seed_7b62,
+            (WorldFixture('original:42',200,7,19,1),),[])
+        owner=Owner(s,raw);pub,job=self.begin(owner,f)
+        out=run(job.state,raw,f,record_draws=True)
+        independent,probe=independent_runtime()
+        original=independent.Match(independent.Image(direct_image(job.state,0).memory_component()),
+            independent.Fixture(7,19,42,200),managed=7,captain=None,substitutions=(5,5),record_draws=True)
+        guest=probe.Competitive(original.m);events=[]
+        for event in original.events():
+            events.append((event.kind,event.minute,event.score,event.data))
+            if event.kind=='decision':original.answer()
+        self.assertEqual(guest.expected(),probe.kit_stamps(events))
+        self.assertEqual(out.result,original.result());self.assertTrue(out.memory==original.memory_component(),'complete independent Memory differs')
+        self.assertEqual(out.result['score'],[0,0]);self.assertIsNotNone(out.result['shootout'])
+        try:pub.complete(job.token,out)
+        except ValueError as exc:self.fail('valid original knockout World completion rejected: '+str(exc))
+        world=owner.state.campaign.world.results[0];history=owner.state.campaign.results[0]
+        self.assertEqual(world['winner'],out.result['winner']);self.assertNotEqual(world['winner'],2)
+        self.assertEqual(world['score'],out.result['score']);self.assertEqual(world['resolution'],history['resolution'])
+        self.assertEqual(world['resolution']['penalties'],out.result['shootout']['score'])
+        saved=session_save.encode(owner.state,raw);self.assertEqual(session_save.decode(saved)[0],owner.state)
+        root=Path(__file__).resolve().parents[2];report=root/'.cache'/('T51-world-knockout-'+str(time.time_ns())+'.json')
+        report.write_text(json.dumps({'source':'424d5998076da1e4efc399c2715689ddb44d3e1a',
+            'kind':200,'index':42,'managed':7,'budget':[5,5],'policy':'play_on','captain_override':None,
+            'engine_year':0,'base_year':2028,'stage':2,'class':0,'next_free':43,
+            'image_sha256':out.result['image_sha256'],
+            'result_sha256':hashlib.sha256(json.dumps(out.result,sort_keys=True).encode()).hexdigest(),
+            'memory_sha256':hashlib.sha256(out.memory).hexdigest(),'seeds':list(out.seeds),
+            'resolution':world['resolution'],'independent_package':str(Path(independent.__file__).relative_to(root)),
+            'independent_result_memory_equal':True,'guest_stamps_order_equal':True},indent=2)+'\n')
+        print('T51 WorldKO evidence '+str(report.relative_to(root)),flush=True)
+        print(f'T51 declared WorldKO kind200 index42 next_free43 normal={world["score"]} PK={world["resolution"]["penalties"]} originalwinner={world["winner"]} PASS',flush=True)
 
 
 if __name__=='__main__':unittest.main()

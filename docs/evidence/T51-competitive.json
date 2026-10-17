@@ -355,11 +355,222 @@
           "source_before_sha256": "4d53f67570fa49fcfb496f8bb309a6069bac01d3b882696948176f3d1dbba5fe"
         }
       ]
+    },
+    {
+      "summary": ".cache/T51-proofs-1792258611661678692/summary.json",
+      "sha256": "457fd529345eb33d2dc26b9a6a0075665c3b0525a6061a02e8a7c0b92da17bbf",
+      "cases": [
+        {
+          "command": [
+            "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals",
+            "-v"
+          ],
+          "exit_code": 1,
+          "wall_s": 37.021,
+          "log": ".cache/T51-proofs-1792258611661678692/6.log",
+          "log_sha256": "f9e3d4b2583933e910f4493d93ee1f4f7c25358c98c18e31dfff16b1460013f5",
+          "name": "World winner inferred from tied normal goals",
+          "assertion_killed": true,
+          "source_before_sha256": "2b96c2c93a4bf7701168359b30fc9e60fe7881168653c2bfd2552ccf7ed24ad8"
+        }
+      ]
     }
   ],
   "retained_identity_controls": {
     "passed": 4,
     "log": ".cache/T51-retained-identity-proofs.log",
     "sha256": "55b6b04893832eeedd20a86bed07ebbabd36f6abc378e738681a496a49fcd744"
-  }
+  },
+  "final_baseline_ten_tests": [
+    {
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_campaign_competitive_match",
+        "goal2.tests.test_campaign_competitive_publication",
+        "goal2.tests.test_campaign_competitive_save",
+        "-v"
+      ],
+      "exit_code": 1,
+      "wall_s": 25.946,
+      "log": ".cache/T51-proofs-1792258547886329530/baseline.log",
+      "log_sha256": "79406b4d99855623d4ef47d82fe4eccc7cdddc61a05786b5edfb9986ae4136da",
+      "source": "f880138bbeaf612157d389cc235f9d7675aba696",
+      "archive_sha256": "df5df568e655a38a88d29e62f098322b61e0891a8d13feb37930ae7cdb3c0bbe",
+      "assertion_tests": [
+        "test_competitive_preparation_preserves_public_friendly_gate",
+        "test_owner_budget_cases_match_independent_execution_and_guest_stamps",
+        "test_source_context_is_explicit_and_invalid_changes_are_atomic",
+        "test_original_winner_and_full_tail_publish_once_without_quick_effects",
+        "test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic",
+        "test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job",
+        "test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals",
+        "test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues",
+        "test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage",
+        "test_quick_setup_is_private_and_preserves_strict_template_refusals"
+      ]
+    }
+  ],
+  "independent_origin_correction": "Initial adapter runs used a separate Match execution and independent guest hooks, but global original_match could resolve to vendor via quick-engine sys.path. Final tests explicitly load isolated accepted-export package by spec and assert package/Match file origins; inputs/goldens and product code unchanged.",
+  "interrupted_readers": [
+    {
+      "log": ".cache/T51-full-1792258196390232160/full-python.log",
+      "sha256": "649e3ff22d79044ccc5020a0672c3e626181b5748737dfd0af781472edc489cb",
+      "status": "diagnostic only; own unit deliberately stopped for stronger final WorldKO/export-origin tests; no completion claimed"
+    },
+    {
+      "log": ".cache/T51-focus-1792258196962226315/adapter.log",
+      "sha256": "a0afe903aeb1897aa0e20e80731d8d273f657a92cc3fd27220fe836c8d08a841",
+      "status": "diagnostic only; own unit deliberately stopped for stronger final WorldKO/export-origin tests; no completion claimed"
+    },
+    {
+      "log": ".cache/T51-focus-1792258196962226315/publication-save.log",
+      "sha256": "99e42b7394d5583d1ffe42563917390e49d6db5c9b73213e4984e71da07ea8f7",
+      "status": "diagnostic only; own unit deliberately stopped for stronger final WorldKO/export-origin tests; no completion claimed"
+    }
+  ],
+  "validation": [
+    {
+      "name": "browser-countries",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "countries"
+      ],
+      "exit_code": 0,
+      "wall_s": 3.936,
+      "log": ".cache/T51-ui-1792258197576440376/browser-countries.log",
+      "log_sha256": "932d81a61457b3f51f0c58d616cd0447375419e764e7aed82b4cbbf4cddc0ae1"
+    },
+    {
+      "name": "browser-management",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "management"
+      ],
+      "exit_code": 0,
+      "wall_s": 3.427,
+      "log": ".cache/T51-ui-1792258197576440376/browser-management.log",
+      "log_sha256": "82d9ece45c418dd817b34bb11f12426b1e5c378f580e34a78afbbf69b4b0ad04"
+    },
+    {
+      "name": "browser-friendlies",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "friendlies"
+      ],
+      "exit_code": 0,
+      "wall_s": 3.47,
+      "log": ".cache/T51-ui-1792258197576440376/browser-friendlies.log",
+      "log_sha256": "5e822571fce02ad255d67813166c138b0995af476b8b83901e58748588c47e9c"
+    },
+    {
+      "name": "browser-persistence",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "persistence"
+      ],
+      "exit_code": 0,
+      "wall_s": 4.113,
+      "log": ".cache/T51-ui-1792258197576440376/browser-persistence.log",
+      "log_sha256": "598fd3d86535027e57e60c000cc36d0c81ae6a8aa896fd17310028855d8e95a6"
+    },
+    {
+      "name": "browser-campaign-friendlies",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "campaign-friendlies"
+      ],
+      "exit_code": 0,
+      "wall_s": 5.835,
+      "log": ".cache/T51-ui-1792258197576440376/browser-campaign-friendlies.log",
+      "log_sha256": "8afdf337b873c6a20b7a7cca8906884678e801d70d416a0787e98e95bd45dab3"
+    },
+    {
+      "name": "browser-campaign-eligibility",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "campaign-eligibility"
+      ],
+      "exit_code": 0,
+      "wall_s": 5.18,
+      "log": ".cache/T51-ui-1792258197576440376/browser-campaign-eligibility.log",
+      "log_sha256": "361b26d2fc98cbc21b173dcfcb62b1e7c48566ec850372b454b225cab8d8851e"
+    },
+    {
+      "name": "qt-management",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "management",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT"
+      ],
+      "exit_code": 0,
+      "wall_s": 2.837,
+      "log": ".cache/T51-ui-1792258197576440376/qt-management.log",
+      "log_sha256": "7434d2c1b559ef6d3e8b2051cdf956598293f25633a65c5995c7488c4211556b"
+    },
+    {
+      "name": "qt-campaign-friendlies",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "campaign-friendlies",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT"
+      ],
+      "exit_code": 0,
+      "wall_s": 11.67,
+      "log": ".cache/T51-ui-1792258197576440376/qt-campaign-friendlies.log",
+      "log_sha256": "ce43ec9e8a262af0669db038c32cd5cc8739690a76b3a2e83eec18a1d85f2a11"
+    },
+    {
+      "name": "qt-competitive",
+      "head": "d513a195c22789c60778149d6f57489fe07b9110",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/competitive.py"
+      ],
+      "exit_code": 0,
+      "wall_s": 110.177,
+      "log": ".cache/T51-ui-1792258197576440376/qt-competitive.log",
+      "log_sha256": "a50e231a840c036559c59c736e48527e8703ecfd669ec7e22677ece76e55e2a9"
+    }
+  ],
+  "ui_validation_scope": "All6 browsers, Qt management/campaign-friendlies and4actual competitive results/8labels passed on d513a19. Later changes only strengthen test/proof isolation/coverage; product/UI source bytes unchanged."
 }

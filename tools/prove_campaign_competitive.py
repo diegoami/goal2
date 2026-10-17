@@ -42,6 +42,10 @@ MUTATIONS=(
   "        from goal2.engine.original_match.match import KINDS\n        allowed=tuple(k for k in KINDS if k!=1) if competitive else (1,)",
   'goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals'),
 
+ ('World winner inferred from tied normal goals','goal2/game/watched_publication.py',
+  "'winner':result['winner'] if competitive else", "'winner':2 if competitive else",
+  'goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals'),
+
 )
 
 

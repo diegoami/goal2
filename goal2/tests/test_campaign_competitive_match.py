@@ -1,6 +1,7 @@
 """[designed: T51] Competitive adapter parity with pinned424 guest writes and independent setup."""
 import copy
 from dataclasses import asdict
+from functools import lru_cache
 import hashlib
 import json
 import time
@@ -37,6 +38,24 @@ def run(s,raw,f,**options):
     return fn(s,raw,f,**options)
 
 
+@lru_cache(maxsize=None)
+def independent_runtime():
+    """[designed] Load an isolated exact export, never a global original_match alias."""
+    sys.path.insert(0,str(ROOT/'tools'))
+    from watched_evidence import stage
+    folder=stage();package=folder/'runtime/original_match'
+    name='t51_accepted_original_match'
+    spec=importlib.util.spec_from_file_location(name,package/'__init__.py',submodule_search_locations=[str(package)])
+    module=importlib.util.module_from_spec(spec);sys.modules[name]=module;spec.loader.exec_module(module)
+    if Path(module.__file__).resolve()!=(package/'__init__.py').resolve():raise AssertionError('independent package origin differs')
+    if Path(sys.modules[module.Match.__module__].__file__).resolve()!=(package/'match.py').resolve():
+        raise AssertionError('independent Match is not from accepted export')
+    file=folder/'experiments/E034-kit-competitive/stamps_competitive.py'
+    spec=importlib.util.spec_from_file_location('t51_guest_stamps',file)
+    probe=importlib.util.module_from_spec(spec);spec.loader.exec_module(probe)
+    return module,probe
+
+
 class CompetitiveAdapterTests(unittest.TestCase):
     def test_competitive_preparation_preserves_public_friendly_gate(self):
         s,raw=state();before=copy.deepcopy(s);f=Fixture(7,19,21,2)
@@ -50,12 +69,7 @@ class CompetitiveAdapterTests(unittest.TestCase):
         self.assertEqual(s,before)
 
     def test_owner_budget_cases_match_independent_execution_and_guest_stamps(self):
-        sys.path.insert(0,str(ROOT/'tools'))
-        from watched_evidence import stage
-        folder=stage();file=folder/'experiments/E034-kit-competitive/stamps_competitive.py'
-        spec=importlib.util.spec_from_file_location('t51_guest_stamps',file)
-        probe=importlib.util.module_from_spec(spec);spec.loader.exec_module(probe)
-        import original_match as independent
+        independent,probe=independent_runtime()
         report=ROOT/'.cache'/('T51-adapter-cases-'+str(time.time_ns())+'.jsonl')
         with report.open('x'):pass
         cases=[(2,21,257,False,7,[1,0],None),(2,21,None,False,7,[1,1],None),
@@ -103,7 +117,9 @@ class CompetitiveAdapterTests(unittest.TestCase):
                     'penalties':outcome.result['shootout'] and outcome.result['shootout']['score'],
                     'kicks':outcome.result['shootout'] and len(outcome.result['shootout']['kicks']),
                     'incidents':{k:len(outcome.result[k]) for k in ('goals','goals_disallowed','bookings','sendings_off','injuries','substitutions')},
-                    'independent_result_memory_events_equal':True,'guest_stamps_order_equal':True}
+                    'independent_result_memory_events_equal':True,'guest_stamps_order_equal':True,
+                    'independent_module':str(Path(independent.__file__).relative_to(ROOT)),
+                    'independent_match_module':str(Path(sys.modules[independent.Match.__module__].__file__).relative_to(ROOT))}
                 with report.open('a') as stream:stream.write(json.dumps(rec,sort_keys=True)+'\n')
                 print(f'T51 kind={kind} index={index} managed={managed} seed={seed} quick={quick} result={score} actual={outcome.result["score"]} winner={outcome.result["winner"]}',flush=True)
 

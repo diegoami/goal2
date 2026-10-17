@@ -2,6 +2,8 @@
 import copy
 from functools import lru_cache
 import json
+import hashlib
+import time
 import subprocess
 import sys
 from pathlib import Path
@@ -14,7 +16,7 @@ from goal2.game.eligibility import available_words
 from goal2.game.watched_match import run_watched_match
 from goal2.game.watched_publication import WatchedPublication
 from goal2.tests.test_watched_publication import Owner
-from goal2.tests.test_campaign_competitive_match import run
+from goal2.tests.test_campaign_competitive_match import run,independent_runtime
 from goal2.tests.test_campaign_competitive_publication import campaign,publication,completed
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -57,10 +59,14 @@ class CompetitiveSaveTests(unittest.TestCase):
         try:before,after,raw,f,job,out=opening_qualifier()
         except ValueError as exc:self.fail('actual competitive publication unavailable: '+str(exc))
         from goal2.tests.test_watched_adapter import direct_image
-        original=__import__('goal2.engine.original_match',fromlist=['Match']).Match(
-            direct_image(job,0),f,managed=4,captain=job.captain,substitutions=(5,5))
+        independent,probe=independent_runtime()
+        original=independent.Match(independent.Image(direct_image(job,0).memory_component()),
+            independent.Fixture(f.first,f.second,f.index,f.kind),managed=4,captain=job.captain,substitutions=(5,5))
+        guest=probe.Competitive(original.m);events=[]
         for event in original.events():
+            events.append((event.kind,event.minute,event.score,event.data))
             if event.kind=='decision':original.answer()
+        self.assertEqual(guest.expected(),probe.kit_stamps(events))
         self.assertEqual(out.result,original.result());self.assertEqual(out.memory,original.memory_component())
         self.assertEqual(len(after.campaign.completed_fixture_ids),3)
         row=after.campaign.results[-1];self.assertEqual(row['resolution']['kind'],f.kind)
@@ -101,6 +107,19 @@ class CompetitiveSaveTests(unittest.TestCase):
         self.assertEqual(session_save.decode(quick_saved)[0],quick[0])
         self.assertEqual(quick[0].campaign.results[2]['resolution'],row['resolution'])
         self.assertEqual(quick[0].mem,out.memory)
+        report=ROOT/'.cache'/('T51-actual-qualifier-'+str(time.time_ns())+'.json')
+        report.write_text(json.dumps({'source':'424d5998076da1e4efc399c2715689ddb44d3e1a',
+            'fixture':{'first':f.first,'second':f.second,'index':f.index,'kind':f.kind},
+            'managed':4,'budget':[5,5],'captain':job.captain,'eleven':job.starting_eleven,
+            'policy':'play_on','reference_seed':None,'delay_byte':None,
+            'engine_year':0,'base_year':1990,'stage':5,'class':1,'next_free':2001,
+            'template_sha256':hashlib.sha256(raw).hexdigest(),'image_sha256':out.result['image_sha256'],
+            'result_sha256':hashlib.sha256(json.dumps(out.result,sort_keys=True).encode()).hexdigest(),
+            'memory_sha256':hashlib.sha256(out.memory).hexdigest(),'seeds':list(out.seeds),
+            'resolution':row['resolution'],'independent_package':str(Path(independent.__file__).relative_to(ROOT)),
+            'full_result_memory_equal':True,'guest_stamps_order_equal':True,
+            'next_original_and_quick_deterministic':True},indent=2)+'\n')
+        print('T51 actual qualifier evidence '+str(report.relative_to(ROOT)),flush=True)
         print(f'T51 actual country4 qualifier kind={f.kind} index={f.index} score={out.result["score"]} winner={out.result["winner"]} next deterministic PASS',flush=True)
 
     def test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage(self):
