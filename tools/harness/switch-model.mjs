@@ -107,18 +107,18 @@ if (a.probe) {
   try {
     const args = ['run', '--dir', dir, '--model', plan.entry.id, ...(plan.entry.variant ? ['--variant', plan.entry.variant] : [])];
     const run = await runOpenCodeWatched({
-      args, prompt: 'Reply with the single word PONG and nothing else.', workDir: dir, title: `probe-${plan.name}`,
+      args, model: plan.entry, agent: 'reviewer', agentFile: path.join(top, '.opencode/agents/reviewer.md'), prompt: 'Reply with the single word PONG and nothing else.', workDir: dir, title: `probe-${plan.name}`,
       startupTimeoutMs: 120_000, idleTimeoutMs: 120_000, totalTimeoutMs: 300_000, pollMs: 2_000,
       opencode, env: pre.env, log: () => {},
     });
-    if (run.exitCode !== 0 || !/PONG/i.test(run.stdout)) {
+    if (run.exitCode !== 0 || !/PONG/i.test(run.reviewText)) {
       failure = `probe failed (exit ${run.exitCode}): ${run.output.split(/\r?\n/).slice(-5).join(' | ')}`;
     } else say(`probe: ${plan.entry.id} answered PONG in ${run.seconds} s`);
   } catch (e) {
     if (!(e instanceof OpenCodeInfraError)) throw e;
     failure = `probe failed: ${e.reason}`;
   } finally {
-    fs.rmSync(dir, { recursive: true, force: true });       // before any exit: process.exit skips finally
+    say(`probe worktree retained: ${dir}`);
   }
   if (failure) die(3, `${failure}. Nothing written.`);
 }

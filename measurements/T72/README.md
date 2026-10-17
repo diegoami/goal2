@@ -25,3 +25,7 @@ last-match permissions; the regression also rejects a contradictory appended all
 raw/export/final/run identity/usage artifacts. No broad parser or retention issue
 is claimed repaired. The live-v2 smoke is the one review main dispatches after
 this PR is validated and ready; no nested or separate billed probe is authorized.
+
+[confirmed: native-storage/source-identities.json and source-excerpts.json, OpenCode v2.0.28 primary source] Native credentials and sessions share Database.Service. Integration chooses saved credentials before environment methods and can refresh/update OAuth credentials. Per-run fresh data preserves catalogue metadata only, not native one-time login. [designed: T72] Default runtime therefore persists only the version-isolated v2 data DB at `<harness-root>/v2/data/opencode/opencode.db`; cache/state, owned stdio lease and receipts remain per invocation. An explicit OPENCODE_DB child value prevents inherited DB overrides from reaching v1 storage. Native one-time login targets this v2 data root; no existing credential or legacy DB is copied, queried or migrated. No paid provider call was made.
+
+[confirmed: preflight-FoBjbc] Effective selected reviewer/M3-thinking, exact native policy, empty zero usage export, production standalone peek and both owned shutdowns passed; the unrelated separately owned v2 server survived primary shutdown. This empty-session evidence is not active-generation cancellation proof; active workflow controls and the one main-launched review supply that boundary.

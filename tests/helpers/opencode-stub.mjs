@@ -7,6 +7,37 @@ const get = (key) => args[args.indexOf(key) + 1];
 const trace = (what) => { if (process.env.STUB_TRACE) fs.appendFileSync(process.env.STUB_TRACE, JSON.stringify(what) + '\n'); };
 trace({ args, cwd: process.cwd(), dataHome: process.env.XDG_DATA_HOME });
 if (args[0] === '--version') { console.log(process.env.STUB_VERSION || 'opencode v2.0.28'); process.exit(0); }
+if (process.env.STUB_VERSION?.startsWith('1.')) {
+  const file = path.join(process.env.STUB_V1_DIR, 'v1.json');
+  let records = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file)) : [];
+  if (args[0] === 'run') {
+    if (!args.includes('--dir') || args.includes('--standalone') || args.includes('--server')) process.exit(2);
+    const raw = JSON.parse(fs.readFileSync(new URL('../fixtures/opencode/v1-synthetic-export.json', import.meta.url)));
+    raw.info.id = get('--session') || `ses_v1_${Date.now()}`; raw.info.directory = process.cwd(); raw.info.title = get('--title'); raw.info.time = { created: Date.now(), updated: Date.now() };
+    raw.info.agent = get('--agent'); const msg = raw.messages[0]; msg.info.sessionID = raw.info.id; msg.info.agent = raw.info.agent;
+    msg.info.providerID = get('--model').split('/')[0]; msg.info.modelID = get('--model').split('/')[1]; msg.info.variant = get('--variant');
+    msg.parts = msg.parts.filter((p) => mode === 'rejected' || p.callID !== 'call_rejected');
+    const actual = JSON.parse(fs.readFileSync(new URL('../fixtures/opencode/v1-actual-metadata-step-projection.json', import.meta.url)));
+    msg.parts.push(...actual.parts);
+    for (const part of msg.parts) { part.sessionID = raw.info.id; part.messageID = msg.info.id; }
+    if (mode === 'wrong-model') msg.info.modelID = 'foreign';
+    if (mode === 'partial') msg.info.finish = 'tool-calls';
+    records = records.filter((r) => r.info.id !== raw.info.id); records.push(raw); fs.writeFileSync(file, JSON.stringify(records)); console.log('volatile v1');
+  } else if (args[0] === 'session') console.log(JSON.stringify(records.map((r) => ({ id: r.info.id, title: r.info.title, directory: r.info.directory, created: r.info.time.created, updated: r.info.time.updated }))));
+  else if (args[0] === 'export') console.log(JSON.stringify(records.find((r) => r.info.id === args[1])));
+  else if (args[0] === 'models') console.log('minimax/MiniMax-M3');
+  else process.exit(2);
+  process.exit(0);
+}
+if (args[0] === 'models') {
+  if (!args.includes('--standalone')) process.exit(2);
+  console.log('minimax/MiniMax-M3'); process.exit(0);
+}
+if (args[0] === 'session' && args[1] === 'export') {
+  if (!args.includes('--standalone')) process.exit(2);
+  const records = JSON.parse(fs.readFileSync(path.join(process.env.XDG_DATA_HOME, 'stub.json')));
+  console.log(JSON.stringify(records.find((s) => s.info.id === args.at(-1)))); process.exit(0);
+}
 if (args[0] === 'serve') {
   if (!args.includes('--stdio') || get('--hostname') !== '127.0.0.1' || get('--port') !== '0') throw Error('unowned launch');
   if (mode === 'startup') { process.stdin.resume(); process.stdin.on('end', () => process.exit(0)); }

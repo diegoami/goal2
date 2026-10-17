@@ -32,7 +32,8 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { OpenCodeInfraError, capture, privateHome, startPrivateServer, settledCatalogue, killOwned } from './opencode-transport.mjs';
-import { runV2Workflow } from './opencode-workflow.mjs';
+import { normalizeSession } from './opencode-protocol.mjs';
+import { finalReviewText, runV2Workflow } from './opencode-workflow.mjs';
 export { OpenCodeInfraError };
 
 // A failed run on Alibaba's Token Plan whose stderr (OpenCode's own, not the model's output) says the
@@ -397,7 +398,7 @@ export function briefFileName(title) {
  * A non-zero exit is returned, not thrown: the caller decides.
  */
 async function runV1Watched({
-  args, prompt, workDir, title, sessionId = null,
+  model, agent, args, prompt, workDir, title, sessionId = null,
   startupTimeoutMs = 180_000, totalTimeoutMs = 3_600_000, idleTimeoutMs = 600_000, pollMs = 10_000,
   logDir = path.join(os.tmpdir(), 'harness-opencode'), opencode, env = process.env, log = () => {},
 }) {
@@ -549,15 +550,22 @@ async function runV1Watched({
     const exportFile = path.join(logDir, `${title}.export.json`);
     const record = await sessionRecord(cmd, { workDir, sessionId: session.id, outFile: exportFile, env });
     const recordedAgent = requestedAgent ? record?.agent ?? null : null;
-    fs.rmSync(exportFile, { force: true });
+    files.push(exportFile);
+    const requestedModel = model ?? { id: args[args.indexOf('--model') + 1], variant: args.includes('--variant') ? args[args.indexOf('--variant') + 1] : undefined };
+    let normalized;
+    try {
+      const raw = JSON.parse(fs.readFileSync(exportFile, 'utf8'));
+      normalized = normalizeSession(1, raw, { sessionID: session.id, directory: workDir, agent: agent ?? requestedAgent, model: { providerID: requestedModel.id.split('/')[0], id: requestedModel.id.slice(requestedModel.id.indexOf('/') + 1), ...(requestedModel.variant ? { variant: requestedModel.variant } : {}) } });
+    } catch (e) { throw fail('protocol', `full v1 export failed validation: ${e.message}`); }
+    if (!normalized.completed) throw fail('incomplete', 'full v1 export has no complete final assistant outcome');
+    const finalFile = path.join(logDir, `${title}.final.txt`); fs.writeFileSync(finalFile, finalReviewText(normalized)); files.push(finalFile);
     const agentFallback = !requestedAgent ? false
       : recordedAgent ? recordedAgent !== requestedAgent
       : agentWarning(stderr, requestedAgent);
     const said = permissionRejection(`${stdout}\n${stderr}`);
-    const permissionRejected = !record ? said : record.rejected ? said ?? 'a tool call (in the session record)' : null;
+    const permissionRejected = normalized.rejected ? said ?? 'a tool call (in the complete session export)' : null;
     const permissionHint = permissionRejected ? rejectionHint(`${stdout}\n${stderr}`) : null;
-    if (exitCode === 0 && !permissionRejected) for (const f of files) fs.rmSync(f, { force: true });
-    else {
+    {
       shelveBrief();
       log(`opencode: exit ${exitCode}${permissionRejected ? `, permission rejected: ${permissionRejected}` : ''}; files kept: ${files.join(', ')}`);
     }
@@ -565,8 +573,8 @@ async function runV1Watched({
       output: `${stdout.trimEnd()}\n${stderr.trimEnd()}`.trim(),
       stdout, stderr, exitCode, sessionId: session.id, title,
       agentFallback, sessionAgent: recordedAgent, permissionRejected, permissionHint,
-      files: exitCode === 0 && !permissionRejected ? [] : files,
-      briefFile: exitCode === 0 && !permissionRejected ? briefFile : briefKeptPath,
+      files, normalized, reviewText: finalReviewText(normalized),
+      briefFile: briefKeptPath,
       seconds: Math.round(elapsed() / 1000),
     };
   } catch (e) {

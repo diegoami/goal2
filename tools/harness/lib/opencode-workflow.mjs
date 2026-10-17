@@ -29,7 +29,7 @@ export async function runV2Workflow({ opencode, model, agent = 'reviewer', agent
   const briefFile = path.join(workDir, `.harness-brief-${runTitle}.md`); fs.writeFileSync(briefFile, prompt); fs.writeFileSync(files['brief.md'], prompt);
   const pointer = `Your complete brief is the file ${path.basename(briefFile)} at the root of this worktree. Read it in full first; never edit, commit or delete it.`;
   const start = Date.now(); let server; let client; let clientClosed = false; let exitCode = null; let spawnError; let normalized; let raw; let failure;
-  const manifest = { major: 2, title: runTitle, directory: workDir, agent, model, dataRoot: home.root, policySHA256: policy.sourceSHA256, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), phase: 'preflight', started: start, files, briefFile };
+  const manifest = { major: 2, title: runTitle, directory: workDir, agent, model, dataRoot: home.root, dataHome: home.env.XDG_DATA_HOME, policySHA256: policy.sourceSHA256, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.binary ?? opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), sources: Object.fromEntries(['opencode.mjs', 'opencode-workflow.mjs', 'opencode-transport.mjs', 'opencode-policy.mjs', 'opencode-protocol.mjs', '../review.mjs'].map((name) => [name, hash(fs.readFileSync(new URL(name, import.meta.url)))])), phase: 'preflight', started: start, files, briefFile };
   const persist = () => {
     json(files['run.json'], manifest);
     // [designed: T72] Per-run receipt index lets bare-SID peek find its own major/data root, without a shared service.
@@ -93,7 +93,8 @@ export async function runV2Workflow({ opencode, model, agent = 'reviewer', agent
     if (normalized.rejected) throw new OpenCodeInfraError('permission-rejected', 'permission rejected in complete session export');
     manifest.phase = 'complete';
   } catch (error) {
-    failure = error instanceof OpenCodeInfraError ? error : new OpenCodeInfraError('protocol', error.message);
+    failure = Date.now() - start >= totalTimeoutMs ? new OpenCodeInfraError('total-timeout', 'total deadline; cancelling owned session')
+      : error instanceof OpenCodeInfraError ? error : new OpenCodeInfraError('protocol', error.message);
     manifest.phase = 'failed'; manifest.failure = { reason: failure.reason, message: failure.message };
     // [designed: T72] Interrupt only this session at this owned endpoint, then recover before closing its lease.
     if (server?.isAlive() && manifest.sessionID) {
@@ -107,9 +108,9 @@ export async function runV2Workflow({ opencode, model, agent = 'reviewer', agent
       if (!clientClosed) { killOwned(client); for (let i = 0; i < 20 && !clientClosed; i++) await delay(25); }
       if (!clientClosed) { failure ||= new OpenCodeInfraError('shutdown', 'owned client did not exit'); manifest.phase = 'failed'; }
     }
+    if (client) { killOwned(client); await delay(25); }
     // [designed: T72] Generated transport nonce is excluded even if a child echoes it in split chunks.
     if (server) for (const file of [files['stdout.txt'], files['stderr.txt']]) if (fs.existsSync(file)) fs.writeFileSync(file, server.redact(fs.readFileSync(file, 'utf8')));
-    if (client) killOwned(client);
     manifest.exitCode = exitCode; manifest.finished = Date.now(); manifest.durationMs = manifest.finished - start;
     manifest.artifactSHA256 = Object.fromEntries(Object.values(files).filter((f) => f !== files['run.json'] && fs.existsSync(f)).map((f) => [path.basename(f), hash(fs.readFileSync(f))]));
     persist();

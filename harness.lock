@@ -51,15 +51,15 @@ b34fe35df1e02e2064024c6cda29270b0581a5d4cb3db4ff1a2bfd7f05d085ea  tools/harness/
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
-ff4381cef87959f5cadebcce8c466bcf6cfde144917d4329efb36d35f96b5fe2  tools/harness/lib/opencode.mjs
+3d510c54b805f22fa4e93278856831b97a49852e25841ce3b83a0407aa6258f0  tools/harness/lib/opencode.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
 7e842f5068ecf64e94248410328c8bb6ebf01b5787e4d0510dd64c7885d9a85e  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
-3919efa4b957459a97da2cdae4b9e13d7f5397410df5500f31746eb46e57876c  tools/harness/peek.sh
+c4abc459b7720a55a357371f38eb6fbda90ecf7aa40632f79238366f3939fb23  tools/harness/peek.sh
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-5a6db60a3de0c60a47d11578f52a0891d13788352ce90e147cdc77a87c663e4d  tools/harness/review.mjs
-6fcb82342aafb2875bb7b2eb474d345aefcb9884adae3920452adddf4323dd9a  tools/harness/switch-model.mjs
+e0e546ab1aa10e89883fa8a54c4663a13bf3e2c4077021a805543663617202fb  tools/harness/review.mjs
+cccd82eb56f6c2e6d544146c160bf80b8f360bcdb5af12e8db2cc38c77d767b6  tools/harness/switch-model.mjs
 f42444fab83e28dffec60593f1c323e6e4c001d6bfdd780b2cdfff1090d5cd72  AGENTS.md
 b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs
 local tools/harness/lib/opencode-protocol.mjs  (T72a explicit protocol contract and offline validation)
@@ -69,18 +69,22 @@ local tools/harness/probe-opencode.mjs  (T72a explicit protocol contract and off
 local tests/opencode_protocol.test.mjs  (T72a explicit protocol contract and offline validation)
 6e4a0ce2e5651537e59135e2c7237108eac31d873bd335aa535d7fafcb464278  tests/opencode_protocol.test.mjs
 local tools/check_premerge.py  (T72a explicit protocol contract and offline validation)
-f6b0324a84b481f845523a970685ed6db24518f4dd288d61ca943e4b8749b062  tools/check_premerge.py
+369532aa7047bf468e7e64e53c338ca5eca121235477c6a50a61058412dac67d  tools/check_premerge.py
 local tests/test_local_validation.py  (T72a explicit protocol contract and offline validation)
-3792301a60e64ec8ff8da1bc91fa7bfa3e2e0065724860d431a2f9bc36443d16  tests/test_local_validation.py
+8193e88eb910ccea233674fe0fccc9189046ff06d2ee5ac7f4b0520d7b1d3365  tests/test_local_validation.py
 local tools/harness/lib/opencode-transport.mjs  (T72 private transport and permission verification)
-0ff5d35790e3eea7a52ebad2728a6ac7320422800222353009a312f86b9737a7  tools/harness/lib/opencode-transport.mjs
+f3938ec1535cc83edad09ae475c597d3c0ef078b08038439442461f2d457ec87  tools/harness/lib/opencode-transport.mjs
 local tools/harness/lib/opencode-policy.mjs  (T72 private transport and permission verification)
 bbeaa498555432b800b940795669e071fa9e2c179d5bef9b7ff95e79e237dc20  tools/harness/lib/opencode-policy.mjs
 local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
-759db8b1e0fbf3d69d3d3d7cd266be6b5e76be90bdb5cd6be2a7cc82b5b106bf  tools/harness/preflight-opencode.mjs
+3b9dd97aafea705a74588e1ab7560165666f192e561236e4e67ef8e8bbdd6d83  tools/harness/preflight-opencode.mjs
 local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
-dd4e49f58645f997ed7d84db61a320e77b29fe29f69ea6bbf8fa635f894185cf  tests/opencode_workflow.test.mjs
+79091bae279cd9ae20a5fb51b34f5ceb85761b12bf3c31a2727730e38b9c914e  tests/opencode_workflow.test.mjs
 
-c75203c1d40f7f1bc6ad506a3099e1c7ceabb12b389d414104af67671f3e38d0  tools/harness/lib/opencode-workflow.mjs
+9475163619f3b0b42b21c7c1d51b4726cb5323b45fbc59ac705e838c27968496  tools/harness/lib/opencode-workflow.mjs
 
-c24cfdf691f876c9668ccd4390112e802bdb3c5158e0426fe2ff7cf1f3ca670b  tests/helpers/opencode-stub.mjs
+a2ed68f75a09fccc3a0f8c3bbbe62052659ded9884b5b5afbae8062e7e46118c  tests/helpers/opencode-stub.mjs
+
+639349fd99e36041802044d163b3efcf5821475d129b8b220602c1024c5a78f8  tools/harness/lib/opencode-peek.mjs
+
+9abb2d7a0c5385e46cd3d5edb7e7b74b171684a8bbfdcea7fb4cab4e8e8f47b2  tools/harness/peek.mjs

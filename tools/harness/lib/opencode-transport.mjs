@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { spawn, spawnSync } from 'node:child_process';
+import { normalizeModels } from './opencode-protocol.mjs';
 import { randomBytes, createHash } from 'node:crypto';
 export const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 export const delay = (ms) => new Promise((r) => setTimeout(r, Math.max(0, ms)));
@@ -53,9 +54,14 @@ export function privateHome(env, { resumeRoot } = {}) {
   if (resumeRoot) {
     if (fs.readFileSync(marker, 'utf8').trim() !== '2') throw new OpenCodeInfraError('ownership', 'resume root is not a retained v2 run');
   } else fs.writeFileSync(marker, '2\n', { flag: 'wx' });
-  const dirs = { XDG_DATA_HOME: path.join(root, 'data'), XDG_CACHE_HOME: path.join(root, 'cache'), XDG_STATE_HOME: path.join(root, 'state') };
+  // [confirmed: v2.0.28 Credential/Database primary source; measurements/T72] Native logins and sessions share one DB.
+  // [designed: T72] Persist v2-only provider/session storage; execution lease, cache, state and receipts remain per-run.
+  const pointer = path.join(root, 'data-home');
+  const dataHome = resumeRoot ? fs.existsSync(pointer) ? fs.readFileSync(pointer, 'utf8').trim() : path.join(root, 'data') : path.join(base, 'v2', 'data');
+  if (!resumeRoot) fs.writeFileSync(pointer, dataHome + '\n', { flag: 'wx' });
+  const dirs = { XDG_DATA_HOME: dataHome, XDG_CACHE_HOME: path.join(root, 'cache'), XDG_STATE_HOME: path.join(root, 'state') };
   for (const dir of Object.values(dirs)) fs.mkdirSync(dir, { recursive: true });
-  return { root, env: { ...env, ...dirs } };
+  return { root, env: { ...env, ...dirs, OPENCODE_DB: path.join(dataHome, 'opencode', 'opencode.db') } };
 }
 export async function startPrivateServer(cmd, { env, cwd, timeoutMs = 30000, log = () => {} } = {}) {
   const password = randomBytes(32).toString('base64url');
@@ -89,6 +95,11 @@ export async function startPrivateServer(cmd, { env, cwd, timeoutMs = 30000, log
     killOwned(child, 'SIGTERM');
     await delay(25); killOwned(child);
     if (!closed) throw new OpenCodeInfraError('shutdown', 'owned server did not exit');
+    if (url) {
+      let reachable = false;
+      try { await fetch(url, { signal: AbortSignal.timeout(500) }); reachable = true; } catch {}
+      if (reachable) throw new OpenCodeInfraError('shutdown', 'owned endpoint remains available after lease shutdown');
+    }
     return { pid: child.pid, exitCode: child.exitCode, signal: child.signalCode, stdout: output.replaceAll(password, '[REDACTED]'), stderr: stderr.replaceAll(password, '[REDACTED]') };
   };
   const started = Date.now();
@@ -105,7 +116,7 @@ export async function startPrivateServer(cmd, { env, cwd, timeoutMs = 30000, log
     try { return JSON.parse(text); } catch { throw new OpenCodeInfraError('api-json', `invalid JSON from owned endpoint ${route}`); }
   };
   log(`opencode: private server pid ${child.pid}`);
-  return { child, url, request, stop, redact: (text) => String(text).replaceAll(password, '[REDACTED]'), isAlive: () => !closed, clientEnv: { ...env, OPENCODE_PASSWORD: password } };
+  return { child, url, directory: fs.realpathSync(cwd), request, stop, redact: (text) => String(text).replaceAll(password, '[REDACTED]'), isAlive: () => !closed, clientEnv: { ...env, OPENCODE_PASSWORD: password } };
 }
 export async function settledCatalogue(server, { timeoutMs = 30000, model, agent, verifyAgent } = {}) {
   const started = Date.now(); let last = 'registry not settled';
@@ -113,6 +124,7 @@ export async function settledCatalogue(server, { timeoutMs = 30000, model, agent
     const remaining = Math.max(1, timeoutMs - (Date.now() - started));
     try {
       const catalogue = await server.request('/api/model', { timeoutMs: remaining });
+      normalizeModels(2, catalogue, { directory: server.directory, providerID: model.id.split('/')[0], id: model.id.slice(model.id.indexOf('/') + 1), ...(model.variant ? { variant: model.variant } : {}) });
       const selected = catalogue.data?.filter((m) => `${m.providerID}/${m.id}` === model.id);
       if (selected?.length !== 1 || selected[0].enabled !== true) throw new Error('selected model missing, disabled or ambiguous');
       if (model.variant && !selected[0].variants.some((v) => v.id === model.variant)) throw new Error('selected effort not advertised');
@@ -120,7 +132,10 @@ export async function settledCatalogue(server, { timeoutMs = 30000, model, agent
       let profile;
       if (agent) {
         const agents = await server.request('/api/agent', { timeoutMs: Math.max(1, timeoutMs - (Date.now() - started)) });
-        profile = agents.data?.find((a) => a.id === agent);
+        if (agents.location?.directory !== server.directory) throw new Error('agent registry directory mismatch');
+        const matches = agents.data?.filter((a) => a.id === agent);
+        if (matches?.length !== 1) throw new Error('selected agent missing or ambiguous');
+        profile = matches[0];
         if (!profile) throw new Error('selected agent not loaded');
         verifyAgent(profile);
       }

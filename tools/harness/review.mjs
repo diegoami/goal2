@@ -43,6 +43,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
+import { reviewerPolicy, trustedReviewEnv } from './lib/opencode-policy.mjs';
 import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem } from './lib/opencode.mjs';
 import { credentialJail, OFF_WARNING } from './lib/jail.mjs';
 import { namedModel, familiesOfName, familiesOfModel, canonicalFamily, selfTest as namedSelfTest } from './lib/named.mjs';
@@ -164,7 +165,7 @@ try { opencode = resolveOpenCode(); } catch (e) {
 // harness.json turns it on (jail.enabled); where it is on but cannot run, the log says so first.
 const jail = config.jail?.enabled === true ? credentialJail() : { off: 'harness.json does not enable it', quiet: true };
 if (jail.off && !jail.quiet) say(OFF_WARNING(jail.off));
-else if (!jail.off) opencode = { exe: jail.exe, prefix: [...jail.args, '--', opencode.exe, ...opencode.prefix] };
+else if (!jail.off) opencode = { binary: opencode.exe, exe: jail.exe, prefix: [...jail.args, '--', opencode.exe, ...opencode.prefix] };
 const pre = await prepareOpenCode({ opencode, chain: [reviewer], models: config.models, env: envWith(a.env), cwd: top, log: say });
 for (const p of pre.problems) say(p);
 if (!pre.usable.length) die(3, `OpenCode unavailable: ${pre.problems.join('; ')}. ${fallback}`);
@@ -176,7 +177,8 @@ if (!pre.usable.length) die(3, `OpenCode unavailable: ${pre.problems.join('; ')}
 // loaded (#10, L34; ic2-conquest's reviewer does the same).
 const agentFile = path.join(top, '.opencode', 'agents', `${rev.agent}.md`);
 if (!fs.existsSync(agentFile)) die(2, `The reviewer agent is missing from this checkout: ${agentFile}. Nothing run.`);
-const reviewEnv = { ...pre.env, OPENCODE_CONFIG_DIR: path.join(top, '.opencode'), OPENCODE_DISABLE_PROJECT_CONFIG: '1' };
+const reviewEnv = pre.version.startsWith('2.') ? trustedReviewEnv(pre.env, reviewerPolicy(agentFile), rev.agent)
+  : { ...pre.env, OPENCODE_CONFIG_DIR: path.join(top, '.opencode'), OPENCODE_DISABLE_PROJECT_CONFIG: '1' };
 const headSha = sh('gh', ['pr', 'view', String(a.pr), '--json', 'headRefOid', '--jq', '.headRefOid'], { cwd: top });
 // A brief that names another commit as the one to review would make the reviewer's tree proof stop
 // it after a billed run (#23): refuse it before any worktree or model run.
@@ -187,22 +189,12 @@ if (stale.length) {
     + 'GitHub updated: take it from the local branch (git rev-parse <branch>), or rerun once GitHub shows it.');
 }
 sh('git', ['-C', top, 'fetch', '-q', 'origin', `pull/${a.pr}/head`]);
-// A path of this invocation's own; only this tree is ever removed.
+// [designed: T72; owner preservation contract] Retain the exact review worktree with its receipts.
 const worktree = path.join(workRoot, `${a.pr}-review-${randomBytes(4).toString('hex')}`);
-let created = false;
-const removeTree = () => {
-  if (!created) return;
-  sh('git', ['-C', top, 'worktree', 'remove', '--force', worktree], { allowFail: true });
-  fs.rmSync(worktree, { recursive: true, force: true });
-  sh('git', ['-C', top, 'worktree', 'prune'], { allowFail: true });
-  created = false;
-};
 const newTree = () => {
-  removeTree();
   fs.mkdirSync(workRoot, { recursive: true });
   sh('git', ['-C', top, 'worktree', 'add', '--detach', worktree, headSha]);
-  created = true;
-  say(`worktree: ${worktree} at ${headSha}`);
+  say(`worktree: ${worktree} at ${headSha} (retained)`);
 };
 
 // The review, in a fresh worktree at the PR's head. Resolves { ok: true, value } or
@@ -241,7 +233,7 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
       let run;
       try {
         run = await runOpenCodeWatched({
-          args: ocArgs(worktree, rev.agent, model), prompt, workDir: worktree, title: `pr${a.pr}-${fileSafe(m)}`,
+          args: ocArgs(worktree, rev.agent, model), model, agent: rev.agent, agentFile, prompt, workDir: worktree, title: `pr${a.pr}-${fileSafe(m)}`,
           startupTimeoutMs: rev.startupTimeoutSec * 1000, idleTimeoutMs: (idleSec ?? rev.idleTimeoutSec) * 1000,
           totalTimeoutMs: (totalSec ?? rev.totalTimeoutSec) * 1000, opencode, env: reviewEnv, log: say,
         });
@@ -255,14 +247,14 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
       if (run.permissionRejected) {
         return { ok: false, reason: `permission rejected: ${run.permissionRejected}${run.permissionHint ? `; ${run.permissionHint}` : ''}`, detail: run.output };
       }
-      const read = readReview(run.stdout, header);
+      const read = readReview(run.reviewText, header);
       if (read.kind === 'none') return { ok: false, reason: read.reason, detail: run.output };
       return { ok: true, value: { ...read, header, model } };
 };
 
 say(`attempt: ${reviewer}`);
 let result;
-try { result = await attempt(reviewer); } finally { removeTree(); }
+result = await attempt(reviewer);
 if (!result.ok) {
   if (result.detail) say(result.detail.split(/\r?\n/).slice(-20).join('\n'));
   die(3, `No review from ${reviewer}: ${result.reason}. ${fallback}`);

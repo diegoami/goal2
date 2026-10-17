@@ -72,6 +72,7 @@ def validate(root: Path, expected_head: str) -> None:
         ("node", "tools/harness/review.mjs", "--self-test"),
         ("node", "--test", "tests/harness_clients.test.mjs"),
         ("node", "--test", "tests/opencode_protocol.test.mjs"),
+        ("node", "--test", "tests/opencode_workflow.test.mjs"),
         (sys.executable, "-m", "unittest", "tests.test_agent_permissions",
          "tests.test_merge_workflow", "tests.test_local_validation", "-v"),
     )

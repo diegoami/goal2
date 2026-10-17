@@ -5,6 +5,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { resolveOpenCode } from './lib/opencode.mjs';
 import { privateHome, startPrivateServer, settledCatalogue, capture, hash } from './lib/opencode-transport.mjs';
+import { peekRecord, renderPeek } from './lib/opencode-peek.mjs';
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from './lib/opencode-policy.mjs';
 const outIndex = process.argv.indexOf('--out');
 assert(outIndex > 0 && process.argv[outIndex + 1], '--out is required');
@@ -17,8 +18,11 @@ const env = trustedReviewEnv(home.env, policy);
 const version = await capture(cmd, ['--version'], { env, cwd: process.cwd() });
 assert.equal(version.code, 0); assert.match(version.stdout, /(?:^|v)2\./);
 save('identity.json', { version: version.stdout.trim(), binary: cmd.exe, binarySHA256: hash(fs.readFileSync(cmd.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), policySHA256: policy.sourceSHA256, root: home.root, directory: process.cwd() });
-let server;
+let server; let unrelated;
 try {
+  const otherHome = privateHome({ ...process.env, HARNESS_OPENCODE_HOME: path.join(dest, 'unrelated') });
+  unrelated = await startPrivateServer(cmd, { env: trustedReviewEnv(otherHome.env, policy), cwd: process.cwd() });
+  const unrelatedBefore = await unrelated.request('/api/session');
   server = await startPrivateServer(cmd, { env, cwd: process.cwd() });
   const found = await settledCatalogue(server, { model: { id: 'minimax/MiniMax-M3', variant: 'thinking', family: 'minimax' }, agent: 'reviewer', verifyAgent: (profile) => verifyReviewer(profile, policy, 'reviewer') });
   save('profile.json', { id: found.profile.id, mode: found.profile.mode, system: found.profile.system, permissions: found.profile.permissions });
@@ -29,7 +33,12 @@ try {
   assert.equal(record.data.info.location.directory, process.cwd()); assert.equal(record.data.info.agent, 'reviewer'); assert.deepEqual(record.data.info.model, model);
   assert.equal(record.data.info.cost, 0); assert.deepEqual(record.data.info.tokens, { input: 0, output: 0, reasoning: 0, cache: { read: 0, write: 0 } }); assert.deepEqual(record.data.messages, []);
   save('empty-export.json', record.data);
+  const peek = await peekRecord(cmd, { record: { major: 2, phase: 'running', dataRoot: home.root, sessionID: session.data.id, directory: process.cwd(), agent: 'reviewer', model: { id: 'minimax/MiniMax-M3', variant: 'thinking' }, files: {} } }, { env });
+  assert.deepEqual(peek, record.data); save('peek.json', { record: peek, rendered: renderPeek(peek, 2) });
   save('session-list.json', await server.request(`/api/session?directory=${encodeURIComponent(process.cwd())}`));
   save('idle-interrupt.json', await server.request(`/api/session/${session.data.id}/interrupt`, { body: {} }));
-} finally { if (server) save('shutdown.json', await server.stop()); }
+  save('shutdown.json', await server.stop()); server = null;
+  assert.deepEqual(await unrelated.request('/api/session'), unrelatedBefore);
+  save('unrelated-survived.json', { before: unrelatedBefore, after: await unrelated.request('/api/session') });
+} finally { if (server) save('shutdown.json', await server.stop()); if (unrelated) save('unrelated-shutdown.json', await unrelated.stop()); }
 console.log(`Non-billing reviewer preflight passed: ${dest}`);
