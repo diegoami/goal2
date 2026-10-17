@@ -45,6 +45,10 @@ class Standings(unittest.TestCase):
         before=copy.deepcopy((fs,rs))
         self.assertEqual(self.table(fs,rs),self.table(fs,list(reversed(rs))))
         self.assertEqual((fs,rs),before)
+        tied_fixtures=[fixture(1,3,4),fixture(2,1,2)]
+        tied_results=[score(1,3,4,0,0),score(2,1,2,0,0)]
+        self.assertEqual([r.country for r in self.table(tied_fixtures,tied_results)],[3,4,1,2])
+        self.assertEqual(self.table(tied_fixtures,tied_results),self.table(tied_fixtures,list(reversed(tied_results))))
         # [confirmed: F023] No ID-based tiebreak even for arbitrary participant identities.
         self.assertEqual([r.country for r in self.table([],[],slots=(40,30,20,10))],[40,30,20,10])
 
