@@ -1156,5 +1156,29 @@
       "independent_result_memory_equal": true,
       "guest_stamps_order_equal": true
     }
-  }
+  },
+  "final_full_validation": [
+    {
+      "name": "full-python",
+      "head": "3f73182c2a2a23e93a54679c29b2f1998a24f34b",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "goal2/tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_s": 1367.596,
+      "log": ".cache/T51-full-1792260218637224547/full-python.log",
+      "log_sha256": "2f0a229cab7ca39a7786fb34620337c345a8ecd149c70137543ef57f30097559",
+      "tests": 500,
+      "test_seconds": 1367.032,
+      "zero_skips": true
+    }
+  ],
+  "final_validation_scope": "Full500 zero-skips and focused3+7+9 ran exact functional source/tests3f73182. Later acceptance commits change only tracked metadata. UI product bytes unchanged since validated d513a19."
 }
