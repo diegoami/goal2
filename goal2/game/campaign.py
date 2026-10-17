@@ -156,18 +156,16 @@ class CampaignState:
         expected = [f.fixture_id for f in self.fixtures[:len(self.completed_fixture_ids)]]
         if self.completed_fixture_ids != expected:
             raise CampaignError("completed fixture ledger must be a fixture-order prefix")
-        if any(f.kind != 1 for f in self.fixtures[:len(self.completed_fixture_ids)]):
-            raise CampaignError("unsupported competitive fixture cannot appear in the completion ledger")
+
         if not isinstance(self.results, list) or len(self.results) > len(self.completed_fixture_ids):
             raise CampaignError("campaign result history must reference completed fixtures")
         # Older T40 saves may have a completion prefix without retained scores.
         result_ids = []
         for row in self.results:
-            if not isinstance(row, dict) or set(row) not in ({"fixture_id", "teams", "score"}, {"fixture_id", "teams", "score", "engine", "schema"}):
+            if not isinstance(row, dict) or set(row) not in ({"fixture_id", "teams", "score"}, {"fixture_id", "teams", "score", "engine", "schema"}, {"fixture_id", "teams", "score", "engine", "schema", "resolution"}):
                 raise CampaignError("campaign result has missing or unknown fields")
             from goal2.game.watched_schema import watched, RESULT_SCHEMA
-            if watched(row) and (type(row["schema"]) is not int or row["schema"] != RESULT_SCHEMA):
-                raise CampaignError("invalid watched result schema")
+
             fixture_id = row["fixture_id"]
             if fixture_id not in self.completed_fixture_ids or fixture_id in result_ids:
                 raise CampaignError("campaign result references an incomplete or duplicate fixture")
@@ -178,9 +176,16 @@ class CampaignState:
             if (not isinstance(row["score"], list) or len(row["score"]) != 2
                     or any(isinstance(v, bool) or not isinstance(v, int) or v < 0 for v in row["score"])):
                 raise CampaignError("campaign result score is invalid")
+            if watched(row):
+                from goal2.game.watched_schema import validate_history
+                validate_history(row,fixture.kind)
+            elif fixture.kind!=1:raise CampaignError('competitive result requires original resolution')
             result_ids.append(fixture_id)
         if result_ids != [f for f in self.completed_fixture_ids if f in result_ids]:
             raise CampaignError("campaign result history is out of order")
+        for fixture in self.fixtures[:len(self.completed_fixture_ids)]:
+            if fixture.kind!=1 and fixture.fixture_id not in result_ids:
+                raise CampaignError('completed competitive fixture lacks resolution history')
         pending = self.next_fixture
         current = (self.cycle, self.stage)
         if pending is None:
@@ -205,7 +210,7 @@ class CampaignState:
         completed = set(self.completed_fixture_ids)
         return next((fixture for fixture in self.fixtures if fixture.fixture_id not in completed), None)
 
-    def complete_fixture(self, fixture_id: str) -> None:
+    def complete_fixture(self, fixture_id: str, *, resolution=None) -> None:
         """Complete the next friendly once; competition kinds await later adapters."""
         pending = self.next_fixture
         if fixture_id in self.completed_fixture_ids:
@@ -216,10 +221,14 @@ class CampaignState:
             raise CampaignError(f"expected next fixture {pending.fixture_id!r}")
         if (pending.cycle, pending.year, pending.stage) != (self.cycle, self.year, self.stage):
             raise CampaignError("advance the calendar before completing a later-stage fixture")
-        if pending.kind != 1:
+        if pending.kind != 1 and resolution is None:
             raise UnsupportedCampaignTransition(
                 f"fixture {pending.fixture_id!r} kind {pending.kind} needs a competitive result handler"
             )
+        if pending.kind!=1:
+            from goal2.game.watched_schema import validate_resolution
+            validate_resolution(resolution,resolution['extra_time'] or resolution['regulation'],pending.kind)
+        elif resolution is not None:raise CampaignError('friendly completion cannot have competitive resolution')
         self.completed_fixture_ids.append(fixture_id)
 
     def advance_calendar(self) -> None:
@@ -233,7 +242,7 @@ class CampaignState:
             raise CampaignError(f"stage {self.stage} still has an incomplete fixture")
         if _next_calendar_key((self.cycle, self.stage)) != (pending.cycle, pending.stage):
             raise CampaignError("calendar cannot skip an unimplemented stage")
-        if pending.kind != 1:
+        if pending.kind != 1 and resolution is None:
             raise UnsupportedCampaignTransition(
                 f"stage {pending.stage} begins with unsupported fixture kind {pending.kind}"
             )

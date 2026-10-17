@@ -5,6 +5,7 @@ LEGACY_ENGINE_ID = 'original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1'
 ENGINE_ID = 'original-match:424d5998076da1e4efc399c2715689ddb44d3e1a:2'
 ENGINE_IDS = (LEGACY_ENGINE_ID, ENGINE_ID)
 RESULT_SCHEMA = 1
+COMPETITIVE_SCHEMA = 2
 RESULT_KEYS = {'first','second','managed','index','score','half_time_score','goals',
     'goals_disallowed','goal_counts','bookings','sendings_off','injuries','substitutions',
     'man_of_the_match','man_of_the_match_name','board','commentary','decisions','inputs',
@@ -20,7 +21,7 @@ def pair(value,low,high):
     return isinstance(value,(list,tuple)) and len(value)==2 and all(integer(v,low,high) for v in value)
 
 
-def validate_result(result):
+def validate_result(result, *, competitive=False):
     """[designed] Refuse incompatible kit results before state publication or save loading."""
     # [designed: T51a] Recognize both exact profiles; never relabel historical results.
     if not isinstance(result,dict):raise ValueError('invalid watched original result schema')
@@ -47,8 +48,12 @@ def validate_result(result):
         if (not isinstance(words,list) or len(words)!=20 or any(not integer(w,1,3060) for w in words)
                 or len(set(words))!=20):raise ValueError('invalid watched squad words')
     if not isinstance(result['board'],dict):raise ValueError('invalid watched board')
-    _details(result)
-    if kit=='2':_friendly_kit2(result)
+    if competitive:
+        if kit!='2':raise ValueError('competitive result requires kit2')
+        _competitive_kit2(result)
+    _details(result,competitive=competitive)
+    if kit=='2':
+        _players(result) if competitive else _friendly_kit2(result)
     return LEGACY_ENGINE_ID if kit=='1' else ENGINE_ID
 
 
@@ -63,6 +68,11 @@ def _friendly_kit2(result):
             or result['shootout'] is not None or result['substitution_budget']!=[5,5]
             or any(type(v) is not int for v in result['substitution_budget'])):
         raise ValueError('unsupported watched kit2 friendly resolution or budget')
+    _players(result)
+
+
+def _players(result):
+    """[designed: T51a/T51] Exact40 player consequences for either current profile."""
     players=result['players']
     if not isinstance(players,list) or len(players)!=40:raise ValueError('invalid watched player consequences')
     expected={word:team for team,country in enumerate((result['first'],result['second']))
@@ -100,7 +110,7 @@ def _hash(value):
         raise ValueError('invalid watched result digest')
 
 
-def _details(result):
+def _details(result,*,competitive=False):
     """[derived: accepted E033 Match._finish/_board/_flush] Compatible result data shapes."""
     _number(result['man_of_the_match'],0,3060);_text(result['man_of_the_match_name'])
     board=result['board']
@@ -109,21 +119,24 @@ def _details(result):
     if any(not pair(v,0,255) for v in board['statistics'].values()):raise ValueError('invalid watched statistics')
     if (not isinstance(board['bars'],list) or len(board['bars'])!=2
             or any(not pair(v,0,65535) for v in board['bars'])
-            or not pair(board['final_score'],0,255) or board['final_score']!=result['score']
+            or not pair(board['final_score'],0,255) or board['final_score']!=_board_score(result,competitive)
             or board['ticks']!=result['ticks'] or board['man_of_the_match']!=result['man_of_the_match']):
         raise ValueError('invalid watched final board')
     _number(board['ticks'],0,2**31-1);_number(board['man_of_the_match'],0,3060)
     _number(board['seed']);_hash(board['screen_sha256'])
     for key in ('goals','goals_disallowed','bookings','sendings_off','injuries','substitutions'):
         for row in result[key]:
+            period={'extra_time'} if competitive and row.get('extra_time') is True else set()
+            if 'extra_time' in row and not period:raise ValueError('invalid incident period')
+            if period and not result['extra_time']:raise ValueError('extra-time incident in regulation match')
             if key=='substitutions':
-                _object(row,{'team','off','on','off_name','on_name','minute'})
+                _object(row,{'team','off','on','off_name','on_name','minute'}|period)
                 for word in ('off','on'):_number(row[word],0,3060)
                 for name in ('off_name','on_name'):_text(row[name])
             else:
                 keys={'team','player','name','minute'}
                 if key in ('goals','goals_disallowed'):keys|={'country','minute_byte'}
-                _object(row,keys);_number(row['team'],0,1);_number(row['player'],0,3060);_text(row['name'])
+                _object(row,keys|period);_number(row['team'],0,1);_number(row['player'],0,3060);_text(row['name'])
                 if 'country' in row:
                     if row['country']!=result[('first','second')[row['team']]]:raise ValueError('invalid watched scorer country')
                     if row['minute_byte'] is not None:_number(row['minute_byte'],0,255)
@@ -142,7 +155,16 @@ def _details(result):
         if len(row['old'])!=len(row['new']):raise ValueError('invalid watched input lengths')
     for row in result['decisions']:
         _object(row,{'context','minute','answer'});_text(row['context']);_number(row['minute'])
-        answer=row['answer'];_object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'})
+        answer=row['answer']
+        if competitive and row['context']=='shootout_order':
+            _object(answer,{'shootout_order'})
+            words=answer['shootout_order']
+            if (not isinstance(words,list) or len(words)>11 or len(set(words))!=len(words)
+                    or any(not integer(w,1,3060) for w in words)):
+                raise ValueError('invalid shootout order')
+            if result['shootout'] is None:raise ValueError('shootout order without shootout')
+            continue
+        _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'})
         if type(answer['quick']) is not bool or (answer['speed'] is not None and not integer(answer['speed'],0,255)):
             raise ValueError('invalid watched decision policy')
         for key in ('substitutions','tactics','positions','marking','own_tactics'):
@@ -177,9 +199,10 @@ def validate_saved_watched(state):
     image=None
     if watched(last):
         keys={'engine','schema','original','teams','score','goals','managed_side','match_count','seeds','engine_year'}
-        if set(last)!=keys or last['schema']!=RESULT_SCHEMA or type(last['schema']) is not int:
+        if set(last)!=keys or last['schema'] not in (RESULT_SCHEMA,COMPETITIVE_SCHEMA) or type(last['schema']) is not int:
             raise ValueError('invalid watched result envelope')
-        result=last['original'];engine=validate_result(result)
+        result=last['original'];competitive=last['schema']==COMPETITIVE_SCHEMA
+        engine=validate_result(result,competitive=competitive)
         if last['engine']!=engine:raise ValueError('watched engine differs from original result profile')
         teams=[result['first'],result['second']]
         if (result['managed']!=state.managed_country
@@ -217,18 +240,20 @@ def validate_saved_watched(state):
                     raise ValueError('watched world RNG or fixture differs from retained returned memory')
         if watched(last):
             if (not state.campaign.results or state.campaign.results[-1]['fixture_id']!=f"original:{last['original']['index']}"
-                    or state.campaign.results[-1].get('engine')!=last['engine']):
+                    or state.campaign.results[-1].get('engine')!=last['engine']
+                    or state.campaign.results[-1]['schema']!=last['schema']
+                    or (competitive and state.campaign.results[-1].get('resolution')!=resolution(result))):
                 raise ValueError('watched last result differs from campaign history')
             world=state.campaign.world
             if world is not None:
                 row=next((r for r in world.results if r['fixture_id']==f"original:{last['original']['index']}"),None)
                 if (row is None or row.get('mode')!='watched' or row.get('engine')!=last['engine'] or row['seed_after']!=last['seeds'][0]
-                        or row['secondary_after']!=last['seeds'][1] or row['engine_year']!=last['engine_year']):
+                        or row['secondary_after']!=last['seeds'][1] or row['engine_year']!=last['engine_year']
+                        or row['schema']!=last['schema']
+                        or (competitive and row.get('resolution')!=resolution(result))):
                     raise ValueError('watched result differs from world continuation')
         for row in state.campaign.results:
-            if watched(row) and (set(row)!={'fixture_id','teams','score','engine','schema'}
-                    or type(row['schema']) is not int or row['schema']!=RESULT_SCHEMA):
-                raise ValueError('invalid watched campaign result schema')
+            if watched(row):validate_history(row)
 
 
 def _fixture_teams(image,index):
@@ -251,3 +276,74 @@ def needs_version3(state):
     if campaign is None:return False
     return (any(watched(row) for row in campaign.results) or (campaign.world is not None
             and any(isinstance(row,dict) and row.get('mode')=='watched' for row in campaign.world.results)))
+
+
+# [designed: T51; confirmed: PR255 KINDS/DECIDERS] Compact history keeps all stages
+# after last_match is replaced; it never adds converted kicks to normal goals.
+def validate_resolution(value,score,kind=None):
+    from goal2.engine.original_match.match import KINDS,DECIDERS
+    _object(value,{'kind','winner','regulation','extra_time','penalties'})
+    k=value['kind'];winner=value['winner'];reg=value['regulation'];et=value['extra_time'];pk=value['penalties']
+    if (type(k) is not int or k not in KINDS or k==1 or (kind is not None and k!=kind)
+            or not integer(winner,0,2) or not pair(reg,0,255) or not pair(score,0,255)
+            or (et is not None and not pair(et,0,255)) or (pk is not None and not pair(pk,0,255))):
+        raise ValueError('invalid competitive resolution fields')
+    normal=reg if et is None else et
+    if list(score)!=list(normal):raise ValueError('competitive normal score differs from resolution')
+    if et is not None and (k not in DECIDERS or reg[0]!=reg[1] or any(et[i]<reg[i] for i in (0,1))):
+        raise ValueError('invalid extra-time resolution')
+    if k in DECIDERS and reg[0]==reg[1] and et is None:raise ValueError('drawn decider needs extra time')
+    if pk is not None and (et is None or et[0]!=et[1] or pk[0]==pk[1]):raise ValueError('invalid penalty resolution')
+    if et is not None and et[0]==et[1] and pk is None:raise ValueError('drawn extra time needs penalties')
+    decided=pk if pk is not None else normal
+    expected=2 if decided[0]==decided[1] else int(decided[1]>decided[0])
+    if winner!=expected:raise ValueError('competitive winner differs from original resolution')
+    return value
+
+
+def resolution(result):
+    value={'kind':result['kind'],'winner':result['winner'],
+           'regulation':list(result['score_90'] if result['extra_time'] else result['score']),
+           'extra_time':list(result['score']) if result['extra_time'] else None,
+           'penalties':list(result['shootout']['score']) if result['shootout'] is not None else None}
+    return validate_resolution(value,result['score'])
+
+
+def _competitive_kit2(result):
+    if (type(result['extra_time']) is not bool or result['substitution_budget']!=[5,5]
+            or any(type(v) is not int for v in result['substitution_budget'])
+            or (not result['extra_time'] and result['score_90'] is not None)
+            or (result['extra_time'] and not pair(result['score_90'],0,255))):
+        raise ValueError('invalid competitive stages or owner budget')
+    shoot=result['shootout']
+    if shoot is not None:_object(shoot,{'score','kicks'})
+    resolution(result)
+    if shoot is not None:
+        _object(shoot,{'score','kicks'})
+        if not isinstance(shoot['kicks'],list) or not shoot['kicks']:raise ValueError('invalid penalty kicks')
+        counts=[0,0];goals=[0,0]
+        for kick in shoot['kicks']:
+            _object(kick,{'team','player','name','scored','round'})
+            team=kick['team']
+            if (not integer(team,0,1) or not integer(kick['player'],1,3060)
+                    or type(kick['scored']) is not bool or not isinstance(kick['name'],str)
+                    or not integer(kick['round'],1,255) or kick['round']!=counts[team]+1):
+                raise ValueError('invalid penalty kick record')
+            counts[team]+=1;goals[team]+=int(kick['scored'])
+        if goals!=shoot['score'] or abs(counts[0]-counts[1])>1:raise ValueError('penalty score differs from kicks')
+
+
+def _board_score(result,competitive):
+    pk=result['shootout']['score'] if competitive and result['shootout'] is not None else [0,0]
+    return [result['score'][i]+pk[i] for i in (0,1)]
+
+
+def validate_history(row,kind=None):
+    schema=row.get('schema')
+    keys={'fixture_id','teams','score','engine','schema'}
+    if schema==COMPETITIVE_SCHEMA and type(schema) is int:
+        if set(row)!=keys|{'resolution'} or row['engine']!=ENGINE_ID:raise ValueError('invalid competitive history profile')
+        validate_resolution(row['resolution'],row['score'],kind)
+    elif schema==RESULT_SCHEMA and type(schema) is int:
+        if set(row)!=keys or (kind is not None and kind!=1):raise ValueError('invalid friendly history profile')
+    else:raise ValueError('invalid watched campaign result schema')
