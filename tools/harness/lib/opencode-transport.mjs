@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { spawn, spawnSync } from 'node:child_process';
+import { canonicalFamily, knownFamilyOfId } from './named.mjs';
 import { normalizeModels } from './opencode-protocol.mjs';
 import { randomBytes, createHash } from 'node:crypto';
 export const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -127,6 +128,11 @@ export async function startPrivateServer(cmd, { env, cwd, timeoutMs = 30000, log
   log(`opencode: private server pid ${child.pid}`);
   return { child, url, directory: fs.realpathSync(cwd), request, stop, redact: (text) => String(text).replaceAll(password, '[REDACTED]'), isAlive: () => !closed, clientEnv: { ...env, OPENCODE_PASSWORD: password } };
 }
+// [confirmed: measurements/T72/model-family-projection.json] Native model-series slugs differ from policy lineage names.
+export function catalogueFamily(family) {
+  const raw = String(family);
+  return knownFamilyOfId(`catalogue/${raw}`) ?? (/^o(?:-|$)/i.test(raw) ? 'openai' : /^hy$/i.test(raw) ? 'hunyuan' : canonicalFamily(raw));
+}
 export async function settledCatalogue(server, { timeoutMs = 30000, model, agent, verifyAgent } = {}) {
   const started = Date.now(); let last = 'registry not settled';
   while (Date.now() - started < timeoutMs) {
@@ -137,7 +143,7 @@ export async function settledCatalogue(server, { timeoutMs = 30000, model, agent
       const selected = catalogue.data?.filter((m) => `${m.providerID}/${m.id}` === model.id);
       if (selected?.length !== 1 || selected[0].enabled !== true) throw new Error('selected model missing, disabled or ambiguous');
       if (model.variant && !selected[0].variants.some((v) => v.id === model.variant)) throw new Error('selected effort not advertised');
-      if (model.family && String(selected[0].family).toLowerCase() !== String(model.family).toLowerCase()) throw new Error('selected model family mismatch');
+      if (model.family && catalogueFamily(selected[0].family) !== canonicalFamily(model.family)) throw new Error('selected model family mismatch');
       let profile;
       if (agent) {
         const agents = await server.request('/api/agent', { timeoutMs: Math.max(1, timeoutMs - (Date.now() - started)) });

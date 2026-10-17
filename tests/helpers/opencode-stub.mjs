@@ -56,7 +56,7 @@ if (args[0] === 'serve') {
       let answer;
       const item = () => sessions.find((s) => s.info.id === sid);
       if (url.pathname === '/openapi.json') answer = { openapi: '3.1.0', info: { title: 'T72 synthetic stub', version: '2.0.28' }, paths: {} };
-      else if (url.pathname === '/api/model') answer = envelope([{ id: 'MiniMax-M3', modelID: 'MiniMax-M3', providerID: 'minimax', family: mode === 'family' ? 'openai' : 'minimax', enabled: true, variants: mode === 'effort' ? [{ id: 'none' }] : [{ id: 'none' }, { id: 'thinking' }] }]);
+      else if (url.pathname === '/api/model') answer = envelope([{ id: 'MiniMax-M3', modelID: 'MiniMax-M3', providerID: 'minimax', family: mode === 'family' ? 'gpt-sol' : process.env.STUB_FAMILY || 'minimax', enabled: true, variants: mode === 'effort' ? [{ id: 'none' }] : [{ id: 'none' }, { id: 'thinking' }] }]);
       else if (url.pathname === '/api/agent') {
         const config = JSON.parse(process.env.OPENCODE_CONFIG_CONTENT || '{}');
         const agent = { id: 'reviewer', name: 'Reviewer', ...config.agents?.reviewer };

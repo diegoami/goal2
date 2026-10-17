@@ -10,8 +10,10 @@ export function finalReviewText(normalized) {
   const last = normalized.messages.filter((m) => m.type === 'assistant').at(-1);
   return last?.parts.filter((p) => p.type === 'text').map((p) => p.text).join('') ?? '';
 }
-export async function runV2Workflow({ opencode, model, agent = 'reviewer', agentFile, prompt, workDir, title, sessionId, resumeManifest, reviewedHead, reviewPR,
+export async function runV2Workflow({ opencode, model, agent, agentFile, prompt, workDir, title, sessionId, resumeManifest, reviewedHead, reviewPR,
   startupTimeoutMs = 180000, totalTimeoutMs = 3600000, idleTimeoutMs = 600000, pollMs = 10000, logDir, env = process.env, log = () => {} }) {
+  if (!agentFile) throw new OpenCodeInfraError('selection', 'requires the explicit trusted agentFile');
+  if (typeof agent !== 'string' || !agent) throw new OpenCodeInfraError('selection', 'requires the exact selected agent');
   workDir = fs.realpathSync(workDir);
   if (reviewedHead) {
     const proof = await capture({ exe: 'git', prefix: [] }, ['rev-parse', 'HEAD'], { cwd: workDir, env, timeoutMs: 5000 });

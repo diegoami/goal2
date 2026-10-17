@@ -105,7 +105,7 @@ if (a.probe) {
   sh('git', ['init', '-q', dir]);
   let failure = null;
   try {
-    const args = ['run', '--dir', dir, '--model', plan.entry.id, ...(plan.entry.variant ? ['--variant', plan.entry.variant] : [])];
+    const args = ['run', '--dir', dir, '--agent', 'reviewer', '--model', plan.entry.id, ...(plan.entry.variant ? ['--variant', plan.entry.variant] : [])];
     const run = await runOpenCodeWatched({
       args, model: plan.entry, agent: 'reviewer', agentFile: path.join(top, '.opencode/agents/reviewer.md'), prompt: 'Reply with the single word PONG and nothing else.', workDir: dir, title: `probe-${plan.name}`,
       startupTimeoutMs: 120_000, idleTimeoutMs: 120_000, totalTimeoutMs: 300_000, pollMs: 2_000,

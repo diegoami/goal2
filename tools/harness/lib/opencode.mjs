@@ -123,26 +123,26 @@ function isWindowsShim(file) {
 export function resolveOpenCode(env = process.env) {
   if (env.HARNESS_OPENCODE_EXE) {
     // A script (the tests' fake, #2) runs through Node, since Windows cannot execute one.
-    if (fs.existsSync(env.HARNESS_OPENCODE_EXE) && /\.m?js$/.test(env.HARNESS_OPENCODE_EXE)) return { exe: process.execPath, prefix: [env.HARNESS_OPENCODE_EXE] };
-    if (fs.existsSync(env.HARNESS_OPENCODE_EXE)) return { exe: env.HARNESS_OPENCODE_EXE, prefix: [] };
+    if (fs.existsSync(env.HARNESS_OPENCODE_EXE) && /\.m?js$/.test(env.HARNESS_OPENCODE_EXE)) return { exe: process.execPath, prefix: [fs.realpathSync(env.HARNESS_OPENCODE_EXE)] };
+    if (fs.existsSync(env.HARNESS_OPENCODE_EXE)) return { exe: fs.realpathSync(env.HARNESS_OPENCODE_EXE), prefix: [] };
     throw new OpenCodeInfraError('opencode not found', `HARNESS_OPENCODE_EXE points at a missing file: ${env.HARNESS_OPENCODE_EXE}`);
   }
   const win = process.platform === 'win32';
   for (const dir of (env.PATH || env.Path || '').split(path.delimiter).filter(Boolean)) {
     if (win) {
       const exe = path.join(dir, 'opencode.exe');
-      if (fs.existsSync(exe)) return { exe, prefix: [] };
+      if (fs.existsSync(exe)) return { exe: fs.realpathSync(exe), prefix: [] };
       if (fs.existsSync(path.join(dir, 'opencode.cmd'))) {
         const npmExe = path.join(dir, 'node_modules', 'opencode-ai', 'bin', 'opencode.exe');
-        if (fs.existsSync(npmExe)) return { exe: npmExe, prefix: [] };
+        if (fs.existsSync(npmExe)) return { exe: fs.realpathSync(npmExe), prefix: [] };
       }
     } else {
       const exe = path.join(dir, 'opencode');
-      if (fs.existsSync(exe) && !isWindowsShim(exe)) return { exe, prefix: [] };
+      if (fs.existsSync(exe) && !isWindowsShim(exe)) return { exe: fs.realpathSync(exe), prefix: [] };
     }
   }
   const installed = env.HOME && path.join(env.HOME, '.opencode', 'bin', 'opencode');
-  if (!win && installed && fs.existsSync(installed)) return { exe: installed, prefix: [] };
+  if (!win && installed && fs.existsSync(installed)) return { exe: fs.realpathSync(installed), prefix: [] };
   throw new OpenCodeInfraError('opencode not found', 'opencode is not on PATH (set HARNESS_OPENCODE_EXE to the real executable).');
 }
 
@@ -582,12 +582,25 @@ export async function runOpenCodeWatched(options) {
   const version = await openCodeVersion(cmd, { env, cwd: options.workDir });
   const bad = versionProblem(version, cmd.exe);
   if (bad) throw new OpenCodeInfraError('version', bad);
-  if (Number(version.split('.')[0]) === 1) return runV1Watched({ ...options, opencode: cmd });
   const args = options.args ?? [];
-  const get = (key) => args.includes(key) ? args[args.indexOf(key) + 1] : undefined;
+  const get = (key) => {
+    if (!args.includes(key)) return undefined;
+    const value = args[args.indexOf(key) + 1];
+    if (typeof value !== 'string' || !value || value.startsWith('--')) throw new OpenCodeInfraError('selection', `${key} requires its explicit value`);
+    return value;
+  };
+  for (const key of ['--model', '--agent', '--variant']) get(key);
   const id = get('--model');
   const model = options.model ?? (id ? { id, ...(get('--variant') ? { variant: get('--variant') } : {}) } : null);
-  if (!model) throw new OpenCodeInfraError('selection', 'v2 requires the exact selected model');
-  return runV2Workflow({ ...options, model, agent: options.agent ?? get('--agent'),
-    agentFile: options.agentFile ?? path.join(options.workDir, '.opencode/agents/reviewer.md'), opencode: cmd });
+  const agent = options.agent ?? get('--agent');
+  if (!model || typeof model.id !== 'string' || !/^[^/\s#]+\/[^\s#]+$/.test(model.id)) throw new OpenCodeInfraError('selection', 'requires the exact selected provider/model');
+  if (typeof agent !== 'string' || !agent) throw new OpenCodeInfraError('selection', 'requires the exact selected agent');
+  if (Number(version.split('.')[0]) === 1) {
+    if (get('--agent') !== agent || get('--model') !== model.id || get('--variant') !== (model.variant ?? undefined)) throw new OpenCodeInfraError('selection', 'v1 command differs from selected model/agent/effort');
+    return runV1Watched({ ...options, model, agent, opencode: cmd });
+  }
+  if (!options.agentFile) throw new OpenCodeInfraError('selection', 'v2 requires the explicit trusted agentFile from the launching checkout');
+  if (typeof model.family !== 'string' || !model.family) throw new OpenCodeInfraError('selection', 'v2 requires the selected policy family');
+  return runV2Workflow({ ...options, model, agent,
+    agentFile: options.agentFile, opencode: cmd });
 }

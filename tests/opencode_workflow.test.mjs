@@ -4,8 +4,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
-const { capture, killOwned, delay, startPrivateServer, privateHome } = await import(process.env.T72_TRANSPORT_MODULE || '../tools/harness/lib/opencode-transport.mjs');
+const { capture, killOwned, delay, startPrivateServer, privateHome, catalogueFamily } = await import(process.env.T72_TRANSPORT_MODULE || '../tools/harness/lib/opencode-transport.mjs');
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from '../tools/harness/lib/opencode-policy.mjs';
 const agentFile = new URL('../.opencode/agents/reviewer.md', import.meta.url);
 test('trusted reviewer freezes exact deny rules and legacy external boundary without replacing globals', () => {
@@ -76,7 +77,7 @@ process.stdin.resume();process.stdin.on('end',()=>setTimeout(()=>process.exit(0)
 });
 
 const { runOpenCodeWatched } = await import(process.env.T72_TEST_MODULE || '../tools/harness/lib/opencode.mjs');
-const stub = new URL('./helpers/opencode-stub.mjs', import.meta.url).pathname;
+const stub = fileURLToPath(new URL('./helpers/opencode-stub.mjs', import.meta.url));
 const selection = { id: 'minimax/MiniMax-M3', family: 'minimax', variant: 'thinking' };
 function workflowOptions(mode = 'complete') {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-workflow-'));
@@ -143,7 +144,7 @@ test('peek reads retained complete receipts and live standalone private exports 
   assert.match(renderPeek(record, 2), /Complete recovered final/);
   const live = { ...receipt, record: { ...receipt.record, phase: 'running' } };
   assert.deepEqual(await peekRecord(cmd, live, { env: options.env }), record);
-  const cli = spawnSync(process.execPath, [new URL('../tools/harness/peek.mjs', import.meta.url).pathname, result.manifest], { env: { ...options.env, HARNESS_OPENCODE_EXE: stub }, encoding: 'utf8' });
+  const cli = spawnSync(process.execPath, [fileURLToPath(new URL('../tools/harness/peek.mjs', import.meta.url)), result.manifest], { env: { ...options.env, HARNESS_OPENCODE_EXE: stub }, encoding: 'utf8' });
   assert.equal(cli.status, 0, cli.stderr); assert.match(cli.stdout, /tool shell \[completed\]/);
   await assert.rejects(() => peekRecord(cmd, { record: { ...receipt.record, sessionID: 'ses_foreign' } }, { env: options.env }), /session mismatch/);
   assert.throws(() => findReceipt('not-a-session', options.env), /valid session/);
@@ -162,7 +163,7 @@ test('explicit v1 commands retain actual-shaped step records and complete recove
   assert(result.files.some((file) => file.endsWith('.export.json')));
   assert(result.files.every((file) => fs.existsSync(file)));
   const resumed = await runOpenCodeWatched({ ...options, sessionId: result.sessionId }); assert.equal(resumed.sessionId, result.sessionId);
-  const bad = workflowOptions('wrong-model'); bad.env.STUB_VERSION = '1.18.34'; bad.env.STUB_V1_DIR = bad.workDir; bad.args = options.args;
+  const bad = workflowOptions('wrong-model'); bad.env.STUB_VERSION = '1.18.34'; bad.env.STUB_V1_DIR = bad.workDir; bad.args = [...options.args]; bad.args[bad.args.indexOf('--dir') + 1] = bad.workDir;
   await assert.rejects(() => runOpenCodeWatched(bad), /model mismatch/);
   const rejected = await runOpenCodeWatched({ ...options, env: { ...options.env, STUB_MODE: 'rejected' } });
   assert.match(rejected.permissionRejected, /complete session export/);
@@ -192,7 +193,7 @@ test('production workflow identity and rejection deletion controls fail the inte
     fs.copyFileSync(new URL('../tools/harness/review.mjs', import.meta.url), path.join(dir, '../review.mjs'));
     const target = path.join(dir, file); const source = fs.readFileSync(target, 'utf8'); assert(source.includes(before)); fs.writeFileSync(target, source.replace(before, after));
     const testEnv = { ...process.env }; delete testEnv.NODE_TEST_CONTEXT;
-    const result = spawnSync(process.execPath, ['--test', '--test-name-pattern=' + pattern, new URL('./opencode_workflow.test.mjs', import.meta.url).pathname], { env: { ...testEnv, T72_TRANSPORT_MODULE: new URL(`file://${path.join(dir, 'opencode-transport.mjs')}`).href, T72_REVIEW_SCRIPT: path.join(scratch, 'review.mjs'), T72_TEST_MODULE: new URL(`file://${path.join(dir, 'opencode.mjs')}`).href }, encoding: 'utf8', timeout: 20000 });
+    const result = spawnSync(process.execPath, ['--test', '--test-name-pattern=' + pattern, fileURLToPath(new URL('./opencode_workflow.test.mjs', import.meta.url))], { env: { ...testEnv, T72_TRANSPORT_MODULE: pathToFileURL(path.join(dir, 'opencode-transport.mjs')).href, T72_REVIEW_SCRIPT: path.join(scratch, 'review.mjs'), T72_TEST_MODULE: pathToFileURL(path.join(dir, 'opencode.mjs')).href }, encoding: 'utf8', timeout: 20000 });
     assert.equal(result.status, 1, `${name}: ${result.stderr}`);
     assert.match(result.stdout + result.stderr, new RegExp(failure), name);
     assert.doesNotMatch(result.stdout + result.stderr, /MODULE_NOT_FOUND|ERR_MODULE_NOT_FOUND|timed out/, name);
@@ -201,7 +202,7 @@ test('production workflow identity and rejection deletion controls fail the inte
 
 test('review CLI uses exact fetched head, trusted profile and complete export while retaining its worktree', () => {
   // [designed: T72] Actual git worktrees stay under the task cache, never /tmp, and are retained.
-  const cache = new URL('../.cache/workflow-review-tests/', import.meta.url).pathname; fs.mkdirSync(cache, { recursive: true });
+  const cache = fileURLToPath(new URL('../.cache/workflow-review-tests/', import.meta.url)); fs.mkdirSync(cache, { recursive: true });
   const fixture = fs.mkdtempSync(path.join(cache, 'run-')); const repo = path.join(fixture, 'repo'); fs.mkdirSync(repo);
   const git = (...args) => { const r = spawnSync('git', args, { cwd: repo, encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); return r.stdout.trim(); };
   git('init', '-q'); git('config', 'user.email', 't72@example.invalid'); git('config', 'user.name', 'T72 nonbilling stub');
@@ -212,7 +213,7 @@ test('review CLI uses exact fetched head, trusted profile and complete export wh
   const brief = path.join(fixture, 'brief.md'); fs.writeFileSync(brief, 'T72 stub review (M3)\nSynthetic read-only review.\n');
   const env = { ...process.env, HARNESS_CLIENT: 'codex', HARNESS_GH_EXE: gh, HARNESS_OPENCODE_EXE: stub, HARNESS_OPENCODE_HOME: path.join(fixture, 'runtime'), STUB_HEAD: head, STUB_FINAL: 'T72 stub review (M3)\napprove\nDW1: ran stub → pass\nFinal pass done\napprove\n' };
   delete env.HARNESS_SESSION_FAMILY; delete env.STUB_VERSION;
-  const result = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || new URL('../tools/harness/review.mjs', import.meta.url).pathname, '--pr', '1', '--brief', brief, '--reviewer', 'm3', '--done-when', '1', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
+  const result = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url)), '--pr', '1', '--brief', brief, '--reviewer', 'm3', '--done-when', '1', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
   assert.equal(result.status, 0, result.stderr + result.stdout);
   assert.match(result.stdout, /dry run: would post the above/); assert.match(result.stdout, /DW1: ran stub/);
   const runManifest = result.stdout.match(/manifest (.+run\.json)/)?.[1]; assert(runManifest);
@@ -223,7 +224,7 @@ test('review CLI uses exact fetched head, trusted profile and complete export wh
   const tree = path.join(cfg.worktreeRoot, trees[0]); assert(fs.existsSync(tree));
   assert.equal(spawnSync('git', ['rev-parse', 'HEAD'], { cwd: tree, encoding: 'utf8' }).stdout.trim(), head);
   const stale = path.join(fixture, 'stale.md'); fs.writeFileSync(stale, 'T72 stub review (M3)\nHEAD is '+ 'a'.repeat(40)+'\n');
-  const refused = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || new URL('../tools/harness/review.mjs', import.meta.url).pathname, '--pr', '1', '--brief', stale, '--reviewer', 'm3', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
+  const refused = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url)), '--pr', '1', '--brief', stale, '--reviewer', 'm3', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
   assert.equal(refused.status, 2, refused.stderr); assert.match(refused.stderr, /brief names/);
   assert.equal(fs.readdirSync(cfg.worktreeRoot).length, 1, 'stale head must not launch another worktree');
 });
@@ -280,4 +281,36 @@ test('peek renders schema-shaped streaming/running tool states and refuses malfo
   assert.match(renderPeek(record, 2), /tool shell \[streaming\]/); assert.match(renderPeek(record, 2), /tool shell \[running\]/);
   delete record.messages[0].content[1].state.input;
   assert.throws(() => renderPeek(record, 2), /malformed native tool state\/input/);
+});
+
+test('missing or malformed chosen model agent and effort fail before generation without defaults', async () => {
+  for (const [change, message] of [
+    [{ agent: undefined }, 'selected agent'],
+    [{ agentFile: undefined }, 'explicit trusted agentFile'],
+    [{ model: undefined }, 'selected provider/model'],
+    [{ model: { id: selection.id } }, 'selected policy family'],
+    [{ args: ['run', '--model'] }, 'explicit value'],
+    [{ args: ['run', '--agent'] }, 'explicit value'],
+    [{ args: ['run', '--variant'] }, 'explicit value'],
+  ]) {
+    const options = { ...workflowOptions(), ...change };
+    await assert.rejects(() => runOpenCodeWatched(options), (e) => { assert.equal(e.reason, 'selection'); assert.match(e.message, new RegExp(message)); return true; });
+    assert.doesNotMatch(fs.readFileSync(options.env.STUB_TRACE, 'utf8'), /generation|serve/, 'no selected identity means no execution server');
+  }
+});
+test('native series-family metadata maps through policy lineage without accepting another family', async () => {
+  for (const [native, policy] of [['glm-flash','glm'], ['gpt-luna','openai'], ['gpt-sol','openai'], ['o','openai'], ['o-pro','openai'], ['kimi-k2','kimi'], ['claude-sonnet','claude'], ['minimax-m3','minimax'], ['mimo-v2.5','mimo'], ['Hy','hunyuan']]) assert.equal(catalogueFamily(native), policy, native);
+  const options = workflowOptions(); options.env.STUB_FAMILY = 'minimax-m3';
+  const result = await runOpenCodeWatched(options); assert.equal(result.normalized.model.id, 'MiniMax-M3');
+  assert.equal(JSON.parse(fs.readFileSync(JSON.parse(fs.readFileSync(result.manifest)).files['model.json'])).family, 'minimax-m3', 'raw advertised family stays in the receipt');
+  await assert.rejects(() => runOpenCodeWatched(workflowOptions('family')), /selected model family mismatch/);
+});
+
+test('relative explicit executable resolves once to a real absolute file before changing the run cwd', async () => {
+  const { resolveOpenCode } = await import('../tools/harness/lib/opencode.mjs');
+  const options = workflowOptions();
+  const cmd = resolveOpenCode({ ...options.env, HARNESS_OPENCODE_EXE: path.relative(process.cwd(), stub) });
+  assert.equal(cmd.prefix[0], fs.realpathSync(stub));
+  assert(path.isAbsolute(cmd.exe));
+  const result = await runOpenCodeWatched({ ...options, opencode: cmd }); assert.equal(result.exitCode, 0);
 });

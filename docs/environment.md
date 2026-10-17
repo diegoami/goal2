@@ -24,7 +24,10 @@ without a backup override. V2 uses the real working directory, `provider/model#v
 and native ordered permissions; the harness starts its own `serve --stdio` execution
 server and polls effective model/agent readiness before any generation. The trusted
 launching checkout's reviewer overrides cwd config while global provider discovery
-is preserved. A stored agent string alone is insufficient proof of its permissions.
+is preserved. A stored agent string alone is insufficient proof of its permissions. The v2 runner
+requires an explicit trusted agentFile; it never defaults to the PR worktree.
+Native model-series family labels are compared through the existing policy lineage
+classifier while raw advertised labels remain in receipts; no route is substituted.
 
 ```bash
 HARNESS_CLIENT=codex node tools/harness/review.mjs --pr <pr> --brief <brief> \
