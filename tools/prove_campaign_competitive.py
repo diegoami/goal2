@@ -37,6 +37,11 @@ MUTATIONS=(
  ('memory captured before original tail','goal2/game/watched_match.py','memory = match.memory_component()',
   'memory = image.memory_component()',
   'goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_owner_budget_cases_match_independent_execution_and_guest_stamps'),
+ ('optional runtime imported by ordinary quick campaign','goal2/game/campaign_rounds.py',
+  "        allowed=(1,)\n        if competitive:\n            from goal2.engine.original_match.match import KINDS\n            allowed=tuple(k for k in KINDS if k!=1)",
+  "        from goal2.engine.original_match.match import KINDS\n        allowed=tuple(k for k in KINDS if k!=1) if competitive else (1,)",
+  'goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals'),
+
 )
 
 
@@ -51,6 +56,7 @@ def run(command,folder,log,timeout=240):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--baseline',action='store_true')
+    parser.add_argument('--case',type=int,choices=range(len(MUTATIONS)),help='run one existing control')
     args=parser.parse_args();folder=ROOT/'.cache'/('T51-proofs-'+str(time.time_ns()));folder.mkdir();rows=[]
     if args.baseline:
         archive=subprocess.check_output(['git','archive',BASE],cwd=ROOT);export=folder/'application';export.mkdir()
@@ -68,6 +74,7 @@ def main():
         rows.append(row);print(f'PASS all{len(tests)} new tests fail by assertion on accepted baseline',flush=True)
     else:
         for number,(name,file,old,new,test) in enumerate(MUTATIONS):
+            if args.case is not None and number!=args.case:continue
             path=ROOT/file;saved=path.read_bytes()
             try:
                 text=saved.decode()

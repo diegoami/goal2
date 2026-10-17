@@ -162,8 +162,10 @@ def prepare(state,template,*,resolver_factory=SilentResolver,competitive=False):
     validate_state(candidate)
     if candidate.campaign is not None and candidate.campaign.world is not None:
         pending=candidate.campaign.next_fixture
-        from goal2.engine.original_match.match import KINDS
-        allowed=tuple(k for k in KINDS if k!=1) if competitive else (1,)
+        allowed=(1,)
+        if competitive:
+            from goal2.engine.original_match.match import KINDS
+            allowed=tuple(k for k in KINDS if k!=1)
         if pending is None or pending.kind not in allowed:raise ValueError('unsupported managed fixture')
         silent_until_managed(candidate,template,resolver_factory)
         world=candidate.campaign.world

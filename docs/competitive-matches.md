@@ -51,6 +51,10 @@ publication and save/reload; quick result labels retain their meaning.
 python3 -m unittest goal2.tests.test_campaign_competitive_match -v
 python3 -m unittest goal2.tests.test_campaign_competitive_publication goal2.tests.test_campaign_competitive_save -v
 python3 -m unittest goal2.tests.test_watched_runtime -v
+python3 tools/prove_campaign_competitive.py --baseline
+# After all readers finish, run saved-byte controls sequentially:
+python3 tools/prove_campaign_competitive.py
+python3 tools/prove_watched_identity.py
 QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/competitive.py
 ```
 

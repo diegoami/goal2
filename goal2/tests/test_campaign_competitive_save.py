@@ -2,6 +2,8 @@
 import copy
 from functools import lru_cache
 import json
+import subprocess
+import sys
 from pathlib import Path
 import unittest
 from goal2.engine.original_match import Fixture,Image
@@ -156,6 +158,28 @@ class CompetitiveSaveTests(unittest.TestCase):
         self.assertEqual(private.ds_bytes(0x831A,1),adapted.ds_bytes(0x831A,1))
         differences=[i for i,(a,b) in enumerate(zip(adapted.mem,private.mem)) if a!=b]
         self.assertEqual(differences,[adapted.program().ds_base+0x78+o for o in sorted((0x7C36,0x8319,0x9A3D))])
+        # [designed] Ordinary quick campaigns must still run without importing optional Unicorn.
+        child_code="""
+import builtins,sys
+from pathlib import Path
+original_import=builtins.__import__
+def guarded(name,*args,**kwargs):
+    if name=='unicorn' or name.startswith('unicorn.'):raise ImportError('optional runtime intentionally unavailable')
+    return original_import(name,*args,**kwargs)
+builtins.__import__=guarded
+from goal2.data.goaldat import load
+from goal2.game.campaign_schedule import start_opening_campaign
+from goal2.desktop.worker import play
+root=Path.cwd();raw=(root/'.cache/e010-r0008-halftime.sav').read_bytes()
+s,_=start_opening_campaign(load((root/'.cache/GOAL.DAT').read_bytes()),raw,managed_country=4,start_year=1990,seed_7b62=4660,seed_8336=33590)
+after=play(s,raw)
+assert after.match_count==1
+assert 'goal2.engine.original_match' not in sys.modules
+print('PASS ordinary quick campaign with optional runtime unavailable')
+"""
+        child=subprocess.run([sys.executable,'-B','-c',child_code],cwd=ROOT,capture_output=True,text=True,timeout=30)
+        self.assertEqual(child.returncode,0,child.stdout+child.stderr)
+
         for damage in ('identity','resolution','unrelated_template','kickoff','unsupported_next','standalone','retained_modes'):
             state_bad=copy.deepcopy(owner.state);input_bad=copy.copy(adapted)
             if damage=='identity':state_bad.last_match['engine']='unknown'

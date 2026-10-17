@@ -240,5 +240,126 @@
         ]
       }
     ]
+  },
+  "negative_controls": [
+    {
+      "summary": ".cache/T51-proofs-1792257504374766409/summary.json",
+      "sha256": "5195315f599ae4cfdae41c9016d4cc546f7b43aa3f465b9dd48d6a26f3b58bdd",
+      "cases": [
+        {
+          "command": [
+            "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals",
+            "-v"
+          ],
+          "exit_code": 1,
+          "wall_s": 12.854,
+          "log": ".cache/T51-proofs-1792257504374766409/0.log",
+          "log_sha256": "00dc7ca365b1a6d382e3c59c94c26bd96e22348df8d4df4d18d38ffb42b0c031",
+          "name": "competitive-to-friendly setup bypass",
+          "assertion_killed": true,
+          "source_before_sha256": "59f82bc6c80d5619165f3d67484990251e955c3576bb7bcb02a5b30bcc550268"
+        },
+        {
+          "command": [
+            "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage",
+            "-v"
+          ],
+          "exit_code": 1,
+          "wall_s": 25.788,
+          "log": ".cache/T51-proofs-1792257504374766409/1.log",
+          "log_sha256": "f30026958d97cdea95c66bb63d9d70ae9f4213e5b0e75292650e8d1c361b6d77",
+          "name": "winner resolution bypass",
+          "assertion_killed": true,
+          "source_before_sha256": "85392f62ab8239e5ad657197ced36f03ffd909e7f5d8fca9f3704a128b78f643"
+        },
+        {
+          "command": [
+            "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_original_winner_and_full_tail_publish_once_without_quick_effects",
+            "-v"
+          ],
+          "exit_code": 1,
+          "wall_s": 13.049,
+          "log": ".cache/T51-proofs-1792257504374766409/2.log",
+          "log_sha256": "72d355e3db656fe66db60361b5d10d1e328eb4ebaba862ba808ac1976635b2c4",
+          "name": "penalty kicks published as normal goals",
+          "assertion_killed": true,
+          "source_before_sha256": "2b96c2c93a4bf7701168359b30fc9e60fe7881168653c2bfd2552ccf7ed24ad8"
+        },
+        {
+          "command": [
+            "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic",
+            "-v"
+          ],
+          "exit_code": 1,
+          "wall_s": 14.2,
+          "log": ".cache/T51-proofs-1792257504374766409/3.log",
+          "log_sha256": "b4a1e383e3487ad339bf93434d53ee46b4a5530039a7d46c72914f88fda83b39",
+          "name": "premature completion without original end",
+          "assertion_killed": true,
+          "source_before_sha256": "2b96c2c93a4bf7701168359b30fc9e60fe7881168653c2bfd2552ccf7ed24ad8"
+        },
+        {
+          "command": [
+            "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_owner_budget_cases_match_independent_execution_and_guest_stamps",
+            "-v"
+          ],
+          "exit_code": 1,
+          "wall_s": 162.714,
+          "log": ".cache/T51-proofs-1792257504374766409/4.log",
+          "log_sha256": "760c997219f23ccd4469f564438a4abef2b976d3718003d72ddb18f36bbf1396",
+          "name": "memory captured before original tail",
+          "assertion_killed": true,
+          "source_before_sha256": "e4902ce294ae51ae7b028564c579dcc6967b1117bc7d33c5d6c4691a6754ac3e"
+        }
+      ]
+    },
+    {
+      "summary": ".cache/T51-proofs-1792257766621222923/summary.json",
+      "sha256": "1a48b578261206b1b0f590848aa663f3fc9eaba32574a11cf2b808b373358a90",
+      "cases": [
+        {
+          "command": [
+            "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+            "-B",
+            "-m",
+            "unittest",
+            "goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals",
+            "-v"
+          ],
+          "exit_code": 1,
+          "wall_s": 15.31,
+          "log": ".cache/T51-proofs-1792257766621222923/5.log",
+          "log_sha256": "f89834273383762596d05d573f1a4fd30aa2b37a77fa2cc0df9a57732ab2e3ca",
+          "name": "optional runtime imported by ordinary quick campaign",
+          "assertion_killed": true,
+          "source_before_sha256": "4d53f67570fa49fcfb496f8bb309a6069bac01d3b882696948176f3d1dbba5fe"
+        }
+      ]
+    }
+  ],
+  "retained_identity_controls": {
+    "passed": 4,
+    "log": ".cache/T51-retained-identity-proofs.log",
+    "sha256": "55b6b04893832eeedd20a86bed07ebbabd36f6abc378e738681a496a49fcd744"
   }
 }
