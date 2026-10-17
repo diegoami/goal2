@@ -91,6 +91,8 @@ test('production major dispatch recovers complete export, usage and receipt; sam
   const result = await runOpenCodeWatched(options);
   assert.equal(result.reviewText, 'Complete recovered final\nFinal pass done\napprove\n');
   assert.doesNotMatch(result.stdout, /Complete recovered final/);
+  const noEffort = await runOpenCodeWatched({ ...options, model: { id: selection.id, family: selection.family } });
+  assert.equal(noEffort.normalized.model.variant, undefined, 'absent effort stays absent instead of selecting a fallback variant');
   assert.equal(result.normalized.tokens.input, 10); assert.equal(result.normalized.cost, .002);
   assert.equal(result.normalized.messages[0].parts.filter((p) => p.type === 'tool').length, 1);
   assert(fs.existsSync(result.manifest)); assert(fs.existsSync(result.briefFile));
@@ -289,6 +291,8 @@ test('missing or malformed chosen model agent and effort fail before generation 
     [{ agentFile: undefined }, 'explicit trusted agentFile'],
     [{ model: undefined }, 'selected provider/model'],
     [{ model: { id: selection.id } }, 'selected policy family'],
+    [{ model: { ...selection, variant: '' } }, 'valid explicit effort'],
+    [{ model: { ...selection, variant: 3 } }, 'valid explicit effort'],
     [{ args: ['run', '--model'] }, 'explicit value'],
     [{ args: ['run', '--agent'] }, 'explicit value'],
     [{ args: ['run', '--variant'] }, 'explicit value'],

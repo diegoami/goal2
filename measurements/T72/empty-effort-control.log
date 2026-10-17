@@ -1,0 +1,24 @@
+✖ missing or malformed chosen model agent and effort fail before generation without defaults (588.623647ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 641.375477
+
+✖ failing tests:
+
+test at tests/opencode_workflow.test.mjs:288:1
+✖ missing or malformed chosen model agent and effort fail before generation without defaults (588.623647ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:301:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

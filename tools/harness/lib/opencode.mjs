@@ -593,6 +593,7 @@ export async function runOpenCodeWatched(options) {
   const id = get('--model');
   const model = options.model ?? (id ? { id, ...(get('--variant') ? { variant: get('--variant') } : {}) } : null);
   const agent = options.agent ?? get('--agent');
+  if (model?.variant != null && (typeof model.variant !== 'string' || !model.variant || /[#\s]/.test(model.variant))) throw new OpenCodeInfraError('selection', 'requires a valid explicit effort or absent effort');
   if (!model || typeof model.id !== 'string' || !/^[^/\s#]+\/[^\s#]+$/.test(model.id)) throw new OpenCodeInfraError('selection', 'requires the exact selected provider/model');
   if (typeof agent !== 'string' || !agent) throw new OpenCodeInfraError('selection', 'requires the exact selected agent');
   if (Number(version.split('.')[0]) === 1) {

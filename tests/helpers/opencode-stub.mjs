@@ -80,7 +80,7 @@ if (args[0] === 'serve') {
       } else if (url.pathname.endsWith('/interrupt')) { trace({ interrupt: sid }); answer = { interrupted: mode === 'active' }; }
       else if (url.pathname.endsWith('/test-run')) {
         const record = item();
-        if (!record || body.agent !== record.info.agent || body.model !== `${record.info.model.providerID}/${record.info.model.id}#${record.info.model.variant}` || body.directory !== record.info.location.directory) throw Error('client selection differs');
+        if (!record || body.agent !== record.info.agent || body.model !== `${record.info.model.providerID}/${record.info.model.id}${record.info.model.variant ? '#' + record.info.model.variant : ''}` || body.directory !== record.info.location.directory) throw Error('client selection differs');
         trace({ generation: sid });
         if (mode === 'active') {
           const worker = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'], { stdio: 'inherit' }); worker.unref(); trace({ workerPID: worker.pid });
