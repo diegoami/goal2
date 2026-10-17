@@ -138,3 +138,69 @@ fixture identity, managed-side and field transfer belong to T63; once-only resul
 publication/save compatibility belong to T64. Those remaining tasks are not waived
 or claimed by package acceptance. Timing in the report is measured on this shared
 machine and supplies no deadline guarantee.
+
+## Watched state adapter
+
+[designed: T63] `goal2.game.watched_match.prepare_watched(state, template, fixture)`
+creates a private accepted-kit image. `run_watched_match` completes it synchronously
+with default `Match.answer()` decisions and returns the original result, ordered
+completed diagnostic events, entire Memory component, both RNG words and engine
+year. It never publishes state or adds Python player updates. T64 owns publication;
+T65 must stream events directly from the kit in its worker rather than replaying
+this completed transcript. A refused decision or an identical repeat without intervening guest progress fails clearly.
+
+[derived: accepted F025 §2–3 at `3656a2d26e0f57a410d648edeaa6cd9eb7d1f607`]
+The original engine year is a counter of two-year gates, starting at zero for both
+opening calendars. For campaign metadata it is
+`(2 * (cycle - 1) + int(stage >= 5) - int(start_year % 4 == 2)) & 65535`.
+This follows the recorded traces `(2,0)..(4,0),(5,1)..(8,1),(2,2)` for a stage-2
+start and `(5,0)..(8,0),(2,1)..(4,1),(5,2)` for a stage-5 start.
+A standalone image retains its own engine-year word. The original setup reseeds
+from `fixture index * (engine year + 1)` modulo 65536 before its setup draws;
+`reference_seed` is an explicit captain-boundary diagnostic override only.
+
+[designed: T63; derived: T41a source identities] Callers supply an explicit
+accepted-kit `Fixture(first, second, index, kind=1)`. Campaign endpoints, current
+stage and `original:<index>` identity must match the pending row. Unsupported
+competitive fixtures and legacy rows without a source index are refused.
+The adapter retains the entire country/player arrays, reorders all twenty squad
+words with the selected eleven first, and passes the actual captain separately.
+The old `+2F` captain placeholder and immutable `DS:0E6C` foot-table bytes are
+preserved from memory. The original updates the computer side and both teams'
+players; the full returned memory carries those changes through its final tail.
+
+[designed: T63] Reproduce with
+`python3 -m unittest goal2.tests.test_watched_adapter -v`.
+The ten explicit E032 seeds use Denmark7/19, source fixture21, engine year0,
+delay byte0 and default play-on decisions; they match the accepted strict T62
+score/ticks/draw-digest records and independent direct kit runs for full results,
+events and memory. Additional natural-seed/year/index, changed-squad/captain/tactics,
+side-B and invalid-input cases protect broader transfer. Original bytes remain in
+ignored caches using the resource hashes above.
+
+[confirmed: F023 §1–2/F025 §2–3 and1771:038C at the accepted pin]
+The original game-record `+0x28` is the next **free** fixture number. Its0x4B48-byte
+allocation holds regular rows1..2400, aggregate rows2401..2408 and sentinel2409.
+The adapter refuses aggregates/sentinel/next-free indexes. With a complete saved
+source world it stages the exact `max(source IDs)+1` count (stage2 opening769,
+stage5 opening2001), checking canonical contiguous IDs in the current source
+class (1..1360 for stages2–4;1361..2400 for5–8). Legacy inputs without that full
+schedule retain the template's bound and cannot silently expand it. Campaign
+indexes and next-free bounds must fit the current source class even for legacy
+inputs; the class-1 legacy reseed control explicitly supplies count2001/fixture1362.
+
+[derived: the same source fields] Campaign images also transfer source base year
+to `+0x3A`, stage to `+0x3C` and class to `+0x40`; the independent year counter
+remains at `+0x38`. A stage2 template's base2028/count769 must not leak into a new
+1990 stage5 campaign. Other opaque memory is preserved; no full original new-game
+replay is claimed for the rebuild's designed fresh state.
+
+[designed: T63 actual-caller regression] Two fresh campaigns made by the desktop's
+`start_opening_campaign` using the retained E010-r0008 template and country4
+match direct original declared-image runs for complete results/events/memory:
+1990 uses fixture1378 (4 versus1), counter0/base1990/stage5/class1/next-free2001;
+1992 uses fixture3 (25 versus4), counter0/base1992/stage2/class0/next-free769.
+Both use default play-on answers and natural setup reseeding. The old adapter
+rejected1378 against the inherited769 bound; an omitted count transfer must fail
+the new field assertions before original execution. These cases extend, rather
+than replace, the ten strict reference controls above.

@@ -36,7 +36,7 @@ local .github/workflows/ci.yml  (new: links, review self-test, lock hashes, revi
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
 18b6a47b723d1b935e12896738496280add9a6f5db0375cb603dab7c3a9d9e22  docs/lessons.md
-ce232c651f2482d9028c5275fe1ae33aaf8ec83eefa55e43671e25d9a9293e0c  docs/model-trials.md
+588d1d00ebbecedefed92931a67406889b9d5b705fbe325e6e9dc31906b74a35  docs/model-trials.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
 5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md
 ce585e0292cb3771833831022a3b3d8274767fdb903c345b82b3b71ae4b94ee2  harness.json
