@@ -404,6 +404,28 @@ on its checked-out SHA. It is optional independent verification; billing or an
 absent hosted run does not block a locally validated merge. No self-hosted runner
 or account billing change is required.
 
+## Local validation caches across reboots
+
+[designed: owner reboot cleanup, 2026-10-17] Keep reusable validation tools and
+original fixtures in ignored repository caches rather than `/tmp`. On this machine,
+Playwright is under `.cache/validation-tools/browser-tooling`; verified original
+fixtures are under `.cache/validation-assets/original-match-fixtures`. Stage the
+required fixtures into each task/review worktree's own `.cache` before testing.
+These caches contain no provider credentials and are never committed.
+
+[designed: same cleanup] For browser checks, export absolute paths rooted in the
+main checkout:
+
+```bash
+export PLAYWRIGHT_MODULE="$PWD/.cache/validation-tools/browser-tooling/node_modules/playwright/index.js"
+export PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/validation-tools/browser-tooling/browser-cache"
+```
+
+[designed: T72 and owner cleanup] Create a physical `.cache/tmp` in the checkout
+running a check and set `TMPDIR` to its absolute path. Detached services need this
+explicitly in their environment. Preserve task/review worktrees and Windows saves;
+remove only verified owned temporary files after their readers finish.
+
 ## Optional original-match runtime
 
 [designed: T62] `python3 -m pip install '.[watched]'` installs tested Unicorn2.1.4;

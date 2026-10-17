@@ -13,7 +13,7 @@ CASES=(
  ('saved tactics','goal2/desktop/model.py','save_state(Path(path),self.state,self.template_bytes)','candidate=copy.copy(self.state);candidate.country_tactics=0;save_state(Path(path),candidate,self.template_bytes)','test_desktop_model.DesktopModelCases.test_save_resume_preserves_complete_state_without_regeneration_and_rejects_bad_input'),
  ('dependency instruction','goal2/desktop/__main__.py','Install the desktop extra:','Instructions omitted:','test_desktop_entry.DesktopEntryCases.test_missing_qt_reports_install_instruction_before_reading_assets'),
  ('confirm widget wire','goal2/desktop/window.py','self.confirm.clicked.connect(self.confirm_draft)','self.confirm.clicked.connect(lambda:None)',None),
- ('country draft isolation','goal2/desktop/window.py','        self.refresh()\n\n    def selected_ids','        self.refresh()\n        self.country.currentIndexChanged.connect(lambda _:self.model.new_campaign(self.country.currentData()))\n\n    def selected_ids',None),
+ ('country draft isolation','goal2/desktop/window.py','        self.country.currentIndexChanged.connect(self.country_changed)','        self.country.currentIndexChanged.connect(self.country_changed)\n        self.country.currentIndexChanged.connect(lambda _:self.model.new_campaign(self.country.currentData()))',None),
 )
 for name,relative,before,after,test in CASES:
  path=ROOT/relative;saved=path.read_bytes();source=saved.decode()

@@ -18,13 +18,22 @@ play remain Qt/Unicorn-independent. Linux Qt needs its platform libraries; X11
 uses libxcb-cursor0 and libxkbcommon-x11-0 in addition to existing X/GL libraries.
 Offscreen acceptance does not replace the actual X11 window check.
 
-[designed] Country selection is a draft. **New campaign** explicitly starts a
-fresh1990 campaign for that country with initial seeds4660/33590, using the shared
-opening campaign generator. A redraw, country selector edit or Resume does not
-regenerate players. The active country's actual twenty records show original
-names, position groups, ability, energy, confidence and eligibility; team morale
-uses the confirmed eleven. Position groups use the runtime POS_LINE mapping,
-not a new role table. The labels follow rebuild conventions, not an original Qt UI.
+[designed: #181] Selecting a country immediately shows a fresh campaign preview:
+its name, twenty-player squad, captain, tactics, morale, next fixture and reserve
+pool. Preview results belong to that fresh team; the active game's result is
+shown again on return. **New campaign** or **New standalone friendly** explicitly
+makes the selected country active; browsing never replaces the active game or
+writes its save. Management, play, Save, exchanges and the competition table are
+unavailable in a preview. Return to the active country to recover its unconfirmed
+XI/captain/tactics draft, or use Resume to load a saved game. Country selection
+is unavailable during a match.
+
+[designed] **New campaign** starts a fresh1990 campaign with initial seeds4660/33590,
+using the shared opening campaign generator. A redraw or Resume does not regenerate
+players; previews generate separate records. The displayed twenty records show
+original names, position groups, ability, energy, confidence and eligibility;
+team morale uses the confirmed eleven. Position groups use the runtime POS_LINE
+mapping, not a new role table. The labels follow rebuild conventions, not an original Qt UI.
 
 [designed; derived: T36/T44] Check exactly eleven available starters, choose one
 as captain and toggle the eight tactics bits, then **Confirm management**. Until
@@ -54,6 +63,7 @@ QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario mana
 xvfb-run -a env QT_QPA_PLATFORM=xcb python3 tools/desktop-ui/acceptance.py --scenario management --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 xvfb-run -a env QT_QPA_PLATFORM=xcb python3 tools/desktop-ui/acceptance.py --scenario launch --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 python3 tools/desktop-ui/prove-management.py
+QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/country-selection.py --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 ```
 
 [designed: T70] Confirm management, then choose **Play quick friendly**. Simulation
