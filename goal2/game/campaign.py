@@ -163,8 +163,11 @@ class CampaignState:
         # Older T40 saves may have a completion prefix without retained scores.
         result_ids = []
         for row in self.results:
-            if not isinstance(row, dict) or set(row) != {"fixture_id", "teams", "score"}:
+            if not isinstance(row, dict) or set(row) not in ({"fixture_id", "teams", "score"}, {"fixture_id", "teams", "score", "engine", "schema"}):
                 raise CampaignError("campaign result has missing or unknown fields")
+            from goal2.game.watched_schema import watched, RESULT_SCHEMA
+            if watched(row) and (type(row["schema"]) is not int or row["schema"] != RESULT_SCHEMA):
+                raise CampaignError("invalid watched result schema")
             fixture_id = row["fixture_id"]
             if fixture_id not in self.completed_fixture_ids or fixture_id in result_ids:
                 raise CampaignError("campaign result references an incomplete or duplicate fixture")

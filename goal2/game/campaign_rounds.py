@@ -57,17 +57,30 @@ class World:
         seed=self.initial_seed;managed_ids=[]
         for fixture,row in zip(self.fixtures,self.results):
             keys={'fixture_id','teams','score','winner','mode','seed_before','seed_after','draws'}
-            if (not isinstance(row,dict) or set(row)!=keys or row['fixture_id']!=fixture.fixture_id
+            is_watched=isinstance(row,dict) and row.get('mode')=='watched'
+            if is_watched:
+                from goal2.game.watched_schema import ENGINE_ID, RESULT_SCHEMA
+                watched_keys={'fixture_id','teams','score','winner','mode','engine','schema','seed_before',
+                    'seed_after','secondary_after','engine_year','index','setup_seed'}
+                if (set(row)!=watched_keys or row['engine']!=ENGINE_ID
+                        or type(row['schema']) is not int or row['schema']!=RESULT_SCHEMA
+                        or not integer(row['secondary_after'],0,65535) or not integer(row['engine_year'],0,65535)
+                        or not integer(row['index'],1,2400) or fixture.fixture_id!=f"original:{row['index']}"
+                        or not integer(row['setup_seed'],0,65535)
+                        or row['setup_seed']!=row['index']*(row['engine_year']+1)&65535):
+                    raise ValueError('invalid watched world result or setup reseed')
+            if (not isinstance(row,dict) or (not is_watched and set(row)!=keys) or row['fixture_id']!=fixture.fixture_id
                     or row['teams']!=[fixture.side_a,fixture.side_b]
                     or not isinstance(row['teams'],list) or any(type(t) is not int for t in row['teams'])
                     or not isinstance(row['score'],list) or len(row['score'])!=2
                     or any(not integer(g,0,255) for g in row['score'])
                     or not integer(row['winner'],0,2) or not integer(row['seed_before'],0,65535)
-                    or not integer(row['seed_after'],0,65535) or not integer(row['draws'],1,2**31-1)
-                    or row['seed_before']!=seed or advance(seed,row['draws'])!=row['seed_after']):
+                    or not integer(row['seed_after'],0,65535)
+                    or row['seed_before']!=seed or (not is_watched and (not integer(row['draws'],1,2**31-1)
+                    or advance(seed,row['draws'])!=row['seed_after']))):
                 raise ValueError('duplicate/out-of-order/invalid world result or RNG chain')
             expected='managed' if self.managed_country in (fixture.side_a,fixture.side_b) else 'silent'
-            if row['mode']!=expected:raise ValueError('world result used the wrong match path')
+            if (row['mode']!='watched' if is_watched and expected=='managed' else row['mode']!=expected):raise ValueError('world result used the wrong match path')
             a,b=row['score'];winner=2 if a==b else int(b>a)
             decider=fixture.kind==4 or 8<=fixture.kind<=203
             if (a!=b or not decider) and row['winner']!=winner:raise ValueError('world result winner differs from score')
