@@ -197,9 +197,18 @@ class WatchedAdapter(unittest.TestCase):
         s.campaign=CampaignState(1992,1,1,2,123,78,(f,))
         for fixture in (Fixture(7,19,22),Fixture(19,7,21)):
             with self.assertRaises(ValueError):prepare_watched(s,self.raw,fixture)
+        declared=Image(s.mem);address=declared.far(0xA923)+0x28
+        declared.memory[address:address+2]=(2001).to_bytes(2,'little');s.mem=declared.memory_component()
         incompatible=CampaignFixture('original:22',1,3,5,1,7,19)
         s.campaign=CampaignState(1994,1,3,5,123,78,(incompatible,))
+        before=copy.deepcopy(s)
         with self.assertRaises(ValueError):prepare_watched(s,self.raw,Fixture(7,19,22))
+        self.assertEqual(s,before)
+        # A class-0 index with an inherited class-1 next-free bound is a separate invalid input.
+        s.campaign=CampaignState(1992,1,1,2,123,78,(f,))
+        before=copy.deepcopy(s)
+        with self.assertRaises(ValueError):prepare_watched(s,self.raw,Fixture(7,19,21))
+        self.assertEqual(s,before)
 
     def test_each_default_decision_is_explicitly_answered(self):
         from goal2.engine.original_match.match import Event
