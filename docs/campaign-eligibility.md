@@ -51,7 +51,8 @@ identical status, recovery, RNG and fixture history.
 [designed: T45] Current campaigns use twenty squad and eighty disjoint reserve
 identities. The reserve B27F caller lives in campaign_pool.py. This adapter consumes current player/event state; the friendly quick
 runner produces no foul events. Tests inject explicit events/state without a
-production incident endpoint. Competitive event production remains T51, and an
+production incident endpoint. [designed: T51] Original competitive events and the full original tail pass
+through the competitive adapter; an
 original watched-result publisher must not reapply Python status/recovery over
 original returned records. No complete original fixture-tail parity is claimed.
 

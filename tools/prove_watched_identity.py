@@ -14,7 +14,7 @@ SCHEMA='goal2/game/watched_schema.py'
 MUTATIONS=[
  ('unknown raw result fields accepted',SCHEMA,'if keys is None or set(result)!=keys:', 'if keys is None:',
   'test_exact_profiles_keep_actual_engine_identity'),
- ('current friendly resolution unchecked',SCHEMA,"if kit=='2':_friendly_kit2(result)","if False:_friendly_kit2(result)",
+ ('current friendly resolution unchecked',SCHEMA,"_players(result) if competitive else _friendly_kit2(result)","_players(result) if competitive else None",
   'test_kit2_remains_friendly_with_exact_default_resolution_and_players'),
  ('historical result silently relabeled',SCHEMA,"if last['engine']!=engine:raise ValueError('watched engine differs from original result profile')",
   "if False:raise ValueError('watched engine differs from original result profile')",

@@ -46,6 +46,11 @@ def engine_year(campaign: CampaignState) -> int:
 
 
 def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Image:
+    """[designed: T63] Preserve the public friendly-only preparation contract."""
+    return _prepare_match(state,original,fixture,competitive=False)
+
+
+def _prepare_match(state: GameState, original: bytes, fixture: Fixture, *, competitive: bool) -> Image:
     """[designed] Validate and serialize a private candidate with exact source endpoints/index.
 
     [confirmed: E033 Image/Match] Calendar order does not assign a home side.
@@ -57,8 +62,10 @@ def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Imag
     for value, name in ((fixture.first,'first country'),(fixture.second,'second country'),
                         (state.managed_country,'managed country')):
         _integer(value,1,128,name)
-    if type(fixture.kind) is not int or fixture.kind != 1 or fixture.first == fixture.second:
-        raise ValueError('two distinct countries and a friendly fixture are required')
+    from goal2.engine.original_match.match import KINDS
+    kinds=tuple(k for k in KINDS if k!=1) if competitive else (1,)
+    if type(fixture.kind) is not int or fixture.kind not in kinds or fixture.first == fixture.second:
+        raise ValueError('two distinct countries and a supported fixture kind are required')
     if state.managed_country not in (fixture.first, fixture.second):
         raise ValueError('managed country must be a fixture endpoint')
     template = Image.from_memory_component(state.mem)
@@ -158,13 +165,20 @@ def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
     energy/form update occurs. Events here are a completed diagnostic transcript;
     a future worker must stream directly from Match.events(), never replay this.
     """
+    image=prepare_watched(state,original,fixture)
+    return _drive_match(state,image,fixture,reference_seed=reference_seed,delay_byte=delay_byte,
+                        record_draws=record_draws)
+
+
+def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
+                 substitutions=None,quick_at_half_time=False):
+    """[designed: T51] Shared completed-original driver; no publication or Python tail."""
     if reference_seed is not None:
         _integer(reference_seed,0,65535,'reference seed')
     if delay_byte is not None:
         _integer(delay_byte,0,255,'delay byte')
-    image = prepare_watched(state,original,fixture)
     match = Match(image,fixture,managed=state.managed_country,captain=state.captain or None,
-                  seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws)
+                  seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions)
     events = []
     previous_decision = None
     for ev in match.events():
@@ -174,7 +188,7 @@ def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
             if ev.data.get('refused') or identity == previous_decision:
                 raise RuntimeError('original decision refused or made no progress under default play-on policy')
             previous_decision = copy.deepcopy(identity)
-            match.answer()
+            match.answer(quick=True) if quick_at_half_time and ev.data.get('context')=='half_time' else match.answer()
         elif ev.kind != 'refused':
             previous_decision = None
     # [confirmed: E033] result() requires completion after the B7FA player-update tail.

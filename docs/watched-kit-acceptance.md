@@ -107,7 +107,8 @@ hooks, tests and worked example.
 [confirmed: PR255 merged README/E034] The accepted kit supports friendly and
 competitive fixture kinds, extra time, shoot-outs, sudden death and explicit per-side
 substitution budgets. Kind4 and other kinds no original builder writes are refused.
-[designed: T51a] Application routing remains friendly-only until T51.
+[designed: T51] Public watched/friendly entrypoints remain friendly-only; the
+[explicit competitive interface](competitive-matches.md) supplies competitive publication.
 The original default budget is five for friendlies and two otherwise; the owner’s
 application budget policy is supplied by T51, not by this acceptance. The shoot-out
 board includes converted kicks, while result.score excludes them. One human side. Substitutions follow original
@@ -315,8 +316,8 @@ default budget5/5, a winner consistent with the friendly score, and40 distinct
 player consequence records with typed before/after bytes and consistent status
 flags. Kit1 keeps its original exact field profile; kit2 requires its seven
 additional fields. Existing board/incident/decision/input schemas and returned
-Memory/RNG/source checks apply to both. Competitive application profiles and
-owner substitution-budget routing remain T51.
+Memory/RNG/source checks apply to both. [designed: T51] Competitive jobs select a separate schema2 profile and explicit
+5/5 budget, described in [competitive matches](competitive-matches.md).
 
 [designed: T51a] Run `python3 -m unittest goal2.tests.test_watched_kit_identity -v`
 for pure profile/publication/mixed-ledger controls. Reproduce genuine historical

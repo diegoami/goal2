@@ -22,6 +22,52 @@ if _ENGINE_DIR not in sys.path:
 from goal2.engine.quick_engine import QuickMatch  # noqa: E402
 
 
+def _friendly_input(template,game_state):
+    """[designed: T51] New-friendly setup copy after a validated original competitive tail.
+
+    [confirmed: PR255/E034 and T51 mode measurements] Original friendly setup is
+    DS9A3D=0,8319=45,7C36=0. The prior original Memory remains the saved evidence;
+    only this private input copy receives new-match modes. Kickoff side is retained.
+    """
+    modes=tuple(template.ds_bytes(off,1)[0] for off in (0x9A3D,0x8319,0x7C36))
+    if modes==(0,45,0):return template
+    campaign=getattr(game_state,'campaign',None)
+    if campaign is None or campaign.next_fixture is None or campaign.next_fixture.kind!=1:return template
+    from goal2.game.watched_schema import watched,COMPETITIVE_SCHEMA,validate_saved_watched,resolution
+    last=game_state.last_match
+    retained=last if watched(last) else None
+    if retained is None:
+        originals=[row for row in campaign.results if watched(row)]
+        retained=originals[-1] if originals else None
+    if campaign.world is not None:
+        original=[r for r in campaign.world.results if r.get('mode')=='watched']
+        retained=original[-1] if original else None
+    if retained is None or retained.get('schema')!=COMPETITIVE_SCHEMA:return template
+    import copy,io,zipfile,zlib
+    from goal2.engine.savestate import Savestate
+    from goal2.game.state import to_savestate
+    from goal2.game.campaign_rounds import validate_state
+    validate_saved_watched(game_state);copy.deepcopy(campaign).__post_init__();validate_state(game_state)
+    from goal2.engine.original_match.match import DECIDERS
+    stages=resolution(retained['original']) if 'original' in retained else retained['resolution']
+    marks=(0,255) if stages['penalties'] is not None else (15,) if stages['extra_time'] is not None else (45,)
+    if modes[0]!=1 or modes[1] not in marks or modes[2]!=int(stages['kind'] in DECIDERS):
+        raise ValueError('unsupported retained original competitive setup modes')
+    # [designed] Reuse the existing serializer to require this precise state's adapted
+    # input, rather than normalize an arbitrary supplied snapshot or unknown modes.
+    container=io.BytesIO()
+    with zipfile.ZipFile(container,'w') as archive:
+        archive.writestr('Vga',zlib.compress(template.vga));archive.writestr('Memory',zlib.compress(template.mem))
+    expected=Savestate(to_savestate(game_state,original=container.getvalue()))
+    if bytes(template.mem)!=bytes(expected.mem) or bytes(template.vga)!=bytes(game_state.vga):
+        raise ValueError('competitive friendly setup requires the exact adapted current state')
+    if template.ds_bytes(0x831A,1)[0] not in (0,1):raise ValueError('invalid kick-off side in template')
+    candidate=copy.copy(template);memory=bytearray(template.mem);base=template.program().ds_base+0x78
+    for off,value in ((0x9A3D,0),(0x8319,45),(0x7C36,0)):memory[base+off]=value
+    candidate.mem=bytes(memory)
+    return candidate
+
+
 def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, int]:
     """[designed: T29] Resolve the actual engine teams for a full friendly.
 
@@ -30,6 +76,7 @@ def resolve_full_matchup(template, game_state) -> tuple[tuple[int, int], int, in
     setup but does not simulate the match. [designed: T41] Campaign mode instead
     uses the exact next scheduled pair and refuses unsupported fixtures.
     """
+    template=_friendly_input(template,game_state)
     qm = QuickMatch(template)
     if qm.ninea3d != 0 or qm.eight319 != 0x2D:
         raise ValueError("full friendly needs a normal friendly template")
@@ -86,7 +133,8 @@ def begin_full_match(template, game_state):
     [confirmed: E010 notes at1b694ed] First-half minutes0..45, countdown91-minute.
     The private engine is retained for one continuation; no result is published.
     """
-    # [designed: T29] Resolve through the same rule the preview displays.
+    # [designed: T29/T51] Both constructors use the same validated new-friendly copy.
+    template=_friendly_input(template,game_state)
     teams, managed_side, opponent = resolve_full_matchup(template, game_state)
     campaign = getattr(game_state, 'campaign', None)
     if campaign is not None:
