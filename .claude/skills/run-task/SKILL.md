@@ -100,18 +100,16 @@ never the implementer's family.
      always follow the brief, and the script's reading is the safety net.
    - **Read before you act (L55).** The final message, read-only (never `auth.json` there), with
      the `session ses_…` id from the run's log:
+     [designed: T72] The log names a retained `run.json` manifest and session ID.
+     Use the current receipt-aware reader for both live progress and retained exports:
      ```bash
-     python3 - <<'PY'
-     import sqlite3, json, os
-     home = os.environ.get('HARNESS_OPENCODE_HOME') or os.path.expanduser('~/.local/share/harness-opencode')
-     db = 'file:' + os.path.join(home, 'data', 'opencode', 'opencode.db') + '?mode=ro'   # the scripts' data directory
-     c = sqlite3.connect(db, uri=True)
-     sid = 'ses_...'   # the "session ses_..." line in the run's log
-     parts = [json.loads(d) for (d,) in c.execute("select data from part where session_id=? order by time_created", (sid,))]
-     texts = [p for p in parts if p.get('type') == 'text']
-     print(texts[-1]['text'] if texts else 'no text part')
-     PY
+     tools/harness/peek.sh /absolute/path/to/run.json -n 20
+     tools/harness/peek.sh ses_... -n 20
      ```
+     Read the manifest's full `final.txt` and `export.json` before acting; peek is a
+     compact display. Explicit legacy v1 reads require the selected v1 binary and
+     `--major 1`. Never query credential tables, copy auth files or open a v1 DB with v2.
+
    - A Claude review (`/code-review <pr>`, always with the number, or the `reviewer` agent posted
      with `post-review.mjs`) only when the user asks: it is the implementer's family.
 

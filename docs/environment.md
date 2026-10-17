@@ -18,26 +18,35 @@ are refused. Pass HARNESS_CLIENT=codex to detached review units because they do
 not inherit the interactive session markers. Keep provider keys in the unit's
 environment, never logs. `switch-model.mjs --show` reports the detected defaults.
 
-[confirmed: T23 / PR #54, 2026-10-14] The installed Linux OpenCode 2.0.28 rejects
-the current harness's `run --dir` and `--variant` flags before creating a session.
-The existing 1.18.32 backup completed the GLM 5.3 Flash review (535 s). Where that
-backup exists, select it per run without changing the default installation:
+[designed: T72; confirmed: measurements/T72, tests/opencode_workflow.test.mjs]
+Routine review and peek use the installed current OpenCode (verified on 2.0.28),
+without a backup override. V2 uses the real working directory, `provider/model#variant`
+and native ordered permissions; the harness starts its own `serve --stdio` execution
+server and polls effective model/agent readiness before any generation. The trusted
+launching checkout's reviewer overrides cwd config while global provider discovery
+is preserved. A stored agent string alone is insufficient proof of its permissions.
 
 ```bash
-HARNESS_CLIENT=codex HARNESS_OPENCODE_EXE="$HOME/.opencode/bin/opencode.1.18.32.bak" \
-  node tools/harness/review.mjs --pr <pr> --brief <brief> --issue <issue> \
-  --apply-label --reviewer <owner-selected-model>
-OPENCODE_BIN="$HOME/.opencode/bin/opencode.1.18.32.bak" tools/harness/peek.sh <session>
+HARNESS_CLIENT=codex node tools/harness/review.mjs --pr <pr> --brief <brief> \
+  --issue <issue> --apply-label --reviewer <owner-selected-model>
+tools/harness/peek.sh <session-or-run.json-or-log> -n 20
+node tools/harness/preflight-opencode.mjs --out .cache/opencode-preflight
 ```
 
-[confirmed: local 2.0.28 command help and
-[official OpenCode v2 commands](https://dev.opencode.ai/v2/docs/cli/commands/)]
-V2 selects effort as `provider/model#variant`, uses the working directory, and
-exports via `opencode session export`. Its configuration uses ordered
-`permissions` rules. [designed: T24] Allowing major version 2 is not proof of
-compatible run/session/config/permission semantics; migration must preserve
-the independent-review boundary and main-checkout configuration grants. This
-task documents the differences and backup, without implementing a v2 adapter.
+[designed: T72] Preflight is nonbilling: effective reviewer/MiniMax-M3 thinking,
+owned empty session/list/export/peek and zero usage. It does not prove model access
+or active-generation cancellation. Review uses the exact owner-selected model;
+missing profile/effort/permissions fail before billing, without substitution.
+
+[confirmed: T23/PR54 historical failure; T72a pinned fixtures] The old v1 `--dir`,
+`--variant` and top-level `export` commands fail on v2. Explicit v1 compatibility
+remains available with an intentionally selected v1 binary and the untouched legacy
+harness DB. Retain historical binaries and receipts; routine v2 needs no backup:
+
+```bash
+HARNESS_OPENCODE_EXE="$HOME/.opencode/bin/opencode.1.18.32.bak" \
+  tools/harness/peek.sh <legacy-session> --major 1
+```
 
 ## On your desktop
 
@@ -45,7 +54,7 @@ Locally there is no network policy and no environment settings, and the session-
 nothing. You need:
 - Node 20 or later.
 - `gh`, logged in (`gh auth login`). It needs no `GH_TOKEN`.
-- OpenCode 1.18 (`opencode --version`), logged in to OpenCode Go (next section).
+- Installed current OpenCode 2 (`opencode --version`), with the selected provider configured (v2 data setup below).
 - Optional: the credential jail (`tools/harness/lib/jail.mjs`, #68), off by default. With
   `"jail": { "enabled": true }` in `harness.json` and bubblewrap installed on Linux or WSL
   (`sudo apt install bubblewrap`), reviewers run without your GitHub credentials; enabled where
@@ -62,14 +71,16 @@ which cannot use the run's Linux paths and survives the kill of a timed-out run:
 tests failed through it. The runner skips the shim and falls back to `~/.opencode/bin/opencode`;
 `HARNESS_OPENCODE_EXE` overrides both. WSL and Windows keep separate logins: log in from WSL.
 
-**On Windows**, `npm install -g opencode-ai@1.18`.
+[designed: T72] On Windows or Linux, install the current native v2 CLI using the
+[official setup instructions](https://opencode.ai/v2/docs/). Retain existing v1 binaries;
+the hook reports version mismatches instead of installing/downgrading a binary.
 
-Then run `npm test` in the harness repository. The tests against the real OpenCode run wherever
-`opencode` is installed. Then do the first-session check at the end of this page.
+[designed: T72] Run the offline premerge checks and the nonbilling preflight above.
+Only an owner-authorized review calls a model; offline tests use protocol stubs.
 
 ## OpenCode Go
 
-**History (the owner, 2026-10-11):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
+**Historical v1 setup (the owner, 2026-10-11; v2 setup below):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
 
 The MiMo v2.6 reviewers are OpenCode Go's (`opencode-go/…`), a subscription. They are not OpenCode Zen's pay-per-token `opencode/…` models. Go comes from a console
 (organisation) login, not from a key; `opencode auth login` and `OPENCODE_API_KEY` reach only Zen
@@ -85,7 +96,7 @@ directory, another machine, WSL beside Windows, or a new cloud session each need
 
 ## OpenAI, for the reviewer
 
-**History (the owner, 2026-10-11):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
+**Historical v1 setup (the owner, 2026-10-11; v2 setup below):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
 
 The reviewer is GPT-5.6 Luna on the direct OpenAI route (`openai/gpt-5.6-luna`, L51), never a Luna
 on Go (`opencode-go/…`): a third-party proxy behind Go's returned `Bad Request` in long agent loops
@@ -97,7 +108,7 @@ next run copies it.
 
 ## Z.AI, for the GLM reviewers
 
-**History (the owner, 2026-10-11):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
+**Historical v1 setup (the owner, 2026-10-11; v2 setup below):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
 
 GLM-5.3 Flash, the default implementer (L42), and GLM-5.3, the first hard reviewer (L41), run on
 Z.AI's coding plan (`zai-coding-plan/…`); both stay on watch (L35). Log in once with `opencode auth login` and choose Z.AI Coding Plan (an API
@@ -107,7 +118,7 @@ the plan.
 
 ## Alibaba Token Plan and MiniMax, on watch
 
-**History (the owner, 2026-10-11):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
+**Historical v1 setup (the owner, 2026-10-11; v2 setup below):** this section's seats, chains and placements no longer pick a model: the main session or a Claude agent implements, and `harness.json`'s `reviewer.default` reviews unless the user names another (CLAUDE.md "Choosing models"). Kept for the logins and probes.
 
 Alibaba is usable (the owner lifted the ask-first gate, 2026-10-13). On an Alibaba quota or rate
 error, stop and tell the owner, and do not retry: its monthly pool is small and is not monitored.
@@ -221,31 +232,51 @@ dies on another rejected path is fixed by widening the grant here, never by re-b
 
 ## The scripts' own data directory
 
-`review.mjs` and `switch-model.mjs` run OpenCode with a data directory of their own, so OpenCode's
-desktop app (2.x) can never migrate their database to a schema the 1.x CLI cannot read (IC2 #540,
-"no such column: project_id"). It is `~/.local/share/harness-opencode`, with `data/`, `cache/` and
-`state/` set as `XDG_DATA_HOME`, `XDG_CACHE_HOME` and `XDG_STATE_HOME` for OpenCode's processes only.
-`HARNESS_OPENCODE_HOME` moves it (a relative path is made absolute). `auth.json`, the API-key
-providers, is copied in from `~/.local/share/opencode` (or `HARNESS_OPENCODE_AUTH_SOURCE`) when the
-copy is missing or older; it is never read or printed.
+[confirmed: measurements/T72/native-storage primary source; designed: T72]
+`HARNESS_OPENCODE_HOME` (default `~/.local/share/harness-opencode`) contains distinct
+major roots. Legacy v1 `data/`, `cache/`, `state/` and its existing receipt DB stay
+intact. V2 persists native provider credentials and sessions only in
+`v2/data/opencode/opencode.db`; it sets `OPENCODE_DB` explicitly so an inherited
+path cannot migrate the legacy DB. Each invocation has its own cache/state, stdio
+lease, protocol marker and receipt index under `v2/runs/run-*`. Multiple private
+servers may read the same v2 DB; they own only their execution and session.
 
-Go's login does not travel with `auth.json`, so log in once for this directory. In bash (WSL, Linux):
+[confirmed: same primary source] Credentials and sessions share the native database;
+fresh data on every run would lose one-time logins, even when a model catalogue
+still lists the provider. V2 never copies `auth.json` or reads/exports credentials.
+Environment API keys and ordinary global provider configuration remain available.
+For native login providers, connect once to the v2-only root (never pass secrets
+on the command line; use the native interactive form):
 
 ```bash
-XDG_DATA_HOME="$HOME/.local/share/harness-opencode/data" opencode console login
+XDG_DATA_HOME="$HOME/.local/share/harness-opencode/v2/data" \
+  OPENCODE_DB="$HOME/.local/share/harness-opencode/v2/data/opencode/opencode.db" \
+  opencode auth login --standalone <integration>
 ```
 
-In PowerShell (Windows), in a new window afterwards:
+[confirmed: native-storage/auth-login-help.txt] V2 `auth login` selects an integration
+and supports a private `--standalone` server. With a custom harness root, substitute
+that same absolute root in both paths. This is setup for the native v2 DB, not a
+credential migration. The historical v1 path/copy behavior above is explicit v1
+compatibility only. A catalogue projection proves advertised metadata, not login
+validity or a billed provider request.
 
-```powershell
-$env:XDG_DATA_HOME = "$HOME\.local\share\harness-opencode\data"; opencode console login
-```
+[designed: T72; confirmed: workflow tests] The log names a `run.json` manifest with
+binary/source/policy identities, session/cwd/model/agent, source hashes, phase,
+usage/duration and retained file paths. Raw stdout/stderr, full export response,
+unwrapped export, full assistant/final text, brief and selected effective profile
+are retained on success and failure before closing the owned server. Generated
+transport nonces are redacted. Review worktrees remain intact. `peek.sh run.json`
+works after completion; bare session IDs resolve through the receipt index. Live
+peek uses private standalone export against this v2 DB, never the shared service.
+V2 resume requires its exact retained manifest and matching session/cwd/model/agent.
 
-Check it with the same `XDG_DATA_HOME` and `opencode models opencode-go`. Before any run, each script
-checks that OpenCode lists its model there; if not, it exits 3 with the command that fixes it (this
-one for Go, `opencode auth login` for OpenAI), and nothing is billed. The scripts never change their
-own process's environment, only that of the OpenCode processes they start, so nothing needs
-restoring afterwards.
+[designed: T72] Cancellation interrupts only the owned session at the owned endpoint,
+closes its stdin lease, then bounds cleanup of its own process groups, including
+descendants after leader exit. It never stops a shared service. Complete final
+exports decide completion/rejections/usage; transient console output cannot approve.
+This transport migration does not resolve the separate formatting-parser #147 or
+broader retention #142 requests.
 
 ## Keys
 
@@ -288,32 +319,17 @@ A cloud environment's network policy must allow:
 
 ## The session-start hook
 
-`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, runs at the start of every
-session on the web (and does nothing locally). It:
-- installs `opencode-ai@1.18` with npm and `gh` with apt, if they are missing;
-- reports which keys are set, as the session's first context.
-
-It never fails the session. OpenCode is pinned to the 1.18 line because the runner's assumptions were
-checked against it:
-- the `run` flags;
-- `session list --format json`, with `id`, `title`, `directory`, `created` and `updated`;
-- `export`, whose `info.agent` names the agent that actually ran.
-
-Change the pin only after running the tools against the new version.
-
-On your machine, install the same things yourself: `npm install -g opencode-ai@1.18`, `gh`, and
-Node 20 or later.
+[designed: T72] `.claude/hooks/session-start.sh` reports the current CLI version and
+key presence for remote Claude sessions; it does not replace the installed CLI.
+Install the current native v2 binary, `gh` and Node 20+ using their supported setup.
+Keep the historical v1 binary when explicit compatibility is needed.
 
 ## First session: check it works
 
-1. The hook's report shows every key `set`, and no setup notes.
-2. The hook's report says OpenAI is logged in (the default reviewer), and `opencode models openai`
-   lists `harness.json`'s `luna` id. If an id differs, edit `harness.json`.
-3. Jev: put two lines such as `{"id": 1, "state": {"title": "Game crashes on load"}}` in
-   `items.jsonl`, then run `node tools/harness/jev.mjs ask --decision breaks-play --in items.jsonl`.
-   It should print `asked 2 of 2`.
-4. OpenCode: run `/run-task` on a small `fix`, and watch the first review: the tail of its log and
-   the posted review.
+[designed: T72] Check `switch-model.mjs --show` for client/family/defaults, choose the
+reviewer explicitly, run the nonbilling preflight above, then use one authorized
+review of a validated PR. Follow its printed session ID or manifest with `peek.sh`.
+Do not add a paid probe to a review whose one live run is already the acceptance smoke.
 
 ## Local pre-merge validation
 

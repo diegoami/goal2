@@ -177,11 +177,7 @@ export function openCodeHome(env = process.env, { log = () => {} } = {}) {
   return { env: { ...env, ...dirs }, root, dataHome: dirs.XDG_DATA_HOME };
 }
 
-// The OpenCode majors the runner drives. 1.x is the tested path (1.18.34). 2.x is allowed if
-// the run produces the same artefacts as a 1.x run (lesson L110, owner 2026-10-13): the desktop
-// app's 2.x CLI differs in run flags, session fields and agent format (#26), so a 2.x run that
-// diverges is caught by the run's own artefacts rather than by this gate. Anything else is
-// refused before anything is billed.
+// [designed: T72; confirmed: protocol/workflow fixtures] Dispatch is explicit; unknown majors fail before billing.
 export const SUPPORTED_MAJOR = [1, 2];
 // OpenCode 1.x prints `<major>.<minor>.<patch>` on `--version`; 2.x prints `opencode v<major>.<minor>.<patch>`.
 // The non-digit prefix (`opencode` / `v` / whitespace) is consumed by the (?:^|v|\s) alternation,
@@ -201,8 +197,7 @@ export function versionProblem(version, exe) {
     + `Use the installed current CLI or an explicitly selected supported HARNESS_OPENCODE_EXE.`;
 }
 
-// The efforts (variants) OpenCode offers for a model, from `opencode models <provider> --verbose`,
-// which prints each id followed by its JSON; null when they cannot be read.
+// [designed: T72] V1 verbose CLI metadata; v2 owned native catalogue, never a shared-service retry.
 export async function modelVariants(cmd, id, { env, cwd, timeoutMs = 60_000 }) {
   const version = await openCodeVersion(cmd, { env, cwd });
   if (version?.startsWith('2.')) {
@@ -227,18 +222,7 @@ export async function modelVariants(cmd, id, { env, cwd, timeoutMs = 60_000 }) {
   return null;
 }
 
-// The model ids OpenCode lists for these providers in this environment, so an unknown id or a
-// provider that is not logged in stops a run before anything is billed.
-// Both 1.x and 2.x accept `opencode models` with no positional argument and return one
-// `<provider>/<model>` per line (1.x: 1.18.34; 2.x: 2.0.28). The older per-provider shape
-// `opencode models <provider>` was 1.x-only — 2.x rejects it as "Unexpected positional
-// argument". Client-side filter by `<provider>/` keeps the per-provider contract.
-// 2.x also tries to talk to its background service on a fixed port; a stale instance
-// (often left behind by an earlier harness run) holds the port and the bare call
-// fails with "Managed service port NNNN ... already in use". Retrying with
-// `--standalone` runs the command on a private server instead and works on 2.x while
-// 1.x ignores the flag (1.18.34 rejects it as unknown, so we only swap in the retry
-// if the bare call fails).
+// [designed: T72] Explicit major-specific nonbilling discovery; no managed-service or version fallback.
 // Returns { listed: Set, errors: Map provider -> message }.
 export async function listedModels(cmd, providers, { env, cwd, timeoutMs = 60_000 }) {
   const listed = new Set();
@@ -383,7 +367,7 @@ export function commandLineTooLong(parts, platform = process.platform) {
 }
 
 // The brief file every run's pointer prompt names: inside the worktree (the agent's tools reach
-// only there, L36/#501), deleted with the run's log files on success, kept and named on failure.
+// only there, L36/#501). [designed: T72] Kept with the run receipts on every outcome.
 export function briefFileName(title) {
   return `.harness-brief-${title}.md`;
 }

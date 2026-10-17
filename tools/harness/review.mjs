@@ -233,7 +233,7 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
       let run;
       try {
         run = await runOpenCodeWatched({
-          args: ocArgs(worktree, rev.agent, model), model, agent: rev.agent, agentFile, prompt, workDir: worktree, title: `pr${a.pr}-${fileSafe(m)}`,
+          args: ocArgs(worktree, rev.agent, model), model, agent: rev.agent, agentFile, reviewedHead: headSha, reviewPR: a.pr, prompt, workDir: worktree, title: `pr${a.pr}-${fileSafe(m)}`,
           startupTimeoutMs: rev.startupTimeoutSec * 1000, idleTimeoutMs: (idleSec ?? rev.idleTimeoutSec) * 1000,
           totalTimeoutMs: (totalSec ?? rev.totalTimeoutSec) * 1000, opencode, env: reviewEnv, log: say,
         });

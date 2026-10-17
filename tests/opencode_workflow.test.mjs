@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { capture, killOwned, delay, startPrivateServer } from '../tools/harness/lib/opencode-transport.mjs';
+const { capture, killOwned, delay, startPrivateServer, privateHome } = await import(process.env.T72_TRANSPORT_MODULE || '../tools/harness/lib/opencode-transport.mjs');
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from '../tools/harness/lib/opencode-policy.mjs';
 const agentFile = new URL('../.opencode/agents/reviewer.md', import.meta.url);
 test('trusted reviewer freezes exact deny rules and legacy external boundary without replacing globals', () => {
@@ -178,9 +178,12 @@ test('spawn errors are explicit infrastructure failures before any generation', 
 });
 test('production workflow identity and rejection deletion controls fail the intended assertions', () => {
   const root = new URL('../tools/harness/lib/', import.meta.url);
-  for (const [name, file, before, after] of [
+  for (const [name, file, before, after, pattern = 'full export identity', failure = 'Missing expected rejection'] of [
     ['session identity', 'opencode-protocol.mjs', "equal(sessionID, string(expected.sessionID, 'expected session id'), 'session');", ''],
     ['rejection', 'opencode-workflow.mjs', 'if (normalized.rejected) throw', 'if (false) throw'],
+    ['owned descendants', 'opencode-transport.mjs', 'if (!child?.pid) return;', 'if (!child?.pid || child.exitCode !== null || child.signalCode !== null) return;', 'capture deadline', 'owned descendant must terminate'],
+    ['old run command', 'opencode-workflow.mjs', "args.splice(1, 1, '--server', server.url);", '', 'production major dispatch', 'exit 2'],
+    ['complete final recovery', '../review.mjs', 'readReview(run.reviewText, header)', 'readReview(run.stdout, header)', 'review CLI uses', 'No review from'],
   ]) {
     const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-workflow-mutant-'));
     const dir = path.join(scratch, 'lib'); fs.mkdirSync(dir);
@@ -189,9 +192,92 @@ test('production workflow identity and rejection deletion controls fail the inte
     fs.copyFileSync(new URL('../tools/harness/review.mjs', import.meta.url), path.join(dir, '../review.mjs'));
     const target = path.join(dir, file); const source = fs.readFileSync(target, 'utf8'); assert(source.includes(before)); fs.writeFileSync(target, source.replace(before, after));
     const testEnv = { ...process.env }; delete testEnv.NODE_TEST_CONTEXT;
-    const result = spawnSync(process.execPath, ['--test', '--test-name-pattern=full export identity', new URL('./opencode_workflow.test.mjs', import.meta.url).pathname], { env: { ...testEnv, T72_TEST_MODULE: new URL(`file://${path.join(dir, 'opencode.mjs')}`).href }, encoding: 'utf8', timeout: 20000 });
+    const result = spawnSync(process.execPath, ['--test', '--test-name-pattern=' + pattern, new URL('./opencode_workflow.test.mjs', import.meta.url).pathname], { env: { ...testEnv, T72_TRANSPORT_MODULE: new URL(`file://${path.join(dir, 'opencode-transport.mjs')}`).href, T72_REVIEW_SCRIPT: path.join(scratch, 'review.mjs'), T72_TEST_MODULE: new URL(`file://${path.join(dir, 'opencode.mjs')}`).href }, encoding: 'utf8', timeout: 20000 });
     assert.equal(result.status, 1, `${name}: ${result.stderr}`);
-    assert.match(result.stdout + result.stderr, /Missing expected rejection/, name);
+    assert.match(result.stdout + result.stderr, new RegExp(failure), name);
     assert.doesNotMatch(result.stdout + result.stderr, /MODULE_NOT_FOUND|ERR_MODULE_NOT_FOUND|timed out/, name);
   }
+});
+
+test('review CLI uses exact fetched head, trusted profile and complete export while retaining its worktree', () => {
+  // [designed: T72] Actual git worktrees stay under the task cache, never /tmp, and are retained.
+  const cache = new URL('../.cache/workflow-review-tests/', import.meta.url).pathname; fs.mkdirSync(cache, { recursive: true });
+  const fixture = fs.mkdtempSync(path.join(cache, 'run-')); const repo = path.join(fixture, 'repo'); fs.mkdirSync(repo);
+  const git = (...args) => { const r = spawnSync('git', args, { cwd: repo, encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); return r.stdout.trim(); };
+  git('init', '-q'); git('config', 'user.email', 't72@example.invalid'); git('config', 'user.name', 'T72 nonbilling stub');
+  const cfg = { worktreeRoot: path.join(fixture, 'trees'), reviewer: { agent: 'reviewer', startupTimeoutSec: 2, idleTimeoutSec: 2, totalTimeoutSec: 4 }, models: { m3: selection }, blocked: [] };
+  fs.writeFileSync(path.join(repo, 'harness.json'), JSON.stringify(cfg)); fs.mkdirSync(path.join(repo, '.opencode/agents'), { recursive: true }); fs.copyFileSync(agentFile, path.join(repo, '.opencode/agents/reviewer.md'));
+  git('add', '.'); git('commit', '-qm', 'Synthetic CLI workflow'); const head = git('rev-parse', 'HEAD'); git('update-ref', 'refs/pull/1/head', head); git('remote', 'add', 'origin', repo);
+  const gh = path.join(fixture, 'gh.mjs'); fs.writeFileSync(gh, `if(process.argv.includes('--version')) console.log('gh stub'); else if(process.argv.includes('headRefOid')) console.log(process.env.STUB_HEAD); else if(!process.argv.includes('labels')) process.exit(9);`);
+  const brief = path.join(fixture, 'brief.md'); fs.writeFileSync(brief, 'T72 stub review (M3)\nSynthetic read-only review.\n');
+  const env = { ...process.env, HARNESS_CLIENT: 'codex', HARNESS_GH_EXE: gh, HARNESS_OPENCODE_EXE: stub, HARNESS_OPENCODE_HOME: path.join(fixture, 'runtime'), STUB_HEAD: head, STUB_FINAL: 'T72 stub review (M3)\napprove\nDW1: ran stub → pass\nFinal pass done\napprove\n' };
+  delete env.HARNESS_SESSION_FAMILY; delete env.STUB_VERSION;
+  const result = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || new URL('../tools/harness/review.mjs', import.meta.url).pathname, '--pr', '1', '--brief', brief, '--reviewer', 'm3', '--done-when', '1', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  assert.match(result.stdout, /dry run: would post the above/); assert.match(result.stdout, /DW1: ran stub/);
+  const runManifest = result.stdout.match(/manifest (.+run\.json)/)?.[1]; assert(runManifest);
+  assert.equal(JSON.parse(fs.readFileSync(runManifest)).reviewedHead, head);
+  assert.equal(JSON.parse(fs.readFileSync(runManifest)).reviewPR, '1');
+  assert.doesNotMatch(result.stdout, /no review|volatile output/i);
+  const trees = fs.readdirSync(cfg.worktreeRoot); assert.equal(trees.length, 1);
+  const tree = path.join(cfg.worktreeRoot, trees[0]); assert(fs.existsSync(tree));
+  assert.equal(spawnSync('git', ['rev-parse', 'HEAD'], { cwd: tree, encoding: 'utf8' }).stdout.trim(), head);
+  const stale = path.join(fixture, 'stale.md'); fs.writeFileSync(stale, 'T72 stub review (M3)\nHEAD is '+ 'a'.repeat(40)+'\n');
+  const refused = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || new URL('../tools/harness/review.mjs', import.meta.url).pathname, '--pr', '1', '--brief', stale, '--reviewer', 'm3', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
+  assert.equal(refused.status, 2, refused.stderr); assert.match(refused.stderr, /brief names/);
+  assert.equal(fs.readdirSync(cfg.worktreeRoot).length, 1, 'stale head must not launch another worktree');
+});
+
+test('progress advances and active owned-server descendants terminate on cancellation', async () => {
+  const options = workflowOptions('progress'); const logs = []; options.log = (line) => logs.push(line);
+  await runOpenCodeWatched(options); assert(logs.some((line) => /session .* progress/.test(line)), 'native updated time drives progress');
+  const active = workflowOptions('active'); let receipt;
+  const otherHome = privateHome(active.env);
+  const unrelated = await startPrivateServer(active.opencode, { env: { ...otherHome.env, OPENCODE_CONFIG_CONTENT: '{}' }, cwd: active.workDir, timeoutMs: 700 });
+  const other = await unrelated.request('/api/session', { body: { title: 'unrelated', agent: 'reviewer', model: { providerID: 'minimax', id: 'MiniMax-M3', variant: 'thinking' }, location: { directory: active.workDir } } });
+  let worker;
+  try {
+  await assert.rejects(() => runOpenCodeWatched(active), (error) => { assert.equal(error.reason, 'idle'); receipt = JSON.parse(fs.readFileSync(error.manifest)); return true; });
+  assert.equal(receipt.completed, false); assert.equal(receipt.phase, 'failed'); assert.deepEqual(receipt.interrupt, { interrupted: true });
+  const trace = fs.readFileSync(active.env.STUB_TRACE, 'utf8').trim().split('\n').map(JSON.parse);
+  assert(trace.some((entry) => entry.interrupt === receipt.sessionID), 'only the own selected session is interrupted');
+  worker = trace.find((entry) => entry.workerPID)?.workerPID; assert(worker);
+  assert.deepEqual((await unrelated.request(`/api/session/${other.data.id}`)).data, other.data, 'unrelated same-v2-DB session and service survive');
+  const stat = `/proc/${worker}/stat`;
+  assert(!fs.existsSync(stat) || fs.readFileSync(stat, 'utf8').split(' ')[2] === 'Z', 'owned generation descendant must terminate');
+  } finally {
+    await unrelated.stop();
+    if (worker) try { process.kill(worker, 'SIGKILL'); } catch {}
+  }
+});
+
+test('reviewer frontmatter rejects unknown roots, malformed permission sections and late deny overrides', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-policy-roots-')); const file = path.join(dir, 'reviewer.md');
+  const original = fs.readFileSync(agentFile, 'utf8');
+  for (const changed of [original.replace('permission:', 'permit:'), original.replace('mode: all', 'mode: all\nwebfetch deny:'), original.replace('mode: all', 'mode: primary'), original.replace('permission:', 'permission:\npermission:'), original.replace('    "gh issue comment *": deny', '    "gh issue comment *": deny\n    "*": allow')]) {
+    fs.writeFileSync(file, changed); assert.throws(() => reviewerPolicy(file), /unsupported reviewer frontmatter root|exact ordered permission contract/);
+  }
+});
+test('resume rejects missing/wrong major markers as ownership errors before opening a database', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-ownership-')); const env = { ...process.env, HARNESS_OPENCODE_HOME: dir };
+  const missing = path.join(dir, 'missing');
+  assert.throws(() => privateHome(env, { resumeRoot: missing }), (e) => e.reason === 'ownership');
+  const home = privateHome(env);
+  fs.writeFileSync(path.join(home.root, 'data-home'), path.join(dir, 'data'));
+  assert.throws(() => privateHome(env, { resumeRoot: home.root }), (e) => e.reason === 'ownership');
+  fs.writeFileSync(path.join(home.root, 'protocol-major'), '1\n');
+  assert.throws(() => privateHome(env, { resumeRoot: home.root }), (e) => e.reason === 'ownership');
+});
+test('peek renders schema-shaped streaming/running tool states and refuses malformed missing input', () => {
+  const schema = JSON.parse(fs.readFileSync(new URL('../measurements/T72/peek-tool-state-schemas.json', import.meta.url)));
+  const stream = schema.schemas['Session.Message.ToolState.Streaming']; assert(stream.required.includes('input')); assert.equal(stream.properties.input.type, 'string');
+  const running = schema.schemas['Session.Message.ToolState.Running']; assert(running.required.includes('input')); assert.equal(running.properties.input.type, 'object');
+  // [designed: T72] Synthetic values from the pinned live schema; no generation evidence.
+  const record = { info: { title: 'synthetic', location: { directory: '/synthetic' } }, messages: [{ type: 'assistant', content: [
+    { type: 'tool', id: 'stream', name: 'shell', state: { status: 'streaming', input: '{"command":' }, time: { created: 1 } },
+    { type: 'tool', id: 'run', name: 'shell', state: { status: 'running', input: { command: 'pwd' }, metadata: {} }, time: { created: 1 } },
+  ] }] };
+  assert.match(renderPeek(record, 2), /tool shell \[streaming\]/); assert.match(renderPeek(record, 2), /tool shell \[running\]/);
+  delete record.messages[0].content[1].state.input;
+  assert.throws(() => renderPeek(record, 2), /malformed native tool state\/input/);
 });

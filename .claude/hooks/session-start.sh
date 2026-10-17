@@ -8,9 +8,8 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
-# OpenCode's CLI surface (run flags, `session list --format json`, `export`) was checked on 1.18.
-# Bump this deliberately, after running tools/harness against the new version.
-OPENCODE_VERSION="1.18"
+# [designed: T72] Report current v2 setup; never replace/downgrade a user's installed binary.
+OPENCODE_VERSION="2"
 notes=()
 
 node_major=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
@@ -18,9 +17,8 @@ if [ "$node_major" -lt 20 ]; then
   notes+=("Node $node_major is too old for tools/harness (needs 20+).")
 fi
 
-if ! opencode --version 2>/dev/null | grep -q "^${OPENCODE_VERSION}\."; then
-  npm install -g "opencode-ai@${OPENCODE_VERSION}" >/dev/null 2>&1 \
-    || notes+=("Could not install opencode-ai@${OPENCODE_VERSION} from npm.")
+if ! opencode --version 2>/dev/null | grep -Eq "(^|v| )${OPENCODE_VERSION}\."; then
+  notes+=("Install the current native OpenCode 2 CLI using https://opencode.ai/v2/docs/; retain historical v1 binaries.")
 fi
 
 if ! command -v gh >/dev/null 2>&1; then
@@ -33,10 +31,8 @@ on_off() { if [ -n "${!1:-}" ]; then echo "set"; else echo "MISSING"; fi; }
 # What the session reads at start (stdout of a SessionStart hook goes into its context).
 echo "Harness environment:"
 echo "- node $(node --version 2>/dev/null || echo none), opencode $(opencode --version 2>/dev/null || echo none), gh $(gh --version 2>/dev/null | head -1 | awk '{print $3}' || echo none)"
-oc_data="${HARNESS_OPENCODE_HOME:-$HOME/.local/share/harness-opencode}/data"
-echo "- OpenAI (the default reviewer, openai/gpt-5.6-luna; Sol for hard reviews): $(opencode models openai 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in: opencode auth login, then choose OpenAI")"
-echo "- Z.AI (reviewers zai-coding-plan/glm-5.3 and glm-5.3-flash): $(opencode models zai-coding-plan 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in: opencode auth login, then choose Z.AI Coding Plan")"
-echo "- OpenCode Go (reviewers opencode-go/mimo-*): $(XDG_DATA_HOME="$oc_data" opencode models opencode-go 2>/dev/null | grep -q . && echo "logged in" || echo "NOT logged in for the scripts' data directory: XDG_DATA_HOME=$oc_data opencode console login")"
+# [designed: T72] Provider metadata is checked by owned nonbilling preflight, not a managed-service call here.
+echo "- OpenCode: run node tools/harness/preflight-opencode.mjs --out .cache/opencode-preflight before the selected review."
 echo "- OPENCODE_API_KEY: $(on_off OPENCODE_API_KEY) (OpenCode Zen's opencode/* models, only if harness.json names any)"
 echo "- OPENROUTER_API_KEY: $(on_off OPENROUTER_API_KEY) (Jev decisions, image models, and OpenCode's openrouter/* models)"
 echo "- ELEVENLABS_API_KEY: $(on_off ELEVENLABS_API_KEY) (speech, sound effects, music; /delegate)"

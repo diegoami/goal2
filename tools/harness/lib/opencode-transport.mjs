@@ -49,15 +49,21 @@ export function capture(cmd, args, { env, cwd, timeoutMs = 30000, outFile } = {}
 export function privateHome(env, { resumeRoot } = {}) {
   const base = path.resolve(env.HARNESS_OPENCODE_HOME || path.join(env.HOME || os.homedir(), '.local/share/harness-opencode'));
   const runs = path.join(base, 'v2', 'runs'); fs.mkdirSync(runs, { recursive: true });
-  const root = resumeRoot ? fs.realpathSync(resumeRoot) : fs.mkdtempSync(path.join(runs, 'run-'));
-  const marker = path.join(root, 'protocol-major');
+  let root;
+  const marker = (dir) => path.join(dir, 'protocol-major');
   if (resumeRoot) {
-    if (fs.readFileSync(marker, 'utf8').trim() !== '2') throw new OpenCodeInfraError('ownership', 'resume root is not a retained v2 run');
-  } else fs.writeFileSync(marker, '2\n', { flag: 'wx' });
+    try {
+      root = fs.realpathSync(resumeRoot);
+      if (!root.startsWith(fs.realpathSync(runs) + path.sep) || fs.readFileSync(marker(root), 'utf8').trim() !== '2') throw new Error('not owned v2 root');
+    } catch { throw new OpenCodeInfraError('ownership', 'resume root is not a retained v2 run'); }
+  } else {
+    root = fs.mkdtempSync(path.join(runs, 'run-')); fs.writeFileSync(marker(root), '2\n', { flag: 'wx' });
+  }
   // [confirmed: v2.0.28 Credential/Database primary source; measurements/T72] Native logins and sessions share one DB.
   // [designed: T72] Persist v2-only provider/session storage; execution lease, cache, state and receipts remain per-run.
   const pointer = path.join(root, 'data-home');
   const dataHome = resumeRoot ? fs.existsSync(pointer) ? fs.readFileSync(pointer, 'utf8').trim() : path.join(root, 'data') : path.join(base, 'v2', 'data');
+  if (![path.join(base, 'v2', 'data'), path.join(root, 'data')].includes(path.resolve(dataHome))) throw new OpenCodeInfraError('ownership', 'v2 data pointer is outside version-isolated storage');
   if (!resumeRoot) fs.writeFileSync(pointer, dataHome + '\n', { flag: 'wx' });
   const dirs = { XDG_DATA_HOME: dataHome, XDG_CACHE_HOME: path.join(root, 'cache'), XDG_STATE_HOME: path.join(root, 'state') };
   for (const dir of Object.values(dirs)) fs.mkdirSync(dir, { recursive: true });
@@ -89,12 +95,15 @@ export async function startPrivateServer(cmd, { env, cwd, timeoutMs = 30000, log
   const stop = async () => {
     child.stdin.end();
     await boundedExit(3000);
-    if (!closed) { killOwned(child, 'SIGTERM'); await boundedExit(1000); }
-    if (!closed) { killOwned(child); await boundedExit(1000); }
-    // [designed: T72] Clean the owned group even when its leader closed first.
+    // [designed: T72] Signal the owned group once per stage, including descendants after leader exit.
     killOwned(child, 'SIGTERM');
-    await delay(25); killOwned(child);
-    if (!closed) throw new OpenCodeInfraError('shutdown', 'owned server did not exit');
+    if (!closed) await boundedExit(1000); else await delay(25);
+    killOwned(child);
+    if (!closed) await boundedExit(1000);
+    if (!closed) {
+      child.stdout.destroy(); child.stderr.destroy(); child.stdin.destroy();
+      throw new OpenCodeInfraError('shutdown', 'owned server did not settle within shutdown deadline');
+    }
     if (url) {
       let reachable = false;
       try { await fetch(url, { signal: AbortSignal.timeout(500) }); reachable = true; } catch {}

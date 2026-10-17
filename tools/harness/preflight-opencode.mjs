@@ -17,13 +17,16 @@ const home = privateHome({ ...process.env, HARNESS_OPENCODE_HOME: path.join(dest
 const env = trustedReviewEnv(home.env, policy);
 const version = await capture(cmd, ['--version'], { env, cwd: process.cwd() });
 assert.equal(version.code, 0); assert.match(version.stdout, /(?:^|v)2\./);
-save('identity.json', { version: version.stdout.trim(), binary: cmd.exe, binarySHA256: hash(fs.readFileSync(cmd.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), policySHA256: policy.sourceSHA256, root: home.root, directory: process.cwd() });
+save('identity.json', { version: version.stdout.trim(), binary: cmd.exe, binarySHA256: hash(fs.readFileSync(cmd.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), policySHA256: policy.sourceSHA256, root: home.root, dataHome: home.env.XDG_DATA_HOME, database: home.env.OPENCODE_DB, sources: Object.fromEntries(['opencode-protocol.mjs', 'opencode-policy.mjs', 'opencode-transport.mjs', 'opencode-peek.mjs'].map((f) => [f, hash(fs.readFileSync(new URL('./lib/' + f, import.meta.url)))])), directory: process.cwd() });
 let server; let unrelated;
 try {
   const otherHome = privateHome({ ...process.env, HARNESS_OPENCODE_HOME: path.join(dest, 'unrelated') });
   unrelated = await startPrivateServer(cmd, { env: trustedReviewEnv(otherHome.env, policy), cwd: process.cwd() });
   const unrelatedBefore = await unrelated.request('/api/session');
   server = await startPrivateServer(cmd, { env, cwd: process.cwd() });
+  const originals = path.join(dest, 'originals'); fs.mkdirSync(originals);
+  const schema = path.join(originals, 'openapi.json'); await server.request('/openapi.json', { outFile: schema });
+  save('schema-identity.json', { source: '/openapi.json', sha256: hash(fs.readFileSync(schema)), original: schema });
   const found = await settledCatalogue(server, { model: { id: 'minimax/MiniMax-M3', variant: 'thinking', family: 'minimax' }, agent: 'reviewer', verifyAgent: (profile) => verifyReviewer(profile, policy, 'reviewer') });
   save('profile.json', { id: found.profile.id, mode: found.profile.mode, system: found.profile.system, permissions: found.profile.permissions });
   save('selected-model.json', { id: found.selected.id, providerID: found.selected.providerID, family: found.selected.family, variants: found.selected.variants.map((v) => v.id), enabled: found.selected.enabled });
@@ -36,7 +39,8 @@ try {
   const peek = await peekRecord(cmd, { record: { major: 2, phase: 'running', dataRoot: home.root, sessionID: session.data.id, directory: process.cwd(), agent: 'reviewer', model: { id: 'minimax/MiniMax-M3', variant: 'thinking' }, files: {} } }, { env });
   assert.deepEqual(peek, record.data); save('peek.json', { record: peek, rendered: renderPeek(peek, 2) });
   save('session-list.json', await server.request(`/api/session?directory=${encodeURIComponent(process.cwd())}`));
-  save('idle-interrupt.json', await server.request(`/api/session/${session.data.id}/interrupt`, { body: {} }));
+  const idle = await server.request(`/api/session/${session.data.id}/interrupt`, { body: {} });
+  assert.equal(idle.interrupted, false, 'empty idle session has no owned execution to interrupt'); save('idle-interrupt.json', idle);
   save('shutdown.json', await server.stop()); server = null;
   assert.deepEqual(await unrelated.request('/api/session'), unrelatedBefore);
   save('unrelated-survived.json', { before: unrelatedBefore, after: await unrelated.request('/api/session') });

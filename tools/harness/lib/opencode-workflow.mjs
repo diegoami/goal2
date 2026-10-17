@@ -3,16 +3,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { command, normalizeSession } from './opencode-protocol.mjs';
-import { privateHome, startPrivateServer, settledCatalogue, spawnOwned, killOwned, delay, hash, OpenCodeInfraError } from './opencode-transport.mjs';
+import { privateHome, startPrivateServer, settledCatalogue, capture, spawnOwned, killOwned, delay, hash, OpenCodeInfraError } from './opencode-transport.mjs';
 import { reviewerPolicy, trustedReviewEnv, verifyReviewer } from './opencode-policy.mjs';
 const json = (file, value) => fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 export function finalReviewText(normalized) {
   const last = normalized.messages.filter((m) => m.type === 'assistant').at(-1);
   return last?.parts.filter((p) => p.type === 'text').map((p) => p.text).join('') ?? '';
 }
-export async function runV2Workflow({ opencode, model, agent = 'reviewer', agentFile, prompt, workDir, title, sessionId, resumeManifest,
+export async function runV2Workflow({ opencode, model, agent = 'reviewer', agentFile, prompt, workDir, title, sessionId, resumeManifest, reviewedHead, reviewPR,
   startupTimeoutMs = 180000, totalTimeoutMs = 3600000, idleTimeoutMs = 600000, pollMs = 10000, logDir, env = process.env, log = () => {} }) {
   workDir = fs.realpathSync(workDir);
+  if (reviewedHead) {
+    const proof = await capture({ exe: 'git', prefix: [] }, ['rev-parse', 'HEAD'], { cwd: workDir, env, timeoutMs: 5000 });
+    if (proof.code !== 0 || proof.stdout.trim() !== reviewedHead) throw new OpenCodeInfraError('head', 'review worktree differs from exact PR head before billing');
+  }
   const policy = reviewerPolicy(agentFile); let previous;
   if (sessionId) {
     if (!resumeManifest) throw new OpenCodeInfraError('ownership', 'v2 resume requires its retained run manifest');
@@ -25,11 +29,11 @@ export async function runV2Workflow({ opencode, model, agent = 'reviewer', agent
   if (logDir) fs.mkdirSync(path.resolve(logDir), { recursive: true });
   const artifactRoot = logDir ? fs.mkdtempSync(path.join(path.resolve(logDir), `${runTitle}-`)) : path.join(home.root, 'artifacts', runTitle);
   fs.mkdirSync(artifactRoot, { recursive: true });
-  const files = Object.fromEntries(['stdout.txt', 'stderr.txt', 'export-response.json', 'export.json', 'final.txt', 'assistant.txt', 'profile.json', 'model.json', 'server.json', 'brief.md', 'run.json'].map((name) => [name, path.join(artifactRoot, name)]));
+  const files = Object.fromEntries(['stdout.txt', 'stderr.txt', 'export-response.json', 'export.json', 'final.txt', 'assistant.txt', 'profile.json', 'model.json', 'openapi.raw.json', 'server.json', 'brief.md', 'run.json'].map((name) => [name, path.join(artifactRoot, name)]));
   const briefFile = path.join(workDir, `.harness-brief-${runTitle}.md`); fs.writeFileSync(briefFile, prompt); fs.writeFileSync(files['brief.md'], prompt);
   const pointer = `Your complete brief is the file ${path.basename(briefFile)} at the root of this worktree. Read it in full first; never edit, commit or delete it.`;
   const start = Date.now(); let server; let client; let clientClosed = false; let exitCode = null; let spawnError; let normalized; let raw; let failure;
-  const manifest = { major: 2, title: runTitle, directory: workDir, agent, model, dataRoot: home.root, dataHome: home.env.XDG_DATA_HOME, policySHA256: policy.sourceSHA256, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.binary ?? opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), sources: Object.fromEntries(['opencode.mjs', 'opencode-workflow.mjs', 'opencode-transport.mjs', 'opencode-policy.mjs', 'opencode-protocol.mjs', '../review.mjs'].map((name) => [name, hash(fs.readFileSync(new URL(name, import.meta.url)))])), phase: 'preflight', started: start, files, briefFile };
+  const manifest = { major: 2, ...(reviewedHead ? { reviewedHead, reviewPR } : {}), title: runTitle, directory: workDir, agent, model, dataRoot: home.root, dataHome: home.env.XDG_DATA_HOME, policySHA256: policy.sourceSHA256, command: { exe: opencode.exe, prefix: opencode.prefix }, binarySHA256: hash(fs.readFileSync(opencode.binary ?? opencode.exe)), sourceSHA256: hash(fs.readFileSync(new URL(import.meta.url))), sources: Object.fromEntries(['opencode.mjs', 'opencode-workflow.mjs', 'opencode-transport.mjs', 'opencode-policy.mjs', 'opencode-protocol.mjs', '../review.mjs'].map((name) => [name, hash(fs.readFileSync(new URL(name, import.meta.url)))])), phase: 'preflight', started: start, files, briefFile };
   const persist = () => {
     json(files['run.json'], manifest);
     // [designed: T72] Per-run receipt index lets bare-SID peek find its own major/data root, without a shared service.
@@ -49,6 +53,8 @@ export async function runV2Workflow({ opencode, model, agent = 'reviewer', agent
   };
   try {
     server = await startPrivateServer(opencode, { env: runEnv, cwd: workDir, timeoutMs: Math.min(startupTimeoutMs, totalTimeoutMs), log });
+    await server.request('/openapi.json', { timeoutMs: Math.min(startupTimeoutMs, left()), outFile: files['openapi.raw.json'] });
+    manifest.schemaSHA256 = hash(fs.readFileSync(files['openapi.raw.json']));
     const found = await settledCatalogue(server, { timeoutMs: Math.min(startupTimeoutMs - (Date.now() - start), left()), model, agent, verifyAgent: (profile) => verifyReviewer(profile, policy, agent) });
     json(files['profile.json'], { id: found.profile.id, mode: found.profile.mode, hidden: found.profile.hidden, system: found.profile.system, permissions: found.profile.permissions });
     json(files['model.json'], { id: found.selected.id, modelID: found.selected.modelID, providerID: found.selected.providerID, family: found.selected.family, variants: found.selected.variants.map((v) => v.id), enabled: found.selected.enabled });

@@ -112,7 +112,8 @@ export async function prepareOpenCode({ opencode, chain, models, env, cwd, log }
   const problems = [];
   const usable = chain.filter((m) => {
     if (listed.has(models[m].id)) return true;
-    problems.push(`${m}: ${loginHint(models[m].id, listed, oc.dataHome, errors)}`);
+    problems.push(version.startsWith('2.') ? `${m}: ${models[m].id} is not advertised by the private v2 catalogue. Check provider configuration/environment or native auth login --standalone with XDG_DATA_HOME=${oc.dataHome}; nothing billed, no fallback.`
+      : `${m}: ${loginHint(models[m].id, listed, oc.dataHome, errors)}`);
     return false;
   });
   return { env: oc.env, usable, problems, version };

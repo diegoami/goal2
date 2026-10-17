@@ -49,7 +49,14 @@ export async function peekRecord(cmd, receipt, { env = process.env, timeoutMs = 
 }
 export function renderPeek(raw, major, n = 20) {
   const steps = raw.messages.flatMap((m) => major === 2 ? m.content ?? [] : m.parts ?? []).flatMap((p) => {
-    if (p.type === 'tool') return [`  tool ${p.name ?? p.tool} [${p.state?.status}]: ${JSON.stringify(p.state?.input).slice(0, 140)}`];
+    if (p.type === 'tool') {
+      const input = p.state?.input;
+      // [confirmed: measurements/T72/peek-tool-state-schemas.json] V2 streaming uses string input; other states require objects.
+      if (major === 2 && !(p.state?.status === 'streaming' ? typeof input === 'string' : ['running', 'completed', 'error'].includes(p.state?.status) && input && typeof input === 'object' && !Array.isArray(input))) throw new OpenCodeInfraError('peek', 'malformed native tool state/input');
+      const text = JSON.stringify(input);
+      if (text === undefined) throw new OpenCodeInfraError('peek', 'missing tool input');
+      return [`  tool ${p.name ?? p.tool} [${p.state?.status}]: ${text.slice(0, 140)}`];
+    }
     if (p.type === 'text' && p.text) return [`  says: ${String(p.text).replaceAll('\n', ' ').slice(0, 200)}`];
     return [];
   });
