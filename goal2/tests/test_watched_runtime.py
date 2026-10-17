@@ -178,8 +178,8 @@ print("quick-only PASS")
 
     def test_unsupported_fixtures_refuse_without_changing_image(self):
         before = self.image.memory_component()
-        for kind in (0,2,4,16):
-            with self.assertRaisesRegex(ValueError,"only friendlies"):
+        for kind in (0,4,9,16,204):
+            with self.assertRaisesRegex(ValueError,"kind"):
                 Match(self.image,Fixture(7,19,index=21,kind=kind),managed=7)
         self.assertEqual(self.image.memory_component(),before)
 

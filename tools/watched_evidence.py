@@ -7,7 +7,7 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607"
+SOURCE = "424d5998076da1e4efc399c2715689ddb44d3e1a"
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
@@ -54,7 +54,7 @@ def stage(cache=None):
     for rel in paths:
         wanted = (rel in exact or rel.startswith("runtime/original_match/")
                   or rel.startswith(("runtime/emul/", "runtime/driver/")) and rel.endswith(".py")
-                  or rel.startswith("experiments/E033-original-match-kit/") and rel.endswith(".py")
+                  or rel.startswith(("experiments/E033-original-match-kit/", "experiments/E034-kit-competitive/")) and rel.endswith(".py")
                   or rel.startswith("static/goal-exe/code/seg_000E_") and rel.endswith(".asm"))
         if wanted:
             target = folder / rel

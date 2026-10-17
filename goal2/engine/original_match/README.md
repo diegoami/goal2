@@ -8,8 +8,8 @@ keys a manager would press. Nothing of the original is in this folder: its code 
 ## Get it (once)
 
 1. **Vendor** this folder byte for byte into `goal2/engine/original_match/` and add a PROVENANCE row per file
-   (source `diegoami/goal2-archaeology`, the commit you copied, findings F004 F010 F013 F014 F018 F026 F027 F028
-   F029 F030, issue 250). Never edit it there; changes come upstream.
+   (source `diegoami/goal2-archaeology`, the commit you copied, findings F004 F010 F013 F014 F018 F020 F023 F026
+   F027 F028 F029 F030, issues 250 and 252). Never edit it there; changes come upstream.
 2. **unicorn** (approved, goal2 #97): `pip install unicorn` (2.1.x; Debian/Ubuntu: `python3-unicorn`). The package
    imports without it; only creating a `Match` needs it (a clear error otherwise), so goal2's quick path keeps
    working without it.
@@ -43,14 +43,18 @@ does not run the guard again: a saved match carries its own memory.
 
 ## Know it works
 
-    python3 -m goal2.engine.original_match.check --cache .cache            # about 45 s
+    python3 -m goal2.engine.original_match.check --cache .cache            # about 95 s
     python3 -m goal2.engine.original_match.check --cache .cache --family   # + about 110 s
 
 `engine PASS`: E011-r0001's friendly replayed from the image is the match E021 recorded from the original's own
 DOSBox-X run (score, 4,149 ticks, all 182,188 RNG draws by digest, the board, the last 199 commentary lines).
 `interactive PASS`: the worked example below, played straight and saved/resumed at minute 60, is the same match
 and the one this kit recorded. `goals PASS`: a quick result from minute 30 and seed 70's match with a goal taken
-back have consistent goals (see Goals below). `family PASS`: E032's ten seeds are E032's records.
+back have consistent goals (see Goals below). `knockout PASS`: the competitive worked example (a World Cup knockout
+match level after 90 and 120 minutes, decided on penalties, with goal2's budget, substitutions before extra time and
+goal2's shoot-out order) played straight, saved and resumed at extra time's first decision, and at the shoot-out
+order, is the same match and the one this kit recorded, and its goals, kicks, shoot-out score and winner agree.
+`family PASS`: E032's ten seeds are E032's records.
 
 ## Play a match
 
@@ -82,9 +86,11 @@ next_state = from_savestate(_rewrite_zip(template_bytes, {"Memory": zlib.compres
 ```
 
 The calls: `Fixture(first, second, index=None, kind=1)` (team 0, team 1 = the host of a friendly; `index` None takes the
-image's own fixture number); `Match(image, fixture, *, managed=None, captain=None, seed=None, players=None,
-countries=None, ticks=False, record_draws=False, delay_byte=None, timeout_s=60)` (`managed` defaults to the image's
-human country, `captain` to the original's pick; the last three are for the engine check); `m.events()`,
+image's own fixture number; `kind` the fixture's kind byte, one the original's builders write: 1 a friendly, 2, 3,
+5, 6, 7, 8, 101-103, 200-203; see Competitive fixtures); `Match(image, fixture, *, managed=None, captain=None,
+seed=None, players=None, countries=None, substitutions=None, ticks=False, record_draws=False, delay_byte=None,
+timeout_s=60)` (`managed` defaults to the image's human country, `captain` to the original's pick, `substitutions`
+to the original's budget; the last three are for the engine check); `m.events()`,
 `m.answer(...)`, `m.pause()`, `m.save()`, `Match.load(blob)`, `m.result()` (once `m.over`), `m.memory_component()`,
 `m.image()`, `m.pitch()`, `m.screen_text()`, and the read-only `m.over`, `m.score`, `m.minute`, `m.waiting` (the
 decision the original waits on, or None). Errors: `MatchError` (the original or the state refuses; no decision
@@ -96,12 +102,17 @@ and `.countries` as they are, without the squad order and tactics `to_savestate`
 `goal2_trial.py` is this flow on goal2's own code (5.9 s, the result read back by `from_savestate`).
 
 `python3 -m goal2.engine.original_match.example --cache .cache` runs the same kind of match from the reference
-image (a pause, a half-time substitution, a save and resume at minute 60; about 9 s).
+image (a pause, a half-time substitution, a save and resume at minute 60; about 9 s). With `--competitive` it runs the
+knockout example (about 18 s): Denmark v country 19 as a World Cup knockout match (kind 200, calendar number 39),
+goal2's budget of 5 a side, three substitutions and a tactic before extra time, the shoot-out with goal2's order,
+the match saved at the order and resumed; 0-0 after 90 and 120 minutes, Denmark through 3-1 on penalties.
 
 **Events**: `minute`, `commentary` (the original's line, with its template and players), `goal`,
 `goal_disallowed` (the original takes back a goal it just wrote, in the same action), `booking`, `sending_off`,
 `injury`, `substitution` (both teams), `half_time`, `full_time` (the board's statistics), `decision`, `tactics`,
-`position`, `player_tactics`, `substitution_requested`, `refused`, `end`; `tick` too with `Match(..., ticks=True)`.
+`position`, `player_tactics`, `substitution_requested`, `refused`, `end`; `tick` too with `Match(..., ticks=True)`;
+in a competitive fixture also `extra_time` (extra time begins: the clock set back to 89), `shootout` (the
+shoot-out begins; `score_120`) and `shootout_kick` (team, player, name, scored, round, `shootout_score`).
 `m.pitch()` gives the 22 players' and the ball's positions at any moment (for drawing).
 
 **Goals**: a `goal` is a goal the original commits. Watched, that is the score byte's `inc` at 0791:685C; a
@@ -138,11 +149,16 @@ by code hooks at its entry D733 and after its commit DA5B) and compares, per kin
 the number of events and each one's minute and score, in order, for `commentary`, `goal`, `goal_disallowed`,
 `booking`, `sending_off`, `injury`, `substitution`, `minute`, `half_time` and `full_time`, and then the whole stream
 of those kinds against the writes in the original's order (`order`). It does not compare the stamps of the other
-kinds or the details inside an event.
+kinds or the details inside an event. E034 `stamps_competitive.py` adds hooks at 9B15 (extra time), A10A (the
+shoot-out), A006 and its return A1EF (a kick; the kicking side from DS:8319, which A006 sets, not from the kit's
+frame read) and compares `extra_time`, `shootout` and `shootout_kick` the same way, over seven scenarios (the
+knockout example, penalties watched and as quick results, one decided in extra time, a qualifier, the friendly).
 
 **Saving**: every public event is a save boundary: `minute`, `commentary`, `goal`, `goal_disallowed`, `booking`,
 `sending_off`, `injury`, `substitution`, `half_time`, `full_time`, `decision`, `tactics`, `position`,
-`player_tactics`, `substitution_requested`, `refused`, `end` and `tick`. `save()` accepts all of them, a `decision`
+`player_tactics`, `substitution_requested`, `refused`, `end`, `tick`, `extra_time`, `shootout` and `shootout_kick`
+(E034 `save_boundaries_competitive.py`: three competitive scenarios, every boundary, the extra-time decisions and the
+shoot-out order before and after their answers). A saved match of kit version 1 is refused by version 2. `save()` accepts all of them, a `decision`
 before `answer()` included (the loaded match has `m.waiting` set: answer it, as the original is still asking; taking
 the next event unanswered plays on) and after it, and events queued but not yet taken are saved with it. Straight and
 resumed are the same match: the remaining events (kind, minute, score, data) and the result are equal. No boundary is
@@ -160,12 +176,53 @@ every kind of answer and a refused eleven, a quick result with `tick` events).
 | `half_time` | after the half-time board | made now | tactics, positions, marking, own tactics, quick, speed |
 | `substitution` | at a stoppage after an injury to your player, or after you asked for one | made now; the default is what you asked for | as above |
 | `pause` | when you call `m.pause()` | asked for: the original offers them at its next stoppage | made now |
-| `extra_time` | before each extra-time half (competitive fixtures: not reachable, the kit refuses them) | made now | as above |
+| `extra_time` | before each extra-time half (`half` 1 or 2) of a decider level after 90 minutes | made now | as above |
+| `shootout_order` | the shoot-out, before the first kick (`available`: the eleven who can take one; `takers`: how many the original wants) | none | `shootout_order` only |
 
 `answer(substitutions=[(off, on)], tactics={element: bool}, positions={player: code}, marking={player: opponent
-or 0}, own_tactics={player: {element 1..4: True/False/None}}, quick=True, speed=0..5)`; no argument plays on.
+or 0}, own_tactics={player: {element 1..4: True/False/None}}, quick=True, speed=0..5, shootout_order=[player, ...])`; no
+argument plays on. `shootout_order` (at that decision only): distinct players of `available`, the first takers in
+order; the rest follow as the original's Enter gives them (the highlighted player, from the top of the eleven). No
+answer is the original's result for a manager who only presses Enter: the eleven in squad order, the keeper first.
 If the original refuses the result (its message, e.g. "Denmark has too many goalkeepers"), the same decision comes
 back with `refused` set; answer again. A declined injury notice comes back at every stoppage, as in the original.
+
+## Competitive fixtures (issue 252)
+
+What the kind changes, all the original's own code (E034 notes):
+- **Extra time and the shoot-out** come for a decider (kinds 4 and 8..203: the semi-finals, third place and final of
+  the continental cups, every World Cup knockout match; F023 section 9) level after 90 minutes: two halves (9B0C sets
+  the clock back to 89 with 31 minutes left and the half's end at 15 left, so the `minute` events run from 90 again,
+  after the 90 minutes' added time: 90..105, then 106..120 and the added time), each after an `extra_time` decision,
+  then, still level, the shoot-out: five kicks a side, then kick for kick (sudden death); a side's takers come round
+  again after its last, entries that cannot play skipped (tested: a side of ten after a sending off, 12 kicks).
+  The computer side's order is the original's (9ED3: by the derived penalty skill). A level non-decider just ends.
+- **The score**: during the shoot-out the score bytes count the kicks too, as the original's board shows them, so an
+  event's `score` there is the 120 minutes' plus the kicks'. `result()["score"]` is the match's (the 120 minutes'),
+  `result()["shootout"]` is `{"score": [kicks in per side], "kicks": [...]}` or None, `result()["winner"]` is the
+  fixture's byte +3 as play_match leaves it (0 team 0, 1 team 1, 2 drawn), `result()["score_90"]` the score when
+  extra time began (None without it), `result()["extra_time"]` whether it was played; a result entry made in extra
+  time (goals, cards, injuries, substitutions) carries `"extra_time": True`.
+- **The substitution budget**: the original's is 5 a side for a friendly and 2 for every other kind (A4A1, F027
+  section 4). `Match(..., substitutions=n or (team 0's, team 1's))` writes goal2's own over it when play_match starts
+  (0..255; `result()["substitution_budget"]` says what the match had). Read, not run: C5DC, which counts a
+  substitution, sets element 3 on the player of the slot (C5F6-C612), which makes him unavailable (1771:3216), so a
+  player taken off should not come back and 9 or more should be no limit for a bench of 9. The computer side follows
+  its budget too: its rule (8062) substitutes while budget is
+  left, so a bigger budget for it is a different match (more substitutions), and 0 stops it. goal2's own rule (the
+  owner, 2026-10-15: unlimited in a friendly, 5 otherwise) is goal2's to apply with this argument.
+- **After the match**: run_match shows the competition's table after a non-friendly (E929 -> 1771:958D; the kit
+  answers its one key) and B7FA serves bans and sets injuries by kind (F027 sections 2 and 6), as for a friendly.
+  `result()["players"]` gives, for every player of both squads, `confidence` (+0xC, F020), `energy` (+0xE, 0 =
+  injured) and `status` (+0x10) before the match and after the post-match update, with `suspended` (element 8, a ban
+  for the next fixture), `carried_booking` (element 4) and `injured` read from the latter. The full records are in
+  `memory_component()`.
+- **The full-time board after a shoot-out** passes without a key: the order screen (9B93) pushes a Down key back after
+  each pick and the board reads the last one (the in-play poll's 214B:0723 asks the BIOS only, so no kick takes
+  it). The `full_time` event comes at the board all the same.
+- **No pause in the shoot-out**: `pause()` at the `shootout` event raises `MatchError` (a kit rule: the kicks poll
+  keys, 9372 from 9564, but what the original's team menu does mid-kick is not checked). After the order's answer
+  the kicks run to the board in one stretch, so their events come together.
 
 ## What the original decides for you (rules to know)
 
@@ -185,7 +242,9 @@ back with `refused` set; answer again. A declined injury notice comes back at ev
 
 ## Limits and costs
 
-Friendlies only (kind 1): `Match` refuses any other `Fixture.kind` with a `ValueError`, so the `extra_time` decision
-and the shoot-out cannot be reached (checking them: about 2 h with E031's shoot-out state). The set-piece taker prompts keep the original's pick (exposing them: about 1 h). One
-human side. A match costs 9-13 s (a quick result after `R`, about 4 s; the write hooks behind the stamps are included); stepping by
+A kind no builder writes (4 included) is refused with a `ValueError`. Not run, because route_fixture runs them
+around run_match and the kit calls run_match itself: "Do you want to watch this match?" (asked of fixtures goal2's
+manager does not play: kinds 8, 200, 201, 203; F030; the kit plays only a fixture with the managed side in it),
+the news pages and the manager's sack check (4E0E, F025: goal2 keeps its own career state). The set-piece taker
+prompts keep the original's pick (exposing them: about 1 h). One human side. A match costs 9-13 s, 13-18 s with extra time and a shoot-out (a quick result after `R`, about 4 s, 7 s with them; the write hooks behind the stamps are included); stepping by
 minute or tick adds nothing measurable. `save()` is about 0.36 MB at minute 60 (much more with `record_draws`, which keeps every RNG write).

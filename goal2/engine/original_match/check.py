@@ -15,6 +15,13 @@
 4. goals: in a quick result from a pause at minute 30 and in seed 70's match with a goal the original takes back,
    the goal events, every event's score, the result's goals, the board and the original's own goal count agree
    (goal_problems).
+5. knockout: example.py's knockout match (a World Cup knockout fixture, kind 200: goal2's budget of 5 a side, three
+   substitutions and a tactic before extra time, goal2's shoot-out order; level after 90 and 120 minutes, decided
+   on penalties) run straight, saved and resumed at the first extra-time decision, and saved and resumed at the
+   shoot-out order, must be identical to each other and to the digest this kit recorded (EXPECTED_KNOCKOUT,
+   competitive_digest: the result with its stages, shoot-out, winner and players' consequences); goal_problems
+   holds over its events (the shoot-out's kicks count in the score bytes the board shows, not in the result's
+   score), its shoot-out's score is its scored kicks, and the winner is the side ahead on penalties.
 The expected values are digests and counts, no original bytes. Exit 0 when every check passes."""
 import argparse
 import hashlib
@@ -46,6 +53,7 @@ EXPECTED_FAMILY = {   # seed: [score, ticks, draws, draws digest] (E032)
 # example.py's match as this kit played it on the reference image (E033 out/check-*.json): a regression value,
 # not independent evidence; a machine that gives another digest plays another match from the same inputs.
 EXPECTED_INTERACTIVE = "0078fad9859d4b4083a88707785e2cf0a49e1b6cddfa48bfec5aa765590e592f"
+EXPECTED_KNOCKOUT = "7de611c6dec2508bf8504a83a2c680fd253c1ff798ad2c9e1e6db79592034049"
 REFERENCE_FIXTURE = Fixture(first=7, second=19, index=21)
 
 
@@ -56,6 +64,13 @@ def result_digest(r):
     keep["board"] = {k: r["board"][k] for k in ("statistics", "bars", "screen_sha256")}
     keep["commentary"] = [c["text"] for c in r["commentary"]]
     return hashlib.sha256(json.dumps(keep, sort_keys=True).encode()).hexdigest()
+
+
+def competitive_digest(r):
+    """result_digest plus what a competitive fixture adds: the kind, the stages, the shoot-out, the winner, the
+    budget and the players' consequences (confidence, energy, status before and after)."""
+    keep = {k: r[k] for k in ("kind", "winner", "score_90", "extra_time", "shootout", "substitution_budget", "players")}
+    return hashlib.sha256((result_digest(r) + json.dumps(keep, sort_keys=True)).encode()).hexdigest()
 
 
 def engine(image):
@@ -97,7 +112,7 @@ def goal_problems(events, result):
     not yet taken back, no other event changes it; the last score is the board's; per team, the result's goals
     are the board's score and the original's own count DS:80F0 (record_goal 6443, which counts an own goal for the
     side the score byte credits, up to 11)."""
-    problems, score, open_goals = [], [0, 0], [0, 0]
+    problems, score, open_goals, kicks = [], [0, 0], [0, 0], [0, 0]
     for i, ev in enumerate(events):
         s = list(ev.score)
         if ev.kind in ("goal", "goal_disallowed"):
@@ -106,11 +121,19 @@ def goal_problems(events, result):
                 problems.append(f"event {i}: goal_disallowed of team {t} without a goal before it")
             open_goals[t] += step
             score[t] += step
+        elif ev.kind == "shootout_kick" and ev.data["scored"]:     # a kick in: the score bytes count it
+            score[ev.data["team"]] += 1
+            kicks[ev.data["team"]] += 1
         if s != score:
             problems.append(f"event {i} ({ev.kind}, minute {ev.minute}): score {s}, the goals before it make {score}")
             score = s
-    if score != list(result["score"]):
-        problems.append(f"the events end at {score}, the board says {result['score']}")
+    if score != list(result["board"]["final_score"]):
+        problems.append(f"the events end at {score}, the board says {result['board']['final_score']}")
+    shootout = result.get("shootout")
+    if (shootout["score"] if shootout else [0, 0]) != kicks or [result["score"][t] + kicks[t] for t in (0, 1)] != list(
+            result["board"]["final_score"]):
+        problems.append(f"the shoot-out's score {shootout and shootout['score']}, its scored kicks {kicks}, the score "
+                        f"{result['score']} and the board {result['board']['final_score']} disagree")
     for t in (0, 1):
         n = sum(1 for g in result["goals"] if g["team"] == t)
         if n != result["score"][t] or result["goal_counts"][t] != min(result["score"][t], 11):
@@ -161,6 +184,26 @@ def goals(image):
     return not any(d["problems"] for d in detail.values()), detail
 
 
+def knockout(image):
+    runs = {}
+    for name, at in (("straight", None), ("resumed at extra time", "extra_time"), ("resumed at the order", "shootout_order")):
+        events = []
+        r = example.play_knockout(image, quiet=True, resume_at=at, record=events)
+        runs[name] = (competitive_digest(r), r, events)
+    digests = {name: d for name, (d, _, _) in runs.items()}
+    _, r, events = runs["straight"]
+    so = r["shootout"]
+    problems = goal_problems(events, r)
+    if not (r["extra_time"] and so and so["score"][0] != so["score"][1]):
+        problems.append(f"not decided on penalties: extra time {r['extra_time']}, shoot-out {so}")
+    elif r["winner"] != (0 if so["score"][0] > so["score"][1] else 1):
+        problems.append(f"winner {r['winner']} is not the side ahead on penalties {so['score']}")
+    ok = len(set(digests.values())) == 1 and not problems and (
+        EXPECTED_KNOCKOUT is None or digests["straight"] == EXPECTED_KNOCKOUT)
+    return ok, {"digests": digests, "expected": EXPECTED_KNOCKOUT, "problems": problems,
+                "score": r["score"], "score_90": r["score_90"], "shootout": so and so["score"], "winner": r["winner"]}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--image", help="a savestate or Memory component (default: the reference, fetched by hash)")
@@ -171,14 +214,14 @@ def main(argv=None):
     data = open(a.image, "rb").read() if a.image else reference_image(a.cache)
     image = Image.from_bytes(data)
     report = {"kit": VERSION, "image_sha256": hashlib.sha256(data).hexdigest(), "reference": REFERENCE, "checks": {}}
-    steps = [("engine", engine), ("interactive", interactive), ("goals", goals)] + (
+    steps = [("engine", engine), ("interactive", interactive), ("goals", goals), ("knockout", knockout)] + (
         [("family", family)] if a.family else [])
     for name, fn in steps:
         t0, c0 = time.time(), time.process_time()
         ok, detail = fn(image)
         report["checks"][name] = {"pass": ok, "detail": detail, "wall_s": round(time.time() - t0, 1),
                                   "cpu_s": round(time.process_time() - c0, 1)}
-        print(f"{name:12s} {'PASS' if ok else 'FAIL'}  {report['checks'][name]['wall_s']} s  {detail if not ok or name == 'interactive' else ''}")
+        print(f"{name:12s} {'PASS' if ok else 'FAIL'}  {report['checks'][name]['wall_s']} s  {detail if not ok or name in ('interactive', 'knockout') else ''}")
     if a.json:
         with open(a.json, "x") as f:
             json.dump(report, f, indent=1)

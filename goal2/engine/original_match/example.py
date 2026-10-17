@@ -1,7 +1,9 @@
 """A worked interactive match: goal2's own state, one tactic change at a pause, one substitution at half time,
-stopped at minute 60 and resumed from the saved bytes.
+stopped at minute 60 and resumed from the saved bytes. With --competitive, a knockout match (kind 200) that goes
+to extra time and penalties: goal2's budget of 5 substitutions (the original's is 2), three of them made before
+extra time with a tactic, goal2's own shoot-out order, the match stopped at the order and resumed.
 
-    python3 -m original_match.example [--image FILE.sav] [--cache .cache] [--quiet]
+    python3 -m original_match.example [--image FILE.sav] [--cache .cache] [--quiet] [--competitive]
 
 Without --image the reference image is fetched by hash (assets.py). Prints the match as it happens."""
 import argparse
@@ -77,14 +79,85 @@ def play(image, quiet=False, resume_at=60):
     return r
 
 
+KNOCKOUT, KNOCKOUT_INDEX, BUDGET = 200, 39, 5     # a World Cup knockout match (F023), calendar number 39 (with
+#   these answers it goes to penalties: E034 find-knockout-20261016b.jsonl); goal2's budget, 5 a side (its rule)
+
+
+def knockout_answer(m, d, say):
+    """goal2's answers in the knockout example: play on at half time; before extra time three substitutions (the
+    last three of the eleven, each by a bench player of his position, else any outfield one) and 'stand ground';
+    play on at extra time's half time; at the shoot-out the available players in reverse squad order (forwards
+    first, the keeper last); an injured player replaced while the budget lasts."""
+    if d["context"] == "extra_time" and d["half"] == 1 and not d.get("refused"):
+        pos, subs, used = dict(d["positions"]), [], set()
+        for off in d["eleven"][8:11]:
+            on = next((w for w in d["bench"] if w and w not in used and pos.get(w) == pos[off]),
+                      next(w for w in d["bench"] if w and w not in used and pos.get(w) != 0))
+            used.add(on)
+            subs.append((off, on))
+        m.answer(substitutions=subs, tactics={STAND_GROUND: True})
+        say(f"  -> answer: substitutions {subs} (budget left {d['substitutions_left']}), stand ground")
+    elif d["context"] == "shootout_order":
+        order = list(reversed(d["available"]))
+        m.answer(shootout_order=order)
+        say(f"  -> answer: shoot-out order {order}")
+    elif d["context"] == "substitution" and d["injured"] and d["bench"] and d["substitutions_left"]:
+        m.answer(substitutions=[(d["injured"][0], next(w for w in d["bench"] if w))])
+        say(f"  -> answer: replace the injured {d['injured'][0]}")
+    else:
+        m.answer()
+        say("  -> answer: play on")
+
+
+def play_knockout(image, quiet=False, resume_at="shootout_order", index=None, record=None):
+    """The knockout scenario; with resume_at (a decision's context), the match is saved at the first such decision
+    (before its answer) and continued from the saved bytes. record: a list that gets every event."""
+    m = Match(image, Fixture(first=DENMARK, second=OPPONENT, index=index or KNOCKOUT_INDEX, kind=KNOCKOUT),
+              managed=DENMARK, substitutions=BUDGET)
+    say = (lambda *a: None) if quiet else print
+    t0, saved = time.time(), None
+    while not m.over:
+        for ev in m.events():
+            if record is not None:
+                record.append(ev)
+            if ev.kind in ("commentary", "minute"):
+                if ev.kind == "commentary" and (ev.data["template"] in (0x26, 60) or ev.data["text"].startswith("----")):
+                    say(f"        {ev.data['text']}")          # goals, the takers, the stage lines
+                continue
+            say(" ", ev)
+            if ev.kind == "decision":
+                if ev.data["context"] == resume_at and saved is None:
+                    saved = m.save()
+                    say(f"  -- saved at the {resume_at} decision: {len(saved)} bytes; resuming from them")
+                    m = Match.load(saved)                  # still waiting on the same decision
+                    knockout_answer(m, ev.data, say)
+                    break                                  # continue with the loaded match
+                knockout_answer(m, ev.data, say)
+    r = m.result()
+    so = r["shootout"]
+    say(f"\n{r['first']} {r['score'][0]}-{r['score'][1]} {r['second']} after {'extra time' if r['extra_time'] else '90'}"
+        f" (90 minutes {r['score_90']})" + (f", penalties {so['score'][0]}-{so['score'][1]}" if so else "")
+        + f"; winner team {r['winner']}")
+    say("goals:", [(g["name"], g["minute"], "et" if g.get("extra_time") else "") for g in r["goals"]])
+    say("substitutions:", [(s["off_name"], s["on_name"], s["minute"]) for s in r["substitutions"] if s["team"] == 0])
+    if so:
+        say("kicks:", [(k["name"], "in" if k["scored"] else "out") for k in so["kicks"]])
+    say("after (player, confidence, energy):", [(p["player"], p["confidence"], p["energy"]) for p in r["players"]
+                                                 if p["team"] == 0][:5], "...")
+    say("decisions:", [(d["context"], d["minute"]) for d in r["decisions"]])
+    say(f"{time.time() - t0:.1f} s wall")
+    return r
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--image")
     ap.add_argument("--cache", default=".cache")
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--competitive", action="store_true")
     a = ap.parse_args()
     data = open(a.image, "rb").read() if a.image else reference_image(a.cache)
-    play(Image.from_bytes(data), quiet=a.quiet)
+    (play_knockout if a.competitive else play)(Image.from_bytes(data), quiet=a.quiet)
 
 
 if __name__ == "__main__":

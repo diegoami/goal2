@@ -27,12 +27,14 @@ def validate_entry(rows):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--suite", required=True, choices=("tests", "mutations", "stamps", "saves", "entry", "example"))
-    ap.add_argument("--case", type=int, choices=range(7), help="one accepted save scenario (0..6)")
-    ap.add_argument("--batch", type=int, choices=(1,2,3), help="mutation batches 1=0..9, 2=10..16, 3=17..19")
+    ap.add_argument("--suite", required=True, choices=("tests", "mutations", "stamps", "saves", "entry", "example", "competitive-stamps", "competitive-saves"))
+    ap.add_argument("--case", type=int, choices=range(8), help="one accepted scenario: saves0..6, competitive-saves0..2, competitive-stamps0..7")
+    ap.add_argument("--batch", type=int, choices=(1,2,3,4,5), help="mutation batches 1=0..9, 2=10..16, 3=17..19, 4=20..27, 5=28..35")
     args = ap.parse_args()
-    if args.case is not None and args.suite != "saves" or args.batch is not None and args.suite != "mutations":
-        ap.error("--case is for saves, --batch is for mutations")
+    if args.case is not None and args.suite not in ("saves", "competitive-saves", "competitive-stamps") or args.batch is not None and args.suite != "mutations":
+        ap.error("--case is for save/stamp scenarios, --batch is for mutations")
+    if args.case is not None and args.case >= {"saves":7,"competitive-saves":3,"competitive-stamps":8}[args.suite]:
+        ap.error("case outside accepted scenario list")
     import unicorn
     if unicorn.__version__ != "2.1.4":
         raise RuntimeError("acceptance requires tested Unicorn2.1.4; pip install unicorn==2.1.4")
@@ -40,6 +42,8 @@ def main():
     log = ROOT / ".cache" / f"watched-{args.suite}-{time.time_ns()}.jsonl"
     prefix = "experiments/E033-original-match-kit/"
     commands = {
+        "competitive-stamps": ["experiments/E034-kit-competitive/stamps_competitive.py", "--log", str(log)],
+        "competitive-saves": ["experiments/E034-kit-competitive/save_boundaries_competitive.py", "--log", str(log)],
         "tests": ["-m", "unittest", "tests.test_original_match", "-v"],
         "mutations": ["tests/mutations_original_match.py"],
         "stamps": [prefix + "stamps.py", "--log", str(log)],
@@ -52,7 +56,9 @@ def main():
     import os
     env = dict(os.environ, PYTHONPATH=str(folder / "runtime"), PYTHONDONTWRITEBYTECODE="1")
     command = commands[args.suite]
-    if args.case is not None or args.batch is not None:
+    if args.case is not None and args.suite.startswith("competitive-"):
+        command = [str(ROOT / "tools/run_watched_scenario.py"), str(folder / command[0]), str(args.case)] + command[1:]
+    elif args.case is not None or args.batch is not None:
         # [designed] Select existing scenarios at runtime; the pinned upstream source remains byte-identical.
         file = folder / command[0]
         bootstrap = ("import importlib.util,sys; "
@@ -61,7 +67,7 @@ def main():
         if args.case is not None:
             bootstrap += f"m.SCENARIOS=m.SCENARIOS[{args.case}:{args.case+1}]; "
         else:
-            start,end = {1:(0,10),2:(10,17),3:(17,20)}[args.batch]
+            start,end = {1:(0,10),2:(10,17),3:(17,20),4:(20,28),5:(28,36)}[args.batch]
             bootstrap += f"m.MUTATIONS=m.MUTATIONS[{start}:{end}]; "
         bootstrap += "sys.argv=sys.argv[1:]; m.main()"
         command = ["-c",bootstrap,str(file)] + command[1:]
