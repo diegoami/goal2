@@ -82,6 +82,14 @@ test('full text usage and rejected tool outcomes survive both protocols', () => 
     assert.match(normalized.messages[0].parts[2].error.message, /rejected permission/);
     assert.equal(normalized.messages[0].parts[3].status, 'completed');
     assert.equal(normalized.messages[0].parts[1].text, 'private reasoning sample');
+    const noEffort = fixture(`v${major}-synthetic-export.json`);
+    const modelWithoutEffort = { providerID: 'minimax', id: 'MiniMax-M3' };
+    if (major === 2) { delete noEffort.info.model.variant; delete noEffort.messages[0].model.variant; }
+    else delete noEffort.messages[0].info.variant;
+    const noEffortResult = p.normalizeSession(major, noEffort, { ...expected, model: modelWithoutEffort });
+    assert.deepEqual(noEffortResult.model, modelWithoutEffort);
+    assert(p.command(major, 'run', { ...options, model: noEffortResult.model }).args.includes('minimax/MiniMax-M3'));
+
     const multiple = fixture(`v${major}-synthetic-export.json`);
     const next = copy(multiple.messages[0]);
     if (major === 2) { next.id = 'msg_fixture_final'; multiple.messages[0].finish = 'tool-calls'; }
@@ -186,6 +194,7 @@ test('mutation controls fail specific identity and rejection assertions', () => 
     { name: 'unfinished-completion', before: "assistants.at(-1).finish === 'stop'", after: 'true', pattern: 'actual v1 step metadata', assertion: /tool-calls is not final completion/ },
     { name: 'assistant-error-loss', before: '!assistants.some((m) => m.error)', after: 'true', pattern: 'actual v1 step metadata', assertion: /unfinished or assistant error must not complete/ },
     { name: 'step-metadata-loss', before: 'return structuredClone(part);', after: 'return { type: part.type };', pattern: 'actual v1 step metadata', assertion: /deep-equal|deeply|strictly deep/ },
+    { name: 'absent-effort-roundtrip-loss', before: "...(v.variant === undefined ? {} : { variant: string(v.variant, 'variant') })", after: "variant: v.variant === undefined ? null : string(v.variant, 'variant')", pattern: 'full text usage and rejected tool outcomes', assertion: /variant: null/ },
     { name: 'earlier-assistant-loss', before: "const assistants = normalized.filter((m) => m.type === 'assistant');", after: "const assistants = normalized.filter((m) => m.type === 'assistant').slice(-1);", pattern: 'full text usage and rejected tool outcomes', assertion: /all assistant messages must survive/ },
     { name: 'text-loss', before: ".filter((p) => p.type === 'text').map((p) => p.text)", after: ".filter((p) => p.type === 'text').slice(-1).map((p) => p.text)", pattern: 'full text usage and rejected tool outcomes', assertion: /complete assistant text/ },
   ];

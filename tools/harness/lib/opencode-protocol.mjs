@@ -11,7 +11,7 @@ function directory(v) { string(v, 'directory'); if (!path.isAbsolute(v)) fail('d
 function equal(a, b, label) { if (a !== b) fail(`${label} mismatch`); }
 function ref(v) {
   object(v, 'model');
-  return { providerID: string(v.providerID, 'providerID'), id: string(v.id, 'model id'), variant: v.variant === undefined ? null : string(v.variant, 'variant') };
+  return { providerID: string(v.providerID, 'providerID'), id: string(v.id, 'model id'), ...(v.variant === undefined ? {} : { variant: string(v.variant, 'variant') }) };
 }
 function identity(actual, expected) {
   const a = ref(actual); const e = ref(expected);
