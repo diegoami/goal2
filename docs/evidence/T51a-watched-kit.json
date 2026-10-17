@@ -1,0 +1,1502 @@
+{
+  "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "legacy": {
+    "application_source": "9fb725ac914afabfdaa830198fc3a514c87c243f",
+    "engine_source": "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607",
+    "archive_sha256": "3a1d3976f12a426426d811c995d915647e6324834bd1beb37063c88eaad8ca14",
+    "inputs": {
+      "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+      "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+      "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+    },
+    "saves": {
+      "standalone": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+      "campaign": "0690fb25cc7245f89d370ad0d08a92862d6283288c74e67caa52f3f09a487a1e"
+    }
+  },
+  "ownerbudget5_preflight": [
+    {
+      "log": ".cache/T51-ownerbudget5-1792231565170998314.jsonl",
+      "log_sha256": "389b2bf9a42afb1e4ef2a75a819805ae2e50651ec83a661d3980d9219a080f73",
+      "cases": [
+        {
+          "board_score": [
+            3,
+            2
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 2,
+            "commentary": 1366,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 5,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 1,
+            "minute": 125,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 4
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 30,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "incidents": {
+            "bookings": [
+              {
+                "minute": 75,
+                "name": "Olsen",
+                "player": 122,
+                "team": 0
+              },
+              {
+                "extra_time": true,
+                "minute": 118,
+                "name": "Laudrup",
+                "player": 130,
+                "team": 0
+              }
+            ],
+            "goals": [
+              {
+                "country": 19,
+                "minute": 8,
+                "minute_byte": 8,
+                "name": "Clarke",
+                "player": 370,
+                "team": 1
+              },
+              {
+                "country": 7,
+                "minute": 51,
+                "minute_byte": 51,
+                "name": "Povlsen",
+                "player": 131,
+                "team": 0
+              },
+              {
+                "country": 19,
+                "minute": 71,
+                "minute_byte": 199,
+                "name": "O'Neill",
+                "player": 380,
+                "team": 1
+              },
+              {
+                "country": 7,
+                "minute": 85,
+                "minute_byte": 213,
+                "name": "Durnin",
+                "player": 368,
+                "team": 0
+              },
+              {
+                "country": 7,
+                "extra_time": true,
+                "minute": 107,
+                "minute_byte": 107,
+                "name": "Piechnik",
+                "player": 123,
+                "team": 0
+              }
+            ],
+            "goals_disallowed": [],
+            "injuries": [
+              {
+                "minute": 16,
+                "name": "Rogan",
+                "player": 376,
+                "team": 1
+              }
+            ],
+            "sendings_off": [],
+            "substitutions": [
+              {
+                "minute": 16,
+                "off": 376,
+                "off_name": "Rogan",
+                "on": 366,
+                "on_name": "Donaghy",
+                "team": 1
+              },
+              {
+                "minute": 61,
+                "off": 379,
+                "off_name": "Morrow",
+                "on": 368,
+                "on_name": "Durnin",
+                "team": 1
+              },
+              {
+                "extra_time": true,
+                "minute": 105,
+                "off": 370,
+                "off_name": "Clarke",
+                "on": 371,
+                "on_name": "Dowie",
+                "team": 1
+              },
+              {
+                "extra_time": true,
+                "minute": 116,
+                "off": 380,
+                "off_name": "O'Neill",
+                "on": 369,
+                "on_name": "Hughes",
+                "team": 1
+              }
+            ]
+          },
+          "kickoff_seed": 58654,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            2,
+            2
+          ],
+          "score": [
+            3,
+            2
+          ],
+          "score_90": [
+            2,
+            2
+          ],
+          "seed_after": 913,
+          "seed_override": null,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 5834,
+          "timeout_s": 60,
+          "wall_s": 23.13,
+          "winner": 0
+        },
+        {
+          "board_score": [
+            4,
+            3
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 1,
+            "commentary": 1422,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 0,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 124,
+            "sending_off": 1,
+            "shootout": 1,
+            "shootout_kick": 9,
+            "substitution": 4
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            },
+            {
+              "context": "shootout_order",
+              "minute": 121
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 42,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "incidents": {
+            "bookings": [
+              {
+                "minute": 83,
+                "name": "Olsen",
+                "player": 122,
+                "team": 0
+              }
+            ],
+            "goals": [],
+            "goals_disallowed": [],
+            "injuries": [],
+            "sendings_off": [
+              {
+                "extra_time": true,
+                "minute": 97,
+                "name": "Olsen",
+                "player": 122,
+                "team": 0
+              }
+            ],
+            "substitutions": [
+              {
+                "minute": 58,
+                "off": 379,
+                "off_name": "Morrow",
+                "on": 368,
+                "on_name": "Durnin",
+                "team": 1
+              },
+              {
+                "minute": 58,
+                "off": 370,
+                "off_name": "Clarke",
+                "on": 371,
+                "on_name": "Dowie",
+                "team": 1
+              },
+              {
+                "minute": 84,
+                "off": 367,
+                "off_name": "Magilton",
+                "on": 377,
+                "on_name": "Wilson",
+                "team": 1
+              },
+              {
+                "extra_time": true,
+                "minute": 99,
+                "off": 380,
+                "off_name": "O'Neill",
+                "on": 369,
+                "on_name": "Hughes",
+                "team": 1
+              }
+            ]
+          },
+          "kickoff_seed": 21802,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            0,
+            0
+          ],
+          "score": [
+            0,
+            0
+          ],
+          "score_90": [
+            0,
+            0
+          ],
+          "seed_after": 35165,
+          "seed_override": null,
+          "shootout": {
+            "kicks": [
+              {
+                "name": "Hughes",
+                "player": 369,
+                "round": 1,
+                "scored": false,
+                "team": 1
+              },
+              {
+                "name": "Schmeichel",
+                "player": 121,
+                "round": 1,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Taggart",
+                "player": 363,
+                "round": 2,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Piechnik",
+                "player": 123,
+                "round": 2,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "W'thington",
+                "player": 364,
+                "round": 3,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Christofte",
+                "player": 124,
+                "round": 3,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Dowie",
+                "player": 371,
+                "round": 4,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Andersen",
+                "player": 125,
+                "round": 4,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Black",
+                "player": 378,
+                "round": 5,
+                "scored": false,
+                "team": 1
+              }
+            ],
+            "score": [
+              4,
+              3
+            ]
+          },
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 5627,
+          "timeout_s": 60,
+          "wall_s": 24.8,
+          "winner": 0
+        },
+        {
+          "board_score": [
+            10,
+            11
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 2,
+            "commentary": 668,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 3,
+            "goal_disallowed": 1,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 125,
+            "sending_off": 1,
+            "shootout": 1,
+            "shootout_kick": 24,
+            "substitution": 5
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            },
+            {
+              "context": "shootout_order",
+              "minute": 120
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 9,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "incidents": {
+            "bookings": [
+              {
+                "minute": 1,
+                "name": "Povlsen",
+                "player": 131,
+                "team": 0
+              },
+              {
+                "minute": 41,
+                "name": "Olsen",
+                "player": 122,
+                "team": 0
+              }
+            ],
+            "goals": [
+              {
+                "country": 7,
+                "minute": 15,
+                "minute_byte": 15,
+                "name": "Povlsen",
+                "player": 131,
+                "team": 0
+              },
+              {
+                "country": 19,
+                "minute": 45,
+                "minute_byte": 45,
+                "name": "Magilton",
+                "player": 367,
+                "team": 1
+              }
+            ],
+            "goals_disallowed": [
+              {
+                "country": 7,
+                "minute": 11,
+                "minute_byte": null,
+                "name": "",
+                "player": 0,
+                "team": 0
+              }
+            ],
+            "injuries": [],
+            "sendings_off": [
+              {
+                "minute": 59,
+                "name": "Povlsen",
+                "player": 131,
+                "team": 0
+              }
+            ],
+            "substitutions": [
+              {
+                "minute": 57,
+                "off": 363,
+                "off_name": "Taggart",
+                "on": 374,
+                "on_name": "Morrow",
+                "team": 1
+              },
+              {
+                "minute": 57,
+                "off": 370,
+                "off_name": "Clarke",
+                "on": 371,
+                "on_name": "Dowie",
+                "team": 1
+              },
+              {
+                "minute": 59,
+                "off": 380,
+                "off_name": "O'Neill",
+                "on": 369,
+                "on_name": "Hughes",
+                "team": 1
+              },
+              {
+                "minute": 71,
+                "off": 379,
+                "off_name": "Morrow",
+                "on": 368,
+                "on_name": "Durnin",
+                "team": 1
+              },
+              {
+                "minute": 84,
+                "off": 376,
+                "off_name": "Rogan",
+                "on": 366,
+                "on_name": "Donaghy",
+                "team": 1
+              }
+            ]
+          },
+          "kickoff_seed": 8457,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "quick_at_half_time",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            1,
+            1
+          ],
+          "score": [
+            1,
+            1
+          ],
+          "score_90": [
+            1,
+            1
+          ],
+          "seed_after": 45154,
+          "seed_override": null,
+          "shootout": {
+            "kicks": [
+              {
+                "name": "Hughes",
+                "player": 369,
+                "round": 1,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Schmeichel",
+                "player": 121,
+                "round": 1,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Magilton",
+                "player": 367,
+                "round": 2,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Olsen",
+                "player": 122,
+                "round": 2,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "W'thington",
+                "player": 364,
+                "round": 3,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Piechnik",
+                "player": 123,
+                "round": 3,
+                "scored": false,
+                "team": 0
+              },
+              {
+                "name": "Dowie",
+                "player": 371,
+                "round": 4,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Christofte",
+                "player": 124,
+                "round": 4,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Morrow",
+                "player": 374,
+                "round": 5,
+                "scored": false,
+                "team": 1
+              },
+              {
+                "name": "Andersen",
+                "player": 125,
+                "round": 5,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Black",
+                "player": 378,
+                "round": 6,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Sivebaek",
+                "player": 126,
+                "round": 6,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Donaghy",
+                "player": 366,
+                "round": 7,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Vilfort",
+                "player": 127,
+                "round": 7,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "McDonald",
+                "player": 365,
+                "round": 8,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Larsen",
+                "player": 128,
+                "round": 8,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Durnin",
+                "player": 368,
+                "round": 9,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Jensen",
+                "player": 129,
+                "round": 9,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Fleming",
+                "player": 362,
+                "round": 10,
+                "scored": false,
+                "team": 1
+              },
+              {
+                "name": "Laudrup",
+                "player": 130,
+                "round": 10,
+                "scored": false,
+                "team": 0
+              },
+              {
+                "name": "Kee",
+                "player": 372,
+                "round": 11,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Schmeichel",
+                "player": 121,
+                "round": 11,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Hughes",
+                "player": 369,
+                "round": 12,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Olsen",
+                "player": 122,
+                "round": 12,
+                "scored": false,
+                "team": 0
+              }
+            ],
+            "score": [
+              9,
+              10
+            ]
+          },
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 2290,
+          "timeout_s": 60,
+          "wall_s": 12.07,
+          "winner": 1
+        },
+        {
+          "board_score": [
+            5,
+            6
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 1,
+            "commentary": 564,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 5,
+            "goal_disallowed": 1,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 124,
+            "sending_off": 1,
+            "shootout": 1,
+            "shootout_kick": 12,
+            "substitution": 5
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            },
+            {
+              "context": "shootout_order",
+              "minute": 120
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 53,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "incidents": {
+            "bookings": [
+              {
+                "minute": 47,
+                "name": "Christofte",
+                "player": 124,
+                "team": 0
+              }
+            ],
+            "goals": [
+              {
+                "country": 19,
+                "minute": 31,
+                "minute_byte": 31,
+                "name": "Black",
+                "player": 378,
+                "team": 1
+              },
+              {
+                "country": 7,
+                "minute": 37,
+                "minute_byte": 37,
+                "name": "Laudrup",
+                "player": 130,
+                "team": 0
+              },
+              {
+                "country": 19,
+                "minute": 65,
+                "minute_byte": 65,
+                "name": "Dowie",
+                "player": 371,
+                "team": 1
+              },
+              {
+                "country": 7,
+                "minute": 67,
+                "minute_byte": 67,
+                "name": "Larsen",
+                "player": 128,
+                "team": 0
+              }
+            ],
+            "goals_disallowed": [
+              {
+                "country": 7,
+                "minute": 21,
+                "minute_byte": null,
+                "name": "",
+                "player": 0,
+                "team": 0
+              }
+            ],
+            "injuries": [],
+            "sendings_off": [
+              {
+                "minute": 75,
+                "name": "Christofte",
+                "player": 124,
+                "team": 0
+              }
+            ],
+            "substitutions": [
+              {
+                "minute": 57,
+                "off": 367,
+                "off_name": "Magilton",
+                "on": 377,
+                "on_name": "Wilson",
+                "team": 1
+              },
+              {
+                "minute": 57,
+                "off": 370,
+                "off_name": "Clarke",
+                "on": 371,
+                "on_name": "Dowie",
+                "team": 1
+              },
+              {
+                "minute": 61,
+                "off": 379,
+                "off_name": "Morrow",
+                "on": 368,
+                "on_name": "Durnin",
+                "team": 1
+              },
+              {
+                "minute": 63,
+                "off": 365,
+                "off_name": "McDonald",
+                "on": 375,
+                "on_name": "Hill",
+                "team": 1
+              },
+              {
+                "minute": 66,
+                "off": 363,
+                "off_name": "Taggart",
+                "on": 374,
+                "on_name": "Morrow",
+                "team": 1
+              }
+            ]
+          },
+          "kickoff_seed": 4405,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "quick_at_half_time",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            2,
+            2
+          ],
+          "score": [
+            2,
+            2
+          ],
+          "score_90": [
+            2,
+            2
+          ],
+          "seed_after": 20463,
+          "seed_override": null,
+          "shootout": {
+            "kicks": [
+              {
+                "name": "O'Neill",
+                "player": 380,
+                "round": 1,
+                "scored": false,
+                "team": 1
+              },
+              {
+                "name": "Schmeichel",
+                "player": 121,
+                "round": 1,
+                "scored": false,
+                "team": 0
+              },
+              {
+                "name": "W'thington",
+                "player": 364,
+                "round": 2,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Olsen",
+                "player": 122,
+                "round": 2,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Dowie",
+                "player": 371,
+                "round": 3,
+                "scored": false,
+                "team": 1
+              },
+              {
+                "name": "Piechnik",
+                "player": 123,
+                "round": 3,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Morrow",
+                "player": 374,
+                "round": 4,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Andersen",
+                "player": 125,
+                "round": 4,
+                "scored": false,
+                "team": 0
+              },
+              {
+                "name": "Black",
+                "player": 378,
+                "round": 5,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Sivebaek",
+                "player": 126,
+                "round": 5,
+                "scored": true,
+                "team": 0
+              },
+              {
+                "name": "Hill",
+                "player": 375,
+                "round": 6,
+                "scored": true,
+                "team": 1
+              },
+              {
+                "name": "Vilfort",
+                "player": 127,
+                "round": 6,
+                "scored": false,
+                "team": 0
+              }
+            ],
+            "score": [
+              3,
+              4
+            ]
+          },
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 2194,
+          "timeout_s": 60,
+          "wall_s": 12.77,
+          "winner": 1
+        },
+        {
+          "board_score": [
+            1,
+            1
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 0,
+            "commentary": 1025,
+            "extra_time": 0,
+            "full_time": 1,
+            "goal": 2,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 91,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 2
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": false,
+          "fixture": {
+            "first": 7,
+            "index": 21,
+            "kind": 2,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "incidents": {
+            "bookings": [],
+            "goals": [
+              {
+                "country": 19,
+                "minute": 16,
+                "minute_byte": 16,
+                "name": "W'thington",
+                "player": 364,
+                "team": 1
+              },
+              {
+                "country": 7,
+                "minute": 23,
+                "minute_byte": 23,
+                "name": "Povlsen",
+                "player": 131,
+                "team": 0
+              }
+            ],
+            "goals_disallowed": [],
+            "injuries": [],
+            "sendings_off": [],
+            "substitutions": [
+              {
+                "minute": 62,
+                "off": 379,
+                "off_name": "Morrow",
+                "on": 368,
+                "on_name": "Durnin",
+                "team": 1
+              },
+              {
+                "minute": 62,
+                "off": 370,
+                "off_name": "Clarke",
+                "on": 371,
+                "on_name": "Dowie",
+                "team": 1
+              }
+            ]
+          },
+          "kickoff_seed": 37141,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            1,
+            1
+          ],
+          "score": [
+            1,
+            1
+          ],
+          "score_90": null,
+          "seed_after": 16321,
+          "seed_override": null,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 4149,
+          "timeout_s": 60,
+          "wall_s": 21.44,
+          "winner": 2
+        },
+        {
+          "board_score": [
+            2,
+            3
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 0,
+            "commentary": 1423,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 5,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 122,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 3
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 40,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "incidents": {
+            "bookings": [],
+            "goals": [
+              {
+                "country": 7,
+                "minute": 7,
+                "minute_byte": 7,
+                "name": "Andersen",
+                "player": 125,
+                "team": 0
+              },
+              {
+                "country": 7,
+                "minute": 14,
+                "minute_byte": 14,
+                "name": "Povlsen",
+                "player": 131,
+                "team": 0
+              },
+              {
+                "country": 19,
+                "minute": 55,
+                "minute_byte": 55,
+                "name": "Black",
+                "player": 378,
+                "team": 1
+              },
+              {
+                "country": 19,
+                "minute": 78,
+                "minute_byte": 78,
+                "name": "Black",
+                "player": 378,
+                "team": 1
+              },
+              {
+                "country": 19,
+                "extra_time": true,
+                "minute": 109,
+                "minute_byte": 109,
+                "name": "Rogan",
+                "player": 376,
+                "team": 1
+              }
+            ],
+            "goals_disallowed": [],
+            "injuries": [],
+            "sendings_off": [],
+            "substitutions": [
+              {
+                "minute": 59,
+                "off": 379,
+                "off_name": "Morrow",
+                "on": 368,
+                "on_name": "Durnin",
+                "team": 1
+              },
+              {
+                "minute": 59,
+                "off": 380,
+                "off_name": "O'Neill",
+                "on": 369,
+                "on_name": "Hughes",
+                "team": 1
+              },
+              {
+                "minute": 73,
+                "off": 370,
+                "off_name": "Clarke",
+                "on": 371,
+                "on_name": "Dowie",
+                "team": 1
+              }
+            ]
+          },
+          "kickoff_seed": 60712,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            2,
+            2
+          ],
+          "score": [
+            2,
+            3
+          ],
+          "score_90": [
+            2,
+            2
+          ],
+          "seed_after": 57183,
+          "seed_override": null,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 6025,
+          "timeout_s": 60,
+          "wall_s": 26.34,
+          "winner": 1
+        }
+      ]
+    },
+    {
+      "log": ".cache/T51-ownerbudget5-regulation-1792231927136754191.json",
+      "log_sha256": "7044d73ba6d983af4ec225a5891cb5dc981aaa1aa95047f88c0ebd1bd4710017",
+      "cases": [
+        {
+          "board_score": [
+            1,
+            0
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "calendar": {
+            "base_year": 2028,
+            "class": 0,
+            "engine_year": 0,
+            "stage": 2
+          },
+          "counts": {
+            "booking": 2,
+            "commentary": 975,
+            "extra_time": 0,
+            "full_time": 1,
+            "goal": 1,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 93,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 4
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            }
+          ],
+          "declared_inputs_sha256": "11bb1beef75c63491109268ac9a84bbdbdf32617d8522c36c52d31c2759c3b64",
+          "extra_time": false,
+          "fixture": {
+            "first": 7,
+            "index": 21,
+            "kind": 2,
+            "second": 19
+          },
+          "full_result_sha256": "1906aa6b1803cbd26f188cbbb7f1f3bc164f56945612da1ee93c6f0c1b8cc575",
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "incidents": {
+            "bookings": [
+              {
+                "minute": 25,
+                "name": "Sivebaek",
+                "player": 126,
+                "team": 0
+              },
+              {
+                "minute": 49,
+                "name": "Black",
+                "player": 378,
+                "team": 1
+              }
+            ],
+            "goals": [
+              {
+                "country": 7,
+                "minute": 75,
+                "minute_byte": 75,
+                "name": "Larsen",
+                "player": 128,
+                "team": 0
+              }
+            ],
+            "goals_disallowed": [],
+            "injuries": [],
+            "sendings_off": [],
+            "substitutions": [
+              {
+                "minute": 66,
+                "off": 379,
+                "off_name": "Morrow",
+                "on": 368,
+                "on_name": "Durnin",
+                "team": 1
+              },
+              {
+                "minute": 66,
+                "off": 378,
+                "off_name": "Black",
+                "on": 371,
+                "on_name": "Dowie",
+                "team": 1
+              },
+              {
+                "minute": 76,
+                "off": 376,
+                "off_name": "Rogan",
+                "on": 366,
+                "on_name": "Donaghy",
+                "team": 1
+              },
+              {
+                "minute": 78,
+                "off": 363,
+                "off_name": "Taggart",
+                "on": 374,
+                "on_name": "Morrow",
+                "team": 1
+              }
+            ]
+          },
+          "kickoff_seed": 257,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "reference_seed": 257,
+          "regulation": [
+            1,
+            0
+          ],
+          "returned_memory_sha256": "3e23b231f242ae081bf43f12f6ae13c61c20a4b66b33e3226c7320f42dc22b59",
+          "score": [
+            1,
+            0
+          ],
+          "score_90": null,
+          "seed_after": 25058,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 4279,
+          "timeout_s": 60,
+          "wall_s": 10.44,
+          "winner": 0
+        }
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "head": "2361057ddf6c7f094a24fa06df917702f40bf269",
+      "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+      "manifest_sha256": "e5dfc08ade7813f72dc36418f52785b869bcaa961ab2af32682bf10df88aec2c",
+      "vendor": {
+        "goal2/engine/original_match/README.md": "dbd20ff6d4fe1f1a38a5bb43abc59d8b4ad42e35cffb5cc1735d4c57b107daf1",
+        "goal2/engine/original_match/__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
+        "goal2/engine/original_match/assets.py": "a3dd00e87b213662c4188eecb9a4e2e88265ad6a8f2f6b84a70c3950895d43b7",
+        "goal2/engine/original_match/build.py": "3368801a8ef847cbb1b37f625bcb716fcd6b2aa1e08d94d9db8d3107f746e9e4",
+        "goal2/engine/original_match/check.py": "ab6f41283784a5b78dba23d05b8d39b65343a22a660bb41f3b35b915fb64f3ae",
+        "goal2/engine/original_match/example.py": "d17a104f8c08635fb8a3ff61f6113aa56a902b88aef5fcceaf32ab27790bbacf",
+        "goal2/engine/original_match/image.py": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
+        "goal2/engine/original_match/machine.py": "3951626402e0f5de690ca5400ad2c6d2fa7d7e26c4fb2143bf7abacac5631fa8",
+        "goal2/engine/original_match/match.py": "635f2dc9f54515452bd3c262c61899b1e36829186266af4d88db54c9b659bb45",
+        "goal2/engine/original_match/screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304"
+      },
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "tests"
+      ],
+      "exit_code": 0,
+      "wall_s": 274.705,
+      "log": ".cache/T51a-upstream-tests-1792232359097952033.log",
+      "log_sha256": "3c8bfd6c072fa397561ce09d477d8314f16a2c4ef21c1b3d3db0f61d46863848",
+      "ran_32_tests": true,
+      "unittest_ok": true
+    }
+  ],
+  "old_kit_baseline": {
+    "source": "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607",
+    "test_source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+    "log": ".cache/T51a-old-kit-competitive-baseline.log",
+    "log_sha256": "00a1cce617291b24f4f6067d2000713a966fbee1c6b02583643a862a85f8707e",
+    "tests": 8,
+    "errors": 8,
+    "reason": "actual missing competitive kinds and substitutions argument; staged verified resources and E034 dependencies"
+  }
+}
