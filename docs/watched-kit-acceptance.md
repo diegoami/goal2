@@ -56,6 +56,7 @@ python3 tools/check_watched_upstream.py --suite competitive-stamps
 # Run each competitive save case separately (0,1,2):
 python3 tools/check_watched_upstream.py --suite competitive-saves --case 0
 python3 tools/prove_watched_competitive.py
+python3 tools/prove_watched_old_kit.py
 # Run source-mutating controls sequentially after all other suites:
 python3 tools/prove_watched_identity.py
 python3 tools/check_provenance.py
@@ -344,3 +345,11 @@ index9 keeps24-kick sudden death, index53 gives12-kick sudden death, and index40
 changes from the original-budget regulation win to an extra-time defeat. The
 explicit kind2/index21/reference-seed0x0101 case establishes a1–0 regulation win
 under5/5. These bounded diagnostics do not enable competitive application routing.
+
+[confirmed: T51a reproduced old-kit control] `prove_watched_old_kit.py` exports
+all ten files of the former accepted3656a2d kit with exact `git show` copies into
+an ignored proof folder and runs the eight PR255 competitive tests against it.
+It requires eight capability errors (unsupported kind or substitution argument),
+zero skips and no unrelated dependency/resource failure. The current consumer
+vendor is never replaced. This makes the failing-before evidence reproducible
+without the original temporary dispatch baseline.
