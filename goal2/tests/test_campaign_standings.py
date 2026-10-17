@@ -59,14 +59,31 @@ class Standings(unittest.TestCase):
             one=next(r for r in rows if r.country==1)
             self.assertEqual((one.goals_for,one.points),(4,4))
 
+    def test_completed_byte_scores_and_signed_goal_difference(self):
+        # [designed: T49] Completion is explicit ledger membership, separate from raw fixture marks.
+        fs=[fixture(1,1,2)]
+        try:rows=self.table(fs,[score(1,1,2,254,255)])
+        except ValueError as exc:self.fail(f'completed byte scores were rejected: {exc}')
+        by={r.country:r for r in rows}
+        self.assertEqual((by[1].goals_for,by[1].goals_against,by[1].goal_difference),(254,255,-1))
+        self.assertEqual((by[2].goals_for,by[2].points),(255,2))
+        # [confirmed: F023 §8] GD is a signed sixteen-bit difference of byte counters, not a byte.
+        by={r.country:r for r in self.table(fs,[score(1,1,2,10,250)])}
+        self.assertEqual(by[1].goal_difference,-240)
+        self.assertNotEqual(by[1].goal_difference,16)
+        rows=self.table(fs+[fixture(2,1,3)],[score(1,1,2,255,0),score(2,1,3,1,0)])
+        self.assertEqual(next(r.goals_for for r in rows if r.country==1),0)
+
     def test_replay_malformed_and_wrong_endpoint_rejection(self):
         fs=[fixture(1,1,2)];rs=[score(1,1,2,1,0)]
         for bad in (rs+rs,[score(2,1,2,1,0)],[score(1,2,1,1,0)],
-                    [score(1,1,2,-1,0)],[score(1,1,2,True,0)]):
+                    [score(1,1,2,-1,0)],[score(1,1,2,256,0)],[score(1,1,2,True,0)]):
             with self.assertRaises(ValueError):self.table(fs,bad)
-        for slots in ((1,1,2,3),(1,2,3),(True,2,3,4)):
+        for slots in ((1,1,2,3),(1,2,3),(True,2,3,4),(0,2,3,4)):
             with self.assertRaises(ValueError):self.table([],[],slots=slots)
         with self.assertRaises(ValueError):self.table(fs+fs,rs)
+        with self.assertRaises(ValueError):self.table(fs,rs,stage=8)
+        with self.assertRaises(ValueError):self.table([fixture(1,1,5)],[score(1,1,5,1,0)])
 
     def test_opening_group_recovers_saved_source_slots_without_rng(self):
         from goal2.desktop.model import DesktopModel

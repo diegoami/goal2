@@ -4,7 +4,8 @@
 `goal2.game.standings.group_table` reads explicit source slots, fixture order and
 completed results. Only played fixtures of the requested group-stage kind count.
 Points are two for a win, one for a draw, zero for a loss. Goals and points retain
-the original byte arithmetic. Sort keys are points, goal difference and goals
+the original byte arithmetic. Goal difference is the signed sixteen-bit
+difference of those counters (10 minus 250 is -240, not a wrapped byte). Sort keys are points, goal difference and goals
 scored; there is no coin or country-ID key.
 
 [derived: same F023 §8, 1771:8476–85F1] The original swaps a slot with any later
@@ -40,3 +41,9 @@ With the desktop extra installed, run
 The smoke uses an explicit result fixture with equal points/GD and decisive goals
 scored, checks the real button/dialog and named country IDs, matches backend
 qualifiers, and proves reads leave the full state/RNG unchanged.
+
+[designed: T49; derived: existing World result schema] This API consumes explicit
+completed ledger entries. Their scores retain the full 0..255 byte range; completion
+is determined by ledger membership rather than interpreting a score as an original
+raw fixture mark. A caller reading raw original fixtures must apply F023's played
+marker check before constructing completed results.

@@ -44,7 +44,9 @@ def group_table(slots, fixtures, results, *, stage, places):
     source chronology. The exchange sort is intentionally not a stable sort:
     indirect swaps may reverse equal teams. Later all-equal comparisons retain
     that current order. Goals and points are original byte counters.
-    [designed] places identifies provisional progressing positions, not a clinch.
+    [designed] Completed-ledger membership marks completion; scores retain the
+    world ledger's full 0..255 range, independently of original raw FE/FF marks.
+    places identifies provisional progressing positions, not a clinch.
     """
     if (len(slots)!=4 or any(not _integer(c,1,128) for c in slots) or len(set(slots))!=4
             or type(stage) is not int or stage not in (2,3,5,7) or not _integer(places,0,4)):
@@ -65,7 +67,7 @@ def group_table(slots, fixtures, results, *, stage, places):
             raise ValueError('unknown or replayed fixture result')
         if (not isinstance(r.get('teams'),(tuple,list)) or list(r['teams'])!=[f.side_a,f.side_b]
                 or any(type(c) is not int for c in r['teams']) or not isinstance(r.get('score'),(tuple,list))
-                or len(r['score'])!=2 or any(not _integer(g,0,253) for g in r['score'])):
+                or len(r['score'])!=2 or any(not _integer(g,0,255) for g in r['score'])):
             raise ValueError('result endpoints or played scores differ from the fixture')
         completed[fid]=tuple(r['score'])
     stats={c:dict(won=0,drawn=0,lost=0,goals_for=0,goals_against=0,points=0) for c in slots}
