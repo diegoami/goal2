@@ -72,7 +72,7 @@ class DesktopModel:
         self.state=candidate
 
     def result_text(self,state=None):
-        """[designed: T70/T51] Name retained quick/original results and resolution."""
+        """[designed: T70] Name retained quick results, never watched events."""
         state=self.state if state is None else state
         match=state.last_match
         if match is None:return 'No match played'
@@ -101,9 +101,7 @@ class DesktopModel:
                 if score is not None:lines.append(f'{label}: {score[0]} — {score[1]}')
             winner=stages['winner']
             lines.append('Draw' if winner==2 else f'Winner: {self.goaldat.country_names[teams[winner]]}')
-        # [designed: T51] The display model owns original/quick result identity.
-        heading='Original engine' if watched(match) else 'Quick simulation (rebuild setup)'
-        return '\n'.join([heading,*lines])
+        return '\n'.join(lines)
 
     def view(self,state=None):
         """[derived: F002/F007; designed] Resolve original names and live fields."""
