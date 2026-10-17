@@ -58,6 +58,7 @@ class CompetitiveSaveTests(unittest.TestCase):
     def test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues(self):
         try:before,after,raw,f,job,out=opening_qualifier()
         except ValueError as exc:self.fail('actual competitive publication unavailable: '+str(exc))
+        declared_input=job
         from goal2.tests.test_watched_adapter import direct_image
         independent,probe=independent_runtime()
         original=independent.Match(independent.Image(direct_image(job,0).memory_component()),
@@ -110,7 +111,7 @@ class CompetitiveSaveTests(unittest.TestCase):
         report=ROOT/'.cache'/('T51-actual-qualifier-'+str(time.time_ns())+'.json')
         report.write_text(json.dumps({'source':'424d5998076da1e4efc399c2715689ddb44d3e1a',
             'fixture':{'first':f.first,'second':f.second,'index':f.index,'kind':f.kind},
-            'managed':4,'budget':[5,5],'captain':job.captain,'eleven':job.starting_eleven,
+            'managed':4,'budget':[5,5],'captain':declared_input.captain,'eleven':declared_input.starting_eleven,
             'policy':'play_on','reference_seed':None,'delay_byte':None,
             'engine_year':0,'base_year':1990,'stage':5,'class':1,'next_free':2001,
             'template_sha256':hashlib.sha256(raw).hexdigest(),'image_sha256':out.result['image_sha256'],

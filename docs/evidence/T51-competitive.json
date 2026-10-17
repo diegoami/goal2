@@ -572,5 +572,31 @@
       "log_sha256": "a50e231a840c036559c59c736e48527e8703ecfd669ec7e22677ece76e55e2a9"
     }
   ],
-  "ui_validation_scope": "All6 browsers, Qt management/campaign-friendlies and4actual competitive results/8labels passed on d513a19. Later changes only strengthen test/proof isolation/coverage; product/UI source bytes unchanged."
+  "ui_validation_scope": "All6 browsers, Qt management/campaign-friendlies and4actual competitive results/8labels passed on d513a19. Later changes only strengthen test/proof isolation/coverage; product/UI source bytes unchanged.",
+  "r2_diagnostic": {
+    "cause": "Evidence writer reused job after continuation loop replaced GameState with WatchedJob; all actual qualifier behavioral comparisons completed before metadata AttributeError. Captured declared_input fixes only evidence metadata; no assertions or expected values changed.",
+    "focused_summary": {
+      "path": ".cache/T51-focus-1792258697776979506/summary.json",
+      "sha256": "e1a13e42be71ac76ff51caff10964877871cb80620adac1b562810268cb5f6b2"
+    },
+    "partial_full": {
+      "path": ".cache/T51-full-1792258697249709087/full-python.log",
+      "sha256": "9e1d636d9ff73b356d2380e3c4691c3b3df0bcdbfa8dee122c2b7b5d7a734e52"
+    },
+    "full_scope": "Stopped known metadata-error run; diagnostic only, not a completed full-suite receipt."
+  },
+  "metadata_writer_fix": {
+    "focused_log": {
+      "path": ".cache/T51-actual-qualifier-writer-fixed.log",
+      "sha256": "31feceea346b0ac97bb25b6cf0bb92ef643273c0993b7827eda1546e243f9f6b"
+    },
+    "tests": 1,
+    "seconds": 64.196,
+    "exit_code": 0,
+    "actual_qualifier": {
+      "path": ".cache/T51-actual-qualifier-1792260060567759428.json",
+      "sha256": "c7e0cc853923692ef9e25e08917b87f8ec3b49c05be088654e5e1642874206f5"
+    },
+    "writer_sweep": "Other adapter/World evidence writers retain correct declared input; unique time_ns paths and separate full/focus folders prevent overwritten receipts."
+  }
 }
