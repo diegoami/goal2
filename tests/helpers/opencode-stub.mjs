@@ -56,7 +56,11 @@ if (args[0] === 'serve') {
       let answer;
       const item = () => sessions.find((s) => s.info.id === sid);
       if (url.pathname === '/openapi.json') answer = { openapi: '3.1.0', info: { title: 'T72 synthetic stub', version: '2.0.28' }, paths: {} };
-      else if (url.pathname === '/api/model') answer = envelope([{ id: 'MiniMax-M3', modelID: 'MiniMax-M3', providerID: 'minimax', family: mode === 'family' ? 'gpt-sol' : process.env.STUB_FAMILY || 'minimax', enabled: true, variants: mode === 'effort' ? [{ id: 'none' }] : [{ id: 'none' }, { id: 'thinking' }] }]);
+      else if (url.pathname === '/api/plugin') {
+        const ids=JSON.parse(fs.readFileSync(new URL('../../tools/harness/opencode-guard/native-plugins.json',import.meta.url)));
+        const options=JSON.parse(process.env.OPENCODE_CONFIG_CONTENT||'{}').plugins?.at(-1)?.options;
+        answer=envelope([...ids.map(id=>({id,source:{type:'builtin'},state:{status:'active'}})),...(options?[{id:options.id,source:{type:'local',path:options.source},state:{status:'active'}}]:[])]);
+      } else if (url.pathname === '/api/model') answer = envelope([{ id: 'MiniMax-M3', modelID: 'MiniMax-M3', providerID: 'minimax', family: mode === 'family' ? 'gpt-sol' : process.env.STUB_FAMILY || 'minimax', enabled: true, variants: mode === 'effort' ? [{ id: 'none' }] : [{ id: 'none' }, { id: 'thinking' }] }]);
       else if (url.pathname === '/api/agent') {
         const config = JSON.parse(process.env.OPENCODE_CONFIG_CONTENT || '{}');
         const agent = { id: 'reviewer', name: 'Reviewer', ...config.agents?.reviewer };

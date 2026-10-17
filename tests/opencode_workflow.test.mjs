@@ -1,4 +1,5 @@
 // [designed: T72] Production transport/permission/workflow regressions; no model calls.
+import './opencode_guard.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -97,6 +98,7 @@ test('production major dispatch recovers complete export, usage and receipt; sam
   assert.equal(result.normalized.messages[0].parts.filter((p) => p.type === 'tool').length, 1);
   assert(fs.existsSync(result.manifest)); assert(fs.existsSync(result.briefFile));
   const receipt = JSON.parse(fs.readFileSync(result.manifest)); assert.equal(receipt.phase, 'complete'); assert.equal(receipt.completed, true);
+  assert(receipt.guard?.sourceSHA256, 'native operand guard must be pinned before generation');
   assert.equal(receipt.binarySHA256.length, 64); assert.equal(receipt.policySHA256.length, 64);
   assert(logs.some((line) => line.includes(`session ${result.sessionId} started`)));
   const independent = await runOpenCodeWatched(options);
@@ -193,6 +195,7 @@ test('production workflow identity and rejection deletion controls fail the inte
     for (const item of fs.readdirSync(root)) if (item.endsWith('.mjs')) fs.copyFileSync(new URL(item, root), path.join(dir, item));
     // [designed: T72] Workflow identity receipts hash this public entrypoint too.
     fs.copyFileSync(new URL('../tools/harness/review.mjs', import.meta.url), path.join(dir, '../review.mjs'));
+    fs.cpSync(new URL('../tools/harness/opencode-guard/', import.meta.url), path.join(scratch, 'opencode-guard'), { recursive: true });
     const target = path.join(dir, file); const source = fs.readFileSync(target, 'utf8'); assert(source.includes(before)); fs.writeFileSync(target, source.replace(before, after));
     const testEnv = { ...process.env }; delete testEnv.NODE_TEST_CONTEXT;
     const result = spawnSync(process.execPath, ['--test', '--test-name-pattern=' + pattern, fileURLToPath(new URL('./opencode_workflow.test.mjs', import.meta.url))], { env: { ...testEnv, T72_TRANSPORT_MODULE: pathToFileURL(path.join(dir, 'opencode-transport.mjs')).href, T72_REVIEW_SCRIPT: path.join(scratch, 'review.mjs'), T72_TEST_MODULE: pathToFileURL(path.join(dir, 'opencode.mjs')).href }, encoding: 'utf8', timeout: 20000 });

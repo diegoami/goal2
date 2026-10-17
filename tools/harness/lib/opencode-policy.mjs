@@ -52,10 +52,10 @@ export function reviewerPolicy(agentFile) {
   if (JSON.stringify(permissions) !== JSON.stringify(pinned)) throw new Error('reviewer must preserve exact ordered permission contract');
   return { sourceSHA256: hash(rawSource), profile: { mode: 'all', hidden: false, system: system.trim(), permissions } };
 }
-export function trustedReviewEnv(env, policy, agent = 'reviewer') {
+export function trustedReviewEnv(env, policy, agent = 'reviewer', guard) {
   const next = { ...env };
   for (const key of ['OPENCODE_CONFIG_DIR', 'OPENCODE_CONFIG', 'OPENCODE_CONFIG_CONTENT', 'OPENCODE_CONFIG_PROJECT_DISABLE']) delete next[key];
-  return { ...next, OPENCODE_DISABLE_PROJECT_CONFIG: '1', OPENCODE_CONFIG_CONTENT: JSON.stringify({ agents: { [agent]: policy.profile } }) };
+  return { ...next, OPENCODE_DISABLE_PROJECT_CONFIG: '1', OPENCODE_CONFIG_CONTENT: JSON.stringify({ agents: { [agent]: policy.profile }, ...(guard ? { plugins: guard.plugins } : {}) }) };
 }
 export function verifyReviewer(profile, policy, agent) {
   const expected = policy.profile;
