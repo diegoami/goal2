@@ -536,6 +536,52 @@
       "wall_s": 46.995,
       "log": ".cache/T51a-sequential-controls-1792234257141028482/prove_watched_serialized_result.log",
       "log_sha256": "2a14e670800a93d2b022ab05c8d4b1d64ffd33517cea4ee0bc08e49da96f147e"
+    },
+    {
+      "name": "full-python-corrected",
+      "head": "b13dea95b595a5636d2bfeb2e827303f68c4e9cc",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "goal2/tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_s": 977.058,
+      "log": ".cache/T51a-full-python-final.log",
+      "log_sha256": "2a2729081b6414049617a17d5986ea9f2a5724a93fc8e2d708eb9da794109908",
+      "tests": 490,
+      "ran_490": true,
+      "zero_skips": true,
+      "skips": 0,
+      "failures": 0,
+      "code_scope": "Exact runtime/test bytes from b13dea9; later024dabf only merged2 model-trials documentation lines. All saved-byte controls completed/restored before this fresh run."
+    },
+    {
+      "name": "final-provenance",
+      "command": [
+        "python3",
+        "tools/check_provenance.py"
+      ],
+      "exit_code": 0,
+      "log": ".cache/T51a-final-provenance.log",
+      "log_sha256": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+      "output": "provenance check: 16 file(s) OK"
+    },
+    {
+      "name": "final-links",
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit_code": 0,
+      "log": ".cache/T51a-final-links.log",
+      "log_sha256": "e7bd5bd7eba02d2daf53da8df67660157e58158f0b3c9f31c9b2c58076190548",
+      "output": "links and JSON ok (337 files)"
     }
   ],
   "negative_controls": {
@@ -641,6 +687,6 @@
     "initial_ui_log_sha256": "142b5995be7edd3aea92a619f494ecde3e5f52a463c3319c17948968fbbd0b4c",
     "cause": "Detached PATH omitted Node; no browser began. Failed log retained, only UI restarted with Node24; browser6/Qt3 pass."
   },
-  "validation_scope": "Background batch started b2f7c8d; later commits added docs/proof diagnostics. Vendor/application/tests stayed unchanged until recorded serialized-result test correction after first full run. Healthy matrices retained; fresh full490 follows correction.",
+  "validation_scope": "Background batch began b2f7c8d; only the documented complete-JSON test representation correction followed its first full run. Healthy matrices retained with unchanged runtime/application/vendor. The fresh490 rerun passes after correction, with no skips. Docs-only main synchronization024dabf did not change runtime/tests/tools.",
   "source": "424d5998076da1e4efc399c2715689ddb44d3e1a"
 }

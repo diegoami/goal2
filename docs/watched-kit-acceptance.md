@@ -373,3 +373,14 @@ shoot-out or player-energy values are changed only in the resumed result.
 [stamp/save/strict-record matrices and snapshot diagnosis](evidence/T51a-watched-matrices.json).
 The first full-run failure and both source-pin diagnostics remain in these
 reports; the corrected fresh full-suite result is recorded separately.
+
+[confirmed: T51a final acceptance; linked reports above] The fresh complete Python
+suite passes490 tests with zero skips in976.765s. Consumer competitive11 and
+upstream32 pass; all5 kit check steps, strict10 records,8 competitive and17
+friendly stamp scenarios,3 competitive and7 friendly save cases pass. Together
+the save cases cover21 public event kinds. All36 upstream mutations,3 explicit
+competitive assertion controls,3 strict-record controls,4 acceptance controls,
+4 identity controls and3 complete-result value controls are killed without
+counting timeouts. Genuine historical-save regressions, all6 retained browser
+scenarios and3 Qt flows pass. The first full-run failure remains recorded
+separately with its measured cause and authorized correction.
