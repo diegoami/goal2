@@ -19,4 +19,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # [designed: T72] Explicit locked setup; the validator itself stays offline.
+      - run: npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund
       - run: python3 tools/check_premerge.py --expected-head "$GITHUB_SHA"

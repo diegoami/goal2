@@ -1,0 +1,10 @@
+{
+  "id": "MiniMax-M3",
+  "providerID": "minimax",
+  "family": "minimax",
+  "variants": [
+    "none",
+    "thinking"
+  ],
+  "enabled": true
+}

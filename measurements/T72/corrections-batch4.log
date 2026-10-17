@@ -1,0 +1,12 @@
+✔ progress advances and active owned-server descendants terminate on cancellation (4860.648633ms)
+✔ reviewer frontmatter rejects unknown roots, malformed permission sections and late deny overrides (0.797451ms)
+✔ resume rejects missing/wrong major markers as ownership errors before opening a database (0.64077ms)
+✔ peek renders schema-shaped streaming/running tool states and refuses malformed missing input (0.438117ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4920.900371

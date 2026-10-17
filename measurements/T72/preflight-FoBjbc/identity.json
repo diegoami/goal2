@@ -1,0 +1,9 @@
+{
+  "version": "opencode v2.0.28",
+  "binary": "/home/diego/.opencode/bin/opencode",
+  "binarySHA256": "20d305d0140bfe04df7264a4ecb014402b74b6ac0a0f6456ee07ef3325fb4a85",
+  "sourceSHA256": "3b9dd97aafea705a74588e1ab7560165666f192e561236e4e67ef8e8bbdd6d83",
+  "policySHA256": "d68b4fad50a4fc7eb9079d8e6c875de99aecc20e1352e38edd9b4a707de89a22",
+  "root": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-live/preflight-FoBjbc/runtime/v2/runs/run-2TeXCE",
+  "directory": "/home/diego/projects/goal2-work/T72-opencode2-harness"
+}

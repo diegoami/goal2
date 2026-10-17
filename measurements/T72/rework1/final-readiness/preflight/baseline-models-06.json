@@ -1,0 +1,295 @@
+[
+  {
+    "id": "x-ai/grok-4.5",
+    "modelID": "x-ai/grok-4.5",
+    "providerID": "openrouter",
+    "family": "grok",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "x-ai/grok-4.6",
+    "modelID": "x-ai/grok-4.6",
+    "providerID": "openrouter",
+    "family": "grok",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "x-ai/grok-4.7",
+    "modelID": "x-ai/grok-4.7",
+    "providerID": "openrouter",
+    "family": "grok",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "x-ai/grok-build-0.1",
+    "modelID": "x-ai/grok-build-0.1",
+    "providerID": "openrouter",
+    "family": "grok-build",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "xiaomi/mimo-v2.5-pro",
+    "modelID": "xiaomi/mimo-v2.5-pro",
+    "providerID": "openrouter",
+    "family": "mimo",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "xiaomi/mimo-v2.5",
+    "modelID": "xiaomi/mimo-v2.5",
+    "providerID": "openrouter",
+    "family": "mimo",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "xiaomi/mimo-v2.6-flash",
+    "modelID": "xiaomi/mimo-v2.6-flash",
+    "providerID": "openrouter",
+    "family": "mimo",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "xiaomi/mimo-v2.6-pro-ultraspeed",
+    "modelID": "xiaomi/mimo-v2.6-pro-ultraspeed",
+    "providerID": "openrouter",
+    "family": "mimo",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "xiaomi/mimo-v2.6-pro",
+    "modelID": "xiaomi/mimo-v2.6-pro",
+    "providerID": "openrouter",
+    "family": "mimo",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "xingchen-agi/xing4.0-29b-a4b:free",
+    "modelID": "xingchen-agi/xing4.0-29b-a4b:free",
+    "providerID": "openrouter",
+    "family": "agi",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-4.5-air",
+    "modelID": "z-ai/glm-4.5-air",
+    "providerID": "openrouter",
+    "family": "glm-air",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-4.5",
+    "modelID": "z-ai/glm-4.5",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-4.5v",
+    "modelID": "z-ai/glm-4.5v",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-4.6",
+    "modelID": "z-ai/glm-4.6",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-4.6v",
+    "modelID": "z-ai/glm-4.6v",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-4.7-flash",
+    "modelID": "z-ai/glm-4.7-flash",
+    "providerID": "openrouter",
+    "family": "glm-flash",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-4.7",
+    "modelID": "z-ai/glm-4.7",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5-turbo",
+    "modelID": "z-ai/glm-5-turbo",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5.1",
+    "modelID": "z-ai/glm-5.1",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5.2",
+    "modelID": "z-ai/glm-5.2",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5.3-flash",
+    "modelID": "z-ai/glm-5.3-flash",
+    "providerID": "openrouter",
+    "family": "glm-flash",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5.3-flashx",
+    "modelID": "z-ai/glm-5.3-flashx",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5.3-prime",
+    "modelID": "z-ai/glm-5.3-prime",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5.3",
+    "modelID": "z-ai/glm-5.3",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5",
+    "modelID": "z-ai/glm-5",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "z-ai/glm-5v-turbo",
+    "modelID": "z-ai/glm-5v-turbo",
+    "providerID": "openrouter",
+    "family": "glm",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  }
+]

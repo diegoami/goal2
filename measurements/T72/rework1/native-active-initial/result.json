@@ -1,0 +1,12 @@
+{
+  "classification": "Actual installed native2 dispatch with deterministic loopback provider; zero provider billing; fake-reported zero tokens are simulated",
+  "externalNetworkModelCalls": 0,
+  "requests": 1,
+  "receipt": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-4dL4qT/receipts/T72-native-guard-fe4d7edaf84f-EUJLeC/run.json",
+  "binarySHA256": "20d305d0140bfe04df7264a4ecb014402b74b6ac0a0f6456ee07ef3325fb4a85",
+  "probeSHA256": "3987856cf60e3712ec7274cf5f1c451f20dcac7a417ed6e520737e9c387bab7e",
+  "calls": [
+    "active-cancel"
+  ],
+  "passed": true
+}

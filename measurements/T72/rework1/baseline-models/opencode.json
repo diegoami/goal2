@@ -1,0 +1,108 @@
+[
+  {
+    "id": "nemotron-3.5-super-vl-free",
+    "modelID": "nemotron-3.5-super-vl-free",
+    "providerID": "opencode",
+    "family": "nemotron-free",
+    "enabled": true,
+    "variants": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "beam-free",
+    "modelID": "beam-free",
+    "providerID": "opencode",
+    "family": "beam",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "longcat-2.5-preview-free",
+    "modelID": "longcat-2.5-preview-free",
+    "providerID": "opencode",
+    "family": "longcat",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "space-bunny-free",
+    "modelID": "space-bunny-free",
+    "providerID": "opencode",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "mimo-v2.6-flash-free",
+    "modelID": "mimo-v2.6-flash-free",
+    "providerID": "opencode",
+    "family": "mimo",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "deepseek-v4.1-flash-free",
+    "modelID": "deepseek-v4.1-flash-free",
+    "providerID": "opencode",
+    "family": "deepseek-flash",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "glm-5.3-flash-free",
+    "modelID": "glm-5.3-flash-free",
+    "providerID": "opencode",
+    "family": "glm-flash",
+    "enabled": true,
+    "variants": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "nemotron-3.5-lightning-free",
+    "modelID": "nemotron-3.5-lightning-free",
+    "providerID": "opencode",
+    "family": "nemotron-free",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "nemotron-3-ultra-free",
+    "modelID": "nemotron-3-ultra-free",
+    "providerID": "opencode",
+    "family": "nemotron-free",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "big-pickle",
+    "modelID": "big-pickle",
+    "providerID": "opencode",
+    "family": "big-pickle",
+    "enabled": true,
+    "variants": []
+  }
+]

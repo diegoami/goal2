@@ -1,0 +1,126 @@
+{
+  "source": "retained provider-parity baseline model.list safe catalogue projection",
+  "classification": "observed metadata; policy-lineage mapping uses existing named classifier, not route substitution",
+  "models": [
+    {
+      "id": "z-ai/glm-5.3-flash",
+      "modelID": "z-ai/glm-5.3-flash",
+      "providerID": "openrouter",
+      "family": "glm-flash",
+      "enabled": true,
+      "variants": [
+        "high",
+        "low",
+        "max"
+      ]
+    },
+    {
+      "id": "~openai/gpt-luna-latest",
+      "modelID": "~openai/gpt-luna-latest",
+      "providerID": "openrouter",
+      "family": "gpt-luna",
+      "enabled": true,
+      "variants": [
+        "high",
+        "low",
+        "max",
+        "medium",
+        "none",
+        "xhigh"
+      ]
+    },
+    {
+      "id": "~openai/gpt-sol-latest",
+      "modelID": "~openai/gpt-sol-latest",
+      "providerID": "openrouter",
+      "family": "gpt-sol",
+      "enabled": true,
+      "variants": [
+        "high",
+        "low",
+        "max",
+        "medium",
+        "xhigh"
+      ]
+    },
+    {
+      "id": "kimi-k2.5",
+      "modelID": "kimi-k2.5",
+      "providerID": "alibaba-token-plan",
+      "family": "kimi-k2",
+      "enabled": true,
+      "variants": [
+        "high",
+        "max",
+        "none"
+      ]
+    },
+    {
+      "id": "~anthropic/claude-sonnet-latest",
+      "modelID": "~anthropic/claude-sonnet-latest",
+      "providerID": "openrouter",
+      "family": "claude-sonnet",
+      "enabled": true,
+      "variants": [
+        "high",
+        "low",
+        "max",
+        "medium",
+        "xhigh"
+      ]
+    },
+    {
+      "id": "minimax-m3",
+      "modelID": "minimax-m3",
+      "providerID": "opencode-go",
+      "family": "minimax-m3",
+      "enabled": true,
+      "variants": [
+        "none",
+        "thinking"
+      ]
+    },
+    {
+      "id": "mimo-v2.5",
+      "modelID": "mimo-v2.5",
+      "providerID": "opencode-go",
+      "family": "mimo-v2.5",
+      "enabled": true,
+      "variants": []
+    },
+    {
+      "id": "hy3",
+      "modelID": "hy3",
+      "providerID": "opencode-go",
+      "family": "Hy",
+      "enabled": true,
+      "variants": [
+        "high",
+        "low",
+        "none"
+      ]
+    },
+    {
+      "id": "openai/o1",
+      "modelID": "openai/o1",
+      "providerID": "openrouter",
+      "family": "o",
+      "enabled": true,
+      "variants": [
+        "none",
+        "thinking"
+      ]
+    },
+    {
+      "id": "openai/o1-pro",
+      "modelID": "openai/o1-pro",
+      "providerID": "openrouter",
+      "family": "o-pro",
+      "enabled": true,
+      "variants": [
+        "none",
+        "thinking"
+      ]
+    }
+  ]
+}

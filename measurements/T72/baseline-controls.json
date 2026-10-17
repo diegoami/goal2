@@ -1,0 +1,20 @@
+[
+  {
+    "control": "tools/harness/lib/opencode-policy.mjs",
+    "exitCode": 1,
+    "stdout": "\u2716 trusted reviewer freezes exact deny rules and legacy external boundary without replacing globals (2.295711ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 46.814219\n\n\u2716 failing tests:\n\ntest at tests/opencode_workflow.test.mjs:11:1\n\u2716 trusted reviewer freezes exact deny rules and legacy external boundary without replacing globals (2.295711ms)\n  Error: unsupported reviewer permission syntax\n      at reviewerPolicy (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tools/harness/lib/opencode-policy.mjs:21:43)\n      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:23:20)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)\n",
+    "stderr": ""
+  },
+  {
+    "control": "tools/harness/lib/opencode-transport.mjs",
+    "exitCode": 1,
+    "stdout": "\u2716 owned lease nonce split across chunks is redacted at return and startup-error boundaries (234.045974ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 3176.119071\n\n\u2716 failing tests:\n\ntest at tests/opencode_workflow.test.mjs:46:1\n\u2716 owned lease nonce split across chunks is redacted at return and startup-error boundaries (234.045974ms)\n  AssertionError [ERR_ASSERTION]: stderr must not expose split generated nonce\n  \n  true !== false\n  \n      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:61:10)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: true,\n    expected: false,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n",
+    "stderr": ""
+  },
+  {
+    "control": "old production dispatch",
+    "exitCode": 1,
+    "stdout": "\u2716 production major dispatch recovers complete export, usage and receipt; same owned session resumes (104.848014ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 147.504728\n\n\u2716 failing tests:\n\ntest at tests/opencode_workflow.test.mjs:79:1\n\u2716 production major dispatch recovers complete export, usage and receipt; same owned session resumes (104.848014ms)\n  Error [OpenCodeInfraError]: OpenCode exited with 2 without creating a session (last lookup: `session list` printed nothing (exit 2); stderr: unsupported old command); files kept: /tmp/harness-opencode/stub-9d76b122145d.out.txt, /tmp/harness-opencode/stub-9d76b122145d.err.txt, /tmp/harness-opencode/stub-9d76b122145d.brief.md. stderr tail:\n  old run command\n  \n      at fail (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tools/harness/lib/opencode.mjs:501:53)\n      at noSession (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tools/harness/lib/opencode.mjs:499:14)\n      at runOpenCodeWatched (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tools/harness/lib/opencode.mjs:553:29)\n      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n      at async TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:81:18)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    reason: 'exited without a session (exit 2)',\n    sessionId: null\n  }\n",
+    "stderr": ""
+  }
+]

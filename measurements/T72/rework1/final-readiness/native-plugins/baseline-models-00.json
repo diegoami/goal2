@@ -1,0 +1,14 @@
+[
+  {
+    "id": "initial",
+    "modelID": "initial",
+    "providerID": "t72-metadata-only",
+    "family": "minimax",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  }
+]

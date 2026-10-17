@@ -1,0 +1,864 @@
+[
+  {
+    "id": "mistralai/mistral-small-3.1-24b-instruct",
+    "modelID": "mistralai/mistral-small-3.1-24b-instruct",
+    "providerID": "openrouter",
+    "family": "mistral-small",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mistral-small-3.2-24b-instruct",
+    "modelID": "mistralai/mistral-small-3.2-24b-instruct",
+    "providerID": "openrouter",
+    "family": "mistral-small",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/mixtral-8x22b-instruct",
+    "modelID": "mistralai/mixtral-8x22b-instruct",
+    "providerID": "openrouter",
+    "family": "mistral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "mistralai/voxtral-small-24b-2507",
+    "modelID": "mistralai/voxtral-small-24b-2507",
+    "providerID": "openrouter",
+    "family": "voxtral",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "moondream/moondream3-preview",
+    "modelID": "moondream/moondream3-preview",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "moondream/moondream3.1-9b-a2b",
+    "modelID": "moondream/moondream3.1-9b-a2b",
+    "providerID": "openrouter",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "moonshotai/kimi-k2-0905",
+    "modelID": "moonshotai/kimi-k2-0905",
+    "providerID": "openrouter",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "moonshotai/kimi-k2-thinking",
+    "modelID": "moonshotai/kimi-k2-thinking",
+    "providerID": "openrouter",
+    "family": "kimi-thinking",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "moonshotai/kimi-k2.5",
+    "modelID": "moonshotai/kimi-k2.5",
+    "providerID": "openrouter",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "moonshotai/kimi-k2.6",
+    "modelID": "moonshotai/kimi-k2.6",
+    "providerID": "openrouter",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "moonshotai/kimi-k2.7-code",
+    "modelID": "moonshotai/kimi-k2.7-code",
+    "providerID": "openrouter",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "moonshotai/kimi-k2",
+    "modelID": "moonshotai/kimi-k2",
+    "providerID": "openrouter",
+    "family": "kimi-k2",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "moonshotai/kimi-k3",
+    "modelID": "moonshotai/kimi-k3",
+    "providerID": "openrouter",
+    "family": "kimi-k3",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "morph/morph-v3-fast",
+    "modelID": "morph/morph-v3-fast",
+    "providerID": "openrouter",
+    "family": "morph",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "morph/morph-v3-large",
+    "modelID": "morph/morph-v3-large",
+    "providerID": "openrouter",
+    "family": "morph",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "nemotron-3-ultra-free",
+    "modelID": "nemotron-3-ultra-free",
+    "providerID": "opencode",
+    "family": "nemotron-free",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "nemotron-3.5-lightning-free",
+    "modelID": "nemotron-3.5-lightning-free",
+    "providerID": "opencode",
+    "family": "nemotron-free",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "nemotron-3.5-super-vl-free",
+    "modelID": "nemotron-3.5-super-vl-free",
+    "providerID": "opencode",
+    "family": "nemotron-free",
+    "enabled": true,
+    "variants": [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "nex-agi/nex-n2.5-mini",
+    "modelID": "nex-agi/nex-n2.5-mini",
+    "providerID": "openrouter",
+    "family": "agi",
+    "enabled": true,
+    "variants": [
+      "none",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "nex-agi/nex-n2.5-pro",
+    "modelID": "nex-agi/nex-n2.5-pro",
+    "providerID": "openrouter",
+    "family": "agi",
+    "enabled": true,
+    "variants": [
+      "none",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "nousresearch/hermes-3-llama-3.1-405b",
+    "modelID": "nousresearch/hermes-3-llama-3.1-405b",
+    "providerID": "openrouter",
+    "family": "nousresearch",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "nousresearch/hermes-3-llama-3.1-70b",
+    "modelID": "nousresearch/hermes-3-llama-3.1-70b",
+    "providerID": "openrouter",
+    "family": "nousresearch",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "nousresearch/hermes-4-405b",
+    "modelID": "nousresearch/hermes-4-405b",
+    "providerID": "openrouter",
+    "family": "hermes",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3-nano-30b-a3b",
+    "modelID": "nvidia/nemotron-3-nano-30b-a3b",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "modelID": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "high",
+      "max"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3-super-120b-a12b:free",
+    "modelID": "nvidia/nemotron-3-super-120b-a12b:free",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3-super-120b-a12b",
+    "modelID": "nvidia/nemotron-3-super-120b-a12b",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "modelID": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3-ultra-550b-a55b",
+    "modelID": "nvidia/nemotron-3-ultra-550b-a55b",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3.5-content-safety:free",
+    "modelID": "nvidia/nemotron-3.5-content-safety:free",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3.5-content-safety",
+    "modelID": "nvidia/nemotron-3.5-content-safety",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3.5-lightning:free",
+    "modelID": "nvidia/nemotron-3.5-lightning:free",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3.5-lightning",
+    "modelID": "nvidia/nemotron-3.5-lightning",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3.5-super-vl:free",
+    "modelID": "nvidia/nemotron-3.5-super-vl:free",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "nvidia/nemotron-3.5-super-vl",
+    "modelID": "nvidia/nemotron-3.5-super-vl",
+    "providerID": "openrouter",
+    "family": "nemotron",
+    "enabled": true,
+    "variants": [
+      "none",
+      "thinking"
+    ]
+  },
+  {
+    "id": "openai/gpt-3.5-turbo-0613",
+    "modelID": "openai/gpt-3.5-turbo-0613",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-3.5-turbo-16k",
+    "modelID": "openai/gpt-3.5-turbo-16k",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-3.5-turbo-instruct",
+    "modelID": "openai/gpt-3.5-turbo-instruct",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-3.5-turbo",
+    "modelID": "openai/gpt-3.5-turbo",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4-turbo",
+    "modelID": "openai/gpt-4-turbo",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4.1-mini",
+    "modelID": "openai/gpt-4.1-mini",
+    "providerID": "openrouter",
+    "family": "gpt-mini",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4.1-nano",
+    "modelID": "openai/gpt-4.1-nano",
+    "providerID": "openrouter",
+    "family": "gpt-nano",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4.1",
+    "modelID": "openai/gpt-4.1",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4",
+    "modelID": "openai/gpt-4",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4o-2024-05-13",
+    "modelID": "openai/gpt-4o-2024-05-13",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4o-2024-08-06",
+    "modelID": "openai/gpt-4o-2024-08-06",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4o-2024-11-20",
+    "modelID": "openai/gpt-4o-2024-11-20",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4o-mini-2024-07-18",
+    "modelID": "openai/gpt-4o-mini-2024-07-18",
+    "providerID": "openrouter",
+    "family": "o-mini",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4o-mini",
+    "modelID": "openai/gpt-4o-mini",
+    "providerID": "openrouter",
+    "family": "gpt-mini",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-4o",
+    "modelID": "openai/gpt-4o",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-5-image-mini",
+    "modelID": "openai/gpt-5-image-mini",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-5-image",
+    "modelID": "openai/gpt-5-image",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-5-mini",
+    "modelID": "openai/gpt-5-mini",
+    "providerID": "openrouter",
+    "family": "gpt-mini",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-5-nano",
+    "modelID": "openai/gpt-5-nano",
+    "providerID": "openrouter",
+    "family": "gpt-nano",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-5-pro",
+    "modelID": "openai/gpt-5-pro",
+    "providerID": "openrouter",
+    "family": "gpt-pro",
+    "enabled": true,
+    "variants": [
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.1-codex-max",
+    "modelID": "openai/gpt-5.1-codex-max",
+    "providerID": "openrouter",
+    "family": "gpt-codex",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.1-codex-mini",
+    "modelID": "openai/gpt-5.1-codex-mini",
+    "providerID": "openrouter",
+    "family": "gpt-codex",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.1-codex",
+    "modelID": "openai/gpt-5.1-codex",
+    "providerID": "openrouter",
+    "family": "gpt-codex",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.1",
+    "modelID": "openai/gpt-5.1",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.2-chat",
+    "modelID": "openai/gpt-5.2-chat",
+    "providerID": "openrouter",
+    "family": "gpt-codex",
+    "enabled": true,
+    "variants": []
+  },
+  {
+    "id": "openai/gpt-5.2-codex",
+    "modelID": "openai/gpt-5.2-codex",
+    "providerID": "openrouter",
+    "family": "gpt-codex",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.2-pro",
+    "modelID": "openai/gpt-5.2-pro",
+    "providerID": "openrouter",
+    "family": "gpt-pro",
+    "enabled": true,
+    "variants": [
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.2",
+    "modelID": "openai/gpt-5.2",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.3-codex",
+    "modelID": "openai/gpt-5.3-codex",
+    "providerID": "openrouter",
+    "family": "gpt-codex",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.4-image-2",
+    "modelID": "openai/gpt-5.4-image-2",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.4-mini",
+    "modelID": "openai/gpt-5.4-mini",
+    "providerID": "openrouter",
+    "family": "gpt-mini",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.4-nano",
+    "modelID": "openai/gpt-5.4-nano",
+    "providerID": "openrouter",
+    "family": "gpt-nano",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.4-pro",
+    "modelID": "openai/gpt-5.4-pro",
+    "providerID": "openrouter",
+    "family": "gpt-pro",
+    "enabled": true,
+    "variants": [
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.4",
+    "modelID": "openai/gpt-5.4",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.5-pro",
+    "modelID": "openai/gpt-5.5-pro",
+    "providerID": "openrouter",
+    "family": "gpt-pro",
+    "enabled": true,
+    "variants": [
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.5",
+    "modelID": "openai/gpt-5.5",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.6-luna-pro",
+    "modelID": "openai/gpt-5.6-luna-pro",
+    "providerID": "openrouter",
+    "family": "gpt-luna",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.6-luna",
+    "modelID": "openai/gpt-5.6-luna",
+    "providerID": "openrouter",
+    "family": "gpt-luna",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.6-sol-pro",
+    "modelID": "openai/gpt-5.6-sol-pro",
+    "providerID": "openrouter",
+    "family": "gpt-sol",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.6-sol",
+    "modelID": "openai/gpt-5.6-sol",
+    "providerID": "openrouter",
+    "family": "gpt-sol",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.6-terra-pro",
+    "modelID": "openai/gpt-5.6-terra-pro",
+    "providerID": "openrouter",
+    "family": "gpt-terra",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-5.6-terra",
+    "modelID": "openai/gpt-5.6-terra",
+    "providerID": "openrouter",
+    "family": "gpt-terra",
+    "enabled": true,
+    "variants": [
+      "none",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-5",
+    "modelID": "openai/gpt-5",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "minimal",
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  {
+    "id": "openai/gpt-6-astra-pro",
+    "modelID": "openai/gpt-6-astra-pro",
+    "providerID": "openrouter",
+    "family": "gpt",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  },
+  {
+    "id": "openai/gpt-6-astra",
+    "modelID": "openai/gpt-6-astra",
+    "providerID": "openrouter",
+    "family": "gpt-astra",
+    "enabled": true,
+    "variants": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ]
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/stdout.txt",
+    "sha256": "2120995558548ae6f32a2d1c02dab3376f60d2de155d5a5834a9040f5b84295c",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/stderr.txt",
+    "sha256": "b3c8fcd32d7929fa0eb0f7e03ed9022a3b1a4d3653f4a353a9a6a336e184ea09",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/export-response.json",
+    "sha256": "e2ff34abd30ea3e4a5a294d4c623c2700f7fed90a8a933bda03ba79e843a46dc",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/export.json",
+    "sha256": "02aeb7ad7dc04cc8997d0bee082a5e0d56dac3001a4cb2c96931416f55c8609e",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/final.txt",
+    "sha256": "4a47b338aafa732a08bba75e55c6cca113b06dc240e8b8ad3b26ae444b9f25d1",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/assistant.txt",
+    "sha256": "4a47b338aafa732a08bba75e55c6cca113b06dc240e8b8ad3b26ae444b9f25d1",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/profile.json",
+    "sha256": "523daf5b3a9d80fe3c5b1294fd7364f80d237e8a0b9b679b967a3a0f27093a69",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/plugins.json",
+    "sha256": "d1eb0276fed29b2fe260f9573fe9405c77440552d1cb0567704a26395dc4baf1",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/baseline.json",
+    "sha256": "ecfd78a67b1d9b76bebeb936c8c6fe80328f8d68511fc54a45779ee2f8dfa232",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/model.json",
+    "sha256": "14dbfc8e81f1ee99bab7f4f504e06f91a512ad7e775d19462755288c5b7da5c4",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/openapi.raw.json",
+    "sha256": "b0cdccd2c0c651f2adbded5efc6a77506521fbf509188c91712d5a854255feeb",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/server.json",
+    "sha256": "97f82411c7a55fa95fcdae62d3b84adbd1c3fb485fccc35fc4f561c55aad652d",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/brief.md",
+    "sha256": "87a2cf2630ab9b613d87001b784a2f6ead256debf6982c41e4278e112d0f8c69",
+    "retained": true
+  },
+  {
+    "file": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/live/native-wSK93j/receipts/T72-native-guard-514334ec2c34-C4qENu/run.json",
+    "sha256": "6f0b27db36436a64b20671424691c782080553016c2471f90e206b98e1659b92",
+    "retained": true
+  }
+]

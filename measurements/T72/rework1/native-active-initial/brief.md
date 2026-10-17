@@ -1,0 +1,1 @@
+Only deterministic loopback fake provider may respond; planned shell tool permission probe.

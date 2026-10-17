@@ -1,0 +1,20 @@
+[
+  {
+    "name": "implicit model/agent/policy selection",
+    "exitCode": 1,
+    "stdout": "\u2716 missing or malformed chosen model agent and effort fail before generation without defaults (546.361634ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 613.325182\n\n\u2716 failing tests:\n\ntest at tests/opencode_workflow.test.mjs:286:1\n\u2716 missing or malformed chosen model agent and effort fail before generation without defaults (546.361634ms)\n  AssertionError [ERR_ASSERTION]: Missing expected rejection.\n      at async TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:297:5)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    operator: 'rejects',\n    diff: 'simple'\n  }\n",
+    "stderr": ""
+  },
+  {
+    "name": "relative executable cwd resolution",
+    "exitCode": 1,
+    "stdout": "\u2716 relative explicit executable resolves once to a real absolute file before changing the run cwd (1.737803ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 60.774502\n\n\u2716 failing tests:\n\ntest at tests/opencode_workflow.test.mjs:309:1\n\u2716 relative explicit executable resolves once to a real absolute file before changing the run cwd (1.737803ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'tests/helpers/opencode-stub.mjs'\n  - '/home/diego/projects/goal2-work/T72-opencode2-harness/tests/helpers/opencode-stub.mjs'\n  \n      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:313:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'tests/helpers/opencode-stub.mjs',\n    expected: '/home/diego/projects/goal2-work/T72-opencode2-harness/tests/helpers/opencode-stub.mjs',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n",
+    "stderr": ""
+  },
+  {
+    "name": "native family-series lineage comparison",
+    "exitCode": 1,
+    "stdout": "\u2716 native series-family metadata maps through policy lineage without accepting another family (1.509573ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 75.931525\n\n\u2716 failing tests:\n\ntest at tests/opencode_workflow.test.mjs:301:1\n\u2716 native series-family metadata maps through policy lineage without accepting another family (1.509573ms)\n  AssertionError [ERR_ASSERTION]: glm-flash\n  \n  'glm-flash' !== 'glm'\n  \n      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:302:259)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)\n      at run (node:internal/test_runner/harness:398:12)\n      at test (node:internal/test_runner/harness:407:12)\n      at file:///home/diego/projects/goal2-work/T72-opencode2-harness/tests/opencode_workflow.test.mjs:301:1 {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: 'glm-flash',\n    expected: 'glm',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n",
+    "stderr": ""
+  }
+]

@@ -31,13 +31,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-export class OpenCodeInfraError extends Error {
-  constructor(reason, message) {
-    super(message);
-    this.name = 'OpenCodeInfraError';
-    this.reason = reason;
-  }
-}
+import { OpenCodeInfraError, capture, privateHome, startPrivateServer, settledCatalogue, killOwned } from './opencode-transport.mjs';
+import { normalizeSession } from './opencode-protocol.mjs';
+import { finalReviewText, runV2Workflow } from './opencode-workflow.mjs';
+export { OpenCodeInfraError };
 
 // A failed run on Alibaba's Token Plan whose stderr (OpenCode's own, not the model's output) says the
 // key was refused: an auth.json entry in the data
@@ -126,26 +123,26 @@ function isWindowsShim(file) {
 export function resolveOpenCode(env = process.env) {
   if (env.HARNESS_OPENCODE_EXE) {
     // A script (the tests' fake, #2) runs through Node, since Windows cannot execute one.
-    if (fs.existsSync(env.HARNESS_OPENCODE_EXE) && /\.m?js$/.test(env.HARNESS_OPENCODE_EXE)) return { exe: process.execPath, prefix: [env.HARNESS_OPENCODE_EXE] };
-    if (fs.existsSync(env.HARNESS_OPENCODE_EXE)) return { exe: env.HARNESS_OPENCODE_EXE, prefix: [] };
+    if (fs.existsSync(env.HARNESS_OPENCODE_EXE) && /\.m?js$/.test(env.HARNESS_OPENCODE_EXE)) return { exe: process.execPath, prefix: [fs.realpathSync(env.HARNESS_OPENCODE_EXE)] };
+    if (fs.existsSync(env.HARNESS_OPENCODE_EXE)) return { exe: fs.realpathSync(env.HARNESS_OPENCODE_EXE), prefix: [] };
     throw new OpenCodeInfraError('opencode not found', `HARNESS_OPENCODE_EXE points at a missing file: ${env.HARNESS_OPENCODE_EXE}`);
   }
   const win = process.platform === 'win32';
   for (const dir of (env.PATH || env.Path || '').split(path.delimiter).filter(Boolean)) {
     if (win) {
       const exe = path.join(dir, 'opencode.exe');
-      if (fs.existsSync(exe)) return { exe, prefix: [] };
+      if (fs.existsSync(exe)) return { exe: fs.realpathSync(exe), prefix: [] };
       if (fs.existsSync(path.join(dir, 'opencode.cmd'))) {
         const npmExe = path.join(dir, 'node_modules', 'opencode-ai', 'bin', 'opencode.exe');
-        if (fs.existsSync(npmExe)) return { exe: npmExe, prefix: [] };
+        if (fs.existsSync(npmExe)) return { exe: fs.realpathSync(npmExe), prefix: [] };
       }
     } else {
       const exe = path.join(dir, 'opencode');
-      if (fs.existsSync(exe) && !isWindowsShim(exe)) return { exe, prefix: [] };
+      if (fs.existsSync(exe) && !isWindowsShim(exe)) return { exe: fs.realpathSync(exe), prefix: [] };
     }
   }
   const installed = env.HOME && path.join(env.HOME, '.opencode', 'bin', 'opencode');
-  if (!win && installed && fs.existsSync(installed)) return { exe: installed, prefix: [] };
+  if (!win && installed && fs.existsSync(installed)) return { exe: fs.realpathSync(installed), prefix: [] };
   throw new OpenCodeInfraError('opencode not found', 'opencode is not on PATH (set HARNESS_OPENCODE_EXE to the real executable).');
 }
 
@@ -180,11 +177,7 @@ export function openCodeHome(env = process.env, { log = () => {} } = {}) {
   return { env: { ...env, ...dirs }, root, dataHome: dirs.XDG_DATA_HOME };
 }
 
-// The OpenCode majors the runner drives. 1.x is the tested path (1.18.34). 2.x is allowed if
-// the run produces the same artefacts as a 1.x run (lesson L110, owner 2026-10-13): the desktop
-// app's 2.x CLI differs in run flags, session fields and agent format (#26), so a 2.x run that
-// diverges is caught by the run's own artefacts rather than by this gate. Anything else is
-// refused before anything is billed.
+// [designed: T72; confirmed: protocol/workflow fixtures] Dispatch is explicit; unknown majors fail before billing.
 export const SUPPORTED_MAJOR = [1, 2];
 // OpenCode 1.x prints `<major>.<minor>.<patch>` on `--version`; 2.x prints `opencode v<major>.<minor>.<patch>`.
 // The non-digit prefix (`opencode` / `v` / whitespace) is consumed by the (?:^|v|\s) alternation,
@@ -200,14 +193,20 @@ export function versionProblem(version, exe) {
   const major = Number((version ?? '').split('.')[0]);
   if (version && SUPPORTED_MAJOR.includes(major)) return null;
   return `OpenCode ${version ?? 'gave no version'} at ${exe} is not supported: the harness drives the public `
-    + `1.x CLI (the tested path on 1.18.34) and permits 2.x if the run produces the same artefacts (L110). Anything `
-    + `else is refused before billing. Point it at a 1.18 CLI: ~/.opencode/bin/opencode, npm opencode-ai@1.18, `
-    + `or HARNESS_OPENCODE_EXE (which may point at 2.x).`;
+    + `1.x compatibility and owned 2.x protocol. Anything else is refused before billing. `
+    + `Use the installed current CLI or an explicitly selected supported HARNESS_OPENCODE_EXE.`;
 }
 
-// The efforts (variants) OpenCode offers for a model, from `opencode models <provider> --verbose`,
-// which prints each id followed by its JSON; null when they cannot be read.
+// [designed: T72] V1 verbose CLI metadata; v2 owned native catalogue, never a shared-service retry.
 export async function modelVariants(cmd, id, { env, cwd, timeoutMs = 60_000 }) {
+  const version = await openCodeVersion(cmd, { env, cwd });
+  if (version?.startsWith('2.')) {
+    const home = privateHome(env);
+    const server = await startPrivateServer(cmd, { env: { ...home.env, OPENCODE_DISABLE_PROJECT_CONFIG: '1' }, cwd, timeoutMs });
+    try { const found = await settledCatalogue(server, { model: { id }, timeoutMs }); return found.selected.variants.map((v) => v.id); }
+    finally { await server.stop(); }
+  }
+  if (!version?.startsWith('1.')) return null;
   const r = await execBounded(cmd, ['models', id.split('/')[0], '--verbose'], { cwd, env, timeoutMs });
   if (!r || r.code !== 0) return null;
   const at = r.stdout.indexOf(`${id}\n`);
@@ -223,29 +222,18 @@ export async function modelVariants(cmd, id, { env, cwd, timeoutMs = 60_000 }) {
   return null;
 }
 
-// The model ids OpenCode lists for these providers in this environment, so an unknown id or a
-// provider that is not logged in stops a run before anything is billed.
-// Both 1.x and 2.x accept `opencode models` with no positional argument and return one
-// `<provider>/<model>` per line (1.x: 1.18.34; 2.x: 2.0.28). The older per-provider shape
-// `opencode models <provider>` was 1.x-only — 2.x rejects it as "Unexpected positional
-// argument". Client-side filter by `<provider>/` keeps the per-provider contract.
-// 2.x also tries to talk to its background service on a fixed port; a stale instance
-// (often left behind by an earlier harness run) holds the port and the bare call
-// fails with "Managed service port NNNN ... already in use". Retrying with
-// `--standalone` runs the command on a private server instead and works on 2.x while
-// 1.x ignores the flag (1.18.34 rejects it as unknown, so we only swap in the retry
-// if the bare call fails).
+// [designed: T72] Explicit major-specific nonbilling discovery; no managed-service or version fallback.
 // Returns { listed: Set, errors: Map provider -> message }.
 export async function listedModels(cmd, providers, { env, cwd, timeoutMs = 60_000 }) {
   const listed = new Set();
   const errors = new Map();
-  let r = await execBounded(cmd, ['models'], { cwd, env, timeoutMs });
-  if (!r || r.code !== 0) {
-    // 1.x rejects `--standalone` as unknown; the retry would still fail and r stays
-    // as the original failure. 2.x runs the command on its own server.
-    const retry = await execBounded(cmd, ['models', '--standalone'], { cwd, env, timeoutMs });
-    if (retry && retry.code === 0) r = retry;
+  const version = await openCodeVersion(cmd, { env, cwd });
+  if (versionProblem(version, cmd.exe)) {
+    for (const p of new Set(providers)) errors.set(p, 'unsupported OpenCode version');
+    return { listed, errors };
   }
+  const args = version.startsWith('2.') ? ['models', '--standalone'] : ['models'];
+  const r = await execBounded(cmd, args, { cwd, env, timeoutMs });
   if (!r) {
     for (const p of new Set(providers)) errors.set(p, `\`opencode models\` did not finish in ${Math.round(timeoutMs / 1000)} s`);
     return { listed, errors };
@@ -289,13 +277,7 @@ export function loginHint(modelId, listed, dataHome, errors = new Map()) {
     + `\`opencode auth login\` (or set its API key) in your usual OpenCode; the next run copies auth.json into ${dataHome}`;
 }
 
-function killTree(child) {
-  if (!child || child.exitCode !== null || child.signalCode !== null) return;
-  try {
-    if (process.platform === 'win32') spawnSync('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore' });
-    else process.kill(-child.pid, 'SIGKILL'); // the run's own process group, and nothing else
-  } catch { /* already gone */ }
-}
+const killTree = killOwned;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, Math.max(0, ms)));
 
@@ -307,28 +289,10 @@ function spawnDetached(cmd, args, options) {
 // A short OpenCode command (`session list`, `export`), bounded and killed if it overruns. With
 // outFile, stdout goes to that file instead of a pipe. Resolves { code, stdout, stderr } or null
 // on a timeout or a spawn error.
-function execBounded(cmd, args, { cwd, timeoutMs, env, outFile }) {
-  if (timeoutMs <= 0) return Promise.resolve(null);
-  return new Promise((resolve) => {
-    let child;
-    const fd = outFile ? fs.openSync(outFile, 'w') : null;
-    try {
-      child = spawnDetached(cmd, args, { cwd, env, stdio: ['ignore', fd ?? 'pipe', 'pipe'] });
-    } catch { resolve(null); return; } finally { if (fd !== null) fs.closeSync(fd); }
-    const out = [];
-    const err = [];
-    child.stdout?.on('data', (d) => out.push(d));
-    child.stderr.on('data', (d) => err.push(d));
-    const timer = setTimeout(() => { killTree(child); resolve(null); }, timeoutMs);
-    child.on('error', () => { clearTimeout(timer); resolve(null); });
-    child.on('close', (code) => {
-      clearTimeout(timer);
-      resolve({
-        code, stdout: outFile ? fs.readFileSync(outFile, 'utf8') : Buffer.concat(out).toString('utf8'),
-        stderr: Buffer.concat(err).toString('utf8'),
-      });
-    });
-  });
+async function execBounded(cmd, args, options) {
+  if (options.timeoutMs <= 0) return null;
+  const result = await capture(cmd, args, options);
+  return result.timedOut || result.error ? null : result;
 }
 
 function sameDir(a, b) {
@@ -403,7 +367,7 @@ export function commandLineTooLong(parts, platform = process.platform) {
 }
 
 // The brief file every run's pointer prompt names: inside the worktree (the agent's tools reach
-// only there, L36/#501), deleted with the run's log files on success, kept and named on failure.
+// only there, L36/#501). [designed: T72] Kept with the run receipts on every outcome.
 export function briefFileName(title) {
   return `.harness-brief-${title}.md`;
 }
@@ -417,8 +381,8 @@ export function briefFileName(title) {
  *   permissionRejected, permissionHint, files, briefFile, seconds }.
  * A non-zero exit is returned, not thrown: the caller decides.
  */
-export async function runOpenCodeWatched({
-  args, prompt, workDir, title, sessionId = null,
+async function runV1Watched({
+  model, agent, args, prompt, workDir, title, sessionId = null,
   startupTimeoutMs = 180_000, totalTimeoutMs = 3_600_000, idleTimeoutMs = 600_000, pollMs = 10_000,
   logDir = path.join(os.tmpdir(), 'harness-opencode'), opencode, env = process.env, log = () => {},
 }) {
@@ -570,15 +534,22 @@ export async function runOpenCodeWatched({
     const exportFile = path.join(logDir, `${title}.export.json`);
     const record = await sessionRecord(cmd, { workDir, sessionId: session.id, outFile: exportFile, env });
     const recordedAgent = requestedAgent ? record?.agent ?? null : null;
-    fs.rmSync(exportFile, { force: true });
+    files.push(exportFile);
+    const requestedModel = model ?? { id: args[args.indexOf('--model') + 1], variant: args.includes('--variant') ? args[args.indexOf('--variant') + 1] : undefined };
+    let normalized;
+    try {
+      const raw = JSON.parse(fs.readFileSync(exportFile, 'utf8'));
+      normalized = normalizeSession(1, raw, { sessionID: session.id, directory: workDir, agent: agent ?? requestedAgent, model: { providerID: requestedModel.id.split('/')[0], id: requestedModel.id.slice(requestedModel.id.indexOf('/') + 1), ...(requestedModel.variant ? { variant: requestedModel.variant } : {}) } });
+    } catch (e) { throw fail('protocol', `full v1 export failed validation: ${e.message}`); }
+    if (!normalized.completed) throw fail('incomplete', 'full v1 export has no complete final assistant outcome');
+    const finalFile = path.join(logDir, `${title}.final.txt`); fs.writeFileSync(finalFile, finalReviewText(normalized)); files.push(finalFile);
     const agentFallback = !requestedAgent ? false
       : recordedAgent ? recordedAgent !== requestedAgent
       : agentWarning(stderr, requestedAgent);
     const said = permissionRejection(`${stdout}\n${stderr}`);
-    const permissionRejected = !record ? said : record.rejected ? said ?? 'a tool call (in the session record)' : null;
+    const permissionRejected = normalized.rejected ? said ?? 'a tool call (in the complete session export)' : null;
     const permissionHint = permissionRejected ? rejectionHint(`${stdout}\n${stderr}`) : null;
-    if (exitCode === 0 && !permissionRejected) for (const f of files) fs.rmSync(f, { force: true });
-    else {
+    {
       shelveBrief();
       log(`opencode: exit ${exitCode}${permissionRejected ? `, permission rejected: ${permissionRejected}` : ''}; files kept: ${files.join(', ')}`);
     }
@@ -586,8 +557,8 @@ export async function runOpenCodeWatched({
       output: `${stdout.trimEnd()}\n${stderr.trimEnd()}`.trim(),
       stdout, stderr, exitCode, sessionId: session.id, title,
       agentFallback, sessionAgent: recordedAgent, permissionRejected, permissionHint,
-      files: exitCode === 0 && !permissionRejected ? [] : files,
-      briefFile: exitCode === 0 && !permissionRejected ? briefFile : briefKeptPath,
+      files, normalized, reviewText: finalReviewText(normalized),
+      briefFile: briefKeptPath,
       seconds: Math.round(elapsed() / 1000),
     };
   } catch (e) {
@@ -602,4 +573,36 @@ export async function runOpenCodeWatched({
     }
     throw e;
 }
+}
+
+// [designed: T72] Dispatch by measured major, with no command/model/agent downgrade.
+export async function runOpenCodeWatched(options) {
+  const env = options.env ?? process.env;
+  const cmd = options.opencode ?? resolveOpenCode(env);
+  const version = await openCodeVersion(cmd, { env, cwd: options.workDir });
+  const bad = versionProblem(version, cmd.exe);
+  if (bad) throw new OpenCodeInfraError('version', bad);
+  const args = options.args ?? [];
+  const get = (key) => {
+    if (!args.includes(key)) return undefined;
+    const value = args[args.indexOf(key) + 1];
+    if (typeof value !== 'string' || !value || value.startsWith('--')) throw new OpenCodeInfraError('selection', `${key} requires its explicit value`);
+    return value;
+  };
+  for (const key of ['--model', '--agent', '--variant']) get(key);
+  const id = get('--model');
+  const model = options.model ?? (id ? { id, ...(get('--variant') ? { variant: get('--variant') } : {}) } : null);
+  const agent = options.agent ?? get('--agent');
+  if (model?.variant != null && (typeof model.variant !== 'string' || !model.variant || /[#\s]/.test(model.variant))) throw new OpenCodeInfraError('selection', 'requires a valid explicit effort or absent effort');
+  if (!model || typeof model.id !== 'string' || !/^[^/\s#]+\/[^\s#]+$/.test(model.id)) throw new OpenCodeInfraError('selection', 'requires the exact selected provider/model');
+  if (typeof agent !== 'string' || !agent) throw new OpenCodeInfraError('selection', 'requires the exact selected agent');
+  if (Number(version.split('.')[0]) === 1) {
+    if (get('--agent') !== agent || get('--model') !== model.id || get('--variant') !== (model.variant ?? undefined)) throw new OpenCodeInfraError('selection', 'v1 command differs from selected model/agent/effort');
+    return runV1Watched({ ...options, model, agent, opencode: cmd });
+  }
+  if (version !== '2.0.28') throw new OpenCodeInfraError('guard', 'native guard requires audited OpenCode2.0.28; revalidate before upgrading');
+  if (!options.agentFile) throw new OpenCodeInfraError('selection', 'v2 requires the explicit trusted agentFile from the launching checkout');
+  if (typeof model.family !== 'string' || !model.family) throw new OpenCodeInfraError('selection', 'v2 requires the selected policy family');
+  return runV2Workflow({ ...options, model, agent,
+    agentFile: options.agentFile, opencode: cmd });
 }

@@ -1,0 +1,1 @@
+[{"name":"operand-loss","status":1,"assertion":"external-proc-metadata must reject","restored":true,"externalModelCalls":0},{"name":"preload-loss","status":1,"assertion":"untrusted source must not import before readiness","restored":true,"externalModelCalls":0}]
