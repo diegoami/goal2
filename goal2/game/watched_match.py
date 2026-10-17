@@ -1,0 +1,145 @@
+"""[designed: T63] Pure synchronous adapter; publication and workers belong to T64/T65.
+[confirmed: archaeology 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607, E033/F025]
+The accepted original engine owns events, setup reseeding and post-match updates.
+"""
+from __future__ import annotations
+
+import copy
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+from goal2.engine.original_match import Image, Fixture, Match
+from goal2.game.state import GameState, to_savestate, CLOCK_OFFSET
+
+if TYPE_CHECKING:
+    from goal2.game.campaign import CampaignState
+    from goal2.engine.original_match.match import Event
+
+
+def _integer(value, low, high, name):
+    if type(value) is not int or not low <= value <= high:
+        raise ValueError(f'{name} must be an integer in {low}..{high}')
+
+
+def engine_year(campaign: CampaignState) -> int:
+    """[derived: accepted F025 §2–3] Two rises per cycle, relative to the initial stage.
+
+    New games start at word 0 in stage 2 (base year 0 mod 4) or stage 5
+    (2 mod 4). Later entries to stages 2 and 5 increment the 16-bit word.
+    This is independent of the rebuild's four ordinal playing-year labels.
+    """
+    from goal2.game.campaign import opening_calendar
+    opening_calendar(campaign.start_year)
+    _integer(campaign.cycle, 1, 2**31-1, 'cycle')
+    _integer(campaign.stage, 2, 8, 'stage')
+    word = 2 * (campaign.cycle - 1) + int(campaign.stage >= 5) - int(campaign.start_year % 4 == 2)
+    if word < 0:
+        raise ValueError('campaign position precedes its initial stage')
+    return word & 0xFFFF
+
+
+def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Image:
+    """[designed] Validate and serialize a private candidate with exact source endpoints/index.
+
+    [confirmed: E033 Image/Match] Calendar order does not assign a home side.
+    [designed] Campaign rows use T41a's original:<number> identity; legacy
+    rows lacking a source index are refused rather than assigned a new one.
+    """
+    if not isinstance(fixture, Fixture):
+        raise ValueError('a source Fixture is required')
+    for value, name in ((fixture.first,'first country'),(fixture.second,'second country'),
+                        (state.managed_country,'managed country')):
+        _integer(value,1,128,name)
+    if type(fixture.kind) is not int or fixture.kind != 1 or fixture.first == fixture.second:
+        raise ValueError('two distinct countries and a friendly fixture are required')
+    if state.managed_country not in (fixture.first, fixture.second):
+        raise ValueError('managed country must be a fixture endpoint')
+    template = Image.from_memory_component(state.mem)
+    _integer(fixture.index,1,template.rd_far(0xA923,0x28),'source fixture index')
+    if len(state.players) != 3061 or any(len(p) != 20 for p in state.players):
+        raise ValueError('players must contain 3061 records of 20 bytes')
+    if len(state.countries) != 129 or any(len(c) != 0xBF for c in state.countries):
+        raise ValueError('countries must contain 129 records of 191 bytes')
+    for words, size, name in ((state.managed_squad,20,'squad'),(state.starting_eleven,11,'eleven')):
+        if len(words) != size:
+            raise ValueError(f'{name} needs {size} player words')
+        for word in words:
+            _integer(word,1,3060,f'{name} player')
+        if len(set(words)) != size:
+            raise ValueError(f'{name} must contain distinct players')
+    if not set(state.starting_eleven) <= set(state.managed_squad):
+        raise ValueError('eleven must belong to the managed squad')
+    _integer(state.captain,0,3060,'captain')
+    if state.captain and state.captain not in state.starting_eleven:
+        raise ValueError('captain must belong to the eleven')
+    _integer(state.country_tactics,0,255,'tactics')
+    for seed in (state.rng_seed_7b62,state.rng_seed_8336):
+        _integer(seed,0,65535,'RNG seed')
+    campaign = copy.deepcopy(state.campaign)
+    if campaign is not None:
+        campaign.__post_init__()
+        pending = campaign.next_fixture
+        if (pending is None or (pending.cycle,pending.stage) != (campaign.cycle,campaign.stage)
+                or (pending.side_a,pending.side_b,pending.kind) != (fixture.first,fixture.second,fixture.kind)
+                or pending.fixture_id != f'original:{fixture.index}'):
+            raise ValueError('source fixture differs from the pending scheduled fixture')
+    candidate = copy.deepcopy(state)
+    # [derived: F029] XI is squad order; retain every bench word when moving a starter.
+    candidate.managed_squad = list(state.starting_eleven) + [
+        w for w in state.managed_squad if w not in state.starting_eleven]
+    # [confirmed: T62 build guard] DS:0E6C is immutable foot-table data, not a clock.
+    candidate.match_state['clock'] = template.rd(CLOCK_OFFSET)
+    # [designed] +2F was a legacy UI placeholder. Preserve its opaque byte;
+    # the actual original captain is supplied via Match's declared captain input.
+    candidate.captain = state.countries[state.managed_country][0x2F]
+    image = Image.from_savestate(to_savestate(candidate, original))
+    if campaign is not None:
+        a = image.far(0xA923) + 0x38
+        image.memory[a:a+2] = engine_year(campaign).to_bytes(2,'little')
+    return image
+
+
+@dataclass(frozen=True)
+class WatchedOutcome:
+    """[designed] Completed original output; caller decides when/how to publish it."""
+    result: dict
+    memory: bytes
+    events: tuple[Event, ...]
+    seeds: tuple[int,int]
+    engine_year: int
+
+
+def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
+                      reference_seed: int | None = None, delay_byte: int | None = None,
+                      record_draws: bool = False) -> WatchedOutcome:
+    """[designed: T63/T65] Complete the original with default play-on answers.
+
+    Reference overrides are explicit diagnostics; normal play keeps setup's
+    fixture-index * (engine-year + 1) reseed. No live-state mutation or Python
+    energy/form update occurs. Events here are a completed diagnostic transcript;
+    a future worker must stream directly from Match.events(), never replay this.
+    """
+    if reference_seed is not None:
+        _integer(reference_seed,0,65535,'reference seed')
+    if delay_byte is not None:
+        _integer(delay_byte,0,255,'delay byte')
+    image = prepare_watched(state,original,fixture)
+    match = Match(image,fixture,managed=state.managed_country,captain=state.captain or None,
+                  seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws)
+    events = []
+    previous_decision = None
+    for ev in match.events():
+        events.append(copy.deepcopy(ev))
+        if ev.kind == 'decision':
+            identity = (ev.minute,ev.data)
+            if ev.data.get('refused') or identity == previous_decision:
+                raise RuntimeError('original decision refused or made no progress under default play-on policy')
+            previous_decision = copy.deepcopy(identity)
+            match.answer()
+        elif ev.kind in ('minute','substitution'):
+            previous_decision = None
+    # [confirmed: E033] result() requires completion after the B7FA player-update tail.
+    result = copy.deepcopy(match.result())
+    memory = match.memory_component()
+    after = Image(memory)
+    return WatchedOutcome(result,memory,tuple(events),(after.rd(0x7B62),after.rd(0x8336)),image.year())
