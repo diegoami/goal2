@@ -115,6 +115,7 @@ class LocalValidationTests(unittest.TestCase):
         self.assertTrue(any("tools/check_links.py" in c for c in children))
         self.assertTrue(any("--self-test" in c for c in children))
         self.assertTrue(any("tests/harness_clients.test.mjs" in c for c in children))
+        self.assertTrue(any("tests/opencode_protocol.test.mjs" in c for c in children))
         self.assertTrue(any("tests.test_agent_permissions" in c for c in children))
 
     def test_child_cannot_dirty_or_move_the_verified_checkout(self):

@@ -62,3 +62,13 @@ bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/
 6fcb82342aafb2875bb7b2eb474d345aefcb9884adae3920452adddf4323dd9a  tools/harness/switch-model.mjs
 f42444fab83e28dffec60593f1c323e6e4c001d6bfdd780b2cdfff1090d5cd72  AGENTS.md
 b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs
+local tools/harness/lib/opencode-protocol.mjs  (T72a explicit protocol contract and offline validation)
+cc5bb387f93881f5ff970293c601995b254b94024713e175dbec38854d58dc99  tools/harness/lib/opencode-protocol.mjs
+local tools/harness/probe-opencode.mjs  (T72a explicit protocol contract and offline validation)
+f573d1ff361b831a1a8f5b9d3de0fd80f3a3eac5cb3f20088c2c5d766011fabe  tools/harness/probe-opencode.mjs
+local tests/opencode_protocol.test.mjs  (T72a explicit protocol contract and offline validation)
+4f5fab9299f1ee211aca9def7e191458e3deef91a072d6200a5e25ebb8408450  tests/opencode_protocol.test.mjs
+local tools/check_premerge.py  (T72a explicit protocol contract and offline validation)
+f6b0324a84b481f845523a970685ed6db24518f4dd288d61ca943e4b8749b062  tools/check_premerge.py
+local tests/test_local_validation.py  (T72a explicit protocol contract and offline validation)
+5a62ec9a634bcd82fd7c6eb90386eb86119ac1d652a82ff5ed0c09fafb6c32c9  tests/test_local_validation.py

@@ -1,0 +1,86 @@
+{
+  "info": {
+    "id": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+    "agent": "reviewer",
+    "directory": "/home/diego/projects/goal2-work/T72a-opencode2-protocol",
+    "time": {
+      "created": 1792240887175,
+      "updated": 1792240887175
+    },
+    "title": "T72a-owned-empty-never-prompted"
+  },
+  "messages": [
+    {
+      "info": {
+        "id": "msg_fixture_assistant",
+        "sessionID": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+        "role": "assistant",
+        "agent": "reviewer",
+        "modelID": "MiniMax-M3",
+        "providerID": "minimax",
+        "variant": "thinking",
+        "time": {
+          "created": 1792240887175,
+          "completed": 1792240887177
+        },
+        "finish": "stop",
+        "cost": 0.002,
+        "tokens": {
+          "input": 10,
+          "output": 4,
+          "reasoning": 2,
+          "cache": {
+            "read": 3,
+            "write": 1
+          }
+        }
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "Header\napprove\n"
+        },
+        {
+          "type": "reasoning",
+          "text": "private reasoning sample"
+        },
+        {
+          "type": "tool",
+          "state": {
+            "status": "error",
+            "input": {
+              "command": "cat /outside/file"
+            },
+            "error": "The user rejected permission to use this specific tool call."
+          },
+          "time": {
+            "created": 1792240887175,
+            "completed": 1792240887176
+          },
+          "callID": "call_rejected",
+          "tool": "shell"
+        },
+        {
+          "type": "tool",
+          "state": {
+            "status": "completed",
+            "input": {
+              "command": "pwd"
+            },
+            "output": "/fixture/project"
+          },
+          "time": {
+            "created": 1792240887175,
+            "completed": 1792240887176
+          },
+          "callID": "call_completed",
+          "tool": "shell"
+        },
+        {
+          "type": "text",
+          "text": "Final pass done\napprove\n"
+        }
+      ]
+    }
+  ]
+}

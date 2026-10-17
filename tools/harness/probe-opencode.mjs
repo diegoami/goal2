@@ -112,7 +112,6 @@ try {
   save('permissions.json', await request(`/api/session/${sid}/permission`));
   const interrupted = await request(`/api/session/${sid}/interrupt`, {}); save('interrupt.json', interrupted);
   assert.equal(interrupted.interrupted, false, 'owned idle interruption must be a no-op');
-  // [confirmed: T72a] Read-only explicit server CLI commands attach to this owned persistent process.
   // [designed: T72a] API remains the source of lifecycle evidence; CLI standalone uses the same private data directory.
   const listed = cli(['session', 'list', '--standalone', '--format', 'json']); save('session-list-cli.json', listed); assert.equal(listed.code, 0);
   const exported = cli(['session', 'export', '--standalone', sid]); save('session-export-cli.json', exported); assert.equal(exported.code, 0);
@@ -133,6 +132,12 @@ try {
   if (child && child.exitCode === null) { child.kill('SIGTERM'); await Promise.race([exited, sleep(5000)]); }
   if (child && child.exitCode === null && child.signalCode === null) { child.kill('SIGKILL'); await exited; }
   lifecycle.ownedExit = child?.exitCode; lifecycle.ownedSignal = child?.signalCode;
+  assert(child?.exitCode !== null || child?.signalCode !== null, 'owned process must exit');
+  if (url) {
+    try { await fetch(url + '/api/info', { signal: AbortSignal.timeout(1500) }); lifecycle.ownedEndpointUnavailable = false; }
+    catch { lifecycle.ownedEndpointUnavailable = true; }
+    assert(lifecycle.ownedEndpointUnavailable, 'owned endpoint must be unavailable after process shutdown');
+  }
   lifecycle.unrelatedAfter = await (await fetch(unrelatedURL)).text(); unrelated.close();
   save('lifecycle.json', lifecycle);
   // [designed: T72a] Retain only redacted startup logs. Never persist the generated password.

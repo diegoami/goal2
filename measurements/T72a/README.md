@@ -52,3 +52,7 @@ prove normalization only. No migration-complete or paid-execution claim is made.
 Primary references: [migration](https://opencode.ai/v2/docs/migrate-v1/),
 [agents](https://opencode.ai/v2/docs/agents/),
 [API](https://opencode.ai/v2/docs/api).
+
+[confirmed: probe-20261017-shutdown/lifecycle.json] The second probe also asserts the owned endpoint is unreachable after bounded process shutdown; its exact source snapshot is retained beside the manifest.
+
+[confirmed: mutation-controls-20261017.json] Six deliberate losses (identity checks, rejection, complete text, final-stop completion, assistant-error gating, step metadata) each fail a specific assertion with child exit1. Tests clear inherited Node test-runner context so child checks execute; neither timeout nor module/syntax errors count as successful controls.

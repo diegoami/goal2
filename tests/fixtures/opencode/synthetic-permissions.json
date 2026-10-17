@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "id": "per_fixture",
+      "sessionID": "ses_eb61e5a91ffeR7ubYUG1t6O4Wt",
+      "action": "external_directory",
+      "resources": [
+        "/outside/*"
+      ],
+      "source": {
+        "type": "tool",
+        "messageID": "msg_fixture_assistant",
+        "id": "call_rejected"
+      },
+      "metadata": {
+        "reason": "fixture"
+      }
+    }
+  ]
+}
