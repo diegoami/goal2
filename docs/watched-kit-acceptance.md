@@ -147,7 +147,7 @@ with default `Match.answer()` decisions and returns the original result, ordered
 completed diagnostic events, entire Memory component, both RNG words and engine
 year. It never publishes state or adds Python player updates. T64 owns publication;
 T65 must stream events directly from the kit in its worker rather than replaying
-this completed transcript. A refused or immediately repeated decision fails clearly.
+this completed transcript. A refused decision or an identical repeat without intervening guest progress fails clearly.
 
 [derived: accepted F025 §2–3 at `3656a2d26e0f57a410d648edeaa6cd9eb7d1f607`]
 The original engine year is a counter of two-year gates, starting at zero for both

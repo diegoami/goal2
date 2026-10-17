@@ -136,7 +136,7 @@ def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
                 raise RuntimeError('original decision refused or made no progress under default play-on policy')
             previous_decision = copy.deepcopy(identity)
             match.answer()
-        elif ev.kind in ('minute','substitution'):
+        elif ev.kind != 'refused':
             previous_decision = None
     # [confirmed: E033] result() requires completion after the B7FA player-update tail.
     result = copy.deepcopy(match.result())

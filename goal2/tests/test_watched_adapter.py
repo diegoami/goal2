@@ -175,8 +175,33 @@ class WatchedAdapter(unittest.TestCase):
         self.assertEqual(controlled.answers,3)
         self.assertEqual(got.result,{'complete':True})
 
+    def test_distinct_same_minute_notices_are_not_a_no_progress_loop(self):
+        # [designed: T65 policy] Guest commentary distinguishes a later stoppage
+        # even when its minute/context/selection data equal the earlier notice.
+        from goal2.engine.original_match.match import Event
+        image=Image(self.state().mem)
+        class Notices:
+            def __init__(self,progress):self.answers=0;self.progress=progress
+            def events(self):
+                data={'context':'substitution','injured':[121]}
+                yield Event('decision',20,(0,0),data)
+                if self.progress:yield Event('commentary',20,(0,0),{'text':'guest progressed'})
+                yield Event('decision',20,(0,0),data)
+                assert self.answers==2,'later notice was not answered'
+                yield Event('full_time',90,(0,0));yield Event('end',90,(0,0))
+            def answer(self):self.answers+=1
+            def result(self):return {'complete':True}
+            def memory_component(self):return image.memory_component()
+        s=self.state();before=copy.deepcopy(s)
+        with patch('goal2.game.watched_match.Match',return_value=Notices(True)):
+            self.assertEqual(run_watched_match(s,self.raw,Fixture(7,19,21)).result,{'complete':True})
+        with patch('goal2.game.watched_match.Match',return_value=Notices(False)):
+            with self.assertRaisesRegex(RuntimeError,'no progress'):
+                run_watched_match(s,self.raw,Fixture(7,19,21))
+        self.assertEqual(s,before)
+
     def test_default_decision_policy_and_refusal_fail_closed(self):
-        # [designed: T65] Real family includes injury notices; no tactics/substitution editing.
+        # [designed: T65] A controlled refused notice fails without tactics/substitution editing.
         class Refused:
             def events(self):
                 from goal2.engine.original_match.match import Event
