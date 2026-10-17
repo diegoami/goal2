@@ -21,7 +21,7 @@ class WatchedJob:
 def completed_candidate(state,fixture,outcome,template):
     """[designed] Build every returned field and ledger privately, never quick Python effects."""
     if not isinstance(outcome,WatchedOutcome):raise ValueError('completed watched outcome required')
-    result=outcome.result;validate_result(result)
+    result=outcome.result;engine=validate_result(result)
     kinds=[getattr(event,'kind',None) for event in outcome.events]
     if (not kinds or kinds[-1]!='end' or kinds.count('end')!=1 or kinds.count('full_time')!=1
             or (result['first'],result['second'],result['index'],result['managed'])!=
@@ -44,7 +44,7 @@ def completed_candidate(state,fixture,outcome,template):
     candidate.country_tactics=candidate.countries[state.managed_country][0x2D]
     candidate.rng_seed_7b62,candidate.rng_seed_8336=outcome.seeds
     candidate.match_count+=1
-    candidate.last_match={'engine':ENGINE_ID,'schema':RESULT_SCHEMA,'original':copy.deepcopy(result),
+    candidate.last_match={'engine':engine,'schema':RESULT_SCHEMA,'original':copy.deepcopy(result),
         'teams':[fixture.first,fixture.second],'score':list(result['score']),'goals':copy.deepcopy(result['goals']),
         'managed_side':int(state.managed_country==fixture.second),'match_count':candidate.match_count,
         'seeds':list(outcome.seeds),'engine_year':outcome.engine_year}
@@ -61,13 +61,13 @@ def completed_candidate(state,fixture,outcome,template):
             score=list(result['score'])
             world.results.append({'fixture_id':pending.fixture_id,'teams':[fixture.first,fixture.second],
                 'score':score,'winner':2 if score[0]==score[1] else int(score[1]>score[0]),'mode':'watched',
-                'engine':ENGINE_ID,'schema':RESULT_SCHEMA,'seed_before':state.rng_seed_7b62,
+                'engine':engine,'schema':RESULT_SCHEMA,'seed_before':state.rng_seed_7b62,
                 'seed_after':outcome.seeds[0],'secondary_after':outcome.seeds[1],
                 'engine_year':outcome.engine_year,'index':fixture.index,
                 'setup_seed':fixture.index*(outcome.engine_year+1)&65535})
         campaign.complete_fixture(pending.fixture_id)
         campaign.results.append({'fixture_id':pending.fixture_id,'teams':[fixture.first,fixture.second],
-            'score':list(result['score']),'engine':ENGINE_ID,'schema':RESULT_SCHEMA})
+            'score':list(result['score']),'engine':engine,'schema':RESULT_SCHEMA})
         if campaign.world is not None:
             campaign_rounds.silent_until_managed(candidate,template,campaign_rounds.SilentResolver)
             campaign_rounds.validate_state(candidate)

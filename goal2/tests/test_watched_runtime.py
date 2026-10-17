@@ -169,17 +169,29 @@ print("quick-only PASS")
             self.assertTrue(seen, "the regression must actually visit a disallowed goal")
             if resume:
                 self.assertTrue(saved)
+            # [confirmed: Match.answer/save/load at accepted3656 and424 pins] Snapshot
+            # JSON turns sorted answer-item tuples into lists. Compare the COMPLETE
+            # serialized result, including all seven new fields, rather than native
+            # container identity. The historical kit1 digest remains an additional
+            # friendly semantics control; no field/value is omitted from the full JSON.
+            result = match.result()
+            self.assertEqual(result["kit"],"2")
+            legacy = {key:value for key,value in result.items() if key not in
+                      {"kind","winner","score_90","extra_time","substitution_budget","shootout","players"}}
+            legacy["kit"] = "1"
             return {"event_sha256": hashlib.sha256(json.dumps(events,sort_keys=True).encode()).hexdigest(),
-                    "result_sha256": hashlib.sha256(json.dumps(match.result(),sort_keys=True).encode()).hexdigest(),
-                    "memory_sha256": hashlib.sha256(match.memory_component()).hexdigest()}
+                    "result_sha256": hashlib.sha256(json.dumps(legacy,sort_keys=True).encode()).hexdigest(),
+                    "memory_sha256": hashlib.sha256(match.memory_component()).hexdigest(),
+                    "current_result_json": json.dumps(result,sort_keys=True)}
         straight, resumed = play(False), play(True)
         self.assertEqual(straight,resumed)
-        self.assertEqual(straight,{key:control[key] for key in straight})
+        self.assertEqual({key:value for key,value in straight.items() if key != "current_result_json"},
+                         {key:control[key] for key in straight if key != "current_result_json"})
 
     def test_unsupported_fixtures_refuse_without_changing_image(self):
         before = self.image.memory_component()
-        for kind in (0,2,4,16):
-            with self.assertRaisesRegex(ValueError,"only friendlies"):
+        for kind in (0,4,9,16,204):
+            with self.assertRaisesRegex(ValueError,"kind"):
                 Match(self.image,Fixture(7,19,index=21,kind=kind),managed=7)
         self.assertEqual(self.image.memory_component(),before)
 

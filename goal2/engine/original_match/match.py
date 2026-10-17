@@ -20,7 +20,7 @@ from .image import (Image, COUNTRIES_PTR, COUNTRY_SIZE, PLAYERS_PTR, PLAYER_SIZE
 from .machine import Machine, GuestError, MEM_SIZE
 from . import screens as S
 
-VERSION = "1"
+VERSION = "2"
 
 # -- the calls (route_fixture's own, static/goal-exe/code/seg_000E_09.asm:308 and :396) -------------------------
 RUN_MATCH, RUN_MATCH_RETURN = "0791:F1F6", "000E:6F1D"
@@ -93,6 +93,28 @@ BALL = 0x82F6                      # player word, +0x12 the state; the ball at D
 TEAM_KEYS = ("first", "second")    # static/goal-exe/annotations/fields.tsv, `likely`)
 
 
+# -- the fixture's kind byte +2 (F023 section 9): the kinds the stage builders write; 1 is a friendly
+KINDS = (1, 2, 3, 5, 6, 7, 8, 101, 102, 103, 200, 201, 202, 203)
+DECIDERS = frozenset([4] + list(range(8, 204)))   # DS:693A, the set A405 tests into DS:7C36: extra time and shoot-out
+# -- extra time and the shoot-out (issue 252): play_match F098 (named seg_0791_12.c) runs, for a decider level after
+# 90 minutes, 9B0C (extra time's first half) and 9B5B (its second), then, still level, penalty_shootout A10A
+# (static/goal-exe/code/seg_0791_16.asm; named seg_0791_08.c):
+EXTRA_TIME_CLOCK = "0791:9B15"  # 9B0C sets the clock for extra time: minute DS:831F := 0x59 (89); 970C counts on
+SHOOTOUT = "0791:A10A"          # penalty_shootout's entry
+KICK, KICK_RETURN = "0791:A006", "0791:A1EF"   # play_shootout_kick(A10A's BP), called at A1EC
+ORDER_READ = "0791:9D67"        # pick_shootout_takers_managed 9B93: its 214B:1560 read (9D62); 9B93's frame:
+ORDER_HIGHLIGHT_BP, ORDER_NEEDED_BP = -6, -4   # local_8 the highlighted squad slot 1..11, local_6 the picks needed
+# A10A's frame (its BP is the argument of 9B93, 9ED3 and A006): the side to kick [bp-0x1F], the next taker's index
+# of side t [bp-0x1E+t], the takers of side t a Pascal string of pitch slots at [bp-0x1A+12t] (9B93 fills its
+# length byte; 9ED3 entries 1..11).
+SO_SIDE, SO_INDEX, SO_TAKERS = -0x1F, -0x1E, -0x1A
+TABLE_READS = ("1771:9022", "1771:91BE")   # after a non-friendly, run_match's E929 calls 1771:958D(.., 0): one pass of
+#                                            the competition's table screen, 8E9A (read at 901D) or 9028 (91B9)
+TABLE_KEY = "1771:9567"         # ... or the finals' table 9509, 'hit any key' (its 214B:08DD at 9562)
+CONFIDENCE, STATUS = 0x0C, 0x10  # player +0xC confidence (F020), +0x10 status: element k is bit k-1 (F027 section 2)
+SUSPENDED, SENT_OFF, CARRIED_BOOKING, SUBSTITUTED_OFF = 0x80, 0x20, 0x08, 0x04
+
+
 class MatchError(RuntimeError):
     """The original refused a decision or a state goal2 asked for (the message says which)."""
 
@@ -102,7 +124,7 @@ class Fixture:
     first: int                 # team 0: fixture +4 (DS:9B34)
     second: int                # team 1: fixture +6 (DS:9B36), the host of a friendly (0791:A6E4)
     index: int = None          # the calendar number the set-up seeds from (0791:2648); None: [A923]+0x26
-    kind: int = 1              # 1, a friendly: the only kind the kit has been checked on
+    kind: int = 1              # fixture +2 (F023 section 9): 1 a friendly; KINDS the ones the builders write
 
 
 @dataclass
@@ -117,9 +139,24 @@ class Event:
         return f"[{self.minute:3d}' {self.score[0]}-{self.score[1]}] {self.kind} {extra}"
 
 
+def fresh_state(players_before):
+    """The kit's state of a match before run_match starts (Match.__init__; E034 builds one at a shoot-out's
+    start from a recorded state the same way)."""
+    return {"phase": "run_match", "fresh": True, "over": False, "full_time": False, "minute": 0,
+            "score": [0, 0], "squads": None, "scorers": [[], []],
+            "candidates": {}, "menu_context": None, "notice": None, "answer": None, "waiting": None,
+            "poll_keys": [], "prompt": None, "pending_subs": [], "recording": False,
+            "decisions": [], "draws": [], "commentary": [], "half_time_score": None, "board": None,
+            "ticks": 0, "kickoff_seed": None, "live": False, "pending": [],
+            "log": {"goals": [], "goals_disallowed": [], "bookings": [], "sendings_off": [], "injuries": [],
+                    "substitutions": []},
+            "stage": "match", "score_90": None, "score_120": None, "kick": None, "kicks": [], "order": None,
+            "players_before": players_before}
+
+
 class Match:
     def __init__(self, image, fixture, *, managed=None, captain=None, seed=None, players=None, countries=None,
-                 ticks=False, record_draws=False, delay_byte=None, timeout_s=60):
+                 substitutions=None, ticks=False, record_draws=False, delay_byte=None, timeout_s=60):
         """image: an Image of the original (goal2's savestate bytes through Image.from_savestate, e.g. of
         to_savestate(state, template); or GameState.mem through Image.from_memory_component). On the fixture
         tried, the match depended on the image only through its two teams' records (E033 notes, section 2).
@@ -130,9 +167,14 @@ class Match:
         prompt, after the set-up's own reseed (default: none, the original's). ticks: also yield one `tick` event
         per tick. record_draws: keep every main-RNG write from the captain prompt to the full-time board (the
         engine check). delay_byte: the speed byte [A923]+0x3F at the captain prompt (the engine check).
-        timeout_s: the most one stretch between two events may take (normally well under a second)."""
-        if fixture.kind != 1:
-            raise ValueError("only friendlies (kind 1) are supported")
+        timeout_s: the most one stretch between two events may take (normally well under a second).
+        substitutions: the substitution budget, one number for both sides or (team 0, team 1), 0..255, written over
+        the set-up's (A4A1: 5 a side for a friendly, kind 1, and 2 for every other kind; F027 section 4) when
+        play_match starts; None keeps the original's. The original counts it down (C5DC) and stops both the
+        manager (E544 'no more substitutes') and the computer's rule (8062) at 0; a player taken off cannot come
+        back (element 3, 1771:3216), so 9 or more is no limit for a bench of 9."""
+        if fixture.kind not in KINDS:
+            raise ValueError(f"fixture kind {fixture.kind} is none of the kinds the original's builders write {KINDS}")
         if fixture.first == fixture.second:
             raise ValueError("the fixture needs two distinct countries")
         for c in (fixture.first, fixture.second):
@@ -158,23 +200,21 @@ class Match:
             raise ValueError("the managed country must be one of the fixture's two countries")
         self._make_managed(managed, fixture)
         index = fixture.index if fixture.index is not None else self.m.rd_far(GAME_PTR, 0x26)
+        if substitutions is not None:
+            budget = [substitutions] * 2 if isinstance(substitutions, int) else list(substitutions)
+            if len(budget) != 2 or any(not isinstance(b, int) or not 0 <= b <= 255 for b in budget):
+                raise ValueError("substitutions: a budget 0..255, or (team 0's, team 1's)")
+            substitutions = budget
         self.opts = {"first": fixture.first, "second": fixture.second, "index": index, "managed": managed,
                      "captain": captain, "seed": seed, "ticks": ticks, "record_draws": record_draws,
-                     "delay_byte": delay_byte}
+                     "delay_byte": delay_byte, "kind": fixture.kind, "substitutions": substitutions}
         self.side = 0 if managed == fixture.first else 1
         if captain is not None and captain not in self._squad(managed)[:11]:
             raise ValueError(f"captain {captain} is not in the managed eleven")
         self._write_fixture(index, fixture)
         self._declare("delay calibration dword DS:A9FF", self.m.DS * 16 + DELAY_COUNT,
                       DELAY_COUNT_VALUE.to_bytes(4, "little"))
-        self.st = {"phase": "run_match", "fresh": True, "over": False, "full_time": False, "minute": 0,
-                   "score": [0, 0], "squads": None, "scorers": [[], []],
-                   "candidates": {}, "menu_context": None, "notice": None, "answer": None, "waiting": None,
-                   "poll_keys": [], "prompt": None, "pending_subs": [], "recording": False,
-                   "decisions": [], "draws": [], "commentary": [], "half_time_score": None, "board": None,
-                   "ticks": 0, "kickoff_seed": None, "live": False, "pending": [],
-                   "log": {"goals": [], "goals_disallowed": [], "bookings": [], "sendings_off": [], "injuries": [],
-                           "substitutions": []}}
+        self.st = fresh_state(self._players_now([fixture.first, fixture.second]))
         self._queue = []
         self._menu = None
         self._result = None
@@ -215,6 +255,16 @@ class Match:
 
     def _player(self, player, field):
         return self.m.read(self.m.far(PLAYERS_PTR) + PLAYER_SIZE * player + field, 1)[0]
+
+    def _players_now(self, countries):
+        """{player word: [team, confidence +0xC, energy +0xE, status +0x10]} for the squads of the two countries."""
+        out = {}
+        for team, c in enumerate(countries):
+            for w in self._squad(c):
+                if w:
+                    out[str(w)] = [team, self._player(w, CONFIDENCE), self._player(w, PLAYER_ENERGY),
+                                   self._player(w, STATUS)]
+        return out
 
     def _make_managed(self, managed, fixture):
         """Make `managed` manager 1's country as the original's records hold one (+0x2E = 0x81, and the manager
@@ -283,7 +333,7 @@ class Match:
             self._advance()
 
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
-               speed=None):
+               speed=None, shootout_order=None):
         """goal2's answer to the waiting decision; nothing given plays on.
         substitutions: (off, on) player words of the managed squad, made now at half time and at a substitution
           notice; at a pause the original only takes the request and offers it at the next stoppage (a
@@ -294,9 +344,26 @@ class Match:
         marking: {player: opponent player word, or 0 for none} (his man-marking, 1771:49B8).
         own_tactics: {player: {element 1..4: True, False or None for the team's}} (his own setting, 1771:4B61).
         quick: the rest as a quick result (the original's R key in play). speed: the original's speed byte 0..5
-          (presentation only: it never changes the match, E033 notes)."""
+          (presentation only: it never changes the match, E033 notes).
+        shootout_order: at the `shootout_order` decision only (and nothing else there): player words of the
+          decision's `available` list, distinct, the first takers in order; the rest follow by the original's
+          Enter (the highlighted player, from the top of the eleven)."""
         if self.st["waiting"] is None:
             raise MatchError("no decision is waiting")
+        if self.st["waiting"]["context"] == "shootout_order":
+            if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None:
+                raise ValueError("the shoot-out order takes shootout_order only")
+            order = [int(w) for w in (shootout_order or [])]
+            avail = self.st["waiting"]["available"]
+            if len(set(order)) != len(order) or any(w not in avail for w in order):
+                raise ValueError(f"shootout_order: distinct players of the available eleven {avail}")
+            self.st["answer"] = {"shootout_order": order}
+            self.st["decisions"].append({"context": "shootout_order", "minute": self.st["minute"],
+                                         "answer": {"shootout_order": order}})
+            self.st["waiting"] = None
+            return
+        if shootout_order is not None:
+            raise ValueError("shootout_order answers the shoot-out order only")
         if isinstance(tactics, int):
             tactics = {e: bool(tactics >> (e - 1) & 1) for e in range(1, 9)}
         tactics = {int(e): bool(v) for e, v in (tactics or {}).items()}
@@ -339,6 +406,8 @@ class Match:
             raise MatchError("a decision is waiting: answer it")
         if self.st["over"] or self.st["full_time"]:
             raise MatchError("the match is over")
+        if self.st.get("stage") == "shootout":
+            raise MatchError("the kit takes no pause in the shoot-out (what the original's team menu does mid-kick is not checked)")
         if S.ENTER not in self.st["poll_keys"]:        # asked already: one menu
             self.st["poll_keys"].append(S.ENTER)
 
@@ -382,6 +451,8 @@ class Match:
             return
         self._flush()
         if self.st["phase"] == "run_match":
+            seg, off = self.fixture_ptr
+            self.st["fixture_after"] = list(self.m.read(seg * 16 + off, FIXTURE_SIZE))
             self.st["phase"] = "player_update"
             self._call(PLAYER_UPDATE, PLAYER_UPDATE_RETURN)
         else:
@@ -401,6 +472,9 @@ class Match:
         m.at(PLAY_MATCH, self._on_play)
         m.at(MATCH_PLAYED, self._on_played)
         m.at(MESSAGE_IF, self._on_message)
+        m.at(SHOOTOUT, self._on_shootout)
+        m.at(KICK, self._on_kick)
+        m.at(KICK_RETURN, self._on_kicked)
         for name in WAIT_FAMILY:
             m.at(name, lambda replay, name=name: self._fail(f"the 000E wait {name} was reached: it is menu code"))
         for name, kind in ((BOOKING, "booking"), (SEND_OFF, "sending_off"), (INJURE, "injury")):
@@ -465,25 +539,31 @@ class Match:
 
     def _on_readkey(self, replay):
         m = self.m
+        site = m.where(m.stack_word(2), m.stack_word(0))
+        if site == SITE_BOARD:
+            self._on_board()           # the board is drawn: its event, whether a key is waiting or not
         if m.rd(PUSHED_BACK, 1):
-            return                     # a pushed-back key: the guest reads it without waiting
-        key = self._key_for(m.where(m.stack_word(2), m.stack_word(0)))
+            return                     # a pushed-back key: the guest reads it without waiting (after a shoot-out
+        key = self._key_for(site)      # 9B93's last Down, 9E5B, passes the full-time board)
         if key is None:
             return                     # stopped for a decision
         m.wr(KEY, key | (key << 8))    # DS:A976 the key, DS:A977 the last key
         m.return_from(True, 0)
 
+    def _on_board(self):
+        st = self.st
+        self._flush()
+        if st["full_time"] and st["board"] is None:
+            st["board"] = self._board()
+            st["recording"] = False
+            self._emit("full_time", **st["board"])
+        elif not st["full_time"] and st["half_time_score"] is None:
+            st["half_time_score"] = list(st["score"])
+            self._emit("half_time")
+
     def _key_for(self, site):
         m, st = self.m, self.st
         if site == SITE_BOARD:
-            self._flush()
-            if st["full_time"] and st["board"] is None:
-                st["board"] = self._board()
-                st["recording"] = False
-                self._emit("full_time", **st["board"])
-            elif not st["full_time"] and st["half_time_score"] is None:
-                st["half_time_score"] = list(st["score"])
-                self._emit("half_time")
             return S.ENTER
         if site == SITE_POLL:
             if not st["poll_keys"]:
@@ -495,6 +575,8 @@ class Match:
             st["prompt"] = None
             return S.ENTER
         if site == SITE_MESSAGE:
+            return S.ENTER
+        if site == TABLE_KEY and st["full_time"]:
             return S.ENTER
         if site == SITE_SELECT and self._menu is not None:
             return self._menu.select_key({
@@ -509,6 +591,10 @@ class Match:
             if caller == MENU_TACTICS and self._menu is not None:
                 table = list(m.read(m.DS * 16 + S.TACTICS_ELEMENT_OF_ROW, 9))
                 return self._menu.tactics_key(m.rd(S.TACTICS_ROW), table, self._tactics())
+            if caller == ORDER_READ:
+                return self._order_key(m.frame_word(bp, 0))
+            if caller in TABLE_READS and st["full_time"]:
+                return S.ENTER                                # the competition's table, looked at: one pass
             if caller == MENU_OWN and self._menu is not None:
                 player = self._menu.jobs[self._menu.job][1]
                 slot = self._squad(self.opts["managed"]).index(player) + 1
@@ -524,6 +610,7 @@ class Match:
             return
         ret = self.m.where(self.m.reg("cs"), self.m.stack_word(0))
         self.st["menu_context"] = MENU_CONTEXT.get(ret, "other:" + ret)
+        self.st["menu_half"] = 2 if ret == "0791:9B70" else 1      # extra time's second half: 9B5B's menu
         self._menu = None
 
     def _team_menu_key(self, item):
@@ -618,6 +705,8 @@ class Match:
         positions = [[w, self.m.read(base + PLAYER_SIZE * w + PLAYER_POSITION, 1)[0]] for w in squad if w]
         data.update(context=context, eleven=squad[:11], bench=squad[11:], injured=injured, positions=positions,
                     substitutions_left=self.m.rd(S.SUBS_LEFT + self.side, 1), tactics=self._tactics())
+        if context == "extra_time":
+            data["half"] = self.st.get("menu_half", 1)    # before extra time's first half (1) or its second (2)
         self._emit("decision", **data)
         self.m.stop("decision")
 
@@ -694,6 +783,10 @@ class Match:
         substitutions left; from here their writes are the match's events."""
         if not replay:
             self.st["live"] = True
+            if self.opts.get("substitutions") is not None:
+                self._declare("substitution budget DS:9B3A (team 0, team 1) after the set-up's (A605)",
+                              self.m.DS * 16 + S.SUBS_LEFT, self.opts["substitutions"])
+            self.st["budget"] = list(self.m.read(self.m.DS * 16 + S.SUBS_LEFT, 2))
 
     def _on_played(self, replay):
         if not replay:
@@ -761,7 +854,14 @@ class Match:
             d = (new[t] - old[t]) & 0xFF
             if not d:
                 continue
-            if d == 1 and pc == m.lin(GOAL_WRITE):
+            if st.get("stage") == "shootout":
+                kick = st["kick"]
+                if d != 1 or pc != m.lin(GOAL_WRITE) or kick is None or kick["team"] != t or kick["scored"]:
+                    self._fail(f"a score write at {pc:05X} in the shoot-out ({list(old)} to {list(new)}) that is not "
+                               "the kicking side's one goal (0791:685C): the kit does not declare it")
+                kick["scored"] = True
+                st["pending"].append(["kick", minute, new[0], new[1], t])
+            elif d == 1 and pc == m.lin(GOAL_WRITE):
                 st["pending"].append(["goal", minute, new[0], new[1], t, False])
             elif d == 0xFF and pc == m.lin(CANCEL_WRITE):
                 taken = [p for p in st["pending"] if p[0] == "goal" and p[4] == t and not p[5]]
@@ -788,6 +888,9 @@ class Match:
     def _on_minute(self, old, new):
         """The clock 970C writes the minute DS:831F (9762 `inc`); A4A1 resets it before play_match."""
         if self.st["live"] and new != old:
+            if self.m.pc() == self.m.lin(EXTRA_TIME_CLOCK):     # 9B0C: extra time begins; the clock is set back
+                self.st["pending"].append(["extra_time", int.from_bytes(new, "little")] + self._stamp()[1:])
+                return
             self._declared("the minute DS:831F", WRITERS["minute"])
             self.st["pending"].append(["minute", int.from_bytes(new, "little")] + self._stamp()[1:])
 
@@ -837,6 +940,11 @@ class Match:
                 self._emit("commentary", minute, score, text=text, template=r[0], team=r[5], players=[p1, p2])
             elif kind == "minute":
                 self._emit("minute", minute, score)
+            elif kind == "extra_time":
+                st["stage"], st["score_90"] = "extra_time", list(score)
+                self._emit("extra_time", minute, score)
+            elif kind == "kick":
+                self._emit_kick(minute, score)
             elif kind in ("goal", "goal_disallowed"):
                 team = item[4]
                 scored = kind == "goal" and not item[5]      # a goal taken back has no record_goal row
@@ -844,24 +952,134 @@ class Match:
                 goal = {"team": team, "country": self.opts[TEAM_KEYS[team]], "player": w, "name": name(w)}
                 if kind == "goal_disallowed" or scored:
                     st["log"]["goals" if scored else "goals_disallowed"].append(dict(goal, minute=minute,
-                                                                                    minute_byte=mb))
+                                                                                    minute_byte=mb, **self._period()))
                 self._emit(kind, minute, score, **goal)
             elif kind == "substitution":
                 team = item[4]
                 off, on = swaps[team].pop(0) if swaps[team] else (0, 0)
                 sub = {"team": team, "off": off, "on": on, "off_name": name(off), "on_name": name(on)}
-                st["log"]["substitutions"].append(dict(sub, minute=minute))
+                st["log"]["substitutions"].append(dict(sub, minute=minute, **self._period()))
                 self._emit("substitution", minute, score, **sub)
             else:                                             # booking, sending_off, injury
                 team, w = item[4], item[5]
                 card = {"team": team, "player": w, "name": name(w)}
-                st["log"][dict(CARD_EVENTS)[kind]].append(dict(card, minute=minute))
+                st["log"][dict(CARD_EVENTS)[kind]].append(dict(card, minute=minute, **self._period()))
                 self._emit(kind, minute, score, **card)
         for team in (0, 1):            # a scorer row or an eleven change without its counter's write: not guessed
             if rows[team] or swaps[team]:
                 self._fail(f"team {team}: scorer rows {rows[team]} or eleven changes {swaps[team]} without the "
                            "score or substitutions-left write that makes them events")
         st["candidates"] = {}
+
+    def _competitive(self, board):
+        """The result's fields for any kind (issue 252): the stages played, the shoot-out, the winner as the
+        fixture's byte +3 holds it after play_match (0 team 0, 1 team 1, 2 drawn), the budget, and per player of
+        both squads what the match and the post-match update did to confidence, energy and status."""
+        st = self.st
+        fx = st.get("fixture_after") or [0] * FIXTURE_SIZE
+        out = {"kind": self.opts.get("kind", 1), "winner": fx[3], "score_90": st.get("score_90"),
+               "extra_time": st.get("score_90") is not None, "substitution_budget": st.get("budget"), "shootout": None}
+        if st.get("score_120") is not None:
+            final = board["final_score"]
+            out["score"] = list(st["score_120"])
+            out["shootout"] = {"score": [final[t] - st["score_120"][t] for t in (0, 1)], "kicks": st["kicks"]}
+        before = st.get("players_before") or {}
+        after = self._players_now([self.opts["first"], self.opts["second"]])
+        players = []
+        for w in sorted(set(before) | set(after), key=int):
+            b, a = before.get(w), after.get(w)
+            team = (a or b)[0]
+            b, a = (b or [team, None, None, None])[1:], (a or [team, None, None, None])[1:]
+            players.append({"player": int(w), "team": team, "confidence": [b[0], a[0]], "energy": [b[1], a[1]],
+                            "status": [b[2], a[2]],
+                            "suspended": bool(a[2] is not None and a[2] & SUSPENDED),
+                            "carried_booking": bool(a[2] is not None and a[2] & CARRIED_BOOKING),
+                            "injured": a[1] == 0})
+        out["players"] = players
+        return out
+
+    def _period(self):
+        """What a result entry made in extra time carries (nothing in the 90 minutes, so a friendly's is unchanged)."""
+        return {"extra_time": True} if self.st.get("stage") == "extra_time" else {}
+
+    # -- the shoot-out ---------------------------------------------------------------------------------------
+    def _on_shootout(self, replay):
+        """0791:A10A penalty_shootout: play_match calls it when the decider is still level after extra time."""
+        if replay:
+            return
+        self._flush()
+        st = self.st
+        st["stage"], st["score_120"] = "shootout", [self.m.rd(SCORE, 1), self.m.rd(SCORE + 1, 1)]
+        self._emit("shootout", score_120=list(st["score_120"]))
+
+    def _so_byte(self, a10a_bp, offset):
+        return self.m.read(self.m.reg("ss") * 16 + ((a10a_bp + offset) & 0xFFFF), 1)[0]
+
+    def _on_kick(self, replay):
+        """0791:A006 play_shootout_kick(A10A's BP): the side [bp-0x1F] kicks; its taker is entry [bp-0x1E+side] of
+        its takers [bp-0x1A+12 side] (a pitch slot; the player word at the pitch record's +0xD)."""
+        if replay:
+            return
+        self._flush()
+        bp = self.m.stack_word(2)
+        side = self._so_byte(bp, SO_SIDE)
+        slot = self._so_byte(bp, SO_TAKERS + 12 * side + self._so_byte(bp, SO_INDEX + side))
+        player = self.m.word_at(self.m.DS * 16 + PITCH + PITCH_SIZE * slot + 0xD)
+        st = self.st
+        st["kick"] = {"team": side, "player": player, "name": self._text()[0](player), "scored": False,
+                      "round": sum(1 for k in st["kicks"] if k["team"] == side) + 1}
+
+    def _on_kicked(self, replay):
+        """The return from A006 (A1EF): a kick the score bytes did not count is a miss, stamped now."""
+        if replay:
+            return
+        kick = self.st["kick"]
+        if kick is None:
+            self._fail("a shoot-out kick ended that the kit did not see start (0791:A006)")
+        self._flush()                  # a goal's kick is emitted here, at its write's place in the order
+        if not kick["scored"]:
+            minute, s0, s1 = self._stamp()
+            self._emit_kick(minute, [s0, s1])
+
+    def _emit_kick(self, minute, score):
+        st = self.st
+        kick, st["kick"] = st["kick"], None
+        if kick is None:
+            self._fail("a shoot-out goal without its kick (0791:A006)")
+        shoot = [score[t] - st["score_120"][t] for t in (0, 1)]
+        st["kicks"].append(dict(kick))
+        self._emit("shootout_kick", minute, score, shootout_score=shoot, **kick)
+
+    def _order_key(self, order_bp):
+        """The managed side's shoot-out order (9B93): Up/Down move the highlight over the eleven (squad slots 1..11),
+        Enter adds the highlighted player (9B93 then skips the ones taken and the unavailable, 1771:3216) until as
+        many are picked as can play ([bp-4]). goal2's order first, then Enter for the rest: the original's own
+        result for a manager who only presses Enter (the highlighted, from the top, in squad order)."""
+        m, st = self.m, self.st
+        if st["order"] is None:
+            if st["answer"] is None:
+                squad = self._squad(self.opts["managed"])
+                self._decide("shootout_order", takers=m.frame_word(order_bp, ORDER_NEEDED_BP),
+                             available=[w for w in squad[:11] if w and self._available(w)])
+                return None
+            answer, st["answer"] = st["answer"], None
+            st["order"] = {"want": list(answer.get("shootout_order") or []), "moves": 0}
+        here, want = m.frame_word(order_bp, ORDER_HIGHLIGHT_BP), st["order"]["want"]
+        if want:
+            target = self._squad(self.opts["managed"]).index(want[0]) + 1
+            if here != target:
+                st["order"]["moves"] += 1
+                if st["order"]["moves"] > S.MAX_MOVES:
+                    raise S.ScreenError(f"the shoot-out order's highlight does not reach slot {target} (it reads {here})")
+                return S.step_toward(here, target)
+            want.pop(0)
+            st["order"]["moves"] = 0
+        return S.ENTER
+
+    def _available(self, w):
+        """1771:3216: a player is unavailable with energy +0xE below 1 or elements 8, 6 or 3 set (F027 section 2)."""
+        e = self._player(w, PLAYER_ENERGY)
+        return 0 < e < 0x80 and not self._player(w, STATUS) & (SUSPENDED | SENT_OFF | SUBSTITUTED_OFF)
 
     def _board(self):
         m = self.m
@@ -894,6 +1112,7 @@ class Match:
             "squads_after": {str(self.opts["first"]): self._squad(self.opts["first"]),
                              str(self.opts["second"]): self._squad(self.opts["second"])},
         }
+        self._result.update(self._competitive(board))
         st["over"] = True
         self._emit("end", score=self._result["score"])
 

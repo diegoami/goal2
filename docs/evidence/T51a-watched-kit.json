@@ -1,0 +1,710 @@
+{
+  "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "legacy": {
+    "application_source": "9fb725ac914afabfdaa830198fc3a514c87c243f",
+    "engine_source": "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607",
+    "archive_sha256": "3a1d3976f12a426426d811c995d915647e6324834bd1beb37063c88eaad8ca14",
+    "inputs": {
+      "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+      "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+      "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+    },
+    "saves": {
+      "standalone": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+      "campaign": "0690fb25cc7245f89d370ad0d08a92862d6283288c74e67caa52f3f09a487a1e"
+    }
+  },
+  "ownerbudget5_preflight": [
+    {
+      "log": ".cache/T51-ownerbudget5-1792231565170998314.jsonl",
+      "log_sha256": "389b2bf9a42afb1e4ef2a75a819805ae2e50651ec83a661d3980d9219a080f73",
+      "cases": [
+        {
+          "board_score": [
+            3,
+            2
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 2,
+            "commentary": 1366,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 5,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 1,
+            "minute": 125,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 4
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 30,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "kickoff_seed": 58654,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            2,
+            2
+          ],
+          "score": [
+            3,
+            2
+          ],
+          "score_90": [
+            2,
+            2
+          ],
+          "seed_after": 913,
+          "seed_override": null,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 5834,
+          "timeout_s": 60,
+          "wall_s": 23.13,
+          "winner": 0,
+          "record_sha256": "ec5e9a0d2a1f5fb9380e4384963d60b63030b3f1f5a6d571fcfb5dcd24872554",
+          "incident_counts": {
+            "bookings": 2,
+            "goals": 5,
+            "goals_disallowed": 0,
+            "injuries": 1,
+            "sendings_off": 0,
+            "substitutions": 4
+          }
+        },
+        {
+          "board_score": [
+            4,
+            3
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 1,
+            "commentary": 1422,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 0,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 124,
+            "sending_off": 1,
+            "shootout": 1,
+            "shootout_kick": 9,
+            "substitution": 4
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            },
+            {
+              "context": "shootout_order",
+              "minute": 121
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 42,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "kickoff_seed": 21802,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            0,
+            0
+          ],
+          "score": [
+            0,
+            0
+          ],
+          "score_90": [
+            0,
+            0
+          ],
+          "seed_after": 35165,
+          "seed_override": null,
+          "shootout": {
+            "score": [
+              4,
+              3
+            ],
+            "kicks_count": 9,
+            "scored_kicks": [
+              4,
+              3
+            ]
+          },
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 5627,
+          "timeout_s": 60,
+          "wall_s": 24.8,
+          "winner": 0,
+          "record_sha256": "fec6b8e73412549c256dbada2d29aaf242051b243fa6f509d458028ef7e4a06d",
+          "incident_counts": {
+            "bookings": 1,
+            "goals": 0,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 1,
+            "substitutions": 4
+          }
+        },
+        {
+          "board_score": [
+            10,
+            11
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 2,
+            "commentary": 668,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 3,
+            "goal_disallowed": 1,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 125,
+            "sending_off": 1,
+            "shootout": 1,
+            "shootout_kick": 24,
+            "substitution": 5
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            },
+            {
+              "context": "shootout_order",
+              "minute": 120
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 9,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "kickoff_seed": 8457,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "quick_at_half_time",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            1,
+            1
+          ],
+          "score": [
+            1,
+            1
+          ],
+          "score_90": [
+            1,
+            1
+          ],
+          "seed_after": 45154,
+          "seed_override": null,
+          "shootout": {
+            "score": [
+              9,
+              10
+            ],
+            "kicks_count": 24,
+            "scored_kicks": [
+              9,
+              10
+            ]
+          },
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 2290,
+          "timeout_s": 60,
+          "wall_s": 12.07,
+          "winner": 1,
+          "record_sha256": "863a8fa795bced5e860f46f08f16de493a16741d4f5d8571b8c510564f56008a",
+          "incident_counts": {
+            "bookings": 2,
+            "goals": 2,
+            "goals_disallowed": 1,
+            "injuries": 0,
+            "sendings_off": 1,
+            "substitutions": 5
+          }
+        },
+        {
+          "board_score": [
+            5,
+            6
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 1,
+            "commentary": 564,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 5,
+            "goal_disallowed": 1,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 124,
+            "sending_off": 1,
+            "shootout": 1,
+            "shootout_kick": 12,
+            "substitution": 5
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            },
+            {
+              "context": "shootout_order",
+              "minute": 120
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 53,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "kickoff_seed": 4405,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "quick_at_half_time",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            2,
+            2
+          ],
+          "score": [
+            2,
+            2
+          ],
+          "score_90": [
+            2,
+            2
+          ],
+          "seed_after": 20463,
+          "seed_override": null,
+          "shootout": {
+            "score": [
+              3,
+              4
+            ],
+            "kicks_count": 12,
+            "scored_kicks": [
+              3,
+              4
+            ]
+          },
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 2194,
+          "timeout_s": 60,
+          "wall_s": 12.77,
+          "winner": 1,
+          "record_sha256": "0ce9f7a1b2bf6dc71af6607669ec574b9b8a52f2dd5af7557d23ee8365201665",
+          "incident_counts": {
+            "bookings": 1,
+            "goals": 4,
+            "goals_disallowed": 1,
+            "injuries": 0,
+            "sendings_off": 1,
+            "substitutions": 5
+          }
+        },
+        {
+          "board_score": [
+            1,
+            1
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 0,
+            "commentary": 1025,
+            "extra_time": 0,
+            "full_time": 1,
+            "goal": 2,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 91,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 2
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": false,
+          "fixture": {
+            "first": 7,
+            "index": 21,
+            "kind": 2,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "kickoff_seed": 37141,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            1,
+            1
+          ],
+          "score": [
+            1,
+            1
+          ],
+          "score_90": null,
+          "seed_after": 16321,
+          "seed_override": null,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 4149,
+          "timeout_s": 60,
+          "wall_s": 21.44,
+          "winner": 2,
+          "record_sha256": "d8298df9c535304fb821e548a3bbac72f7dfded47f88a88becb02b66d6d5d888",
+          "incident_counts": {
+            "bookings": 0,
+            "goals": 2,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 0,
+            "substitutions": 2
+          }
+        },
+        {
+          "board_score": [
+            2,
+            3
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "counts": {
+            "booking": 0,
+            "commentary": 1423,
+            "extra_time": 1,
+            "full_time": 1,
+            "goal": 5,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 122,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 3
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            },
+            {
+              "context": "extra_time",
+              "minute": 89
+            },
+            {
+              "context": "extra_time",
+              "minute": 105
+            }
+          ],
+          "engine_year": 0,
+          "extra_time": true,
+          "fixture": {
+            "first": 7,
+            "index": 40,
+            "kind": 200,
+            "second": 19
+          },
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "kickoff_seed": 60712,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "regulation": [
+            2,
+            2
+          ],
+          "score": [
+            2,
+            3
+          ],
+          "score_90": [
+            2,
+            2
+          ],
+          "seed_after": 57183,
+          "seed_override": null,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 6025,
+          "timeout_s": 60,
+          "wall_s": 26.34,
+          "winner": 1,
+          "record_sha256": "10f8143fdaf8a9f4d4aa7f1d3d219e9d32fb19b66c541b80ba151fa5a11928e8",
+          "incident_counts": {
+            "bookings": 0,
+            "goals": 5,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 0,
+            "substitutions": 3
+          }
+        }
+      ]
+    },
+    {
+      "log": ".cache/T51-ownerbudget5-regulation-1792231927136754191.json",
+      "log_sha256": "7044d73ba6d983af4ec225a5891cb5dc981aaa1aa95047f88c0ebd1bd4710017",
+      "cases": [
+        {
+          "board_score": [
+            1,
+            0
+          ],
+          "budget": [
+            5,
+            5
+          ],
+          "calendar": {
+            "base_year": 2028,
+            "class": 0,
+            "engine_year": 0,
+            "stage": 2
+          },
+          "counts": {
+            "booking": 2,
+            "commentary": 975,
+            "extra_time": 0,
+            "full_time": 1,
+            "goal": 1,
+            "goal_disallowed": 0,
+            "half_time": 1,
+            "injury": 0,
+            "minute": 93,
+            "sending_off": 0,
+            "shootout": 0,
+            "shootout_kick": 0,
+            "substitution": 4
+          },
+          "decisions": [
+            {
+              "context": "half_time",
+              "minute": 46
+            }
+          ],
+          "declared_inputs_sha256": "11bb1beef75c63491109268ac9a84bbdbdf32617d8522c36c52d31c2759c3b64",
+          "extra_time": false,
+          "fixture": {
+            "first": 7,
+            "index": 21,
+            "kind": 2,
+            "second": 19
+          },
+          "full_result_sha256": "1906aa6b1803cbd26f188cbbb7f1f3bc164f56945612da1ee93c6f0c1b8cc575",
+          "image_memory_sha256": "87400f6a866e0798f61a9f3ab3bfcaa322469fa6b238b0061f1b7ab2b6a3f979",
+          "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+          "kickoff_seed": 257,
+          "kit": "2",
+          "managed": 7,
+          "pass_stamps": true,
+          "policy": "play_on",
+          "probe_sha256": "c098fcd406f141588f005787730a5db88823709f52a5d269b26e0e83965a3cc0",
+          "reference_seed": 257,
+          "regulation": [
+            1,
+            0
+          ],
+          "returned_memory_sha256": "3e23b231f242ae081bf43f12f6ae13c61c20a4b66b33e3226c7320f42dc22b59",
+          "score": [
+            1,
+            0
+          ],
+          "score_90": null,
+          "seed_after": 25058,
+          "shootout": null,
+          "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+          "substitution_budget": [
+            5,
+            5
+          ],
+          "ticks": 4279,
+          "timeout_s": 60,
+          "wall_s": 10.44,
+          "winner": 0,
+          "record_sha256": "646da48c112cb95049b8665f5825b28aa48f674f4e71d01b3f10092f8fc9d3f8",
+          "incident_counts": {
+            "bookings": 2,
+            "goals": 1,
+            "goals_disallowed": 0,
+            "injuries": 0,
+            "sendings_off": 0,
+            "substitutions": 4
+          }
+        }
+      ]
+    }
+  ],
+  "old_kit_baseline": {
+    "source": "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607",
+    "test_source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+    "log": ".cache/T51a-old-kit-competitive-baseline.log",
+    "log_sha256": "00a1cce617291b24f4f6067d2000713a966fbee1c6b02583643a862a85f8707e",
+    "tests": 8,
+    "errors": 8,
+    "reason": "actual missing competitive kinds and substitutions argument; staged verified resources and E034 dependencies"
+  },
+  "old_kit_reproduced": {
+    "source": "3656a2d26e0f57a410d648edeaa6cd9eb7d1f607",
+    "test_source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+    "old_vendor": {
+      "README.md": "974a43f31945e496404072d701ab5fa4a9106ddfdbecf88e5ad45ba9acd9b6d1",
+      "__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
+      "assets.py": "a3dd00e87b213662c4188eecb9a4e2e88265ad6a8f2f6b84a70c3950895d43b7",
+      "build.py": "3368801a8ef847cbb1b37f625bcb716fcd6b2aa1e08d94d9db8d3107f746e9e4",
+      "check.py": "01d60bb980d3271dd3dd099387b2bdf42698c51bb9b8ec74a207885c8b660708",
+      "example.py": "29f37f5a763ac99daca5b6763f47ef91c05b78a562f99ff4bb0c504c70969a9c",
+      "image.py": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
+      "machine.py": "3951626402e0f5de690ca5400ad2c6d2fa7d7e26c4fb2143bf7abacac5631fa8",
+      "match.py": "3de81f0dc02c88d35941bae98ba8b511c669430dc7fa316496880d875343cf5a",
+      "screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304"
+    },
+    "tests": 8,
+    "expected_capability_errors": 8,
+    "exit_code": 0,
+    "wall_s": 0.117,
+    "log": ".cache/watched-old-kit-proof-1792233432113442947/result.log",
+    "log_sha256": "4e49a46f63a7d8a7258af5fdeb25f2c7d6c81429aa2da55edf1d5e2686f5665f"
+  },
+  "reports": {
+    "validation": "T51a-watched-validation.json",
+    "matrices": "T51a-watched-matrices.json"
+  }
+}

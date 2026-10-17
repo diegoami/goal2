@@ -6,7 +6,7 @@ remain T63–T66. Ordinary quick play does not import or require Unicorn.
 
 ## Source and resources
 
-[confirmed: archaeology PR251, merge `3656a2d26e0f57a410d648edeaa6cd9eb7d1f607`]
+[confirmed: archaeology PR255, merge `424d5998076da1e4efc399c2715689ddb44d3e1a`; independent [upstream approval](https://github.com/diegoami/goal2-archaeology/pull/255#issuecomment-6225373016)]
 All ten files in `goal2/engine/original_match/` are byte copies of
 `runtime/original_match/` at that commit, including its README. PROVENANCE.md has
 one row per file; tools/watched-kit-hashes.json records all ten full SHA-256 values.
@@ -39,7 +39,7 @@ without altering that checkout or installing a second production caller.
 Outputs in `.cache/watched-*` have unique names and include per-case diagnostics.
 
 ```sh
-python3 -m unittest goal2.tests.test_watched_runtime -v
+python3 -m unittest goal2.tests.test_watched_runtime goal2.tests.test_watched_competitive_runtime -v
 python3 -m goal2.engine.original_match.check --cache .cache --family
 python3 tools/check_watched_records.py --seeds 10
 python3 tools/check_watched_upstream.py --suite tests
@@ -48,10 +48,18 @@ python3 tools/check_watched_upstream.py --suite stamps
 python3 tools/check_watched_upstream.py --suite saves --case 0
 python3 tools/check_watched_upstream.py --suite entry
 python3 tools/check_watched_upstream.py --suite example
-# Run each mutation batch separately (1,2,3):
+# Run each mutation batch separately (1,2,3,4,5):
 python3 tools/check_watched_upstream.py --suite mutations --batch 1
 python3 tools/prove_watched_acceptance.py
 python3 tools/prove_watched_records.py
+python3 tools/check_watched_upstream.py --suite competitive-stamps
+# Run each competitive save case separately (0,1,2):
+python3 tools/check_watched_upstream.py --suite competitive-saves --case 0
+python3 tools/prove_watched_competitive.py
+python3 tools/prove_watched_old_kit.py
+# Run source-mutating controls sequentially after all other suites:
+python3 tools/prove_watched_identity.py
+python3 tools/prove_watched_serialized_result.py
 python3 tools/check_provenance.py
 ```
 
@@ -96,8 +104,13 @@ cross-kind take-back order remain explicit acceptance checks. Original boards,
 summary responses, substitutions/refusals and normal completion use the upstream
 hooks, tests and worked example.
 
-[confirmed: merged README] Friendlies only (kind1), one human side. Competitive
-fixtures, extra time and shoot-outs are refused. Substitutions follow original
+[confirmed: PR255 merged README/E034] The accepted kit supports friendly and
+competitive fixture kinds, extra time, shoot-outs, sudden death and explicit per-side
+substitution budgets. Kind4 and other kinds no original builder writes are refused.
+[designed: T51a] Application routing remains friendly-only until T51.
+The original default budget is five for friendlies and two otherwise; the owner’s
+application budget policy is supplied by T51, not by this acceptance. The shoot-out
+board includes converted kicks, while result.score excludes them. One human side. Substitutions follow original
 stoppages; interactive editing and owner substitution-budget integration are
 outside T62. A full_time event precedes the post-match player update. Consumers
 must wait for completion/result and carry full returned memory; never add quick
@@ -109,7 +122,7 @@ The old goal2 clock stand-in at DS:0E6C overlaps the original foot table: adapte
 must preserve the template's immutable bytes. T62's adapted-record guard test
 changes players/tactics/seed while retaining those bytes. T63 owns broader mapping.
 
-## Recorded acceptance run
+## Original friendly acceptance run (kit1)
 
 [confirmed: T62 execution, full diagnostic hashes and per-case outcomes in
 [evidence/T62-watched-kit.json](evidence/T62-watched-kit.json)] Nine runtime tests,
@@ -205,6 +218,31 @@ rejected1378 against the inherited769 bound; an omitted count transfer must fail
 the new field assertions before original execution. These cases extend, rather
 than replace, the ten strict reference controls above.
 
+## Competitive-kit acceptance
+
+[confirmed: archaeology PR255, E034 final20261016c at
+`424d5998076da1e4efc399c2715689ddb44d3e1a`] The accepted upstream run records
+32 tests and36 killed mutants. The consumer exports E034’s existing bounded
+stamp and save probes unchanged, alongside all original E033 probes. Competitive
+stamps cover regulation, extra time, shoot-outs, sudden death and both managed
+sides; competitive save cases0–2 cover every visited public boundary and both
+extra-time decisions plus the shoot-out order before/after answering.
+
+[designed: T51a] `--suite competitive-stamps --case 0..7` selects one existing
+stamp scenario; `--suite competitive-saves --case 0..2` selects one save scenario.
+Selection changes only the compiled literal scenario list, retaining the pinned
+source bytes and every probe assertion. Mutation batches4–5 select the accepted
+competitive mutants. Timeouts never count as proved mutation kills.
+`prove_watched_competitive.py` separately requires assertion failures when the
+winner is absent, extra-time detection is suppressed or shoot-out scoring is wrong.
+
+[designed: T51a] The historical T62 report above retains its original identity.
+The goal-disallowed save regression compares complete current results and memory
+straight/resumed, then explicitly projects the unchanged friendly fields to kit1
+for comparison with its historical digest. It never rewrites a stored result.
+Kit1 engine snapshots (`Match.save`) are refused by kit2 as upstream documents;
+completed application save compatibility is handled independently by the watched
+result schema, without inventing another application save format.
 ## Watched publication and session saves
 
 [designed: T64] `goal2.game.watched_publication.WatchedPublication` accepts an
@@ -259,3 +297,90 @@ suite passes473 tests with no skips. All12 publication/save mutation controls,
 all6 browser scenarios and both retained Qt flows pass. Commands, durations,
 log digests, baseline failures and scope are recorded in
 [evidence/T64-watched-publication.json](evidence/T64-watched-publication.json).
+
+## Kit2 friendly application compatibility
+
+[designed: T51a] Completed application saves keep version3 and result-envelope
+schema1. The accepted engine identities are explicit:
+`original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1` for historical kit1
+results, and `original-match:424d5998076da1e4efc399c2715689ddb44d3e1a:2` for
+current kit2 results. Publication derives the identity from the validated actual
+result profile. Loading checks that the envelope matches that profile, and that
+world/history/envelope identities agree for each shared fixture. Historical
+results and their fields are retained unchanged.
+
+[derived: PR255 _competitive; designed: T51a prerequisite boundary] The current
+application profile accepts kind1 only: no extra time or shoot-out, original
+default budget5/5, a winner consistent with the friendly score, and40 distinct
+player consequence records with typed before/after bytes and consistent status
+flags. Kit1 keeps its original exact field profile; kit2 requires its seven
+additional fields. Existing board/incident/decision/input schemas and returned
+Memory/RNG/source checks apply to both. Competitive application profiles and
+owner substitution-budget routing remain T51.
+
+[designed: T51a] Run `python3 -m unittest goal2.tests.test_watched_kit_identity -v`
+for pure profile/publication/mixed-ledger controls. Reproduce genuine historical
+standalone and campaign saves with `python3 tools/export_watched_legacy.py --source
+<full-reviewed-T64-commit>` after T64 acceptance. The tool exports that immutable
+application into ignored `.cache/`, retains its source/input/output hashes, and
+never runs in or changes another task worktree. Original inputs and generated
+application saves remain ignored.
+
+[confirmed: T51a accepted-T64 export and real consumer execution]
+`python3 tools/export_watched_legacy.py --source 9fb725ac914afabfdaa830198fc3a514c87c243f`
+generates genuine kit1 standalone and1990 opening-campaign version3 saves using
+the reviewed T64 application and its original engine pin.
+`python3 -m unittest goal2.tests.test_watched_legacy_compatibility -v` checks
+byte-identical save roundtrips without rewriting old results, full real kit2
+result/event/Memory equality against a separate direct execution, mixed kit1/kit2
+history, watched-to-quick continuation and malformed identity rejection.
+The retained original primary seed belongs to returned Memory; later silent
+fixtures advance the live primary seed through the checked world ledger. The
+secondary seed remains checked against the retained original Memory.
+
+[confirmed: bounded T51 ownerbudget5 preflight at PR255]
+[evidence/T51a-watched-kit.json](evidence/T51a-watched-kit.json) records exact
+input/source/log hashes and measured outcomes for the parent dispatch. Budget5
+changes some original outcomes: index42 becomes a9-kick normal shoot-out,
+index9 keeps24-kick sudden death, index53 gives12-kick sudden death, and index40
+changes from the original-budget regulation win to an extra-time defeat. The
+explicit kind2/index21/reference-seed0x0101 case establishes a1–0 regulation win
+under5/5. These bounded diagnostics do not enable competitive application routing.
+
+[confirmed: T51a reproduced old-kit control] `prove_watched_old_kit.py` exports
+all ten files of the former accepted3656a2d kit with exact `git show` copies into
+an ignored proof folder and runs the eight PR255 competitive tests against it.
+It requires eight capability errors (unsupported kind or substitution argument),
+zero skips and no unrelated dependency/resource failure. The current consumer
+vendor is never replaced. This makes the failing-before evidence reproducible
+without the original temporary dispatch baseline.
+
+[confirmed: exact3656 and424 Match.answer/save/load; T51a snapshot diagnostics]
+Both kits store sorted decision-item tuples and snapshot them through JSON. A
+resumed result can therefore contain a list where its uninterrupted result had
+a tuple. Complete result JSON, event JSON and entire Memory are identical in
+the measured disallowed-goal case; only the Python container type differs. The
+first490-test run’s newly added native-result comparison was too strict for
+this pre-existing transport. The main session’s [recorded decision](https://github.com/diegoami/goal2/pull/172#issuecomment-6233015137)
+authorizes comparing complete canonical result JSON, including every new field,
+while retaining all historical expected hashes and native schema/profile guards.
+`prove_watched_serialized_result.py` requires assertion failures when winner,
+shoot-out or player-energy values are changed only in the resumed result.
+
+[designed: T51a] The bounded evidence is split to keep each report readable:
+[source/legacy/owner-budget inputs](evidence/T51a-watched-kit.json),
+[commands and negative controls](evidence/T51a-watched-validation.json), and
+[stamp/save/strict-record matrices and snapshot diagnosis](evidence/T51a-watched-matrices.json).
+The first full-run failure and both source-pin diagnostics remain in these
+reports; the corrected fresh full-suite result is recorded separately.
+
+[confirmed: T51a final acceptance; linked reports above] The fresh complete Python
+suite passes490 tests with zero skips in976.765s. Consumer competitive11 and
+upstream32 pass; all5 kit check steps, strict10 records,8 competitive and17
+friendly stamp scenarios,3 competitive and7 friendly save cases pass. Together
+the save cases cover21 public event kinds. All36 upstream mutations,3 explicit
+competitive assertion controls,3 strict-record controls,4 acceptance controls,
+4 identity controls and3 complete-result value controls are killed without
+counting timeouts. Genuine historical-save regressions, all6 retained browser
+scenarios and3 Qt flows pass. The first full-run failure remains recorded
+separately with its measured cause and authorized correction.

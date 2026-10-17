@@ -1,0 +1,718 @@
+{
+  "validation": [
+    {
+      "head": "2361057ddf6c7f094a24fa06df917702f40bf269",
+      "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+      "manifest_sha256": "e5dfc08ade7813f72dc36418f52785b869bcaa961ab2af32682bf10df88aec2c",
+      "vendor": {
+        "goal2/engine/original_match/README.md": "dbd20ff6d4fe1f1a38a5bb43abc59d8b4ad42e35cffb5cc1735d4c57b107daf1",
+        "goal2/engine/original_match/__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
+        "goal2/engine/original_match/assets.py": "a3dd00e87b213662c4188eecb9a4e2e88265ad6a8f2f6b84a70c3950895d43b7",
+        "goal2/engine/original_match/build.py": "3368801a8ef847cbb1b37f625bcb716fcd6b2aa1e08d94d9db8d3107f746e9e4",
+        "goal2/engine/original_match/check.py": "ab6f41283784a5b78dba23d05b8d39b65343a22a660bb41f3b35b915fb64f3ae",
+        "goal2/engine/original_match/example.py": "d17a104f8c08635fb8a3ff61f6113aa56a902b88aef5fcceaf32ab27790bbacf",
+        "goal2/engine/original_match/image.py": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
+        "goal2/engine/original_match/machine.py": "3951626402e0f5de690ca5400ad2c6d2fa7d7e26c4fb2143bf7abacac5631fa8",
+        "goal2/engine/original_match/match.py": "635f2dc9f54515452bd3c262c61899b1e36829186266af4d88db54c9b659bb45",
+        "goal2/engine/original_match/screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304"
+      },
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "tests"
+      ],
+      "exit_code": 0,
+      "wall_s": 274.705,
+      "log": ".cache/T51a-upstream-tests-1792232359097952033.log",
+      "log_sha256": "3c8bfd6c072fa397561ce09d477d8314f16a2c4ef21c1b3d3db0f61d46863848",
+      "ran_32_tests": true,
+      "unittest_ok": true,
+      "name": "upstream-tests32"
+    },
+    {
+      "name": "kit-family",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "goal2.engine.original_match.check",
+        "--cache",
+        ".cache",
+        "--family"
+      ],
+      "exit_code": 0,
+      "wall_s": 214.62,
+      "log": ".cache/T51a-runtime-1792232969812552797/kit-family.log",
+      "log_sha256": "e85c998bc896f8f939f11eb43d243784ce57d25f954fe9c474d46957d8db913a",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "competitive-stamps8",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "competitive-stamps"
+      ],
+      "exit_code": 0,
+      "wall_s": 89.132,
+      "log": ".cache/T51a-runtime-1792232969812552797/competitive-stamps8.log",
+      "log_sha256": "2538a2849974ecd0a10c0bd153d7ddffdc8ade781c91c79fc69ba8620d5a11cc",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "strict-records10",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_records.py",
+        "--seeds",
+        "10"
+      ],
+      "exit_code": 0,
+      "wall_s": 342.299,
+      "log": ".cache/T51a-runtime-1792232969812552797/strict-records10.log",
+      "log_sha256": "0e8eb28d86851863078f3e92a1b4a82e7ace1967981d85875d2cd43738f0c0cb",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "friendly-stamps17",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "stamps"
+      ],
+      "exit_code": 0,
+      "wall_s": 169.521,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-stamps17.log",
+      "log_sha256": "7da27ff2a0c1dc0a98564d82793d77db6aed44386c7e5f8dc4876f8fe98fe7e5",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "competitive-assertion-mutants3",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/prove_watched_competitive.py"
+      ],
+      "exit_code": 0,
+      "wall_s": 70.048,
+      "log": ".cache/T51a-runtime-1792232969812552797/competitive-assertion-mutants3.log",
+      "log_sha256": "5545b43e8cc3cae5190a32d1a08055b21d92f5c406fa6a5de683e21af4d6cf03",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "strict-record-negatives3",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/prove_watched_records.py"
+      ],
+      "exit_code": 0,
+      "wall_s": 98.825,
+      "log": ".cache/T51a-runtime-1792232969812552797/strict-record-negatives3.log",
+      "log_sha256": "90fafa37fe843e0a3e1b8264746664d6d66a10a5a6c9c4237579fc3dfe0113bf",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "competitive-save0",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "competitive-saves",
+        "--case",
+        "0"
+      ],
+      "exit_code": 0,
+      "wall_s": 124.972,
+      "log": ".cache/T51a-runtime-1792232969812552797/competitive-save0.log",
+      "log_sha256": "5dee8622b2ed50100cc39957ac8316ec6414427266a71fa3febe75126be2557e",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "competitive-save1",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "competitive-saves",
+        "--case",
+        "1"
+      ],
+      "exit_code": 0,
+      "wall_s": 110.047,
+      "log": ".cache/T51a-runtime-1792232969812552797/competitive-save1.log",
+      "log_sha256": "85f498b0dcfd53ab03d3678168992fb95a19ccab016f5ac430b2f95ecc3ed3c6",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "upstream-mutants36",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "mutations"
+      ],
+      "exit_code": 0,
+      "wall_s": 567.146,
+      "log": ".cache/T51a-runtime-1792232969812552797/upstream-mutants36.log",
+      "log_sha256": "825903b0cac46123c249f89a4d7dbf013c243e923a5823d42e57a1e110c8811b",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "competitive-save2",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "competitive-saves",
+        "--case",
+        "2"
+      ],
+      "exit_code": 0,
+      "wall_s": 69.054,
+      "log": ".cache/T51a-runtime-1792232969812552797/competitive-save2.log",
+      "log_sha256": "f7b6bc5ada22ebd53f0c1880b9f2cd7b41c2f60482d66fc3884625b9cfedb1a6",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "friendly-save0",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "saves",
+        "--case",
+        "0"
+      ],
+      "exit_code": 0,
+      "wall_s": 61.775,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-save0.log",
+      "log_sha256": "27186a0ee2175b84fdc353a50cc49142031d8c30b0e80ece40e652c6ace7619f",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "friendly-save1",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "saves",
+        "--case",
+        "1"
+      ],
+      "exit_code": 0,
+      "wall_s": 54.36,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-save1.log",
+      "log_sha256": "97ef55c03ffa4886bcdf87c9d1362678ed3a8c89c33b0775e33c854cc0fb936f",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "friendly-save2",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "saves",
+        "--case",
+        "2"
+      ],
+      "exit_code": 0,
+      "wall_s": 69.024,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-save2.log",
+      "log_sha256": "88cafc23904adc84e0dc9859be465bc38a3757dcd879cdc5e508460a1981277b",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "friendly-save3",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "saves",
+        "--case",
+        "3"
+      ],
+      "exit_code": 0,
+      "wall_s": 66.211,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-save3.log",
+      "log_sha256": "eabbbbc79e1539cdbd35016a971b18238c86399df517745b2ae4646fe2dfea4e",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "full-python",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "goal2/tests",
+        "-v"
+      ],
+      "exit_code": 1,
+      "wall_s": 1067.14,
+      "log": ".cache/T51a-runtime-1792232969812552797/full-python.log",
+      "log_sha256": "e1d2e7bbc4b9ae84f51f5e39eb577c8cb5f2782f856e0fb349f0888d4103a343",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7",
+      "tests": 490,
+      "failures": 1,
+      "skips": 0,
+      "cause": "Newly added Python-native result comparison distinguished tuple/list transport representation. Complete serialized values/events/Memory equal; main-authorized complete JSON comparison correction and fresh full rerun required."
+    },
+    {
+      "name": "friendly-save6",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "saves",
+        "--case",
+        "6"
+      ],
+      "exit_code": 0,
+      "wall_s": 16.51,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-save6.log",
+      "log_sha256": "dcc0c354fe352ea43e150fe4432d0f0891fcf77f6384aa60a2419cd1bae821d6",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "friendly-save4",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "saves",
+        "--case",
+        "4"
+      ],
+      "exit_code": 0,
+      "wall_s": 77.538,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-save4.log",
+      "log_sha256": "94e7a8aa08c470d1bfd3d9232077615ac4a9bb2dd9b6b0bc754421977d4700d8",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "friendly-save5",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "saves",
+        "--case",
+        "5"
+      ],
+      "exit_code": 0,
+      "wall_s": 151.282,
+      "log": ".cache/T51a-runtime-1792232969812552797/friendly-save5.log",
+      "log_sha256": "98f247aab6bee667d62a34eccb9ea514389e06528213f1bd9a9a941688b78536",
+      "batch_start_head": "b2f7c8d0dd103f2a3f69d0f1ca640ae749d566a7"
+    },
+    {
+      "name": "browser-countries",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "countries"
+      ],
+      "exit_code": 0,
+      "wall_s": 2.745,
+      "log": ".cache/T51a-ui-1792233045059170072/browser-countries.log",
+      "log_sha256": "932d81a61457b3f51f0c58d616cd0447375419e764e7aed82b4cbbf4cddc0ae1"
+    },
+    {
+      "name": "browser-management",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "management"
+      ],
+      "exit_code": 0,
+      "wall_s": 3.149,
+      "log": ".cache/T51a-ui-1792233045059170072/browser-management.log",
+      "log_sha256": "82d9ece45c418dd817b34bb11f12426b1e5c378f580e34a78afbbf69b4b0ad04"
+    },
+    {
+      "name": "browser-friendlies",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "friendlies"
+      ],
+      "exit_code": 0,
+      "wall_s": 3.106,
+      "log": ".cache/T51a-ui-1792233045059170072/browser-friendlies.log",
+      "log_sha256": "5e822571fce02ad255d67813166c138b0995af476b8b83901e58748588c47e9c"
+    },
+    {
+      "name": "browser-persistence",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "persistence"
+      ],
+      "exit_code": 0,
+      "wall_s": 3.583,
+      "log": ".cache/T51a-ui-1792233045059170072/browser-persistence.log",
+      "log_sha256": "598fd3d86535027e57e60c000cc36d0c81ae6a8aa896fd17310028855d8e95a6"
+    },
+    {
+      "name": "browser-campaign-friendlies",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "campaign-friendlies"
+      ],
+      "exit_code": 0,
+      "wall_s": 5.175,
+      "log": ".cache/T51a-ui-1792233045059170072/browser-campaign-friendlies.log",
+      "log_sha256": "8afdf337b873c6a20b7a7cca8906884678e801d70d416a0787e98e95bd45dab3"
+    },
+    {
+      "name": "browser-campaign-eligibility",
+      "command": [
+        "node",
+        "tools/browser-ui/acceptance.mjs",
+        "--scenario",
+        "campaign-eligibility"
+      ],
+      "exit_code": 0,
+      "wall_s": 4.567,
+      "log": ".cache/T51a-ui-1792233045059170072/browser-campaign-eligibility.log",
+      "log_sha256": "361b26d2fc98cbc21b173dcfcb62b1e7c48566ec850372b454b225cab8d8851e"
+    },
+    {
+      "name": "qt-management",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "management",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT"
+      ],
+      "exit_code": 0,
+      "wall_s": 2.339,
+      "log": ".cache/T51a-ui-1792233045059170072/qt-management.log",
+      "log_sha256": "7434d2c1b559ef6d3e8b2051cdf956598293f25633a65c5995c7488c4211556b"
+    },
+    {
+      "name": "qt-campaign-halftime",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "campaign-halftime",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT"
+      ],
+      "exit_code": 0,
+      "wall_s": 4.701,
+      "log": ".cache/T51a-ui-1792233045059170072/qt-campaign-halftime.log",
+      "log_sha256": "912e16c6ba7b5cf303edac0845bd19144734efdf08d5534db2b37a2de2ae0137"
+    },
+    {
+      "name": "upstream-entry",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "entry"
+      ],
+      "exit_code": 0,
+      "wall_s": 135.278,
+      "log": ".cache/T51a-entry-example-1792233774395771120/entry.log",
+      "log_sha256": "7b1fe5f2ee6e2e9e5a018f20cb74ca5af8bcdf99322d9ace0ae14566bdcd250b"
+    },
+    {
+      "name": "upstream-example",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/check_watched_upstream.py",
+        "--suite",
+        "example"
+      ],
+      "exit_code": 0,
+      "wall_s": 9.996,
+      "log": ".cache/T51a-entry-example-1792233774395771120/example.log",
+      "log_sha256": "f3c5e36726c40c1103ab609347757af43f4f3dd61a557cbf6559621a54d6c0f4"
+    },
+    {
+      "name": "qt-campaign-friendlies",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "campaign-friendlies",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT"
+      ],
+      "exit_code": 0,
+      "wall_s": 9.166,
+      "log": ".cache/T51a-qt-campaign-friendlies.log",
+      "log_sha256": "ce43ec9e8a262af0669db038c32cd5cc8739690a76b3a2e83eec18a1d85f2a11"
+    },
+    {
+      "name": "consumer-competitive11",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_watched_competitive_runtime",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_s": 140.377,
+      "log": ".cache/T51a-consumer-competitive.log",
+      "log_sha256": "98f9d79dcb0abec98145be44dfd49e3ad3af78ee24443821527d44f2d946c0d1"
+    },
+    {
+      "name": "prove_watched_identity",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/prove_watched_identity.py"
+      ],
+      "exit_code": 0,
+      "wall_s": 0.282,
+      "log": ".cache/T51a-sequential-controls-1792234257141028482/prove_watched_identity.log",
+      "log_sha256": "87958732ae2d36b621fef7ad9c30ee12f26aa4bacadfece9c1dd1c8c0a99e442"
+    },
+    {
+      "name": "prove_watched_acceptance",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/prove_watched_acceptance.py"
+      ],
+      "exit_code": 0,
+      "wall_s": 0.441,
+      "log": ".cache/T51a-sequential-controls-1792234257141028482/prove_watched_acceptance.log",
+      "log_sha256": "b6cce877514be8676dea9da70f1beab9f6049f5950991a2d768fad230cf769fb"
+    },
+    {
+      "name": "prove_watched_serialized_result",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/prove_watched_serialized_result.py"
+      ],
+      "exit_code": 0,
+      "wall_s": 46.995,
+      "log": ".cache/T51a-sequential-controls-1792234257141028482/prove_watched_serialized_result.log",
+      "log_sha256": "2a14e670800a93d2b022ab05c8d4b1d64ffd33517cea4ee0bc08e49da96f147e"
+    },
+    {
+      "name": "full-python-corrected",
+      "head": "b13dea95b595a5636d2bfeb2e827303f68c4e9cc",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "goal2/tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "wall_s": 977.058,
+      "log": ".cache/T51a-full-python-final.log",
+      "log_sha256": "2a2729081b6414049617a17d5986ea9f2a5724a93fc8e2d708eb9da794109908",
+      "tests": 490,
+      "ran_490": true,
+      "zero_skips": true,
+      "skips": 0,
+      "failures": 0,
+      "code_scope": "Exact runtime/test bytes from b13dea9; later024dabf only merged2 model-trials documentation lines. All saved-byte controls completed/restored before this fresh run."
+    },
+    {
+      "name": "final-provenance",
+      "command": [
+        "python3",
+        "tools/check_provenance.py"
+      ],
+      "exit_code": 0,
+      "log": ".cache/T51a-final-provenance.log",
+      "log_sha256": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+      "output": "provenance check: 16 file(s) OK"
+    },
+    {
+      "name": "final-links",
+      "command": [
+        "python3",
+        "tools/check_links.py"
+      ],
+      "exit_code": 0,
+      "log": ".cache/T51a-final-links.log",
+      "log_sha256": "e7bd5bd7eba02d2daf53da8df67660157e58158f0b3c9f31c9b2c58076190548",
+      "output": "links and JSON ok (337 files)"
+    },
+    {
+      "name": "premerge-before-admin-sync",
+      "command": [
+        "python3",
+        "tools/check_premerge.py",
+        "--expected-head",
+        "f4163082b796536247d50212497993ebed409080"
+      ],
+      "exit_code": 1,
+      "log": ".cache/T51a-final-premerge.log",
+      "log_sha256": "52687c890003f99dc1610f7f7e0b19c8f274b8988ff5783706f2be4ab3594063",
+      "cause": "Main documentation update had a stale model-trials locked digest; main fixed only that digest in f756ebc, merged925d82b. Runtime/tests untouched."
+    },
+    {
+      "name": "premerge-after-admin-sync",
+      "command": [
+        "python3",
+        "tools/check_premerge.py",
+        "--expected-head",
+        "925d82b082874147d853021134ad44d6bcbad375"
+      ],
+      "exit_code": 0,
+      "log": ".cache/T51a-final-premerge-corrected.log",
+      "log_sha256": "ca8f0833a8fbf353888477accad17b233421c9e5bca6ac377dc5e1440c23238a",
+      "result": "PASS exacthead clean checkout;35 locked hashes, original-asset exclusion,337 link/JSON files,35 harness selftests,9 clienttests,17 Python premerge tests."
+    }
+  ],
+  "negative_controls": {
+    "identity": {
+      "summary": ".cache/watched-identity-proofs-1792234257156666600/summary.json",
+      "summary_sha256": "2587f31379390bf41db9f217279b3c8edb66592a8b9246b23497035a027aaaeb",
+      "cases": [
+        {
+          "name": "unknown raw result fields accepted",
+          "test": "test_exact_profiles_keep_actual_engine_identity",
+          "assertion_killed": true,
+          "log": ".cache/watched-identity-proofs-1792234257156666600/0.log",
+          "log_sha256": "1522c9441f4cff715f97e9405243dd59c3a1afe1e37026cd61804b2a64a96750"
+        },
+        {
+          "name": "current friendly resolution unchecked",
+          "test": "test_kit2_remains_friendly_with_exact_default_resolution_and_players",
+          "assertion_killed": true,
+          "log": ".cache/watched-identity-proofs-1792234257156666600/1.log",
+          "log_sha256": "58a482c374e2e98b8bf168e80446f6e8bd152b0e3e41e3d42f1421f5ea48824e"
+        },
+        {
+          "name": "historical result silently relabeled",
+          "test": "test_publication_uses_actual_result_profile_and_save_rejects_relabeling",
+          "assertion_killed": true,
+          "log": ".cache/watched-identity-proofs-1792234257156666600/2.log",
+          "log_sha256": "29ba89672d9fafe519ae02d18e936ca2f26a53a31dcf58db8719e9f42149e504"
+        },
+        {
+          "name": "world and history engine mismatch accepted",
+          "test": "test_mixed_history_world_preserves_identity_and_strict_quick_rng",
+          "assertion_killed": true,
+          "log": ".cache/watched-identity-proofs-1792234257156666600/3.log",
+          "log_sha256": "3dd20ffd4e38d1fbc9fd7fd94eabc4ba48166ba9cd479f56b0f2c3d17338fe9b"
+        }
+      ]
+    },
+    "competitive": {
+      "summary": ".cache/watched-competitive-proofs-1792233443116113450/summary.json",
+      "summary_sha256": "d3e854c37da51f3d4b28cbb81409c9ad3c9f2cc0af12722a4d62564e096aed16",
+      "cases": [
+        {
+          "name": "unmodified baseline",
+          "exit_code": 0,
+          "log": ".cache/watched-competitive-proofs-1792233443116113450/0.log",
+          "log_sha256": "4269676978b54db9dc0f2af373a04af881fbc4c5f1d04a1079a62a2e8021684b",
+          "assertion_failure": false,
+          "error": false
+        },
+        {
+          "name": "missing winner",
+          "exit_code": 1,
+          "log": ".cache/watched-competitive-proofs-1792233443116113450/1.log",
+          "log_sha256": "28a4aac23d8aba27eef505b00a929a3dcac6acd91b6515fde9c8096b18929ba3",
+          "assertion_failure": true,
+          "error": false
+        },
+        {
+          "name": "extra-time detection suppressed",
+          "exit_code": 1,
+          "log": ".cache/watched-competitive-proofs-1792233443116113450/2.log",
+          "log_sha256": "182f9535f0a8d4bd23d4b475f94efbf8c0f58a102d10fc20beb1eee8a7919a62",
+          "assertion_failure": true,
+          "error": false
+        },
+        {
+          "name": "wrong shootout score",
+          "exit_code": 1,
+          "log": ".cache/watched-competitive-proofs-1792233443116113450/3.log",
+          "log_sha256": "9049ba41b23560c4e063a8efdcd31a26a896f2909dda3ec873026f1be7b73c3c",
+          "assertion_failure": true,
+          "error": false
+        }
+      ]
+    },
+    "serialized-result": {
+      "summary": ".cache/watched-serialized-result-proofs-1792234257881257398/summary.json",
+      "summary_sha256": "66023650837241015717e23c6e8a9bea1c3735952816f38a72002eb82102ab9a",
+      "cases": [
+        {
+          "name": "winner",
+          "assertion_killed": true,
+          "log": ".cache/watched-serialized-result-proofs-1792234257881257398/0.log",
+          "log_sha256": "6de7d407f3b7322d45f813be855147d80f43c4e5474a82bf8026ac2f370ebf7d"
+        },
+        {
+          "name": "shootout",
+          "assertion_killed": true,
+          "log": ".cache/watched-serialized-result-proofs-1792234257881257398/1.log",
+          "log_sha256": "93fdae2f1a7a6bccab1195e3c202aa201b00b2b6761bb94fc5eb81206245bd55"
+        },
+        {
+          "name": "player energy",
+          "assertion_killed": true,
+          "log": ".cache/watched-serialized-result-proofs-1792234257881257398/2.log",
+          "log_sha256": "1ec55008efa2806f68a916f4ab2832a8ad1d6b8cf2e680dbe25dad6aa726f54b"
+        }
+      ]
+    }
+  },
+  "environment_retry": {
+    "initial_ui_log": ".cache/T51a-ui-unit.log",
+    "initial_ui_log_sha256": "142b5995be7edd3aea92a619f494ecde3e5f52a463c3319c17948968fbbd0b4c",
+    "cause": "Detached PATH omitted Node; no browser began. Failed log retained, only UI restarted with Node24; browser6/Qt3 pass."
+  },
+  "validation_scope": "Background batch began b2f7c8d; only the documented complete-JSON test representation correction followed its first full run. Healthy matrices retained with unchanged runtime/application/vendor. The fresh490 rerun passes after correction, with no skips. Docs-only main synchronization024dabf did not change runtime/tests/tools.",
+  "source": "424d5998076da1e4efc399c2715689ddb44d3e1a"
+}

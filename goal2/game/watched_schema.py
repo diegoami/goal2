@@ -1,13 +1,16 @@
 """[designed: T64] Explicit completed watched result/save identity, independent of quick play."""
 import re
 
-ENGINE_ID = 'original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1'
+LEGACY_ENGINE_ID = 'original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1'
+ENGINE_ID = 'original-match:424d5998076da1e4efc399c2715689ddb44d3e1a:2'
+ENGINE_IDS = (LEGACY_ENGINE_ID, ENGINE_ID)
 RESULT_SCHEMA = 1
 RESULT_KEYS = {'first','second','managed','index','score','half_time_score','goals',
     'goals_disallowed','goal_counts','bookings','sendings_off','injuries','substitutions',
     'man_of_the_match','man_of_the_match_name','board','commentary','decisions','inputs',
     'ticks','kickoff_seed','seed_after','image_sha256','kit','draws','draws_digest','squads_after'}
 
+KIT2_KEYS = {'kind','winner','score_90','extra_time','substitution_budget','shootout','players'}
 
 def integer(value,low,high):
     return type(value) is int and low<=value<=high
@@ -19,8 +22,11 @@ def pair(value,low,high):
 
 def validate_result(result):
     """[designed] Refuse incompatible kit results before state publication or save loading."""
-    if not isinstance(result,dict) or set(result)!=RESULT_KEYS or result['kit']!='1':
-        raise ValueError('invalid watched original result schema')
+    # [designed: T51a] Recognize both exact profiles; never relabel historical results.
+    if not isinstance(result,dict):raise ValueError('invalid watched original result schema')
+    kit=result.get('kit')
+    keys=RESULT_KEYS if kit=='1' else RESULT_KEYS|KIT2_KEYS if kit=='2' else None
+    if keys is None or set(result)!=keys:raise ValueError('invalid watched original result schema')
     if (any(not integer(result[k],1,128) for k in ('first','second','managed'))
             or result['first']==result['second'] or result['managed'] not in (result['first'],result['second'])
             or not integer(result['index'],1,2400) or not pair(result['score'],0,255)
@@ -42,6 +48,39 @@ def validate_result(result):
                 or len(set(words))!=20):raise ValueError('invalid watched squad words')
     if not isinstance(result['board'],dict):raise ValueError('invalid watched board')
     _details(result)
+    if kit=='2':_friendly_kit2(result)
+    return LEGACY_ENGINE_ID if kit=='1' else ENGINE_ID
+
+
+def _friendly_kit2(result):
+    """[designed: T51a; confirmed: PR255 _competitive] Current app accepts default-budget friendlies only.
+    T51 owns competitive routing and the owner's substitution policy.
+    """
+    score=result['score'];winner=2 if score[0]==score[1] else int(score[1]>score[0])
+    if (type(result['kind']) is not int or result['kind']!=1
+            or not integer(result['winner'],0,2) or result['winner']!=winner
+            or result['score_90'] is not None or result['extra_time'] is not False
+            or result['shootout'] is not None or result['substitution_budget']!=[5,5]
+            or any(type(v) is not int for v in result['substitution_budget'])):
+        raise ValueError('unsupported watched kit2 friendly resolution or budget')
+    players=result['players']
+    if not isinstance(players,list) or len(players)!=40:raise ValueError('invalid watched player consequences')
+    expected={word:team for team,country in enumerate((result['first'],result['second']))
+              for word in result['squads_after'][str(country)]}
+    seen=set()
+    for row in players:
+        _object(row,{'player','team','confidence','energy','status','suspended','carried_booking','injured'})
+        word=row['player']
+        if (not integer(word,1,3060) or word in seen or word not in expected
+                or not integer(row['team'],0,1) or row['team']!=expected[word]
+                or any(not pair(row[key],0,255) for key in ('confidence','energy','status'))
+                or any(type(row[key]) is not bool for key in ('suspended','carried_booking','injured'))
+                or row['suspended']!=bool(row['status'][1]&0x80)
+                or row['carried_booking']!=bool(row['status'][1]&0x08)
+                or row['injured']!=(row['energy'][1]==0)):
+            raise ValueError('invalid watched player consequences')
+        seen.add(word)
+    if seen!=set(expected):raise ValueError('invalid watched player consequences')
 
 
 def _object(value,keys):
@@ -128,7 +167,7 @@ def watched(row):
     if 'engine' not in row:
         if 'schema' in row or 'original' in row:raise ValueError('missing watched engine identity')
         return False
-    if row['engine']!=ENGINE_ID:raise ValueError('unsupported result engine identity')
+    if row['engine'] not in ENGINE_IDS:raise ValueError('unsupported result engine identity')
     return True
 
 
@@ -140,7 +179,8 @@ def validate_saved_watched(state):
         keys={'engine','schema','original','teams','score','goals','managed_side','match_count','seeds','engine_year'}
         if set(last)!=keys or last['schema']!=RESULT_SCHEMA or type(last['schema']) is not int:
             raise ValueError('invalid watched result envelope')
-        result=last['original'];validate_result(result)
+        result=last['original'];engine=validate_result(result)
+        if last['engine']!=engine:raise ValueError('watched engine differs from original result profile')
         teams=[result['first'],result['second']]
         if (result['managed']!=state.managed_country
                 or not pair(last['teams'],1,128) or last['teams']!=teams
@@ -176,12 +216,13 @@ def validate_saved_watched(state):
                         or row['teams']!=_fixture_teams(image,row['index'])):
                     raise ValueError('watched world RNG or fixture differs from retained returned memory')
         if watched(last):
-            if not state.campaign.results or state.campaign.results[-1]['fixture_id']!=f"original:{last['original']['index']}":
+            if (not state.campaign.results or state.campaign.results[-1]['fixture_id']!=f"original:{last['original']['index']}"
+                    or state.campaign.results[-1].get('engine')!=last['engine']):
                 raise ValueError('watched last result differs from campaign history')
             world=state.campaign.world
             if world is not None:
                 row=next((r for r in world.results if r['fixture_id']==f"original:{last['original']['index']}"),None)
-                if (row is None or row.get('mode')!='watched' or row['seed_after']!=last['seeds'][0]
+                if (row is None or row.get('mode')!='watched' or row.get('engine')!=last['engine'] or row['seed_after']!=last['seeds'][0]
                         or row['secondary_after']!=last['seeds'][1] or row['engine_year']!=last['engine_year']):
                     raise ValueError('watched result differs from world continuation')
         for row in state.campaign.results:

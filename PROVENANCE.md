@@ -13,13 +13,13 @@ is deliberate: a new row (or an updated commit) records it, and the source commi
 | goal2/engine/confidence.py | diegoami/goal2-archaeology | 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb | F019 | 2026-10-16 |
 | goal2/engine/morale.py | diegoami/goal2-archaeology | 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb | F020 | 2026-10-16 |
 
-| goal2/engine/original_match/README.md | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/__init__.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/assets.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/build.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/check.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/example.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/image.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/machine.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/match.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
-| goal2/engine/original_match/screens.py | diegoami/goal2-archaeology | 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607 | F004, F010, F013, F014, F018, F026, F027, F028, F029, F030; #250 | 2026-10-16 |
+| goal2/engine/original_match/README.md | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/__init__.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/assets.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/build.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/check.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/example.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/image.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/machine.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/match.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
+| goal2/engine/original_match/screens.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
