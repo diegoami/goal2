@@ -46,12 +46,12 @@ ce585e0292cb3771833831022a3b3d8274767fdb903c345b82b3b71ae4b94ee2  harness.json
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
 4fe177771b1e387af7dc013e29a4d03102416ffcb27bbf5cdf3e830c4170e15d  tools/harness/lib/chain.mjs
 b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1  tools/harness/lib/claim.mjs
-99c9d024d8b9197a004edbfb0cf71ab40109eedd032331c8563e6e54d00e38ee  tools/harness/lib/common.mjs
+b34fe35df1e02e2064024c6cda29270b0581a5d4cb3db4ff1a2bfd7f05d085ea  tools/harness/lib/common.mjs
 411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1  tools/harness/lib/guard.mjs
 2020f3a9dc6295089dde3481f2c08bce6d924fa031dffee1e68b6e0ce884e34a  tools/harness/lib/jail.mjs
 b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/lib/jev.mjs
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
-49b8e7f3757a0d64b21c9284d923a75902086e655844f1a505917f6c5b898e57  tools/harness/lib/opencode.mjs
+ff4381cef87959f5cadebcce8c466bcf6cfde144917d4329efb36d35f96b5fe2  tools/harness/lib/opencode.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
 7e842f5068ecf64e94248410328c8bb6ebf01b5787e4d0510dd64c7885d9a85e  tools/harness/lib/switch.mjs
@@ -73,10 +73,14 @@ f6b0324a84b481f845523a970685ed6db24518f4dd288d61ca943e4b8749b062  tools/check_pr
 local tests/test_local_validation.py  (T72a explicit protocol contract and offline validation)
 3792301a60e64ec8ff8da1bc91fa7bfa3e2e0065724860d431a2f9bc36443d16  tests/test_local_validation.py
 local tools/harness/lib/opencode-transport.mjs  (T72 private transport and permission verification)
-85dbb698108d8933d63c7ca60632b58bc59f51dca096fa95c4a6e1241ca15dac  tools/harness/lib/opencode-transport.mjs
+0ff5d35790e3eea7a52ebad2728a6ac7320422800222353009a312f86b9737a7  tools/harness/lib/opencode-transport.mjs
 local tools/harness/lib/opencode-policy.mjs  (T72 private transport and permission verification)
-d8453bc37f2340f6e1913b2308c23f86c7b27783ff33838606d06fcdf0136973  tools/harness/lib/opencode-policy.mjs
+bbeaa498555432b800b940795669e071fa9e2c179d5bef9b7ff95e79e237dc20  tools/harness/lib/opencode-policy.mjs
 local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
 759db8b1e0fbf3d69d3d3d7cd266be6b5e76be90bdb5cd6be2a7cc82b5b106bf  tools/harness/preflight-opencode.mjs
 local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
-5e1b73259c090a6186a9c855c54b4632d7df19a320088d3274240749986823ec  tests/opencode_workflow.test.mjs
+dd4e49f58645f997ed7d84db61a320e77b29fe29f69ea6bbf8fa635f894185cf  tests/opencode_workflow.test.mjs
+
+c75203c1d40f7f1bc6ad506a3099e1c7ceabb12b389d414104af67671f3e38d0  tools/harness/lib/opencode-workflow.mjs
+
+c24cfdf691f876c9668ccd4390112e802bdb3c5158e0426fe2ff7cf1f3ca670b  tests/helpers/opencode-stub.mjs

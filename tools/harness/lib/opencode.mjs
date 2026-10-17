@@ -31,7 +31,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { OpenCodeInfraError } from './opencode-transport.mjs';
+import { OpenCodeInfraError, capture, privateHome, startPrivateServer, settledCatalogue, killOwned } from './opencode-transport.mjs';
+import { runV2Workflow } from './opencode-workflow.mjs';
 export { OpenCodeInfraError };
 
 // A failed run on Alibaba's Token Plan whose stderr (OpenCode's own, not the model's output) says the
@@ -195,14 +196,21 @@ export function versionProblem(version, exe) {
   const major = Number((version ?? '').split('.')[0]);
   if (version && SUPPORTED_MAJOR.includes(major)) return null;
   return `OpenCode ${version ?? 'gave no version'} at ${exe} is not supported: the harness drives the public `
-    + `1.x CLI (the tested path on 1.18.34) and permits 2.x if the run produces the same artefacts (L110). Anything `
-    + `else is refused before billing. Point it at a 1.18 CLI: ~/.opencode/bin/opencode, npm opencode-ai@1.18, `
-    + `or HARNESS_OPENCODE_EXE (which may point at 2.x).`;
+    + `1.x compatibility and owned 2.x protocol. Anything else is refused before billing. `
+    + `Use the installed current CLI or an explicitly selected supported HARNESS_OPENCODE_EXE.`;
 }
 
 // The efforts (variants) OpenCode offers for a model, from `opencode models <provider> --verbose`,
 // which prints each id followed by its JSON; null when they cannot be read.
 export async function modelVariants(cmd, id, { env, cwd, timeoutMs = 60_000 }) {
+  const version = await openCodeVersion(cmd, { env, cwd });
+  if (version?.startsWith('2.')) {
+    const home = privateHome(env);
+    const server = await startPrivateServer(cmd, { env: { ...home.env, OPENCODE_DISABLE_PROJECT_CONFIG: '1' }, cwd, timeoutMs });
+    try { const found = await settledCatalogue(server, { model: { id }, timeoutMs }); return found.selected.variants.map((v) => v.id); }
+    finally { await server.stop(); }
+  }
+  if (!version?.startsWith('1.')) return null;
   const r = await execBounded(cmd, ['models', id.split('/')[0], '--verbose'], { cwd, env, timeoutMs });
   if (!r || r.code !== 0) return null;
   const at = r.stdout.indexOf(`${id}\n`);
@@ -234,13 +242,13 @@ export async function modelVariants(cmd, id, { env, cwd, timeoutMs = 60_000 }) {
 export async function listedModels(cmd, providers, { env, cwd, timeoutMs = 60_000 }) {
   const listed = new Set();
   const errors = new Map();
-  let r = await execBounded(cmd, ['models'], { cwd, env, timeoutMs });
-  if (!r || r.code !== 0) {
-    // 1.x rejects `--standalone` as unknown; the retry would still fail and r stays
-    // as the original failure. 2.x runs the command on its own server.
-    const retry = await execBounded(cmd, ['models', '--standalone'], { cwd, env, timeoutMs });
-    if (retry && retry.code === 0) r = retry;
+  const version = await openCodeVersion(cmd, { env, cwd });
+  if (versionProblem(version, cmd.exe)) {
+    for (const p of new Set(providers)) errors.set(p, 'unsupported OpenCode version');
+    return { listed, errors };
   }
+  const args = version.startsWith('2.') ? ['models', '--standalone'] : ['models'];
+  const r = await execBounded(cmd, args, { cwd, env, timeoutMs });
   if (!r) {
     for (const p of new Set(providers)) errors.set(p, `\`opencode models\` did not finish in ${Math.round(timeoutMs / 1000)} s`);
     return { listed, errors };
@@ -284,13 +292,7 @@ export function loginHint(modelId, listed, dataHome, errors = new Map()) {
     + `\`opencode auth login\` (or set its API key) in your usual OpenCode; the next run copies auth.json into ${dataHome}`;
 }
 
-function killTree(child) {
-  if (!child || child.exitCode !== null || child.signalCode !== null) return;
-  try {
-    if (process.platform === 'win32') spawnSync('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore' });
-    else process.kill(-child.pid, 'SIGKILL'); // the run's own process group, and nothing else
-  } catch { /* already gone */ }
-}
+const killTree = killOwned;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, Math.max(0, ms)));
 
@@ -302,28 +304,10 @@ function spawnDetached(cmd, args, options) {
 // A short OpenCode command (`session list`, `export`), bounded and killed if it overruns. With
 // outFile, stdout goes to that file instead of a pipe. Resolves { code, stdout, stderr } or null
 // on a timeout or a spawn error.
-function execBounded(cmd, args, { cwd, timeoutMs, env, outFile }) {
-  if (timeoutMs <= 0) return Promise.resolve(null);
-  return new Promise((resolve) => {
-    let child;
-    const fd = outFile ? fs.openSync(outFile, 'w') : null;
-    try {
-      child = spawnDetached(cmd, args, { cwd, env, stdio: ['ignore', fd ?? 'pipe', 'pipe'] });
-    } catch { resolve(null); return; } finally { if (fd !== null) fs.closeSync(fd); }
-    const out = [];
-    const err = [];
-    child.stdout?.on('data', (d) => out.push(d));
-    child.stderr.on('data', (d) => err.push(d));
-    const timer = setTimeout(() => { killTree(child); resolve(null); }, timeoutMs);
-    child.on('error', () => { clearTimeout(timer); resolve(null); });
-    child.on('close', (code) => {
-      clearTimeout(timer);
-      resolve({
-        code, stdout: outFile ? fs.readFileSync(outFile, 'utf8') : Buffer.concat(out).toString('utf8'),
-        stderr: Buffer.concat(err).toString('utf8'),
-      });
-    });
-  });
+async function execBounded(cmd, args, options) {
+  if (options.timeoutMs <= 0) return null;
+  const result = await capture(cmd, args, options);
+  return result.timedOut || result.error ? null : result;
 }
 
 function sameDir(a, b) {
@@ -412,7 +396,7 @@ export function briefFileName(title) {
  *   permissionRejected, permissionHint, files, briefFile, seconds }.
  * A non-zero exit is returned, not thrown: the caller decides.
  */
-export async function runOpenCodeWatched({
+async function runV1Watched({
   args, prompt, workDir, title, sessionId = null,
   startupTimeoutMs = 180_000, totalTimeoutMs = 3_600_000, idleTimeoutMs = 600_000, pollMs = 10_000,
   logDir = path.join(os.tmpdir(), 'harness-opencode'), opencode, env = process.env, log = () => {},
@@ -597,4 +581,21 @@ export async function runOpenCodeWatched({
     }
     throw e;
 }
+}
+
+// [designed: T72] Dispatch by measured major, with no command/model/agent downgrade.
+export async function runOpenCodeWatched(options) {
+  const env = options.env ?? process.env;
+  const cmd = options.opencode ?? resolveOpenCode(env);
+  const version = await openCodeVersion(cmd, { env, cwd: options.workDir });
+  const bad = versionProblem(version, cmd.exe);
+  if (bad) throw new OpenCodeInfraError('version', bad);
+  if (Number(version.split('.')[0]) === 1) return runV1Watched({ ...options, opencode: cmd });
+  const args = options.args ?? [];
+  const get = (key) => args.includes(key) ? args[args.indexOf(key) + 1] : undefined;
+  const id = get('--model');
+  const model = options.model ?? (id ? { id, ...(get('--variant') ? { variant: get('--variant') } : {}) } : null);
+  if (!model) throw new OpenCodeInfraError('selection', 'v2 requires the exact selected model');
+  return runV2Workflow({ ...options, model, agent: options.agent ?? get('--agent'),
+    agentFile: options.agentFile ?? path.join(options.workDir, '.opencode/agents/reviewer.md'), opencode: cmd });
 }

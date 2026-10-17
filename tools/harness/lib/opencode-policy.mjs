@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import { hash, OpenCodeInfraError } from './opencode-transport.mjs';
 const ACTION = { bash: 'shell', task: 'subagent', edit: 'edit', external_directory: 'external_directory' };
 export function reviewerPolicy(agentFile) {
-  const source = fs.readFileSync(agentFile, 'utf8');
+  const rawSource = fs.readFileSync(agentFile, 'utf8');
+  const source = rawSource.replaceAll('\r\n', '\n');
   const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/.exec(source);
   if (!match) throw new Error('reviewer frontmatter is missing');
   const [, front, system] = match;
@@ -30,7 +31,7 @@ export function reviewerPolicy(agentFile) {
   const allowed = permissions.filter((r) => r.action === 'external_directory' && r.effect === 'allow').map((r) => r.resource).sort();
   const exact = ['/tmp/opencode/*', '/tmp', '/tmp/*', `${process.env.HOME}/projects/goal2-archaeology`, `${process.env.HOME}/projects/goal2-archaeology/*`].sort();
   if (JSON.stringify(allowed) !== JSON.stringify(exact)) throw new Error('reviewer external grants differ from exact research/tmp contract');
-  return { sourceSHA256: hash(source), profile: { mode: 'all', hidden: false, system: system.trim(), permissions } };
+  return { sourceSHA256: hash(rawSource), profile: { mode: 'all', hidden: false, system: system.trim(), permissions } };
 }
 export function trustedReviewEnv(env, policy, agent = 'reviewer') {
   const next = { ...env };
