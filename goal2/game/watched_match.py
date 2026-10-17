@@ -89,6 +89,8 @@ def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Imag
     campaign = copy.deepcopy(state.campaign)
     if campaign is not None:
         campaign.__post_init__()
+        class_low,class_high=(1,1360) if campaign.stage<5 else (1361,2400)
+        _integer(fixture.index,class_low,class_high,'source class fixture index')
         pending = campaign.next_fixture
         if (pending is None or (pending.cycle,pending.stage) != (campaign.cycle,campaign.stage)
                 or (pending.side_a,pending.side_b,pending.kind) != (fixture.first,fixture.second,fixture.kind)
@@ -111,6 +113,8 @@ def prepare_watched(state: GameState, original: bytes, fixture: Fixture) -> Imag
                 raise ValueError('a complete source-ordered calendar is required')
             next_free=numbers[-1]+1
     _integer(next_free,2,REGULAR_FIXTURES+1,'declared next-free fixture')
+    if campaign is not None:
+        _integer(next_free,class_low+1,class_high+1,'source class next-free fixture')
     _integer(fixture.index,1,next_free-1,'source fixture index')
     candidate = copy.deepcopy(state)
     # [derived: F029] XI is squad order; retain every bench word when moving a starter.

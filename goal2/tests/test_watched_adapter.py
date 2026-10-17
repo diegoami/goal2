@@ -117,10 +117,14 @@ class WatchedAdapter(unittest.TestCase):
         b = self.compare(s,Fixture(7,19,21),year=0)
         self.assertEqual({k:v for k,v in a.result.items() if k not in ('image_sha256','inputs')},
                          {k:v for k,v in b.result.items() if k not in ('image_sha256','inputs')})  # [confirmed: E033] Setup replaces incoming primary RNG.
-        f2 = CampaignFixture('original:22',1,3,5,1,7,19)
+        f2 = CampaignFixture('original:1362',1,3,5,1,7,19)
+        legacy=Image(s.mem);address=legacy.far(0xA923)+0x28
+        legacy.memory[address:address+2]=(2001).to_bytes(2,'little');s.mem=legacy.memory_component()
         s.campaign = CampaignState(1994,1,3,5,123,78,(f2,))
-        c = self.compare(s,Fixture(7,19,22),year=0)
+        c = self.compare(s,Fixture(7,19,1362),year=0)
         self.assertNotEqual(a.result['kickoff_seed'], c.result['kickoff_seed'])
+        legacy=Image(s.mem);address=legacy.far(0xA923)+0x28
+        legacy.memory[address:address+2]=(769).to_bytes(2,'little');s.mem=legacy.memory_component()
         schedule = tuple(CampaignFixture(f'original:{i+1}',cycle,year,stage,1,7,19)
                          for i,(cycle,year,stage) in enumerate(((1,3,5),(1,3,6),(1,4,7),(1,4,8),(2,1,2))))
         s.campaign = CampaignState(1994,2,1,2,123,78,schedule,
@@ -193,6 +197,9 @@ class WatchedAdapter(unittest.TestCase):
         s.campaign=CampaignState(1992,1,1,2,123,78,(f,))
         for fixture in (Fixture(7,19,22),Fixture(19,7,21)):
             with self.assertRaises(ValueError):prepare_watched(s,self.raw,fixture)
+        incompatible=CampaignFixture('original:22',1,3,5,1,7,19)
+        s.campaign=CampaignState(1994,1,3,5,123,78,(incompatible,))
+        with self.assertRaises(ValueError):prepare_watched(s,self.raw,Fixture(7,19,22))
 
     def test_each_default_decision_is_explicitly_answered(self):
         from goal2.engine.original_match.match import Event

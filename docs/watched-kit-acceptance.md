@@ -185,7 +185,9 @@ The adapter refuses aggregates/sentinel/next-free indexes. With a complete saved
 source world it stages the exact `max(source IDs)+1` count (stage2 opening769,
 stage5 opening2001), checking canonical contiguous IDs in the current source
 class (1..1360 for stages2–4;1361..2400 for5–8). Legacy inputs without that full
-schedule retain the template's bound and cannot silently expand it.
+schedule retain the template's bound and cannot silently expand it. Campaign
+indexes and next-free bounds must fit the current source class even for legacy
+inputs; the class-1 legacy reseed control explicitly supplies count2001/fixture1362.
 
 [derived: the same source fields] Campaign images also transfer source base year
 to `+0x3A`, stage to `+0x3C` and class to `+0x40`; the independent year counter
