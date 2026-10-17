@@ -46,7 +46,22 @@ MUTATIONS=[
      '        if False:',
      'goal2.tests.test_watched_publication.WatchedPublicationTests.test_campaign_completes_and_appends_history_exactly_once',
      'ValueError not raised'),
-    ('omit watched save validation','goal2/game/session_save.py',
+    ('erase watched history after quick continuation','goal2/game/campaign_rounds.py',
+     "                if not any(history['fixture_id']==row['fixture_id'] and watched(history)",
+     "                if False and not any(history['fixture_id']==row['fixture_id'] and watched(history)",
+     'goal2.tests.test_watched_save.WatchedSaveTests.test_fresh_1990_1992_campaign_history_and_deterministic_next_fixture',
+     'SessionSaveError not raised'),
+    ('erase latest watched result engine identity','goal2/game/watched_schema.py',
+     "            if managed and managed[-1]['mode']=='watched' and not watched(last):",
+     '            if False:',
+     'goal2.tests.test_watched_save.WatchedSaveTests.test_fresh_1990_1992_campaign_history_and_deterministic_next_fixture',
+     'SessionSaveError not raised'),
+    ('forget original RNG after quick continuation','goal2/game/watched_schema.py',
+     "                if (row['seed_after']!=image.rd(0x7B62) or row['secondary_after']!=image.rd(0x8336)",
+     '                if (False',
+     'goal2.tests.test_watched_save.WatchedSaveTests.test_fresh_1990_1992_campaign_history_and_deterministic_next_fixture',
+     'SessionSaveError not raised'),
+    ('omit watched save validation' ,'goal2/game/session_save.py',
      '''    try:
         from goal2.game.watched_schema import needs_version3, validate_saved_watched
         validate_saved_watched(state)

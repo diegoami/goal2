@@ -28,6 +28,8 @@ class WatchedSaveTests(unittest.TestCase):
         self.assertEqual(state,owner.state);self.assertEqual(template,self.raw)
         for mutate in (lambda d:d['state']['last_match'].__setitem__('engine','unknown'),
                        lambda d:d['state']['last_match']['original'].__setitem__('seed_after',-1),
+                       lambda d:d['state']['last_match']['original'].__setitem__('index',22),
+                       lambda d:d['state']['last_match']['original'].__setitem__('managed',19),
                        lambda d:d['state']['last_match'].__setitem__('schema',99),
                        lambda d:d['state'].__setitem__('rng_seed_8336',1),
                        lambda d:d['state']['last_match'].pop('engine'),
@@ -89,6 +91,33 @@ class WatchedSaveTests(unittest.TestCase):
                 resumed,raw_template=session_save.decode(raw)
                 self.assertEqual(resumed,owner.state)
                 self.assertEqual(raw_template,template)
+                if year==1990:
+                    # [designed: T64] A following quick match retains both paths' identities.
+                    from goal2.desktop.worker import play
+                    from goal2.game.eligibility import available_words
+                    quick_states=[]
+                    for prior in (owner.state,resumed):
+                        selected=copy.deepcopy(prior)
+                        selected.starting_eleven=available_words(selected.players,selected.managed_squad)[:11]
+                        selected.captain=selected.starting_eleven[0]
+                        quick_states.append(play(selected,template))
+                    self.assertEqual(quick_states[0],quick_states[1])
+                    self.assertNotIn('engine',quick_states[0].last_match)
+                    mixed=session_save.encode(quick_states[0],template)
+                    self.assertEqual(json.loads(mixed)['version'],3)
+                    self.assertEqual(session_save.decode(mixed)[0],quick_states[0])
+                    for damage in ('history','secondary','version'):
+                        damaged=json.loads(mixed)
+                        if damage=='history':damaged['state']['campaign']['results'].pop(0)
+                        elif damage=='version':damaged['version']=2
+                        else:
+                            watched_row=next(r for r in damaged['state']['campaign']['world']['results'] if r['mode']=='watched')
+                            watched_row['secondary_after']^=1
+                        with self.subTest(damage=damage):
+                            with self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(damaged).encode())
+                damaged=json.loads(raw)
+                damaged['state']['last_match']={'teams':[f.side_a,f.side_b],'score':[0,0],'goals':[]}
+                with self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(damaged).encode())
                 f2=resumed.campaign.next_fixture
                 self.assertIsNotNone(f2)
                 if year==1992:

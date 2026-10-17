@@ -234,7 +234,9 @@ returned seeds and Memory. This is separate from between-fixture player effects.
 `original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1` and result schema1.
 Session saves containing watched results use version3. Legacy friendly version1
 and campaign version2 retain their quick result/history meanings and continue to
-load; new quick-only sessions retain those versions. A watched world row records
+load; new quick-only sessions retain those versions. A quick result following a
+watched result keeps version3 and both engine meanings; its prior watched history
+and returned Memory/RNG remain validated. A watched world row records
 the incoming seed, original fixture/year setup reseed and returned primary and
 secondary seeds explicitly. It never presents the setup reseed as an affine
 continuation of T48's quick draw ledger. Unknown engine identities, incompatible

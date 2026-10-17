@@ -135,24 +135,26 @@ def watched(row):
 def validate_saved_watched(state):
     """[designed] Validate watched envelopes and their returned-memory continuation."""
     last=state.last_match
+    image=None
     if watched(last):
         keys={'engine','schema','original','teams','score','goals','managed_side','match_count','seeds','engine_year'}
         if set(last)!=keys or last['schema']!=RESULT_SCHEMA or type(last['schema']) is not int:
             raise ValueError('invalid watched result envelope')
         result=last['original'];validate_result(result)
         teams=[result['first'],result['second']]
-        if (not pair(last['teams'],1,128) or last['teams']!=teams
+        if (result['managed']!=state.managed_country
+                or not pair(last['teams'],1,128) or last['teams']!=teams
                 or not pair(last['score'],0,255) or last['score']!=list(result['score']) or last['goals']!=result['goals']
                 or last['managed_side']!=teams.index(state.managed_country)
                 or not integer(last['managed_side'],0,1) or last['match_count']!=state.match_count
                 or not integer(last['match_count'],1,2**31-1) or not pair(last['seeds'],0,65535)
                 or last['seeds'][0]!=result['seed_after'] or not integer(last['engine_year'],0,65535)):
             raise ValueError('inconsistent watched result envelope')
-        from goal2.engine.original_match import Image
-        image=Image.from_memory_component(state.mem)
+        image=_returned_image(state.mem)
         # [designed] Management edits may change live fields after completion;
         # the retained returned memory still validates the original result independently.
-        if (image.build_problems() or any(image.squad(int(country))!=words for country,words in result['squads_after'].items())
+        if (any(image.squad(int(country))!=words for country,words in result['squads_after'].items())
+                or image.fixture_index()!=result['index'] or _fixture_teams(image,result['index'])!=teams
                 or image.year()!=last['engine_year']
                 or tuple(last['seeds'])!=(image.rd(0x7B62),image.rd(0x8336))
                 or state.rng_seed_8336!=last['seeds'][1]):
@@ -160,6 +162,19 @@ def validate_saved_watched(state):
         if state.campaign is None or state.campaign.world is None:
             if state.rng_seed_7b62!=last['seeds'][0]:raise ValueError('watched primary RNG differs from returned memory')
     if state.campaign is not None:
+        world=state.campaign.world
+        if world is not None:
+            managed=[row for row in world.results if row['mode'] in ('managed','watched')]
+            if managed and managed[-1]['mode']=='watched' and not watched(last):
+                raise ValueError('watched completion lost its result engine identity')
+            returned=[row for row in world.results if row['mode']=='watched']
+            if returned:
+                if image is None:image=_returned_image(state.mem)
+                row=returned[-1]
+                if (row['seed_after']!=image.rd(0x7B62) or row['secondary_after']!=image.rd(0x8336)
+                        or row['engine_year']!=image.year() or row['index']!=image.fixture_index()
+                        or row['teams']!=_fixture_teams(image,row['index'])):
+                    raise ValueError('watched world RNG or fixture differs from retained returned memory')
         if watched(last):
             if not state.campaign.results or state.campaign.results[-1]['fixture_id']!=f"original:{last['original']['index']}":
                 raise ValueError('watched last result differs from campaign history')
@@ -175,6 +190,23 @@ def validate_saved_watched(state):
                 raise ValueError('invalid watched campaign result schema')
 
 
+def _fixture_teams(image,index):
+    # [confirmed: E033 _write_fixture at the engine identity pin] Source row endpoints.
+    return [image.rd_far(0xA92B,8*(index-1)+offset) for offset in (4,6)]
+
+
+def _returned_image(memory):
+    # [designed: T64; derived: accepted E033] The latest original Memory remains
+    # retained through later quick results; live quick fields may differ from it.
+    from goal2.engine.original_match import Image
+    image=Image.from_memory_component(memory)
+    if image.build_problems():raise ValueError('unsupported watched returned memory build')
+    return image
+
+
 def needs_version3(state):
-    return (watched(state.last_match) or (state.campaign is not None and
-            any(watched(row) for row in state.campaign.results)))
+    if watched(state.last_match):return True
+    campaign=state.campaign
+    if campaign is None:return False
+    return (any(watched(row) for row in campaign.results) or (campaign.world is not None
+            and any(isinstance(row,dict) and row.get('mode')=='watched' for row in campaign.world.results)))

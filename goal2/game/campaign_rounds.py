@@ -94,6 +94,12 @@ class World:
                 managed_ids.append(fixture.fixture_id)
             seed=row['seed_after']
         if managed_ids!=campaign.completed_fixture_ids:raise ValueError('world and managed completion ledgers differ')
+        for row in self.results:
+            if row['mode']=='watched':
+                from goal2.game.watched_schema import watched
+                if not any(history['fixture_id']==row['fixture_id'] and watched(history)
+                           for history in campaign.results):
+                    raise ValueError('watched world result is missing its engine-marked history')
         for row in campaign.results:
             match=next((r for r in self.results if r['fixture_id']==row['fixture_id']),None)
             from goal2.game.watched_schema import watched
