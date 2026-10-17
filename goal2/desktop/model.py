@@ -90,7 +90,18 @@ class DesktopModel:
                 raise ValueError('Invalid saved match goal')
         text=f"{self.goaldat.country_names[teams[0]]} {score[0]} — {score[1]} {self.goaldat.country_names[teams[1]]}"
         goals=[f"{g['minute']}′ {self.goaldat.player_names[g['player']]} ({self.goaldat.country_names[teams[g['team']]]})" for g in match['goals']]
-        return text+'\n'+('\n'.join(goals) if goals else 'No goals')
+        lines=[text,'\n'.join(goals) if goals else 'No goals']
+        # [designed: T51] Render validated competitive stages without counting kicks as goals.
+        from goal2.game.watched_schema import watched,COMPETITIVE_SCHEMA,validate_result,resolution
+        if watched(match) and match.get('schema')==COMPETITIVE_SCHEMA:
+            original=match.get('original');validate_result(original,competitive=True)
+            stages=resolution(original)
+            for key,label in (('regulation','Regulation'),('extra_time','Extra time'),('penalties','Penalties')):
+                score=stages[key]
+                if score is not None:lines.append(f'{label}: {score[0]} — {score[1]}')
+            winner=stages['winner']
+            lines.append('Draw' if winner==2 else f'Winner: {self.goaldat.country_names[teams[winner]]}')
+        return '\n'.join(lines)
 
     def view(self,state=None):
         """[derived: F002/F007; designed] Resolve original names and live fields."""

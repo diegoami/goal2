@@ -19,7 +19,13 @@ ROOT=Path(__file__).resolve().parents[2]
 
 
 def select(s):
-    s.starting_eleven=available_words(s.players,s.managed_squad)[:11];s.captain=s.starting_eleven[0]
+    # [designed] A declared manager selection: one available keeper and ten outfield players.
+    image=Image(s.mem);lines=image.memory[image.DS*16+0xD4E:image.DS*16+0xD4E+16]
+    eligible=available_words(s.players,s.managed_squad)
+    keepers=[w for w in eligible if lines[s.players[w][6]]==0]
+    outfield=[w for w in eligible if lines[s.players[w][6]]!=0]
+    if not keepers or len(outfield)<10:raise AssertionError('declared squad lacks an eligible original eleven')
+    s.starting_eleven=keepers[:1]+outfield[:10];s.captain=s.starting_eleven[0]
 
 
 @lru_cache(maxsize=None)
@@ -61,13 +67,36 @@ class CompetitiveSaveTests(unittest.TestCase):
         encoded=session_save.encode(after,raw);restored,template=session_save.decode(encoded)
         self.assertEqual(after,restored);self.assertEqual(template,raw);self.assertEqual(restored.mem,out.memory)
         self.assertEqual(restored.last_match['seeds'],list(out.seeds))
+        for damage in ('world_resolution','world_winner','history_resolution','raw_kind','raw_players'):
+            bad=json.loads(encoded)
+            history=bad['state']['campaign']['results'][-1]
+            world=next(r for r in bad['state']['campaign']['world']['results'] if r['fixture_id']==f'original:{f.index}')
+            if damage=='world_resolution':world['resolution']['kind']=200
+            elif damage=='world_winner':world['winner']=(world['winner']+1)%3
+            elif damage=='history_resolution':history.pop('resolution')
+            elif damage=='raw_kind':bad['state']['last_match']['original']['kind']=200
+            else:bad['state']['last_match']['original']['players'][0]['energy'][1]^=1
+            with self.subTest(damage=damage),self.assertRaises(session_save.SessionSaveError):session_save.decode(json.dumps(bad).encode())
         outcomes=[]
         for prior in (after,restored):
             owner=Owner(copy.deepcopy(prior),raw);select(owner.state);nextf=owner.state.campaign.next_fixture
             fixture=Fixture(nextf.side_a,nextf.side_b,int(nextf.fixture_id.split(':')[1]),nextf.kind)
-            pub=publication(owner);job=pub.begin(fixture);result=run(job.state,raw,fixture)
+            pub=WatchedPublication(owner) if fixture.kind==1 else publication(owner)
+            job=pub.begin(fixture)
+            result=run_watched_match(job.state,raw,fixture) if fixture.kind==1 else run(job.state,raw,fixture)
             pub.complete(job.token,result);outcomes.append(owner.state)
         self.assertEqual(outcomes[0],outcomes[1])
+        # [designed] The actual next row is friendly: explicit quick continuation keeps competitive history.
+        self.assertEqual(after.campaign.next_fixture.kind,1)
+        from goal2.desktop.worker import play
+        quick=[]
+        for prior in (after,restored):
+            candidate=copy.deepcopy(prior);select(candidate);quick.append(play(candidate,raw))
+        self.assertEqual(quick[0],quick[1]);self.assertNotIn('engine',quick[0].last_match)
+        quick_saved=session_save.encode(quick[0],raw)
+        self.assertEqual(session_save.decode(quick_saved)[0],quick[0])
+        self.assertEqual(quick[0].campaign.results[2]['resolution'],row['resolution'])
+        self.assertEqual(quick[0].mem,out.memory)
         print(f'T51 actual country4 qualifier kind={f.kind} index={f.index} score={out.result["score"]} winner={out.result["winner"]} next deterministic PASS',flush=True)
 
     def test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage(self):

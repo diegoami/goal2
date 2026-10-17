@@ -109,7 +109,9 @@ class ManagementWindow(QMainWindow):
             self.standings_dialog.close();self.standings_dialog=None
         view=self.model.view();state=self.model.state;self._refreshing=True
         self.title.setText(view['country_name']);self.country.setCurrentIndex(self.country.findData(view['country']))
-        self.result.setText('Quick simulation (rebuild setup)\n'+self.model.result_text())
+        from goal2.game.watched_schema import watched
+        heading='Original engine' if watched(state.last_match) else 'Quick simulation (rebuild setup)'
+        self.result.setText(heading+'\n'+self.model.result_text())
         self.summary.setText(f"Team morale: {view['morale']}     Next fixture: {view['fixture'] or ('Standalone friendly' if state.campaign is None else 'No supported fixture')}")
         for row,p in enumerate(view['players']):
             available=p['availability']['available'];selected=p['id'] in state.starting_eleven

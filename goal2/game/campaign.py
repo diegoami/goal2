@@ -211,7 +211,7 @@ class CampaignState:
         return next((fixture for fixture in self.fixtures if fixture.fixture_id not in completed), None)
 
     def complete_fixture(self, fixture_id: str, *, resolution=None) -> None:
-        """Complete the next friendly once; competition kinds await later adapters."""
+        """[designed: T51] Complete the next fixture once; competitive completion requires its resolution."""
         pending = self.next_fixture
         if fixture_id in self.completed_fixture_ids:
             raise CampaignError(f"fixture {fixture_id!r} was already completed")
@@ -242,7 +242,7 @@ class CampaignState:
             raise CampaignError(f"stage {self.stage} still has an incomplete fixture")
         if _next_calendar_key((self.cycle, self.stage)) != (pending.cycle, pending.stage):
             raise CampaignError("calendar cannot skip an unimplemented stage")
-        if pending.kind != 1 and resolution is None:
+        if pending.kind != 1:
             raise UnsupportedCampaignTransition(
                 f"stage {pending.stage} begins with unsupported fixture kind {pending.kind}"
             )

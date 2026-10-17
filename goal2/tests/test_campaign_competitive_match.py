@@ -1,6 +1,9 @@
 """[designed: T51] Competitive adapter parity with pinned424 guest writes and independent setup."""
 import copy
 from dataclasses import asdict
+import hashlib
+import json
+import time
 import importlib.util
 from pathlib import Path
 import sys
@@ -53,6 +56,8 @@ class CompetitiveAdapterTests(unittest.TestCase):
         spec=importlib.util.spec_from_file_location('t51_guest_stamps',file)
         probe=importlib.util.module_from_spec(spec);spec.loader.exec_module(probe)
         import original_match as independent
+        report=ROOT/'.cache'/('T51-adapter-cases-'+str(time.time_ns())+'.jsonl')
+        with report.open('x'):pass
         cases=[(2,21,257,False,7,[1,0],None),(2,21,None,False,7,[1,1],None),
                (200,30,None,False,7,[3,2],None),(200,42,None,False,7,[0,0],[4,3]),
                (200,9,None,True,7,[1,1],[9,10]),(200,53,None,True,7,[2,2],[3,4]),
@@ -84,7 +89,45 @@ class CompetitiveAdapterTests(unittest.TestCase):
                     self.assertEqual(outcome.result['score'],score)
                     self.assertEqual(outcome.result['shootout'] and outcome.result['shootout']['score'],penalties)
                 if index in (9,53):self.assertGreater(len(outcome.result['shootout']['kicks']),10)
+                rec={'source':'424d5998076da1e4efc399c2715689ddb44d3e1a','kind':kind,'index':index,
+                    'managed':managed,'captain_override':None,'budget':[5,5],'reference_seed':seed,'delay_byte':None,
+                    'quick_at_half_time':quick,'engine_year':outcome.engine_year,
+                    'base_year':image.rd_far(0xA923,0x3A),'stage':image.rd_far(0xA923,0x3C,1),
+                    'class':image.rd_far(0xA923,0x40,1),'next_free':image.rd_far(0xA923,0x28),
+                    'template_sha256':hashlib.sha256(raw).hexdigest(),'image_sha256':outcome.result['image_sha256'],
+                    'result_sha256':hashlib.sha256(json.dumps(outcome.result,sort_keys=True).encode()).hexdigest(),
+                    'memory_sha256':hashlib.sha256(outcome.memory).hexdigest(),
+                    'events_sha256':hashlib.sha256(json.dumps([asdict(e) for e in outcome.events],sort_keys=True).encode()).hexdigest(),
+                    'seeds':list(outcome.seeds),'score':outcome.result['score'],'score_90':outcome.result['score_90'],
+                    'extra_time':outcome.result['extra_time'],'winner':outcome.result['winner'],
+                    'penalties':outcome.result['shootout'] and outcome.result['shootout']['score'],
+                    'kicks':outcome.result['shootout'] and len(outcome.result['shootout']['kicks']),
+                    'incidents':{k:len(outcome.result[k]) for k in ('goals','goals_disallowed','bookings','sendings_off','injuries','substitutions')},
+                    'independent_result_memory_events_equal':True,'guest_stamps_order_equal':True}
+                with report.open('a') as stream:stream.write(json.dumps(rec,sort_keys=True)+'\n')
                 print(f'T51 kind={kind} index={index} managed={managed} seed={seed} quick={quick} result={score} actual={outcome.result["score"]} winner={outcome.result["winner"]}',flush=True)
+
+    def test_source_context_is_explicit_and_invalid_changes_are_atomic(self):
+        from goal2.tests.test_campaign_competitive_publication import campaign
+        s,raw,f=campaign(21,2);fn=getattr(api(),'prepare_competitive',watched_match.prepare_watched)
+        try:image=fn(s,raw,f)
+        except ValueError as exc:self.fail('valid source context rejected: '+str(exc))
+        game=image.far(0xA923)
+        self.assertEqual((image.year(),image.rd_far(0xA923,0x3A),image.memory[game+0x3C],image.memory[game+0x40]),(0,2028,2,0))
+        for change in ('managed','index','kind','endpoints','year','stage','base_year','next_free'):
+            bad=copy.deepcopy(s);fixture=f
+            if change=='managed':bad.managed_country=1
+            elif change=='index':fixture=Fixture(7,19,22,2)
+            elif change=='kind':fixture=Fixture(7,19,21,3)
+            elif change=='endpoints':fixture=Fixture(19,7,21,2)
+            elif change=='year':bad.campaign.year=2
+            elif change=='stage':bad.campaign.stage=5
+            elif change=='base_year':bad.campaign.start_year=2027
+            else:
+                image_bad=Image(bad.mem);image_bad.memory[game+0x28:game+0x2A]=(21).to_bytes(2,'little');bad.mem=image_bad.memory_component()
+            before=copy.deepcopy(bad)
+            with self.subTest(change=change),self.assertRaises(ValueError):fn(bad,raw,fixture)
+            self.assertEqual(bad,before)
 
 
 if __name__=='__main__':unittest.main()

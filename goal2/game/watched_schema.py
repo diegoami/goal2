@@ -58,8 +58,8 @@ def validate_result(result, *, competitive=False):
 
 
 def _friendly_kit2(result):
-    """[designed: T51a; confirmed: PR255 _competitive] Current app accepts default-budget friendlies only.
-    T51 owns competitive routing and the owner's substitution policy.
+    """[designed: T51a; confirmed: PR255 _competitive] The public friendly profile accepts original default-budget friendlies only.
+    [designed: T51] Competitive jobs select a distinct explicit profile.
     """
     score=result['score'];winner=2 if score[0]==score[1] else int(score[1]>score[0])
     if (type(result['kind']) is not int or result['kind']!=1
@@ -214,6 +214,12 @@ def validate_saved_watched(state):
                 or last['seeds'][0]!=result['seed_after'] or not integer(last['engine_year'],0,65535)):
             raise ValueError('inconsistent watched result envelope')
         image=_returned_image(state.mem)
+        if competitive:
+            # [confirmed: PR255 _players_now] Compare the post-tail bytes, not live management edits.
+            players=image.players()
+            if any(players[row['player']][offset]!=row[field][1]
+                   for row in result['players'] for field,offset in (('confidence',12),('energy',14),('status',16))):
+                raise ValueError('competitive consequences differ from returned post-tail memory')
         # [designed] Management edits may change live fields after completion;
         # the retained returned memory still validates the original result independently.
         if (any(image.squad(int(country))!=words for country,words in result['squads_after'].items())
@@ -316,7 +322,9 @@ def _competitive_kit2(result):
             or (result['extra_time'] and not pair(result['score_90'],0,255))):
         raise ValueError('invalid competitive stages or owner budget')
     shoot=result['shootout']
-    if shoot is not None:_object(shoot,{'score','kicks'})
+    if shoot is not None:
+        _object(shoot,{'score','kicks'})
+        if not pair(shoot['score'],0,255):raise ValueError('invalid penalty score')
     resolution(result)
     if shoot is not None:
         _object(shoot,{'score','kicks'})

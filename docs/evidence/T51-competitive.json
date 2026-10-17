@@ -1,0 +1,71 @@
+{
+  "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "base": "f880138bbeaf612157d389cc235f9d7675aba696",
+  "baseline_initial_six_tests": {
+    "source": "f880138bbeaf612157d389cc235f9d7675aba696",
+    "archive_sha256": "df5df568e655a38a88d29e62f098322b61e0891a8d13feb37930ae7cdb3c0bbe",
+    "tests": {
+      "test_campaign_competitive_match.py": "4909d298736e128a9145b3487326a8b9369e4e84273cc3be3ed02432f2cb4274",
+      "test_campaign_competitive_publication.py": "f11a166a12b0b1ca4853122974526604c0084b2d4118467fdb9235148d5be376",
+      "test_campaign_competitive_save.py": "7387d1212ed46e4f016d96eccdf899634b2f06f53910001683e702cd9cdbfb2f"
+    },
+    "exit": 1,
+    "wall_s": 20.627270015997055,
+    "log": ".cache/T51-all-before-r2.log",
+    "log_sha256": "90f94188d353fe9c4f4861f6519ba267987efd0870bd0cde885382f2601b0592",
+    "assertion_failures": 21,
+    "errors": 0
+  },
+  "inputs": {
+    ".cache/e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    ".cache/e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    ".cache/GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "initial_batches": [
+    {
+      "log": ".cache/T51-adapter-before.log",
+      "sha256": "f846aaf5345452fc7e6fa9ee2db83a6ee7cbf9827ec4a100076f2592653fa262",
+      "interpretation": "Initial actual missing competitive gate/policy behavior proof."
+    },
+    {
+      "log": ".cache/T51-adapter-after.log",
+      "sha256": "d868d8dac881748afc2760f342b184f5369bc2f1eb7012b86756034957cc0df3",
+      "interpretation": "Parity equal; pinned goldens differ because test forced first-player captain. Declared input corrected to original captain pick; no golden changed."
+    },
+    {
+      "log": ".cache/T51-adapter-corrected.log",
+      "sha256": "3ea4c5215ed6f08af04e76a2c76804c00ca5a954b62dabc95962e606442c16bb",
+      "interpretation": "Test passed captain0 directly to independent Match; corrected to None to mean original pick."
+    },
+    {
+      "log": ".cache/T51-focused-r1.log",
+      "sha256": "1ff4c9573d980ac8e7d2f2b4ff64941c9dcfe241743692f8bd292fe462451534",
+      "interpretation": "Seven adapter cases matched independent result/events/Memory and guest stamps/order. Save fixtures subsequently gained explicit reserve membership; actual next row is friendly, so continuation now dispatches by its declared kind."
+    },
+    {
+      "log": ".cache/T51-publication-after.log",
+      "sha256": "7b4319f9c723b2e8a048f2ef0b36b471bef42c9e2cc01f54f2c1d2f562a33a05",
+      "interpretation": "Two publication tests passed14.540s."
+    },
+    {
+      "log": ".cache/T51-qt-before.log",
+      "sha256": "cb167eae361276d2340b98d05719453942fd89228885edff68f614505d9f11dd",
+      "interpretation": "Expected assertion: real original result labelled Quick simulation."
+    },
+    {
+      "log": ".cache/T51-qt-after.log",
+      "sha256": "2cd63789d26df2811ae4544636d6a5ce6a40120119e3e9411cc12cde0e22facf",
+      "interpretation": "New synthetic campaign fixture omitted explicit reserve_ids; existing save canonicalization changed None to list. Fixture now declares canonical membership before equality assertions."
+    },
+    {
+      "log": ".cache/T51-qt-r2.log",
+      "sha256": "a50e231a840c036559c59c736e48527e8703ecfd669ec7e22677ece76e55e2a9",
+      "interpretation": "PASS four real original results and eight actual publication/reload Qt labels."
+    },
+    {
+      "log": ".cache/T51-publication-save-r2.log",
+      "sha256": "1cae55707b536fa78d73fa9c16e6f19625680eb272724fa3a1bfd885bfb12ecc",
+      "interpretation": "Remaining quick-after-competitive mode handoff fails strict guard; test next-free write missed Memory header, now uses Image API. No guard/assertion weakened."
+    }
+  ]
+}
