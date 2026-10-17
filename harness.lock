@@ -73,13 +73,13 @@ local tools/check_premerge.py  (T72a explicit protocol contract and offline vali
 local tests/test_local_validation.py  (T72a explicit protocol contract and offline validation)
 998fda187823cae5c7ef65553f413735aa5d24beb07972f2572b43ba782b5fda  tests/test_local_validation.py
 local tools/harness/lib/opencode-transport.mjs  (T72 private transport and permission verification)
-7a1f553fe66898db9c04eba292525bfb4600c2aaa3d2d19309e3a9f38db65951  tools/harness/lib/opencode-transport.mjs
+ea5fbd47306add61071b5208de4be59f592e8b2440358ec9078429d10611c5f9  tools/harness/lib/opencode-transport.mjs
 local tools/harness/lib/opencode-policy.mjs  (T72 private transport and permission verification)
 74293db6682ce74c75dbea130185124331944709350e8358a9b6af8dcafcb47b  tools/harness/lib/opencode-policy.mjs
 local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
 25190e2558c5f44ff1d861bd5038bb1a829b06e06f950c65275446094f2cd450  tools/harness/preflight-opencode.mjs
 local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
-785d0ed51b05edd4ffd668391d4f3c81e48e835c3349ad51677ce084106d0276  tests/opencode_workflow.test.mjs
+4c5e1c3b1105571adb3adc6d98b1b10823993ef9ff362b823d073e346eb3246d  tests/opencode_workflow.test.mjs
 
 2b424f52ca6d69a60ad7e6bdcd078c52cc5277be1e3d405a98aaae4238d24377  tools/harness/lib/opencode-workflow.mjs
 

@@ -58,7 +58,7 @@ export function privateHome(env, { resumeRoot } = {}) {
       if (!root.startsWith(fs.realpathSync(runs) + path.sep) || fs.readFileSync(marker(root), 'utf8').trim() !== '2') throw new Error('not owned v2 root');
     } catch { throw new OpenCodeInfraError('ownership', 'resume root is not a retained v2 run'); }
   } else {
-    root = fs.mkdtempSync(path.join(runs, 'run-')); fs.writeFileSync(marker(root), '2\n', { flag: 'wx' });
+    root = fs.realpathSync(fs.mkdtempSync(path.join(runs, 'run-'))); fs.writeFileSync(marker(root), '2\n', { flag: 'wx' });
   }
   // [confirmed: v2.0.28 Credential/Database primary source; measurements/T72] Native logins and sessions share one DB.
   // [designed: T72] Persist v2-only provider/session storage; execution lease, cache, state and receipts remain per-run.

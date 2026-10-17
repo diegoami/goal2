@@ -1,0 +1,17 @@
+{
+  "version": "opencode v2.0.28",
+  "binary": "/home/diego/.opencode/bin/opencode",
+  "binarySHA256": "20d305d0140bfe04df7264a4ecb014402b74b6ac0a0f6456ee07ef3325fb4a85",
+  "sourceSHA256": "25190e2558c5f44ff1d861bd5038bb1a829b06e06f950c65275446094f2cd450",
+  "policySHA256": "d68b4fad50a4fc7eb9079d8e6c875de99aecc20e1352e38edd9b4a707de89a22",
+  "root": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/runs/run-tn8MY3",
+  "dataHome": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/data",
+  "database": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/data/opencode/opencode.db",
+  "sources": {
+    "opencode-protocol.mjs": "df08f13157d56b6c85e81e6b927ed5c7535f38ba22aafa913281b644dd659838",
+    "opencode-policy.mjs": "74293db6682ce74c75dbea130185124331944709350e8358a9b6af8dcafcb47b",
+    "opencode-transport.mjs": "ea5fbd47306add61071b5208de4be59f592e8b2440358ec9078429d10611c5f9",
+    "opencode-peek.mjs": "1c55d82c867b0aa5f8ea3992199c7b1a51332f11b147b0c5dbd07cb8a83fd72b"
+  },
+  "directory": "/home/diego/projects/goal2-work/T72-opencode2-harness"
+}

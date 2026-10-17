@@ -1,0 +1,67 @@
+[
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/actual-config.json",
+    "sha256": "446e2566b2edea2a7a1431897778c0e193ffe10a643ee459d0ed9f7fa72aaa6c"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/baseline.json",
+    "sha256": "c1a48d958520b948339f355f58867f92272bf522da047d74c1d4a62019f31198"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/empty-export.json",
+    "sha256": "9c9972c132c9f397af11fbc2389391928f00cb92fb1ac6e2c276e157f33a71b5"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/guard.json",
+    "sha256": "59fcaa7ebcd2dbcac5b08faed6441abf5aeff2875fe325a010f50325cde50b41"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/identity.json",
+    "sha256": "dd16d6787acb8c35448e27d4a8e9e63b30a3b2c5b897e2c637bf4c0a0f6cd324"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/idle-interrupt.json",
+    "sha256": "8db9ffd2f73e4147cb1b563db05cc75c92e2cf2a6ada8d202ec048489d20d2e1"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/peek.json",
+    "sha256": "dd90312013aa3a852b52816210e5375e37b84a3201e73370d843607307948c90"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/plugins.json",
+    "sha256": "33240871094a59fa1df5a147c6bd5299f1c265fb7a3a6cc231753b4d53904e3e"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/profile.json",
+    "sha256": "7dd0acca6b5d55f4a107b4ee3ffa0fdf19171f12080141a14de6173d09c2d407"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/schema-identity.json",
+    "sha256": "6c627495e0b041d430b9983654cf8781a5448f1e728efdca17529b0b15658e7e"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/selected-model.json",
+    "sha256": "f8c5c0e773aa2a6470d809984ca25e262f2e194559ac6ebc1bf87ba54fc75625"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/session-list.json",
+    "sha256": "37457fd5df7d947899d7121cc423dfe3ed7020c086b9137d4055564d1ae5b49c"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/shutdown.json",
+    "sha256": "af76ccb2bff923732011976a6c7b2fd965ba8e600d9a2dd1a4671b0bb7a8d590"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/unrelated-shutdown.json",
+    "sha256": "b320306b01a1f1096a913fe0272709018467f2dc8f7fa32e5412f4866dd4b7e4"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/unrelated-survived.json",
+    "sha256": "6f12c0a12417c244ff8dd041faf76d2fedbcff264e4bf248c63309543dabd6ca"
+  },
+  {
+    "original": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/originals/openapi.json",
+    "sha256": "b0cdccd2c0c651f2adbded5efc6a77506521fbf509188c91712d5a854255feeb",
+    "committed": false
+  }
+]

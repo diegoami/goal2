@@ -110,6 +110,31 @@ test('production major dispatch recovers complete export, usage and receipt; sam
   await assert.rejects(() => runOpenCodeWatched({ ...options, sessionId: result.sessionId }), /retained run manifest/);
   await assert.rejects(() => runOpenCodeWatched({ ...options, sessionId: result.sessionId, resumeManifest: result.manifest, model: { ...selection, variant: 'none' } }), /resume manifest identity/);
 });
+test('symlinked owned parent keeps canonical fresh and resumed production identity', async () => {
+  const options = workflowOptions();
+  const physical = path.join(options.workDir, 'physical-runtime');
+  const alias = path.join(options.workDir, 'runtime-alias');
+  fs.mkdirSync(physical);
+  fs.symlinkSync(physical, alias, process.platform === 'win32' ? 'junction' : 'dir');
+  options.env.HARNESS_OPENCODE_HOME = alias;
+  const fresh = await runOpenCodeWatched(options);
+  const receipt = JSON.parse(fs.readFileSync(fresh.manifest));
+  assert.equal(receipt.dataRoot, fs.realpathSync(receipt.dataRoot), 'fresh owned root must have physical identity');
+  assert(receipt.dataRoot.startsWith(path.join(physical, 'v2', 'runs') + path.sep));
+  assert.equal(fs.readFileSync(path.join(receipt.dataRoot, 'protocol-major'), 'utf8'), '2\n');
+  assert.equal(fs.realpathSync(receipt.guard.directory), receipt.guard.directory, 'staged guard uses physical owned root');
+  assert(receipt.guard.directory.startsWith(receipt.dataRoot + path.sep));
+  assert.equal(fs.realpathSync(receipt.guard.source), receipt.guard.source, 'guard entrypoint retains physical source identity');
+  for (const name of ['cache', 'state']) assert(fs.statSync(path.join(receipt.dataRoot, name)).isDirectory(), name + ' remains owned by the physical run root');
+  assert.equal(fs.readFileSync(path.join(receipt.dataRoot, 'data-home'), 'utf8').trim(), receipt.dataHome);
+  const resumed = await runOpenCodeWatched({ ...options, sessionId: fresh.sessionId, resumeManifest: fresh.manifest });
+  const resumedReceipt = JSON.parse(fs.readFileSync(resumed.manifest));
+  assert.equal(resumedReceipt.dataRoot, receipt.dataRoot, 'fresh and resume must retain identical physical ownership');
+  assert.equal(resumedReceipt.dataHome, receipt.dataHome, 'version-specific provider storage must stay unchanged');
+  assert.equal(resumed.sessionId, fresh.sessionId);
+  assert.equal(resumed.reviewText, fresh.reviewText);
+  assert.equal(fs.readFileSync(path.join(resumedReceipt.dataRoot, 'protocol-major'), 'utf8'), '2\n');
+});
 test('discovery fails before generation on chosen family/effort/agent/effective policy mismatch', async () => {
   for (const mode of ['family', 'effort', 'agent', 'policy']) {
     const options = workflowOptions(mode);
