@@ -15,7 +15,7 @@ TACTICS=((5,'Half pitch / full pitch'),(6,'Short kicks / long kicks'),(7,'Stay b
 class ManagementWindow(QMainWindow):
     """[designed] All widget access and active-state publication stay on the Qt thread."""
     def __init__(self,model):
-        super().__init__();self.model=model;self._refreshing=False
+        super().__init__();self.model=model;self._refreshing=False;self.preview=None;self.active_draft=None
         self.jobs=QuickJobs(model);self.timer=QTimer(self);self.timer.setInterval(30);self.timer.timeout.connect(self.poll_match)
         self.setWindowTitle('goal2 — Country management');self.resize(1050,780)
         root=QWidget();self.setCentralWidget(root);layout=QVBoxLayout(root)
@@ -72,16 +72,63 @@ class ManagementWindow(QMainWindow):
         self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
         self.result=QLabel();self.result.setWordWrap(True);self.result.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);layout.addWidget(self.result)
         self.status=QLabel('Confirm management, then play a quick friendly or save.');self.status.setWordWrap(True);self.status.setObjectName('status');layout.addWidget(self.status)
-        self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData()),'New campaign created'))
-        self.friendly.clicked.connect(lambda:self.action(lambda:model.new_friendly(self.country.currentData()),'New standalone friendly created'))
+        self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData()),'New campaign created',replace=True))
+        self.friendly.clicked.connect(lambda:self.action(lambda:model.new_friendly(self.country.currentData()),'New standalone friendly created',replace=True))
         self.play.clicked.connect(self.start_match);self.stop.clicked.connect(self.cancel_match)
         self.confirm.clicked.connect(self.confirm_draft);self.cancel.clicked.connect(lambda:self.refresh('Draft discarded'))
         self.save.clicked.connect(lambda:self.action(lambda:model.save(self.path.text()),'Game saved; unconfirmed edits are excluded'))
-        self.resume.clicked.connect(lambda:self.action(lambda:model.resume(self.path.text()),'Game resumed'))
+        self.resume.clicked.connect(lambda:self.action(lambda:model.resume(self.path.text()),'Game resumed',replace=True))
         self.search.textChanged.connect(self.refresh_pool);self.position.currentIndexChanged.connect(self.refresh_pool)
         self.exchange.clicked.connect(self.exchange_selected)
         self.table.itemChanged.connect(self.selection_changed)
         self.refresh()
+        self.country.currentIndexChanged.connect(self.country_changed)
+
+    @property
+    def display_model(self):
+        # [designed: #181] A preview owns generated records, never the active game.
+        return self.preview if self.preview is not None else self.model
+
+    def draft(self):
+        return (self.selected_ids(),self.captain.currentData(),
+                sum(1<<(element-1) for element,box in self.tactics if box.isChecked()))
+
+    def apply_draft(self,draft):
+        eleven,captain,bits=draft;self._refreshing=True
+        for row in range(20):
+            item=self.table.item(row,0)
+            item.setCheckState(Qt.CheckState.Checked if item.data(Qt.ItemDataRole.UserRole) in eleven else Qt.CheckState.Unchecked)
+        self.update_captain();self.captain.setCurrentIndex(max(0,self.captain.findData(captain)))
+        for element,box in self.tactics:box.setChecked(bool(bits & (1<<(element-1))))
+        self._refreshing=False
+
+    def country_changed(self):
+        if self._refreshing:return
+        country=self.country.currentData()
+        if self.jobs.busy:
+            self._refreshing=True;self.country.setCurrentIndex(self.country.findData(self.model.state.managed_country));self._refreshing=False
+            return
+        try:
+            if country==self.model.state.managed_country:
+                self.preview=None;self.refresh('Active game; previous management draft restored')
+                if self.active_draft is not None:self.apply_draft(self.active_draft)
+                self.active_draft=None
+            else:
+                from goal2.desktop.model import DesktopModel
+                candidate=DesktopModel(self.model.goaldat,self.model.template_bytes,self.model.save_path)
+                candidate.new_campaign(country)
+                if self.preview is None:self.active_draft=self.draft()
+                self.preview=candidate;self.refresh()
+        except (OSError,ValueError,IndexError,KeyError) as exc:
+            self._refreshing=True;self.country.setCurrentIndex(self.country.findData(self.display_model.state.managed_country));self._refreshing=False
+            self.status.setText(str(exc))
+
+    def require_active(self):
+        if self.jobs.busy:
+            self.status.setText('Finish or cancel the match first');return False
+        if self.preview is not None:
+            self.status.setText('Fresh campaign preview: choose New campaign or New standalone friendly to manage this team, or return to the active country.');return False
+        return True
 
     def selected_ids(self):
         return [self.table.item(row,0).data(Qt.ItemDataRole.UserRole) for row in range(20)
@@ -107,9 +154,9 @@ class ManagementWindow(QMainWindow):
     def refresh(self,message=None):
         if self.standings_dialog is not None:
             self.standings_dialog.close();self.standings_dialog=None
-        view=self.model.view();state=self.model.state;self._refreshing=True
+        display=self.display_model;view=display.view();state=display.state;self._refreshing=True
         self.title.setText(view['country_name']);self.country.setCurrentIndex(self.country.findData(view['country']))
-        self.result.setText('Quick simulation (rebuild setup)\n'+self.model.result_text())
+        self.result.setText('Quick simulation (rebuild setup)\n'+display.result_text())
         self.summary.setText(f"Team morale: {view['morale']}     Next fixture: {view['fixture'] or ('Standalone friendly' if state.campaign is None else 'No supported fixture')}")
         for row,p in enumerate(view['players']):
             available=p['availability']['available'];selected=p['id'] in state.starting_eleven
@@ -124,10 +171,13 @@ class ManagementWindow(QMainWindow):
         for element,box in self.tactics:box.setChecked(bool(state.country_tactics & (1<<(element-1))))
         self.path.setText(str(self.model.save_path));self._refreshing=False
         self.refresh_pool()
-        if message:self.status.setText(message)
+        self.set_busy(self.jobs.busy)
+        if self.preview is not None:self.require_active()
+        elif message:self.status.setText(message)
 
     def show_standings(self):
         """[designed: T49] Render a pure snapshot, closing it when the active game refreshes."""
+        if not self.require_active():return
         from goal2.desktop.standings import CompetitionTable
         try:
             view=self.model.competition_table()
@@ -138,21 +188,29 @@ class ManagementWindow(QMainWindow):
             self.standings_dialog=CompetitionTable(view,self);self.standings_dialog.show()
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
-    def action(self,operation,message):
-        try:operation();self.refresh(message)
+    def action(self,operation,message,*,replace=False):
+        if self.jobs.busy or (not replace and not self.require_active()):return
+        try:
+            operation()
+            if replace:self.preview=None;self.active_draft=None
+            self.refresh(message)
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def confirm_draft(self):
+        if not self.require_active():return
         bits=sum(1<<(element-1) for element,box in self.tactics if box.isChecked())
         self.action(lambda:self.model.confirm(self.selected_ids(),self.captain.currentData(),bits),'Management confirmed')
 
     def set_busy(self,busy):
         # [designed: T70] Prevent conflicting edits while keeping the UI responsive.
-        for widget in (self.country,self.new,self.friendly,self.table,self.captain,self.confirm,self.cancel,self.save,self.resume,self.path,self.pool_panel):widget.setEnabled(not busy)
-        for _,box in self.tactics:box.setEnabled(not busy)
-        self.play.setEnabled(not busy);self.stop.setEnabled(busy)
+        for widget in (self.country,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
+        active=not busy and self.preview is None
+        for widget in (self.table,self.captain,self.confirm,self.cancel,self.save,self.pool_panel,self.play,self.standings):widget.setEnabled(active)
+        for _,box in self.tactics:box.setEnabled(active)
+        self.stop.setEnabled(busy)
 
     def start_match(self):
+        if not self.require_active():return
         try:
             bits=sum(1<<(element-1) for element,box in self.tactics if box.isChecked())
             state=self.model.state
@@ -178,12 +236,12 @@ class ManagementWindow(QMainWindow):
     def refresh_pool(self):
         if self._refreshing:return
         try:
-            view=self.model.pool_view(query=self.search.text(),position=self.position.currentData())
+            view=self.display_model.pool_view(query=self.search.text(),position=self.position.currentData())
             self.reserves.setRowCount(0)
             if view is None:
                 self.pool_summary.setText('National pool requires a campaign');self.exchange.setEnabled(False);return
             self.pool_summary.setText(f"Squad 20 / Reserves 80 — showing {len(view['reserves'])}\n{view['window']['reason']}")
-            self.exchange.setEnabled(view['window']['allowed'] and not self.jobs.busy)
+            self.exchange.setEnabled(view['window']['allowed'] and not self.jobs.busy and self.preview is None)
             self.reserves.setRowCount(len(view['reserves']))
             for row,p in enumerate(view['reserves']):
                 values=(p['id'],p['name'],f"{p['position']} — {p['position_group']}",p['ability'],p['energy'],p['confidence'],', '.join(p['availability']['reasons']) or 'Available')
@@ -195,6 +253,7 @@ class ManagementWindow(QMainWindow):
             self.exchange.setEnabled(False);self.pool_summary.setText(str(exc))
 
     def exchange_selected(self):
+        if not self.require_active():return
         row=self.table.currentRow();reserve=self.reserves.currentRow()
         if row<0 or reserve<0:
             self.status.setText('Select one squad player and one reserve');return
