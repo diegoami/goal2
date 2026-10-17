@@ -27,6 +27,9 @@ class ManagementWindow(QMainWindow):
         self.friendly=QPushButton('New standalone friendly');country_bar.addWidget(self.friendly)
         country_bar.addWidget(QLabel('Country'));country_bar.addWidget(self.country,1);country_bar.addWidget(self.new);layout.addLayout(country_bar)
         self.summary=QLabel();layout.addWidget(self.summary)
+        self.standings_dialog=None
+        self.standings=QPushButton('Competition table');self.standings.setObjectName('showStandings')
+        self.standings.clicked.connect(self.show_standings);layout.addWidget(self.standings)
         self.table=QTableWidget(20,7);self.table.setObjectName('squad')
         self.table.setHorizontalHeaderLabels(['XI','Player','Position','Ability','Energy','Confidence','Availability'])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
@@ -102,6 +105,8 @@ class ManagementWindow(QMainWindow):
         self.captain.setCurrentIndex(max(0,self.captain.findData(previous)))
 
     def refresh(self,message=None):
+        if self.standings_dialog is not None:
+            self.standings_dialog.close();self.standings_dialog=None
         view=self.model.view();state=self.model.state;self._refreshing=True
         self.title.setText(view['country_name']);self.country.setCurrentIndex(self.country.findData(view['country']))
         self.result.setText('Quick simulation (rebuild setup)\n'+self.model.result_text())
@@ -120,6 +125,18 @@ class ManagementWindow(QMainWindow):
         self.path.setText(str(self.model.save_path));self._refreshing=False
         self.refresh_pool()
         if message:self.status.setText(message)
+
+    def show_standings(self):
+        """[designed: T49] Render a pure snapshot, closing it when the active game refreshes."""
+        from goal2.desktop.standings import CompetitionTable
+        try:
+            view=self.model.competition_table()
+            if view is None:
+                self.status.setText('Competition table unavailable: this session has no complete opening group schedule')
+                return
+            if self.standings_dialog is not None:self.standings_dialog.close()
+            self.standings_dialog=CompetitionTable(view,self);self.standings_dialog.show()
+        except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def action(self,operation,message):
         try:operation();self.refresh(message)
