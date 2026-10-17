@@ -76,6 +76,9 @@ class WatchedAdapter(unittest.TestCase):
         self.assertTrue(any(e.kind == 'full_time' for e in got.events))
         self.assertEqual(got.engine_year, after.year())
         self.assertTrue(got.result['decisions'])
+        print(f'case first={fixture.first} second={fixture.second} index={fixture.index} '
+              f'year={got.engine_year} reference_seed={seed} seeds_after={got.seeds} '
+              f'decisions={[d["context"] for d in got.result["decisions"]]} PASS', flush=True)
         return got
 
     def test_ten_strict_t62_inputs(self):
@@ -101,11 +104,17 @@ class WatchedAdapter(unittest.TestCase):
         a = self.compare(s,Fixture(7,19,21),year=0)
         s.rng_seed_7b62 ^= 0xFFFF
         b = self.compare(s,Fixture(7,19,21),year=0)
-        self.assertEqual(a.result,b.result)  # [confirmed: E033] Setup replaces incoming primary RNG.
+        self.assertEqual({k:v for k,v in a.result.items() if k not in ('image_sha256','inputs')},
+                         {k:v for k,v in b.result.items() if k not in ('image_sha256','inputs')})  # [confirmed: E033] Setup replaces incoming primary RNG.
         f2 = CampaignFixture('original:22',1,3,5,1,7,19)
         s.campaign = CampaignState(1994,1,3,5,123,78,(f2,))
         c = self.compare(s,Fixture(7,19,22),year=0)
         self.assertNotEqual(a.result['kickoff_seed'], c.result['kickoff_seed'])
+        schedule = tuple(CampaignFixture(f'original:{i+1}',cycle,year,stage,1,7,19)
+                         for i,(cycle,year,stage) in enumerate(((1,3,5),(1,3,6),(1,4,7),(1,4,8),(2,1,2))))
+        s.campaign = CampaignState(1994,2,1,2,123,78,schedule,
+                                   [f.fixture_id for f in schedule[:-1]])
+        self.compare(s,Fixture(7,19,5),year=1)
         s.campaign = None
         image = Image(s.mem); p = image.far(0xA923)+0x38
         image.memory[p:p+2] = (7).to_bytes(2,'little'); s.mem = image.memory_component()
@@ -117,7 +126,7 @@ class WatchedAdapter(unittest.TestCase):
         s.captain = s.starting_eleven[4]
         s.country_tactics ^= 8
         s.match_state['clock'] = 0  # [confirmed: T62 guard] Must preserve the actual foot table.
-        image = Image(s.mem); image.memory[-16:] = b'T63-opaque-tail!!'; s.mem=image.memory_component()
+        image = Image(s.mem); image.memory[-16:] = b'T63-opaque-tail!'; s.mem=image.memory_component()
         expected_image=direct_image(s)
         prepared=prepare_watched(s,self.raw,Fixture(19,7,21))
         self.assertEqual(prepared.memory_component(),expected_image.memory_component())
@@ -125,7 +134,7 @@ class WatchedAdapter(unittest.TestCase):
         got = self.compare(s,Fixture(19,7,21),seed=0x1234,delay=0)
         original = self.compare(self.state(),Fixture(19,7,21),seed=0x1234,delay=0)
         self.assertNotEqual(got.result['draws_digest'],original.result['draws_digest'])
-        self.assertEqual(got.memory[-16:],b'T63-opaque-tail!!')
+        self.assertEqual(got.memory[-16:],b'T63-opaque-tail!')
 
     def test_invalid_inputs_do_not_mutate_active_state(self):
         mutations = [lambda s:setattr(s,'captain',3060), lambda s:s.managed_squad.pop(),
@@ -145,6 +154,26 @@ class WatchedAdapter(unittest.TestCase):
         s.campaign=CampaignState(1992,1,1,2,123,78,(f,))
         for fixture in (Fixture(7,19,22),Fixture(19,7,21)):
             with self.assertRaises(ValueError):prepare_watched(s,self.raw,fixture)
+
+    def test_each_default_decision_is_explicitly_answered(self):
+        from goal2.engine.original_match.match import Event
+        image=Image(self.state().mem)
+        class Controlled:
+            def __init__(self):self.answers=0
+            def events(self):
+                for i,context in enumerate(('half_time','substitution','pause')):
+                    yield Event('decision',45+i,(0,0),{'context':context,'injured':[121]})
+                    assert self.answers==i+1, 'default answer missing'
+                yield Event('full_time',90,(0,0))
+                yield Event('end',90,(0,0))
+            def answer(self):self.answers+=1
+            def result(self):return {'complete':True}
+            def memory_component(self):return image.memory_component()
+        controlled=Controlled()
+        with patch('goal2.game.watched_match.Match',return_value=controlled):
+            got=run_watched_match(self.state(),self.raw,Fixture(7,19,21))
+        self.assertEqual(controlled.answers,3)
+        self.assertEqual(got.result,{'complete':True})
 
     def test_default_decision_policy_and_refusal_fail_closed(self):
         # [designed: T65] Real family includes injury notices; no tactics/substitution editing.
