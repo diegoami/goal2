@@ -61,8 +61,8 @@ uninterrupted two-fixture continuations compare complete state.
 
 [designed: T45] Current campaigns retain twenty squad and eighty disjoint reserve
 identities; the national-pool confidence/recovery prefix lives in campaign_pool.py;
-T44 now applies current-squad B27F and availability gates; competitive event
-production remains T51. The energy-only public adapter
+T44 now applies current-squad B27F and availability gates; [designed: T51] the separate original competitive adapter carries incidents
+and its complete original tail in Memory without applying this Python quick tail. The energy-only public adapter
 can still run without confidence; the campaign quick runner requests the joint
 ordered path. No whole original fixture-tail RNG parity is claimed. The saved
 `campaign_energy` marker retains its earlier fields and adds `confidence_draws`.

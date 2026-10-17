@@ -59,14 +59,18 @@ class World:
             keys={'fixture_id','teams','score','winner','mode','seed_before','seed_after','draws'}
             is_watched=isinstance(row,dict) and row.get('mode')=='watched'
             if is_watched:
-                from goal2.game.watched_schema import ENGINE_IDS, RESULT_SCHEMA
+                from goal2.game.watched_schema import ENGINE_IDS, RESULT_SCHEMA, COMPETITIVE_SCHEMA, ENGINE_ID, validate_resolution
                 scheduled=next((f for f in campaign.fixtures if f.fixture_id==fixture.fixture_id),None)
                 expected_year=((2*(scheduled.cycle-1)+int(scheduled.stage>=5)-int(campaign.start_year%4==2))&65535
                                if scheduled is not None else None)
                 watched_keys={'fixture_id','teams','score','winner','mode','engine','schema','seed_before',
                     'seed_after','secondary_after','engine_year','index','setup_seed'}
+                if row.get('schema')==COMPETITIVE_SCHEMA:
+                    watched_keys|={'resolution'}
+                    if row.get('engine')!=ENGINE_ID:raise ValueError('competitive world requires current original engine')
+                    validate_resolution(row.get('resolution'),row.get('score'),fixture.kind)
                 if (set(row)!=watched_keys or row['engine'] not in ENGINE_IDS
-                        or type(row['schema']) is not int or row['schema']!=RESULT_SCHEMA
+                        or type(row['schema']) is not int or row['schema'] not in (RESULT_SCHEMA,COMPETITIVE_SCHEMA)
                         or not integer(row['secondary_after'],0,65535) or not integer(row['engine_year'],0,65535)
                         or row['engine_year']!=expected_year
                         or not integer(row['index'],1,2400) or fixture.fixture_id!=f"original:{row['index']}"
@@ -88,9 +92,12 @@ class World:
             a,b=row['score'];winner=2 if a==b else int(b>a)
             decider=fixture.kind==4 or 8<=fixture.kind<=203
             if (a!=b or not decider) and row['winner']!=winner:raise ValueError('world result winner differs from score')
-            if a==b and decider and row['winner']==2:raise ValueError('silent decider needs its winner coin')
+            if a==b and decider and row['winner']==2:raise ValueError('decider needs its original or silent winner')
+            if is_watched and row['schema']==COMPETITIVE_SCHEMA and row['winner']!=row['resolution']['winner']:
+                raise ValueError('world winner differs from competitive resolution')
             if expected=='managed':
-                if fixture.kind!=1:raise ValueError('unsupported managed fixture completed')
+                if fixture.kind!=1 and not (is_watched and row['schema']==COMPETITIVE_SCHEMA):
+                    raise ValueError('unsupported managed fixture completed')
                 managed_ids.append(fixture.fixture_id)
             seed=row['seed_after']
         if managed_ids!=campaign.completed_fixture_ids:raise ValueError('world and managed completion ledgers differ')
@@ -105,7 +112,8 @@ class World:
             from goal2.game.watched_schema import watched
             if (match is None or match['teams']!=row['teams'] or match['score']!=row['score']
                     or watched(row)!=(match['mode']=='watched')
-                    or (watched(row) and row['engine']!=match['engine'])):
+                    or (watched(row) and row['engine']!=match['engine'])
+                    or (watched(row) and (row['schema']!=match['schema'] or row.get('resolution')!=match.get('resolution')))):
                 raise ValueError('managed score differs from world result')
         return seed
 
@@ -148,13 +156,17 @@ def silent_until_managed(state,template,resolver_factory):
         append_result(state,fixture,resolver(fixture,state.rng_seed_7b62),'silent')
 
 
-def prepare(state,template,*,resolver_factory=SilentResolver):
+def prepare(state,template,*,resolver_factory=SilentResolver,competitive=False):
     """[designed] Pure atomic prefix; only caller-owned candidates leave this seam."""
     candidate = copy.deepcopy(state)
     validate_state(candidate)
     if candidate.campaign is not None and candidate.campaign.world is not None:
         pending=candidate.campaign.next_fixture
-        if pending is None or pending.kind!=1:raise ValueError('unsupported managed fixture')
+        allowed=(1,)
+        if competitive:
+            from goal2.engine.original_match.match import KINDS
+            allowed=tuple(k for k in KINDS if k!=1)
+        if pending is None or pending.kind not in allowed:raise ValueError('unsupported managed fixture')
         silent_until_managed(candidate,template,resolver_factory)
         world=candidate.campaign.world
         if len(world.results)>=len(world.fixtures) or world.fixtures[len(world.results)].fixture_id!=pending.fixture_id:
