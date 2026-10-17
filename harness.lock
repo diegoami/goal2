@@ -67,7 +67,7 @@ cc5bb387f93881f5ff970293c601995b254b94024713e175dbec38854d58dc99  tools/harness/
 local tools/harness/probe-opencode.mjs  (T72a explicit protocol contract and offline validation)
 085d1abf1b031c39ce0fc15247d340946d58ca1b23a7c4f2dae702c6ba7947e0  tools/harness/probe-opencode.mjs
 local tests/opencode_protocol.test.mjs  (T72a explicit protocol contract and offline validation)
-4f5fab9299f1ee211aca9def7e191458e3deef91a072d6200a5e25ebb8408450  tests/opencode_protocol.test.mjs
+11382b6cc21a17164b6d7619c391b3ada4aeb92560e2c6f90ca816e6d8c7bd54  tests/opencode_protocol.test.mjs
 local tools/check_premerge.py  (T72a explicit protocol contract and offline validation)
 f6b0324a84b481f845523a970685ed6db24518f4dd288d61ca943e4b8749b062  tools/check_premerge.py
 local tests/test_local_validation.py  (T72a explicit protocol contract and offline validation)

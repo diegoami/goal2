@@ -82,6 +82,20 @@ test('full text usage and rejected tool outcomes survive both protocols', () => 
     assert.match(normalized.messages[0].parts[2].error.message, /rejected permission/);
     assert.equal(normalized.messages[0].parts[3].status, 'completed');
     assert.equal(normalized.messages[0].parts[1].text, 'private reasoning sample');
+    const multiple = fixture(`v${major}-synthetic-export.json`);
+    const next = copy(multiple.messages[0]);
+    if (major === 2) { next.id = 'msg_fixture_final'; multiple.messages[0].finish = 'tool-calls'; }
+    else {
+      next.info.id = 'msg_fixture_final'; multiple.messages[0].info.finish = 'tool-calls';
+      for (const part of next.parts) part.messageID = next.info.id;
+    }
+    multiple.messages.push(next);
+    const both = p.normalizeSession(major, multiple, expected);
+    assert.equal(both.assistantText, normalized.assistantText.repeat(2), 'all assistant messages must survive');
+    assert.equal(both.completed, true, 'final stop completes a tool-call sequence');
+    const user = major === 2 ? { id: 'msg_fixture_later_user', type: 'user' } : { info: { id: 'msg_fixture_later_user', sessionID: expected.sessionID, role: 'user' }, parts: [] };
+    multiple.messages.push(user);
+    assert.equal(p.normalizeSession(major, multiple, expected).completed, false, 'later user input is not completed by prior approval');
   }
 });
 test('wrong session directory agent model and effort fail closed', () => {
@@ -172,6 +186,7 @@ test('mutation controls fail specific identity and rejection assertions', () => 
     { name: 'unfinished-completion', before: "assistants.at(-1).finish === 'stop'", after: 'true', pattern: 'actual v1 step metadata', assertion: /tool-calls is not final completion/ },
     { name: 'assistant-error-loss', before: '!assistants.some((m) => m.error)', after: 'true', pattern: 'actual v1 step metadata', assertion: /unfinished or assistant error must not complete/ },
     { name: 'step-metadata-loss', before: 'return structuredClone(part);', after: 'return { type: part.type };', pattern: 'actual v1 step metadata', assertion: /deep-equal|deeply|strictly deep/ },
+    { name: 'earlier-assistant-loss', before: "const assistants = normalized.filter((m) => m.type === 'assistant');", after: "const assistants = normalized.filter((m) => m.type === 'assistant').slice(-1);", pattern: 'full text usage and rejected tool outcomes', assertion: /all assistant messages must survive/ },
     { name: 'text-loss', before: ".filter((p) => p.type === 'text').map((p) => p.text)", after: ".filter((p) => p.type === 'text').slice(-1).map((p) => p.text)", pattern: 'full text usage and rejected tool outcomes', assertion: /complete assistant text/ },
   ];
   const results = [];

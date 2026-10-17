@@ -58,3 +58,5 @@ Primary references: [migration](https://opencode.ai/v2/docs/migrate-v1/),
 [confirmed: mutation-controls-20261017.json] Six deliberate losses (identity checks, rejection, complete text, final-stop completion, assistant-error gating, step metadata) each fail a specific assertion with child exit1. Tests clear inherited Node test-runner context so child checks execute; neither timeout nor module/syntax errors count as successful controls.
 
 [confirmed: v1-help-run.json, v1-primary-schema-fragments.json] The retained v1 CLI advertises separate --dir/--variant; primary v1 schema fragments pin full assistant metadata and step/tool records. The actual v1 database projection and synthetic records have distinct provenance. Final probe evidence is retained in probe-20261017-final with the matching source hash.
+
+[confirmed: mutation-controls-final-20261017.json] The final control batch additionally removes earlier assistant messages and fails the complete-transcript assertion. Both protocols preserve all assistant text across a tool-call sequence followed by a final stop; later user input leaves completion false.
