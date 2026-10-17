@@ -67,7 +67,7 @@ choose its implementer; choose its independent reviewer for its validated PR.
 | 2 | [T63](tasks/T63.md) / [#133](https://github.com/diegoami/goal2/issues/133) — Adapt state/fixture/result | Medium | T62 |
 | 3 | [T64](tasks/T64.md) / [#134](https://github.com/diegoami/goal2/issues/134) — Atomic publication and compatible saves | Medium | T63 |
 | 4 | [T65](tasks/T65.md) / [#135](https://github.com/diegoami/goal2/issues/135) — Worker and progress | Medium | T64 |
-| 5 | [T66](tasks/T66.md) / [#136](https://github.com/diegoami/goal2/issues/136) — Original friendly in desktop | Medium | T65, T70 |
+| 5 | [T66](tasks/T66.md) / [#136](https://github.com/diegoami/goal2/issues/136) — Pygame original-friendly view from Qt | Medium | T65, T70 |
 
 ## State and scope rules
 
@@ -117,7 +117,8 @@ Further whole-core adoption remains an owner decision; campaign work continues u
 
 [designed: owner #148; T68] The desktop pivot preserves T60–T64 evidence and
 state contracts. T65 uses a local process and IPC, with no HTTP session layer;
-T66 joins it to T70's Qt loop. The engine kit comes first on this track, while
+T66 joins it to T70's Qt management and a separate Pygame match window
+(owner choice, 2026-10-17), with Qt retaining active state and saves. The engine kit comes first on this track, while
 portable campaign work continues. The historical browser estimate is not a new
 Qt estimate. Distribution is wanted but small, last and unscheduled (#130/#148):
 deliver the image from the private release at package build time, never git.

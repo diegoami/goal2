@@ -1,7 +1,9 @@
 # Desktop UI roadmap
 
 [designed: owner #148, 2026-10-16; session choice] The primary app uses PySide6
-with ordinary Qt widgets. This supersedes the browser direction; T34–T38 remain
+with ordinary Qt management widgets. [designed: owner, 2026-10-17] A separate
+Pygame match view consumes original engine events; keep Qt management and saves.
+This amends the earlier all-Qt match-view choice and supersedes the browser direction; T34–T38 remain
 historical contracts, not tasks to reopen. Reuse Python game logic, state adapters,
 the evidence register and saves. The web layer is not reused. No HTTP server,
 network sessions or hosting is needed. A web demo is an optional later owner choice.
@@ -17,12 +19,13 @@ GitHub labels carry status. Each task receives its own preflight and PR.
 | [T69](tasks/T69.md) | Desktop country, squad, XI/captain/tactics, eligibility/morale, save/resume | Medium | T44 |
 | [T70](tasks/T70.md) | Desktop quick friendly and scheduled campaign play/result/repeat through a process worker | Medium | T69 |
 | [T71](tasks/T71.md) | Search/filter the 80 reserves, exchange with the 20-player squad and continue in desktop | Medium | T45, T70 |
-| [T66](tasks/T66.md) | Original watched friendly with real events/results, save and repeat | Medium | T65, T70 |
+| [T66](tasks/T66.md) | Pygame original-friendly view from Qt management, real events/results, save and repeat | Medium | T65, T70 |
 
 [designed] T45 and T46 keep progressing independently of kit acceptance and desktop
 migration. The later UI-bearing campaign tasks require T71 through T47; their
 rule dependencies stay intact. T62–T64 acceptance/adapter/publication do not depend
-on Qt. T65 supplies a UI-independent process bridge; T66 joins that bridge to Qt.
+on Qt. T65 supplies a UI-independent process bridge; T66 connects it to a separate Pygame
+match window while Qt retains state/publication and management.
 The engine kit acceptance sequence remains first on the original-engine track.
 
 ## Execution and state ownership
@@ -30,8 +33,9 @@ The engine kit acceptance sequence remains first on the original-engine track.
 [designed: #148] Keep match computation outside the Qt UI thread. Default to a
 separate process: whether Unicorn releases Python's GIL has not been established.
 The engine runs locally within the worker process. IPC carries ordered events,
-answers and completion/failure; the Qt receiver forwards them as signals on the
-UI thread. Match workers receive a candidate snapshot, never shared mutable active
+answers and completion/failure. Qt retains publication on its UI thread and forwards
+read-only presentation packets to the separate Pygame window. Neither redraws
+nor playback timing may change engine inputs, RNG or publication. Match workers receive a candidate snapshot, never shared mutable active
 state. One current job token permits one publication; ignore stale completions.
 Keep controls responsive and the previous committed state/save intact on failure.
 Process shutdown/cancellation and application close must be bounded and tested.
@@ -68,3 +72,23 @@ Native mobile is outside this desktop plan until a separately chosen exact port;
 a phone web demo is optional, not a desktop acceptance requirement.
 
 [designed: T69] The [desktop management guide](desktop-management.md) defines the shell launch, optional dependency and direct-Python management/save boundary. Match execution, pool controls and watched integration retain their separate task contracts.
+
+## Gradual Pygame match view
+
+[designed: owner, 2026-10-17] T66 first displays real minute, score, commentary
+and original result boards in a separate pygame-ce window launched from Qt.
+Keep the management screens and save/resume ownership in Qt. T65 supplies ordered
+original events, default answers and a completed outcome; the viewer never runs a
+second match or publishes state. Test both process lifecycles and stale/duplicate
+messages, with optional dependencies and headless/real-window checks.
+
+[confirmed: accepted kit at424d599, `Match.pitch()`, F013] The kit exposes 22 player
+records and ball coordinates, labeling their pitch interpretation likely.
+[designed] A later bounded pitch-view slice must validate the coordinate transform,
+orientation and sampling cadence against original output before claiming animation
+fidelity. Presentation interpolation must be labeled and cannot alter engine behavior.
+
+[derived: official pygame-ce documentation, checked 2026-10-17]
+[pygame-ce](https://pyga.me/docs/) supplies display, drawing, fonts, events and sprites
+for a Python 2D viewer. The implementation preflight selects/tests its optional
+version; this plan does not claim the dependency or viewer has shipped.
