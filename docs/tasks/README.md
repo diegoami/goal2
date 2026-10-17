@@ -90,3 +90,12 @@ Historical browser contracts T34–T38 are preserved; these are separate impleme
 | [T69](T69.md) | Desktop country and management shell | [#149](https://github.com/diegoami/goal2/issues/149) | Medium | T44 |
 | [T70](T70.md) | Desktop quick friendly and campaign loop | [#150](https://github.com/diegoami/goal2/issues/150) | Medium | T69 |
 | [T71](T71.md) | Desktop national pool controls | [#151](https://github.com/diegoami/goal2/issues/151) | Medium | T45, T70 |
+
+## OpenCode 2 migration
+
+[designed: owner #168,2026-10-17] Protocol acceptance precedes the runtime cutover.
+
+| Task | Title | Issue | Difficulty | Merge after |
+| --- | --- | --- | --- | --- |
+| [T72a](T72a.md) | Pin OpenCode 2 protocol fixtures and adapter contract | [#173](https://github.com/diegoami/goal2/issues/173) | Hard | Existing reviewed harness |
+| [T72](T72.md) | Migrate review launch, monitoring and recovery to OpenCode 2 | [#168](https://github.com/diegoami/goal2/issues/168) | Hard | T72a |
