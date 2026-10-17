@@ -293,3 +293,31 @@ suite passes473 tests with no skips. All12 publication/save mutation controls,
 all6 browser scenarios and both retained Qt flows pass. Commands, durations,
 log digests, baseline failures and scope are recorded in
 [evidence/T64-watched-publication.json](evidence/T64-watched-publication.json).
+
+## Kit2 friendly application compatibility
+
+[designed: T51a] Completed application saves keep version3 and result-envelope
+schema1. The accepted engine identities are explicit:
+`original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1` for historical kit1
+results, and `original-match:424d5998076da1e4efc399c2715689ddb44d3e1a:2` for
+current kit2 results. Publication derives the identity from the validated actual
+result profile. Loading checks that the envelope matches that profile, and that
+world/history/envelope identities agree for each shared fixture. Historical
+results and their fields are retained unchanged.
+
+[derived: PR255 _competitive; designed: T51a prerequisite boundary] The current
+application profile accepts kind1 only: no extra time or shoot-out, original
+default budget5/5, a winner consistent with the friendly score, and40 distinct
+player consequence records with typed before/after bytes and consistent status
+flags. Kit1 keeps its original exact field profile; kit2 requires its seven
+additional fields. Existing board/incident/decision/input schemas and returned
+Memory/RNG/source checks apply to both. Competitive application profiles and
+owner substitution-budget routing remain T51.
+
+[designed: T51a] Run `python3 -m unittest goal2.tests.test_watched_kit_identity -v`
+for pure profile/publication/mixed-ledger controls. Reproduce genuine historical
+standalone and campaign saves with `python3 tools/export_watched_legacy.py --source
+<full-reviewed-T64-commit>` after T64 acceptance. The tool exports that immutable
+application into ignored `.cache/`, retains its source/input/output hashes, and
+never runs in or changes another task worktree. Original inputs and generated
+application saves remain ignored.
