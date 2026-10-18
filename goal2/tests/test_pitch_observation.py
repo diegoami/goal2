@@ -11,6 +11,7 @@ import subprocess
 import sys
 import time
 import unittest
+from types import SimpleNamespace
 
 from tools import probe_watched_pitch as probe
 
@@ -40,6 +41,18 @@ class ProjectionTests(unittest.TestCase):
         # [designed] A changed player word is an identity rebind, never a shirt.
         row = probe.project_player(dict(slot=1, player=999, x=0, y=0, state=1), 11)
         self.assertEqual((row['number'], row['player']), (1, 999))
+
+    def test_half_selector_and_terminal_boundaries(self):
+        for threshold, remaining, flag in [(45, 91, 1), (45, 46, 1), (45, 45, 0),
+                                            (45, 44, 0), (255, 0, 1), (128, 0, 1)]:
+            self.assertEqual(probe.attack_selector(threshold, remaining), flag, 'original half selector')
+        for kind, data, expected in [('tick', {}, True), ('half_time', {}, True),
+                                      ('decision', {'context': 'half_time'}, True),
+                                      ('end', {}, False), ('full_time', {}, False),
+                                      ('commentary', {}, False),
+                                      ('decision', {'context': 'substitution'}, False)]:
+            event = SimpleNamespace(kind=kind, data=data)
+            self.assertEqual(probe.observe_boundary(event), expected, 'completed pitch boundary')
 
     def test_predicates_are_not_lifecycle_clamps(self):
         for x, y, inside in [(8, 37, True), (-8, -37, True), (9, 37, False),
@@ -92,7 +105,7 @@ class FidelityTests(unittest.TestCase):
 
 class ReportTests(unittest.TestCase):
     def test_retained_full_cases(self):
-        report = json.loads((EVIDENCE / 'runtime-01.json').read_text())
+        report = json.loads((EVIDENCE / 'runtime-02.json').read_text())
         self.assertEqual(report['source']['pin'], '424d5998076da1e4efc399c2715689ddb44d3e1a')
         self.assertEqual(report['inputs']['seeds'], [257, 4660])
         self.assertEqual(report['inputs']['fixture'], [7, 19, 21])
@@ -133,6 +146,10 @@ class SavedByteControls(unittest.TestCase):
         folder = EVIDENCE / ('controls-' + str(time.time_ns()))
         folder.mkdir()
         mutations = [
+            ('half-unsigned', 'return int(signed(threshold) < remaining)', 'return int(threshold < remaining)',
+             'ProjectionTests.test_half_selector_and_terminal_boundaries', 'original half selector'),
+            ('terminal-pose', "event.kind in ('tick', 'half_time')", "event.kind in ('tick', 'half_time', 'end')",
+             'ProjectionTests.test_half_selector_and_terminal_boundaries', 'completed pitch boundary'),
             ('inverted-axes', 'return [y, x]', 'return [x, y]',
              'ProjectionTests.test_signed_draw_axes', 'original draw axes'),
             ('inverted-identity', 'team = 1 if slot <= 11 else 0', 'team = 0 if slot <= 11 else 1',

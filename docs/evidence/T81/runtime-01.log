@@ -1,0 +1,16 @@
+completed seed=0x0101 sampled=False ticks=4279
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/tools/probe_watched_pitch.py", line 257, in <module>
+    main()
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/tools/probe_watched_pitch.py", line 253, in main
+    verify(args.output)
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/tools/probe_watched_pitch.py", line 235, in verify
+    observed, o_report = run_case(raw, seed, True)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/tools/probe_watched_pitch.py", line 167, in run_case
+    frame = snapshot(match, event, stats['ticks'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/tools/probe_watched_pitch.py", line 124, in snapshot
+    assert item['player'] == squads[item['team']][item['number'] - 1], 'current squad identity mapping differs'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: current squad identity mapping differs

@@ -34,11 +34,12 @@ IMAGE_NAME = 'e0afff6751747233-e006-1000-r0001.sav'
 IMAGE_SHA = 'e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d'
 DAT_SHA = 'bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca'
 STATIC = {
-    'static/goal-exe/named/seg_0791_02.c': ['718-724: slot side', '896-940: local slot and attack sign'],
+    'static/goal-exe/named/seg_0791_02.c': ['357-497: sorting and rebind', '718-724: slot side', '896-940: local slot and attack sign'],
     'static/goal-exe/named/seg_0791_07.c': ['352-449: movement/restart', '465-480: player draw', '904-931: ball draw'],
     'static/goal-exe/named/seg_0791_08.c': ['252-295: clock', '445-446: clock setup', '810-868: binding/initialization'],
     'static/goal-exe/named/seg_0791_09.c': ['4-49: pitch background loading'],
-    'static/goal-exe/code/seg_0791_05.asm': ['535-598: signed predicates'],
+    'static/goal-exe/code/seg_0791_05.asm': ['2BE5-2C26: signed-byte half selector', '535-598: signed predicates'],
+    'static/goal-exe/named/seg_0791_10.c': ['434-504: substitution refresh and sort'],
 }
 
 
@@ -97,9 +98,24 @@ def predicate(x, y, bounds):
     return abs(x) <= bounds[0] and abs(y) <= bounds[1]
 
 
+def observe_boundary(event):
+    """[designed: T81] Terminal teardown is not a completed pitch frame.
+
+    [confirmed: runtime identity-diagnostic-01.log] After all4279 original ticks,
+    end exposes re-sorted squads alongside stale pitch bindings. Keep last tick.
+    """
+    return (event.kind in ('tick', 'half_time') or
+            event.kind == 'decision' and event.data.get('context') == 'half_time')
+
+
+def attack_selector(threshold, remaining):
+    """[confirmed: kit424d599, 2BE5-2C26] Byte sign extends before comparison."""
+    return int(signed(threshold) < remaining)
+
+
 def source_receipt():
     """[designed] Hash upstream evidence without retaining original source bytes."""
-    return dict(pin=SOURCE, files={path: dict(sha256=sha(source_bytes(path)), citations=cites)
+    return dict(pin=SOURCE, observer_sha256=sha(Path(__file__).read_bytes()), files={path: dict(sha256=sha(source_bytes(path)), citations=cites)
                                  for path, cites in STATIC.items()},
                 vendor_files_verified=verify_vendor())
 
@@ -121,7 +137,7 @@ def snapshot(match, event, sequence):
         raw = m.read(m.DS * 16 + PITCH + PITCH_SIZE * item['slot'], PITCH_SIZE)
         assert raw[6] == item['slot'], 'slot byte identity differs'
         assert item['player'] == int.from_bytes(raw[13:15], 'little'), 'player word differs'
-        assert item['player'] == squads[item['team']][item['number'] - 1], 'current squad identity mapping differs'
+        assert item['player'] == squads[item['team']][item['number'] - 1], 'current squad identity mapping differs: ' + json.dumps(dict(sequence=sequence, kind=event.kind, minute=event.minute, item=item, squads=squads))
         assert item['team'] == raw_item['team'], 'accessor team differs from original slot binding'
         assert (item['x'], item['y']) == (signed(raw[0]), signed(raw[1])), 'signed coordinates differ'
         assert item['screen'] == [signed(raw[1]), signed(raw[0])], 'original draw axes differ'
@@ -129,8 +145,8 @@ def snapshot(match, event, sequence):
     ball_raw = m.read(m.DS * 16 + BALL, 2)
     ball = [signed(pitch['ball'][0]), pitch['ball'][1]]
     assert ball == [signed(ball_raw[0]), signed(ball_raw[1])], 'ball signed coordinates differ'
-    threshold, remaining = m.rd(0x8319), m.rd(0x831B)
-    half_flag = int((threshold - 65536 if threshold > 32767 else threshold) < remaining)
+    threshold, remaining = m.rd(0x8319, 1), m.rd(0x831B)
+    half_flag = attack_selector(threshold, remaining)
     table = [signed(value) for value in m.read(m.DS * 16 + 0x7920, 2)]
     return dict(sequence=sequence, stopped_at=event.kind, event_minute=event.minute,
                 subtick=m.rd(0x831D), threshold=threshold, remaining=remaining,
@@ -162,13 +178,14 @@ def run_case(raw, seed, sampled):
         events.append(asdict(event))
         # [designed] Frames only at completed original tick boundaries. Event
         # transitions below are explicitly labelled stopped-state diagnostics.
-        if sampled and (event.kind == 'tick' or event.kind in ('half_time', 'end') or
-                        event.kind == 'decision' and event.data.get('context') == 'half_time'):
+        if sampled and observe_boundary(event):
             frame = snapshot(match, event, stats['ticks'])
             if event.kind != 'tick':
                 transitions.append(dict(reason='event stopped state; not a historical event pose', sample=frame))
             else:
                 stats['ticks'] += 1
+                if stats['ticks'] % 1000 == 0:
+                    print(f'observed seed={seed:#06x} ticks={stats["ticks"]} minute={event.minute}', flush=True)
                 stats['repeated_reads'] += 1
                 flags.add(frame['half_flag'])
                 minutes.add(frame['event_minute'])
@@ -207,7 +224,7 @@ def run_case(raw, seed, sampled):
         assert stats['player_changes'] > 0 and stats['ball_changes'] > 0, 'movement not observed'
         assert any(t['reason'] == 'adjacent tick half flag change' for t in transitions), 'half transition absent'
     report = dict(seed=seed, sampled=sampled, seconds=round(time.monotonic()-start, 3),
-                  outcome=outcome_summary(outcome))
+                  outcome=outcome_summary(outcome), terminal_event_minute=events[-1]['minute'])
     if sampled:
         report.update(counts=stats, extrema=extrema, half_flags=sorted(flags),
                       first=first, last=last, transitions=transitions,

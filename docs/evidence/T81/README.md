@@ -135,3 +135,24 @@ mapping, team mapping and sampled canonical outcome in turn. A subprocess must
 fail the intended assertion (not ERROR/import/timeout), then the tool's exact
 saved bytes are restored in `finally`. Each invocation retains separate logs
 and source-before/mutated/restored hashes under `controls-<time_ns>/`.
+
+[confirmed: T81 `identity-diagnostic-01.log` at this kit pin] The rejected first
+full collection reached all4279 ticks for seed0x0101, then failed the ordinal
+squad-binding assertion at `end`/minute93: pitch slot3 still held player364,
+while the final squad's third word was374 (364 moved to fourth). This is a
+postmatch stopped state, not a failed tick frame. [derived] Pitch bindings must
+not be projected against postmatch squads after teardown. The observer retains
+the last completed tick as its final frame and records terminal event minute
+separately; `end`/`full_time` are not sampled frames. This corrects the overly broad
+decisions/end diagnostic wording above: only halftime decisions are diagnostic
+pose reads. All completed ticks retain strict raw word/current squad ordinal,
+team and signed-coordinate assertions; no runtime tick is omitted.
+
+[designed] Trustworthy marker placement/visibility has no unresolved gate for
+the two evidenced friendly cases: signed fixed axes, current word/team/slot,
+original draw sentinel and completed-tick boundaries are concrete. Unresolved
+original decorative field/net artwork constrains exact original reproduction,
+not a labelled rebuild-designed modern field. Other raw state semantics are
+preserved rather than guessed; no state-based culling is authorized. Slot
+numbering remains explicit, and per-frame identity rebinds invalidate any
+interpolation that would blend different players through a slot.
