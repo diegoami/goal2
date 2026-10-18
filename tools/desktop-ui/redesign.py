@@ -379,6 +379,8 @@ def overview(args):
                     w.resize(width,height);QTest.qWait(80);page=w.pages[0]
                     assert (w.width(),w.height())==(width,height),'shell minimum size exceeds target'
                     assert page.horizontalScrollBar().maximum()==0,'overview needs horizontal scrolling'
+                    for label in (w.title,w.context):
+                        assert label.height()>=label.heightForWidth(label.width()),'country identity/context clips wrapped text'
                     for widget in (w.overview_country_identity,w.overview_fixture,w.overview_result,w.overview_return,w.new,w.friendly):
                         page.ensureWidgetVisible(widget,0,0);app.processEvents()
                         origin=widget.mapTo(page.viewport(),QPoint(0,0))
@@ -406,7 +408,16 @@ def overview(args):
             assert m.state.managed_country==4 and w.preview is None and encode(m.state,m.template_bytes)==encoded and save.read_bytes()==saved
             assert w.overview_country_identity.text().startswith(m.view()['country_name'])and w.overview_result.text()=='Quick simulation (rebuild setup)\n'+m.result_text()
             assert w.title.text()==m.view()['country_name'] and w.selected_ids()==m.state.starting_eleven
-            w.navigate(0);w.pages[0].ensureWidgetVisible(w.overview_result);app.processEvents();assert w.grab().save(str(out/'completed-result.png'))
+            w.navigate(0);app.processEvents();page=w.pages[0]
+            result_panel=w.overview_result.parentWidget()
+            page.ensureWidgetVisible(result_panel,0,0);app.processEvents()
+            origin=result_panel.mapTo(page.viewport(),QPoint(0,0))
+            assert origin.x()>=0 and origin.x()+result_panel.width()<=page.viewport().width(),'completed result clipped horizontally'
+            assert origin.y()>=0 and origin.y()+result_panel.height()<=page.viewport().height(),'completed result card is not fully reachable'
+            assert w.overview_result.height()>=w.overview_result.heightForWidth(w.overview_result.width()),'completed result clips wrapped text'
+            r['completed_result_geometry']={'origin':[origin.x(),origin.y()],'size':[result_panel.width(),result_panel.height()],
+                                             'viewport':[page.viewport().width(),page.viewport().height()]}
+            assert w.grab().save(str(out/'completed-result.png'))
             r['captures'].append({'path':'completed-result.png','sha256':digest(out/'completed-result.png'),'context':'completed result restored'})
             r['result']='PASS';r['invalid_draft_return']=True;r['explicit_campaign_friendly_resume']=True;r['completed_result_restored']=True
             w.close();app.processEvents()
