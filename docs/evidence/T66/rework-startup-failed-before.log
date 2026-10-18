@@ -1,0 +1,33 @@
+test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) ... 
+  test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='folder') ... FAIL
+  test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='display') ... FAIL
+  test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='errors') ... FAIL
+
+======================================================================
+FAIL: test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='folder')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 242, in test_partial_startup_allocation_cleanup_and_retry_preserve_save
+    self.assertIsInstance(error,ValueError,'startup allocation did not report actionable error')
+AssertionError: OSError('simulated folder allocation failure') is not an instance of <class 'ValueError'> : startup allocation did not report actionable error
+
+======================================================================
+FAIL: test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='display')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 242, in test_partial_startup_allocation_cleanup_and_retry_preserve_save
+    self.assertIsInstance(error,ValueError,'startup allocation did not report actionable error')
+AssertionError: OSError('simulated display allocation failure') is not an instance of <class 'ValueError'> : startup allocation did not report actionable error
+
+======================================================================
+FAIL: test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='errors')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 242, in test_partial_startup_allocation_cleanup_and_retry_preserve_save
+    self.assertIsInstance(error,ValueError,'startup allocation did not report actionable error')
+AssertionError: OSError('simulated errors allocation failure') is not an instance of <class 'ValueError'> : startup allocation did not report actionable error
+
+----------------------------------------------------------------------
+Ran 1 test in 0.994s
+
+FAILED (failures=3)

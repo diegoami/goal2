@@ -1,0 +1,59 @@
+{
+  "evidence": "[designed: T66] Bounded startup-allocation rework; original bytes excluded.",
+  "source_commit": "d8b90451a72295732eb4808c9606b74017dfd24e",
+  "implementation_commit": "3798534d570c85d574f1068a9d2fa6359c763999",
+  "accepted_main_merged": "7cb1a00d7d657380888795a419d4c47a7085f322",
+  "files_sha256": {
+    "goal2/desktop/watched.py": "6b5d939ad3db36ab22d7e3e56e21c936275ff8bb87d2a579f2fc497223a6b398",
+    "goal2/tests/test_pygame_match_view.py": "b2ae04c56c1f1be4f12f4dbeebe55a59fb6d0716377c8ca2086fb0c46c74cf14",
+    "docs/evidence/T66/startup_controls.py": "90994e9d89585a7c8dad45cdea8cba096af50061fd8040c86399efe31467cab1",
+    "goal2/desktop/window.py": "9ad358b09715e250e4377a8fd15b98607425f4050203d247668ddb010b9d3fa0",
+    "docs/desktop-management.md": "078323d997ce4901ef358fef35c4f2531fc48909dd3383156402e2a54dde86a3"
+  },
+  "scope": [
+    "Initialize optional stream/error/directory handles",
+    "Protect folder/stream startup allocations with existing actionable-error path",
+    "Null-safe idempotent cleanup with all acquired resources released",
+    "Failure/retry state and committed save-byte preservation"
+  ],
+  "failed_before": {
+    "source": "a9d1d5462801e9a91925cd821c06f1b35641e084",
+    "log": "rework-startup-failed-before.log",
+    "result": "three intended assertion failures for folder/display/errors allocation; no ERROR/module absence/timeout"
+  },
+  "focused": {
+    "command": "python3 -B -m unittest goal2.tests.test_pygame_match_view -v",
+    "log": "rework-focused-01.log",
+    "tests": 10,
+    "seconds": 61.412,
+    "skips": 0,
+    "result": "PASS"
+  },
+  "qt": {
+    "command": "python3 tools/desktop-ui/watched.py",
+    "log": "rework-qt-01.log",
+    "result": "PASS exact standalone Qt original/save/resume/repeat acceptance"
+  },
+  "environment": "SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen TMPDIR=<physical task .cache/tmp>",
+  "startup_controls": {
+    "command": "python3 docs/evidence/T66/startup_controls.py <new-output-directory>",
+    "report": "startup-controls-01/controls.json",
+    "log": "startup-control-runner-01.log",
+    "count": 3,
+    "result": "all intended FAIL assertions, no ERROR/module absence/timeout; automatic cleanup, stream release, saved bytes",
+    "restoration": "current physical source bytes verified equal committed source after each control"
+  },
+  "prior_independent_review": {
+    "head": "a9d1d5462801e9a91925cd821c06f1b35641e084",
+    "model": "owner-selected MiniMax M3 thinking",
+    "verdict": "approve, no findings; main separately required startup rework",
+    "decision": "https://github.com/diegoami/goal2/pull/190#issuecomment-6247660398",
+    "main_finding": "https://github.com/diegoami/goal2/pull/190#issuecomment-6247591108",
+    "carried_scope": "49 Python regressions, five Qt scenarios, browser, native SDL and nine controls independently passed at prior head; not rerun or relabelled as current-head results"
+  },
+  "preservation": [
+    "Accepted #164 tactic labels and #184 successful New/Resume replacement paragraph retained by ordinary merge",
+    "Accepted #165 parser inherited unchanged",
+    "No engine/vendor edits or original bytes committed; Windows launchers/saves/worktrees retained"
+  ]
+}

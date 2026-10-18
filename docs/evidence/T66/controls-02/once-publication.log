@@ -1,0 +1,18 @@
+test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 243, in test_original_qt_save_resume_repeat
+    acceptance['main']()
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/tools/desktop-ui/watched.py", line 78, in main
+    else:raise AssertionError('Consumed original completion published twice')
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Consumed original completion published twice
+
+----------------------------------------------------------------------
+Ran 1 test in 21.637s
+
+FAILED (failures=1)
