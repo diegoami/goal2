@@ -126,10 +126,16 @@ class DesktopModel:
         from goal2.engine.original_match.match import KINDS
         competitive=fixture is not None and fixture.kind!=1 and fixture.kind in KINDS
         label='Friendly' if fixture is not None and fixture.kind==1 else ('Original competitive' if competitive else 'Unsupported fixture')
+        if fixture is None or fixture.kind==1:
+            play_label='Play quick friendly'
+        elif competitive:
+            play_label='Play original competitive'
+        else:
+            play_label='Play unavailable'
         return {'countries':[(n,self.goaldat.country_names[n]) for n in range(1,129)],
                 'country':state.managed_country,'country_name':self.goaldat.country_names[state.managed_country],
                 'players':rows,'morale':team_morale(state.players,state.starting_eleven),
-                'play_label':'Play original competitive' if competitive else 'Play quick friendly',
+                'play_label':play_label,
                 'fixture':None if fixture is None else f'{self.goaldat.country_names[fixture.side_a]} — {self.goaldat.country_names[fixture.side_b]} ({label})'}
 
     def competition_table(self):
