@@ -1,0 +1,14 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+This plugin does not support raise()
+This plugin does not support grabbing the keyboard
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T75-main-preflight.py", line 74, in <module>
+    select(number);expected=DesktopModel.open(ROOT/'.cache/e010-r0008-halftime.sav',ROOT/'.cache/GOAL.DAT',save,country=number);v=expected.view()
+    ^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T75-main-preflight.py", line 67, in select
+    assert not view.isVisible()and w.country.currentData()==number,'native country browse selected wrong country'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: native country browse selected wrong country

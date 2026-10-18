@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T75-preflight-cd081575ecdc-1792336362750321503\verify-native-2.py", line 11, in <module>
+    runpy.run_path(sys.argv[0],run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T75-preflight-cd081575ecdc-1792336362750321503\main-overview-preflight.py", line 93, in <module>
+    select(5);click(w.friendly);assert m.state.managed_country==5 and m.state.campaign is None and w.preview is None
+    ~~~~~~^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T75-preflight-cd081575ecdc-1792336362750321503\main-overview-preflight.py", line 62, in select
+    active(w.country);QTest.keyClick(w.country,Qt.Key.Key_Down,Qt.KeyboardModifier.AltModifier,80);app.processEvents();QTest.qWait(100)
+    ~~~~~~^^^^^^^^^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T75-preflight-cd081575ecdc-1792336362750321503\main-overview-preflight.py", line 38, in active
+    if target is not None:target.setFocus();app.processEvents();QTest.qWait(150);assert app.focusWidget()is target
+                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
