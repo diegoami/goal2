@@ -80,3 +80,14 @@ exclusively. No runtime engine/vendor code changes.
 [designed: scope of measurements] These are Linux/WSL Qt6.12/Unicorn2.1.4 checks.
 They do not claim Windows runtime acceptance or deploy a Windows launcher. All
 worktrees, original resources, Windows saves and the prior launcher are retained.
+
+[confirmed: exact-head offline run] The clean implementation at
+`1154c18e29b2a2f83d80f5da81ddc0c1b84b5ff7` passed
+`python3 tools/check_premerge.py --expected-head <full SHA>`;
+[premerge-1154c18.log](premerge-1154c18.log) includes original/session exclusion,
+75 lock hashes, links/JSON and all guard/client/protocol/workflow/permission
+checks. The final evidence-only commit is checked again before handoff; main
+still owns independent review and accepted exact-head premerge/merge.
+The standings check with explicit destruction assertions and a recorded normal
+exit0 is [standings-final.json](standings-final.json), with
+[output](standings-ui-04.log).

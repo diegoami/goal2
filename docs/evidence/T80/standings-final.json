@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "tools/desktop-ui/standings.py",
+    "--template",
+    ".cache/e010-r0008-halftime.sav",
+    "--data",
+    ".cache/GOAL.DAT"
+  ],
+  "returncode": 0,
+  "seconds": 0.566
+}
