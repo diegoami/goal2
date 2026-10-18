@@ -1,0 +1,9 @@
+{
+  "accepted": true,
+  "returncode": 1,
+  "expected_assertion": "AssertionError: standings management window was not destroyed",
+  "source": "tools/desktop-ui/standings.py",
+  "original_sha256": "4a3b2478c7f263e03184dd501e57095c84eb923d2be100b8c1fe78573dabb54e",
+  "mutated_sha256": "80343ed0db99599c25819d50fa7a3a251e32827ef2c51b89a6d046a1b68c2a11",
+  "restored": true
+}

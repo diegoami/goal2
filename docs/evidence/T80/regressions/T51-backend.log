@@ -1,0 +1,26 @@
+test_competitive_preparation_preserves_public_friendly_gate (goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_competitive_preparation_preserves_public_friendly_gate) ... ok
+test_owner_budget_cases_match_independent_execution_and_guest_stamps (goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_owner_budget_cases_match_independent_execution_and_guest_stamps) ... T51 kind=2 index=21 managed=7 seed=257 quick=False result=[1, 0] actual=[1, 0] winner=0
+T51 kind=2 index=21 managed=7 seed=None quick=False result=[1, 1] actual=[1, 1] winner=2
+T51 kind=200 index=30 managed=7 seed=None quick=False result=[3, 2] actual=[3, 2] winner=0
+T51 kind=200 index=42 managed=7 seed=None quick=False result=[0, 0] actual=[0, 0] winner=0
+T51 kind=200 index=9 managed=7 seed=None quick=True result=[1, 1] actual=[1, 1] winner=1
+T51 kind=200 index=53 managed=7 seed=None quick=True result=[2, 2] actual=[2, 2] winner=1
+T51 kind=200 index=42 managed=19 seed=None quick=True result=None actual=[0, 0] winner=0
+ok
+test_source_context_is_explicit_and_invalid_changes_are_atomic (goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_source_context_is_explicit_and_invalid_changes_are_atomic) ... ok
+test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job) ... ok
+test_original_winner_and_full_tail_publish_once_without_quick_effects (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_original_winner_and_full_tail_publish_once_without_quick_effects) ... ok
+test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic) ... ok
+test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals) ... T51 WorldKO evidence .cache/T51-world-knockout-1792309386532147645.json
+T51 declared WorldKO kind200 index42 next_free43 normal=[0, 0] PK=[4, 3] originalwinner=0 PASS
+ok
+test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues (goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues) ... T51 actual qualifier evidence .cache/T51-actual-qualifier-1792309453140619948.json
+T51 actual country4 qualifier kind=5 index=1475 score=[0, 3] winner=1 next deterministic PASS
+ok
+test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage (goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage) ... ok
+test_quick_setup_is_private_and_preserves_strict_template_refusals (goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 309.217s
+
+OK

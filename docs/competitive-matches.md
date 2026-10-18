@@ -70,8 +70,8 @@ No seed or fixture search is performed.
 runs both original friendlies, then its actual pending qualifier. The1992 queue
 has only one opening friendly. These are original executions on explicitly
 adapted application inputs, not an original new-game replay. New competition
-builders, route-level news/sacking, live workers, renderer and controls remain
-outside this interface. Friendly unlimited-substitution UI policy is separate
+builders, route-level news/sacking and renderer remain outside this adapter;
+the competitive Play process/control is described below. Friendly unlimited-substitution UI policy is separate
 from the accepted original friendly default5.
 
 [confirmed: accepted original setup observations and T51 tests; designed: T51]
@@ -84,3 +84,34 @@ Both quick constructors use that copy. Unknown identities, arbitrary templates,
 unsupported retained modes, nonfriendly pending rows and legacy extra-time
 templates retain their strict refusals. This is new-friendly setup, with no
 competitive quick-engine implementation or original Memory rewriting.
+
+[designed: T80] Desktop competitive **Play** runs the actual pending source
+fixture in its own process through `goal2.desktop.competitive.CompetitiveJobs`.
+It uses `CompetitivePublication`, the shared original driver and default play-on
+answers with five substitutions per side. This is separate from the friendly
+Quick and friendly Watch paths. The Qt thread polls bounded event batches and
+waits for successful process exit, a complete ordered transcript and the validated
+original result/tail before publishing. A full-time event alone does not complete
+the job. The existing completed-result save format is retained.
+
+[designed: T80] Pending jobs exclude another match and saving. Cancellation,
+failed launch, malformed/truncated IPC, stale state/template or invalid result
+leave the active game and existing save untouched. Closing an inactive competitive
+controller does not unlock another controller's match. The bridge terminates and
+reaps only its own child, escalating from terminate to kill with bounded waits.
+The optional runtime is checked only when competitive Play is requested; its
+refusal names `python3 -m pip install '.[desktop,watched]'`.
+
+[designed: T80 acceptance] Run the focused real-worker comparisons and bounded
+synthetic failure cases with:
+
+```sh
+python3 -m unittest goal2.tests.test_desktop_competitive_jobs -v
+python3 tools/desktop-ui/competitive_play.py
+```
+
+[designed: T80] The real-engine cases reuse T51's supplied kind2/index21 and
+kind200/index42 inputs, including the tied knockout's extra time and penalties.
+Synthetic IPC fault fixtures replay an accepted outcome only to visit parent
+validation, successful-exit and cancellation boundaries; they are not additional
+original-game executions or campaign fidelity claims.

@@ -150,9 +150,13 @@ def friendlies(template,data,screenshot=None,blocked=False):
                 click(window.save);snapshot=copy.deepcopy(model.state)
                 click(window.new);click(window.resume);assert model.state==snapshot
             assert model.state.campaign.results[0]['teams']==[first.side_a,first.side_b]
-            before=copy.deepcopy(model.state);click(window.play)
-            assert not window.jobs.busy and model.state==before and 'unsupported' in window.status.text()
-            assert 'Unsupported fixture' in window.summary.text()
+            before=copy.deepcopy(model.state);prior=model.save_path.read_bytes()
+            assert model.state.campaign.next_fixture.kind==5
+            try:window.jobs.start()
+            except ValueError as exc:assert 'unsupported' in str(exc)
+            else:raise AssertionError('Quick accepted a competitive fixture')
+            assert not window.jobs.busy and model.state==before and model.save_path.read_bytes()==prior
+            assert 'Original competitive' in window.summary.text() and 'competitive' in window.play.text()
             # Explicit standalone mode and repeat; full continuation remains saveable.
             click(window.friendly);click(window.confirm);assert model.state.campaign is None
             direct=copy.deepcopy(model.state)

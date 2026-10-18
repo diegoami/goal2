@@ -1,0 +1,11 @@
+{
+  "mode": "saved-byte actual Qt route deletion",
+  "accepted": true,
+  "expected_assertion": "AssertionError: Play did not start the original competitive child",
+  "returncode": 1,
+  "seconds": 1.264,
+  "source": "goal2/desktop/window.py",
+  "original_sha256": "0b7714c71daa7142b8be271c4c8f6487420e6bc17d3168a95147fe13439d1e69",
+  "mutated_sha256": "5ea764945947eb86d1d4df611d28490720df47397a41400bd5515f51b4b831f9",
+  "restored": true
+}

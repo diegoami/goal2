@@ -122,10 +122,15 @@ class DesktopModel:
                          'confidence':record[12],'availability':eligibility.info(record)})
         self.result_text(state)  # [designed: T70] Validate renderable results before publication.
         fixture=state.campaign.next_fixture if state.campaign else None
+        # [derived: T51; designed: T80] Capability names use the adapter's supported kinds.
+        from goal2.engine.original_match.match import KINDS
+        competitive=fixture is not None and fixture.kind!=1 and fixture.kind in KINDS
+        label='Friendly' if fixture is not None and fixture.kind==1 else ('Original competitive' if competitive else 'Unsupported fixture')
         return {'countries':[(n,self.goaldat.country_names[n]) for n in range(1,129)],
                 'country':state.managed_country,'country_name':self.goaldat.country_names[state.managed_country],
                 'players':rows,'morale':team_morale(state.players,state.starting_eleven),
-                'fixture':None if fixture is None else f'{self.goaldat.country_names[fixture.side_a]} — {self.goaldat.country_names[fixture.side_b]} ({'Friendly' if fixture.kind==1 else 'Unsupported fixture'})'}
+                'play_label':'Play original competitive' if competitive else 'Play quick friendly',
+                'fixture':None if fixture is None else f'{self.goaldat.country_names[fixture.side_a]} — {self.goaldat.country_names[fixture.side_b]} ({label})'}
 
     def competition_table(self):
         """[designed: T49; derived: F023] Pure named view of the managed opening group."""

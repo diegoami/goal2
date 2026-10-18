@@ -1,0 +1,6 @@
+test_duplicate_completion_packet_is_rejected (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_duplicate_completion_packet_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 17.097s
+
+OK

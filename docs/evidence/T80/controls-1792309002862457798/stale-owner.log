@@ -1,0 +1,15 @@
+test_changed_owner_is_rejected_before_any_publication (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_changed_owner_is_rejected_before_any_publication) ... FAIL
+
+======================================================================
+FAIL: test_changed_owner_is_rejected_before_any_publication (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_changed_owner_is_rejected_before_any_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/goal2/tests/test_desktop_competitive_jobs.py", line 188, in test_changed_owner_is_rejected_before_any_publication
+    with self.assertRaisesRegex(ValueError,'stale'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 16.309s
+
+FAILED (failures=1)

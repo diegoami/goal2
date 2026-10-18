@@ -1,0 +1,2 @@
+usage: tactics-labels.py [-h] --template TEMPLATE --data DATA
+tactics-labels.py: error: the following arguments are required: --template, --data

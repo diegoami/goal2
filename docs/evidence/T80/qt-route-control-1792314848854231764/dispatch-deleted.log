@@ -1,0 +1,9 @@
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/tools/desktop-ui/competitive_play.py", line 183, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/tools/desktop-ui/competitive_play.py", line 62, in main
+    assert getattr(model,'match_pending',False) and window.competitive.busy,'Play did not start the original competitive child'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Play did not start the original competitive child

@@ -1,0 +1,14 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "tools/desktop-ui/standings.py", line 60, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "tools/desktop-ui/standings.py", line 54, in main
+    assert destroyed,'standings management window was not destroyed'
+           ^^^^^^^^^
+AssertionError: standings management window was not destroyed

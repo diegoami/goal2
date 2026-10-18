@@ -3,6 +3,7 @@
 """
 from PySide6.QtCore import Qt,QTimer
 from goal2.desktop.jobs import QuickJobs
+from goal2.desktop.competitive import CompetitiveJobs
 from PySide6.QtWidgets import (QCheckBox,QComboBox,QHeaderView,QHBoxLayout,QLabel,
  QLineEdit,QMainWindow,QPushButton,QSplitter,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget)
 
@@ -18,6 +19,8 @@ class ManagementWindow(QMainWindow):
         super().__init__();self.model=model;self._refreshing=False;self.preview=None;self.active_draft=None
         from goal2.desktop.watched import WatchedController
         self.watched=WatchedController(model)
+        self.competitive=CompetitiveJobs(model)
+        self.competitive_timer=QTimer(self);self.competitive_timer.setInterval(30);self.competitive_timer.timeout.connect(self.poll_competitive)
         self.watch_timer=QTimer(self);self.watch_timer.setInterval(30);self.watch_timer.timeout.connect(self.poll_watched)
         self.jobs=QuickJobs(model);self.timer=QTimer(self);self.timer.setInterval(30);self.timer.timeout.connect(self.poll_match)
         self.setWindowTitle('goal2 — Country management');self.resize(1050,780)
@@ -153,6 +156,15 @@ class ManagementWindow(QMainWindow):
     def update_captain(self):
         previous=self.captain.currentData();selected=self.selected_ids()
         self.captain.clear()
+        # [designed: T80] Preserve supplied competitive input; fresh friendly drafts keep their named default.
+        state=self.display_model.state
+        pending=state.campaign.next_fixture if state.campaign else None
+        from goal2.game.watched_schema import COMPETITIVE_SCHEMA,watched
+        from goal2.engine.original_match.match import KINDS
+        original=(pending is not None and pending.kind!=1 and pending.kind in KINDS) or (watched(state.last_match) and state.last_match['schema']==COMPETITIVE_SCHEMA)
+        if state.captain==0 and original:
+            self.captain.addItem('Original captain selection',0)
+            self.captain.model().item(0).setEnabled(False)
         for word in selected:self.captain.addItem(self.model.goaldat.player_names[word],word)
         self.captain.setCurrentIndex(max(0,self.captain.findData(previous)))
 
@@ -164,6 +176,7 @@ class ManagementWindow(QMainWindow):
         from goal2.game.watched_schema import watched
         heading='Original engine' if watched(state.last_match) else 'Quick simulation (rebuild setup)'
         self.result.setText(heading+'\n'+display.result_text())
+        self.play.setText(view['play_label'])
         self.summary.setText(f"Team morale: {view['morale']}     Next fixture: {view['fixture'] or ('Standalone friendly' if state.campaign is None else 'No supported fixture')}")
         for row,p in enumerate(view['players']):
             available=p['availability']['available'];selected=p['id'] in state.starting_eleven
@@ -224,7 +237,12 @@ class ManagementWindow(QMainWindow):
             state=self.model.state
             if (self.selected_ids()!=state.starting_eleven or self.captain.currentData()!=state.captain or bits!=state.country_tactics):
                 raise ValueError('Confirm or discard management edits before playing')
-            self.jobs.start(halftime=self.model.state.campaign is not None);self.set_busy(True);self.status.setText('Playing quick friendly…');self.timer.start()
+            pending=state.campaign.next_fixture if state.campaign else None
+            if pending is not None and pending.kind!=1:
+                self.competitive.start(record_draws=True);self.set_busy(True)
+                self.status.setText('Starting original competitive engine…');self.competitive_timer.start()
+            else:
+                self.jobs.start(halftime=state.campaign is not None);self.set_busy(True);self.status.setText('Playing quick friendly…');self.timer.start()
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def start_watched(self):
@@ -249,6 +267,19 @@ class ManagementWindow(QMainWindow):
         except (OSError,ValueError,IndexError,KeyError) as exc:
             self.watch_timer.stop();self.set_busy(False);self.status.setText(str(exc))
 
+    def poll_competitive(self):
+        """[designed: T80] Poll bounded IPC on Qt; publish only the validated full continuation."""
+        try:
+            events=self.competitive.poll(self.competitive.token)
+            if not self.competitive.busy:
+                self.competitive_timer.stop();self.set_busy(False)
+                self.refresh('Original competitive match complete; result can be saved')
+            elif events:
+                event=events[-1]
+                self.status.setText(f"Original competitive engine: {event.minute}′ {event.score[0]} — {event.score[1]}")
+        except (OSError,ValueError,IndexError,KeyError) as exc:
+            self.competitive_timer.stop();self.set_busy(False);self.status.setText(str(exc))
+
     def poll_match(self):
         try:
             if self.jobs.poll():
@@ -258,10 +289,13 @@ class ManagementWindow(QMainWindow):
             self.timer.stop();self.set_busy(False);self.show_halftime();self.status.setText(str(exc))
 
     def cancel_match(self):
-        self.timer.stop();self.watched.cancel();self.watch_timer.stop();self.jobs.cancel();self.set_busy(False);self.show_halftime();self.refresh('Friendly cancelled; game unchanged')
+        self.timer.stop();self.watched.cancel();self.watch_timer.stop();self.jobs.cancel()
+        self.competitive_timer.stop()
+        if self.competitive.busy:self.competitive.cancel(self.competitive.token)
+        self.set_busy(False);self.show_halftime();self.refresh('Match cancelled; game unchanged')
 
     def closeEvent(self,event):
-        self.timer.stop();self.watch_timer.stop();self.watched.close();self.jobs.cancel();super().closeEvent(event)
+        self.timer.stop();self.watch_timer.stop();self.competitive_timer.stop();self.watched.close();self.jobs.cancel();self.competitive.close();super().closeEvent(event)
 
     def refresh_pool(self):
         if self._refreshing:return

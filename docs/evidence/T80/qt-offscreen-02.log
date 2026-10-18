@@ -1,0 +1,15 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS real Qt competitive kind2 index21: original result/events/Memory/both seeds, progress, captain0, save/resume
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS real Qt competitive kind200 index42: original result/events/Memory/both seeds, progress, captain0, save/resume
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/tools/desktop-ui/competitive_play.py", line 176, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/tools/desktop-ui/competitive_play.py", line 158, in main
+    assert 'No supported pending competitive fixture' in window.status.text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

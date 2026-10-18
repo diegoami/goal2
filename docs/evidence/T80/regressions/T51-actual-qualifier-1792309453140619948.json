@@ -1,0 +1,58 @@
+{
+  "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "fixture": {
+    "first": 4,
+    "second": 26,
+    "index": 1475,
+    "kind": 5
+  },
+  "managed": 4,
+  "budget": [
+    5,
+    5
+  ],
+  "captain": 61,
+  "eleven": [
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    73
+  ],
+  "policy": "play_on",
+  "reference_seed": null,
+  "delay_byte": null,
+  "engine_year": 0,
+  "base_year": 1990,
+  "stage": 5,
+  "class": 1,
+  "next_free": 2001,
+  "template_sha256": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+  "image_sha256": "eb20532f75d4c8ee0fb3ef08dd567b6d9b4484dcfcaafaef1b384f27215c0d6f",
+  "result_sha256": "e1714f9b4a30ac7162ee441b602f5fb0ac3ed64dc992b86684e13d548fa577e1",
+  "memory_sha256": "fe51d438c629881882ffd4f0a7364dd167d4e84a13fba0d42019ac126005de22",
+  "seeds": [
+    22804,
+    7490
+  ],
+  "resolution": {
+    "kind": 5,
+    "winner": 1,
+    "regulation": [
+      0,
+      3
+    ],
+    "extra_time": null,
+    "penalties": null
+  },
+  "independent_package": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+  "full_result_memory_equal": true,
+  "guest_stamps_order_equal": true,
+  "next_original_and_quick_deterministic": true
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "name": "focused-final-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "-m",
+      "unittest",
+      "goal2.tests.test_desktop_competitive_jobs",
+      "goal2.tests.test_desktop_model",
+      "goal2.tests.test_desktop_quick_jobs",
+      "goal2.tests.test_desktop_pool",
+      "goal2.tests.test_desktop_entry",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 138.873
+  },
+  {
+    "name": "retained-ui-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "docs/evidence/T66/retained_ui.py"
+    ],
+    "returncode": 1,
+    "seconds": 8.094
+  }
+]

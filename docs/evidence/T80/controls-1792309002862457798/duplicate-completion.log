@@ -1,0 +1,15 @@
+test_duplicate_completion_packet_is_rejected (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_duplicate_completion_packet_is_rejected) ... FAIL
+
+======================================================================
+FAIL: test_duplicate_completion_packet_is_rejected (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_duplicate_completion_packet_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/goal2/tests/test_desktop_competitive_jobs.py", line 175, in test_duplicate_completion_packet_is_rejected
+    with self.assertRaisesRegex(ValueError,'identity/order'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 16.607s
+
+FAILED (failures=1)

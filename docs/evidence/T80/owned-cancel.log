@@ -1,0 +1,7 @@
+test_cancel_leaves_an_unrelated_child_alive (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_cancel_leaves_an_unrelated_child_alive) ... ok
+test_only_canonical_pending_competitive_fixtures_are_bound (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_only_canonical_pending_competitive_fixtures_are_bound) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 17.184s
+
+OK
