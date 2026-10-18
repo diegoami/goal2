@@ -161,7 +161,9 @@ def main():
             unsupported,competitive_raw,_=campaign(21,4)
             unsupported.captain=unsupported.starting_eleven[0]
             model.state=unsupported;model.template_bytes=competitive_raw;window.refresh()
-            unchanged=copy.deepcopy(model.state);saved=model.save_path.read_bytes();click(window.play)
+            unchanged=copy.deepcopy(model.state);saved=model.save_path.read_bytes()
+            assert window.play.text()=='Play unavailable',window.play.text()
+            click(window.play)
             assert 'No supported pending competitive fixture' in window.status.text()
             assert model.state==unchanged and model.save_path.read_bytes()==saved and window.save.isEnabled()
             model.state=copy.deepcopy(before);model.template_bytes=raw;window.refresh()
