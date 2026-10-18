@@ -5,6 +5,13 @@ Every review brief carries these two sections, in full, after the numbered block
 the brief in another file, so paste them; never point to this one. Write "Blocking means" for the
 task; paste the second section as it is. (L47, L49)
 
+[designed: #226; L115] When a brief includes a task or supplementary quotation, keep its full
+literal text and put it inside a text fence longer than every fence it contains (for example,
+four backticks around a task with triple-backtick blocks). This keeps source-relative links in the
+quotation from being resolved as links in the generated root brief. Stage every author log the
+review cites in the review worktree's own ignored `.cache`; never search sibling worktrees for a
+missing file.
+
 ```text
 ## Blocking means
 
