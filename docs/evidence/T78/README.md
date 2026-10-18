@@ -57,3 +57,12 @@ halftime mutation proofs; campaign-friendlies, worker, campaign-halftime,
 management and campaign-pool acceptance; country selection; standings;
 overview1x/2x and its negative controls; shell1x/2x. The exact driver bytes and
 hashes are retained beside its full per-command logs. No source mutation remains.
+
+[derived: linux-final/report.json and scale-2/report.json] Final native Linux
+processes pass at measured ratios1.0 and2.0, with requested scales retained,
+seven cases, full panel geometry and focused Play/standings captures. Final
+negative controls repeat the baseline plus all three intended failures and
+restore exact bytes. `validation-01/final-source-identity.json` ties both reports
+to pushed source `6cb6a747b05dd5865cfc10b4620a629a544954e1`. Later evidence-only
+commits carry these identical product/scenario bytes; they do not claim an
+execution that occurred at a later commit.
