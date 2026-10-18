@@ -33,7 +33,7 @@ is unavailable during a match.
 management draft. A Resume that fails validation leaves the active game and draft
 unchanged.
 
-[designed] **New campaign** starts a fresh1990 campaign with initial seeds4660/33590,
+[designed] **New campaign** starts a fresh 1990 campaign with initial seeds 4660/33590,
 using the shared opening campaign generator. A redraw or Resume does not regenerate
 players; previews generate separate records. The displayed twenty records show
 original names, position groups, ability, energy, confidence and eligibility;
