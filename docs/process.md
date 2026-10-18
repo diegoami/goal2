@@ -134,6 +134,19 @@ What the review script guarantees, and why:
   posted: read the final message ("Choosing models" rule 12), fix the cause, run again. 4: posted under a note, no
   label: the main session reads it and decides.
 
+[designed: T73] An owner explicitly selecting direct Claude review uses
+`review.mjs --backend claude --reviewer claude-sonnet`, with a trusted external
+permission file, exact required negative-control command and fixed session UUID.
+See [the direct Claude setup](environment.md#optional-direct-claude-cli-review).
+This optional path preserves model-family exclusion and standard findings/DW
+posting. Native model-free policy/account projection uses an owned pipe lease;
+the distinct actual review process has closed input. Main alone runs the single
+actual trial after ready PR, audits all native outputs and distinguishes synthetic
+permission checks/parent validation from reviewer-executed checks. Unknown routes,
+required denials, incomplete final/identity/coverage and failed exact-head checks
+prevent acceptance. No default/fallback, OS-jail or startup-hook isolation claim
+is added. Preserve all historical agy preparation.
+
 How the main session launches and watches a run (L103):
 - Detached from its own session, so a restart of Codex or Claude Code does not kill the run, in the form of
   CLAUDE.md's "Choosing models" rule 9: `systemd-run --user --unit=goal2r-<task> --collect -E PATH="$PATH"

@@ -5,7 +5,7 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 export function verifyInit(frame, expected) {
   demand(frame?.type === 'system' && frame.subtype === 'init', 'missing init');
   demand(frame.session_id === expected.sessionID && frame.cwd === expected.cwd && frame.model === CLAUDE.model && frame.claude_code_version === CLAUDE.version, 'init identity');
-  demand(same([...frame.tools].sort(), TOOLS) && frame.permissionMode === 'dontAsk' && frame.mcp_servers?.length === 0 && frame.slash_commands?.length === 0 && frame.skills?.length === 0 && frame.plugins?.every(p => p.path === 'builtin'), 'init toolset');
+  demand(Array.isArray(frame.tools) && same([...frame.tools].sort(), TOOLS) && frame.permissionMode === 'dontAsk' && frame.mcp_servers?.length === 0 && frame.slash_commands?.length === 0 && frame.skills?.length === 0 && frame.plugins?.every(p => p.path === 'builtin'), 'init toolset');
 }
 export function parseClaude(text, expected) {
   demand(text.endsWith('\n'), 'truncated stream');
@@ -26,8 +26,9 @@ export function parseClaude(text, expected) {
     } else if (f.type === 'user') {
       demand(Array.isArray(f.message?.content), 'tool result shape');
       for (const c of f.message.content) {
-        demand(c.type === 'tool_result' && calls.has(c.tool_use_id) && !outcomes.has(c.tool_use_id) && typeof c.is_error === 'boolean', 'tool result identity');
-        outcomes.set(c.tool_use_id, { ...c, interrupted: f.tool_use_result?.interrupted === true });
+        demand(c.type === 'tool_result' && calls.has(c.tool_use_id) && !outcomes.has(c.tool_use_id) && (c.is_error === undefined || typeof c.is_error === 'boolean'), 'tool result identity');
+        // [confirmed: T73 native loopback receipt] Successful Read results omit optional is_error.
+        outcomes.set(c.tool_use_id, { ...c, is_error: c.is_error ?? false, interrupted: f.tool_use_result?.interrupted === true });
       }
     } else demand(f.type === 'system' || f.type === 'result', 'unknown native frame');
   }

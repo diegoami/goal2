@@ -176,6 +176,12 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
    `high`); every model id comes from a live list (`opencode models --standalone` on v2), never memory;
    the main session runs the lines an OpenCode reviewer cannot reach (L57).
 
+[designed: T73] The owner may explicitly select the optional direct Claude CLI
+reviewer described in docs/environment.md. It is reviewer-only, never a fallback
+or a default change. Native Codex remains family openai; direct Claude remains
+family claude and cannot review Claude-family implementation. Trusted launching
+policy, complete identity/denial/scope evidence and main-only merge rules remain.
+
 ### Monitoring OpenCode sessions (and any other background agent)
 8. [designed: T72] Start every OpenCode run in the background. The run client receives closed stdin; its private v2 server has a separately owned stdin lease. For direct v1 clients, use stdin from a file (never an inherited pipe:
    `opencode run` waits for stdin's end-of-file before it creates a session). Never wait on it blind.

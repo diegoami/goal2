@@ -26,7 +26,8 @@ const DENY = ['Edit', 'Write', 'Agent', 'Bash(git push *)', 'Bash(git merge *)',
 export function reviewPolicy(file, workDir) {
   const real = fs.realpathSync(file); const cwd = fs.realpathSync(workDir);
   demand(real !== cwd && !real.startsWith(cwd + path.sep), 'policy must come from outside reviewed tree');
-  const bytes = fs.readFileSync(real); const policy = JSON.parse(bytes);
+  const bytes = fs.readFileSync(real); let policy;
+  try { policy = JSON.parse(bytes); } catch { throw new ClaudeError('policy JSON'); }
   demand(Object.keys(policy).sort().join() === 'commands,directories' && Array.isArray(policy.commands) && policy.commands.length > 0 && Array.isArray(policy.directories), 'policy shape');
   // [designed: T73] These are trusted exact native command grants, never arbitrary wildcard grants.
   demand(new Set(policy.commands).size === policy.commands.length, 'duplicate commands');
@@ -34,7 +35,7 @@ export function reviewPolicy(file, workDir) {
   for (const command of policy.commands) demand(typeof command === 'string' && command.length > 0 && parts(command).every(c => !/[\n\r()*;&|`$<>]/.test(c) && /^(?:git |node --test |python3? (?:-I )?)/.test(c)), 'command grant');
   const dirs = policy.directories.map(d => fs.realpathSync(d));
   demand(new Set(dirs).size === dirs.length && dirs.every(d => path.isAbsolute(d) && d !== '/' && d !== process.env.HOME), 'directory grant');
-  demand(dirs.some(d => d === '/tmp') && dirs.some(d => path.basename(d) === 'goal2-archaeology'), 'research/tmp grants');
+  demand(dirs.length === 2 && dirs.some(d => d === '/tmp') && dirs.some(d => path.basename(d) === 'goal2-archaeology'), 'research/tmp grants');
   const settings = { model: CLAUDE.model, effortLevel: CLAUDE.effort, permissions: { defaultMode: 'dontAsk', allow: ['Read', 'Grep', 'Glob', ...[...new Set(policy.commands.flatMap(parts))].map(c => `Bash(${c})`)], deny: DENY, additionalDirectories: dirs } };
   return { file: real, sourceSHA256: sha(bytes), commands: policy.commands, directories: dirs, settings };
 }

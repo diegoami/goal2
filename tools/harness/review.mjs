@@ -4,6 +4,7 @@
 //   node tools/harness/review.mjs --pr 42 --brief brief.md [--reviewer NAME] [--exclude NAME,...]
 //     [--issue 12 --apply-label] [--done-when K] [--dry-run] [--env KEY=VALUE]...
 //     [--backend claude --reviewer claude-sonnet --claude-policy /trusted/policy.json]
+//     [--claude-worktree PREPARED_REVIEW_WORKTREE]
 //     [--claude-negative-control COMMAND --claude-session-id UUID --claude-canary COMMAND]...
 //     [--total-timeout-sec N] [--idle-timeout-sec N]   override harness.json's limits for this run
 //   node tools/harness/review.mjs --self-test   (the reader's samples and the named-model checks; no model is called)
@@ -44,7 +45,8 @@
 
 import fs from 'node:fs';
 import { runClaudeReview } from './lib/claude-workflow.mjs';
-import { selectClaude } from './lib/claude-policy.mjs';
+import { selectClaude, ClaudeError } from './lib/claude-policy.mjs';
+import { preparedClaudeWorktree } from './lib/claude-scope.mjs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { reviewerPolicy, trustedReviewEnv } from './lib/opencode-policy.mjs';
@@ -132,7 +134,7 @@ requireTools('git', 'gh');
 
 const top0 = sh('git', ['rev-parse', '--show-toplevel']);
 const config = loadConfig(top0);
-const { top, workRoot } = repoPaths(config);
+const { top, workRoot, commonDir } = repoPaths(config);
 const rev = config.reviewer;
 
 // The implementer's family never reviews: the session's family always (every Claude Code agent runs
@@ -196,7 +198,7 @@ reviewEnv = pre.version.startsWith('2.') ? trustedReviewEnv(pre.env, reviewerPol
 }
 const headSha = sh('gh', ['pr', 'view', String(a.pr), '--json', 'headRefOid', '--jq', '.headRefOid'], { cwd: top });
 // [designed: T73] Pin PR base commit metadata separately from full local diff evidence.
-const baseSha = backend === 'claude' ? sh('gh', ['pr', 'view', String(a.pr), '--json', 'baseRefOid', '--jq', '.baseRefOid'], { cwd: top }) : null;
+const baseTipSha = backend === 'claude' ? sh('gh', ['pr', 'view', String(a.pr), '--json', 'baseRefOid', '--jq', '.baseRefOid'], { cwd: top }) : null;
 
 // A brief that names another commit as the one to review would make the reviewer's tree proof stop
 // it after a billed run (#23): refuse it before any worktree or model run.
@@ -207,10 +209,17 @@ if (stale.length) {
     + 'GitHub updated: take it from the local branch (git rev-parse <branch>), or rerun once GitHub shows it.');
 }
 sh('git', ['-C', top, 'fetch', '-q', 'origin', `pull/${a.pr}/head`]);
-if (baseSha) sh('git', ['-C', top, 'fetch', '-q', 'origin', baseSha]);
+if (baseTipSha) sh('git', ['-C', top, 'fetch', '-q', 'origin', baseTipSha]);
+// [designed: T73] Match the PR's three-dot diff when unrelated main commits land.
+const baseSha = baseTipSha ? sh('git', ['-C', top, 'merge-base', baseTipSha, headSha]) : null;
 // [designed: T72; owner preservation contract] Retain the exact review worktree with its receipts.
-const worktree = path.join(workRoot, `${a.pr}-review-${randomBytes(4).toString('hex')}`);
+const worktree = backend === 'claude' && a['claude-worktree'] ? fs.realpathSync(a['claude-worktree']) : path.join(workRoot, `${a.pr}-review-${randomBytes(4).toString('hex')}`);
 const newTree = () => {
+  // [designed: T73] Main may stage offline grammar dependencies before the sole actual review.
+  if (backend === 'claude' && a['claude-worktree']) {
+    try { preparedClaudeWorktree({ directory: worktree, top, workRoot, commonDir, head: headSha }); } catch { die(2, 'Prepared Claude review worktree must be isolated, same-repository, clean and at the exact PR head.'); }
+    say(`prepared worktree: ${worktree} at ${headSha} (retained)`); return;
+  }
   fs.mkdirSync(workRoot, { recursive: true });
   sh('git', ['-C', top, 'worktree', 'add', '--detach', worktree, headSha]);
   say(`worktree: ${worktree} at ${headSha} (retained)`);
@@ -265,7 +274,7 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
           totalTimeoutMs: (totalSec ?? rev.totalTimeoutSec) * 1000, opencode, env: reviewEnv, log: say,
         });
       } catch (e) {
-        if (!(e instanceof OpenCodeInfraError) && e.name !== 'ClaudeError' && !e.message.startsWith('Claude review refused:')) throw e;
+        if (!(e instanceof OpenCodeInfraError) && !(e instanceof ClaudeError)) throw e;
         return { ok: false, reason: e.reason, detail: e.message };
       }
       // OpenCode's own error stream on a failed run, never the model's output (Luna's R1, round 2).

@@ -10,6 +10,7 @@ export function localGit(cwd, args) {
 export function pinnedScope({ cwd, base, head, pr, directory }) {
   demand(/^[0-9a-f]{40}$/.test(head) && /^[0-9a-f]{40}$/.test(base) && Number.isSafeInteger(pr) && pr > 0, 'scope identity');
   demand(localGit(cwd, ['rev-parse', 'HEAD']).trim() === head && !localGit(cwd, ['status', '--porcelain', '--untracked-files=no']).trim(), 'clean exact head');
+  demand(localGit(cwd, ['merge-base', base, head]).trim() === base, 'base must be pinned PR merge base');
   for (const ref of [base, head]) demand(localGit(cwd, ['rev-parse', ref + '^{commit}']).trim() === ref, 'pinned commit');
   const names = localGit(cwd, ['diff', '--no-ext-diff', '--no-textconv', '--name-status', '-z', '--find-renames', base, head]).split('\0');
   const inventory = [];
@@ -21,4 +22,10 @@ export function pinnedScope({ cwd, base, head, pr, directory }) {
   const scope = { pr, base, head, inventory, chunks, diffSHA256: sha(diff) };
   fs.writeFileSync(path.join(directory, 'scope.json'), JSON.stringify(scope, null, 2) + '\n', { flag: 'wx' });
   return scope;
+}
+// [designed: T73] A staged review tree retains offline dependencies; never adopt the implementation/main checkout.
+export function preparedClaudeWorktree({ directory, top, workRoot, commonDir, head }) {
+  const real = fs.realpathSync(directory);
+  demand(real !== fs.realpathSync(top) && localGit(real, ['branch', '--show-current']).trim() === '' && real.startsWith(fs.realpathSync(workRoot) + path.sep) && localGit(real, ['rev-parse', '--path-format=absolute', '--git-common-dir']).trim() === commonDir && localGit(real, ['rev-parse', 'HEAD']).trim() === head && !localGit(real, ['status', '--porcelain', '--untracked-files=no']).trim(), 'prepared review worktree identity');
+  return real;
 }

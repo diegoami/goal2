@@ -96,6 +96,116 @@ HARNESS_OPENCODE_EXE="$HOME/.opencode/bin/opencode.1.18.32.bak" \
   tools/harness/peek.sh <legacy-session> --major 1
 ```
 
+## Optional direct Claude CLI review
+
+[designed: T73; confirmed: measurements/T73/preflight.md and native-proof.md]
+OpenCode remains the default. Direct Claude is an explicit reviewer backend for
+an owner-selected independent Claude-family reviewer, never an implementer or
+fallback. The audited Linux/WSL native build is2.1.292, SHA256
+`a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3`.
+A different executable/build fails closed pending revalidation. The selected
+entry is `claude-sonnet`, actual model `claude-sonnet-5-5`, effort `medium`.
+
+[designed: T73] Main prepares a trusted JSON permission file **outside the PR's
+review worktree**, in the launching checkout or another owned evidence directory.
+It contains exactly `commands` and `directories`. Commands are required exact
+checks, including a substantive negative control; supported ` && ` compounds
+receive separate native grants for their constituents. Include the exact
+isolated-Python script invocation where needed. Direct commands do not grant
+wildcards. The two ordinary external grants are `/tmp` and the physical
+`goal2-archaeology` checkout. Example (replace paths and the full SHA):
+
+```json
+{
+  "commands": [
+    "git rev-parse HEAD",
+    "node --test tests/claude_review.test.mjs && git diff --check",
+    "python3 -I /trusted/t73-control.py"
+  ],
+  "directories": ["/tmp", "/home/owner/projects/goal2-archaeology"]
+}
+```
+
+[designed: T73] After a clean validated ready PR, main launches the one authorized
+real review, with a fixed UUID and full pinned head in its brief:
+
+```bash
+HARNESS_CLIENT=codex node tools/harness/review.mjs --pr <pr> --brief <brief> \
+  --issue <issue> --apply-label --backend claude --reviewer claude-sonnet \
+  --claude-policy /trusted/policy.json --claude-session-id <uuid> \
+  --claude-negative-control 'python3 -I /trusted/t73-control.py'
+```
+
+[designed: T73] For checks requiring offline grammar dependencies, main first
+creates and preserves an isolated review worktree at the full PR head under
+`worktreeRoot`, makes its physical `.cache/tmp`, and runs the explicit
+`npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund`
+setup there. Add `--claude-worktree /absolute/prepared/review-worktree` to use
+that staged checkout. The entrypoint verifies its shared repository, location,
+detached HEAD, clean tracked files and exact PR head before dispatch. No watcher is necessary.
+The tracked `node --test --test-name-pattern=deletion tests/claude_review.test.mjs`
+is an available substantive negative-control command; using it avoids staging
+an extra helper. Put that exact command in policy and `--claude-negative-control`.
+
+[designed: T73] Optional repeated `--claude-canary 'git push T73-NO-REMOTE'`
+identifies deliberately forbidden calls; use only an inert owned target. Their
+native denial must be observed exactly. Every other tool denial/error blocks
+acceptance, including a required check even if the CLI exits0. A premerge command
+in the actual policy must use the full reviewed SHA; the example negative-control
+script is separately prepared, inspected and granted by main.
+
+[designed: T73] Production reconstructs the child environment, forwarding ordinary
+locale/path/home and existing native OAuth token only. Provider API/auth tokens,
+endpoints/model aliases, proxy/host overrides and user/project/local settings
+are excluded. Native OAuth storage stays native: no authfile is read/copied by
+the harness. API-key-helper-only setups are unsupported by this profile and fail
+closed; do not clear an endpoint while retaining its provider-specific token.
+
+[confirmed: measurements/T73/native-account-projection.json; designed: T73]
+A separate owned model-free control process verifies native account provider,
+applied model/effort, exact effective trusted policy and every native live rule.
+Its bounded stdin pipe carries only initialize/settings/rules/hooks requests;
+it is a **control lease**, closed and reaped before actual generation. Raw
+settings/account/env/hook replies never leave process memory; sanitized hashes,
+rule-source metadata and the firstParty provider field are retained. Actual
+review input is DEVNULL, with a short positional pointer to the retained full
+brief. It gets a distinct fixed UUID, its own process group and startup/idle/total
+deadlines. Cancellation kills only owned descendants, including after leader exit.
+
+[designed: T73] Mandatory managed startup hooks remain respected and may execute
+before projection. A point-in-time projection does not freeze native policy
+refresh between processes; policy drift or native refusal prevents acceptance.
+Native file/tool grants and exact shell grants are not an OS jail: explicitly
+allowed tests/Python scripts retain host authority and must be trusted. Safe mode
+does not prove that a flag-defined hook gate ran; this transport claims no such
+gate. The trusted policy/source comes from the launcher, never the PR.
+
+[designed: T73] Local base/head commits drive complete rename-aware inventory and
+24k-character diff chunks, retained with prompt, complete raw review stream/tool
+results, stderr, complete final and hashed receipt under `.cache/claude-review-*`
+in the preserved review worktree. Complete native result and final assistant text
+must agree. Missing/truncated results fail; never buy another generation to repair
+formatting. The parser also requires executed tree/check commands, every DW,
+substantive-control accounting, per-file `COVER Fnnn: audited ...` lines and exact
+PR/head/base identity. Main audits the complete native evidence and owns posting
+and exact-head merge checks. Standalone `peek.sh` remains the OpenCode reader;
+read the Claude receipt's full final/raw paths directly.
+
+[confirmed: measurements/T73/native-proof.md] Offline regressions and the optional
+synthetic native fixture are:
+
+```bash
+node --test tests/claude_review.test.mjs
+node tools/harness/probe-claude-permissions.mjs --out .cache/t73-native \
+  --archaeology /absolute/path/to/goal2-archaeology
+```
+
+[designed: T73] The second command uses scripted loopback responses and synthetic
+credentials in a fresh own-cache CLI config directory. It is not Sonnet access
+or a review; it proves native compound/Python/research/tmp permission behavior
+and an intentional denial without external model inference. No extra paid smoke
+is part of setup. Preserve failed and successful receipts.
+
 ## On your desktop
 
 Locally there is no network policy and no environment settings, and the session-start hook does
