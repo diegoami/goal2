@@ -29,3 +29,16 @@ sharing/import-context/original Qt acceptance is recorded separately in this bat
 clean4d6adec2 freeze passed75protected hashes and exact-head offline premerge.
 The earlier incorrectly copied fullSHA refusal is preserved distinctly; no checks
 ran on that invalid invocation and it is not acceptance evidence.
+
+[confirmed: main-startup-fixture-01.log and .json] Main's original runtime trace
+is preserved verbatim with source4d6adec2 and log/source SHA256 mapping. It records
+a nominal test pass alongside exactly2 unintended missing-executable exceptions;
+this is diagnostic evidence of the coverage gap, not successful startup coverage.
+
+[confirmed: runtime.log, display-receipt.json, fixtures-unchanged.json] Fresh
+corrected sharing13 + import-context2 + unchanged OriginalQtAcceptance1 passed
+all16tests in68.134s with no skips, using owned private Xvfb+xfwm/Qt xcb/SDL x11.
+Both genuine original continuations still match complete state/Memory/both RNG/
+history; Save/Resume/repeat and cancellation/ownership protections pass, with
+heartbeats1361/1417. All27fixture/kit hashes remain unchanged. The owned display
+helper and window manager exit0. No product/helper source changes were needed.

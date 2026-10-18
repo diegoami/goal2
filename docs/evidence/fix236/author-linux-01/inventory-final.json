@@ -1,0 +1,15 @@
+{
+  "claim": "Current safe evidence files; excludes inventory files themselves. Earlier inventories remain historical snapshots in git.",
+  "sha256": {
+    "README.md": "7eeb5e80c648c8149d979f428635cc56ddb8933a095aa98ca19a26ef6b666b7b",
+    "controls-1792353803242518662/axes.log": "7738a5d9cf8a9549c932c5042c898de19b8c5c51a4cd2859dc46e67bd4f5a592",
+    "controls-1792353803242518662/ball-visibility.log": "4611ca699f102805953b951a2109e963f0dd9ae1e5d9844a399145ca7f66a866",
+    "controls-1792353803242518662/consumption.log": "18f75469eb8eda6382bd5d5c522e7ccbd293040438e081173fb1f75a4389fef0",
+    "controls-1792353803242518662/early-consumption.log": "5b6510e888183fccce8ef1caab3120e776274f23489706f465ac7690e72931de",
+    "controls-1792353803242518662/player-visibility.log": "dcc81264fdf4c0b09c870173d9b6a0a6cf5c4247dbf4b1833aee4f76112af2fb",
+    "controls-1792353803242518662/receipt.json": "a41179cb43982b228107d25dd403478050e7842640ffa21848d275c34791a378",
+    "display-receipt.json": "f2eb667769de13876c568050268ff4bc71d3b020f0ff29344de4f7e7ca3ccc6b",
+    "fixtures-unchanged.json": "435e96108764d24b4af2432a7fc047fe88b1ceb55281fa3001adc54e1e58d1f2",
+    "runtime.log": "5e62d0cf2974d5d3a6d36aa11f6cc4b61efb2e412dbe279c9d9d8708f4cd7d24"
+  }
+}
