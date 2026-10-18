@@ -1,0 +1,71 @@
+{
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "kind": "synthetic saved-byte controls",
+  "cases": [
+    {
+      "name": "token",
+      "file": "goal2/game/watched_jobs.py",
+      "before_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527",
+      "mutated_sha256": "4962f26be2dfe49c33dbd22db979c700b01eea98c82443e44507a3b878bf03a5",
+      "intended_assertion_failed": true,
+      "restored_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527"
+    },
+    {
+      "name": "sequence",
+      "file": "goal2/game/watched_pitch.py",
+      "before_sha256": "d5abe7709059da51d1f0393a89ac68939019d98b088b5c53d3d4f49fd9f72dc4",
+      "mutated_sha256": "bb8340b7b0b810df600f394255c793db9eca661184d0f40822ec3641770c2a49",
+      "intended_assertion_failed": true,
+      "restored_sha256": "d5abe7709059da51d1f0393a89ac68939019d98b088b5c53d3d4f49fd9f72dc4"
+    },
+    {
+      "name": "schema",
+      "file": "goal2/game/watched_pitch.py",
+      "before_sha256": "d5abe7709059da51d1f0393a89ac68939019d98b088b5c53d3d4f49fd9f72dc4",
+      "mutated_sha256": "b9c58fa1f9897e648b439ea3407531d6e87e5b41cb6c920979cf96b7887594be",
+      "intended_assertion_failed": true,
+      "restored_sha256": "d5abe7709059da51d1f0393a89ac68939019d98b088b5c53d3d4f49fd9f72dc4"
+    },
+    {
+      "name": "watermark",
+      "file": "goal2/game/watched_pitch.py",
+      "before_sha256": "d5abe7709059da51d1f0393a89ac68939019d98b088b5c53d3d4f49fd9f72dc4",
+      "mutated_sha256": "089b56148908ca36eb24ecb292676e8bdb4dc0117369ad48c53965a56c8a2141",
+      "intended_assertion_failed": true,
+      "restored_sha256": "d5abe7709059da51d1f0393a89ac68939019d98b088b5c53d3d4f49fd9f72dc4"
+    },
+    {
+      "name": "total-budget",
+      "file": "goal2/game/watched_jobs.py",
+      "before_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527",
+      "mutated_sha256": "d0d3e9311a2e3eab6d11be9b952f8a3ab58b55c269fd8ce09bfe34a8b9683390",
+      "intended_assertion_failed": true,
+      "restored_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527"
+    },
+    {
+      "name": "read-budget",
+      "file": "goal2/game/watched_jobs.py",
+      "before_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527",
+      "mutated_sha256": "ae38beb0d51a1f33b5ddd6a6530e807ab735c31c277d120b70a72174d5b0f15f",
+      "intended_assertion_failed": true,
+      "restored_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527"
+    },
+    {
+      "name": "ack-delivered",
+      "file": "goal2/game/watched_jobs.py",
+      "before_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527",
+      "mutated_sha256": "8f645e4bf5035ae9dfc1449e5b1f8f6f8d3543a55c3b4fcaa5facc272cdc911c",
+      "intended_assertion_failed": true,
+      "restored_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527"
+    },
+    {
+      "name": "deferred-publication",
+      "file": "goal2/game/watched_jobs.py",
+      "before_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527",
+      "mutated_sha256": "97b1d36fb3707bae366a4898de078374a6d72f1fb9e6af9ea98614ea9c551cdb",
+      "intended_assertion_failed": true,
+      "restored_sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+test_raw_signed_identity_visibility_and_generic_countries (goal2.tests.test_watched_pitch_jobs.PitchObservationTests.test_raw_signed_identity_visibility_and_generic_countries) ... FAIL
+
+======================================================================
+FAIL: test_raw_signed_identity_visibility_and_generic_countries (goal2.tests.test_watched_pitch_jobs.PitchObservationTests.test_raw_signed_identity_visibility_and_generic_countries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 230, in test_raw_signed_identity_visibility_and_generic_countries
+    self.assertEqual(frame['players'][0],[1,1,1,401,11,0,255,True])
+AssertionError: Lists differ: [1, 1, 1, 401, 11, 0, 255, False] != [1, 1, 1, 401, 11, 0, 255, True]
+
+First differing element 7:
+False
+True
+
+- [1, 1, 1, 401, 11, 0, 255, False]
+?                            ^^^^
+
++ [1, 1, 1, 401, 11, 0, 255, True]
+?                            ^^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

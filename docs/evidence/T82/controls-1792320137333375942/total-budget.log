@@ -1,0 +1,37 @@
+test_total_buffer_overflow (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_total_buffer_overflow) ... FAIL
+
+======================================================================
+FAIL: test_total_buffer_overflow (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_total_buffer_overflow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/game/watched_jobs.py", line 254, in poll_frames
+    identity, frame = json.loads(bytes(self._frame_buffer[4:length+4]))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/json/decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/json/decoder.py", line 356, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+The above exception was the direct cause of the following exception:
+
+ValueError: Invalid watched pitch IPC: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 162, in test_total_buffer_overflow
+    self.reject('total budget')
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 55, in reject
+    with self.assertRaisesRegex(ValueError,message):self.jobs.poll_frames(self.token)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "total budget" does not match "Invalid watched pitch IPC: Expecting value: line 1 column 1 (char 0)"
+
+----------------------------------------------------------------------
+Ran 1 test in 0.346s
+
+FAILED (failures=1)
