@@ -53,3 +53,13 @@ Execution status belongs to GitHub labels, never this document.
 ## Issue contracts
 
 [designed: main task administration,2026-10-18] [T81 / #211](https://github.com/diegoami/goal2/issues/211), [T82 / #212](https://github.com/diegoami/goal2/issues/212), [T83 / #213](https://github.com/diegoami/goal2/issues/213).
+
+## Frame and playback boundary
+
+[designed: main technical preflight,2026-10-18] T82 samples carry a canonical-event
+watermark; T83 uses it to pace positions together with their displayed clock,
+score and commentary. Engine completion does not permit early publication while
+view consumption is pending. The initial renderer shows discrete original samples;
+interpolation requires reset evidence beyond the independently accepted T81
+contract. Half transitions, identity rebindings and terminal teardown retain the
+last valid tick, without creating positions for earlier queued commentary.
