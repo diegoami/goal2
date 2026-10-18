@@ -37,7 +37,7 @@ def main():
     app=QApplication.instance() or QApplication([])
     receipts=[]
     with tempfile.TemporaryDirectory() as folder:
-        save=Path(folder)/'watched.g2save';m=model(save);w=ManagementWindow(m);w.show();app.processEvents()
+        save=Path(folder)/'watched.g2save';m=model(save);w=ManagementWindow(m);original_start=w.watched.start;w.watched.start=lambda **kw:original_start(frames=False,**kw);w.show();app.processEvents()
         beats=[];heartbeat=QTimer();heartbeat.setInterval(5);heartbeat.timeout.connect(lambda:beats.append(time.monotonic()));heartbeat.start()
         try:
             w.country.setCurrentIndex(w.country.findData(4));QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()

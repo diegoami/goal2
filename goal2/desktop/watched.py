@@ -9,7 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from goal2.desktop.match_view import Display, completion, MAX_PACKET, MAX_JOURNAL
+from goal2.desktop.match_view import Display, completion, MAX_PACKET, MAX_JOURNAL, PLAYBACK_RATE, MAX_BACKLOG
 from goal2.game.watched_jobs import WatchedJobs
 from goal2.engine.original_match import Fixture
 from goal2.engine.quick_engine import QuickEngineError
@@ -40,9 +40,11 @@ class WatchedController:
             raise ValueError('Watch supports scheduled friendlies only; pending qualifiers are unsupported')
         return pending
 
-    def start(self, **options):
+    def start(self, *, frames=True, playback_rate=PLAYBACK_RATE, **options):
         # [designed] No wall-clock delay; record the accepted original RNG transcript.
         options = {'delay_byte':0, 'record_draws':True, **options}
+        if type(frames) is not bool:
+            raise ValueError('frames must be boolean')
         if getattr(self.model, 'match_pending', False):
             raise ValueError('A match is already running')
         if importlib.util.find_spec('pygame') is None:
@@ -52,6 +54,7 @@ class WatchedController:
         pending = self.fixture()
         self.close_viewer()
         try:
+            self.frames_enabled = frames
             self.token = secrets.token_hex(24)
             self.display = Display(self.token)
             self.folder = tempfile.TemporaryDirectory(prefix='goal2-viewer-')
@@ -62,12 +65,16 @@ class WatchedController:
             self.digests = {0: self.display.digest()}
             self.started = time.monotonic()
             self.last_status = None
+            self.frame_ack = -1
+            self.frame_receipts = {}
             self.send('start', [self.model.goaldat.country_names[w] for w in (pending.side_a,pending.side_b)])
+            if frames:
+                self.send('pitch', {'rate': playback_rate})
             command = self.viewer_command or [sys.executable, '-m', 'goal2.desktop.pygame_viewer']
             self.process = subprocess.Popen(list(command) + [str(self.directory), self.token],
                 cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL, stderr=self.errors)
-            self.engine_token = self.engine.start(Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1])), **options)
+            self.engine_token = self.engine.start(Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1])), frames=frames, **options)
             self.model.match_pending = True
             self._pending_owned = True
         except Exception as exc:
@@ -105,12 +112,35 @@ class WatchedController:
                     raise ValueError('malformed or stale viewer status')
                 if value['kind'] == 'error':
                     raise ValueError('Pygame viewer failed: ' + str(value.get('message','unknown error')))
-                if (set(value) != {'token','kind','sequence','digest'} or type(value['sequence']) is not int
+                keys = {'token','kind','sequence','digest'}
+                # [designed] Initial startup may precede the child parsing pitch configuration.
+                pitch_status = self.frames_enabled and 'frame_sequence' in value
+                if pitch_status:
+                    keys |= {'frame_sequence','frame_digest'}
+                if (set(value) != keys or type(value['sequence']) is not int
                         or not 0 <= value['sequence'] <= self.display.sequence
                         or value['digest'] != self.digests[value['sequence']]):
                     raise ValueError('invalid viewer acknowledgement')
                 if self.last_status and value['sequence'] < self.last_status['sequence']:
                     raise ValueError('stale viewer acknowledgement')
+                if pitch_status:
+                    consumed = value['frame_sequence']
+                    receipt = self.frame_receipts.get(consumed)
+                    if (type(consumed) is not int or consumed < self.frame_ack
+                            or consumed > self.display.frame_sequence
+                            or (consumed == -1 and value['frame_digest'] is not None)
+                            or (consumed >= 0 and (receipt is None or value['frame_digest'] != receipt[0]
+                                                  or value['sequence'] < receipt[1]))):
+                        raise ValueError('invalid rendered pitch acknowledgement')
+                    if consumed > self.frame_ack:
+                        self.engine.ack_frames(self.engine_token, consumed)
+                        self.frame_ack = consumed
+                        while self.display.frames and self.display.frames[0]['sequence'] <= consumed:
+                            self.display.frames.popleft()
+                        # [designed] Keep one receipt for repeated status, bounded by outstanding frames.
+                        self.frame_receipts = {k:v for k,v in self.frame_receipts.items() if k >= consumed}
+                elif self.frames_enabled and self.frame_ack >= 0:
+                    raise ValueError('missing rendered pitch acknowledgement')
                 self.last_status = value
                 if value['kind'] == 'closed':
                     self.cancel()
@@ -122,6 +152,11 @@ class WatchedController:
             if self.engine.busy and self.last_status is not None:
                 for event in self.engine.poll(self.engine_token):
                     self.send('event', asdict(event))
+                if self.frames_enabled and self.engine.busy and len(self.display.frames) <= MAX_BACKLOG-32:
+                    from goal2.desktop.pygame_viewer import frame_digest
+                    for frame in self.engine.poll_frames(self.engine_token):
+                        self.send('frame', frame)
+                        self.frame_receipts[frame['sequence']] = (frame_digest(frame), self.display.sequence)
                 if not self.engine.busy:
                     self.model.match_pending = False
                     self._pending_owned = False

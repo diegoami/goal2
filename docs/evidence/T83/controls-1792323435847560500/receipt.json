@@ -1,0 +1,14 @@
+[
+  {
+    "name": "axes",
+    "before": "e29981622e6759000eb8898b9e2e0902b2524d89c9e36b4377c9fc0ee2facc68",
+    "mutated": "0c5ab527167465d55f4a2d576dcb3ad6568f14c35d166f644d49a3a456af757a",
+    "restored": "e29981622e6759000eb8898b9e2e0902b2524d89c9e36b4377c9fc0ee2facc68"
+  },
+  {
+    "name": "player-visibility",
+    "before": "e29981622e6759000eb8898b9e2e0902b2524d89c9e36b4377c9fc0ee2facc68",
+    "mutated": "86b46e2d913d5044e129d9d07db119938f5a56d5319c3520a1271cdc06000f61",
+    "restored": "e29981622e6759000eb8898b9e2e0902b2524d89c9e36b4377c9fc0ee2facc68"
+  }
+]
