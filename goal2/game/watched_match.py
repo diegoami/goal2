@@ -171,7 +171,7 @@ def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
 
 
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
-                 substitutions=None,quick_at_half_time=False):
+                 substitutions=None,quick_at_half_time=False,_observe=None):
     """[designed: T51] Shared completed-original driver; no publication or Python tail."""
     if reference_seed is not None:
         _integer(reference_seed,0,65535,'reference seed')
@@ -183,7 +183,12 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     previous_decision = None
     for ev in match.events():
         events.append(copy.deepcopy(ev))
+        if _observe is not None:
+            _observe(copy.deepcopy(ev))
         if ev.kind == 'decision':
+            # [designed: T65] Unknown contexts cannot be silently defaulted.
+            if ev.data.get('context') not in ('half_time','substitution','pause','extra_time','shootout_order'):
+                raise RuntimeError('unsupported original decision under default play-on policy')
             identity = (ev.minute,ev.data)
             if ev.data.get('refused') or identity == previous_decision:
                 raise RuntimeError('original decision refused or made no progress under default play-on policy')
