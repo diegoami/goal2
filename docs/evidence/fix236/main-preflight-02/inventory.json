@@ -1,0 +1,12 @@
+{
+  "issue": 236,
+  "claim": "Main runtime-only genuine animated native Windows planning; Qt1x/default60fps; not source-fix approval",
+  "files": {
+    "T79-animated09-source-audit.json": "8ac38504f6d046b516fd41ea08eed76469db4edab4246b8fe40d641eb038c266",
+    "T79-original-windows-animated-mock-09-receipt.json": "f70090ee8e94b50b9509602ec63067d1dc9cf48b8ba4cadbce160dda6f711bff",
+    "T79-original-windows-animated-mock-09.log": "80eb63359e62637ea488c0a785844113e070c4cb79f5096d6896b3bb9a09ba95",
+    "Windows-sharing-animated-pass.md": "5c7b9b5641a349094fc3febaa0bd0795cd15c5670060532b28f0e5e8f4b82296",
+    "combined-sharing-animated-mock-09.py": "547d058ceefe64ca360240098fd38073ab3a1c1e9f40aec509bb2664adc09807",
+    "viewer-retry-mock.py": "a71892aef71e2aaa3aa6ae5ea711ba8f564b7705334aca214f2f304e43d6b62a"
+  }
+}
