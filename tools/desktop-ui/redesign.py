@@ -219,16 +219,22 @@ def shell(args):
                     assert page.horizontalScrollBar().maximum()==0,'shell needs horizontal scrolling'
                     page_actions=[w for w in actions if page.isAncestorOf(w)]
                     for widget in page_actions:
-                        page.ensureWidgetVisible(widget,0,0);app.processEvents()
-                        origin=widget.mapTo(page.viewport(),QPoint(0,0))
+                        footer=getattr(page,'footer',None)
+                        surface=footer if footer is not None and footer.isAncestorOf(widget) else page.viewport()
+                        if surface is footer:
+                            assert page.rect().contains(footer.geometry()),'footer extends outside page'
+                            assert not footer.geometry().intersects(page.viewport().geometry()),'footer overlaps scroll viewport'
+                        else:page.ensureWidgetVisible(widget,0,0)
+                        app.processEvents()
+                        origin=widget.mapTo(surface,QPoint(0,0))
                         # [designed] Qt may reveal a table's focused cell only; use real scroll keys to expose its full control.
                         for _ in range(100):
-                            if origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height():break
+                            if origin.y()>=0 and origin.y()+widget.height()<=surface.height():break
                             key=Qt.Key.Key_Up if origin.y()<0 else Qt.Key.Key_Down
                             QTest.keyClick(page.verticalScrollBar(),key);app.processEvents()
-                            origin=widget.mapTo(page.viewport(),QPoint(0,0))
-                        assert origin.x()>=0 and origin.x()+widget.width()<=page.viewport().width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
-                        assert origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height(),f'action unreachable vertically: {widget.objectName() or widget.accessibleName()} y={origin.y()} height={widget.height()} viewport={page.viewport().height()}'
+                            origin=widget.mapTo(surface,QPoint(0,0))
+                        assert origin.x()>=0 and origin.x()+widget.width()<=surface.width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
+                        assert origin.y()>=0 and origin.y()+widget.height()<=surface.height(),f'action unreachable vertically: {widget.objectName() or widget.accessibleName()} y={origin.y()} height={widget.height()} viewport={surface.height()}'
                         assert widget.isVisible(),'action hidden'
                         assert widget.accessibleName(),'action has no accessible name'
                         if widget.isEnabled() and isinstance(widget,(QAbstractButton,QComboBox,QLineEdit)):

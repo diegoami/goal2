@@ -145,11 +145,20 @@ def scenario(args):
                         QTest.keyClick(control,Qt.Key.Key_Tab);app.processEvents();QTest.keyClick(app.focusWidget(),Qt.Key.Key_Backtab);app.processEvents()
                         assert app.focusWidget() is control,'Tab/Shift-Tab did not return to draft action'
                     capture(f'long-{width}x{height}-{label}-focused-confirm')
+                name_rows=set();value_rows=set()
+                def visible_rows(column):
+                    viewport=w.table.viewport().rect()
+                    return {row for row in range(20) if viewport.contains(w.table.visualItemRect(w.table.item(row,column)))}
                 for row in (0,4,8,12,16,19):
                     page.verticalScrollBar().setValue(w.table.y()-8);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
+                    name_rows.update(visible_rows(1))
                     capture(f'long-{width}x{height}-roster-row-{row+1}-names')
                     w.table.scrollToItem(w.table.item(row,6));app.processEvents()
+                    value_rows.update(set.intersection(*(visible_rows(column) for column in range(2,7))))
                     capture(f'long-{width}x{height}-roster-row-{row+1}-values')
+                assert name_rows==set(range(20)),'long-name captures missed complete roster names'
+                assert value_rows==set(range(20)),'roster captures missed complete raw fields/availability'
+                report.setdefault('roster_coverage',[]).append({'size':[width,height],'name_rows':sorted(name_rows),'value_rows':sorted(value_rows)})
                 # [designed] Read every table column through its native contained horizontal scroll.
                 for row in range(20):
                     for col in range(7):w.table.scrollToItem(w.table.item(row,col));app.processEvents();assert w.table.item(row,col).text() or col==0
