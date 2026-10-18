@@ -109,8 +109,8 @@ Historical browser contracts T34–T38 are preserved; these are separate impleme
 ## Modern football GUI proposal
 
 [designed: owner #182, 2026-10-18] See the [visual study and bounded backlog](../design/football-gui/README.md).
-These contracts await main-session planning acceptance/retriage and child issue creation;
-child issue identities are linked below. This index records no execution status.
+These contracts come from planning PR188; per-slice preflight and main-session
+retriage govern dispatch. Child issue identities are linked below; GitHub labels own status.
 
 | Task | Title | Issue | Difficulty | Merge after |
 | --- | --- | --- | --- | --- |
