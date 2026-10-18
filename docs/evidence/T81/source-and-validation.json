@@ -1,0 +1,147 @@
+{
+  "additional_static_evidence": {
+    "static/goal-exe/named/seg_0791_06.c": {
+      "citations": [
+        "73-126: goal branch continuation",
+        "131-171: kickoff placement is not universal reset classification"
+      ],
+      "sha256": "8aed66714a1b296f48c02e90d53c30f52edcb59469af5c325ed445b8431f402a"
+    }
+  },
+  "commands": [
+    {
+      "command": "python3 tools/probe_watched_pitch.py --verify --output docs/evidence/T81/runtime-03.json",
+      "execution": "owned systemd unit goal2-t81-runtime-03; HARNESS_CLIENT=codex; physical TMPDIR; null stdin",
+      "log": "runtime-03.log",
+      "result": "PASS four complete original cases; no skips; exact full parity"
+    },
+    {
+      "command": "python3 -m unittest goal2.tests.test_pitch_observation -v",
+      "log": "focused-final-02.log",
+      "result": "PASS8, no skips; six saved-byte controls; exact source restoration"
+    },
+    {
+      "command": "python3 tools/check_provenance.py",
+      "log": "provenance-final-01.log",
+      "result": "PASS16 total engine files"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "log": "links-final-01.log",
+      "result": "PASS links/JSON"
+    }
+  ],
+  "downstream": {
+    "field": "confirmed original play/movement predicates; designed modern schematic allowed; original decorative art/net geometry unresolved",
+    "identity": "resolved current words/teams/local slot labels; no persistent shirt numbering",
+    "placement": "resolved signed x/y and fixed orientation",
+    "smoothing": "discrete samples supported; no interpolation across unproved resets",
+    "terminal": "hold last completed tick; terminal event is outcome only",
+    "visibility": "exact packed sentinel on players and ball; other raw state semantics unresolved"
+  },
+  "environment": {
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.12.14",
+    "unicorn": "2.1.4"
+  },
+  "inputs": {
+    "answers": "default at every decision",
+    "delay_byte": 0,
+    "fixture": [
+      7,
+      19,
+      21
+    ],
+    "goal_dat_sha256": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    "kind": 1,
+    "managed": 7,
+    "record_draws": true,
+    "seeds": [
+      257,
+      4660
+    ]
+  },
+  "observer_commit": "4346f3db83bf2774682294f86e02b6ddae1c4c1f",
+  "receipts": {
+    "README.md": "3c86bc62425a8584f5821603ac2bc4cda7c4239ae85bc02a90cc09714e984efb",
+    "controls-1792317625767267565/canonical-outcome.log": "0f0dde26b4f13825d2e746a33fd931755d3231bad70430f8582bee7768d167fb",
+    "controls-1792317625767267565/inverted-axes.log": "54bb94609cd0e67ef57e274351150f613b54e4bd9dc45269ab5ac155159772ea",
+    "controls-1792317625767267565/inverted-identity.log": "169500d457ee75ce0ba1cee8d342b675d8da33534fb0156b19c34769f75e09c2",
+    "controls-1792317625767267565/receipt.json": "0bbb05635fc463d48f6a533e3ca52558a9edd8337091c73883641ec71917017c",
+    "controls-1792317877187672782/canonical-outcome.log": "2baf5ff91a7b65856fac94a528d1220d33755653f723a57f0e37c24dbb894b0d",
+    "controls-1792317877187672782/half-unsigned.log": "bd6eb90d0c72d397598308afbc86080663349613ef645c4e85f991555c92e244",
+    "controls-1792317877187672782/inverted-axes.log": "01f2efc30c2693ce5e051ff7d48110afb1d54dabddb9608c7344e1907b93caaf",
+    "controls-1792317877187672782/inverted-identity.log": "80664b96c01c41caaa00033c3c5eaf1863fea1f9ca0d831f9024c18e92dbacec",
+    "controls-1792317877187672782/receipt.json": "57ac5c3d6d2aa37f06196387d2e8191b69a4a73c7a3993a68e16ed4e9cfb5701",
+    "controls-1792317877187672782/terminal-pose.log": "f1e38fa89526ee996284c5a19577fb39bb9294e5abf18286fdc397c78a95e98d",
+    "controls-1792318128062206399/canonical-outcome.log": "48a4b13dd82988aea8b7cae59eccd0103beac26a12f26fadb6b6b856b0da1b7c",
+    "controls-1792318128062206399/half-unsigned.log": "bd6eb90d0c72d397598308afbc86080663349613ef645c4e85f991555c92e244",
+    "controls-1792318128062206399/inverted-axes.log": "01f2efc30c2693ce5e051ff7d48110afb1d54dabddb9608c7344e1907b93caaf",
+    "controls-1792318128062206399/inverted-identity.log": "80664b96c01c41caaa00033c3c5eaf1863fea1f9ca0d831f9024c18e92dbacec",
+    "controls-1792318128062206399/receipt.json": "f10a10b5af69e744152b5b75b33e95204d104788256c27adb7d6b6281d799068",
+    "controls-1792318128062206399/sentinel-visibility.log": "f49b36e47f6408c0988fd0d80b512a6b75125b953efda4002d294be3e9e7a96e",
+    "controls-1792318128062206399/terminal-pose.log": "f1e38fa89526ee996284c5a19577fb39bb9294e5abf18286fdc397c78a95e98d",
+    "controls-1792318377979328697/canonical-outcome.log": "7fb2e7846b83601e2a10cf5691f1ba644d73aedfbab4ff3792ce04249720ea8d",
+    "controls-1792318377979328697/half-unsigned.log": "bd6eb90d0c72d397598308afbc86080663349613ef645c4e85f991555c92e244",
+    "controls-1792318377979328697/inverted-axes.log": "01f2efc30c2693ce5e051ff7d48110afb1d54dabddb9608c7344e1907b93caaf",
+    "controls-1792318377979328697/inverted-identity.log": "80664b96c01c41caaa00033c3c5eaf1863fea1f9ca0d831f9024c18e92dbacec",
+    "controls-1792318377979328697/receipt.json": "6ee05bfd77561b8929b7dfa9b1baf23f5e74f5c0befce14b988b5385e492337c",
+    "controls-1792318377979328697/sentinel-visibility.log": "f49b36e47f6408c0988fd0d80b512a6b75125b953efda4002d294be3e9e7a96e",
+    "controls-1792318377979328697/terminal-pose.log": "f1e38fa89526ee996284c5a19577fb39bb9294e5abf18286fdc397c78a95e98d",
+    "controls-1792318404469640766/canonical-outcome.log": "48a4b13dd82988aea8b7cae59eccd0103beac26a12f26fadb6b6b856b0da1b7c",
+    "controls-1792318404469640766/half-unsigned.log": "bd6eb90d0c72d397598308afbc86080663349613ef645c4e85f991555c92e244",
+    "controls-1792318404469640766/inverted-axes.log": "01f2efc30c2693ce5e051ff7d48110afb1d54dabddb9608c7344e1907b93caaf",
+    "controls-1792318404469640766/inverted-identity.log": "80664b96c01c41caaa00033c3c5eaf1863fea1f9ca0d831f9024c18e92dbacec",
+    "controls-1792318404469640766/receipt.json": "f10a10b5af69e744152b5b75b33e95204d104788256c27adb7d6b6281d799068",
+    "controls-1792318404469640766/sentinel-visibility.log": "f49b36e47f6408c0988fd0d80b512a6b75125b953efda4002d294be3e9e7a96e",
+    "controls-1792318404469640766/terminal-pose.log": "f1e38fa89526ee996284c5a19577fb39bb9294e5abf18286fdc397c78a95e98d",
+    "focused-before-runtime-01.log": "6d79665139ecf678477b4bd0b1bc44a5774ac859b5b01e4bde19149316db9dc8",
+    "focused-before-runtime-02.log": "943163dcb4fed038fd22911b12cd6c26f39bcde727423186b425978430d335ac",
+    "focused-before-runtime-03.log": "16b9de3303b7957a6019d7d0c2b3c87160c0dd4434af7d5dfd3dd0409abd549b",
+    "focused-final-01.log": "2b8f4021abc037b62ec613e600426b8d4362feb8527867ae451efec424d41044",
+    "focused-final-02.log": "7c8524391fc48ead9cdf7f535d7db229a52368b659b22486ea503ecde57adeb7",
+    "identity-diagnostic-01.log": "92856de42eab6078de936bd1a9bf91a6494c15ea4c20a1f25d2fb71ee639ee49",
+    "links-01.log": "305ff71ebd89548fb69e92589713e4f539738a44b27b419745d6a39011042b06",
+    "links-final-01.log": "9be2b0c3e1d18c893b989321d76b3419d22375a91629e8124e7729916c7a3ec6",
+    "premerge-4346f3d.log": "da9c9e0420d556bce0c0af29c3e50c25eef90225cea68e5d47aba0cb33446919",
+    "premerge-attempt-01.log": "4f1bdc1d7b2456e5124edc849d6ce6eb97cb08bc5ca5c07d5a7a03740d15c457",
+    "provenance-01.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+    "provenance-final-01.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+    "runtime-01.log": "3e1a1590337e0225bd687e6acca248e75db0d1e1c8f080c4fb0d7cca0a9b750b",
+    "runtime-02.json": "68940278585d4c760c9c9ec3b880dc617a0f1863b69d57e341ebcac7d0b0b038",
+    "runtime-02.log": "baf37a23323e47f9b1acfe3a0abe61a453d97f94b65eab47234c65e69831f11d",
+    "runtime-03.json": "aea35491733f7882915ef106049af4d3c471181dddf2c32a66292d7dcbea13f3",
+    "runtime-03.log": "ac8562f46f3da29a2f47974667e04825c69ec6f94c76fca2c5fbdab65410454e"
+  },
+  "rejected_attempts": [
+    {
+      "log": "runtime-01.log",
+      "reason": "invalid terminal pose ordinal binding assertion"
+    },
+    {
+      "log": "identity-diagnostic-01.log",
+      "reason": "exact terminal state disproves end as valid current-squad pitch frame"
+    },
+    {
+      "log": "premerge-attempt-01.log",
+      "reason": "mistyped full SHA refused"
+    },
+    {
+      "log": "premerge-4346f3d.log",
+      "reason": "final cleanliness check refused concurrent documentation edit; no passing claim"
+    },
+    {
+      "log": "focused-final-01.log",
+      "reason": "incorrect16-file test expectation; kit manifest has10, total provenance has16"
+    }
+  ],
+  "schema": 1,
+  "source_pin": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "sources": {
+    "docs/evidence/T81/README.md": "3c86bc62425a8584f5821603ac2bc4cda7c4239ae85bc02a90cc09714e984efb",
+    "goal2/tests/test_pitch_observation.py": "cd80007a29d6f0cb03fca4c451309a2deaffedbf170916ae0565179eeda05cfc",
+    "tools/probe_watched_pitch.py": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+    "tools/watched-kit-hashes.json": "e5dfc08ade7813f72dc36418f52785b869bcaa961ab2af32682bf10df88aec2c"
+  }
+}

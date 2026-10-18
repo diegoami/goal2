@@ -1,0 +1,60 @@
+{
+  "controls": [
+    {
+      "name": "sentinel-visibility",
+      "test": "ProjectionTests.test_predicates_are_not_lifecycle_clamps",
+      "assertion": "original sentinel visibility",
+      "returncode": 1,
+      "source_before_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+      "mutated_source_sha256": "0fddca966bc00f003b93d7df0d6e1c505737713746106a102299c02a4c3cd7d8",
+      "log_sha256": "f49b36e47f6408c0988fd0d80b512a6b75125b953efda4002d294be3e9e7a96e"
+    },
+    {
+      "name": "half-unsigned",
+      "test": "ProjectionTests.test_half_selector_and_terminal_boundaries",
+      "assertion": "original half selector",
+      "returncode": 1,
+      "source_before_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+      "mutated_source_sha256": "b9dc121b4b91ede4884894e5fc57e10943f82e656ff9adf012e86fe17d031512",
+      "log_sha256": "bd6eb90d0c72d397598308afbc86080663349613ef645c4e85f991555c92e244"
+    },
+    {
+      "name": "terminal-pose",
+      "test": "ProjectionTests.test_half_selector_and_terminal_boundaries",
+      "assertion": "completed pitch boundary",
+      "returncode": 1,
+      "source_before_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+      "mutated_source_sha256": "bd68ee251f2994077bf19b39b1552843575f7df1f019eef9a53e1e7c5f145861",
+      "log_sha256": "f1e38fa89526ee996284c5a19577fb39bb9294e5abf18286fdc397c78a95e98d"
+    },
+    {
+      "name": "inverted-axes",
+      "test": "ProjectionTests.test_signed_draw_axes",
+      "assertion": "original draw axes",
+      "returncode": 1,
+      "source_before_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+      "mutated_source_sha256": "6d2904cb76cec586683f97ddf8951c7222df4affbf32fbc9f04ca392ef3a9411",
+      "log_sha256": "01f2efc30c2693ce5e051ff7d48110afb1d54dabddb9608c7344e1907b93caaf"
+    },
+    {
+      "name": "inverted-identity",
+      "test": "ProjectionTests.test_identity_uses_fixture_side_and_local_slot",
+      "assertion": "original squad identity",
+      "returncode": 1,
+      "source_before_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+      "mutated_source_sha256": "ceb6be6b3f3a968b7b9c2e18dd8905f4fbf044d5b5ca9ef69f444610ed07e419",
+      "log_sha256": "80664b96c01c41caaa00033c3c5eaf1863fea1f9ca0d831f9024c18e92dbacec"
+    },
+    {
+      "name": "canonical-outcome",
+      "test": "FidelityTests.test_canonical_fidelity",
+      "assertion": "canonical events changed",
+      "returncode": 1,
+      "source_before_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+      "mutated_source_sha256": "d9c4ada833e889005534bf825ec1362d9aa24af882c341afd51935f6bc071e11",
+      "log_sha256": "7fb2e7846b83601e2a10cf5691f1ba644d73aedfbab4ff3792ce04249720ea8d"
+    }
+  ],
+  "source_restored_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+  "exact_saved_bytes_restored": true
+}

@@ -1,0 +1,176 @@
+PASS harness.lock: 75 hashes
+PASS original-asset exclusion
+RUN node tools/harness/check-opencode-guard.mjs
+PASS trusted guard dependencies: 156 exact file hashes
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/check_links.py
+links and JSON ok (1172 files)
+RUN node tools/harness/review.mjs --self-test
+self-test: 35 of 35 samples read as expected, and the named-model checks passed
+RUN node --test tests/harness_clients.test.mjs
+✔ Codex markers override stale Anthropic settings; installation paths do not identify a session (0.862654ms)
+✔ Explicit client selection and Codex family conflicts fail closed (0.321537ms)
+✔ Claude family detection and explicit overrides retain legacy behavior (0.282114ms)
+✔ Codex and Claude defaults can be switched without overwriting each other (1.32374ms)
+✔ Codex refuses Claude aliases, other model families and blocked OpenAI choices (0.73647ms)
+✔ Legacy Claude aliases, provider IDs and blocked checks still work (0.333437ms)
+✔ CLI show/dry-run/write use the correct client and preserve Claude defaults (197.558839ms)
+✔ Reviewer CLI rejects the Codex/OpenAI family before resolving OpenCode (277.412344ms)
+✔ Codex permits a distinct reviewer family; Claude still refuses its own (184.697254ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 721.038866
+RUN node --test tests/opencode_protocol.test.mjs
+✔ commands explicitly preserve v1 and select v2 syntax (1.890109ms)
+✔ unknown majors never downgrade (1.565489ms)
+✔ observed empty export/list/event identities and zero usage survive (1.191975ms)
+✔ live model variants and family plus explicit v1 parsed metadata (0.57136ms)
+✔ effective agent permissions preserve order and expose legacy boundary gap (0.931988ms)
+✔ full text usage and rejected tool outcomes survive both protocols (1.988469ms)
+✔ wrong session directory agent model and effort fail closed (0.698614ms)
+✔ malformed truncated incomplete records never become success (1.108583ms)
+✔ structured rejection tags and failed outcomes remain explicit (1.627059ms)
+✔ actual v1 step metadata survives and unfinished or errored assistants never complete (0.946492ms)
+✔ permission requests preserve source resource and session ownership (0.351526ms)
+✔ real old v2 command failures are behavioral failures (0.33321ms)
+✔ mutation controls fail specific identity and rejection assertions (768.998031ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 835.633098
+RUN node --test tests/opencode_workflow.test.mjs
+✔ legacy FILES grammar finds quoted nested relative and multi-file operands while preserving ls behavior (43.825675ms)
+✔ same ordered external policy preserves exact tmp and research roots, rejects neighbors (0.858308ms)
+✔ native hooks tighten saved allow, preserve deny/ask and reject missing mismatched scan (2.2497ms)
+✔ actual shell and cwd select grammar; absent or unsupported native invocation cannot manufacture allow (3.752051ms)
+✔ trusted activation overlay pins dependencies and rejects foreign failed duplicate or missing plugins (68.837753ms)
+✔ safe native config survey rejects every potentially overlapping allow glob and unverified shells (62.417113ms)
+✔ real wrappers and unpinned binaries fail closed; missing dependency setup never fetches (139.771611ms)
+✔ guard mutation controls fail operand approval activation and source-target assertions (978.505974ms)
+✔ full catalogue parity waits for delayed nonselected providers and fails within its deadline (98.020529ms)
+✔ trusted reviewer freezes exact deny rules and legacy external boundary without replacing globals (2.63719ms)
+✔ capture deadline kills an exited leaders owned descendants while unrelated process survives (170.967192ms)
+✔ owned lease nonce split across chunks is redacted at return and startup-error boundaries (622.509348ms)
+✔ production major dispatch recovers complete export, usage and receipt; same owned session resumes (3741.29438ms)
+✔ symlinked owned parent keeps canonical fresh and resumed production identity (1801.643994ms)
+✔ discovery fails before generation on chosen family/effort/agent/effective policy mismatch (10679.614026ms)
+✔ full export identity, rejection, completion and JSON guards reject approval-looking outcomes (10056.829342ms)
+✔ owned startup/idle/total timeouts settle with failure receipt and unrelated service survives (3419.235364ms)
+✔ peek reads retained complete receipts and live standalone private exports without legacy DB access (1036.241121ms)
+✔ explicit v1 commands retain actual-shaped step records and complete recovered text without deleting receipts (830.962166ms)
+✔ spawn errors are explicit infrastructure failures before any generation (65.02076ms)
+✔ production workflow identity and rejection deletion controls fail the intended assertions (15332.04298ms)
+✔ review CLI uses exact fetched head, trusted profile and complete export while retaining its worktree (1911.49101ms)
+✔ progress advances and active owned-server descendants terminate on cancellation (5983.461619ms)
+✔ reviewer frontmatter rejects unknown roots, malformed permission sections and late deny overrides (1.53558ms)
+✔ resume rejects missing/wrong major markers as ownership errors before opening a database (1.621943ms)
+✔ peek renders schema-shaped streaming/running tool states and refuses malformed missing input (0.360341ms)
+✔ missing or malformed chosen model agent and effort fail before generation without defaults (472.473282ms)
+✔ native series-family metadata maps through policy lineage without accepting another family (3637.747857ms)
+✔ relative explicit executable resolves once to a real absolute file before changing the run cwd (942.358119ms)
+✔ known owned transport nonce is redacted from exports final returned text and hashes after split echoes (1944.319384ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64125.067735
+RUN node --test tests/claude_review.test.mjs
+✔ explicit Claude selection and sanitized environment reject provider substitution (1.758488ms)
+✔ trusted policy preserves exact isolated-Python grants, research/tmp and native denies (0.929151ms)
+✔ native effective settings and live rules fail closed on routing and permission drift (0.906579ms)
+✔ policy guard deletion controls fail intended production assertions (282.1241ms)
+✔ production runner recovers full native final, exact scope, usage and sanitized projection (204.42988ms)
+✔ production discovery refuses routing/provider/widening before generation without raw config retention (203.294906ms)
+✔ production exact identity, required denials, final and coverage guards reject approval-looking streams (2336.375006ms)
+✔ production owned startup idle total and cancellation leave unrelated process alive (1212.469595ms)
+✔ complete inventory retains rename source and destination and bounded full diff chunks (58.041693ms)
+✔ native planned forbidden canaries remain distinct from required-check denials (107.585524ms)
+✔ protocol identity rejection and scope deletion controls fail intended assertions (3095.436719ms)
+✔ native successful Read omits optional error flag and retains full review (111.351323ms)
+✔ prepared worktree validates isolation repository exact head and cleanliness before billing (66.543286ms)
+✔ production review argv terminates trailing variadic directory options before the prompt (0.182626ms)
+✔ native rate-limit notices and owned tool heartbeats validate shape and identity (126.637797ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7867.21166
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -m unittest tests.test_agent_permissions tests.test_merge_workflow tests.test_local_validation -v
+test_a_dotted_path_out_of_tmp_is_not_under_tmp (tests.test_agent_permissions.AgentTmpGrantTests.test_a_dotted_path_out_of_tmp_is_not_under_tmp) ... ok
+test_nothing_else_outside_the_worktree_is_granted (tests.test_agent_permissions.AgentTmpGrantTests.test_nothing_else_outside_the_worktree_is_granted) ... ok
+test_the_archaeology_checkout_is_open_to_the_reviewer (tests.test_agent_permissions.AgentTmpGrantTests.test_the_archaeology_checkout_is_open_to_the_reviewer) ... ok
+test_the_reviewer_is_the_one_opencode_agent (tests.test_agent_permissions.AgentTmpGrantTests.test_the_reviewer_is_the_one_opencode_agent) ... ok
+test_tmp_is_open_to_the_reviewer (tests.test_agent_permissions.AgentTmpGrantTests.test_tmp_is_open_to_the_reviewer) ... ok
+test_documents_use_squash_merge_pinned_to_reviewed_head (tests.test_merge_workflow.MergeWorkflowTests.test_documents_use_squash_merge_pinned_to_reviewed_head) ... ok
+test_safe_recipe_keeps_local_worktree_notes_and_cache (tests.test_merge_workflow.MergeWorkflowTests.test_safe_recipe_keeps_local_worktree_notes_and_cache) ... ok
+test_child_cannot_dirty_or_move_the_verified_checkout (tests.test_local_validation.LocalValidationTests.test_child_cannot_dirty_or_move_the_verified_checkout) ... PASS harness.lock: 1 hashes
+PASS original-asset exclusion
+RUN node tools/harness/check-opencode-guard.mjs
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/check_links.py
+RUN node tools/harness/review.mjs --self-test
+RUN node --test tests/harness_clients.test.mjs
+RUN node --test tests/opencode_protocol.test.mjs
+RUN node --test tests/opencode_workflow.test.mjs
+RUN node --test tests/claude_review.test.mjs
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -m unittest tests.test_agent_permissions tests.test_merge_workflow tests.test_local_validation -v
+PASS harness.lock: 1 hashes
+PASS original-asset exclusion
+RUN node tools/harness/check-opencode-guard.mjs
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/check_links.py
+RUN node tools/harness/review.mjs --self-test
+RUN node --test tests/harness_clients.test.mjs
+RUN node --test tests/opencode_protocol.test.mjs
+RUN node --test tests/opencode_workflow.test.mjs
+RUN node --test tests/claude_review.test.mjs
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -m unittest tests.test_agent_permissions tests.test_merge_workflow tests.test_local_validation -v
+ok
+test_child_failure_and_missing_tool_fail_the_command (tests.test_local_validation.LocalValidationTests.test_child_failure_and_missing_tool_fail_the_command) ... PASS harness.lock: 1 hashes
+PASS original-asset exclusion
+RUN node tools/harness/check-opencode-guard.mjs
+PASS harness.lock: 1 hashes
+PASS original-asset exclusion
+RUN node tools/harness/check-opencode-guard.mjs
+FAIL local pre-merge validation: missing tool
+ok
+test_committed_lock_mismatch_is_rejected (tests.test_local_validation.LocalValidationTests.test_committed_lock_mismatch_is_rejected) ... ok
+test_hosted_workflow_is_manual_and_uses_the_same_validator (tests.test_local_validation.LocalValidationTests.test_hosted_workflow_is_manual_and_uses_the_same_validator) ... ok
+test_missing_empty_and_malformed_lock_fail (tests.test_local_validation.LocalValidationTests.test_missing_empty_and_malformed_lock_fail) ... ok
+test_staged_and_unstaged_changes_are_rejected (tests.test_local_validation.LocalValidationTests.test_staged_and_unstaged_changes_are_rejected) ... ok
+test_success_runs_checks_and_rechecks_the_commit (tests.test_local_validation.LocalValidationTests.test_success_runs_checks_and_rechecks_the_commit) ... PASS harness.lock: 1 hashes
+PASS original-asset exclusion
+RUN node tools/harness/check-opencode-guard.mjs
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/check_links.py
+RUN node tools/harness/review.mjs --self-test
+RUN node --test tests/harness_clients.test.mjs
+RUN node --test tests/opencode_protocol.test.mjs
+RUN node --test tests/opencode_workflow.test.mjs
+RUN node --test tests/claude_review.test.mjs
+RUN /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -m unittest tests.test_agent_permissions tests.test_merge_workflow tests.test_local_validation -v
+PASS harness.lock: 1 hashes
+PASS original-asset exclusion
+PASS local pre-merge validation at 4c73fd354515149bb38f452f52ed46423a69cde2
+ok
+test_tracked_original_and_session_names_are_rejected (tests.test_local_validation.LocalValidationTests.test_tracked_original_and_session_names_are_rejected) ... ok
+test_untracked_and_ignored_user_files_are_preserved (tests.test_local_validation.LocalValidationTests.test_untracked_and_ignored_user_files_are_preserved) ... PASS original-asset exclusion
+ok
+test_wrong_or_abbreviated_head_is_rejected (tests.test_local_validation.LocalValidationTests.test_wrong_or_abbreviated_head_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.287s
+
+OK
+FAIL local pre-merge validation: tracked checkout is dirty; commit changes before validating

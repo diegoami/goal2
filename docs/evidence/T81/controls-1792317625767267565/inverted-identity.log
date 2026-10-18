@@ -1,0 +1,21 @@
+test_identity_uses_fixture_side_and_local_slot (goal2.tests.test_pitch_observation.ProjectionTests.test_identity_uses_fixture_side_and_local_slot) ... FAIL
+
+======================================================================
+FAIL: test_identity_uses_fixture_side_and_local_slot (goal2.tests.test_pitch_observation.ProjectionTests.test_identity_uses_fixture_side_and_local_slot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/goal2/tests/test_pitch_observation.py", line 36, in test_identity_uses_fixture_side_and_local_slot
+    self.assertEqual((row['team'], row['number'], row['player']),
+AssertionError: Tuples differ: (0, 1, 372) != (1, 1, 372)
+
+First differing element 0:
+0
+1
+
+- (0, 1, 372)
++ (1, 1, 372) : original squad identity
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)

@@ -1,0 +1,14 @@
+test_half_selector_and_terminal_boundaries (goal2.tests.test_pitch_observation.ProjectionTests.test_half_selector_and_terminal_boundaries) ... FAIL
+
+======================================================================
+FAIL: test_half_selector_and_terminal_boundaries (goal2.tests.test_pitch_observation.ProjectionTests.test_half_selector_and_terminal_boundaries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/goal2/tests/test_pitch_observation.py", line 48, in test_half_selector_and_terminal_boundaries
+    self.assertEqual(probe.attack_selector(threshold, remaining), flag, 'original half selector')
+AssertionError: 0 != 1 : original half selector
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)

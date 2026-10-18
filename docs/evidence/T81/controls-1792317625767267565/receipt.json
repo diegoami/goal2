@@ -1,0 +1,33 @@
+{
+  "controls": [
+    {
+      "name": "inverted-axes",
+      "test": "ProjectionTests.test_signed_draw_axes",
+      "assertion": "original draw axes",
+      "returncode": 1,
+      "source_before_sha256": "0db8dd8aaa623f5702cf4bc170e837b62cdfa7cfd2e89be1332ea8a0835d2137",
+      "mutated_source_sha256": "7ad6f8150b687a6adab095752fd18bf2842b1793f166211abaf18393192ed2b9",
+      "log_sha256": "54bb94609cd0e67ef57e274351150f613b54e4bd9dc45269ab5ac155159772ea"
+    },
+    {
+      "name": "inverted-identity",
+      "test": "ProjectionTests.test_identity_uses_fixture_side_and_local_slot",
+      "assertion": "original squad identity",
+      "returncode": 1,
+      "source_before_sha256": "0db8dd8aaa623f5702cf4bc170e837b62cdfa7cfd2e89be1332ea8a0835d2137",
+      "mutated_source_sha256": "6050101e9e18e719676bd314b738d10d8e91d0268f4b44d3511b49077daee97d",
+      "log_sha256": "169500d457ee75ce0ba1cee8d342b675d8da33534fb0156b19c34769f75e09c2"
+    },
+    {
+      "name": "canonical-outcome",
+      "test": "FidelityTests.test_canonical_fidelity",
+      "assertion": "canonical events changed",
+      "returncode": 1,
+      "source_before_sha256": "0db8dd8aaa623f5702cf4bc170e837b62cdfa7cfd2e89be1332ea8a0835d2137",
+      "mutated_source_sha256": "313023290fbce853e112c97f122d7abced180d577583dbd4206d624e1dc4fcb2",
+      "log_sha256": "0f0dde26b4f13825d2e746a33fd931755d3231bad70430f8582bee7768d167fb"
+    }
+  ],
+  "source_restored_sha256": "0db8dd8aaa623f5702cf4bc170e837b62cdfa7cfd2e89be1332ea8a0835d2137",
+  "exact_saved_bytes_restored": true
+}

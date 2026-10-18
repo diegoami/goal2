@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/tools/probe_watched_pitch.py", line 167, in run_case
+    frame = snapshot(match, event, stats['ticks'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/tools/probe_watched_pitch.py", line 124, in snapshot
+    assert item['player'] == squads[item['team']][item['number'] - 1], 'current squad identity mapping differs: ' + json.dumps(dict(sequence=sequence, kind=event.kind, minute=event.minute, item=item, squads=squads))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: current squad identity mapping differs: {"sequence": 4279, "kind": "end", "minute": 93, "item": {"slot": 3, "team": 1, "number": 3, "player": 364, "x": -9, "y": 0, "screen": [0, -9], "state": 4, "hidden": false}, "squads": [[121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140], [372, 362, 374, 364, 365, 366, 367, 368, 380, 370, 371, 361, 373, 363, 375, 376, 377, 379, 369, 378]]}

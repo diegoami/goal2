@@ -1,0 +1,13 @@
+completed seed=0x0101 sampled=False ticks=4279
+observed seed=0x0101 ticks=1000 minute=21
+observed seed=0x0101 ticks=2000 minute=43
+observed seed=0x0101 ticks=3000 minute=66
+observed seed=0x0101 ticks=4000 minute=87
+PASS seed=0x0101 sampled=True {'ticks': 4279, 'changed_poses': 4277, 'player_changes': 68534, 'ball_changes': 2624, 'outside_in_play': 70, 'outside_movement': 0, 'hidden': 0, 'repeated_reads': 4279}
+completed seed=0x1234 sampled=False ticks=4146
+observed seed=0x1234 ticks=1000 minute=20
+observed seed=0x1234 ticks=2000 minute=45
+observed seed=0x1234 ticks=3000 minute=66
+observed seed=0x1234 ticks=4000 minute=88
+PASS seed=0x1234 sampled=True {'ticks': 4146, 'changed_poses': 4144, 'player_changes': 66010, 'ball_changes': 2599, 'outside_in_play': 101, 'outside_movement': 0, 'hidden': 0, 'repeated_reads': 4146}
+PASS four completed cases; no skips; report=docs/evidence/T81/runtime-02.json

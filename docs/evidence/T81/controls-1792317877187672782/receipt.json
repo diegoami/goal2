@@ -1,0 +1,51 @@
+{
+  "controls": [
+    {
+      "name": "half-unsigned",
+      "test": "ProjectionTests.test_half_selector_and_terminal_boundaries",
+      "assertion": "original half selector",
+      "returncode": 1,
+      "source_before_sha256": "c54301029214c72eb9c5807ce0bef7820b4c363d67b39f0079851085ae636440",
+      "mutated_source_sha256": "2c19ed82382260edafcad7eb213b64da8840d52405ec70e4357b8e2ad6930352",
+      "log_sha256": "bd6eb90d0c72d397598308afbc86080663349613ef645c4e85f991555c92e244"
+    },
+    {
+      "name": "terminal-pose",
+      "test": "ProjectionTests.test_half_selector_and_terminal_boundaries",
+      "assertion": "completed pitch boundary",
+      "returncode": 1,
+      "source_before_sha256": "c54301029214c72eb9c5807ce0bef7820b4c363d67b39f0079851085ae636440",
+      "mutated_source_sha256": "76c36a4c0e8734de03538ceeaba019a296069c5dea29eb3a9a72315b4e9e06bc",
+      "log_sha256": "f1e38fa89526ee996284c5a19577fb39bb9294e5abf18286fdc397c78a95e98d"
+    },
+    {
+      "name": "inverted-axes",
+      "test": "ProjectionTests.test_signed_draw_axes",
+      "assertion": "original draw axes",
+      "returncode": 1,
+      "source_before_sha256": "c54301029214c72eb9c5807ce0bef7820b4c363d67b39f0079851085ae636440",
+      "mutated_source_sha256": "34ce2c81af9439487164c00a7ba7a019b376456d839421acc1d61bf6e17bd2bb",
+      "log_sha256": "01f2efc30c2693ce5e051ff7d48110afb1d54dabddb9608c7344e1907b93caaf"
+    },
+    {
+      "name": "inverted-identity",
+      "test": "ProjectionTests.test_identity_uses_fixture_side_and_local_slot",
+      "assertion": "original squad identity",
+      "returncode": 1,
+      "source_before_sha256": "c54301029214c72eb9c5807ce0bef7820b4c363d67b39f0079851085ae636440",
+      "mutated_source_sha256": "84bcbffc2c2c00f648bdc5279feaf8940c51fed169d6dd25ed2c99619cb1cb9b",
+      "log_sha256": "80664b96c01c41caaa00033c3c5eaf1863fea1f9ca0d831f9024c18e92dbacec"
+    },
+    {
+      "name": "canonical-outcome",
+      "test": "FidelityTests.test_canonical_fidelity",
+      "assertion": "canonical events changed",
+      "returncode": 1,
+      "source_before_sha256": "c54301029214c72eb9c5807ce0bef7820b4c363d67b39f0079851085ae636440",
+      "mutated_source_sha256": "05bbc2bc5e219601790c215004fc9e940ac696963bf75293c185b0d257967ff9",
+      "log_sha256": "2baf5ff91a7b65856fac94a528d1220d33755653f723a57f0e37c24dbb894b0d"
+    }
+  ],
+  "source_restored_sha256": "c54301029214c72eb9c5807ce0bef7820b4c363d67b39f0079851085ae636440",
+  "exact_saved_bytes_restored": true
+}
