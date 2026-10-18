@@ -129,7 +129,11 @@ class WatchedJobs:
             if (self.owner.state is not self._original or self.owner.state != self._snapshot
                     or self.owner.template_bytes != self._template):
                 raise ValueError('watched job is stale; active game changed')
-            self._buffer.extend(self._journal.read(READ_BUDGET))
+            # [designed] Drain queued complete frames before reading another bounded batch.
+            ready = (len(self._buffer) >= 4 and
+                     len(self._buffer) >= 4 + struct.unpack('!I', self._buffer[:4])[0])
+            if not ready:
+                self._buffer.extend(self._journal.read(READ_BUDGET))
             for _ in range(32):
                 if len(self._buffer) < 4:
                     break

@@ -218,6 +218,24 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
             self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET*2)
         self.assertEqual(self.owner.state,self.before)
 
+    def test_exited_burst_drains_in_bounded_batches_without_buffer_growth(self):
+        token=self.bridge('blocked')
+        process=self.jobs.process
+        process.terminate();process.wait(timeout=2)
+        self.jobs._journal.seek(0);self.jobs._journal.truncate()
+        with open(self.jobs._journal.name,'ab') as stream:
+            for number in range(2000):_write(stream,token,number,'event',Event('minute',number,(0,0)))
+        seen=[]
+        # [designed] Keep the decoder pending while checking the read/record budgets.
+        with patch.object(process,'poll',return_value=None):
+            for _ in range(70):
+                events=self.jobs.poll(token)
+                self.assertLessEqual(len(events),32)
+                self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET)
+                seen.extend(events)
+        self.assertEqual([event.minute for event in seen],list(range(2000)))
+        self.assertEqual(self.owner.state,self.before)
+
     def test_stream_outcome_mismatch_and_incomplete_tail_never_publish(self):
         for mode in ('mismatch','tail','trailing'):
             token=self.bridge('blocked')
