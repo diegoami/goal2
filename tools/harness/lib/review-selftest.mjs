@@ -3,6 +3,7 @@
 // and act, post flagged with no label, or fail) and the text it keeps.
 
 import { readReview } from './chain.mjs';
+import { planPost } from './post.mjs';
 
 export const H = 'T07 review (luna)';
 const FINDINGS = 'R1: a.js:10 skips the last item (blocking).\nR2: b.js:4 has no test (not blocking).';
@@ -184,6 +185,23 @@ export const SAMPLES = [
   },
 ];
 
+// [designed: #165] A complete identity header missing only its terminal period is
+// recoverable for human assessment, including unsafe/incomplete review bodies.
+const IDENTITY = 'T32 review (MiniMax M3), PR #135 at b38110183a310303b1f9357272870817f166a16a';
+const RECOVERY_NOTE = 'review header differs by its terminal period; manual assessment required';
+const completed = `${IDENTITY}\napprove\nDW1: ran one → pass\nDW2: ran two → pass\nDW3: ran three → pass\nR1: fixes #136 (not blocking).\napprove`;
+const recoveryCases = [
+  ['completed final after preamble', `Final pass done.\n${completed}`],
+  ['truncated', `${IDENTITY}\napprove\nR1: unfinished`],
+  ['mismatched verdicts', `${IDENTITY}\napprove\nR1: issue\nrework`],
+  ['finding after verdict', `${completed}\nR2: blocking`],
+  ['missing DW', `${IDENTITY}\napprove\nR1: none\napprove`],
+  ['DW not run', completed.replace('DW2: ran two → pass', 'DW2: not run — unavailable')],
+  ['multiple near headers', `${completed}\n${completed}`],
+  ['earlier exact draft then near final', `${IDENTITY}.\napprove\nDW1: ran one → pass\napprove\n${completed}`],
+  ['earlier near draft then exact final', `${completed}\n${IDENTITY}.\napprove\napprove`],
+];
+
 // Returns one line per failed sample (empty when all pass).
 export function selfTest() {
   const failures = [];
@@ -196,6 +214,29 @@ export function selfTest() {
       if (r.note !== s.note) fail(`note "${r.note}", expected "${s.note}"`);
       if (r.review !== s.out.trim()) fail('the flagged review is not the whole input');
     }
+  }
+  for (const [name, out] of recoveryCases) {
+    const r = readReview(out, IDENTITY + '.');
+    const retained = out.replaceAll('fixes #136', 'fixes 136');
+    if (r.kind !== 'flagged' || r.note !== RECOVERY_NOTE || r.review !== retained) {
+      failures.push(`${name}: recovery must retain the whole final and flag it: ${JSON.stringify(r)}`);
+      continue;
+    }
+    const post = planPost({ read: r, header: IDENTITY + '.', doneWhen: 3, source: 'self-test', signature: 'synthetic' });
+    if (post.code !== 4 || post.label !== null || !post.body.includes(retained)) failures.push(`${name}: recovery must post whole, exit 4, no label`);
+  }
+  for (const wrong of [IDENTITY.replace('T32', 'T33'), IDENTITY.replace('#135', '#136'), IDENTITY.replace('b38110183a310303b1f9357272870817f166a16a', 'a'.repeat(40)), IDENTITY.replace('MiniMax M3', 'another reviewer')]) {
+    if (readReview(completed.replace(IDENTITY, wrong), IDENTITY + '.').kind !== 'none') failures.push('wrong identity recovered');
+  }
+  // [designed: #165] Short headers and other punctuation are outside this recovery.
+  for (const [out, header] of [['T32 review (MiniMax M3)\napprove\napprove', 'T32 review (MiniMax M3).'], [completed.replace(IDENTITY, IDENTITY + '!'), IDENTITY + '.']]) {
+    if (readReview(out, header).kind !== 'none') failures.push('unbounded punctuation recovery');
+  }
+  for (const out of [recoveryCases[4][1], recoveryCases[5][1]]) {
+    const exact = out.replace(IDENTITY, IDENTITY + '.');
+    const r = readReview(exact, IDENTITY + '.');
+    const post = planPost({ read: r, header: IDENTITY + '.', doneWhen: 3, source: 'self-test', signature: 'synthetic' });
+    if (r.kind !== 'ok' || post.code !== 4 || post.label !== null || !post.unaccounted) failures.push('exact-header DW protection changed');
   }
   return failures;
 }
