@@ -2,11 +2,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 export const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 export const CLAUDE = Object.freeze({ version: '2.1.292', model: 'claude-sonnet-5-5', effort: 'medium', binarySHA256: 'a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3' });
 export const TOOLS = ['Bash', 'Glob', 'Grep', 'Read'];
 export class ClaudeError extends Error {
-  constructor(reason) { super(`Claude review refused: ${reason}`); this.reason = reason; }
+  constructor(reason) { super(`Claude review refused: ${reason}`); this.name = 'ClaudeError'; this.reason = reason; }
 }
 export function demand(ok, reason) { if (!ok) throw new ClaudeError(reason); }
 export function selectClaude(model) {
@@ -28,11 +29,13 @@ export function reviewPolicy(file, workDir) {
   const bytes = fs.readFileSync(real); const policy = JSON.parse(bytes);
   demand(Object.keys(policy).sort().join() === 'commands,directories' && Array.isArray(policy.commands) && policy.commands.length > 0 && Array.isArray(policy.directories), 'policy shape');
   // [designed: T73] These are trusted exact native command grants, never arbitrary wildcard grants.
-  for (const command of policy.commands) demand(typeof command === 'string' && command.length > 0 && !/[\n\r()*]/.test(command) && /^(?:git |node --test |python3? (?:-I )?)/.test(command), 'command grant');
+  demand(new Set(policy.commands).size === policy.commands.length, 'duplicate commands');
+  const parts = command => command.split(' && ');
+  for (const command of policy.commands) demand(typeof command === 'string' && command.length > 0 && parts(command).every(c => !/[\n\r()*;&|`$<>]/.test(c) && /^(?:git |node --test |python3? (?:-I )?)/.test(c)), 'command grant');
   const dirs = policy.directories.map(d => fs.realpathSync(d));
   demand(new Set(dirs).size === dirs.length && dirs.every(d => path.isAbsolute(d) && d !== '/' && d !== process.env.HOME), 'directory grant');
   demand(dirs.some(d => d === '/tmp') && dirs.some(d => path.basename(d) === 'goal2-archaeology'), 'research/tmp grants');
-  const settings = { model: CLAUDE.model, effortLevel: CLAUDE.effort, permissions: { defaultMode: 'dontAsk', allow: ['Read', 'Grep', 'Glob', ...policy.commands.map(c => `Bash(${c})`)], deny: DENY, additionalDirectories: dirs } };
+  const settings = { model: CLAUDE.model, effortLevel: CLAUDE.effort, permissions: { defaultMode: 'dontAsk', allow: ['Read', 'Grep', 'Glob', ...[...new Set(policy.commands.flatMap(parts))].map(c => `Bash(${c})`)], deny: DENY, additionalDirectories: dirs } };
   return { file: real, sourceSHA256: sha(bytes), commands: policy.commands, directories: dirs, settings };
 }
 export function claudeArgs(policy, sessionID, { projection = false } = {}) {
@@ -40,7 +43,7 @@ export function claudeArgs(policy, sessionID, { projection = false } = {}) {
   return ['--print', '--verbose', '--output-format', 'stream-json', ...(projection ? ['--input-format', 'stream-json', '--no-session-persistence'] : []), '--session-id', sessionID, '--model', CLAUDE.model, '--effort', CLAUDE.effort, '--setting-sources', '', '--safe-mode', '--restricted', '--settings', JSON.stringify(policy.settings), '--permission-mode', 'dontAsk', '--permission-prompts', 'none', '--tools', TOOLS.join(','), '--disallowedTools', 'Edit', 'Write', 'Agent', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--disable-slash-commands', '--no-chrome', ...policy.directories.flatMap(d => ['--add-dir', d])];
 }
 export function verifySettings(reply, policy) {
-  demand(reply && !reply.errors?.length && JSON.stringify(reply.effective) === JSON.stringify(policy.settings), 'effective settings');
+  demand(reply && !reply.errors?.length && isDeepStrictEqual(reply.effective, policy.settings), 'effective settings');
   demand(Array.isArray(reply.sources) && reply.sources.every(s => ['flagSettings', 'policySettings'].includes(s.source)), 'settings sources');
   demand(reply.applied?.model === CLAUDE.model && reply.applied?.effort === CLAUDE.effort && reply.applied?.advisor == null, 'applied model/effort');
   return { effectiveSHA256: sha(JSON.stringify(reply.effective)), sources: reply.sources.map(s => ({ source: s.source, sha256: sha(JSON.stringify(s.settings)) })), model: reply.applied.model, effort: reply.applied.effort };

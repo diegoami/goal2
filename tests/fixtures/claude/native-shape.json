@@ -1,0 +1,119 @@
+{
+  "init": {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/fixture/review",
+    "session_id": "00000000-0000-4000-8000-000000000001",
+    "tools": [
+      "Bash",
+      "Glob",
+      "Grep",
+      "Read"
+    ],
+    "mcp_servers": [],
+    "model": "claude-sonnet-5-5",
+    "permissionMode": "dontAsk",
+    "slash_commands": [],
+    "apiKeySource": "none",
+    "claude_code_version": "2.1.292",
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "assistant": {
+    "type": "assistant",
+    "session_id": "00000000-0000-4000-8000-000000000001",
+    "parent_tool_use_id": null,
+    "message": {
+      "type": "message",
+      "role": "assistant",
+      "model": "claude-sonnet-5-5",
+      "stop_reason": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Fixture review final"
+        }
+      ]
+    }
+  },
+  "result": {
+    "type": "result",
+    "subtype": "success",
+    "duration_ms": 23008,
+    "duration_api_ms": 43076,
+    "is_error": false,
+    "num_turns": 4,
+    "stop_reason": "end_turn",
+    "session_id": "00000000-0000-4000-8000-000000000001",
+    "total_cost_usd": 0.22923019999999997,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 5483,
+      "cache_read_input_tokens": 73842,
+      "output_tokens": 753,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 5483,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 533,
+          "cache_read_input_tokens": 38944,
+          "cache_creation_input_tokens": 1437,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1437
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard",
+      "fallback_credit": null
+    },
+    "modelUsage": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 8,
+        "outputTokens": 4602,
+        "thinkingTokens": 2291,
+        "cacheReadInputTokens": 108351,
+        "cacheCreationInputTokens": 40381,
+        "webSearchRequests": 0,
+        "costUSD": 0.22923019999999997,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "canonicalModel": "claude-sonnet-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "result": "Fixture review final"
+  }
+}

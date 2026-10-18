@@ -58,7 +58,7 @@ a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 c4abc459b7720a55a357371f38eb6fbda90ecf7aa40632f79238366f3939fb23  tools/harness/peek.sh
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-3bd5eeb4a792cc04a36bfd513a121969a9c3bc9f3dc7715f98e92eeb42215702  tools/harness/review.mjs
+9f2a3784153ae336c9fa3bc5772aa32d5a578da4b3c28692238985a5638cc0ae  tools/harness/review.mjs
 d89401578e18253ebfcb82494fbaba1f3825a02533fbd56dfabe0f11b7f41206  tools/harness/switch-model.mjs
 f42444fab83e28dffec60593f1c323e6e4c001d6bfdd780b2cdfff1090d5cd72  AGENTS.md
 b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs
@@ -139,7 +139,19 @@ cca236f12a826843a5ed0b7772c9c564321337a597e55955e13a4f5e01caf6ed  tools/harness/
 1d7fc7b3eea2a7a6a26f59f3ac1bede3daf50dc543b9d21b3a7907b62be34569  tools/harness/probe-opencode-plugins.mjs
 
 local tools/harness/lib/claude-policy.mjs  (T73 optional direct Claude review)
-0bdde41a2a92af02d5ed70a6109586be26937e514595ebe71c89a477ce4658ba  tools/harness/lib/claude-policy.mjs
+da1c534329b6753eb455b32c45e2b19b8c016efe1b24a1a48ab98996449e3109  tools/harness/lib/claude-policy.mjs
 
 local tests/claude_review.test.mjs  (T73 optional direct Claude review)
-a65c1f8cc1d09fe8c5c082abc2617b5d02650ec472bc4227405d1c07ff3eb1f0  tests/claude_review.test.mjs
+e6fe162e4575ab35086a9aba7988cf544a78f2960eb663a25042ff46044ce9a0  tests/claude_review.test.mjs
+
+local tools/harness/lib/claude-protocol.mjs  (T73 optional direct Claude review)
+ba433c8891c20377efd9183ccbaa27296876e6fd91f5aab7f2371746406375dc  tools/harness/lib/claude-protocol.mjs
+
+local tools/harness/lib/claude-scope.mjs  (T73 optional direct Claude review)
+c3b42a98cebb1129d9da425bb6574838e3ef3a1857c9d0c409efb723149fcb37  tools/harness/lib/claude-scope.mjs
+
+local tools/harness/lib/claude-workflow.mjs  (T73 optional direct Claude review)
+5d6bc080857c4f2e5e81ee04a2cb4d2c51f477b9ec999ce4a93e2732f8a8e915  tools/harness/lib/claude-workflow.mjs
+
+local tests/helpers/claude-stub.mjs  (T73 optional direct Claude review)
+bccf626ec1354fe8a2a1671e6d5d40b31e42051a0b9d096b77877b1f36160586  tests/helpers/claude-stub.mjs
