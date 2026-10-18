@@ -1,0 +1,17 @@
+test_token_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_token_rejection) ... FAIL
+
+======================================================================
+FAIL: test_token_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_token_rejection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 124, in test_token_rejection
+    self.reject('token differs')
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 55, in reject
+    with self.assertRaisesRegex(ValueError,message):self.jobs.poll_frames(self.token)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.334s
+
+FAILED (failures=1)
