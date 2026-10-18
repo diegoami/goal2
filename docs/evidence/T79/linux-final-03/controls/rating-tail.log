@@ -1,0 +1,15 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail) ... FAIL
+
+======================================================================
+FAIL: test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 162, in test_wrapped_commentary_lands_at_board_and_scroll_retains_tail
+    self.assertEqual(pygame.image.tobytes(screen.subsurface((20,490+7*26,*label.get_size())),'RGB'),pygame.image.tobytes(expected,'RGB'),'manual scroll lost the final rating row')
+AssertionError: b'\x0[1230 chars]x18\x08\x1c\x18\x08\x1c\x18\x08\x1c\x18\x08\x1[20749 chars]\x18' != b'\x0[1230 chars]x18\xf5\xf2\xe8\xf5\xf2\xe8\xf5\xf2\xe8\xf5\xf[19276 chars]\x18' : manual scroll lost the final rating row
+
+----------------------------------------------------------------------
+Ran 1 test in 0.099s
+
+FAILED (failures=1)

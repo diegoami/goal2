@@ -1,0 +1,957 @@
+{
+  "tag": "[designed: T79] Actual Qt/SDL original handoff",
+  "mode": "actual",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "scenario_sha256": "a71314f9de2a50979e55e11d092802836e72ecac334b65174c0eb3483524011c",
+  "observer_sha256": "cb283071ad5901b221757dc4feee79f72a8071b55eb708736d2d48aa1cd7f65c",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "ce1b0a08bf413f385f61d2a8476968e76f869ac272737eaf0db04e5ea8255c72",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_page.py": "74348d824ada9b51abe3b484e24986e0aa32b3ab4fbaad98d06de105799617a7",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "616843175f8111dc93cbe0d8a7351685db9b218d14c37e12ba12870677712f1f",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "17cff020e5798c2a8a8561960a72d8a9c9b90f3c8afd733898b82c2421644012",
+    "goal2/desktop/window.py": "a95895d766f7012ce9ed0cef5c785d422102e00171483e22cc6f36fe8095371a",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "repeat_policy": "resume-owned-pre-match-checkpoint",
+  "rounds": [],
+  "captures": [
+    {
+      "path": "idle-1440x900.png",
+      "sha256": "75df48281437b5bbc5921b7c8ac7fe60eb83f351bc498b0d2c6a61ead9112625"
+    },
+    {
+      "path": "idle-1050x780.png",
+      "sha256": "f5ae3594fc76a8fa31bc88c677269247ac61ceb2222b68897bd8e12a0eb9a5a4"
+    },
+    {
+      "path": "idle-900x700.png",
+      "sha256": "26da3753cd8673772ad9f3fa12dda8788e3397c8545f583f911e1b05bf504662"
+    },
+    {
+      "path": "starting-0-1440x900.png",
+      "sha256": "bce6ccee605a6f599d6f1e0cd66d04c0f7db2df1a2635b976e5f5cee521fca93"
+    },
+    {
+      "path": "starting-0-1050x780.png",
+      "sha256": "8d290207ed6be83f0061154decae7cb91b557d77a32efccb862b8f941ed75c45"
+    },
+    {
+      "path": "starting-0-900x700.png",
+      "sha256": "a6101b07ba9496210e7be560bcd1b4984b54106a241dd663649905ed10721c8b"
+    }
+  ],
+  "limits": [
+    "Real product widgets and renderer; observer does not substitute painting",
+    "Qt scale does not establish SDL OS/paint scaling",
+    "Separate retained lifecycle suites remain mandatory"
+  ],
+  "uncaught_qt_callbacks": [],
+  "qt": "6.12.0",
+  "qpa": "xcb",
+  "requested_qt_scale": null,
+  "qt_ratio": 1.0,
+  "qt_available": [
+    2880,
+    1800
+  ],
+  "opening_save_sha256": "73d83a7d60878f0c0e5d11f41c66976efe0b69daf3958e4ec1e09a90b1ba5f6a",
+  "geometry": [
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    }
+  ],
+  "resize_requests": [
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "observed_attempts": [
+        [
+          1440,
+          900
+        ]
+      ],
+      "normalized_window_state": 0
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "observed_attempts": [
+        [
+          1050,
+          780
+        ]
+      ],
+      "normalized_window_state": 0
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "observed_attempts": [
+        [
+          900,
+          700
+        ]
+      ],
+      "normalized_window_state": 0
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "observed_attempts": [
+        [
+          1440,
+          900
+        ]
+      ],
+      "normalized_window_state": 0
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "observed_attempts": [
+        [
+          1050,
+          780
+        ]
+      ],
+      "normalized_window_state": 0
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "observed_attempts": [
+        [
+          900,
+          700
+        ]
+      ],
+      "normalized_window_state": 0
+    }
+  ],
+  "focus": [
+    {
+      "stage": "idle",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "idle",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "idle",
+      "size": [
+        900,
+        700
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "starting-0",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "starting-0",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "starting-0",
+      "size": [
+        900,
+        700
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    }
+  ],
+  "negative_control": {
+    "intended_read_only_failure": true,
+    "state_and_saves_preserved": true,
+    "engine_and_viewer_reaped": true,
+    "pending_cleared": true,
+    "metrics_read_after_reaping": true
+  },
+  "result": "FAIL",
+  "exception": "AssertionError",
+  "failure": "renderer changed Display state",
+  "cleanup": {
+    "window_closed": true,
+    "pending": false,
+    "owned_processes_reaped": true
+  }
+}
