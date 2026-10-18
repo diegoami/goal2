@@ -1,0 +1,39 @@
+{
+  "issue": 219,
+  "revision": "final-marker-readiness",
+  "scope": [
+    "tests/opencode_workflow.test.mjs",
+    "harness.lock protected hash for tests/opencode_workflow.test.mjs",
+    "docs/evidence/fix219 text and hash receipts"
+  ],
+  "change": "Readiness now waits on leader.pid, written after descendant.pid, and asserts that the descendant PID file exists before continuing.",
+  "fixed_source_sha256": "d68222c26da50abeaab0ff29d26ce77f96f767c878f743eceaba96386b050ae7",
+  "baseline_reference": {
+    "path": "docs/evidence/fix219/failed-before-enoent.log",
+    "sha256": "75e02186a83f49cf6e1be5d84d604ca07b0a869a6ed2b842d4bad626d51ac5b5",
+    "result": "old 100 ms capture deadline expired before the delayed fixture published its PID; read failed with ENOENT"
+  },
+  "checks": [
+    {
+      "command": "node --test --test-name-pattern='^capture deadline|^production workflow identity and rejection deletion controls' tests/opencode_workflow.test.mjs",
+      "unit": "goal2r-fix219-focused02",
+      "exit_status": 0,
+      "result": "2 passed, 0 failed; normal and 200 ms delayed fixtures pass, and the substantive omission control requires `owned descendant must terminate`",
+      "evidence": {
+        "path": "docs/evidence/fix219/focused-controls-02.log",
+        "sha256": "2be4a155631276b7ce82bce50782747e5978876d6cdddc01435afd4060ce15b7"
+      }
+    },
+    {
+      "command": "node --test tests/opencode_workflow.test.mjs",
+      "unit": "goal2r-fix219-full02",
+      "exit_status": 0,
+      "result": "30 passed, 0 failed",
+      "evidence": {
+        "path": "docs/evidence/fix219/full-workflow-02.log",
+        "sha256": "a669d46fc6eac825f3a50ca1ab544e80cce5ea07f26c5cdac252b69b6e71a069"
+      }
+    }
+  ],
+  "pending": "Exact-head clean premerge validation will be recorded after commit and push."
+}

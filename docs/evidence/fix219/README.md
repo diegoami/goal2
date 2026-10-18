@@ -18,3 +18,8 @@ The first full run exceeded the interactive command window and its partial outpu
 `receipt.json` records command outcomes and SHA-256 hashes for the tested source and evidence.
 This directory contains text and hashes only; generated process fixtures and scratch data stayed
 under the ignored `.cache` directory.
+
+On review of the first pushed head, the readiness poll was tightened to wait on `leader.pid`, the
+last marker written after `descendant.pid`, so observing readiness also proves the child PID write
+has completed. `receipt-02.json`, `focused-controls-02.log` and `full-workflow-02.log` preserve the
+results for that final-marker revision; the earlier receipts remain unchanged.

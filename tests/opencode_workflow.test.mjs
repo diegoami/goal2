@@ -49,9 +49,9 @@ process.exit(0);
         env: { ...process.env, FIXTURE_STARTUP_DELAY_MS: String(startupDelayMs) },
       });
       const readinessDeadline = start + 800;
-      while (!fs.existsSync(pidFile) && Date.now() < readinessDeadline) await delay(10);
-      assert(fs.existsSync(pidFile), `descendant fixture must become ready within 800ms (startup delay ${startupDelayMs}ms)`);
-      assert(fs.existsSync(leaderFile), 'fixture must record its leader before exiting');
+      while (!fs.existsSync(leaderFile) && Date.now() < readinessDeadline) await delay(10);
+      assert(fs.existsSync(leaderFile), `descendant fixture must become ready within 800ms (startup delay ${startupDelayMs}ms)`);
+      assert(fs.existsSync(pidFile), 'final readiness marker must follow the descendant PID write');
       const descendant = Number(fs.readFileSync(pidFile, 'utf8'));
       const leader = Number(fs.readFileSync(leaderFile, 'utf8'));
       assert(Number.isInteger(descendant) && descendant > 0, 'fixture must record a started descendant PID');
