@@ -129,3 +129,5 @@ original native-01 failure remains unchanged and is not used as clean acceptance
 focused footer caption clipping at the minimum2x size. The Windows guide records
 that separate readability failure; raw native02 outputs remain historical and
 unchanged. Runtime-mock success is feasibility evidence only.
+
+[confirmed: validation-05/README.md] The [composed validation](validation-05/README.md) retains20 passing groups after accepted T78 and the scoped [caption correction](caption-rework-01/README.md). Actual focused/unfocused QStyle content bounds now accompany frame geometry at all supported sizes/scales. [Source freeze03](source-freeze-03.json) pins175 unchanged product/test/tool files for a separate final native attempt. Native02 remains cleanup-only acceptance at its older checkpoint.

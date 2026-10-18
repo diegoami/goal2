@@ -55,8 +55,8 @@ The [v4 main runner](native-02/main-native-validation.py) independently rejects
 raw Qt tracebacks even if a process were to exit zero.
 
 [designed: T76/#233] The [author audit](native02-author-audit-01.json) independently
-checks all174 product/test/tool bytes against both the current tree and frozen
-Git blobs, with exact [source-freeze02](../source-freeze-02.json) parity. The main
+checked all174 product/test/tool bytes against the then-current evidence tree
+`882835e414dc515509b77df186134e4691f3c746` and frozen Git blobs, with exact [source-freeze02](../source-freeze-02.json) parity. The main
 proof checker verifies every native report/capture/wrapper/log/resource/inventory
 hash and equality of all four protected launcher/save/resource hashes. The raw
 native-01 receipt and its full inventory are also rechecked unchanged. These are
@@ -71,4 +71,7 @@ success evidence, not final caption-readability acceptance.** Main's exact
 native `SE_PushButtonContents` using each button's own style option at900×640/2x.
 Focused Confirm has132px content for135px text; Discard has75px for79px text.
 The raw native02 captures/logs remain unchanged. A runtime-only stable3px scoped
-footer border proves feasibility, but fresh source validation is still required.
+footer border proves feasibility. The scoped source correction and actual caption
+assertions now pass offscreen1x/2x in [caption rework](../caption-rework-01/README.md).
+The later accepted T78 composition and caption correction intentionally change
+source bytes; final native acceptance requires their own frozen checkpoint.
