@@ -1,0 +1,6 @@
+{
+  "encoding": "utf-8",
+  "raw_sha256": "1eac0d87047ce7008d0225678181ac2fda4d0e10852d5e35410cc44992c6bf63",
+  "raw_utf8": "PASS T79 planning-only actual original Malta18 handoff; full state/events/boards/ratings; real frame ACK; Save/Resume/replay from explicit owned opening checkpoint\r\n",
+  "derived_lf_file": "handoff-mock-2.log"
+}

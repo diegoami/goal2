@@ -1,0 +1,138 @@
+{
+  "head": "ccc659fc804ab76439f5a8814a603f8c185bf443",
+  "directory": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T79-planning-ccc659fc804a-1792357903286503972",
+  "runs": [
+    {
+      "kind": "handoff",
+      "mode": "baseline",
+      "qt_scale": "1",
+      "exit": 1,
+      "seconds": 4.621,
+      "log_sha256": "9de7d20a13f9361d6cef4885261dd1acd47a6e4dda138c5a9d71be93807c2ccd",
+      "wrapper_sha256": "3a1cccf86d131fdd82b2e8b0583f6212ecf2c5398a60122f37bc9f863f2673ea",
+      "report": "observations/handoff-baseline-1/report.json",
+      "report_sha256": "45e29e2b9861f25108c951df95ae128ca40f5fd973fc291d4aeb1e6ca4c14ecb"
+    },
+    {
+      "kind": "handoff",
+      "mode": "mock",
+      "qt_scale": "1",
+      "exit": 0,
+      "seconds": 419.837,
+      "log_sha256": "1eac0d87047ce7008d0225678181ac2fda4d0e10852d5e35410cc44992c6bf63",
+      "wrapper_sha256": "45656976c5ccd01df9fcfcc00767ea592b90ac2358f7612fc65614fa42ab3cfb",
+      "report": "observations/handoff-mock-1/report.json",
+      "report_sha256": "5d7c1868bf36ab763f567667df3410f77834ce11719a01df1454dec768d6a86a"
+    },
+    {
+      "kind": "handoff",
+      "mode": "mutate-render",
+      "qt_scale": "1",
+      "exit": 1,
+      "seconds": 76.063,
+      "log_sha256": "7c1725854d6686204fe7cccc4b4a925c6f62f7478c350e100ad8e5fd655a8fe5",
+      "wrapper_sha256": "c35f31aad6663794667cc864a0f9ff03e8d7c52e216dc5bd2eb26069ac15b399",
+      "report": "observations/handoff-mutate-render-1/report.json",
+      "report_sha256": "59a394c9e2a0f7ead59f6048eae73a8eb6840e7db9d351e5e80d23a580987271"
+    },
+    {
+      "kind": "surface",
+      "mode": "baseline",
+      "qt_scale": "1",
+      "exit": 1,
+      "seconds": 1.115,
+      "log_sha256": "aafede15519236bccc56e3de75712502c39138f1a58d497a508b3e5adfc90b34",
+      "wrapper_sha256": "cae39e103de2cbfadc36c64f899cc0f21a3c390e55603161cb44533639d945d9",
+      "report": "observations/surface-baseline-1/report.json",
+      "report_sha256": "1825bb835a60c1c5d2f4d8cc9765b3fd0adb824e1547e2f9db5502178ef5dcb1"
+    },
+    {
+      "kind": "surface",
+      "mode": "mock",
+      "qt_scale": "1",
+      "exit": 0,
+      "seconds": 1.206,
+      "log_sha256": "e823226f54cc042db576f114709e876602157606e9fe4c839631374f21f635d3",
+      "wrapper_sha256": "a1615b26ede94985a2b78377e5b6625f497873c8fae0b46fbf6de8ef58c6066b",
+      "report": "observations/surface-mock-1/report.json",
+      "report_sha256": "7ba0dff3db77721a2bd26741fc03444792e7d827b47e593a01d03a6b56131e72"
+    },
+    {
+      "kind": "surface",
+      "mode": "mutate-render",
+      "qt_scale": "1",
+      "exit": 1,
+      "seconds": 1.215,
+      "log_sha256": "dd8e09b12d8f6b5eeba43fbce53da828347db6ac0bc8b9ebdc598c803f077fbe",
+      "wrapper_sha256": "c05b6c208806d5aa1b3c0d8cae0c6e3af7020f5d3d89bed87b711a9b938a70aa",
+      "report": "observations/surface-mutate-render-1/report.json",
+      "report_sha256": "04a0ba6d6f0b2e303b93742b5feefcf8344d861a21ae6210c2a04c563446e43a"
+    },
+    {
+      "kind": "handoff",
+      "mode": "baseline",
+      "qt_scale": "2",
+      "exit": 1,
+      "seconds": 1.562,
+      "log_sha256": "2b393ed890eaa503b38ac8a6a84253073ec3a300d65d58c24b621b89ba303097",
+      "wrapper_sha256": "ca7c0c6ecf8cd6bbd980e3731f74c3637a66377b94cab55ebda1b03f77a82586",
+      "report": "observations/handoff-baseline-2/report.json",
+      "report_sha256": "7a8414b29ddc078ea06f98ca8cb54b1ccc2c1d4b2b4d707f8e7a37e8f6afde01"
+    },
+    {
+      "kind": "handoff",
+      "mode": "mock",
+      "qt_scale": "2",
+      "exit": 0,
+      "seconds": 423.482,
+      "log_sha256": "1eac0d87047ce7008d0225678181ac2fda4d0e10852d5e35410cc44992c6bf63",
+      "wrapper_sha256": "e37c87030b753de3a560d926bc645c2e07637b1000e4742266a71327202b7808",
+      "report": "observations/handoff-mock-2/report.json",
+      "report_sha256": "a49555f3e02f2862a8c04ae4fd352c6cd6035680c2ac8f2bd0dcd43fad88533d"
+    },
+    {
+      "kind": "handoff",
+      "mode": "mutate-render",
+      "qt_scale": "2",
+      "exit": 1,
+      "seconds": 74.567,
+      "log_sha256": "fbb2782cd1efd9c02de222dbedd51a69c687787b8b6118eb61a85127ea0daa52",
+      "wrapper_sha256": "3d215452fc49c4777c7ec45c31e76078eb1a9fe79a7ee819b0997b5c8f91ec8c",
+      "report": "observations/handoff-mutate-render-2/report.json",
+      "report_sha256": "9c881d3629d032a88d778d38d3f2187c86c90ac7287d86805bb00e678b1c4e97"
+    },
+    {
+      "kind": "surface",
+      "mode": "baseline",
+      "qt_scale": "2",
+      "exit": 1,
+      "seconds": 0.906,
+      "log_sha256": "3f4faf381c772a27e16c193c7e6344f7d167f1562ba8047ee51b482edffada04",
+      "wrapper_sha256": "94b7dd79bd9b965343fd92434d7bc15b2ff24b8a7df6b1526c590c8958c0b1fa",
+      "report": "observations/surface-baseline-2/report.json",
+      "report_sha256": "10aef294ab5e1111ed4f3c5cf7551fb164a81cbcb413066d1509ed60fbc827c5"
+    },
+    {
+      "kind": "surface",
+      "mode": "mock",
+      "qt_scale": "2",
+      "exit": 0,
+      "seconds": 1.008,
+      "log_sha256": "e823226f54cc042db576f114709e876602157606e9fe4c839631374f21f635d3",
+      "wrapper_sha256": "6b867f17518d8e8872df75f8389d419fb77cd9c23e1c34dfebfa819c1a25e4c1",
+      "report": "observations/surface-mock-2/report.json",
+      "report_sha256": "ef3e61e24263292be0af1adf7e166f72a39de2b838537548123796a5e79fb03d"
+    },
+    {
+      "kind": "surface",
+      "mode": "mutate-render",
+      "qt_scale": "2",
+      "exit": 1,
+      "seconds": 0.955,
+      "log_sha256": "15013e514a94e9e4b1afe8c3192a2ae676811eb0e9bee2fc7945aaab74b4efb0",
+      "wrapper_sha256": "a15d9fbeb41676b9213aae18eeee292b8c44bd34692dc2ebfd4661006f952453",
+      "report": "observations/surface-mutate-render-2/report.json",
+      "report_sha256": "1caaa4bb1e56bc357c93ef6f13e587dbefe8e151b05cca206ed623295f04c4b1"
+    }
+  ]
+}

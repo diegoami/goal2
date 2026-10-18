@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-planning-ccc659fc804a-1792357903286503972\run-surface-mutate-render-1.py", line 25, in <module>
+    runpy.run_path('C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T79-planning-ccc659fc804a-1792357903286503972\\.cache\\T79-main-planning-probe.py',run_name="__main__")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-planning-ccc659fc804a-1792357903286503972\.cache\T79-main-planning-probe.py", line 178, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-planning-ccc659fc804a-1792357903286503972\.cache\T79-main-planning-probe.py", line 163, in main
+    raise AssertionError('T79 planning visual/read-only contract: ' + ', '.join(failed))
+AssertionError: T79 planning visual/read-only contract: render_is_read_only, pinned_score_provenance_and_commentary

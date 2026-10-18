@@ -1,0 +1,26 @@
+{
+  "head": "ccc659fc804ab76439f5a8814a603f8c185bf443",
+  "rows": [
+    {
+      "mode": "baseline",
+      "exit": 1,
+      "seconds": 1.217,
+      "log": ".cache/T79-main-handoff-planning-1792357903282350887/baseline.log",
+      "log_sha256": "03a950d58ba5a65c79256540011bf346dca5fc33f3872c3848fa98eb371204d1"
+    },
+    {
+      "mode": "mock",
+      "exit": 0,
+      "seconds": 136.489,
+      "log": ".cache/T79-main-handoff-planning-1792357903282350887/mock.log",
+      "log_sha256": "77f8356eb64e195d13b9c36f0e96251679642355ae6076cbc603cdecfed01762"
+    },
+    {
+      "mode": "mutate-render",
+      "exit": 1,
+      "seconds": 18.066,
+      "log": ".cache/T79-main-handoff-planning-1792357903282350887/mutate-render.log",
+      "log_sha256": "75fe6c7bcbcaec5be72a5c30a5473de69872d1645e4be6d1b01ce965e80e9a6e"
+    }
+  ]
+}

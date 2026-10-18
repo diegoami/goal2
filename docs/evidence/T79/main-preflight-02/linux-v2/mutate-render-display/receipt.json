@@ -1,0 +1,19 @@
+{
+  "display": ":99",
+  "owned_window_manager_pid": 2877768,
+  "command": [
+    "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "-B",
+    ".cache/T79-handoff-planning-v2.py",
+    "--mode",
+    "mutate-render",
+    "--template",
+    ".cache/e010-r0008-halftime.sav",
+    "--data",
+    ".cache/GOAL.DAT",
+    "--output",
+    "/home/diego/projects/goal2-work/T79-football-ui/.cache/T79-main-handoff-planning-1792357356893453191/mutate-render"
+  ],
+  "exit": 1,
+  "owned_window_manager_exit": 0
+}
