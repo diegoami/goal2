@@ -163,7 +163,9 @@ no original text resources or images are bundled here.
 Unicorn2.1.4 and PySide6 6.12.0 on Linux/WSL. The viewer receives bounded private
 JSON presentation records, never game state/Memory or engine input. Qt polls the
 T65 worker and owns the single validated result publication. Viewer startup has
-a10-second bound; cancellation terminates then kills/reaps only its owned engine
+a10-second bound. Failed folder/stream allocation releases partial resources and
+reports the original cause; the same controller can retry. Cancellation terminates
+then kills/reaps only its owned engine
 and viewer, each with half-second waits. Native Windows packaging is untested.
 See [T66 evidence](evidence/T66/README.md) for tested display modes and controls.
 

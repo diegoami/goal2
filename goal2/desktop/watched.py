@@ -1,4 +1,5 @@
 """[designed: T66] Qt-polled engine/viewer ownership; viewer never receives state."""
+from contextlib import ExitStack
 from dataclasses import asdict
 import importlib.util
 import json
@@ -21,6 +22,7 @@ class WatchedController:
         self.viewer_command = viewer_command
         self.process = None
         self.folder = None
+        self.stream = self.errors = self.directory = None
         self.token = None
         self.display = None
         self.last_status = None
@@ -49,17 +51,17 @@ class WatchedController:
             raise ValueError("Watch requires Unicorn: python3 -m pip install '.[watched]'")
         pending = self.fixture()
         self.close_viewer()
-        self.token = secrets.token_hex(24)
-        self.display = Display(self.token)
-        self.folder = tempfile.TemporaryDirectory(prefix='goal2-viewer-')
-        self.directory = Path(self.folder.name)
-        self.stream = (self.directory / 'display').open('wb')
-        self.errors = (self.directory / 'errors').open('w+b')
-        self.bytes_sent = 0
-        self.digests = {0: self.display.digest()}
-        self.started = time.monotonic()
-        self.last_status = None
         try:
+            self.token = secrets.token_hex(24)
+            self.display = Display(self.token)
+            self.folder = tempfile.TemporaryDirectory(prefix='goal2-viewer-')
+            self.directory = Path(self.folder.name)
+            self.stream = (self.directory / 'display').open('wb')
+            self.errors = (self.directory / 'errors').open('w+b')
+            self.bytes_sent = 0
+            self.digests = {0: self.display.digest()}
+            self.started = time.monotonic()
+            self.last_status = None
             self.send('start', [self.model.goaldat.country_names[w] for w in (pending.side_a,pending.side_b)])
             command = self.viewer_command or [sys.executable, '-m', 'goal2.desktop.pygame_viewer']
             self.process = subprocess.Popen(list(command) + [str(self.directory), self.token],
@@ -138,8 +140,17 @@ class WatchedController:
                 except subprocess.TimeoutExpired:
                     self.process.kill();self.process.wait(timeout=.5)
             self.process = None
-        if self.folder is not None:
-            self.stream.close();self.errors.close();self.folder.cleanup();self.folder = None
+        # [designed: T66] Release every acquired resource, including a partial startup.
+        with ExitStack() as cleanup:
+            if self.folder is not None:
+                cleanup.callback(self.folder.cleanup)
+                self.folder = None
+            for name in ('errors', 'stream'):
+                handle = getattr(self, name)
+                setattr(self, name, None)
+                if handle is not None:
+                    cleanup.callback(handle.close)
+            self.directory = None
 
     def cancel(self):
         if self.engine.busy:

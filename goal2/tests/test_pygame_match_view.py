@@ -213,6 +213,66 @@ sys.exit(pygame_viewer.main())
                 self.assertIsNone(c.process);self.assertFalse(c.busy);self.assertEqual(m.state,before)
             finally:c.close()
 
+    def test_partial_startup_allocation_cleanup_and_retry_preserve_save(self):
+        from goal2.tests.test_watched_jobs import CONTROLLED
+        original_open=Path.open
+        original_folder=tempfile.TemporaryDirectory
+        for failed in ('folder','display','errors'):
+            with self.subTest(allocation=failed),original_folder() as folder:
+                m=model(Path(folder)/'save');m.save(m.save_path)
+                before=copy.deepcopy(m.state);saved=m.save_path.read_bytes()
+                c=WatchedController(m,engine_command=[sys.executable,'-c',CONTROLLED,'blocked'])
+                acquired=[];directories=[];retry_handles=();injected=OSError(f'simulated {failed} allocation failure')
+                def allocate(*args,**kwargs):
+                    if failed=='folder':raise injected
+                    result=original_folder(*args,**kwargs);directories.append(Path(result.name));return result
+                def opening(path,*args,**kwargs):
+                    if path.name==failed and path.parent.name.startswith('goal2-viewer-'):raise injected
+                    result=original_open(path,*args,**kwargs)
+                    if path.parent.name.startswith('goal2-viewer-'):acquired.append(result)
+                    return result
+                try:
+                    error=None;cleanup_error=None
+                    with patch('goal2.desktop.watched.tempfile.TemporaryDirectory',allocate),patch.object(Path,'open',opening),patch('goal2.desktop.watched.subprocess.Popen') as launch:
+                        try:c.start()
+                        except Exception as exc:error=exc
+                        self.assertFalse(launch.called,'allocation failure launched a child')
+                    automatically_closed=all(handle.closed for handle in acquired)
+                    automatically_released=all(not directory.exists() for directory in directories)
+                    try:c.close_viewer();c.close_viewer();c.cancel();c.cancel()
+                    except Exception as exc:cleanup_error=exc
+                    self.assertIsInstance(error,ValueError,'startup allocation did not report actionable error')
+                    self.assertIn('Cannot start original friendly',str(error));self.assertIs(error.__cause__,injected)
+                    self.assertIsNone(cleanup_error,'partial cleanup raised a secondary exception')
+                    self.assertIsNone(c.process);self.assertFalse(c.busy);self.assertIsNone(c.engine.publication._pending)
+                    self.assertFalse(getattr(m,'match_pending',False));self.assertTrue(m.state==before,'allocation failure changed complete state')
+                    self.assertTrue(m.save_path.read_bytes()==saved,'failed allocation changed committed save bytes')
+                    self.assertTrue(automatically_closed,'startup failure retained an acquired stream')
+                    self.assertTrue(automatically_released,'startup failure retained its allocated folder')
+                    self.assertTrue(all(handle.closed for handle in acquired),'partial allocation leaked an open stream')
+                    self.assertTrue(all(not directory.exists() for directory in directories),'partial allocation retained its folder')
+                    # [designed] Retry the same live bridge before terminal close, with real owned children.
+                    c.start();viewer=c.process;engine=c.engine.process
+                    retry_handles=(c.stream,c.errors)
+                    def seen():c.poll();return c.last_status is not None and bool(c.display.events)
+                    pump(seen)
+                    c.cancel();c.cancel()
+                    self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll())
+                    self.assertTrue(all(handle.closed for handle in retry_handles))
+                    self.assertTrue(m.state==before,'allocation failure changed complete state');self.assertTrue(m.save_path.read_bytes()==saved,'retry changed committed save bytes')
+                    close_error=None
+                    try:c.close();c.close()
+                    except Exception as exc:close_error=exc
+                    self.assertIsNone(close_error,'terminal cleanup was not idempotent')
+                finally:
+                    # [designed] A failing before/control run must still release its test-owned resources.
+                    try:c.close()
+                    except Exception:pass
+                    for handle in acquired+list(retry_handles):
+                        if not handle.closed:handle.close()
+                    if c.folder is not None:c.folder.cleanup();c.folder=None
+                    c.engine.close()
+
     def test_malformed_stale_ack_and_engine_failure_preserve_state(self):
         from goal2.tests.test_watched_jobs import CONTROLLED
         for mode in ('malformed','stale','guest','closed','startup-timeout','oversized','bad-digest'):
