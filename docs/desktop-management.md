@@ -247,3 +247,12 @@ python3 -m unittest goal2.tests.test_desktop_competitive_jobs -v
 python3 tools/desktop-ui/competitive_play.py
 QT_QPA_PLATFORM=xcb xvfb-run -a python3 tools/desktop-ui/competitive_play.py
 ```
+
+[designed: T76] **Squad & tactics** retains the twenty-player source-order roster.
+Select a row to read its full ID, position group, raw ability/energy/confidence
+and availability. The grouped starting XI and bench reflect the private draft,
+with explicit Captain text; grouping does not assign a formation. The fixed
+Confirm management / Discard draft bar stays visible while the page scrolls.
+Space toggles native XI/tactics controls; Enter activates a focused draft action.
+Draft edits survive navigation and country preview/return; Save writes confirmed
+state, and match play still requires confirmed management.

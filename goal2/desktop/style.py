@@ -27,5 +27,8 @@ def apply_style(window):
     QLabel#cardHeading {{font-size:14px;color:{c['secondary']};font-weight:600;}}
     QLabel#overviewCountry {{font-size:24px;font-weight:700;}}
     QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;}}
+    QLabel#lineupBoard,QLabel#benchBoard,QLabel#playerDetail {{background:{c['panel']};border:1px solid {c['divider']};border-radius:8px;padding:16px;}}
+    QWidget#draftBar {{background:{c['raised']};border-top:1px solid {c['divider']};}}
+    QLabel#draftState {{color:{c['warning']};font-size:14px;font-weight:600;}}
     QScrollArea {{border:0;}}
     """)

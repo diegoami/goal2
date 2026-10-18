@@ -1,0 +1,219 @@
+"""[designed: T76] Native squad interaction and saved-source mutation oracles."""
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import subprocess
+import sys
+import tempfile
+
+ROOT=Path(__file__).resolve().parents[2]
+
+def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+def scenario(args):
+    from PySide6.QtCore import Qt,QCoreApplication,QEvent,qVersion
+    from PySide6.QtTest import QTest
+    from PySide6.QtWidgets import QApplication,QLabel
+    from goal2.desktop.model import DesktopModel
+    from goal2.desktop.window import ManagementWindow,TACTICS
+    from goal2.game.session_save import encode
+    from navigation import reveal
+    app=QApplication([])
+    out=Path(args.evidence_dir)
+    if out.exists() and any(out.iterdir()):
+        i=2
+        while (out/f'run-{i:02}').exists():i+=1
+        out=out/f'run-{i:02}'
+    out.mkdir(parents=True,exist_ok=True)
+    report={'tag':'[designed: T76]','platform':platform.platform(),'python':sys.version,'qt':qVersion(),
+            'qpa':app.platformName(),'requested_scale':os.environ.get('QT_SCALE_FACTOR','1'),
+            'sources':{str(p.relative_to(ROOT)):digest(p) for p in sorted((ROOT/'goal2/desktop').glob('*.py'))},
+            'scenario_sha256':digest(__file__),'resources':{'template':digest(args.template),'data':digest(args.data)},
+            'steps':[],'captures':[]}
+    window=None
+    try:
+        with tempfile.TemporaryDirectory(prefix='T76-squad-') as folder:
+            save=Path(folder)/'owned.g2save';model=DesktopModel.open(args.template,args.data,save,country=13)
+            model.confirm(list(model.state.starting_eleven),model.state.starting_eleven[0],model.state.country_tactics);model.save(save)
+            saved=save.read_bytes();window=ManagementWindow(model);w=window;w.show();w.activateWindow();QTest.qWait(120)
+            report['ratio']=w.devicePixelRatioF()
+            assert all(w.findChild(QLabel,name) is not None for name in ('lineupBoard','benchBoard','playerDetail','draftState')),'grouped XI/bench and draft hierarchy absent'
+            assert hasattr(w.pages[1],'footer'),'persistent draft footer absent'
+            w.navigate(1);app.processEvents()
+            def state():return encode(model.state,model.template_bytes)
+            def unchanged(before,label):
+                assert state()==before,label+' prematurely published active state'
+                assert save.read_bytes()==saved,label+' changed confirmed save bytes'
+            def focus(widget):
+                if not w.isActiveWindow():w.raise_();w.activateWindow()
+                assert QTest.qWaitForWindowActive(w,2000),'owned squad window did not become active'
+                widget.setFocus();app.processEvents()
+                assert app.focusWidget() is widget,'native focus not acquired: '+widget.objectName()
+            def toggle(row):
+                before=state();reveal(w.table);w.table.setCurrentCell(row,0);w.table.scrollToItem(w.table.item(row,0));focus(w.table)
+                QTest.keyClick(w.table,Qt.Key.Key_Space);app.processEvents();unchanged(before,'XI checkbox')
+            def key(widget,key):
+                before=state();reveal(widget);focus(widget);QTest.keyClick(widget,key);app.processEvents();unchanged(before,'draft control')
+            def action(widget):
+                reveal(widget);focus(widget);QTest.keyClick(widget,Qt.Key.Key_Return);app.processEvents()
+            def capture(name):
+                app.processEvents();path=out/(name+'.png');assert w.grab().save(str(path))
+                report['captures'].append({'path':path.name,'sha256':digest(path),'size':[w.width(),w.height()],
+                                           'scroll':w.pages[1].verticalScrollBar().value(),'focus':app.focusWidget().objectName() if app.focusWidget() else None})
+            def detail(row):
+                w.table.setCurrentCell(row,1);app.processEvents();p=model.view()['players'][row];text=w.player_detail.text()
+                for value in (p['name'],str(p['id']),p['position'],f"Ability {p['ability']}",f"Energy {p['energy']}",f"Confidence {p['confidence']}"):
+                    assert value in text,'selected player raw detail missing '+value
+                for reason in p['availability']['reasons']:assert reason in text,'selected detail omitted availability'
+                if p['availability']['carried_bookings']:assert 'carried booking' in text
+            capture('initial')
+            wanted=list(range(250,261))
+            for row in range(20):
+                if (w.table.item(row,0).checkState()==Qt.CheckState.Checked)!=(241+row in wanted):toggle(row)
+            assert w.selected_ids()==wanted,'full integer player IDs were truncated'
+            key(w.captain,Qt.Key.Key_End);assert w.captain.currentData()==260,'captain full ID was truncated'
+            assert tuple(e for e,_ in w.tactics)==(5,6,7,1,2,3,4,8)
+            for element,box in w.tactics:
+                assert box.text()==dict(TACTICS)[element]
+                key(box,Qt.Key.Key_Space)
+                if not box.isChecked():key(box,Qt.Key.Key_Space)
+            assert w.draft()==(wanted,260,255)
+            assert 'Unconfirmed draft' in w.draft_state.text()
+            assert 'Starting XI · 11' in w.lineup_board.text() and 'Bench · 9' in w.bench_board.text()
+            assert 'Captain' in w.lineup_board.text()
+            for p in model.view()['players']:
+                assert p['name'] in (w.lineup_board.text() if p['id'] in wanted else w.bench_board.text())
+                if p['id'] in wanted:assert p['position'] in w.lineup_board.text()
+            for row in range(20):detail(row)
+            capture('dirty-full-id-detail')
+            before=state();draft=copy.deepcopy(w.draft())
+            for index in (0,2,3,4,1):
+                QTest.keyClick(w,Qt.Key.Key_1+index,Qt.KeyboardModifier.ControlModifier);app.processEvents()
+                assert w.draft()==draft;unchanged(before,'navigation')
+            key(w.country,Qt.Key.Key_Home);assert w.preview is not None
+            key(w.country,Qt.Key.Key_Home)
+            for _ in range(12):key(w.country,Qt.Key.Key_Down)
+            assert w.preview is None and w.draft()==draft,'country return lost active draft'
+            action(w.confirm)
+            assert model.state.starting_eleven==wanted and model.state.captain==260 and model.state.country_tactics==255,'Confirm did not publish full IDs/all bits'
+            confirmed=state();assert 'Confirmed' in w.draft_state.text();capture('confirmed-grouped')
+            for row in (19,0):
+                toggle(row);action(w.confirm)
+                assert state()==confirmed and 'eleven' in w.status.text(),'invalid XI count accepted'
+                capture('invalid-count-'+str(len(w.selected_ids())))
+                action(w.cancel);assert w.draft()==(wanted,260,255),'Discard did not restore confirmed management'
+            # [designed] Force a corrupt captain input through the real Confirm action, independently of combo filtering.
+            w.captain.addItem('Invalid captain outside XI',241);key(w.captain,Qt.Key.Key_End);action(w.confirm)
+            assert state()==confirmed and 'Captain' in w.status.text(),'invalid captain accepted'
+            action(w.cancel)
+            for box in (w.tactics[0][1],w.tactics[-1][1]):key(box,Qt.Key.Key_Space)
+            action(w.cancel);assert w.draft()==(wanted,260,255),'Discard lost confirmed tactics'
+            for word in (260,241):
+                rec=bytearray(model.state.players[word]);rec[14]=0;rec[16]=0x88;model.state.players[word]=bytes(rec)
+            w.refresh();before=state();action(w.confirm)
+            assert state()==before and 'unavailable' in w.status.text(),'unavailable starter was accepted'
+            detail(19);capture('unavailable-player-detail');toggle(0)
+            assert 241 not in w.selected_ids(),'unavailable reserve added to XI'
+            toggle(19);assert 260 not in w.selected_ids(),'unavailable starter could not be removed'
+            toggle(1);assert len(w.selected_ids())==11 and 242 in w.selected_ids()
+            action(w.confirm);assert 260 not in model.state.starting_eleven and 242 in model.state.starting_eleven
+            report['steps'].append('Full IDs250–260, captain260, all8bits; private events/save; Confirm/Discard; invalid10/12/captain; unavailable starter/removal/reserve; navigation/preview return')
+            sizes=[(900,640)] if report['ratio']>1 else [(1440,900),(1050,780),(900,700)]
+            original_names=model.goaldat.player_names
+            # [designed] Generated long names exercise wrapping; original names are restored before workers run.
+            names=list(original_names)
+            for word in model.state.managed_squad:names[word]='Long national player name '+str(word)+' with extended family name'
+            from dataclasses import replace
+            model.goaldat=replace(model.goaldat,player_names=names)
+            w.refresh()
+            for width,height in sizes:
+                w.resize(width,height);w.navigate(1);app.processEvents();page=w.pages[1]
+                for scroll,label in ((0,'roster'),(page.verticalScrollBar().maximum()//2,'detail'),(page.verticalScrollBar().maximum(),'tactics')):
+                    page.verticalScrollBar().setValue(scroll);app.processEvents()
+                    footer=page.footer
+                    assert footer.isVisible() and footer.geometry().bottom()<page.height(),'draft bar is outside page'
+                    assert not page.viewport().geometry().intersects(footer.geometry()),'draft bar covers scroll content'
+                    assert w.confirm.geometry().right()<footer.width(),'draft action clipped by footer'
+                    assert footer.geometry().right()<page.verticalScrollBar().geometry().left() or not page.verticalScrollBar().isVisible(),'scrollbar overlaps draft action bar'
+                    for control in (w.cancel,w.confirm):
+                        focus(control);assert control.visibleRegion().boundingRect().height()>0 and control.accessibleName()
+                        QTest.keyClick(control,Qt.Key.Key_Tab);app.processEvents();QTest.keyClick(app.focusWidget(),Qt.Key.Key_Backtab);app.processEvents()
+                        assert app.focusWidget() is control,'Tab/Shift-Tab did not return to draft action'
+                    capture(f'long-{width}x{height}-{label}-focused-confirm')
+                for row in (0,6,12,19):
+                    page.ensureWidgetVisible(w.table);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
+                    capture(f'long-{width}x{height}-roster-row-{row+1}-names')
+                    w.table.scrollToItem(w.table.item(row,6));app.processEvents()
+                    capture(f'long-{width}x{height}-roster-row-{row+1}-values')
+                # [designed] Read every table column through its native contained horizontal scroll.
+                for row in range(20):
+                    for col in range(7):w.table.scrollToItem(w.table.item(row,col));app.processEvents();assert w.table.item(row,col).text() or col==0
+                for widget,name in ((w.player_detail,'selected-detail'),(w.lineup_board,'grouped-xi'),(w.bench_board,'bench')):
+                    page.ensureWidgetVisible(widget);app.processEvents();capture(f'long-{width}x{height}-{name}')
+            model.goaldat=replace(model.goaldat,player_names=original_names)
+            model.new_campaign(4);model.exchange(80,2561);model.confirm(list(model.state.starting_eleven),61,165);w.refresh()
+            # [derived: T47] Real private first-half worker, substitution and cancellation preserve confirmed management.
+            import time
+            before=state();reveal(w.play);focus(w.play);QTest.mouseClick(w.play,Qt.MouseButton.LeftButton);app.processEvents()
+            deadline=time.monotonic()+20
+            while w.jobs.halftime is None and time.monotonic()<deadline:QTest.qWait(20)
+            assert w.jobs.halftime is not None,'real halftime worker did not pause: '+w.status.text()
+            assert state()==before and not w.confirm.isEnabled() and not w.table.isEnabled()
+            reveal(w.half_out);focus(w.half_out);QTest.keyClick(w.half_out,Qt.Key.Key_Home)
+            reveal(w.half_in);focus(w.half_in);QTest.keyClick(w.half_in,Qt.Key.Key_End)
+            assert w.half_out.currentData()==61 and w.half_in.currentData()==2561
+            reveal(w.substitute);QTest.mouseClick(w.substitute,Qt.MouseButton.LeftButton);app.processEvents()
+            assert w.jobs.halftime['captain']==2561 and 2561 in w.jobs.halftime['eleven'] and w.half_in.findData(61)==-1
+            assert state()==before and save.read_bytes()==saved
+            reveal(w.stop);QTest.mouseClick(w.stop,Qt.MouseButton.LeftButton);app.processEvents()
+            assert not w.jobs.busy and state()==before and save.read_bytes()==saved
+            report['steps'].append('Real pending halftime, captain2561 private substitution/no re-entry, disabled management and cancellation without publication')
+            report['result']='PASS'
+    except BaseException as exc:
+        report['failure']=str(exc);report['exception']=type(exc).__name__;raise
+    finally:
+        if window is not None:
+            window.close();window.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
+        app.quit();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
+        report['clean_widgets']=not bool(app.topLevelWidgets())
+        (out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+    print('PASS squad: real private drafts/full IDs/eligibility, grouped raw detail, persistent actions, navigation, real pending halftime; '+str(out))
+
+
+def negative_controls(args):
+    out=Path(args.evidence_dir)
+    if out.exists() and any(out.iterdir()):out=out/('negative-'+str(len(list(out.iterdir()))+1))
+    out.mkdir(parents=True,exist_ok=False)
+    paths=[ROOT/'goal2/desktop/squad_page.py',ROOT/'goal2/desktop/window.py',ROOT/'goal2/desktop/model.py']
+    saved={p:p.read_bytes() for p in paths};receipt={'tag':'[designed: T76]','cases':[],'before':{str(p.relative_to(ROOT)):digest(p) for p in paths}}
+    command=[sys.executable,'-B',str(ROOT/'tools/desktop-ui/redesign.py'),'--scenario','squad','--template',args.template,'--data',args.data,'--single-scale']
+    env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','QT_SCALE_FACTOR':'1'}
+    def run(name,cmd,expected):
+        r=subprocess.run(cmd,cwd=ROOT,env=env,capture_output=True,text=True,timeout=120)
+        (out/(name+'.log')).write_text(r.stdout+r.stderr)
+        assert r.returncode!=0 and 'AssertionError' in r.stderr and expected in r.stderr,name+' missed intended assertion: '+r.stderr
+        receipt['cases'].append({'name':name,'command':cmd,'returncode':r.returncode,'expected':expected})
+    try:
+        p=paths[0];p.write_bytes(subprocess.check_output(['git','show','f1697ef628508ac19130299194d751990ca7fa9e:goal2/desktop/squad_page.py'],cwd=ROOT))
+        # [designed] Restore matching baseline window as it has no additive presentation bindings.
+        paths[1].write_bytes(subprocess.check_output(['git','show','f1697ef628508ac19130299194d751990ca7fa9e:goal2/desktop/window.py'],cwd=ROOT))
+        run('baseline',command+['--evidence-dir',str(out/'baseline')],'grouped XI/bench and draft hierarchy absent')
+        for p,raw in saved.items():p.write_bytes(raw)
+        p=paths[2];source=p.read_text();old='candidate.captain=captain;';assert source.count(old)==1
+        p.write_text(source.replace(old,'candidate.captain=captain & 255;'))
+        run('truncated-captain',command+['--evidence-dir',str(out/'truncated-captain')],'Confirm did not publish full IDs/all bits')
+        run('truncated-management',[sys.executable,'-B','tools/desktop-ui/acceptance.py','--scenario','management','--template',args.template,'--data',args.data],'AssertionError')
+        p.write_bytes(saved[p]);p=paths[1];source=p.read_text();old='        self.country.currentIndexChanged.connect(self.country_changed)';assert source.count(old)==1
+        p.write_text(source.replace(old,old+'\n        for _,box in self.tactics:box.toggled.connect(lambda *_:self.model.confirm(self.selected_ids(),self.captain.currentData(),self.draft()[2]))'))
+        run('eager-tactic',command+['--evidence-dir',str(out/'eager-tactic')],'prematurely published active state')
+        # [designed] Legacy management confirms the final result and has no per-tactic isolation assertion.
+        r=subprocess.run([sys.executable,'-B','tools/desktop-ui/acceptance.py','--scenario','management','--template',args.template,'--data',args.data],cwd=ROOT,env=env,capture_output=True,text=True,timeout=90)
+        (out/'eager-legacy-management.log').write_text(r.stdout+r.stderr);receipt['legacy_eager_management_returncode']=r.returncode
+    finally:
+        for p,raw in saved.items():p.write_bytes(raw)
+        receipt['after']={str(p.relative_to(ROOT)):digest(p) for p in paths};receipt['restored']=all(p.read_bytes()==raw for p,raw in saved.items())
+        (out/'negative-controls.json').write_text(json.dumps(receipt,indent=2)+'\n')
+    assert receipt['restored'];print('PASS squad negative controls: baseline/truncated captain/eager tactics; exact saved bytes restored')

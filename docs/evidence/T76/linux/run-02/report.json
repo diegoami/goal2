@@ -1,0 +1,284 @@
+{
+  "tag": "[designed: T76]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "offscreen",
+  "requested_scale": "1",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2/desktop/jobs.py": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "fd2e50294a7d6abbdcff028c1f8fbfe3f2178af9f9c07c0ee84e7411af29564f",
+    "goal2/desktop/pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "014cd8c574cb516edd392f4574f9d65ca17b28f0beb3c0322292dbad605184a6",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "a068a2f2b2b39fd2eede7f304f7e587fc6a136345d0008d8d6300fa9669e63ae",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "steps": [
+    "Full IDs250\u2013260, captain260, all8bits; private events/save; Confirm/Discard; invalid10/12/captain; unavailable starter/removal/reserve; navigation/preview return",
+    "Real pending halftime, captain2561 private substitution/no re-entry, disabled management and cancellation without publication"
+  ],
+  "captures": [
+    {
+      "path": "initial.png",
+      "sha256": "b66e62c77911bfe103deff79231a07e6744a456ec269a340630918510e808649",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "pageHeading"
+    },
+    {
+      "path": "dirty-full-id-detail.png",
+      "sha256": "fef0ddd50b8b85261f153b9ead28cb5ab317c9d6511ff9c05315177e4d88e430",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 1300,
+      "focus": "tactic8"
+    },
+    {
+      "path": "confirmed-grouped.png",
+      "sha256": "ae4c257f630fd2ee87c33ad9be41f598e412753eb05be814aac351590aa10c34",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-10.png",
+      "sha256": "56dd1a15d0a2dfbb1ec8297103701b994eed690843d0cd7b20a41a3629637b5b",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-12.png",
+      "sha256": "bca6da7797f581598e1f2a8aa6bfaee2a860d41b0b5cc0065ddbf9f89102571f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "unavailable-player-detail.png",
+      "sha256": "6ed3bf230a453e6603e90cbbc0acc1efdbbbd0c3f617120ab452f97bfc954581",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-focused-confirm.png",
+      "sha256": "114f6f57bcd34bdbb319352f45db3591c0251f915978ae54646badd01462d671",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-detail-focused-confirm.png",
+      "sha256": "c82f8c4225eeb4435cbd0cca3b640e9f1c3c316020713fef14731d5dadc07d75",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 609,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-tactics-focused-confirm.png",
+      "sha256": "db9288e52b7a4fbdb49462aec6a2b99f9026aa8a9fd2f6fc8e48ec1f5631f4e9",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 1218,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-selected-detail.png",
+      "sha256": "d97bf7671c15129f379a057af5d57d5650029296246ca61dae52749e2e0b79d8",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 435,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-grouped-xi.png",
+      "sha256": "d97bf7671c15129f379a057af5d57d5650029296246ca61dae52749e2e0b79d8",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 435,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-bench.png",
+      "sha256": "5b89ee01925a409fdecc4139a868054a1a2eae26b5dfbfd16010702bd11f9a04",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 703,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-focused-confirm.png",
+      "sha256": "582a6472f0ad5c0f7e70d6451a7e9048056d28156efdcdddfad71aa9658f0f67",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-detail-focused-confirm.png",
+      "sha256": "78cf6cd8b3b1b52e26291e79598de3c8f373c0d8ad22aee189f9494d7dda5cc4",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 678,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-tactics-focused-confirm.png",
+      "sha256": "47d9eaedc2ee03bb6edd7c6e115f9a623918d77b0f47a386d55ac6252ceca0b9",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 1357,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-selected-detail.png",
+      "sha256": "1a14caa861cd6de4ad67c528b78d0c4d89ce3e84b98e362a775295fc055e5dcf",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 435,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-grouped-xi.png",
+      "sha256": "d71857af89037a51b919980649944b720d63ef0d6887fd1035b2117da68fd937",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 591,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-bench.png",
+      "sha256": "4407ff2cb49bee79cf42e372c02162f93153397a1262f10eecaabeb054293004",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 842,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-focused-confirm.png",
+      "sha256": "c1c4a0cd35b897e7e886991732a78eca90e2fe34c3a6ac1ba66b664d2d82759e",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-detail-focused-confirm.png",
+      "sha256": "06771e8893f46bc05df710a99ea23b789b45df4a19503104487698b956d93533",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 728,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-tactics-focused-confirm.png",
+      "sha256": "784e0d671f0c7a692a560f8898659a4343ba8bb0955504e81135ea692f490c70",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 1456,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-selected-detail.png",
+      "sha256": "8a97e4729cfc6d971ef37703e9cdda79795ffd9c9431ea52fbc27a0ca014cd91",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 435,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-grouped-xi.png",
+      "sha256": "160c211eabd1880e8b866966faeaadeb4e84c28865b0878af0ebfc34dd5141af",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 640,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-bench.png",
+      "sha256": "c933a766414fcf54b86df7f980a03a1798f2c3b859b3ec76c9a8e6411211aad7",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 941,
+      "focus": "confirm"
+    }
+  ],
+  "ratio": 1.0,
+  "result": "PASS",
+  "clean_widgets": true
+}

@@ -9,6 +9,19 @@ DESTINATIONS=('Overview','Squad & tactics','National pool','Fixtures & results',
 
 class ShellPage(QScrollArea):
     """[designed] One vertical content scroll region per destination."""
+    def set_footer(self,footer):
+        """[designed: T76] Reserve a fixed action area outside content scrolling."""
+        self.footer=footer;footer.setParent(self);footer.show();self.place_footer()
+
+    def place_footer(self):
+        if not hasattr(self,'footer'):return
+        height=self.footer.sizeHint().height()
+        self.setViewportMargins(0,0,0,height)
+        self.footer.setGeometry(0,self.height()-height,self.viewport().width(),height);self.footer.raise_()
+
+    def resizeEvent(self,event):
+        super().resizeEvent(event);self.place_footer()
+
     def __init__(self,name,index):
         super().__init__();self.setObjectName(f'page{index+1}')
         self.setWidgetResizable(True);self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
