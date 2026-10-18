@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 498, in main
+    return (pool_negative if args.negative_controls else pool)(args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/pool_scenario.py", line 107, in scenario
+    search(target['name'].swapcase());position(target['position']);rows();reserve(2561);capture('filtered')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/pool_scenario.py", line 63, in search
+    app.processEvents();stable(before,'search/filter',draft)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/pool_scenario.py", line 52, in stable
+    assert m.state==before,label+' changed state/RNG/membership'
+           ^^^^^^^^^^^^^^^
+AssertionError: search/filter changed state/RNG/membership

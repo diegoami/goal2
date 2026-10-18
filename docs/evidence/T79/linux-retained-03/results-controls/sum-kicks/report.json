@@ -1,0 +1,1410 @@
+{
+  "tag": "[designed: T78]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "xcb",
+  "scale": "1",
+  "requested_scale": "1",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "7e25644ee41b836b3ca07e46f6640ff4ce6e65e7b37c78d6de869bf042714368",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_page.py": "20ae3e5073affdacbef798fb099c3661ee48832ea691ce3076f1f356d14bde48",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "17cff020e5798c2a8a8561960a72d8a9c9b90f3c8afd733898b82c2421644012",
+    "goal2/desktop/window.py": "858e57a8aec01861e73b621d577ff8465244b7f3e7f8879150dc23701fa02f5b",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "3a778053c589dce1d8584704d67f4fa8507238e4e65cd71690fc531f20dc45fb",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "cases": [
+    {
+      "name": "empty",
+      "source_save_sha256": null,
+      "state_sha256": "db9bc8cd4186f88a89429b6abfbe01d3a1c53ff8ad6a51e67f164fbbe7eff1ea",
+      "score": "No match played",
+      "stages": "No completed result",
+      "standings": {
+        "continent": 1,
+        "group": 7,
+        "slots": [
+          4,
+          26,
+          30,
+          14
+        ],
+        "places": 2,
+        "playoff": false,
+        "stage": 5,
+        "rows": [
+          {
+            "country": 4,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 1,
+            "advances": true,
+            "name": "Bulgaria",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 26,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 2,
+            "advances": true,
+            "name": "Spain",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 30,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 3,
+            "advances": false,
+            "name": "Russia",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 14,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 4,
+            "advances": false,
+            "name": "Hungary",
+            "played": 0,
+            "goal_difference": 0
+          }
+        ]
+      },
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "quick-long-country",
+      "source_save_sha256": "5ed8707fa731584224f36855c253a1f8195e0de685a69140c5cafafffbfa7b9e",
+      "state_sha256": "5ed8707fa731584224f36855c253a1f8195e0de685a69140c5cafafffbfa7b9e",
+      "score": "Trinidad/Tobago 0 \u2014 1 Chile",
+      "stages": "Full time",
+      "standings": {
+        "continent": 2,
+        "group": 3,
+        "slots": [
+          61,
+          45,
+          39,
+          49
+        ],
+        "places": 1,
+        "playoff": false,
+        "stage": 5,
+        "rows": [
+          {
+            "country": 61,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 1,
+            "advances": true,
+            "name": "Trinidad/Tobago",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 45,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 2,
+            "advances": false,
+            "name": "Ecuador",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 39,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 3,
+            "advances": false,
+            "name": "Canada",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 49,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 4,
+            "advances": false,
+            "name": "Guyana",
+            "played": 0,
+            "goal_difference": 0
+          }
+        ]
+      },
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "opening-table-1992",
+      "source_save_sha256": null,
+      "state_sha256": "ed30e631ff6f1681fee0f5f2c72c5e5e1602240581bb175ed782f497bea4a729",
+      "score": "No match played",
+      "stages": "No completed result",
+      "standings": {
+        "continent": 1,
+        "group": 1,
+        "slots": [
+          7,
+          16,
+          4,
+          10
+        ],
+        "places": 1,
+        "playoff": false,
+        "stage": 2,
+        "rows": [
+          {
+            "country": 7,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 1,
+            "advances": true,
+            "name": "Denmark",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 16,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 2,
+            "advances": false,
+            "name": "Italy",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 4,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 3,
+            "advances": false,
+            "name": "Bulgaria",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 10,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 4,
+            "advances": false,
+            "name": "Finland",
+            "played": 0,
+            "goal_difference": 0
+          }
+        ]
+      },
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "standalone",
+      "source_save_sha256": null,
+      "state_sha256": "8d0f7e2b8262252c86bd0b341d46b4945a7010009ac7cd15cb9f25bd5ee09351",
+      "score": "No match played",
+      "stages": "No completed result",
+      "standings": null,
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "competitive-regulation",
+      "source_save_sha256": "30daba2cfd5ee333a780d0c267d15266dbdd168010266c8698c65f5f54cdfbcf",
+      "state_sha256": "30daba2cfd5ee333a780d0c267d15266dbdd168010266c8698c65f5f54cdfbcf",
+      "score": "Denmark 1 \u2014 1 N.Ireland",
+      "stages": "Regulation: 1 \u2014 1\nDraw",
+      "standings": null,
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "original-friendly-kit1",
+      "source_save_sha256": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+      "state_sha256": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+      "score": "Denmark 1 \u2014 1 N.Ireland",
+      "stages": "Full time",
+      "standings": null,
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    }
+  ],
+  "captures": [
+    {
+      "file": "empty-focused-standings.png",
+      "sha256": "59f3b7475c2b435d836ee093cb42a8e6ca2551b96d6ff05c512bc20e163e6416",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "empty-focused-play.png",
+      "sha256": "732c70648b765f7d6cc3df749991085ece7bc08e45b85c5df38e14eaa3a27e3e",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "empty-1440x900-fixtureNext.png",
+      "sha256": "67d9dab575a65aac2184037eaae88d5dacc5b462623d6fcbebf6e2e80f7ee9a2",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        516,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "empty-1440x900-scoreboard.png",
+      "sha256": "b701b829d1e90778f8efa199cd5f24c4e8aadb22904427389154279036579f2e",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        545,
+        1346,
+        69
+      ]
+    },
+    {
+      "file": "empty-1440x900-resultStages.png",
+      "sha256": "5df8b372970c6f35cba87413cc6a058aec6d1f0e1ef2b0d4cb08bded66943cc6",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "empty-1440x900-resultDetails.png",
+      "sha256": "baa7d59d5694e1b316fe879e5561af235eba05a4e3d489eedd428d7389a4dfce",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        533,
+        1346,
+        81
+      ]
+    },
+    {
+      "file": "empty-1440x900-fixtureTable.png",
+      "sha256": "fc5f3fbe9a7b73d35bcb39e314fd078dee27add54313e5c02e004684ece7baa4",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        476,
+        1346,
+        138
+      ]
+    },
+    {
+      "file": "empty-1050x780-fixtureNext.png",
+      "sha256": "6094b3f47b2a75ff3a7df1b4d2f79494e58e297126d5f5006089f63f2b0405f0",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        50,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "empty-1050x780-scoreboard.png",
+      "sha256": "6094b3f47b2a75ff3a7df1b4d2f79494e58e297126d5f5006089f63f2b0405f0",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        124,
+        956,
+        69
+      ]
+    },
+    {
+      "file": "empty-1050x780-resultStages.png",
+      "sha256": "6094b3f47b2a75ff3a7df1b4d2f79494e58e297126d5f5006089f63f2b0405f0",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        205,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "empty-1050x780-resultDetails.png",
+      "sha256": "6094b3f47b2a75ff3a7df1b4d2f79494e58e297126d5f5006089f63f2b0405f0",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        333,
+        956,
+        81
+      ]
+    },
+    {
+      "file": "empty-1050x780-fixtureTable.png",
+      "sha256": "aa50bb773221d3f0c4332f3f977603ad18518f0252e267a8ca572db267dc980e",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        356,
+        956,
+        138
+      ]
+    },
+    {
+      "file": "empty-900x700-fixtureNext.png",
+      "sha256": "42e83b3cfe0f199199c34c7dc0acb875afef667e74fca62746fe72c54b9d64b5",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        0,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "empty-900x700-scoreboard.png",
+      "sha256": "42e83b3cfe0f199199c34c7dc0acb875afef667e74fca62746fe72c54b9d64b5",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        74,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "empty-900x700-resultStages.png",
+      "sha256": "42e83b3cfe0f199199c34c7dc0acb875afef667e74fca62746fe72c54b9d64b5",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        155,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "empty-900x700-resultDetails.png",
+      "sha256": "42e83b3cfe0f199199c34c7dc0acb875afef667e74fca62746fe72c54b9d64b5",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        283,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "empty-900x700-fixtureTable.png",
+      "sha256": "4330648301921228d967d671abe25035c54154422dfd8a697071e1ea74cf182a",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        276,
+        806,
+        138
+      ]
+    },
+    {
+      "file": "malformed-copied-scoreboard.png",
+      "sha256": "fdab9d83be343b76a2f903a35ab31bfd9e76aee4aa9870f2127de21447e6f5e6",
+      "geometry": [
+        24,
+        0,
+        806,
+        69
+      ],
+      "context": "malformed pure copied input; save loading remains strict"
+    },
+    {
+      "file": "malformed-copied-resultStages.png",
+      "sha256": "7b507074bd9766017c13bcf1f08c3e370df31acb7d235f6aaee2102143c4886f",
+      "geometry": [
+        24,
+        81,
+        806,
+        62
+      ],
+      "context": "malformed pure copied input; save loading remains strict"
+    },
+    {
+      "file": "malformed-copied-resultDetails.png",
+      "sha256": "61a69736af9ed1ce920084ef621c5e9a49cfc3c6b712cf842f1452765adca2b8",
+      "geometry": [
+        24,
+        209,
+        806,
+        62
+      ],
+      "context": "malformed pure copied input; save loading remains strict"
+    },
+    {
+      "file": "quick-long-country-focused-standings.png",
+      "sha256": "340b3752dc273b9e38b95c9fe10e2e1caec3ac3709c5087cbb6cd54a8741cbcd",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "quick-long-country-focused-play.png",
+      "sha256": "c2993608cd84f417e4d5c464e4df4472c1bda1d965a048e5ea8847a8944b9366",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "quick-long-country-1440x900-fixtureNext.png",
+      "sha256": "35ae98c09ee085cb379c99ee9f7ad1b842f65fc7ffdc4572a1244aa8ea823488",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        516,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-1440x900-scoreboard.png",
+      "sha256": "805a7e5a4aa671d5f104c70d6a3ebaca5d75c434c9276e857c64f615309fe00f",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        545,
+        1346,
+        69
+      ]
+    },
+    {
+      "file": "quick-long-country-1440x900-resultStages.png",
+      "sha256": "c1af7b3362dc01e88546d2e2245ebb599cb1d526b4d4e24ff649bff1470f6e93",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-1440x900-resultDetails.png",
+      "sha256": "f6603a3a355fbc5a09fe22ada62012cd3f62bf43e9b0c0c0219f3b43fe0ad8a1",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        514,
+        1346,
+        100
+      ]
+    },
+    {
+      "file": "quick-long-country-1440x900-fixtureTable.png",
+      "sha256": "05297fe9badd3e2216d4ef15a1c457a766b954d75a3939d1baf86128ac5cd78f",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        476,
+        1346,
+        138
+      ]
+    },
+    {
+      "file": "quick-long-country-1050x780-fixtureNext.png",
+      "sha256": "228c65bc6a33896b785e35bb534475f3f730da9c2dca157bcd6e8340f0494397",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        31,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-1050x780-scoreboard.png",
+      "sha256": "228c65bc6a33896b785e35bb534475f3f730da9c2dca157bcd6e8340f0494397",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        105,
+        956,
+        69
+      ]
+    },
+    {
+      "file": "quick-long-country-1050x780-resultStages.png",
+      "sha256": "228c65bc6a33896b785e35bb534475f3f730da9c2dca157bcd6e8340f0494397",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        186,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-1050x780-resultDetails.png",
+      "sha256": "228c65bc6a33896b785e35bb534475f3f730da9c2dca157bcd6e8340f0494397",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        314,
+        956,
+        100
+      ]
+    },
+    {
+      "file": "quick-long-country-1050x780-fixtureTable.png",
+      "sha256": "60f241d36f80795a6480d99672ed7ad5f58b4349167ccddd2dbf5c5f9e527395",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        356,
+        956,
+        138
+      ]
+    },
+    {
+      "file": "quick-long-country-900x700-fixtureNext.png",
+      "sha256": "b2dd4f95606064b928482df0782dd08cf3aacb6de21f85148749d5094d5b2e88",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        0,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-900x700-scoreboard.png",
+      "sha256": "b2dd4f95606064b928482df0782dd08cf3aacb6de21f85148749d5094d5b2e88",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        74,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "quick-long-country-900x700-resultStages.png",
+      "sha256": "b2dd4f95606064b928482df0782dd08cf3aacb6de21f85148749d5094d5b2e88",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        155,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-900x700-resultDetails.png",
+      "sha256": "b2dd4f95606064b928482df0782dd08cf3aacb6de21f85148749d5094d5b2e88",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        283,
+        806,
+        100
+      ]
+    },
+    {
+      "file": "quick-long-country-900x700-fixtureTable.png",
+      "sha256": "093937e5156d9319efa28224407ef2d5cfafe708d17382f3de573d980b23b416",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        276,
+        806,
+        138
+      ]
+    },
+    {
+      "file": "opening-table-1992-focused-standings.png",
+      "sha256": "a0528ae0aab7837d5792dd737e4f68313f207a5ed56fc93c7a44128ab336d679",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "opening-table-1992-focused-play.png",
+      "sha256": "0d78866dfb3a0e2fff494702d13ca8a714f92513b262fc426282a599dc447bf6",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "opening-table-1992-1440x900-fixtureNext.png",
+      "sha256": "ec2ce32a67edb7fc57adca1ded334188228ece67d3cc693ab46fffa15ccb8d02",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        516,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-1440x900-scoreboard.png",
+      "sha256": "681fc4bb6c2fa1b40eb21cd07c7fd3fc5ce114c5aeb2ffd3408cf5635273a898",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        545,
+        1346,
+        69
+      ]
+    },
+    {
+      "file": "opening-table-1992-1440x900-resultStages.png",
+      "sha256": "338e9fa69c33a5722edefc33fae054d728880ce070fc4f92bc469568b2cf4f50",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-1440x900-resultDetails.png",
+      "sha256": "b5411472bb016a6b25ae6fb34b6523991d94138498aa2064fb74d3ac9c145e2b",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        533,
+        1346,
+        81
+      ]
+    },
+    {
+      "file": "opening-table-1992-1440x900-fixtureTable.png",
+      "sha256": "96b67f1c252639460dfecab8296438a00b369dd541c0e83c600d1bbe47d7ffa1",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        476,
+        1346,
+        138
+      ]
+    },
+    {
+      "file": "opening-table-1992-1050x780-fixtureNext.png",
+      "sha256": "7f8f8bb9cfa2d6c3eac2c23416803bdd0f49a62664fff3fb330acc94aa97e1b1",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        50,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-1050x780-scoreboard.png",
+      "sha256": "7f8f8bb9cfa2d6c3eac2c23416803bdd0f49a62664fff3fb330acc94aa97e1b1",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        124,
+        956,
+        69
+      ]
+    },
+    {
+      "file": "opening-table-1992-1050x780-resultStages.png",
+      "sha256": "7f8f8bb9cfa2d6c3eac2c23416803bdd0f49a62664fff3fb330acc94aa97e1b1",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        205,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-1050x780-resultDetails.png",
+      "sha256": "7f8f8bb9cfa2d6c3eac2c23416803bdd0f49a62664fff3fb330acc94aa97e1b1",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        333,
+        956,
+        81
+      ]
+    },
+    {
+      "file": "opening-table-1992-1050x780-fixtureTable.png",
+      "sha256": "19134ada49e9c1e099757f1582319f792aae70b183887139697697cc5b161815",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        356,
+        956,
+        138
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x700-fixtureNext.png",
+      "sha256": "1a62993889de588474a99e9d3bb33796716f721e1dc2c1f70f30794b24c6fe34",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        0,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x700-scoreboard.png",
+      "sha256": "1a62993889de588474a99e9d3bb33796716f721e1dc2c1f70f30794b24c6fe34",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        74,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x700-resultStages.png",
+      "sha256": "1a62993889de588474a99e9d3bb33796716f721e1dc2c1f70f30794b24c6fe34",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        155,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x700-resultDetails.png",
+      "sha256": "1a62993889de588474a99e9d3bb33796716f721e1dc2c1f70f30794b24c6fe34",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        283,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x700-fixtureTable.png",
+      "sha256": "61dc9cef20702f4caac6fe4eff0618cce12a1534de9af238e8e585214fd8fb82",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        276,
+        806,
+        138
+      ]
+    },
+    {
+      "file": "standalone-focused-standings.png",
+      "sha256": "db51fc7b8f4eae997c8d0ee4a0341ac9df82534ea9115a4446e6d593d86cdccb",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "standalone-focused-play.png",
+      "sha256": "c3af9b9329dc4c24f39fe343c7c4e7486e6a0a236b204249ac909c2acbb8d704",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "standalone-1440x900-fixtureNext.png",
+      "sha256": "3444894b2bdfe25a9e0199a451a7aadd59b81cd2eb932f2cffdf4d0213215ed2",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        516,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "standalone-1440x900-scoreboard.png",
+      "sha256": "1ad6438e6a0b9e147c3a2dd721fef6a7ed68a32e4cec8da2cc1b0690e4203e11",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        545,
+        1346,
+        69
+      ]
+    },
+    {
+      "file": "standalone-1440x900-resultStages.png",
+      "sha256": "03b3c0914e512f350e442fb8cfb16200a3fd063abb525b21db33ea9a20e29e24",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "standalone-1440x900-resultDetails.png",
+      "sha256": "ac6cb1195a8f51f8b03f5092e9db368927a130829f26f0be3a2711fc52c08a45",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        533,
+        1346,
+        81
+      ]
+    },
+    {
+      "file": "standalone-1440x900-fixtureTable.png",
+      "sha256": "57532b46d7276b904a5874d60d1e211d51e671e9e3d7a51d574e3d9b5a82346c",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "standalone-1050x780-fixtureNext.png",
+      "sha256": "b9b0a4188f291a549b9698eb5c475334f85983a20871f16cbdd34c661f014ee8",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        126,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "standalone-1050x780-scoreboard.png",
+      "sha256": "b9b0a4188f291a549b9698eb5c475334f85983a20871f16cbdd34c661f014ee8",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        200,
+        956,
+        69
+      ]
+    },
+    {
+      "file": "standalone-1050x780-resultStages.png",
+      "sha256": "b9b0a4188f291a549b9698eb5c475334f85983a20871f16cbdd34c661f014ee8",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        281,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "standalone-1050x780-resultDetails.png",
+      "sha256": "b9b0a4188f291a549b9698eb5c475334f85983a20871f16cbdd34c661f014ee8",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        409,
+        956,
+        81
+      ]
+    },
+    {
+      "file": "standalone-1050x780-fixtureTable.png",
+      "sha256": "8b5e58c62c8d8f02f6ed7b316ead16a984b4b5e1a856564386bbd088fb8bb89e",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        432,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "standalone-900x700-fixtureNext.png",
+      "sha256": "55268bdbe2bdf48d440173ef3408abeafdef2527b0358b1d5e8dfa07bc7f8d60",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        6,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "standalone-900x700-scoreboard.png",
+      "sha256": "55268bdbe2bdf48d440173ef3408abeafdef2527b0358b1d5e8dfa07bc7f8d60",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        80,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "standalone-900x700-resultStages.png",
+      "sha256": "55268bdbe2bdf48d440173ef3408abeafdef2527b0358b1d5e8dfa07bc7f8d60",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        161,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "standalone-900x700-resultDetails.png",
+      "sha256": "55268bdbe2bdf48d440173ef3408abeafdef2527b0358b1d5e8dfa07bc7f8d60",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        289,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "standalone-900x700-fixtureTable.png",
+      "sha256": "ebb22c556789dcba1a5ab100a75ca4d3f1975c67905c480fbfc987e6e7a654bc",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        352,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-focused-standings.png",
+      "sha256": "86da77a526fa3b1a36668493f0c674010ca6afd4cf9abc30e66f77e82008d8a3",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "competitive-regulation-1440x900-fixtureNext.png",
+      "sha256": "b5fc868595186a0a248c44d9e451d11d171c0cffd8340e6dc0826b83508d1146",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        535,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-1440x900-scoreboard.png",
+      "sha256": "47e16cf63c3a905d44bbbf9e23baba0ca60df6d5985533aee2303051e9aa068f",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        545,
+        1346,
+        69
+      ]
+    },
+    {
+      "file": "competitive-regulation-1440x900-resultStages.png",
+      "sha256": "70c5eee55ef16cdab8c11a5f9c48e89b5a198769fd0cdd8614003c2f7fe85073",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        533,
+        1346,
+        81
+      ]
+    },
+    {
+      "file": "competitive-regulation-1440x900-resultDetails.png",
+      "sha256": "554463cda5d94fc9d3fad9994c8d18c5d73648292c09175d1e5d7e8a7eea705f",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        457,
+        1346,
+        157
+      ]
+    },
+    {
+      "file": "competitive-regulation-1440x900-fixtureTable.png",
+      "sha256": "9504722a2c5c4315d4ef669d49ecfde9fef15303297bfc99ef5cae5aa8f38d47",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-1050x780-fixtureNext.png",
+      "sha256": "feb394628440a57c124b70642ee636c55191cbdf9957b9d68fc435c4159d60b6",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        31,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-1050x780-scoreboard.png",
+      "sha256": "feb394628440a57c124b70642ee636c55191cbdf9957b9d68fc435c4159d60b6",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        105,
+        956,
+        69
+      ]
+    },
+    {
+      "file": "competitive-regulation-1050x780-resultStages.png",
+      "sha256": "feb394628440a57c124b70642ee636c55191cbdf9957b9d68fc435c4159d60b6",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        186,
+        956,
+        81
+      ]
+    },
+    {
+      "file": "competitive-regulation-1050x780-resultDetails.png",
+      "sha256": "feb394628440a57c124b70642ee636c55191cbdf9957b9d68fc435c4159d60b6",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        333,
+        956,
+        157
+      ]
+    },
+    {
+      "file": "competitive-regulation-1050x780-fixtureTable.png",
+      "sha256": "053862ea08e7b55f189edc4c4e1f40d313391bdaf3c358624324e0dccd5d1ac0",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        432,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x700-fixtureNext.png",
+      "sha256": "822f900d23a9a548902468a706e461dcbc2e9b71ddf70871ca35c8b764266c61",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        0,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x700-scoreboard.png",
+      "sha256": "822f900d23a9a548902468a706e461dcbc2e9b71ddf70871ca35c8b764266c61",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        74,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x700-resultStages.png",
+      "sha256": "822f900d23a9a548902468a706e461dcbc2e9b71ddf70871ca35c8b764266c61",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        155,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x700-resultDetails.png",
+      "sha256": "9bb539a20529917985ec0b15d025c177deb2de4a9edaef9724e646fee7c49c00",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        257,
+        806,
+        157
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x700-fixtureTable.png",
+      "sha256": "dc1b406b82d4061551949d01dafb60946d9dbf189ac954f83ae99bd21d54fdf9",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        352,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-focused-standings.png",
+      "sha256": "a9ba1888356c93524b0ff1a23ebcc6ed0d1db16d70cd8e28916b46c49c7b1439",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "original-friendly-kit1-focused-play.png",
+      "sha256": "f77ebcbbe28177caba0801fe7ce9306601a9d722d08563eaed15e25f743bc8a6",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "original-friendly-kit1-1440x900-fixtureNext.png",
+      "sha256": "8697acd11a225a25ed53dfadf19d342d53ccd1500c647b546da2d05a6ddaa3d3",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        516,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1440x900-scoreboard.png",
+      "sha256": "976435723a741357e2f4122e0dcd40dc9ffb95ca10ed03d8c944764ed1ec51ef",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        545,
+        1346,
+        69
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1440x900-resultStages.png",
+      "sha256": "f3f8bed2b2d40be89d8175623e23699659eed67cdedad9bf0952485f96b7f587",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1440x900-resultDetails.png",
+      "sha256": "1e963523cc5afd5ed9b39b1852227bb6bd42a0f159403afbbbff71b94ac29067",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        495,
+        1346,
+        119
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1440x900-fixtureTable.png",
+      "sha256": "74494167ed7e458be8234ceeb033df04f50c6311093d40e2f25c1fbba47b087b",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        552,
+        1346,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1050x780-fixtureNext.png",
+      "sha256": "a515a427ce73808631688cca6eccd397858b610ba530c982ee137f08446f2e85",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        88,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1050x780-scoreboard.png",
+      "sha256": "a515a427ce73808631688cca6eccd397858b610ba530c982ee137f08446f2e85",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        162,
+        956,
+        69
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1050x780-resultStages.png",
+      "sha256": "a515a427ce73808631688cca6eccd397858b610ba530c982ee137f08446f2e85",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        243,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1050x780-resultDetails.png",
+      "sha256": "a515a427ce73808631688cca6eccd397858b610ba530c982ee137f08446f2e85",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        371,
+        956,
+        119
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-1050x780-fixtureTable.png",
+      "sha256": "105f33f6d719158dacc00ae7c88abfafcc1653bc4924b813598a2eb71c106ea8",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        432,
+        956,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x700-fixtureNext.png",
+      "sha256": "cf565162b7ebda2dfed32f820accf5fa74b1a16cd07ba7aa16fd57532562fb6d",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        0,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x700-scoreboard.png",
+      "sha256": "cf565162b7ebda2dfed32f820accf5fa74b1a16cd07ba7aa16fd57532562fb6d",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        74,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x700-resultStages.png",
+      "sha256": "cf565162b7ebda2dfed32f820accf5fa74b1a16cd07ba7aa16fd57532562fb6d",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        155,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x700-resultDetails.png",
+      "sha256": "cf565162b7ebda2dfed32f820accf5fa74b1a16cd07ba7aa16fd57532562fb6d",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        283,
+        806,
+        119
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x700-fixtureTable.png",
+      "sha256": "5212da28f59514aa2df83b16ada1e17b741880e70b5b17ef1244a514c8a90ae4",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        352,
+        806,
+        62
+      ]
+    }
+  ],
+  "ratio": 1.0,
+  "result": "FAIL",
+  "exception": "AssertionError",
+  "failure": "scoreboard A/B or ordinary goals differ"
+}

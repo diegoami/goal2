@@ -1,0 +1,57 @@
+dbus-daemon[3245155]: [session uid=1000 pid=3245155 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=3245181 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3245155]: [session uid=1000 pid=3245155 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[3245254]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=3245181 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3245155]: [session uid=1000 pid=3245155 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=3245181 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3245254]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[3245155]: [session uid=1000 pid=3245155 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 3245181
+START prove-management
+PASS prove-management 15.987
+START prove-friendlies
+PASS prove-friendlies 14.129
+START prove-pool
+PASS prove-pool 6.551
+START prove-halftime
+PASS prove-halftime 17.998
+START acceptance-management
+PASS acceptance-management 10.818
+START acceptance-campaign-friendlies
+PASS acceptance-campaign-friendlies 14.386
+START acceptance-worker
+PASS acceptance-worker 2.635
+START acceptance-campaign-pool
+PASS acceptance-campaign-pool 14.837
+START acceptance-campaign-halftime
+PASS acceptance-campaign-halftime 8.171
+START results-inputs
+PASS results-inputs 1.583
+START results
+PASS results 44.312
+START results-controls
+PASS results-controls 41.548
+START shell
+PASS shell 80.788
+START shell-controls
+PASS shell-controls 44.745
+START overview
+PASS overview 23.812
+START overview-controls
+PASS overview-controls 6.095
+START squad
+PASS squad 86.404
+START squad-controls
+PASS squad-controls 106.492
+START pool
+PASS pool 40.196
+START pool-controls
+PASS pool-controls 5.038
+START provenance
+PASS provenance 0.123
+START links
+PASS links 0.423
+START working-whitespace
+PASS working-whitespace 0.024
+START authored-whitespace
+PASS authored-whitespace 0.273
+PASS all serial author gates

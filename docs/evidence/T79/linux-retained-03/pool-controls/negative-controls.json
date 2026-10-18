@@ -1,0 +1,68 @@
+{
+  "tag": "[designed: T77]",
+  "before": {
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/window.py": "858e57a8aec01861e73b621d577ff8465244b7f3e7f8879150dc23701fa02f5b"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "pool",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/linux-retained-03/pool-controls/baseline"
+      ],
+      "returncode": 1,
+      "expected": "focused incoming detail/exchange summary absent"
+    },
+    {
+      "name": "filter-state",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "pool",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/linux-retained-03/pool-controls/filter-state"
+      ],
+      "returncode": 1,
+      "expected": "search/filter changed state/RNG/membership"
+    },
+    {
+      "name": "shared-retained-filter-state",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "campaign-pool",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT"
+      ],
+      "returncode": 1,
+      "expected": "AssertionError"
+    }
+  ],
+  "after": {
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/window.py": "858e57a8aec01861e73b621d577ff8465244b7f3e7f8879150dc23701fa02f5b"
+  },
+  "restored": true
+}
