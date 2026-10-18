@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T85-planning-1792362961322526067\ignore-selection.py", line 12, in <module>
+    runpy.run_path('C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T85-planning-1792362961322526067\\probe.py',run_name="__main__")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T85-planning-1792362961322526067\probe.py", line 58, in <module>
+    w.pages[3].ensureWidgetVisible(rate);rate.setFocus();app.processEvents();assert rate.hasFocus(),'speed focus absent';QTest.keyClick(rate,Qt.Key.Key_Home);app.processEvents();assert rate.currentData()==15,'chosen Slow rate was ignored'
+                                                                                                                                                                                         ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: chosen Slow rate was ignored

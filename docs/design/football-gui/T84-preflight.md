@@ -63,7 +63,7 @@ Append ID to squad only (pool already has it). Append these SAME thirty attribut
 | Mark tactic | blank national pos<2; +10&0x40 Protect zone Personal; else team bit7 text at DS:0E90+11*bit | F27, S192..198 | Pre-match context only; in-match opponent naming unresolved. Do not read stale template DS:0C1E. |
 | Cards | +10 masks0x08 carried booking,0x10 booked,0x20 sent off | F25; F027 | Named flags, not invented total. Original icons statically established, E007 blank only. |
 | Readiness | priority suspended0x80, E==0 injured, booked0x10, sent off0x20, substituted0x04, ready | F25, S157..177; accepted eligibility.info | Use accepted signed-energy availability too. Selection/bench is actual managed lineup context, not template screen context. |
-| Performance | u16le+12; 0x7FFF sentinel blank | F25, S209; 1771:3827 | Nonblank original bucket rendering unresolved upstream; display Unresolved, no numeric skill/rating interpretation. |
+| Performance | u16le+12; 0x7FFF sentinel blank | F25, S209; 1771:3827 | Nonblank original bucket rendering unresolved upstream; display an explicitly labeled raw word; original bucket interpretation remains unavailable, with no skill/rating scale inferred. |
 
 [derived: accepted state adapter] Tables from _wrap_raw(state.vga,state.mem); live player bytes exclusively state.players[id]; managed tactics state.country_tactics. Never copy records from immutable template. Validate bounded Pascal string lengths and loaded table domains before decoding. Unsupported values remain explicitly unavailable with raw source where useful.
 
