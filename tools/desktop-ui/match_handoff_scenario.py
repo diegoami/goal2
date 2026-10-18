@@ -191,6 +191,10 @@ def scenario(options):
  from navigation import reveal
  from watched import expected
  app=QApplication.instance() or QApplication([])
+ report['uncaught_qt_callbacks']=[];previous_hook=sys.excepthook
+ def callback_exception(kind,value,trace):
+  report['uncaught_qt_callbacks'].append({'type':kind.__name__,'message':str(value)});previous_hook(kind,value,trace)
+ sys.excepthook=callback_exception
  report.update(qt=qVersion(),qpa=app.platformName(),requested_qt_scale=os.environ.get('QT_SCALE_FACTOR'))
  with tempfile.TemporaryDirectory(prefix='T79-planning-') as folder:
   save=Path(folder)/'owned.g2save';m=DesktopModel.open(args.template,args.data,save,country=4);w=ManagementWindow(m);w.show();w.activateWindow();QTest.qWait(150)
@@ -331,7 +335,14 @@ def scenario(options):
    report.update(result='FAIL',exception=type(exc).__name__,failure=str(exc));raise
   finally:
    presentation.stop();heartbeat.stop();w.close();w.deleteLater();app.processEvents()
+   report['cleanup']={'window_closed':not w.isVisible(),'pending':bool(getattr(m,'match_pending',False)),
+     'owned_processes_reaped':all(controller.process is None or controller.process.poll() is not None for controller in (w.jobs,w.watched,w.competitive))}
+   sys.excepthook=previous_hook
+   if report['uncaught_qt_callbacks']:report.update(result='FAIL',failure='uncaught Qt callback exceptions')
    (args.output/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+   assert not report['uncaught_qt_callbacks'],'uncaught Qt callback exceptions'
+   assert report['cleanup']['window_closed'] and report['cleanup']['owned_processes_reaped'] and not report['cleanup']['pending'],'owned Qt/process cleanup incomplete'
+
 
 
 
