@@ -1,0 +1,8 @@
+{
+  "evidence": "[designed: T81] measured local validation",
+  "head": "b6291b3a534a4bd6618f9970e3f3aebff25c0794",
+  "command": "python3 tools/check_premerge.py --expected-head b6291b3a534a4bd6618f9970e3f3aebff25c0794",
+  "result": "PASS",
+  "log": "docs/evidence/T81/premerge-b6291b3.log",
+  "log_sha256": "61dc2769764390ddeb2e1eecce315734e9de026286d3ad92268590d812be84ee"
+}
