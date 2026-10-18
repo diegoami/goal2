@@ -23,5 +23,9 @@ def apply_style(window):
     QLineEdit {{selection-background-color:{c['accent']};selection-color:{c['ink']};}}
     QTableWidget {{font-size:14px;background:{c['paper']};color:{c['ink']};gridline-color:{c['divider']};selection-background-color:{c['accent']};selection-color:{c['ink']};}}
     QHeaderView::section {{background:{c['raised']};color:{c['text']};padding:8px;}}
+    QFrame#overviewCard {{background:{c['panel']};border:1px solid {c['divider']};border-radius:8px;}}
+    QLabel#cardHeading {{font-size:14px;color:{c['secondary']};font-weight:600;}}
+    QLabel#overviewCountry {{font-size:24px;font-weight:700;}}
+    QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;}}
     QScrollArea {{border:0;}}
     """)

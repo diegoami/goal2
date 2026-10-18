@@ -29,6 +29,13 @@ same guarded Save. Status and Cancel match remain visible across destinations.
 At small sizes, scroll the current page to reach its remaining actions; tables
 retain their native row/column navigation, and Tab moves to the next control.
 
+[designed: T75] The header shows the displayed country's full name beside an
+original generic shirt and neutral decorative stripe. The art is a fallback for
+every country, not a national kit. Overview shows that country's next fixture in
+source A/B order and last result with its provenance, or an honest empty state.
+**Return to active game** restores the active country and its unconfirmed draft;
+New campaign and New standalone friendly remain explicit replacement actions.
+
 [designed: #181] Selecting a country immediately shows a fresh campaign preview:
 its name, twenty-player squad, captain, tactics, morale, next fixture and reserve
 pool. Preview results belong to that fresh team; the active game's result is
@@ -79,6 +86,7 @@ QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario mana
 xvfb-run -a env QT_QPA_PLATFORM=xcb python3 tools/desktop-ui/acceptance.py --scenario management --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 xvfb-run -a env QT_QPA_PLATFORM=xcb python3 tools/desktop-ui/acceptance.py --scenario launch --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 python3 tools/desktop-ui/prove-management.py
+QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/redesign.py --scenario overview --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --evidence-dir docs/evidence/T75/linux
 QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/country-selection.py --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 ```
 
