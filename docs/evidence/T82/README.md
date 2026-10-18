@@ -6,8 +6,8 @@ T66 text Watch and T51/T80 competitive drivers continue using the default. No
 engine vendor code or original resources are changed or committed. Production
 uses the accepted [T81 contract](../T81/README.md), not its evidence-tool module.
 
-[designed] A consumer runs `events = jobs.poll(token)` and delivers those
-canonical events before calling `frames = jobs.poll_frames(token)`. Every sample
+[designed] A consumer runs `events = jobs.poll(token)` and passes those
+canonical events into its presentation queue before calling `frames = jobs.poll_frames(token)`. Every sample
 is a discrete completed original tick; never assign its pose to an earlier
 commentary event. `watermark` is the number of canonical events already observed
 by the child before that tick. The parent withholds any frame until at least
@@ -19,7 +19,8 @@ Frame data never enters `Event`, `WatchedOutcome`, the result or a save.
 must advance and cannot exceed the last sample actually returned. Merely writing
 a journal or finishing the engine does not acknowledge anything. Duplicate,
 stale-token, boolean and future acknowledgements are rejected. Acknowledgement
-does not poll or swallow events. Continue canonical `poll`; after successful
+does not poll or swallow events. After acknowledgement, a subsequent `poll` or
+`poll_frames` may publish; check `busy` before another read. After successful
 child exit, full-tail/transcript validation, complete frame drainage, exact tick
 count and final acknowledgement, the existing T64 publication runs once.
 `engine_complete` distinguishes child/transcript completion from publication;
@@ -103,5 +104,17 @@ from actual original execution; platform and hashes are in control receipts.
 seed257 produced4279 frames/1079 canonical events; seed4660 produced4146/1178.
 Full outcomes exactly matched their unsampled baselines. This early receipt
 predates expanded raw-oracle, live-read, cancellation and round-trip checks.
-[designed] Later focused/regression receipts and a source/validation manifest
-record the expanded accepted check set. No Windows execution claim is made.
+[designed] [source-and-validation.json](source-and-validation.json) pins the expanded
+check set. [confirmed: focused-02.log] All21 tests pass, including an independent
+raw-record check at every tick, exact frame equality, per-frame rebindings, live
+causal reads, Qt heartbeat, finished-child cancellation/close and saved outcome
+round-trip. [confirmed: regressions-01.log] All36 shared-driver tests pass, with
+ten strict T64 publication seeds and actual friendly/injury, qualifier and tied
+knockout paths. [confirmed: t66-01.log] All10 T66 tests pass, including real
+Qt/SDL Watch and save/resume/repeat. [confirmed: proof-03.log] Eleven intended
+saved-byte assertion failures pass with exact restoration; the positive synthetic
+transport/raw-observation suite passes all19 tests. [confirmed:
+premerge-f93fe79-02.log] Exact-head premerge passes at
+`f93fe79467832d0f54723dd4ffeb238ceee6a13d`, including75 lock hashes and original
+asset exclusion. [designed] `premerge-f93fe79.log` is a rejected mistyped-SHA
+attempt, not acceptance evidence. Main repeats validation at the reviewed head. No Windows execution claim is made.
