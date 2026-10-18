@@ -1,0 +1,17 @@
+[
+  {
+    "name": "historical-missing",
+    "path": "docs/evidence/T77/windows/native-01/observations/scale-2/report.json",
+    "returncode": 1
+  },
+  {
+    "name": "current-1x",
+    "path": "docs/evidence/T77/M1-linux-03/positive/report.json",
+    "returncode": 0
+  },
+  {
+    "name": "current-2x",
+    "path": "docs/evidence/T77/M1-linux-03/positive/scale-2/report.json",
+    "returncode": 0
+  }
+]

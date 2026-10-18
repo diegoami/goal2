@@ -23,7 +23,7 @@ def fresh(path):
 
 def scenario(args):
     from PySide6.QtCore import Qt,QRect,QCoreApplication,QEvent,qVersion
-    from PySide6.QtWidgets import QApplication,QLabel,QStyle,QStyleOptionComboBox,QStyleOptionButton
+    from PySide6.QtWidgets import QApplication,QLabel,QStyle,QStyleOptionComboBox,QStyleOptionButton,QStyleOptionViewItem
     from PySide6.QtTest import QTest
     from goal2.desktop.model import DesktopModel
     from goal2.desktop.window import ManagementWindow
@@ -115,18 +115,48 @@ def scenario(args):
         before=copy.deepcopy(m.state);w.exchange_selected();stable(before,'missing selection');assert 'Select one' in w.status.text(),'existing no-selection callback error absent'
         search('');position(None);rows();reserve(2561)
         assert all(str(target[k]) in w.pool_detail.text() for k in ('id','name','ability','energy','confidence','position_group')),'selected detail missing raw field'
-        # [designed] Every row/column is reachable through contained table scrolling.
-        coverage=[]
-        for row in range(w.reserves.rowCount()):
-            for col in range(w.reserves.columnCount()):
-                item=w.reserves.item(row,col);w.reserves.scrollToItem(item);app.processEvents();rect=w.reserves.visualItemRect(item)
-                assert w.reserves.viewport().rect().intersects(rect),'reserve cell cannot be reached'
-                assert w.reserves.fontMetrics().horizontalAdvance(item.text())<=rect.width(),f'reserve cell text clipped row={row} col={col} text={item.text()} width={rect.width()} needed={w.reserves.fontMetrics().horizontalAdvance(item.text())}'
-            coverage.append(int(w.reserves.item(row,0).text()))
-        report['table_reading_coverage']=coverage;reserve(2561)
+        # [designed: T77/M1] Reading coverage belongs to each supported size, not initial geometry.
+        report['table_reading_by_size']=[]
         sizes=((1440,900),(1050,780),(900,700)) if report['ratio']==1 else ((900,640),)
         for width,height in sizes:
-            w.resize(width,height);app.processEvents();capture(f'selected-{width}x{height}')
+            w.resize(width,height);app.processEvents()
+            assert (w.width(),w.height())==(width,height),'required reading size did not settle'
+            before=copy.deepcopy(m.state);draft=copy.deepcopy(w.draft());rows()
+            cells=[];coverage=[];viewport=w.reserves.viewport();page=w.pages[2]
+            focus(w.reserves)
+            # [designed] Reveal the table through the outer scroll before its contained cell scrolling.
+            page.ensureWidgetVisible(w.reserves);app.processEvents()
+            for row in range(w.reserves.rowCount()):
+                for col in range(w.reserves.columnCount()):
+                    item=w.reserves.item(row,col);w.reserves.scrollToItem(item);app.processEvents()
+                    rect=w.reserves.visualItemRect(item)
+                    assert viewport.rect().intersects(rect),'reserve cell cannot be reached'
+                    option=QStyleOptionViewItem();w.reserves.itemDelegate().initStyleOption(option,w.reserves.indexFromItem(item));option.rect=rect
+                    text_rect=w.reserves.style().subElementRect(QStyle.SubElement.SE_ItemViewItemText,option,w.reserves)
+                    metrics=option.fontMetrics;advance=metrics.horizontalAdvance(item.text());height_px=metrics.height()
+                    assert advance<=text_rect.width() and height_px<=text_rect.height(),f'reserve cell text clipped row={row} col={col}'
+                    glyph=QRect(text_rect.x(),text_rect.y()+(text_rect.height()-height_px)//2,advance,height_px)
+                    assert rect.contains(glyph) and text_rect.contains(glyph),'reserve glyph exceeds cell/text contents'
+                    # [designed] Outer scrolling exposes this reading target even when the whole table exceeds the page.
+                    target_point=viewport.mapTo(page.widget(),glyph.center())
+                    page.ensureVisible(target_point.x(),target_point.y(),glyph.width()//2+2,glyph.height()//2+2);app.processEvents()
+                    # [designed] The complete text must be in the actual visible region, including ancestor clipping.
+                    assert viewport.visibleRegion().contains(glyph),f'reserve text not fully visible row={row} col={col}'
+                    outer=QRect(viewport.mapTo(page.viewport(),glyph.topLeft()),glyph.size())
+                    assert page.viewport().rect().contains(outer),'reserve text outside outer scrolling viewport'
+                    cells.append({'id':int(w.reserves.item(row,0).text()),'column':col,'text':item.text(),
+                                  'cell':rect.getRect(),'text_contents':text_rect.getRect(),'glyph':glyph.getRect(),
+                                  'outer_glyph':outer.getRect(),'table_viewport':viewport.rect().getRect(),
+                                  'visible_bounds':viewport.visibleRegion().boundingRect().getRect(),'outer_viewport':page.viewport().rect().getRect(),
+                                  'font_height':height_px,'font_advance':advance})
+                coverage.append(int(w.reserves.item(row,0).text()))
+            assert len(cells)==560 and len(coverage)==80 and len(set(coverage))==80,'per-size reading coverage incomplete'
+            stable(before,'per-size table reading',draft)
+            report['table_reading_by_size'].append({'size':[w.width(),w.height()],'ratio':w.devicePixelRatioF(),
+                'ids':coverage,'cells':cells,'pure_state_draft_save_rng':True})
+            report['table_reading_coverage']=coverage
+            reserve(2561);assert 'ID 2561' in w.exchange_summary.text(),'reading did not restore intended incoming identity'
+            capture(f'selected-{width}x{height}')
         # [designed] Long labels are rebuild fixture inputs, never original player-name claims.
         original=m.goaldat.player_names[2561];m.goaldat.player_names[2561]='Rebuild fixture long reserve name demonstrating complete wrapped reading'
         w.refresh_pool();reserve(2561);capture('synthetic-long-name');m.goaldat.player_names[2561]=original;w.refresh_pool();reserve(2561)
