@@ -66,3 +66,32 @@ restore exact bytes. `validation-01/final-source-identity.json` ties both report
 to pushed source `6cb6a747b05dd5865cfc10b4620a629a544954e1`. Later evidence-only
 commits carry these identical product/scenario bytes; they do not claim an
 execution that occurred at a later commit.
+
+[derived: windows/native-01/host-receipt.json and windows/independent-verification.json]
+The final real Windows run uses Windows 11 build 10.0.26200, Python 3.13.15 and
+Qt 6.12.0. Fresh processes at requested scales 1/2 measure ratios 1.0/2.0 and
+pass in 39.845/36.775 seconds with 120/50 captures. Both complete logs contain only
+the results PASS line. The independent checker validates all 174 source files,
+report/resource/capture hashes, native runtime identity and all four unchanged
+protected launcher/resource/save hashes. Its independently retained main receipt
+SHA256 is `18ef109041de8a92e2a8d50c858d76700606db70eeaff2c5ee2c16b9a80b78e7`.
+The native execution checkpoint is frozen `27b62e9e5c175317af30bfca0e9ffcb4c085a949`;
+subsequent commits contain evidence/docs only and carry these exact source bytes.
+SDL is inapplicable to this fixtures/results page.
+
+[derived: windows/failed-bootstrap-01 and windows/failed-runtime-02] The first
+Windows host attempt failed before Qt execution because its runpy bootstrap did
+not include tools/desktop-ui on sys.path. The second reached all scale 1 result
+panels but failed the unsupported Play assertion with the existing optional
+watched runtime absent. Neither is claimed as acceptance; their complete logs,
+receipts, wrapper bytes and available reports/captures are retained separately.
+All four protected hashes remained unchanged in both attempts.
+
+[derived: windows/private-runtime-provenance] Main installed the already declared
+Unicorn 2.1.4 dependency into a private validation directory, leaving the existing
+Windows venv unchanged. The official PyPI Windows wheel SHA256 is
+`d7107500c64ce5c168fbff6bef9485b5db1350050036f4cea568650cf8bdbdf5`.
+Setup logs, scripts, metadata and dependency-file hashes are tracked; wheel,
+DLL/package bytes and original-game bytes are excluded. Final native wrappers
+verify the private import location and version. No product/scenario change was
+made to resolve either host setup failure.

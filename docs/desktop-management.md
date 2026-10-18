@@ -208,7 +208,7 @@ not the original screen's 1..9 buckets. Commentary and names are decoded at runt
 no original text resources or images are bundled here.
 
 [designed] Tested optional dependencies are pygame-ce2.5.8 (SDL2.32.10),
-Unicorn2.1.4 and PySide6 6.12.0 on Linux/WSL. The viewer receives bounded private
+Unicorn 2.1.4 and PySide6 6.12.0 on Linux/WSL. The viewer receives bounded private
 JSON presentation records, never game state/Memory or engine input. Qt polls the
 T65 worker and owns the single validated result publication. Viewer startup has
 a10-second bound. Failed folder/stream allocation releases partial resources and
@@ -255,3 +255,17 @@ python3 -m unittest goal2.tests.test_desktop_competitive_jobs -v
 python3 tools/desktop-ui/competitive_play.py
 QT_QPA_PLATFORM=xcb xvfb-run -a python3 tools/desktop-ui/competitive_play.py
 ```
+
+[designed: T78] The fixtures/results acceptance scenario supports verified saved
+inputs and separate native scale processes:
+
+```sh
+python3 tools/desktop-ui/redesign.py --scenario results --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --evidence-dir docs/evidence/T78/linux
+```
+
+[derived: evidence/T78/README.md] The retained Windows proof runs this scenario
+at measured 100%/200% with Qt 6.12.0 and the declared optional Unicorn 2.1.4 runtime
+in a private validation directory. Host bootstrap and missing-runtime failures
+are preserved alongside the final passing proof in [T78 evidence](evidence/T78/README.md).
+Those setup corrections leave product code and the existing Windows environment
+unchanged; dependency provenance is recorded without committing package bytes.
