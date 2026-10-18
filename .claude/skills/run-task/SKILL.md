@@ -42,8 +42,14 @@ never the implementer's family.
    change, then discarded). A line that cannot is amended on `main` before dispatch (L45).
 
 1. **Brief.** The task file **pasted in full**, then `docs/process.md` §4's block, then (on
-   rework) the review comment's URL. Never a pointer to the task file. The main session
-   implementing itself reads the same block as its contract.
+   rework) the review comment's URL. Never a pointer to the task file. Keep task and supplementary
+   quotations verbatim inside a text fence longer than any fence inside the quoted text (for
+   example, four backticks around text containing triple-backtick code blocks); do not use nested
+   fences of the same length or shorten the task. An unfenced source-relative link in a task quote
+   can be resolved from the generated root brief and fail `check_links.py`; the identical fenced
+   quote passes (L115). Stage every author log cited by a review in that worktree's own ignored
+   `.cache`, and refer to that local path; never search sibling worktrees for missing files (L115).
+   The main session implementing itself reads the same block as its contract.
 
 2. **Implement (Claude dispatch).** Unless already authorized, ask the user ONE question with the question tool (CLAUDE.md "Choosing models"
    rule 1): which subagent implements (the `implementer` agent on `sonnet`, `opus`, `haiku`, `fable`
