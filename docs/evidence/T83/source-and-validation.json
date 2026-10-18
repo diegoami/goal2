@@ -1,5 +1,6 @@
 {
   "accepted_dependency": "f74bd0f4aa41acdcbe45372b86864be1aba949db",
+  "accepted_harness_fix": "354e8e7b488c7f7db17d82073e3aefb0880daec0",
   "clarifications": [
     "Original drawing and movement remain enabled; no engine files changed. All compares are complete objects/bytes in memory, hashes only summarize receipts.",
     "The second-round boundary string owned-only teardown round2 in completed runtime receipts means ordinary completed-viewer close; first round visits newer Quick owner. Final script corrects this diagnostic label only.",
@@ -47,6 +48,27 @@
       "command": "python3 tools/check_links.py",
       "log": "links-01.log",
       "result": "PASS links/JSON before final receipts; final check follows"
+    },
+    {
+      "command": "python3 tools/desktop-ui/competitive_play.py",
+      "log": "t80-ui-01.log",
+      "receipt": "t80-competitive-play-1792325025136367029.json",
+      "result": "PASS real Qt qualifier+tied knockout full result/events/Memory/seeds/progress/captain0/SaveResume and synthetic lifecycle; owned systemd goal2-t83-t80-ui-01"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "log": "links-final-02.log",
+      "result": "PASS final receipts/JSON"
+    },
+    {
+      "command": "python3 tools/check_provenance.py",
+      "log": "provenance-final-02.log",
+      "result": "PASS16 unchanged vendor files"
+    },
+    {
+      "command": "python3 tools/check_premerge.py --expected-head d5536525deca7334992393b038bb5d8d002f1d28",
+      "log": "premerge-d553652-01.log",
+      "result": "PASS75 lock hashes, original exclusion and full local checks; final ready-head check follows in ignored cache"
     }
   ],
   "fixtures": {
@@ -124,7 +146,7 @@
     "20261018T115405.988758Z-xcb-x11/slow-close/half-1.png": "7f378e76bac02fa4887287a9f10156b9bbae123d919361bb453cde9f0bd0728e",
     "20261018T115405.988758Z-xcb-x11/slow-close/metrics.json": "4ba83646caa77e6493b454fd4611ee9b563d342a71ef612e5ab3b28a0db75545",
     "20261018T115405.988758Z-xcb-x11/stale/metrics.json": "5fc1fa11d76f19a313761e569368dfdab70247b181207149cb583201cb412df5",
-    "README.md": "337247b2e3908fbc8265e11bc7aff1fde744ac7397e40d8a4f8fce5a9b3d12f3",
+    "README.md": "3f785c1616aab623bc2763d31455f78cd7a6fcffb286ae6618d89dbbac6603c4",
     "before-1792323476926257376/baseline.log": "e3ebef4022c22c9ed7eeab7edb4fc04b4104fdde6674fbaf7b04ad02f61a2a29",
     "before-1792323476926257376/restoration.json": "64d5a3387c7d17af6925a3b1d6f830268dac7ba2c4bca4108e7243a84044f27f",
     "before-1792324216575042931/baseline.log": "9b97af8522ff18144a66b3b9a52e240d16a5bb41cb16ecb6aa321c8b2610493c",
@@ -151,12 +173,17 @@
     "controls-1792324192619165076/receipt.json": "9cca8334395032292fd0c34407fac5852ac33bf1c0d17398fd5ebb26b4454b67",
     "focused-02.log": "259e146cc025470fcb1df2da2c55da80685705c6a4e1aaeb9226d77c27fb696c",
     "links-01.log": "3b22e0c2547f938c38e3125c3cd1dac921b3d3f17d5e7ea5978135b67ab7afcf",
+    "links-final-02.log": "b162d3a285d8e04a86a2f38d1de1e0c3fb3178c91615a03b8f55318b27ac859e",
     "native-20261018-run1.log": "04e3b67cd930b89d76f580eff46724e52c8de935bb48ea920ec5f31653ed6f60",
     "offscreen-20261018-driver-metadata.log": "416be1588dab96e6903f9a7c00a771b0a9195f46d44d3e55150afd1b4247c400",
     "offscreen-20261018-run1.log": "b30b054fcb9a82d681eec4250e89018677a8887740b3eb098ac4aeb617d8323e",
     "offscreen-20261018-run2.log": "fcb2d6c90f880c092e05043308a02dc5a68a5a7b8264776f126888e46df5d8c6",
+    "premerge-d553652-01.log": "bcf4145d9d6f78db93996bbdaa87dace7f14e4284750faeba1c8a135adb4325a",
     "provenance-01.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+    "provenance-final-02.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
     "regressions-tail-01.log": "a740236bd55ca877b8e52907a63b83c950721d9fb83b091355f6948c7bf1bbfb",
+    "t80-competitive-play-1792325025136367029.json": "e9ab7c474e4c07c6b8d9c58cd33b1d5e9d39599b011aa4bceaa1694acf22c187",
+    "t80-ui-01.log": "d9ed09f022577316a017f767e5e40028b9b1d96a12677d27cd821748e3a7cd0d",
     "t82-regressions-01.log": "c8ae495681780899f80dab545ad6f3ff08888bf1685ab250d53ae2e91c1b1c12"
   },
   "rejected_attempts": [
@@ -179,7 +206,7 @@
   "sources": {
     "docs/desktop-management.md": "e6ec80a708f580d5ccd4ad04d84737091b471e74e649674cf2cb16030fa820e0",
     "docs/desktop-ui-roadmap.md": "ee3e6e4a44661784b950af8bf6ac163d6ca06122096a8dac615ac38c41fa7e91",
-    "docs/evidence/T83/README.md": "337247b2e3908fbc8265e11bc7aff1fde744ac7397e40d8a4f8fce5a9b3d12f3",
+    "docs/evidence/T83/README.md": "3f785c1616aab623bc2763d31455f78cd7a6fcffb286ae6618d89dbbac6603c4",
     "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
     "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
     "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",

@@ -123,3 +123,14 @@ transport/publication tests pass, including both original seeds, every-tick raw
 identity/coordinate checks and exact baseline parity. [confirmed:
 provenance-01.log, links-01.log] Provenance verifies 16 unchanged engine files;
 links/JSON pass. Final exact-head validation is recorded separately.
+
+[confirmed: t80-ui-01.log and t80-competitive-play-1792325025136367029.json]
+The retained T80 real Qt competitive Play acceptance also passes: qualifier and
+tied knockout original results/events/Memory/both seeds, progress, automatic
+captain, Save/Resume and synthetic lock/cancel/ownership/resource boundaries.
+Its exact generated T80 JSON is copied here without altering the original
+untracked tool output. [confirmed: premerge-d553652-01.log] Exact-head premerge
+passes at `d5536525deca7334992393b038bb5d8d002f1d28`, including 75 lock hashes
+and original-asset exclusion after ordinarily incorporating accepted #219
+`354e8e7b488c7f7db17d82073e3aefb0880daec0`. Final clean ready-head validation
+uses an ignored cache log and is reported on the PR.
