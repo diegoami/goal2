@@ -28,6 +28,11 @@ unavailable in a preview. Return to the active country to recover its unconfirme
 XI/captain/tactics draft, or use Resume to load a saved game. Country selection
 is unavailable during a match.
 
+[designed: #181] A successful **New campaign**, **New standalone friendly**, or
+**Resume** explicitly replaces the active game and discards any unconfirmed
+management draft. A Resume that fails validation leaves the active game and draft
+unchanged.
+
 [designed] **New campaign** starts a fresh1990 campaign with initial seeds4660/33590,
 using the shared opening campaign generator. A redraw or Resume does not regenerate
 players; previews generate separate records. The displayed twenty records show
