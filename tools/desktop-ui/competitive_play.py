@@ -59,7 +59,7 @@ def main():
                 assert 'friendlies only' in window.status.text(),window.status.text()
                 assert model.state==before and not getattr(model,'match_pending',False)
                 click(window.play)
-                assert model.match_pending and window.competitive.busy,'Play did not start the original competitive child'
+                assert getattr(model,'match_pending',False) and window.competitive.busy,'Play did not start the original competitive child'
                 assert not window.jobs.busy and not window.watched.busy
                 assert not window.save.isEnabled() and not window.confirm.isEnabled()
                 token=window.competitive.token
@@ -151,6 +151,9 @@ def main():
             window.set_busy(False);assert not window.save.isEnabled() and not window.play.isEnabled()
             click(window.stop)
             assert not getattr(model,'match_pending',False) and model.state==friendly and window.confirm.isEnabled()
+            # [designed] The deliberately closed inactive bridge is replaced before another Play.
+            from goal2.desktop.competitive import CompetitiveJobs
+            window.competitive=CompetitiveJobs(model,command=BLOCK)
             # [designed] Unsupported kind4 refuses before mutation; closing competitive reaps its child.
             unsupported,competitive_raw,_=campaign(21,4)
             model.state=unsupported;model.template_bytes=competitive_raw;window.refresh()
