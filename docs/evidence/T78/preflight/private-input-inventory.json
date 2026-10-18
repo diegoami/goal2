@@ -1,0 +1,75 @@
+[
+  {
+    "file": "competitive-regulation.g2save",
+    "sha256": "30daba2cfd5ee333a780d0c267d15266dbdd168010266c8698c65f5f54cdfbcf",
+    "source": "/home/diego/projects/goal2-work/T80-competitive-desktop-play/.cache/tmp/goal2-T80-Qt-8q7wn3k1/kind2.g2save",
+    "schema": 2,
+    "kit": "2",
+    "teams": [
+      7,
+      19
+    ],
+    "score": [
+      1,
+      1
+    ],
+    "resolution": {
+      "kind": 2,
+      "winner": 2,
+      "regulation": [
+        1,
+        1
+      ],
+      "extra_time": null,
+      "penalties": null
+    }
+  },
+  {
+    "file": "original-friendly-kit1.g2save",
+    "sha256": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+    "source": "/home/diego/projects/goal2-work/T80-competitive-desktop-play/.cache/watched-legacy-v3-9fb725ac914a/standalone.g2save",
+    "schema": 1,
+    "kit": "1",
+    "teams": [
+      7,
+      19
+    ],
+    "score": [
+      1,
+      1
+    ],
+    "resolution": null
+  },
+  {
+    "file": "competitive-shootout.g2save",
+    "sha256": "5f0f0204f82450e180f2ec45601f5009e6bf5247271edd06b65a91cdc0f1970c",
+    "source": "Main freshly executed genuine accepted original kind200/index42/defaultseed, completed publication + save + loader roundtrip",
+    "schema": 2,
+    "kit": "2",
+    "teams": [
+      7,
+      19
+    ],
+    "score": [
+      0,
+      0
+    ],
+    "resolution": {
+      "kind": 200,
+      "winner": 0,
+      "regulation": [
+        0,
+        0
+      ],
+      "extra_time": [
+        0,
+        0
+      ],
+      "penalties": [
+        4,
+        3
+      ]
+    },
+    "seconds": 24.697
+  }
+]

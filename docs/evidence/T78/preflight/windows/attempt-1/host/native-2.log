@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T78-planning-f1697ef62850-1792342401556323226\native-2.py", line 11, in <module>
+    runpy.run_path(sys.argv[0],run_name='__main__')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T78-planning-f1697ef62850-1792342401556323226\tools\desktop-ui\main-preflight.py", line 77, in <module>
+    w.pages[3].ensureWidgetVisible(widget);widget.setFocus();app.processEvents();assert app.focusWidget()is widget,'action not keyboard reachable'
+                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: action not keyboard reachable

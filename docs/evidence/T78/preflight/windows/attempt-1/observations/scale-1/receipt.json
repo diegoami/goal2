@@ -1,0 +1,187 @@
+{
+  "tag": "[designed: T78] planning-only runtime mock",
+  "mode": "mock",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "qt": "6.12.0",
+  "sources": {
+    "goal2\\desktop\\__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2\\desktop\\__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2\\desktop\\competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2\\desktop\\competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2\\desktop\\country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2\\desktop\\fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2\\desktop\\jobs.py": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+    "goal2\\desktop\\match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2\\desktop\\model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2\\desktop\\overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2\\desktop\\pages.py": "36edd70c83acfcfbad6933ba701026ddc7418d385f28692c9eb73eef28b2087f",
+    "goal2\\desktop\\pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2\\desktop\\pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2\\desktop\\save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2\\desktop\\squad_page.py": "19cc5391bc185a89cce4eb94868532544401ab41661a10621e0a62d92d971aec",
+    "goal2\\desktop\\standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2\\desktop\\style.py": "d7e8f9e9a62836b5a9a7a731d08913af88be65f208e4253087ed8ebd03f6e45d",
+    "goal2\\desktop\\watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2\\desktop\\window.py": "f2c898127b28b1c6dc1a17e3242966d607cc6029810a15373b4dca6bab6adefd",
+    "goal2\\desktop\\worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "probe_sha256": "a64b15aa40aacdb1406fd506247a3defa142663295d78b28055d5cb97ccc575d",
+  "resources": {
+    "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "cases": [
+    {
+      "name": "empty",
+      "source_order_and_score": true,
+      "all_stages": true,
+      "pure_display_and_rng": true,
+      "preview_isolated": true,
+      "busy_refused": true,
+      "standings": true,
+      "malformed_adapter_refused": false
+    },
+    {
+      "name": "quick-long-country",
+      "source_order_and_score": true,
+      "all_stages": true,
+      "pure_display_and_rng": true,
+      "preview_isolated": true,
+      "busy_refused": true,
+      "standings": true,
+      "malformed_adapter_refused": true
+    },
+    {
+      "name": "standings-1992",
+      "source_order_and_score": true,
+      "all_stages": true,
+      "pure_display_and_rng": true,
+      "preview_isolated": true,
+      "busy_refused": true,
+      "standings": true,
+      "malformed_adapter_refused": false
+    },
+    {
+      "name": "competitive-regulation.g2save",
+      "source_order_and_score": true,
+      "all_stages": true,
+      "pure_display_and_rng": true,
+      "preview_isolated": true,
+      "busy_refused": true,
+      "standings": false,
+      "malformed_adapter_refused": true
+    },
+    {
+      "name": "original-friendly-kit1.g2save",
+      "source_order_and_score": true,
+      "all_stages": true,
+      "pure_display_and_rng": true,
+      "preview_isolated": true,
+      "busy_refused": true,
+      "standings": false,
+      "malformed_adapter_refused": true
+    },
+    {
+      "name": "competitive-shootout.g2save",
+      "source_order_and_score": true,
+      "all_stages": true,
+      "pure_display_and_rng": true,
+      "preview_isolated": true,
+      "busy_refused": true,
+      "standings": false,
+      "malformed_adapter_refused": true
+    }
+  ],
+  "captures": [
+    {
+      "path": "empty-1440x900.png",
+      "sha256": "51a165ec04f0de9761fd3fcab783397140574ca0c9b1de2713b5ceff8bfb39b8"
+    },
+    {
+      "path": "empty-1050x780.png",
+      "sha256": "f3f8f806484669ed9617f61144ca425a7732da546601b2e6328184a73f7789ad"
+    },
+    {
+      "path": "empty-900x700.png",
+      "sha256": "55265512c5b72a46a1e8254e375e66af4c28fbf871537430428c239f7daa4c52"
+    },
+    {
+      "path": "quick-long-country-1440x900.png",
+      "sha256": "aaa6b6a2bdd0c3b8f369ff1bb211bdd7a549ddd04847810df5cbfe02e6f12cd8"
+    },
+    {
+      "path": "quick-long-country-1050x780.png",
+      "sha256": "8e60fc20045b59841664a6c8ebceab704db7371bd4fd76a89a17fa24494b3d78"
+    },
+    {
+      "path": "quick-long-country-900x700.png",
+      "sha256": "8097fdb8bf86144ff374c433bbf2c82af32c4ec3b61ae58315ddfabbcf7a7a7b"
+    },
+    {
+      "path": "standings-1992-1440x900.png",
+      "sha256": "5490ec89ec52f02ad51f3e936d57a171d2a4ec0ee8f56302bb98e8a6db76a512"
+    },
+    {
+      "path": "standings-1992-1050x780.png",
+      "sha256": "c5c052c84b15fe3604231cd893c910ac9bcbb663b1b676c378fda5ebbeb03efe"
+    },
+    {
+      "path": "standings-1992-900x700.png",
+      "sha256": "70ee0a742e18424f8a475383ad050a3979dafb1bfa050cc4e50efa6b05070111"
+    },
+    {
+      "path": "competitive-regulation-1440x900.png",
+      "sha256": "db35d611b0984c0ef982a94f9f7da41deafc1b73d24f2830d9f55633c0b64eaf"
+    },
+    {
+      "path": "competitive-regulation-1050x780.png",
+      "sha256": "9bfad8375e96ee923976f44fbb36d598809b5285caf9d435e799cc238dd6c9cc"
+    },
+    {
+      "path": "competitive-regulation-900x700.png",
+      "sha256": "d09056655af94a7d7dac15214de2f76786c8b758af49d48e85cdc8bf82d94ce5"
+    },
+    {
+      "path": "original-friendly-kit1-1440x900.png",
+      "sha256": "b63d0c8d5e1efe05a20086b87140f8023f68f93d9fbdd8f35c39442cb523b02e"
+    },
+    {
+      "path": "original-friendly-kit1-1050x780.png",
+      "sha256": "5cedd6f22e146e286a80e6131b6f2683c4d3e5ad1bf78befa7c99a387b55f38b"
+    },
+    {
+      "path": "original-friendly-kit1-900x700.png",
+      "sha256": "7c7143f98bc0172050175889d2b7f5996a3aa438aab757e7084ef345efaeb1fa"
+    },
+    {
+      "path": "competitive-shootout-1440x900.png",
+      "sha256": "776a0c250329c1982cf836bc9c4d6f2a0e134a50ff9e979968ab791bb4a42a4d"
+    },
+    {
+      "path": "competitive-shootout-1050x780.png",
+      "sha256": "c93e772cbb8f83bb0dc695cfbbfb787c36a8e050b57a9dbb03fdb3616942a85f"
+    },
+    {
+      "path": "competitive-shootout-900x700.png",
+      "sha256": "d2d7b62778899e87d1f28370e02b8a209f4d9fa917cd9e6163e8c01396d48bea"
+    }
+  ],
+  "qpa": "windows",
+  "input_saves": [
+    {
+      "file": "competitive-regulation.g2save",
+      "sha256": "30daba2cfd5ee333a780d0c267d15266dbdd168010266c8698c65f5f54cdfbcf"
+    },
+    {
+      "file": "original-friendly-kit1.g2save",
+      "sha256": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67"
+    },
+    {
+      "file": "competitive-shootout.g2save",
+      "sha256": "5f0f0204f82450e180f2ec45601f5009e6bf5247271edd06b65a91cdc0f1970c"
+    }
+  ],
+  "ratio": 1.0,
+  "result": "PASS",
+  "source_unchanged": true
+}
