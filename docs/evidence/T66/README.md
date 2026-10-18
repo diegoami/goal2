@@ -96,3 +96,25 @@ optional-boundary helper with unconditional window cleanup.
 [designed] Final-head local premerge is recorded on the PR, so recording its SHA
 does not change the SHA it certifies. The main session repeats exact-head checks
 after independent approval; no implementer merge or review is claimed here.
+
+
+[designed] The subsequent bounded startup-allocation rework is recorded in
+[startup-rework.json](startup-rework.json). This supersedes earlier source identity
+for the controller; earlier receipts remain immutable, accurately scoped evidence.
+The main audit found folder/display/error allocations outside protected startup.
+`rework-startup-failed-before.log` records three intended assertion failures on
+the prior product. Protected allocation, optional handles and null-safe idempotent
+cleanup now preserve original errors, release acquired resources immediately and
+allow retry on the same live controller before terminal close. The regression
+checks no child/publication, full state and exact committed save bytes throughout.
+
+[designed] `rework-focused-01.log` passes10 tests/61.412seconds, zero skips;
+`rework-qt-01.log` passes the exact standalone command after ordinary merge of
+accepted main7cb1a00. `startup-control-runner-01.log` and
+`startup-controls-01/controls.json` record three intended assertion controls:
+skipped automatic cleanup, skipped stream release and corrupted saved bytes.
+No ERROR/module absence/timeout is counted, and the committed source bytes were
+restored exactly. Run `python3 docs/evidence/T66/startup_controls.py <new-directory>`
+to reproduce. The prior independent MiniMax run passed the unchanged49-test,
+five-Qt/browser/native/nine-control coverage; these are carried at their actual
+prior head, not relabelled as fresh rework results.
