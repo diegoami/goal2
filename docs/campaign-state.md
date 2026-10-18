@@ -11,8 +11,8 @@ replacing those records. The existing new-game player generator keeps its
 established fixed managed-pool seed. Requested seeds are stored as campaign
 starting seeds and initialize the live game RNG words; `GameState` RNG words
 then advance with play while campaign metadata retains the initial seeds.
-Bytes outside the recognized fresh-game
-fields are retained as opaque template layout data.
+The template layout is retained, as is opaque data outside rebuilt game fields.
+Fresh country records are rebuilt with bytes from `0x30` onward zeroed.
 
 [confirmed: T39 handover, F023/F025 at archaeology pin
 `0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb`] Start years divisible by four
@@ -25,7 +25,8 @@ year remains a separate value.
 [designed: T40] A caller supplies the ordered fixture records until later
 tasks add calendar builders. Each record has a stable ID, cycle, ordinal year,
 stage, kind and two ordered country IDs; the retained home/away field names are storage labels only. The model validates ID uniqueness,
-country ranges, stage/year pairing, ordering and a contiguous stage path. The
+country ranges, stage/year pairing and ordering. Multiple fixtures may share a
+stage; transitions between distinct stages must be contiguous. The
 completion ledger is an exact prefix of that queue. Friendly kind1 keeps its original completion interface. [designed: T51]
 Competitive completion requires an explicit validated original resolution; the
 [competitive adapter](competitive-matches.md) supplies the completed tail and
