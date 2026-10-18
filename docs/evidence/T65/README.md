@@ -60,3 +60,14 @@ bridge guard separately; independent review runs all nine modules freshly.
 payload. The final test count is fourteen. The earlier thirteen-test receipt and
 its source/test-file hashes remain immutable; a new final receipt records the
 updated test hash. Product files remain byte-identical to `b8232e1`.
+
+[designed] [acceptance-final-a0b4e55.log](acceptance-final-a0b4e55.log) is the final
+fourteen-test focused result: PASS14/113.578s, zero skips. It supersedes the earlier
+thirteen-test receipt as final focused evidence. Then, with no other validation
+readers, [controls-final/controls.json](controls-final/controls.json) records all
+eleven intended assertion failures, including the buffer-drain and Memory-limit
+controls. The updated test/source hashes, exact commands and source scopes are in
+[final-source-and-validation.json](final-source-and-validation.json). Every saved
+product file was restored and verified byte-identical to the original source
+receipt after the controls. Final-head premerge is posted to PR185 after the
+last evidence-only commit.
