@@ -64,7 +64,7 @@ def results(args):
         out=out/f'run-{number:02}'
     out.mkdir(parents=True,exist_ok=True)
     report={'tag':'[designed: T78]','platform':platform.platform(),'python':sys.version,'qt':qVersion(),'qpa':app.platformName(),
-        'scale':os.environ.get('QT_SCALE_FACTOR','1'),'sources':{str(p.relative_to(ROOT)):digest(p) for p in sorted((ROOT/'goal2/desktop').glob('*.py'))},
+        'scale':os.environ.get('QT_SCALE_FACTOR','1'),'requested_scale':os.environ.get('QT_SCALE_FACTOR','1'),'sources':{str(p.relative_to(ROOT)):digest(p) for p in sorted((ROOT/'goal2/desktop').glob('*.py'))},
         'scenario_sha256':digest(__file__),'resources':{'template':digest(args.template),'data':digest(args.data)},'cases':[],'captures':[]}
     try:
         with tempfile.TemporaryDirectory(prefix='goal2-t78-') as temporary:
@@ -88,7 +88,7 @@ def results(args):
                     if target is not None:
                         target.setFocus();app.processEvents();QTest.qWait(50)
                         assert app.focusWidget() is target,'native input focus differs'
-                active();assert w.devicePixelRatioF()==float(report['scale']),'actual scale differs'
+                active();report['ratio']=w.devicePixelRatioF();assert report['ratio']==float(report['requested_scale']),'actual scale differs'
                 assert hasattr(w,'scoreboard'),'named scoreboard hierarchy absent'
                 from goal2.desktop.fixtures_page import snapshot
                 active(w.navigation[3]);QTest.keyClick(w.navigation[3],Qt.Key.Key_Space);app.processEvents()
