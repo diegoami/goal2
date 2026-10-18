@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 517, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 504, in main
+    if args.single_scale:return (overview if args.scenario=='overview' else shell)(args)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 338, in overview
+    w=ManagementWindow(m);w.show();w.raise_();w.activateWindow();QTest.qWait(150)
+      ^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/goal2/desktop/window.py", line 26, in __init__
+    compose(self,model,TACTICS)
+  File "/home/diego/projects/goal2-work/T77-football-ui/goal2/desktop/pages.py", line 46, in compose
+    for module in (overview_page,squad_page,pool_page,fixtures_page,save_page):module.build(self,model,TACTICS)
+                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/goal2/desktop/pool_page.py", line 37, in build
+    page.set_footer(footer)
+    ^^^^^^^^^^^^^^^
+AttributeError: 'ShellPage' object has no attribute 'set_footer'

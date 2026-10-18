@@ -1,0 +1,20 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+This plugin does not support raise()
+This plugin does not support grabbing the keyboard
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 518, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 505, in main
+    if args.single_scale:return (overview if args.scenario=='overview' else shell)(args)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 370, in overview
+    select(number);expected=DesktopModel.open(args.template,args.data,save,country=number);v=expected.view()
+    ^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 363, in select
+    assert not view.isVisible()and w.country.currentData()==number,'native country browse selected wrong country'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: native country browse selected wrong country

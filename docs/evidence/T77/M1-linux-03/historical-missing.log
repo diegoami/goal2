@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/docs/evidence/T77/M1-linux-03/coverage-audit.py", line 5, in <module>
+    assert 'table_reading_by_size' in r,'required per-supported-size table reading coverage absent'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: required per-supported-size table reading coverage absent

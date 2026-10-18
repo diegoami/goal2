@@ -1,0 +1,629 @@
+{
+  "tag": "[designed: T77]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "xcb",
+  "requested_scale": "2",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "c2ac62364ad4d91ed673063671c51d1695ece84a90f1118c68823bac7d958b55",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "9b1196820fbca972223b51aa18f3cf62b5c5ddd42ce1986f37b8795cd297ff29",
+  "dispatcher_sha256": "f92d213666dcfd735e8cc8b9c0d60d3c2207fe1aba5977d08dfb6c97063eae2b",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "steps": [
+    "Keyboard filters/full-ID selection, all raw rows, hidden-selection clear,261\u21922561 full-state exchange, repair/discard and save/resume",
+    "No-selection/unavailable existing callback errors; closed-window, pending ownership without controller.busy, preview and standalone refusals; visible reasons"
+  ],
+  "captures": [
+    {
+      "file": "filtered.png",
+      "sha256": "43a5cd25c317974fcf19120721e120c6512903edb0571997d50becb0bfb3b641",
+      "size": [
+        1050,
+        780
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            938,
+            76
+          ],
+          "text_bounds": [
+            314,
+            76
+          ],
+          "font_height": 19,
+          "text": "Reserve detail \u00b7 Longley\nID 2561 \u00b7 Position code 0 \u00b7 Goalkeeper\nAbility 173 \u00b7 Energy 29 \u00b7 Confidence 15\nAvailability: Available"
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            938,
+            76
+          ],
+          "text_bounds": [
+            557,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Petry \u00b7 ID 261\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 200 \u00b7 Energy 32 \u00b7 Confidence 25\nAvailability: Available\nIncoming \u00b7 Longley \u00b7 ID 2561"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            988,
+            38
+          ],
+          "text_bounds": [
+            441,
+            19
+          ],
+          "font_height": 19,
+          "text": "Between supported friendlies (provisional Q008 policy)"
+        }
+      ],
+      "focused_action": true,
+      "outgoing_text_width": 95,
+      "outgoing_reading_width": 904
+    },
+    {
+      "file": "empty-filter.png",
+      "sha256": "0f76e09b7ca3c6d7d11c0b1132247dddc50d70c990b451605892d63dbaf8f7ff",
+      "size": [
+        1050,
+        780
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            938,
+            19
+          ],
+          "text_bounds": [
+            472,
+            19
+          ],
+          "font_height": 19,
+          "text": "No incoming reserve selected. Select a visible reserve row."
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            938,
+            76
+          ],
+          "text_bounds": [
+            557,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Petry \u00b7 ID 261\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 200 \u00b7 Energy 32 \u00b7 Confidence 25\nAvailability: Available\nNo incoming reserve selected"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            988,
+            38
+          ],
+          "text_bounds": [
+            441,
+            19
+          ],
+          "font_height": 19,
+          "text": "Between supported friendlies (provisional Q008 policy)"
+        }
+      ],
+      "focused_action": true,
+      "outgoing_text_width": 95,
+      "outgoing_reading_width": 904
+    },
+    {
+      "file": "selected-900x640.png",
+      "sha256": "bcd7230b09bada219ea7800ae70fea824fe52d52b7887954916a35780f124d5b",
+      "size": [
+        900,
+        640
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            314,
+            76
+          ],
+          "font_height": 19,
+          "text": "Reserve detail \u00b7 Longley\nID 2561 \u00b7 Position code 0 \u00b7 Goalkeeper\nAbility 173 \u00b7 Energy 29 \u00b7 Confidence 15\nAvailability: Available"
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            557,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Petry \u00b7 ID 261\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 200 \u00b7 Energy 32 \u00b7 Confidence 25\nAvailability: Available\nIncoming \u00b7 Longley \u00b7 ID 2561"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            838,
+            38
+          ],
+          "text_bounds": [
+            441,
+            19
+          ],
+          "font_height": 19,
+          "text": "Between supported friendlies (provisional Q008 policy)"
+        }
+      ],
+      "focused_action": true,
+      "outgoing_text_width": 95,
+      "outgoing_reading_width": 754
+    },
+    {
+      "file": "synthetic-long-name.png",
+      "sha256": "c0dda10f1afc14ac37bcc415e9fd1ce2b5a4b1132d257cf0d3e7930dca33a8ee",
+      "size": [
+        900,
+        640
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            745,
+            76
+          ],
+          "font_height": 19,
+          "text": "Reserve detail \u00b7 Rebuild fixture long reserve name demonstrating complete wrapped reading\nID 2561 \u00b7 Position code 0 \u00b7 Goalkeeper\nAbility 173 \u00b7 Energy 29 \u00b7 Confidence 15\nAvailability: Available"
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            782,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Petry \u00b7 ID 261\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 200 \u00b7 Energy 32 \u00b7 Confidence 25\nAvailability: Available\nIncoming \u00b7 Rebuild fixture long reserve name demonstrating complete wrapped reading \u00b7 ID 2561"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            838,
+            38
+          ],
+          "text_bounds": [
+            441,
+            19
+          ],
+          "font_height": 19,
+          "text": "Between supported friendlies (provisional Q008 policy)"
+        }
+      ],
+      "focused_action": true,
+      "outgoing_text_width": 95,
+      "outgoing_reading_width": 754
+    },
+    {
+      "file": "unavailable.png",
+      "sha256": "463d96cc3d4623a882fbb1d942a7a9207baf32673c96d78828ff28a0587be82f",
+      "size": [
+        900,
+        640
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            306,
+            76
+          ],
+          "font_height": 19,
+          "text": "Reserve detail \u00b7 Stott\nID 2562 \u00b7 Position code 0 \u00b7 Goalkeeper\nAbility 173 \u00b7 Energy 0 \u00b7 Confidence 16\nAvailability: Injured, Suspended"
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            557,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Brockh'ser \u00b7 ID 272\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 200 \u00b7 Energy 21 \u00b7 Confidence 19\nAvailability: Available\nIncoming \u00b7 Stott \u00b7 ID 2562"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            838,
+            38
+          ],
+          "text_bounds": [
+            441,
+            19
+          ],
+          "font_height": 19,
+          "text": "Between supported friendlies (provisional Q008 policy)"
+        }
+      ],
+      "focused_action": true,
+      "outgoing_text_width": 133,
+      "outgoing_reading_width": 754
+    },
+    {
+      "file": "closed-window.png",
+      "sha256": "758551a29fbeac879acd49fa4087e067f346255a30b84f8cf93990fce6be192f",
+      "size": [
+        900,
+        640
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            314,
+            76
+          ],
+          "font_height": 19,
+          "text": "Reserve detail \u00b7 Stott\nID 2562 \u00b7 Position code 0 \u00b7 Goalkeeper\nAbility 173 \u00b7 Energy 15 \u00b7 Confidence 18\nAvailability: Available"
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            557,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Brockh'ser \u00b7 ID 272\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 200 \u00b7 Energy 32 \u00b7 Confidence 19\nAvailability: Available\nIncoming \u00b7 Stott \u00b7 ID 2562"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            838,
+            38
+          ],
+          "text_bounds": [
+            380,
+            19
+          ],
+          "font_height": 19,
+          "text": "Exchange requires a pending managed friendly"
+        }
+      ],
+      "focused_action": false,
+      "outgoing_text_width": 133,
+      "outgoing_reading_width": 754
+    },
+    {
+      "file": "pending-busy.png",
+      "sha256": "de54e8b7999d435275ca8da5ecf10b9a69d2df2952106101e9be66f8443cd7ac",
+      "size": [
+        900,
+        640
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            788,
+            19
+          ],
+          "text_bounds": [
+            472,
+            19
+          ],
+          "font_height": 19,
+          "text": "No incoming reserve selected. Select a visible reserve row."
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            557,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Brockh'ser \u00b7 ID 272\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 200 \u00b7 Energy 21 \u00b7 Confidence 19\nAvailability: Available\nNo incoming reserve selected"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            838,
+            38
+          ],
+          "text_bounds": [
+            248,
+            19
+          ],
+          "font_height": 19,
+          "text": "Finish or cancel the match first"
+        }
+      ],
+      "focused_action": false,
+      "outgoing_text_width": 133,
+      "outgoing_reading_width": 754
+    },
+    {
+      "file": "preview.png",
+      "sha256": "abbde700317d1d76e0dad279a6966f3db6a2e89ebd9e30ca325da733b254edf9",
+      "size": [
+        900,
+        640
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            788,
+            19
+          ],
+          "text_bounds": [
+            472,
+            19
+          ],
+          "font_height": 19,
+          "text": "No incoming reserve selected. Select a visible reserve row."
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            788,
+            76
+          ],
+          "text_bounds": [
+            557,
+            76
+          ],
+          "font_height": 19,
+          "text": "Outgoing \u00b7 Sigurdsson \u00b7 ID 292\nPosition code 0 \u00b7 Goalkeeper \u00b7 Ability 189 \u00b7 Energy 31 \u00b7 Confidence 12\nAvailability: Available\nNo incoming reserve selected"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            838,
+            38
+          ],
+          "text_bounds": [
+            445,
+            19
+          ],
+          "font_height": 19,
+          "text": "Preview: return to the active game to exchange players"
+        }
+      ],
+      "focused_action": false,
+      "outgoing_text_width": 136,
+      "outgoing_reading_width": 754
+    },
+    {
+      "file": "standalone.png",
+      "sha256": "c729619303448f0932a2ce71df96f04dfeda6c7b3a6a78bfb1a0c570e47affd5",
+      "size": [
+        900,
+        640
+      ],
+      "ratio": 2.0,
+      "reading": [
+        {
+          "name": "poolDetail",
+          "available": [
+            788,
+            19
+          ],
+          "text_bounds": [
+            472,
+            19
+          ],
+          "font_height": 19,
+          "text": "No incoming reserve selected. Select a visible reserve row."
+        },
+        {
+          "name": "exchangeSummary",
+          "available": [
+            788,
+            38
+          ],
+          "text_bounds": [
+            280,
+            38
+          ],
+          "font_height": 19,
+          "text": "No outgoing squad player selected\nNo incoming reserve selected"
+        },
+        {
+          "name": "poolPolicy",
+          "available": [
+            838,
+            38
+          ],
+          "text_bounds": [
+            491,
+            19
+          ],
+          "font_height": 19,
+          "text": "Campaign required \u00b7 standalone friendly has no national pool"
+        }
+      ],
+      "focused_action": false,
+      "outgoing_text_width": 0,
+      "outgoing_reading_width": 754
+    }
+  ],
+  "ratio": 2.0,
+  "table_reading_coverage": [
+    2561,
+    2562,
+    2563,
+    2564,
+    2617,
+    2628,
+    2565,
+    2566,
+    2567,
+    2568,
+    2618,
+    2629,
+    2630,
+    2569,
+    2570,
+    2571,
+    2572,
+    2619,
+    2620,
+    2573,
+    2574,
+    2575,
+    2576,
+    2577,
+    2578,
+    2579,
+    2580,
+    2581,
+    2582,
+    2583,
+    2584,
+    2631,
+    2585,
+    2586,
+    2587,
+    2588,
+    2621,
+    2622,
+    2632,
+    2633,
+    2637,
+    2589,
+    2590,
+    2591,
+    2592,
+    2623,
+    2638,
+    2593,
+    2594,
+    2595,
+    2596,
+    2624,
+    2639,
+    2597,
+    2598,
+    2599,
+    2600,
+    2625,
+    2640,
+    2601,
+    2602,
+    2603,
+    2604,
+    2605,
+    2606,
+    2607,
+    2608,
+    2609,
+    2610,
+    2611,
+    2612,
+    2626,
+    2613,
+    2614,
+    2615,
+    2616,
+    2627,
+    2634,
+    2635,
+    2636
+  ],
+  "result": "PASS",
+  "owned_processes_closed": true,
+  "callback_exceptions": [],
+  "clean_widgets": true,
+  "sources_after": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "c2ac62364ad4d91ed673063671c51d1695ece84a90f1118c68823bac7d958b55",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "sources_unchanged": true
+}

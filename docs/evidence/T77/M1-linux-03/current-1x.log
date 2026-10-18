@@ -1,0 +1,3 @@
+PASS per-size coverage [1440, 900] ratio 1.0 80 IDs/560 unique cells; all text/viewport bounds
+PASS per-size coverage [1050, 780] ratio 1.0 80 IDs/560 unique cells; all text/viewport bounds
+PASS per-size coverage [900, 700] ratio 1.0 80 IDs/560 unique cells; all text/viewport bounds

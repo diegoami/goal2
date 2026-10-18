@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 518, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 495, in main
+    return (pool_negative if args.negative_controls else pool)(args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/pool_scenario.py", line 140, in scenario
+    assert viewport.visibleRegion().contains(glyph),f'reserve text not fully visible row={row} col={col}'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: reserve text not fully visible row=3 col=0
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 518, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py", line 517, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-venv/bin/python3', '/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'pool', '--template', '.cache/e010-r0008-halftime.sav', '--data', '.cache/GOAL.DAT', '--evidence-dir', 'docs/evidence/T77/M1-linux-01/positive', '--single-scale']' returned non-zero exit status 1.

@@ -196,6 +196,8 @@ class ManagementWindow(QMainWindow):
         active=not busy and self.preview is None
         for widget in (self.table,self.captain,self.confirm,self.cancel,self.save,self.pool_panel,self.play,self.watch,self.standings):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
+        from goal2.desktop.pool_page import context as pool_context
+        pool_context(self,busy)
         self.stop.setEnabled(busy)
         from goal2.desktop.fixtures_page import enabled as fixtures_enabled
         fixtures_enabled(self,active)
@@ -273,7 +275,9 @@ class ManagementWindow(QMainWindow):
             view=self.display_model.pool_view(query=self.search.text(),position=self.position.currentData())
             self.reserves.setRowCount(0)
             if view is None:
-                self.pool_summary.setText('National pool requires a campaign');self.exchange.setEnabled(False);return
+                self.pool_summary.setText('National pool requires a campaign');self.exchange.setEnabled(False)
+                from goal2.desktop.pool_page import refresh as refresh_pool_page
+                refresh_pool_page(self);return
             self.pool_summary.setText(f"Squad 20 / Reserves 80 — showing {len(view['reserves'])}\n{view['window']['reason']}")
             self.exchange.setEnabled(view['window']['allowed'] and not self.jobs.busy and self.preview is None)
             self.reserves.setRowCount(len(view['reserves']))
@@ -283,6 +287,8 @@ class ManagementWindow(QMainWindow):
                     item=QTableWidgetItem(str(value));item.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable)
                     if col==0:item.setData(Qt.ItemDataRole.UserRole,p['id'])
                     self.reserves.setItem(row,col,item)
+            from goal2.desktop.pool_page import refresh as refresh_pool_page
+            refresh_pool_page(self)
         except (ValueError,IndexError,KeyError) as exc:
             self.exchange.setEnabled(False);self.pool_summary.setText(str(exc))
 
