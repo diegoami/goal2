@@ -57,3 +57,12 @@ widgets could mask the unsupported fixture boundary. The UI now calls the shared
 pure fixture guard before draft validation; a deliberately invalid draft at a
 qualifier visits this refusal directly. Final acceptance supersedes these failed
 receipts rather than omitting the boundary.
+
+
+[designed] `control-runner-01.log`/`controls-01` preserve the rejected initial
+once-publication control: a doubled match counter triggered World validation as
+an ERROR, so it was not counted as behavioral proof. The corrected control
+removes both consumed-token clearance and the redundant stale-owner fallback,
+then the acceptance explicitly retries the actual consumed publication and
+requires refusal without replacing active state. Final controls must all be
+intended assertion failures; this diagnostic attempt is not substituted for them.

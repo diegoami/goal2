@@ -1,0 +1,27 @@
+test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 243, in test_original_qt_save_resume_repeat
+    acceptance['main']()
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/tools/desktop-ui/watched.py", line 51, in main
+    outcome,events=expected(control)
+                   ^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/tools/desktop-ui/watched.py", line 32, in expected
+    publication.complete(job.token,outcome)
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/game/watched_publication.py", line 115, in complete
+    candidate=completed_candidate(candidate,fixture,outcome,template,competitive=self._competitive)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/game/watched_publication.py", line 82, in completed_candidate
+    campaign_rounds.validate_state(candidate)
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/game/campaign_rounds.py", line 138, in validate_state
+    raise ValueError('world country or live RNG differs from saved continuation')
+ValueError: world country or live RNG differs from saved continuation
+
+----------------------------------------------------------------------
+Ran 1 test in 10.085s
+
+FAILED (errors=1)

@@ -27,7 +27,7 @@ def main():
          'goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit'),
         ('lock-ownership','goal2/desktop/watched.py','if self._pending_owned:','if True:',
          'goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat'),
-        ('once-publication','goal2/game/watched_publication.py','candidate.match_count+=1','candidate.match_count+=2',
+        ('once-publication','goal2/game/watched_publication.py',"        self._pending=None\n        if self.owner.state is not original or self.owner.state!=snapshot or self.owner.template_bytes!=template:\n            raise ValueError('watched completion is stale; active state changed')",'        # [designed: negative control] Retain the consumed token and allow its second publication.',
          'goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat'),
         ('save-continuation','goal2/desktop/model.py','self.state=candidate;self.template_bytes=raw;self.save_path=Path(path)',
          'self.state=candidate;self.template_bytes=raw;self.save_path=Path(path);self.state.rng_seed_8336 ^= 1',

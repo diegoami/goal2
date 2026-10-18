@@ -1,0 +1,15 @@
+test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save) ... FAIL
+
+======================================================================
+FAIL: test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 193, in test_real_viewer_cancel_duplicate_and_failed_start_preserve_save
+    with self.assertRaisesRegex(ValueError,'already running'):quick.start()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 1.457s
+
+FAILED (failures=1)

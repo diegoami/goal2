@@ -71,6 +71,11 @@ def main():
                 assert any('Raw rating' in line for line in display.lines())
                 pump(lambda:w.watched.last_status and w.watched.last_status['sequence']==display.sequence,app=app)
                 assert w.watched.last_status['digest']==display.digest(),'real SDL child display differs'
+                committed=m.state
+                try:w.watched.engine.publication.complete(w.watched.engine_token,outcome)
+                except ValueError:pass
+                else:raise AssertionError('Consumed original completion published twice')
+                assert m.state is committed,'consumed completion replaced the active state'
                 state=copy.deepcopy(m.state)
                 for _ in range(4):w.poll_watched();w.refresh();app.processEvents()
                 assert m.state==state,'redraw published again'
