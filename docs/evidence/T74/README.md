@@ -90,3 +90,7 @@ QT_QPA_PLATFORM=offscreen python3 docs/evidence/T74/run-surface-input-controls.p
 ```
 
 [derived: input-negative-01 and surface-input-controls-02] All four original saved-byte controls still fail their unchanged intended oracles with exact restoration. The repeatable input-control runner passes both intended failures and exact country-change delta fields. [Serial full log](input-controls-final-01.log). New native Windows validation remains pending at this checkpoint.
+
+[derived: Windows input-rework-final] Fresh native Windows validation at65b20f5 passes actual ratios1/2,62/42 transitions and15/5 target captures in41.564/31.036seconds. All eight per-step traces and the final12-field delta are empty. [Audited receipt](windows/input-rework-final/receipt.json), logs, wrappers and26 rebuild artifacts are collected byte-exact;157 archived source hashes match current bytes, and four protected launcher/save/resource hashes are unchanged. This pair is the authoritative Windows acceptance for the changed helper; older `windows/final` remains valid historical product-source evidence, not the reworked helper identity.
+
+[derived: input-management-units-01.log] Fresh27 model/entry/pool/Quick/halftime tests pass after the helper rework. No product source changes require repeating the prior actual82def backend proof groups; their identities and original logs remain explicit. Final author exact-head premerge is recorded in the PR after this evidence commit.
