@@ -1,0 +1,173 @@
+{
+  "tag": "[designed: T74]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "offscreen",
+  "requested_scale": "1",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2/desktop/jobs.py": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "5cd5046c322a7a119cf25e7746ef45a285646f831efb32d2523613cda22548f8",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "6da3ac8c2ac4892e83da5f1c5210a7e06f342986dde882f4f513043ed62400f4",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "transitions": [
+    {
+      "method": "shortcut",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    }
+  ],
+  "captures": [],
+  "reachable": [],
+  "contrast": {
+    "body": 15.760201803771965,
+    "panel text": 13.446624450282803,
+    "disabled": 9.212049490323153,
+    "table": 11.539344302961265,
+    "selected": 10.387089745067524,
+    "focus": 12.29461751985869,
+    "control boundary": 3.25823740432172,
+    "selected focus": 10.387089745067524
+  },
+  "ratio": 1.0,
+  "available": [
+    800,
+    800
+  ],
+  "surface_trace": [
+    {
+      "stage": "before-popup",
+      "native_active": true,
+      "focus_type": "QLabel",
+      "focus_name": "pageHeading",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "country-focus",
+      "native_active": true,
+      "focus_type": "QComboBox",
+      "focus_name": "country",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "popup-open",
+      "native_active": true,
+      "focus_type": "QListView",
+      "focus_name": "",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "popup-escape",
+      "native_active": true,
+      "focus_type": "QComboBox",
+      "focus_name": "country",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "path-selection",
+      "native_active": true,
+      "focus_type": "QLineEdit",
+      "focus_name": "savePath",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "save-restored",
+      "native_active": true,
+      "focus_type": "QLineEdit",
+      "focus_name": "savePath",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "other-created",
+      "native_active": true,
+      "focus_type": "QLineEdit",
+      "focus_name": "savePath",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "dialog-closed",
+      "native_active": true,
+      "focus_type": "QLineEdit",
+      "focus_name": "savePath",
+      "country": 4,
+      "delta": []
+    }
+  ],
+  "popup_events": {
+    "opened": true,
+    "closed": true,
+    "active_after_close": true
+  },
+  "native_surfaces": {
+    "combo popup": {
+      "foreground": "#f5f2e8",
+      "background": "#ffffff",
+      "contrast": 1.1200844211700167
+    },
+    "combo selection": {
+      "foreground": "#ffffff",
+      "background": "#308cc6",
+      "contrast": 3.68916016275542
+    },
+    "path selection": {
+      "foreground": "#ffffff",
+      "background": "#308cc6",
+      "contrast": 3.68916016275542
+    },
+    "disabled action": {
+      "foreground": "#bbcfc5",
+      "background": "#102b25",
+      "contrast": 9.212049490323153
+    },
+    "table": {
+      "foreground": "#17352c",
+      "background": "#f3efe2",
+      "contrast": 11.539344302961265
+    },
+    "disabled table": {
+      "foreground": "#17352c",
+      "background": "#f3efe2",
+      "contrast": 11.539344302961265
+    },
+    "table header": {
+      "foreground": "#f5f2e8",
+      "background": "#2b4a41",
+      "contrast": 8.685688666066612
+    },
+    "competition dialog": {
+      "foreground": "#f5f2e8",
+      "background": "#efefef",
+      "contrast": 1.0265804469071316
+    }
+  },
+  "surface_snapshot_delta": []
+}
