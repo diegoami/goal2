@@ -160,7 +160,8 @@ class ManagementWindow(QMainWindow):
         state=self.display_model.state
         pending=state.campaign.next_fixture if state.campaign else None
         from goal2.game.watched_schema import COMPETITIVE_SCHEMA,watched
-        original=(pending is not None and pending.kind!=1) or (watched(state.last_match) and state.last_match['schema']==COMPETITIVE_SCHEMA)
+        from goal2.engine.original_match.match import KINDS
+        original=(pending is not None and pending.kind!=1 and pending.kind in KINDS) or (watched(state.last_match) and state.last_match['schema']==COMPETITIVE_SCHEMA)
         if state.captain==0 and original:
             self.captain.addItem('Original captain selection',0)
             self.captain.model().item(0).setEnabled(False)

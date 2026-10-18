@@ -130,6 +130,9 @@ def main():
             window.country.setCurrentIndex(window.country.findData(4));click(window.new)
             assert model.state.campaign.next_fixture.kind==1
             assert window.play.text()=='Play quick friendly'
+            assert model.state.captain==0 and window.captain.currentData() in model.state.starting_eleven
+            named=window.captain.currentData();click(window.confirm)
+            assert model.state.captain==named and window.status.text()=='Management confirmed'
             window.jobs.command=BLOCK
             friendly=copy.deepcopy(model.state);click(window.play)
             assert window.jobs.busy and model.match_pending
@@ -156,6 +159,7 @@ def main():
             window.competitive=CompetitiveJobs(model,command=BLOCK)
             # [designed] Unsupported kind4 refuses before mutation; closing competitive reaps its child.
             unsupported,competitive_raw,_=campaign(21,4)
+            unsupported.captain=unsupported.starting_eleven[0]
             model.state=unsupported;model.template_bytes=competitive_raw;window.refresh()
             unchanged=copy.deepcopy(model.state);saved=model.save_path.read_bytes();click(window.play)
             assert 'No supported pending competitive fixture' in window.status.text()
