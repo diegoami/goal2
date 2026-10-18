@@ -80,11 +80,24 @@ def shell(args):
                         tuple(c.process for c in (window.jobs,window.competitive,window.watched)))
             def navigate(index,method):
                 before=snapshot()
+                # [designed] QtTest widget events do not perform the OS click-to-activate step.
+                app.processEvents();QTest.qWait(10)
+                active_before=window.isActiveWindow()
+                if not active_before:
+                    window.raise_();window.activateWindow();app.processEvents();QTest.qWait(30)
+                assert QTest.qWaitForWindowActive(window,2000),'owned shell window is not active before synthetic navigation'
+                assert window.isActiveWindow() and app.activeWindow() is window,'native activation precondition did not settle'
+                if not active_before:report.setdefault('activation_preconditions',[]).append({'method':method,'index':index,'native_active_after':window.isActiveWindow()})
                 if method=='mouse':QTest.mouseClick(window.navigation[index],Qt.MouseButton.LeftButton)
                 else:QTest.keyClick(window,Qt.Key.Key_1+index,Qt.KeyboardModifier.ControlModifier)
                 app.processEvents()
                 assert window.page_stack.currentIndex()==index,'navigation selected wrong page'
-                assert app.focusWidget() is window.pages[index].heading,'navigation did not focus heading'
+                focus=app.focusWidget();active=app.activeWindow()
+                details={'method':method,'index':index,'focus_type':type(focus).__name__ if focus else None,
+                         'focus_name':focus.objectName() if focus else None,'active_type':type(active).__name__ if active else None,
+                         'active_name':active.objectName() if active else None,'window_active':window.isActiveWindow()}
+                if focus is not window.pages[index].heading:report['focus_failure']=details
+                assert focus is window.pages[index].heading,'navigation did not focus heading: '+json.dumps(details)
                 assert window.navigation[index].isChecked(),'selected destination has no checked cue'
                 assert snapshot()==before,'navigation changed state/draft/preview/save/job ownership'
                 report['transitions'].append({'method':method,'destination':names[index],'focus':app.focusWidget().text()})
@@ -97,13 +110,18 @@ def shell(args):
                 value=contrast(foreground,background)
                 surfaces[name]={'foreground':foreground,'background':background,'contrast':value}
                 if value<4.5:failed.append(name)
-            window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Down,Qt.KeyboardModifier.AltModifier)
-            app.processEvents();QTest.qWait(30);popup=window.country.view()
+            window.country.setFocus();app.processEvents();QTest.qWait(150)
+            QTest.keyClick(window.country,Qt.Key.Key_Down,Qt.KeyboardModifier.AltModifier,100)
+            app.processEvents();QTest.qWait(100);popup=window.country.view()
             assert popup.isVisible(),'native country popup did not open'
             surface('combo popup',popup.palette().color(QPalette.ColorRole.Text).name(),popup.palette().color(QPalette.ColorRole.Base).name())
             surface('combo selection',popup.palette().color(QPalette.ColorRole.HighlightedText).name(),popup.palette().color(QPalette.ColorRole.Highlight).name())
             assert popup.window().grab().save(str(evidence/'surface-country-popup.png'))
-            QTest.keyClick(window.country,Qt.Key.Key_Escape);window.country.hidePopup();app.processEvents()
+            QTest.keyClick(popup,Qt.Key.Key_Escape,delay=100);app.processEvents();QTest.qWait(100)
+            assert not popup.isVisible(),'native country popup did not close'
+            window.raise_();window.activateWindow();app.processEvents()
+            assert QTest.qWaitForWindowActive(window,2000),'shell did not regain activation after popup close'
+            report['popup_events']={'opened':True,'closed':not popup.isVisible(),'active_after_close':window.isActiveWindow()}
             navigate(4,'shortcut');window.path.setFocus()
             QTest.keyClick(window.path,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier);app.processEvents()
             surface('path selection',window.path.palette().color(QPalette.ColorRole.HighlightedText).name(),window.path.palette().color(QPalette.ColorRole.Highlight).name())
@@ -181,6 +199,7 @@ def shell(args):
                         assert origin.x()>=0 and origin.x()+widget.width()<=page.viewport().width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
                         assert origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height(),f'action unreachable vertically: {widget.objectName() or widget.accessibleName()} y={origin.y()} height={widget.height()} viewport={page.viewport().height()}'
                         assert widget.isVisible(),'action hidden'
+                        assert widget.accessibleName(),'action has no accessible name'
                         if widget.isEnabled() and isinstance(widget,(QAbstractButton,QComboBox,QLineEdit)):
                             # Native Tab traversal from heading must reach each interactive action.
                             page.heading.setFocus();seen=False
@@ -207,18 +226,20 @@ def shell(args):
 
 def negative_controls(args):
     """[designed] Baseline, draft loss and saved pre-fix native surfaces fail intended assertions."""
-    source=ROOT/'goal2/desktop/window.py';style=ROOT/'goal2/desktop/style.py'
-    saved={source:source.read_bytes(),style:style.read_bytes()}
+    source=ROOT/'goal2/desktop/window.py';style=ROOT/'goal2/desktop/style.py';pages=ROOT/'goal2/desktop/pages.py'
+    saved={source:source.read_bytes(),style:style.read_bytes(),pages:pages.read_bytes()}
     evidence=Path(args.evidence_dir);evidence.mkdir(parents=True,exist_ok=False)
     accepted='08e3c67d2d0dc63a73aae7ee69610639746bf4b8'
     pre_surface_fix='6eaaea2a0d1bca1a6f7dd4d89adfc65f367123fb'
     baseline=subprocess.check_output(['git','show',accepted+':goal2/desktop/window.py'],cwd=ROOT)
     old_style=subprocess.check_output(['git','show',pre_surface_fix+':goal2/desktop/style.py'],cwd=ROOT)
+    old_pages=subprocess.check_output(['git','show','154bfbbc5053ba9a18d93bb734464c2a4f10f7bc:goal2/desktop/pages.py'],cwd=ROOT)
     old=b'self.page_stack.setCurrentIndex(index)'
     assert saved[source].count(old)==1,'expected one navigation mutation site'
     cases=(('baseline',source,baseline,'five-destination navigation is absent'),
            ('discard-draft',source,saved[source].replace(old,old+b';self.refresh()'),'navigation changed state/draft/preview/save/job ownership'),
-           ('native-surfaces',style,old_style,'native surface contrast failed: combo popup, combo selection, path selection, competition dialog'))
+           ('native-surfaces',style,old_style,'native surface contrast failed: combo popup, combo selection, path selection, competition dialog'),
+           ('accessible-names',pages,old_pages,'action has no accessible name'))
     receipt={'tag':'[designed: T74]','baseline':accepted,'pre_surface_fix':pre_surface_fix,
              'source_before':{str(p.relative_to(ROOT)):hashlib.sha256(raw).hexdigest() for p,raw in saved.items()},'cases':[]}
     try:
@@ -238,7 +259,7 @@ def negative_controls(args):
         receipt['source_after']={str(p.relative_to(ROOT)):digest(p) for p in saved}
         (evidence/'negative-controls.json').write_text(json.dumps(receipt,indent=2)+'\n')
     assert all(path.read_bytes()==raw for path,raw in saved.items()),'source restoration differed'
-    print('PASS negative controls: baseline navigation; dirty-draft loss; saved pre-fix native surface contrast; exact source bytes restored')
+    print('PASS negative controls: baseline navigation; dirty-draft loss; native surface contrast; accessible names; exact source bytes restored')
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell'],required=True)

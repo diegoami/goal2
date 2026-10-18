@@ -51,6 +51,7 @@ def compose(self,model,TACTICS):
     for widget in self.findChildren(QWidget):
         if isinstance(widget,(QPushButton,QComboBox,QLineEdit,QCheckBox)):
             if not widget.accessibleName():widget.setAccessibleName(widget.text() if hasattr(widget,'text') else widget.objectName())
+    self.table.setAccessibleName('Squad');self.reserves.setAccessibleName('National pool reserves')
     self.country.setAccessibleName('Country');self.search.setAccessibleName('Search reserve name')
     self.position.setAccessibleName('Reserve position');self.half_out.setAccessibleName('Halftime outgoing player')
     self.half_in.setAccessibleName('Halftime incoming player')
