@@ -1,0 +1,18 @@
+test_schema_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_schema_rejection) ... FAIL
+
+======================================================================
+FAIL: test_schema_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_schema_rejection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 132, in test_schema_rejection
+    self.put([value]);self.reject('frame player')
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 55, in reject
+    with self.assertRaisesRegex(ValueError,message):self.jobs.poll_frames(self.token)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.346s
+
+FAILED (failures=1)

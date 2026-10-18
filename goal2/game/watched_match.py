@@ -171,7 +171,7 @@ def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
 
 
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
-                 substitutions=None,quick_at_half_time=False,_observe=None):
+                 substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None):
     """[designed: T51] Shared completed-original driver; no publication or Python tail."""
     if reference_seed is not None:
         _integer(reference_seed,0,65535,'reference seed')
@@ -179,9 +179,17 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
         _integer(delay_byte,0,255,'delay byte')
     match = Match(image,fixture,managed=state.managed_country,captain=state.captain or None,
                   seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions)
+    if _observe_pitch is not None:
+        match.opts['ticks'] = True
+    frame_sequence = 0
     events = []
     previous_decision = None
     for ev in match.events():
+        if _observe_pitch is not None and ev.kind == 'tick':
+            from goal2.game.watched_pitch import snapshot
+            _observe_pitch(snapshot(match, ev, frame_sequence, len(events)))
+            frame_sequence += 1
+            continue
         events.append(copy.deepcopy(ev))
         if _observe is not None:
             _observe(copy.deepcopy(ev))

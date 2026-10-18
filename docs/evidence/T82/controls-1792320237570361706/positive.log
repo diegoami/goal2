@@ -1,0 +1,24 @@
+test_cancel_after_engine_done_keeps_pending_state_and_prior_save (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_cancel_after_engine_done_keeps_pending_state_and_prior_save) ... ok
+test_cancel_close_and_owned_child_death_preserve_prior_save (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_cancel_close_and_owned_child_death_preserve_prior_save) ... ok
+test_child_death_without_completion_rejected (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_child_death_without_completion_rejected) ... ok
+test_completed_frame_count_must_match_original_ticks (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_completed_frame_count_must_match_original_ticks) ... ok
+test_deferred_once_only_publication (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_deferred_once_only_publication) ... ok
+test_future_watermark_waits_then_rejects_at_completion (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_future_watermark_waits_then_rejects_at_completion) ... ok
+test_malformed_json (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_malformed_json) ... ok
+test_owned_death_and_worker_error_cancel_without_publication (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_owned_death_and_worker_error_cancel_without_publication) ... ok
+test_partial_tail_read_is_bounded (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_partial_tail_read_is_bounded) ... ok
+test_schema_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_schema_rejection) ... ok
+test_separate_bounded_consumer_and_ack_order (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_separate_bounded_consumer_and_ack_order) ... ok
+test_sequence_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_sequence_rejection) ... ok
+test_token_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_token_rejection) ... ok
+test_total_buffer_overflow (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_total_buffer_overflow) ... ok
+test_truncated_and_oversized_records (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_truncated_and_oversized_records) ... ok
+test_truncated_record_after_engine_completion (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_truncated_record_after_engine_completion) ... ok
+test_watermark_regression_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_watermark_regression_rejection) ... ok
+test_writer_packet_total_and_count_budgets (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_writer_packet_total_and_count_budgets) ... ok
+test_raw_signed_identity_visibility_and_generic_countries (goal2.tests.test_watched_pitch_jobs.PitchObservationTests.test_raw_signed_identity_visibility_and_generic_countries) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 5.672s
+
+OK

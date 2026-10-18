@@ -1,0 +1,14 @@
+test_separate_bounded_consumer_and_ack_order (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_separate_bounded_consumer_and_ack_order) ... FAIL
+
+======================================================================
+FAIL: test_separate_bounded_consumer_and_ack_order (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_separate_bounded_consumer_and_ack_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 65, in test_separate_bounded_consumer_and_ack_order
+    self.assertLessEqual(len(self.jobs._frame_buffer),FRAME_READ_BUDGET+MAX_FRAME_PACKET)
+AssertionError: 222640 not less than or equal to 69632
+
+----------------------------------------------------------------------
+Ran 1 test in 0.344s
+
+FAILED (failures=1)

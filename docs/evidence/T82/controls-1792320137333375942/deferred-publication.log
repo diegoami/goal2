@@ -1,0 +1,14 @@
+test_deferred_once_only_publication (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_deferred_once_only_publication) ... FAIL
+
+======================================================================
+FAIL: test_deferred_once_only_publication (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_deferred_once_only_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 84, in test_deferred_once_only_publication
+    self.assertTrue(self.jobs.busy,'publication must wait for consumption acknowledgement')
+AssertionError: False is not true : publication must wait for consumption acknowledgement
+
+----------------------------------------------------------------------
+Ran 1 test in 0.310s
+
+FAILED (failures=1)

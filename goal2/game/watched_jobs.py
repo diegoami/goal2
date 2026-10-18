@@ -20,6 +20,8 @@ import tempfile
 from goal2.engine.original_match.match import Event
 from goal2.game.watched_match import WatchedOutcome
 from goal2.game.watched_publication import WatchedPublication
+from goal2.game.watched_pitch import (MAX_FRAME_BYTES, MAX_FRAME_PACKET, FRAME_READ_BUDGET,
+                                      FRAME_POLL_BUDGET, validate)
 
 MAX_MEMORY = 32 * 1024 * 1024
 MAX_PACKET = 8 * 1024 * 1024
@@ -83,18 +85,32 @@ class WatchedJobs:
     def busy(self):
         return self.process is not None
 
-    def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False):
+    def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False):
+        if type(frames) is not bool:
+            raise ValueError('frames must be boolean')
         if self.closed or self.busy:
             raise ValueError('watched bridge is closed or a match is already running')
+        if frames and getattr(self.owner, 'match_pending', False):
+            raise ValueError('Another match is already pending')
+        self._pitch_owns_pending = False
         job = self.publication.begin(fixture)
         self.token = job.token
         self.outcome = None
         self.events = []
+        self._frames_enabled = frames
+        self._frame_sequence = 0
+        self._frame_ack = -1
+        self._frame_watermark = 0
+        self._frame_buffer = bytearray()
+        self._engine_done = False
         self._complete = None
         self._sequence = 0
         self._buffer = bytearray()
         try:
             self._start(job, reference_seed, delay_byte, record_draws)
+            if frames:
+                self.owner.match_pending = True
+                self._pitch_owns_pending = True
         except Exception:
             self.publication.cancel()
             self._release()
@@ -110,9 +126,11 @@ class WatchedJobs:
         source = folder / 'input'
         source.write_bytes(encode(job.state, self._template))
         (folder / 'request.json').write_text(json.dumps({'token':job.token, 'fixture':asdict(job.fixture),
+            'frames':self._frames_enabled,
             'options':dict(reference_seed=reference_seed, delay_byte=delay_byte, record_draws=record_draws)}))
         self._journal = (folder / 'events').open('w+b')
         self._errors = (folder / 'errors').open('w+b')
+        self._frames = (folder / 'frames').open('w+b')
         command = [sys.executable, '-m', 'goal2.game.watched_worker'] if self.command is None else list(self.command)
         self.process = subprocess.Popen(command + [str(source), str(folder / 'events')],
             cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
@@ -169,9 +187,8 @@ class WatchedJobs:
                     self._errors.seek(0)
                     detail = self._errors.read(1500).decode(errors='replace')
                     raise ValueError(f'Watched worker exited ({code}) without completion: {detail}')
-                self.publication.complete(token, self._complete)
-                self.outcome = self._complete
-                self._release()
+                self._engine_done = True
+                self._maybe_publish(token)
             elif code is not None and len(self._buffer) < 4 and self._journal.tell() == Path(self._journal.name).stat().st_size:
                 raise ValueError('truncated watched IPC record')
             elif code is not None and len(self._buffer) >= 4:
@@ -183,9 +200,97 @@ class WatchedJobs:
             self.cancel(token)
             raise ValueError(f'Invalid watched worker IPC: {exc}') from exc
 
+    @property
+    def engine_complete(self):
+        """[designed] Valid transcript/exit received; presentation may still own pending state."""
+        return getattr(self, '_engine_done', False)
+
+    def _maybe_publish(self, token):
+        if not self._engine_done:
+            return
+        if self._frames_enabled:
+            size = Path(self._frames.name).stat().st_size
+            if size > MAX_FRAME_BYTES:
+                raise ValueError('pitch frame total budget exceeded')
+            if self._frame_buffer or self._frames.tell() != size:
+                return
+            if self._frame_sequence != self._complete.result['ticks'] or self._frame_sequence == 0:
+                raise ValueError('pitch frame count differs from completed ticks')
+            if self._frame_ack != self._frame_sequence - 1:
+                return
+        self.publication.complete(token, self._complete)
+        self.outcome = self._complete
+        self._release()
+
+    def poll_frames(self, token):
+        """[designed] Read <=64KiB/decode <=32 samples; caller owns returned poses.
+
+        Canonical poll must run first. A frame ahead of that poll's event watermark
+        waits in the bounded decoder; after canonical completion it is an error.
+        Returned frames require cumulative acknowledgement after actual consumption.
+        """
+        self._check_token(token)
+        if not self._frames_enabled:
+            raise ValueError('pitch frames were not enabled')
+        try:
+            if (self.owner.state is not self._original or self.owner.state != self._snapshot
+                    or self.owner.template_bytes != self._template):
+                raise ValueError('watched job is stale; active game changed')
+            size = Path(self._frames.name).stat().st_size
+            if size > MAX_FRAME_BYTES:
+                raise ValueError('pitch frame total budget exceeded')
+            ready = len(self._frame_buffer) >= 4 and len(self._frame_buffer) >= 4 + struct.unpack('!I',self._frame_buffer[:4])[0]
+            if not ready:
+                self._frame_buffer.extend(self._frames.read(FRAME_READ_BUDGET))
+            new = []
+            for _ in range(FRAME_POLL_BUDGET):
+                if len(self._frame_buffer) < 4:
+                    break
+                length = struct.unpack('!I',self._frame_buffer[:4])[0]
+                if length > MAX_FRAME_PACKET:
+                    raise ValueError('pitch frame packet budget exceeded')
+                if len(self._frame_buffer) < length + 4:
+                    break
+                identity, frame = json.loads(bytes(self._frame_buffer[4:length+4]))
+                if identity != token:
+                    raise ValueError('pitch frame token differs')
+                validate(frame, self._frame_sequence, self._frame_watermark)
+                if frame['watermark'] > len(self.events):
+                    if self._engine_done:
+                        raise ValueError('pitch frame watermark exceeds canonical events')
+                    break
+                del self._frame_buffer[:length+4]
+                self._frame_sequence += 1
+                self._frame_watermark = frame['watermark']
+                new.append(frame)
+            if (self._engine_done and self._frames.tell() == size and self._frame_buffer
+                    and (len(self._frame_buffer) < 4 or len(self._frame_buffer) < 4 + struct.unpack('!I',self._frame_buffer[:4])[0])):
+                raise ValueError('truncated pitch frame record')
+            if self._engine_done and size == 0:
+                raise ValueError('pitch frame stream is empty')
+            self._maybe_publish(token)
+            return new
+        except Exception as exc:
+            self.cancel(token)
+            raise ValueError(f'Invalid watched pitch IPC: {exc}') from exc
+
+    def ack_frames(self, token, sequence):
+        """[designed] Cumulative consumed sequence; duplicate/stale/future acks cannot publish."""
+        self._check_token(token)
+        if (not self._frames_enabled or type(sequence) is not int
+                or not self._frame_ack < sequence < self._frame_sequence):
+            raise ValueError('stale or invalid pitch frame acknowledgement')
+        self._frame_ack = sequence
+        # [designed] Publication occurs on the next canonical poll, whose returned
+        # events must reach the caller rather than disappear inside acknowledgement.
+
+
     def _release(self):
+        if getattr(self, '_pitch_owns_pending', False):
+            self.owner.match_pending = False
+            self._pitch_owns_pending = False
         self.process = None
-        for name in ('_journal', '_errors'):
+        for name in ('_journal', '_errors', '_frames'):
             stream = getattr(self, name, None)
             if stream is not None:
                 stream.close()

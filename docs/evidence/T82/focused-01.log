@@ -1,0 +1,20 @@
+test_actual_original_parity_movement_halves_pending_and_once_only (goal2.tests.test_watched_pitch_jobs.OriginalPitchJobsTests.test_actual_original_parity_movement_halves_pending_and_once_only) ... T82 actual seed=257 frames=4279 events=1079 memory_sha256=e4f9f700b98282f51bd791b253c159cf4d561ef68a270c898a153a0ac791e18c seeds=(25058, 61800)
+T82 actual seed=4660 frames=4146 events=1178 memory_sha256=232436908ceb7f7082bd9ae5b5d46e964d1706be8e780e169d1eb033dbf9f104 seeds=(62399, 10535)
+ok
+test_cancel_close_and_owned_child_death_preserve_prior_save (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_cancel_close_and_owned_child_death_preserve_prior_save) ... ok
+test_future_watermark_waits_then_rejects_at_completion (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_future_watermark_waits_then_rejects_at_completion) ... ok
+test_malformed_json (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_malformed_json) ... ok
+test_schema_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_schema_rejection) ... ok
+test_separate_bounded_consumer_and_ack_order (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_separate_bounded_consumer_and_ack_order) ... ok
+test_sequence_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_sequence_rejection) ... ok
+test_token_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_token_rejection) ... ok
+test_total_buffer_overflow (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_total_buffer_overflow) ... ok
+test_truncated_and_oversized_records (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_truncated_and_oversized_records) ... ok
+test_truncated_record_after_engine_completion (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_truncated_record_after_engine_completion) ... ok
+test_watermark_regression_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_watermark_regression_rejection) ... ok
+test_writer_packet_total_and_count_budgets (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_writer_packet_total_and_count_budgets) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 45.656s
+
+OK

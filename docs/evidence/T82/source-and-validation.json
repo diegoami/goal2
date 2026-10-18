@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "source_pin": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "environment": {
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+    "unicorn": "2.1.4",
+    "PySide6": "6.12.0",
+    "pygame_ce": "2.5.8",
+    "modes": [
+      "offscreen Qt",
+      "dummy SDL"
+    ],
+    "windows_execution": false
+  },
+  "inputs": {
+    "fixture": [
+      7,
+      19,
+      21
+    ],
+    "kind": 1,
+    "managed": 7,
+    "seeds": [
+      257,
+      4660
+    ],
+    "delay_byte": 0,
+    "record_draws": true,
+    "answers": "original defaults",
+    "original_resource_hashes": {
+      "e010-r0003-halftime.sav": "b732ed79429f2bb8ae3241d1bff4ab8273676a63024e50a2433063f5ab9c7c62",
+      "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
+      "e010-r0002-halftime.sav": "224e63c18380c3ff13ab9245fc23166f7ed568d97d0701e994896dacee6ad569",
+      "e006-r0001-main.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+      "8a4ebd41b1c576a8-E010-r0007-halftime.sav": "8a4ebd41b1c576a81350d3a2e1cfba58880029aea44d3db9e5df0d6c0f8a1a17",
+      "e010-r0007-halftime.sav": "8a4ebd41b1c576a81350d3a2e1cfba58880029aea44d3db9e5df0d6c0f8a1a17",
+      "e010-r0001-halftime.sav": "e1dee7e2f5ad443ee0d62eb6dd203394ef81f43732845aa04d969f422b556920",
+      "ae2935b9c4907454-E010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+      "e010-r0005-halftime.sav": "5497b6d4d367ac2d8653d962de0301d552d2362bc5fe7159c72d64f721c01988",
+      "91e815687fb73288-E010-r0009-halftime.sav": "91e815687fb732882ca2aa72841bcaacd54e16f6ace25ae63a4e96e2b195d1b0",
+      "224e63c18380c3ff-E010-r0002-halftime.sav": "224e63c18380c3ff13ab9245fc23166f7ed568d97d0701e994896dacee6ad569",
+      "e010-r0006-halftime.sav": "0095cee949724990db81740c5d1e73858137a79d47de274b756c7c459816fe5a",
+      "3789d8490d2b42d8-e006-2100-r0005.sav": "3789d8490d2b42d8a589fec2afeb51de0ace4b4c5d1e5e24ff232321874dd106",
+      "0095cee949724990-E010-r0006-halftime.sav": "0095cee949724990db81740c5d1e73858137a79d47de274b756c7c459816fe5a",
+      "e010-r0010-halftime.sav": "3c7983fa4869d3278fe9f1f6140e5ca1b84f602e97b5862f547c6332d086e1e6",
+      "b732ed79429f2bb8-E010-r0003-halftime.sav": "b732ed79429f2bb8ae3241d1bff4ab8273676a63024e50a2433063f5ab9c7c62",
+      "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+      "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+      "5497b6d4d367ac2d-E010-r0005-halftime.sav": "5497b6d4d367ac2d8653d962de0301d552d2362bc5fe7159c72d64f721c01988",
+      "e1dee7e2f5ad443e-E010-r0001-halftime.sav": "e1dee7e2f5ad443ee0d62eb6dd203394ef81f43732845aa04d969f422b556920",
+      "111e38da1a3bc674-E010-r0004-halftime.sav": "111e38da1a3bc6747b1bc7f66fbd187d711a5fccb8892aeec6657fe49a5cd6b9",
+      "e010-r0004-halftime.sav": "111e38da1a3bc6747b1bc7f66fbd187d711a5fccb8892aeec6657fe49a5cd6b9",
+      "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+      "e010-r0009-halftime.sav": "91e815687fb732882ca2aa72841bcaacd54e16f6ace25ae63a4e96e2b195d1b0"
+    }
+  },
+  "actual_cases": [
+    {
+      "seed": 257,
+      "frames": 4279,
+      "canonical_events": 1079,
+      "memory_sha256": "e4f9f700b98282f51bd791b253c159cf4d561ef68a270c898a153a0ac791e18c",
+      "seeds_after": [
+        25058,
+        61800
+      ]
+    },
+    {
+      "seed": 4660,
+      "frames": 4146,
+      "canonical_events": 1178,
+      "memory_sha256": "232436908ceb7f7082bd9ae5b5d46e964d1706be8e780e169d1eb033dbf9f104",
+      "seeds_after": [
+        62399,
+        10535
+      ]
+    }
+  ],
+  "source_validation_head": "f93fe79467832d0f54723dd4ffeb238ceee6a13d",
+  "sources": {
+    "goal2/game/watched_pitch.py": "d5abe7709059da51d1f0393a89ac68939019d98b088b5c53d3d4f49fd9f72dc4",
+    "goal2/game/watched_match.py": "cda09629b5a48b1afccf2510e0640ef0e373a97e735a4292d28bf99d3ac7d817",
+    "goal2/game/watched_jobs.py": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527",
+    "goal2/game/watched_worker.py": "79d148d1d6f52f96decad52a82611663d52da622273fc3cb331fb49046e83c59",
+    "goal2/tests/test_watched_pitch_jobs.py": "6e0cb499c382e9eeb1c693f6b63f5eec6e2a7f36e40e885e45be382a5c5bf51f",
+    "tools/prove_watched_pitch_jobs.py": "e39c7ac0a16fe54d1ea4a3c4e9ea4422d25863345fcced3c1e1f2621cd955335"
+  },
+  "commands": [
+    {
+      "command": "python3 -m unittest goal2.tests.test_watched_pitch_jobs -v",
+      "log": "focused-02.log",
+      "result": "PASS21, zero skips; actual original eight runs plus synthetic cases"
+    },
+    {
+      "command": "python3 tools/prove_watched_pitch_jobs.py",
+      "log": "proof-03.log",
+      "result": "PASS positive19 and11 intended assertion failures; exact saved bytes restored",
+      "directory": "controls-1792320237570361706"
+    },
+    {
+      "command": "python3 -m unittest goal2.tests.test_watched_jobs goal2.tests.test_watched_publication goal2.tests.test_desktop_competitive_jobs goal2.tests.test_campaign_competitive_match -v",
+      "log": "regressions-01.log",
+      "result": "PASS36, zero skips; actual original and labelled synthetic faults"
+    },
+    {
+      "command": "python3 -m unittest goal2.tests.test_pygame_match_view -v",
+      "log": "t66-01.log",
+      "result": "PASS10, zero skips; real offscreen Qt/dummy SDL and original"
+    },
+    {
+      "command": "python3 tools/check_provenance.py",
+      "log": "provenance-01.log",
+      "result": "PASS16"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "log": "links-01.log",
+      "result": "PASS links/JSON"
+    },
+    {
+      "command": "python3 tools/check_premerge.py --expected-head f93fe79467832d0f54723dd4ffeb238ceee6a13d",
+      "log": "premerge-f93fe79-02.log",
+      "result": "PASS actual clean head/75 hashes/original exclusion"
+    }
+  ],
+  "rejected_attempts": [
+    {
+      "log": "premerge-f93fe79.log",
+      "reason": "manually mistyped expected SHA; validator correctly refused before child checks"
+    }
+  ],
+  "readers": "owned units with HARNESS_CLIENT=codex, explicit PATH and physical TMPDIR, null stdin; finished before any source mutation",
+  "parity": "Exact complete objects/Memory bytes compared, hashes summarize rather than replace comparisons; original poses independently checked against raw guest bytes at every completed tick",
+  "receipts": {
+    "README.md": "16088ba77fb176a221d11ad438b96af5e9a029f85dd7d765ce90b454350553c2",
+    "controls-1792320137333375942/ack-delivered.log": "4afd6e56694fa92417d6408128639497b8ab3102d82674df36cca41420b920b8",
+    "controls-1792320137333375942/deferred-publication.log": "772c556a0c656dccdfaf962fafa00e9abdfdf03a5dba95ebbcc5dc3de4d61964",
+    "controls-1792320137333375942/read-budget.log": "3baf9fe0b2898c7845a84b0024f79882d4362bd9db743bb43a2d9e77294e79b1",
+    "controls-1792320137333375942/receipt.json": "f9759d3ffbbda0510e10b3a2dc9e60dc79931e8a0f1bde3c3d9807bec6730ce7",
+    "controls-1792320137333375942/schema.log": "f5dcff2a8b399470c0bf95e89848fad7aa54a16dbc6a2a986648bfb444499e7d",
+    "controls-1792320137333375942/sequence.log": "a9ed97106bb9a1211c7740a0b301b4c4007190df0cb1913c82a32884497f69ee",
+    "controls-1792320137333375942/token.log": "c0d07666c7f7218e7df2ea428a75b7fbe4ed78f1e024f9a8e6ed46d14bf32223",
+    "controls-1792320137333375942/total-budget.log": "a3390081d285560800a16327d7f8de144c0263fe062ced285817bd60277d12ca",
+    "controls-1792320137333375942/watermark.log": "c1c16e78aba27fbf861fcc414df695603c00c100865044e948d98f8e4b67e377",
+    "controls-1792320171694168850/ack-delivered.log": "33bc8a7c7966ed0ce4ed5377e2983ccd4063673b47586f456428f36d6256a2be",
+    "controls-1792320171694168850/deferred-publication.log": "89f986ab2c96677f41291a3f20d8de133e2b8afbf1c7bb430660e090a2f5092b",
+    "controls-1792320171694168850/raw-axis.log": "80cd5eeb2c60f9a4ef09979fdf7bc3613b2578aaea1da28f54af39f786604cc3",
+    "controls-1792320171694168850/raw-team.log": "162aa53469a7b18aa6c7e2d7867fdd91330eb7c64326992de65f7fb8df9f9921",
+    "controls-1792320171694168850/raw-visibility.log": "92ef7de7b012a108a771aa8a29f95a5efe846f8a183b7d75383fb0b7c6282ed1",
+    "controls-1792320171694168850/read-budget.log": "2facfb0ce31a3b27832a8875dd2cc3d2c10fc805cb49a91657d24c35dfbb5acb",
+    "controls-1792320171694168850/receipt.json": "2ba3c26320a168e20e045666e153c4f4e0abb544ee3317870dddc2af762ac863",
+    "controls-1792320171694168850/schema.log": "7cc91400efb40741001824bfc8423f8abafeedb2263331081477154e35145481",
+    "controls-1792320171694168850/sequence.log": "2646a9d98d068f6b06739eb91487f55ee519a7645ec3097fcf0012b22642c07a",
+    "controls-1792320171694168850/token.log": "0ba1a4bb7b9b7949d8816898ac2ced98cc0fd3c0fbe9633212b211077857ba26",
+    "controls-1792320171694168850/total-budget.log": "dc29b7a42bcb7848976ef8966bd7a79192e4d7a2cf834f46e3149523755e82eb",
+    "controls-1792320171694168850/watermark.log": "ddc91408bc06d38eb561e3b5850c4431c918ae08563233fa3ece5bd5bdcae419",
+    "controls-1792320237570361706/ack-delivered.log": "74149f5c472b7f70acf55c832da47478684365c381ff4914ec491df66c1b023b",
+    "controls-1792320237570361706/deferred-publication.log": "ee24b017b7551d6188c95f6b50907d867fc2fb21e4350adbab638b7d3cb72406",
+    "controls-1792320237570361706/positive.log": "d2c0a3848589513816da40264ec714c571d4ebae74e0c01f2d4a139e6c99a1ab",
+    "controls-1792320237570361706/raw-axis.log": "80cd5eeb2c60f9a4ef09979fdf7bc3613b2578aaea1da28f54af39f786604cc3",
+    "controls-1792320237570361706/raw-team.log": "162aa53469a7b18aa6c7e2d7867fdd91330eb7c64326992de65f7fb8df9f9921",
+    "controls-1792320237570361706/raw-visibility.log": "92ef7de7b012a108a771aa8a29f95a5efe846f8a183b7d75383fb0b7c6282ed1",
+    "controls-1792320237570361706/read-budget.log": "05cba552a9ade47a8ac984a6912c6fb3d7bcdfcdb2bd0df386a0aba9506dc3d0",
+    "controls-1792320237570361706/receipt.json": "a0d08ca745d2f017be61b6f11f6bf1a6b7e1141e9cb5f16938209a32406778ca",
+    "controls-1792320237570361706/schema.log": "964d848a9bf68d83c3277761d696b404ed114f1c045ca2aa3ea537cfc7a84a9e",
+    "controls-1792320237570361706/sequence.log": "8fc5e6f92ed75706287fc5188bcf0dc26b7b8eb0779f698c7bbbf613b000af5f",
+    "controls-1792320237570361706/token.log": "c0d07666c7f7218e7df2ea428a75b7fbe4ed78f1e024f9a8e6ed46d14bf32223",
+    "controls-1792320237570361706/total-budget.log": "22b5d6d3d3916a898c4a23bd3daa73c716bb2959b620e1b4bf3486f5005fd5b3",
+    "controls-1792320237570361706/watermark.log": "5d4e0c94bd5f4f1f91b610bdf762efaf108760ff64e5646284e1dcb4ee224b1e",
+    "focused-01.log": "8e4acd687b216b5ed248e8e79fa56ed56d734a2dab372b21f86a24b12812eef7",
+    "focused-02.log": "34d68214218d52d0047dfd2b1efbd0b108736e4818856dc883524242e58b7c5d",
+    "links-01.log": "0ccb10fef7fa86c14cd3785f27c4d1ee71aa0a6b6f6911ff7a28eb1c9449581a",
+    "premerge-f93fe79-02.log": "25e674689c638bdf6ae9b714d9b4583071a54e28d1e0814ec011f0ac4f257194",
+    "premerge-f93fe79.log": "3af57b56f8c79930ae35bf3b5be46b2fe0f5af4022c3a126f2e4aa48158838ac",
+    "proof-03.log": "07e5a46026a4cd9d36b1d8dc2b65d287f3e04176b02e59c347106cb2ccf8da86",
+    "provenance-01.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+    "regressions-01.log": "4e099c9905e879459d890b5f8840e656a5f19f22e6bea8d9a14412cb2e6b349a",
+    "t66-01.log": "f6379a676e7bedd4155823bf648dbf576fe018549064e64c74ed8faf79eb6a1e"
+  }
+}

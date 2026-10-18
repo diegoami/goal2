@@ -1,0 +1,15 @@
+test_separate_bounded_consumer_and_ack_order (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_separate_bounded_consumer_and_ack_order) ... FAIL
+
+======================================================================
+FAIL: test_separate_bounded_consumer_and_ack_order (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_separate_bounded_consumer_and_ack_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T82-pitch-frames/goal2/tests/test_watched_pitch_jobs.py", line 71, in test_separate_bounded_consumer_and_ack_order
+    with self.assertRaisesRegex(ValueError,'stale|invalid'):self.jobs.ack_frames(token,seq)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.371s
+
+FAILED (failures=1)
