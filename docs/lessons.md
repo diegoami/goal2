@@ -103,3 +103,10 @@ stopping rules as permission gates. Read complete evidence, fix causes and valid
 each new head; preserve provider/model selection, safety and acceptance checks.
 Report real owner design/external-access blockers. This authorizes follow-up,
 not merging an unaccepted head.
+
+[designed: owner,2026-10-18; original-game research handoff] The owner explicitly
+authorized main to post exploration/decompilation requests in goal2-archaeology
+for the original GOAL2 game. Use scoped linked issues with reproducible evidence
+questions and requested findings rather than guessing original behavior in the
+rebuild. This supplements the existing upstream-defect/re-vendor procedure; it
+does not change its provenance or original-asset boundaries.

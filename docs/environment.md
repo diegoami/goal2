@@ -552,3 +552,15 @@ tests/verified assets and exact upstream reproduction, follow
 application watched controls are later tasks. Full runtime tests need the verified
 images and archaeology source described there; do not treat skipped upstream
 original tests as accepted evidence.
+
+## Original-game research handoffs
+
+[designed: owner,2026-10-18] Main may file focused exploration or decompilation
+issues in [goal2-archaeology](https://github.com/diegoami/goal2-archaeology) when a
+rebuild task needs original-game evidence. Link the goal2 task, state the precise
+question, existing findings/source pin, relevant binary addresses and reproducible
+inputs/seeds where known, and request the evidence/artifact that resolves it.
+Track the upstream response and link confirmed findings back before encoding the
+behavior here. Continue independent work while research is pending. Original
+assets remain private and vendored engine files follow the existing deliberate
+re-vendor/provenance rule.
