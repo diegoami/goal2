@@ -18,7 +18,7 @@ def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def scenario(args):
     from PySide6.QtCore import Qt,QCoreApplication,QEvent,qVersion,QPoint
     from PySide6.QtTest import QTest
-    from PySide6.QtWidgets import QApplication,QLabel
+    from PySide6.QtWidgets import QApplication,QLabel,QStyle,QStyleOptionButton
     from goal2.desktop.model import DesktopModel
     from goal2.desktop.window import ManagementWindow,TACTICS
     from goal2.game.session_save import encode
@@ -69,6 +69,20 @@ def scenario(args):
                 before=state();reveal(widget);focus(widget);QTest.keyClick(widget,Qt.Key.Key_Return);app.processEvents()
                 assert save.read_bytes()==saved,'draft action changed confirmed save bytes'
                 if widget is w.cancel:unchanged(before,'Discard')
+            def footer_caption(button,focused):
+                other=w.cancel if button is w.confirm else w.confirm
+                focus(button if focused else other)
+                assert button.hasFocus()==focused,'footer caption focus precondition failed'
+                option=QStyleOptionButton();button.initStyleOption(option)
+                contents=button.style().subElementRect(QStyle.SubElement.SE_PushButtonContents,option,button)
+                metrics=button.fontMetrics();advance=metrics.horizontalAdvance(button.text());text_height=metrics.height()
+                record={'size':[w.width(),w.height()],'button':button.objectName(),'text':button.text(),
+                        'focused':focused,'widget':[button.width(),button.height()],
+                        'contents':[contents.x(),contents.y(),contents.width(),contents.height()],
+                        'font_advance':advance,'font_height':text_height,'font':button.font().toString(),
+                        'ratio':w.devicePixelRatioF()}
+                report.setdefault('footer_captions',[]).append(record)
+                assert contents.width()>=advance and contents.height()>=text_height,'footer caption clipped: '+json.dumps(record)
             def capture(name):
                 app.processEvents();path=out/(name+'.png');assert w.grab().save(str(path))
                 report['captures'].append({'path':path.name,'sha256':digest(path),'size':[w.width(),w.height()],
@@ -149,7 +163,8 @@ def scenario(args):
                     assert w.confirm.geometry().right()<footer.width(),'draft action clipped by footer'
                     assert footer.geometry().right()<page.verticalScrollBar().mapTo(page,QPoint(0,0)).x() or not page.verticalScrollBar().isVisible(),'scrollbar overlaps draft action bar'
                     for control in (w.cancel,w.confirm):
-                        focus(control);assert control.visibleRegion().boundingRect().height()>0 and control.accessibleName()
+                        footer_caption(control,False);footer_caption(control,True)
+                        assert control.visibleRegion().boundingRect().height()>0 and control.accessibleName()
                         QTest.keyClick(control,Qt.Key.Key_Tab);app.processEvents();QTest.keyClick(app.focusWidget(),Qt.Key.Key_Backtab);app.processEvents()
                         assert app.focusWidget() is control,'Tab/Shift-Tab did not return to draft action'
                     capture(f'long-{width}x{height}-{label}-focused-confirm')
@@ -245,15 +260,15 @@ def negative_controls(args):
     out=Path(args.evidence_dir)
     if out.exists() and any(out.iterdir()):out=out/('negative-'+str(len(list(out.iterdir()))+1))
     out.mkdir(parents=True,exist_ok=False)
-    paths=[ROOT/'goal2/desktop/squad_page.py',ROOT/'goal2/desktop/window.py',ROOT/'goal2/desktop/model.py']
+    paths=[ROOT/'goal2/desktop/squad_page.py',ROOT/'goal2/desktop/window.py',ROOT/'goal2/desktop/model.py',ROOT/'goal2/desktop/style.py']
     saved={p:p.read_bytes() for p in paths};receipt={'tag':'[designed: T76]','cases':[],'before':{str(p.relative_to(ROOT)):digest(p) for p in paths}}
     command=[sys.executable,'-B',str(ROOT/'tools/desktop-ui/redesign.py'),'--scenario','squad','--template',args.template,'--data',args.data,'--single-scale']
     env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','QT_SCALE_FACTOR':'1'}
-    def run(name,cmd,expected):
-        r=subprocess.run(cmd,cwd=ROOT,env=env,capture_output=True,text=True,timeout=120)
+    def run(name,cmd,expected,scale='1'):
+        r=subprocess.run(cmd,cwd=ROOT,env={**env,'QT_SCALE_FACTOR':scale},capture_output=True,text=True,timeout=120)
         (out/(name+'.log')).write_text(r.stdout+r.stderr)
         assert r.returncode!=0 and 'AssertionError' in r.stderr and expected in r.stderr,name+' missed intended assertion: '+r.stderr
-        receipt['cases'].append({'name':name,'command':cmd,'returncode':r.returncode,'expected':expected})
+        receipt['cases'].append({'name':name,'command':cmd,'returncode':r.returncode,'expected':expected,'scale':scale,'mutated_sources':{str(p.relative_to(ROOT)):digest(p) for p in paths}})
     def legacy(name,scenario_name):
         cmd=[sys.executable,'-B','tools/desktop-ui/acceptance.py','--scenario',scenario_name,'--template',args.template,'--data',args.data]
         result=subprocess.run(cmd,cwd=ROOT,env=env,capture_output=True,text=True,timeout=120)
@@ -279,8 +294,14 @@ def negative_controls(args):
         assert source.count(old)==1
         p.write_text(source.replace(old,'.data(Qt.ItemDataRole.UserRole) & 255 for row in range(20)'))
         run('truncated-player-id',command+['--evidence-dir',str(out/'truncated-player-id')],'full integer player IDs were truncated')
+        for p,raw in saved.items():p.write_bytes(raw)
+        p=paths[3];source=p.read_text();lines=source.splitlines(keepends=True)
+        old_border=[line for line in lines if line.startswith('    QWidget#draftBar QPushButton')]
+        assert len(old_border)==2,'scoped stable footer border pair absent'
+        p.write_text(''.join(line for line in lines if line not in old_border))
+        run('focused-caption-old-border',command+['--evidence-dir',str(out/'focused-caption-old-border')],'footer caption clipped',scale='2')
     finally:
         for p,raw in saved.items():p.write_bytes(raw)
         receipt['after']={str(p.relative_to(ROOT)):digest(p) for p in paths};receipt['restored']=all(p.read_bytes()==raw for p,raw in saved.items())
         (out/'negative-controls.json').write_text(json.dumps(receipt,indent=2)+'\n')
-    assert receipt['restored'];print('PASS squad negative controls: baseline/truncated captain/eager tactics; exact saved bytes restored')
+    assert receipt['restored'];print('PASS squad negative controls: baseline/truncated captain/eager tactics/full IDs/focused captions; exact saved bytes restored')

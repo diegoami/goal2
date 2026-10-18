@@ -30,5 +30,7 @@ def apply_style(window):
     QLabel#lineupBoard,QLabel#benchBoard,QLabel#playerDetail {{background:{c['panel']};border:1px solid {c['divider']};border-radius:8px;padding:16px;}}
     QWidget#draftBar {{background:{c['raised']};border-top:1px solid {c['divider']};}}
     QLabel#draftState {{color:{c['warning']};font-size:14px;font-weight:600;}}
+    QWidget#draftBar QPushButton {{border:3px solid {c['divider']};}}
+    QWidget#draftBar QPushButton:focus {{border:3px solid {c['focus']};}}
     QScrollArea {{border:0;}}
     """)
