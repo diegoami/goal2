@@ -18,7 +18,7 @@
 
 [derived: native surface measurements] Actual country-popup text/selection, path selection, disabled action/table, table/header and inherited competition-dialog surfaces meet4.5:1 text contrast. Selected-hover pixels retain readable accent/ink. Focus and control boundary token pairs meet3:1. The proposed divider `#507365` measured2.855:1 against the panel, so the implementation uses `#5a7c6e` at3.258:1. No original asset files or personal saves are included in this evidence.
 
-[designed: acceptance setup] The default scenario orchestrator imports no Qt and runs separate, fully exited processes for ratios1 and2. `--single-scale` uses the caller's native scaling environment, set before Qt import. QtTest widget events do not perform the OS click-to-activate step, so navigation checks a bounded own-window activation precondition before dispatching the unchanged real event. The helper never sets page/heading focus. Popup input uses a measured native focus-settle and100ms key spacing, actual Escape, and visible/hidden/native-active assertions.
+[designed: acceptance setup] The default scenario orchestrator imports no Qt and runs separate, fully exited processes for ratios1 and2. `--single-scale` uses the caller's native scaling environment, set before Qt import. QtTest widget events do not perform the OS click-to-activate step, so navigation checks a bounded own-window activation precondition before dispatching the unchanged real event. The navigation helper never sets page/heading focus. Popup input uses a measured native focus-settle and100ms key spacing, actual Escape, and visible/hidden/native-active assertions.
 
 ```sh
 # Use the prepared Python/Qt environment and a physical worktree .cache/tmp as TMPDIR.
@@ -30,7 +30,7 @@ python tools/desktop-ui/redesign.py --scenario shell --template .cache/e010-r000
 
 ## Behavioral negative controls
 
-[derived: negative06] [The receipt](negative-06/negative-controls.json) and [full output](negative-06.log) prove four intended assertion failures: accepted08e baseline lacks navigation; page-refresh navigation discards the dirty draft; saved6eaa style fails actual native surface contrast; saved154f page composition leaves table accessible names empty. Complete window/style/pages bytes are restored in finally and the before/after hashes agree. No import failure, timeout or missing executable counts as a negative.
+[derived: negative06] [The receipt](negative-06/negative-controls.json) and [full output](negative-06.log) prove four intended assertion failures: accepted08e baseline lacks navigation; page-refresh navigation discards the dirty draft; saved6eaa style fails actual native surface contrast; saved154b page composition leaves table accessible names empty. Complete window/style/pages bytes are restored in finally and the before/after hashes agree. No import failure, timeout or missing executable counts as a negative.
 
 ```sh
 # Exclusive: no other source readers. Choose a new evidence directory; prior outputs are never overwritten.
@@ -41,7 +41,7 @@ QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/redesign.py --scenario shell 
 
 [derived: retained logs] [27 unit cases and nine Qt scenarios](regression-01/commands.json) pass model/entry/pool/Quick/halftime plus management/launch/worker/friendlies/pool/halftime/country-preview/tactics/standings assertions. [The final two-row halftime container](halftime-final-01.log) passes the real pause/substitution/continue/save/cancel scenario. Later changes only affect surfaces, accessible names and the acceptance input setup; game/model/engine/worker modules are unchanged.
 
-[derived: retained proofs] Existing management8/friendlies7/pool6/halftime13 mutation suites pass their original assertion oracles: [management receipt](retained-proofs-01/receipt.json), [remaining receipts](retained-proofs-02/receipt.json). The original friendlies proof fails its stale source-site lookup; pool/halftime hardcode a departed `/tmp` interpreter. The owner-approved adapters replace only that interpreter path and update the one-in-flight mutation site to the accepted expanded busy/match_pending guard, still bypassing the same guard. [The reproducible adapter](run-retained-proofs.py) leaves proof and production sources unchanged after each run.
+[derived: retained proofs] Existing management8/friendlies7/pool6/halftime13 mutation suites pass their original assertion oracles: [management receipt](retained-proofs-01/receipt.json), [remaining receipts](retained-proofs-02/receipt.json). The original friendlies proof fails its stale source-site lookup; pool/halftime hardcode a departed `/tmp` interpreter. The main-session-approved setup adapters replace only that interpreter path and update the one-in-flight mutation site to the accepted expanded busy/match_pending guard, still bypassing the same guard. [The reproducible adapter](run-retained-proofs.py) leaves proof and production sources unchanged after each run.
 
 ```sh
 # Exclusive, with verified fixture caches; creates a new retained output directory.
