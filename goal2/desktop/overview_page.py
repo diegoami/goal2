@@ -31,9 +31,9 @@ def build(self,model,TACTICS):
 def refresh(self,display,view):
     """[designed] Use the same displayed model as the roster, including previews."""
     from goal2.game.watched_schema import watched
-    self.overview_country_identity.setText(view['country_name']+' · neutral identity fallback')
+    self.overview_country_identity.setText(view['country_name'])
     self.overview_fixture.setText(view['fixture'] or ('Standalone friendly / no campaign fixture' if display.state.campaign is None else 'No supported fixture'))
     match=display.state.last_match
-    provenance=('Original engine' if watched(match) else 'Quick simulation (rebuild setup)') if match else 'No retained result'
+    provenance=('Original engine' if watched(match) else 'Quick simulation (rebuild setup)') if match else 'No result yet'
     self.overview_result.setText(provenance+'\n'+display.result_text())
     self.identity_art.setAccessibleName('Generic shirt and neutral decorative stripe for '+view['country_name'])

@@ -322,7 +322,9 @@ def overview(args):
             assert m.state.last_match is not None
             m.save(save);saved=save.read_bytes();encoded=encode(m.state,m.template_bytes)
             w=ManagementWindow(m);w.show();w.raise_();w.activateWindow();QTest.qWait(150)
-            r['ratio']=w.devicePixelRatioF();w.resize(900,640 if r['ratio']>1 else 700);app.processEvents();r['initial_viewport']=[w.width(),w.height()];r['available']=[w.screen().availableGeometry().width(),w.screen().availableGeometry().height()]
+            r['ratio']=w.devicePixelRatioF()
+            assert r['ratio']==float(r['requested_scale']),'actual Qt ratio differs from requested fresh-process scale'
+            w.resize(900,640 if r['ratio']>1 else 700);app.processEvents();r['initial_viewport']=[w.width(),w.height()];r['available']=[w.screen().availableGeometry().width(),w.screen().availableGeometry().height()]
             def active(target=None):
                 if not w.isActiveWindow():w.raise_();w.activateWindow()
                 assert QTest.qWaitForWindowActive(w,2000)
@@ -352,7 +354,7 @@ def overview(args):
             longest=max(range(1,129),key=lambda n:len(m.goaldat.country_names[n]));countries=list(dict.fromkeys([5,13,longest]))
             for number in countries:
                 select(number);expected=DesktopModel.open(args.template,args.data,save,country=number);v=expected.view()
-                assert w.overview_country_identity.text()==v['country_name']+' · neutral identity fallback','overview identity bound to active country instead of preview'
+                assert w.overview_country_identity.text()==v['country_name'],'overview identity bound to active country instead of preview'
                 assert w.title.text()==v['country_name']
                 assert [w.table.item(i,1).text()for i in range(20)]==[x['name']for x in v['players']],'preview roster differs from independent model'
                 for i,player in enumerate(v['players']):
@@ -362,8 +364,8 @@ def overview(args):
                     if player['availability']['carried_bookings']:reason+='; carried booking'
                     values=(player['name'],player['position'],player['ability'],player['energy'],player['confidence'],reason)
                     assert [w.table.item(i,col).text()for col in range(1,7)]==[str(value)for value in values],'preview player fields differ from independent model'
-                assert w.overview_fixture.text()==(v['fixture']or'Standalone friendly / no supported fixture')
-                assert w.overview_result.text()=='No retained result\n'+expected.result_text()
+                assert w.overview_fixture.text()==(v['fixture']or('Standalone friendly / no campaign fixture' if expected.state.campaign is None else 'No supported fixture'))
+                assert w.overview_result.text()=='No result yet\n'+expected.result_text()
                 pool=expected.pool_view()['reserves'];assert [w.reserves.item(i,1).text()for i in range(80)]==[x['name']for x in pool]
                 assert encode(m.state,m.template_bytes)==encoded and save.read_bytes()==saved
                 assert w.active_draft==dirty,'country browse lost invalid active draft'
@@ -395,7 +397,7 @@ def overview(args):
             assert w.overview_result.text()=='Quick simulation (rebuild setup)\n'+m.result_text()and encode(m.state,m.template_bytes)==encoded and save.read_bytes()==saved
             # Explicit replacement actions and Resume use the existing guarded callbacks.
             select(13);click(w.new);assert m.state.managed_country==13 and w.preview is None
-            assert w.overview_country_identity.text().startswith(m.view()['country_name'])and w.overview_result.text()=='No retained result\n'+m.result_text()
+            assert w.overview_country_identity.text().startswith(m.view()['country_name'])and w.overview_result.text()=='No result yet\n'+m.result_text()
             assert w.title.text()==m.view()['country_name'] and w.selected_ids()==m.state.starting_eleven
             select(5);click(w.friendly);assert m.state.managed_country==5 and m.state.campaign is None and w.preview is None
             assert w.title.text()==m.view()['country_name'] and w.selected_ids()==m.state.starting_eleven

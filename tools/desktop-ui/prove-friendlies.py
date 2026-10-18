@@ -21,7 +21,7 @@ def main():
   try:
    path.write_text(text.replace(old,new))
    if test:command=[sys.executable,'-B','-m','unittest','goal2.tests.test_desktop_quick_jobs.QuickJobCases.'+test]
-   else:command=['/tmp/T69-desktop-venv/bin/python','-B','tools/desktop-ui/acceptance.py','--scenario','worker','--template','.cache/e010-r0008-halftime.sav','--data','.cache/GOAL.DAT']
+   else:command=[sys.executable,'-B','tools/desktop-ui/acceptance.py','--scenario','worker','--template','.cache/e010-r0008-halftime.sav','--data','.cache/GOAL.DAT']
    import os
    result=subprocess.run(command,cwd=ROOT,env={**os.environ,'QT_QPA_PLATFORM':'offscreen','PYTHONDONTWRITEBYTECODE':'1'},capture_output=True,text=True,timeout=45)
    output=result.stdout+result.stderr
