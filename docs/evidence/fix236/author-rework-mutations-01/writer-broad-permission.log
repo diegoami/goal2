@@ -1,0 +1,24 @@
+test_writer_does_not_retry_unrelated_or_non_windows_errors (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_does_not_retry_unrelated_or_non_windows_errors) ... 
+  test_writer_does_not_retry_unrelated_or_non_windows_errors (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_does_not_retry_unrelated_or_non_windows_errors) (platform='linux', error=PermissionError(13, 'injected sharing denial')) ... FAIL
+  test_writer_does_not_retry_unrelated_or_non_windows_errors (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_does_not_retry_unrelated_or_non_windows_errors) (platform='win32', error=PermissionError(13, 'injected sharing denial')) ... FAIL
+
+======================================================================
+FAIL: test_writer_does_not_retry_unrelated_or_non_windows_errors (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_does_not_retry_unrelated_or_non_windows_errors) (platform='linux', error=PermissionError(13, 'injected sharing denial'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/goal2/tests/test_desktop_watched_sharing.py", line 119, in test_writer_does_not_retry_unrelated_or_non_windows_errors
+    self.assertEqual(replace.call_count, 1)
+AssertionError: 25 != 1
+
+======================================================================
+FAIL: test_writer_does_not_retry_unrelated_or_non_windows_errors (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_does_not_retry_unrelated_or_non_windows_errors) (platform='win32', error=PermissionError(13, 'injected sharing denial'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/goal2/tests/test_desktop_watched_sharing.py", line 119, in test_writer_does_not_retry_unrelated_or_non_windows_errors
+    self.assertEqual(replace.call_count, 1)
+AssertionError: 25 != 1
+
+----------------------------------------------------------------------
+Ran 1 test in 0.009s
+
+FAILED (failures=2)

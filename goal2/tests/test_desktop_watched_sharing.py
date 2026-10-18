@@ -38,7 +38,7 @@ class Clock:
 class SharingTests(unittest.TestCase):
     def environment(self, module, clock, platform='win32'):
         stack = ExitStack()
-        stack.enter_context(patch.object(module, 'sys', SimpleNamespace(platform=platform)))
+        stack.enter_context(patch.object(module, 'sys', SimpleNamespace(**{**vars(module.sys), 'platform':platform})))
         stack.enter_context(patch.object(module.time, 'monotonic', clock.monotonic))
         stack.enter_context(patch.object(module.time, 'sleep', clock.sleep))
         return stack
@@ -259,14 +259,32 @@ class SharingTests(unittest.TestCase):
                 c.model.match_pending=False
                 c.fixture=Mock(return_value=SimpleNamespace(side_a=0,side_b=1,fixture_id='fixture:1'))
                 c.model.goaldat=SimpleNamespace(country_names=['A','B'])
-                clock=Clock(); acquired=[]; original_open=Path.open; owned=Mock(name=folder)
+                clock=Clock(); acquired=[]; opened=[]; original_open=Path.open; owned=Mock(name=folder)
                 owned.name=folder; owned.cleanup.side_effect=denied(32)
+                injected = OSError(f'{failed} startup failure')
                 def opening(path,*args,**kwargs):
-                    if path.name==failed:raise OSError('allocation failed')
+                    opened.append(path.name)
+                    if path.name==failed:raise injected
                     handle=original_open(path,*args,**kwargs); acquired.append(handle); return handle
-                c.engine.start.side_effect=OSError('engine failed') if failed=='engine' else None
-                with self.environment(watched,clock), patch.object(watched.importlib.util,'find_spec',return_value=object()), patch.object(watched.tempfile,'TemporaryDirectory',return_value=owned), patch.object(Path,'open',opening), patch.object(watched.subprocess,'Popen',side_effect=OSError('launch failed') if failed=='launch' else None):
-                    with self.assertRaises(PermissionError):c.start(frames=False)
+                c.engine.start.side_effect=injected if failed=='engine' else None
+                with self.environment(watched,clock), patch.object(watched.importlib.util,'find_spec',return_value=object()), patch.object(watched.tempfile,'TemporaryDirectory',return_value=owned) as allocate_owned, patch.object(Path,'open',opening), patch.object(watched.subprocess,'Popen',side_effect=injected if failed=='launch' else None) as launch:
+                    with self.assertRaises(PermissionError) as caught:c.start(frames=False)
+                    # [designed: #236] Cleanup denial must follow the intended startup failure.
+                    self.assertIs(caught.exception.__context__, injected)
+                    allocate_owned.assert_called_once_with(prefix='goal2-viewer-')
+                    self.assertEqual(opened, ['display'] if failed=='display' else ['display','errors'])
+                    self.assertEqual(len(acquired), {'display':0,'errors':1,'launch':2,'engine':2}[failed])
+                    if failed in ('launch','engine'):
+                        launch.assert_called_once()
+                        self.assertEqual(launch.call_args.args[0][:3],
+                                         [watched.sys.executable,'-m','goal2.desktop.pygame_viewer'])
+                    else:
+                        launch.assert_not_called()
+                    if failed=='engine':
+                        c.engine.start.assert_called_once()
+                        self.assertIs(c.process, launch.return_value)
+                    else:
+                        c.engine.start.assert_not_called()
                     self.assertIs(c.folder,owned); self.assertEqual(c.directory,Path(folder))
                     self.assertTrue(all(h.closed for h in acquired))
                     owned.cleanup.side_effect=None

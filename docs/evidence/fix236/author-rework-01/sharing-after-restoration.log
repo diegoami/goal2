@@ -1,0 +1,18 @@
+test_cleanup_kill_and_wait_remain_bounded_and_references_survive_timeout (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_kill_and_wait_remain_bounded_and_references_survive_timeout) ... ok
+test_cleanup_permanent_win32_retains_references_and_pending_for_retry (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_permanent_win32_retains_references_and_pending_for_retry) ... ok
+test_cleanup_retries_win32_after_closing_owned_handles (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_retries_win32_after_closing_owned_handles) ... ok
+test_cleanup_unrelated_or_non_windows_error_retains_owned_folder (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_unrelated_or_non_windows_error_retains_owned_folder) ... ok
+test_completed_old_viewer_failed_cleanup_cannot_unlock_newer_quick_job (goal2.tests.test_desktop_watched_sharing.SharingTests.test_completed_old_viewer_failed_cleanup_cannot_unlock_newer_quick_job) ... ok
+test_deferred_read_preserves_malformed_stale_digest_and_frame_ack_oracles (goal2.tests.test_desktop_watched_sharing.SharingTests.test_deferred_read_preserves_malformed_stale_digest_and_frame_ack_oracles) ... ok
+test_parent_read_deadline_is_inclusive_and_success_resets_budget (goal2.tests.test_desktop_watched_sharing.SharingTests.test_parent_read_deadline_is_inclusive_and_success_resets_budget) ... ok
+test_parent_read_defers_native_errno13_and_win5_without_blocking (goal2.tests.test_desktop_watched_sharing.SharingTests.test_parent_read_defers_native_errno13_and_win5_without_blocking) ... ok
+test_parent_read_unrelated_and_non_windows_errors_propagate (goal2.tests.test_desktop_watched_sharing.SharingTests.test_parent_read_unrelated_and_non_windows_errors_propagate) ... ok
+test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation (goal2.tests.test_desktop_watched_sharing.SharingTests.test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation) ... ok
+test_writer_does_not_retry_unrelated_or_non_windows_errors (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_does_not_retry_unrelated_or_non_windows_errors) ... ok
+test_writer_permanent_denial_stops_at_deadline_and_keeps_old_status (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_permanent_denial_stops_at_deadline_and_keeps_old_status) ... ok
+test_writer_retries_same_atomic_payload_without_schema_changes (goal2.tests.test_desktop_watched_sharing.SharingTests.test_writer_retries_same_atomic_payload_without_schema_changes) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.059s
+
+OK
