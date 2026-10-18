@@ -59,10 +59,12 @@ def navigation(event, scroll, follow):
     return scroll, follow, True
 
 
-def position(display, scroll, follow, finished, changed):
+def position(display, scroll, follow, finished, changed, *, font=None, width=960):
     """[designed] Follow live commentary; land at the original board once complete."""
     if display.result is not None and not finished:
-        return sum(event['kind'] == 'commentary' for event in display.events), False, True
+        count=sum(event['kind'] == 'commentary' for event in display.events)
+        rows=wrapped(font,display.lines()[3:3+count],width) if font is not None else range(count)
+        return len(rows), False, True
     if follow and changed:
         return 10**9, follow, finished
     return scroll, follow, finished
@@ -198,7 +200,8 @@ def main():
                 changed = display.advance(time.monotonic()) if display.pitch_rate else False
                 visible = display.visible()
                 scroll, follow, finished = position(visible, scroll, follow, finished,
-                                                     changed or display.sequence != previous_sequence)
+                                                     changed or display.sequence != previous_sequence,
+                                                     font=font,width=960 if display.pitch_rate else screen.get_width()-40)
                 scroll = (render_pitch if display.pitch_rate else render)(screen, font, display, scroll)
                 pygame.display.flip()
                 # [designed] One due sample per loop and one real flip before consumption.

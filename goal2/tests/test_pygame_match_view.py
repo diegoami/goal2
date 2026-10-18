@@ -129,6 +129,57 @@ class PresentationTests(unittest.TestCase):
                 self.assertEqual(d.__dict__,before,'painting changed a delivered frame/packet')
         finally:pygame.quit()
 
+    def test_wrapped_commentary_lands_at_board_and_scroll_retains_tail(self):
+        # [designed: T79] A wrapped commentary row must not consume the board landing offset.
+        import pygame
+        from goal2.desktop.pygame_viewer import render_pitch,position,wrapped
+        from goal2.tests.test_pygame_pitch_view import pitch,sample,send
+        pygame.init()
+        try:
+            font=pygame.font.Font(None,24);d=pitch()
+            send(d,'event',{'kind':'commentary','minute':7,'score':[1,0],'data':{'text':'long original words '*65}})
+            f=sample();f['watermark']=1;send(d,'frame',f);d.advance(0)
+            send(d,'event',{'kind':'end','minute':90,'score':[1,0],'data':{}})
+            rows=[{'name':f'Player {n}','raw':55} for n in range(20)]
+            send(d,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},'ratings':[rows,rows],'man_of_the_match':'Player 0'})
+            scroll,follow,finished=position(d,0,True,False,True,font=font)
+            self.assertGreater(scroll,1)
+            self.assertEqual(scroll,len(wrapped(font,d.lines()[3:4],960)))
+            screen=pygame.Surface((1000,720));render_pitch(screen,font,d,scroll)
+            title=font.render('Original full-time board',True,(245,242,232))
+            expected=pygame.Surface(title.get_size());expected.fill((8,28,24));expected.blit(title,(0,0))
+            self.assertEqual(pygame.image.tobytes(screen.subsurface((20,490,*title.get_size())),'RGB'),pygame.image.tobytes(expected,'RGB'))
+            tail=render_pitch(screen,font,d,10**9)
+            self.assertGreater(tail,scroll)
+            self.assertEqual((follow,finished),(False,True))
+        finally:pygame.quit()
+
+    def test_qt_score_uses_consumed_pose_not_future_ingress(self):
+        # [designed: T79] Parent presentation remembers frames before the controller drains ACKed ingress.
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.window import ManagementWindow
+        from goal2.desktop.match_page import observe,present
+        from goal2.tests.test_pygame_pitch_view import pitch,sample,send
+        app=QApplication.instance() or QApplication([])
+        with tempfile.TemporaryDirectory() as folder:
+            m=model(Path(folder)/'save');w=ManagementWindow(m)
+            try:
+                d=pitch();send(d,'event',{'kind':'commentary','minute':88,'score':[9,8],'data':{'text':'FUTURE GOAL'}})
+                f=sample();f['score']=[1,0];f['watermark']=0;send(d,'frame',f)
+                w.watched.display=d;w.watched.token='owned';w.watched.frames_enabled=True;w.watched.frame_ack=-1
+                with patch.object(type(w.watched),'busy',new_callable=lambda:property(lambda self:True)):
+                    before=copy.deepcopy(d.__dict__);observe(w);present(w)
+                    self.assertEqual(d.__dict__,before)
+                    self.assertNotIn('9 — 8',w.match_score.text());self.assertIn('first rendered sample',w.match_progress.text())
+                    w.watched.frame_ack=0;d.frames.popleft();present(w)
+                    self.assertEqual(w.match_score.text(),'First 1 — 0 Second')
+                    self.assertTrue(w.match_progress.text().startswith('7 min'))
+                    self.assertNotIn('88',w.match_progress.text())
+                    w.watched.token='replacement';w.watched.frame_ack=-1;observe(w);present(w)
+                    self.assertEqual(w._match_poses,{})
+                    self.assertIn('first rendered sample',w.match_progress.text())
+            finally:w.close();app.processEvents()
+
     def test_named_match_surface_tracks_current_authority_instead_of_old_viewer(self):
         # [designed: T79] Visit New/preview/quick context with real controls and a bounded child.
         from PySide6.QtWidgets import QApplication,QWidget

@@ -58,7 +58,13 @@ def values(window):
         return 'Original engine — competitive',fixture,'Original competitive engine running. Cancel match remains available.'
     if window.watched.busy:
         d=window.watched.display
-        if d.countries and d.events:
+        if getattr(window.watched,'frames_enabled',False):
+            pose=getattr(window,'_match_poses',{}).get(getattr(window.watched,'frame_ack',-1))
+            if d.countries and pose is not None:
+                fixture=f'{d.countries[0]} {pose["score"][0]} — {pose["score"][1]} {d.countries[1]}'
+                progress=f'{pose["minute"]} min · rendered pitch sample. Cancel match remains available.'
+            else:progress='Starting original friendly in Pygame… Waiting for the first rendered sample. Cancel match remains available.'
+        elif d.countries and d.events:
             event=d.events[-1];fixture=f'{d.countries[0]} {event["score"][0]} — {event["score"][1]} {d.countries[1]}'
             progress=f'{event["minute"]} min · original engine running. Cancel match remains available.'
         else:progress='Starting original friendly in Pygame… Cancel match remains available.'
@@ -73,6 +79,21 @@ def values(window):
 
 def present(window):
     """[designed: T79] Pure widget updates; no engine start or management publication."""
+    if not window.watched.busy or window.preview is not None:
+        window._match_pose_token=None;window._match_poses={}
     provenance,score,progress=values(window)
     window.match_provenance.setText(provenance);window.match_score.setText(score);window.match_progress.setText(progress)
     window.half_panel.setVisible(window.jobs.halftime is not None)
+
+
+def observe(window):
+    """[designed: T79] Remember only presentation fields until their existing flip ACK arrives."""
+    controller=window.watched;token=controller.token
+    if getattr(window,'_match_pose_token',None)!=token:
+        window._match_pose_token=token;window._match_poses={}
+    ack=getattr(controller,'frame_ack',-1)
+    poses=getattr(window,'_match_poses',{})
+    window._match_poses={k:v for k,v in poses.items() if k>=ack}
+    if controller.display is not None:
+        for frame in controller.display.frames:
+            window._match_poses[frame['sequence']]={'minute':frame['minute'],'score':tuple(frame['score']),'watermark':frame['watermark']}

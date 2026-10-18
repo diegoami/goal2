@@ -1,0 +1,8 @@
+test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail) ... ok
+test_qt_score_uses_consumed_pose_not_future_ingress (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_score_uses_consumed_pose_not_future_ingress) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.398s
+
+OK
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)

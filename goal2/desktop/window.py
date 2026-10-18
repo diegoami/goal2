@@ -234,6 +234,8 @@ class ManagementWindow(QMainWindow):
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def poll_watched(self):
+        from goal2.desktop.match_page import observe
+        observe(self)
         try:
             if self.watched.poll():
                 self.set_busy(False);self.refresh('Original friendly complete; result can be saved. Scroll the Pygame window for board and Raw rating.')
