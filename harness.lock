@@ -39,7 +39,7 @@ c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/block
 b12fd55cefdaa554a268b9aab7e5f89323455a5ca017e7ae4336b1fe596edf7d  docs/model-trials.md
 325385ce86485b764e18a17dbee408d014b968f78a2e727c5116a8f9becf3511  docs/review-brief.md
 5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md
-ce585e0292cb3771833831022a3b3d8274767fdb903c345b82b3b71ae4b94ee2  harness.json
+807384dd2ad76c5d401785458a2b68c79e22946d040bc8e39566cc05e6de77f1  harness.json
 4867325747c19a6f7beee6b8f1a3be22575a6396fc89a915a5ee8ed88ffab4cd  tools/check_links.py
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
@@ -137,3 +137,9 @@ cca236f12a826843a5ed0b7772c9c564321337a597e55955e13a4f5e01caf6ed  tools/harness/
 41b510d0fc1b637a701f0170465ced2fdba3ee9a0b9792df7e77af2d734e08d8  tools/harness/opencode-guard/README.md
 
 1d7fc7b3eea2a7a6a26f59f3ac1bede3daf50dc543b9d21b3a7907b62be34569  tools/harness/probe-opencode-plugins.mjs
+
+local tools/harness/lib/claude-policy.mjs  (T73 optional direct Claude review)
+0bdde41a2a92af02d5ed70a6109586be26937e514595ebe71c89a477ce4658ba  tools/harness/lib/claude-policy.mjs
+
+local tests/claude_review.test.mjs  (T73 optional direct Claude review)
+a65c1f8cc1d09fe8c5c082abc2617b5d02650ec472bc4227405d1c07ff3eb1f0  tests/claude_review.test.mjs

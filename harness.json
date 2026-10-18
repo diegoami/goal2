@@ -25,6 +25,13 @@
   },
   "blocked": [],
   "models": {
+    "claude-sonnet": {
+      "id": "claude-sonnet-5-5",
+      "family": "claude",
+      "variant": "medium",
+      "backend": "claude",
+      "note": "[designed: T73] Explicit direct native Claude CLI only; no default or fallback change."
+    },
     "mimo-flash": {
       "id": "opencode-go/mimo-v2.6-flash",
       "family": "mimo",
