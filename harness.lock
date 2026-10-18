@@ -37,7 +37,7 @@ local .github/workflows/ci.yml  (new: links, review self-test, lock hashes, revi
 8a63c4093207e8f96230e8e6c92019c06897434ca8b70f287e76821ff09502d6  .github/pull_request_template.md
 c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/blocks-release.md
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
-49133f6da71fefc2cd22b6b41031da8f039ce60ee93a7cefa28b7857a1eec3c2  docs/lessons.md
+a363ae185a82d25a717e8d185ccde5dec55e73eb76a3ed173592980530bbbd00  docs/lessons.md
 b12fd55cefdaa554a268b9aab7e5f89323455a5ca017e7ae4336b1fe596edf7d  docs/model-trials.md
 6dba885913cb1144b7cbcef486b4119f5cb37a48154995b4c8780eaac260b9f6  docs/review-brief.md
 5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md
@@ -126,7 +126,7 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 8cacda74b4c6a5e5d1daef705aa6983adbad9beed4acb574c96cf9b801a4c223  .github/workflows/ci.yml
 
-a5a9846cce7c9f3262799fe8f32197110d2ee1ccd70219546c85c149e81d0e84  docs/environment.md
+9ea860f4da3641bd079432dc2ed1bece9db659f6cf8cfea072cdea63496e56b4  docs/environment.md
 
 47f6c62a9f3f51909f249a003baa9a9ff800d201f8f4f0f8efa90684858cff82  docs/process.md
 
