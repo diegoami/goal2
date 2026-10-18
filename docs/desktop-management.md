@@ -195,7 +195,7 @@ labels where applicable. Only a validated full post-match continuation publishes
 Save/Resume retains its complete result, Memory and seeds. No competition draw or
 new fixture progression is added. Unsupported kind4 still refuses Play.
 
-[designed: T80] A loaded automatic captain0 is displayed as the disabled
+[designed: T80] A loaded competitive automatic captain0 is displayed as the disabled
 **Original captain selection** placeholder. Playing preserves that original input;
 explicit **Confirm management** requires a named captain in the XI. Missing runtime
 or local resources show install/resource guidance while management remains usable.

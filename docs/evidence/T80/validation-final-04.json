@@ -1,0 +1,62 @@
+[
+  {
+    "name": "qt-offscreen-05",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/competitive_play.py"
+    ],
+    "returncode": 0,
+    "seconds": 54.937
+  },
+  {
+    "name": "qt-xcb-02",
+    "command": [
+      "xvfb-run",
+      "-a",
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/competitive_play.py"
+    ],
+    "returncode": 0,
+    "seconds": 52.012
+  },
+  {
+    "name": "retained-ui-02",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "docs/evidence/T66/retained_ui.py"
+    ],
+    "returncode": 0,
+    "seconds": 22.75
+  },
+  {
+    "name": "watched-ui-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/watched.py"
+    ],
+    "returncode": 0,
+    "seconds": 43.784
+  },
+  {
+    "name": "country-ui-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/country-selection.py",
+      "--template",
+      ".cache/e010-r0008-halftime.sav",
+      "--data",
+      ".cache/GOAL.DAT"
+    ],
+    "returncode": 0,
+    "seconds": 4.231
+  },
+  {
+    "name": "tactics-ui-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/tactics-labels.py"
+    ],
+    "returncode": 2,
+    "seconds": 0.165
+  }
+]
