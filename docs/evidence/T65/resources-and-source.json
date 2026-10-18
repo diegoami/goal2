@@ -1,0 +1,64 @@
+{
+  "evidence": "[designed: T65] Resource and implementation identities; no original bytes included.",
+  "accepted_kit_source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "accepted_main_base": "e66012968745a1516b0f0e67505b7d5461a7dc69",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "defaults": {
+    "managed": 7,
+    "first": 7,
+    "second": 19,
+    "fixture_index": 21,
+    "engine_year": 0,
+    "captain": 0,
+    "substitutions": null,
+    "decision_answer": "Match.answer() with no arguments",
+    "reference_seeds": [
+      257,
+      70
+    ],
+    "delay_byte": 0,
+    "record_draws": true
+  },
+  "resources": [
+    {
+      "path": ".cache/e0afff6751747233-e006-1000-r0001.sav",
+      "sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
+    },
+    {
+      "path": ".cache/d68e48c734a742a6-E011-r0001-watchstart.sav",
+      "sha256": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9"
+    },
+    {
+      "path": ".cache/3789d8490d2b42d8-e006-2100-r0005.sav",
+      "sha256": "3789d8490d2b42d8a589fec2afeb51de0ace4b4c5d1e5e24ff232321874dd106"
+    },
+    {
+      "path": ".cache/T65-preflight-original.json",
+      "sha256": "d1ef099ab1719e8a6cb69cc207bc2a71063bff9dad47572bcd9ffb49d743c742"
+    },
+    {
+      "path": "tools/watched-kit-hashes.json",
+      "sha256": "e5dfc08ade7813f72dc36418f52785b869bcaa961ab2af32682bf10df88aec2c"
+    }
+  ],
+  "product_source_commit": "b8232e159bc58e04b0ad951a253ef0539fa27982",
+  "product_files": [
+    {
+      "path": "goal2/game/watched_match.py",
+      "sha256": "6d159e7772283e3ba0ee54db8eec7df2c10438b6cb8a5bc9378f7e0632659d29"
+    },
+    {
+      "path": "goal2/game/watched_jobs.py",
+      "sha256": "c121b7b422e13f722941e4965bc5462adfcaf91921e6bf0a51ccd3e4839ddc39"
+    },
+    {
+      "path": "goal2/game/watched_worker.py",
+      "sha256": "05a7c90f67c5f555fd25b96d9d40a7389bdde2703d59a8aacf85910d4b4ecaec"
+    },
+    {
+      "path": "goal2/tests/test_watched_jobs.py",
+      "sha256": "c9095a35a800dd6b8a44809951e9e71c3c12fff55826cf602561c9ca38e63ab3"
+    }
+  ],
+  "timing_scope": "Measured poll-to-publication elapsed after start returns, not a hardware deadline; final suite ran concurrently with retained regressions."
+}
