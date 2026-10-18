@@ -1,0 +1,107 @@
+test_bridge_imports_without_ui_or_optional_runtime (goal2.tests.test_watched_jobs.WatchedJobsTests.test_bridge_imports_without_ui_or_optional_runtime) ... ok
+test_declared_default_policy_repeated_injury_progress (goal2.tests.test_watched_jobs.WatchedJobsTests.test_declared_default_policy_repeated_injury_progress) ... ok
+test_failure_classes_preserve_complete_state (goal2.tests.test_watched_jobs.WatchedJobsTests.test_failure_classes_preserve_complete_state) ... ok
+test_killed_worker_and_bounded_shutdown (goal2.tests.test_watched_jobs.WatchedJobsTests.test_killed_worker_and_bounded_shutdown) ... ok
+test_large_partial_record_reads_are_bounded (goal2.tests.test_watched_jobs.WatchedJobsTests.test_large_partial_record_reads_are_bounded) ... ok
+test_live_order_default_answers_and_full_time_still_pending (goal2.tests.test_watched_jobs.WatchedJobsTests.test_live_order_default_answers_and_full_time_still_pending) ... ok
+test_observation_occurs_before_guest_continues_and_answers (goal2.tests.test_watched_jobs.WatchedJobsTests.test_observation_occurs_before_guest_continues_and_answers) ... ok
+test_partial_oversized_wrong_identity_and_order_ipc (goal2.tests.test_watched_jobs.WatchedJobsTests.test_partial_oversized_wrong_identity_and_order_ipc) ... ok
+test_replacement_and_stale_cancel_cannot_touch_new_job (goal2.tests.test_watched_jobs.WatchedJobsTests.test_replacement_and_stale_cancel_cannot_touch_new_job) ... ok
+test_start_failures_clear_publication_and_allow_restart (goal2.tests.test_watched_jobs.WatchedJobsTests.test_start_failures_clear_publication_and_allow_restart) ... ok
+test_stream_outcome_mismatch_and_incomplete_tail_never_publish (goal2.tests.test_watched_jobs.WatchedJobsTests.test_stream_outcome_mismatch_and_incomplete_tail_never_publish) ... ok
+test_verified_normal_and_injury_jobs_equal_synchronous_and_publish_once (goal2.tests.test_watched_jobs.WatchedJobsTests.test_verified_normal_and_injury_jobs_equal_synchronous_and_publish_once) ... T65 seed=257 seconds=11.070 events=1079 memory_sha256=e4f9f700b98282f51bd791b253c159cf4d561ef68a270c898a153a0ac791e18c seeds=(25058, 61800)
+T65 seed=70 seconds=12.325 events=1248 memory_sha256=d7827ac4637c8b2327148d4115911847d0f37a9144ad14103fcf25d607e7e3f5 seeds=(60292, 3354)
+ok
+test_campaign_natural_reseed_and_source_fixture_identity (goal2.tests.test_watched_adapter.WatchedAdapter.test_campaign_natural_reseed_and_source_fixture_identity) ... case first=7 second=19 index=21 year=0 base_year=1992 stage=2 class=0 next_free=769 reference_seed=None seeds_after=(16321, 53210) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=1992 stage=2 class=0 next_free=769 reference_seed=None seeds_after=(16321, 53210) decisions=['half_time'] PASS
+case first=7 second=19 index=1362 year=0 base_year=1994 stage=5 class=1 next_free=2001 reference_seed=None seeds_after=(5691, 43511) decisions=['half_time'] PASS
+case first=7 second=19 index=5 year=1 base_year=1994 stage=2 class=0 next_free=769 reference_seed=None seeds_after=(9798, 26136) decisions=['half_time'] PASS
+case first=7 second=19 index=22 year=7 base_year=2028 stage=2 class=0 next_free=769 reference_seed=None seeds_after=(2704, 6987) decisions=['half_time'] PASS
+ok
+test_changed_squad_tactics_captain_side_b_and_opaque_memory (goal2.tests.test_watched_adapter.WatchedAdapter.test_changed_squad_tactics_captain_side_b_and_opaque_memory) ... case first=19 second=7 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=4660 seeds_after=(57469, 25996) decisions=['half_time'] PASS
+case first=19 second=7 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=4660 seeds_after=(62167, 20811) decisions=['half_time'] PASS
+ok
+test_default_decision_policy_and_refusal_fail_closed (goal2.tests.test_watched_adapter.WatchedAdapter.test_default_decision_policy_and_refusal_fail_closed) ... ok
+test_distinct_same_minute_notices_are_not_a_no_progress_loop (goal2.tests.test_watched_adapter.WatchedAdapter.test_distinct_same_minute_notices_are_not_a_no_progress_loop) ... ok
+test_each_default_decision_is_explicitly_answered (goal2.tests.test_watched_adapter.WatchedAdapter.test_each_default_decision_is_explicitly_answered) ... ok
+test_invalid_inputs_do_not_mutate_active_state (goal2.tests.test_watched_adapter.WatchedAdapter.test_invalid_inputs_do_not_mutate_active_state) ... ok
+test_real_fresh_campaigns_transfer_next_free_count_and_context (goal2.tests.test_watched_adapter.WatchedAdapter.test_real_fresh_campaigns_transfer_next_free_count_and_context) ... case first=4 second=1 index=1378 year=0 base_year=1990 stage=5 class=1 next_free=2001 reference_seed=None seeds_after=(53742, 13654) decisions=['half_time'] PASS
+case first=25 second=4 index=3 year=0 base_year=1992 stage=2 class=0 next_free=769 reference_seed=None seeds_after=(51149, 36823) decisions=['half_time'] PASS
+ok
+test_ten_strict_t62_inputs (goal2.tests.test_watched_adapter.WatchedAdapter.test_ten_strict_t62_inputs) ... case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=257 seeds_after=(25058, 61800) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=4660 seeds_after=(62399, 10535) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=9029 seeds_after=(24310, 42334) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=11134 seeds_after=(23217, 50614) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=19485 seeds_after=(61973, 51400) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=27187 seeds_after=(13314, 26369) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=36357 seeds_after=(1550, 690) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=41456 seeds_after=(3419, 41710) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=50115 seeds_after=(2362, 27363) decisions=['half_time'] PASS
+case first=7 second=19 index=21 year=0 base_year=2028 stage=2 class=0 next_free=769 reference_seed=59161 seeds_after=(14240, 59514) decisions=['half_time'] PASS
+ok
+test_year_mapping_pinned_to_f025_both_start_calendars_and_wrap (goal2.tests.test_watched_adapter.WatchedAdapter.test_year_mapping_pinned_to_f025_both_start_calendars_and_wrap) ... ok
+test_all_ten_strict_cases_publish_direct_runner_memory_once (goal2.tests.test_watched_publication.WatchedPublicationTests.test_all_ten_strict_cases_publish_direct_runner_memory_once) ... strict publication seed=0101 PASS
+strict publication seed=1234 PASS
+strict publication seed=2345 PASS
+strict publication seed=2b7e PASS
+strict publication seed=4c1d PASS
+strict publication seed=6a33 PASS
+strict publication seed=8e05 PASS
+strict publication seed=a1f0 PASS
+strict publication seed=c3c3 PASS
+strict publication seed=e719 PASS
+ok
+test_campaign_completes_and_appends_history_exactly_once (goal2.tests.test_watched_publication.WatchedPublicationTests.test_campaign_completes_and_appends_history_exactly_once) ... ok
+test_cancel_and_wrong_tokens_preserve_active_state (goal2.tests.test_watched_publication.WatchedPublicationTests.test_cancel_and_wrong_tokens_preserve_active_state) ... ok
+test_changed_job_and_malformed_completions_cannot_publish (goal2.tests.test_watched_publication.WatchedPublicationTests.test_changed_job_and_malformed_completions_cannot_publish) ... ok
+test_full_time_is_not_completion_and_tail_failure_is_atomic (goal2.tests.test_watched_publication.WatchedPublicationTests.test_full_time_is_not_completion_and_tail_failure_is_atomic) ... ok
+test_stale_wrong_identity_unsupported_kind_and_view_failure_are_atomic (goal2.tests.test_watched_publication.WatchedPublicationTests.test_stale_wrong_identity_unsupported_kind_and_view_failure_are_atomic) ... ok
+test_fresh_1990_1992_campaign_history_and_deterministic_next_fixture (goal2.tests.test_watched_save.WatchedSaveTests.test_fresh_1990_1992_campaign_history_and_deterministic_next_fixture) ... ok
+test_injected_failure_before_swap_preserves_complete_state (goal2.tests.test_watched_save.WatchedSaveTests.test_injected_failure_before_swap_preserves_complete_state) ... ok
+test_legacy_friendly_and_campaign_history_retain_v1_v2_meaning (goal2.tests.test_watched_save.WatchedSaveTests.test_legacy_friendly_and_campaign_history_retain_v1_v2_meaning) ... ok
+test_watched_roundtrip_and_malformed_saves (goal2.tests.test_watched_save.WatchedSaveTests.test_watched_roundtrip_and_malformed_saves) ... ok
+test_watched_save_write_failure_keeps_existing_file_and_active_state (goal2.tests.test_watched_save.WatchedSaveTests.test_watched_save_write_failure_keeps_existing_file_and_active_state) ... ok
+test_all_ten_files_are_exact_accepted_source (goal2.tests.test_watched_runtime.RuntimeTests.test_all_ten_files_are_exact_accepted_source) ... ok
+test_build_refuses_meaningful_code_and_data_changes (goal2.tests.test_watched_runtime.RuntimeTests.test_build_refuses_meaningful_code_and_data_changes) ... ok
+test_changed_vendor_bytes_and_added_files_are_rejected (goal2.tests.test_watched_runtime.RuntimeTests.test_changed_vendor_bytes_and_added_files_are_rejected) ... ok
+test_disallowed_goal_save_preserves_complete_match_and_closes_coverage (goal2.tests.test_watched_runtime.RuntimeTests.test_disallowed_goal_save_preserves_complete_match_and_closes_coverage) ... ok
+test_entry_probe_false_or_incomplete_evidence_is_rejected (goal2.tests.test_watched_runtime.RuntimeTests.test_entry_probe_false_or_incomplete_evidence_is_rejected) ... ok
+test_missing_asset_and_wrong_hash_are_actionable (goal2.tests.test_watched_runtime.RuntimeTests.test_missing_asset_and_wrong_hash_are_actionable) ... ok
+test_optional_dependency_failure_and_actual_quick_play (goal2.tests.test_watched_runtime.RuntimeTests.test_optional_dependency_failure_and_actual_quick_play) ... ok
+test_supported_adapted_records_pass_guard_without_mutating_original (goal2.tests.test_watched_runtime.RuntimeTests.test_supported_adapted_records_pass_guard_without_mutating_original) ... ok
+test_unsupported_fixtures_refuse_without_changing_image (goal2.tests.test_watched_runtime.RuntimeTests.test_unsupported_fixtures_refuse_without_changing_image) ... ok
+test_competitive_preparation_preserves_public_friendly_gate (goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_competitive_preparation_preserves_public_friendly_gate) ... ok
+test_owner_budget_cases_match_independent_execution_and_guest_stamps (goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_owner_budget_cases_match_independent_execution_and_guest_stamps) ... T51 kind=2 index=21 managed=7 seed=257 quick=False result=[1, 0] actual=[1, 0] winner=0
+T51 kind=2 index=21 managed=7 seed=None quick=False result=[1, 1] actual=[1, 1] winner=2
+T51 kind=200 index=30 managed=7 seed=None quick=False result=[3, 2] actual=[3, 2] winner=0
+T51 kind=200 index=42 managed=7 seed=None quick=False result=[0, 0] actual=[0, 0] winner=0
+T51 kind=200 index=9 managed=7 seed=None quick=True result=[1, 1] actual=[1, 1] winner=1
+T51 kind=200 index=53 managed=7 seed=None quick=True result=[2, 2] actual=[2, 2] winner=1
+T51 kind=200 index=42 managed=19 seed=None quick=True result=None actual=[0, 0] winner=0
+ok
+test_source_context_is_explicit_and_invalid_changes_are_atomic (goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_source_context_is_explicit_and_invalid_changes_are_atomic) ... ok
+test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job) ... ok
+test_original_winner_and_full_tail_publish_once_without_quick_effects (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_original_winner_and_full_tail_publish_once_without_quick_effects) ... ok
+test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic) ... ok
+test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals) ... T51 WorldKO evidence .cache/T51-world-knockout-1792302074951684650.json
+T51 declared WorldKO kind200 index42 next_free43 normal=[0, 0] PK=[4, 3] originalwinner=0 PASS
+ok
+test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues (goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues) ... T51 actual qualifier evidence .cache/T51-actual-qualifier-1792302190407913544.json
+T51 actual country4 qualifier kind=5 index=1475 score=[0, 3] winner=1 next deterministic PASS
+ok
+test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage (goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage) ... ok
+test_quick_setup_is_private_and_preserves_strict_template_refusals (goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_quick_setup_is_private_and_preserves_strict_template_refusals) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume) ... ok
+test_candidate_matches_existing_transport_independent_campaign_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_matches_existing_transport_independent_campaign_publication) ... ok
+test_failure_and_bad_output_leave_active_state_unchanged (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_failure_and_bad_output_leave_active_state_unchanged) ... ok
+test_launch_failure_and_unsupported_fixture_are_atomic (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_launch_failure_and_unsupported_fixture_are_atomic) ... ok
+test_stale_completion_refuses_replaced_and_mutated_active_state (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_stale_completion_refuses_replaced_and_mutated_active_state) ... ok
+test_standalone_repeat_retains_complete_state_without_campaign (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_standalone_repeat_retains_complete_state_without_campaign) ... ok
+test_unrenderable_saved_result_is_rejected_before_resume_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_unrenderable_saved_result_is_rejected_before_resume_publication) ... ok
+test_worker_and_jobs_import_without_qt_unicorn_or_web (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_worker_and_jobs_import_without_qt_unicorn_or_web) ... ok
+
+----------------------------------------------------------------------
+Ran 60 tests in 1585.808s
+
+OK

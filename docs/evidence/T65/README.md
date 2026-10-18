@@ -47,3 +47,16 @@ records the SIGTERM-ignoring child and no-UI/optional-runtime import checks.
 pushed implementation SHA before the evidence-only commit. Final-head premerge
 is recorded on the PR to avoid changing the SHA it certifies. Links/provenance
 outputs are [links-01.log](links-01.log) and [provenance-01.log](provenance-01.log).
+
+[designed] [regressions-started-37aa2d1.log](regressions-started-37aa2d1.log)
+records PASS60/1585.808s for the nine-module retained command. It started with
+`37aa2d1` source loaded by the parent; the narrow queued-frame read guard was added
+and controlled during that run. This is earlier-source regression evidence, not a
+fresh exact-final-head full-suite run. The final focused suite tests the fixed
+bridge guard separately; independent review runs all nine modules freshly.
+
+[designed] After every validation reader exited, a test-only addition visits the
+32 MiB decoder boundary, oversized output, truncated compression and trailing
+payload. The final test count is fourteen. The earlier thirteen-test receipt and
+its source/test-file hashes remain immutable; a new final receipt records the
+updated test hash. Product files remain byte-identical to `b8232e1`.

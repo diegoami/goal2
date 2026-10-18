@@ -1,6 +1,8 @@
 """[designed: T65] Headless process, live observation and atomic ownership tests."""
 import copy
 import asyncio
+import base64
+import zlib
 from dataclasses import replace
 import hashlib
 import os
@@ -15,7 +17,7 @@ from unittest.mock import patch
 
 from goal2.engine.original_match import Fixture, Image
 from goal2.engine.original_match.match import Event
-from goal2.game.watched_jobs import WatchedJobs, MAX_PACKET, READ_BUDGET, _write
+from goal2.game.watched_jobs import WatchedJobs, MAX_PACKET, MAX_MEMORY, READ_BUDGET, _write, _memory
 from goal2.game.watched_match import _drive_match, run_watched_match
 from goal2.tests import test_watched_adapter as adapter
 from goal2.tests.test_watched_publication import Owner
@@ -203,6 +205,19 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         token=self.jobs.start(Fixture(7,19,21))
         self.assertTrue(self.jobs.busy)
         self.jobs.cancel(token)
+
+    def test_memory_decoder_bounds_truncation_and_trailing_payloads(self):
+        def encoded(raw):return base64.b64encode(raw).decode('ascii')
+        self.assertEqual(_memory(encoded(zlib.compress(b'opaque tail'))),b'opaque tail')
+        self.assertEqual(len(_memory(encoded(zlib.compress(bytes(MAX_MEMORY))))),MAX_MEMORY)
+        for mode,compressed in (
+                ('oversized',zlib.compress(bytes(MAX_MEMORY+1))),
+                ('truncated',zlib.compress(b'tail')[:-1]),
+                ('trailing',zlib.compress(b'tail')+b'trailing')):
+            with self.subTest(mode=mode):
+                with self.assertRaisesRegex(ValueError,'invalid or oversized watched memory'):
+                    _memory(encoded(compressed))
+        self.assertEqual(self.owner.state,self.before)
 
     def test_large_partial_record_reads_are_bounded(self):
         token=self.bridge('blocked')

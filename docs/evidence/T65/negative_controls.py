@@ -12,6 +12,8 @@ controls=[
  ('stale-cancel',jobs,'    def cancel(self, token):\n        self._check_token(token)','    def cancel(self, token):\n        pass',base+'test_replacement_and_stale_cancel_cannot_touch_new_job','ValueError not raised'),
  ('stream-identity',jobs,'                    if tuple(self.events) != value.events:','                    if False:',base+'test_stream_outcome_mismatch_and_incomplete_tail_never_publish','live event stream'),
  ('bounded-read',jobs,'self._journal.read(READ_BUDGET)','self._journal.read(READ_BUDGET * 4)',base+'test_large_partial_record_reads_are_bounded','1 != 0'),
+ ('burst-buffer',jobs,'            if not ready:','            if True:',base+'test_exited_burst_drains_in_bounded_batches_without_buffer_growth','not less than or equal to 65536'),
+ ('memory-limit',jobs,'if len(memory) > MAX_MEMORY or not decoder.eof or decoder.unused_data:','if not decoder.eof or decoder.unused_data:',base+'test_memory_decoder_bounds_truncation_and_trailing_payloads','ValueError not raised'),
  ('start-cleanup',jobs,'            self.publication.cancel()\n            self._release()\n            raise','            self._release()\n            raise',base+'test_start_failures_clear_publication_and_allow_restart','AssertionError'),
 ]
 report=[]
