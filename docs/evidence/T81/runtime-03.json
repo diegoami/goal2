@@ -1,0 +1,4654 @@
+{
+  "cases": [
+    {
+      "baseline": {
+        "outcome": {
+          "canonical_events": 1079,
+          "canonical_sha256": "4f4bb748e6b5d47675f4ec03922b92da93981875e17fbb8228635709d9bed660",
+          "complete_memory_sha256": "e4f9f700b98282f51bd791b253c159cf4d561ef68a270c898a153a0ac791e18c",
+          "complete_result_sha256": "e1804c7cc374402ac44c042afc3057d5a29fd58f90dd770157e50b74189ff9ed",
+          "seeds": [
+            25058,
+            61800
+          ],
+          "ticks": 4279
+        },
+        "sampled": false,
+        "seconds": 10.374,
+        "seed": 257,
+        "terminal_event_minute": 93
+      },
+      "exact_equal": [
+        "canonical_events",
+        "complete_result",
+        "complete_memory",
+        "both_rng_seeds"
+      ],
+      "observed": {
+        "counts": {
+          "ball_changes": 2624,
+          "changed_poses": 4277,
+          "hidden": 0,
+          "hidden_ball": 0,
+          "outside_in_play": 70,
+          "outside_movement": 0,
+          "player_changes": 68534,
+          "repeated_reads": 4279,
+          "ticks": 4279
+        },
+        "extrema": {
+          "ball": [
+            -8,
+            8,
+            -38,
+            37
+          ],
+          "players": [
+            -9,
+            8,
+            -37,
+            37
+          ]
+        },
+        "first": {
+          "attack_by_team": [
+            1,
+            -1
+          ],
+          "ball": [
+            -8,
+            1
+          ],
+          "ball_hidden": false,
+          "event_minute": 0,
+          "half_flag": 1,
+          "initialization_word": 247,
+          "memory_sha256": "ba6bcdf1006c677b0ee976f57cd14e45345a90d0caad4b07b6865b244e8944a3",
+          "players": [
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 1,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 362,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 2,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 364,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 3,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 363,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 4,
+              "state": 1,
+              "team": 1,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 365,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 5,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 376,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 6,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 367,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 7,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 379,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 8,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 380,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 9,
+              "state": 1,
+              "team": 1,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 370,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 10,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 378,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 11,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 121,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 12,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 122,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 13,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 123,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 14,
+              "state": 1,
+              "team": 0,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 124,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 15,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 125,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 16,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 126,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 17,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 127,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 18,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 128,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 19,
+              "state": 1,
+              "team": 0,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 129,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 20,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 130,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 21,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 131,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 22,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            }
+          ],
+          "remaining": 91,
+          "rng": [
+            18389,
+            62212
+          ],
+          "sentinel_word": 11,
+          "sequence": 0,
+          "stopped_at": "tick",
+          "subtick": 0,
+          "threshold": 45
+        },
+        "half_flags": [
+          0,
+          1
+        ],
+        "last": {
+          "attack_by_team": [
+            -1,
+            1
+          ],
+          "ball": [
+            -4,
+            0
+          ],
+          "ball_hidden": false,
+          "event_minute": 93,
+          "half_flag": 0,
+          "initialization_word": 247,
+          "memory_sha256": "d8f6a2f2b33cbe697226d3b387e36fafaac13e1fe8a8751c58ca8fa93e47a0c5",
+          "players": [
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                -37,
+                0
+              ],
+              "slot": 1,
+              "state": 5,
+              "team": 1,
+              "x": 0,
+              "y": -37
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 362,
+              "screen": [
+                -24,
+                0
+              ],
+              "slot": 2,
+              "state": 5,
+              "team": 1,
+              "x": 0,
+              "y": -24
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 364,
+              "screen": [
+                -30,
+                -4
+              ],
+              "slot": 3,
+              "state": 5,
+              "team": 1,
+              "x": -4,
+              "y": -30
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 374,
+              "screen": [
+                -30,
+                2
+              ],
+              "slot": 4,
+              "state": 5,
+              "team": 1,
+              "x": 2,
+              "y": -30
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 365,
+              "screen": [
+                -8,
+                -7
+              ],
+              "slot": 5,
+              "state": 5,
+              "team": 1,
+              "x": -7,
+              "y": -8
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 366,
+              "screen": [
+                -18,
+                6
+              ],
+              "slot": 6,
+              "state": 5,
+              "team": 1,
+              "x": 6,
+              "y": -18
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 367,
+              "screen": [
+                -22,
+                0
+              ],
+              "slot": 7,
+              "state": 5,
+              "team": 1,
+              "x": 0,
+              "y": -22
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 368,
+              "screen": [
+                0,
+                -5
+              ],
+              "slot": 8,
+              "state": 5,
+              "team": 1,
+              "x": -5,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 380,
+              "screen": [
+                -16,
+                8
+              ],
+              "slot": 9,
+              "state": 5,
+              "team": 1,
+              "x": 8,
+              "y": -16
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 370,
+              "screen": [
+                -3,
+                -2
+              ],
+              "slot": 10,
+              "state": 5,
+              "team": 1,
+              "x": -2,
+              "y": -3
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 371,
+              "screen": [
+                -4,
+                -4
+              ],
+              "slot": 11,
+              "state": 5,
+              "team": 1,
+              "x": -4,
+              "y": -4
+            },
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 121,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 12,
+              "state": 5,
+              "team": 0,
+              "x": 0,
+              "y": 37
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 122,
+              "screen": [
+                0,
+                -4
+              ],
+              "slot": 13,
+              "state": 5,
+              "team": 0,
+              "x": -4,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 123,
+              "screen": [
+                12,
+                2
+              ],
+              "slot": 14,
+              "state": 5,
+              "team": 0,
+              "x": 2,
+              "y": 12
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 124,
+              "screen": [
+                16,
+                -3
+              ],
+              "slot": 15,
+              "state": 5,
+              "team": 0,
+              "x": -3,
+              "y": 16
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 125,
+              "screen": [
+                13,
+                7
+              ],
+              "slot": 16,
+              "state": 5,
+              "team": 0,
+              "x": 7,
+              "y": 13
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 126,
+              "screen": [
+                12,
+                -5
+              ],
+              "slot": 17,
+              "state": 5,
+              "team": 0,
+              "x": -5,
+              "y": 12
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 127,
+              "screen": [
+                4,
+                0
+              ],
+              "slot": 18,
+              "state": 5,
+              "team": 0,
+              "x": 0,
+              "y": 4
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 128,
+              "screen": [
+                4,
+                3
+              ],
+              "slot": 19,
+              "state": 5,
+              "team": 0,
+              "x": 3,
+              "y": 4
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 129,
+              "screen": [
+                -15,
+                -5
+              ],
+              "slot": 20,
+              "state": 5,
+              "team": 0,
+              "x": -5,
+              "y": -15
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 130,
+              "screen": [
+                -9,
+                -2
+              ],
+              "slot": 21,
+              "state": 5,
+              "team": 0,
+              "x": -2,
+              "y": -9
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 131,
+              "screen": [
+                16,
+                -1
+              ],
+              "slot": 22,
+              "state": 5,
+              "team": 0,
+              "x": -1,
+              "y": 16
+            }
+          ],
+          "remaining": 0,
+          "rng": [
+            18182,
+            61800
+          ],
+          "sentinel_word": 11,
+          "sequence": 4278,
+          "stopped_at": "tick",
+          "subtick": 0,
+          "threshold": 45
+        },
+        "outcome": {
+          "canonical_events": 1079,
+          "canonical_sha256": "4f4bb748e6b5d47675f4ec03922b92da93981875e17fbb8228635709d9bed660",
+          "complete_memory_sha256": "e4f9f700b98282f51bd791b253c159cf4d561ef68a270c898a153a0ac791e18c",
+          "complete_result_sha256": "e1804c7cc374402ac44c042afc3057d5a29fd58f90dd770157e50b74189ff9ed",
+          "seeds": [
+            25058,
+            61800
+          ],
+          "ticks": 4279
+        },
+        "raw_state_examples": {
+          "0": {
+            "player": {
+              "hidden": false,
+              "number": 9,
+              "player": 380,
+              "screen": [
+                4,
+                -7
+              ],
+              "slot": 9,
+              "state": 0,
+              "team": 1,
+              "x": -7,
+              "y": 4
+            },
+            "sequence": 7
+          },
+          "1": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 1,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            "sequence": 0
+          },
+          "11": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 1,
+              "state": 11,
+              "team": 1,
+              "x": 0,
+              "y": 37
+            },
+            "sequence": 165
+          },
+          "13": {
+            "player": {
+              "hidden": false,
+              "number": 11,
+              "player": 131,
+              "screen": [
+                0,
+                -1
+              ],
+              "slot": 22,
+              "state": 13,
+              "team": 0,
+              "x": -1,
+              "y": 0
+            },
+            "sequence": 48
+          },
+          "2": {
+            "player": {
+              "hidden": false,
+              "number": 10,
+              "player": 130,
+              "screen": [
+                -1,
+                0
+              ],
+              "slot": 21,
+              "state": 2,
+              "team": 0,
+              "x": 0,
+              "y": -1
+            },
+            "sequence": 10
+          },
+          "5": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 1,
+              "state": 5,
+              "team": 1,
+              "x": 0,
+              "y": 37
+            },
+            "sequence": 46
+          },
+          "6": {
+            "player": {
+              "hidden": false,
+              "number": 2,
+              "player": 122,
+              "screen": [
+                -19,
+                2
+              ],
+              "slot": 13,
+              "state": 6,
+              "team": 0,
+              "x": 2,
+              "y": -19
+            },
+            "sequence": 3393
+          },
+          "7": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 1,
+              "state": 7,
+              "team": 1,
+              "x": 0,
+              "y": 37
+            },
+            "sequence": 242
+          },
+          "8": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                37,
+                -2
+              ],
+              "slot": 1,
+              "state": 8,
+              "team": 1,
+              "x": -2,
+              "y": 37
+            },
+            "sequence": 428
+          },
+          "9": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                -37,
+                0
+              ],
+              "slot": 1,
+              "state": 9,
+              "team": 1,
+              "x": 0,
+              "y": -37
+            },
+            "sequence": 3895
+          }
+        },
+        "rebindings": [
+          {
+            "after": 368,
+            "before": 379,
+            "sequence": 2978,
+            "slot": 8
+          },
+          {
+            "after": 371,
+            "before": 378,
+            "sequence": 2978,
+            "slot": 11
+          },
+          {
+            "after": 366,
+            "before": 376,
+            "sequence": 3423,
+            "slot": 6
+          },
+          {
+            "after": 374,
+            "before": 363,
+            "sequence": 3548,
+            "slot": 4
+          }
+        ],
+        "sampled": true,
+        "seconds": 80.363,
+        "seed": 257,
+        "terminal_event_minute": 93,
+        "transitions": [
+          {
+            "reason": "event stopped state; not a historical event pose",
+            "sample": {
+              "attack_by_team": [
+                -1,
+                1
+              ],
+              "ball": [
+                -9,
+                -1
+              ],
+              "ball_hidden": false,
+              "event_minute": 46,
+              "half_flag": 0,
+              "initialization_word": 247,
+              "memory_sha256": "ef87dcff94e6e1ab49ffb1cc63d15b7eb309f8fa9e326118f1056b4406285d0c",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 1,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 2,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 3,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 4,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 5,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 6,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 7,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 8,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 9,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 10,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 11,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 12,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 13,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 14,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 15,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 16,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 17,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 18,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 19,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 20,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 21,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 22,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                }
+              ],
+              "remaining": 45,
+              "rng": [
+                15798,
+                46186
+              ],
+              "sentinel_word": 11,
+              "sequence": 2117,
+              "stopped_at": "half_time",
+              "subtick": 36,
+              "threshold": 45
+            }
+          },
+          {
+            "reason": "event stopped state; not a historical event pose",
+            "sample": {
+              "attack_by_team": [
+                -1,
+                1
+              ],
+              "ball": [
+                -9,
+                -1
+              ],
+              "ball_hidden": false,
+              "event_minute": 46,
+              "half_flag": 0,
+              "initialization_word": 247,
+              "memory_sha256": "ef87dcff94e6e1ab49ffb1cc63d15b7eb309f8fa9e326118f1056b4406285d0c",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 1,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 2,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 3,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 4,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 5,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 6,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 7,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 8,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 9,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 10,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 11,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 12,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 13,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 14,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 15,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 16,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 17,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 18,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 19,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 20,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 21,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 22,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                }
+              ],
+              "remaining": 45,
+              "rng": [
+                15798,
+                46186
+              ],
+              "sentinel_word": 11,
+              "sequence": 2117,
+              "stopped_at": "decision",
+              "subtick": 36,
+              "threshold": 45
+            }
+          },
+          {
+            "after": {
+              "attack_by_team": [
+                -1,
+                1
+              ],
+              "ball": [
+                -8,
+                1
+              ],
+              "ball_hidden": false,
+              "event_minute": 46,
+              "half_flag": 0,
+              "initialization_word": 247,
+              "memory_sha256": "8c3a5407dee42f6d0489d1299bcf6952e67abbe926023f116a1527c64a5afe4a",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 1,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 2,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 3,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 4,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 5,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 6,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 7,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 8,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 9,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 10,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 11,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 12,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 13,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 14,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 15,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 16,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 17,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 18,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 19,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 20,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 21,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 22,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                }
+              ],
+              "remaining": 45,
+              "rng": [
+                15215,
+                12224
+              ],
+              "sentinel_word": 11,
+              "sequence": 2117,
+              "stopped_at": "tick",
+              "subtick": 36,
+              "threshold": 45
+            },
+            "before": {
+              "attack_by_team": [
+                1,
+                -1
+              ],
+              "ball": [
+                -1,
+                10
+              ],
+              "ball_hidden": false,
+              "event_minute": 45,
+              "half_flag": 1,
+              "initialization_word": 247,
+              "memory_sha256": "3fe1ea379d706c901f6546062abf3b3c5dbdf16caf766e39a75292377d856170",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    37,
+                    0
+                  ],
+                  "slot": 1,
+                  "state": 5,
+                  "team": 1,
+                  "x": 0,
+                  "y": 37
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    8,
+                    -1
+                  ],
+                  "slot": 2,
+                  "state": 5,
+                  "team": 1,
+                  "x": -1,
+                  "y": 8
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    19,
+                    3
+                  ],
+                  "slot": 3,
+                  "state": 5,
+                  "team": 1,
+                  "x": 3,
+                  "y": 19
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    19,
+                    -3
+                  ],
+                  "slot": 4,
+                  "state": 5,
+                  "team": 1,
+                  "x": -3,
+                  "y": 19
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    6,
+                    7
+                  ],
+                  "slot": 5,
+                  "state": 5,
+                  "team": 1,
+                  "x": 7,
+                  "y": 6
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    9,
+                    -6
+                  ],
+                  "slot": 6,
+                  "state": 5,
+                  "team": 1,
+                  "x": -6,
+                  "y": 9
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    -5,
+                    1
+                  ],
+                  "slot": 7,
+                  "state": 5,
+                  "team": 1,
+                  "x": 1,
+                  "y": -5
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    -12,
+                    -1
+                  ],
+                  "slot": 8,
+                  "state": 5,
+                  "team": 1,
+                  "x": -1,
+                  "y": -12
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    -15,
+                    -8
+                  ],
+                  "slot": 9,
+                  "state": 5,
+                  "team": 1,
+                  "x": -8,
+                  "y": -15
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    -21,
+                    0
+                  ],
+                  "slot": 10,
+                  "state": 5,
+                  "team": 1,
+                  "x": 0,
+                  "y": -21
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    -23,
+                    2
+                  ],
+                  "slot": 11,
+                  "state": 5,
+                  "team": 1,
+                  "x": 2,
+                  "y": -23
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    -37,
+                    0
+                  ],
+                  "slot": 12,
+                  "state": 5,
+                  "team": 0,
+                  "x": 0,
+                  "y": -37
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    -33,
+                    -1
+                  ],
+                  "slot": 13,
+                  "state": 5,
+                  "team": 0,
+                  "x": -1,
+                  "y": -33
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    -8,
+                    -1
+                  ],
+                  "slot": 14,
+                  "state": 5,
+                  "team": 0,
+                  "x": -1,
+                  "y": -8
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    -8,
+                    -2
+                  ],
+                  "slot": 15,
+                  "state": 5,
+                  "team": 0,
+                  "x": -2,
+                  "y": -8
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    -14,
+                    -5
+                  ],
+                  "slot": 16,
+                  "state": 5,
+                  "team": 0,
+                  "x": -5,
+                  "y": -14
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    5,
+                    -1
+                  ],
+                  "slot": 17,
+                  "state": 5,
+                  "team": 0,
+                  "x": -1,
+                  "y": 5
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    -25,
+                    -1
+                  ],
+                  "slot": 18,
+                  "state": 5,
+                  "team": 0,
+                  "x": -1,
+                  "y": -25
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    -9,
+                    -5
+                  ],
+                  "slot": 19,
+                  "state": 5,
+                  "team": 0,
+                  "x": -5,
+                  "y": -9
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    -7,
+                    4
+                  ],
+                  "slot": 20,
+                  "state": 5,
+                  "team": 0,
+                  "x": 4,
+                  "y": -7
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    -21,
+                    2
+                  ],
+                  "slot": 21,
+                  "state": 5,
+                  "team": 0,
+                  "x": 2,
+                  "y": -21
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    -6,
+                    -3
+                  ],
+                  "slot": 22,
+                  "state": 5,
+                  "team": 0,
+                  "x": -3,
+                  "y": -6
+                }
+              ],
+              "remaining": 46,
+              "rng": [
+                606,
+                46186
+              ],
+              "sentinel_word": 11,
+              "sequence": 2116,
+              "stopped_at": "tick",
+              "subtick": 0,
+              "threshold": 45
+            },
+            "reason": "adjacent tick half flag change"
+          }
+        ]
+      },
+      "seed": 257
+    },
+    {
+      "baseline": {
+        "outcome": {
+          "canonical_events": 1178,
+          "canonical_sha256": "ae9a29e07ecc3f57149880c4d757e4aaffcf508aae8bf469095ce6d2a1055e20",
+          "complete_memory_sha256": "232436908ceb7f7082bd9ae5b5d46e964d1706be8e780e169d1eb033dbf9f104",
+          "complete_result_sha256": "bc788ebfb7f06797464f6e3c9d5885bca06b757ecd882c9cdfffd8dd28f24b1a",
+          "seeds": [
+            62399,
+            10535
+          ],
+          "ticks": 4146
+        },
+        "sampled": false,
+        "seconds": 11.03,
+        "seed": 4660,
+        "terminal_event_minute": 91
+      },
+      "exact_equal": [
+        "canonical_events",
+        "complete_result",
+        "complete_memory",
+        "both_rng_seeds"
+      ],
+      "observed": {
+        "counts": {
+          "ball_changes": 2599,
+          "changed_poses": 4144,
+          "hidden": 0,
+          "hidden_ball": 0,
+          "outside_in_play": 101,
+          "outside_movement": 0,
+          "player_changes": 66010,
+          "repeated_reads": 4146,
+          "ticks": 4146
+        },
+        "extrema": {
+          "ball": [
+            -9,
+            8,
+            -38,
+            38
+          ],
+          "players": [
+            -9,
+            8,
+            -37,
+            37
+          ]
+        },
+        "first": {
+          "attack_by_team": [
+            1,
+            -1
+          ],
+          "ball": [
+            -9,
+            1
+          ],
+          "ball_hidden": false,
+          "event_minute": 0,
+          "half_flag": 1,
+          "initialization_word": 247,
+          "memory_sha256": "b5e821cd2735efb1cae94fc470f807acf5f33be96f48dec48e57337a4a59c003",
+          "players": [
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 1,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 362,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 2,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 364,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 3,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 363,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 4,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 365,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 5,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 376,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 6,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 367,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 7,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 379,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 8,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 380,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 9,
+              "state": 1,
+              "team": 1,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 370,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 10,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 378,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 11,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 121,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 12,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 122,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 13,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 123,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 14,
+              "state": 1,
+              "team": 0,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 124,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 15,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 125,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 16,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 126,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 17,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 127,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 18,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 128,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 19,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 129,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 20,
+              "state": 1,
+              "team": 0,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 130,
+              "screen": [
+                0,
+                -9
+              ],
+              "slot": 21,
+              "state": 1,
+              "team": 0,
+              "x": -9,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 131,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 22,
+              "state": 1,
+              "team": 0,
+              "x": -8,
+              "y": 0
+            }
+          ],
+          "remaining": 91,
+          "rng": [
+            17394,
+            62212
+          ],
+          "sentinel_word": 11,
+          "sequence": 0,
+          "stopped_at": "tick",
+          "subtick": 0,
+          "threshold": 45
+        },
+        "half_flags": [
+          0,
+          1
+        ],
+        "last": {
+          "attack_by_team": [
+            -1,
+            1
+          ],
+          "ball": [
+            -6,
+            6
+          ],
+          "ball_hidden": false,
+          "event_minute": 91,
+          "half_flag": 0,
+          "initialization_word": 247,
+          "memory_sha256": "fb01b608e7eddb07f157541410c3bf6d8c5eb04c8df354da65598e7dafa09839",
+          "players": [
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                -37,
+                0
+              ],
+              "slot": 1,
+              "state": 5,
+              "team": 1,
+              "x": 0,
+              "y": -37
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 362,
+              "screen": [
+                5,
+                -3
+              ],
+              "slot": 2,
+              "state": 5,
+              "team": 1,
+              "x": -3,
+              "y": 5
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 364,
+              "screen": [
+                -17,
+                -6
+              ],
+              "slot": 3,
+              "state": 5,
+              "team": 1,
+              "x": -6,
+              "y": -17
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 363,
+              "screen": [
+                -6,
+                2
+              ],
+              "slot": 4,
+              "state": 5,
+              "team": 1,
+              "x": 2,
+              "y": -6
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 365,
+              "screen": [
+                -22,
+                -6
+              ],
+              "slot": 5,
+              "state": 5,
+              "team": 1,
+              "x": -6,
+              "y": -22
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 376,
+              "screen": [
+                -15,
+                6
+              ],
+              "slot": 6,
+              "state": 5,
+              "team": 1,
+              "x": 6,
+              "y": -15
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 367,
+              "screen": [
+                6,
+                -6
+              ],
+              "slot": 7,
+              "state": 5,
+              "team": 1,
+              "x": -6,
+              "y": 6
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 368,
+              "screen": [
+                20,
+                -8
+              ],
+              "slot": 8,
+              "state": 5,
+              "team": 1,
+              "x": -8,
+              "y": 20
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 369,
+              "screen": [
+                27,
+                8
+              ],
+              "slot": 9,
+              "state": 5,
+              "team": 1,
+              "x": 8,
+              "y": 27
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 371,
+              "screen": [
+                18,
+                0
+              ],
+              "slot": 10,
+              "state": 5,
+              "team": 1,
+              "x": 0,
+              "y": 18
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 378,
+              "screen": [
+                25,
+                -6
+              ],
+              "slot": 11,
+              "state": 5,
+              "team": 1,
+              "x": -6,
+              "y": 25
+            },
+            {
+              "hidden": false,
+              "number": 1,
+              "player": 121,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 12,
+              "state": 5,
+              "team": 0,
+              "x": 0,
+              "y": 37
+            },
+            {
+              "hidden": false,
+              "number": 2,
+              "player": 122,
+              "screen": [
+                36,
+                -1
+              ],
+              "slot": 13,
+              "state": 5,
+              "team": 0,
+              "x": -1,
+              "y": 36
+            },
+            {
+              "hidden": false,
+              "number": 3,
+              "player": 123,
+              "screen": [
+                26,
+                -6
+              ],
+              "slot": 14,
+              "state": 5,
+              "team": 0,
+              "x": -6,
+              "y": 26
+            },
+            {
+              "hidden": false,
+              "number": 4,
+              "player": 124,
+              "screen": [
+                21,
+                0
+              ],
+              "slot": 15,
+              "state": 5,
+              "team": 0,
+              "x": 0,
+              "y": 21
+            },
+            {
+              "hidden": false,
+              "number": 5,
+              "player": 125,
+              "screen": [
+                27,
+                5
+              ],
+              "slot": 16,
+              "state": 5,
+              "team": 0,
+              "x": 5,
+              "y": 27
+            },
+            {
+              "hidden": false,
+              "number": 6,
+              "player": 126,
+              "screen": [
+                9,
+                -6
+              ],
+              "slot": 17,
+              "state": 5,
+              "team": 0,
+              "x": -6,
+              "y": 9
+            },
+            {
+              "hidden": false,
+              "number": 7,
+              "player": 127,
+              "screen": [
+                19,
+                0
+              ],
+              "slot": 18,
+              "state": 5,
+              "team": 0,
+              "x": 0,
+              "y": 19
+            },
+            {
+              "hidden": false,
+              "number": 8,
+              "player": 128,
+              "screen": [
+                4,
+                3
+              ],
+              "slot": 19,
+              "state": 5,
+              "team": 0,
+              "x": 3,
+              "y": 4
+            },
+            {
+              "hidden": false,
+              "number": 9,
+              "player": 129,
+              "screen": [
+                0,
+                -5
+              ],
+              "slot": 20,
+              "state": 5,
+              "team": 0,
+              "x": -5,
+              "y": 0
+            },
+            {
+              "hidden": false,
+              "number": 10,
+              "player": 130,
+              "screen": [
+                4,
+                -5
+              ],
+              "slot": 21,
+              "state": 5,
+              "team": 0,
+              "x": -5,
+              "y": 4
+            },
+            {
+              "hidden": false,
+              "number": 11,
+              "player": 131,
+              "screen": [
+                6,
+                -1
+              ],
+              "slot": 22,
+              "state": 5,
+              "team": 0,
+              "x": -1,
+              "y": 6
+            }
+          ],
+          "remaining": 0,
+          "rng": [
+            29071,
+            10535
+          ],
+          "sentinel_word": 11,
+          "sequence": 4145,
+          "stopped_at": "tick",
+          "subtick": 0,
+          "threshold": 45
+        },
+        "outcome": {
+          "canonical_events": 1178,
+          "canonical_sha256": "ae9a29e07ecc3f57149880c4d757e4aaffcf508aae8bf469095ce6d2a1055e20",
+          "complete_memory_sha256": "232436908ceb7f7082bd9ae5b5d46e964d1706be8e780e169d1eb033dbf9f104",
+          "complete_result_sha256": "bc788ebfb7f06797464f6e3c9d5885bca06b757ecd882c9cdfffd8dd28f24b1a",
+          "seeds": [
+            62399,
+            10535
+          ],
+          "ticks": 4146
+        },
+        "raw_state_examples": {
+          "0": {
+            "player": {
+              "hidden": false,
+              "number": 9,
+              "player": 380,
+              "screen": [
+                4,
+                -7
+              ],
+              "slot": 9,
+              "state": 0,
+              "team": 1,
+              "x": -7,
+              "y": 4
+            },
+            "sequence": 7
+          },
+          "1": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                0,
+                -8
+              ],
+              "slot": 1,
+              "state": 1,
+              "team": 1,
+              "x": -8,
+              "y": 0
+            },
+            "sequence": 0
+          },
+          "11": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                35,
+                -1
+              ],
+              "slot": 1,
+              "state": 11,
+              "team": 1,
+              "x": -1,
+              "y": 35
+            },
+            "sequence": 467
+          },
+          "13": {
+            "player": {
+              "hidden": false,
+              "number": 10,
+              "player": 130,
+              "screen": [
+                1,
+                1
+              ],
+              "slot": 21,
+              "state": 13,
+              "team": 0,
+              "x": 1,
+              "y": 1
+            },
+            "sequence": 57
+          },
+          "2": {
+            "player": {
+              "hidden": false,
+              "number": 10,
+              "player": 130,
+              "screen": [
+                -1,
+                0
+              ],
+              "slot": 21,
+              "state": 2,
+              "team": 0,
+              "x": 0,
+              "y": -1
+            },
+            "sequence": 13
+          },
+          "5": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 1,
+              "state": 5,
+              "team": 1,
+              "x": 0,
+              "y": 37
+            },
+            "sequence": 46
+          },
+          "6": {
+            "player": {
+              "hidden": false,
+              "number": 2,
+              "player": 362,
+              "screen": [
+                13,
+                1
+              ],
+              "slot": 2,
+              "state": 6,
+              "team": 1,
+              "x": 1,
+              "y": 13
+            },
+            "sequence": 2699
+          },
+          "7": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 1,
+              "state": 7,
+              "team": 1,
+              "x": 0,
+              "y": 37
+            },
+            "sequence": 61
+          },
+          "8": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                36,
+                0
+              ],
+              "slot": 1,
+              "state": 8,
+              "team": 1,
+              "x": 0,
+              "y": 36
+            },
+            "sequence": 193
+          },
+          "9": {
+            "player": {
+              "hidden": false,
+              "number": 1,
+              "player": 372,
+              "screen": [
+                37,
+                0
+              ],
+              "slot": 1,
+              "state": 9,
+              "team": 1,
+              "x": 0,
+              "y": 37
+            },
+            "sequence": 122
+          }
+        },
+        "rebindings": [
+          {
+            "after": 371,
+            "before": 370,
+            "sequence": 2656,
+            "slot": 10
+          },
+          {
+            "after": 369,
+            "before": 380,
+            "sequence": 2741,
+            "slot": 9
+          },
+          {
+            "after": 368,
+            "before": 379,
+            "sequence": 3093,
+            "slot": 8
+          }
+        ],
+        "sampled": true,
+        "seconds": 124.014,
+        "seed": 4660,
+        "terminal_event_minute": 91,
+        "transitions": [
+          {
+            "reason": "event stopped state; not a historical event pose",
+            "sample": {
+              "attack_by_team": [
+                -1,
+                1
+              ],
+              "ball": [
+                -9,
+                1
+              ],
+              "ball_hidden": false,
+              "event_minute": 46,
+              "half_flag": 0,
+              "initialization_word": 247,
+              "memory_sha256": "86da2c26b4f4e14e21a4dd367fa5097c404acb0c5327151de80a922f2853bb40",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 1,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 2,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 3,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 4,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 5,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 6,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 7,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 8,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 9,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 10,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 11,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 12,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 13,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 14,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 15,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 16,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 17,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 18,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 19,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 20,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 21,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 22,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                }
+              ],
+              "remaining": 45,
+              "rng": [
+                4787,
+                36758
+              ],
+              "sentinel_word": 11,
+              "sequence": 2022,
+              "stopped_at": "half_time",
+              "subtick": 36,
+              "threshold": 45
+            }
+          },
+          {
+            "reason": "event stopped state; not a historical event pose",
+            "sample": {
+              "attack_by_team": [
+                -1,
+                1
+              ],
+              "ball": [
+                -9,
+                1
+              ],
+              "ball_hidden": false,
+              "event_minute": 46,
+              "half_flag": 0,
+              "initialization_word": 247,
+              "memory_sha256": "86da2c26b4f4e14e21a4dd367fa5097c404acb0c5327151de80a922f2853bb40",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 1,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 2,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 3,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 4,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 5,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 6,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 7,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 8,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 9,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 10,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 11,
+                  "state": 4,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 12,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 13,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 14,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 15,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 16,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 17,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 18,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 19,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 20,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 21,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 22,
+                  "state": 4,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                }
+              ],
+              "remaining": 45,
+              "rng": [
+                4787,
+                36758
+              ],
+              "sentinel_word": 11,
+              "sequence": 2022,
+              "stopped_at": "decision",
+              "subtick": 36,
+              "threshold": 45
+            }
+          },
+          {
+            "after": {
+              "attack_by_team": [
+                -1,
+                1
+              ],
+              "ball": [
+                -8,
+                1
+              ],
+              "ball_hidden": false,
+              "event_minute": 46,
+              "half_flag": 0,
+              "initialization_word": 247,
+              "memory_sha256": "7925547988fff9e9bb165df842c46e36e63b3a8687bb2678cde8525316e42c30",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 1,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 2,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 3,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 4,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 5,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 6,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 7,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 8,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 9,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 10,
+                  "state": 1,
+                  "team": 1,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 11,
+                  "state": 1,
+                  "team": 1,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 12,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 13,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 14,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 15,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 16,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 17,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 18,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    0,
+                    -9
+                  ],
+                  "slot": 19,
+                  "state": 1,
+                  "team": 0,
+                  "x": -9,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 20,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 21,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    0,
+                    -8
+                  ],
+                  "slot": 22,
+                  "state": 1,
+                  "team": 0,
+                  "x": -8,
+                  "y": 0
+                }
+              ],
+              "remaining": 45,
+              "rng": [
+                29516,
+                25868
+              ],
+              "sentinel_word": 11,
+              "sequence": 2022,
+              "stopped_at": "tick",
+              "subtick": 36,
+              "threshold": 45
+            },
+            "before": {
+              "attack_by_team": [
+                1,
+                -1
+              ],
+              "ball": [
+                4,
+                -18
+              ],
+              "ball_hidden": false,
+              "event_minute": 45,
+              "half_flag": 1,
+              "initialization_word": 247,
+              "memory_sha256": "62071676a7bd392d4d3d4f468379543603b32a8eff3e31093ecd683b88a7020d",
+              "players": [
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 372,
+                  "screen": [
+                    37,
+                    0
+                  ],
+                  "slot": 1,
+                  "state": 5,
+                  "team": 1,
+                  "x": 0,
+                  "y": 37
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 362,
+                  "screen": [
+                    0,
+                    3
+                  ],
+                  "slot": 2,
+                  "state": 5,
+                  "team": 1,
+                  "x": 3,
+                  "y": 0
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 364,
+                  "screen": [
+                    7,
+                    5
+                  ],
+                  "slot": 3,
+                  "state": 5,
+                  "team": 1,
+                  "x": 5,
+                  "y": 7
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 363,
+                  "screen": [
+                    4,
+                    0
+                  ],
+                  "slot": 4,
+                  "state": 5,
+                  "team": 1,
+                  "x": 0,
+                  "y": 4
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 365,
+                  "screen": [
+                    -9,
+                    4
+                  ],
+                  "slot": 5,
+                  "state": 5,
+                  "team": 1,
+                  "x": 4,
+                  "y": -9
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 376,
+                  "screen": [
+                    14,
+                    -5
+                  ],
+                  "slot": 6,
+                  "state": 5,
+                  "team": 1,
+                  "x": -5,
+                  "y": 14
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 367,
+                  "screen": [
+                    -16,
+                    2
+                  ],
+                  "slot": 7,
+                  "state": 5,
+                  "team": 1,
+                  "x": 2,
+                  "y": -16
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 379,
+                  "screen": [
+                    -14,
+                    8
+                  ],
+                  "slot": 8,
+                  "state": 5,
+                  "team": 1,
+                  "x": 8,
+                  "y": -14
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 380,
+                  "screen": [
+                    -30,
+                    -6
+                  ],
+                  "slot": 9,
+                  "state": 5,
+                  "team": 1,
+                  "x": -6,
+                  "y": -30
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 370,
+                  "screen": [
+                    -30,
+                    -1
+                  ],
+                  "slot": 10,
+                  "state": 5,
+                  "team": 1,
+                  "x": -1,
+                  "y": -30
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 378,
+                  "screen": [
+                    -31,
+                    -2
+                  ],
+                  "slot": 11,
+                  "state": 5,
+                  "team": 1,
+                  "x": -2,
+                  "y": -31
+                },
+                {
+                  "hidden": false,
+                  "number": 1,
+                  "player": 121,
+                  "screen": [
+                    -37,
+                    0
+                  ],
+                  "slot": 12,
+                  "state": 5,
+                  "team": 0,
+                  "x": 0,
+                  "y": -37
+                },
+                {
+                  "hidden": false,
+                  "number": 2,
+                  "player": 122,
+                  "screen": [
+                    -33,
+                    -2
+                  ],
+                  "slot": 13,
+                  "state": 5,
+                  "team": 0,
+                  "x": -2,
+                  "y": -33
+                },
+                {
+                  "hidden": false,
+                  "number": 3,
+                  "player": 123,
+                  "screen": [
+                    -20,
+                    1
+                  ],
+                  "slot": 14,
+                  "state": 5,
+                  "team": 0,
+                  "x": 1,
+                  "y": -20
+                },
+                {
+                  "hidden": false,
+                  "number": 4,
+                  "player": 124,
+                  "screen": [
+                    -31,
+                    1
+                  ],
+                  "slot": 15,
+                  "state": 5,
+                  "team": 0,
+                  "x": 1,
+                  "y": -31
+                },
+                {
+                  "hidden": false,
+                  "number": 5,
+                  "player": 125,
+                  "screen": [
+                    -28,
+                    -6
+                  ],
+                  "slot": 16,
+                  "state": 5,
+                  "team": 0,
+                  "x": -6,
+                  "y": -28
+                },
+                {
+                  "hidden": false,
+                  "number": 6,
+                  "player": 126,
+                  "screen": [
+                    -28,
+                    7
+                  ],
+                  "slot": 17,
+                  "state": 5,
+                  "team": 0,
+                  "x": 7,
+                  "y": -28
+                },
+                {
+                  "hidden": false,
+                  "number": 7,
+                  "player": 127,
+                  "screen": [
+                    -17,
+                    1
+                  ],
+                  "slot": 18,
+                  "state": 5,
+                  "team": 0,
+                  "x": 1,
+                  "y": -17
+                },
+                {
+                  "hidden": false,
+                  "number": 8,
+                  "player": 128,
+                  "screen": [
+                    -15,
+                    -6
+                  ],
+                  "slot": 19,
+                  "state": 5,
+                  "team": 0,
+                  "x": -6,
+                  "y": -15
+                },
+                {
+                  "hidden": false,
+                  "number": 9,
+                  "player": 129,
+                  "screen": [
+                    -13,
+                    4
+                  ],
+                  "slot": 20,
+                  "state": 5,
+                  "team": 0,
+                  "x": 4,
+                  "y": -13
+                },
+                {
+                  "hidden": false,
+                  "number": 10,
+                  "player": 130,
+                  "screen": [
+                    -16,
+                    3
+                  ],
+                  "slot": 21,
+                  "state": 5,
+                  "team": 0,
+                  "x": 3,
+                  "y": -16
+                },
+                {
+                  "hidden": false,
+                  "number": 11,
+                  "player": 131,
+                  "screen": [
+                    2,
+                    4
+                  ],
+                  "slot": 22,
+                  "state": 13,
+                  "team": 0,
+                  "x": 4,
+                  "y": 2
+                }
+              ],
+              "remaining": 46,
+              "rng": [
+                26886,
+                36758
+              ],
+              "sentinel_word": 11,
+              "sequence": 2021,
+              "stopped_at": "tick",
+              "subtick": 0,
+              "threshold": 45
+            },
+            "reason": "adjacent tick half flag change"
+          }
+        ]
+      },
+      "seed": 4660
+    }
+  ],
+  "environment": {
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.12.14",
+    "unicorn": "2.1.4"
+  },
+  "inputs": {
+    "answers": "default at every decision",
+    "delay_byte": 0,
+    "fixture": [
+      7,
+      19,
+      21
+    ],
+    "goal_dat_sha256": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    "kind": 1,
+    "managed": 7,
+    "record_draws": true,
+    "seeds": [
+      257,
+      4660
+    ]
+  },
+  "schema": 1,
+  "source": {
+    "files": {
+      "static/goal-exe/code/seg_0791_05.asm": {
+        "citations": [
+          "2BE5-2C26: signed-byte half selector",
+          "535-598: signed predicates"
+        ],
+        "sha256": "0635bc395cd69ffe2c77ead9aaaf786f36eedeee5496daae8f43127ce4aed474"
+      },
+      "static/goal-exe/named/seg_0791_02.c": {
+        "citations": [
+          "357-497: sorting and rebind",
+          "718-724: slot side",
+          "896-940: local slot and attack sign"
+        ],
+        "sha256": "c1f547990d100372b6638a89ad6d9447cd1bc0403dc0e240cffdede0c8af2d7a"
+      },
+      "static/goal-exe/named/seg_0791_07.c": {
+        "citations": [
+          "352-449: movement/restart",
+          "465-480: player draw",
+          "904-931: ball draw"
+        ],
+        "sha256": "a1ff1c789985e0fa2cbcff46c552a770604495a7d93c1a7900a8d6902aa67aea"
+      },
+      "static/goal-exe/named/seg_0791_08.c": {
+        "citations": [
+          "252-295: clock",
+          "445-446: clock setup",
+          "810-868: binding/initialization"
+        ],
+        "sha256": "9d43a8f83f269b588e22d32bb89f32480fa32058a75f36b30c310799b324709c"
+      },
+      "static/goal-exe/named/seg_0791_09.c": {
+        "citations": [
+          "4-49: pitch background loading"
+        ],
+        "sha256": "f67572d75994910310ca68465dd9251f5017d3d1d14c9555f5803c8e7fef6689"
+      },
+      "static/goal-exe/named/seg_0791_10.c": {
+        "citations": [
+          "434-504: substitution refresh and sort"
+        ],
+        "sha256": "dac88d5343ca5c88e68c9300bd29aeb34d2d04fdb7a8f72027783ca776126101"
+      }
+    },
+    "observer_sha256": "cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9",
+    "pin": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+    "vendor_files_verified": 10
+  }
+}

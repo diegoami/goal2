@@ -1,0 +1,21 @@
+test_all_complete_outcomes_are_compared (goal2.tests.test_pitch_observation.FidelityTests.test_all_complete_outcomes_are_compared) ... ok
+test_canonical_fidelity (goal2.tests.test_pitch_observation.FidelityTests.test_canonical_fidelity) ... ok
+test_half_selector_and_terminal_boundaries (goal2.tests.test_pitch_observation.ProjectionTests.test_half_selector_and_terminal_boundaries) ... ok
+test_identity_uses_fixture_side_and_local_slot (goal2.tests.test_pitch_observation.ProjectionTests.test_identity_uses_fixture_side_and_local_slot) ... ok
+test_predicates_are_not_lifecycle_clamps (goal2.tests.test_pitch_observation.ProjectionTests.test_predicates_are_not_lifecycle_clamps) ... ok
+test_signed_draw_axes (goal2.tests.test_pitch_observation.ProjectionTests.test_signed_draw_axes) ... ok
+test_retained_full_cases (goal2.tests.test_pitch_observation.ReportTests.test_retained_full_cases) ... FAIL
+test_saved_byte_mutations_fail_intended_assertions (goal2.tests.test_pitch_observation.SavedByteControls.test_saved_byte_mutations_fail_intended_assertions) ... ok
+
+======================================================================
+FAIL: test_retained_full_cases (goal2.tests.test_pitch_observation.ReportTests.test_retained_full_cases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T81-pitch-observation/goal2/tests/test_pitch_observation.py", line 114, in test_retained_full_cases
+    self.assertEqual(report['source']['vendor_files_verified'], 16)
+AssertionError: 10 != 16
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.324s
+
+FAILED (failures=1)

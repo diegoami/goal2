@@ -155,3 +155,65 @@ not a labelled rebuild-designed modern field. Other raw state semantics are
 preserved rather than guessed; no state-based culling is authorized. Slot
 numbering remains explicit, and per-frame identity rebinds invalidate any
 interpolation that would blend different players through a slot.
+
+[designed] Reset classification beyond the proved half-selector transition and
+identity rebinds is not inferred from coordinate jumps or raw state numbers.
+T82 can transport exact stopped snapshots without such a classification. T83
+can show discrete observed samples; interpolation across other restart/reset
+sequences requires additional original evidence and must stay disabled where
+that evidence is absent. This limits smoothing, not trustworthy marker placement
+or the simple animated field requested by the owner.
+
+## Complete runtime measurements
+
+[confirmed: T81 `runtime-02.json`, F013, kit424d599] Each sampled run and its
+unsampled baseline completed with exactly equal canonical events, complete
+result, full Memory and both seeds. No tick or runtime case was skipped.
+
+| Seed | Ticks | Changed poses | Player position changes | Ball changes | Outside in-play observations | Slot rebinds |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0x0101 | 4279 | 4277 | 68534 | 2624 | 70 | 4 |
+| 0x1234 | 4146 | 4144 | 66010 | 2599 | 101 | 3 |
+
+[confirmed: same report/pin] Neither case observed a player or ball outside the
+wider movement predicate. Player extrema were x[-9,8], y[-37,37] in both cases.
+Ball extrema were x[-8,8], y[-38,37] and x[-9,8], y[-38,38], respectively. Both
+cases observed raw player state values0,1,2,5,6,7,8,9,11,13. Neither case observed
+a sentinel-hidden player; exact suppression is established by the static draw
+condition and synthetic edge/control tests, not an invented runtime injury.
+
+[confirmed: same report/pin] Adjacent half-selector samples were sequences
+2116→2117 and2021→2022, respectively. Both went from minute45/subtick0,
+remaining46/threshold45/flag1 to minute46/subtick36, remaining45/threshold45/flag0;
+attack signs for fixture teams0/1 changed [1,-1]→[-1,1]. First/last sampled
+minutes were0/93 and0/91. Full player/ball coordinates, identity words, raw state,
+Memory digest and both RNG words of the transition neighbors are retained in
+`transitions`; separate halftime event/decision diagnostics are labelled as such.
+
+[designed] `runtime-01.log` and `identity-diagnostic-01.log` are rejected initial
+end-frame attempts, not incomplete cases counted as acceptance. `runtime-02`
+records the complete first observer version. `runtime-03` adds explicit ball
+sentinel visibility and pins that exact observer hash. The final focused suite
+checks the latter hash and cases. Earlier focused receipts exclude the report
+class explicitly and do not stand in for the complete suite.
+
+[designed] `premerge-attempt-01.log` retains a refused mistyped full SHA.
+`premerge-4346f3d.log` retains a run whose child checks passed but whose final
+clean-tree check correctly refused a concurrent documentation edit. Neither is
+a passing exact-head receipt. Final clean-head validation is recorded separately;
+the main session repeats it at the independently reviewed head before merging.
+
+[confirmed: T81 `runtime-03.json`, F013, kit424d599] The final observer repeats
+all four complete cases with the same measurements above and exact outcome
+comparisons. It explicitly reports zero sentinel-hidden balls in these cases.
+The observer SHA-256 is
+`cb9b4845ed6d8de06c3f01335313eee858154a6a882651ca074d0f5f684b11f9`.
+
+[designed] `focused-final-01.log` preserves an incorrect test expectation that
+conflated all16 provenance-managed engine files with the10 original-match kit
+files. The report test now compares the verified count to the pinned kit
+manifest's exact file set, retaining the source-pin and observer-hash assertions.
+`focused-final-02.log` passes all8 tests with zero skips, including all6 saved-byte
+controls and exact source restoration. `provenance-final-01.log` and
+`links-final-01.log` pass. `source-and-validation.json` records complete source,
+resource, report and receipt identities; original bytes remain ignored.
