@@ -18,7 +18,7 @@ def build(self,model,TACTICS):
     self.table.setHorizontalHeaderLabels(['XI','Player','Position','Ability','Energy','Confidence','Availability'])
     self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
     self.table.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.ResizeToContents)
-    self.table.setTabKeyNavigation(False);self.table.setMinimumHeight(340)
+    self.table.setTabKeyNavigation(False);self.table.setMinimumHeight(240)
     self.table.verticalHeader().setDefaultSectionSize(40);layout.addWidget(self.table)
     self.player_detail=reading_label('playerDetail');self.player_detail.setAccessibleName('Selected player detail');layout.addWidget(self.player_detail)
     self.lineup_board=reading_label('lineupBoard');self.lineup_board.setAccessibleName('Starting XI grouped by position');layout.addWidget(self.lineup_board)

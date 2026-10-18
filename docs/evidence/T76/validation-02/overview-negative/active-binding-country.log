@@ -1,0 +1,12 @@
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/country-selection.py", line 85, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/country-selection.py", line 53, in main
+    select(country);assert_display(expected)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/country-selection.py", line 32, in assert_display
+    assert window.title.text()==view['country_name'],'selected country header remains on previous country'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: selected country header remains on previous country

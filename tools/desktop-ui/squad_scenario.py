@@ -145,7 +145,7 @@ def scenario(args):
                         QTest.keyClick(control,Qt.Key.Key_Tab);app.processEvents();QTest.keyClick(app.focusWidget(),Qt.Key.Key_Backtab);app.processEvents()
                         assert app.focusWidget() is control,'Tab/Shift-Tab did not return to draft action'
                     capture(f'long-{width}x{height}-{label}-focused-confirm')
-                for row in (0,6,12,19):
+                for row in (0,4,8,12,16,19):
                     page.verticalScrollBar().setValue(w.table.y()-8);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
                     capture(f'long-{width}x{height}-roster-row-{row+1}-names')
                     w.table.scrollToItem(w.table.item(row,6));app.processEvents()
