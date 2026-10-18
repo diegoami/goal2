@@ -19,7 +19,7 @@ class QuickJobs:
     def busy(self):return self.process is not None
 
     def start(self,*,halftime=False):
-        if self.busy:raise ValueError('A friendly is already running')
+        if self.busy or getattr(self.model,'match_pending',False):raise ValueError('A match is already running')
         model=self.model
         if halftime and model.state.campaign is None:raise ValueError('Halftime interaction requires a campaign')
         self.interactive=halftime;self.halftime=None;self.continued=False
