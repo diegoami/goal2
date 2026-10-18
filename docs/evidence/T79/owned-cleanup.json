@@ -1,0 +1,18 @@
+{
+  "tag": "[confirmed: T79 checkpoint cleanup]",
+  "units_command": [
+    "systemctl",
+    "--user",
+    "list-units",
+    "--all",
+    "goal2-t79-*",
+    "--no-pager"
+  ],
+  "units_returncode": 0,
+  "units_stdout": "  UNIT LOAD ACTIVE SUB DESCRIPTION\n\n0 loaded units listed.\nTo show all installed unit files use 'systemctl list-unit-files'.\n",
+  "owned_retained_pid": 3245093,
+  "pid_output": "",
+  "sources_match_fbf73158": true,
+  "checkpoint_changes_evidence_only": true,
+  "checked_commit": "c3b404d6733042625dc255331882870299f0a487"
+}
