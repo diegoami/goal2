@@ -42,6 +42,15 @@ def make_session() -> server.WebSession:
 
 
 class WebCountryTests(unittest.TestCase):
+    def test_tactics_labels_match_confirmed_f010_elements_and_rebuild_choices(self):
+        labels = {row["element"]: (row["clear"], row["set"], row["evidence"])
+                  for row in make_session().view()["tactics_options"]}
+        self.assertEqual(labels[6], ("sag back to box", "stand ground", "confirmed"))
+        self.assertEqual(labels[7], ("play safe", "offside trap", "confirmed"))
+        self.assertEqual(labels[1], ("stay back", "push forward", "confirmed"))
+        self.assertEqual(labels[5][2], "designed")
+        self.assertEqual(labels[8][2], "designed")
+
     def test_countries_lists_all_128_real_names_and_current_id(self):
         session = make_session()
         result = session.countries_view()
@@ -165,7 +174,9 @@ class WebCountryTests(unittest.TestCase):
                 selected = json.load(response)
                 self.assertEqual(selected["country"]["id"], 2)
             with urlopen(base + "/") as response:
-                self.assertIn(b"Draft choices", response.read())
+                homepage = response.read()
+                self.assertIn(b"Draft choices", homepage)
+                self.assertIn("Elements 1–4, 6 and 7 use labels confirmed by F010".encode(), homepage)
                 self.assertEqual(response.headers["Content-Type"], "text/html; charset=utf-8")
             for path, media_type in (("/app.mjs", "text/javascript; charset=utf-8"),
                                      ("/styles.css", "text/css; charset=utf-8")):

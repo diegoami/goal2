@@ -11,7 +11,7 @@ adapt .claude/skills/run-task/SKILL.md  (squash merges (rule 7); preserve local 
 adapt .opencode/agents/reviewer.md  (the grant outside /tmp is the goal2-archaeology checkout (tools/check_provenance.py reads it), not the DOSBox-X bundle)
 adapt CLAUDE.md  (goal2-archaeology's rules 1-16 and "Choosing models" (numbered as there, the skills cite them; rule 7 squash-only), then goal2's own six rules word for word as 17-22)
 adapt docs/environment.md  (without the DOSBox-X and Ghidra sections; a shared machine without project specifics; the reviewer's grant is the goal2-archaeology checkout; Alibaba cites "Choosing models" rule 3)
-adapt docs/process.md  (without §11 (reverse engineering) and §13 (the named view); goal2's rules 17-20 in the briefs; T34/T14 named as goal2-archaeology's; monitoring rules cited as "Choosing models" rules; units goal2r-<name>)
+adapt docs/process.md  (#165 bounded flagged terminal-period recovery; without §11 (reverse engineering) and §13 (the named view); goal2's rules 17-20 in the briefs; T34/T14 named as goal2-archaeology's; monitoring rules cited as "Choosing models" rules; units goal2r-<name>)
 adapt docs/tasks/TEMPLATE.md  (goal2's Kind and Evidence lines; a measuring task owns measurements/T<nn>/**)
 adapt tests/test_agent_permissions.py  (checks the goal2-archaeology checkout grant)
 adapt tools/harness/lib/named.mjs  (the blocked list cites "Choosing models" rule 3 (a comment))
@@ -21,6 +21,8 @@ adapt tools/harness/switch-model.mjs  (T24 pass the detected client to model swi
 adapt tools/harness/review.mjs  (T24 client/provider diagnostics; retain reviewer family guard)
 adapt harness.json  (T24 Codex defaultsByClient.codex; retain Claude default and reviewer roster)
 adapt .claude/skills/switch-model/SKILL.md  (T24 client-specific defaults, retain Claude dispatch)
+adapt tools/harness/lib/chain.mjs  (#165 bounded flagged terminal-period recovery)
+adapt tools/harness/lib/review-selftest.mjs  (#165 recovery, identity, ambiguity and posting regressions)
 local README.md  (goal2's own: links the plan; the evidence-tags rule is now 17)
 local PROVENANCE.md  (goal2's own: the vendoring rule is now 18)
 local AGENTS.md  (Codex entrypoint sharing the numbered rules and task process)
@@ -44,7 +46,7 @@ b12fd55cefdaa554a268b9aab7e5f89323455a5ca017e7ae4336b1fe596edf7d  docs/model-tri
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
 9befbffd7ca14116d581da6fefefbe5d43514f8c3d4a7419467f4a7810e8f96b  tools/harness/jev.mjs
-4fe177771b1e387af7dc013e29a4d03102416ffcb27bbf5cdf3e830c4170e15d  tools/harness/lib/chain.mjs
+08953d99d575f293f2d8188ebc397357f83a159d88e2d69f06ed954eb0d3bbdc  tools/harness/lib/chain.mjs
 b82b7d62e2b543b565cb900684a9fbf611da1737b127e59cd2577c0add6a23d1  tools/harness/lib/claim.mjs
 38c62590823b35f5d40532edb7480899fbdc68eb06a28fb3bac42dbacbc31067  tools/harness/lib/common.mjs
 411151214b90b3847a643139417aad0b4863971c6d6ab4c271f249aa09e9ebc1  tools/harness/lib/guard.mjs
@@ -53,7 +55,7 @@ b65cc055307ca29a94c1f882262395737af1ae776b3561bd32d187740622b9af  tools/harness/
 a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/lib/models.mjs
 62cea459c5c582403cd6987eb57a57e682ac195452f91b33e114e189572ee9c5  tools/harness/lib/opencode.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
-66379ce8b5620f13ac48634a9f54e1eabfd6f451c06161219f6883b541bd3452  tools/harness/lib/review-selftest.mjs
+cfa5b6c3bc3039ed2e6946c111380a8be58b0aa04438ac4e923d0a9e2bd2e95e  tools/harness/lib/review-selftest.mjs
 7e842f5068ecf64e94248410328c8bb6ebf01b5787e4d0510dd64c7885d9a85e  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 c4abc459b7720a55a357371f38eb6fbda90ecf7aa40632f79238366f3939fb23  tools/harness/peek.sh
@@ -126,7 +128,7 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 a5a9846cce7c9f3262799fe8f32197110d2ee1ccd70219546c85c149e81d0e84  docs/environment.md
 
-00a56df0d059d06f287326e2cb2b0edcb51cf9429669df3fe79fd0e962a8a78f  docs/process.md
+47f6c62a9f3f51909f249a003baa9a9ff800d201f8f4f0f8efa90684858cff82  docs/process.md
 
 5446dcc17f2b70e1988ad315af538c31ec7f5cbcb7b94bafab008682f1c853fe  tools/harness/check-opencode-guard.mjs
 

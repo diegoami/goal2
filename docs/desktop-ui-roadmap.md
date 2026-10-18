@@ -92,3 +92,12 @@ fidelity. Presentation interpolation must be labeled and cannot alter engine beh
 [pygame-ce](https://pyga.me/docs/) supplies display, drawing, fonts, events and sprites
 for a Python 2D viewer. The implementation preflight selects/tests its optional
 version; this plan does not claim the dependency or viewer has shipped.
+
+## Modern football visual design
+
+[designed: owner #182, 2026-10-18] The [original visual study](design/football-gui/README.md)
+and [T74–T79 sequence](design/football-gui/backlog.md) propose a coherent football
+identity, country overview, squad/tactics, pool and result hierarchy, followed by
+T66 presentation integration. They preserve the Qt/Pygame architecture and state
+boundaries above. Planning acceptance and main-session retriage precede runtime
+dispatch; prototype screenshots do not establish real Qt or Windows acceptance.

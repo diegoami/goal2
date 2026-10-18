@@ -1,0 +1,25 @@
+Expected failure: mutation binds displayed-country labels to active country while browsing France.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'Netherlands'
+- 'France'
+
+    at file:///home/diego/projects/goal2-work/182-modern-football-gui-plan/tools/desktop-ui/inspect-design-plan.mjs:33:96
+    at async check (file:///home/diego/projects/goal2-work/182-modern-football-gui-plan/tools/desktop-ui/inspect-design-plan.mjs:23:36)
+    at async file:///home/diego/projects/goal2-work/182-modern-football-gui-plan/tools/desktop-ui/inspect-design-plan.mjs:33:2 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'Netherlands',
+  expected: 'France',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0
+
+PASS intended selected-country assertion rejected the mutation; original source bytes restored in finally.

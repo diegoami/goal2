@@ -1,0 +1,203 @@
+{
+  "proposal": "issue182 planning-only",
+  "baseline": "650189cbc58b67bcd3d1d775feb8b53c1bcf2c89",
+  "runtime_changes": false,
+  "illustrative_data": true,
+  "screens": [
+    "overview",
+    "squad-tactics",
+    "match-result"
+  ],
+  "prototype_contexts": [
+    "active",
+    "preview",
+    "busy",
+    "unsupported",
+    "empty-result"
+  ],
+  "assets": [
+    "index.html",
+    "study.css",
+    "study.js",
+    "pitch.svg",
+    "shirt.svg",
+    "audit.md",
+    "system.md"
+  ],
+  "tasks": [
+    {
+      "id": "T74",
+      "contract": "docs/tasks/T74.md",
+      "title": "Compose the Qt football shell and shared visual tokens",
+      "difficulty": "Medium",
+      "implementer": "Sol Low",
+      "reviewer": "MiniMax M3",
+      "depends_on": [
+        "#182 planning acceptance",
+        "T70",
+        "T71",
+        "T66",
+        "T80"
+      ],
+      "owns": [
+        "goal2/desktop/window.py (shell composition only)",
+        "goal2/desktop/style.py and page modules introduced here",
+        "tools/desktop-ui/redesign.py (shell scenario)",
+        "docs/evidence/T74/**"
+      ],
+      "acceptance_topics": [
+        "state",
+        "keyboard",
+        "scaling",
+        "windows",
+        "regression"
+      ],
+      "negative_control": "Remove navigation or make page changes discard an active draft: the new shell interaction scenario must fail. Prove baseline lacks the navigation scenario before implementation.",
+      "platform_evidence": "docs/evidence/T74/linux and windows",
+      "issue": "https://github.com/diegoami/goal2/issues/193"
+    },
+    {
+      "id": "T75",
+      "contract": "docs/tasks/T75.md",
+      "title": "Make country selection and overview unmistakable",
+      "difficulty": "Medium",
+      "implementer": "Sol Low",
+      "reviewer": "MiniMax M3",
+      "depends_on": [
+        "T74",
+        "#181 / PR183"
+      ],
+      "owns": [
+        "Qt country identity/overview page modules from T74",
+        "goal2/desktop/window.py (minimal binding only)",
+        "tools/desktop-ui/redesign.py (overview scenario)",
+        "docs/evidence/T75/**"
+      ],
+      "acceptance_topics": [
+        "state",
+        "keyboard",
+        "scaling",
+        "windows",
+        "regression"
+      ],
+      "negative_control": "Bind the preview header/roster to the active model or clear the active draft on browse: country-selection.py and the new overview scenario must fail. Baseline also lacks the country identity/overview hierarchy.",
+      "platform_evidence": "docs/evidence/T75/linux and windows",
+      "issue": "https://github.com/diegoami/goal2/issues/194"
+    },
+    {
+      "id": "T76",
+      "contract": "docs/tasks/T76.md",
+      "title": "Compose a readable squad and tactics draft workspace",
+      "difficulty": "Hard",
+      "implementer": "Sol Medium",
+      "reviewer": "MiniMax M3",
+      "depends_on": [
+        "T75",
+        "T47",
+        "#164"
+      ],
+      "owns": [
+        "Qt squad/tactics page modules from T74",
+        "goal2/desktop/window.py (minimal bindings)",
+        "tools/desktop-ui/redesign.py (squad scenario)",
+        "docs/evidence/T76/**"
+      ],
+      "acceptance_topics": [
+        "state",
+        "keyboard",
+        "scaling",
+        "windows",
+        "regression"
+      ],
+      "negative_control": "Publish XI/tactics on a checkbox change, truncate an ID above255, or allow an unavailable reserve into XI: the new squad scenario and existing management/halftime regressions must fail. Baseline lacks the grouped XI/bench and draft hierarchy.",
+      "platform_evidence": "docs/evidence/T76/linux and windows",
+      "issue": "https://github.com/diegoami/goal2/issues/195"
+    },
+    {
+      "id": "T77",
+      "contract": "docs/tasks/T77.md",
+      "title": "Give the national pool a focused exchange workspace",
+      "difficulty": "Medium",
+      "implementer": "Sol Low",
+      "reviewer": "MiniMax M3",
+      "depends_on": [
+        "T76",
+        "T71"
+      ],
+      "owns": [
+        "Qt national-pool page module from T74",
+        "tools/desktop-ui/redesign.py (pool scenario)",
+        "docs/evidence/T77/**"
+      ],
+      "acceptance_topics": [
+        "state",
+        "keyboard",
+        "scaling",
+        "windows",
+        "regression"
+      ],
+      "negative_control": "Make filtering change membership/RNG or exchange in preview/standalone/busy state: the new pool scenario and prove-pool.py must fail. Baseline lacks the focused exchange summary.",
+      "platform_evidence": "docs/evidence/T77/linux and windows",
+      "issue": "https://github.com/diegoami/goal2/issues/196"
+    },
+    {
+      "id": "T78",
+      "contract": "docs/tasks/T78.md",
+      "title": "Compose fixtures and results around the scoreboard",
+      "difficulty": "Medium",
+      "implementer": "Sol Low",
+      "reviewer": "MiniMax M3",
+      "depends_on": [
+        "T75",
+        "T49",
+        "T51"
+      ],
+      "owns": [
+        "Qt fixtures/results page module from T74",
+        "goal2/desktop/standings.py (presentation only)",
+        "tools/desktop-ui/redesign.py (results scenario)",
+        "docs/evidence/T78/**"
+      ],
+      "acceptance_topics": [
+        "state",
+        "keyboard",
+        "scaling",
+        "windows",
+        "regression"
+      ],
+      "negative_control": "Swap A/B on display, sum shootout kicks into goals or show the active result in a different-country preview: the new results scenario must fail. Baseline lacks scoreboard hierarchy.",
+      "platform_evidence": "docs/evidence/T78/linux and windows",
+      "issue": "https://github.com/diegoami/goal2/issues/197"
+    },
+    {
+      "id": "T79",
+      "contract": "docs/tasks/T79.md",
+      "title": "Unify Qt and Pygame match presentation after T66",
+      "difficulty": "Hard",
+      "implementer": "Sol Medium",
+      "reviewer": "MiniMax M3",
+      "depends_on": [
+        "T74",
+        "T76",
+        "T78",
+        "T66"
+      ],
+      "owns": [
+        "T66 Pygame presentation module (read exact merged path at preflight)",
+        "Qt match/progress page and minimal window binding",
+        "tools/desktop-ui/redesign.py (match-handoff scenario)",
+        "docs/evidence/T79/**"
+      ],
+      "acceptance_topics": [
+        "state",
+        "keyboard",
+        "scaling",
+        "windows",
+        "regression"
+      ],
+      "negative_control": "Let rendering mutate a packet/state, block the Qt heartbeat, start two jobs or publish on full_time before the tail: the accepted T66 lifecycle checks plus the new handoff scenario must fail. Baseline lacks unified presentation.",
+      "platform_evidence": "docs/evidence/T79/linux and windows",
+      "issue": "https://github.com/diegoami/goal2/issues/198"
+    }
+  ]
+}

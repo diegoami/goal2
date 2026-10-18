@@ -133,6 +133,13 @@ What the review script guarantees, and why:
 - The model runs at the effort its `harness.json` entry names (a heavy model at low, a light one
   at high), in the scripts' own data directory (L27, L29). One model, one run; no chain. The model
   is `reviewer.default`, or `--reviewer` (a harness.json key or `provider/model[@variant]`).
+- [designed: #165] A complete task/reviewer/PR/full-SHA header missing only its
+  expected terminal period is posted whole, flagged, with no label (exit 4).
+  Any such near header holds the output, including multiple or mixed exact/near
+  drafts. Other punctuation and wrong identities are outside this recovery.
+  Read the retained final and manually assess verdicts, findings and every DW;
+  formatting alone does not require another paid run. Existing closing-keyword
+  rewriting still applies to posted text; retained final artifacts remain raw.
 - Exit 0: posted and labelled. 2: a refused model (DeepSeek, an unknown name). 3: no review, nothing
   posted: read the final message ("Choosing models" rule 12), fix the cause, run again. 4: posted under a note, no
   label: the main session reads it and decides.

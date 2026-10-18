@@ -28,6 +28,11 @@ unavailable in a preview. Return to the active country to recover its unconfirme
 XI/captain/tactics draft, or use Resume to load a saved game. Country selection
 is unavailable during a match.
 
+[designed: #181] A successful **New campaign**, **New standalone friendly**, or
+**Resume** explicitly replaces the active game and discards any unconfirmed
+management draft. A Resume that fails validation leaves the active game and draft
+unchanged.
+
 [designed] **New campaign** starts a fresh1990 campaign with initial seeds4660/33590,
 using the shared opening campaign generator. A redraw or Resume does not regenerate
 players; previews generate separate records. The displayed twenty records show
@@ -40,8 +45,8 @@ as captain and toggle the eight tactics bits, then **Confirm management**. Until
 confirmation, edits affect only widgets. **Discard draft** restores confirmed
 choices. An unavailable selected starter can be removed; an unavailable reserve
 cannot be added. Invalid drafts show a reason and preserve active state. IDs and
-captain remain Python integers, including values above255. Tactics labels1..4
-follow F010; labels5..8 retain the established rebuild choices.
+captain remain Python integers, including values above255. [confirmed: F010] Tactics
+labels for elements1..4,6,7 follow F010; [designed] labels5 and8 retain the established rebuild choices.
 
 [designed; derived: T33/T40] Save writes the confirmed state, never an unconfirmed
 draft, through the existing atomic writer. Resume validates the save, embedded
