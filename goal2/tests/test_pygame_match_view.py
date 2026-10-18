@@ -41,7 +41,7 @@ class PresentationTests(unittest.TestCase):
         event={'kind':'commentary','minute':12,'score':[1,0],'data':{'text':'original line'}}
         d.accept(['owned',1,'event',event]);event['data']['text']='changed'
         self.assertEqual(d.events[0]['data']['text'],'original line')
-        self.assertEqual(d.lines()[:4],['Original engine — friendly','Denmark — Germany','12′   1 — 0','12′ original line'])
+        self.assertEqual(d.lines()[:4],['Original engine — friendly','Denmark — Germany','12 min   1 — 0','12 min original line'])
         for packet in (['stale',2,'event',event],['owned',1,'event',event],['owned',3,'event',event],['owned',2,'complete',{}]):
             before=copy.deepcopy(d.__dict__)
             with self.assertRaises(ValueError):d.accept(packet)
@@ -81,7 +81,7 @@ class PresentationTests(unittest.TestCase):
             render(screen,font,display)
             expected=pygame.Surface((1000,720));expected.fill((18,28,37))
             # [designed] Independent expected strings visit score, countries, minute and commentary pixels.
-            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','17′   2 — 1','17′ Actual original commentary']):
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','17 min   2 — 1','17 min Actual original commentary']):
                 expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
             self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'SDL rendered text differs')
             display.accept(['owned',2,'event',{'kind':'end','minute':90,'score':[2,1],'data':{}}])
@@ -89,7 +89,7 @@ class PresentationTests(unittest.TestCase):
                 'ratings':[[{'name':'A','raw':55}],[{'name':'B','raw':None}]],'man_of_the_match':'A'}])
             render(screen,font,display)
             expected.fill((18,28,37))
-            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','90′   2 — 1','17′ Actual original commentary',
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','90 min   2 — 1','17 min Actual original commentary',
                 'Original full-time board','Man of the match: A','corners: 3 — 4','Original bars: [[1, 2], [3, 4]]',
                 'Denmark — Raw rating','A: 55','Germany — Raw rating','B: blank']):
                 expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
@@ -99,8 +99,8 @@ class PresentationTests(unittest.TestCase):
                 live.accept(['owned',n-17,'event',{'kind':'commentary','minute':n,'score':[2,1],'data':{'text':f'Original line {n}'}}])
             self.assertEqual(render(screen,font,live,999),8)
             expected.fill((18,28,37))
-            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','48′   2 — 1']+
-                                    [f'{n}′ Original line {n}' for n in range(26,49)]):
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','48 min   2 — 1']+
+                                    [f'{n} min Original line {n}' for n in range(26,49)]):
                 expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
             self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'live scroll lost pinned score or ordered commentary')
             from goal2.desktop.pygame_viewer import position
