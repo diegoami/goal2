@@ -1,0 +1,43 @@
+{
+  "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "kind": 200,
+  "index": 42,
+  "managed": 7,
+  "budget": [
+    5,
+    5
+  ],
+  "policy": "play_on",
+  "captain_override": null,
+  "engine_year": 0,
+  "base_year": 2028,
+  "stage": 2,
+  "class": 0,
+  "next_free": 43,
+  "image_sha256": "b2693395ed3167efd1ec25a7d1a11b02b8a82f3b06d889e07c872a43796dacb3",
+  "result_sha256": "82c1393c7cf3909bddef19275b9de584c9914bc3bcc84983f426e20f84622830",
+  "memory_sha256": "919b8821c61defb120881c1c481feaf53bbc3e20379120b9f8ac0afc3148866e",
+  "seeds": [
+    35165,
+    20148
+  ],
+  "resolution": {
+    "kind": 200,
+    "winner": 0,
+    "regulation": [
+      0,
+      0
+    ],
+    "extra_time": [
+      0,
+      0
+    ],
+    "penalties": [
+      4,
+      3
+    ]
+  },
+  "independent_package": ".cache/watched-evidence-424d5998076d/runtime/original_match/__init__.py",
+  "independent_result_memory_equal": true,
+  "guest_stamps_order_equal": true
+}
