@@ -1,0 +1,11 @@
+dbus-daemon[2969069]: [session uid=1000 pid=2969069 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=2969071 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2969069]: [session uid=1000 pid=2969069 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[2969084]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=2969071 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2969069]: [session uid=1000 pid=2969069 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=2969071 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2969084]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[2969069]: [session uid=1000 pid=2969069 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 2969071
+PASS actual quick halftime/Continue/two-window close
+
+(xfconfd:2969091): xfconfd-WARNING **: 23:44:39.718: Name org.xfce.Xfconf lost on the message dbus, exiting.

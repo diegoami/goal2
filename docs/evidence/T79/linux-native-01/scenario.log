@@ -1,0 +1,21 @@
+dbus-daemon[2923424]: [session uid=1000 pid=2923424 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=2923426 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2923424]: [session uid=1000 pid=2923424 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[2923439]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=2923426 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2923424]: [session uid=1000 pid=2923424 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=2923426 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2923439]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[2923424]: [session uid=1000 pid=2923424 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 2923426
+test_qt_heartbeat_blocked_tail_and_actual_viewer_quit (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit) ... ok
+test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save) ... ok
+test_malformed_stale_ack_and_engine_failure_preserve_state (goal2.tests.test_pygame_match_view.PresentationTests.test_malformed_stale_ack_and_engine_failure_preserve_state) ... ok
+test_optional_dependency_and_qualifier_boundary (goal2.tests.test_pygame_match_view.PresentationTests.test_optional_dependency_and_qualifier_boundary) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 9.602s
+
+OK
+PASS match-handoff: actual product Qt/SDL; full original Malta18 state/events/board/ratings; frame+complete ACK; checkpoint replay; native layout/focus and lifecycle
+
+(xfconfd:2923446): xfconfd-WARNING **: 23:42:22.891: Name org.xfce.Xfconf lost on the message dbus, exiting.

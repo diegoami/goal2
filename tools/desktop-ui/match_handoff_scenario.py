@@ -114,6 +114,47 @@ def geometry(window,app,out,report,stage):
   report['captures'].append({'path':capture.name,'sha256':sha(capture)})
 
 
+def quick_decisions(window,app,out,report):
+ """[designed: T79] Actual private halftime controls and owned two-window shutdown."""
+ from PySide6.QtCore import Qt,QPoint
+ from PySide6.QtTest import QTest
+ from PySide6.QtGui import QFontMetrics
+ from goal2.tests.test_pygame_match_view import pump
+ from navigation import reveal
+ def click(button):reveal(button);QTest.mouseClick(button,Qt.MouseButton.LeftButton);app.processEvents()
+ model=window.model;prior=Path(model.save_path).read_bytes()
+ window.country.setCurrentIndex(window.country.findData(4));click(window.new);click(window.confirm)
+ before=copy.deepcopy(model.state)
+ click(window.play);assert window.jobs.busy and window.match_provenance.text()=='Quick simulation (rebuild setup)'
+ pump(lambda:window.jobs.halftime is not None,app=app,timeout=120)
+ assert model.state==before and Path(model.save_path).read_bytes()==prior,'private halftime changed committed game/save'
+ assert window.half_panel.isVisible() and not window.save.isEnabled() and window.stop.isEnabled()
+ geometry(window,app,out,report,'quick-halftime')
+ controls=[]
+ for widget in (window.half_out,window.half_in,window.substitute,window.continue_match):
+  reveal(widget);app.processEvents();page=window.pages[3];pos=widget.mapTo(page.viewport(),QPoint(0,0))
+  assert widget.isVisible() and widget.isEnabled() and pos.x()>=0 and pos.y()>=0 and pos.x()+widget.width()<=page.viewport().width() and pos.y()+widget.height()<=page.viewport().height(),'halftime action not reachable'
+  text=widget.currentText() if hasattr(widget,'currentText') else widget.text()
+  assert QFontMetrics(widget.font()).horizontalAdvance(text)+24<=widget.width(),'halftime action text clipped'
+  capture=out/('quick-half-'+widget.accessibleName().replace(' ','-')+'.png');assert window.grab().save(str(capture))
+  report['captures'].append({'path':capture.name,'sha256':sha(capture)})
+  controls.append({'name':widget.accessibleName(),'text':text,'size':[widget.width(),widget.height()]})
+ click(window.substitute);assert len(window.jobs.halftime['changes'])==1,'actual substitution control did not update private decision'
+ click(window.continue_match);pump(lambda:not window.jobs.busy,app=app,timeout=120)
+ assert model.state.match_count==before.match_count+1 and Path(model.save_path).read_bytes()==prior
+ assert window.match_provenance.text()=='Quick simulation (rebuild setup)' and not window.half_panel.isVisible(),'quick completion retained original/halftime context'
+ report['quick_halftime']={'actual_private_substitution':True,'continue_completed':True,'prior_save_retained':True,'controls':controls}
+ # [designed] A blocked engine keeps both real windows alive for authoritative close/reap.
+ click(window.new);click(window.confirm);snapshot=copy.deepcopy(model.state)
+ window.watched.engine.command=[sys.executable,'-c','import time;time.sleep(60)'];window.watched.viewer_command=None
+ click(window.watch);assert window.watched.busy
+ engine=window.watched.engine.process;viewer=window.watched.process
+ started=time.monotonic();window.close();app.processEvents()
+ assert time.monotonic()-started<3 and engine.poll() is not None and viewer.poll() is not None,'two-window close did not reap owned children'
+ assert model.state==snapshot and Path(model.save_path).read_bytes()==prior and not model.match_pending
+ report['both_window_shutdown']={'engine_reaped':True,'viewer_reaped':True,'state_and_save_retained':True,'seconds':time.monotonic()-started}
+
+
 def lifecycle(report):
  """[designed: T79] Run retained real child/refusal/save guards without rewriting their oracles."""
  import unittest
@@ -169,7 +210,7 @@ def scenario(options):
    assert w.draft()==(m.state.starting_eleven,m.state.captain,m.state.country_tactics)
    assert m.state.captain==341
    control=type(m)(m.goaldat,m.template_bytes,Path(folder)/'direct');control.state=copy.deepcopy(m.state)
-   # [designed: T79 planning] Save both checkpoints through the actual Qt path/actions.
+   # [designed: T79] Save both checkpoints through the actual Qt path/actions.
    opening=Path(folder)/'opening.g2save';working=save;repeat=Path(folder)/'repeat.g2save'
    w.path.setText(str(opening));click(w.save)
    assert opening.is_file() and m.save_path==opening,'opening checkpoint Save failed'
@@ -192,7 +233,7 @@ def scenario(options):
     engine=w.watched.engine.process;viewer=w.watched.process
     geometry(w,app,args.output,report,'starting-'+str(round_index))
     w.start_watched();w.start_match();assert w.watched.engine.process is engine and not w.jobs.busy,'duplicate handoff launched another job'
-    # [designed: T79 planning] Read only the product status while its observer writes diagnostics.
+    # [designed: T79] Read only the product status while its observer writes diagnostics.
     live_seen=[]
     def live_check():
      if w.watched.busy and getattr(w.watched,'frame_ack',-1)>=0:
@@ -200,20 +241,29 @@ def scenario(options):
       if pose:
        a,b=w.watched.display.countries
        assert w.match_score.text()==f'{a} {pose["score"][0]} — {pose["score"][1]} {b}','Qt live score differs from actual consumed pose'
+       if not live_seen:geometry(w,app,args.output,report,'live-'+str(round_index))
        live_seen.append(w.watched.frame_ack)
      return not w.watched.busy
     pump(live_check,app=app,timeout=360)
-    assert live_seen,'no consumed live Qt score observed'
 
     # Parent publication sends complete; wait for the existing child packet ACK before reaping.
     # A final pitch-frame ACK alone does not prove the later complete-board flip.
-    pump(lambda:w.watched.last_status is not None and
-         w.watched.last_status['sequence']==w.watched.display.sequence and
-         w.watched.last_status['digest']==w.watched.display.digest(),app=app,timeout=30)
+    if w.watched.process is not None:
+     pump(lambda:w.watched.last_status is not None and
+          w.watched.last_status['sequence']==w.watched.display.sequence and
+          w.watched.last_status['digest']==w.watched.display.digest(),app=app,timeout=30)
     w.watched.close_viewer();w.poll_watched();assert viewer.poll() is not None
     metrics=json.loads((child_output/'metrics.json').read_text())
+    if metrics.get('read_only') is False:
+     assert metrics.get('failure')=='renderer changed Display state','renderer failure was outside read-only oracle'
+     assert m.state==before and (save.read_bytes() if save.exists() else None)==prior_save,'renderer mutant altered committed state/save'
+     assert opening.read_bytes()==opening_bytes and working.read_bytes()==prior_save and not m.match_pending and engine.poll() is not None,'renderer mutant lost save/ownership retention'
+     report['negative_control']={'intended_read_only_failure':True,'state_and_saves_preserved':True,'engine_and_viewer_reaped':True,'pending_cleared':True,'metrics_read_after_reaping':True}
+     raise AssertionError('renderer changed Display state')
+    assert live_seen,'no consumed live Qt score observed'
     assert m.state==control.state,'complete state/Memory/RNG/history differs from direct original'
     assert m.state.match_count==before.match_count+1 and len(beats)>5
+    assert max((b-a for a,b in zip(beats,beats[1:])),default=0)<1,'Qt heartbeat blocked for a second'
     assert w.watched.display.events==json.loads(json.dumps(events)),'ordered original events differ'
     assert w.watched.display.result==completion(outcome,m.goaldat.player_names),'board/raw rating words/MOTM differ'
     assert w.watched.engine.outcome==outcome,'complete original outcome differs'
@@ -245,7 +295,7 @@ def scenario(options):
     assert m.state==control.state and save.read_bytes()==saved,'Save/Resume lost complete original continuation'
     w.navigate(3);app.processEvents();capture=args.output/('round-%s-qt.png'%round_index);assert w.grab().save(str(capture))
     report['captures'].append({'path':capture.name,'sha256':sha(capture)})
-    report['rounds'].append({'round':round_index,'rate':rate,'default_rate_first':round_index==0,'fixture':outcome.result['index'],'countries':w.watched.display.countries,'ticks':outcome.result['ticks'],'final_ack':w.watched.frame_ack,'heartbeats':len(beats),'live_observations':len(live_seen),'original_image_sha256':outcome.result['image_sha256'],'source_captain':before.captain,'source_tactics':before.country_tactics,'source_xi':before.starting_eleven,'source_seeds':[before.rng_seed_7b62,before.rng_seed_8336],'final_seeds':list(outcome.seeds),'full_exact_parity':True,'sdl_metrics_sha256':sha(child_output/'metrics.json'),'diagnostics_read_after_writer_reaped':True,'complete_packet_acknowledged':True})
+    report['rounds'].append({'round':round_index,'rate':rate,'default_rate_first':round_index==0,'fixture':outcome.result['index'],'countries':w.watched.display.countries,'ticks':outcome.result['ticks'],'final_ack':w.watched.frame_ack,'heartbeats':len(beats),'live_observations':len(live_seen),'maximum_heartbeat_gap':max((b-a for a,b in zip(beats,beats[1:])),default=0),'original_image_sha256':outcome.result['image_sha256'],'source_captain':before.captain,'source_tactics':before.country_tactics,'source_xi':before.starting_eleven,'source_seeds':[before.rng_seed_7b62,before.rng_seed_8336],'final_seeds':list(outcome.seeds),'full_exact_parity':True,'sdl_metrics_sha256':sha(child_output/'metrics.json'),'diagnostics_read_after_writer_reaped':True,'complete_packet_acknowledged':True})
     if round_index==0:
      first_completed_bytes=working.read_bytes();first_completed_state=copy.deepcopy(m.state)
      pending=m.state.campaign.next_fixture
@@ -257,6 +307,7 @@ def scenario(options):
      assert w.status.text()=='Watch supports scheduled friendlies only; pending qualifiers are unsupported','defensive Watch refusal differs'
      assert w.watched.process is None and not w.watched.busy and not m.match_pending,'qualifier refusal launched a watched job'
      assert m.state==first_completed_state and working.read_bytes()==first_completed_bytes and opening.read_bytes()==opening_bytes,'qualifier refusal changed state/save'
+     geometry(w,app,args.output,report,'qualifier-refusal')
      report['blocked_next_fixture']={'kind':pending.kind,'id':pending.fixture_id,'watch_disabled':True,'exact_route_explanation':w.fixture_routes.text().splitlines()[-1],'defensive_callback_refused':True}
      report['first_completed_save_sha256']=sha(working)
      assert first_completed_bytes!=opening_bytes,'completed and opening checkpoints unexpectedly identical'
@@ -272,6 +323,8 @@ def scenario(options):
    assert len(list(args.output.glob('round-*-sdl/complete.png')))==2,'both actual original complete-board captures are required'
    assert len(report['rounds'])==2 and all(row['fixture']==1376 for row in report['rounds']),'replay source counts/fixture differ'
    geometry(w,app,args.output,report,'completed')
+   quick_decisions(w,app,args.output,report)
+   assert opening.read_bytes()==opening_bytes and working.read_bytes()==first_completed_bytes,'later UI actions altered retained original checkpoints'
    lifecycle(report)
    report['result']='PASS';print('PASS match-handoff: actual product Qt/SDL; full original Malta18 state/events/board/ratings; frame+complete ACK; checkpoint replay; native layout/focus and lifecycle')
   except Exception as exc:
@@ -302,5 +355,20 @@ def negative_controls(options):
    receipt.append({'name':name,'command':command,'returncode':run.returncode,'intended_assertion':expected,'mutant_sha256':sha(path),'restored_sha256':hashlib.sha256(saved).hexdigest()})
   finally:
    path.write_bytes(saved);assert path.read_bytes()==saved
+ # [designed: T79] The real scenario must reject an actual source render mutation too.
+ path=ROOT/'goal2/desktop/pygame_viewer.py';saved=path.read_bytes();source=saved.decode()
+ before="    screen.fill(color('background'))\n    visible = display.visible()"
+ assert source.count(before)==1
+ try:
+  path.write_text(source.replace(before,"    display.sequence += 1\n"+before))
+  command=[sys.executable,'-B',str(ROOT/'tools/desktop-ui/redesign.py'),'--scenario','match-handoff','--template',str(options.template),'--data',str(options.data),'--evidence-dir',str(out/'real-scenario-render-mutation'),'--single-scale']
+  run=subprocess.run(command,cwd=ROOT,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'},capture_output=True,text=True,timeout=240)
+  log=run.stdout+run.stderr;(out/'real-scenario-render-mutation.log').write_text(log)
+  assert run.returncode!=0 and 'AssertionError: renderer changed Display state' in log,('real scenario missed render mutation',log)
+  failed=json.loads((out/'real-scenario-render-mutation/report.json').read_text())
+  assert failed['negative_control']['state_and_saves_preserved'] and failed['negative_control']['engine_and_viewer_reaped']
+  receipt.append({'name':'real-scenario-render-mutation','command':command,'returncode':run.returncode,'intended_assertion':'renderer changed Display state','restored_sha256':hashlib.sha256(saved).hexdigest()})
+ finally:
+  path.write_bytes(saved);assert path.read_bytes()==saved
  (out/'controls.json').write_text(json.dumps({'result':'PASS','controls':receipt,'exact_saved_bytes_restored':True},indent=2)+'\n')
- print('PASS3 T79 intended rendering/read-only/board/future-score controls; exact source restored')
+ print('PASS4 T79 intended rendering/read-only/board/future-score controls; exact source restored')

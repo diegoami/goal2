@@ -1,0 +1,469 @@
+{
+  "captures": [
+    {
+      "path": "quick-halftime-1440x900.png",
+      "sha256": "dfa49376ada1772335ca463ba1ed98fd3a4e4f20497c6a616639a77952debe23"
+    },
+    {
+      "path": "quick-halftime-1050x780.png",
+      "sha256": "e4d2fdab7a0dc64b33b53698549f9e94f8793c7ad40b37b94efd1b9956c0124b"
+    },
+    {
+      "path": "quick-halftime-900x700.png",
+      "sha256": "07ca3deaaff4e98bcacb529e87e5cddc2714b63ad2e97e28f7f56c54111e03c1"
+    },
+    {
+      "path": "quick-half-Halftime-outgoing-player.png",
+      "sha256": "d2cdb6babeeb21e091e92b5f6162a7ca07f0576b2394237f74bf20a2ab6be535"
+    },
+    {
+      "path": "quick-half-Halftime-incoming-player.png",
+      "sha256": "d2cdb6babeeb21e091e92b5f6162a7ca07f0576b2394237f74bf20a2ab6be535"
+    },
+    {
+      "path": "quick-half-Substitute.png",
+      "sha256": "52452049079366332e54496cccc6e52ef7d9e96c4d221a59f9bf659aa7fb75c2"
+    },
+    {
+      "path": "quick-half-Continue-second-half.png",
+      "sha256": "f751862be1ca73556c946ab672c9e7d40f7581ebb335dc665128c9f303b8e7e7"
+    }
+  ],
+  "geometry": [
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        225,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Quick simulation (rebuild setup)"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        357,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Bulgaria 0 \u2014 1 Albania"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        761,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Halftime \u00b7 private decision. Continue second half or Cancel match; saving remains unavailable."
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        225,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Quick simulation (rebuild setup)"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        357,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Bulgaria 0 \u2014 1 Albania"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        761,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Halftime \u00b7 private decision. Continue second half or Cancel match; saving remains unavailable."
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        225,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Quick simulation (rebuild setup)"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        357,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Bulgaria 0 \u2014 1 Albania"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        761,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Halftime \u00b7 private decision. Continue second half or Cancel match; saving remains unavailable."
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    }
+  ],
+  "focus": [
+    {
+      "stage": "quick-halftime",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "",
+      "accessible_name": "Halftime outgoing player"
+    },
+    {
+      "stage": "quick-halftime",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "",
+      "accessible_name": "Halftime outgoing player"
+    },
+    {
+      "stage": "quick-halftime",
+      "size": [
+        900,
+        700
+      ],
+      "object": "",
+      "accessible_name": "Halftime outgoing player"
+    }
+  ],
+  "quick_halftime": {
+    "actual_private_substitution": true,
+    "continue_completed": true,
+    "prior_save_retained": true,
+    "controls": [
+      {
+        "name": "Halftime outgoing player",
+        "text": "Mikhailov",
+        "size": [
+          737,
+          42
+        ]
+      },
+      {
+        "name": "Halftime incoming player",
+        "text": "Velinov",
+        "size": [
+          737,
+          42
+        ]
+      },
+      {
+        "name": "Substitute",
+        "text": "Substitute",
+        "size": [
+          768,
+          42
+        ]
+      },
+      {
+        "name": "Continue second half",
+        "text": "Continue second half",
+        "size": [
+          768,
+          42
+        ]
+      }
+    ]
+  },
+  "both_window_shutdown": {
+    "engine_reaped": true,
+    "viewer_reaped": true,
+    "state_and_save_retained": true,
+    "seconds": 0.07316591800190508
+  },
+  "result": "PASS"
+}

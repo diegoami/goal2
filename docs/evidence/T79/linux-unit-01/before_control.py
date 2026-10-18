@@ -1,7 +1,7 @@
 import hashlib,json,os,subprocess,sys
 from pathlib import Path
 root=Path.cwd();files=['goal2/desktop/pygame_viewer.py','goal2/desktop/fixtures_page.py','goal2/desktop/window.py'];saved={name:(root/name).read_bytes() for name in files}
-out=root/'docs/evidence/T79/linux-unit-01';receipt=[]
+out=Path(sys.argv[1]);out.mkdir(parents=True,exist_ok=False);receipt=[]
 tests=['test_real_framebuffer_matches_original_text_projection','test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only','test_named_match_surface_tracks_current_authority_instead_of_old_viewer']
 try:
  for name in files:(root/name).write_bytes(subprocess.check_output(['git','show','5c26616917d19a77a0e548a0baa2a3997112c477:'+name]))

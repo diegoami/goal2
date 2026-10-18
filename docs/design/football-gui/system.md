@@ -95,4 +95,6 @@ cannot satisfy this. Preserve launcher and saves on Windows.
 spacing and provenance label. T79 adapts T66's packet/render surface after it
 merges; no fonts/assets/state copied from original game. Opening/closing the view
 keeps Qt's job token and publication ownership. No transition starts a second
-match. Stage1 is a commentary/result board, not a live pitch animation.
+match. The historical stage1 study covered commentary/result boards. Accepted T83 supplies
+the discrete animated pitch; T79 preserves its signed projection, numbered markers,
+frame consumption and publication contract while styling the reading surfaces.

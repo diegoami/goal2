@@ -1,0 +1,30 @@
+{
+  "tag": "[designed: T79] Validation execution correction",
+  "acceptance": false,
+  "reason": "Full pitch suite includes SavedByteControls; it overlapped the separate native scenario source reader. Both outputs retained as diagnostics only, even though green. Final acceptance must run full suites and scenario serially.",
+  "scenario_exit": 0,
+  "unit_tests": 57,
+  "unit_seconds": 194.573,
+  "sources_restored_after_all_owned_jobs_exited": {
+    "goal2/desktop/pygame_viewer.py": {
+      "sha256": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+      "equals_committed_886f907d": true
+    },
+    "goal2/desktop/match_page.py": {
+      "sha256": "3eebb0b598c6ff9f56578619209e53ec7c99881c853ca0aa2d4526e157a34552",
+      "equals_committed_886f907d": true
+    },
+    "goal2/desktop/window.py": {
+      "sha256": "f00b851d5d4b5ed55230d4c64835a785f7cd80e6880839488e3950a4ad5480fb",
+      "equals_committed_886f907d": true
+    },
+    "goal2/desktop/fixtures_page.py": {
+      "sha256": "ce1b0a08bf413f385f61d2a8476968e76f869ac272737eaf0db04e5ea8255c72",
+      "equals_committed_886f907d": true
+    },
+    "tools/desktop-ui/match_handoff_scenario.py": {
+      "sha256": "9ae4a48805993c58427b3c3fd209d51e766ebe3c07cc04f94d2d82325ee072da",
+      "equals_committed_886f907d": true
+    }
+  }
+}

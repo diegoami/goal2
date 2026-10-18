@@ -99,6 +99,22 @@ QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/redesign.py --scenario overvi
 QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/country-selection.py --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
 ```
 
+[designed: T79] Fixtures & results starts with a named match surface: provenance,
+source-order teams/score and current progress. It follows the current job or saved
+model, so a previous original viewer does not label a new game or quick match.
+During animated original play, Qt shows only the latest acknowledged rendered
+pose; it waits for the first sample rather than displaying future ingress scores.
+The private quick halftime decision uses the same surface, with existing Off/On,
+Substitute and Continue actions. Cancel match stays in the persistent footer.
+
+[designed: T79] The SDL viewer shares the shell palette, pins provenance/named
+sides/score, and wraps commentary and original result rows without discarding
+characters. Wheel/Up/Down scroll reading rows; End follows live output; Escape
+closes the viewer. Resizing fits the canonical pitch and reading canvas inside
+the actual SDL surface, preserving aspect ratio and the signed sample projection.
+SDL paint dimensions are independent of Qt scaling. No original font or asset is
+used; raw rating words remain raw values, including the original blank sentinel.
+
 [designed: T70] Confirm management, then choose **Play quick friendly**. Simulation
 runs in a local process; the window stays responsive. Controls that change the
 game are disabled until completion. **Cancel match** or closing the window stops
