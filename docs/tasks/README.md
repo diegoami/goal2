@@ -138,3 +138,13 @@ main-session preflight before implementation; status stays in issue labels.
 | [T81](T81.md) | Validate original pitch coordinates and observation fidelity | [#211](https://github.com/diegoami/goal2/issues/211) | Hard | T66, T80 |
 | [T82](T82.md) | Stream bounded original pitch frames independently of match events | [#212](https://github.com/diegoami/goal2/issues/212) | Hard | T81, T80 |
 | [T83](T83.md) | Watch a numbered animated pitch in Pygame | [#213](https://github.com/diegoami/goal2/issues/213) | Hard | T82, #209 |
+
+## Playtest usability and player information
+
+[designed: owner,2026-10-19] Preserve the original information and improve access;
+status remains in GitHub labels. The browsing bug is [#241](https://github.com/diegoami/goal2/issues/241).
+
+| Task | Title | Issue | Difficulty | Merge after |
+| --- | --- | --- | --- | --- |
+| [T84](T84.md) | Inspect complete original-style player attributes | [#242](https://github.com/diegoami/goal2/issues/242) | Hard | T79, #241 |
+| [T85](T85.md) | Find Play/Watch easily and choose match playback speed | [#243](https://github.com/diegoami/goal2/issues/243) | Medium | T79 |
