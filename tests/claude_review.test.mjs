@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { CLAUDE, sha, claudeEnv, selectClaude, reviewPolicy, claudeArgs, verifySettings, verifyRules } from '../tools/harness/lib/claude-policy.mjs';
+import { CLAUDE, sha, claudeEnv, selectClaude, reviewPolicy, claudeArgs, claudeReviewArgs, verifySettings, verifyRules } from '../tools/harness/lib/claude-policy.mjs';
 const model = { backend: 'claude', id: CLAUDE.model, variant: 'medium', family: 'claude' };
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 't73-policy-'));
 const cwd = path.join(root, 'review'); fs.mkdirSync(cwd);
@@ -89,7 +89,7 @@ function fixtureOptions(mode = 'ok') {
 test('production runner recovers full native final, exact scope, usage and sanitized projection', async () => {
   const options = fixtureOptions(); const result = await runClaudeReview(options);
   assert.match(result.reviewText, /COVER F001: audited/); assert.equal(result.modelUsage[CLAUDE.model].provider, 'firstParty');
-  const receipt = JSON.parse(fs.readFileSync(result.manifest)); assert.equal(receipt.phase, 'complete'); assert.equal(receipt.owned.stdin, 'DEVNULL');
+  const receipt = JSON.parse(fs.readFileSync(result.manifest)); assert.equal(receipt.phase, 'complete'); assert(receipt.finished >= receipt.started); assert(receipt.durationMs >= receipt.owned.durationMs); assert.equal(receipt.owned.stdin, 'DEVNULL');
   const projection = fs.readFileSync(receipt.files.projection, 'utf8'); assert.doesNotMatch(projection, /SYNTHETIC-SECRET/);
   assert.match(projection, /owned pipe lease/); assert(fs.existsSync(path.join(path.dirname(result.manifest), 'scope.json')));
   const frames = fs.readFileSync(receipt.files.stdout, 'utf8'); assert.equal(JSON.parse(frames.trimEnd().split('\n').at(-1)).result, result.reviewText);
@@ -109,7 +109,7 @@ test('production discovery refuses routing/provider/widening before generation w
 test('production exact identity, required denials, final and coverage guards reject approval-looking streams', async () => {
   const cases = { 'read-malformed-error': 'tool result identity', 'read-failed': 'required tool denied', 'malformed-init': 'init toolset', 'duplicate-init': 'missing/duplicate init', 'bad-usage': 'native token/cost accounting', 'wrong-head': 'executed head identity', 'wrong-model': 'init identity', 'wrong-cwd': 'init identity', toolset: 'init toolset', 'wrong-session': 'frame session', 'wrong-pr': 'PR/head/base', denied: 'required tool denied', 'missing-check': 'required command coverage', dw: 'Done-when coverage', scope: 'changed-file scope coverage', control: 'substantive control accounting', 'provider-final': 'final model/provider', 'missing-init': 'missing/duplicate init', 'missing-final': 'missing/duplicate final', 'final-mismatch': 'complete final recovery', malformed: 'malformed native stream', truncated: 'truncated stream', nonzero: 'nonzero review exit' };
   for (const [mode, reason] of Object.entries(cases)) {
-    await assert.rejects(() => runClaudeReview(fixtureOptions(mode)), e => { assert.match(e.message, new RegExp(reason), mode); assert.equal(JSON.parse(fs.readFileSync(e.manifest)).phase, 'failed'); return true; });
+    await assert.rejects(() => runClaudeReview(fixtureOptions(mode)), e => { assert.match(e.message, new RegExp(reason), mode); const receipt = JSON.parse(fs.readFileSync(e.manifest)); assert.equal(receipt.phase, 'failed'); assert(receipt.finished >= receipt.started); assert(receipt.durationMs >= 0); return true; });
   }
 });
 test('production owned startup idle total and cancellation leave unrelated process alive', async () => {
@@ -191,4 +191,12 @@ test('prepared worktree validates isolation repository exact head and cleanlines
   const file = path.join(directory, 'source.txt'); const original = fs.readFileSync(file);
   try { fs.writeFileSync(file, 'dirty'); assert.throws(() => preparedClaudeWorktree(args), /prepared review worktree identity/); }
   finally { fs.writeFileSync(file, original); }
+});
+
+test('production review argv terminates trailing variadic directory options before the prompt', () => {
+  const prompt = 'Read and follow the entire trusted review brief at /fixture/brief.md.';
+  const args = claudeReviewArgs(policy, '81688ef6-b3dd-42ab-9680-ae1bd6b824a8', prompt);
+  assert.deepEqual(args.slice(-2), ['--', prompt], 'native prompt must survive trailing --add-dir');
+  assert.equal(args[args.length - 3], research, 'regression retains the actual trailing directory shape');
+  assert(!args.includes('--max-turns'), 'no extra option may mask prompt capture');
 });

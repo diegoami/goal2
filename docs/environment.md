@@ -169,7 +169,10 @@ it is a **control lease**, closed and reaped before actual generation. Raw
 settings/account/env/hook replies never leave process memory; sanitized hashes,
 rule-source metadata and the firstParty provider field are retained. Actual
 review input is DEVNULL, with a short positional pointer to the retained full
-brief. It gets a distinct fixed UUID, its own process group and startup/idle/total
+brief, separated from variadic directory flags by an explicit `--` terminator.
+The native loopback fixture uses this same production argument builder without
+a trailing option masking positional parsing (measurements/T73/argv-regression.md).
+It gets a distinct fixed UUID, its own process group and startup/idle/total
 deadlines. Cancellation kills only owned descendants, including after leader exit.
 
 [designed: T73] Mandatory managed startup hooks remain respected and may execute

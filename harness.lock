@@ -124,7 +124,7 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 8cacda74b4c6a5e5d1daef705aa6983adbad9beed4acb574c96cf9b801a4c223  .github/workflows/ci.yml
 
-931bf73cc5535395a52c14909f43ce877ff044473713d661a3e1f2dc4f385f61  docs/environment.md
+9dc11b91bff2eed70d3eaa9b85325eccab90a2b5b5edc93d7c0a564918d7024b  docs/environment.md
 
 256079ae4082268b5408cb4a937997834db4fe466c2265bd10c1d5b8dc3f757c  docs/process.md
 
@@ -139,10 +139,10 @@ cca236f12a826843a5ed0b7772c9c564321337a597e55955e13a4f5e01caf6ed  tools/harness/
 1d7fc7b3eea2a7a6a26f59f3ac1bede3daf50dc543b9d21b3a7907b62be34569  tools/harness/probe-opencode-plugins.mjs
 
 local tools/harness/lib/claude-policy.mjs  (T73 optional direct Claude review)
-67f929ad3067021c29c45ff491ef404165a419c2bc6849cbe59bbc725c024769  tools/harness/lib/claude-policy.mjs
+201be75ec2c7c1a016af8a7a1b4c970c0cd11d8bfb8027cea302234057dfac25  tools/harness/lib/claude-policy.mjs
 
 local tests/claude_review.test.mjs  (T73 optional direct Claude review)
-49c266b0acc990eb00f2b8c0de8432c2915de48777acc4431a05345f5f8e13d6  tests/claude_review.test.mjs
+d218414dff2220ee215882e7d5b0da693026d6988c3b41092d392d1a8f6da27b  tests/claude_review.test.mjs
 
 local tools/harness/lib/claude-protocol.mjs  (T73 optional direct Claude review)
 4418ad9fd158d513438db78f2890204496b4dae65fbb0767b1d9ccc23f646fe4  tools/harness/lib/claude-protocol.mjs
@@ -151,10 +151,10 @@ local tools/harness/lib/claude-scope.mjs  (T73 optional direct Claude review)
 7dd870c66713d8575a5314aa5bf95e20a901aee5027c17f12c4819771102eb56  tools/harness/lib/claude-scope.mjs
 
 local tools/harness/lib/claude-workflow.mjs  (T73 optional direct Claude review)
-90b2d490251dd8ad433fba0d4c11edd85da7eafee037aec47700fc8ea17c49e8  tools/harness/lib/claude-workflow.mjs
+d5381de9b9093941120dc8b8eb004c4fc60ba64dac7c7024ad7c40606ec2fec7  tools/harness/lib/claude-workflow.mjs
 
 local tests/helpers/claude-stub.mjs  (T73 optional direct Claude review)
 b4318112fa2e8400d4f8521d281fc733039657a12ac08dd07940f5a6dec02749  tests/helpers/claude-stub.mjs
 
 local tools/harness/probe-claude-permissions.mjs  (T73 deterministic native permission fixture)
-5655069bcc304facda92d55df13fd951d1fe332dc3c3278e540bb084d6dbdc9d  tools/harness/probe-claude-permissions.mjs
+57eb033cde97c0b22555cc135c30bd108f02dcda808a8fa72b3adcc74dcfeb97  tools/harness/probe-claude-permissions.mjs

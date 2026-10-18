@@ -6,7 +6,7 @@ import http from 'node:http';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { capture } from './lib/opencode-transport.mjs';
-import { CLAUDE, claudeArgs, sha } from './lib/claude-policy.mjs';
+import { CLAUDE, claudeReviewArgs, sha } from './lib/claude-policy.mjs';
 import { claudeCommand } from './lib/claude-workflow.mjs';
 const ix = process.argv.indexOf('--out'); assert(ix > 0 && process.argv[ix + 1], '--out required');
 const out = path.resolve(process.argv[ix + 1]); fs.mkdirSync(out, { recursive: true });
@@ -58,7 +58,7 @@ try {
  // [designed: T73] Fixture git repo has no remote; canary cannot publish even if enforcement regresses.
  const setup = await capture({ exe: 'git', prefix: [] }, ['init', '-q'], { env, cwd, timeoutMs: 3000 }); assert.equal(setup.code, 0);
  const remotes = await capture({ exe: 'git', prefix: [] }, ['remote', '-v'], { env, cwd, timeoutMs: 3000 }); assert.equal(remotes.code, 0); assert.equal(remotes.stdout, ''); receipt.fixtureGitRemotes = [];
- const args = [...claudeArgs(policy, randomUUID()), '--max-turns', '3', 'Synthetic local protocol fixture: execute the scripted tool calls, then finish. No external inference.'];
+ const args = claudeReviewArgs(policy, randomUUID(), 'Synthetic local protocol fixture: execute the scripted tool calls, then finish. No external inference.');
  receipt.argv = args;
  run = await capture(command, args, { env, cwd, timeoutMs: 45000 });
  receipt.ownedExit = run.code; receipt.timedOut = run.timedOut; receipt.stdoutSHA256 = sha(run.stdout); receipt.stderrSHA256 = sha(run.stderr); receipt.stderrBytes = Buffer.byteLength(run.stderr);
@@ -75,7 +75,7 @@ try {
  receipt.denials = final.permission_denials; receipt.syntheticUsage = final.usage; receipt.nativePolicyEnforcementPassed = true;
 } catch (error) { receipt.nativePolicyEnforcementPassed = false; receipt.failure = error.code === 'ERR_ASSERTION' ? String(error.message).split('\n')[0] : error.name; process.exitCode = 1; }
 finally {
- fake.closeAllConnections(); await new Promise(r => fake.close(r)); receipt.requests = requestReceipts; receipt.scriptSHA256 = sha(fs.readFileSync(new URL(import.meta.url)));
+ fake.closeAllConnections(); await new Promise(r => fake.close(r)); receipt.requests = requestReceipts; receipt.scriptSHA256 = sha(fs.readFileSync(new URL(import.meta.url))); receipt.argumentBuilderSHA256 = sha(fs.readFileSync(new URL('./lib/claude-policy.mjs', import.meta.url))); receipt.argumentBuilder = 'claudeReviewArgs shared with production; no masking option after directories';
  fs.writeFileSync(path.join(root, 'receipt.json'), JSON.stringify(receipt, null, 2) + '\n', { flag: 'wx' });
  console.log(JSON.stringify({ root, passed: receipt.nativePolicyEnforcementPassed, requests: turns, failure: receipt.failure }));
 }

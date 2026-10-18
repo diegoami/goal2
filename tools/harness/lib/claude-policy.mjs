@@ -63,3 +63,10 @@ export function verifyRules(reply, policy) {
   demand(expected.size === 0 && DENY.every(rule => rules.some(r => r.behavior === 'deny' && r.rule === rule)), 'missing required live permission');
   return rules.map(({ behavior, source, rule }) => ({ behavior, source, ruleSHA256: sha(rule) }));
 }
+
+// [designed: T73] Share actual review invocation with the synthetic native argument fixture.
+export function claudeReviewArgs(policy, sessionID, prompt) {
+  demand(typeof prompt === 'string' && prompt.trim().length > 0, 'review prompt');
+  // [confirmed: measurements/T73/argv-regression.md] --add-dir is variadic; an option-free tail consumes the prompt.
+  return [...claudeArgs(policy, sessionID), '--', prompt];
+}

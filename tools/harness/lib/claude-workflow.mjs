@@ -4,7 +4,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { StringDecoder } from 'node:string_decoder';
 import { spawnOwned, killOwned } from './opencode-transport.mjs';
-import { CLAUDE, ClaudeError, claudeArgs, claudeEnv, demand, sha, reviewPolicy, selectClaude, verifyRules, verifySettings } from './claude-policy.mjs';
+import { CLAUDE, ClaudeError, claudeArgs, claudeReviewArgs, claudeEnv, demand, sha, reviewPolicy, selectClaude, verifyRules, verifySettings } from './claude-policy.mjs';
 import { parseClaude, verifyInit } from './claude-protocol.mjs';
 import { localGit, pinnedScope } from './claude-scope.mjs';
 // [designed: T73] Only an exact nonbilling simulator in a native Node test may replace the audited executable.
@@ -85,7 +85,7 @@ export async function runClaudeReview({ command: chosen, model, policyFile, work
   const files = Object.fromEntries(['stdout', 'stderr', 'final', 'brief', 'projection'].map(k => [k, path.join(directory, k + ({ stdout: '.jsonl', stderr: '.txt', projection: '.json', final: '.txt', brief: '.md' }[k]))]));
   const manifestFile = path.join(directory, 'run.json'); const started = Date.now();
   const manifest = { backend: 'claude', sessionID, projectionSessionID, reviewedHead, reviewBase, reviewPR, directory: cwd, policySHA256: policy.sourceSHA256, binarySHA256: command.simulator ? STUB_SHA256 : CLAUDE.binarySHA256, sources: Object.fromEntries(['claude-policy.mjs', 'claude-protocol.mjs', 'claude-scope.mjs', 'claude-workflow.mjs', '../review.mjs'].map(n => [n, sha(fs.readFileSync(new URL(n, import.meta.url)))])), files, phase: 'preflight', started, redactions: [], limits: 'Native startup policy hooks are respected; projection is point-in-time and does not freeze native policy refresh. No OS jail.' };
-  const save = () => { manifest.hashes = Object.fromEntries(Object.entries(files).filter(([, f]) => fs.existsSync(f)).map(([k, f]) => [k, sha(fs.readFileSync(f))])); fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 2) + '\n'); };
+  const save = () => { if (['complete', 'failed'].includes(manifest.phase)) { manifest.finished = Date.now(); manifest.durationMs = manifest.finished - started; } manifest.hashes = Object.fromEntries(Object.entries(files).filter(([, f]) => fs.existsSync(f)).map(([k, f]) => [k, sha(fs.readFileSync(f))])); fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 2) + '\n'); };
   save();
   try {
     const scope = pinnedScope({ cwd, base: reviewBase, head: reviewedHead, pr: reviewPR, directory });
@@ -104,7 +104,7 @@ export async function runClaudeReview({ command: chosen, model, policyFile, work
     demand(sha(fs.readFileSync(policy.file)) === policy.sourceSHA256 && localGit(cwd, ['rev-parse', 'HEAD']).trim() === reviewedHead && !localGit(cwd, ['status', '--porcelain', '--untracked-files=no']).trim(), 'policy/head drift');
     claudeCommand(command); manifest.phase = 'running'; save(); log(`Claude review session ${sessionID}; retained ${manifestFile}`);
     const expected = { sessionID, cwd, head: reviewedHead, base: reviewBase, pr: reviewPR, inventory: scope.inventory, commands: policy.commands, negativeControl, deniedCanaries, doneWhen };
-    const run = await ownedRun(command, [...claudeArgs(policy, sessionID), `Read and follow the entire trusted review brief at ${files.brief}.`], { cwd, env, files, startupTimeoutMs, idleTimeoutMs, totalTimeoutMs: Math.max(1, totalTimeoutMs - (Date.now() - started)), signal, log,
+    const run = await ownedRun(command, claudeReviewArgs(policy, sessionID, `Read and follow the entire trusted review brief at ${files.brief}.`), { cwd, env, files, startupTimeoutMs, idleTimeoutMs, totalTimeoutMs: Math.max(1, totalTimeoutMs - (Date.now() - started)), signal, log,
       frame(event) { if (event.type === 'system' && event.subtype === 'init') { verifyInit(event, expected); return true; } return false; } });
     manifest.owned = { pid: run.pid, exitCode: run.exitCode, durationMs: run.durationMs, stdin: 'DEVNULL' };
     const recovered = run.streams.stdout.trimEnd().split('\n').flatMap(line => { try { const r = JSON.parse(line); return r.type === 'result' && typeof r.result === 'string' ? [r.result] : []; } catch { return []; } });
