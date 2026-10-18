@@ -70,6 +70,11 @@ def draw_offset(x, y):
     return DRAW_ORIGIN + ROW_BYTES * x + COLUMN_BYTES * y
 
 
+def hidden_xy(x, y, sentinel):
+    """[confirmed: 8537/8F10, kit424d599] Exact packed sentinel skips drawing."""
+    return ((x & 255) | ((y & 255) << 8)) == sentinel
+
+
 def project_player(item, sentinel):
     """[derived: A260/2974/2BB1/8537] Preserve word identity and explicit slot."""
     slot = item['slot']
@@ -78,7 +83,7 @@ def project_player(item, sentinel):
     x, y = signed(item['x']), item['y']
     return dict(slot=slot, team=team, number=number, player=item['player'],
                 x=x, y=y, screen=project_xy(x, y), state=item['state'],
-                hidden=((item['x'] | ((y & 255) << 8)) == sentinel))
+                hidden=hidden_xy(x, y, sentinel))
 
 
 def canonical_events(events):
@@ -152,7 +157,7 @@ def snapshot(match, event, sequence):
                 subtick=m.rd(0x831D), threshold=threshold, remaining=remaining,
                 half_flag=half_flag, attack_by_team=[table[0 ^ half_flag], table[1 ^ half_flag]],
                 sentinel_word=sentinel, initialization_word=m.rd(0x0644),
-                ball=ball, players=players, memory_sha256=sha(before), rng=list(rng))
+                ball=ball, ball_hidden=hidden_xy(*ball, sentinel), players=players, memory_sha256=sha(before), rng=list(rng))
 
 
 def outcome_summary(outcome):
@@ -171,7 +176,7 @@ def run_case(raw, seed, sampled):
     events, previous, first, last = [], None, None, None
     transitions, rebindings, state_examples = [], [], {}
     stats = dict(ticks=0, changed_poses=0, player_changes=0, ball_changes=0,
-                 outside_in_play=0, outside_movement=0, hidden=0, repeated_reads=0)
+                 outside_in_play=0, outside_movement=0, hidden=0, hidden_ball=0, repeated_reads=0)
     extrema = {kind: [128, -129, 128, -129] for kind in ('players', 'ball')}
     flags, minutes, bindings = set(), set(), {}
     for event in match.events():
@@ -187,6 +192,7 @@ def run_case(raw, seed, sampled):
                 if stats['ticks'] % 1000 == 0:
                     print(f'observed seed={seed:#06x} ticks={stats["ticks"]} minute={event.minute}', flush=True)
                 stats['repeated_reads'] += 1
+                stats['hidden_ball'] += int(frame['ball_hidden'])
                 flags.add(frame['half_flag'])
                 minutes.add(frame['event_minute'])
                 first = first or frame

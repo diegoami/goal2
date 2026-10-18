@@ -86,7 +86,7 @@ may rebind a slot; renderers must use each frame's player word.
 `named/seg_0791_07.c:465-480,904-931`]
 Initialization writes `DS:0644` as the packed position. Drawing suppresses an
 exact packed `DS:0640` position. [derived] The observer carries a `hidden` boolean
-for that exact sentinel, leaving coordinates and the raw state byte intact.
+for that exact sentinel on both players and ball, leaving coordinates and the raw state byte intact.
 `state` is not used as a universal active/off-field predicate. [designed] No
 unproven meaning is attached to other state values. Synthetic edge tests cover
 initialization `(-9,0)`, sentinel `(11,0)` and non-sentinel `(11,1)` without
@@ -110,8 +110,8 @@ after the preceding movement/display sweep, before the next clock execution.
 Multiple queued canonical events may refer to that one stopped state. [designed]
 Only tick reads are presentation frames; `event_minute` is the stop's event stamp,
 not a reconstructed timestamp for each earlier commentary item. Reported
-`transitions` at decisions/end are explicitly diagnostic stopped states, never
-historical event poses. Approximately37 ticks per original minute is engine
+`transitions` at halftime decisions are explicitly diagnostic stopped states,
+never historical event poses. Approximately37 ticks per original minute is engine
 clock structure, not wall-clock animation fps.
 
 [designed] T82's observation contract is resolved: signed x/y, fixed orientation,
@@ -143,9 +143,8 @@ while the final squad's third word was374 (364 moved to fourth). This is a
 postmatch stopped state, not a failed tick frame. [derived] Pitch bindings must
 not be projected against postmatch squads after teardown. The observer retains
 the last completed tick as its final frame and records terminal event minute
-separately; `end`/`full_time` are not sampled frames. This corrects the overly broad
-decisions/end diagnostic wording above: only halftime decisions are diagnostic
-pose reads. All completed ticks retain strict raw word/current squad ordinal,
+separately; `end`/`full_time` are not sampled frames. Only halftime decisions
+are diagnostic pose reads. All completed ticks retain strict raw word/current squad ordinal,
 team and signed-coordinate assertions; no runtime tick is omitted.
 
 [designed] Trustworthy marker placement/visibility has no unresolved gate for

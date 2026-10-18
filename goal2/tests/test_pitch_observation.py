@@ -65,7 +65,10 @@ class ProjectionTests(unittest.TestCase):
         hidden = probe.project_player(dict(slot=1, player=372, x=11, y=0, state=1), 11)
         initial = probe.project_player(dict(slot=1, player=372, x=247, y=0, state=1), 11)
         other = probe.project_player(dict(slot=1, player=372, x=11, y=1, state=1), 11)
-        self.assertTrue(hidden['hidden'])
+        self.assertTrue(hidden['hidden'], 'original sentinel visibility')
+        self.assertTrue(probe.hidden_xy(11, 0, 11), 'original sentinel visibility')
+        self.assertFalse(probe.hidden_xy(-9, 0, 11))
+        self.assertFalse(probe.hidden_xy(11, 1, 11))
         self.assertFalse(initial['hidden'])
         self.assertFalse(other['hidden'])
         self.assertEqual(initial['x'], -9)
@@ -105,8 +108,10 @@ class FidelityTests(unittest.TestCase):
 
 class ReportTests(unittest.TestCase):
     def test_retained_full_cases(self):
-        report = json.loads((EVIDENCE / 'runtime-02.json').read_text())
+        report = json.loads((EVIDENCE / 'runtime-03.json').read_text())
         self.assertEqual(report['source']['pin'], '424d5998076da1e4efc399c2715689ddb44d3e1a')
+        self.assertEqual(report['source']['observer_sha256'], hashlib.sha256(Path(probe.__file__).read_bytes()).hexdigest())
+        self.assertEqual(report['source']['vendor_files_verified'], 16)
         self.assertEqual(report['inputs']['seeds'], [257, 4660])
         self.assertEqual(report['inputs']['fixture'], [7, 19, 21])
         self.assertEqual(len(report['cases']), 2)
@@ -139,13 +144,15 @@ class ReportTests(unittest.TestCase):
 class SavedByteControls(unittest.TestCase):
     def test_saved_byte_mutations_fail_intended_assertions(self):
         # [designed] A new immutable receipt per invocation. Mutate only the
-        # non-vendored tool, restore exact saved bytes even on failure; -B
-        # prevents timestamp/size-based stale bytecode from masking controls.
+        # non-vendored tool, restore exact saved bytes even on failure. A fresh
+        # cache prefix plus -B excludes existing timestamp/size-based bytecode.
         path = ROOT / 'tools/probe_watched_pitch.py'
         saved = path.read_bytes()
         folder = EVIDENCE / ('controls-' + str(time.time_ns()))
         folder.mkdir()
         mutations = [
+            ('sentinel-visibility', 'return ((x & 255) | ((y & 255) << 8)) == sentinel', 'return False',
+             'ProjectionTests.test_predicates_are_not_lifecycle_clamps', 'original sentinel visibility'),
             ('half-unsigned', 'return int(signed(threshold) < remaining)', 'return int(threshold < remaining)',
              'ProjectionTests.test_half_selector_and_terminal_boundaries', 'original half selector'),
             ('terminal-pose', "event.kind in ('tick', 'half_time')", "event.kind in ('tick', 'half_time', 'end')",
@@ -165,7 +172,7 @@ class SavedByteControls(unittest.TestCase):
             for name, old, new, test, message in mutations:
                 self.assertEqual(saved.decode().count(old), 1, 'mutation site is unique')
                 path.write_bytes(saved.replace(old.encode(), new.encode()))
-                run = subprocess.run([sys.executable, '-B', '-m', 'unittest',
+                run = subprocess.run([sys.executable, '-B', '-X', 'pycache_prefix=' + str(ROOT / '.cache/tmp' / ('t81-controls-' + str(time.time_ns()))), '-m', 'unittest',
                                       'goal2.tests.test_pitch_observation.' + test, '-v'],
                                      cwd=ROOT, capture_output=True, text=True, timeout=30)
                 output = run.stdout + run.stderr
