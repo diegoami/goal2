@@ -1,0 +1,50 @@
+{
+    "timestamp":  "2026-10-18T17:29:21.0882506Z",
+    "archive":  "C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-implementation-3a76a704864f-1792344033654236591",
+    "filter":  "exact archive substring AND goal2.desktop.worker; parent command emitted only if same ownership filter",
+    "owned_processes":  [
+
+                        ],
+    "owned_worker_directories":  [
+                                     {
+                                         "path":  "C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-implementation-3a76a704864f-1792344033654236591\\.cache\\tmp\\goal2-friendly-7amw3ixw",
+                                         "files":  [
+                                                       {
+                                                           "name":  "error.txt",
+                                                           "bytes":  0,
+                                                           "modified":  "2026-10-18T17:21:44.0405350Z"
+                                                       },
+                                                       {
+                                                           "name":  "halftime.json",
+                                                           "bytes":  292,
+                                                           "modified":  "2026-10-18T17:21:44.6653458Z"
+                                                       },
+                                                       {
+                                                           "name":  "input.g2save",
+                                                           "bytes":  26750639,
+                                                           "modified":  "2026-10-18T17:21:44.0385282Z"
+                                                       }
+                                                   ]
+                                     },
+                                     {
+                                         "path":  "C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-implementation-3a76a704864f-1792344033654236591\\.cache\\tmp\\goal2-friendly-tdwyp_lq",
+                                         "files":  [
+                                                       {
+                                                           "name":  "error.txt",
+                                                           "bytes":  0,
+                                                           "modified":  "2026-10-18T17:22:41.8697730Z"
+                                                       },
+                                                       {
+                                                           "name":  "halftime.json",
+                                                           "bytes":  292,
+                                                           "modified":  "2026-10-18T17:22:42.4827651Z"
+                                                       },
+                                                       {
+                                                           "name":  "input.g2save",
+                                                           "bytes":  26750639,
+                                                           "modified":  "2026-10-18T17:22:41.8697730Z"
+                                                       }
+                                                   ]
+                                     }
+                                 ]
+}

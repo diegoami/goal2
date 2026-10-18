@@ -1,0 +1,421 @@
+{
+  "tag": "[designed: T76]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "qt": "6.12.0",
+  "qpa": "windows",
+  "requested_scale": "2",
+  "sources": {
+    "goal2\\desktop\\__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2\\desktop\\__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2\\desktop\\competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2\\desktop\\competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2\\desktop\\country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2\\desktop\\fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2\\desktop\\jobs.py": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+    "goal2\\desktop\\match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2\\desktop\\model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2\\desktop\\overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2\\desktop\\pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2\\desktop\\pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2\\desktop\\pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2\\desktop\\save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2\\desktop\\squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2\\desktop\\standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2\\desktop\\style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba",
+    "goal2\\desktop\\watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2\\desktop\\window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2\\desktop\\worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "fc6715cd767883b28fda88c145d8336a1dadb71537ff0cbc084dd81570449e0f",
+  "dispatcher_sha256": "6da3ac8c2ac4892e83da5f1c5210a7e06f342986dde882f4f513043ed62400f4",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "steps": [
+    "Full IDs250\u2013260, captain260, all8bits; private events/save; Confirm/Discard; invalid10/12/captain; unavailable starter/removal/reserve; navigation/preview return",
+    "Real pending halftime, captain2561 private substitution/no re-entry, disabled management and cancellation without publication"
+  ],
+  "captures": [
+    {
+      "path": "initial.png",
+      "sha256": "36c8aebc22cbe329f6b541323812799aeac9df93cf35618226043fe03fa89003",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "pageHeading"
+    },
+    {
+      "path": "dirty-full-id-detail.png",
+      "sha256": "0ea764ffe50a9a5ff6e66e96dbb839cbb4c6ccf5e23273bf93b209bb6656ce1b",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 1316,
+      "focus": "tactic8"
+    },
+    {
+      "path": "confirmed-grouped.png",
+      "sha256": "15da46b8f08a5a3a6052cf44fcbe9f9f944747cce767f5c06247ccb1b26faff3",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-10.png",
+      "sha256": "48307f38cb63a5652ed5f2b3114055db966bf35e7ee2efc44a3f0224b7535a54",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-12.png",
+      "sha256": "5c57f35145aadb226ab5f815b9c9d66305d57727d0dad343ba8ee40124e32cf9",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "unavailable-player-detail.png",
+      "sha256": "4dc24447fa4cdffeed9634af109e353920c106cae308fd70ceb8cbf38cdc6a12",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-focused-confirm.png",
+      "sha256": "9394d5f078229bd17d0baa3523c898cb8ce080b4914992d55f4f68345c972865",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-detail-focused-confirm.png",
+      "sha256": "5f0eb447c59883b9ae983cc1c4242e86ce98405f1a221a6aeeb30ed274142859",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 726,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-tactics-focused-confirm.png",
+      "sha256": "4e4722e42192692e15ab20d1174fd443d5dea5c555e3b0c58d06e3fe4cbcc367",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 1453,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-1-names.png",
+      "sha256": "976afb59f0bb0b3a9f40c57f801f63786faf74d2333f03c5e49547ae62f74b88",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-1-values.png",
+      "sha256": "68227b4d16cc22413a4ffb08d9e7b8dcae89f012eb132fc3dc40731d02972ee7",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-5-names.png",
+      "sha256": "cbec160c33ec904684b7ec3678946b7a73e0a6e96cc4588a8d7fbc6a78a43e6b",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-5-values.png",
+      "sha256": "bd417d44fb040f4a517e1e430ab28ce243b083aba1ded4856b91905ab9a29e05",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-9-names.png",
+      "sha256": "4a8f621f8c613a0c8d6ce5149db61a6af1f50263de0a204b83bd5181c10c43ea",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-9-values.png",
+      "sha256": "4325739a646b2a587e85b26c6e5daee2554ed7ef31620d011bc8c11317b510ce",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-13-names.png",
+      "sha256": "898bd8235fb435146ad411a5e64f98b6c78605514a281cdcb9f9cc1cd66b05eb",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-13-values.png",
+      "sha256": "155693c5fcaeb3f3737a2e4df7e7fd962b6757b459e43d7e0b12593e35b372e8",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-17-names.png",
+      "sha256": "98bcf399d121cb059ab236118356e96f317690efc64d18f4053c67dfb919e30d",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-17-values.png",
+      "sha256": "6496f9e3c5bdcd43634cd7797bd55e59ce7c9a192f747e6bdc3cc9abb2d3d519",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-20-names.png",
+      "sha256": "fb2abca42c1b31be28b51d6b0b88dc8ad849dac57c06ce6c59081687d6ea6847",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-20-values.png",
+      "sha256": "10062f6555d4b364f1495a53ef45a71e99027445365d4b107383eed081fdd0aa",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-selected-detail-segment-0.png",
+      "sha256": "76f1de6b1929e821551ff814f09db2d0a49672a34e7c576fdcd8103c4236c83a",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 382,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-grouped-xi-segment-0.png",
+      "sha256": "7179722cef21a8f8b5726e01eb7ab00ce867cf78bb7672bcdfc87645d53f888e",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 516,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-grouped-xi-segment-181.png",
+      "sha256": "06d8391c772bf90473f51c20700d8d10d9e3c386083dfca17fc27d6b9dc23108",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 697,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-bench-segment-0.png",
+      "sha256": "73da0c75c6b99c45edda593e86d3e1872c0e88d264a237c9da8bc842e6f0334b",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 936,
+      "focus": "confirm"
+    }
+  ],
+  "ratio": 2.0,
+  "roster_coverage": [
+    {
+      "size": [
+        900,
+        640
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    }
+  ],
+  "reading_coverage": [
+    {
+      "size": [
+        900,
+        640
+      ],
+      "widget": "selected-detail",
+      "height": 122,
+      "intervals": [
+        [
+          0,
+          122
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "widget": "grouped-xi",
+      "height": 408,
+      "intervals": [
+        [
+          0,
+          265
+        ],
+        [
+          165,
+          408
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "widget": "bench",
+      "height": 254,
+      "intervals": [
+        [
+          0,
+          254
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    }
+  ],
+  "result": "PASS",
+  "clean_widgets": true,
+  "sources_after": {
+    "goal2\\desktop\\__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2\\desktop\\__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2\\desktop\\competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2\\desktop\\competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2\\desktop\\country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2\\desktop\\fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2\\desktop\\jobs.py": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+    "goal2\\desktop\\match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2\\desktop\\model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2\\desktop\\overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2\\desktop\\pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2\\desktop\\pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2\\desktop\\pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2\\desktop\\save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2\\desktop\\squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2\\desktop\\standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2\\desktop\\style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba",
+    "goal2\\desktop\\watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2\\desktop\\window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2\\desktop\\worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "source_unchanged": true
+}

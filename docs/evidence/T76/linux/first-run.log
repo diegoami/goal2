@@ -1,0 +1,12 @@
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 491, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 477, in main
+    return (squad_negative_controls if args.negative_controls else scenario)(args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/squad_scenario.py", line 155, in scenario
+    assert w.jobs.halftime is not None,'real halftime worker did not pause: '+w.status.text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: real halftime worker did not pause: Management confirmed

@@ -1,0 +1,12 @@
+[
+  {
+    "case": "before",
+    "exit": 1,
+    "folder": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T76-caption-before-1792346408385594072"
+  },
+  {
+    "case": "runtime-mock",
+    "exit": 0,
+    "folder": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T76-caption-runtime-mock-1792346409589068542"
+  }
+]

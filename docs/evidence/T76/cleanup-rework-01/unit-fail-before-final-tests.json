@@ -1,0 +1,19 @@
+{
+  "tag": "[designed: T76/#233]",
+  "command": [
+    "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_transient_windows_sharing_cleanup_retries_then_releases_ownership",
+    "goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_permanent_windows_sharing_is_bounded_retains_ownership_and_can_retry",
+    "goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_nonsharing_cleanup_errors_propagate_without_retry_and_retain_ownership",
+    "goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_failed_launch_cleanup_can_retry_without_a_process",
+    "-v"
+  ],
+  "returncode": 1,
+  "old_jobs_sha256": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+  "tested_tests_sha256": "a09db6e71494c80ae0068a277921987758a82740393e4bb84de9c84aa40a06b7",
+  "restored_jobs_sha256": "4a957b9e2e362dd902d1172868d40b00ff5efa647fd6ff20ceb51469d9399331",
+  "restored_exactly": true
+}

@@ -1,0 +1,129 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+This plugin does not support grabbing the keyboard
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+QWidget::mapTo(): parent must be in parent hierarchy
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 499, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 487, in main
+    if args.single_scale:return (overview if args.scenario=='overview' else shell)(args)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 230, in shell
+    assert origin.x()>=0 and origin.x()+widget.width()<=page.viewport().width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: action clipped horizontally: confirm
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 499, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 498, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-venv/bin/python3', '/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'shell', '--template', '.cache/e010-r0008-halftime.sav', '--data', '.cache/GOAL.DAT', '--evidence-dir', '/home/diego/projects/goal2-work/T76-football-ui/docs/evidence/T76/validation-02/shell', '--single-scale']' returned non-zero exit status 1.

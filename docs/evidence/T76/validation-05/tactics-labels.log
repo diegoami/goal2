@@ -1,0 +1,2 @@
+This plugin does not support propagateSizeHints()
+PASS Qt tactics labels: elements 1, 6, 7; each checkbox retains its existing bit

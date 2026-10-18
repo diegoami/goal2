@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 from goal2.game.session_save import encode, load
 from goal2.game.quick_match import resolve_full_matchup
 from goal2.engine.savestate import Savestate
@@ -20,6 +21,7 @@ class QuickJobs:
 
     def start(self,*,halftime=False):
         if self.busy or getattr(self.model,'match_pending',False):raise ValueError('A match is already running')
+        if self.folder is not None and self.process is None:raise ValueError('Worker cleanup is pending; cancel again before starting')
         model=self.model
         if halftime and model.state.campaign is None:raise ValueError('Halftime interaction requires a campaign')
         self.interactive=halftime;self.halftime=None;self.continued=False
@@ -104,15 +106,27 @@ class QuickJobs:
         self.continued=True;self.halftime=None
 
     def _release(self):
-        self.process=None;self.halftime=None;self.model.match_pending=False
+        # [designed: T76/#233] A Windows venv child may still be closing inherited stderr after launcher wait.
         if self.folder is not None:
-            self.errors.close();self.folder.cleanup();self.folder=None
+            self.errors.close();deadline=time.monotonic()+.5
+            while True:
+                try:
+                    self.folder.cleanup()
+                    break
+                except PermissionError as exc:
+                    remaining=deadline-time.monotonic()
+                    if getattr(exc,'winerror',None)!=32 or remaining<=0:raise
+                    time.sleep(min(.02,remaining))
+                    if time.monotonic()>=deadline:raise
+            self.folder=None
+        self.process=None;self.halftime=None;self.model.match_pending=False
 
     def cancel(self):
         """[designed] Bound termination waits and reap; never publish on close."""
-        if self.busy:
+        if self.busy and self.process.poll() is None:
             self.process.terminate()
             try:self.process.wait(timeout=0.5)
             except subprocess.TimeoutExpired:
                 self.process.kill();self.process.wait(timeout=0.5)
             finally:self._release()
+        elif self.folder is not None:self._release()

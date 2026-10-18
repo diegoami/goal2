@@ -36,6 +36,10 @@ class ManagementWindow(QMainWindow):
         self.search.textChanged.connect(self.refresh_pool);self.position.currentIndexChanged.connect(self.refresh_pool)
         self.exchange.clicked.connect(self.exchange_selected)
         self.table.itemChanged.connect(self.selection_changed)
+        from goal2.desktop.squad_page import refresh as refresh_squad
+        self.table.currentCellChanged.connect(lambda *args:refresh_squad(self))
+        self.captain.currentIndexChanged.connect(lambda *args:refresh_squad(self))
+        for _,box in self.tactics:box.toggled.connect(lambda *args:refresh_squad(self))
         self.refresh()
         self.country.currentIndexChanged.connect(self.country_changed)
 
@@ -63,6 +67,11 @@ class ManagementWindow(QMainWindow):
         self.update_captain();self.captain.setCurrentIndex(max(0,self.captain.findData(captain)))
         for element,box in self.tactics:box.setChecked(bool(bits & (1<<(element-1))))
         self._refreshing=False
+        self.refresh_squad()
+
+    def refresh_squad(self):
+        from goal2.desktop.squad_page import refresh
+        refresh(self)
 
     def country_changed(self):
         if self._refreshing:return
@@ -106,6 +115,7 @@ class ManagementWindow(QMainWindow):
             item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsUserCheckable)
             self._refreshing=False
         self.update_captain()
+        self.refresh_squad()
 
     def update_captain(self):
         previous=self.captain.currentData();selected=self.selected_ids()
@@ -146,6 +156,7 @@ class ManagementWindow(QMainWindow):
         self.update_captain();self.captain.setCurrentIndex(max(0,self.captain.findData(state.captain)))
         for element,box in self.tactics:box.setChecked(bool(state.country_tactics & (1<<(element-1))))
         self.path.setText(str(self.model.save_path));self._refreshing=False
+        self.refresh_squad()
         self.refresh_pool()
         self.set_busy(getattr(self.model,'match_pending',False))
         if self.preview is not None:self.require_active()

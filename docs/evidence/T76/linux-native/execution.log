@@ -1,0 +1,21 @@
+PASS squad: real private drafts/full IDs/eligibility, grouped raw detail, persistent actions, navigation, real pending halftime; docs/evidence/T76/linux-native
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 491, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 477, in main
+    return (squad_negative_controls if args.negative_controls else scenario)(args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/squad_scenario.py", line 165, in scenario
+    assert all(first[1]>=second[0]+40 for first,second in zip(intervals,intervals[1:])),'reading captures lack wrapped-line overlap'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: reading captures lack wrapped-line overlap
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 491, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 490, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-venv/bin/python3', '/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'squad', '--template', '.cache/e010-r0008-halftime.sav', '--data', '.cache/GOAL.DAT', '--evidence-dir', 'docs/evidence/T76/linux-native/scale-2', '--single-scale']' returned non-zero exit status 1.

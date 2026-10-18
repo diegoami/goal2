@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 491, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 478, in main
+    if args.negative_controls:return (overview_negative_controls if args.scenario=='overview' else negative_controls)(args)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 451, in overview_negative_controls
+    run('baseline',overview_command+['--evidence-dir',str(evidence/'baseline')],
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 445, in run
+    assert result.returncode!=0 and 'AssertionError: '+expected in result.stderr, f'{name} failed outside intended oracle: {result.stderr}'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: baseline failed outside intended oracle: Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 491, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 479, in main
+    if args.single_scale:return (overview if args.scenario=='overview' else shell)(args)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/tools/desktop-ui/redesign.py", line 324, in overview
+    w=ManagementWindow(m);w.show();w.raise_();w.activateWindow();QTest.qWait(150)
+      ^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/goal2/desktop/window.py", line 26, in __init__
+    compose(self,model,TACTICS)
+  File "/home/diego/projects/goal2-work/T76-football-ui/goal2/desktop/pages.py", line 46, in compose
+    for module in (overview_page,squad_page,pool_page,fixtures_page,save_page):module.build(self,model,TACTICS)
+                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T76-football-ui/goal2/desktop/squad_page.py", line 38, in build
+    page.set_footer(footer)
+    ^^^^^^^^^^^^^^^
+AttributeError: 'ShellPage' object has no attribute 'set_footer'
+

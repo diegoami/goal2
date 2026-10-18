@@ -1,0 +1,10 @@
+{
+  "tag": "[designed: T76/#233]",
+  "old_module_commit": "3a76a704864fadee0a92a298af3a8a4d0072b1fa",
+  "old_module_sha256": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+  "old_release_code_file": "frozen-3a76a704864fadee0a92a298af3a8a4d0072b1fa-jobs.py",
+  "final_tests_sha256": "4e636eef0046f850c62f4194602389160a56055e7a17e150f406b954333cb2fe",
+  "tests_run": 4,
+  "failures": 6,
+  "errors": 0
+}

@@ -1,0 +1,701 @@
+{
+  "tag": "[designed: T76]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "qt": "6.12.0",
+  "qpa": "windows",
+  "requested_scale": "2",
+  "sources": {
+    "goal2\\desktop\\__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2\\desktop\\__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2\\desktop\\competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2\\desktop\\competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2\\desktop\\country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2\\desktop\\fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2\\desktop\\jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2\\desktop\\match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2\\desktop\\model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2\\desktop\\overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2\\desktop\\pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2\\desktop\\pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2\\desktop\\pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2\\desktop\\save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2\\desktop\\squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2\\desktop\\standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2\\desktop\\style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2\\desktop\\watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2\\desktop\\window.py": "d1f6c3e01866321ccb2f02899e5239bd0f4e4773c2fedcc69d1f5dc8ca92582f",
+    "goal2\\desktop\\worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "e34dde4487d7967efcca4b70a0d2976e3481df16fa80fc9128a6d612bc41e9cb",
+  "dispatcher_sha256": "74ef04a32f111613d379706160abd9ee1994880b50079f2162bf21afde9ddf54",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "steps": [
+    "Full IDs250\u2013260, captain260, all8bits; private events/save; Confirm/Discard; invalid10/12/captain; unavailable starter/removal/reserve; navigation/preview return",
+    "Real pending halftime, captain2561 private substitution/no re-entry, disabled management and cancellation without publication"
+  ],
+  "captures": [
+    {
+      "path": "initial.png",
+      "sha256": "e0d6111561d05345a4c513d59e609df7aeb6e1662a3284813a270545ae9e16ea",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "pageHeading"
+    },
+    {
+      "path": "dirty-full-id-detail.png",
+      "sha256": "d968c2d6213316124056aae5ffa15dd3475764bc2274a4566af2c47dda3c20c8",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 1316,
+      "focus": "tactic8"
+    },
+    {
+      "path": "confirmed-grouped.png",
+      "sha256": "81109e87b055ca3023a0e37f88458a973c8ece02f8a3bb063d640e7e50a8bcd9",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-10.png",
+      "sha256": "2da3d5c49b8b6a2a481630c08b124b5bb3c75a79a8d865894172157adec1b68e",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-12.png",
+      "sha256": "5bbf56ecfb136fa78e8e7c12c9630fa5fd379d2e46aa96cbdbd83b2825edb9b5",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "unavailable-player-detail.png",
+      "sha256": "2673aa794e245ee38209b12697ad0849bb7daca441a57609e3d1f34e24661a06",
+      "size": [
+        1050,
+        711
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-focused-confirm.png",
+      "sha256": "0760caa290fa833b45b5d9f867eb26c747ad8ac3dcca8dd897c98767a429ab0a",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-detail-focused-confirm.png",
+      "sha256": "7b3c3ddd13243b39b18f0abfd663d57876ed5dc94827f5f08e03459689e73a9c",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 726,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-tactics-focused-confirm.png",
+      "sha256": "d49bab444dcebed8d27f0b26981e1911766f2023de6a942b5daa78f76ef80774",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 1453,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-1-names.png",
+      "sha256": "5a0228af3e77f4b89052f27bc67ee87abf007b95ff59e17de35c06e46ee043d0",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-1-values.png",
+      "sha256": "b2bd53014f8e231b9c06402b54456fd1575ed32043b88c3b2b7c6bba3f702020",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-5-names.png",
+      "sha256": "a649b229fd0002c783b74247c9e3b092c57617075f4f42d87d65a14bb59deaf7",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-5-values.png",
+      "sha256": "fa8b461ed9f65ab5e64d0ed0a917913f0c1b058d1c056bec776b1cfbbfda4c01",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-9-names.png",
+      "sha256": "9ef855b3f0b382ef147165bd45681ae2adb79f441732713fa8e6196bbfb5d039",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-9-values.png",
+      "sha256": "e2ab075057f5afdf9e5942153de0e6d8199a968d6a2066dac68ddc87b4376b36",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-13-names.png",
+      "sha256": "44c42a6c7bc7fe060610f5d09fee64f55325164b7d5745bc2412281202b619c0",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-13-values.png",
+      "sha256": "9206f174d6a119067ae96d371ec081c24df61ca9ae48832d85718382972743fd",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-17-names.png",
+      "sha256": "678400ddebf80ed4acb3c6f01deef7e85bc55865ff643c71917fc346bc8648c4",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-17-values.png",
+      "sha256": "de5f0360d39b69d24a66df839a2a633f6c375017bc1a4bc0c9dced69f8503df6",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-20-names.png",
+      "sha256": "3b356f4b423f23361a7be6617cc28d4bc2de5dd3e069d318c612b8a4cc27bb9e",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-roster-row-20-values.png",
+      "sha256": "197d44f1cf5c05c9c89b9afa770faa4dc51360ae5be3d72d776f3cbc5e81c26c",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 138,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-selected-detail-segment-0.png",
+      "sha256": "378dbda7e5f6a287698662241dc5616356d8e62a48d774fddc9b11984918c45c",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 382,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-grouped-xi-segment-0.png",
+      "sha256": "279e4ebf57216101128a04b0c09d7cebd144e9dcfb19a1ecfba0766fd245b340",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 516,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-grouped-xi-segment-181.png",
+      "sha256": "2e71e81469029879e2803bfee0b56c6698c1c2e709d83083a7d1b2c2e7f30c97",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 697,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x640-bench-segment-0.png",
+      "sha256": "1d557ffd31b56ab8c7654b71210e5bb7fa208fb3abb5f29f5288f4e2dc6fba92",
+      "size": [
+        900,
+        640
+      ],
+      "scroll": 936,
+      "focus": "confirm"
+    }
+  ],
+  "ratio": 2.0,
+  "footer_captions": [
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        101,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        79,
+        40
+      ],
+      "font_advance": 79,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        101,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        79,
+        40
+      ],
+      "font_advance": 79,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        158,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        136,
+        40
+      ],
+      "font_advance": 135,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        158,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        136,
+        40
+      ],
+      "font_advance": 135,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        101,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        79,
+        40
+      ],
+      "font_advance": 79,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        101,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        79,
+        40
+      ],
+      "font_advance": 79,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        158,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        136,
+        40
+      ],
+      "font_advance": 135,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        158,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        136,
+        40
+      ],
+      "font_advance": 135,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        101,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        79,
+        40
+      ],
+      "font_advance": 79,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        101,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        79,
+        40
+      ],
+      "font_advance": 79,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        158,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        136,
+        40
+      ],
+      "font_advance": 135,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        158,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        136,
+        40
+      ],
+      "font_advance": 135,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 2.0
+    }
+  ],
+  "roster_coverage": [
+    {
+      "size": [
+        900,
+        640
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    }
+  ],
+  "reading_coverage": [
+    {
+      "size": [
+        900,
+        640
+      ],
+      "widget": "selected-detail",
+      "height": 122,
+      "intervals": [
+        [
+          0,
+          122
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "widget": "grouped-xi",
+      "height": 408,
+      "intervals": [
+        [
+          0,
+          265
+        ],
+        [
+          165,
+          408
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        900,
+        640
+      ],
+      "widget": "bench",
+      "height": 254,
+      "intervals": [
+        [
+          0,
+          254
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    }
+  ],
+  "cleanup_retry_calls": 2,
+  "result": "PASS",
+  "callback_exceptions": [],
+  "clean_widgets": true,
+  "sources_after": {
+    "goal2\\desktop\\__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2\\desktop\\__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2\\desktop\\competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2\\desktop\\competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2\\desktop\\country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2\\desktop\\fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2\\desktop\\jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2\\desktop\\match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2\\desktop\\model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2\\desktop\\overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2\\desktop\\pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2\\desktop\\pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2\\desktop\\pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2\\desktop\\save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2\\desktop\\squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2\\desktop\\standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2\\desktop\\style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2\\desktop\\watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2\\desktop\\window.py": "d1f6c3e01866321ccb2f02899e5239bd0f4e4773c2fedcc69d1f5dc8ca92582f",
+    "goal2\\desktop\\worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "source_unchanged": true
+}

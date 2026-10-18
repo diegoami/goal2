@@ -219,16 +219,22 @@ def shell(args):
                     assert page.horizontalScrollBar().maximum()==0,'shell needs horizontal scrolling'
                     page_actions=[w for w in actions if page.isAncestorOf(w)]
                     for widget in page_actions:
-                        page.ensureWidgetVisible(widget,0,0);app.processEvents()
-                        origin=widget.mapTo(page.viewport(),QPoint(0,0))
+                        footer=getattr(page,'footer',None)
+                        surface=footer if footer is not None and footer.isAncestorOf(widget) else page.viewport()
+                        if surface is footer:
+                            assert page.rect().contains(footer.geometry()),'footer extends outside page'
+                            assert not footer.geometry().intersects(page.viewport().geometry()),'footer overlaps scroll viewport'
+                        else:page.ensureWidgetVisible(widget,0,0)
+                        app.processEvents()
+                        origin=widget.mapTo(surface,QPoint(0,0))
                         # [designed] Qt may reveal a table's focused cell only; use real scroll keys to expose its full control.
                         for _ in range(100):
-                            if origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height():break
+                            if origin.y()>=0 and origin.y()+widget.height()<=surface.height():break
                             key=Qt.Key.Key_Up if origin.y()<0 else Qt.Key.Key_Down
                             QTest.keyClick(page.verticalScrollBar(),key);app.processEvents()
-                            origin=widget.mapTo(page.viewport(),QPoint(0,0))
-                        assert origin.x()>=0 and origin.x()+widget.width()<=page.viewport().width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
-                        assert origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height(),f'action unreachable vertically: {widget.objectName() or widget.accessibleName()} y={origin.y()} height={widget.height()} viewport={page.viewport().height()}'
+                            origin=widget.mapTo(surface,QPoint(0,0))
+                        assert origin.x()>=0 and origin.x()+widget.width()<=surface.width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
+                        assert origin.y()>=0 and origin.y()+widget.height()<=surface.height(),f'action unreachable vertically: {widget.objectName() or widget.accessibleName()} y={origin.y()} height={widget.height()} viewport={surface.height()}'
                         assert widget.isVisible(),'action hidden'
                         assert widget.accessibleName(),'action has no accessible name'
                         if widget.isEnabled() and isinstance(widget,(QAbstractButton,QComboBox,QLineEdit)):
@@ -265,14 +271,22 @@ def negative_controls(args):
     baseline=subprocess.check_output(['git','show',accepted+':goal2/desktop/window.py'],cwd=ROOT)
     old_style=subprocess.check_output(['git','show',pre_surface_fix+':goal2/desktop/style.py'],cwd=ROOT)
     old_pages=subprocess.check_output(['git','show','154bfbbc5053ba9a18d93bb734464c2a4f10f7bc:goal2/desktop/pages.py'],cwd=ROOT)
+    fixed_pages=subprocess.check_output(['git','show','d035bade8f3ffd28c5bcf648d6084c04da0c4cee:goal2/desktop/pages.py'],cwd=ROOT)
+    names_line=b"    self.table.setAccessibleName('Squad');self.reserves.setAccessibleName('National pool reserves')\n"
+    assert fixed_pages.count(names_line)==1 and fixed_pages.replace(names_line,b'')==old_pages,'historical accessibility defect changed'
+    assert saved[pages].count(names_line)==1,'expected one current accessibility mutation site'
+    missing_names_pages=saved[pages].replace(names_line,b'')
     old=b'self.page_stack.setCurrentIndex(index)'
     assert saved[source].count(old)==1,'expected one navigation mutation site'
     cases=(('baseline',source,baseline,'five-destination navigation is absent'),
            ('discard-draft',source,saved[source].replace(old,old+b';self.refresh()'),'navigation changed state/draft/preview/save/job ownership'),
            ('native-surfaces',style,old_style,'native surface contrast failed: combo popup, combo selection, path selection, competition dialog'),
-           ('accessible-names',pages,old_pages,'action has no accessible name'))
+           ('accessible-names',pages,missing_names_pages,'action has no accessible name'))
     receipt={'tag':'[designed: T74]','baseline':accepted,'pre_surface_fix':pre_surface_fix,
-             'source_before':{str(p.relative_to(ROOT)):hashlib.sha256(raw).hexdigest() for p,raw in saved.items()},'cases':[]}
+             'source_before':{str(p.relative_to(ROOT)):hashlib.sha256(raw).hexdigest() for p,raw in saved.items()},'cases':[],
+             'accessible_names_fixture':{'old':'154bfbbc5053ba9a18d93bb734464c2a4f10f7bc','fixed':'d035bade8f3ffd28c5bcf648d6084c04da0c4cee',
+                 'old_sha256':hashlib.sha256(old_pages).hexdigest(),'fixed_sha256':hashlib.sha256(fixed_pages).hexdigest(),
+                 'difference':names_line.decode(),'mutant_sha256':hashlib.sha256(missing_names_pages).hexdigest()}}
     try:
         for name,path,mutant,expected in cases:
             try:
@@ -433,7 +447,7 @@ def overview_negative_controls(args):
     evidence=Path(args.evidence_dir)
     evidence.mkdir(parents=True,exist_ok=False)
     paths=[ROOT/name for name in ('goal2/desktop/pages.py','goal2/desktop/overview_page.py',
-                                 'goal2/desktop/window.py','goal2/desktop/style.py')]
+                                 'goal2/desktop/window.py','goal2/desktop/style.py','goal2/desktop/squad_page.py')]
     saved={path:path.read_bytes() for path in paths}
     receipt={'tag':'[designed: T75]','sources_before':{str(p.relative_to(ROOT)):digest(p) for p in paths},'cases':[]}
     env={**os.environ,'QT_QPA_PLATFORM':'offscreen','PYTHONDONTWRITEBYTECODE':'1','QT_SCALE_FACTOR':'1'}
@@ -467,7 +481,7 @@ def overview_negative_controls(args):
     print('PASS overview negative controls: baseline hierarchy absent; active binding fails country-selection and overview; exact saved bytes restored')
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell','overview','results'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell','overview','squad','results'],required=True)
     parser.add_argument('--template',required=True);parser.add_argument('--data',required=True)
     parser.add_argument('--evidence-dir',required=True);parser.add_argument('--single-scale',action='store_true');parser.add_argument('--negative-controls',action='store_true')
     parser.add_argument('--surface-input-control',choices=['wrong-focus','country-change'])
@@ -475,6 +489,9 @@ def main():
     parser.add_argument('--results-source-dir')
     parser.add_argument('--prepare-results-inputs',action='store_true')
     args=parser.parse_args()
+    if args.scenario=='squad' and (args.negative_controls or args.single_scale):
+        from squad_scenario import scenario,negative_controls as squad_negative_controls
+        return (squad_negative_controls if args.negative_controls else scenario)(args)
     if args.scenario=='results':
         from results_scenario import results,negative_controls as results_negative,prepare
         if args.prepare_results_inputs:return prepare(args)

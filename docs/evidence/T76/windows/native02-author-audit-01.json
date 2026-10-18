@@ -1,0 +1,16 @@
+{
+  "tag": "[designed: T76/#233]",
+  "result": "PASS",
+  "native_checkpoint": "0503407a7e2466054f4b4070515d3e426ccd9942",
+  "audit_head": "0503407a7e2466054f4b4070515d3e426ccd9942",
+  "independent_main_receipt_sha256": "7b90c2d6c56c9c65d99240f9bcc0027b3924107daf1cb74764918a0555de18b0",
+  "source_files_verified_against_current_and_frozen_git": 174,
+  "all_source_bytes_match_source_freeze02": true,
+  "all_inventory_entries_verified": 95,
+  "all_protected_hashes_unchanged": 4,
+  "raw_native_logs_one_line_no_tracebacks": true,
+  "report_callback_exceptions_empty": true,
+  "owned_folder_assertions_passed": true,
+  "all20_roster_names_fields_covered": true,
+  "original_native01_inventory_unchanged": true
+}

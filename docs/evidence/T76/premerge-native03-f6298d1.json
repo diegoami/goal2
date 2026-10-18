@@ -1,0 +1,8 @@
+{
+  "tag": "[confirmed: T76 exact-head validation]",
+  "head": "f6298d1e6a3ad407d4828b22241dd6683280945b",
+  "command": "python3 tools/check_premerge.py --expected-head f6298d1e6a3ad407d4828b22241dd6683280945b",
+  "exit": 0,
+  "log_sha256": "e9b86cba5d0aeb79eb92f74519e21948fd852124f700568ab8a0a134cc449443",
+  "note": "Clean exact-head evidence checkpoint. The following receipt-only commit requires its own final exact-head execution."
+}

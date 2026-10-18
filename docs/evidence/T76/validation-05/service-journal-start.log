@@ -1,0 +1,3 @@
+Oct 18 20:09:48 WINDOWS-BJ0PUMB systemd[347]: t76-validation-05.service: Failed to add control inotify watch descriptor for control group /user.slice/user-1000.slice/user@1000.service/app.slice/t76-validation-05.service: No space left on device
+Oct 18 20:09:48 WINDOWS-BJ0PUMB systemd[347]: t76-validation-05.service: Failed to add memory inotify watch descriptor for control group /user.slice/user-1000.slice/user@1000.service/app.slice/t76-validation-05.service: No space left on device
+Oct 18 20:09:48 WINDOWS-BJ0PUMB systemd[347]: Started t76-validation-05.service - [systemd-run] /bin/bash -c "exec /home/diego/projects/goal2/.cache/validation-venv/bin/python3 -u .cache/t76-validation-05.py > .cache/t76-validation-05-service.log 2>&1".

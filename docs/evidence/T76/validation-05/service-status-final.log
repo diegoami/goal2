@@ -1,0 +1,6 @@
+ActiveState=deactivating
+SubState=stop-sigterm
+MainPID=0
+Result=success
+ExecMainCode=1
+ExecMainStatus=0
