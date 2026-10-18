@@ -1,2 +1,0 @@
-# [designed: #236] Preserve complete native/unittest output bytes, including CRLF/trailing spaces.
-*.log -whitespace

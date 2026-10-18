@@ -1,0 +1,37 @@
+[
+  {
+    "name": "axes",
+    "intended_assertion_failed": true,
+    "before": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb",
+    "mutated": "33ce676f8e34762f243a6843f6020eb9cb89e3b9fe3f5afb9eabd1aaf17a7b58",
+    "restored": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb"
+  },
+  {
+    "name": "player-visibility",
+    "intended_assertion_failed": true,
+    "before": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb",
+    "mutated": "2ee240ae010894feeb700b6ed0a3a9dbd0d1a0ba1a4a93ba70a753c7fd2eca9a",
+    "restored": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb"
+  },
+  {
+    "name": "ball-visibility",
+    "intended_assertion_failed": true,
+    "before": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb",
+    "mutated": "4c72d55f3470bc6bdec6f98c9777a8de19516ea2a977aa69fd2cf223c34e2ba5",
+    "restored": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb"
+  },
+  {
+    "name": "early-consumption",
+    "intended_assertion_failed": true,
+    "before": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb",
+    "mutated": "6fda9119db0c552d3e95305508649b85e5fa19325ebea4e2f75e457d7cfc1a58",
+    "restored": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb"
+  },
+  {
+    "name": "consumption",
+    "intended_assertion_failed": true,
+    "before": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb",
+    "mutated": "f6c521bf4cc08553a9ecff7352b0c8923269d1c93b66aca5dcaa4109b5490660",
+    "restored": "1aa8f829658216220f8cfdb573b539dabd3055fb05a61957da8898f8c3327eeb"
+  }
+]

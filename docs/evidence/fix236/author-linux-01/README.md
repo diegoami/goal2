@@ -18,3 +18,14 @@ main-provided SHA256 values after the suite. Only names/hashes are recorded;
 original resources remain ignored. Product source and the pygame acceptance
 module were unchanged during the full runtime suite; subsequent sharing-test
 strengthening did not alter runtime code or existing assertions.
+
+[confirmed: controls-1792353803242518662/receipt.json] The unchanged saved-byte
+pitch-control test generated its five assertion-failing mutation logs under the
+usual T83 path. This batch moves those complete safe logs into this task's owned
+evidence directory, preserving all bytes. The receipt verifies exact restoration
+of the viewer after each axes/visibility/consumption control.
+
+[designed: main disposition] Raw logs retain unittest trailing spaces and native
+CRLF. No Git whitespace exemption applies. Clean literal `git diff --check` and
+the authored-source PR-range check exclude immutable evidence formatting from
+source-whitespace findings; full-range raw-log whitespace is disclosed separately.
