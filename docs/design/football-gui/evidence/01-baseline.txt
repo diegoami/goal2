@@ -1,0 +1,1 @@
+FAIL missing design manifest, screen artifacts and bounded task contracts
