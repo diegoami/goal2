@@ -1,0 +1,22 @@
+[
+  {
+    "name": "qt-offscreen-03",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/competitive_play.py"
+    ],
+    "returncode": 0,
+    "seconds": 112.098
+  },
+  {
+    "name": "qt-xcb-01",
+    "command": [
+      "xvfb-run",
+      "-a",
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/competitive_play.py"
+    ],
+    "returncode": 134,
+    "seconds": 0.467
+  }
+]
