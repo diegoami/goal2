@@ -17,10 +17,16 @@ def main():
          'goal2.tests.test_pygame_match_view.PresentationTests.test_order_display_copy_and_once_completion'),
         ('framebuffer','goal2/desktop/pygame_viewer.py','font.render(line, True','font.render(line.replace("2 — 1", "0 — 0"), True',
          'goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection'),
+        ('live-follow','goal2/desktop/pygame_viewer.py','return 10**9, follow, finished','return scroll, False, finished',
+         'goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection'),
         ('raw-rating','goal2/desktop/match_view.py','record[18:20]','record[16:18]',
          'goal2.tests.test_pygame_match_view.PresentationTests.test_raw_rating_original_word_boundaries'),
         ('shared-start','goal2/desktop/jobs.py',"self.busy or getattr(self.model,'match_pending',False)",'self.busy',
          'goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save'),
+        ('qualifier-priority','goal2/desktop/window.py','self.watched.fixture()','pass',
+         'goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit'),
+        ('lock-ownership','goal2/desktop/watched.py','if self._pending_owned:','if True:',
+         'goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat'),
         ('once-publication','goal2/game/watched_publication.py','candidate.match_count+=1','candidate.match_count+=2',
          'goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat'),
         ('save-continuation','goal2/desktop/model.py','self.state=candidate;self.template_bytes=raw;self.save_path=Path(path)',
@@ -43,7 +49,7 @@ def main():
             path.write_bytes(saved)
             assert path.read_bytes()==saved
     (target/'controls.json').write_text(json.dumps(receipts,indent=2)+'\n')
-    print(json.dumps(receipts,indent=2));print('PASS all6 intended assertion controls; saved source bytes restored')
+    print(json.dumps(receipts,indent=2));print(f'PASS all{len(cases)} intended assertion controls; saved source bytes restored')
 
 
 if __name__=='__main__':main()

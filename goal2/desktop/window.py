@@ -230,6 +230,7 @@ class ManagementWindow(QMainWindow):
     def start_watched(self):
         if not self.require_active():return
         try:
+            self.watched.fixture()
             state=self.model.state
             if self.draft()!=(state.starting_eleven,state.captain,state.country_tactics):
                 raise ValueError('Confirm or discard management edits before watching')

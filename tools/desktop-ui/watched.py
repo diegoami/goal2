@@ -104,7 +104,7 @@ def main():
             snapshot=copy.deepcopy(m.state);saved=save.read_bytes()
             assert m.state.campaign.next_fixture.kind!=1
             w.start_watched();app.processEvents()
-            assert not w.watched.busy and 'qualifiers are unsupported' in w.status.text()
+            assert not w.watched.busy and 'qualifiers are unsupported' in w.status.text(),w.status.text()
             assert m.state==snapshot and save.read_bytes()==saved
             QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
             QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()

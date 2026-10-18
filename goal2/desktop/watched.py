@@ -30,6 +30,14 @@ class WatchedController:
     def busy(self):
         return self.engine.busy
 
+    def fixture(self):
+        """[designed] Unsupported watching is explicit even with an unconfirmed draft."""
+        campaign = self.model.state.campaign
+        pending = campaign.next_fixture if campaign else None
+        if pending is None or pending.kind != 1:
+            raise ValueError('Watch supports scheduled friendlies only; pending qualifiers are unsupported')
+        return pending
+
     def start(self, **options):
         # [designed] No wall-clock delay; record the accepted original RNG transcript.
         options = {'delay_byte':0, 'record_draws':True, **options}
@@ -39,10 +47,7 @@ class WatchedController:
             raise ValueError("Watch requires pygame-ce: python3 -m pip install '.[desktop,watched,match-view]'")
         if importlib.util.find_spec('unicorn') is None:
             raise ValueError("Watch requires Unicorn: python3 -m pip install '.[watched]'")
-        campaign = self.model.state.campaign
-        pending = campaign.next_fixture if campaign else None
-        if pending is None or pending.kind != 1:
-            raise ValueError('Watch supports scheduled friendlies only; pending qualifiers are unsupported')
+        pending = self.fixture()
         self.close_viewer()
         self.token = secrets.token_hex(24)
         self.display = Display(self.token)

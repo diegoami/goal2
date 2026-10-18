@@ -152,6 +152,12 @@ sys.exit(pygame_viewer.main())
                 pump(lambda:w.watched.process is None,app=app)
                 self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll())
                 self.assertEqual(m.state,before);self.assertFalse(m.match_pending)
+                from dataclasses import replace
+                m.state.campaign.fixtures=tuple(replace(f,kind=2) for f in m.state.campaign.fixtures)
+                w.tactics[0][1].setChecked(not w.tactics[0][1].isChecked())
+                w.start_watched()
+                self.assertIn('qualifiers are unsupported',w.status.text())
+                self.assertFalse(w.watched.busy);self.assertIsNone(w.watched.process)
             finally:timer.stop();w.close();w.deleteLater();app.processEvents()
 
     def test_optional_dependency_and_qualifier_boundary(self):
