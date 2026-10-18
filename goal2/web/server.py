@@ -35,13 +35,12 @@ MAX_BODY = 4096
 class StalePlaySubmission(Exception):
     """The browser supplied a token that has already been consumed."""
 
-# [confirmed: F010] Labels for tactics elements 1–4. [designed: F010] The
-# labels for elements 5–8 are not read from the original screen; these retain
-# the rebuild's existing terminal wording.
+# [confirmed: F010] Labels for tactics elements 1–4, 6 and 7. [designed: F010]
+# The labels for elements 5 and 8 are not read from the original screen.
 TACTICS = (
     {"element": 5, "clear": "half pitch", "set": "full pitch", "evidence": "designed"},
-    {"element": 6, "clear": "short kicks", "set": "long kicks", "evidence": "designed"},
-    {"element": 7, "clear": "stay back", "set": "push forward", "evidence": "designed"},
+    {"element": 6, "clear": "sag back to box", "set": "stand ground", "evidence": "confirmed"},
+    {"element": 7, "clear": "play safe", "set": "offside trap", "evidence": "confirmed"},
     {"element": 1, "clear": "stay back", "set": "push forward", "evidence": "confirmed"},
     {"element": 2, "clear": "keep ball", "set": "quick pass", "evidence": "confirmed"},
     {"element": 3, "clear": "short passes", "set": "long passes", "evidence": "confirmed"},

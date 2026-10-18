@@ -37,15 +37,15 @@ _DISPLAY_ORDER = (5, 6, 7, 1, 2, 3, 4, 8)
 # [confirmed: F010 "element k at bit k − 1"] Bit position = element - 1.
 _BIT_OF_ELEMENT = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7}
 
-# [confirmed: F010's element labels for 1-4] [designed: F010 says
-# "the screen labels of 5..7 are not read"; element 8 label not read either]
+# [confirmed: F010's element labels for 1-4, 6 and 7]
+# [designed: F010's screen label for element 5 and element 8 are not read]
 _ELEMENT_LABELS: dict[int, tuple[str, str]] = {
-    # Element 5: [designed; F010 notes labels of 5..7 are not read]
+    # Element 5: [designed; F010's element 5 label is not read]
     5: ("half pitch", "full pitch"),
-    # Element 6: [designed; F010 notes labels of 5..7 are not read]
-    6: ("short kicks", "long kicks"),
-    # Element 7: [designed; F010 notes labels of 5..7 are not read]
-    7: ("stay back", "push forward"),
+    # Element 6: [confirmed: F010]
+    6: ("sag back to box", "stand ground"),
+    # Element 7: [confirmed: F010]
+    7: ("play safe", "offside trap"),
     # Element 1: [confirmed: F010]
     1: ("stay back", "push forward"),
     # Element 2: [confirmed: F010]
@@ -68,8 +68,8 @@ def run_tactics_select(
 ) -> bool:
     """Show the 8 tactics rows and return True on Enter, False on Esc.
 
-    `goaldat` is required but not read by this screen (the labels are
-    hardcoded per F010's evidence).
+    `goaldat` is required but not read by this screen (confirmed labels follow
+    F010; elements 5 and 8 keep their designed wording).
     `keys` is an optional iterable of Key values (for scripted tests); when
     None the screen reads from stdin.
     `state`, if given, is written with country_tactics when Enter is pressed;

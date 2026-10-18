@@ -40,8 +40,8 @@ as captain and toggle the eight tactics bits, then **Confirm management**. Until
 confirmation, edits affect only widgets. **Discard draft** restores confirmed
 choices. An unavailable selected starter can be removed; an unavailable reserve
 cannot be added. Invalid drafts show a reason and preserve active state. IDs and
-captain remain Python integers, including values above255. Tactics labels1..4
-follow F010; labels5..8 retain the established rebuild choices.
+captain remain Python integers, including values above255. [confirmed: F010] Tactics
+labels for elements1..4,6,7 follow F010; [designed] labels5 and8 retain the established rebuild choices.
 
 [designed; derived: T33/T40] Save writes the confirmed state, never an unconfirmed
 draft, through the existing atomic writer. Resume validates the save, embedded
