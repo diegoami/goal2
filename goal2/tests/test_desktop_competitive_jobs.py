@@ -140,7 +140,10 @@ class CompetitiveJobsTests(unittest.TestCase):
                 self.owner.save(self.owner.save_path);self.owner.resume(self.owner.save_path)
                 self.assertEqual(self.owner.state,after)
                 print(f'T80 REAL kind={kind} index={index} events={len(events)} memory_sha256={hashlib.sha256(expected.memory).hexdigest()} seeds={expected.seeds}',flush=True)
+                self.owner.match_pending=True
                 self.jobs.close()
+                self.assertTrue(self.owner.match_pending,'finished competitive close unlocked another job')
+                self.owner.match_pending=False
 
     def test_complete_packet_waits_for_successful_exit_and_full_tail(self):
         token=self.bridge('waitexit')
@@ -212,10 +215,15 @@ class CompetitiveJobsTests(unittest.TestCase):
         with patch('goal2.game.watched_jobs.subprocess.Popen',side_effect=OSError('launch unavailable')):
             with self.assertRaisesRegex(ValueError,'launch unavailable'):self.jobs.start()
         self.assertFalse(self.jobs.busy);self.assertIsNone(self.jobs.publication._pending);self.unchanged()
-        with patch('goal2.desktop.competitive.require_runtime',side_effect=ValueError("install '.[desktop,watched]'")):
-            with self.assertRaisesRegex(ValueError,'install'):self.jobs.start()
+        import builtins
+        original_import=builtins.__import__
+        def without_unicorn(name,*args,**kwargs):
+            if name=='unicorn':raise ImportError('synthetic missing optional runtime')
+            return original_import(name,*args,**kwargs)
+        with patch('builtins.__import__',side_effect=without_unicorn):
+            with self.assertRaisesRegex(ValueError,"pip install.*desktop,watched"):self.jobs.start()
         raw=self.owner.template_bytes;self.owner.template_bytes=b'broken'
-        with self.assertRaises(ValueError):self.jobs.start()
+        with self.assertRaisesRegex(ValueError,'Check the local game resources'):self.jobs.start()
         self.owner.template_bytes=raw;self.unchanged()
         self.owner.match_pending=True
         with self.assertRaisesRegex(ValueError,'Another match'):self.jobs.start()

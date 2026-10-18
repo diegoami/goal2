@@ -1,0 +1,15 @@
+test_missing_original_end_tail_is_rejected (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_missing_original_end_tail_is_rejected) ... FAIL
+
+======================================================================
+FAIL: test_missing_original_end_tail_is_rejected (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_missing_original_end_tail_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/goal2/tests/test_desktop_competitive_jobs.py", line 181, in test_missing_original_end_tail_is_rejected
+    with self.assertRaisesRegex(ValueError,'incomplete'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 16.272s
+
+FAILED (failures=1)

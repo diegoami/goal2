@@ -1,0 +1,43 @@
+{
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "mode": "saved-byte negative controls",
+  "controls": [
+    {
+      "control": "duplicate-completion",
+      "file": "goal2/game/watched_jobs.py",
+      "test": "goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_duplicate_completion_packet_is_rejected",
+      "baseline": false,
+      "returncode": 1,
+      "intended_assertion": true,
+      "accepted": true,
+      "seconds": 16.724,
+      "original_sha256": "c121b7b422e13f722941e4965bc5462adfcaf91921e6bf0a51ccd3e4839ddc39",
+      "restored": true
+    },
+    {
+      "control": "stale-owner",
+      "file": "goal2/game/watched_jobs.py",
+      "test": "goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_changed_owner_is_rejected_before_any_publication",
+      "baseline": false,
+      "returncode": 1,
+      "intended_assertion": true,
+      "accepted": true,
+      "seconds": 16.461,
+      "original_sha256": "c121b7b422e13f722941e4965bc5462adfcaf91921e6bf0a51ccd3e4839ddc39",
+      "restored": true
+    },
+    {
+      "control": "original-tail",
+      "file": "goal2/game/watched_publication.py",
+      "test": "goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_missing_original_end_tail_is_rejected",
+      "baseline": false,
+      "returncode": 1,
+      "intended_assertion": true,
+      "accepted": true,
+      "seconds": 16.422,
+      "original_sha256": "2b96c2c93a4bf7701168359b30fc9e60fe7881168653c2bfd2552ccf7ed24ad8",
+      "restored": true
+    }
+  ]
+}

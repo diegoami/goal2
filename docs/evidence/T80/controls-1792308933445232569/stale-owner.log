@@ -1,0 +1,6 @@
+test_changed_owner_is_rejected_before_any_publication (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_changed_owner_is_rejected_before_any_publication) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 18.150s
+
+OK

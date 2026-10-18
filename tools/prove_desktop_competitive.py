@@ -40,8 +40,8 @@ def main():
         try:
             if not args.baseline:path.write_text(original.replace(old,new))
             env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
-            # [designed] Remove only this process's owned bytecode for the two mutation files;
-            # source size changes plus -B avoid stale cached imports in child readers.
+            # [designed] Changed source size invalidates prior bytecode; -B keeps the
+            # mutation from writing a bytecode artifact for later readers.
             result=subprocess.run([sys.executable,'-B','-m','unittest',PREFIX+test,'-v'],cwd=ROOT,
                                   env=env,capture_output=True,text=True,timeout=180)
         finally:path.write_bytes(saved)
