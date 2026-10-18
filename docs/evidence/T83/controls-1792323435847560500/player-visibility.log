@@ -1,0 +1,7 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.094s
+
+OK

@@ -1,0 +1,15 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/tools/desktop-ui/animated-pitch.py", line 229, in <module>
+    receipts['pass'] = True
+^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/tools/desktop-ui/animated-pitch.py", line 179, in main
+    QTest.mouseClick(w.resume, Qt.MouseButton.LeftButton);app.processEvents()
+    ^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/desktop/jobs.py", line 26, in start
+    resolve_full_matchup(Savestate(to_savestate(model.state,original=model.template_bytes)),model.state)
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/game/quick_match.py", line 98, in resolve_full_matchup
+    raise ValueError(f"unsupported fixture kind {fixture.kind}; competitive play is unavailable")
+ValueError: unsupported fixture kind 5; competitive play is unavailable

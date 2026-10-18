@@ -123,7 +123,7 @@ class PresentationTests(unittest.TestCase):
         from goal2.tests.test_watched_jobs import CONTROLLED
         app=QApplication.instance() or QApplication([])
         with tempfile.TemporaryDirectory() as folder:
-            m=model(Path(folder)/'save');w=ManagementWindow(m);w.show();app.processEvents()
+            m=model(Path(folder)/'save');w=ManagementWindow(m);original_start=w.watched.start;w.watched.start=lambda **kw:original_start(frames=False,**kw);w.show();app.processEvents()
             w.watched.engine.command=[sys.executable,'-c',CONTROLLED,'blocked']
             w.confirm_draft()
             before=copy.deepcopy(m.state);beats=[];timer=QTimer();timer.setInterval(2);timer.timeout.connect(lambda:beats.append(1));timer.start()
@@ -165,15 +165,15 @@ sys.exit(pygame_viewer.main())
             m=model(Path(folder)/'save');c=WatchedController(m);before=copy.deepcopy(m.state)
             try:
                 with patch('goal2.desktop.watched.importlib.util.find_spec',return_value=None):
-                    with self.assertRaisesRegex(ValueError,'pygame-ce.*pip install'):c.start()
+                    with self.assertRaisesRegex(ValueError,'pygame-ce.*pip install'):c.start(frames=False,)
                 self.assertEqual(m.state,before);self.assertIsNone(c.process)
                 m.state.campaign=None
-                with self.assertRaisesRegex(ValueError,'scheduled friendlies only'):c.start()
+                with self.assertRaisesRegex(ValueError,'scheduled friendlies only'):c.start(frames=False,)
                 m.state=before
                 from dataclasses import replace
                 campaign=m.state.campaign
                 campaign.fixtures=tuple(replace(f,kind=2) for f in campaign.fixtures)
-                with self.assertRaisesRegex(ValueError,'qualifiers are unsupported'):c.start()
+                with self.assertRaisesRegex(ValueError,'qualifiers are unsupported'):c.start(frames=False,)
                 self.assertIsNone(c.process)
             finally:c.close()
 
@@ -183,11 +183,11 @@ sys.exit(pygame_viewer.main())
             m=model(Path(folder)/'save');m.save(m.save_path);saved=m.save_path.read_bytes();before=copy.deepcopy(m.state)
             c=WatchedController(m,engine_command=[sys.executable,'-c',CONTROLLED,'blocked'])
             try:
-                c.start(reference_seed=257,delay_byte=0,record_draws=True)
+                c.start(frames=False,reference_seed=257,delay_byte=0,record_draws=True)
                 viewer=c.process;engine=c.engine.process
                 def seen():c.poll();return c.last_status and c.display.events
                 pump(seen)
-                with self.assertRaisesRegex(ValueError,'already running'):c.start()
+                with self.assertRaisesRegex(ValueError,'already running'):c.start(frames=False,)
                 quick=QuickJobs(m)
                 try:
                     with self.assertRaisesRegex(ValueError,'already running'):quick.start()
@@ -201,7 +201,7 @@ sys.exit(pygame_viewer.main())
             finally:c.close()
             c=WatchedController(m,viewer_command=['/nonexistent/goal2-viewer'])
             try:
-                with self.assertRaisesRegex(ValueError,'Cannot start original friendly'):c.start()
+                with self.assertRaisesRegex(ValueError,'Cannot start original friendly'):c.start(frames=False,)
                 self.assertIsNone(c.process);self.assertFalse(c.busy);self.assertFalse(m.match_pending)
                 self.assertEqual(m.state,before)
             finally:c.close()
@@ -209,7 +209,7 @@ sys.exit(pygame_viewer.main())
             m=DesktopModel.open(ROOT/'.cache/e0afff6751747233-e006-1000-r0001.sav',ROOT/'.cache/GOAL.DAT',Path(folder)/'unused',country=4)
             before=copy.deepcopy(m.state);c=WatchedController(m)
             try:
-                with self.assertRaisesRegex(ValueError,'Cannot start original friendly:.*extra time'):c.start()
+                with self.assertRaisesRegex(ValueError,'Cannot start original friendly:.*extra time'):c.start(frames=False,)
                 self.assertIsNone(c.process);self.assertFalse(c.busy);self.assertEqual(m.state,before)
             finally:c.close()
 
@@ -234,7 +234,7 @@ sys.exit(pygame_viewer.main())
                 try:
                     error=None;cleanup_error=None
                     with patch('goal2.desktop.watched.tempfile.TemporaryDirectory',allocate),patch.object(Path,'open',opening),patch('goal2.desktop.watched.subprocess.Popen') as launch:
-                        try:c.start()
+                        try:c.start(frames=False,)
                         except Exception as exc:error=exc
                         self.assertFalse(launch.called,'allocation failure launched a child')
                     automatically_closed=all(handle.closed for handle in acquired)
@@ -252,7 +252,7 @@ sys.exit(pygame_viewer.main())
                     self.assertTrue(all(handle.closed for handle in acquired),'partial allocation leaked an open stream')
                     self.assertTrue(all(not directory.exists() for directory in directories),'partial allocation retained its folder')
                     # [designed] Retry the same live bridge before terminal close, with real owned children.
-                    c.start();viewer=c.process;engine=c.engine.process
+                    c.start(frames=False,);viewer=c.process;engine=c.engine.process
                     retry_handles=(c.stream,c.errors)
                     def seen():c.poll();return c.last_status is not None and bool(c.display.events)
                     pump(seen)
@@ -281,7 +281,7 @@ sys.exit(pygame_viewer.main())
                 script="import time;time.sleep(60)"
                 c=WatchedController(m,viewer_command=[sys.executable,'-c',script],engine_command=[sys.executable,'-c',CONTROLLED,'guest' if mode=='guest' else 'blocked'])
                 try:
-                    c.start();viewer=c.process;engine=c.engine.process
+                    c.start(frames=False,);viewer=c.process;engine=c.engine.process
                     if mode in ('guest','bad-digest'):
                         (c.directory/'status').write_text(json.dumps({'token':c.token,'kind':'ready','sequence':0,'digest':c.digests[0] if mode=='guest' else '0'*64}))
                     if mode=='startup-timeout':c.started-=11

@@ -1,0 +1,84 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+test_accumulated_target_cadence_and_country_color_association (goal2.tests.test_pygame_pitch_view.PitchPixels.test_accumulated_target_cadence_and_country_color_association) ... FAIL
+test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting) ... FAIL
+test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state) ... FAIL
+test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding) ... FAIL
+test_watermark_minute_terminal_tail_and_bounded_queue (goal2.tests.test_pygame_pitch_view.PitchPixels.test_watermark_minute_terminal_tail_and_bounded_queue) ... FAIL
+test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status (goal2.tests.test_pygame_pitch_view.PitchController.test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status) ... FAIL
+
+======================================================================
+FAIL: test_accumulated_target_cadence_and_country_color_association (goal2.tests.test_pygame_pitch_view.PitchPixels.test_accumulated_target_cadence_and_country_color_association)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 119, in test_accumulated_target_cadence_and_country_color_association
+    d=pitch()
+      ^^^^^^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 32, in pitch
+    assert callable(getattr(viewer,'render_pitch',None)), 'numbered pitch renderer missing'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: numbered pitch renderer missing
+
+======================================================================
+FAIL: test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 134, in test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting
+    d=pitch()
+      ^^^^^^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 32, in pitch
+    assert callable(getattr(viewer,'render_pitch',None)), 'numbered pitch renderer missing'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: numbered pitch renderer missing
+
+======================================================================
+FAIL: test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 81, in test_field_bounds_visibility_and_unknown_state
+    d=pitch();f=sample();f['ball']=[11,0,True]
+      ^^^^^^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 32, in pitch
+    assert callable(getattr(viewer,'render_pitch',None)), 'numbered pitch renderer missing'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: numbered pitch renderer missing
+
+======================================================================
+FAIL: test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 55, in test_independent_axes_team_labels_ball_movement_half_and_rebinding
+    d=pitch();f=sample()
+      ^^^^^^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 32, in pitch
+    assert callable(getattr(viewer,'render_pitch',None)), 'numbered pitch renderer missing'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: numbered pitch renderer missing
+
+======================================================================
+FAIL: test_watermark_minute_terminal_tail_and_bounded_queue (goal2.tests.test_pygame_pitch_view.PitchPixels.test_watermark_minute_terminal_tail_and_bounded_queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 95, in test_watermark_minute_terminal_tail_and_bounded_queue
+    d=pitch()
+      ^^^^^^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 32, in pitch
+    assert callable(getattr(viewer,'render_pitch',None)), 'numbered pitch renderer missing'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: numbered pitch renderer missing
+
+======================================================================
+FAIL: test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status (goal2.tests.test_pygame_pitch_view.PitchController.test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 170, in test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status
+    pitch()  # [designed] Before-control asserts feature absence without import ERROR.
+    ^^^^^^^
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 32, in pitch
+    assert callable(getattr(viewer,'render_pitch',None)), 'numbered pitch renderer missing'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: numbered pitch renderer missing
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.209s
+
+FAILED (failures=6)

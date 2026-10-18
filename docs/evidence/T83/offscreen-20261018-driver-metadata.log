@@ -1,0 +1,2 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+{"actual_qt_platform": "offscreen", "actual_sdl_driver": "dummy", "pygame_version": "2.5.8", "sdl_version": [2, 32, 10], "scope": "Separate metadata-only probe; no original match"}

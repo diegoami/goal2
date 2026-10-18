@@ -82,11 +82,14 @@ original events, default answers and a completed outcome; the viewer never runs 
 second match or publishes state. Test both process lifecycles and stale/duplicate
 messages, with optional dependencies and headless/real-window checks.
 
-[confirmed: accepted kit at424d599, `Match.pitch()`, F013] The kit exposes 22 player
-records and ball coordinates, labeling their pitch interpretation likely.
-[designed] A later bounded pitch-view slice must validate the coordinate transform,
-orientation and sampling cadence against original output before claiming animation
-fidelity. Presentation interpolation must be labeled and cannot alter engine behavior.
+[derived: T81/T82, F013/F018/F028 at424d599] The validated pitch contract preserves
+signed fixed coordinates, current player words, team/local slot identity and exact
+player/ball hidden sentinels at completed original ticks. T82 carries bounded
+causal samples with consumption-gated publication. [designed: T83] Friendly Watch
+renders those discrete samples on a modern schematic pitch at a fixed default
+60 samples/s target. Score/commentary follow frame watermarks; interpolation,
+guessed reset classification, persistent shirt numbering and original artwork
+fidelity remain outside the claim. See [T83 evidence](evidence/T83/README.md).
 
 [derived: official pygame-ce documentation, checked 2026-10-17]
 [pygame-ce](https://pyga.me/docs/) supplies display, drawing, fonts, events and sprites

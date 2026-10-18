@@ -1,0 +1,218 @@
+{
+  "accepted_dependency": "f74bd0f4aa41acdcbe45372b86864be1aba949db",
+  "accepted_harness_fix": "354e8e7b488c7f7db17d82073e3aefb0880daec0",
+  "clarifications": [
+    "Original drawing and movement remain enabled; no engine files changed. All compares are complete objects/bytes in memory, hashes only summarize receipts.",
+    "The second-round boundary string owned-only teardown round2 in completed runtime receipts means ordinary completed-viewer close; first round visits newer Quick owner. Final script corrects this diagnostic label only.",
+    "Native receipt records actual driver getters; offscreen match used forced environment before getters were added, with separate metadata-only actual-driver probe.",
+    "Playback targets60/240 are designed; measured mean default59.839/59.865 samples/s. Every discrete sample flips before ACK; host-dependent instantaneous intervals are retained.",
+    "No native Windows acceptance; launcher/saves/all worktrees preserved. Original bytes remain ignored."
+  ],
+  "commands": [
+    {
+      "command": "python3 -m unittest goal2.tests.test_pygame_pitch_view -v",
+      "log": "focused-02.log",
+      "result": "PASS7; five intended saved-byte assertion controls, exact restoration; six behavior tests fail accepted baseline"
+    },
+    {
+      "command": "python3 tools/desktop-ui/animated-pitch.py",
+      "log": "offscreen-20261018-run2.log",
+      "mode": "offscreen/dummy",
+      "receipt": "20261018T115046.684495Z-offscreen-dummy/acceptance.json",
+      "result": "PASS full exact original parity,4540/4616 samples,both halves,SaveResume,cancellation/locks/hostile acknowledgement/owned teardown"
+    },
+    {
+      "command": "python3 tools/desktop-ui/animated-pitch.py",
+      "log": "native-20261018-run1.log",
+      "mode": "actual Qt xcb/SDL x11",
+      "receipt": "20261018T115405.988758Z-xcb-x11/acceptance.json",
+      "result": "PASS same complete boundaries; actual native driver getters recorded"
+    },
+    {
+      "command": "python3 -m unittest goal2.tests.test_pygame_match_view goal2.tests.test_watched_jobs goal2.tests.test_watched_publication goal2.tests.test_desktop_quick_jobs goal2.tests.test_desktop_model goal2.tests.test_desktop_competitive_jobs -v",
+      "log": "regressions-tail-01.log",
+      "result": "PASS57; captured terminal tail; all10 strict T64 seeds and real T80 qualifier/tied knockout;631.455s owned exec"
+    },
+    {
+      "command": "python3 -m unittest goal2.tests.test_watched_pitch_jobs -v",
+      "execution": "owned systemd goal2-t83-t82-regressions-01; explicit environment,null stdin,physical TMPDIR",
+      "log": "t82-regressions-01.log",
+      "result": "PASS21 in158.078s; raw every-tick oracle,4279/4146frames,full exact parity"
+    },
+    {
+      "command": "python3 tools/check_provenance.py",
+      "log": "provenance-01.log",
+      "result": "PASS16 unchanged vendor files"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "log": "links-01.log",
+      "result": "PASS links/JSON before final receipts; final check follows"
+    },
+    {
+      "command": "python3 tools/desktop-ui/competitive_play.py",
+      "log": "t80-ui-01.log",
+      "receipt": "t80-competitive-play-1792325025136367029.json",
+      "result": "PASS real Qt qualifier+tied knockout full result/events/Memory/seeds/progress/captain0/SaveResume and synthetic lifecycle; owned systemd goal2-t83-t80-ui-01"
+    },
+    {
+      "command": "python3 tools/check_links.py",
+      "log": "links-final-02.log",
+      "result": "PASS final receipts/JSON"
+    },
+    {
+      "command": "python3 tools/check_provenance.py",
+      "log": "provenance-final-02.log",
+      "result": "PASS16 unchanged vendor files"
+    },
+    {
+      "command": "python3 tools/check_premerge.py --expected-head d5536525deca7334992393b038bb5d8d002f1d28",
+      "log": "premerge-d553652-01.log",
+      "result": "PASS75 lock hashes, original exclusion and full local checks; final ready-head check follows in ignored cache"
+    }
+  ],
+  "fixtures": {
+    "0095cee949724990-E010-r0006-halftime.sav": "0095cee949724990db81740c5d1e73858137a79d47de274b756c7c459816fe5a",
+    "111e38da1a3bc674-E010-r0004-halftime.sav": "111e38da1a3bc6747b1bc7f66fbd187d711a5fccb8892aeec6657fe49a5cd6b9",
+    "224e63c18380c3ff-E010-r0002-halftime.sav": "224e63c18380c3ff13ab9245fc23166f7ed568d97d0701e994896dacee6ad569",
+    "3789d8490d2b42d8-e006-2100-r0005.sav": "3789d8490d2b42d8a589fec2afeb51de0ace4b4c5d1e5e24ff232321874dd106",
+    "5497b6d4d367ac2d-E010-r0005-halftime.sav": "5497b6d4d367ac2d8653d962de0301d552d2362bc5fe7159c72d64f721c01988",
+    "8a4ebd41b1c576a8-E010-r0007-halftime.sav": "8a4ebd41b1c576a81350d3a2e1cfba58880029aea44d3db9e5df0d6c0f8a1a17",
+    "91e815687fb73288-E010-r0009-halftime.sav": "91e815687fb732882ca2aa72841bcaacd54e16f6ace25ae63a4e96e2b195d1b0",
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "ae2935b9c4907454-E010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "b732ed79429f2bb8-E010-r0003-halftime.sav": "b732ed79429f2bb8ae3241d1bff4ab8273676a63024e50a2433063f5ab9c7c62",
+    "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
+    "e006-r0001-main.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    "e010-r0001-halftime.sav": "e1dee7e2f5ad443ee0d62eb6dd203394ef81f43732845aa04d969f422b556920",
+    "e010-r0002-halftime.sav": "224e63c18380c3ff13ab9245fc23166f7ed568d97d0701e994896dacee6ad569",
+    "e010-r0003-halftime.sav": "b732ed79429f2bb8ae3241d1bff4ab8273676a63024e50a2433063f5ab9c7c62",
+    "e010-r0004-halftime.sav": "111e38da1a3bc6747b1bc7f66fbd187d711a5fccb8892aeec6657fe49a5cd6b9",
+    "e010-r0005-halftime.sav": "5497b6d4d367ac2d8653d962de0301d552d2362bc5fe7159c72d64f721c01988",
+    "e010-r0006-halftime.sav": "0095cee949724990db81740c5d1e73858137a79d47de274b756c7c459816fe5a",
+    "e010-r0007-halftime.sav": "8a4ebd41b1c576a81350d3a2e1cfba58880029aea44d3db9e5df0d6c0f8a1a17",
+    "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "e010-r0009-halftime.sav": "91e815687fb732882ca2aa72841bcaacd54e16f6ace25ae63a4e96e2b195d1b0",
+    "e010-r0010-halftime.sav": "3c7983fa4869d3278fe9f1f6140e5ca1b84f602e97b5862f547c6332d086e1e6",
+    "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    "e1dee7e2f5ad443e-E010-r0001-halftime.sav": "e1dee7e2f5ad443ee0d62eb6dd203394ef81f43732845aa04d969f422b556920"
+  },
+  "kind": "T83 rebuild-only presentation validation",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "receipts": {
+    "20261018T113806.202097Z-offscreen-dummy/failure.json": "32f2e8f7109cb963915a8d910380e5bf570515806eca0b1a0420f72d2632f139",
+    "20261018T113806.202097Z-offscreen-dummy/round-1/full-time.png": "55de8eb7987c3a390d90094e5002f879c55efeec03fa3bd2fcf1edd7099bfcd4",
+    "20261018T113806.202097Z-offscreen-dummy/round-1/half-0.png": "890e56e047d93442ae1ecf59ffddb1b5d4635e151040f0e9939769fcc4f6b29a",
+    "20261018T113806.202097Z-offscreen-dummy/round-1/half-1.png": "418071491e0acc9f138a3533ca3796884e90f075e1e0f33b624823176ba577cc",
+    "20261018T113806.202097Z-offscreen-dummy/round-1/metrics.json": "c8b865576b2def4ddbf7f928f163cb242d23270125f93fea2f01238eb2fc6719",
+    "20261018T113806.202097Z-offscreen-dummy/round-2/full-time.png": "1a33e83ef6d6c75865ea8d561b9a8e3a2726b29e0f1064c2d9a85d0a3ccb1206",
+    "20261018T113806.202097Z-offscreen-dummy/round-2/half-0.png": "e98511d1c50e00e62490afb88a18e453b10bca87be9044ab7a0fde3d68e702ec",
+    "20261018T113806.202097Z-offscreen-dummy/round-2/half-1.png": "ab7bd18eee9a75d987a2d432018e3928b9bc30245830f5ce7546247623fc4240",
+    "20261018T113806.202097Z-offscreen-dummy/round-2/metrics.json": "24dd36c439a43e58850b0792b587e950cf35fbb4a33e0072dcf90f4bd91a207a",
+    "20261018T115046.684495Z-offscreen-dummy/acceptance.json": "e60fcc054d272005e9f503ff37f34c7ff684571547267795a3fd341593669657",
+    "20261018T115046.684495Z-offscreen-dummy/malformed/metrics.json": "b3f9932a0a167942a5c6b27722ad25e0f7b21c2922ca98e2eff21256257cae55",
+    "20261018T115046.684495Z-offscreen-dummy/round-1/full-time.png": "c7f869b81b4c834997eceb0979115180ec5dcd4251cd6943dbf1477426b4ff07",
+    "20261018T115046.684495Z-offscreen-dummy/round-1/half-0.png": "53d5a7419b92d743da9249d6e424be6f03346243cd9ee0ea0934958707ab8199",
+    "20261018T115046.684495Z-offscreen-dummy/round-1/half-1.png": "7f378e76bac02fa4887287a9f10156b9bbae123d919361bb453cde9f0bd0728e",
+    "20261018T115046.684495Z-offscreen-dummy/round-1/metrics.json": "61beb6aceeab1f28c8bd213854c371a75bae67aa4ca0a7a56a13349b33a9407e",
+    "20261018T115046.684495Z-offscreen-dummy/round-1/sample-300-selector-0.png": "6dcc27ae3c4bf9d65212460f7e0ea005cda21f2097faccf80ed0a2aef119575b",
+    "20261018T115046.684495Z-offscreen-dummy/round-1/sample-300-selector-1.png": "385296b9fddccb63657b4b070c8de27e10f19bbd3e0f900c9c921aba5f343b45",
+    "20261018T115046.684495Z-offscreen-dummy/round-2/full-time.png": "62d2657cd920555c1d724c413183d6d7588ed0e5e5cbab8d7cfff58eb9aef0fb",
+    "20261018T115046.684495Z-offscreen-dummy/round-2/half-0.png": "e5bcd5101c345f6f12866698f1437f4952d73b8ac76b6bcf98e2e17ab4c0da99",
+    "20261018T115046.684495Z-offscreen-dummy/round-2/half-1.png": "538217ace846f94534a95172bb2affee1d1a7e83e20596543daf8f6bf267e9f6",
+    "20261018T115046.684495Z-offscreen-dummy/round-2/metrics.json": "00544a055446dcc3e0381bd40ea6525838a337556d983dbf6c5690404d3f7810",
+    "20261018T115046.684495Z-offscreen-dummy/round-2/sample-300-selector-0.png": "d4bb9db650a3743138f6be8546ec92c107caf9fee123522facf6364c82222cff",
+    "20261018T115046.684495Z-offscreen-dummy/round-2/sample-300-selector-1.png": "7f490bf8626349dab1315225b01454b3520a3b2c5f2804899a05e9ff3a6a0dec",
+    "20261018T115046.684495Z-offscreen-dummy/slow-close/close-request": "d53dd99465fc97de9d13400b1e81e696783a43294d5f10bce1f8e5931c9a1355",
+    "20261018T115046.684495Z-offscreen-dummy/slow-close/half-1.png": "7f378e76bac02fa4887287a9f10156b9bbae123d919361bb453cde9f0bd0728e",
+    "20261018T115046.684495Z-offscreen-dummy/slow-close/metrics.json": "cb9f415adf4b45d1a76615932478a6f7aaac74a734e98e2aba707d80b23b599f",
+    "20261018T115046.684495Z-offscreen-dummy/slow-close/sample-300-selector-1.png": "385296b9fddccb63657b4b070c8de27e10f19bbd3e0f900c9c921aba5f343b45",
+    "20261018T115046.684495Z-offscreen-dummy/stale/metrics.json": "b3f9932a0a167942a5c6b27722ad25e0f7b21c2922ca98e2eff21256257cae55",
+    "20261018T115405.988758Z-xcb-x11/acceptance.json": "3ce8363b7879566d903ff917d8c0d3909a95466b49f3707fa0faed9e1ffda962",
+    "20261018T115405.988758Z-xcb-x11/malformed/metrics.json": "5fc1fa11d76f19a313761e569368dfdab70247b181207149cb583201cb412df5",
+    "20261018T115405.988758Z-xcb-x11/round-1/full-time.png": "c7f869b81b4c834997eceb0979115180ec5dcd4251cd6943dbf1477426b4ff07",
+    "20261018T115405.988758Z-xcb-x11/round-1/half-0.png": "53d5a7419b92d743da9249d6e424be6f03346243cd9ee0ea0934958707ab8199",
+    "20261018T115405.988758Z-xcb-x11/round-1/half-1.png": "7f378e76bac02fa4887287a9f10156b9bbae123d919361bb453cde9f0bd0728e",
+    "20261018T115405.988758Z-xcb-x11/round-1/metrics.json": "2e5c88e924031ec80c04c7bbd5b277c21050bf5d2c916f7fd1355d93f45da6e5",
+    "20261018T115405.988758Z-xcb-x11/round-1/sample-300-selector-0.png": "6dcc27ae3c4bf9d65212460f7e0ea005cda21f2097faccf80ed0a2aef119575b",
+    "20261018T115405.988758Z-xcb-x11/round-1/sample-300-selector-1.png": "385296b9fddccb63657b4b070c8de27e10f19bbd3e0f900c9c921aba5f343b45",
+    "20261018T115405.988758Z-xcb-x11/round-2/full-time.png": "62d2657cd920555c1d724c413183d6d7588ed0e5e5cbab8d7cfff58eb9aef0fb",
+    "20261018T115405.988758Z-xcb-x11/round-2/half-0.png": "e5bcd5101c345f6f12866698f1437f4952d73b8ac76b6bcf98e2e17ab4c0da99",
+    "20261018T115405.988758Z-xcb-x11/round-2/half-1.png": "538217ace846f94534a95172bb2affee1d1a7e83e20596543daf8f6bf267e9f6",
+    "20261018T115405.988758Z-xcb-x11/round-2/metrics.json": "98438c2b7d533cff22e99a3dd5c123b04382ce4ff215a1d8d29969b75b79cc85",
+    "20261018T115405.988758Z-xcb-x11/round-2/sample-300-selector-0.png": "d4bb9db650a3743138f6be8546ec92c107caf9fee123522facf6364c82222cff",
+    "20261018T115405.988758Z-xcb-x11/round-2/sample-300-selector-1.png": "7f490bf8626349dab1315225b01454b3520a3b2c5f2804899a05e9ff3a6a0dec",
+    "20261018T115405.988758Z-xcb-x11/slow-close/close-request": "d53dd99465fc97de9d13400b1e81e696783a43294d5f10bce1f8e5931c9a1355",
+    "20261018T115405.988758Z-xcb-x11/slow-close/half-1.png": "7f378e76bac02fa4887287a9f10156b9bbae123d919361bb453cde9f0bd0728e",
+    "20261018T115405.988758Z-xcb-x11/slow-close/metrics.json": "4ba83646caa77e6493b454fd4611ee9b563d342a71ef612e5ab3b28a0db75545",
+    "20261018T115405.988758Z-xcb-x11/stale/metrics.json": "5fc1fa11d76f19a313761e569368dfdab70247b181207149cb583201cb412df5",
+    "README.md": "3f785c1616aab623bc2763d31455f78cd7a6fcffb286ae6618d89dbbac6603c4",
+    "before-1792323476926257376/baseline.log": "e3ebef4022c22c9ed7eeab7edb4fc04b4104fdde6674fbaf7b04ad02f61a2a29",
+    "before-1792323476926257376/restoration.json": "64d5a3387c7d17af6925a3b1d6f830268dac7ba2c4bca4108e7243a84044f27f",
+    "before-1792324216575042931/baseline.log": "9b97af8522ff18144a66b3b9a52e240d16a5bb41cb16ecb6aa321c8b2610493c",
+    "before-1792324216575042931/restoration.json": "421ead9dc8974317419c81eca5d5832db1b5c81f87d19896f1589ef858895e95",
+    "cadence-before-01.log": "9c97bb185d8019946640c558cd58fdc44b01dcd89bdfeb9587aa25009998f15a",
+    "controls-1792323435847560500/axes.log": "ef3d3a32235a7bdf8311629653e94e77e0f97e3e7065784d6aa5ccf0ab3654a1",
+    "controls-1792323435847560500/player-visibility.log": "cfd3d5f785c10d4260218ac2d314f5103ca0407b6f1a540ddd28355123791b04",
+    "controls-1792323435847560500/receipt.json": "811a00e7bd4644227f31d738e2ba772624bca33ede921d622419b6c27438fcfa",
+    "controls-1792323450306122111/axes.log": "56e79a0b1aa9c6884d110a7f305a6ed4d5bebd22681ae3f53c62e674a8205606",
+    "controls-1792323450306122111/ball-visibility.log": "d24bbbc58fa693f9d638b5ceaf6a60ce3137f8224ab0c2d05ecffc2ce3b7b525",
+    "controls-1792323450306122111/consumption.log": "567d37587b8335591a4ca5ec9fe83b6951839f00e5362309f755557f8dce79bf",
+    "controls-1792323450306122111/player-visibility.log": "a9411bc82ee5fad12e90dc4f712d5fb1259551bfaf445c35631d82ffd9c1d139",
+    "controls-1792323450306122111/receipt.json": "b1f3ba7a0483b2e6bc8765364a10de7ed228a745f0fc270fb91cb9641738ddc4",
+    "controls-1792323460829517928/axes.log": "86ca94e06e88e22a16f17da75499bcc4943e97211df9d77a064c123372309c25",
+    "controls-1792323460829517928/ball-visibility.log": "402cbb0eea69ec11bb062780a73908fe9fc9f61e5dfe67d36e2921fbd72fa8bc",
+    "controls-1792323460829517928/consumption.log": "adacd49c135befbd3a2810f44f21b19a30b3a8f3545d06b7c1f0ee72ed064d13",
+    "controls-1792323460829517928/player-visibility.log": "6eea577432f7f855d8f5c44f51c405181d97be948b58fc4dc5925d93fc17d18b",
+    "controls-1792323460829517928/receipt.json": "b1f3ba7a0483b2e6bc8765364a10de7ed228a745f0fc270fb91cb9641738ddc4",
+    "controls-1792324192619165076/axes.log": "56e79a0b1aa9c6884d110a7f305a6ed4d5bebd22681ae3f53c62e674a8205606",
+    "controls-1792324192619165076/ball-visibility.log": "402cbb0eea69ec11bb062780a73908fe9fc9f61e5dfe67d36e2921fbd72fa8bc",
+    "controls-1792324192619165076/consumption.log": "cef3615eab43a380d1d882f0af26588b5b5458257fc4c7894b895fc077fa5a94",
+    "controls-1792324192619165076/early-consumption.log": "fea0b1e6889f1163ef0402dfbc01132c199f55ca52e9f7966df03928b912d846",
+    "controls-1792324192619165076/player-visibility.log": "6eea577432f7f855d8f5c44f51c405181d97be948b58fc4dc5925d93fc17d18b",
+    "controls-1792324192619165076/receipt.json": "9cca8334395032292fd0c34407fac5852ac33bf1c0d17398fd5ebb26b4454b67",
+    "focused-02.log": "259e146cc025470fcb1df2da2c55da80685705c6a4e1aaeb9226d77c27fb696c",
+    "links-01.log": "3b22e0c2547f938c38e3125c3cd1dac921b3d3f17d5e7ea5978135b67ab7afcf",
+    "links-final-02.log": "b162d3a285d8e04a86a2f38d1de1e0c3fb3178c91615a03b8f55318b27ac859e",
+    "native-20261018-run1.log": "04e3b67cd930b89d76f580eff46724e52c8de935bb48ea920ec5f31653ed6f60",
+    "offscreen-20261018-driver-metadata.log": "416be1588dab96e6903f9a7c00a771b0a9195f46d44d3e55150afd1b4247c400",
+    "offscreen-20261018-run1.log": "b30b054fcb9a82d681eec4250e89018677a8887740b3eb098ac4aeb617d8323e",
+    "offscreen-20261018-run2.log": "fcb2d6c90f880c092e05043308a02dc5a68a5a7b8264776f126888e46df5d8c6",
+    "premerge-d553652-01.log": "bcf4145d9d6f78db93996bbdaa87dace7f14e4284750faeba1c8a135adb4325a",
+    "provenance-01.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+    "provenance-final-02.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+    "regressions-tail-01.log": "a740236bd55ca877b8e52907a63b83c950721d9fb83b091355f6948c7bf1bbfb",
+    "t80-competitive-play-1792325025136367029.json": "e9ab7c474e4c07c6b8d9c58cd33b1d5e9d39599b011aa4bceaa1694acf22c187",
+    "t80-ui-01.log": "d9ed09f022577316a017f767e5e40028b9b1d96a12677d27cd821748e3a7cd0d",
+    "t82-regressions-01.log": "c8ae495681780899f80dab545ad6f3ff08888bf1685ab250d53ae2e91c1b1c12"
+  },
+  "rejected_attempts": [
+    {
+      "path": "20261018T113806.202097Z-offscreen-dummy/failure.json",
+      "reason": "both original comparisons completed; later acceptance-only Quick probe hit unsupported competitive fixture; retained, not full pass"
+    },
+    {
+      "path": "controls-1792323435847560500",
+      "reason": "weak visibility oracle did not reject final overdraw team; not proof"
+    },
+    {
+      "path": "controls-1792323450306122111",
+      "reason": "consumption probe handler ERROR; not proof"
+    }
+  ],
+  "runtime_production_commit": "a9cca7cc9cfe52cf52072789b6d94fae751a4f03",
+  "schema": 1,
+  "source_pin": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+  "sources": {
+    "docs/desktop-management.md": "e6ec80a708f580d5ccd4ad04d84737091b471e74e649674cf2cb16030fa820e0",
+    "docs/desktop-ui-roadmap.md": "ee3e6e4a44661784b950af8bf6ac163d6ca06122096a8dac615ac38c41fa7e91",
+    "docs/evidence/T83/README.md": "3f785c1616aab623bc2763d31455f78cd7a6fcffb286ae6618d89dbbac6603c4",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/tests/test_pygame_match_view.py": "de639009b647f43f4abb69219817cd01d8ad9d97013104f1266b2f778e730d1f",
+    "goal2/tests/test_pygame_pitch_view.py": "78e2df3133b1150309288e588edb66beb6fce394cc03e2df684e93c743e6666a",
+    "tools/desktop-ui/animated-pitch.py": "a8fb6bfd27353b76d60e185233c928ac5c33cc3112ebbfc0d1bb27a7d56357a3",
+    "tools/desktop-ui/watched.py": "b4318bb61607505bbfe3b282051d953dd6f4844eb7c483aba374da2a2ee32be6"
+  }
+}
