@@ -1,0 +1,19 @@
+test_confirm_full_ids_and_bits_is_atomic_and_rejects_unavailable (goal2.tests.test_desktop_model.DesktopModelCases.test_confirm_full_ids_and_bits_is_atomic_and_rejects_unavailable) ... ok
+test_fresh_country_matches_direct_python_and_reads_are_pure (goal2.tests.test_desktop_model.DesktopModelCases.test_fresh_country_matches_direct_python_and_reads_are_pure) ... ok
+test_malformed_local_template_is_readable_and_never_published (goal2.tests.test_desktop_model.DesktopModelCases.test_malformed_local_template_is_readable_and_never_published) ... ok
+test_save_failure_and_invalid_new_country_keep_active_state (goal2.tests.test_desktop_model.DesktopModelCases.test_save_failure_and_invalid_new_country_keep_active_state) ... ok
+test_save_resume_preserves_complete_state_without_regeneration_and_rejects_bad_input (goal2.tests.test_desktop_model.DesktopModelCases.test_save_resume_preserves_complete_state_without_regeneration_and_rejects_bad_input) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume) ... ok
+test_candidate_matches_existing_transport_independent_campaign_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_matches_existing_transport_independent_campaign_publication) ... ok
+test_failure_and_bad_output_leave_active_state_unchanged (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_failure_and_bad_output_leave_active_state_unchanged) ... ok
+test_launch_failure_and_unsupported_fixture_are_atomic (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_launch_failure_and_unsupported_fixture_are_atomic) ... ok
+test_stale_completion_refuses_replaced_and_mutated_active_state (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_stale_completion_refuses_replaced_and_mutated_active_state) ... ok
+test_standalone_repeat_retains_complete_state_without_campaign (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_standalone_repeat_retains_complete_state_without_campaign) ... ok
+test_unrenderable_saved_result_is_rejected_before_resume_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_unrenderable_saved_result_is_rejected_before_resume_publication) ... ok
+test_worker_and_jobs_import_without_qt_unicorn_or_web (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_worker_and_jobs_import_without_qt_unicorn_or_web) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 22.343s
+
+OK
