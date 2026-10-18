@@ -117,10 +117,15 @@ def results(args):
                         assert f"{row['rank']}. {row['name']}   P {row['played']}   GF {row['goals_for']}   GA {row['goals_against']}   GD {row['goal_difference']}   Pts {row['points']}" in w.fixture_table.text(),'standings snapshot differs'
                 # [designed] Reach enabled Play and standings by Tab, and reverse with Shift-Tab.
                 w.pages[3].ensureWidgetVisible(w.standings);app.processEvents();active(w.standings)
+                filename=name+'-focused-standings.png';assert w.grab().save(str(out/filename))
+                report['captures'].append({'file':filename,'sha256':digest(out/filename),'focus':w.standings.objectName(),'window_active':w.isActiveWindow()})
                 QTest.keyClick(w.standings,Qt.Key.Key_Tab);app.processEvents()
                 expected=w.play if w.play.isEnabled() else w.substitute if w.substitute.isEnabled() else None
                 if w.play.isEnabled():
                     assert app.focusWidget() is w.play,'Tab did not reach Play'
+                    w.pages[3].ensureWidgetVisible(w.play);app.processEvents()
+                    filename=name+'-focused-play.png';assert w.grab().save(str(out/filename))
+                    report['captures'].append({'file':filename,'sha256':digest(out/filename),'focus':'Play','window_active':w.isActiveWindow()})
                     QTest.keyClick(w.play,Qt.Key.Key_Backtab);assert app.focusWidget() is w.standings,'Shift-Tab did not return to standings'
                 active(w.standings);QTest.keyClick(w.standings,Qt.Key.Key_Space);app.processEvents()
                 if backend:
