@@ -28,29 +28,50 @@ test('trusted reviewer freezes exact deny rules and legacy external boundary wit
   }
 });
 
-test('capture deadline kills an exited leaders owned descendants while unrelated process survives', async () => {
+test('capture deadline kills an exited leaders owned descendants after normal and delayed fixture startup', async () => {
   if (process.platform === 'win32') return;
-  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-pipes-'));
-  const fixture = path.join(scratch, 'leader.mjs'); const pidFile = path.join(scratch, 'descendant.pid');
-  fs.writeFileSync(fixture, `import {spawn} from 'node:child_process'; import fs from 'node:fs';
+  for (const startupDelayMs of [0, 200]) {
+    const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-pipes-'));
+    const fixture = path.join(scratch, 'leader.mjs'); const pidFile = path.join(scratch, 'descendant.pid'); const leaderFile = path.join(scratch, 'leader.pid');
+    fs.writeFileSync(fixture, `import {spawn} from 'node:child_process'; import fs from 'node:fs';
+await new Promise((resolve) => setTimeout(resolve, Number(process.env.FIXTURE_STARTUP_DELAY_MS)));
 const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'inherit'});
-fs.writeFileSync(${JSON.stringify(pidFile)},String(child.pid)); child.unref();
+fs.writeFileSync(${JSON.stringify(pidFile)},String(child.pid));
+fs.writeFileSync(${JSON.stringify(leaderFile)},String(process.pid)); child.unref();
 process.exit(0);
 `);
-  const sentinel = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'], { detached: true, stdio: 'ignore' });
-  try {
-    const start = Date.now(); const result = await capture({ exe: process.execPath, prefix: [] }, [fixture], { timeoutMs: 100 });
-    assert(Date.now() - start < 1000, 'descendant-held pipes must settle within the bounded deadline');
-    assert.equal(result.timedOut, true); assert.notEqual(result.code, 0);
-    const descendant = Number(fs.readFileSync(pidFile, 'utf8'));
-    await delay(25);
-    const stat = `/proc/${descendant}/stat`;
-    assert(!fs.existsSync(stat) || fs.readFileSync(stat, 'utf8').split(' ')[2] === 'Z', 'owned descendant must terminate even after leader exit');
-    assert.equal(sentinel.exitCode, null); process.kill(sentinel.pid, 0);
-  } finally {
-    killOwned(sentinel);
-    if (fs.existsSync(pidFile)) try { process.kill(Number(fs.readFileSync(pidFile, 'utf8')), 'SIGKILL'); } catch {}
-    await delay(25);
+    const sentinel = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'], { detached: true, stdio: 'ignore' });
+    let capturePromise;
+    try {
+      const start = Date.now();
+      capturePromise = capture({ exe: process.execPath, prefix: [] }, [fixture], {
+        timeoutMs: 1200,
+        env: { ...process.env, FIXTURE_STARTUP_DELAY_MS: String(startupDelayMs) },
+      });
+      const readinessDeadline = start + 800;
+      while (!fs.existsSync(leaderFile) && Date.now() < readinessDeadline) await delay(10);
+      assert(fs.existsSync(leaderFile), `descendant fixture must become ready within 800ms (startup delay ${startupDelayMs}ms)`);
+      assert(fs.existsSync(pidFile), 'final readiness marker must follow the descendant PID write');
+      const descendant = Number(fs.readFileSync(pidFile, 'utf8'));
+      const leader = Number(fs.readFileSync(leaderFile, 'utf8'));
+      assert(Number.isInteger(descendant) && descendant > 0, 'fixture must record a started descendant PID');
+      assert(Number.isInteger(leader) && leader > 0, 'fixture must record its leader PID');
+      await delay(25);
+      const leaderStat = `/proc/${leader}/stat`;
+      assert(!fs.existsSync(leaderStat) || fs.readFileSync(leaderStat, 'utf8').split(' ')[2] === 'Z', 'fixture leader must exit before capture deadline cleanup');
+      const result = await capturePromise;
+      assert(Date.now() - start < 2000, 'capture and descendant-held pipes must settle within the finite 1200ms deadline plus 800ms margin');
+      assert.equal(result.timedOut, true); assert.notEqual(result.code, 0);
+      await delay(25);
+      const descendantStat = `/proc/${descendant}/stat`;
+      assert(!fs.existsSync(descendantStat) || fs.readFileSync(descendantStat, 'utf8').split(' ')[2] === 'Z', 'owned descendant must terminate even after leader exit');
+      assert.equal(sentinel.exitCode, null); process.kill(sentinel.pid, 0);
+    } finally {
+      if (capturePromise) await capturePromise;
+      killOwned(sentinel);
+      if (fs.existsSync(pidFile)) try { process.kill(Number(fs.readFileSync(pidFile, 'utf8')), 'SIGKILL'); } catch {}
+      await delay(25);
+    }
   }
 });
 

@@ -1,0 +1,38 @@
+✔ legacy FILES grammar finds quoted nested relative and multi-file operands while preserving ls behavior (56.16246ms)
+✔ same ordered external policy preserves exact tmp and research roots, rejects neighbors (2.723275ms)
+✔ native hooks tighten saved allow, preserve deny/ask and reject missing mismatched scan (2.453223ms)
+✔ actual shell and cwd select grammar; absent or unsupported native invocation cannot manufacture allow (1.346263ms)
+✔ trusted activation overlay pins dependencies and rejects foreign failed duplicate or missing plugins (88.466238ms)
+✔ safe native config survey rejects every potentially overlapping allow glob and unverified shells (76.653172ms)
+✔ real wrappers and unpinned binaries fail closed; missing dependency setup never fetches (179.501392ms)
+✔ guard mutation controls fail operand approval activation and source-target assertions (1742.57789ms)
+✔ full catalogue parity waits for delayed nonselected providers and fails within its deadline (101.223591ms)
+✔ trusted reviewer freezes exact deny rules and legacy external boundary without replacing globals (2.777009ms)
+✔ capture deadline kills an exited leaders owned descendants after normal and delayed fixture startup (2541.337859ms)
+✔ owned lease nonce split across chunks is redacted at return and startup-error boundaries (624.406972ms)
+✔ production major dispatch recovers complete export, usage and receipt; same owned session resumes (4321.52284ms)
+✔ symlinked owned parent keeps canonical fresh and resumed production identity (2049.258476ms)
+✔ discovery fails before generation on chosen family/effort/agent/effective policy mismatch (10769.02666ms)
+✔ full export identity, rejection, completion and JSON guards reject approval-looking outcomes (11479.303207ms)
+✔ owned startup/idle/total timeouts settle with failure receipt and unrelated service survives (3570.847062ms)
+✔ peek reads retained complete receipts and live standalone private exports without legacy DB access (1268.272336ms)
+✔ explicit v1 commands retain actual-shaped step records and complete recovered text without deleting receipts (1055.090377ms)
+✔ spawn errors are explicit infrastructure failures before any generation (69.699635ms)
+✔ production workflow identity and rejection deletion controls fail the intended assertions (19159.034689ms)
+✔ review CLI uses exact fetched head, trusted profile and complete export while retaining its worktree (2390.39072ms)
+✔ progress advances and active owned-server descendants terminate on cancellation (6602.092623ms)
+✔ reviewer frontmatter rejects unknown roots, malformed permission sections and late deny overrides (2.366619ms)
+✔ resume rejects missing/wrong major markers as ownership errors before opening a database (2.307269ms)
+✔ peek renders schema-shaped streaming/running tool states and refuses malformed missing input (0.96031ms)
+✔ missing or malformed chosen model agent and effort fail before generation without defaults (678.452282ms)
+✔ native series-family metadata maps through policy lineage without accepting another family (3810.186375ms)
+✔ relative explicit executable resolves once to a real absolute file before changing the run cwd (1162.932231ms)
+✔ known owned transport nonce is redacted from exports final returned text and hashes after split echoes (2214.569617ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76129.695754
