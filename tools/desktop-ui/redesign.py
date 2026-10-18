@@ -265,14 +265,22 @@ def negative_controls(args):
     baseline=subprocess.check_output(['git','show',accepted+':goal2/desktop/window.py'],cwd=ROOT)
     old_style=subprocess.check_output(['git','show',pre_surface_fix+':goal2/desktop/style.py'],cwd=ROOT)
     old_pages=subprocess.check_output(['git','show','154bfbbc5053ba9a18d93bb734464c2a4f10f7bc:goal2/desktop/pages.py'],cwd=ROOT)
+    fixed_pages=subprocess.check_output(['git','show','d035bade8f3ffd28c5bcf648d6084c04da0c4cee:goal2/desktop/pages.py'],cwd=ROOT)
+    names_line=b"    self.table.setAccessibleName('Squad');self.reserves.setAccessibleName('National pool reserves')\n"
+    assert fixed_pages.count(names_line)==1 and fixed_pages.replace(names_line,b'')==old_pages,'historical accessibility defect changed'
+    assert saved[pages].count(names_line)==1,'expected one current accessibility mutation site'
+    missing_names_pages=saved[pages].replace(names_line,b'')
     old=b'self.page_stack.setCurrentIndex(index)'
     assert saved[source].count(old)==1,'expected one navigation mutation site'
     cases=(('baseline',source,baseline,'five-destination navigation is absent'),
            ('discard-draft',source,saved[source].replace(old,old+b';self.refresh()'),'navigation changed state/draft/preview/save/job ownership'),
            ('native-surfaces',style,old_style,'native surface contrast failed: combo popup, combo selection, path selection, competition dialog'),
-           ('accessible-names',pages,old_pages,'action has no accessible name'))
+           ('accessible-names',pages,missing_names_pages,'action has no accessible name'))
     receipt={'tag':'[designed: T74]','baseline':accepted,'pre_surface_fix':pre_surface_fix,
-             'source_before':{str(p.relative_to(ROOT)):hashlib.sha256(raw).hexdigest() for p,raw in saved.items()},'cases':[]}
+             'source_before':{str(p.relative_to(ROOT)):hashlib.sha256(raw).hexdigest() for p,raw in saved.items()},'cases':[],
+             'accessible_names_fixture':{'old':'154bfbbc5053ba9a18d93bb734464c2a4f10f7bc','fixed':'d035bade8f3ffd28c5bcf648d6084c04da0c4cee',
+                 'old_sha256':hashlib.sha256(old_pages).hexdigest(),'fixed_sha256':hashlib.sha256(fixed_pages).hexdigest(),
+                 'difference':names_line.decode(),'mutant_sha256':hashlib.sha256(missing_names_pages).hexdigest()}}
     try:
         for name,path,mutant,expected in cases:
             try:
@@ -433,7 +441,7 @@ def overview_negative_controls(args):
     evidence=Path(args.evidence_dir)
     evidence.mkdir(parents=True,exist_ok=False)
     paths=[ROOT/name for name in ('goal2/desktop/pages.py','goal2/desktop/overview_page.py',
-                                 'goal2/desktop/window.py','goal2/desktop/style.py')]
+                                 'goal2/desktop/window.py','goal2/desktop/style.py','goal2/desktop/squad_page.py')]
     saved={path:path.read_bytes() for path in paths}
     receipt={'tag':'[designed: T75]','sources_before':{str(p.relative_to(ROOT)):digest(p) for p in paths},'cases':[]}
     env={**os.environ,'QT_QPA_PLATFORM':'offscreen','PYTHONDONTWRITEBYTECODE':'1','QT_SCALE_FACTOR':'1'}

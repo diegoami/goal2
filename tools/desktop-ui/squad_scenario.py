@@ -31,7 +31,7 @@ def scenario(args):
     report={'tag':'[designed: T76]','platform':platform.platform(),'python':sys.version,'qt':qVersion(),
             'qpa':app.platformName(),'requested_scale':os.environ.get('QT_SCALE_FACTOR','1'),
             'sources':{str(p.relative_to(ROOT)):digest(p) for p in sorted((ROOT/'goal2/desktop').glob('*.py'))},
-            'scenario_sha256':digest(__file__),'resources':{'template':digest(args.template),'data':digest(args.data)},
+            'scenario_sha256':digest(__file__),'dispatcher_sha256':digest(ROOT/'tools/desktop-ui/redesign.py'),'resources':{'template':digest(args.template),'data':digest(args.data)},
             'steps':[],'captures':[]}
     window=None
     try:
@@ -58,7 +58,9 @@ def scenario(args):
             def key(widget,key):
                 before=state();reveal(widget);focus(widget);QTest.keyClick(widget,key);app.processEvents();unchanged(before,'draft control')
             def action(widget):
-                reveal(widget);focus(widget);QTest.keyClick(widget,Qt.Key.Key_Return);app.processEvents()
+                before=state();reveal(widget);focus(widget);QTest.keyClick(widget,Qt.Key.Key_Return);app.processEvents()
+                assert save.read_bytes()==saved,'draft action changed confirmed save bytes'
+                if widget is w.cancel:unchanged(before,'Discard')
             def capture(name):
                 app.processEvents();path=out/(name+'.png');assert w.grab().save(str(path))
                 report['captures'].append({'path':path.name,'sha256':digest(path),'size':[w.width(),w.height()],
@@ -144,7 +146,7 @@ def scenario(args):
                         assert app.focusWidget() is control,'Tab/Shift-Tab did not return to draft action'
                     capture(f'long-{width}x{height}-{label}-focused-confirm')
                 for row in (0,6,12,19):
-                    page.ensureWidgetVisible(w.table);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
+                    page.verticalScrollBar().setValue(w.table.y()-8);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
                     capture(f'long-{width}x{height}-roster-row-{row+1}-names')
                     w.table.scrollToItem(w.table.item(row,6));app.processEvents()
                     capture(f'long-{width}x{height}-roster-row-{row+1}-values')
@@ -152,7 +154,17 @@ def scenario(args):
                 for row in range(20):
                     for col in range(7):w.table.scrollToItem(w.table.item(row,col));app.processEvents();assert w.table.item(row,col).text() or col==0
                 for widget,name in ((w.player_detail,'selected-detail'),(w.lineup_board,'grouped-xi'),(w.bench_board,'bench')):
-                    page.ensureWidgetVisible(widget);app.processEvents();capture(f'long-{width}x{height}-{name}')
+                    # [designed] Overlap viewport segments so long wrapped values are readable in full across captures.
+                    intervals=[];step=max(40,page.viewport().height()-100)
+                    for offset in range(0,widget.height(),step):
+                        page.verticalScrollBar().setValue(widget.y()-16+offset);app.processEvents()
+                        top=page.verticalScrollBar().value()-widget.y();bottom=top+page.viewport().height()
+                        intervals.append([max(0,top),min(widget.height(),bottom)])
+                        capture(f'long-{width}x{height}-{name}-segment-{offset}')
+                        if bottom>=widget.height():break
+                    assert intervals[0][0]==0 and max(end for start,end in intervals)>=widget.height(),'scroll captures missed a reading area'
+                    assert all(first[1]>=second[0]+40 for first,second in zip(intervals,intervals[1:])),'reading captures lack wrapped-line overlap'
+                    report.setdefault('reading_coverage',[]).append({'size':[width,height],'widget':name,'height':widget.height(),'intervals':intervals,'text_sha256':hashlib.sha256(widget.text().encode()).hexdigest()})
             model.goaldat=replace(model.goaldat,player_names=original_names)
             model.new_campaign(4);model.exchange(80,2561);model.confirm(list(model.state.starting_eleven),61,165);w.refresh()
             # [derived: T47] Real private first-half worker, substitution and cancellation preserve confirmed management.
@@ -179,7 +191,11 @@ def scenario(args):
             window.close();window.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
         app.quit();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
         report['clean_widgets']=not bool(app.topLevelWidgets())
+        report['sources_after']={name:digest(ROOT/name) for name in report['sources']}
+        report['source_unchanged']=report['sources']==report['sources_after']
         (out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+        assert report['source_unchanged'],'source changed during squad scenario'
+        assert report['clean_widgets'],'owned Qt widgets remained after cleanup'
     print('PASS squad: real private drafts/full IDs/eligibility, grouped raw detail, persistent actions, navigation, real pending halftime; '+str(out))
 
 

@@ -28,7 +28,7 @@ def build(self,model,TACTICS):
     self.tactics=[];tactics=QVBoxLayout()
     for element,label in TACTICS:
         box=QCheckBox(label);box.setObjectName(f'tactic{element}')
-        self.tactics.append((element,box));tactics.addWidget(box)
+        self.tactics.append((element,box));tactics.addWidget(box,0,Qt.AlignmentFlag.AlignLeft)
     layout.addLayout(tactics)
     footer=QWidget();footer.setObjectName('draftBar');bar=QHBoxLayout(footer);bar.setContentsMargins(8,8,8,8)
     self.draft_state=reading_label('draftState');self.draft_state.setAccessibleName('Management draft state');bar.addWidget(self.draft_state,1)
