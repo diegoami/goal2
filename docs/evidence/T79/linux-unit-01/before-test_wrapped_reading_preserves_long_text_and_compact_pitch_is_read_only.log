@@ -1,0 +1,15 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only) ... FAIL
+
+======================================================================
+FAIL: test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 116, in test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only
+    self.assertTrue(callable(getattr(viewer,'wrapped',None)),'readable wrapping is absent')
+AssertionError: False is not true : readable wrapping is absent
+
+----------------------------------------------------------------------
+Ran 1 test in 0.012s
+
+FAILED (failures=1)

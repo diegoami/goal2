@@ -72,49 +72,84 @@ class PresentationTests(unittest.TestCase):
 
     def test_real_framebuffer_matches_original_text_projection(self):
         import pygame
-        from goal2.desktop.pygame_viewer import render
+        from goal2.desktop.pygame_viewer import render,position
         pygame.init()
         try:
             screen=pygame.display.set_mode((1000,720));font=pygame.font.Font(None,24)
-            display=Display('owned');display.accept(['owned',0,'start',['Denmark','Germany']])
-            display.accept(['owned',1,'event',{'kind':'commentary','minute':17,'score':[2,1],'data':{'text':'Actual original commentary'}}])
-            render(screen,font,display)
-            expected=pygame.Surface((1000,720));expected.fill((18,28,37))
-            # [designed] Independent expected strings visit score, countries, minute and commentary pixels.
-            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','17 min   2 — 1','17 min Actual original commentary']):
-                expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
+            d=Display('owned');d.accept(['owned',0,'start',['Denmark','Germany']])
+            d.accept(['owned',1,'event',{'kind':'commentary','minute':17,'score':[2,1],'data':{'text':'Actual original commentary'}}])
+            before=copy.deepcopy(d.__dict__);render(screen,font,d)
+            expected=pygame.Surface((1000,720));expected.fill((8,28,24))
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','17 min   2 — 1']):
+                expected.blit(font.render(line,True,(200,242,121) if n==2 else (245,242,232)),(20,16+n*30))
+            expected.blit(font.render('17 min Actual original commentary',True,(245,242,232)),(20,112))
             self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'SDL rendered text differs')
-            display.accept(['owned',2,'event',{'kind':'end','minute':90,'score':[2,1],'data':{}}])
-            display.accept(['owned',3,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},
+            self.assertEqual(d.__dict__,before,'rendering mutated display state')
+            d.accept(['owned',2,'event',{'kind':'end','minute':90,'score':[2,1],'data':{}}])
+            d.accept(['owned',3,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},
                 'ratings':[[{'name':'A','raw':55}],[{'name':'B','raw':None}]],'man_of_the_match':'A'}])
-            render(screen,font,display)
-            expected.fill((18,28,37))
-            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','90 min   2 — 1','17 min Actual original commentary',
-                'Original full-time board','Man of the match: A','corners: 3 — 4','Original bars: [[1, 2], [3, 4]]',
-                'Denmark — Raw rating','A: 55','Germany — Raw rating','B: blank']):
-                expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
+            render(screen,font,d)
+            expected.fill((8,28,24))
+            header=['Original engine — friendly','Denmark — Germany','90 min   2 — 1']
+            rows=['17 min Actual original commentary','Original full-time board','Man of the match: A','corners: 3 — 4','Original bars: [[1, 2], [3, 4]]','Denmark — Raw rating','A: 55','Germany — Raw rating','B: blank']
+            for n,line in enumerate(header):expected.blit(font.render(line,True,(200,242,121) if n==2 else (245,242,232)),(20,16+n*30))
+            for n,line in enumerate(rows):expected.blit(font.render(line,True,(245,242,232)),(20,112+n*26))
             self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'SDL board/raw rating pixels differ')
             live=Display('owned');live.accept(['owned',0,'start',['Denmark','Germany']])
-            for n in range(18,49):
-                live.accept(['owned',n-17,'event',{'kind':'commentary','minute':n,'score':[2,1],'data':{'text':f'Original line {n}'}}])
-            self.assertEqual(render(screen,font,live,999),8)
-            expected.fill((18,28,37))
-            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','48 min   2 — 1']+
-                                    [f'{n} min Original line {n}' for n in range(26,49)]):
-                expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
-            self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'live scroll lost pinned score or ordered commentary')
-            from goal2.desktop.pygame_viewer import position
+            for n in range(18,49):live.accept(['owned',n-17,'event',{'kind':'commentary','minute':n,'score':[2,1],'data':{'text':f'Original line {n}'}}])
+            self.assertEqual(render(screen,font,live,999),9)
             self.assertEqual(position(live,8,False,False,True),(8,False,False))
             self.assertEqual(position(live,0,True,False,True),(10**9,True,False))
             live.accept(['owned',32,'event',{'kind':'end','minute':90,'score':[2,1],'data':{}}])
             rows=[{'name':f'Player {n}','raw':55} for n in range(20)]
-            live.accept(['owned',33,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},
-                'ratings':[rows,rows],'man_of_the_match':'A'}])
+            live.accept(['owned',33,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},'ratings':[rows,rows],'man_of_the_match':'A'}])
             board_scroll,follow,finished=position(live,0,True,False,True)
             self.assertEqual((board_scroll,follow,finished),(31,False,True))
             self.assertEqual(render(screen,font,live,board_scroll),31)
             self.assertEqual(position(live,7,False,True,False),(7,False,True))
         finally:pygame.quit()
+
+    def test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only(self):
+        # [designed: T79] Independent character retention, bounds and canonical pitch samples.
+        import pygame
+        from goal2.desktop import pygame_viewer as viewer
+        self.assertTrue(callable(getattr(viewer,'wrapped',None)),'readable wrapping is absent')
+        wrapped,render_pitch=viewer.wrapped,viewer.render_pitch
+        from goal2.tests.test_pygame_pitch_view import pitch,sample,send
+        pygame.init()
+        try:
+            font=pygame.font.Font(None,24);line='Long original commentary '+('unbrokenname'*35)
+            rows=wrapped(font,[line],860)
+            self.assertGreater(len(rows),1);self.assertEqual(''.join(rows),line)
+            self.assertTrue(all(font.size(row)[0]<=860 for row in rows))
+            d=pitch();send(d,'frame',sample());d.advance(0);before=copy.deepcopy(d.__dict__)
+            for size in ((900,640),(1000,720),(1440,900),(1800,1280)):
+                surface=pygame.Surface(size);render_pitch(surface,font,d)
+                self.assertEqual(tuple(surface.get_at((1,1)))[:3],(8,28,24))
+                self.assertEqual(d.__dict__,before,'painting changed a delivered frame/packet')
+        finally:pygame.quit()
+
+    def test_named_match_surface_tracks_current_authority_instead_of_old_viewer(self):
+        # [designed: T79] Visit New/preview/quick context with real controls and a bounded child.
+        from PySide6.QtWidgets import QApplication,QWidget
+        from goal2.desktop.window import ManagementWindow
+        app=QApplication.instance() or QApplication([])
+        with tempfile.TemporaryDirectory() as folder:
+            m=model(Path(folder)/'save');w=ManagementWindow(m);w.show();app.processEvents()
+            try:
+                self.assertIsNotNone(w.findChild(QWidget,'matchSurface'))
+                old=Display('old');old.accept(['old',0,'start',['Stale A','Stale B']]);w.watched.display=old
+                w.refresh();self.assertEqual(w.match_provenance.text(),'No match played')
+                self.assertNotIn('Stale',w.match_score.text())
+                w.country.setCurrentIndex(w.country.findData(18));app.processEvents()
+                self.assertEqual(w.match_provenance.text(),'Country preview')
+                w.action(lambda:m.new_campaign(18),'New campaign created',replace=True)
+                w.confirm_draft();w.jobs.command=[sys.executable,'-c','import time;time.sleep(60)'];w.start_match()
+                self.assertTrue(w.jobs.busy,w.status.text())
+                self.assertEqual(w.match_provenance.text(),'Quick simulation (rebuild setup)')
+                self.assertNotIn('Stale',w.match_score.text());self.assertTrue(w.stop.isEnabled())
+                w.cancel_match();self.assertEqual(w.match_provenance.text(),'No match played')
+            finally:w.close();app.processEvents()
 
     def test_qt_heartbeat_blocked_tail_and_actual_viewer_quit(self):
         from PySide6.QtCore import QTimer

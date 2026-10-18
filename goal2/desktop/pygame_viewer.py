@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import time
 from goal2.desktop.match_view import Display, MAX_PACKET, MAX_JOURNAL
+from goal2.desktop.style import COLORS
 
 # [designed: T83] Modern schematic scale; T81 proves signed axes, not physical metres/art.
 CENTER = (500, 282)
@@ -67,26 +68,67 @@ def position(display, scroll, follow, finished, changed):
     return scroll, follow, finished
 
 
-def render(screen, font, display, scroll=0):
-    """[designed] Render the ordered text projection on the real SDL surface."""
-    lines = display.lines()
-    scroll = max(0, min(scroll, max(0, len(lines) - 26)))
-    screen.fill((18, 28, 37))
-    for number, line in enumerate(lines[:3] + lines[3+scroll:3+scroll+23]):
-        screen.blit(font.render(line, True, (232, 239, 229)), (20, 20 + number * 25))
+def color(name):
+    """[designed: T79] Qt-free shared palette conversion."""
+    return tuple(bytes.fromhex(COLORS[name][1:]))
+
+
+def wrapped(font, lines, width):
+    """[designed: T79] Retain every character, including an unbroken long name."""
+    rows=[]
+    for line in lines:
+        rest=line
+        if not rest:rows.append('')
+        while rest:
+            end=len(rest)
+            if font.size(rest)[0]>width:
+                low,high=1,len(rest)
+                while low<high:
+                    mid=(low+high+1)//2
+                    if font.size(rest[:mid])[0]<=width:low=mid
+                    else:high=mid-1
+                end=low
+                space=rest.rfind(' ',0,end+1)
+                if space>0:end=space+1
+            rows.append(rest[:end]);rest=rest[end:]
+    return rows
+
+
+def reading_rows(screen,font,lines,top,scroll):
+    """[designed: T79] Scroll complete wrapped rows below the pinned score."""
+    rows=wrapped(font,lines,screen.get_width()-40)
+    height=max(26,font.get_linesize()+4);count=max(1,(screen.get_height()-top-12)//height)
+    scroll=max(0,min(scroll,max(0,len(rows)-count)))
+    for n,line in enumerate(rows[scroll:scroll+count]):
+        screen.blit(font.render(line,True,color('text')),(20,top+n*height))
     return scroll
 
+
+def render(screen, font, display, scroll=0):
+    """[designed: T79] Named score remains pinned above readable wrapped original rows."""
+    screen.fill(color('background'));lines=display.lines()
+    for n,line in enumerate(lines[:3]):
+        screen.blit(font.render(line,True,color('accent') if n==2 else color('text')),(20,16+n*30))
+    return reading_rows(screen,font,lines[3:],112,scroll)
 
 
 def render_pitch(screen, font, display, scroll=0):
     """[designed: T83] Schematic evidenced playing grid; exact samples, local slot labels."""
     import pygame
-    screen.fill((18, 28, 37))
+    if screen.get_size() != (1000,720):
+        canvas=pygame.Surface((1000,720))
+        result=render_pitch(canvas,font,display,scroll)
+        factor=min(screen.get_width()/1000,screen.get_height()/720)
+        size=(round(1000*factor),round(720*factor))
+        screen.fill(color('background'))
+        screen.blit(pygame.transform.smoothscale(canvas,size),((screen.get_width()-size[0])//2,(screen.get_height()-size[1])//2))
+        return result
+    screen.fill(color('background'))
     visible = display.visible()
     lines = visible.lines()
     for n, line in enumerate(lines[:3]):
         if n != 1:
-            screen.blit(font.render(line, True, (232, 239, 229)), (20, 12+n*25))
+            screen.blit(font.render(line, True, color('accent') if n==2 else color('text')), (20, 12+n*25))
     for team, name in enumerate(display.countries or ['Starting…']):
         x = 20 + team * 480
         pygame.draw.circle(screen, TEAM_COLORS[team], (x+8,46), 8)
@@ -116,12 +158,8 @@ def render_pitch(screen, font, display, scroll=0):
             pygame.draw.circle(screen, (10,20,27), point, 6)
             pygame.draw.circle(screen, (255,244,161), point, 4)
     screen.blit(font.render('Slot labels 1-11 | wheel/arrows: commentary / board | End: follow | Esc: close',
-                            True, (232,239,229)), (20,88))
-    rows = lines[3:]
-    scroll = max(0, min(scroll, max(0,len(rows)-8)))
-    for n,line in enumerate(rows[scroll:scroll+8]):
-        screen.blit(font.render(line, True, (232,239,229)), (20,490+n*26))
-    return scroll
+                            True, color('secondary')), (20,88))
+    return reading_rows(screen,font,lines[3:],490,scroll)
 
 def main():
     folder, token = Path(sys.argv[1]), sys.argv[2]
@@ -129,7 +167,7 @@ def main():
     try:
         import pygame
         pygame.init()
-        screen = pygame.display.set_mode((1000, 720))
+        screen = pygame.display.set_mode((1000, 720), pygame.RESIZABLE)
         pygame.display.set_caption('goal2 — Original friendly')
         font = pygame.font.Font(None, 24)
         clock = pygame.time.Clock()

@@ -201,6 +201,12 @@ class ManagementWindow(QMainWindow):
         self.stop.setEnabled(busy)
         from goal2.desktop.fixtures_page import enabled as fixtures_enabled
         fixtures_enabled(self,active)
+        self.present_match()
+
+    def present_match(self):
+        """[designed: T79] Project current match context without changing ownership."""
+        from goal2.desktop.match_page import present
+        present(self)
 
     def start_match(self):
         if not self.require_active():return
@@ -239,6 +245,8 @@ class ManagementWindow(QMainWindow):
         except (OSError,ValueError,IndexError,KeyError) as exc:
             self.watch_timer.stop();self.set_busy(False);self.status.setText(str(exc))
 
+        self.present_match()
+
     def poll_competitive(self):
         """[designed: T80] Poll bounded IPC on Qt; publish only the validated full continuation."""
         try:
@@ -252,6 +260,8 @@ class ManagementWindow(QMainWindow):
         except (OSError,ValueError,IndexError,KeyError) as exc:
             self.competitive_timer.stop();self.set_busy(False);self.status.setText(str(exc))
 
+        self.present_match()
+
     def poll_match(self):
         try:
             if self.jobs.poll():
@@ -259,6 +269,8 @@ class ManagementWindow(QMainWindow):
             elif self.jobs.halftime is not self.half_preview:self.show_halftime()
         except (OSError,ValueError,IndexError,KeyError) as exc:
             self.timer.stop();self.set_busy(False);self.show_halftime();self.status.setText(str(exc))
+
+        self.present_match()
 
     def cancel_match(self):
         self.timer.stop();self.watched.cancel();self.watch_timer.stop();self.jobs.cancel()
@@ -306,6 +318,7 @@ class ManagementWindow(QMainWindow):
         self.half_preview=self.jobs.halftime;preview=self.half_preview
         for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(preview is not None)
         self.half_out.clear();self.half_in.clear()
+        self.present_match()
         if preview is None:return
         for word in preview['eleven']:self.half_out.addItem(self.model.goaldat.player_names[word],word)
         for word in preview['bench']:
@@ -325,3 +338,4 @@ class ManagementWindow(QMainWindow):
             if not self.jobs.busy:
                 self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh(str(exc))
             else:self.status.setText(str(exc))
+        self.present_match()

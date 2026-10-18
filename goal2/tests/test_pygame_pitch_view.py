@@ -84,7 +84,7 @@ class PitchPixels(unittest.TestCase):
         self.assertEqual(self.pixel(907,160),(213,231,204),'right playing-grid boundary')
         self.assertEqual(self.pixel(200,146),(213,231,204),'top playing-grid boundary')
         self.assertEqual(self.pixel(200,418),(213,231,204),'bottom playing-grid boundary')
-        self.assertEqual(self.pixel(508,469),(18,28,37),'sentinel player must be hidden')
+        self.assertEqual(self.pixel(508,469),(8,28,24),'sentinel player must be hidden')
         self.assertNotEqual(self.pixel(500,469),(255,244,161),'sentinel ball must be hidden')
         g=copy.deepcopy(f);g['sequence']=1;g['players'][0][4:8]=[11,1,255,False];g['ball']=[10,2,False]
         send(d,'frame',g);d.advance(1);viewer.render_pitch(self.screen,self.font,d)
@@ -103,8 +103,8 @@ class PitchPixels(unittest.TestCase):
         self.assertNotIn('90 min FULL TIME',d.visible().lines(),'future commentary leaked before watermark')
         self.assertEqual(d.consumed,-1,'selection/queueing must not acknowledge an unseen frame')
         import pygame
-        expected=self.font.render('7 min   1 — 0',True,(232,239,229))
-        label=pygame.Surface(expected.get_size());label.fill((18,28,37));label.blit(expected,(0,0))
+        expected=self.font.render('7 min   1 — 0',True,(200,242,121))
+        label=pygame.Surface(expected.get_size());label.fill((8,28,24));label.blit(expected,(0,0))
         self.assertEqual(pygame.image.tobytes(self.screen.subsurface((20,62,*expected.get_size())),'RGB'),pygame.image.tobytes(label,'RGB'),'readable min label pixels differ')
         pygame.display.flip();d.rendered();self.assertEqual(d.consumed,0)
         send(d,'complete',{'board':{'statistics':{},'bars':[]},'ratings':[[],[]],'man_of_the_match':'A'})
@@ -125,7 +125,7 @@ class PitchPixels(unittest.TestCase):
         viewer.render_pitch(self.screen,self.font,d)
         for x,name,color in [(40,'First',(45,135,245)),(520,'Second',(245,105,45))]:
             text=self.font.render(name,True,color)
-            expected=pygame.Surface(text.get_size());expected.fill((18,28,37));expected.blit(text,(0,0))
+            expected=pygame.Surface(text.get_size());expected.fill((8,28,24));expected.blit(text,(0,0))
             actual=self.screen.subsurface((x,37,*text.get_size()))
             self.assertEqual(pygame.image.tobytes(actual,'RGB'),pygame.image.tobytes(expected,'RGB'),'country names must identify marker colors')
 

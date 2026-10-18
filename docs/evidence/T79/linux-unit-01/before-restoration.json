@@ -1,0 +1,24 @@
+{
+  "controls": [
+    {
+      "test": "test_real_framebuffer_matches_original_text_projection",
+      "returncode": 1,
+      "intended_assertion_failure": true
+    },
+    {
+      "test": "test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only",
+      "returncode": 1,
+      "intended_assertion_failure": true
+    },
+    {
+      "test": "test_named_match_surface_tracks_current_authority_instead_of_old_viewer",
+      "returncode": 1,
+      "intended_assertion_failure": true
+    }
+  ],
+  "restored": {
+    "goal2/desktop/pygame_viewer.py": "16e4fdefb52f8490568f7cfb90269af0c37897a5340b0b1781952138983134f4",
+    "goal2/desktop/fixtures_page.py": "ce1b0a08bf413f385f61d2a8476968e76f869ac272737eaf0db04e5ea8255c72",
+    "goal2/desktop/window.py": "f1c7b7b6dd62d362f59d533f1bdf8203820324edb6ff88fc654d0f7bf9e0c0d6"
+  }
+}

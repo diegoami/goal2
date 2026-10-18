@@ -1,0 +1,15 @@
+test_real_framebuffer_matches_original_text_projection (goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection) ... ok
+test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only) ... ok
+test_named_match_surface_tracks_current_authority_instead_of_old_viewer (goal2.tests.test_pygame_match_view.PresentationTests.test_named_match_surface_tracks_current_authority_instead_of_old_viewer) ... This plugin does not support propagateSizeHints()
+ok
+test_accumulated_target_cadence_and_country_color_association (goal2.tests.test_pygame_pitch_view.PitchPixels.test_accumulated_target_cadence_and_country_color_association) ... ok
+test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting) ... ok
+test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state) ... ok
+test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding) ... ok
+test_watermark_minute_terminal_tail_and_bounded_queue (goal2.tests.test_pygame_pitch_view.PitchPixels.test_watermark_minute_terminal_tail_and_bounded_queue) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.522s
+
+OK
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)

@@ -1,0 +1,15 @@
+test_named_match_surface_tracks_current_authority_instead_of_old_viewer (goal2.tests.test_pygame_match_view.PresentationTests.test_named_match_surface_tracks_current_authority_instead_of_old_viewer) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_named_match_surface_tracks_current_authority_instead_of_old_viewer (goal2.tests.test_pygame_match_view.PresentationTests.test_named_match_surface_tracks_current_authority_instead_of_old_viewer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 140, in test_named_match_surface_tracks_current_authority_instead_of_old_viewer
+    self.assertIsNotNone(w.findChild(QWidget,'matchSurface'))
+AssertionError: unexpectedly None
+
+----------------------------------------------------------------------
+Ran 1 test in 0.361s
+
+FAILED (failures=1)
