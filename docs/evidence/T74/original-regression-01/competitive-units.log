@@ -1,0 +1,20 @@
+test_cancel_close_death_and_save_pending_have_bounded_owned_lifecycle (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_cancel_close_death_and_save_pending_have_bounded_owned_lifecycle) ... ok
+test_cancel_leaves_an_unrelated_child_alive (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_cancel_leaves_an_unrelated_child_alive) ... ok
+test_changed_owner_is_rejected_before_any_publication (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_changed_owner_is_rejected_before_any_publication) ... ok
+test_complete_packet_waits_for_successful_exit_and_full_tail (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_complete_packet_waits_for_successful_exit_and_full_tail) ... ok
+test_duplicate_completion_packet_is_rejected (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_duplicate_completion_packet_is_rejected) ... ok
+test_fault_outputs_never_publish_or_change_prior_save (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_fault_outputs_never_publish_or_change_prior_save) ... ok
+test_inactive_close_never_unlocks_another_match (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_inactive_close_never_unlocks_another_match) ... ok
+test_launch_runtime_resource_and_pending_failures_are_actionable (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_launch_runtime_resource_and_pending_failures_are_actionable) ... ok
+test_missing_original_end_tail_is_rejected (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_missing_original_end_tail_is_rejected) ... ok
+test_only_canonical_pending_competitive_fixtures_are_bound (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_only_canonical_pending_competitive_fixtures_are_bound) ... ok
+test_qt_heartbeat_while_worker_full_time_tail_is_blocked (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_qt_heartbeat_while_worker_full_time_tail_is_blocked) ... ok
+test_real_kind2_and_tied_knockout_match_direct_result_events_memory_seeds (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_real_kind2_and_tied_knockout_match_direct_result_events_memory_seeds) ... T80 REAL kind=2 index=21 events=1124 memory_sha256=c46612552090c6aefb6674505ea0c39574cd3b9ff5cd03dba53c09fbb10f6980 seeds=(16321, 53210)
+T80 REAL kind=200 index=42 events=1570 memory_sha256=97a934c906a74dbb5d3e19231bc230f966dc509c5a517f7d532cfb63257cee8f seeds=(35165, 20148)
+ok
+test_stale_owner_input_template_and_duplicate_tokens (goal2.tests.test_desktop_competitive_jobs.CompetitiveJobsTests.test_stale_owner_input_template_and_duplicate_tokens) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 72.781s
+
+OK

@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 271, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 259, in main
+    if args.single_scale:return shell(args)
+                                ^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 164, in shell
+    model.match_pending=True;window.set_busy(True);tour()
+                                                   ^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 98, in tour
+    for index in range(5):navigate(index,method)
+                          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 92, in navigate
+    assert focus is window.pages[index].heading,'navigation did not focus heading: '+json.dumps(details)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: navigation did not focus heading: {"method": "mouse", "index": 4, "focus_type": null, "focus_name": null, "active_type": null, "active_name": null, "window_active": false}
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 271, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 270, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-venv/bin/python3', '/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'shell', '--template', '.cache/e010-r0008-halftime.sav', '--data', '.cache/GOAL.DAT', '--evidence-dir', 'docs/evidence/T74/focus-paired-04', '--single-scale']' returned non-zero exit status 1.

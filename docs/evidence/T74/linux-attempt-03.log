@@ -1,0 +1,4 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS shell: 35 real navigation transitions; state/draft/preview/save/job invariants; 5 captures; actual ratio 2.0
+PASS shell: 45 real navigation transitions; state/draft/preview/save/job invariants; 15 captures; actual ratio 1.0

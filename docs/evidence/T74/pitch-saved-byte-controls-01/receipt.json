@@ -1,0 +1,37 @@
+[
+  {
+    "name": "axes",
+    "intended_assertion_failed": true,
+    "before": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "mutated": "155b73ce32d134f2154fd9ab2c7fca714a0c398709509ef6351cf450a540f2f1",
+    "restored": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631"
+  },
+  {
+    "name": "player-visibility",
+    "intended_assertion_failed": true,
+    "before": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "mutated": "6038570844222aa092416e71408d96bf51807087f77751e98cc0ac44f916788a",
+    "restored": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631"
+  },
+  {
+    "name": "ball-visibility",
+    "intended_assertion_failed": true,
+    "before": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "mutated": "de96c61bfbf0bdac9bef2934e8b40e91c179c292022beda79a030cbe4a55ba63",
+    "restored": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631"
+  },
+  {
+    "name": "early-consumption",
+    "intended_assertion_failed": true,
+    "before": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "mutated": "e230c1d9386c97f2ed39eda89637b5d4a7b4fe6b40b150533b34168434024816",
+    "restored": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631"
+  },
+  {
+    "name": "consumption",
+    "intended_assertion_failed": true,
+    "before": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "mutated": "35e899783313b141f195232439297b812aed9b7bc95dbd43a092c55c761bd84b",
+    "restored": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631"
+  }
+]

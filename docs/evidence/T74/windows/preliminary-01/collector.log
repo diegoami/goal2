@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T74-windows-shell.py", line 123, in <module>
+    main()
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T74-windows-shell.py", line 100, in main
+    assert sources[path] == h, path
+           ~~~~~~~^^^^^^
+KeyError: 'goal2\\desktop\\__init__.py'

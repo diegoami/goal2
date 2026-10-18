@@ -1,0 +1,48 @@
+{
+  "head": "82def543cb9d3c3eb145bce6ab91e55f02887652",
+  "rows": [
+    {
+      "name": "shell-controls",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/redesign.py",
+        "--scenario",
+        "shell",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T74-football-ui/.cache/main-after-approval-01/shell-controls",
+        "--negative-controls"
+      ],
+      "exit_code": 0,
+      "seconds": 29.051,
+      "log": ".cache/main-after-approval-01/shell-controls.log",
+      "sha256": "5c1a144f676b97738bcccf7556e847c7cf31b08a7dc8a318e3b38314e4797bf6"
+    },
+    {
+      "name": "shell-native",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/redesign.py",
+        "--scenario",
+        "shell",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T74-football-ui/.cache/main-after-approval-01/shell-native"
+      ],
+      "exit_code": 1,
+      "seconds": 36.697,
+      "log": ".cache/main-after-approval-01/shell-native.log",
+      "sha256": "dad1c62db0ea8bc66cd3c05eb03d5bb5e0eeab379ff8aacbd92d2a29fdfd38b4"
+    }
+  ],
+  "passed": false,
+  "complete": false
+}

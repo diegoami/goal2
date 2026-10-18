@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 313, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 301, in main
+    if args.single_scale:return shell(args)
+                                ^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 134, in shell
+    native_input(window.country);surface_trace('country-focus')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 93, in native_input
+    assert app.focusWidget() is target,'synthetic input target did not acquire focus: '+target.objectName()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: synthetic input target did not acquire focus: country

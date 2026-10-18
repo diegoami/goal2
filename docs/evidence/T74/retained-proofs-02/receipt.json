@@ -1,0 +1,32 @@
+[
+  {
+    "proof": "prove-friendlies.py",
+    "original_sha256": "41fac4bfc73c092b81b557281b7343113a38040aee8ccf1ece1ce4a6015883f7",
+    "compatibility_source_sha256": "cc2f7b2ec51ea4cc105cedfe541e51983593ba0039a835e360e33c2612e7582f",
+    "interpreter": "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "returncode": 0,
+    "seconds": 9.128,
+    "all_source_bytes_restored": true,
+    "adaptation": "interpreter path only; friendlies old busy site updated to accepted expanded busy/match_pending guard; assertion oracles unchanged"
+  },
+  {
+    "proof": "prove-pool.py",
+    "original_sha256": "2d28b1432c202f86405e8c0a0bb72ddbbb0f44f2ea6e52a88fb67ba79750a967",
+    "compatibility_source_sha256": "aea484fe7571a51ea6ea431fd5df4e6a7b5fdb3de9fd9fd1fb74a7b840fc9d05",
+    "interpreter": "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "returncode": 0,
+    "seconds": 2.792,
+    "all_source_bytes_restored": true,
+    "adaptation": "interpreter path only; friendlies old busy site updated to accepted expanded busy/match_pending guard; assertion oracles unchanged"
+  },
+  {
+    "proof": "prove-halftime.py",
+    "original_sha256": "e502aed1f2b5211a896fe6e027d3d8d3644a2ad388c7931670e05b9c9668d2c5",
+    "compatibility_source_sha256": "40d84c0399296009846c1a22ceb0b92786e1a6997ef79804bde27eb8421d5599",
+    "interpreter": "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "returncode": 0,
+    "seconds": 11.002,
+    "all_source_bytes_restored": true,
+    "adaptation": "interpreter path only; friendlies old busy site updated to accepted expanded busy/match_pending guard; assertion oracles unchanged"
+  }
+]

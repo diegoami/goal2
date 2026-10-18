@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """[designed: T49] Actual desktop table wiring with a decisive goals-scored tie."""
+from navigation import reveal
 import argparse,copy,tempfile,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
@@ -31,7 +32,7 @@ def main():
         assert [(r['points'],r['goal_difference']) for r in backend['rows'][:2]]==[(2,1),(2,1)]
         assert [r['country'] for r in backend['rows'] if r['advances']]==[slots[0]],'wrong qualifier'
         window=ManagementWindow(model);window.show();app.processEvents()
-        QTest.mouseClick(window.standings,Qt.MouseButton.LeftButton);app.processEvents()
+        reveal(window.standings);QTest.mouseClick(window.standings,Qt.MouseButton.LeftButton);app.processEvents()
         dialog=window.standings_dialog
         assert dialog is not None and dialog.isVisible(),'button did not open the table'
         table=dialog.table
@@ -45,7 +46,7 @@ def main():
         assert model.state==before,'table read changed state/RNG'
         window.refresh();assert not dialog.isVisible(),'stale table survived an active-game refresh'
         model.state.campaign=None
-        QTest.mouseClick(window.standings,Qt.MouseButton.LeftButton);app.processEvents()
+        reveal(window.standings);QTest.mouseClick(window.standings,Qt.MouseButton.LeftButton);app.processEvents()
         assert 'unavailable' in window.status.text().lower()
         destroyed=[];window.destroyed.connect(lambda:destroyed.append(True))
         window.close();window.deleteLater()

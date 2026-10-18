@@ -1,0 +1,15 @@
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 314, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 302, in main
+    if args.single_scale:return shell(args)
+                                ^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 136, in shell
+    QTest.keyClick(window.country,Qt.Key.Key_Down);app.processEvents();surface_trace('controlled-country-change')
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 132, in surface_trace
+    assert not change,'surface inspection changed state/draft/preview/save/job ownership at '+stage+': '+json.dumps(change)
+           ^^^^^^^^^^
+AssertionError: surface inspection changed state/draft/preview/save/job ownership at controlled-country-change: [{"field": "draft", "before": "([61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], 61, 136)", "after": "([81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91], 81, 141)"}, {"field": "active_draft", "before": "None", "after": "([61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], 61, 136)"}, {"field": "preview_identity", "before": "21278288", "after": "126245011102544"}, {"field": "encoded_preview", "before": "None", "after": "cce78d4316f0ef64b52899fdbb1db1447734ef78b8625ea41524d1dbdb2f04fe"}]

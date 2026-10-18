@@ -1,0 +1,1046 @@
+{
+  "tag": "[designed: T74]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "offscreen",
+  "requested_scale": "1",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/jobs.py": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/pages.py": "4513891844dce8a0ac60f748dbd5c90814c6d14f1d3eb5ad0931387f47311f64",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "ec0f5fd4047bc043c1a88b3a8a5796d0527d81f0bbbfd4e0afe3734d9e685f6a",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "78bd39f12def6a4bde8bdd492300e3ab833b99db7c77ab485f6fc4b1cd20d553",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "e7762660bbe818b6f5c772ee66ec7e551371a631eeee57bcf2905297a4fbf293",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "transitions": [
+    {
+      "method": "mouse",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "mouse",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "mouse",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "mouse",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "mouse",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "shortcut",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "mouse",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "mouse",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "mouse",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "mouse",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "mouse",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "shortcut",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "mouse",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "mouse",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "mouse",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "mouse",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "mouse",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "shortcut",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "shortcut",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "shortcut",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Overview",
+      "focus": "Overview"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Squad & tactics",
+      "focus": "Squad & tactics"
+    },
+    {
+      "method": "shortcut",
+      "destination": "National pool",
+      "focus": "National pool"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Fixtures & results",
+      "focus": "Fixtures & results"
+    },
+    {
+      "method": "shortcut",
+      "destination": "Save / resume",
+      "focus": "Save / resume"
+    }
+  ],
+  "captures": [
+    "shell-1440x900-page1.png",
+    "shell-1440x900-page2.png",
+    "shell-1440x900-page3.png",
+    "shell-1440x900-page4.png",
+    "shell-1440x900-page5.png",
+    "shell-1050x780-page1.png",
+    "shell-1050x780-page2.png",
+    "shell-1050x780-page3.png",
+    "shell-1050x780-page4.png",
+    "shell-1050x780-page5.png",
+    "shell-900x700-page1.png",
+    "shell-900x700-page2.png",
+    "shell-900x700-page3.png",
+    "shell-900x700-page4.png",
+    "shell-900x700-page5.png"
+  ],
+  "reachable": [
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Overview",
+      "action": "newCampaign",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Overview",
+      "action": "New standalone friendly",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "squad",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "captain",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "confirm",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "Discard draft",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic5",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic6",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic7",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic1",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic2",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic3",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic4",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic8",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "National pool",
+      "action": "Search reserve name",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "National pool",
+      "action": "Reserve position",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "National pool",
+      "action": "reserves",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "National pool",
+      "action": "Exchange selected squad player and reserve",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Fixtures & results",
+      "action": "showStandings",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Fixtures & results",
+      "action": "Play quick friendly",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Fixtures & results",
+      "action": "watchOriginal",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Fixtures & results",
+      "action": "Halftime outgoing player",
+      "enabled": false
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Fixtures & results",
+      "action": "Halftime incoming player",
+      "enabled": false
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Fixtures & results",
+      "action": "Substitute",
+      "enabled": false
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Fixtures & results",
+      "action": "Continue second half",
+      "enabled": false
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Save / resume",
+      "action": "savePath",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Save / resume",
+      "action": "save",
+      "enabled": true
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "page": "Save / resume",
+      "action": "resume",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Overview",
+      "action": "newCampaign",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Overview",
+      "action": "New standalone friendly",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "squad",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "captain",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "confirm",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "Discard draft",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic5",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic6",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic7",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic1",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic2",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic3",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic4",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic8",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "National pool",
+      "action": "Search reserve name",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "National pool",
+      "action": "Reserve position",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "National pool",
+      "action": "reserves",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "National pool",
+      "action": "Exchange selected squad player and reserve",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Fixtures & results",
+      "action": "showStandings",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Fixtures & results",
+      "action": "Play quick friendly",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Fixtures & results",
+      "action": "watchOriginal",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Fixtures & results",
+      "action": "Halftime outgoing player",
+      "enabled": false
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Fixtures & results",
+      "action": "Halftime incoming player",
+      "enabled": false
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Fixtures & results",
+      "action": "Substitute",
+      "enabled": false
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Fixtures & results",
+      "action": "Continue second half",
+      "enabled": false
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Save / resume",
+      "action": "savePath",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Save / resume",
+      "action": "save",
+      "enabled": true
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "page": "Save / resume",
+      "action": "resume",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Overview",
+      "action": "newCampaign",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Overview",
+      "action": "New standalone friendly",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "squad",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "captain",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "confirm",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "Discard draft",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic5",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic6",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic7",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic1",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic2",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic3",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic4",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Squad & tactics",
+      "action": "tactic8",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "National pool",
+      "action": "Search reserve name",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "National pool",
+      "action": "Reserve position",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "National pool",
+      "action": "reserves",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "National pool",
+      "action": "Exchange selected squad player and reserve",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Fixtures & results",
+      "action": "showStandings",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Fixtures & results",
+      "action": "Play quick friendly",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Fixtures & results",
+      "action": "watchOriginal",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Fixtures & results",
+      "action": "Halftime outgoing player",
+      "enabled": false
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Fixtures & results",
+      "action": "Halftime incoming player",
+      "enabled": false
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Fixtures & results",
+      "action": "Substitute",
+      "enabled": false
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Fixtures & results",
+      "action": "Continue second half",
+      "enabled": false
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Save / resume",
+      "action": "savePath",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Save / resume",
+      "action": "save",
+      "enabled": true
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "page": "Save / resume",
+      "action": "resume",
+      "enabled": true
+    }
+  ],
+  "contrast": {
+    "body": 15.760201803771965,
+    "panel text": 13.446624450282803,
+    "disabled": 9.212049490323153,
+    "table": 11.539344302961265,
+    "selected": 10.387089745067524,
+    "focus": 12.29461751985869
+  },
+  "ratio": 1.0,
+  "available": [
+    800,
+    800
+  ],
+  "preview_country": 5,
+  "result": "PASS"
+}

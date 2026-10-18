@@ -1,0 +1,7 @@
+START prove-management.py
+END prove-management.py 0
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T74-football-ui/.cache/T74-controls.py", line 11, in <module>
+    assert result.returncode and 'one in-flight: expected' in result.stdout+result.stderr,'expected retained proof site-drift failure'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: expected retained proof site-drift failure

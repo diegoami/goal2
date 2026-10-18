@@ -3,6 +3,7 @@
 Original resources stay in ignored caches. Default offscreen; set QT_QPA_PLATFORM
 and use xvfb-run for the separate xcb platform run. No screenshot is committed.
 """
+from navigation import reveal
 import builtins
 import copy
 from dataclasses import asdict
@@ -34,7 +35,7 @@ def main():
     data=load((ROOT/'.cache/GOAL.DAT').read_bytes())
     receipts=[]
     def click(widget):
-        QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+        reveal(widget);QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
     def finish_window(window):
         window.close();window.deleteLater()
         QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()

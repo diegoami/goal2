@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """[designed: T66] Real Qt controls, SDL child and independent original continuation."""
+from navigation import reveal
 import copy
 from dataclasses import asdict
 import json
@@ -40,17 +41,17 @@ def main():
         save=Path(folder)/'watched.g2save';m=model(save);w=ManagementWindow(m);original_start=w.watched.start;w.watched.start=lambda **kw:original_start(frames=False,**kw);w.show();app.processEvents()
         beats=[];heartbeat=QTimer();heartbeat.setInterval(5);heartbeat.timeout.connect(lambda:beats.append(time.monotonic()));heartbeat.start()
         try:
-            w.country.setCurrentIndex(w.country.findData(4));QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
+            w.country.setCurrentIndex(w.country.findData(4));reveal(w.new);QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
             w.captain.setCurrentIndex(3)
             w.tactics[0][1].setChecked(not w.tactics[0][1].isChecked())
-            QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(w.confirm);QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()
             assert m.state.managed_country==4 and m.state.captain==w.captain.currentData()
             assert w.draft()==(m.state.starting_eleven,m.state.captain,m.state.country_tactics)
             control=type(m)(m.goaldat,m.template_bytes,Path(folder)/'control');control.state=copy.deepcopy(m.state)
             for round_number in range(2):
                 outcome,events=expected(control)
                 before=copy.deepcopy(m.state);beats.clear()
-                QTest.mouseClick(w.watch,Qt.MouseButton.LeftButton);app.processEvents()
+                reveal(w.watch);QTest.mouseClick(w.watch,Qt.MouseButton.LeftButton);app.processEvents()
                 assert w.watched.busy,w.status.text()
                 engine=w.watched.engine.process;viewer=w.watched.process
                 w.start_watched();w.start_match();w.refresh();assert w.watched.engine.process is engine
@@ -81,9 +82,9 @@ def main():
                 state=copy.deepcopy(m.state)
                 for _ in range(4):w.poll_watched();w.refresh();app.processEvents()
                 assert m.state==state,'redraw published again'
-                QTest.mouseClick(w.save,Qt.MouseButton.LeftButton);app.processEvents();assert save.is_file()
+                reveal(w.save);QTest.mouseClick(w.save,Qt.MouseButton.LeftButton);app.processEvents();assert save.is_file()
                 saved=save.read_bytes()
-                QTest.mouseClick(w.resume,Qt.MouseButton.LeftButton);app.processEvents()
+                reveal(w.resume);QTest.mouseClick(w.resume,Qt.MouseButton.LeftButton);app.processEvents()
                 assert m.state==control.state,'Qt resume lost completed original continuation'
                 assert save.read_bytes()==saved
                 if round_number==0:
@@ -113,8 +114,8 @@ def main():
             w.start_watched();app.processEvents()
             assert not w.watched.busy and 'qualifiers are unsupported' in w.status.text(),w.status.text()
             assert m.state==snapshot and save.read_bytes()==saved
-            QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
-            QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(w.new);QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(w.confirm);QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()
             snapshot=copy.deepcopy(m.state);w.start_watched()
             assert w.watched.busy,w.status.text()
             engine=w.watched.engine.process;viewer=w.watched.process

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """[designed: #181] Real Qt country previews preserve active ownership and saves."""
+from navigation import reveal
 import argparse
 import copy
 from pathlib import Path
@@ -25,7 +26,7 @@ def main():
         def select(country):
             window.country.setCurrentIndex(window.country.findData(country));app.processEvents()
         def click(button):
-            QTest.mouseClick(button,Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(button);QTest.mouseClick(button,Qt.MouseButton.LeftButton);app.processEvents()
         def assert_display(expected):
             view=expected.view();state=expected.state
             assert window.title.text()==view['country_name'],'selected country header remains on previous country'

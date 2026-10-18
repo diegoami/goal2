@@ -1,0 +1,17 @@
+{
+  "head": "154bfbbc5053ba9a18d93bb734464c2a4f10f7bc",
+  "folder": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T74-popup-mouse-debug-1792328735941237780",
+  "source": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T74-shell-154bfbbc5053-1792328595076188456",
+  "exit": 0,
+  "protected_unchanged": true,
+  "sources_unchanged": true,
+  "files": {
+    "debug.py": "8475c2d1f3a596473ad53987f8e7f91315f8e47652c4ab3078905c0a6065a7aa",
+    "diagnostic.json": "a76a8849b10a63d9d048c9a500fbdc8c51b94084e447d5e0c78b8e4717b0057f",
+    "fresh-arrow-click-window.png": "22fd529d81bc4e06392fca35a70a850b6fa55d4c78cc4350fad9a737dcdf49b3",
+    "initial-window.png": "29264559b09cb15e2b2ae6ce967cd44a142c40dafc51a13346381305e20f8481",
+    "native.log": "9af2dd4e8a2eeedc09fb548b67e47a33a342fe3b545084d7c82b003d44f7ee26",
+    "settled-alt-down-popup.png": "ef5f72292a6b63b466eb5f3f3ec57e3696bc85b26c737619ceb14e21a68d5f7d",
+    "settled-alt-down-window.png": "751e01f058e190b8d1b364a5b4ab77df2a539de3502d212a709b8f1beddff17e"
+  }
+}

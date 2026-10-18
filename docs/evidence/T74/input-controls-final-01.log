@@ -1,0 +1,2 @@
+PASS negative controls: baseline navigation; dirty-draft loss; native surface contrast; accessible names; exact source bytes restored
+PASS two controlled input failures; country change leaves save/job fields unchanged

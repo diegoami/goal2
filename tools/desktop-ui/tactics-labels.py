@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """[confirmed: F010] Verify Qt tactic labels and their existing bit positions."""
+from navigation import reveal
 import argparse
 import gc
 from pathlib import Path
@@ -54,9 +55,9 @@ def main():
         for element in (6, 7, 1):
             for box in boxes.values():
                 box.setChecked(False)
-            QTest.mouseClick(boxes[element], Qt.MouseButton.LeftButton)
+            reveal(boxes[element]);QTest.mouseClick(boxes[element], Qt.MouseButton.LeftButton)
             assert boxes[element].isChecked(), f"element {element} checkbox did not toggle"
-            QTest.mouseClick(window.confirm, Qt.MouseButton.LeftButton)
+            reveal(window.confirm);QTest.mouseClick(window.confirm, Qt.MouseButton.LeftButton)
             expected = 1 << (element - 1)
             assert model.state.country_tactics == expected, (
                 f"element {element} must retain mask 0x{expected:02X}; "

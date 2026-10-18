@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """[designed: T83] Real Qt/SDL animation acceptance; captures contain rebuild pixels only."""
+from navigation import reveal
 import copy
 from datetime import datetime, timezone
 import hashlib
@@ -143,7 +144,7 @@ def main():
             return target
 
         def click_watch():
-            QTest.mouseClick(w.watch, Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(w.watch);QTest.mouseClick(w.watch, Qt.MouseButton.LeftButton);app.processEvents()
             assert w.watched.busy, w.status.text()
             assert w.watched.frames_enabled, 'Watch did not enable the production pitch by default'
 
@@ -156,7 +157,7 @@ def main():
             else:raise AssertionError('pending playback allowed saving')
 
         try:
-            QTest.mouseClick(w.confirm, Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(w.confirm);QTest.mouseClick(w.confirm, Qt.MouseButton.LeftButton);app.processEvents()
             m.save(save)
             control = type(m)(m.goaldat, m.template_bytes, Path(folder) / 'baseline')
             control.state = copy.deepcopy(m.state)
@@ -192,8 +193,8 @@ def main():
                 assert metrics['changed'] > 10 and set(metrics['selectors']) == {0, 1}
                 assert metrics['last_sequence'] == w.watched.frame_ack
                 assert len(beats) > 5, 'Qt heartbeat blocked'
-                QTest.mouseClick(w.save, Qt.MouseButton.LeftButton);app.processEvents()
-                QTest.mouseClick(w.resume, Qt.MouseButton.LeftButton);app.processEvents()
+                reveal(w.save);QTest.mouseClick(w.save, Qt.MouseButton.LeftButton);app.processEvents()
+                reveal(w.resume);QTest.mouseClick(w.resume, Qt.MouseButton.LeftButton);app.processEvents()
                 assert m.state == control.state
                 for _ in range(3):w.poll_watched();app.processEvents()
                 assert m.state == control.state, 'redraw republished result'
@@ -217,8 +218,8 @@ def main():
                 receipts['boundaries'].append('owned-only teardown round 1' if round_number==0 else 'completed-viewer close round 2')
 
             # [designed] New campaign restores a friendly boundary for cancellation probes.
-            QTest.mouseClick(w.new, Qt.MouseButton.LeftButton);app.processEvents()
-            QTest.mouseClick(w.confirm, Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(w.new);QTest.mouseClick(w.new, Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(w.confirm);QTest.mouseClick(w.confirm, Qt.MouseButton.LeftButton);app.processEvents()
             m.save(save)
             for failure in ('slow-close', 'malformed', 'stale'):
                 before = copy.deepcopy(m.state);saved = save.read_bytes()
