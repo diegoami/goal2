@@ -1,0 +1,4 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+PASS native SDL window x11 2.5.8 (2, 32, 10)
+
+native_returncode 0

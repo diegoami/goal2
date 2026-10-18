@@ -60,7 +60,14 @@ class PresentationTests(unittest.TestCase):
             surface=pygame.display.set_mode((640,360));surface.fill((17,33,49));pygame.display.flip()
             self.assertEqual(tuple(surface.get_at((2,2)))[:3],(17,33,49))
             pygame.event.post(pygame.event.Event(pygame.QUIT))
-            self.assertTrue(any(event.type==pygame.QUIT for event in pygame.event.get()))
+            from goal2.desktop.pygame_viewer import navigation
+            self.assertTrue(any(navigation(event,0,True)[2] is False for event in pygame.event.get()))
+            pygame.event.post(pygame.event.Event(pygame.MOUSEWHEEL,y=2))
+            pygame.event.post(pygame.event.Event(pygame.KEYDOWN,key=pygame.K_END))
+            states=[];scroll=20;follow=True
+            for event in pygame.event.get():
+                scroll,follow,running=navigation(event,scroll,follow);states.append((scroll,follow,running))
+            self.assertEqual(states,[(14,False,True),(10**9,True,True)])
         finally:pygame.quit()
 
     def test_real_framebuffer_matches_original_text_projection(self):
@@ -87,6 +94,26 @@ class PresentationTests(unittest.TestCase):
                 'Denmark — Raw rating','A: 55','Germany — Raw rating','B: blank']):
                 expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
             self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'SDL board/raw rating pixels differ')
+            live=Display('owned');live.accept(['owned',0,'start',['Denmark','Germany']])
+            for n in range(18,49):
+                live.accept(['owned',n-17,'event',{'kind':'commentary','minute':n,'score':[2,1],'data':{'text':f'Original line {n}'}}])
+            self.assertEqual(render(screen,font,live,999),8)
+            expected.fill((18,28,37))
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','48′   2 — 1']+
+                                    [f'{n}′ Original line {n}' for n in range(26,49)]):
+                expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
+            self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'live scroll lost pinned score or ordered commentary')
+            from goal2.desktop.pygame_viewer import position
+            self.assertEqual(position(live,8,False,False,True),(8,False,False))
+            self.assertEqual(position(live,0,True,False,True),(10**9,True,False))
+            live.accept(['owned',32,'event',{'kind':'end','minute':90,'score':[2,1],'data':{}}])
+            rows=[{'name':f'Player {n}','raw':55} for n in range(20)]
+            live.accept(['owned',33,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},
+                'ratings':[rows,rows],'man_of_the_match':'A'}])
+            board_scroll,follow,finished=position(live,0,True,False,True)
+            self.assertEqual((board_scroll,follow,finished),(31,False,True))
+            self.assertEqual(render(screen,font,live,board_scroll),31)
+            self.assertEqual(position(live,7,False,True,False),(7,False,True))
         finally:pygame.quit()
 
     def test_qt_heartbeat_blocked_tail_and_actual_viewer_quit(self):
@@ -168,20 +195,31 @@ sys.exit(pygame_viewer.main())
             finally:c.close()
             c=WatchedController(m,viewer_command=['/nonexistent/goal2-viewer'])
             try:
-                with self.assertRaises(OSError):c.start()
+                with self.assertRaisesRegex(ValueError,'Cannot start original friendly'):c.start()
                 self.assertIsNone(c.process);self.assertFalse(c.busy);self.assertFalse(m.match_pending)
                 self.assertEqual(m.state,before)
+            finally:c.close()
+            from goal2.desktop.model import DesktopModel
+            m=DesktopModel.open(ROOT/'.cache/e0afff6751747233-e006-1000-r0001.sav',ROOT/'.cache/GOAL.DAT',Path(folder)/'unused',country=4)
+            before=copy.deepcopy(m.state);c=WatchedController(m)
+            try:
+                with self.assertRaisesRegex(ValueError,'Cannot start original friendly:.*extra time'):c.start()
+                self.assertIsNone(c.process);self.assertFalse(c.busy);self.assertEqual(m.state,before)
             finally:c.close()
 
     def test_malformed_stale_ack_and_engine_failure_preserve_state(self):
         from goal2.tests.test_watched_jobs import CONTROLLED
-        for mode in ('malformed','stale','guest','closed'):
+        for mode in ('malformed','stale','guest','closed','startup-timeout','oversized','bad-digest'):
             with self.subTest(mode=mode),tempfile.TemporaryDirectory() as folder:
                 m=model(Path(folder)/'save');before=copy.deepcopy(m.state)
                 script="import time;time.sleep(60)"
                 c=WatchedController(m,viewer_command=[sys.executable,'-c',script],engine_command=[sys.executable,'-c',CONTROLLED,'guest' if mode=='guest' else 'blocked'])
                 try:
                     c.start();viewer=c.process;engine=c.engine.process
+                    if mode in ('guest','bad-digest'):
+                        (c.directory/'status').write_text(json.dumps({'token':c.token,'kind':'ready','sequence':0,'digest':c.digests[0] if mode=='guest' else '0'*64}))
+                    if mode=='startup-timeout':c.started-=11
+                    if mode=='oversized':(c.directory/'status').write_text('x'*4097)
                     if mode in ('malformed','stale','closed'):
                         (c.directory/'status').write_text('[]' if mode=='malformed' else json.dumps({'token':'stale' if mode=='stale' else c.token,'kind':'closed','sequence':0,'digest':c.digests[0]}))
                     if mode=='closed':c.poll()

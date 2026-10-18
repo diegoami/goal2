@@ -11,6 +11,7 @@ import time
 from goal2.desktop.match_view import Display, completion, MAX_PACKET, MAX_JOURNAL
 from goal2.game.watched_jobs import WatchedJobs
 from goal2.engine.original_match import Fixture
+from goal2.engine.quick_engine import QuickEngineError
 
 
 class WatchedController:
@@ -62,8 +63,10 @@ class WatchedController:
             self.engine_token = self.engine.start(Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1])), **options)
             self.model.match_pending = True
             self._pending_owned = True
-        except Exception:
+        except Exception as exc:
             self.close_viewer()
+            if isinstance(exc, (OSError, ValueError, QuickEngineError)):
+                raise ValueError(f'Cannot start original friendly: {exc}') from exc
             raise
 
     def send(self, kind, value):
@@ -109,7 +112,7 @@ class WatchedController:
                 raise ValueError('Pygame window did not start within 10 seconds; check SDL display configuration')
             if self.process.poll() is not None:
                 raise ValueError('Pygame window exited; check SDL display configuration')
-            if self.engine.busy:
+            if self.engine.busy and self.last_status is not None:
                 for event in self.engine.poll(self.engine_token):
                     self.send('event', asdict(event))
                 if not self.engine.busy:

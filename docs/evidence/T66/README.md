@@ -25,3 +25,27 @@ every source file's full saved bytes in `finally`, never git-resetting work.
 Controls visit packet order, actual SDL framebuffer text, raw-rating offset,
 shared match-start ownership, once-only publication and saved RNG continuation.
 Original fidelity controls run the actual engine and real Qt/SDL acceptance.
+
+
+[designed] `acceptance-02.log` is PASS9/57.405seconds at product34b24b5,
+including framebuffer parity, blocked full-time-tail Qt heartbeat, real SDL QUIT
+and the completed-viewer/new-quick-job lock regression. `qt-command-01.log` passes
+the standalone command. `retained-01.log` is PASS49/528.957seconds across eight
+retained desktop/watched/web modules at that source; `retained-ui-01.log` passes
+five existing Qt scenarios via `retained_ui.py`. `browser-01.log` passes Chromium
+campaign-friendlies. These receipts precede the final narrow startup-error and
+live-follow changes; final focused acceptance covers those changes.
+
+[designed] `native-display-01.log` records a real native SDL x11 window,
+640x360 surface flip and SDL QUIT event with pygame-ce2.5.8/SDL2.32.10. Reproduce
+with `python3 docs/evidence/T66/native_display_smoke.py`; its owned subprocess is
+bounded at8seconds. This is Linux/WSL X11, not native Windows packaging.
+
+[designed] `optional-02.log` passes `optional_boundary.py`: actual Qt quick
+campaign friendly including halftime continuation, management and save/resume
+with pygame/Unicorn imports blocked. `optional-01.log` preserves the earlier
+failed proof that omitted halftime continuation; it is not evidence of a product
+failure. Its verified owned orphan worker was terminated after all readers
+exited; the reproducible helper now always closes its window in `finally`.
+`resources-and-source.json` records source/dependency/resource identities and
+exact commands; provenance and links receipts are separately retained.

@@ -140,7 +140,10 @@ python3 -m goal2.desktop --template .cache/e010-r0008-halftime.sav --data .cache
 [designed] Confirm XI, captain and tactics, then choose **Watch original friendly**.
 A separate Pygame window shows the original ordered commentary, minute and score;
 after the original post-match tail, scroll with the mouse wheel or arrow keys to
-see the original full-time board, man of the match and **Raw rating**. Escape or
+see the original full-time board, man of the match and **Raw rating**. Countries,
+minute and score stay pinned above the scroll area. New commentary follows live
+until wheel/arrow scrolling pauses it; End resumes following. Completion opens
+at the original board, with raw ratings below. Escape or
 the window close button closes it. Closing while the match is running cancels the
 match and preserves the last committed state/save. Closing a completed viewer
 keeps the published result. Save/Resume remain Qt actions; saving during a match

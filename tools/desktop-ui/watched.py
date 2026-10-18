@@ -97,13 +97,24 @@ def main():
                 assert viewer.poll() is not None
                 receipts.append({'round':round_number+1,'fixture':outcome.result['index'],'events':len(events),
                     'score':outcome.result['score'],'heartbeats':len(beats),'digest':display.digest(),
+                    'image_sha256':outcome.result['image_sha256'],'engine_year':outcome.engine_year,
+                    'captain':before.captain,'tactics':before.country_tactics,'eleven':before.starting_eleven,
                     'seeds':list(outcome.seeds),'state_memory_rng_history_equal':True})
-            # [designed] Closing the Qt owner reaps only its two children and keeps the saved result.
-            if m.state.campaign.next_fixture.kind==1:
-                snapshot=copy.deepcopy(m.state);saved=save.read_bytes();w.start_watched();engine=w.watched.engine.process;viewer=w.watched.process
-                w.close();app.processEvents()
-                assert engine.poll() is not None and viewer.poll() is not None
-                assert m.state==snapshot and save.read_bytes()==saved
+            # [designed] Actually visit the pending qualifier boundary, then active-owner shutdown.
+            snapshot=copy.deepcopy(m.state);saved=save.read_bytes()
+            assert m.state.campaign.next_fixture.kind!=1
+            w.start_watched();app.processEvents()
+            assert not w.watched.busy and 'qualifiers are unsupported' in w.status.text()
+            assert m.state==snapshot and save.read_bytes()==saved
+            QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
+            QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()
+            snapshot=copy.deepcopy(m.state);w.start_watched()
+            assert w.watched.busy,w.status.text()
+            engine=w.watched.engine.process;viewer=w.watched.process
+            closing=time.monotonic();w.close();app.processEvents()
+            assert time.monotonic()-closing<3
+            assert engine.poll() is not None and viewer.poll() is not None
+            assert m.state==snapshot and save.read_bytes()==saved
             print(json.dumps(receipts,indent=2));print('PASS T66 Qt controls + original events/board/raw ratings/MOTM + SDL acknowledgement + save/resume/repeat')
         finally:heartbeat.stop();w.close();w.deleteLater();app.processEvents()
     return receipts
