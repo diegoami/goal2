@@ -3,6 +3,8 @@ import copy
 import asyncio
 from dataclasses import replace
 import hashlib
+import os
+import signal
 from pathlib import Path
 import json
 import struct
@@ -134,7 +136,8 @@ class WatchedJobsTests(unittest.TestCase):
         token=self.bridge('ignore');process=self.jobs.process
         self.until(token,lambda events:bool(events))
         self.jobs.close()
-        self.assertEqual(process.poll(),-9)
+        self.assertIsNotNone(process.poll())
+        if os.name == 'posix':self.assertEqual(process.poll(),-signal.SIGKILL)
         self.assertEqual(self.owner.state,self.before)
 
     def test_replacement_and_stale_cancel_cannot_touch_new_job(self):
@@ -208,10 +211,11 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         self.jobs._journal.seek(0);self.jobs._journal.truncate()
         with open(self.jobs._journal.name,'ab') as stream:
             _write(stream,token,0,'event',Event('commentary',1,(0,0),{'text':'x'*(READ_BUDGET*3)}))
-        self.assertEqual(self.jobs.poll(token),[])
-        self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET)
-        self.assertEqual(self.jobs.poll(token),[])
-        self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET*2)
+        with patch.object(process,'poll',return_value=None):
+            self.assertEqual(len(self.jobs.poll(token)),0)
+            self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET)
+            self.assertEqual(len(self.jobs.poll(token)),0)
+            self.assertLessEqual(len(self.jobs._buffer),READ_BUDGET*2)
         self.assertEqual(self.owner.state,self.before)
 
     def test_stream_outcome_mismatch_and_incomplete_tail_never_publish(self):
@@ -225,7 +229,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
             if mode=='tail':outcome=replace(outcome,events=events)
             with open(self.jobs._journal.name,'ab') as stream:
                 for n,event in enumerate(events):_write(stream,token,n,'event',event)
-                if mode=='mismatch':outcome=replace(outcome,events=outcome.events[:-1])
+                if mode=='mismatch':outcome=replace(outcome,events=(replace(outcome.events[0],data={'tampered':True}),)+outcome.events[1:])
                 _write(stream,token,len(events),'complete',outcome)
                 if mode=='trailing':stream.write(struct.pack('!I',1)+b'{')
             # [designed] Substitute successful exit only; use the real parent decoder/publication.
