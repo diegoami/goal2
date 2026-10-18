@@ -6,6 +6,7 @@ import subprocess
 import sys
 ROOT=Path(__file__).resolve().parents[2]
 CASES=[
+ ('filter state purity','goal2/desktop/model.py','        return campaign_pool.view(self.state,self.goaldat,query=query,position=position)', '        if query:self.state.rng_seed_7b62+=1\n        return campaign_pool.view(self.state,self.goaldat,query=query,position=position)', 'test_view_filters_are_pure_and_exchange_matches_t45_full_identity_repair'),
  ('exchange publication','goal2/desktop/model.py','self.state=candidate','self.state=self.state','test_view_filters_are_pure_and_exchange_matches_t45_full_identity_repair'),
  ('full reserve ID','goal2/desktop/model.py','campaign_pool.exchange(candidate,outgoing,incoming)','campaign_pool.exchange(candidate,outgoing,incoming & 255)','test_view_filters_are_pure_and_exchange_matches_t45_full_identity_repair'),
  ('copied candidate rollback','goal2/desktop/model.py','candidate=copy.deepcopy(self.state)','candidate=self.state','test_invalid_unavailable_closed_and_validation_failure_are_atomic'),

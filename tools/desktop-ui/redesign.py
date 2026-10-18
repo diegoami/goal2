@@ -481,7 +481,7 @@ def overview_negative_controls(args):
     print('PASS overview negative controls: baseline hierarchy absent; active binding fails country-selection and overview; exact saved bytes restored')
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell','overview','squad','results'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell','overview','squad','results','pool'],required=True)
     parser.add_argument('--template',required=True);parser.add_argument('--data',required=True)
     parser.add_argument('--evidence-dir',required=True);parser.add_argument('--single-scale',action='store_true');parser.add_argument('--negative-controls',action='store_true')
     parser.add_argument('--surface-input-control',choices=['wrong-focus','country-change'])
@@ -489,6 +489,9 @@ def main():
     parser.add_argument('--results-source-dir')
     parser.add_argument('--prepare-results-inputs',action='store_true')
     args=parser.parse_args()
+    if args.scenario=='pool' and (args.negative_controls or args.single_scale):
+        from pool_scenario import scenario as pool,negative_controls as pool_negative
+        return (pool_negative if args.negative_controls else pool)(args)
     if args.scenario=='squad' and (args.negative_controls or args.single_scale):
         from squad_scenario import scenario,negative_controls as squad_negative_controls
         return (squad_negative_controls if args.negative_controls else scenario)(args)

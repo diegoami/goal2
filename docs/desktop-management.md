@@ -30,8 +30,9 @@ provisional. A fresh country preview has its own empty result. Unavailable
 Play/Watch routes show a reason and retain the existing callback refusals.
  Navigation moves
 focus to the page heading and preserves unconfirmed drafts, the active game,
-save files and running jobs. Select an outgoing squad row in Squad & tactics,
-then choose its reserve in National pool before using the existing exchange action.
+save files and running jobs. [designed: T77] National pool provides an outgoing
+squad selector synchronized with the current squad row; it changes selection only.
+Choose a visible reserve and read both full identities before exchanging.
 Save/Resume and the editable save path live in Save / resume; Ctrl+S invokes the
 same guarded Save. Status and Cancel match remain visible across destinations.
 At small sizes, scroll the current page to reach its remaining actions; tables
@@ -128,21 +129,24 @@ QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/acceptance.py --scenario work
 python3 tools/desktop-ui/prove-friendlies.py
 ```
 
-[derived: T45; designed: T71] The national pool sits beside the twenty-player
-squad. It shows eighty reserve identities with original names, source position
+[derived: T45; designed: T71/T77] The National pool destination retains the twenty-player
+squad membership. It shows eighty reserve identities with original names, source position
 code/group, ability, energy, confidence and availability. Search names and filter
 numeric position codes to find a reserve. These controls only filter the view.
-Select a row in each table, then **Exchange selected squad player and reserve**.
+Select an outgoing player and a reserve row, then **Exchange selected squad player and reserve**.
+The raw reserve detail and exchange summary retain names and full integer IDs.
+Filtering clears the incoming selection and shows an explicit empty detail; select
+a visible row again before exchanging.
 The exchange uses the confirmed team and discards unconfirmed widget edits.
 T45 swaps full IDs, repairs a replaced starter/captain, and preserves player
 records. Confirm management, save/resume or play with the exchanged team.
 
-[assumed: T45 Q008/#254] The explanation above the reserves is authoritative:
+[assumed: T45 Q008/#254] The explanation beside the exchange action is authoritative:
 exchanges require a pending supported managed friendly outside the provisional
 tour boundary. This is the existing provisional rebuild policy, not established
 original window fidelity. Invalid or unavailable incoming players are refused
-without changing the game. Standalone mode has no national pool. Pool controls
-are disabled while a match process is running. Redraw/filter/resume never
+without changing the game. Standalone mode has no national pool. [designed: T77] The adjacent reason also explains preview, standalone and busy
+contexts. Pool controls are disabled while a match process is running. Redraw/filter/resume never
 regenerate player identities; the existing ordered quick tail updates reserves
 once per completed fixture.
 
