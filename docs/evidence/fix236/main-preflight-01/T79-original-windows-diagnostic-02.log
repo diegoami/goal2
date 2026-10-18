@@ -1,0 +1,28 @@
+test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat) ... DIAGNOSTIC controller exception ValueError('Pygame window exited; check SDL display configuration')
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-original-baseline-1792350834010012560\diagnostic.py", line 23, in _audit_poll
+    try:return _original_poll(self)
+               ~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-original-baseline-1792350834010012560\goal2\desktop\watched.py", line 153, in poll
+    raise ValueError('Pygame window exited; check SDL display configuration')
+ValueError: Pygame window exited; check SDL display configuration
+DIAGNOSTIC differing state fields ['players', 'countries', 'rng_seed_7b62', 'rng_seed_8336', 'match_state', 'mem', 'match_count', 'last_match', 'campaign']
+DIAGNOSTIC match counts 0 1
+FAIL
+
+======================================================================
+FAIL: test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-original-baseline-1792350834010012560\goal2\tests\test_pygame_match_view.py", line 303, in test_original_qt_save_resume_repeat
+    acceptance['main']()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-original-baseline-1792350834010012560\tools\desktop-ui\watched.py", line 60, in main
+    assert m.state==control.state,'complete state/Memory/both RNG/history differs from direct original'
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: complete state/Memory/both RNG/history differs from direct original
+
+----------------------------------------------------------------------
+Ran 1 test in 22.550s
+
+FAILED (failures=1)

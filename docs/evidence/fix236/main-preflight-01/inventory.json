@@ -1,0 +1,28 @@
+{
+  "source": "e337d56172373e0786b571c9b379e86ebcf63921",
+  "issue": 236,
+  "claim": "Main runtime-only preflight; no product fix; T66 frames=False only",
+  "files": {
+    "README.md": "5017d1d945e843717c006d84cbe9855edb45904402c007822afde09db918fbe9",
+    "T79-original-windows-combined-mock-06.log": "368968e1c2f4b586633a97e054435556f85d06413b5d6cda4032380eeec5ed21",
+    "T79-original-windows-combined-mock-07.log": "be01c7df5aa45d8171ddbdb65ab511a77a82cd2de060b6455b7d1569a389f86c",
+    "T79-original-windows-combined-mock-08-receipt.json": "a8a2bf31856b0b7944ae551ff17af8b589cf4a6a40fe76e5fe697ab8e477a72d",
+    "T79-original-windows-combined-mock-08.log": "2bfa883d1aa0728b7f88f11294ddcbc2c4835311b2fcf7c680d24405618abd19",
+    "T79-original-windows-diagnostic-02.log": "1ecd0ac139d3c123e5df14e8a6f182d3727d9cadd1c3e77890eb0e8038d8292c",
+    "T79-original-windows-diagnostic-03.log": "770eb07accd41d68b5ebc8a3ed617192871e80e31ef76cad647d6698449a9177",
+    "T79-original-windows-retry-mock-04.log": "e08169b9e73bd6698c326fe38c36fecfc0305fda1607ea837a302e6e38d95b7f",
+    "T79-original-windows-trace-05.log": "8a97d64a89ebea165af7f019d061e35f7435c736cb9ef38758d4de17231706cb",
+    "T79-status-sharing-native-01.json": "41fe3d0659e90d6c24e436a3483f50f70195cc5d11f582242f9d5f3c552fb274",
+    "T79-status-sharing-native-01.log": "15d40f3009126f15a57dd014454ba835d42356462bbb908c74a0157d74d706a1",
+    "T79-status-sharing-repro.py": "a13f0129eb66bf3849d61df42e1d56f12b1b895194339c304d873c2b3a01c614",
+    "Windows-sharing-mock-pass.md": "241df6847887f4fda49eeadd411fa68d5c25144e2220ddc6a323b763f8f6e4dd",
+    "combined-sharing-mock-06.py": "f490ad013701d92f4405c2271b22733ff7984e4a187e490d366aa3a440bcb776",
+    "combined-sharing-mock-07.py": "5d197413b1a99d2e29801129daa2541ee7dd83010e549c7d4f0090fd449f284e",
+    "combined-sharing-mock-08.py": "5fb4fa3708928fbe6935273c6a7f78acef4335a6109045724d9ae0f1b9de0ec0",
+    "diagnostic-03.py": "1ce0131e8d6574bc99857631db4712c1425055c7971c900928ea0e5a05686e71",
+    "diagnostic.py": "bd4dcf08259c7311372aac916c80a8a0b2a8dc60e6b310983c0ee3449df61013",
+    "retry-mock-04.py": "8b6f3f486dd2bf8dd155c8f444ff5f081423e1df7ba0a577018a37a82619e8e8",
+    "trace-05.py": "58b5f58cde1e935136c1fd534620b1dea54e309de85fc0238ecff3a5c031f051",
+    "viewer-retry-mock.py": "a71892aef71e2aaa3aa6ae5ea711ba8f564b7705334aca214f2f304e43d6b62a"
+  }
+}
