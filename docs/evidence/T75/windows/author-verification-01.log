@@ -1,0 +1,24 @@
+{
+  "tag": "[confirmed: main-owned native-01 inventory/receipt/reports; designed: author verification]",
+  "native_source_head": "c216cdba0e3086a082854290fe07c742dd699a90",
+  "current_scenario_sha256": "f87ded8f686d78574ef47935e47e004d038ac0f70e88f50873dfef4ca1398bf0",
+  "inventory_files": 34,
+  "protected_hashes_unchanged": true,
+  "runs": [
+    {
+      "scale": 1,
+      "captures": 19,
+      "all_inventory_and_source_hashes_match": true,
+      "actual_native_qpa": "windows",
+      "result": "PASS"
+    },
+    {
+      "scale": 2,
+      "captures": 7,
+      "all_inventory_and_source_hashes_match": true,
+      "actual_native_qpa": "windows",
+      "result": "PASS"
+    }
+  ],
+  "result": "PASS"
+}
