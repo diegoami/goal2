@@ -12,6 +12,16 @@ def status(path, value):
     os.replace(temporary, path)
 
 
+def render(screen, font, display, scroll=0):
+    """[designed] Render the ordered text projection on the real SDL surface."""
+    lines = display.lines()
+    scroll = max(0, min(scroll, max(0, len(lines) - 25)))
+    screen.fill((18, 28, 37))
+    for number, line in enumerate(lines[scroll:scroll+26]):
+        screen.blit(font.render(line, True, (232, 239, 229)), (20, 20 + number * 25))
+    return scroll
+
+
 def main():
     folder, token = Path(sys.argv[1]), sys.argv[2]
     target = folder / 'status'
@@ -47,11 +57,7 @@ def main():
                     display.accept(json.loads(row))
                 if len(buffer) > MAX_PACKET:
                     raise ValueError('viewer packet exceeds limit')
-                lines = display.lines()
-                scroll = max(0, min(scroll, max(0, len(lines) - 25)))
-                screen.fill((18, 28, 37))
-                for number, line in enumerate(lines[scroll:scroll+26]):
-                    screen.blit(font.render(line, True, (232, 239, 229)), (20, 20 + number * 25))
+                scroll = render(screen, font, display, scroll)
                 pygame.display.flip()
                 status(target, {'token': token, 'kind': 'ready' if running else 'closed',
                                 'sequence': display.sequence, 'digest': display.digest()})

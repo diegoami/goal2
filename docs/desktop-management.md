@@ -49,7 +49,7 @@ template and rebuilt continuation before replacing active state. Invalid/missing
 local files leave the current game and prior good save intact. DesktopModel calls
 Python game/state/save interfaces directly and imports no web/Qt layer. Widget
 updates stay on the Qt thread. Quick match execution uses the responsive T70 process flow below; pool
-controls use the T71 flow below, watched controls belong to T66. No server/hosting
+controls use the T71 flow below; original watched friendlies use the T66 flow below. No server/hosting
 is involved in this management slice.
 
 [derived: official Qt API documentation] The shell uses
@@ -127,3 +127,49 @@ No re-entry; friendly substitutions are unlimited. Saving is disabled while the
 match is pending; cancel keeps the previous game/save. Standalone quick play
 continues uninterrupted. Substituted XI/captain choices persist for later
 fixtures and through full-time save/resume.
+
+
+[designed: T66] To watch the next scheduled **friendly**, install the optional
+presentation and original runtime dependencies in the same environment as Qt:
+
+```sh
+python3 -m pip install '.[desktop,watched,match-view]'
+python3 -m goal2.desktop --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --save .cache/desktop.g2save
+```
+
+[designed] Confirm XI, captain and tactics, then choose **Watch original friendly**.
+A separate Pygame window shows the original ordered commentary, minute and score;
+after the original post-match tail, scroll with the mouse wheel or arrow keys to
+see the original full-time board, man of the match and **Raw rating**. Escape or
+the window close button closes it. Closing while the match is running cancels the
+match and preserves the last committed state/save. Closing a completed viewer
+keeps the published result. Save/Resume remain Qt actions; saving during a match
+is unavailable. A second match requires an explicit new Play/Watch action.
+Pending qualifiers, standalone watching, in-play changes, mid-match saves and
+pitch animation are unsupported. Quick management/play remains available without
+pygame-ce, Unicorn or watched resources; Watch reports the missing dependency.
+
+[confirmed: F014/E012 §1 at424d5998076da1e4efc399c2715689ddb44d3e1a]
+Raw ratings are the actual returned original player-record words at +0x12, not
+confidence or a replay prediction. Blank is 0x7FFF; signed values above5000 have
+the substitution encoding10000 removed. This view explicitly displays raw values,
+not the original screen's 1..9 buckets. Commentary and names are decoded at runtime;
+no original text resources or images are bundled here.
+
+[designed] Tested optional dependencies are pygame-ce2.5.8 (SDL2.32.10),
+Unicorn2.1.4 and PySide6 6.12.0 on Linux/WSL. The viewer receives bounded private
+JSON presentation records, never game state/Memory or engine input. Qt polls the
+T65 worker and owns the single validated result publication. Viewer startup has
+a10-second bound; cancellation terminates then kills/reaps only its owned engine
+and viewer, each with half-second waits. Native Windows packaging is untested.
+See [T66 evidence](evidence/T66/README.md) for tested display modes and controls.
+
+```sh
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m unittest goal2.tests.test_pygame_match_view -v
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/watched.py
+```
+
+[designed] For validation, set TMPDIR to the checkout's physical `.cache/tmp` and
+stage the verified fixtures described by the T66 evidence; neither command fetches
+or commits original assets. A normal desktop launch should use its native SDL/Qt
+display drivers, not the headless variables above.

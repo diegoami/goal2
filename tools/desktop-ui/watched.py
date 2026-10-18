@@ -79,7 +79,22 @@ def main():
                 QTest.mouseClick(w.resume,Qt.MouseButton.LeftButton);app.processEvents()
                 assert m.state==control.state,'Qt resume lost completed original continuation'
                 assert save.read_bytes()==saved
-                w.watched.close_viewer();w.poll_watched();assert viewer.poll() is not None
+                if round_number==0:
+                    # [designed] An old completed viewer cannot release a newer quick job's lock.
+                    from goal2.desktop.jobs import QuickJobs
+                    quick=QuickJobs(m,command=[sys.executable,'-c','import time;time.sleep(60)'])
+                    quick.start();w.set_busy(True);other=quick.process
+                    try:
+                        w.watched.cancel();w.poll_watched()
+                        assert m.match_pending and not w.save.isEnabled() and not w.confirm.isEnabled()
+                        assert other.poll() is None and quick.busy
+                        try:m.save(save)
+                        except ValueError:pass
+                        else:raise AssertionError('old viewer close permitted mid-match save')
+                        assert m.state==control.state and save.read_bytes()==saved
+                    finally:quick.cancel();w.set_busy(False)
+                else:w.watched.close_viewer();w.poll_watched()
+                assert viewer.poll() is not None
                 receipts.append({'round':round_number+1,'fixture':outcome.result['index'],'events':len(events),
                     'score':outcome.result['score'],'heartbeats':len(beats),'digest':display.digest(),
                     'seeds':list(outcome.seeds),'state_memory_rng_history_equal':True})

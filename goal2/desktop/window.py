@@ -209,6 +209,7 @@ class ManagementWindow(QMainWindow):
         self.action(lambda:self.model.confirm(self.selected_ids(),self.captain.currentData(),bits),'Management confirmed')
 
     def set_busy(self,busy):
+        busy=bool(busy or getattr(self.model,'match_pending',False))
         # [designed: T70] Prevent conflicting edits while keeping the UI responsive.
         for widget in (self.country,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
         active=not busy and self.preview is None

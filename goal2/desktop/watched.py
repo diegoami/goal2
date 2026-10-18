@@ -23,6 +23,7 @@ class WatchedController:
         self.token = None
         self.display = None
         self.last_status = None
+        self._pending_owned = False
 
     @property
     def busy(self):
@@ -60,6 +61,7 @@ class WatchedController:
                 stdout=subprocess.DEVNULL, stderr=self.errors)
             self.engine_token = self.engine.start(Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1])), **options)
             self.model.match_pending = True
+            self._pending_owned = True
         except Exception:
             self.close_viewer()
             raise
@@ -112,6 +114,7 @@ class WatchedController:
                     self.send('event', asdict(event))
                 if not self.engine.busy:
                     self.model.match_pending = False
+                    self._pending_owned = False
                     self.send('complete', completion(self.engine.outcome,self.model.goaldat.player_names))
                     return True
             return False
@@ -133,7 +136,9 @@ class WatchedController:
     def cancel(self):
         if self.engine.busy:
             self.engine.cancel(self.engine_token)
-        self.model.match_pending = False
+        if self._pending_owned:
+            self.model.match_pending = False
+            self._pending_owned = False
         self.close_viewer()
 
     def close(self):

@@ -63,6 +63,70 @@ class PresentationTests(unittest.TestCase):
             self.assertTrue(any(event.type==pygame.QUIT for event in pygame.event.get()))
         finally:pygame.quit()
 
+    def test_real_framebuffer_matches_original_text_projection(self):
+        import pygame
+        from goal2.desktop.pygame_viewer import render
+        pygame.init()
+        try:
+            screen=pygame.display.set_mode((1000,720));font=pygame.font.Font(None,24)
+            display=Display('owned');display.accept(['owned',0,'start',['Denmark','Germany']])
+            display.accept(['owned',1,'event',{'kind':'commentary','minute':17,'score':[2,1],'data':{'text':'Actual original commentary'}}])
+            render(screen,font,display)
+            expected=pygame.Surface((1000,720));expected.fill((18,28,37))
+            # [designed] Independent expected strings visit score, countries, minute and commentary pixels.
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','17′   2 — 1','17′ Actual original commentary']):
+                expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
+            self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'SDL rendered text differs')
+            display.accept(['owned',2,'event',{'kind':'end','minute':90,'score':[2,1],'data':{}}])
+            display.accept(['owned',3,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},
+                'ratings':[[{'name':'A','raw':55}],[{'name':'B','raw':None}]],'man_of_the_match':'A'}])
+            render(screen,font,display)
+            expected.fill((18,28,37))
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','90′   2 — 1','17′ Actual original commentary',
+                'Original full-time board','Man of the match: A','corners: 3 — 4','Original bars: [[1, 2], [3, 4]]',
+                'Denmark — Raw rating','A: 55','Germany — Raw rating','B: blank']):
+                expected.blit(font.render(line,True,(232,239,229)),(20,20+n*25))
+            self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'SDL board/raw rating pixels differ')
+        finally:pygame.quit()
+
+    def test_qt_heartbeat_blocked_tail_and_actual_viewer_quit(self):
+        from PySide6.QtCore import QTimer
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.window import ManagementWindow
+        from goal2.tests.test_watched_jobs import CONTROLLED
+        app=QApplication.instance() or QApplication([])
+        with tempfile.TemporaryDirectory() as folder:
+            m=model(Path(folder)/'save');w=ManagementWindow(m);w.show();app.processEvents()
+            w.watched.engine.command=[sys.executable,'-c',CONTROLLED,'blocked']
+            w.confirm_draft()
+            before=copy.deepcopy(m.state);beats=[];timer=QTimer();timer.setInterval(2);timer.timeout.connect(lambda:beats.append(1));timer.start()
+            try:
+                w.start_watched()
+                pump(lambda:any(e['kind']=='full_time' for e in w.watched.display.events),app=app)
+                count=len(beats)
+                pump(lambda:len(beats)>count+12,app=app)
+                self.assertTrue(w.watched.busy);self.assertIsNone(w.watched.display.result)
+                self.assertEqual(m.state,before);self.assertFalse(w.save.isEnabled())
+                # [designed] Actual SDL QUIT goes through the child loop, not a fabricated close acknowledgement.
+                w.cancel_match()
+                script="""import sys,pygame
+from goal2.desktop import pygame_viewer
+original=pygame.event.get
+count=0
+def events():
+ global count
+ count+=1
+ return original()+([pygame.event.Event(pygame.QUIT)] if count==10 else [])
+pygame.event.get=events
+sys.exit(pygame_viewer.main())
+"""
+                w.watched.viewer_command=[sys.executable,'-c',script]
+                w.start_watched();viewer=w.watched.process;engine=w.watched.engine.process
+                pump(lambda:w.watched.process is None,app=app)
+                self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll())
+                self.assertEqual(m.state,before);self.assertFalse(m.match_pending)
+            finally:timer.stop();w.close();w.deleteLater();app.processEvents()
+
     def test_optional_dependency_and_qualifier_boundary(self):
         with tempfile.TemporaryDirectory() as folder:
             m=model(Path(folder)/'save');c=WatchedController(m);before=copy.deepcopy(m.state)
@@ -91,7 +155,10 @@ class PresentationTests(unittest.TestCase):
                 def seen():c.poll();return c.last_status and c.display.events
                 pump(seen)
                 with self.assertRaisesRegex(ValueError,'already running'):c.start()
-                with self.assertRaisesRegex(ValueError,'already running'):QuickJobs(m).start()
+                quick=QuickJobs(m)
+                try:
+                    with self.assertRaisesRegex(ValueError,'already running'):quick.start()
+                finally:quick.cancel()
                 with self.assertRaisesRegex(ValueError,'Saving during'):m.save(m.save_path)
                 self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
                 started=time.monotonic();c.cancel();c.cancel()
