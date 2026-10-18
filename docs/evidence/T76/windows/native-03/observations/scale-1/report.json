@@ -1,0 +1,1803 @@
+{
+  "tag": "[designed: T76]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "qt": "6.12.0",
+  "qpa": "windows",
+  "requested_scale": "1",
+  "sources": {
+    "goal2\\desktop\\__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2\\desktop\\__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2\\desktop\\competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2\\desktop\\competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2\\desktop\\country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2\\desktop\\fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2\\desktop\\jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2\\desktop\\match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2\\desktop\\model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2\\desktop\\overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2\\desktop\\pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2\\desktop\\pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2\\desktop\\pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2\\desktop\\save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2\\desktop\\squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2\\desktop\\standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2\\desktop\\style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2\\desktop\\watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2\\desktop\\window.py": "d1f6c3e01866321ccb2f02899e5239bd0f4e4773c2fedcc69d1f5dc8ca92582f",
+    "goal2\\desktop\\worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "e34dde4487d7967efcca4b70a0d2976e3481df16fa80fc9128a6d612bc41e9cb",
+  "dispatcher_sha256": "74ef04a32f111613d379706160abd9ee1994880b50079f2162bf21afde9ddf54",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "steps": [
+    "Full IDs250\u2013260, captain260, all8bits; private events/save; Confirm/Discard; invalid10/12/captain; unavailable starter/removal/reserve; navigation/preview return",
+    "Real pending halftime, captain2561 private substitution/no re-entry, disabled management and cancellation without publication"
+  ],
+  "captures": [
+    {
+      "path": "initial.png",
+      "sha256": "5729576e7da01b8d5d457624d8da53e81498ffb0267dae0de71c8ca13f2b6447",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "pageHeading"
+    },
+    {
+      "path": "dirty-full-id-detail.png",
+      "sha256": "1ab4f6ebc9e286156c7d7c6d65bbd270cbb699bb62019e9369367f00be828bf3",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 1215,
+      "focus": "tactic8"
+    },
+    {
+      "path": "confirmed-grouped.png",
+      "sha256": "cfd56de56ff35555683ca52e3ed2c76a6085b6cc39b01effa8270eebec39f89f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-10.png",
+      "sha256": "5f4e07447064961ad4c188b7d498014ecb99370a3f5655c7ff8ef4de6a7eb17e",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-12.png",
+      "sha256": "4e0bf0e187701c6942ead077488d7414075298b7169d81b790c11694a02b5392",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "unavailable-player-detail.png",
+      "sha256": "15c2cb47fe76de1f96610bfc7f4ba9dd3b664f96ab8be0f1e0057da9f4dfbf80",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-focused-confirm.png",
+      "sha256": "485472096dc8c561441c714f3b15f83912cabb02ecaad40d4e2f327dc154ed26",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-detail-focused-confirm.png",
+      "sha256": "da0dddf64e62804d44d14d7bdd60bd646b180ae29fafbaa007f8df5075166305",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 547,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-tactics-focused-confirm.png",
+      "sha256": "5aec32c96e35416a688730d3d4a6d4ca729d09b8e7eefc7a3771b5cb9829db43",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 1095,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-1-names.png",
+      "sha256": "046df58e1fb90064e9d4d74308d9643adf47bf8e4d7ea7a1f5bcc5da1fba3a09",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-1-values.png",
+      "sha256": "046df58e1fb90064e9d4d74308d9643adf47bf8e4d7ea7a1f5bcc5da1fba3a09",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-5-names.png",
+      "sha256": "43c0dc72d9d7df42fe04cef067cb26c463cd87edc7ebfe6138a9d64063cabaf8",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-5-values.png",
+      "sha256": "43c0dc72d9d7df42fe04cef067cb26c463cd87edc7ebfe6138a9d64063cabaf8",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-9-names.png",
+      "sha256": "6255668b9ca1920d73de6712f45cfe86d74b6f964d5f1aaea4ea580e1fe27dd7",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-9-values.png",
+      "sha256": "6255668b9ca1920d73de6712f45cfe86d74b6f964d5f1aaea4ea580e1fe27dd7",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-13-names.png",
+      "sha256": "127d572cd3356f0b279b0ff7f56e80cdda15b675c75bf62b4cca29cf8b2f5bd5",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-13-values.png",
+      "sha256": "127d572cd3356f0b279b0ff7f56e80cdda15b675c75bf62b4cca29cf8b2f5bd5",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-17-names.png",
+      "sha256": "0f36d7154b92c37c7ae71994073c9071b53c3ac9fc2171502e55b1528479b526",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-17-values.png",
+      "sha256": "0f36d7154b92c37c7ae71994073c9071b53c3ac9fc2171502e55b1528479b526",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-20-names.png",
+      "sha256": "fe5a432e8b460d20b0ed0017d6b64b70f340d5e8a51282e8b783195fe362b706",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-20-values.png",
+      "sha256": "fe5a432e8b460d20b0ed0017d6b64b70f340d5e8a51282e8b783195fe362b706",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-selected-detail-segment-0.png",
+      "sha256": "5273a8521c339a7e2c0fd606835be4827aa76ab9ec9db3babf9086e7df01f9f5",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 379,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-grouped-xi-segment-0.png",
+      "sha256": "10e804ca4345303dbbf8bc73727e9b45674be073b1d9e62ddebd682f837c90da",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 509,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-bench-segment-0.png",
+      "sha256": "ed69cf94a30353546dc87ceb251e15558342ce0b52f2c3a9ef68a8716cac666f",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 849,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-focused-confirm.png",
+      "sha256": "9b51276c9074045202a22cabb055edc3ac4437e0dcbd808b8468ef003a620c2f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-detail-focused-confirm.png",
+      "sha256": "58e25b5c846130996f28c6e65fe9e5bed4884a44d5bff6cfc928801238528a6d",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 628,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-tactics-focused-confirm.png",
+      "sha256": "fa8663dd91e3e434d25b1051ed50b055449546195adfd835dd295f53ee7f1a06",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 1257,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-1-names.png",
+      "sha256": "ed95bd224dc225e5a11762fdd9340a26a8111a5697790dc6425bb6e98aa163da",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-1-values.png",
+      "sha256": "96aec3735503fe1aea3c5941b71833e99c2f4ac1ecd95fb6e5149679ef2a53d3",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-5-names.png",
+      "sha256": "93b221ca4fe027a2d7c8da1e8231e155682ce511d8085dbe6ea37e5ca15b3dfb",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-5-values.png",
+      "sha256": "1873e9f9b1e918f0d9a657c4fc0f1cd339ebdbd81319fd577c8f092a2640973d",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-9-names.png",
+      "sha256": "1c99cf256b1fd47019e9d88e595decea39a4d29132affbc7f07ba92021cb2cb5",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-9-values.png",
+      "sha256": "5ecd6c49b0102aebfcd8cf23f01b95a7d97d1c298758a7af545e08eb1a7cdd50",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-13-names.png",
+      "sha256": "27f14c39664f37af5861b567015bded3022c2f8c796404a34a4ebf3412aa905f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-13-values.png",
+      "sha256": "955b889bf58072fcf10fa914fb14c3eb083fb3e1122295de74fd67cb31f9ac39",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-17-names.png",
+      "sha256": "58e8b6b3fead9922398564f45a8223c49218439acb210d5d88122d40eb6d9ceb",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-17-values.png",
+      "sha256": "736361b4b56f9a197d1e0ff1bf2cac9eff75b10360b6f96ff514cfe0d0effb77",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-20-names.png",
+      "sha256": "3bb7bed7d23afc9d3a3ef46a0a036771242c115ddacffa0c611e1d5336d0df8c",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-20-values.png",
+      "sha256": "d51c1a047fb8c02f6780d2c53662101bf67e0c80169f6ffecb1eccc37828caac",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-selected-detail-segment-0.png",
+      "sha256": "1600444bebdf58c35500fa22159a151a7653259d9af89bf30af514fda8537d1e",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 379,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-grouped-xi-segment-0.png",
+      "sha256": "f489db381075120a18405d5cb56ee95a8a0c1511e97540c0a403667e4722397e",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 509,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-bench-segment-0.png",
+      "sha256": "b5bb6127f2173d832442ae6c62947250497d7cfef96d797baede46588f18431f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 891,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-focused-confirm.png",
+      "sha256": "ac534144b698a7f3cd6bc8f42a23d28103e6e05a042dd07428075198dc67e45b",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-detail-focused-confirm.png",
+      "sha256": "1f2096cfe09cbb4a931bab20db6f0c6a6d22ac7331147bb320e8935c8b209391",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 679,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-tactics-focused-confirm.png",
+      "sha256": "05cf50ce0cd9f3b96a649f2533613e5569b709cda64f054b465b707d1ace7c8e",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 1358,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-1-names.png",
+      "sha256": "bd882b4e13eb36b1d137c011cb9873df07b8b075e6d1ebd1bf2f269c340f29dd",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-1-values.png",
+      "sha256": "a898460103e0a8ba09174706bad5f84ce209ae3b2bbd3a23c8f55828c1a29418",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-5-names.png",
+      "sha256": "cccde129f8b05bc2a512a838f51d205dc4d0a2f45e7f892232d6dfaeaaaca366",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-5-values.png",
+      "sha256": "831b7626f951c54a0846c308fa0f1576cf5e9971777233d17dd843a67ec7a58f",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-9-names.png",
+      "sha256": "f9393544439e5ba9d636e84a38458a7c2e210fa6741f369c060705143a632043",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-9-values.png",
+      "sha256": "1ebae7a8e60366a61822ebe80f610b31baad848a7a4c4254b007367d17596c0c",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-13-names.png",
+      "sha256": "85f52d8e099da548f2a4aed301f067954acd42bb9bdd70916b44e4e588e7c804",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-13-values.png",
+      "sha256": "857d9175d64206f6c6558f9c56ab97d9c1b149e84d19334f785af373e83a6cf7",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-17-names.png",
+      "sha256": "a86f0e6091e9bf6b28efeb44a990ba7bd94fea7dcdf982d9d8ee8af8aa567256",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-17-values.png",
+      "sha256": "5fc0bb8878694270a60e1fbac88d1a43e1ed461c464e748f983d21acbcd5463b",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-20-names.png",
+      "sha256": "8cf99663abd2d3580e36176647216ae08b0a51227f6ef022aff1d9b6ce359879",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-20-values.png",
+      "sha256": "1d174b0ee45b5dc7cacb4cb4b1aac42889dcd0e0383f16d314f36dbfeb77e0a8",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 135,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-selected-detail-segment-0.png",
+      "sha256": "f7734110b50a8ad5cca4ed7e6e71cb5fb1bde2f42fba6c67564651e64bd4ed77",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 379,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-grouped-xi-segment-0.png",
+      "sha256": "a753ed9f574891800dbc5b79297c40369422fa2c1a6597cc052da5db4ca77027",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 509,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-grouped-xi-segment-241.png",
+      "sha256": "f34ac20674b356c73137840858d4258f95b246a68cbf021e0dc9f8392813c728",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 750,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-bench-segment-0.png",
+      "sha256": "eccb5aa1fb3656c35018c7f8e9d0722ef4d583be02b92b13785e259a45e0b02a",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 912,
+      "focus": "confirm"
+    }
+  ],
+  "ratio": 1.0,
+  "footer_captions": [
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": false,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "discard",
+      "text": "Discard draft",
+      "focused": true,
+      "widget": [
+        100,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        78,
+        40
+      ],
+      "font_advance": 78,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": false,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "button": "confirm",
+      "text": "Confirm management",
+      "focused": true,
+      "widget": [
+        156,
+        46
+      ],
+      "contents": [
+        11,
+        3,
+        134,
+        40
+      ],
+      "font_advance": 134,
+      "font_height": 19,
+      "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0",
+      "ratio": 1.0
+    }
+  ],
+  "roster_coverage": [
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    }
+  ],
+  "reading_coverage": [
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "widget": "selected-detail",
+      "height": 118,
+      "intervals": [
+        [
+          0,
+          118
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "widget": "grouped-xi",
+      "height": 328,
+      "intervals": [
+        [
+          0,
+          328
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "widget": "bench",
+      "height": 244,
+      "intervals": [
+        [
+          0,
+          244
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "widget": "selected-detail",
+      "height": 118,
+      "intervals": [
+        [
+          0,
+          118
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "widget": "grouped-xi",
+      "height": 370,
+      "intervals": [
+        [
+          0,
+          370
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "widget": "bench",
+      "height": 244,
+      "intervals": [
+        [
+          0,
+          244
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "widget": "selected-detail",
+      "height": 118,
+      "intervals": [
+        [
+          0,
+          118
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "widget": "grouped-xi",
+      "height": 391,
+      "intervals": [
+        [
+          0,
+          325
+        ],
+        [
+          225,
+          391
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "widget": "bench",
+      "height": 244,
+      "intervals": [
+        [
+          0,
+          244
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    }
+  ],
+  "cleanup_retry_calls": 2,
+  "result": "PASS",
+  "callback_exceptions": [],
+  "clean_widgets": true,
+  "sources_after": {
+    "goal2\\desktop\\__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2\\desktop\\__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2\\desktop\\competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2\\desktop\\competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2\\desktop\\country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2\\desktop\\fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2\\desktop\\jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2\\desktop\\match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2\\desktop\\model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2\\desktop\\overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2\\desktop\\pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2\\desktop\\pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2\\desktop\\pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2\\desktop\\save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2\\desktop\\squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2\\desktop\\standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2\\desktop\\style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2\\desktop\\watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2\\desktop\\window.py": "d1f6c3e01866321ccb2f02899e5239bd0f4e4773c2fedcc69d1f5dc8ca92582f",
+    "goal2\\desktop\\worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "source_unchanged": true
+}

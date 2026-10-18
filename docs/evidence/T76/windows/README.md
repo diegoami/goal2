@@ -75,3 +75,39 @@ footer border proves feasibility. The scoped source correction and actual captio
 assertions now pass offscreen1x/2x in [caption rework](../caption-rework-01/README.md).
 The later accepted T78 composition and caption correction intentionally change
 source bytes; final native acceptance requires their own frozen checkpoint.
+
+## Native03: composed source and caption acceptance
+
+[confirmed: native03-author-audit.json; native03-main-proof-author-run.log] Main
+ran immutable checkpoint `b3e2c95d8c5e744782d43ece6c840a7bd0a595d9`, containing
+the accepted T78 composition and scoped stable footer borders. The exact
+[host receipt](native-03/host-receipt.json) SHA256 is
+`f8cf9a5c13def6300f0d82075eccdee55b0ba12f270d453b9d6ca44ad3c3b751`;
+its bytes match main's independently retained original. The
+[inventory](native-03/inventory.json) verifies95 entries plus itself.
+
+| Actual process | Environment | Captures | Elapsed | Result |
+| --- | --- | --- | --- | --- |
+| [confirmed] [1x report](native-03/observations/scale-1/report.json) / [complete log](native-03/native-1.log) | Windows11 build10.0.26200; Python3.13.15; Qt6.12.0; ratio1.0 | 61 | 81.766s | PASS |
+| [confirmed] [2x report](native-03/observations/scale-2/report.json) / [complete log](native-03/native-2.log) | Same versions; ratio2.0 | 25 | 50.007s | PASS |
+
+[confirmed: native03-author-audit.json; verify-native03.py] The independent author
+audit verifies all175 sources against source-freeze03, current bytes and frozen
+Git blobs; every artifact/inventory/capture/report/log hash; four protected
+launcher/save/resource hashes unchanged; and native01/02 inventories unchanged.
+Each full log contains exactly one PASS line. Both reports record no callback
+exceptions, two cleanup calls, no owned worker folder after Cancel, clean widget
+teardown and unchanged sources. All20 roster rows/fields and complete overlapping
+selected-detail/XI/bench reading coverage remain required and pass.
+
+[confirmed: native-03/observations/scale-1/report.json; native-03/observations/scale-2/report.json]
+Caption checks record36 measurements at100% and12 at200%: both buttons, focused
+and unfocused, at every required size and three scroll positions. All actual
+QStyle content rectangles contain the caption width and height. At900×640/200%,
+Confirm has136px for135px text and Discard79px for79px, unchanged by focus;
+both contents are40px tall for19px text. This fresh source run establishes the
+caption correction; the earlier runtime-only mock remains feasibility evidence.
+Main also visually inspected the native200% focused footer and selected detail.
+The evidence-only follow-up carries checkpoint source bytes forward explicitly;
+it does not claim Windows executed a later documentation commit. SDL is
+inapplicable to this Qt-only workspace slice.

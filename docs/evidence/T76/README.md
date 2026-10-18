@@ -131,3 +131,11 @@ that separate readability failure; raw native02 outputs remain historical and
 unchanged. Runtime-mock success is feasibility evidence only.
 
 [confirmed: validation-05/README.md] The [composed validation](validation-05/README.md) retains20 passing groups after accepted T78 and the scoped [caption correction](caption-rework-01/README.md). Actual focused/unfocused QStyle content bounds now accompany frame geometry at all supported sizes/scales. [Source freeze03](source-freeze-03.json) pins175 unchanged product/test/tool files for a separate final native attempt. Native02 remains cleanup-only acceptance at its older checkpoint.
+
+[confirmed: windows/native03-author-audit.json] [Native03](windows/README.md)
+passes the composed source at actual Windows100%/200%, including all required
+focused/unfocused caption bounds, strict callback/worker cleanup and complete
+roster/reading coverage. Its immutable checkpoint is
+`b3e2c95d8c5e744782d43ece6c840a7bd0a595d9`; evidence-only later commits preserve
+all175 source bytes. Earlier native failures and cleanup-only results remain
+separately attributed.
