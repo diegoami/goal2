@@ -4,8 +4,7 @@
 from PySide6.QtCore import Qt,QTimer
 from goal2.desktop.jobs import QuickJobs
 from goal2.desktop.competitive import CompetitiveJobs
-from PySide6.QtWidgets import (QCheckBox,QComboBox,QHeaderView,QHBoxLayout,QLabel,
- QLineEdit,QMainWindow,QPushButton,QSplitter,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget)
+from PySide6.QtWidgets import QMainWindow,QTableWidgetItem
 
 # [confirmed: F010] Display order5,6,7,1,2,3,4,8. [designed] Labels5,8.
 TACTICS=((5,'Half pitch / full pitch'),(6,'Sag back to box / stand ground'),(7,'Play safe / offside trap'),

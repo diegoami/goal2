@@ -49,7 +49,7 @@ def shell(args):
     # [designed] Both enabled and disabled reading colors, and the focus boundary, are measured.
     pairs=(('body','text','background',4.5),('panel text','text','panel',4.5),
            ('disabled','secondary','panel',4.5),('table','ink','paper',4.5),
-           ('selected','ink','accent',4.5),('focus','focus','panel',3),('control boundary','divider','panel',3))
+           ('selected','ink','accent',4.5),('focus','focus','panel',3),('control boundary','divider','panel',3),('selected focus','ink','accent',3))
     report['contrast']={}
     for name,foreground,background,minimum in pairs:
         value=contrast(COLORS[foreground],COLORS[background]);assert value>=minimum,(name,value)
@@ -96,10 +96,20 @@ def shell(args):
             dirty=copy.deepcopy(window.draft())
             assert dirty[2]!=model.state.country_tactics,'test did not establish dirty tactics'
             tour()
+            # [designed] The selected cue remains readable under the actual hover selector.
+            navigate(0,'shortcut');button=window.navigation[0]
+            QTest.mouseMove(button,button.rect().center());QTest.qWait(30)
+            pixel=button.grab().toImage().pixelColor(10,button.height()//2).name()
+            assert pixel==COLORS['accent'],'selected hover lost its high-contrast surface'
+            rendered=button.grab().toImage()
+            assert any(rendered.pixelColor(x,y).name()==COLORS['ink'] for x in range(4,rendered.width()-4) for y in range(4,rendered.height()-4)),'selected hover text lost readable ink'
+            report['selected_hover_background']=pixel
             # [designed] Country selector uses native keyboard events; preview navigation retains its saved draft.
             window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Down);app.processEvents()
             assert window.preview is not None and window.active_draft==dirty,'country preview lost active draft'
             preview_country=window.country.currentData();tour()
+            before=snapshot();QTest.keyClick(window,Qt.Key.Key_S,Qt.KeyboardModifier.ControlModifier);app.processEvents()
+            assert snapshot()==before,'Save shortcut mutated a country preview'
             window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Up);app.processEvents()
             assert window.preview is None and window.draft()==dirty,'country return did not restore dirty draft'
             report['preview_country']=preview_country
@@ -107,6 +117,8 @@ def shell(args):
             model.match_pending=True;window.set_busy(True);tour()
             assert window.stop.isVisible() and window.stop.isEnabled(),'busy Cancel is unreachable'
             assert not window.save.isEnabled() and not window.resume.isEnabled(),'busy save controls enabled'
+            before=snapshot();QTest.keyClick(window,Qt.Key.Key_S,Qt.KeyboardModifier.ControlModifier);app.processEvents()
+            assert snapshot()==before,'Save shortcut mutated pending ownership'
             model.match_pending=False;window.set_busy(False)
             actions=(window.new,window.friendly,window.table,window.captain,window.confirm,window.cancel,
                      *(box for _,box in window.tactics),window.search,window.position,window.reserves,window.exchange,
@@ -123,8 +135,14 @@ def shell(args):
                     for widget in page_actions:
                         page.ensureWidgetVisible(widget,0,0);app.processEvents()
                         origin=widget.mapTo(page.viewport(),QPoint(0,0))
+                        # [designed] Qt may reveal a table's focused cell only; use real scroll keys to expose its full control.
+                        for _ in range(100):
+                            if origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height():break
+                            key=Qt.Key.Key_Up if origin.y()<0 else Qt.Key.Key_Down
+                            QTest.keyClick(page.verticalScrollBar(),key);app.processEvents()
+                            origin=widget.mapTo(page.viewport(),QPoint(0,0))
                         assert origin.x()>=0 and origin.x()+widget.width()<=page.viewport().width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
-                        assert origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height(),'action unreachable vertically'
+                        assert origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height(),f'action unreachable vertically: {widget.objectName() or widget.accessibleName()} y={origin.y()} height={widget.height()} viewport={page.viewport().height()}'
                         assert widget.isVisible(),'action hidden'
                         if widget.isEnabled() and isinstance(widget,(QAbstractButton,QComboBox,QLineEdit)):
                             # Native Tab traversal from heading must reach each interactive action.

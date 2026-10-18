@@ -1,0 +1,20 @@
+START units
+END units 0
+START management
+END management 0
+START launch
+END launch 0
+START worker
+END worker 0
+START campaign-friendlies
+END campaign-friendlies 0
+START campaign-pool
+END campaign-pool 0
+START campaign-halftime
+END campaign-halftime 0
+START country-selection
+END country-selection 0
+START tactics-labels
+END tactics-labels 0
+START standings
+END standings 0

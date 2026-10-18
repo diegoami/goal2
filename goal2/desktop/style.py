@@ -15,6 +15,8 @@ def apply_style(window):
     QPushButton,QComboBox,QLineEdit {{background:{c['panel']};border:1px solid {c['divider']};border-radius:4px;padding:0px 8px;}}
     QPushButton:checked {{background:{c['accent']};color:{c['ink']};font-weight:600;}}
     QPushButton:hover {{background:{c['raised']};}}
+    QPushButton:checked:hover {{background:{c['accent']};color:{c['ink']};}}
+    QPushButton:checked:focus {{border:3px solid {c['ink']};}}
     QPushButton:disabled,QComboBox:disabled,QLineEdit:disabled,QCheckBox:disabled {{color:{c['secondary']};background:{c['panel']};}}
     QPushButton:focus,QComboBox:focus,QLineEdit:focus,QCheckBox:focus,QTableWidget:focus,QLabel#pageHeading:focus {{border:3px solid {c['focus']};}}
     QTableWidget {{font-size:14px;background:{c['paper']};color:{c['ink']};gridline-color:{c['divider']};selection-background-color:{c['accent']};selection-color:{c['ink']};}}

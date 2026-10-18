@@ -1,0 +1,12 @@
+[
+  {
+    "proof": "prove-management.py",
+    "original_sha256": "8abdddae83f98870990939b3a05eb7583b38a099cc0ffb5b0986939b7b3f05d7",
+    "compatibility_source_sha256": "8abdddae83f98870990939b3a05eb7583b38a099cc0ffb5b0986939b7b3f05d7",
+    "interpreter": "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "returncode": 0,
+    "seconds": 9.165,
+    "all_source_bytes_restored": true,
+    "adaptation": "interpreter path only; friendlies old busy site updated to accepted expanded busy/match_pending guard; assertion oracles unchanged"
+  }
+]

@@ -8,6 +8,8 @@ def reveal(widget):
     if not hasattr(window,'pages'):return
     for index,page in enumerate(window.pages):
         if page.isAncestorOf(widget):
+            window.activateWindow();QApplication.processEvents()
             QTest.keyClick(window,Qt.Key.Key_1+index,Qt.KeyboardModifier.ControlModifier)
+            assert window.page_stack.currentIndex()==index,'retained proof could not reveal page'
             page.ensureWidgetVisible(widget);QApplication.processEvents()
             return
