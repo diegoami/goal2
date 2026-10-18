@@ -35,3 +35,5 @@
 ## Parallel ownership
 
 [designed] T77 owns pool_page.py and pool_scenario.py; window changes are pool selection connections, refresh_pool/exchange selection/context presentation calls. T79 owns pygame_viewer.py/match_page.py/fixtures-page play-half construction and minimal match presentation calls. Neither changes shared style.py or the other's helpers. Add independent dispatcher choices/routing only. Ordinary merge accepted main before final freeze; resolve shared additive hooks without dropping the other task, then repeat relevant combined checks. Main alone launches the selected MiniMax M3 reviewer and exact-head squash merge.
+
+[designed: main retained-tool disposition] Overview baseline fixture must also pin/save/restore pool_page.py together with its historical ShellPage at4f366a5. Main read complete retained02 AttributeError failure: new pool page requires set_footer absent on historical page class. This bounded fixture pairing preserves the exact missing-overview assertion and all subsequent active-binding checks; no failed setup may count as a behavioral negative.
