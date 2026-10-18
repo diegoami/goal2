@@ -1,0 +1,2 @@
+usage: country-selection.py [-h] --template TEMPLATE --data DATA
+country-selection.py: error: the following arguments are required: --template, --data

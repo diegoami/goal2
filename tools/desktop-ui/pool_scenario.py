@@ -105,6 +105,11 @@ def scenario(args):
         outgoing=next(x for x in campaign_pool.view(m.state,m.goaldat)['squad'] if x['id']==261)
         assert all(str(outgoing[k]) in w.exchange_summary.text() for k in ('id','name','ability','energy','confidence','position_group')),'outgoing summary missing raw field'
         search(target['name'].swapcase());position(target['position']);rows();reserve(2561);capture('filtered')
+        other=next(row for row in campaign_pool.view(m.state,m.goaldat)['reserves'] if row['id']!=2561 and row['name'].casefold() not in target['name'].casefold() and row['position']==target['position'])
+        search(other['name']);rows();assert w.reserves.rowCount()>0 and all(int(w.reserves.item(i,0).text())!=2561 for i in range(w.reserves.rowCount())),'hidden-selection fixture did not retain other visible rows'
+        assert w.reserves.currentRow()==-1 and 'No incoming' in w.pool_detail.text(),'hidden incoming selection not cleared'
+        before=copy.deepcopy(m.state);w.exchange_selected();stable(before,'hidden selection with other visible rows');assert 'Select one' in w.status.text(),'hidden selection exchanged another visible identity'
+        capture('hidden-selection-other-visible')
         search('no reserve matches this query');rows();assert w.reserves.currentRow()==-1 and 'No incoming' in w.pool_detail.text(),'hidden incoming selection not cleared'
         capture('empty-filter')
         before=copy.deepcopy(m.state);w.exchange_selected();stable(before,'missing selection');assert 'Select one' in w.status.text(),'existing no-selection callback error absent'

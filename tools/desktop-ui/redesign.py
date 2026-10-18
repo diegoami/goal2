@@ -447,7 +447,8 @@ def overview_negative_controls(args):
     evidence=Path(args.evidence_dir)
     evidence.mkdir(parents=True,exist_ok=False)
     paths=[ROOT/name for name in ('goal2/desktop/pages.py','goal2/desktop/overview_page.py',
-                                 'goal2/desktop/window.py','goal2/desktop/style.py','goal2/desktop/squad_page.py')]
+                                 'goal2/desktop/window.py','goal2/desktop/style.py','goal2/desktop/squad_page.py',
+                                 'goal2/desktop/pool_page.py')]
     saved={path:path.read_bytes() for path in paths}
     receipt={'tag':'[designed: T75]','sources_before':{str(p.relative_to(ROOT)):digest(p) for p in paths},'cases':[]}
     env={**os.environ,'QT_QPA_PLATFORM':'offscreen','PYTHONDONTWRITEBYTECODE':'1','QT_SCALE_FACTOR':'1'}

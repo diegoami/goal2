@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""[designed: T71] Prove desktop exchange and identities with restored mutations."""
+"""[designed: T71/T77] Prove desktop exchange and identities with restored mutations."""
 from pathlib import Path
 import os
 import subprocess
