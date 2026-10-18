@@ -1,0 +1,6 @@
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T76-main-preflight.py", line 63, in <module>
+    assert w.selected_ids()==wanted,'full integer player IDs were truncated'
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: full integer player IDs were truncated

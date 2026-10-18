@@ -1,0 +1,23 @@
+[
+  {
+    "mode": "mock",
+    "scale": "2",
+    "exit": 0,
+    "seconds": 19.0,
+    "log_sha256": "fafd953672f3c53a0de49680626916a328b4e30d6a31a4162bbb801780fa11b6"
+  },
+  {
+    "mode": "truncated-id",
+    "scale": "1",
+    "exit": 1,
+    "seconds": 8.445,
+    "log_sha256": "f2932380d7ff52a4da776e0d3107324c9ab82abf9bcc7c57404b53c15d24eae7"
+  },
+  {
+    "mode": "eager-publish",
+    "scale": "1",
+    "exit": 1,
+    "seconds": 8.681,
+    "log_sha256": "cb3e78be884ab546e5ab7abc5ad3f20f414c98b5be78e6ccf4e3cb7f224facdd"
+  }
+]
