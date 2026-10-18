@@ -60,3 +60,32 @@ hashes. A native runtime mock establishes feasibility only. Freeze and push the
 product/scenario source before requesting this run; later evidence-only commits
 carry explicit byte-identity validation rather than a self-referential head
 claim. SDL is not part of this page; do not start a Pygame view for screenshots.
+
+## Blocking Windows cleanup regression (#233)
+
+[designed: main; derived: actual Windows validation and isolated native reproduction]
+Both original T76 native1x/2x attempts logged an uncaught Qt-slot WinError32 during
+QuickJobs cancellation despite exit0/reportPASS. They are failure evidence, not
+accepted clean cancellation. Pure-stdlib owned-process reproduction proved the
+venv launcher wait returned before its actual child finished teardown: retained
+child handle unsignaled and owned stderr delete failed at1.4ms; at26.7ms the
+handle was signaled and delete succeeded. No persistent orphan was observed.
+
+[designed] A one-file mechanical production fix in jobs.py may retry only Windows
+PermissionError.winerror32 from its own TemporaryDirectory cleanup, with a strict
+bounded budget no greater than0.5s and unchanged existing cancellation bounds.
+Do not suppress errors or change worker interpreter/dependencies. Keep folder
+ownership until successful cleanup; permanent sharing violations and all other
+errors propagate. Retrying pending cleanup must remain possible after failure.
+No model/state/save/engine/publication changes are authorized. Supporting tests
+in test_desktop_quick_jobs.py and the owned squad scenario must prove transient
+sharing success, bounded permanent failure, no nonsharing retry/swallow, retained
+ownership/retry and encoded state/save preservation.
+
+[designed] The real squad scenario captures uncaught Qt callback exceptions and
+asserts no owned worker folder remains after Cancel. Add fail-before/pass-after
+proof against the actual old cleanup behavior; a setup failure cannot count.
+Native1x/2x must rerun against a newly frozen pushed checkpoint with no uncaught
+exceptions and all original invariants. Main must veto raw tracebacks even if
+process exits0. Preserve original native-01 byte-for-byte and label its cleanup
+failure honestly; new success evidence uses a separate attempt directory.
