@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import subprocess
 import sys
 import tempfile
 import time
@@ -247,6 +248,18 @@ class CompetitiveJobsTests(unittest.TestCase):
                 if action=='ignore' and os.name=='posix':self.assertEqual(process.returncode,-signal.SIGKILL)
                 self.unchanged();self.jobs.close()
 
+    def test_cancel_leaves_an_unrelated_child_alive(self):
+        unrelated=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],
+                                   stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        try:
+            token=self.bridge('blocked');self.until(token,lambda seen:bool(seen))
+            owned=self.jobs.process;self.jobs.cancel(token)
+            self.assertIsNotNone(owned.poll())
+            self.assertIsNone(unrelated.poll(),'competitive cancellation reaped an unrelated child')
+            self.unchanged()
+        finally:
+            unrelated.terminate();unrelated.wait(timeout=2)
+
     def test_qt_heartbeat_while_worker_full_time_tail_is_blocked(self):
         from PySide6.QtCore import QCoreApplication,QTimer
         app=QCoreApplication.instance() or QCoreApplication([])
@@ -272,7 +285,7 @@ class CompetitiveJobsTests(unittest.TestCase):
         for state in (replace(self.owner.state,campaign=None),):
             with self.assertRaisesRegex(ValueError,'No supported'):pending_fixture(state)
         from dataclasses import replace as dc_replace
-        for fid,kind in (('original:042',200),('42',200),('original:42',1)):
+        for fid,kind in (('original:042',200),('42',200),('original:42',1),('original:42',4)):
             bad=copy.deepcopy(self.owner.state)
             bad.campaign.fixtures=(dc_replace(bad.campaign.fixtures[0],fixture_id=fid,kind=kind),)
             with self.assertRaises(ValueError):pending_fixture(bad)
