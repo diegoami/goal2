@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T77-retained-filter-control.py", line 13, in <module>
+    pool(ROOT/'.cache/e010-r0008-halftime.sav',ROOT/'.cache/GOAL.DAT')
+  File "/home/diego/projects/goal2-work/T77-football-ui/tools/desktop-ui/acceptance.py", line 205, in pool
+    assert model.state==before and window.reserves.rowCount()>0
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

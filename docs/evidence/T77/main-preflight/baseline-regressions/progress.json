@@ -1,0 +1,27 @@
+{
+  "head": "e337d56172373e0786b571c9b379e86ebcf63921",
+  "task": "T77",
+  "rows": [
+    {
+      "name": "units",
+      "exit": 0,
+      "seconds": 7.045,
+      "log": "/home/diego/projects/goal2-work/T77-football-ui/.cache/main-baseline-01/units.log",
+      "sha256": "9941443fce30513b630faa9bbbbbf882307cbb8794c5cabb726582e587e82f6d"
+    },
+    {
+      "name": "pool-proof",
+      "exit": 0,
+      "seconds": 5.341,
+      "log": "/home/diego/projects/goal2-work/T77-football-ui/.cache/main-baseline-01/pool-proof.log",
+      "sha256": "556a0cd4c034c279fa15fe4765fdbdb542f5887956f33df8417c3dc39f262298"
+    },
+    {
+      "name": "pool-acceptance",
+      "exit": 0,
+      "seconds": 10.609,
+      "log": "/home/diego/projects/goal2-work/T77-football-ui/.cache/main-baseline-01/pool-acceptance.log",
+      "sha256": "af93206f59b6ae3c47f0926a85a3b350d52f448084ce010b034303617cc0d8b6"
+    }
+  ]
+}

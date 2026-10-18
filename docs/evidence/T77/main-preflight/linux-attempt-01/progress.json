@@ -1,0 +1,17 @@
+[
+  {
+    "mode": "baseline",
+    "exit": 1,
+    "log_sha256": "f05fdecadee90093f416226b3e4d39b3b910eca2fb883e46eb4dc50bd9f2d0a5"
+  },
+  {
+    "mode": "mock",
+    "exit": 1,
+    "log_sha256": "6921fcb20a6a5f2cadb11110997ea9423a7ce16aa22c467357671782bbe6dab8"
+  },
+  {
+    "mode": "filter-mutates",
+    "exit": 1,
+    "log_sha256": "6921fcb20a6a5f2cadb11110997ea9423a7ce16aa22c467357671782bbe6dab8"
+  }
+]

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/.cache/T77-main-planning-probe.py", line 57, in <module>
+    assert m.state==before_state,'search/filter changed complete state or RNG'
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: search/filter changed complete state or RNG

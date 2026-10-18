@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/.cache/T77-main-planning-probe.py", line 72, in <module>
+    assert m.state==expected,'exchange differs from independent campaign_pool exchange';assert m.state.players==records and seeds==(m.state.rng_seed_7b62,m.state.rng_seed_8336),'records/RNG changed'
+           ^^^^^^^^^^^^^^^^^
+AssertionError: exchange differs from independent campaign_pool exchange

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T77-football-ui/.cache/T77-main-planning-probe.py", line 49, in <module>
+    assert w.findChild(QLabel,'poolDetail') is not None and w.findChild(QLabel,'exchangeSummary') is not None,'focused incoming detail/exchange summary absent'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: focused incoming detail/exchange summary absent

@@ -1,0 +1,5 @@
+{
+  "exit": 1,
+  "expected": "retained campaign-pool assert model.state==before rejects filter RNG mutation",
+  "sha256": "8bd5f14fd0a8013ef38066335d0c3a278c7cfd3274394b700082522077d21a8a"
+}
