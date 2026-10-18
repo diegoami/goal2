@@ -1,0 +1,16 @@
+{
+  "originalSHA256": "44ed5f4ef6b6c3bffd39b27cf25d368df696dc28d8b3c19ecb27c645583d5195",
+  "originalPreserved": "/home/diego/projects/goal2-work/186-review-claude-20261018-r2/.cache/claude-review-n0Mfwi/stdout.jsonl",
+  "reviewedHead": "c2571712bcfbd99d71d635b731952e936f6a75f5",
+  "actualExit": 0,
+  "actualDurationMs": 131859,
+  "afterParserFixRejection": "Claude review refused: required tool denied/failed",
+  "accepted": false,
+  "modelTrialConsumed": true,
+  "coverage": {
+    "exactStandaloneHead": false,
+    "inventoryCoverLines": 0
+  },
+  "unplannedDenial": "node --test tests/claude_review.test.mjs && git diff --check; echo EXIT=$?",
+  "note": "Original transcript replay only; no new model generation. Complete final falsely claims no denials and all exact commands. Missing scope and command coverage remain independent rejection guards."
+}

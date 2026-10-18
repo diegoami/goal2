@@ -2,6 +2,27 @@
 import { CLAUDE, TOOLS, demand } from './claude-policy.mjs';
 import { accountDoneWhen } from './chain.mjs';
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+// [confirmed: native2.1.292 source offsets 204884737, 219215522, 219222149;
+// measurements/T73/native-progress-rework.json] Accept the observed advisory subset only.
+const fields = (o, allowed) => o && typeof o === 'object' && !Array.isArray(o) && Object.keys(o).every(k => allowed.includes(k));
+const nonnegative = n => Number.isFinite(n) && n >= 0;
+const epoch = n => Number.isSafeInteger(n) && n >= 0;
+function verifyAdvisory(f, calls, outcomes) {
+  demand(typeof f.uuid === 'string' && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(f.uuid), 'advisory frame identity');
+  if (f.type === 'rate_limit_event') {
+    const r = f.rate_limit_info; const status = s => ['allowed', 'allowed_warning', 'rejected'].includes(s);
+    demand(fields(f, ['type', 'rate_limit_info', 'uuid', 'session_id']) && fields(r, ['status', 'resetsAt', 'rateLimitType', 'overageStatus', 'overageResetsAt', 'isUsingOverage', 'unifiedWindows', 'utilization']) && status(r.status)
+      && (r.resetsAt === undefined || epoch(r.resetsAt)) && (r.overageResetsAt === undefined || epoch(r.overageResetsAt))
+      && (r.rateLimitType === undefined || ['five_hour', 'seven_day', 'seven_day_opus', 'seven_day_sonnet', 'seven_day_overage_included', 'overage'].includes(r.rateLimitType))
+      && (r.overageStatus === undefined || status(r.overageStatus)) && (r.isUsingOverage === undefined || typeof r.isUsingOverage === 'boolean')
+      && (r.utilization === undefined || nonnegative(r.utilization))
+      && (r.unifiedWindows === undefined || (fields(r.unifiedWindows, ['five_hour', 'seven_day', 'seven_day_overage_included']) && Object.values(r.unifiedWindows).every(w => fields(w, ['utilization', 'resetsAt']) && nonnegative(w.utilization) && epoch(w.resetsAt)))), 'rate-limit shape');
+  } else {
+    demand(fields(f, ['type', 'tool_use_id', 'tool_name', 'parent_tool_use_id', 'elapsed_time_seconds', 'heartbeat', 'session_id', 'uuid']) && f.heartbeat === true && nonnegative(f.elapsed_time_seconds), 'heartbeat shape');
+    const call = calls.get(f.parent_tool_use_id);
+    demand(call && !outcomes.has(call.id) && call.name === f.tool_name && typeof f.tool_use_id === 'string' && f.tool_use_id.startsWith(call.id + '-heartbeat-') && /^\d+$/.test(f.tool_use_id.slice((call.id + '-heartbeat-').length)), 'heartbeat identity');
+  }
+}
 export function verifyInit(frame, expected) {
   demand(frame?.type === 'system' && frame.subtype === 'init', 'missing init');
   demand(frame.session_id === expected.sessionID && frame.cwd === expected.cwd && frame.model === CLAUDE.model && frame.claude_code_version === CLAUDE.version, 'init identity');
@@ -30,7 +51,8 @@ export function parseClaude(text, expected) {
         // [confirmed: T73 native loopback receipt] Successful Read results omit optional is_error.
         outcomes.set(c.tool_use_id, { ...c, is_error: c.is_error ?? false, interrupted: f.tool_use_result?.interrupted === true });
       }
-    } else demand(f.type === 'system' || f.type === 'result', 'unknown native frame');
+    } else if (f.type === 'rate_limit_event' || f.type === 'tool_progress') verifyAdvisory(f, calls, outcomes);
+    else demand(f.type === 'system' || f.type === 'result', 'unknown native frame');
   }
   demand(calls.size === outcomes.size, 'unfinished tool calls');
   const denied = final.permission_denials; demand(Array.isArray(denied), 'missing denials');

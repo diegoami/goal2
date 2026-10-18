@@ -124,7 +124,7 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 8cacda74b4c6a5e5d1daef705aa6983adbad9beed4acb574c96cf9b801a4c223  .github/workflows/ci.yml
 
-9dc11b91bff2eed70d3eaa9b85325eccab90a2b5b5edc93d7c0a564918d7024b  docs/environment.md
+c6ef7bf2cbb3a5128f777d5ec95fb5a3c989cde13aca73ecddc7b782b50d4ae0  docs/environment.md
 
 256079ae4082268b5408cb4a937997834db4fe466c2265bd10c1d5b8dc3f757c  docs/process.md
 
@@ -142,10 +142,10 @@ local tools/harness/lib/claude-policy.mjs  (T73 optional direct Claude review)
 201be75ec2c7c1a016af8a7a1b4c970c0cd11d8bfb8027cea302234057dfac25  tools/harness/lib/claude-policy.mjs
 
 local tests/claude_review.test.mjs  (T73 optional direct Claude review)
-d218414dff2220ee215882e7d5b0da693026d6988c3b41092d392d1a8f6da27b  tests/claude_review.test.mjs
+454ff3898833aafc64865014c2e12efd9c4a2292dee7631177b2efc1f0b3193d  tests/claude_review.test.mjs
 
 local tools/harness/lib/claude-protocol.mjs  (T73 optional direct Claude review)
-4418ad9fd158d513438db78f2890204496b4dae65fbb0767b1d9ccc23f646fe4  tools/harness/lib/claude-protocol.mjs
+b865de792dd75aba051d75e94e10bce264cf886ebc94c76d1bbf2ab9e3997945  tools/harness/lib/claude-protocol.mjs
 
 local tools/harness/lib/claude-scope.mjs  (T73 optional direct Claude review)
 7dd870c66713d8575a5314aa5bf95e20a901aee5027c17f12c4819771102eb56  tools/harness/lib/claude-scope.mjs
@@ -158,3 +158,5 @@ b4318112fa2e8400d4f8521d281fc733039657a12ac08dd07940f5a6dec02749  tests/helpers/
 
 local tools/harness/probe-claude-permissions.mjs  (T73 deterministic native permission fixture)
 57eb033cde97c0b22555cc135c30bd108f02dcda808a8fa72b3adcc74dcfeb97  tools/harness/probe-claude-permissions.mjs
+local tests/fixtures/claude/native-progress.json  (T73 sanitized actual advisory frames)
+c4f219d0a2c8785e30b00674284de81fb04c121bede2d59d371024409f0e61b2  tests/fixtures/claude/native-progress.json

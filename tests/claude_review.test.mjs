@@ -200,3 +200,40 @@ test('production review argv terminates trailing variadic directory options befo
   assert.equal(args[args.length - 3], research, 'regression retains the actual trailing directory shape');
   assert(!args.includes('--max-turns'), 'no extra option may mask prompt capture');
 });
+
+// [confirmed: T73 actual Sonnet stream, native2.1.292] Advisory frames do not prove command success.
+test('native rate-limit notices and owned tool heartbeats validate shape and identity', async () => {
+  const options = fixtureOptions(); const result = await runClaudeReview(options);
+  const receipt = JSON.parse(fs.readFileSync(result.manifest));
+  const baseline = fs.readFileSync(receipt.files.stdout, 'utf8').trimEnd().split('\n').map(JSON.parse);
+  const notices = JSON.parse(fs.readFileSync(new URL('./fixtures/claude/native-progress.json', import.meta.url)));
+  const expected = { sessionID: receipt.sessionID, cwd: options.workDir, commands: JSON.parse(fs.readFileSync(options.env.T73_STUB_SCOPE)).commands, negativeControl: options.negativeControl, head: options.reviewedHead, base: options.reviewBase, pr: 186, doneWhen: 1, inventory: [{ id: 'F001' }] };
+  const stream = mutate => {
+    const frames = structuredClone(baseline); const extra = structuredClone(notices);
+    for (const f of extra) f.session_id = expected.sessionID;
+    mutate?.(extra);
+    frames.splice(2, 0, ...extra); // first Bash call exists and has not completed
+    return frames.map(f => JSON.stringify(f)).join('\n') + '\n';
+  };
+  assert.equal(parseClaude(stream(), expected).reviewText, result.reviewText);
+  for (const [name, mutate, reason] of [
+    ['rate session', x => x[0].session_id = 'other', 'frame session identity'],
+    ['heartbeat session', x => x[1].session_id = 'other', 'frame session identity'],
+    ['status', x => x[0].rate_limit_info.status = 'success', 'rate-limit shape'],
+    ['numeric reset', x => x[0].rate_limit_info.resetsAt = '123', 'rate-limit shape'],
+    ['window', x => x[0].rate_limit_info.unifiedWindows.five_hour.utilization = -1, 'rate-limit shape'],
+    ['unknown field', x => x[0].rate_limit_info.provider = 'gateway', 'rate-limit shape'],
+    ['uuid', x => x[0].uuid = 1, 'advisory frame identity'],
+    ['parent', x => x[1].parent_tool_use_id = 'unowned', 'heartbeat identity'],
+    ['tool', x => x[1].tool_name = 'Read', 'heartbeat identity'],
+    ['id', x => x[1].tool_use_id = 'unowned-heartbeat-0', 'heartbeat identity'],
+    ['elapsed', x => x[1].elapsed_time_seconds = -1, 'heartbeat shape'],
+    ['flag', x => x[1].heartbeat = 'true', 'heartbeat shape'],
+    ['unknown progress', x => x[1].subagent_retry = {}, 'heartbeat shape'],
+  ]) assert.throws(() => parseClaude(stream(mutate), expected), new RegExp(reason), name);
+  const denied = stream(); const frames = denied.trimEnd().split('\n').map(JSON.parse);
+  frames.find(f => f.type === 'user').message.content[0].is_error = true;
+  assert.throws(() => parseClaude(frames.map(f => JSON.stringify(f)).join('\n') + '\n', expected), /required tool denied/);
+  assert.throws(() => parseClaude(stream(), { ...expected, commands: [...expected.commands, 'missing'] }), /required command coverage/);
+  assert.throws(() => parseClaude(stream(), { ...expected, inventory: [{ id: 'F002' }] }), /changed-file scope coverage/);
+});

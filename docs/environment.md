@@ -145,7 +145,9 @@ that staged checkout. The entrypoint verifies its shared repository, location,
 detached HEAD, clean tracked files and exact PR head before dispatch. No watcher is necessary.
 The tracked `node --test --test-name-pattern=deletion tests/claude_review.test.mjs`
 is an available substantive negative-control command; using it avoids staging
-an extra helper. Put that exact command in policy and `--claude-negative-control`.
+an extra helper. Its saved-byte mutations target policy and protocol guards;
+workflow, scope and lifecycle have behavioral tests. Put that exact command in
+policy and `--claude-negative-control`.
 
 [designed: T73] Optional repeated `--claude-canary 'git push T73-NO-REMOTE'`
 identifies deliberately forbidden calls; use only an inert owned target. Their
