@@ -52,7 +52,6 @@ def results(args):
     from PySide6.QtWidgets import QApplication
     from goal2.desktop.model import DesktopModel
     from goal2.desktop.window import ManagementWindow
-    from goal2.desktop.fixtures_page import snapshot
     from goal2.desktop.worker import play
     from goal2.game.session_save import encode
     from goal2.game.watched_schema import resolution,watched
@@ -91,9 +90,13 @@ def results(args):
                         assert app.focusWidget() is target,'native input focus differs'
                 active();assert w.devicePixelRatioF()==float(report['scale']),'actual scale differs'
                 assert hasattr(w,'scoreboard'),'named scoreboard hierarchy absent'
+                from goal2.desktop.fixtures_page import snapshot
                 active(w.navigation[3]);QTest.keyClick(w.navigation[3],Qt.Key.Key_Space);app.processEvents()
                 assert w.page_stack.currentIndex()==3,'keyboard fixtures navigation failed'
                 match=model.state.last_match
+                pending=model.state.campaign.next_fixture if model.state.campaign else None
+                assert w.watch.isEnabled()==(pending is not None and pending.kind==1),'Watch availability differs from scheduled-friendly guard'
+                if model.state.campaign is not None and pending is None:assert not w.play.isEnabled(),'completed result enabled an absent pending fixture'
                 if match:
                     a,b=match['teams'];x,y=match['score']
                     expected=f'{model.goaldat.country_names[a]} {x} — {y} {model.goaldat.country_names[b]}'
@@ -153,9 +156,13 @@ def results(args):
                 assert snapshot(bad)['error'] and snapshot(bad)['score']=='Result unavailable','malformed result was not refused'
                 if name=='empty':
                     damaged=snapshot(bad);w.scoreboard.setText(damaged['score']);w.result_stages.setText(damaged['stages']);w.result.setText(damaged['detail'])
-                    page=w.pages[3];page.ensureWidgetVisible(w.scoreboard.parentWidget(),0,0);app.processEvents()
-                    filename='malformed-copied-result.png';assert w.grab().save(str(out/filename))
-                    report['captures'].append({'file':filename,'sha256':digest(out/filename),'context':'malformed pure copied input; save loading remains strict'})
+                    page=w.pages[3]
+                    for label in (w.scoreboard,w.result_stages,w.result):
+                        panel=label.parentWidget();page.ensureWidgetVisible(panel,0,0);app.processEvents();origin=panel.mapTo(page.viewport(),QPoint(0,0))
+                        assert origin.y()>=0 and origin.y()+panel.height()<=page.viewport().height(),'error panel not completely reachable'
+                        assert label.height()>=label.heightForWidth(label.width()),'wrapped error line clipped'
+                        filename='malformed-copied-'+label.objectName()+'.png';assert w.grab().save(str(out/filename))
+                        report['captures'].append({'file':filename,'sha256':digest(out/filename),'geometry':[origin.x(),origin.y(),panel.width(),panel.height()],'context':'malformed pure copied input; save loading remains strict'})
                     w.refresh();w.navigate(3)
                 report['cases'].append({'name':name,'source_save_sha256':source_hash,'state_sha256':hashlib.sha256(before).hexdigest(),'score':w.scoreboard.text(),'stages':w.result_stages.text(),'standings':backend,'pure':True,'busy_refused':True,'preview_isolated':True})
                 w.close();w.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()

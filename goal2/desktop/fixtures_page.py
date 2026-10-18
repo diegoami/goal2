@@ -94,8 +94,9 @@ def enabled(self,active):
     """[designed: T78; derived: T80/T50] Display existing routes; callbacks retain authority."""
     from goal2.engine.original_match.match import KINDS
     state=self.display_model.state;pending=state.campaign.next_fixture if state.campaign else None
-    quick=pending is None or pending.kind==1
+    quick=state.campaign is None or (pending is not None and pending.kind==1)
+    watch=pending is not None and pending.kind==1
     competitive=pending is not None and pending.kind!=1 and pending.kind in KINDS
-    self.play.setEnabled(active and (quick or competitive));self.watch.setEnabled(active and quick)
+    self.play.setEnabled(active and (quick or competitive));self.watch.setEnabled(active and watch)
     self.fixture_routes.setText(('Play: '+('quick friendly' if quick else 'original competitive') if quick or competitive else 'Play unavailable: unsupported pending fixture')+
-        '\n'+('Watch: original friendly' if quick else 'Watch unavailable: scheduled friendlies only'))
+        '\n'+('Watch: original friendly' if watch else 'Watch unavailable: scheduled friendlies only'))
