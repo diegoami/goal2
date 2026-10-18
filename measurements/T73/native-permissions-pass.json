@@ -1,0 +1,169 @@
+{
+  "kind": "synthetic native enforcement; no external inference/provider-access proof",
+  "cwd": "/home/diego/projects/goal2-work/T73-claude-cli-review/.cache/T73-native-permissions/native-odmUOu/work",
+  "fixtureGitOwned": true,
+  "version": "2.1.292",
+  "binarySHA256": "a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3",
+  "endpoint": "http://127.0.0.1:41441",
+  "configHomeFresh": true,
+  "realCredentialsForwarded": false,
+  "environmentNames": [
+    "HOME",
+    "PATH",
+    "LANG",
+    "TMPDIR",
+    "CLAUDE_CONFIG_DIR",
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_BASE_URL",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "DISABLE_AUTOUPDATER",
+    "DISABLE_TELEMETRY",
+    "DISABLE_ERROR_REPORTING",
+    "NO_COLOR"
+  ],
+  "commands": [
+    "node --test allowed.test.mjs && git diff --check",
+    "python3 -I isolated.py"
+  ],
+  "plannedCanary": "git push T73-NO-REMOTE",
+  "permissionSHA256": "4c062c6cfbb4792db9978d41f27b31630364a9af09625e23657dc429f5011251",
+  "fixtureGitRemotes": [],
+  "argv": [
+    "--print",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--session-id",
+    "d1ed5556-4d33-4d2d-a614-e2a47f0e4250",
+    "--model",
+    "claude-sonnet-5-5",
+    "--effort",
+    "medium",
+    "--setting-sources",
+    "",
+    "--safe-mode",
+    "--restricted",
+    "--settings",
+    "{\"model\":\"claude-sonnet-5-5\",\"effortLevel\":\"medium\",\"permissions\":{\"defaultMode\":\"dontAsk\",\"additionalDirectories\":[\"/tmp\",\"/home/diego/projects/goal2-archaeology\"],\"allow\":[\"Read\",\"Grep\",\"Glob\",\"Bash(node --test allowed.test.mjs)\",\"Bash(git diff --check)\",\"Bash(python3 -I isolated.py)\"],\"deny\":[\"Edit\",\"Write\",\"Agent\",\"Bash(git push *)\"]}}",
+    "--permission-mode",
+    "dontAsk",
+    "--permission-prompts",
+    "none",
+    "--tools",
+    "Bash,Glob,Grep,Read",
+    "--disallowedTools",
+    "Edit",
+    "Write",
+    "Agent",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--add-dir",
+    "/tmp",
+    "--add-dir",
+    "/home/diego/projects/goal2-archaeology",
+    "--max-turns",
+    "3",
+    "Synthetic local protocol fixture: execute the scripted tool calls, then finish. No external inference."
+  ],
+  "ownedExit": 0,
+  "timedOut": false,
+  "stdoutSHA256": "1e3b770f6852f30d40270159154bcc1995f6da54fa060b2a24cc401c94c2c2f7",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBytes": 0,
+  "outcomes": [
+    {
+      "id": "toolu_t73_compound",
+      "is_error": false,
+      "contentSHA256": "aa1d3612d059696ca15c2b755655bd353f0209432442d85271ed7ade7f3a1f84",
+      "isolatedPythonSentinel": false,
+      "compoundTestPassed": true
+    },
+    {
+      "id": "toolu_t73_python",
+      "is_error": false,
+      "contentSHA256": "b25fe5f2502fe5ab9938cd7a401c9791905adf822f619243d94408580862edb2",
+      "isolatedPythonSentinel": true,
+      "compoundTestPassed": false
+    },
+    {
+      "id": "toolu_t73_tmp",
+      "is_error": false,
+      "contentSHA256": "8952c7775da6833265b3904af6addde218c1b4dc59d1e44ba18272f4b3523076",
+      "isolatedPythonSentinel": false,
+      "compoundTestPassed": false
+    },
+    {
+      "id": "toolu_t73_research",
+      "is_error": false,
+      "contentSHA256": "cbc892b83a0efc200757bebce1e44ec9f7ad3a2a133dcddded017b05b68fb042",
+      "isolatedPythonSentinel": false,
+      "compoundTestPassed": false
+    },
+    {
+      "id": "toolu_t73_forbidden",
+      "is_error": true,
+      "contentSHA256": "df5b42f47c89da29275d46f97ed432c7632711fc00b0f175192bd41d4cb445e8",
+      "isolatedPythonSentinel": false,
+      "compoundTestPassed": false
+    }
+  ],
+  "denials": [
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_t73_forbidden",
+      "tool_input": {
+        "command": "git push T73-NO-REMOTE",
+        "description": "Planned forbidden canary; must be denied"
+      }
+    }
+  ],
+  "syntheticUsage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 2,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "nativePolicyEnforcementPassed": true,
+  "requests": [
+    {
+      "turn": 1,
+      "path": "/v1/messages?beta=true",
+      "model": "claude-sonnet-5-5",
+      "messageCount": 2,
+      "toolResultIds": []
+    },
+    {
+      "turn": 2,
+      "path": "/v1/messages?beta=true",
+      "model": "claude-sonnet-5-5",
+      "messageCount": 5,
+      "toolResultIds": [
+        "toolu_t73_compound",
+        "toolu_t73_python",
+        "toolu_t73_tmp",
+        "toolu_t73_research",
+        "toolu_t73_forbidden"
+      ]
+    }
+  ],
+  "scriptSHA256": "5655069bcc304facda92d55df13fd951d1fe332dc3c3278e540bb084d6dbdc9d"
+}

@@ -74,6 +74,8 @@ def validate(root: Path, expected_head: str) -> None:
         ("node", "--test", "tests/harness_clients.test.mjs"),
         ("node", "--test", "tests/opencode_protocol.test.mjs"),
         ("node", "--test", "tests/opencode_workflow.test.mjs"),
+        # [designed: T73] Optional native transport remains covered by offline stubs.
+        ("node", "--test", "tests/claude_review.test.mjs"),
         (sys.executable, "-m", "unittest", "tests.test_agent_permissions",
          "tests.test_merge_workflow", "tests.test_local_validation", "-v"),
     )

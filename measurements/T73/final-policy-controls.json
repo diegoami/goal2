@@ -1,0 +1,26 @@
+[
+  {
+    "control": "selection",
+    "baselineSHA256": "58a7b13ca3315b39d8e319c73391ec10948209ce5d2dceeff84490b77ffc3790",
+    "mutantSHA256": "0957221c42f9cbed6f83ec855a74a75cf20623fc0beba0cc151f25d2cd580576",
+    "exit": 1,
+    "stdout": "✖ explicit Claude selection and sanitized environment reject provider substitution (1.611406ms)\nℹ tests 1\nℹ suites 0\nℹ pass 0\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 86.692617\n\n✖ failing tests:\n\ntest at tests/claude_review.test.mjs:16:1\n✖ explicit Claude selection and sanitized environment reject provider substitution (1.611406ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T73-claude-cli-review/tests/claude_review.test.mjs:18:141)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: /selection/,\n    operator: 'throws',\n    diff: 'simple'\n  }\n",
+    "stderr": ""
+  },
+  {
+    "control": "routing",
+    "baselineSHA256": "58a7b13ca3315b39d8e319c73391ec10948209ce5d2dceeff84490b77ffc3790",
+    "mutantSHA256": "070e0839447596fe144fada0dab8400aa18652ca658ead2b290b4045d4769381",
+    "exit": 1,
+    "stdout": "✖ native effective settings and live rules fail closed on routing and permission drift (2.011365ms)\nℹ tests 1\nℹ suites 0\nℹ pass 0\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 80.276769\n\n✖ failing tests:\n\ntest at tests/claude_review.test.mjs:36:1\n✖ native effective settings and live rules fail closed on routing and permission drift (2.011365ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T73-claude-cli-review/tests/claude_review.test.mjs:41:274)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: undefined,\n    operator: 'throws',\n    diff: 'simple'\n  }\n",
+    "stderr": ""
+  },
+  {
+    "control": "permission",
+    "baselineSHA256": "58a7b13ca3315b39d8e319c73391ec10948209ce5d2dceeff84490b77ffc3790",
+    "mutantSHA256": "2442825d67764b874ac88df06fd476b6a2dbeb7b6339ffb4fc10f83a95fde28b",
+    "exit": 1,
+    "stdout": "✖ native effective settings and live rules fail closed on routing and permission drift (3.132375ms)\nℹ tests 1\nℹ suites 0\nℹ pass 0\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 86.701163\n\n✖ failing tests:\n\ntest at tests/claude_review.test.mjs:36:1\n✖ native effective settings and live rules fail closed on routing and permission drift (3.132375ms)\n  AssertionError [ERR_ASSERTION]: Missing expected exception.\n      at TestContext.<anonymous> (file:///home/diego/projects/goal2-work/T73-claude-cli-review/tests/claude_review.test.mjs:44:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.start (node:internal/test_runner/test:1262:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: undefined,\n    expected: /widened live permission/,\n    operator: 'throws',\n    diff: 'simple'\n  }\n",
+    "stderr": ""
+  }
+]

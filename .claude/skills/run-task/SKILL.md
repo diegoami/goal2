@@ -23,7 +23,7 @@ The Claude-specific step-2 dispatch below remains in force for Claude Code.
 Read `docs/process.md` §3–§6 first. Given ids, run them in order; given none, take the first
 `status:ready` task in `docs/tasks/README.md`. Report after each task; stop at any escalation.
 For `#<issue>` of a bug labelled `fix`, the bug body replaces the task file, the branch is
-`fix/<issue>-<slug>`, and there is one review round.
+`fix/<issue>-<slug>`, with same-reviewer follow-ups until accepted.
 
 Ask for the implementer/model before each new task unless the owner has already
 explicitly chosen it for that task, then wait for the answer. For each
@@ -71,7 +71,7 @@ never the implementer's family.
      (`docs/running-notes.md`), pushing after every commit and at least every 20 minutes, opening
      the PR as a draft after the first push and `gh pr ready` before the review.
 
-3. **Review.** First ask the user ONE question (CLAUDE.md "Choosing models" rule 2): which
+3. **Review.** If no reviewer is selected for this task, ask the user ONE question (CLAUDE.md "Choosing models" rule 2): which
    OpenCode model reviews? Put `harness.json`'s `reviewer.default` first (`sol-6.1` for hard
    reviews: an engine seam, a fidelity test, a vendored model), then the registered models that are neither of the session's family nor
    blocked (`switch-model.mjs --show`). Record the answer on the PR. Label `status:in-review`.
@@ -83,7 +83,11 @@ never the implementer's family.
    node tools/harness/review.mjs --pr <pr> --brief <file> --issue <n> --apply-label
    [--reviewer <the answer>]`), watched ("Choosing models" rules 9-11). The script reads the session's family from
    client/provider settings, so the unit must carry HARNESS_CLIENT (Codex) or the Anthropic endpoint/override (Claude).
-   One review per PR unless the user asks for more. Relay its findings in full (rule 8).
+   [designed: owner, 2026-10-18] Once selected, keep the same reviewer and continue
+   follow-ups/rework until accepted, without asking again for each review or stopping
+   solely at a round/trial count. Read complete results, fix causes and validate each
+   new head. Report real owner design/external-access blockers; never silently switch
+   provider/model, weaken acceptance or bypass safety. Relay findings in full (rule 8).
    - Exit 0: posted and labelled.
    - Exit 2: a refused model (blocked in `harness.json`, or an unknown name): tell the user.
    - Exit 3: no review came back (OpenCode, the login, the model, a rejected path, or a review
@@ -96,8 +100,9 @@ never the implementer's family.
      a finding after the closing verdict, or an approve with a Done-when line unaccounted for or
      not run, L32). No label was applied. Read it on the PR and decide: apply the label it
      supports, ask for a supplementary review of the missing DW lines, or send it to rework.
-     Never pay for a second review just because the first was flagged: OpenCode's models do not
-     always follow the brief, and the script's reading is the safety net.
+     Do not rerun blindly because a result was flagged: read the complete evidence,
+     fix the cause or request a targeted same-reviewer follow-up under the standing
+     authorization. The script's reading remains a safety net, never an acceptance waiver.
    - **Read before you act (L55).** The final message, read-only (never `auth.json` there), with
      the `session ses_…` id from the run's log:
      [designed: T72] The log names a retained `run.json` manifest and session ID.
@@ -138,12 +143,10 @@ never the implementer's family.
    - `status:rework`:
      1. Check that every finding names a file in `gh pr diff <pr> --name-only`. A review that
         does not reviewed the wrong tree: discard it, say so, and re-review.
-     2. At `review-round:2` (at `review-round:1` for a fix), go to step 5.
-        A reviewer that reports one blocking finding per round despite the brief's one-pass
-        section (L49): after the second such round, stop. Request no further review until you
-        have gone through the whole diff yourself for that class and fixed what you found, and
-        recorded the pattern in `docs/model-trials.md` (L101). The review after that is the task's
-        last before escalation (step 5).
+     2. After repeated findings of the same class, sweep the whole diff for that class,
+        fix what you find and record the pattern in `docs/model-trials.md` (L101).
+        Continue with the selected reviewer until accepted; a round count alone
+        does not require escalation or renewed permission.
      3. A heavy review (three or more blocking findings, or a repeated class) is fixed by class,
         not by instance: the next round sweeps the implementer's own code for the same class and
         lists the sweep in the PR body, and changes the approach when the class needs it, saying

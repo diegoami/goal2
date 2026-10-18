@@ -3,6 +3,9 @@
 //
 //   node tools/harness/review.mjs --pr 42 --brief brief.md [--reviewer NAME] [--exclude NAME,...]
 //     [--issue 12 --apply-label] [--done-when K] [--dry-run] [--env KEY=VALUE]...
+//     [--backend claude --reviewer claude-sonnet --claude-policy /trusted/policy.json]
+//     [--claude-worktree PREPARED_REVIEW_WORKTREE]
+//     [--claude-negative-control COMMAND --claude-session-id UUID --claude-canary COMMAND]...
 //     [--total-timeout-sec N] [--idle-timeout-sec N]   override harness.json's limits for this run
 //   node tools/harness/review.mjs --self-test   (the reader's samples and the named-model checks; no model is called)
 //
@@ -41,6 +44,9 @@
 // use, and exits 0; it still runs, and bills, the model.
 
 import fs from 'node:fs';
+import { runClaudeReview } from './lib/claude-workflow.mjs';
+import { selectClaude, ClaudeError } from './lib/claude-policy.mjs';
+import { preparedClaudeWorktree } from './lib/claude-scope.mjs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { reviewerPolicy, trustedReviewEnv } from './lib/opencode-policy.mjs';
@@ -58,7 +64,7 @@ import {
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test'], repeatable: ['env'] });
+const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test'], repeatable: ['env', 'claude-canary'] });
 // The run's title names its files (the brief, the logs): a model id's '/' would make a directory
 // there (#145, Sol's R5 on PR 149). The id and variant passed to OpenCode stay as named.
 const fileSafe = (s) => String(s).replace(/[^\w.@-]+/g, '-');
@@ -128,7 +134,7 @@ requireTools('git', 'gh');
 
 const top0 = sh('git', ['rev-parse', '--show-toplevel']);
 const config = loadConfig(top0);
-const { top, workRoot } = repoPaths(config);
+const { top, workRoot, commonDir } = repoPaths(config);
 const rev = config.reviewer;
 
 // The implementer's family never reviews: the session's family always (every Claude Code agent runs
@@ -155,8 +161,18 @@ const families = [...new Set([canonicalFamily(own), ...implementedBy.flatMap((n)
 say(`implemented by: ${implementedBy.join(', ')} (${own}: the session's family, from client/provider settings)`);
 if (familiesOfModel(model).some((f) => families.includes(f))) die(1, `Refused: ${reviewer} is the implementer's model family (${families.join(', ')}). Nothing posted.`);
 const fallback = 'Nothing posted. Read the run\'s final message (CLAUDE.md, "Choosing models" rule 12) and fix the cause; another reviewer is the user\'s call.';
+// [designed: T73] Optional direct transport requires explicit backend AND selected model/policy.
+const backend = a.backend ?? 'opencode';
+if (!['opencode', 'claude'].includes(backend)) die(2, 'Unknown review backend.');
+if (backend === 'opencode' && model.backend === 'claude') die(2, 'Direct Claude requires --backend claude.');
+let opencode, pre, agentFile, reviewEnv;
+if (backend === 'claude') {
+  try { selectClaude(model); } catch { die(2, 'Direct Claude requires the explicitly configured Claude model/effort.'); }
+  if (!a['claude-policy'] || !a['claude-negative-control']) die(2, 'Direct Claude requires --claude-policy and --claude-negative-control.');
+  reviewEnv = envWith(a.env);
+} else {
 // OpenCode is looked for only now, so that its absence is reported with the same fallback (Sol's R1 on PR 41).
-let opencode;
+
 try { opencode = resolveOpenCode(); } catch (e) {
   if (e instanceof OpenCodeInfraError) die(3, `OpenCode unavailable: ${e.message} ${fallback}`);
   throw e;
@@ -166,7 +182,7 @@ try { opencode = resolveOpenCode(); } catch (e) {
 const jail = config.jail?.enabled === true ? credentialJail() : { off: 'harness.json does not enable it', quiet: true };
 if (jail.off && !jail.quiet) say(OFF_WARNING(jail.off));
 else if (!jail.off) opencode = { binary: opencode.exe, exe: jail.exe, prefix: [...jail.args, '--', opencode.exe, ...opencode.prefix] };
-const pre = await prepareOpenCode({ opencode, chain: [reviewer], models: config.models, env: envWith(a.env), cwd: top, log: say });
+pre = await prepareOpenCode({ opencode, chain: [reviewer], models: config.models, env: envWith(a.env), cwd: top, log: say });
 for (const p of pre.problems) say(p);
 if (!pre.usable.length) die(3, `OpenCode unavailable: ${pre.problems.join('; ')}. ${fallback}`);
 
@@ -175,11 +191,15 @@ if (!pre.usable.length) die(3, `OpenCode unavailable: ${pre.problems.join('; ')}
 // (or anything else it puts there) would decide what its reviewer may do. Checked on OpenCode
 // 1.18.34: without these two variables a PR's reviewer.md with `git push *: allow` was the one
 // loaded (#10, L34; ic2-conquest's reviewer does the same).
-const agentFile = path.join(top, '.opencode', 'agents', `${rev.agent}.md`);
+agentFile = path.join(top, '.opencode', 'agents', `${rev.agent}.md`);
 if (!fs.existsSync(agentFile)) die(2, `The reviewer agent is missing from this checkout: ${agentFile}. Nothing run.`);
-const reviewEnv = pre.version.startsWith('2.') ? trustedReviewEnv(pre.env, reviewerPolicy(agentFile), rev.agent)
+reviewEnv = pre.version.startsWith('2.') ? trustedReviewEnv(pre.env, reviewerPolicy(agentFile), rev.agent)
   : { ...pre.env, OPENCODE_CONFIG_DIR: path.join(top, '.opencode'), OPENCODE_DISABLE_PROJECT_CONFIG: '1' };
+}
 const headSha = sh('gh', ['pr', 'view', String(a.pr), '--json', 'headRefOid', '--jq', '.headRefOid'], { cwd: top });
+// [designed: T73] Pin PR base commit metadata separately from full local diff evidence.
+const baseTipSha = backend === 'claude' ? sh('gh', ['pr', 'view', String(a.pr), '--json', 'baseRefOid', '--jq', '.baseRefOid'], { cwd: top }) : null;
+
 // A brief that names another commit as the one to review would make the reviewer's tree proof stop
 // it after a billed run (#23): refuse it before any worktree or model run.
 const stale = [...new Set(briefTargets(brief.join('\n')))].filter((c) => c !== headSha.toLowerCase());
@@ -189,9 +209,17 @@ if (stale.length) {
     + 'GitHub updated: take it from the local branch (git rev-parse <branch>), or rerun once GitHub shows it.');
 }
 sh('git', ['-C', top, 'fetch', '-q', 'origin', `pull/${a.pr}/head`]);
+if (baseTipSha) sh('git', ['-C', top, 'fetch', '-q', 'origin', baseTipSha]);
+// [designed: T73] Match the PR's three-dot diff when unrelated main commits land.
+const baseSha = baseTipSha ? sh('git', ['-C', top, 'merge-base', baseTipSha, headSha]) : null;
 // [designed: T72; owner preservation contract] Retain the exact review worktree with its receipts.
-const worktree = path.join(workRoot, `${a.pr}-review-${randomBytes(4).toString('hex')}`);
+const worktree = backend === 'claude' && a['claude-worktree'] ? fs.realpathSync(a['claude-worktree']) : path.join(workRoot, `${a.pr}-review-${randomBytes(4).toString('hex')}`);
 const newTree = () => {
+  // [designed: T73] Main may stage offline grammar dependencies before the sole actual review.
+  if (backend === 'claude' && a['claude-worktree']) {
+    try { preparedClaudeWorktree({ directory: worktree, top, workRoot, commonDir, head: headSha }); } catch { die(2, 'Prepared Claude review worktree must be isolated, same-repository, clean and at the exact PR head.'); }
+    say(`prepared worktree: ${worktree} at ${headSha} (retained)`); return;
+  }
   fs.mkdirSync(workRoot, { recursive: true });
   sh('git', ['-C', top, 'worktree', 'add', '--detach', worktree, headSha]);
   say(`worktree: ${worktree} at ${headSha} (retained)`);
@@ -234,13 +262,19 @@ OUTPUT RULES (from tools/harness/review.mjs; they override anything above that c
       if (watch) say(watch);
       let run;
       try {
-        run = await runOpenCodeWatched({
+        run = backend === 'claude' ? await runClaudeReview({
+          model, policyFile: path.resolve(a['claude-policy']), workDir: worktree, reviewedHead: headSha, reviewBase: baseSha, reviewPR: Number(a.pr),
+          prompt, header, doneWhen, negativeControl: a['claude-negative-control'], deniedCanaries: a['claude-canary'],
+          ...(a['claude-session-id'] ? { sessionID: a['claude-session-id'] } : {}),
+          startupTimeoutMs: rev.startupTimeoutSec * 1000, idleTimeoutMs: (idleSec ?? rev.idleTimeoutSec) * 1000,
+          totalTimeoutMs: (totalSec ?? rev.totalTimeoutSec) * 1000, env: reviewEnv, log: say,
+        }) : await runOpenCodeWatched({
           args: ocArgs(worktree, rev.agent, model), model, agent: rev.agent, agentFile, reviewedHead: headSha, reviewPR: a.pr, logDir: path.join(worktree, '.cache/harness-reviews'), prompt, workDir: worktree, title: `pr${a.pr}-${fileSafe(m)}`,
           startupTimeoutMs: rev.startupTimeoutSec * 1000, idleTimeoutMs: (idleSec ?? rev.idleTimeoutSec) * 1000,
           totalTimeoutMs: (totalSec ?? rev.totalTimeoutSec) * 1000, opencode, env: reviewEnv, log: say,
         });
       } catch (e) {
-        if (!(e instanceof OpenCodeInfraError)) throw e;
+        if (!(e instanceof OpenCodeInfraError) && !(e instanceof ClaudeError)) throw e;
         return { ok: false, reason: e.reason, detail: e.message };
       }
       // OpenCode's own error stream on a failed run, never the model's output (Luna's R1, round 2).
@@ -263,6 +297,6 @@ if (!result.ok) {
 }
 const plan = planPost({
   read: result.value, header: result.value.header, doneWhen, source: 'tools/harness/review.mjs',
-  signature: `${reviewer}, via tools/harness/review.mjs (${result.value.model.id})`,
+  signature: `${reviewer}, via tools/harness/review.mjs [${backend}] (${result.value.model.id})`,
 });
 publish({ plan, pr: a.pr, issue: a.issue, applyLabel: a['apply-label'], dryRun: a['dry-run'], top, say, die });

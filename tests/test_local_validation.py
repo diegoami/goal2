@@ -111,7 +111,7 @@ class LocalValidationTests(unittest.TestCase):
 
         with patch.object(validator.subprocess, "run", side_effect=run):
             validator.validate(self.root, self.sha)
-        self.assertEqual(len(children), 7)
+        self.assertEqual(len(children), 8)
         self.assertTrue(any("tools/harness/check-opencode-guard.mjs" in c for c in children))
         self.assertFalse(any("npm" in c for c in children), "offline validation never installs implicitly")
         self.assertTrue(any("tools/check_links.py" in c for c in children))
@@ -119,6 +119,7 @@ class LocalValidationTests(unittest.TestCase):
         self.assertTrue(any("tests/harness_clients.test.mjs" in c for c in children))
         self.assertTrue(any("tests/opencode_protocol.test.mjs" in c for c in children))
         self.assertTrue(any("tests/opencode_workflow.test.mjs" in c for c in children))
+        self.assertTrue(any("tests/claude_review.test.mjs" in c for c in children))
         self.assertTrue(any("tests.test_agent_permissions" in c for c in children))
 
     def test_child_cannot_dirty_or_move_the_verified_checkout(self):

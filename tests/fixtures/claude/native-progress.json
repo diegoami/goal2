@@ -1,0 +1,45 @@
+[
+  {
+    "type": "rate_limit_event",
+    "rate_limit_info": {
+      "status": "allowed",
+      "resetsAt": 1792317600,
+      "rateLimitType": "five_hour",
+      "overageStatus": "allowed",
+      "overageResetsAt": 1793491200,
+      "isUsingOverage": false,
+      "unifiedWindows": {
+        "five_hour": {
+          "utilization": 0.05,
+          "resetsAt": 1792317600
+        },
+        "seven_day": {
+          "utilization": 0.3,
+          "resetsAt": 1792677600
+        }
+      }
+    },
+    "uuid": "00000000-0000-4000-8000-000000000010",
+    "session_id": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+    "type": "tool_progress",
+    "tool_use_id": "toolu_fixture_1-heartbeat-0",
+    "tool_name": "Bash",
+    "parent_tool_use_id": "toolu_fixture_1",
+    "elapsed_time_seconds": 30,
+    "heartbeat": true,
+    "session_id": "00000000-0000-4000-8000-000000000001",
+    "uuid": "00000000-0000-4000-8000-000000000011"
+  },
+  {
+    "type": "tool_progress",
+    "tool_use_id": "toolu_fixture_1-heartbeat-1",
+    "tool_name": "Bash",
+    "parent_tool_use_id": "toolu_fixture_1",
+    "elapsed_time_seconds": 60,
+    "heartbeat": true,
+    "session_id": "00000000-0000-4000-8000-000000000001",
+    "uuid": "00000000-0000-4000-8000-000000000012"
+  }
+]

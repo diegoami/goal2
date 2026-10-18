@@ -31,6 +31,9 @@ dispatch; it does not replace the shared evidence, provenance or merge rules.
 4. Ask the owner which OpenCode model reviews only after a concrete PR exists;
    record the choice and run tools/harness/review.mjs. Codex is family `openai`,
    so OpenAI reviewers are ineligible. Do not choose or substitute a reviewer.
+   [designed: T73] An owner-explicit direct Claude review instead follows
+   docs/environment.md's optional backend procedure, with the same independent
+   family, trusted permissions and main-only acceptance rules.
 5. Detached harness jobs must carry `HARNESS_CLIENT=codex` (and required provider
    keys), because user services do not inherit Codex session markers. Native
    shell tools are detected via CODEX_THREAD_ID or CODEX_SESSION_ID; conflicting

@@ -37,3 +37,12 @@ every item under "Blocking means", and report all blocking findings together.
 - If you ran out of time or context before covering the whole diff, say which files or
   sections you did not cover. Do not approve in that case.
 ```
+
+[designed: T73] For an explicitly selected direct Claude backend, main also supplies
+the trusted external policy and its required commands. Audit the retained local
+base/head inventory and every diff chunk; print the requested exact PR/head/base
+identity, `COVER <inventory-id>: audited <concrete scope/result>` for each item,
+and `CONTROL: ran <trusted command> -> <observed substantive result>`. Run every
+DW yourself and distinguish parent/synthetic evidence from your own execution.
+Planned forbidden canaries must be denied; a denied required check blocks approval.
+Do not post, merge, change routing/permissions or launch a nested model.
