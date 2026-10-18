@@ -1,0 +1,24 @@
+# T74 shell preflight and acceptance details
+
+[designed: main,2026-10-18] This pins proposed T74 commands after baseline/mock feasibility; implementation waits for accepted T83. Preserve the approved [visual system](system.md), state ownership and all existing acceptance assertions. Minimal retained Qt acceptance-helper edits may navigate to existing controls; they cannot weaken behavior checks.
+
+[designed] Destinations/shortcuts: Overview/Ctrl+1; Squad & tactics/Ctrl+2; National pool/Ctrl+3; Fixtures & results/Ctrl+4; Save / resume/Ctrl+5. Navigation only switches page/focus to its heading; never call refresh or a management action. Keep existing widget identities/connections, Save/Resume guards and persistent status/Cancel while busy. New shortcuts must retain native keyboard behavior.
+
+[designed] The shell scenario uses real mouse and keyboard events against existing widgets. Before/after each navigation compare encoded active state, dirty widget draft, saved active draft during country preview, preview ownership, prior save bytes/path and starts across Quick, competitive and watched controllers (zero). Include preview/active-country return and a pending-control reachability probe without running an engine. The negative control removes navigation or connects page changes to draft-discarding refresh; require the intended interaction assertion and restore complete source bytes in finally with no concurrent reader.
+
+[designed] At100% capture1440×900,1050×780,900×700. At200% keep every action reachable through one content scroll region and test a viewport fitting the actual display; the measured Windows screen permits900×640 logical pixels with window chrome. Preserve all values/actions, keyboard focus/Tab access, readable focus and disabled states; no shell horizontal scroll. This adds a measured small viewport rather than claiming an off-screen oversized window proves accessibility.
+
+[confirmed: native Windows metadata/preflight receipts linked below] Windows10.0.26200,Python3.13.15,Qt6.12 has actual ratios1 and2 when QT_SCALE_FACTOR is set inside Windows Python before importing Qt. Setting only WSL subprocess environment left the second probe at ratio1. Record actual ratio/platform, never infer from requested environment. Fresh-process native wrapper sets scale, platform windows and an owned physical TMPDIR, then runs the same shell scenario against a pinned source copy and generated temporary saves. Main stages/collects native evidence before acceptance. At ratio2 the available logical area is1280×696; no global display settings change is needed. Preserve the existing launcher and saves; SDL is inapplicable to shell navigation, and no new Windows engine/viewer acceptance is claimed.
+
+[confirmed: planning receipts] The baseline actual ManagementWindow lacks five-page navigation. A runtime-only mock around that same window/controls passes five mouse and five shortcut/focus transitions with state/draft/preview/save/job invariants. A runtime page-refresh mutant fails the intended dirty-draft assertion. The same mock passes native Windows ratios1 and2. These are mechanical feasibility checks, not T74 style/sizing acceptance. The first Linux mock lacked stable active-window focus timing; its partial receipt is preserved and not counted as proof. Explicit offscreen/window settling corrected setup without weakening assertions or editing product source.
+
+- [Linux final baseline/mock receipt](../../evidence/T74/preflight/linux-02.json)
+- [Linux partial focus-setup receipt](../../evidence/T74/preflight/linux-partial-01.json)
+- [Windows100% mock log](../../evidence/T74/preflight/windows-1.log)
+- [Windows200% mock log](../../evidence/T74/preflight/windows-2.log)
+- [Actual Windows100% metadata](../../evidence/T74/preflight/windows-metadata-1.json)
+- [Actual Windows200% metadata](../../evidence/T74/preflight/windows-metadata-2.json)
+- [Initial WSL scale projection](../../evidence/T74/preflight/scale-env-01.json)
+- [Corrected native scale projection](../../evidence/T74/preflight/scale-env-02.json)
+
+[derived: source hashes in receipts] Window/model bytes were unchanged at accepted354e8e7. The code-shaped mock was executed from main's ignored verification tools; it is not an application shell or an unconditional acceptance stub. Original templates/data stayed ignored; receipts contain only rebuild observations and hashes. Final implementation must satisfy every task line on its own real shell, including Windows sizes/focus/scaling, retained workers and exact-head validation.

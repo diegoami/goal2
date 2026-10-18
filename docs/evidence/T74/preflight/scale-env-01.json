@@ -1,0 +1,38 @@
+{
+  "kind": "native Windows Qt metadata only; no T74 interaction acceptance or source deployment",
+  "rows": [
+    {
+      "requested_qt_scale_factor": "1",
+      "actual": {
+        "platform": "win32",
+        "os_version": "10.0.26200",
+        "python": "3.13.15",
+        "qt": "6.12.0",
+        "qt_platform": "windows",
+        "device_pixel_ratio": 1.0,
+        "logical_dpi": 96.0,
+        "available": [
+          2560,
+          1392
+        ]
+      }
+    },
+    {
+      "requested_qt_scale_factor": "2",
+      "actual": {
+        "platform": "win32",
+        "os_version": "10.0.26200",
+        "python": "3.13.15",
+        "qt": "6.12.0",
+        "qt_platform": "windows",
+        "device_pixel_ratio": 1.0,
+        "logical_dpi": 96.0,
+        "available": [
+          2560,
+          1392
+        ]
+      }
+    }
+  ],
+  "launcher_sha256_unchanged": "1df00f8ca12e10be100877021ec40ea7013604e7503fa8c40a21a57e7d0d6bb2"
+}

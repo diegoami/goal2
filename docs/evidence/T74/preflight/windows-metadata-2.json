@@ -1,0 +1,8 @@
+{
+  "platform": "win32",
+  "os_version": "10.0.26200",
+  "python": "3.13.15",
+  "qt": "6.12.0",
+  "qt_platform": "windows",
+  "device_pixel_ratio": 2.0
+}
