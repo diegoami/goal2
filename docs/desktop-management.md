@@ -80,8 +80,8 @@ the rebuild quick simulation, not original watched commentary or visualization.
 
 [derived: T41–T46; designed: T70] Campaign play consumes only the next supported
 friendly in source A/B order, retaining condition, eligibility, RNG and history.
-Save and resume use the same complete continuation. The unsupported competitive
-fixture remains visible and refuses play. **New standalone friendly** explicitly
+Save and resume use the same complete continuation. Supported original competitive
+fixtures use the separate Play action described below; Quick itself remains friendly-only. **New standalone friendly** explicitly
 creates fresh selected-country records without a campaign ledger; confirm its
 management before play. Repeat carries the prior result/player state forward.
 Creating either new mode replaces the active unsaved game only on that explicit
@@ -183,3 +183,29 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 to
 stage the verified fixtures described by the T66 evidence; neither command fetches
 or commits original assets. A normal desktop launch should use its native SDL/Qt
 display drivers, not the headless variables above.
+
+
+[designed: T80; derived: T51/E034 at424d599] For a supplied pending original
+competitive fixture, the button reads **Play original competitive**. It runs the
+original engine in a separate owned process with the fixture, current confirmed
+XI/captain/tactics, engine year and both RNG seeds. Default decisions continue
+play, with the existing five substitutions per side budget. The Qt window shows
+live minute/score progress, then named regulation, extra-time, penalties and winner
+labels where applicable. Only a validated full post-match continuation publishes;
+Save/Resume retains its complete result, Memory and seeds. No competition draw or
+new fixture progression is added. Unsupported kind4 still refuses Play.
+
+[designed: T80] A loaded automatic captain0 is displayed as the disabled
+**Original captain selection** placeholder. Playing preserves that original input;
+explicit **Confirm management** requires a named captain in the XI. Missing runtime
+or local resources show install/resource guidance while management remains usable.
+Competitive Play, friendly Quick and friendly Watch share one match lock. Save,
+Resume and management edits wait until completion or cancellation. Cancel/close
+reaps only the owned child and preserves the active state and previous save.
+**Watch original friendly** continues to support scheduled friendlies only.
+
+```bash
+python3 -m unittest goal2.tests.test_desktop_competitive_jobs -v
+python3 tools/desktop-ui/competitive_play.py
+QT_QPA_PLATFORM=xcb xvfb-run -a python3 tools/desktop-ui/competitive_play.py
+```
