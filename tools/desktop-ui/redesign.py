@@ -384,6 +384,8 @@ def overview(args):
                         assert origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height(),'overview action/value unreachable: '+widget.objectName()
                         if isinstance(widget,QLabel):
                             assert widget.height()>=widget.heightForWidth(widget.width()),'overview label clips wrapped text: '+widget.objectName()
+                    actions_name=f'preview-{number}-{width}x{height}-actions.png'
+                    assert w.grab().save(str(out/actions_name));r['captures'].append({'path':actions_name,'sha256':digest(out/actions_name),'size':[width,height],'country':number,'context':'reachable preview replacement and Return actions'})
                     page.verticalScrollBar().setValue(0);app.processEvents()
                     name=f'preview-{number}-{width}x{height}.png'
                     assert w.grab().save(str(out/name));r['captures'].append({'path':name,'sha256':digest(out/name),'size':[width,height],'country':number})
@@ -442,7 +444,7 @@ def overview_negative_controls(args):
         run('active-binding-country',[sys.executable,'-B',str(ROOT/'tools/desktop-ui/country-selection.py'),
              '--template',args.template,'--data',args.data],'selected country header remains on previous country')
         run('active-binding-overview',overview_command+['--evidence-dir',str(evidence/'active-binding-overview')],
-            'overview identity bound to active country instead of preview')
+            'native country browse selected wrong country')
     finally:
         for path,raw in saved.items():path.write_bytes(raw)
         receipt['sources_after']={str(p.relative_to(ROOT)):digest(p) for p in paths}
