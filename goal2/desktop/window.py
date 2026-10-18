@@ -156,8 +156,12 @@ class ManagementWindow(QMainWindow):
     def update_captain(self):
         previous=self.captain.currentData();selected=self.selected_ids()
         self.captain.clear()
-        # [designed: T80] Preserve the loaded original automatic selection without confirming it.
-        if self.display_model.state.captain==0:
+        # [designed: T80] Preserve supplied competitive input; fresh friendly drafts keep their named default.
+        state=self.display_model.state
+        pending=state.campaign.next_fixture if state.campaign else None
+        from goal2.game.watched_schema import COMPETITIVE_SCHEMA,watched
+        original=(pending is not None and pending.kind!=1) or (watched(state.last_match) and state.last_match['schema']==COMPETITIVE_SCHEMA)
+        if state.captain==0 and original:
             self.captain.addItem('Original captain selection',0)
             self.captain.model().item(0).setEnabled(False)
         for word in selected:self.captain.addItem(self.model.goaldat.player_names[word],word)
