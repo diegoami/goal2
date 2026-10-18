@@ -1,0 +1,19 @@
+{
+  "head": "21469a379d7436d8691f9baf2945d67c236f5cd5",
+  "rows": [
+    {
+      "mode": "baseline",
+      "exit": 1,
+      "seconds": 1.067,
+      "log": ".cache/T79-main-handoff-planning-1792356985134641352/baseline.log",
+      "log_sha256": "4cad0bd82c23c64c05889885e99ac3e089ed00f5fdedfd7a70f54f2138cbc127"
+    },
+    {
+      "mode": "mock",
+      "exit": 1,
+      "seconds": 89.288,
+      "log": ".cache/T79-main-handoff-planning-1792356985134641352/mock.log",
+      "log_sha256": "513712a32511c18bec1806098eef136f3efa6d9045e997c7a101137926a9ad1d"
+    }
+  ]
+}
