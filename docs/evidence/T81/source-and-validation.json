@@ -112,7 +112,9 @@
     "runtime-02.json": "68940278585d4c760c9c9ec3b880dc617a0f1863b69d57e341ebcac7d0b0b038",
     "runtime-02.log": "baf37a23323e47f9b1acfe3a0abe61a453d97f94b65eab47234c65e69831f11d",
     "runtime-03.json": "aea35491733f7882915ef106049af4d3c471181dddf2c32a66292d7dcbea13f3",
-    "runtime-03.log": "ac8562f46f3da29a2f47974667e04825c69ec6f94c76fca2c5fbdab65410454e"
+    "runtime-03.log": "ac8562f46f3da29a2f47974667e04825c69ec6f94c76fca2c5fbdab65410454e",
+    "premerge-b6291b3.log": "61dc2769764390ddeb2e1eecce315734e9de026286d3ad92268590d812be84ee",
+    "premerge-receipt-01.json": "6f5032eb4800bb978e032be9315ac0d40000fbb86e8e7423b49403bb9a648e3e"
   },
   "rejected_attempts": [
     {
