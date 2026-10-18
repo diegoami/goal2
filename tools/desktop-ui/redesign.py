@@ -28,8 +28,9 @@ def contrast(a,b):
 def shell(args):
     # [designed] Import Qt only after the native caller has selected scaling.
     from PySide6.QtCore import Qt,qVersion,QPoint
+    from PySide6.QtGui import QPalette
     from PySide6.QtTest import QTest
-    from PySide6.QtWidgets import QApplication,QAbstractButton,QComboBox,QLineEdit
+    from PySide6.QtWidgets import QApplication,QAbstractButton,QComboBox,QLineEdit,QLabel
     from goal2.desktop.model import DesktopModel
     from goal2.desktop.window import ManagementWindow
     from goal2.desktop.style import COLORS
@@ -90,6 +91,42 @@ def shell(args):
             def tour():
                 for method in ('mouse','shortcut'):
                     for index in range(5):navigate(index,method)
+            # [designed] Actual native surfaces must retain contrast when inheriting this shell's style.
+            before=snapshot();surfaces={};failed=[]
+            def surface(name,foreground,background):
+                value=contrast(foreground,background)
+                surfaces[name]={'foreground':foreground,'background':background,'contrast':value}
+                if value<4.5:failed.append(name)
+            window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Down,Qt.KeyboardModifier.AltModifier)
+            app.processEvents();QTest.qWait(30);popup=window.country.view()
+            assert popup.isVisible(),'native country popup did not open'
+            surface('combo popup',popup.palette().color(QPalette.ColorRole.Text).name(),popup.palette().color(QPalette.ColorRole.Base).name())
+            surface('combo selection',popup.palette().color(QPalette.ColorRole.HighlightedText).name(),popup.palette().color(QPalette.ColorRole.Highlight).name())
+            assert popup.window().grab().save(str(evidence/'surface-country-popup.png'))
+            QTest.keyClick(window.country,Qt.Key.Key_Escape);window.country.hidePopup();app.processEvents()
+            navigate(4,'shortcut');window.path.setFocus()
+            QTest.keyClick(window.path,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier);app.processEvents()
+            surface('path selection',window.path.palette().color(QPalette.ColorRole.HighlightedText).name(),window.path.palette().color(QPalette.ColorRole.Highlight).name())
+            enabled=window.save.isEnabled();window.save.setEnabled(False);app.processEvents()
+            surface('disabled action',window.save.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.ButtonText).name(),window.save.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.Button).name())
+            window.save.setEnabled(enabled)
+            surface('table',window.table.palette().color(QPalette.ColorRole.Text).name(),window.table.palette().color(QPalette.ColorRole.Base).name())
+            surface('disabled table',window.table.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.Text).name(),window.table.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.Base).name())
+            header_background=window.table.horizontalHeader().grab().toImage().pixelColor(10,5).name()
+            surface('table header',COLORS['text'],header_background)
+            from goal2.desktop.standings import CompetitionTable
+            from goal2.game.campaign_schedule import start_opening_campaign
+            other=DesktopModel(model.goaldat,model.template_bytes,model.save_path)
+            other.state,_=start_opening_campaign(model.goaldat,model.template_bytes,managed_country=4,start_year=1992,seed_7b62=4660,seed_8336=33590)
+            dialog=CompetitionTable(other.competition_table(),window);dialog.show();QTest.qWait(30)
+            surface('competition dialog',dialog.findChildren(QLabel)[0].palette().color(QPalette.ColorRole.WindowText).name(),dialog.palette().color(QPalette.ColorRole.Window).name())
+            assert dialog.grab().save(str(evidence/'surface-competition-dialog.png'))
+            dialog.close();app.processEvents();QTest.qWait(120)
+            window.raise_();window.activateWindow();app.processEvents()
+            assert QTest.qWaitForWindowActive(window,2000),'shell did not regain native activation after closing surface probe'
+            report['native_surfaces']=surfaces
+            assert snapshot()==before,'surface inspection changed state/draft/preview/save/job ownership'
+            assert not failed,'native surface contrast failed: '+', '.join(failed)
             # [designed] Dirty active controls are deliberately different from confirmed state.
             window.navigate(1);window.pages[1].ensureWidgetVisible(window.tactics[0][1]);app.processEvents()
             QTest.mouseClick(window.tactics[0][1],Qt.MouseButton.LeftButton,pos=QPoint(10,window.tactics[0][1].height()//2));app.processEvents()
@@ -169,32 +206,39 @@ def shell(args):
     return report['ratio']
 
 def negative_controls(args):
-    """[designed] Actual baseline and refresh mutant must fail intended shell assertions."""
-    source=ROOT/'goal2/desktop/window.py';saved=source.read_bytes()
-    evidence=Path(args.evidence_dir);evidence.mkdir(parents=True,exist_ok=True)
+    """[designed] Baseline, draft loss and saved pre-fix native surfaces fail intended assertions."""
+    source=ROOT/'goal2/desktop/window.py';style=ROOT/'goal2/desktop/style.py'
+    saved={source:source.read_bytes(),style:style.read_bytes()}
+    evidence=Path(args.evidence_dir);evidence.mkdir(parents=True,exist_ok=False)
     accepted='08e3c67d2d0dc63a73aae7ee69610639746bf4b8'
+    pre_surface_fix='6eaaea2a0d1bca1a6f7dd4d89adfc65f367123fb'
     baseline=subprocess.check_output(['git','show',accepted+':goal2/desktop/window.py'],cwd=ROOT)
+    old_style=subprocess.check_output(['git','show',pre_surface_fix+':goal2/desktop/style.py'],cwd=ROOT)
     old=b'self.page_stack.setCurrentIndex(index)'
-    assert saved.count(old)==1,'expected one navigation mutation site'
-    cases=(('baseline',baseline,'five-destination navigation is absent'),
-           ('discard-draft',saved.replace(old,old+b';self.refresh()'),'navigation changed state/draft/preview/save/job ownership'))
-    receipt={'tag':'[designed: T74]','baseline':accepted,'source_before':hashlib.sha256(saved).hexdigest(),'cases':[]}
+    assert saved[source].count(old)==1,'expected one navigation mutation site'
+    cases=(('baseline',source,baseline,'five-destination navigation is absent'),
+           ('discard-draft',source,saved[source].replace(old,old+b';self.refresh()'),'navigation changed state/draft/preview/save/job ownership'),
+           ('native-surfaces',style,old_style,'native surface contrast failed: combo popup, combo selection, path selection, competition dialog'))
+    receipt={'tag':'[designed: T74]','baseline':accepted,'pre_surface_fix':pre_surface_fix,
+             'source_before':{str(p.relative_to(ROOT)):hashlib.sha256(raw).hexdigest() for p,raw in saved.items()},'cases':[]}
     try:
-        for name,mutant,expected in cases:
-            source.write_bytes(mutant)
-            command=[sys.executable,'-B',str(Path(__file__).resolve()),'--scenario','shell',
-                     '--template',args.template,'--data',args.data,'--evidence-dir',str(evidence/name),'--single-scale']
-            result=subprocess.run(command,cwd=ROOT,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'},capture_output=True,text=True,timeout=180)
-            (evidence/(name+'.log')).write_text(result.stdout+result.stderr)
-            assert result.returncode!=0 and 'AssertionError: '+expected in result.stderr, f'{name} did not fail intended assertion: {result.stderr}'
-            receipt['cases'].append({'name':name,'expected_assertion':expected,'returncode':result.returncode,
-                                     'mutant_sha256':hashlib.sha256(mutant).hexdigest()})
+        for name,path,mutant,expected in cases:
+            try:
+                path.write_bytes(mutant)
+                command=[sys.executable,'-B',str(Path(__file__).resolve()),'--scenario','shell',
+                         '--template',args.template,'--data',args.data,'--evidence-dir',str(evidence/name),'--single-scale']
+                result=subprocess.run(command,cwd=ROOT,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'},capture_output=True,text=True,timeout=180)
+                (evidence/(name+'.log')).write_text(result.stdout+result.stderr)
+                assert result.returncode!=0 and 'AssertionError: '+expected in result.stderr, f'{name} did not fail intended assertion: {result.stderr}'
+                receipt['cases'].append({'name':name,'source':str(path.relative_to(ROOT)),'expected_assertion':expected,
+                                         'returncode':result.returncode,'mutant_sha256':hashlib.sha256(mutant).hexdigest()})
+            finally:path.write_bytes(saved[path])
     finally:
-        source.write_bytes(saved)
-        receipt['source_after']=digest(source)
+        for path,raw in saved.items():path.write_bytes(raw)
+        receipt['source_after']={str(p.relative_to(ROOT)):digest(p) for p in saved}
         (evidence/'negative-controls.json').write_text(json.dumps(receipt,indent=2)+'\n')
-    assert source.read_bytes()==saved,'source restoration differed'
-    print('PASS negative controls: baseline lacks navigation; page refresh discards dirty draft; exact source bytes restored')
+    assert all(path.read_bytes()==raw for path,raw in saved.items()),'source restoration differed'
+    print('PASS negative controls: baseline navigation; dirty-draft loss; saved pre-fix native surface contrast; exact source bytes restored')
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell'],required=True)
@@ -202,10 +246,16 @@ def main():
     parser.add_argument('--evidence-dir',required=True);parser.add_argument('--single-scale',action='store_true');parser.add_argument('--negative-controls',action='store_true')
     args=parser.parse_args()
     if args.negative_controls:return negative_controls(args)
-    ratio=shell(args)
-    if ratio<1.5 and not args.single_scale:
-        env=os.environ.copy();env['QT_SCALE_FACTOR']='2'
+    if args.single_scale:return shell(args)
+    # [designed] The orchestrator owns no Qt connection; each scale exits before the next starts.
+    evidence=Path(args.evidence_dir)
+    if evidence.exists() and any(evidence.iterdir()):
+        index=2
+        while (evidence/f'run-{index:02}').exists():index+=1
+        evidence=evidence/f'run-{index:02}'
+    for scale,target in (('1',evidence),('2',evidence/'scale-2')):
+        env=os.environ.copy();env['QT_SCALE_FACTOR']=scale
         command=[sys.executable,str(Path(__file__).resolve()),'--scenario','shell','--template',args.template,
-                 '--data',args.data,'--evidence-dir',str(Path(args.evidence_dir)/'scale-2'),'--single-scale']
+                 '--data',args.data,'--evidence-dir',str(target),'--single-scale']
         subprocess.run(command,env=env,check=True)
 if __name__=='__main__':main()

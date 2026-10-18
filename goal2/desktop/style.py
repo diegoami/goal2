@@ -7,7 +7,7 @@ def apply_style(window):
     c=COLORS
     title_size=32 if window.devicePixelRatioF()>1 else 40
     window.setStyleSheet(f"""
-    QMainWindow, QScrollArea, QScrollArea > QWidget > QWidget {{background:{c['background']};color:{c['text']};}}
+    QMainWindow, QDialog, QScrollArea, QScrollArea > QWidget > QWidget {{background:{c['background']};color:{c['text']};}}
     QWidget {{font-size:16px; color:{c['text']};}}
     QLabel#countryTitle {{font-size:{title_size}px;font-weight:700;}}
     QLabel#pageHeading {{font-size:24px;font-weight:600;padding:4px;}}
@@ -19,6 +19,8 @@ def apply_style(window):
     QPushButton:checked:focus {{border:3px solid {c['ink']};}}
     QPushButton:disabled,QComboBox:disabled,QLineEdit:disabled,QCheckBox:disabled {{color:{c['secondary']};background:{c['panel']};}}
     QPushButton:focus,QComboBox:focus,QLineEdit:focus,QCheckBox:focus,QTableWidget:focus,QLabel#pageHeading:focus {{border:3px solid {c['focus']};}}
+    QComboBox QAbstractItemView {{background:{c['panel']};color:{c['text']};selection-background-color:{c['accent']};selection-color:{c['ink']};border:1px solid {c['divider']};}}
+    QLineEdit {{selection-background-color:{c['accent']};selection-color:{c['ink']};}}
     QTableWidget {{font-size:14px;background:{c['paper']};color:{c['ink']};gridline-color:{c['divider']};selection-background-color:{c['accent']};selection-color:{c['ink']};}}
     QHeaderView::section {{background:{c['raised']};color:{c['text']};padding:8px;}}
     QScrollArea {{border:0;}}

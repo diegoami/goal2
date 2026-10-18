@@ -1,0 +1,14 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+This plugin does not support grabbing the keyboard
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+This plugin does not support grabbing the keyboard
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+PASS shell: 42 real navigation transitions; state/draft/preview/save/job invariants; 5 captures; actual ratio 2.0
+PASS shell: 62 real navigation transitions; state/draft/preview/save/job invariants; 15 captures; actual ratio 1.0

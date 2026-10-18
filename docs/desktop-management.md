@@ -18,6 +18,17 @@ play remain Qt/Unicorn-independent. Linux Qt needs its platform libraries; X11
 uses libxcb-cursor0 and libxkbcommon-x11-0 in addition to existing X/GL libraries.
 Offscreen acceptance does not replace the actual X11 window check.
 
+[designed: T74] The persistent country header sits above five destinations:
+**Overview** (Ctrl+1), **Squad & tactics** (Ctrl+2), **National pool** (Ctrl+3),
+**Fixtures & results** (Ctrl+4), and **Save / resume** (Ctrl+5). Navigation moves
+focus to the page heading and preserves unconfirmed drafts, the active game,
+save files and running jobs. Select an outgoing squad row in Squad & tactics,
+then choose its reserve in National pool before using the existing exchange action.
+Save/Resume and the editable save path live in Save / resume; Ctrl+S invokes the
+same guarded Save. Status and Cancel match remain visible across destinations.
+At small sizes, scroll the current page to reach its remaining actions; tables
+retain their native row/column navigation, and Tab moves to the next control.
+
 [designed: #181] Selecting a country immediately shows a fresh campaign preview:
 its name, twenty-player squad, captain, tactics, morale, next fixture and reserve
 pool. Preview results belong to that fresh team; the active game's result is
