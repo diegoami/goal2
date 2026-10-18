@@ -49,7 +49,7 @@ status; this index carries none.
 | [T49](T49.md) | Build competition tables and code-based tie-breaks (medium) | [#109](https://github.com/diegoami/goal2/issues/109) | T48 |
 | [T51a](T51a.md) | Accept the competitive original-match kit (hard) | [#170](https://github.com/diegoami/goal2/issues/170) | T49 |
 | [T51](T51.md) | Resolve competitive matches, extra time and penalties (hard) | [#111](https://github.com/diegoami/goal2/issues/111) | T49, T51a |
-| [T50](T50.md) | Play continental qualifying campaigns (hard) | [#110](https://github.com/diegoami/goal2/issues/110) | T51 |
+| [T50](T50.md) | Play continental qualifying campaigns (hard) | [#110](https://github.com/diegoami/goal2/issues/110) | T51, T80 |
 | [T52](T52.md) | Play continental finals through a champion (hard) | [#112](https://github.com/diegoami/goal2/issues/112) | T50 |
 | [T53](T53.md) | Play World Cup qualifying and regional playoffs (hard) | [#113](https://github.com/diegoami/goal2/issues/113) | T52 |
 | [T54](T54.md) | Play World Cup finals through a champion (hard) | [#114](https://github.com/diegoami/goal2/issues/114) | T53 |
@@ -105,3 +105,9 @@ Historical browser contracts T34–T38 are preserved; these are separate impleme
 | Task | Title | Issue | Difficulty | Merge after |
 | --- | --- | --- | --- | --- |
 | [T73](T73.md) | Add direct Claude CLI and run one Sonnet review trial | [#174](https://github.com/diegoami/goal2/issues/174) | Hard | T72 |
+
+## Continental qualifying desktop prerequisite
+
+| Task | Title | Issue | Merge after |
+| --- | --- | --- | --- |
+| [T80](T80.md) | Play pending original competitive fixtures in the desktop (Hard) | [#189](https://github.com/diegoami/goal2/issues/189) | T51 |
