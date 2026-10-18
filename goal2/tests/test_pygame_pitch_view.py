@@ -81,9 +81,9 @@ class PitchPixels(unittest.TestCase):
         d=pitch();f=sample();f['ball']=[11,0,True]
         send(d,'frame',f);d.advance(0);viewer.render_pitch(self.screen,self.font,d)
         self.assertEqual(self.pixel(93,160),(213,231,204),'left playing-grid boundary')
-        self.assertEqual(self.pixel(906,160),(213,231,204),'right playing-grid boundary')
+        self.assertEqual(self.pixel(907,160),(213,231,204),'right playing-grid boundary')
         self.assertEqual(self.pixel(200,146),(213,231,204),'top playing-grid boundary')
-        self.assertEqual(self.pixel(200,417),(213,231,204),'bottom playing-grid boundary')
+        self.assertEqual(self.pixel(200,418),(213,231,204),'bottom playing-grid boundary')
         self.assertEqual(self.pixel(508,469),(18,28,37),'sentinel player must be hidden')
         self.assertNotEqual(self.pixel(500,469),(255,244,161),'sentinel ball must be hidden')
         g=copy.deepcopy(f);g['sequence']=1;g['players'][0][4:8]=[11,1,255,False];g['ball']=[10,2,False]
@@ -114,6 +114,21 @@ class PitchPixels(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'backlog'):send(other,'frame',sample(64))
         self.assertEqual(len(other.frames),64)
 
+    def test_accumulated_target_cadence_and_country_color_association(self):
+        import pygame
+        d=pitch()
+        for n in range(5):send(d,'frame',sample(n))
+        self.assertTrue(d.advance(0))
+        # [designed] Small scheduler lateness must not reset the target and halve playback rate.
+        for instant in (.018,.034,.051,.068):
+            self.assertTrue(d.advance(instant),'deadline drift reduced the fixed playback target')
+        viewer.render_pitch(self.screen,self.font,d)
+        for x,name,color in [(40,'First',(45,135,245)),(520,'Second',(245,105,45))]:
+            text=self.font.render(name,True,color)
+            expected=pygame.Surface(text.get_size());expected.fill((18,28,37));expected.blit(text,(0,0))
+            actual=self.screen.subsurface((x,37,*text.get_size()))
+            self.assertEqual(pygame.image.tobytes(actual,'RGB'),pygame.image.tobytes(expected,'RGB'),'country names must identify marker colors')
+
     def test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting(self):
         import pygame
         d=pitch()
@@ -123,11 +138,12 @@ class PitchPixels(unittest.TestCase):
             path=Path(folder);packets=[['owned',0,'start',['First','Second']],['owned',1,'pitch',{'rate':1}]]
             packets += [['owned',n+2,'frame',sample(n)] for n in range(3)]
             (path/'display').write_text(''.join(json.dumps(p)+'\n' for p in packets))
-            seen=[];flips=[];states=[];calls=[0]
+            seen=[];flips=[];states=[];calls=[0];before_flips=[]
             real_render=viewer.render_pitch;real_flip=pygame.display.flip
             def render(*args):
                 states[:]=[args[2]];return real_render(*args)
             def flip():
+                before_flips.append(states[0].consumed)
                 real_flip();flips.append(states[0].frame['sequence'] if states[0].frame else -1)
             def events():
                 calls[0]+=1
@@ -135,12 +151,57 @@ class PitchPixels(unittest.TestCase):
             def status(path,value):
                 seen.append(value)
                 value['test_flip_sequence']=flips[-1]
-            with patch.object(sys,'argv',['viewer',folder,'owned']),patch.object(viewer,'render_pitch',render),patch.object(viewer,'status',status),patch('pygame.display.flip',flip),patch('pygame.event.get',events):
+            with patch.object(sys,'argv',['viewer',folder,'owned']),patch.object(viewer,'render_pitch',render),patch.object(viewer,'status',status),patch('pygame.display.flip',flip),patch('pygame.event.get',events),patch.object(viewer.time,'monotonic',side_effect=[0,1,2,2.1,2.2]):
                 self.assertEqual(viewer.main(),0)
             for value in seen:
                 self.assertEqual(value['frame_sequence'],value['test_flip_sequence'],'ACK must match actually flipped sample')
             self.assertEqual(seen[0]['frame_sequence'],0,'first flipped sample was not consumed')
-            self.assertEqual(seen[-1]['kind'],'closed');self.assertEqual(seen[-1]['frame_sequence'],0)
+            previous=-1
+            for seq,before in zip(flips,before_flips):
+                if seq!=previous:
+                    self.assertEqual(before,previous,'sample acknowledged before SDL flip')
+                previous=seq
+            self.assertEqual(sorted(set(flips)),[0,1,2])
+            self.assertEqual(seen[-1]['kind'],'closed');self.assertEqual(seen[-1]['frame_sequence'],2)
+
+
+class PitchController(unittest.TestCase):
+    def test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status(self):
+        pitch()  # [designed] Before-control asserts feature absence without import ERROR.
+        from goal2.desktop.watched import WatchedController
+        from goal2.tests.test_pygame_match_view import model
+        with tempfile.TemporaryDirectory() as folder:
+            m=model(Path(folder)/'save');m.save(m.save_path)
+            saved=m.save_path.read_bytes();before=copy.deepcopy(m.state)
+            c=WatchedController(m,engine_command=[sys.executable,'-c','import time;time.sleep(60)'],viewer_command=[sys.executable,'-c','import time;time.sleep(60)'])
+            try:
+                # [designed] Sleep children exercise real ownership/cleanup without original execution.
+                c.start();frame=sample()
+                initial={'token':c.token,'kind':'ready','sequence':0,'digest':c.digests[0]}
+                (c.directory/'status').write_text(json.dumps(initial))
+                with patch.object(c.engine,'poll',return_value=[]),patch.object(c.engine,'poll_frames',side_effect=[[frame],[],[],[]]),patch.object(c.engine,'ack_frames') as ack:
+                    c.poll();ack.assert_not_called()
+                    self.assertEqual(len(c.display.frames),1,'queued frame must remain pending')
+                    self.assertTrue(c.busy and m.match_pending)
+                    valid=dict(token=c.token,kind='ready',sequence=c.display.sequence,digest=c.display.digest(),frame_sequence=0,frame_digest=viewer.frame_digest(frame))
+                    (c.directory/'status').write_text(json.dumps(valid));c.poll()
+                    ack.assert_called_once_with(c.engine_token,0)
+                    c.poll();ack.assert_called_once()
+                    self.assertEqual(len(c.display.frames),0)
+                self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
+            finally:c.close()
+            for bad in (True,-2,1,[],None):
+                with self.subTest(ack=bad):
+                    c=WatchedController(m,engine_command=[sys.executable,'-c','import time;time.sleep(60)'],viewer_command=[sys.executable,'-c','import time;time.sleep(60)'])
+                    try:
+                        c.start();child=c.process;engine=c.engine.process
+                        status=dict(token=c.token,kind='ready',sequence=c.display.sequence,digest=c.display.digest(),frame_sequence=bad,frame_digest=None)
+                        (c.directory/'status').write_text(json.dumps(status))
+                        with self.assertRaises(ValueError):c.poll()
+                        self.assertFalse(c.busy or m.match_pending)
+                        self.assertIsNotNone(child.poll());self.assertIsNotNone(engine.poll())
+                        self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
+                    finally:c.close()
 
 
 class SavedByteControls(unittest.TestCase):
@@ -152,18 +213,21 @@ class SavedByteControls(unittest.TestCase):
         cases=[('axes','CENTER[0] + y * SCALE[0], CENTER[1] + x * SCALE[1]','CENTER[0] + x * SCALE[0], CENTER[1] + y * SCALE[1]','test_independent_axes_team_labels_ball_movement_half_and_rebinding','signed team marker pixels differ'),
                ('player-visibility','            if hidden:\n','            if False:\n','test_field_bounds_visibility_and_unknown_state','sentinel player must be hidden'),
                ('ball-visibility','        if not hidden:\n','        if True:\n','test_field_bounds_visibility_and_unknown_state','sentinel ball must be hidden'),
+               ('early-consumption','                pygame.display.flip()','                display.rendered()\n                pygame.display.flip()','test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting','sample acknowledged before SDL flip'),
                ('consumption','                display.rendered()','                pass # mutant: no rendered acknowledgement','test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting','ACK must match actually flipped sample')]
         receipt=[]
         for name,before,after,test,assertion in cases:
             mutated=original.replace(before.encode(),after.encode());self.assertNotEqual(mutated,original)
+            intended=False
             try:
                 target.write_bytes(mutated)
                 result=subprocess.run([sys.executable,'-B','-m','unittest','goal2.tests.test_pygame_pitch_view.PitchPixels.'+test,'-v'],cwd=ROOT,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),capture_output=True,text=True,timeout=30)
                 output=result.stdout+result.stderr;(directory/(name+'.log')).write_text(output)
                 self.assertEqual(result.returncode,1,output);self.assertIn('FAIL:',output);self.assertIn(assertion,output);self.assertNotIn('\nERROR:',output)
+                intended=True
             finally:
                 target.write_bytes(original);self.assertEqual(target.read_bytes(),original)
-                receipt.append(dict(name=name,before=hashlib.sha256(original).hexdigest(),mutated=hashlib.sha256(mutated).hexdigest(),restored=hashlib.sha256(target.read_bytes()).hexdigest()))
+                receipt.append(dict(name=name,intended_assertion_failed=intended,before=hashlib.sha256(original).hexdigest(),mutated=hashlib.sha256(mutated).hexdigest(),restored=hashlib.sha256(target.read_bytes()).hexdigest()))
                 (directory/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
 
 

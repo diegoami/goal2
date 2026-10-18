@@ -143,7 +143,7 @@ python3 -m goal2.desktop --template .cache/e010-r0008-halftime.sav --data .cache
 ```
 
 [designed] Confirm XI, captain and tactics, then choose **Watch original friendly**.
-A separate Pygame window shows the original ordered commentary, minute and score;
+A separate Pygame window shows a numbered animated pitch, original ordered commentary, minute and score;
 after the original post-match tail, scroll with the mouse wheel or arrow keys to
 see the original full-time board, man of the match and **Raw rating**. Countries,
 minute and score stay pinned above the scroll area. New commentary follows live
@@ -154,8 +154,24 @@ match and preserves the last committed state/save. Closing a completed viewer
 keeps the published result. Save/Resume remain Qt actions; saving during a match
 is unavailable. A second match requires an explicit new Play/Watch action.
 Pending qualifiers, standalone watching, in-play changes, mid-match saves and
-pitch animation are unsupported. Quick management/play remains available without
+competitive watching are unsupported. Quick management/play remains available without
 pygame-ce, Unicorn or watched resources; Watch reports the missing dependency.
+
+[designed: T83] The field is a modern schematic. Team colors identify the fixture
+countries; numbers 1–11 are current local pitch slots, not persistent shirt
+numbers. The ball and players use discrete original completed-tick positions,
+without interpolation or halftime rotation. Only the original exact hidden-position
+sentinel suppresses a marker. The fixed default playback target is 60 samples per
+second, independently of engine speed; slow display refresh can extend playback.
+Score, minute and commentary follow the currently displayed sample's canonical
+event watermark. The last tick stays on screen through full-time. Save and all
+management mutations stay locked until every sample has been displayed and the
+original result validated. Closing while playback is pending discards the pending
+result even if the engine has finished. The bounded queue holds at most 64
+unacknowledged samples; the worker's finite journal remains lossless within T82's
+8192-frame/16MiB budget. `WatchedController.start(playback_rate=...)` accepts an
+explicit 1–240 samples/s target; `frames=False` retains the text presentation for
+compatibility checks. See [T83 evidence](evidence/T83/README.md).
 
 [confirmed: F014/E012 §1 at424d5998076da1e4efc399c2715689ddb44d3e1a]
 Raw ratings are the actual returned original player-record words at +0x12, not
@@ -172,15 +188,18 @@ a10-second bound. Failed folder/stream allocation releases partial resources and
 reports the original cause; the same controller can retry. Cancellation terminates
 then kills/reaps only its owned engine
 and viewer, each with half-second waits. Native Windows packaging is untested.
-See [T66 evidence](evidence/T66/README.md) for tested display modes and controls.
+See [T66 evidence](evidence/T66/README.md) for retained text-mode checks and
+[T83 evidence](evidence/T83/README.md) for animated pitch display acceptance.
 
 ```sh
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m unittest goal2.tests.test_pygame_pitch_view -v
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/animated-pitch.py
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m unittest goal2.tests.test_pygame_match_view -v
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/watched.py
 ```
 
 [designed] For validation, set TMPDIR to the checkout's physical `.cache/tmp` and
-stage the verified fixtures described by the T66 evidence; neither command fetches
+stage the verified fixtures described by the T66 evidence; these commands never fetch
 or commits original assets. A normal desktop launch should use its native SDL/Qt
 display drivers, not the headless variables above.
 

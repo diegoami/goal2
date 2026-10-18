@@ -9,7 +9,7 @@ from goal2.desktop.match_view import Display, MAX_PACKET, MAX_JOURNAL
 # [designed: T83] Modern schematic scale; T81 proves signed axes, not physical metres/art.
 CENTER = (500, 282)
 SCALE = (11, 17)
-FIELD = (93, 146, 814, 272)
+FIELD = (93, 146, 815, 273)
 TEAM_COLORS = ((45, 135, 245), (245, 105, 45))
 GRASS = (26, 100, 57)
 MARKING = (213, 231, 204)
@@ -73,7 +73,12 @@ def render_pitch(screen, font, display, scroll=0):
     visible = display.visible()
     lines = visible.lines()
     for n, line in enumerate(lines[:3]):
-        screen.blit(font.render(line, True, (232, 239, 229)), (20, 12+n*25))
+        if n != 1:
+            screen.blit(font.render(line, True, (232, 239, 229)), (20, 12+n*25))
+    for team, name in enumerate(display.countries or ['Starting…']):
+        x = 20 + team * 480
+        pygame.draw.circle(screen, TEAM_COLORS[team], (x+8,46), 8)
+        screen.blit(font.render(name, True, TEAM_COLORS[team]), (x+20,37))
     pygame.draw.rect(screen, GRASS, (60, 112, 880, 340))
     pygame.draw.rect(screen, MARKING, FIELD, 2)
     pygame.draw.line(screen, MARKING, (500,146), (500,418), 2)
@@ -98,7 +103,7 @@ def render_pitch(screen, font, display, scroll=0):
             point = project(x,y)
             pygame.draw.circle(screen, (10,20,27), point, 6)
             pygame.draw.circle(screen, (255,244,161), point, 4)
-    screen.blit(font.render('Slot labels 1-11 | discrete original samples | wheel/arrows: commentary / board | Esc: close',
+    screen.blit(font.render('Slot labels 1-11 | wheel/arrows: commentary / board | End: follow | Esc: close',
                             True, (232,239,229)), (20,88))
     rows = lines[3:]
     scroll = max(0, min(scroll, max(0,len(rows)-8)))

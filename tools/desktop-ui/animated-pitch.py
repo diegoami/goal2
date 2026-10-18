@@ -17,21 +17,26 @@ sys.path.insert(0, str(ROOT))
 # [designed] Instrument the actual production renderer and post-flip surface, without
 # extending product protocols or writing original Memory, poses, assets or executables.
 VIEWER = r'''
-import json, pathlib, sys, time
+import collections, json, pathlib, sys, time
 import pygame
 from goal2.desktop import pygame_viewer as v
 out=pathlib.Path(sys.argv.pop(1));out.mkdir(parents=True,exist_ok=True)
 slow=float(sys.argv.pop(1));close_after=int(sys.argv.pop(1))
 original_render=v.render_pitch;original_flip=pygame.display.flip
-state={'rendered':0,'changed':0,'selectors':[],'rebindings':0,'last_sequence':-1,'last_minute':None,'complete':False}
-current=None;previous=None;display=None;last_pixels=None
+state={'rendered':0,'changed':0,'selectors':[],'rebindings':0,'last_sequence':-1,'last_minute':None,'complete':False,
+       'first_flip_monotonic':None,'last_flip_monotonic':None,'playback_seconds':0,'observed_samples_per_second':0,
+       'minimum_sample_interval':None,'maximum_sample_interval':None,'maximum_samples_per_second':None,
+       'selector_samples':{},'capture_counts':{}}
+current=None;previous=None;display=None;last_pixels=None;caption_set=False
 def render(screen,font,d,scroll=0):
  global current,display
  result=original_render(screen,font,d,scroll)
  current=d.frame;display=d
  return result
 def flip():
- global previous,last_pixels
+ global previous,last_pixels,caption_set
+ if not caption_set:
+  pygame.display.set_caption('goal2 — T83 automated pitch acceptance');caption_set=True
  original_flip()
  if (out/'close-request').exists():pygame.event.post(pygame.event.Event(pygame.QUIT))
  if current is not None and current['sequence']!=state['last_sequence']:
@@ -41,14 +46,33 @@ def flip():
    assert len(visible.events)==current['watermark'],'commentary escaped its causal watermark'
    assert visible.lines()[2]==('%s min   %s — %s'%(current['minute'],*current['score'])),'score/minute differs from rendered sample'
   pixels=pygame.image.tobytes(pygame.display.get_surface(),'RGB')
+  now=time.monotonic()
+  if state['first_flip_monotonic'] is None:state['first_flip_monotonic']=now
+  if state['last_flip_monotonic'] is not None:
+   interval=now-state['last_flip_monotonic']
+   state['minimum_sample_interval']=min(state['minimum_sample_interval'] or interval,interval)
+   state['maximum_sample_interval']=max(state['maximum_sample_interval'] or interval,interval)
+   state['maximum_samples_per_second']=1/state['minimum_sample_interval']
+  state['last_flip_monotonic']=now
+  state['playback_seconds']=now-state['first_flip_monotonic']
+  if state['playback_seconds']:state['observed_samples_per_second']=state['rendered']/state['playback_seconds']
   state['changed']+=int(last_pixels is not None and pixels!=last_pixels)
   state['rendered']+=1;state['last_sequence']=current['sequence'];state['last_minute']=current['minute']
   if previous is not None:state['rebindings']+=sum(a[3]!=b[3] for a,b in zip(previous['players'],current['players']))
   selector=current['selector']
   if selector not in state['selectors']:
    state['selectors'].append(selector)
-   pygame.image.save(pygame.display.get_surface(),str(out/('half-%s.png'%selector)))
   previous=current;last_pixels=pixels
+  key=str(selector);state['selector_samples'][key]=state['selector_samples'].get(key,0)+1
+  ordinal=state['selector_samples'][key]
+  if ordinal in (1,300):
+   counts=collections.Counter(v.project(p[4],p[5]) for p in current['players'] if not p[7])
+   name=('half-' if ordinal==1 else 'sample-300-selector-')+key
+   state['capture_counts'][name]={'sample_ordinal_within_selector':ordinal,'sequence':current['sequence'],
+    'minute':current['minute'],'hidden_players':sum(p[7] for p in current['players']),
+    'visible_players':sum(counts.values()),'unique_projected_player_positions':len(counts),
+    'overlap_multiplicities':sorted(n for n in counts.values() if n>1),'ball_hidden':current['ball'][2]}
+   pygame.image.save(pygame.display.get_surface(),str(out/(name+'.png')))
   if close_after and state['rendered']>=close_after:pygame.event.post(pygame.event.Event(pygame.QUIT))
   if slow:time.sleep(slow)
  if display is not None and display.result is not None and not state['complete']:
@@ -99,6 +123,7 @@ def main():
         save = Path(folder) / 'pitch.g2save'
         m = model(save)
         w = ManagementWindow(m)
+        w.setWindowTitle('goal2 — T83 automated pitch acceptance controls')
         w.show()
         app.processEvents()
         beats = []
@@ -175,13 +200,16 @@ def main():
                     'canonical_state_memory_seeds_equal':True, 'pending_tail_locked':pending_tail,
                     'max_backlog':max_backlog, 'heartbeats':len(beats), 'render':metrics})
                 # [designed] An old viewer's teardown must preserve a newer job owner.
-                quick = QuickJobs(m, command=[sys.executable, '-c', 'import time;time.sleep(60)'])
-                quick.start();other = quick.process
-                try:
-                    w.watched.cancel();w.poll_watched()
-                    assert m.match_pending and other.poll() is None
-                    assert not w.save.isEnabled()
-                finally:quick.cancel();w.set_busy(False)
+                if round_number == 0:
+                    quick = QuickJobs(m, command=[sys.executable, '-c', 'import time;time.sleep(60)'])
+                    quick.start();other = quick.process
+                    try:
+                        w.watched.cancel();w.poll_watched()
+                        assert m.match_pending and other.poll() is None
+                        assert not w.save.isEnabled()
+                    finally:quick.cancel();w.set_busy(False)
+                else:
+                    w.watched.close_viewer();w.poll_watched()
                 assert viewer.poll() is not None and engine.poll() is not None
                 receipts['boundaries'].append('owned-only teardown round %s' % (round_number+1))
 
@@ -202,7 +230,8 @@ def main():
                     pump(lambda:w.watched.process is None, app=app, timeout=60)
                 else:
                     # [designed] Pause only this owned child to prevent a valid status
-                    # racing our malformed/stale protocol probe. Teardown resumes by SIGTERM.
+                    # racing our malformed/stale protocol probe. The controller reaps
+                    # a still-stopped child with its bounded SIGKILL fallback.
                     import signal
                     os.kill(viewer.pid, signal.SIGSTOP)
                     path = w.watched.directory/'status'

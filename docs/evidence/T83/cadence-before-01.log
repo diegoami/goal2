@@ -1,0 +1,15 @@
+test_accumulated_target_cadence_and_country_color_association (goal2.tests.test_pygame_pitch_view.PitchPixels.test_accumulated_target_cadence_and_country_color_association) ... FAIL
+
+======================================================================
+FAIL: test_accumulated_target_cadence_and_country_color_association (goal2.tests.test_pygame_pitch_view.PitchPixels.test_accumulated_target_cadence_and_country_color_association)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T83-animated-pitch/goal2/tests/test_pygame_pitch_view.py", line 124, in test_accumulated_target_cadence_and_country_color_association
+    self.assertTrue(d.advance(instant),'deadline drift reduced the fixed playback target')
+AssertionError: False is not true : deadline drift reduced the fixed playback target
+
+----------------------------------------------------------------------
+Ran 1 test in 0.052s
+
+FAILED (failures=1)
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)

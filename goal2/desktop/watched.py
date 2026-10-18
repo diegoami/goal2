@@ -125,8 +125,10 @@ class WatchedController:
                     raise ValueError('stale viewer acknowledgement')
                 if pitch_status:
                     consumed = value['frame_sequence']
+                    if type(consumed) is not int:
+                        raise ValueError('invalid rendered pitch acknowledgement')
                     receipt = self.frame_receipts.get(consumed)
-                    if (type(consumed) is not int or consumed < self.frame_ack
+                    if (consumed < self.frame_ack
                             or consumed > self.display.frame_sequence
                             or (consumed == -1 and value['frame_digest'] is not None)
                             or (consumed >= 0 and (receipt is None or value['frame_digest'] != receipt[0]
@@ -139,7 +141,7 @@ class WatchedController:
                             self.display.frames.popleft()
                         # [designed] Keep one receipt for repeated status, bounded by outstanding frames.
                         self.frame_receipts = {k:v for k,v in self.frame_receipts.items() if k >= consumed}
-                elif self.frames_enabled and self.frame_ack >= 0:
+                elif self.frames_enabled and value['sequence'] >= 2:
                     raise ValueError('missing rendered pitch acknowledgement')
                 self.last_status = value
                 if value['kind'] == 'closed':

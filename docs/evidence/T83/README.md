@@ -13,6 +13,13 @@ captures for its observed half selectors and full-time board. Captures contain
 rebuild UI pixels only. Memory is compared in process and recorded only by hash;
 original assets, executable bytes, savestates and raw pose journals are excluded.
 
+[designed: T83] Each selector's first and 300th discrete sample are captured by
+ordinal, without classifying an engine reset or selecting favourable spacing.
+Metrics record visible/hidden player counts, unique projected position counts,
+overlap multiplicities and ball visibility for those samples. Timing metrics
+record actual post-flip intervals and mean/maximum observed cadence; the fixed
+configured rate is a target, with host-dependent rendering and scheduling costs.
+
 [designed: T83] The first friendly uses the production default rate of 60 discrete
 samples per second. The second uses the supported rate of 240 to shorten the
 repeat and Save/Resume check. Both compare complete canonical state (including
@@ -34,3 +41,12 @@ its actual `DISPLAY`, `QT_QPA_PLATFORM=xcb` and `SDL_VIDEODRIVER=x11`; provide a
 staged xcb libraries through `LD_LIBRARY_PATH` when needed. Environment mode names
 are retained in each receipt. A headless pass does not establish native display
 acceptance; neither Linux mode establishes Windows acceptance.
+
+[designed: T83; measured: offscreen-20261018-run1.log] The first retained
+offscreen run completed both original friendly comparisons, Save/Resume and all
+4,540 then 4,616 discrete frame flips. Its acceptance setup then attempted to
+start a quick friendly after the second match, where the campaign correctly
+offered a competitive fixture. That unsupported probe failed before the
+cancellation probes. The script now visits owned-only quick teardown after the
+first friendly and closes the second viewer directly. The failed run and its
+captures remain as diagnostic evidence; it is not a complete acceptance pass.

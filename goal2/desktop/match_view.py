@@ -62,7 +62,7 @@ class Display:
         elif kind == 'pitch' and self.sequence == 1:
             if (not isinstance(value, dict) or set(value) != {'rate'}
                     or type(value['rate']) not in (int, float)
-                    or not math.isfinite(value['rate']) or not 1 <= value['rate'] <= 240):
+                    or not 1 <= value['rate'] <= 240 or not math.isfinite(value['rate'])):
                 raise ValueError('invalid pitch playback rate')
             self.pitch_rate = value['rate']
         elif kind == 'frame' and self.pitch_rate is not None and self.result is None:
@@ -95,7 +95,10 @@ class Display:
         if not self.frames or now < self.next_frame:
             return False
         self.frame = self.frames.popleft()
-        self.next_frame = now + 1 / self.pitch_rate
+        interval = 1 / self.pitch_rate
+        # [designed] Accumulate small scheduler lateness; a full missed interval resets pacing,
+        # retaining every sample instead of a burst of catch-up acknowledgements.
+        self.next_frame = (now if now - self.next_frame >= interval else self.next_frame) + interval
         return True
 
     def rendered(self):
