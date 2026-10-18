@@ -299,5 +299,51 @@ sys.exit(pygame_viewer.main())
 class OriginalQtAcceptance(unittest.TestCase):
     def test_original_qt_save_resume_repeat(self):
         import runpy
-        acceptance=runpy.run_path(str(ROOT/'tools/desktop-ui/watched.py'))
-        acceptance['main']()
+        # [designed: #234] run_path does not add the helper's sibling import directory.
+        original_path = sys.path[:]
+        try:
+            sys.path.insert(0, str(ROOT/'tools/desktop-ui'))
+            acceptance=runpy.run_path(str(ROOT/'tools/desktop-ui/watched.py'))
+            acceptance['main']()
+        finally:
+            sys.path[:] = original_path
+
+
+class AcceptanceImportContextTests(unittest.TestCase):
+    def test_direct_acceptance_load_restores_complete_import_path(self):
+        import runpy
+        original = sys.path[:]
+        loader = runpy.run_path
+        loaded = []
+        def load(path):
+            self.assertEqual(sys.path[0], str(ROOT/'tools/desktop-ui'))
+            namespace = loader(path)
+            loaded.append(namespace)
+            def main():
+                sys.path.append('acceptance-main-mutation')
+                return 'bounded'
+            return {**namespace, 'main':main}
+        try:
+            with patch.object(runpy, 'run_path', load):
+                OriginalQtAcceptance().test_original_qt_save_resume_repeat()
+            self.assertEqual(len(loaded), 1)
+            self.assertTrue(callable(loaded[0]['main']))
+            self.assertEqual(sys.path, original)
+        finally:
+            sys.path[:] = original
+
+    def test_acceptance_exception_restores_complete_import_path(self):
+        import runpy
+        original = sys.path[:]
+        failure = RuntimeError('bounded acceptance failure')
+        def load(path):
+            sys.path.insert(0, 'acceptance-loader-mutation')
+            raise failure
+        try:
+            with patch.object(runpy, 'run_path', load):
+                with self.assertRaises(RuntimeError) as caught:
+                    OriginalQtAcceptance().test_original_qt_save_resume_repeat()
+            self.assertIs(caught.exception, failure)
+            self.assertEqual(sys.path, original)
+        finally:
+            sys.path[:] = original

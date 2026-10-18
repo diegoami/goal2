@@ -29,7 +29,19 @@ def frame_digest(frame):
 def status(path, value):
     temporary = path.with_suffix('.new')
     temporary.write_text(json.dumps(value))
-    os.replace(temporary, path)
+    # [designed: #236] Retry only native Windows replacement denial, for <=250ms.
+    deadline = time.monotonic() + .25
+    while True:
+        try:
+            os.replace(temporary, path)
+            return
+        except PermissionError as exc:
+            remaining = deadline - time.monotonic()
+            if sys.platform != 'win32' or getattr(exc, 'winerror', None) != 5 or remaining <= 0:
+                raise
+            time.sleep(min(.01, remaining))
+            if time.monotonic() >= deadline:
+                raise
 
 
 def navigation(event, scroll, follow):

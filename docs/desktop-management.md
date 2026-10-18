@@ -215,6 +215,16 @@ a10-second bound. Failed folder/stream allocation releases partial resources and
 reports the original cause; the same controller can retry. Cancellation terminates
 then kills/reaps only its owned engine
 and viewer, each with half-second waits. Native Windows packaging is untested.
+
+[designed: #236] The watched viewer retries Windows status replacement denial
+(WinError5) for up to250ms. Qt defers status-read access denial to later polls,
+without sleeping in the callback, for up to250ms of consecutive failures; a
+successful read resets that budget. Native Windows reads may report errno13
+without a winerror. Owned viewer-folder deletion retries WinError32 for up
+to500ms after child reaping and stream closure. Permanent or unrelated errors
+propagate. Failed teardown retains references for retry and keeps its pending
+match lock; a completed old viewer never releases a newer job's lock.
+
 See [T66 evidence](evidence/T66/README.md) for retained text-mode checks and
 [T83 evidence](evidence/T83/README.md) for animated pitch display acceptance.
 
