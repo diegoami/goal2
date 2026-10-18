@@ -1,13 +1,13 @@
 """[designed: T69] Native Qt management widgets; drafts never mutate the game.
-[derived: F010] Tactics elements1..4; remaining labels retain rebuild policy.
+[confirmed: F010] Tactics labels for elements1..4,6,7.
 """
 from PySide6.QtCore import Qt,QTimer
 from goal2.desktop.jobs import QuickJobs
 from PySide6.QtWidgets import (QCheckBox,QComboBox,QHeaderView,QHBoxLayout,QLabel,
  QLineEdit,QMainWindow,QPushButton,QSplitter,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget)
 
-# [confirmed: F010] Display order5,6,7,1,2,3,4,8. [designed] Labels5..8.
-TACTICS=((5,'Half pitch / full pitch'),(6,'Short kicks / long kicks'),(7,'Stay back / push forward'),
+# [confirmed: F010] Display order5,6,7,1,2,3,4,8. [designed] Labels5,8.
+TACTICS=((5,'Half pitch / full pitch'),(6,'Sag back to box / stand ground'),(7,'Play safe / offside trap'),
          (1,'Stay back / push forward'),(2,'Keep ball / quick pass'),(3,'Short passes / long passes'),
          (4,'Avoid injury / go in hard'),(8,'Zone / man to man'))
 

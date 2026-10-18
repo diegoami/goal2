@@ -145,8 +145,8 @@ class TestVisibleNavigation(unittest.TestCase):
 
     def test_tactics_marker_tracks_rows_without_replacing_checkbox(self):
         steps = ((1, "[ ]  half pitch / full pitch"),
-                 (2, "[ ]  short kicks / long kicks"),
-                 (2, "[X]  short kicks / long kicks"),
+                 (2, "[ ]  sag back to box / stand ground"),
+                 (2, "[X]  sag back to box / stand ground"),
                  (1, "[ ]  half pitch / full pitch"))
         result, output = _drive(
             tactics,
@@ -160,8 +160,8 @@ class TestVisibleNavigation(unittest.TestCase):
 
     def test_tactics_marker_stays_visible_at_both_movement_bounds(self):
         labels = (
-            "[ ]  half pitch / full pitch", "[ ]  short kicks / long kicks",
-            "[ ]  stay back / push forward", "[ ]  stay back / push forward",
+            "[ ]  half pitch / full pitch", "[ ]  sag back to box / stand ground",
+            "[ ]  play safe / offside trap", "[ ]  stay back / push forward",
             "[ ]  keep ball / quick pass", "[ ]  short passes / long passes",
             "[ ]  avoid injury / go in hard", "[ ]  zone / man to man",
         )
