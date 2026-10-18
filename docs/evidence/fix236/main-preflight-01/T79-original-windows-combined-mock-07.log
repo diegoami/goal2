@@ -1,0 +1,37 @@
+test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat) ... DIAGNOSTIC cancel viewer code None
+DIAGNOSTIC viewer stderr 
+DIAGNOSTIC engine stderr 
+DIAGNOSTIC status {"token": "d383cfa3952bcef29ab7be2efce0054dba7cce02b338c9ae", "kind": "ready", "sequence": 436, "digest": "2381d08e7e82393ee1922ba3180508323b358d22ff2de32da087fa3549bb24c6"}
+MOCK retried transient Windows owned-viewer cleanup
+DIAGNOSTIC controller exception PermissionError(13, 'Permission denied')
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-original-baseline-1792350834010012560\combined-sharing-mock-07.py", line 23, in _audit_poll
+    try:return _original_poll(self)
+               ~~~~~~~~~~~~~~^^^^^^
+  File "<runtime-only bounded status-read mock>", line 10, in poll
+  File "C:\Users\diego\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T79-original-baseline-1792350834010012560\\.cache\\tmp\\goal2-viewer-uzib06_j\\status'
+DIAGNOSTIC differing state fields ['players', 'countries', 'rng_seed_7b62', 'rng_seed_8336', 'match_state', 'mem', 'match_count', 'last_match', 'campaign']
+DIAGNOSTIC match counts 0 1
+DIAGNOSTIC cancel viewer code None
+DIAGNOSTIC stderr read FileNotFoundError(2, 'No such file or directory')
+FAIL
+
+======================================================================
+FAIL: test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-original-baseline-1792350834010012560\goal2\tests\test_pygame_match_view.py", line 303, in test_original_qt_save_resume_repeat
+    acceptance['main']()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-original-baseline-1792350834010012560\tools\desktop-ui\watched.py", line 60, in main
+    assert m.state==control.state,'complete state/Memory/both RNG/history differs from direct original'
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: complete state/Memory/both RNG/history differs from direct original
+
+----------------------------------------------------------------------
+Ran 1 test in 29.163s
+
+FAILED (failures=1)

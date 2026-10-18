@@ -1,0 +1,17 @@
+{
+  "exit": 0,
+  "seconds": 117.02562270400085,
+  "protected_before": {
+    "/mnt/c/Users/diego/projects/goal2-exe/Start-goal2.cmd": "1df00f8ca12e10be100877021ec40ea7013604e7503fa8c40a21a57e7d0d6bb2",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/desktop.g2save": "ead25fd28628a68d30a9077d07b400e55e5b092c41f32db39e3da312c9f3e0a5",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "protected_after": {
+    "/mnt/c/Users/diego/projects/goal2-exe/Start-goal2.cmd": "1df00f8ca12e10be100877021ec40ea7013604e7503fa8c40a21a57e7d0d6bb2",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/desktop.g2save": "ead25fd28628a68d30a9077d07b400e55e5b092c41f32db39e3da312c9f3e0a5",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "scope": "Runtime-only diagnostic; unchanged archived source"
+}
