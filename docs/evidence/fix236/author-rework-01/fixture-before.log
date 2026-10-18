@@ -1,0 +1,24 @@
+test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation (goal2.tests.test_desktop_watched_sharing.SharingTests.test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation) ... 
+  test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation (goal2.tests.test_desktop_watched_sharing.SharingTests.test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation) (failed='launch') ... FAIL
+  test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation (goal2.tests.test_desktop_watched_sharing.SharingTests.test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation) (failed='engine') ... FAIL
+
+======================================================================
+FAIL: test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation (goal2.tests.test_desktop_watched_sharing.SharingTests.test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation) (failed='launch')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/goal2/tests/test_desktop_watched_sharing.py", line 273, in test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation
+    self.assertIs(caught.exception.__context__, injected)
+AssertionError: AttributeError("'types.SimpleNamespace' object has no attribute 'executable'") is not OSError('launch startup failure')
+
+======================================================================
+FAIL: test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation (goal2.tests.test_desktop_watched_sharing.SharingTests.test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation) (failed='engine')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/goal2/tests/test_desktop_watched_sharing.py", line 273, in test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation
+    self.assertIs(caught.exception.__context__, injected)
+AssertionError: AttributeError("'types.SimpleNamespace' object has no attribute 'executable'") is not OSError('engine startup failure')
+
+----------------------------------------------------------------------
+Ran 1 test in 0.011s
+
+FAILED (failures=2)

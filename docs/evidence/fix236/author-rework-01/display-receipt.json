@@ -1,0 +1,16 @@
+{
+  "display": ":99",
+  "owned_window_manager_pid": 2649245,
+  "command": [
+    "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "goal2.tests.test_desktop_watched_sharing",
+    "goal2.tests.test_pygame_match_view.AcceptanceImportContextTests",
+    "goal2.tests.test_pygame_match_view.OriginalQtAcceptance",
+    "-v"
+  ],
+  "exit": 0,
+  "owned_window_manager_exit": 0
+}

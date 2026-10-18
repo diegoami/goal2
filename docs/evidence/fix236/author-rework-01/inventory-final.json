@@ -1,0 +1,20 @@
+{
+  "claim": "Current safe evidence files; excludes inventory files themselves. Earlier inventories remain historical snapshots in git.",
+  "sha256": {
+    "README.md": "bcacf48a0cecf0027c9f9aeab95dd4304f4ed07bfe16f8d5209fae7513c1d05d",
+    "baseline-restoration.json": "f7a10812309a557a5103613f457eefbfae6dda06c655895c3460817435f97de7",
+    "display-receipt.json": "17e519b768f6df3dffb4d77b24f6f46f5b1c78baf37508fcc7a82a7e4f03c229",
+    "fixture-before.log": "ebabf99f71274b06aeeda36e01dc8c278f851b9af6398ef99edbbee8be020aae",
+    "fixtures-unchanged.json": "435e96108764d24b4af2432a7fc047fe88b1ceb55281fa3001adc54e1e58d1f2",
+    "main-startup-fixture-01.json": "f3295ae33961d7330efcc2083ea4ec0148670ed025056dc62a0d3615f967fd75",
+    "main-startup-fixture-01.log": "b188e3299fc4457aaa0076cef9074fe83098acd4f656aab51e12fb61cf5047da",
+    "premerge-prior-freeze.log": "1f45e1469f7d65f588793a0ef1020141ef757b1f0c349dff2e88a601ab62e2cc",
+    "premerge-wrong-sha-refusal.log": "73b8e6f02496ee0c399425bca1bd56ac6133e7bb677f70abd96f1ea715630a88",
+    "provenance.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8",
+    "runtime.log": "e5374ea98b87fa478b41ff1414df9dc83c5899562a01bea8e96175bca3dcc24f",
+    "sharing-after-restoration.log": "e2c635b0a542e66b269ce583a5c1852aea6885a6bd853f8b80d586890da5b580",
+    "sharing-after.log": "a5720c5781aecab5a8e8a169eb0d2a0082521370dabef2c8651fd2d8ac27ee10",
+    "sharing-before.log": "26641e621f2ac90ab4bb8c0a16d86df75688cc31670831415366ec03c5197ed0",
+    "source-carry.json": "c9af4b82a95a6c217890801dce36886753e46c836b1a7e16bf79e961884b6f0a"
+  }
+}

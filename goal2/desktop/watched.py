@@ -2,6 +2,7 @@
 from contextlib import ExitStack
 from dataclasses import asdict
 import importlib.util
+import errno
 import json
 from pathlib import Path
 import secrets
@@ -27,6 +28,7 @@ class WatchedController:
         self.display = None
         self.last_status = None
         self._pending_owned = False
+        self._status_read_deadline = None
 
     @property
     def busy(self):
@@ -65,6 +67,7 @@ class WatchedController:
             self.digests = {0: self.display.digest()}
             self.started = time.monotonic()
             self.last_status = None
+            self._status_read_deadline = None
             self.frame_ack = -1
             self.frame_receipts = {}
             self.send('start', [self.model.goaldat.country_names[w] for w in (pending.side_a,pending.side_b)])
@@ -102,8 +105,23 @@ class WatchedController:
         try:
             path = self.directory / 'status'
             if path.exists():
-                with path.open('rb') as stream:
-                    data = stream.read(4097)
+                try:
+                    with path.open('rb') as stream:
+                        data = stream.read(4097)
+                except PermissionError as exc:
+                    # [confirmed: #236 main-preflight-01] Native open may lack winerror.
+                    winerror = getattr(exc, 'winerror', None)
+                    if sys.platform != 'win32' or not (winerror == 5 or
+                            (winerror is None and exc.errno == errno.EACCES)):
+                        raise
+                    # [designed: #236] Defer to Qt; consecutive denial gets <=250ms.
+                    now = time.monotonic()
+                    if self._status_read_deadline is None:
+                        self._status_read_deadline = now + .25
+                    if now >= self._status_read_deadline:
+                        raise
+                    return False
+                self._status_read_deadline = None
                 if len(data) > 4096:
                     raise ValueError('oversized viewer status')
                 value = json.loads(data)
@@ -176,26 +194,40 @@ class WatchedController:
                 try:self.process.wait(timeout=.5)
                 except subprocess.TimeoutExpired:
                     self.process.kill();self.process.wait(timeout=.5)
-            self.process = None
-        # [designed: T66] Release every acquired resource, including a partial startup.
+        # [designed: #236] Keep ownership/references until every teardown step succeeds.
         with ExitStack() as cleanup:
-            if self.folder is not None:
-                cleanup.callback(self.folder.cleanup)
-                self.folder = None
             for name in ('errors', 'stream'):
                 handle = getattr(self, name)
-                setattr(self, name, None)
                 if handle is not None:
                     cleanup.callback(handle.close)
-            self.directory = None
+        if self.folder is not None:
+            deadline = time.monotonic() + .5
+            while True:
+                try:
+                    self.folder.cleanup()
+                    break
+                except PermissionError as exc:
+                    remaining = deadline - time.monotonic()
+                    if sys.platform != 'win32' or getattr(exc, 'winerror', None) != 32 or remaining <= 0:
+                        raise
+                    time.sleep(min(.02, remaining))
+                    if time.monotonic() >= deadline:
+                        raise
+        self.process = self.folder = self.stream = self.errors = self.directory = None
 
     def cancel(self):
-        if self.engine.busy:
-            self.engine.cancel(self.engine_token)
+        try:
+            if self.engine.busy:
+                self.engine.cancel(self.engine_token)
+            self.close_viewer()
+        except Exception:
+            # [designed: #236] Engine cancellation may release its lock before viewer deletion.
+            if self._pending_owned:
+                self.model.match_pending = True
+            raise
         if self._pending_owned:
             self.model.match_pending = False
             self._pending_owned = False
-        self.close_viewer()
 
     def close(self):
         self.cancel()

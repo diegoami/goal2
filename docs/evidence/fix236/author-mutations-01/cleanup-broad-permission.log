@@ -1,0 +1,86 @@
+test_cleanup_unrelated_or_non_windows_error_retains_owned_folder (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_unrelated_or_non_windows_error_retains_owned_folder) ... 
+  test_cleanup_unrelated_or_non_windows_error_retains_owned_folder (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_unrelated_or_non_windows_error_retains_owned_folder) (platform='linux', error=PermissionError(13, 'injected sharing denial')) ... FAIL
+  test_cleanup_unrelated_or_non_windows_error_retains_owned_folder (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_unrelated_or_non_windows_error_retains_owned_folder) (platform='win32', error=PermissionError(13, 'injected sharing denial')) ... FAIL
+
+======================================================================
+FAIL: test_cleanup_unrelated_or_non_windows_error_retains_owned_folder (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_unrelated_or_non_windows_error_retains_owned_folder) (platform='linux', error=PermissionError(13, 'injected sharing denial'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/goal2/tests/test_desktop_watched_sharing.py", line 243, in test_cleanup_unrelated_or_non_windows_error_retains_owned_folder
+    self.assertEqual(clock.sleeps,[])
+AssertionError: Lists differ: [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,[118 chars]9985] != []
+
+First list contains 25 additional elements.
+First extra element 0:
+0.02
+
++ []
+- [0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.01999999999999985]
+
+======================================================================
+FAIL: test_cleanup_unrelated_or_non_windows_error_retains_owned_folder (goal2.tests.test_desktop_watched_sharing.SharingTests.test_cleanup_unrelated_or_non_windows_error_retains_owned_folder) (platform='win32', error=PermissionError(13, 'injected sharing denial'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/goal2/tests/test_desktop_watched_sharing.py", line 243, in test_cleanup_unrelated_or_non_windows_error_retains_owned_folder
+    self.assertEqual(clock.sleeps,[])
+AssertionError: Lists differ: [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,[118 chars]9985] != []
+
+First list contains 25 additional elements.
+First extra element 0:
+0.02
+
++ []
+- [0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.02,
+-  0.01999999999999985]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=2)

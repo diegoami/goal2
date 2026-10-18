@@ -1,0 +1,12 @@
+{
+  "README.md": "852117f9033d34db389d61a043d768e2c5b4b73cf8543df66924b41cf30b6dee",
+  "complete-source-carry.json": "284af097eefc86c8e2596e8aabd2322920c20a5ec8c6f7b78f46dd9fc4c88296",
+  "native-proof-final.log": "ef66250a885d288415a51a81f80be6b23b617dc5c825b150384d8c6ff6ca6307",
+  "native-proof.log": "d8afd943e9555d7b3670534d6bfd42e71f7c6f504878552afc84d96da72f2d15",
+  "premerge-source-freeze.log": "a78f2817d29fbbf23fa20999af254fa291db8b2ce9a2cebe921e51d6ed9c97f6",
+  "proof-controls.json": "e08f19831994763db496708b70e200be458a30b9532d0e892ee795b60c7484dd",
+  "proof-negative-capture-tampering.log": "9d51a52c02e0c8c226ebbcf3f35c8f4879e9ad35c79fa3c94e09756b895a06dc",
+  "proof-negative-rewritten-both-receipts.log": "c278ef639ff3e4cc9f81b520657fc57f35d80dd52df43d07c28ab04e0db4bf48",
+  "proof-negative-wrong-external-anchor.log": "c278ef639ff3e4cc9f81b520657fc57f35d80dd52df43d07c28ab04e0db4bf48",
+  "provenance.log": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8"
+}
