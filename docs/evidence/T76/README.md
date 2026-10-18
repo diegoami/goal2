@@ -116,3 +116,16 @@ Both normal and injected-sharing Cancel paths assert absent owned folders and
 the existing cancellation bound. [Source freeze02](source-freeze-02.json)
 anchors all174 product/test/tool files for a separate main-owned Windows attempt.
 It preserves, rather than overwrites, the first attempt and its failure evidence.
+
+[designed: T76/#233] [Strict native Windows02](windows/README.md#native02-strict-cleanup-acceptance)
+passes on immutable checkpoint `0503407a7e2466054f4b4070515d3e426ccd9942` at
+actual1x/2x with61/25 captures and zero callback exceptions/raw tracebacks. The
+[independent author audit](windows/native02-author-audit-01.json) verifies all174
+frozen source files,95 inventory entries and all four protected hashes. The
+original native-01 failure remains unchanged and is not used as clean acceptance.
+
+[designed: T76] Native02 proves strict cleanup, while the later main native
+[caption control](caption-rework-01/T76-native-caption-controls.json) exposes
+focused footer caption clipping at the minimum2x size. The Windows guide records
+that separate readability failure; raw native02 outputs remain historical and
+unchanged. Runtime-mock success is feasibility evidence only.
