@@ -1,0 +1,29 @@
+{
+  "result": "PASS",
+  "native_checkpoint": "b3e2c95d8c5e744782d43ece6c840a7bd0a595d9",
+  "independent_original_sha256": "f8cf9a5c13def6300f0d82075eccdee55b0ba12f270d453b9d6ca44ad3c3b751",
+  "source_files": 175,
+  "protected_unchanged": 4,
+  "runs": [
+    {
+      "scale": "1",
+      "seconds": 81.766,
+      "captures": 61,
+      "caption_records": 36,
+      "qt": "6.12.0",
+      "platform": "Windows-11-10.0.26200-SP0"
+    },
+    {
+      "scale": "2",
+      "seconds": 50.007,
+      "captures": 25,
+      "caption_records": 12,
+      "qt": "6.12.0",
+      "platform": "Windows-11-10.0.26200-SP0"
+    }
+  ],
+  "prior_inventory_unchanged": [
+    "native-01",
+    "native-02"
+  ]
+}
