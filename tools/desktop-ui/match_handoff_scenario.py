@@ -235,8 +235,11 @@ def scenario(options):
     w.watched.start=original_start if round_index==0 else lambda **kw:original_start(playback_rate=rate,**kw)
     beats.clear();click(w.watch);assert w.watched.busy,w.status.text()
     engine=w.watched.engine.process;viewer=w.watched.process
+    duplicate_checked=False
+    if w.watched.busy:
+     w.start_watched();w.start_match();assert w.watched.engine.process is engine and not w.jobs.busy,'duplicate handoff launched another job'
+     duplicate_checked=True
     geometry(w,app,args.output,report,'starting-'+str(round_index))
-    w.start_watched();w.start_match();assert w.watched.engine.process is engine and not w.jobs.busy,'duplicate handoff launched another job'
     # [designed: T79] Read only the product status while its observer writes diagnostics.
     live_seen=[]
     def live_check():
@@ -264,6 +267,7 @@ def scenario(options):
      assert opening.read_bytes()==opening_bytes and working.read_bytes()==prior_save and not m.match_pending and engine.poll() is not None,'renderer mutant lost save/ownership retention'
      report['negative_control']={'intended_read_only_failure':True,'state_and_saves_preserved':True,'engine_and_viewer_reaped':True,'pending_cleared':True,'metrics_read_after_reaping':True}
      raise AssertionError('renderer changed Display state')
+    assert duplicate_checked,'duplicate exclusion was not visited while the original job was busy'
     assert live_seen,'no consumed live Qt score observed'
     assert m.state==control.state,'complete state/Memory/RNG/history differs from direct original'
     assert m.state.match_count==before.match_count+1 and len(beats)>5
@@ -299,7 +303,7 @@ def scenario(options):
     assert m.state==control.state and save.read_bytes()==saved,'Save/Resume lost complete original continuation'
     w.navigate(3);app.processEvents();capture=args.output/('round-%s-qt.png'%round_index);assert w.grab().save(str(capture))
     report['captures'].append({'path':capture.name,'sha256':sha(capture)})
-    report['rounds'].append({'round':round_index,'rate':rate,'default_rate_first':round_index==0,'fixture':outcome.result['index'],'countries':w.watched.display.countries,'ticks':outcome.result['ticks'],'final_ack':w.watched.frame_ack,'heartbeats':len(beats),'live_observations':len(live_seen),'maximum_heartbeat_gap':max((b-a for a,b in zip(beats,beats[1:])),default=0),'original_image_sha256':outcome.result['image_sha256'],'source_captain':before.captain,'source_tactics':before.country_tactics,'source_xi':before.starting_eleven,'source_seeds':[before.rng_seed_7b62,before.rng_seed_8336],'final_seeds':list(outcome.seeds),'full_exact_parity':True,'sdl_metrics_sha256':sha(child_output/'metrics.json'),'diagnostics_read_after_writer_reaped':True,'complete_packet_acknowledged':True})
+    report['rounds'].append({'round':round_index,'rate':rate,'default_rate_first':round_index==0,'duplicate_exclusion_visited':duplicate_checked,'fixture':outcome.result['index'],'countries':w.watched.display.countries,'ticks':outcome.result['ticks'],'final_ack':w.watched.frame_ack,'heartbeats':len(beats),'live_observations':len(live_seen),'maximum_heartbeat_gap':max((b-a for a,b in zip(beats,beats[1:])),default=0),'original_image_sha256':outcome.result['image_sha256'],'source_captain':before.captain,'source_tactics':before.country_tactics,'source_xi':before.starting_eleven,'source_seeds':[before.rng_seed_7b62,before.rng_seed_8336],'final_seeds':list(outcome.seeds),'full_exact_parity':True,'sdl_metrics_sha256':sha(child_output/'metrics.json'),'diagnostics_read_after_writer_reaped':True,'complete_packet_acknowledged':True})
     if round_index==0:
      first_completed_bytes=working.read_bytes();first_completed_state=copy.deepcopy(m.state)
      pending=m.state.campaign.next_fixture

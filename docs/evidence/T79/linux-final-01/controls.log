@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 495, in main
+    return (handoff_negative if args.negative_controls else handoff)(args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/match_handoff_scenario.py", line 378, in negative_controls
+    assert run.returncode!=0 and 'AssertionError: renderer changed Display state' in log,('real scenario missed render mutation',log)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('real scenario missed render mutation', 'Traceback (most recent call last):\n  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>\n    if __name__==\'__main__\':main()\n                            ^^^^^^\n  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 495, in main\n    return (handoff_negative if args.negative_controls else handoff)(args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/match_handoff_scenario.py", line 239, in scenario\n    w.start_watched();w.start_match();assert w.watched.engine.process is engine and not w.jobs.busy,\'duplicate handoff launched another job\'\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: duplicate handoff launched another job\n')
