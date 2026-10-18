@@ -1,0 +1,21 @@
+PASS shell: 62 real navigation transitions; state/draft/preview/save/job invariants; 15 captures; actual ratio 1.0
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 282, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 270, in main
+    if args.single_scale:return shell(args)
+                                ^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 146, in shell
+    assert snapshot()==before,'surface inspection changed state/draft/preview/save/job ownership'
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: surface inspection changed state/draft/preview/save/job ownership
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 282, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py", line 281, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-venv/bin/python3', '/home/diego/projects/goal2-work/T74-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'shell', '--template', '.cache/e010-r0008-halftime.sav', '--data', '.cache/GOAL.DAT', '--evidence-dir', '/home/diego/projects/goal2-work/T74-football-ui/.cache/main-after-approval-01/shell-native/scale-2', '--single-scale']' returned non-zero exit status 1.

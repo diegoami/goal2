@@ -66,3 +66,27 @@ QT_QPA_PLATFORM=offscreen SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m
 [derived: native attempt receipts] Windows `preliminary-01` is pre-surface-fix100% appPASS followed by a collector backslash-normalization failure, with no200% result. `preliminary-02` refused a tracked-doc-clean precondition before staging. `preliminary-03` failed the immediate popup-input setup before measuring contrast. The [diagnostics](windows/diagnostics/) compare immediate key/mouse input with the successful delayed real key input; they are not final DW2 acceptance. Final Windows acceptance is exclusively the audited `windows/final` pair above. Protected Windows launcher/save hashes remain unchanged; only generated temporary saves and isolated validation copies are used.
 
 [designed: exact-head validation] Commit all intended receipts before running `python3 tools/check_premerge.py --expected-head <full-ready-head>` in the tracked-clean task worktree. The immutable check's ignored full log/hash is recorded in the PR, avoiding an evidence-only head change after the check. Main owns independent review and exact-head merge.
+
+## Postapproval diagnostic rework
+
+[derived: postapproval-diagnostic-01] Main's exact82def postapproval native pair passed100% but failed the final surface ownership equality at200%. The old assertion did not retain the changed field, so the original component/root cause remains unresolved. The unchanged-source runtime-only200% probe and one instrumented100%→200% pair then passed with empty12-field deltas; the1x trace observed temporary native deactivation after path selection. This observation does not establish the cause of the original failure. [The preserved failure and probes](postapproval-diagnostic-01/copy-manifest.json) retain original82def source identities, logs, reports, rebuild captures and the runtime-only loader.
+
+[designed: diagnostic rework] Only the shell acceptance helper changes. Its original snapshot remains before all surface input, and the final full12-field equality remains. Every surface step now records named deltas, native activity, focused object and country, then rejects any ownership change immediately. Before country Alt+Down and path Ctrl+A the helper establishes and asserts actual own-window activation and target focus; before Escape the popup must own input. It never restores game/draft/preview/path values or recaptures the baseline. These are stronger setup checks and failure locators, not proof that the unreproduced original cause was fixed.
+
+[derived: surface-input-controls-01] A deliberately wrong target focus fails the intended input precondition before dispatch. A real plain country Down key fails the step ownership assertion with draft, active_draft, preview_identity and encoded_preview deltas; save/job fields remain unchanged. Both control outputs/reports are retained. Reproduce in fresh native processes (each command must fail its named assertion):
+
+```sh
+QT_QPA_PLATFORM=xcb DISPLAY=:0 python3 tools/desktop-ui/redesign.py --scenario shell --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --evidence-dir <new-output> --single-scale --surface-input-control wrong-focus
+QT_QPA_PLATFORM=xcb DISPLAY=:0 python3 tools/desktop-ui/redesign.py --scenario shell --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --evidence-dir <new-output> --single-scale --surface-input-control country-change
+```
+
+[derived: prior independent review] The full23-group independent approval at82def and main's postapproval failure are preserved in PR223's review history. Backend/game/worker/product Qt source bytes remain unchanged; that prior backend proof retains its actual82def identity. New helper-focused Linux/native Windows acceptance and same-reviewer reassessment are required for this rework.
+
+[derived: input rework receipts] The new helper passes [native xcb1/2](input-xcb-01/interaction.json) and [offscreen1/2](input-offscreen-01/interaction.json), with62/42 transitions,15/5 target captures and empty per-step ownership deltas. Scale2 reports are in each `scale-2` directory. [The new inventory](source-manifest-input-rework-01.json) records the changed scenario and27 unchanged prior source files. Earlier source manifests remain immutable; their scenario hash describes the prior acceptance helper.
+
+```sh
+# Automatically requires both intended failures and verifies save/job fields unchanged.
+QT_QPA_PLATFORM=offscreen python3 docs/evidence/T74/run-surface-input-controls.py --evidence-dir <new-owned-output>
+```
+
+[derived: input-negative-01 and surface-input-controls-02] All four original saved-byte controls still fail their unchanged intended oracles with exact restoration. The repeatable input-control runner passes both intended failures and exact country-change delta fields. [Serial full log](input-controls-final-01.log). New native Windows validation remains pending at this checkpoint.

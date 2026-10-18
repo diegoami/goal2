@@ -78,6 +78,19 @@ def shell(args):
                         save.read_bytes(),model.save_path,window.path.text(),model.state.match_count,
                         tuple(starts),getattr(model,'match_pending',False),
                         tuple(c.process for c in (window.jobs,window.competitive,window.watched)))
+            labels=('encoded_active','draft','active_draft','preview_identity','encoded_preview','save_bytes','save_path','path_text','match_count','starts','pending','controller_processes')
+            def delta(before,after):
+                def describe(value):return hashlib.sha256(value).hexdigest() if isinstance(value,bytes) else repr(value)
+                return [{'field':name,'before':describe(a),'after':describe(b)} for name,a,b in zip(labels,before,after) if a!=b]
+            def native_input(target):
+                app.processEvents()
+                if not window.isActiveWindow():window.raise_();window.activateWindow()
+                assert QTest.qWaitForWindowActive(window,2000),'owned shell window is not active before synthetic input'
+                target.setFocus();app.processEvents();QTest.qWait(150)
+                assert window.isActiveWindow() and app.activeWindow() is window,'owned shell activation lost before synthetic input'
+                if args.surface_input_control=='wrong-focus' and target is window.country:
+                    window.navigation[0].setFocus();app.processEvents()
+                assert app.focusWidget() is target,'synthetic input target did not acquire focus: '+target.objectName()
             def navigate(index,method):
                 before=snapshot()
                 # [designed] QtTest widget events do not perform the OS click-to-activate step.
@@ -110,24 +123,39 @@ def shell(args):
                 value=contrast(foreground,background)
                 surfaces[name]={'foreground':foreground,'background':background,'contrast':value}
                 if value<4.5:failed.append(name)
-            window.country.setFocus();app.processEvents();QTest.qWait(150)
+            def surface_trace(stage):
+                change=delta(before,snapshot())
+                focus=app.focusWidget()
+                report.setdefault('surface_trace',[]).append({'stage':stage,'native_active':window.isActiveWindow(),
+                    'focus_type':type(focus).__name__ if focus else None,'focus_name':focus.objectName() if focus else None,
+                    'country':window.country.currentData(),'delta':change})
+                assert not change,'surface inspection changed state/draft/preview/save/job ownership at '+stage+': '+json.dumps(change)
+            surface_trace('before-popup')
+            native_input(window.country);surface_trace('country-focus')
+            if args.surface_input_control=='country-change':
+                QTest.keyClick(window.country,Qt.Key.Key_Down);app.processEvents();surface_trace('controlled-country-change')
             QTest.keyClick(window.country,Qt.Key.Key_Down,Qt.KeyboardModifier.AltModifier,100)
             app.processEvents();QTest.qWait(100);popup=window.country.view()
+            surface_trace('popup-open')
             assert popup.isVisible(),'native country popup did not open'
             surface('combo popup',popup.palette().color(QPalette.ColorRole.Text).name(),popup.palette().color(QPalette.ColorRole.Base).name())
             surface('combo selection',popup.palette().color(QPalette.ColorRole.HighlightedText).name(),popup.palette().color(QPalette.ColorRole.Highlight).name())
             assert popup.window().grab().save(str(evidence/'surface-country-popup.png'))
+            assert popup.hasFocus() and app.activePopupWidget() is popup.window(),'country popup does not own native input before Escape'
             QTest.keyClick(popup,Qt.Key.Key_Escape,delay=100);app.processEvents();QTest.qWait(100)
+            surface_trace('popup-escape')
             assert not popup.isVisible(),'native country popup did not close'
             window.raise_();window.activateWindow();app.processEvents()
             assert QTest.qWaitForWindowActive(window,2000),'shell did not regain activation after popup close'
             report['popup_events']={'opened':True,'closed':not popup.isVisible(),'active_after_close':window.isActiveWindow()}
-            navigate(4,'shortcut');window.path.setFocus()
+            navigate(4,'shortcut');native_input(window.path)
             QTest.keyClick(window.path,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier);app.processEvents()
+            surface_trace('path-selection')
             surface('path selection',window.path.palette().color(QPalette.ColorRole.HighlightedText).name(),window.path.palette().color(QPalette.ColorRole.Highlight).name())
             enabled=window.save.isEnabled();window.save.setEnabled(False);app.processEvents()
             surface('disabled action',window.save.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.ButtonText).name(),window.save.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.Button).name())
             window.save.setEnabled(enabled)
+            surface_trace('save-restored')
             surface('table',window.table.palette().color(QPalette.ColorRole.Text).name(),window.table.palette().color(QPalette.ColorRole.Base).name())
             surface('disabled table',window.table.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.Text).name(),window.table.palette().color(QPalette.ColorGroup.Disabled,QPalette.ColorRole.Base).name())
             header_background=window.table.horizontalHeader().grab().toImage().pixelColor(10,5).name()
@@ -136,14 +164,17 @@ def shell(args):
             from goal2.game.campaign_schedule import start_opening_campaign
             other=DesktopModel(model.goaldat,model.template_bytes,model.save_path)
             other.state,_=start_opening_campaign(model.goaldat,model.template_bytes,managed_country=4,start_year=1992,seed_7b62=4660,seed_8336=33590)
+            surface_trace('other-created')
             dialog=CompetitionTable(other.competition_table(),window);dialog.show();QTest.qWait(30)
             surface('competition dialog',dialog.findChildren(QLabel)[0].palette().color(QPalette.ColorRole.WindowText).name(),dialog.palette().color(QPalette.ColorRole.Window).name())
             assert dialog.grab().save(str(evidence/'surface-competition-dialog.png'))
             dialog.close();app.processEvents();QTest.qWait(120)
             window.raise_();window.activateWindow();app.processEvents()
             assert QTest.qWaitForWindowActive(window,2000),'shell did not regain native activation after closing surface probe'
+            surface_trace('dialog-closed')
             report['native_surfaces']=surfaces
-            assert snapshot()==before,'surface inspection changed state/draft/preview/save/job ownership'
+            report['surface_snapshot_delta']=delta(before,snapshot())
+            assert snapshot()==before,'surface inspection changed state/draft/preview/save/job ownership: '+json.dumps(report['surface_snapshot_delta'])
             assert not failed,'native surface contrast failed: '+', '.join(failed)
             # [designed] Dirty active controls are deliberately different from confirmed state.
             window.navigate(1);window.pages[1].ensureWidgetVisible(window.tactics[0][1]);app.processEvents()
@@ -265,6 +296,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell'],required=True)
     parser.add_argument('--template',required=True);parser.add_argument('--data',required=True)
     parser.add_argument('--evidence-dir',required=True);parser.add_argument('--single-scale',action='store_true');parser.add_argument('--negative-controls',action='store_true')
+    parser.add_argument('--surface-input-control',choices=['wrong-focus','country-change'])
     args=parser.parse_args()
     if args.negative_controls:return negative_controls(args)
     if args.single_scale:return shell(args)

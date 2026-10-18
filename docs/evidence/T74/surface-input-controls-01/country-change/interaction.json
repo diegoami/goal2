@@ -1,0 +1,99 @@
+{
+  "tag": "[designed: T74]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "xcb",
+  "requested_scale": "1",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2/desktop/jobs.py": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "c7e020a5754c3d87002020b872112759f2a19d3df98bb2c37aab57045e773c45",
+    "goal2/desktop/pages.py": "a6fade50df7c690e7ce938958a867f48bcddf02b0b83432169aa061c2c22c372",
+    "goal2/desktop/pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "19cc5391bc185a89cce4eb94868532544401ab41661a10621e0a62d92d971aec",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "38f3ff467850a5a7782f61f9e973abf95279402d523fc7d5d62c1ed0b6ea9e93",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "224ea43632bf66fe691c15cf245988fc4bc0cb7243da2aed16649a389988a2eb",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "19698fa7dd6d34ec05abff3281d85ca390583e815a14d2d6a8026c87170f05aa",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "transitions": [],
+  "captures": [],
+  "reachable": [],
+  "contrast": {
+    "body": 15.760201803771965,
+    "panel text": 13.446624450282803,
+    "disabled": 9.212049490323153,
+    "table": 11.539344302961265,
+    "selected": 10.387089745067524,
+    "focus": 12.29461751985869,
+    "control boundary": 3.25823740432172,
+    "selected focus": 10.387089745067524
+  },
+  "ratio": 1.0,
+  "available": [
+    2560,
+    1440
+  ],
+  "surface_trace": [
+    {
+      "stage": "before-popup",
+      "native_active": true,
+      "focus_type": "QLabel",
+      "focus_name": "pageHeading",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "country-focus",
+      "native_active": true,
+      "focus_type": "QComboBox",
+      "focus_name": "country",
+      "country": 4,
+      "delta": []
+    },
+    {
+      "stage": "controlled-country-change",
+      "native_active": true,
+      "focus_type": "QComboBox",
+      "focus_name": "country",
+      "country": 5,
+      "delta": [
+        {
+          "field": "draft",
+          "before": "([61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], 61, 136)",
+          "after": "([81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91], 81, 141)"
+        },
+        {
+          "field": "active_draft",
+          "before": "None",
+          "after": "([61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], 61, 136)"
+        },
+        {
+          "field": "preview_identity",
+          "before": "21278288",
+          "after": "129237537589776"
+        },
+        {
+          "field": "encoded_preview",
+          "before": "None",
+          "after": "cce78d4316f0ef64b52899fdbb1db1447734ef78b8625ea41524d1dbdb2f04fe"
+        }
+      ]
+    }
+  ]
+}
