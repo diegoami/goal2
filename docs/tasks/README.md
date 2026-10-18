@@ -110,7 +110,7 @@ Historical browser contracts T34–T38 are preserved; these are separate impleme
 
 [designed: owner #182, 2026-10-18] See the [visual study and bounded backlog](../design/football-gui/README.md).
 These contracts await main-session planning acceptance/retriage and child issue creation;
-issue numbers are unassigned. This index records no execution status.
+child issue identities are linked below. This index records no execution status.
 
 | Task | Title | Issue | Difficulty | Merge after |
 | --- | --- | --- | --- | --- |
