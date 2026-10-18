@@ -56,7 +56,10 @@ def main():
                 click(window.resume)
                 assert model.state==before and window.captain.currentData()==0
                 assert 'competitive' in window.play.text().lower()
-                click(window.watch)
+                # [designed: T77/#237] Disabled routes retain defensive callback coverage.
+                assert not window.watch.isEnabled()
+                assert 'Watch unavailable: scheduled friendlies only' in window.fixture_routes.text().splitlines()
+                window.start_watched();app.processEvents()
                 assert 'friendlies only' in window.status.text(),window.status.text()
                 assert model.state==before and not getattr(model,'match_pending',False)
                 click(window.play)
@@ -164,7 +167,9 @@ def main():
             model.state=unsupported;model.template_bytes=competitive_raw;window.refresh()
             unchanged=copy.deepcopy(model.state);saved=model.save_path.read_bytes()
             assert window.play.text()=='Play unavailable',window.play.text()
-            click(window.play)
+            assert not window.play.isEnabled()
+            assert 'Play unavailable: unsupported pending fixture' in window.fixture_routes.text().splitlines()
+            window.start_match();app.processEvents()
             assert 'No supported pending competitive fixture' in window.status.text()
             assert model.state==unchanged and model.save_path.read_bytes()==saved and window.save.isEnabled()
             model.state=copy.deepcopy(before);model.template_bytes=raw;window.refresh()
