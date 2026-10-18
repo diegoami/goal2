@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """[designed: T69] Real Qt interactions over verified local game resources."""
+from navigation import reveal
 import argparse
 import copy
 from pathlib import Path
@@ -21,12 +22,12 @@ def management(template,data,screenshot=None):
         model=DesktopModel.open(template,data,save,country=4)
         window=ManagementWindow(model);window.show();QTest.qWait(80)
         def click(widget):
-            QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+            reveal(widget);QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
         def country(number):
             window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Home)
             for _ in range(number-1):QTest.keyClick(window.country,Qt.Key.Key_Down)
         def toggle(row):
-            window.table.setCurrentCell(row,0);window.table.setFocus();QTest.keyClick(window.table,Qt.Key.Key_Space);app.processEvents()
+            reveal(window.table);window.table.setCurrentCell(row,0);window.table.setFocus();QTest.keyClick(window.table,Qt.Key.Key_Space);app.processEvents()
         original=copy.deepcopy(model.state)
         country(13)
         assert model.state==original,'country draft mutated active game'
@@ -108,7 +109,7 @@ def friendlies(template,data,screenshot=None,blocked=False):
     with tempfile.TemporaryDirectory() as folder:
         model=DesktopModel.open(template,data,Path(folder)/'game.g2save',country=4)
         window=ManagementWindow(model);window.show();QTest.qWait(80)
-        def click(widget):QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+        def click(widget):reveal(widget);QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
         def finish():
             deadline=time.monotonic()+15
             while window.jobs.busy and time.monotonic()<deadline:
@@ -178,17 +179,17 @@ def pool(template,data,screenshot=None):
     with tempfile.TemporaryDirectory() as folder:
         model=DesktopModel.open(template,data,Path(folder)/'pool.g2save',country=4)
         window=ManagementWindow(model);window.resize(1500,900);window.show();QTest.qWait(80)
-        def click(widget):QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+        def click(widget):reveal(widget);QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
         def select(table,row,col=1):
             item=table.item(row,col);table.scrollToItem(item);app.processEvents()
-            QTest.mouseClick(table.viewport(),Qt.MouseButton.LeftButton,pos=table.visualItemRect(item).center());app.processEvents()
+            reveal(table);QTest.mouseClick(table.viewport(),Qt.MouseButton.LeftButton,pos=table.visualItemRect(item).center());app.processEvents()
         def search(text):
-            window.search.setFocus();QTest.keyClick(window.search,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier)
+            reveal(window.search);window.search.setFocus();QTest.keyClick(window.search,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier)
             QTest.keyClick(window.search,Qt.Key.Key_Backspace)
             if text:QTest.keyClicks(window.search,text)
             app.processEvents()
         def position(code):
-            window.position.setFocus();QTest.keyClick(window.position,Qt.Key.Key_Home)
+            reveal(window.position);window.position.setFocus();QTest.keyClick(window.position,Qt.Key.Key_Home)
             for _ in range(0 if code is None else code+1):QTest.keyClick(window.position,Qt.Key.Key_Down)
             app.processEvents()
         def finish():
@@ -265,7 +266,7 @@ def halftime(template,data,screenshot=None):
         model.exchange(80,2561);model.confirm(list(model.state.starting_eleven),61,165)
         model.save(model.save_path);saved=model.save_path.read_bytes();before=copy.deepcopy(model.state)
         window=ManagementWindow(model);window.show();QTest.qWait(60)
-        def click(widget):QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+        def click(widget):reveal(widget);QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
         def wait_for(predicate):
             deadline=time.monotonic()+15
             while not predicate() and time.monotonic()<deadline:QTest.qWait(20)

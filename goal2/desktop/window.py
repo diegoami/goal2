@@ -23,63 +23,11 @@ class ManagementWindow(QMainWindow):
         self.competitive_timer=QTimer(self);self.competitive_timer.setInterval(30);self.competitive_timer.timeout.connect(self.poll_competitive)
         self.watch_timer=QTimer(self);self.watch_timer.setInterval(30);self.watch_timer.timeout.connect(self.poll_watched)
         self.jobs=QuickJobs(model);self.timer=QTimer(self);self.timer.setInterval(30);self.timer.timeout.connect(self.poll_match)
-        self.setWindowTitle('goal2 — Country management');self.resize(1050,780)
-        root=QWidget();self.setCentralWidget(root);layout=QVBoxLayout(root)
-        self.title=QLabel();self.title.setStyleSheet('font-size:22px;font-weight:600')
-        layout.addWidget(self.title)
-        country_bar=QHBoxLayout();self.country=QComboBox();self.country.setObjectName('country')
-        for number,name in model.view()['countries']:self.country.addItem(name,number)
-        self.new=QPushButton('New campaign');self.new.setObjectName('newCampaign')
-        self.friendly=QPushButton('New standalone friendly');country_bar.addWidget(self.friendly)
-        country_bar.addWidget(QLabel('Country'));country_bar.addWidget(self.country,1);country_bar.addWidget(self.new);layout.addLayout(country_bar)
-        self.summary=QLabel();layout.addWidget(self.summary)
-        self.standings_dialog=None
-        self.standings=QPushButton('Competition table');self.standings.setObjectName('showStandings')
-        self.standings.clicked.connect(self.show_standings);layout.addWidget(self.standings)
-        self.table=QTableWidget(20,7);self.table.setObjectName('squad')
-        self.table.setHorizontalHeaderLabels(['XI','Player','Position','Ability','Energy','Confidence','Availability'])
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.Stretch)
-        # [designed: T71] Show the existing squad beside its source reserve pool.
-        split=QSplitter();split.addWidget(self.table)
-        pool_panel=QWidget();pool_layout=QVBoxLayout(pool_panel);self.pool_panel=pool_panel
-        self.pool_summary=QLabel();self.pool_summary.setWordWrap(True);pool_layout.addWidget(self.pool_summary)
-        filter_bar=QHBoxLayout();self.search=QLineEdit();self.search.setPlaceholderText('Search reserve name')
-        self.position=QComboBox();self.position.addItem('All position codes',None)
-        for code in range(14):self.position.addItem(f'Position code {code}',code)
-        filter_bar.addWidget(self.search,1);filter_bar.addWidget(self.position);pool_layout.addLayout(filter_bar)
-        self.reserves=QTableWidget(0,7);self.reserves.setObjectName('reserves')
-        self.reserves.setHorizontalHeaderLabels(['ID','Player','Position','Ability','Energy','Confidence','Availability'])
-        self.reserves.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows);self.reserves.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
-        self.reserves.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
-        self.reserves.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.Stretch)
-        pool_layout.addWidget(self.reserves,1)
-        self.exchange=QPushButton('Exchange selected squad player and reserve');pool_layout.addWidget(self.exchange)
-        split.addWidget(pool_panel);split.setSizes([620,620]);layout.addWidget(split,1)
-        captain_bar=QHBoxLayout();captain_bar.addWidget(QLabel('Captain'));self.captain=QComboBox();self.captain.setObjectName('captain');captain_bar.addWidget(self.captain,1)
-        self.confirm=QPushButton('Confirm management');self.confirm.setObjectName('confirm');self.cancel=QPushButton('Discard draft')
-        captain_bar.addWidget(self.cancel);captain_bar.addWidget(self.confirm);layout.addLayout(captain_bar)
-        self.tactics=[]
-        for start in (0,4):
-            bar=QHBoxLayout()
-            for element,label in TACTICS[start:start+4]:
-                box=QCheckBox(label);box.setObjectName(f'tactic{element}');self.tactics.append((element,box));bar.addWidget(box)
-            layout.addLayout(bar)
-        save_bar=QHBoxLayout();save_bar.addWidget(QLabel('Save file'));self.path=QLineEdit(str(model.save_path));self.path.setObjectName('savePath');save_bar.addWidget(self.path,1)
-        self.save=QPushButton('Save');self.save.setObjectName('save');self.resume=QPushButton('Resume');self.resume.setObjectName('resume');save_bar.addWidget(self.save);save_bar.addWidget(self.resume);layout.addLayout(save_bar)
-        play_bar=QHBoxLayout();self.play=QPushButton('Play quick friendly');self.stop=QPushButton('Cancel match');self.stop.setEnabled(False)
-        self.watch=QPushButton('Watch original friendly');self.watch.setObjectName('watchOriginal')
+        from goal2.desktop.pages import compose
+        compose(self,model,TACTICS)
+        self.standings.clicked.connect(self.show_standings)
         self.watch.clicked.connect(self.start_watched)
-        play_bar.addWidget(self.play);play_bar.addWidget(self.watch);play_bar.addWidget(self.stop);layout.addLayout(play_bar)
-        half_bar=QHBoxLayout();self.half_out=QComboBox();self.half_in=QComboBox()
-        self.substitute=QPushButton('Substitute');self.continue_match=QPushButton('Continue second half')
-        half_bar.addWidget(QLabel('Off'));half_bar.addWidget(self.half_out);half_bar.addWidget(QLabel('On'));half_bar.addWidget(self.half_in)
-        half_bar.addWidget(self.substitute);half_bar.addWidget(self.continue_match)
-        for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(False)
-        layout.addLayout(half_bar);self.half_preview=None
         self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
-        self.result=QLabel();self.result.setWordWrap(True);self.result.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);layout.addWidget(self.result)
-        self.status=QLabel('Confirm management, then play a quick friendly or save.');self.status.setWordWrap(True);self.status.setObjectName('status');layout.addWidget(self.status)
         self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData()),'New campaign created',replace=True))
         self.friendly.clicked.connect(lambda:self.action(lambda:model.new_friendly(self.country.currentData()),'New standalone friendly created',replace=True))
         self.play.clicked.connect(self.start_match);self.stop.clicked.connect(self.cancel_match)
@@ -91,6 +39,13 @@ class ManagementWindow(QMainWindow):
         self.table.itemChanged.connect(self.selection_changed)
         self.refresh()
         self.country.currentIndexChanged.connect(self.country_changed)
+
+    def navigate(self,index):
+        """[designed: T74] Presentation only; preserve draft and job ownership."""
+        self.page_stack.setCurrentIndex(index)
+        for number,button in enumerate(self.navigation):button.setChecked(number==index)
+        self.pages[index].verticalScrollBar().setValue(0)
+        self.pages[index].heading.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
     @property
     def display_model(self):
@@ -172,6 +127,7 @@ class ManagementWindow(QMainWindow):
         if self.standings_dialog is not None:
             self.standings_dialog.close();self.standings_dialog=None
         display=self.display_model;view=display.view();state=display.state;self._refreshing=True
+        self.context.setText(('Preview · active game: '+self.model.goaldat.country_names[self.model.state.managed_country]) if self.preview is not None else 'Active game')
         self.title.setText(view['country_name']);self.country.setCurrentIndex(self.country.findData(view['country']))
         from goal2.game.watched_schema import watched
         heading='Original engine' if watched(state.last_match) else 'Quick simulation (rebuild setup)'
