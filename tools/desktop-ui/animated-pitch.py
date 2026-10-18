@@ -37,6 +37,8 @@ def flip():
  global previous,last_pixels,caption_set
  if not caption_set:
   pygame.display.set_caption('goal2 — T83 automated pitch acceptance');caption_set=True
+  state['actual_sdl_driver']=pygame.display.get_driver()
+  state['pygame_version']=pygame.version.ver;state['sdl_version']=list(pygame.get_sdl_version())
  original_flip()
  if (out/'close-request').exists():pygame.event.post(pygame.event.Event(pygame.QUIT))
  if current is not None and current['sequence']!=state['last_sequence']:
@@ -119,6 +121,7 @@ def main():
     evidence.mkdir(parents=True)
     receipts = {'mode': mode, 'platform': sys.platform, 'rounds': [], 'boundaries': []}
     app = QApplication.instance() or QApplication([])
+    receipts['actual_qt_platform'] = app.platformName()
     with tempfile.TemporaryDirectory(prefix='goal2-t83-') as folder:
         save = Path(folder) / 'pitch.g2save'
         m = model(save)
@@ -211,7 +214,7 @@ def main():
                 else:
                     w.watched.close_viewer();w.poll_watched()
                 assert viewer.poll() is not None and engine.poll() is not None
-                receipts['boundaries'].append('owned-only teardown round %s' % (round_number+1))
+                receipts['boundaries'].append('owned-only teardown round 1' if round_number==0 else 'completed-viewer close round 2')
 
             # [designed] New campaign restores a friendly boundary for cancellation probes.
             QTest.mouseClick(w.new, Qt.MouseButton.LeftButton);app.processEvents()
