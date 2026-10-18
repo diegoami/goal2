@@ -1,0 +1,27 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS real Qt competitive kind2 index21: original result/events/Memory/both seeds, progress, captain0, save/resume
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS real Qt competitive kind200 index42: original result/events/Memory/both seeds, progress, captain0, save/resume
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/goal2/desktop/window.py", line 240, in start_match
+    self.jobs.start(halftime=state.campaign is not None);self.set_busy(True);self.status.setText('Playing quick friendly…');self.timer.start()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/goal2/desktop/jobs.py", line 26, in start
+    resolve_full_matchup(Savestate(to_savestate(model.state,original=model.template_bytes)),model.state)
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/goal2/game/quick_match.py", line 80, in resolve_full_matchup
+    qm = QuickMatch(template)
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/goal2/engine/quick_engine.py", line 135, in __init__
+    raise ExtraTimeNotModelled("DS:7C36 set at half time: extra time is not modelled")
+goal2.engine.quick_engine.ExtraTimeNotModelled: DS:7C36 set at half time: extra time is not modelled
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/tools/desktop-ui/competitive_play.py", line 161, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T80-competitive-desktop-play/tools/desktop-ui/competitive_play.py", line 131, in main
+    assert window.jobs.busy and model.match_pending
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

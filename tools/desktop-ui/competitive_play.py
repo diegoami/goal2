@@ -49,6 +49,8 @@ def main():
                 assert window.captain.currentText()=='Original captain selection'
                 assert window.draft()==(state.starting_eleven,0,state.country_tactics)
                 before=copy.deepcopy(model.state)
+                click(window.confirm)
+                assert 'Captain must be' in window.status.text() and model.state==before
                 model.save(model.save_path);prior_bytes=model.save_path.read_bytes()
                 click(window.resume)
                 assert model.state==before and window.captain.currentData()==0
@@ -122,7 +124,9 @@ def main():
             click(window.stop)
             assert process.poll() is not None and not getattr(model,'match_pending',False) and model.state==before
             assert model.save_path.read_bytes()==prior
-            # [designed] Explicit new campaign action returns to existing friendly paths.
+            # [designed] Fresh campaign uses the retained supported friendly template.
+            # The competitive source image carries original match flags outside Quick's setup contract.
+            model.template_bytes=(ROOT/'.cache/e010-r0008-halftime.sav').read_bytes()
             window.country.setCurrentIndex(window.country.findData(4));click(window.new)
             assert model.state.campaign.next_fixture.kind==1
             assert window.play.text()=='Play quick friendly'
@@ -147,6 +151,17 @@ def main():
             window.set_busy(False);assert not window.save.isEnabled() and not window.play.isEnabled()
             click(window.stop)
             assert not getattr(model,'match_pending',False) and model.state==friendly and window.confirm.isEnabled()
+            # [designed] Unsupported kind4 refuses before mutation; closing competitive reaps its child.
+            unsupported,competitive_raw,_=campaign(21,4)
+            model.state=unsupported;model.template_bytes=competitive_raw;window.refresh()
+            unchanged=copy.deepcopy(model.state);saved=model.save_path.read_bytes();click(window.play)
+            assert 'No supported pending competitive fixture' in window.status.text()
+            assert model.state==unchanged and model.save_path.read_bytes()==saved and window.save.isEnabled()
+            model.state=copy.deepcopy(before);model.template_bytes=raw;window.refresh()
+            click(window.play);child=window.competitive.process;assert window.competitive.busy
+            window.close()
+            assert child.poll() is not None and model.state==before and model.save_path.read_bytes()==saved
+            assert not getattr(model,'match_pending',False)
             receipts.append(dict(mode='synthetic blocked child and optional-runtime/resource failures',
                 state_and_prior_save_preserved=True,mutual_exclusion=['competitive','Quick','friendly Watch'],
                 inactive_controller_preserves_other_lock=True))
