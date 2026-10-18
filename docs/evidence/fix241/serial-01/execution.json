@@ -1,0 +1,14 @@
+{
+  "tag": "[designed: #241]",
+  "unit": "goal2-fix241-serial-01.service",
+  "invocation": "e5999d89d59942698da35c8eb59f6e2d",
+  "source_head": "b62e153a3eca1b1b3e431d5efbca5eafc47d1862",
+  "display": ":241",
+  "screen": "2880x1800x24",
+  "qpa": "xcb",
+  "private_xdg": ".cache/display-private/{config,cache,runtime}",
+  "tmpdir": ".cache/tmp",
+  "stdin": "null",
+  "driver_sha256": "e199f1c2badc238c1323744d314dddbff73ffed349a1f292e3bd078fd990e481",
+  "unit_log_sha256": "cf38846f50b1d0ab7f5455cdaa143ab788ab6b71e468733a2c48690366f88dcc"
+}
