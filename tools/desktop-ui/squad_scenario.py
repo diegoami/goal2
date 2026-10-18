@@ -8,6 +8,8 @@ import platform
 import subprocess
 import sys
 import tempfile
+import traceback
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -33,7 +35,13 @@ def scenario(args):
             'sources':{str(p.relative_to(ROOT)):digest(p) for p in sorted((ROOT/'goal2/desktop').glob('*.py'))},
             'scenario_sha256':digest(__file__),'dispatcher_sha256':digest(ROOT/'tools/desktop-ui/redesign.py'),'resources':{'template':digest(args.template),'data':digest(args.data)},
             'steps':[],'captures':[]}
-    window=None
+    window=None;callback_exceptions=[];previous_exception_hook=sys.excepthook
+    def callback_exception(kind,error,trace):
+        callback_exceptions.append(''.join(traceback.format_exception(kind,error,trace)))
+        previous_exception_hook(kind,error,trace)
+    sys.excepthook=callback_exception
+    def assert_callbacks_clean():
+        assert not callback_exceptions,'uncaught Qt callback exception: '+''.join(callback_exceptions)
     try:
         with tempfile.TemporaryDirectory(prefix='T76-squad-') as folder:
             save=Path(folder)/'owned.g2save';model=DesktopModel.open(args.template,args.data,save,country=13)
@@ -189,8 +197,29 @@ def scenario(args):
             reveal(w.substitute);QTest.mouseClick(w.substitute,Qt.MouseButton.LeftButton);app.processEvents()
             assert w.jobs.halftime['captain']==2561 and 2561 in w.jobs.halftime['eleven'] and w.half_in.findData(61)==-1
             assert state()==before and save.read_bytes()==saved
-            reveal(w.stop);QTest.mouseClick(w.stop,Qt.MouseButton.LeftButton);app.processEvents()
+            owned_directory=Path(w.jobs.directory);started=time.monotonic()
+            reveal(w.stop);QTest.mouseClick(w.stop,Qt.MouseButton.LeftButton);app.processEvents();assert_callbacks_clean()
+            assert time.monotonic()-started<2,'Cancel exceeded existing bounded wait'
             assert not w.jobs.busy and state()==before and save.read_bytes()==saved
+            assert w.jobs.folder is None and not owned_directory.exists(),'owned worker folder remains after Cancel'
+            # [designed: T76/#233] Real Qt Cancel also visits one transient own-folder sharing error deterministically.
+            reveal(w.play);focus(w.play);QTest.mouseClick(w.play,Qt.MouseButton.LeftButton);app.processEvents()
+            deadline=time.monotonic()+20
+            while w.jobs.halftime is None and time.monotonic()<deadline:QTest.qWait(20)
+            assert w.jobs.halftime is not None,'second real halftime worker did not pause'
+            owned_folder=w.jobs.folder;owned_directory=Path(owned_folder.name);cleanup=owned_folder.cleanup;cleanup_calls=[]
+            def transient_cleanup():
+                cleanup_calls.append(True)
+                if len(cleanup_calls)==1:
+                    error=PermissionError('owned stderr handle still closing');error.winerror=32;raise error
+                cleanup()
+            with patch.object(owned_folder,'cleanup',side_effect=transient_cleanup):
+                started=time.monotonic();reveal(w.stop);QTest.mouseClick(w.stop,Qt.MouseButton.LeftButton);app.processEvents();assert_callbacks_clean()
+                assert time.monotonic()-started<2,'sharing retry exceeded existing cancellation bound'
+            assert len(cleanup_calls)>=2,'transient owned sharing violation did not retry'
+            assert w.jobs.folder is None and not owned_directory.exists(),'owned sharing-error folder remains after Cancel'
+            assert not w.jobs.busy and state()==before and save.read_bytes()==saved
+            report['cleanup_retry_calls']=len(cleanup_calls)
             report['steps'].append('Real pending halftime, captain2561 private substitution/no re-entry, disabled management and cancellation without publication')
             report['result']='PASS'
     except BaseException as exc:
@@ -199,12 +228,16 @@ def scenario(args):
         if window is not None:
             window.close();window.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
         app.quit();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
+        report['callback_exceptions']=callback_exceptions
+        sys.excepthook=previous_exception_hook
+        if callback_exceptions:report.update(result='FAIL',failure='uncaught Qt callback exception',exception='AssertionError')
         report['clean_widgets']=not bool(app.topLevelWidgets())
         report['sources_after']={name:digest(ROOT/name) for name in report['sources']}
         report['source_unchanged']=report['sources']==report['sources_after']
         (out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
         assert report['source_unchanged'],'source changed during squad scenario'
         assert report['clean_widgets'],'owned Qt widgets remained after cleanup'
+        assert_callbacks_clean()
     print('PASS squad: real private drafts/full IDs/eligibility, grouped raw detail, persistent actions, navigation, real pending halftime; '+str(out))
 
 

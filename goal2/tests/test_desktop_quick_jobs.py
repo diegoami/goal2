@@ -7,6 +7,7 @@ import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from types import SimpleNamespace
 from goal2.desktop.model import DesktopModel
 from goal2.desktop.jobs import QuickJobs
 from goal2.desktop.worker import play
@@ -66,6 +67,80 @@ class QuickJobCases(unittest.TestCase):
             self.assertLess(time.monotonic()-start,2)
             self.assertIsNotNone(process.poll());self.assertFalse(job.busy)
             self.assertEqual(self.model.state,before);self.assertIsNone(job.poll())
+    # [designed: T76/#233] Simulate only owned-folder sharing errors; real child cancellation stays in the path.
+    def cleanup_fixture(self):
+        self.model.save(self.model.save_path)
+        before=encode(self.model.state,self.model.template_bytes);saved=self.model.save_path.read_bytes()
+        job=self.job([sys.executable,'-c','import time;time.sleep(60)']);job.start()
+        return job,before,saved
+
+    def sharing_error(self):
+        error=PermissionError('owned worker stderr still closing');error.winerror=32
+        return error
+
+    def assert_preserved(self,before,saved):
+        self.assertEqual(encode(self.model.state,self.model.template_bytes),before)
+        self.assertEqual(self.model.save_path.read_bytes(),saved)
+
+    def test_transient_windows_sharing_cleanup_retries_then_releases_ownership(self):
+        job,before,saved=self.cleanup_fixture();folder=job.folder;directory=Path(folder.name);cleanup=folder.cleanup
+        calls=[]
+        def transient():
+            calls.append(True)
+            if len(calls)==1:raise self.sharing_error()
+            cleanup()
+        start=time.monotonic()
+        with patch.object(folder,'cleanup',side_effect=transient):
+            try:job.cancel()
+            except PermissionError:self.fail('transient WinError32 was not retried')
+        self.assertEqual(len(calls),2);self.assertLess(time.monotonic()-start,2)
+        self.assertFalse(job.busy);self.assertIsNone(job.folder);self.assertFalse(self.model.match_pending)
+        self.assertFalse(directory.exists());self.assert_preserved(before,saved)
+
+    def test_permanent_windows_sharing_is_bounded_retains_ownership_and_can_retry(self):
+        job,before,saved=self.cleanup_fixture();folder=job.folder;process=job.process;directory=Path(folder.name)
+        elapsed=[0.0];sleeps=[]
+        def sleep(seconds):sleeps.append(seconds);elapsed[0]+=seconds
+        clock=SimpleNamespace(monotonic=lambda:elapsed[0],sleep=sleep)
+        error=self.sharing_error();attempt_times=[]
+        def permanent():attempt_times.append(elapsed[0]);raise error
+        with patch('goal2.desktop.jobs.time',clock,create=True),patch.object(folder,'cleanup',side_effect=permanent) as cleanup:
+            with self.assertRaises(PermissionError) as raised:job.cancel()
+            self.assertIs(raised.exception,error)
+            self.assertIs(job.process,process,'cleanup failure lost process ownership')
+            self.assertIs(job.folder,folder);self.assertTrue(job.busy);self.assertTrue(self.model.match_pending)
+            self.assertGreater(cleanup.call_count,1);self.assertTrue(sleeps);self.assertLessEqual(elapsed[0],.5)
+            self.assertTrue(all(value<.5 for value in attempt_times),'cleanup retried after deadline')
+        self.assert_preserved(before,saved);job.cancel()
+        self.assertIsNone(job.folder);self.assertFalse(job.busy);self.assertFalse(directory.exists())
+        self.assertFalse(self.model.match_pending);self.assert_preserved(before,saved)
+
+    def test_nonsharing_cleanup_errors_propagate_without_retry_and_retain_ownership(self):
+        denied=PermissionError('not a sharing violation');denied.winerror=5
+        for error in (denied,PermissionError('no Windows sharing code'),OSError('other cleanup error')):
+            with self.subTest(error=repr(error)):
+                job,before,saved=self.cleanup_fixture();folder=job.folder;process=job.process
+                clock=SimpleNamespace(monotonic=lambda:0,sleep=lambda _:self.fail('nonsharing error was retried'))
+                with patch('goal2.desktop.jobs.time',clock,create=True),patch.object(folder,'cleanup',side_effect=error) as cleanup:
+                    with self.assertRaises(type(error)) as raised:job.cancel()
+                    self.assertIs(raised.exception,error);self.assertEqual(cleanup.call_count,1)
+                    self.assertIs(job.process,process,'cleanup failure lost process ownership');self.assertIs(job.folder,folder)
+                    self.assertTrue(self.model.match_pending)
+                self.assert_preserved(before,saved);job.cancel();self.assertIsNone(job.folder)
+                self.assertFalse(job.busy);self.assert_preserved(before,saved)
+
+    def test_failed_launch_cleanup_can_retry_without_a_process(self):
+        self.model.save(self.model.save_path);before=encode(self.model.state,self.model.template_bytes);saved=self.model.save_path.read_bytes()
+        folder=tempfile.TemporaryDirectory(prefix='goal2-owned-launch-failure-');self.addCleanup(folder.cleanup)
+        job=self.job();error=self.sharing_error()
+        with patch('goal2.desktop.jobs.tempfile.TemporaryDirectory',return_value=folder),patch('goal2.desktop.jobs.subprocess.Popen',side_effect=FileNotFoundError('missing owned launcher')):
+            with patch.object(folder,'cleanup',side_effect=error),patch('goal2.desktop.jobs.time',SimpleNamespace(monotonic=iter((0,1)).__next__,sleep=lambda _:None),create=True):
+                with self.assertRaises(PermissionError):job.start()
+        self.assertIsNone(job.process);self.assertIs(job.folder,folder);self.assert_preserved(before,saved)
+        with self.assertRaisesRegex(ValueError,'cleanup'):job.start()
+        job.cancel();self.assertIsNone(job.folder,'pending folder without a process was not retried')
+        self.assertFalse(Path(folder.name).exists());self.assert_preserved(before,saved)
+
     def test_launch_failure_and_unsupported_fixture_are_atomic(self):
         job=self.job(['/missing/goal2-worker'])
         before=copy.deepcopy(self.model.state)

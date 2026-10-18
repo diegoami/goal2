@@ -1,0 +1,129 @@
+{
+  "folder": "C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-launcher-diagnostic-6t__sp4a",
+  "driver_pid": 25928,
+  "driver_executable": "C:\\Users\\diego\\projects\\goal2-exe\\.venv\\Scripts\\python.exe",
+  "base_executable": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+  "cases": [
+    {
+      "label": "venv",
+      "executable": "C:\\Users\\diego\\projects\\goal2-exe\\.venv\\Scripts\\python.exe",
+      "deletions": [
+        {
+          "seconds_after_wait": 0.001434,
+          "child_state_before_delete": {
+            "wait0": 258,
+            "exit_code": 0
+          },
+          "deleted": false,
+          "type": "PermissionError",
+          "winerror": 32,
+          "message": "[WinError 32] The process cannot access the file because it is being used by another process: 'C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\T76-launcher-diagnostic-6t__sp4a\\\\venv\\\\error.txt'",
+          "child_state_after_delete": {
+            "wait0": 258,
+            "exit_code": 0
+          }
+        },
+        {
+          "seconds_after_wait": 0.026705,
+          "child_state_before_delete": {
+            "wait0": 0,
+            "exit_code": 0
+          },
+          "deleted": true,
+          "child_state_after_delete": {
+            "wait0": 0,
+            "exit_code": 0
+          }
+        }
+      ],
+      "popen_pid": 44204,
+      "ready": {
+        "pid": 2280,
+        "ppid": 44204,
+        "executable": "C:\\Users\\diego\\projects\\goal2-exe\\.venv\\Scripts\\python.exe",
+        "base_executable": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+      },
+      "alive_tree": [
+        {
+          "pid": 44204,
+          "ppid": 25928,
+          "command": "C:\\Users\\diego\\projects\\goal2-exe\\.venv\\Scripts\\python.exe C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-launcher-diagnostic-6t__sp4a\\owned_sleep.py C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-launcher-diagnostic-6t__sp4a\\venv\\ready.json",
+          "executable": "C:\\Users\\diego\\projects\\goal2-exe\\.venv\\Scripts\\python.exe",
+          "created": "10/18/2026 19:31:50"
+        },
+        {
+          "pid": 2280,
+          "ppid": 44204,
+          "command": "C:\\Users\\diego\\projects\\goal2-exe\\.venv\\Scripts\\python.exe C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-launcher-diagnostic-6t__sp4a\\owned_sleep.py C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-launcher-diagnostic-6t__sp4a\\venv\\ready.json",
+          "executable": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+          "created": "10/18/2026 19:31:50"
+        }
+      ],
+      "stderr_before": "owned diagnostic child ready\n",
+      "child_before_terminate": {
+        "wait0": 258,
+        "exit_code": 259
+      },
+      "popen_returncode": 1,
+      "terminate_wait_seconds": 0.0013913999937358312,
+      "child_immediately_after_parent_wait": {
+        "wait0": 258,
+        "exit_code": 0
+      },
+      "after_terminate_tree": [],
+      "cleanup_verified_processes": [],
+      "after_cleanup_tree": [],
+      "error_exists_after_process_cleanup": false
+    },
+    {
+      "label": "base",
+      "executable": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "deletions": [
+        {
+          "seconds_after_wait": 0.004503,
+          "child_state_before_delete": {
+            "wait0": 0,
+            "exit_code": 1
+          },
+          "deleted": true,
+          "child_state_after_delete": {
+            "wait0": 0,
+            "exit_code": 1
+          }
+        }
+      ],
+      "popen_pid": 44328,
+      "ready": {
+        "pid": 44328,
+        "ppid": 25928,
+        "executable": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "base_executable": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+      },
+      "alive_tree": [
+        {
+          "pid": 44328,
+          "ppid": 25928,
+          "command": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-launcher-diagnostic-6t__sp4a\\owned_sleep.py C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T76-launcher-diagnostic-6t__sp4a\\base\\ready.json",
+          "executable": "C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+          "created": "10/18/2026 19:31:54"
+        }
+      ],
+      "stderr_before": "owned diagnostic child ready\n",
+      "child_before_terminate": {
+        "wait0": 258,
+        "exit_code": 259
+      },
+      "popen_returncode": 1,
+      "terminate_wait_seconds": 0.0042678999961935915,
+      "child_immediately_after_parent_wait": {
+        "wait0": 0,
+        "exit_code": 1
+      },
+      "after_terminate_tree": [],
+      "cleanup_verified_processes": [],
+      "after_cleanup_tree": [],
+      "error_exists_after_process_cleanup": false
+    }
+  ],
+  "result": "PASS"
+}
