@@ -1,0 +1,31 @@
+test_stream_outcome_mismatch_and_incomplete_tail_never_publish (goal2.tests.test_watched_jobs.WatchedJobsTests.test_stream_outcome_mismatch_and_incomplete_tail_never_publish) ... FAIL
+
+======================================================================
+FAIL: test_stream_outcome_mismatch_and_incomplete_tail_never_publish (goal2.tests.test_watched_jobs.WatchedJobsTests.test_stream_outcome_mismatch_and_incomplete_tail_never_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/game/watched_jobs.py", line 168, in poll
+    self.publication.complete(token, self._complete)
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/game/watched_publication.py", line 115, in complete
+    candidate=completed_candidate(candidate,fixture,outcome,template,competitive=self._competitive)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/game/watched_publication.py", line 32, in completed_candidate
+    raise ValueError('watched completion differs from the pending fixture or is incomplete')
+ValueError: watched completion differs from the pending fixture or is incomplete
+
+The above exception was the direct cause of the following exception:
+
+ValueError: Invalid watched worker IPC: watched completion differs from the pending fixture or is incomplete
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/tests/test_watched_jobs.py", line 233, in test_stream_outcome_mismatch_and_incomplete_tail_never_publish
+    with self.assertRaisesRegex(ValueError,{'mismatch':'live event stream','tail':'incomplete','trailing':'Invalid watched worker IPC'}[mode]):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "live event stream" does not match "Invalid watched worker IPC: watched completion differs from the pending fixture or is incomplete"
+
+----------------------------------------------------------------------
+Ran 1 test in 10.105s
+
+FAILED (failures=1)

@@ -1,0 +1,24 @@
+test_large_partial_record_reads_are_bounded (goal2.tests.test_watched_jobs.WatchedJobsTests.test_large_partial_record_reads_are_bounded) ... ERROR
+
+======================================================================
+ERROR: test_large_partial_record_reads_are_bounded (goal2.tests.test_watched_jobs.WatchedJobsTests.test_large_partial_record_reads_are_bounded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/game/watched_jobs.py", line 167, in poll
+    raise ValueError(f'Watched worker exited ({code}) without completion: {detail}')
+ValueError: Watched worker exited (-15) without completion: 
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/tests/test_watched_jobs.py", line 211, in test_large_partial_record_reads_are_bounded
+    self.assertEqual(self.jobs.poll(token),[])
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/game/watched_jobs.py", line 180, in poll
+    raise ValueError(f'Invalid watched worker IPC: {exc}') from exc
+ValueError: Invalid watched worker IPC: Watched worker exited (-15) without completion: 
+
+----------------------------------------------------------------------
+Ran 1 test in 0.434s
+
+FAILED (errors=1)

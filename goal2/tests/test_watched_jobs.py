@@ -22,11 +22,12 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # [designed] Children use the real shared driver with a controlled original guest.
 CONTROLLED = r'''
-import sys,json,time
+import sys,json,time,signal
 from unittest.mock import patch
 from goal2.engine.original_match.match import Event
 from goal2.game import watched_worker
 mode=sys.argv.pop(1)
+if mode=='ignore':signal.signal(signal.SIGTERM,signal.SIG_IGN)
 class Guest:
  def __init__(self,*args,**kwargs):self.answers=0;self.image=args[0]
  def events(self):
@@ -130,9 +131,10 @@ class WatchedJobsTests(unittest.TestCase):
             self.until(token,lambda events:False)
         self.assertEqual(self.owner.state,self.before)
         self.jobs.close()
-        token=self.bridge('blocked');process=self.jobs.process
+        token=self.bridge('ignore');process=self.jobs.process
+        self.until(token,lambda events:bool(events))
         self.jobs.close()
-        self.assertIsNotNone(process.poll())
+        self.assertEqual(process.poll(),-9)
         self.assertEqual(self.owner.state,self.before)
 
     def test_replacement_and_stale_cancel_cannot_touch_new_job(self):
@@ -157,6 +159,7 @@ class WatchedJobsTests(unittest.TestCase):
         scripts=[
             ("import sys,struct;f=open(sys.argv[2],'wb');f.write(struct.pack('!I',1)+b'{')",'Invalid watched worker IPC'),
             ("import sys,json;from pathlib import Path;from goal2.game.watched_jobs import _write;j=json.loads((Path(sys.argv[1]).parent/'request.json').read_text());f=open(sys.argv[2],'ab');_write(f,j['token'],0,'event',{'wrong':1})",'Invalid watched worker IPC'),
+            ("import sys,json;from pathlib import Path;from goal2.game.watched_jobs import _write;j=json.loads((Path(sys.argv[1]).parent/'request.json').read_text());f=open(sys.argv[2],'ab');_write(f,j['token'],0,'event',{'kind':7,'minute':1,'score':(0,0),'data':{}})",'invalid watched event shape'),
             ("import sys;open(sys.argv[2],'wb').write(b'\\x00\\x00')",'truncated'),
             (f"import sys,struct;open(sys.argv[2],'wb').write(struct.pack('!I',{MAX_PACKET+1}))",'exceeds'),
             ("import sys;from goal2.game.watched_jobs import _write;f=open(sys.argv[2],'ab');_write(f,'wrong',0,'event',None)",'identity/order'),
@@ -170,13 +173,27 @@ class WatchedJobsTests(unittest.TestCase):
                 self.assertEqual(self.owner.state,self.before)
                 self.jobs.close()
 
+    def test_bridge_imports_without_ui_or_optional_runtime(self):
+        import subprocess
+        script = """
+import importlib.abc,sys
+class NoUI(importlib.abc.MetaPathFinder):
+ def find_spec(self,fullname,path=None,target=None):
+  if fullname.split('.')[0] in ('PySide6','pygame','unicorn','flask','http'):
+   raise ImportError('forbidden dependency: '+fullname)
+sys.meta_path.insert(0,NoUI())
+import goal2.game.watched_jobs,goal2.game.watched_worker
+"""
+        result=subprocess.run([sys.executable,'-c',script],cwd=ROOT,capture_output=True,text=True,timeout=30)
+        self.assertEqual(result.returncode,0,result.stderr)
+
     def test_start_failures_clear_publication_and_allow_restart(self):
         self.jobs=WatchedJobs(self.owner)
         for target in ('tempfile.TemporaryDirectory','subprocess.Popen'):
             with patch('goal2.game.watched_jobs.'+target,side_effect=OSError('launch unavailable')):
                 with self.assertRaisesRegex(OSError,'launch unavailable'):
                     self.jobs.start(Fixture(7,19,21))
-            self.assertIsNone(self.jobs.publication._pending)
+            self.assertTrue(self.jobs.publication._pending is None,'failed launch must clear pending publication')
             self.assertFalse(self.jobs.busy)
             self.assertEqual(self.owner.state,self.before)
         self.jobs.command=[sys.executable,'-c',CONTROLLED,'blocked']
@@ -213,7 +230,7 @@ class WatchedJobsTests(unittest.TestCase):
                 if mode=='trailing':stream.write(struct.pack('!I',1)+b'{')
             # [designed] Substitute successful exit only; use the real parent decoder/publication.
             with patch.object(self.jobs.process,'poll',return_value=0):
-                with self.assertRaisesRegex(ValueError,'stream|incomplete|Invalid watched worker IPC'):
+                with self.assertRaisesRegex(ValueError,{'mismatch':'live event stream','tail':'incomplete','trailing':'Invalid watched worker IPC'}[mode]):
                     self.until(token,lambda events:False)
             self.assertEqual(self.owner.state,self.before)
             self.jobs.close()
