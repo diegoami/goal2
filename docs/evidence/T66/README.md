@@ -66,3 +66,33 @@ removes both consumed-token clearance and the redundant stale-owner fallback,
 then the acceptance explicitly retries the actual consumed publication and
 requires refusal without replacing active state. Final controls must all be
 intended assertion failures; this diagnostic attempt is not substituted for them.
+
+
+[designed] Final fixed-source receipt is
+[final-source-and-validation.json](final-source-and-validation.json), with full
+source/resource hashes and exact commands. At source66dab84, `acceptance-05.log`
+is PASS9/53.330seconds, zero skips; `qt-command-04.log` passes the exact standalone
+command. Both actual friendlies (fixtures1378/1471;1171/1392 ordered events) match
+direct original output and complete state/Memory/both RNG/history through Qt
+save/resume/repeat. They explicitly retry a consumed publication without changing
+state/save, reject the pending qualifier even with a draft, and close a running
+new-friendly owner while preserving the previously saved completed result.
+
+[designed] `controls-02/controls.json` and `control-runner-02.log` record all nine
+intended assertion failures: ordering, framebuffer pixels, live follow, raw rating,
+shared start, qualifier-message priority, completed-viewer/new-job lock ownership,
+actual repeated publication, and saved RNG continuation. No ERROR/module absence/
+timeout is counted. Every touched physical source hash matches the frozen committed
+source after restoration. Product files are unchanged since5962c7d; only acceptance
+and evidence improved afterward.
+
+[designed] `native-viewer-01.log` additionally passes the actual product SDL
+viewer on the available native x11 display: blocked-tail Qt heartbeats, actual
+SDL rendering and actual SDL QUIT, plus qualifier refusal. Qt controls used its
+offscreen driver; this does not claim native Qt/Windows packaging. The owned
+validation cgroup was bounded at20seconds. `optional-03.log` passes the corrected
+optional-boundary helper with unconditional window cleanup.
+
+[designed] Final-head local premerge is recorded on the PR, so recording its SHA
+does not change the SHA it certifies. The main session repeats exact-head checks
+after independent approval; no implementer merge or review is claimed here.
