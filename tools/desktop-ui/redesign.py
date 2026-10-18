@@ -481,14 +481,22 @@ def overview_negative_controls(args):
     print('PASS overview negative controls: baseline hierarchy absent; active binding fails country-selection and overview; exact saved bytes restored')
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell','overview','squad'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['shell','overview','squad','results'],required=True)
     parser.add_argument('--template',required=True);parser.add_argument('--data',required=True)
     parser.add_argument('--evidence-dir',required=True);parser.add_argument('--single-scale',action='store_true');parser.add_argument('--negative-controls',action='store_true')
     parser.add_argument('--surface-input-control',choices=['wrong-focus','country-change'])
+    parser.add_argument('--results-input-dir',default=str(ROOT/'.cache/T78-presentation-inputs-03'))
+    parser.add_argument('--results-source-dir')
+    parser.add_argument('--prepare-results-inputs',action='store_true')
     args=parser.parse_args()
     if args.scenario=='squad' and (args.negative_controls or args.single_scale):
         from squad_scenario import scenario,negative_controls as squad_negative_controls
         return (squad_negative_controls if args.negative_controls else scenario)(args)
+    if args.scenario=='results':
+        from results_scenario import results,negative_controls as results_negative,prepare
+        if args.prepare_results_inputs:return prepare(args)
+        if args.negative_controls:return results_negative(args)
+        if args.single_scale:return results(args)
     if args.negative_controls:return (overview_negative_controls if args.scenario=='overview' else negative_controls)(args)
     if args.single_scale:return (overview if args.scenario=='overview' else shell)(args)
     # [designed] The orchestrator owns no Qt connection; each scale exits before the next starts.
@@ -501,5 +509,6 @@ def main():
         env=os.environ.copy();env['QT_SCALE_FACTOR']=scale
         command=[sys.executable,str(Path(__file__).resolve()),'--scenario',args.scenario,'--template',args.template,
                  '--data',args.data,'--evidence-dir',str(target),'--single-scale']
+        if args.scenario=='results':command+=['--results-input-dir',args.results_input_dir]
         subprocess.run(command,env=env,check=True)
 if __name__=='__main__':main()

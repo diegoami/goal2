@@ -1,0 +1,30 @@
+START competitive
+END competitive 0
+START prove-management
+END prove-management 0
+START prove-friendlies
+END prove-friendlies 0
+START prove-pool
+END prove-pool 0
+START prove-halftime
+END prove-halftime 0
+START campaign-friendlies
+END campaign-friendlies 0
+START worker
+END worker 0
+START campaign-halftime
+END campaign-halftime 0
+START management
+END management 0
+START campaign-pool
+END campaign-pool 0
+START country-selection
+END country-selection 0
+START standings
+END standings 0
+START overview
+END overview 0
+START overview-negative
+END overview-negative 0
+START shell
+END shell 0
