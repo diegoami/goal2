@@ -1,0 +1,7 @@
+PASS mutation: candidate isolation
+PASS mutation: one in-flight
+PASS mutation: stale completion
+PASS mutation: publication
+PASS mutation: history
+PASS mutation: Qt play wire
+PASS mutation: Qt cancel wire

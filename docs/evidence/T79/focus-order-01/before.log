@@ -1,0 +1,15 @@
+test_standings_tab_reaches_play_and_back_without_state_change (goal2.tests.test_pygame_match_view.PresentationTests.test_standings_tab_reaches_play_and_back_without_state_change) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_standings_tab_reaches_play_and_back_without_state_change (goal2.tests.test_pygame_match_view.PresentationTests.test_standings_tab_reaches_play_and_back_without_state_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 230, in test_standings_tab_reaches_play_and_back_without_state_change
+    self.assertIs(app.focusWidget(),w.play,'standings Tab must reach Play')
+AssertionError: <PySide6.QtWidgets.QFrame(0x33ed2cd0, name="matchSurface") at 0x7bb555bb4580> is not <PySide6.QtWidgets.QPushButton(0x33eb4500, name="playMatch") at 0x7bb555bb6240> : standings Tab must reach Play
+
+----------------------------------------------------------------------
+Ran 1 test in 1.819s
+
+FAILED (failures=1)

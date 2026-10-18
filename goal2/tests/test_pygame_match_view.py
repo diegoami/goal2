@@ -212,6 +212,34 @@ class PresentationTests(unittest.TestCase):
                 w.cancel_match();self.assertEqual(w.match_provenance.text(),'No match played')
             finally:w.close();app.processEvents()
 
+    def test_standings_tab_reaches_play_and_back_without_state_change(self):
+        # [designed: T79] Preserve T78 keyboard order after adding the focusable match panel.
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.window import ManagementWindow
+        app=QApplication.instance() or QApplication([])
+        with tempfile.TemporaryDirectory() as folder:
+            m=model(Path(folder)/'save');m.save(m.save_path)
+            before=copy.deepcopy(m.state);saved=m.save_path.read_bytes()
+            w=ManagementWindow(m);w.show();w.page_stack.setCurrentIndex(3);app.processEvents()
+            try:
+                self.assertTrue(w.play.isEnabled())
+                w.standings.setFocus();app.processEvents();self.assertIs(app.focusWidget(),w.standings)
+                QTest.keyClick(w.standings,Qt.Key.Key_Tab);app.processEvents()
+                self.assertIs(app.focusWidget(),w.play,'standings Tab must reach Play')
+                QTest.keyClick(w.play,Qt.Key.Key_Backtab);app.processEvents()
+                self.assertIs(app.focusWidget(),w.standings)
+                visited=[]
+                for _ in range(128):
+                    target=app.focusWidget();visited.append(target.objectName())
+                    QTest.keyClick(target,Qt.Key.Key_Tab);app.processEvents()
+                    if app.focusWidget() is w.standings:break
+                self.assertIn('matchSurface',visited,'match panel must remain keyboard reachable')
+                self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
+                self.assertFalse(getattr(m,'match_pending',False))
+            finally:w.close();app.processEvents()
+
     def test_external_job_pending_context_preserves_state_save_and_resets(self):
         # [designed: T79] A completed view cannot identify an unrelated current match owner.
         from PySide6.QtWidgets import QApplication

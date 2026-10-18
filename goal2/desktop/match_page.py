@@ -35,6 +35,11 @@ def build(window, layout):
     window.half_preview=None;body.addWidget(window.half_panel);layout.addWidget(panel)
 
 
+def bind_keyboard(window):
+    from PySide6.QtWidgets import QWidget
+    QWidget.setTabOrder(window.standings,window.play)
+
+
 def values(window):
     """[designed: T79] Read current authority, never reuse an old viewer after replacement."""
     from goal2.desktop.fixtures_page import snapshot

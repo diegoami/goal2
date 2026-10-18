@@ -1,0 +1,16 @@
+test_standings_tab_reaches_play_and_back_without_state_change (goal2.tests.test_pygame_match_view.PresentationTests.test_standings_tab_reaches_play_and_back_without_state_change) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_standings_tab_reaches_play_and_back_without_state_change (goal2.tests.test_pygame_match_view.PresentationTests.test_standings_tab_reaches_play_and_back_without_state_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 240, in test_standings_tab_reaches_play_and_back_without_state_change
+    self.assertFalse(m.match_pending)
+                     ^^^^^^^^^^^^^^^
+AttributeError: 'DesktopModel' object has no attribute 'match_pending'
+
+----------------------------------------------------------------------
+Ran 1 test in 2.214s
+
+FAILED (errors=1)

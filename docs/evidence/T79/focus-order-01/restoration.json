@@ -1,0 +1,6 @@
+{
+  "tag": "[confirmed: T79]",
+  "window_sha256": "858e57a8aec01861e73b621d577ff8465244b7f3e7f8879150dc23701fa02f5b",
+  "restored": true,
+  "control": "binding removed: actual Tab fails; final binding preserves Backtab and matchSurface cycle"
+}

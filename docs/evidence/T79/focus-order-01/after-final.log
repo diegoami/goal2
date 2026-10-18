@@ -1,0 +1,7 @@
+test_standings_tab_reaches_play_and_back_without_state_change (goal2.tests.test_pygame_match_view.PresentationTests.test_standings_tab_reaches_play_and_back_without_state_change) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.642s
+
+OK

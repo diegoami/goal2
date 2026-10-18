@@ -24,6 +24,8 @@ class ManagementWindow(QMainWindow):
         self.jobs=QuickJobs(model);self.timer=QTimer(self);self.timer.setInterval(30);self.timer.timeout.connect(self.poll_match)
         from goal2.desktop.pages import compose
         compose(self,model,TACTICS)
+        from goal2.desktop.match_page import bind_keyboard
+        bind_keyboard(self)
         self.standings.clicked.connect(self.show_standings)
         self.watch.clicked.connect(self.start_watched)
         self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
