@@ -1,0 +1,20 @@
+dbus-daemon[2438948]: [session uid=1000 pid=2438948 pidfd=5] Cannot set up inotify for '/usr/share/dbus-1/session.d': No space left on device
+dbus-daemon[2438948]: [session uid=1000 pid=2438948 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=2438951 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2438948]: [session uid=1000 pid=2438948 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[2438965]: Cannot set up inotify for '/usr/share/dbus-1/accessibility-services': No space left on device
+dbus-daemon[2438965]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=2438951 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2438948]: [session uid=1000 pid=2438948 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=2438951 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2438965]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[2438948]: [session uid=1000 pid=2438948 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :101 2438951
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/competitive_play.py", line 186, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/competitive_play.py", line 60, in main
+    assert 'friendlies only' in window.status.text(),window.status.text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Game resumed
+
+(xfconfd:2438973): xfconfd-WARNING **: 21:16:42.615: Name org.xfce.Xfconf lost on the message dbus, exiting.

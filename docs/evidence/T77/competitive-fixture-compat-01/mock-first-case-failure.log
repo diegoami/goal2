@@ -1,0 +1,30 @@
+dbus-daemon[2444219]: [session uid=1000 pid=2444219 pidfd=5] Cannot set up inotify for '/usr/share/dbus-1/session.d': No space left on device
+dbus-daemon[2444219]: [session uid=1000 pid=2444219 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=2444222 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2444219]: [session uid=1000 pid=2444219 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[2444237]: Cannot set up inotify for '/usr/share/dbus-1/accessibility-services': No space left on device
+dbus-daemon[2444237]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=2444222 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2444219]: [session uid=1000 pid=2444219 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=2444222 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2444237]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[2444219]: [session uid=1000 pid=2444219 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :100 2444222
+MOCK: disabled Watch remains disabled; direct callback refusal exercised explicitly
+PASS real Qt competitive kind2 index21: original result/events/Memory/both seeds, progress, captain0, save/resume
+MOCK: disabled Watch remains disabled; direct callback refusal exercised explicitly
+PASS real Qt competitive kind200 index42: original result/events/Memory/both seeds, progress, captain0, save/resume
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T79-competitive-compatibility-mock.py", line 17, in <module>
+    try:runpy.run_path(str(ROOT/'tools/desktop-ui/competitive_play.py'),run_name='__main__')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/competitive_play.py", line 186, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/competitive_play.py", line 168, in main
+    assert 'No supported pending competitive fixture' in window.status.text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+(xfconfd:2444247): xfconfd-WARNING **: 21:20:02.190: Name org.xfce.Xfconf lost on the message dbus, exiting.
