@@ -21,7 +21,7 @@ class QuickJobs:
 
     def start(self,*,halftime=False):
         if self.busy or getattr(self.model,'match_pending',False):raise ValueError('A match is already running')
-        if self.folder is not None:raise ValueError('Worker cleanup is pending; cancel again before starting')
+        if self.folder is not None and self.process is None:raise ValueError('Worker cleanup is pending; cancel again before starting')
         model=self.model
         if halftime and model.state.campaign is None:raise ValueError('Halftime interaction requires a campaign')
         self.interactive=halftime;self.halftime=None;self.continued=False

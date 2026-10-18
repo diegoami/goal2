@@ -256,3 +256,9 @@ Confirm management / Discard draft bar stays visible while the page scrolls.
 Space toggles native XI/tactics controls; Enter activates a focused draft action.
 Draft edits survive navigation and country preview/return; Save writes confirmed
 state, and match play still requires confirmed management.
+
+[designed: T76/#233; derived: native launcher diagnosis] Windows quick-worker
+cleanup allows up to0.5seconds for a transient sharing violation while an owned
+child finishes closing stderr. Other cleanup errors propagate. Cleanup failure
+retains ownership so Cancel can retry; it does not publish a candidate or change
+the confirmed save. Worker interpreter and dependency context remain unchanged.
