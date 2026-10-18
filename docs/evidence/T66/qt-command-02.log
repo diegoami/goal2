@@ -1,0 +1,11 @@
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/tools/desktop-ui/watched.py", line 123, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/tools/desktop-ui/watched.py", line 107, in main
+    assert not w.watched.busy and 'qualifiers are unsupported' in w.status.text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

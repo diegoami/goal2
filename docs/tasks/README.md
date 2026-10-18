@@ -106,6 +106,21 @@ Historical browser contracts T34–T38 are preserved; these are separate impleme
 | --- | --- | --- | --- | --- |
 | [T73](T73.md) | Add direct Claude CLI and run one Sonnet review trial | [#174](https://github.com/diegoami/goal2/issues/174) | Hard | T72 |
 
+## Modern football GUI proposal
+
+[designed: owner #182, 2026-10-18] See the [visual study and bounded backlog](../design/football-gui/README.md).
+These contracts come from planning PR188; per-slice preflight and main-session
+retriage govern dispatch. Child issue identities are linked below; GitHub labels own status.
+
+| Task | Title | Issue | Difficulty | Merge after |
+| --- | --- | --- | --- | --- |
+| [T74](T74.md) | Qt football shell and shared visual tokens | [#193](https://github.com/diegoami/goal2/issues/193) | Medium | #182 plan, T70, T71, T66, T80 |
+| [T75](T75.md) | Country identity, selection and overview | [#194](https://github.com/diegoami/goal2/issues/194) | Medium | T74, #181/PR183 |
+| [T76](T76.md) | Squad/tactics draft workspace | [#195](https://github.com/diegoami/goal2/issues/195) | Hard | T75, T47, #164 |
+| [T77](T77.md) | National pool exchange workspace | [#196](https://github.com/diegoami/goal2/issues/196) | Medium | T76, T71 |
+| [T78](T78.md) | Fixture/result scoreboard and standings | [#197](https://github.com/diegoami/goal2/issues/197) | Medium | T75, T49, T51 |
+| [T79](T79.md) | Qt/Pygame match presentation | [#198](https://github.com/diegoami/goal2/issues/198) | Hard | T74, T76, T78, T66 |
+
 ## Continental qualifying desktop prerequisite
 
 | Task | Title | Issue | Merge after |

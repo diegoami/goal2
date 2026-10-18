@@ -1,13 +1,13 @@
 """[designed: T69] Native Qt management widgets; drafts never mutate the game.
-[derived: F010] Tactics elements1..4; remaining labels retain rebuild policy.
+[confirmed: F010] Tactics labels for elements1..4,6,7.
 """
 from PySide6.QtCore import Qt,QTimer
 from goal2.desktop.jobs import QuickJobs
 from PySide6.QtWidgets import (QCheckBox,QComboBox,QHeaderView,QHBoxLayout,QLabel,
  QLineEdit,QMainWindow,QPushButton,QSplitter,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget)
 
-# [confirmed: F010] Display order5,6,7,1,2,3,4,8. [designed] Labels5..8.
-TACTICS=((5,'Half pitch / full pitch'),(6,'Short kicks / long kicks'),(7,'Stay back / push forward'),
+# [confirmed: F010] Display order5,6,7,1,2,3,4,8. [designed] Labels5,8.
+TACTICS=((5,'Half pitch / full pitch'),(6,'Sag back to box / stand ground'),(7,'Play safe / offside trap'),
          (1,'Stay back / push forward'),(2,'Keep ball / quick pass'),(3,'Short passes / long passes'),
          (4,'Avoid injury / go in hard'),(8,'Zone / man to man'))
 
@@ -16,6 +16,9 @@ class ManagementWindow(QMainWindow):
     """[designed] All widget access and active-state publication stay on the Qt thread."""
     def __init__(self,model):
         super().__init__();self.model=model;self._refreshing=False;self.preview=None;self.active_draft=None
+        from goal2.desktop.watched import WatchedController
+        self.watched=WatchedController(model)
+        self.watch_timer=QTimer(self);self.watch_timer.setInterval(30);self.watch_timer.timeout.connect(self.poll_watched)
         self.jobs=QuickJobs(model);self.timer=QTimer(self);self.timer.setInterval(30);self.timer.timeout.connect(self.poll_match)
         self.setWindowTitle('goal2 — Country management');self.resize(1050,780)
         root=QWidget();self.setCentralWidget(root);layout=QVBoxLayout(root)
@@ -62,7 +65,9 @@ class ManagementWindow(QMainWindow):
         save_bar=QHBoxLayout();save_bar.addWidget(QLabel('Save file'));self.path=QLineEdit(str(model.save_path));self.path.setObjectName('savePath');save_bar.addWidget(self.path,1)
         self.save=QPushButton('Save');self.save.setObjectName('save');self.resume=QPushButton('Resume');self.resume.setObjectName('resume');save_bar.addWidget(self.save);save_bar.addWidget(self.resume);layout.addLayout(save_bar)
         play_bar=QHBoxLayout();self.play=QPushButton('Play quick friendly');self.stop=QPushButton('Cancel match');self.stop.setEnabled(False)
-        play_bar.addWidget(self.play);play_bar.addWidget(self.stop);layout.addLayout(play_bar)
+        self.watch=QPushButton('Watch original friendly');self.watch.setObjectName('watchOriginal')
+        self.watch.clicked.connect(self.start_watched)
+        play_bar.addWidget(self.play);play_bar.addWidget(self.watch);play_bar.addWidget(self.stop);layout.addLayout(play_bar)
         half_bar=QHBoxLayout();self.half_out=QComboBox();self.half_in=QComboBox()
         self.substitute=QPushButton('Substitute');self.continue_match=QPushButton('Continue second half')
         half_bar.addWidget(QLabel('Off'));half_bar.addWidget(self.half_out);half_bar.addWidget(QLabel('On'));half_bar.addWidget(self.half_in)
@@ -105,7 +110,7 @@ class ManagementWindow(QMainWindow):
     def country_changed(self):
         if self._refreshing:return
         country=self.country.currentData()
-        if self.jobs.busy:
+        if getattr(self.model,'match_pending',False):
             self._refreshing=True;self.country.setCurrentIndex(self.country.findData(self.model.state.managed_country));self._refreshing=False
             return
         try:
@@ -124,7 +129,7 @@ class ManagementWindow(QMainWindow):
             self.status.setText(str(exc))
 
     def require_active(self):
-        if self.jobs.busy:
+        if getattr(self.model,'match_pending',False):
             self.status.setText('Finish or cancel the match first');return False
         if self.preview is not None:
             self.status.setText('Fresh campaign preview: choose New campaign or New standalone friendly to manage this team, or return to the active country.');return False
@@ -173,7 +178,7 @@ class ManagementWindow(QMainWindow):
         for element,box in self.tactics:box.setChecked(bool(state.country_tactics & (1<<(element-1))))
         self.path.setText(str(self.model.save_path));self._refreshing=False
         self.refresh_pool()
-        self.set_busy(self.jobs.busy)
+        self.set_busy(getattr(self.model,'match_pending',False))
         if self.preview is not None:self.require_active()
         elif message:self.status.setText(message)
 
@@ -191,7 +196,7 @@ class ManagementWindow(QMainWindow):
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def action(self,operation,message,*,replace=False):
-        if self.jobs.busy or (not replace and not self.require_active()):return
+        if getattr(self.model,'match_pending',False) or (not replace and not self.require_active()):return
         try:
             operation()
             if replace:self.preview=None;self.active_draft=None
@@ -204,10 +209,11 @@ class ManagementWindow(QMainWindow):
         self.action(lambda:self.model.confirm(self.selected_ids(),self.captain.currentData(),bits),'Management confirmed')
 
     def set_busy(self,busy):
+        busy=bool(busy or getattr(self.model,'match_pending',False))
         # [designed: T70] Prevent conflicting edits while keeping the UI responsive.
         for widget in (self.country,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
         active=not busy and self.preview is None
-        for widget in (self.table,self.captain,self.confirm,self.cancel,self.save,self.pool_panel,self.play,self.standings):widget.setEnabled(active)
+        for widget in (self.table,self.captain,self.confirm,self.cancel,self.save,self.pool_panel,self.play,self.watch,self.standings):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
         self.stop.setEnabled(busy)
 
@@ -221,6 +227,28 @@ class ManagementWindow(QMainWindow):
             self.jobs.start(halftime=self.model.state.campaign is not None);self.set_busy(True);self.status.setText('Playing quick friendly…');self.timer.start()
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
+    def start_watched(self):
+        if not self.require_active():return
+        try:
+            self.watched.fixture()
+            state=self.model.state
+            if self.draft()!=(state.starting_eleven,state.captain,state.country_tactics):
+                raise ValueError('Confirm or discard management edits before watching')
+            self.watched.start();self.set_busy(True);self.status.setText('Starting original friendly in Pygame…');self.watch_timer.start()
+        except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
+
+    def poll_watched(self):
+        try:
+            if self.watched.poll():
+                self.set_busy(False);self.refresh('Original friendly complete; result can be saved. Scroll the Pygame window for board and Raw rating.')
+            elif self.watched.busy and self.watched.display.events:
+                event=self.watched.display.events[-1]
+                self.status.setText(f"Original engine: {event['minute']}′ {event['score'][0]} — {event['score'][1]}")
+            if self.watched.process is None:
+                self.watch_timer.stop();self.set_busy(False)
+        except (OSError,ValueError,IndexError,KeyError) as exc:
+            self.watch_timer.stop();self.set_busy(False);self.status.setText(str(exc))
+
     def poll_match(self):
         try:
             if self.jobs.poll():
@@ -230,10 +258,10 @@ class ManagementWindow(QMainWindow):
             self.timer.stop();self.set_busy(False);self.show_halftime();self.status.setText(str(exc))
 
     def cancel_match(self):
-        self.timer.stop();self.jobs.cancel();self.set_busy(False);self.show_halftime();self.refresh('Friendly cancelled; game unchanged')
+        self.timer.stop();self.watched.cancel();self.watch_timer.stop();self.jobs.cancel();self.set_busy(False);self.show_halftime();self.refresh('Friendly cancelled; game unchanged')
 
     def closeEvent(self,event):
-        self.timer.stop();self.jobs.cancel();super().closeEvent(event)
+        self.timer.stop();self.watch_timer.stop();self.watched.close();self.jobs.cancel();super().closeEvent(event)
 
     def refresh_pool(self):
         if self._refreshing:return

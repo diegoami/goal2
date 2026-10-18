@@ -1,0 +1,24 @@
+test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) ... 
+  test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='display') ... FAIL
+  test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='errors') ... FAIL
+
+======================================================================
+FAIL: test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='display')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 251, in test_partial_startup_allocation_cleanup_and_retry_preserve_save
+    self.assertTrue(automatically_released,'startup failure retained its allocated folder')
+AssertionError: False is not true : startup failure retained its allocated folder
+
+======================================================================
+FAIL: test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) (allocation='errors')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T66-pygame-match-view/goal2/tests/test_pygame_match_view.py", line 250, in test_partial_startup_allocation_cleanup_and_retry_preserve_save
+    self.assertTrue(automatically_closed,'startup failure retained an acquired stream')
+AssertionError: False is not true : startup failure retained an acquired stream
+
+----------------------------------------------------------------------
+Ran 1 test in 1.813s
+
+FAILED (failures=2)

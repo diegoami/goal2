@@ -1,0 +1,36 @@
+COMMAND /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/desktop-ui/acceptance.py --scenario management --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+This plugin does not support propagateSizeHints()
+PASS management: real Qt country/draft/XI/captain260/all tactics, injury/ban repair, complete save/resume, failure rollback and pure redraw
+COMMAND /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/desktop-ui/acceptance.py --scenario campaign-friendlies --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS campaign-friendlies: two scheduled fixtures, complete state/RNG/history, save/resume, boundary and standalone repeat
+COMMAND /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/desktop-ui/acceptance.py --scenario worker --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+This plugin does not support propagateSizeHints()
+PASS worker
+COMMAND /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/desktop-ui/acceptance.py --scenario campaign-pool --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS campaign-pool: search/filter, 20/80 identities, exchange/captain2561, unavailable/closed refusal, save/resume, ordered condition and real play
+COMMAND /home/diego/projects/goal2/.cache/validation-venv/bin/python3 tools/desktop-ui/acceptance.py --scenario campaign-halftime --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+PASS campaign-halftime: real pause/substitute/captain2561/no re-entry/continue once, full state/save/resume/next XI, cancel and safe save refusal
+PASS all5 retained Qt scenarios

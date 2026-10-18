@@ -1,0 +1,75 @@
+[
+  {
+    "name": "ordering",
+    "test": "goal2.tests.test_pygame_match_view.PresentationTests.test_order_display_copy_and_once_completion",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/match_view.py",
+    "restored_sha256": "22785ceb4dfc5a033c792bc738157376605813ef85cc35a4423bb691d49ea98c"
+  },
+  {
+    "name": "framebuffer",
+    "test": "goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/pygame_viewer.py",
+    "restored_sha256": "6ab51f2e7e6e930da7a67e61e7f9b3f1c22962174583187323ff3ec74a52f4a2"
+  },
+  {
+    "name": "live-follow",
+    "test": "goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/pygame_viewer.py",
+    "restored_sha256": "6ab51f2e7e6e930da7a67e61e7f9b3f1c22962174583187323ff3ec74a52f4a2"
+  },
+  {
+    "name": "raw-rating",
+    "test": "goal2.tests.test_pygame_match_view.PresentationTests.test_raw_rating_original_word_boundaries",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/match_view.py",
+    "restored_sha256": "22785ceb4dfc5a033c792bc738157376605813ef85cc35a4423bb691d49ea98c"
+  },
+  {
+    "name": "shared-start",
+    "test": "goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/jobs.py",
+    "restored_sha256": "ef0356ac4908cdfa6dc41a3db41806e150a8e8162b13f972b931b16e222e8543"
+  },
+  {
+    "name": "qualifier-priority",
+    "test": "goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/window.py",
+    "restored_sha256": "0313f261b38c1e5569591a943e3307951958cc3d04aff0fae592a30d53aae88f"
+  },
+  {
+    "name": "lock-ownership",
+    "test": "goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/watched.py",
+    "restored_sha256": "4a577f616c49cca8fa291305cf310e5c6cfb78ebe9164a7449ea725f106b2077"
+  },
+  {
+    "name": "once-publication",
+    "test": "goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/game/watched_publication.py",
+    "restored_sha256": "2b96c2c93a4bf7701168359b30fc9e60fe7881168653c2bfd2552ccf7ed24ad8"
+  },
+  {
+    "name": "save-continuation",
+    "test": "goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat",
+    "returncode": 1,
+    "intended_assertion_failure": true,
+    "file": "goal2/desktop/model.py",
+    "restored_sha256": "2a60ee766de250517e84b11526ac465a1dd12a1f69261cebdb19675d5d329066"
+  }
+]
+PASS all9 intended assertion controls; saved source bytes restored

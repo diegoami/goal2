@@ -119,6 +119,16 @@ export function readReview(stdout, header) {
     return readLines(onLine ? [onLine, ...following] : following);
   };
 
+  // [designed: #165] Recover only a complete task/reviewer/PR/full-SHA identity
+  // header missing its expected final period. A near header anywhere holds the
+  // whole output, including mixed exact/near drafts: it can never label approval.
+  const expected = header.trim();
+  const identity = /^(?:T\d+|#\d+) review \([^()]+\), PR #\d+ at [0-9a-f]{40}\.$/i;
+  const folded = (s) => s.replace(/\s+/g, ' ').toLowerCase();
+  if (identity.test(expected) && lines.some((line) => folded(undecorate(line)) === folded(expected.slice(0, -1)))) {
+    return done({ ...flagged('review header differs by its terminal period; manual assessment required'), review: whole });
+  }
+
   const last = lines.findLastIndex((l) => headerRe.test(undecorate(l)));
   if (last < 0) return { kind: 'none', reason: 'no review in its output' };
   const r = readAt(last);

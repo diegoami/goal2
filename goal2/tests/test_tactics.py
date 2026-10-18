@@ -2,7 +2,7 @@
 
 [confirmed: F010 (8-element Pascal set at country[+0x2D]); T11 (input layer,
 screen pattern); T12 (starting_eleven and captain are set before tactics).]
-[designed: T13 screen layout, display order, element labels, footer text,
+[designed: T13 screen layout, display order, remaining rebuild element labels, footer text,
 country_tactics field on GameState.]
 """
 import unittest

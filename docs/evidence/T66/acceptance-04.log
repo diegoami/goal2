@@ -1,0 +1,89 @@
+test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_malformed_stale_ack_and_engine_failure_preserve_state (goal2.tests.test_pygame_match_view.PresentationTests.test_malformed_stale_ack_and_engine_failure_preserve_state) ... ok
+test_optional_dependency_and_qualifier_boundary (goal2.tests.test_pygame_match_view.PresentationTests.test_optional_dependency_and_qualifier_boundary) ... ok
+test_order_display_copy_and_once_completion (goal2.tests.test_pygame_match_view.PresentationTests.test_order_display_copy_and_once_completion) ... ok
+test_qt_heartbeat_blocked_tail_and_actual_viewer_quit (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit) ... This plugin does not support propagateSizeHints()
+ok
+test_raw_rating_original_word_boundaries (goal2.tests.test_pygame_match_view.PresentationTests.test_raw_rating_original_word_boundaries) ... ok
+test_real_framebuffer_matches_original_text_projection (goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection) ... ok
+test_real_sdl_surface_and_quit_event (goal2.tests.test_pygame_match_view.PresentationTests.test_real_sdl_surface_and_quit_event) ... ok
+test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 52.314s
+
+OK
+[
+  {
+    "round": 1,
+    "fixture": 1378,
+    "events": 1171,
+    "score": [
+      2,
+      3
+    ],
+    "heartbeats": 883,
+    "digest": "85290f4850d3ccf08472a81e85fae476a72c140eeba5288cafe86e5b95c2dc9f",
+    "image_sha256": "3b90568c708215c1ec47c8eb6416e4afb8ef46cf36d4cf3f15397a7fb71f97fd",
+    "engine_year": 0,
+    "captain": 64,
+    "tactics": 152,
+    "eleven": [
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "seeds": [
+      29619,
+      33187
+    ],
+    "state_memory_rng_history_equal": true
+  },
+  {
+    "round": 2,
+    "fixture": 1471,
+    "events": 1392,
+    "score": [
+      2,
+      0
+    ],
+    "heartbeats": 1014,
+    "digest": "5fb6ceb57a91f07a7d423845829341c5d5d251e4a8a920af37c6c8bb96a59436",
+    "image_sha256": "f13b94f7d91ac3db098c142a7467bcd08e2b6995a798dd93989b0d7a1073bd35",
+    "engine_year": 0,
+    "captain": 64,
+    "tactics": 152,
+    "eleven": [
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "seeds": [
+      36752,
+      2052
+    ],
+    "state_memory_rng_history_equal": true
+  }
+]
+PASS T66 Qt controls + original events/board/raw ratings/MOTM + SDL acknowledgement + save/resume/repeat
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
