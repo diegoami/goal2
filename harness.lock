@@ -81,7 +81,7 @@ local tools/harness/lib/opencode-policy.mjs  (T72 private transport and permissi
 local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
 25190e2558c5f44ff1d861bd5038bb1a829b06e06f950c65275446094f2cd450  tools/harness/preflight-opencode.mjs
 local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
-4c5e1c3b1105571adb3adc6d98b1b10823993ef9ff362b823d073e346eb3246d  tests/opencode_workflow.test.mjs
+2bb6525ff60f8ef55c110efd4ad18bb7542d47fc9ba8805d84cc55b92f833306  tests/opencode_workflow.test.mjs
 
 2b424f52ca6d69a60ad7e6bdcd078c52cc5277be1e3d405a98aaae4238d24377  tools/harness/lib/opencode-workflow.mjs
 

@@ -1,0 +1,17 @@
+node:fs:483
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: ENOENT: no such file or directory, open '/home/diego/projects/goal2-work/fix219-descendant-fixture-readiness/.cache/tmp/goal2-fix219-before-PWYN45/descendant.pid'
+    at Object.readFileSync (node:fs:483:20)
+    at file:///home/diego/projects/goal2-work/fix219-descendant-fixture-readiness/.cache/fix219-baseline-proof.mjs:12:4
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/diego/projects/goal2-work/fix219-descendant-fixture-readiness/.cache/tmp/goal2-fix219-before-PWYN45/descendant.pid'
+}
+
+Node.js v24.21.0
+
+exit_status=1
