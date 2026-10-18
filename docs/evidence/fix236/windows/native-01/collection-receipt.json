@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "claim": "Main-owned immutable observations only; private binaries/original assets/saves excluded",
+  "original_host_receipt_sha256": "454bbb4a4bcd2bfc2a951a08b3ddda63c988d77eb8051263096eef25d028dd0a",
+  "native_checkpoint": "dfed1519af51dcb105d2526621eec9b313dd4b83",
+  "verified_source_files": 176,
+  "verified_dependency_files": 566,
+  "verified_resources": 3,
+  "verified_protected_files": 4,
+  "runner_sha256": "509f6ef0f03cad1ca3efe65099bffcf4fcdc5e4a9907a7a3a0f336b13a217e17",
+  "proof_sha256": "073bba74c088c12a3c25a25c405f76375630cbf7055f961b71069395bf373ec1"
+}
