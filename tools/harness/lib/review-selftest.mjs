@@ -2,7 +2,7 @@
 // harness repository. No model is called. Each sample asserts what review.mjs does with it (post
 // and act, post flagged with no label, or fail) and the text it keeps.
 
-import { readReview } from './chain.mjs';
+import { readReview, briefTargets } from './chain.mjs';
 import { planPost } from './post.mjs';
 
 export const H = 'T07 review (luna)';
@@ -202,9 +202,45 @@ const recoveryCases = [
   ['earlier near draft then exact final', `${completed}\n${IDENTITY}.\napprove\napprove`],
 ];
 
+// [designed: #204] Complete public issue156 contract; historical citations stay verbatim.
+const ISSUE156 = "MiniMax-M3 approved PR #154 at 2a4066e656b9a353f1bd231976810b4a43b97911 with one non-blocking cosmetic finding: docs/desktop-management.md:22 uses fresh1990 and seeds4660/33590 without spaces. Values are correct and match the implemented fresh campaign defaults. Fix wording when documentation is next touched; preserve year/seeds and all runtime behavior. Difficulty: Easy. Triage: post-playable; no gameplay or merge blocker. Validation: links/JSON, whitespace and required exact-head local checks; no new behavior test needed for spacing.";
+const CURRENT = '705e2576a51fcb197ea9759276f5a04aef813f3f';
+const STALE = '2a4066e656b9a353f1bd231976810b4a43b97911';
+const target = `You review PR #203 at ${CURRENT}.\nProve HEAD is ${CURRENT}.\n`;
+const boundary = '# Issue #156 task contract';
+const history = `${ISSUE156}\nAuthor notes: HEAD is ${STALE}; prior validation HEAD: ${STALE}.`;
+const quotation = '````text\n' + history + '\n```\nexample\n```\n````';
+const TARGET_CASES = [
+  ['complete issue and historical notes', target + boundary + '\n' + quotation, [CURRENT, CURRENT]],
+  ['CRLF issue boundary', (target + boundary + '\n' + quotation).replaceAll('\n', '\r\n'), [CURRENT, CURRENT]],
+  ['actual stale target before issue', `Review PR #203 at ${STALE}\n${boundary}\n${quotation}`, [STALE]],
+  ['multiple actual targets before issue', target + `HEAD: ${STALE}\n${boundary}\n${quotation}`, [CURRENT, CURRENT, STALE]],
+  ['historical existing task title', target + '# T69 follow-up\n' + history, [CURRENT, CURRENT]],
+  ['existing fenced task-title behavior', target + '````text\n# T69 follow-up\n' + history, [CURRENT, CURRENT]],
+];
+for (const heading of ['# Evidence', '## Notes', '# Issue #156', '# Issue #0 task contract', '# Issue #0156 task contract', '# Issue #-1 task contract', '# Issue #1.0 task contract', '## Issue #156 task contract', ' # Issue #156 task contract', '# Issue #156 task contract extra']) {
+  TARGET_CASES.push([`ordinary heading ${heading}`, target + heading + `\nHEAD: ${STALE}`, [CURRENT, CURRENT, STALE]]);
+}
+for (const [name, example] of [
+  ['backticks', '```text\n' + boundary + '\n```'],
+  ['longer outer fence', '````text\n```\n' + boundary + '\n```\n````'],
+  ['tilde fence with inner backticks', '~~~~text\n```\n' + boundary + '\n```\n~~~~'],
+  ['wrong closing marker', '```text\n~~~\n' + boundary + '\n```'],
+  ['indented fence', '   ```text\n' + boundary + '\n   ```'],
+  ['unclosed fence', '```text\n' + boundary],
+]) {
+  TARGET_CASES.push([`quoted heading: ${name}`, target + example + `\nHEAD: ${STALE}`, [CURRENT, CURRENT, STALE]]);
+}
+// [designed: #204] Closing a fence re-enables only the exact canonical boundary.
+TARGET_CASES.push(['boundary after quoted example', target + '~~~text\n' + boundary + '\n~~~\n' + boundary + '\n' + quotation, [CURRENT, CURRENT]]);
+
 // Returns one line per failed sample (empty when all pass).
 export function selfTest() {
   const failures = [];
+  for (const [name, brief, expected] of TARGET_CASES) {
+    const got = briefTargets(brief);
+    if (JSON.stringify(got) !== JSON.stringify(expected)) failures.push(`${name}: expected targets ${JSON.stringify(expected)}, got ${JSON.stringify(got)}`);
+  }
   for (const s of SAMPLES) {
     const r = readReview(s.out, s.header ?? H);
     const fail = (why) => failures.push(`${s.name}: ${why}\n  got ${JSON.stringify(r)}`);
