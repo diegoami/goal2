@@ -1,0 +1,32 @@
+{
+  "kind": "main runtime-only retained fixture compatibility preflight",
+  "baseline": "e337d56172373e0786b571c9b379e86ebcf63921",
+  "issue": 237,
+  "files": [
+    {
+      "path": "baseline-failure.log",
+      "sha256": "ad14c183f1aee61f133d0cd3c9ab0307fffe47b1697110a315f6d6de0f963f8c",
+      "bytes": 1887
+    },
+    {
+      "path": "mock-both-cases-pass.log",
+      "sha256": "d02cecebd703cdfbae754032c60c445e450626f9f3065b1fccb8a304f68d60a6",
+      "bytes": 2074
+    },
+    {
+      "path": "mock-first-case-failure.log",
+      "sha256": "e1dad5460008122416997c624588d0d8debcac562e840813e76b7c319d7f1877",
+      "bytes": 2759
+    },
+    {
+      "path": "mock-result.json",
+      "sha256": "3a78663235496fa1dd793c432b6db669eca0ae6eb194cccdf2a4daa0c6eeec0b",
+      "bytes": 2175
+    },
+    {
+      "path": "runtime-planning-probe.py",
+      "sha256": "5274c02bbadb259fdc8c7d2a4d51ed1fb4e95a1ff67360c2142cc2f20ecbd631",
+      "bytes": 1393
+    }
+  ]
+}
