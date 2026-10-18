@@ -3,7 +3,7 @@
 import argparse,copy,tempfile,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt,QCoreApplication,QEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication
 from goal2.desktop.model import DesktopModel
@@ -47,7 +47,9 @@ def main():
         model.state.campaign=None
         QTest.mouseClick(window.standings,Qt.MouseButton.LeftButton);app.processEvents()
         assert 'unavailable' in window.status.text().lower()
-        window.close();app.processEvents()
+        window.close();window.deleteLater()
+        QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
+        app.shutdown()
     print('PASS desktop standings: forced points/GD tie decided by GF; backend/widget qualifiers match; reads preserve state/RNG')
 
 
