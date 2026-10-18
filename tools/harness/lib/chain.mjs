@@ -183,6 +183,25 @@ export function accountDoneWhen(review, count) {
 // docs/tasks/TEMPLATE.md opens): a task file may cite its evidence "at <sha>" too (#32). Any other
 // heading stays in the block, so it cannot hide a stale head (Luna's R1 on PR 34).
 export function briefTargets(brief) {
-  const block = String(brief).split(/^#\s+T\d+\b/m)[0];
+  let block = String(brief).split(/^#\s+T\d+\b/m)[0];
+  // [designed: #204] Only an unfenced canonical issue heading ends current instructions.
+  // Keep the original task-title split above, including its historical fence behavior.
+  let fence = null;
+  let offset = 0;
+  for (const line of block.split('\n')) {
+    const text = line.replace(/\r$/, '');
+    if (fence) {
+      const close = text.match(/^ {0,3}(`+|~+)[ \t]*$/);
+      if (close && close[1][0] === fence[0] && close[1].length >= fence.length) fence = null;
+    } else {
+      const open = text.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+      if (open && (open[1][0] !== '`' || !open[2].includes('`'))) fence = open[1];
+      else if (/^# Issue #[1-9][0-9]* task contract$/.test(text)) {
+        block = block.slice(0, offset);
+        break;
+      }
+    }
+    offset += line.length + 1;
+  }
   return [...block.matchAll(/\b(?:at|HEAD\s+is|HEAD:)\s+`?([0-9a-fA-F]{40})\b/g)].map((m) => m[1].toLowerCase());
 }

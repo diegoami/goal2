@@ -12,6 +12,15 @@ quotation from being resolved as links in the generated root brief. Stage every 
 review cites in the review worktree's own ignored `.cache`; never search sibling worktrees for a
 missing file.
 
+[designed: #204] For an issue-based task, put every current review target assertion and
+reviewer instruction before the exact top-level heading `# Issue #156 task contract`
+(substitute a positive canonical decimal issue ID, without leading zeroes). Paste the complete
+issue contract and historical notes after it, inside text fences longer than any quoted fences.
+Target extraction stops at this heading only outside backtick or tilde fences; quoted examples,
+arbitrary Evidence/Notes/Issue headings and malformed IDs do not end target validation. Existing
+`# T<nn>` task-title handling remains unchanged. Keep actual current targets before the boundary;
+this boundary separates historical evidence, never repairs a mismatched review target.
+
 ```text
 ## Blocking means
 
