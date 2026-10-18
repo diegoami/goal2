@@ -21,6 +21,6 @@ ordinary PySide6 widgets, not an embedded browser or toolkit migration.
 - [Evidence and reproduction](evidence/README.md): proposal screenshots and browser checks, distinct from real Qt/Windows acceptance.
 
 [designed] Owner retriage follows this planning pass before dispatching any child.
-Child issue numbers are intentionally unassigned. GitHub labels carry execution
+Child issue identities are linked in the implementation sequence. GitHub labels carry execution
 status; the files below are proposed contracts. The issue182 planning PR references
 its parent without closing it because runtime implementation remains separate.

@@ -16,9 +16,8 @@ scope/difficulty needs the main session's retriage before dispatch.
 | [T78](../../tasks/T78.md) | Fixture/result scoreboard and existing standings presentation | Medium / Sol Low | T75, T49, T51 |
 | [T79](../../tasks/T79.md) | Shared Qt/Pygame match presentation and transition | Hard / Sol Medium | T74, T76, T78, T66 |
 
-[designed] Every row uses MiniMax M3 review. Child issues are intentionally
-unassigned; main creates them from these bodies after accepting/retriaging this
-plan. Parent #182 remains open for runtime deliverable4. The task index lists
+[designed] Every row uses MiniMax M3 review. The child issues below carry these accepted planning contracts; main-session
+retriage and per-slice preflight precede each implementation. Parent #182 remains open for runtime deliverable4. The task index lists
 contracts, while GitHub labels own execution status.
 
 [designed] Suggested limited fan-out: T74 then T75; after that, T76 and T78 may
@@ -50,3 +49,17 @@ live competitive Play before T50 qualifying progression. T78 can style validated
 saved results independently; its controls consume accepted capability checks,
 without pretending that a competitive result adapter makes live Play or Watch
 available. Main sequences T66/T80 integration before conflicting Qt bindings.
+
+## Child issue identities
+
+[designed: main task-contract administration,2026-10-18] Accepted planning PR188
+supplies the split; execution status remains in GitHub labels.
+
+| Contract | Issue |
+| --- | --- |
+| T74 | [#193](https://github.com/diegoami/goal2/issues/193) |
+| T75 | [#194](https://github.com/diegoami/goal2/issues/194) |
+| T76 | [#195](https://github.com/diegoami/goal2/issues/195) |
+| T77 | [#196](https://github.com/diegoami/goal2/issues/196) |
+| T78 | [#197](https://github.com/diegoami/goal2/issues/197) |
+| T79 | [#198](https://github.com/diegoami/goal2/issues/198) |
