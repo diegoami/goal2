@@ -69,12 +69,12 @@ class Display:
         lines = ['Original engine — friendly', ' — '.join(self.countries or ['Starting…'])]
         if self.events:
             last = self.events[-1]
-            lines.append(f"{last['minute']}′   {last['score'][0]} — {last['score'][1]}")
+            lines.append(f"{last['minute']} min   {last['score'][0]} — {last['score'][1]}")
         else:
             lines.append('Waiting for original engine…')
         for event in self.events:
             if event['kind'] == 'commentary':
-                lines.append(f"{event['minute']}′ {event['data'].get('text', '')}")
+                lines.append(f"{event['minute']} min {event['data'].get('text', '')}")
         if self.result:
             lines += ['Original full-time board', f"Man of the match: {self.result['man_of_the_match']}"]
             for name, values in self.result['board']['statistics'].items():
