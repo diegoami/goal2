@@ -1,0 +1,15 @@
+test_idle_halftime_controls_remain_visible_disabled_and_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_idle_halftime_controls_remain_visible_disabled_and_read_only) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_idle_halftime_controls_remain_visible_disabled_and_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_idle_halftime_controls_remain_visible_disabled_and_read_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 224, in test_idle_halftime_controls_remain_visible_disabled_and_read_only
+    self.assertTrue(widget.isVisible(),'retained halftime control hidden while idle')
+AssertionError: False is not true : retained halftime control hidden while idle
+
+----------------------------------------------------------------------
+Ran 1 test in 0.908s
+
+FAILED (failures=1)

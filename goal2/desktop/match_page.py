@@ -90,7 +90,6 @@ def present(window):
         window._match_pose_token=None;window._match_poses={}
     provenance,score,progress=values(window)
     window.match_provenance.setText(provenance);window.match_score.setText(score);window.match_progress.setText(progress)
-    window.half_panel.setVisible(window.jobs.halftime is not None)
 
 
 def observe(window):

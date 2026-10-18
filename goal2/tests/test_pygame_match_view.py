@@ -212,6 +212,20 @@ class PresentationTests(unittest.TestCase):
                 w.cancel_match();self.assertEqual(w.match_provenance.text(),'No match played')
             finally:w.close();app.processEvents()
 
+    def test_idle_halftime_controls_remain_visible_disabled_and_read_only(self):
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.window import ManagementWindow
+        app=QApplication.instance() or QApplication([])
+        with tempfile.TemporaryDirectory() as folder:
+            m=model(Path(folder)/'save');before=copy.deepcopy(m.state)
+            w=ManagementWindow(m);w.show();w.navigate(3);app.processEvents()
+            try:
+                for widget in (w.half_out,w.half_in,w.substitute,w.continue_match):
+                    self.assertTrue(widget.isVisible(),'retained halftime control hidden while idle')
+                    self.assertFalse(widget.isEnabled())
+                self.assertEqual(m.state,before);self.assertFalse(getattr(m,'match_pending',False))
+            finally:w.close();app.processEvents()
+
     def test_standings_tab_reaches_play_and_back_without_state_change(self):
         # [designed: T79] Preserve T78 keyboard order after adding the focusable match panel.
         from PySide6.QtCore import Qt

@@ -1,0 +1,9 @@
+test_idle_halftime_controls_remain_visible_disabled_and_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_idle_halftime_controls_remain_visible_disabled_and_read_only) ... This plugin does not support propagateSizeHints()
+ok
+test_standings_tab_reaches_play_and_back_without_state_change (goal2.tests.test_pygame_match_view.PresentationTests.test_standings_tab_reaches_play_and_back_without_state_change) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.835s
+
+OK

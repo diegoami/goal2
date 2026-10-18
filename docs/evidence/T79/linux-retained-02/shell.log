@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 508, in main
+    if args.single_scale:return (overview if args.scenario=='overview' else shell)(args)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 238, in shell
+    assert widget.isVisible(),'action hidden'
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: action hidden
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 520, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-venv/bin/python3', '/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'shell', '--template', '/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav', '--data', '/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT', '--evidence-dir', '/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/linux-retained-02/shell', '--single-scale']' returned non-zero exit status 1.

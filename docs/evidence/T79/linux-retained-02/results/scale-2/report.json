@@ -1,0 +1,821 @@
+{
+  "tag": "[designed: T78]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "xcb",
+  "scale": "2",
+  "requested_scale": "2",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "ce1b0a08bf413f385f61d2a8476968e76f869ac272737eaf0db04e5ea8255c72",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_page.py": "b92a065d6e55454d4dafef4ef451d562aa6f4973e4226604ed9ea54c4937a7ee",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "17cff020e5798c2a8a8561960a72d8a9c9b90f3c8afd733898b82c2421644012",
+    "goal2/desktop/window.py": "858e57a8aec01861e73b621d577ff8465244b7f3e7f8879150dc23701fa02f5b",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "3a778053c589dce1d8584704d67f4fa8507238e4e65cd71690fc531f20dc45fb",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "cases": [
+    {
+      "name": "empty",
+      "source_save_sha256": null,
+      "state_sha256": "db9bc8cd4186f88a89429b6abfbe01d3a1c53ff8ad6a51e67f164fbbe7eff1ea",
+      "score": "No match played",
+      "stages": "No completed result",
+      "standings": {
+        "continent": 1,
+        "group": 7,
+        "slots": [
+          4,
+          26,
+          30,
+          14
+        ],
+        "places": 2,
+        "playoff": false,
+        "stage": 5,
+        "rows": [
+          {
+            "country": 4,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 1,
+            "advances": true,
+            "name": "Bulgaria",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 26,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 2,
+            "advances": true,
+            "name": "Spain",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 30,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 3,
+            "advances": false,
+            "name": "Russia",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 14,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 4,
+            "advances": false,
+            "name": "Hungary",
+            "played": 0,
+            "goal_difference": 0
+          }
+        ]
+      },
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "quick-long-country",
+      "source_save_sha256": "5ed8707fa731584224f36855c253a1f8195e0de685a69140c5cafafffbfa7b9e",
+      "state_sha256": "5ed8707fa731584224f36855c253a1f8195e0de685a69140c5cafafffbfa7b9e",
+      "score": "Trinidad/Tobago 0 \u2014 1 Chile",
+      "stages": "Full time",
+      "standings": {
+        "continent": 2,
+        "group": 3,
+        "slots": [
+          61,
+          45,
+          39,
+          49
+        ],
+        "places": 1,
+        "playoff": false,
+        "stage": 5,
+        "rows": [
+          {
+            "country": 61,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 1,
+            "advances": true,
+            "name": "Trinidad/Tobago",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 45,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 2,
+            "advances": false,
+            "name": "Ecuador",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 39,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 3,
+            "advances": false,
+            "name": "Canada",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 49,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 4,
+            "advances": false,
+            "name": "Guyana",
+            "played": 0,
+            "goal_difference": 0
+          }
+        ]
+      },
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "opening-table-1992",
+      "source_save_sha256": null,
+      "state_sha256": "ed30e631ff6f1681fee0f5f2c72c5e5e1602240581bb175ed782f497bea4a729",
+      "score": "No match played",
+      "stages": "No completed result",
+      "standings": {
+        "continent": 1,
+        "group": 1,
+        "slots": [
+          7,
+          16,
+          4,
+          10
+        ],
+        "places": 1,
+        "playoff": false,
+        "stage": 2,
+        "rows": [
+          {
+            "country": 7,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 1,
+            "advances": true,
+            "name": "Denmark",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 16,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 2,
+            "advances": false,
+            "name": "Italy",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 4,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 3,
+            "advances": false,
+            "name": "Bulgaria",
+            "played": 0,
+            "goal_difference": 0
+          },
+          {
+            "country": 10,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goals_for": 0,
+            "goals_against": 0,
+            "points": 0,
+            "rank": 4,
+            "advances": false,
+            "name": "Finland",
+            "played": 0,
+            "goal_difference": 0
+          }
+        ]
+      },
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "standalone",
+      "source_save_sha256": null,
+      "state_sha256": "8d0f7e2b8262252c86bd0b341d46b4945a7010009ac7cd15cb9f25bd5ee09351",
+      "score": "No match played",
+      "stages": "No completed result",
+      "standings": null,
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "competitive-regulation",
+      "source_save_sha256": "30daba2cfd5ee333a780d0c267d15266dbdd168010266c8698c65f5f54cdfbcf",
+      "state_sha256": "30daba2cfd5ee333a780d0c267d15266dbdd168010266c8698c65f5f54cdfbcf",
+      "score": "Denmark 1 \u2014 1 N.Ireland",
+      "stages": "Regulation: 1 \u2014 1\nDraw",
+      "standings": null,
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "original-friendly-kit1",
+      "source_save_sha256": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+      "state_sha256": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+      "score": "Denmark 1 \u2014 1 N.Ireland",
+      "stages": "Full time",
+      "standings": null,
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    },
+    {
+      "name": "competitive-shootout",
+      "source_save_sha256": "5f0f0204f82450e180f2ec45601f5009e6bf5247271edd06b65a91cdc0f1970c",
+      "state_sha256": "5f0f0204f82450e180f2ec45601f5009e6bf5247271edd06b65a91cdc0f1970c",
+      "score": "Denmark 0 \u2014 0 N.Ireland",
+      "stages": "Regulation: 0 \u2014 0\nExtra time: 0 \u2014 0\nPenalties: 4 \u2014 3\nWinner: Denmark",
+      "standings": null,
+      "pure": true,
+      "busy_refused": true,
+      "preview_isolated": true
+    }
+  ],
+  "captures": [
+    {
+      "file": "empty-focused-standings.png",
+      "sha256": "f3168960ae20d00faacb6809cb7ceac46094af8aff3e0c592720b37256ba0429",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "empty-focused-play.png",
+      "sha256": "fa69fd3338115e10c70d1719b4d25ca53cf3b93403a0b6ec2f0c9f8c27aa4fde",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "empty-900x640-fixtureNext.png",
+      "sha256": "743c82fd20d6f03c341a61320dd2289e53ac580730c0f2b7e1407d5f56827f16",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        281,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "empty-900x640-scoreboard.png",
+      "sha256": "f1d3c4298622c8bb0084540e03fbf3532ac2dd294e7ac7c5955ce148806e2269",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        285,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "empty-900x640-resultStages.png",
+      "sha256": "b10d914e10e594d02fd2e12128b74b43f36314da61981620da789fded518cc4e",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "empty-900x640-resultDetails.png",
+      "sha256": "b0bb4254da982afc79c41252c7dfdf91a2fe475956428e1a84f820058c68f5fd",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        273,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "empty-900x640-fixtureTable.png",
+      "sha256": "27dd1712c3dff31ac7f2bb4b3eefdb2502f2408deebc8ba3ac9b8967ddaa79e6",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        216,
+        806,
+        138
+      ]
+    },
+    {
+      "file": "malformed-copied-scoreboard.png",
+      "sha256": "30b4508c5c2bf0c1d2417cddfe00be76139271e00710044f6a39e8cc52bcd4e1",
+      "geometry": [
+        24,
+        0,
+        806,
+        69
+      ],
+      "context": "malformed pure copied input; save loading remains strict"
+    },
+    {
+      "file": "malformed-copied-resultStages.png",
+      "sha256": "b74f11580da8c86768df4b8f0573460c7155bd9f76eba452e792a2d350f41ee4",
+      "geometry": [
+        24,
+        81,
+        806,
+        62
+      ],
+      "context": "malformed pure copied input; save loading remains strict"
+    },
+    {
+      "file": "malformed-copied-resultDetails.png",
+      "sha256": "353e3eac1675355780aa154e63167e75f35f0aa73d60b7b20c878e8f7c644069",
+      "geometry": [
+        24,
+        209,
+        806,
+        62
+      ],
+      "context": "malformed pure copied input; save loading remains strict"
+    },
+    {
+      "file": "quick-long-country-focused-standings.png",
+      "sha256": "40656ffd0c00924ec40c96930c145fa0dd09da7d86d9fd66a3d560769217e59a",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "quick-long-country-focused-play.png",
+      "sha256": "7a4a00edea9ceb41596f11655ad285717764f9fbe5fe08f1b9cb9e3740a1060f",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "quick-long-country-900x640-fixtureNext.png",
+      "sha256": "d66e5b7ed4521573e3dbd3e77d5d8baa1623eb11da1c7194b566e74bd52b5b02",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        281,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-900x640-scoreboard.png",
+      "sha256": "dda624a2812ee84e195fcf8cad6fe958c2bf7e440514bfd37fc8a7db21db781e",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        285,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "quick-long-country-900x640-resultStages.png",
+      "sha256": "a6f2bdf3ea2d1a44df572b746a261be8c91eab73430f45d95e99af9229d4254f",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "quick-long-country-900x640-resultDetails.png",
+      "sha256": "54f4747c7727eed927be88cfd6e9f5d3aaa3c3db8b595efff60d9a19438931bd",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        254,
+        806,
+        100
+      ]
+    },
+    {
+      "file": "quick-long-country-900x640-fixtureTable.png",
+      "sha256": "0e0978c9c360d667a6e8ebb63aba4bf98831399dbb9b72ae7a8b234751671698",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        216,
+        806,
+        138
+      ]
+    },
+    {
+      "file": "opening-table-1992-focused-standings.png",
+      "sha256": "8516c12ca2512fec4e0f9caba9ccce489c23c3d6fe5c3a5ae59a4147754159c8",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "opening-table-1992-focused-play.png",
+      "sha256": "5c7a592c4a700610c93969dfc33f5414d7205357d8f5568902bf4b3e544d8629",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "opening-table-1992-900x640-fixtureNext.png",
+      "sha256": "d96b6b4a1a5393e851cb571e2202149f670d039314a50d9dd2cfa075f6301408",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        281,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x640-scoreboard.png",
+      "sha256": "1c6b7b39e60fdf9a30189242d5c78e7cc47badfc31513f1750f6bb6286ff8e3c",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        285,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x640-resultStages.png",
+      "sha256": "5891d75867e7fa979a323c84f957e65272f6749443c33de4dcfbeb5e2cfcbc4d",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x640-resultDetails.png",
+      "sha256": "1d84c37b3466392776f7b27b0248746f20f6a0eaf4dbcf9e2036230ddac2d368",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        273,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "opening-table-1992-900x640-fixtureTable.png",
+      "sha256": "d19609df394b247bedf7d935754ef9fcba19cbafc5c2d990a6ae61e84618788b",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        216,
+        806,
+        138
+      ]
+    },
+    {
+      "file": "standalone-focused-standings.png",
+      "sha256": "39d05f9f943c0f241a1a0ee75dd8fc0dfd86abc428827726c248b097d1c4d3b2",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "standalone-focused-play.png",
+      "sha256": "6960a7aa6777faf620deee4eed0edd4d7b066734bb55143dfdb3f46a91c993d2",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "standalone-900x640-fixtureNext.png",
+      "sha256": "ca7c27fcf01cedef8f9c45d5f833794bf7694cee0d8ecfb0a17217cdbcc1758e",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        281,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "standalone-900x640-scoreboard.png",
+      "sha256": "c1c69673a7d0074fc22973815970c97155539398fa2a0e5bf391c8fd3a657670",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        285,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "standalone-900x640-resultStages.png",
+      "sha256": "a713ce708a2e28cb16bf39fec9d8b4ab8a19d574266fe9b4592e4028a4fbde95",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "standalone-900x640-resultDetails.png",
+      "sha256": "127c6d6ff2963e8b9f0d0775f4cb460ae01db647fa87391f2d05b9484d78bd56",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        273,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "standalone-900x640-fixtureTable.png",
+      "sha256": "30bcea1006383e9e46255735c5c8099762c3424e3d5cf9dcc552ed5630bdd661",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-focused-standings.png",
+      "sha256": "d2f5adf1664fdcb2fce487f3cf83885cbec73305c2f72fc1860b080a84f42fdd",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "competitive-regulation-900x640-fixtureNext.png",
+      "sha256": "d4c351ec158a36b7e28b9e892325e5f93bf3b028ada0bcf178032e2868afe260",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x640-scoreboard.png",
+      "sha256": "bcbae480cbbc2bd1366f0666de70d071adc5474fe500796f59da5460c4e8110c",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        285,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x640-resultStages.png",
+      "sha256": "48e7a06295713c3ef78f73149eb859a8eb09e57f06168833f7a550d00c719dbc",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        273,
+        806,
+        81
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x640-resultDetails.png",
+      "sha256": "12ba773752ce06e8ddd1e165792f9eb221e2bfd3533d1716460fac3dbb1b2572",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        197,
+        806,
+        157
+      ]
+    },
+    {
+      "file": "competitive-regulation-900x640-fixtureTable.png",
+      "sha256": "9d36e87d9e7b9220b7c7b1d4c0f206298e7d218f203c6136ec0b49abb38a8dce",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-focused-standings.png",
+      "sha256": "1235b1ad16a3aae3050ce6846d8819a0377e38abe74e2badccd5d49b6d10a582",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "original-friendly-kit1-focused-play.png",
+      "sha256": "21ecbf756410f547a83691449721e84d05c37b74bcf6e05e196bc95b4b37e7de",
+      "focus": "Play",
+      "window_active": true
+    },
+    {
+      "file": "original-friendly-kit1-900x640-fixtureNext.png",
+      "sha256": "553c9c3bb1fd446273dd846217a25bcf0cc26301adf54cbe8aca7802aa88585d",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        281,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x640-scoreboard.png",
+      "sha256": "49da6f5537ca2091a4f7602088be51bb041e63f0864ab220121abefb3d930566",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        285,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x640-resultStages.png",
+      "sha256": "84ab844a703852cf390468e8e6af34ecd0e291a596c60245f0aa927be05b827f",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x640-resultDetails.png",
+      "sha256": "2a34096e27f43cc73e8eef5dce71397e33f11b48eb388980b915f1cf021faeed",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        235,
+        806,
+        119
+      ]
+    },
+    {
+      "file": "original-friendly-kit1-900x640-fixtureTable.png",
+      "sha256": "c1a3c6285c2f857947f0acc8e6343e880bcc9db3722c3dca79e2bd9f66f22ae2",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "competitive-shootout-focused-standings.png",
+      "sha256": "2aee772135070f3f6fa1ba2398ca9f26923db9093285ed10b03a12b6e483c4e9",
+      "focus": "showStandings",
+      "window_active": true
+    },
+    {
+      "file": "competitive-shootout-900x640-fixtureNext.png",
+      "sha256": "5af168844e3dfa858b7bf3ae9d629284917fdad9d5b49d73fd9ac486ef6af15a",
+      "panel": "fixtureNext",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    },
+    {
+      "file": "competitive-shootout-900x640-scoreboard.png",
+      "sha256": "77ac21c5294fd0cc0623be0f397bbc8e9fc31425218d2ddd75d0a2ffa026201a",
+      "panel": "scoreboard",
+      "geometry": [
+        24,
+        285,
+        806,
+        69
+      ]
+    },
+    {
+      "file": "competitive-shootout-900x640-resultStages.png",
+      "sha256": "630ba4073c7febd2f4687be92b19cb41863640fa1c957f4df05e96e054dad98d",
+      "panel": "resultStages",
+      "geometry": [
+        24,
+        235,
+        806,
+        119
+      ]
+    },
+    {
+      "file": "competitive-shootout-900x640-resultDetails.png",
+      "sha256": "7e47c251b54a8632e76567f003b26fb6f1fcc708faf35070a26eef2233aa4046",
+      "panel": "resultDetails",
+      "geometry": [
+        24,
+        178,
+        806,
+        176
+      ]
+    },
+    {
+      "file": "competitive-shootout-900x640-fixtureTable.png",
+      "sha256": "6475671500903045aedfcd4018322ce2c7295edff4560fa707cd37c12ebbab50",
+      "panel": "fixtureTable",
+      "geometry": [
+        24,
+        292,
+        806,
+        62
+      ]
+    }
+  ],
+  "ratio": 2.0,
+  "unsupported_callbacks_refused": true,
+  "result": "PASS"
+}

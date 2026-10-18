@@ -168,7 +168,8 @@ def quick_decisions(window,app,out,report):
  click(window.substitute);assert len(window.jobs.halftime['changes'])==1,'actual substitution control did not update private decision'
  click(window.continue_match);pump(lambda:not window.jobs.busy,app=app,timeout=120)
  assert model.state.match_count==before.match_count+1 and Path(model.save_path).read_bytes()==prior
- assert window.match_provenance.text()=='Quick simulation (rebuild setup)' and not window.half_panel.isVisible(),'quick completion retained original/halftime context'
+ assert window.match_provenance.text()=='Quick simulation (rebuild setup)' and window.half_panel.isVisible(),'quick completion lost current provenance/retained controls'
+ assert not any(widget.isEnabled() for widget in (window.half_out,window.half_in,window.substitute,window.continue_match)),'completed quick match retained active decision controls'
  report['quick_halftime']={'actual_private_substitution':True,'continue_completed':True,'prior_save_retained':True,'controls':controls}
  # [designed] A blocked engine keeps both real windows alive for authoritative close/reap.
  click(window.new);click(window.confirm);snapshot=copy.deepcopy(model.state)
