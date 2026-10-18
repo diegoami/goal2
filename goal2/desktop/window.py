@@ -130,9 +130,8 @@ class ManagementWindow(QMainWindow):
         self.title.setText(view['country_name']);self.country.setCurrentIndex(self.country.findData(view['country']))
         from goal2.desktop.overview_page import refresh as refresh_overview
         refresh_overview(self,display,view)
-        from goal2.game.watched_schema import watched
-        heading='Original engine' if watched(state.last_match) else 'Quick simulation (rebuild setup)'
-        self.result.setText(heading+'\n'+display.result_text())
+        from goal2.desktop.fixtures_page import refresh as refresh_fixtures
+        refresh_fixtures(self,display,view)
         self.play.setText(view['play_label'])
         self.summary.setText(f"Team morale: {view['morale']}     Next fixture: {view['fixture'] or ('Standalone friendly' if state.campaign is None else 'No supported fixture')}")
         for row,p in enumerate(view['players']):
@@ -187,6 +186,8 @@ class ManagementWindow(QMainWindow):
         for widget in (self.table,self.captain,self.confirm,self.cancel,self.save,self.pool_panel,self.play,self.watch,self.standings):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
         self.stop.setEnabled(busy)
+        from goal2.desktop.fixtures_page import enabled as fixtures_enabled
+        fixtures_enabled(self,active)
 
     def start_match(self):
         if not self.require_active():return

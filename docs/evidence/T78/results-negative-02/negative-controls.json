@@ -1,0 +1,89 @@
+{
+  "cases": [
+    {
+      "name": "baseline",
+      "expected": "named scoreboard hierarchy absent",
+      "returncode": 1,
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/T78-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "results",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--results-input-dir",
+        "/home/diego/projects/goal2-work/T78-football-ui/.cache/T78-presentation-inputs-03",
+        "--single-scale",
+        "--evidence-dir",
+        "docs/evidence/T78/results-negative-02/baseline"
+      ]
+    },
+    {
+      "name": "swap-ab",
+      "expected": "scoreboard A/B or ordinary goals differ",
+      "returncode": 1,
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/T78-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "results",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--results-input-dir",
+        "/home/diego/projects/goal2-work/T78-football-ui/.cache/T78-presentation-inputs-03",
+        "--single-scale",
+        "--evidence-dir",
+        "docs/evidence/T78/results-negative-02/swap-ab"
+      ]
+    },
+    {
+      "name": "sum-kicks",
+      "expected": "scoreboard A/B or ordinary goals differ",
+      "returncode": 1,
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/T78-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "results",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--results-input-dir",
+        "/home/diego/projects/goal2-work/T78-football-ui/.cache/T78-presentation-inputs-03",
+        "--single-scale",
+        "--evidence-dir",
+        "docs/evidence/T78/results-negative-02/sum-kicks"
+      ]
+    },
+    {
+      "name": "preview-leak",
+      "expected": "active result leaked into preview",
+      "returncode": 1,
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/T78-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "results",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--results-input-dir",
+        "/home/diego/projects/goal2-work/T78-football-ui/.cache/T78-presentation-inputs-03",
+        "--single-scale",
+        "--evidence-dir",
+        "docs/evidence/T78/results-negative-02/preview-leak"
+      ]
+    }
+  ],
+  "restored": true
+}

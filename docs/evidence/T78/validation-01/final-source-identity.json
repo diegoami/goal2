@@ -1,0 +1,23 @@
+{
+  "executed_source_head": "6cb6a747b05dd5865cfc10b4620a629a544954e1",
+  "reports": [
+    {
+      "file": "docs/evidence/T78/linux-final/report.json",
+      "sha256": "75252df178969b2c6fa60de50a87e1016baab327159ff3c03eb66b7f9050c288",
+      "requested_scale": "1",
+      "actual_ratio": 1.0,
+      "case_count": 7,
+      "capture_count": 120,
+      "all_source_bytes_match_executed_head": true
+    },
+    {
+      "file": "docs/evidence/T78/linux-final/scale-2/report.json",
+      "sha256": "81b64ea7098619a46c70c5d0d029585a97c038c2aa4eae0caaa2c6080cacb6d9",
+      "requested_scale": "2",
+      "actual_ratio": 2.0,
+      "case_count": 7,
+      "capture_count": 50,
+      "all_source_bytes_match_executed_head": true
+    }
+  ]
+}

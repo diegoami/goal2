@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T78-football-ui/tools/desktop-ui/redesign.py", line 497, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T78-football-ui/tools/desktop-ui/redesign.py", line 482, in main
+    if args.single_scale:return results(args)
+                                ^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T78-football-ui/tools/desktop-ui/results_scenario.py", line 135, in results
+    assert w.preview is not None and w.scoreboard.text()=='No match played','active result leaked into preview'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: active result leaked into preview
