@@ -1,0 +1,13 @@
+PASS mutation: no re-entry
+PASS mutation: five non-friendly
+PASS mutation: friendly unlimited
+PASS mutation: incoming eligibility
+PASS mutation: pitch rebind
+PASS mutation: persistence
+PASS mutation: captain full ID
+PASS mutation: save refusal
+PASS mutation: stale continuation
+PASS mutation: second-half RNG continuity
+PASS mutation: preview validation
+PASS mutation: Qt substitution wire
+PASS mutation: Qt continuation wire

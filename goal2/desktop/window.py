@@ -128,6 +128,8 @@ class ManagementWindow(QMainWindow):
         display=self.display_model;view=display.view();state=display.state;self._refreshing=True
         self.context.setText(('Preview · active game: '+self.model.goaldat.country_names[self.model.state.managed_country]) if self.preview is not None else 'Active game')
         self.title.setText(view['country_name']);self.country.setCurrentIndex(self.country.findData(view['country']))
+        from goal2.desktop.overview_page import refresh as refresh_overview
+        refresh_overview(self,display,view)
         from goal2.game.watched_schema import watched
         heading='Original engine' if watched(state.last_match) else 'Quick simulation (rebuild setup)'
         self.result.setText(heading+'\n'+display.result_text())
@@ -180,6 +182,7 @@ class ManagementWindow(QMainWindow):
         busy=bool(busy or getattr(self.model,'match_pending',False))
         # [designed: T70] Prevent conflicting edits while keeping the UI responsive.
         for widget in (self.country,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
+        self.overview_return.setEnabled(not busy and self.preview is not None)
         active=not busy and self.preview is None
         for widget in (self.table,self.captain,self.confirm,self.cancel,self.save,self.pool_panel,self.play,self.watch,self.standings):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
