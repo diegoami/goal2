@@ -47,13 +47,7 @@ Codex default at implementer.defaultsByClient.codex. See process §1 for dispatc
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
 6. The reviewer is never the implementer's model family. It re-runs every Done-when line itself.
-7. Merge only with an approving review and the main session's pre-merge checks pass (process.md §3 — re-run the check the approval rests on, plus `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean implementation checkout; Actions is manual-only optional verification (owner, #127, 2026-10-16)). Two rework rounds, then escalate. (L38's
-   ladder is superseded: the same implementer fixes the class of the findings, not each instance.) With both, merge at once
-   without asking (the owner, 2026-10-04): `--squash` (goal2 keeps no research history to preserve).
-   The main session may grant a third, narrow round itself when the remaining findings are small
-   and change no result (the owner, 2026-10-05). When it escalates over small exact corrections,
-   it offers "small fix + delta review": it applies the corrections in the task's worktree and
-   the reviewer checks only `git diff <old>..<new>`.
+7. Merge only with an approving review and the main session's pre-merge checks pass (process.md §3 — re-run the check the approval rests on, plus `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean implementation checkout; Actions is manual-only optional verification (owner, #127, 2026-10-16)). [designed: owner, 2026-10-18] Once the reviewer is selected, continue same-reviewer follow-ups and rework until accepted, without asking again for each review. This supersedes fixed round-count stops and one-trial limits as retry-permission gates. Read complete results, fix causes and validate each new head; never silently switch provider/model, weaken acceptance or bypass safety. Report real blockers needing an owner design or external-access decision. Merge only the accepted exact head after required checks, from the main session, without asking again (`--squash`).
 8. Relay review findings in full. Read a run's final message before you retry or re-route it (L55).
 9. A test proves behaviour only if it fails without that behaviour; re-take a claim that nothing failed.
 9a. Undo a mutation or scratch edit by writing back the file's saved contents (read it first, restore
@@ -151,10 +145,10 @@ a rule that names a model. No quota, tier or difficulty table picks a model.
    `harness.json`'s `reviewer.default` first (GPT-5.6 Luna today; `sol-6.1`, GPT-6.1 Sol at
    `low`, for hard reviews: an engine seam, a fidelity test, a vendored model), only if eligible for this client, and list the registered models that are neither of the
    session's family nor blocked. Then `tools/harness/review.mjs --pr <n> --brief <file> --issue
-   <n> --apply-label [--reviewer <name>]`, one review per PR unless the user asks for more; its
+   <n> --apply-label [--reviewer <name>]`, same-reviewer follow-ups until accepted under rule 7; its
    findings are relayed in full (rule 8). OpenCode's models do not always follow the brief: the
    script posts what came back, flags what it cannot read (exit 4), and the main session reads a
-   flagged review and decides rather than paying for another. Record the answers to both
+   flagged review and decides the needed correction or targeted follow-up under rule 7. Record the answers to both
    questions on the issue or PR.
 3. **The fixed rules:** the reviewer is never of the session's family (`review.mjs` refuses it
    from the environment; a `/code-review` or the `reviewer` agent, which are that family, run

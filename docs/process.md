@@ -46,7 +46,7 @@ Client-aware defaults and commands:
 | --- | --- | --- |
 | Main session | Codex or Claude Code, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
 | Implementer | Codex: native main session or authorized native Codex subagent in a prepared worktree. Claude: the **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or **the main session** directly, in its own worktree, where the provider cannot spawn one; asked when not already authorized (CLAUDE.md "Choosing models" rule 1). *Superseded: OpenCode via `implement.mjs` (removed), the GLM/DeepSeek/Sonnet chain (L42), L46's heavier-model rule, the user asked before each run.* | One task, one branch, one PR, in its own worktree |
-| Reviewer | **One OpenCode run** via `tools/harness/review.mjs`, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first only if eligible (`sol-6.1` for hard reviews: an engine seam, a fidelity test, a vendored model); never the session's family (L27), never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the quota-checked Sol / Luna / Opus order (L50, L51, L101), the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
+| Reviewer | **Selected OpenCode reviewer with follow-ups until accepted** via `tools/harness/review.mjs`, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first only if eligible (`sol-6.1` for hard reviews: an engine seam, a fidelity test, a vendored model); never the session's family (L27), never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the quota-checked Sol / Luna / Opus order (L50, L51, L101), the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
 
@@ -94,8 +94,11 @@ Scope, Done when, Hazards, Implementer, Reviewer, Merge after. Rules:
 ## 3. The loop
 
 `ready → implement → review → approved + exact-head local checks → squash merge → follow-up → unblock → report`.
-Rework sends the full review back to the same branch, at most two rounds (one for a fix), then
-escalates. The implementer script resumes a pushed branch; it never starts over. Before a merge the
+[designed: owner, 2026-10-18] Rework sends the full review back to the same branch.
+Once selected, keep the same reviewer and continue meaningful follow-ups until accepted,
+without repeated retry permission or an automatic round-count stop. Read complete results,
+fix causes and validate the new head. Report real owner design/external-access blockers;
+never silently switch providers, weaken acceptance or bypass safety. The implementer script resumes a pushed branch; it never starts over. Before a merge the
 main session re-runs the check the approval rests on most; a different result is rework. (L46)
 
 [designed: owner, 2026-10-14; L114] Only the main session merges, using
@@ -140,8 +143,8 @@ permission file, exact required negative-control command and fixed session UUID.
 See [the direct Claude setup](environment.md#optional-direct-claude-cli-review).
 This optional path preserves model-family exclusion and standard findings/DW
 posting. Native model-free policy/account projection uses an owned pipe lease;
-the distinct actual review process has closed input. Main alone runs the single
-actual trial after ready PR, audits all native outputs and distinguishes synthetic
+the distinct actual review process has closed input. Main alone runs the real
+review and same-reviewer follow-ups after ready PR, audits all native outputs and distinguishes synthetic
 permission checks/parent validation from reviewer-executed checks. Unknown routes,
 required denials, incomplete final/identity/coverage and failed exact-head checks
 prevent acceptance. No default/fallback, OS-jail or startup-hook isolation claim
@@ -249,7 +252,7 @@ Bugs and non-blocking review findings are filed with `triage:needed`: one `T<nn>
 per merge. Triage decides one of:
 - **fix**: no ruleset value, fixture value, seeded measurement or golden line changes outside the
   bug's own reproduction. The bug issue is the contract; its Done-when is its reproduction as a
-  failing-then-passing test; one review round. (L4)
+  failing-then-passing test; same-reviewer follow-ups until accepted (§3). (L4)
 - **correction task**: anything that changes an outcome.
 - **fold** into a task not yet ready, or **close**, with the reason.
 

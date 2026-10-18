@@ -94,3 +94,12 @@ The owner chose mandatory local checks on the exact reviewed commit and
 manual-only optional Actions. Preserve every former hosted check in one command;
 keep task-specific checks and independent review. The historical L106 row above
 records the earlier post-merge trigger policy, now superseded by manual dispatch.
+
+[designed: owner, 2026-10-18; T73 follow-up] The owner said: "yes, follow up of
+course, always follow up until it is accepted". Once a reviewer is selected,
+continue same-reviewer follow-ups and rework without repeated permission or an
+automatic round/trial-count stop. This supersedes historical one-review/two-round
+stopping rules as permission gates. Read complete evidence, fix causes and validate
+each new head; preserve provider/model selection, safety and acceptance checks.
+Report real owner design/external-access blockers. This authorizes follow-up,
+not merging an unaccepted head.

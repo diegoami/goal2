@@ -126,8 +126,9 @@ wildcards. The two ordinary external grants are `/tmp` and the physical
 }
 ```
 
-[designed: T73] After a clean validated ready PR, main launches the one authorized
-real review, with a fixed UUID and full pinned head in its brief:
+[designed: T73] After a clean validated ready PR, main launches the selected
+real review and any same-reviewer follow-ups until accepted (CLAUDE.md rule 7),
+each with a fixed UUID and full pinned head in its brief:
 
 ```bash
 HARNESS_CLIENT=codex node tools/harness/review.mjs --pr <pr> --brief <brief> \
