@@ -498,6 +498,20 @@ reviewer explicitly, run the nonbilling preflight above, then use one authorized
 review of a validated PR. Follow its printed session ID or manifest with `peek.sh`.
 Do not add a paid probe to a review whose one live run is already the acceptance smoke.
 
+## Large reviewer command outputs
+
+[designed: native MiniMax review evidence, 2026-10-18] Stage complete PR inventories
+and diffs in the actual review checkout's ignored `.cache` before its fixture-ready
+marker. Redirect large git output to those owned files and read bounded sections.
+Native OpenCode may spill oversized stdout under its private data root, outside
+the reviewer's exact permitted directories. A denied spill-file read invalidates
+the review even when its tests and final verdict approve. Do not grant the broad
+private data root or waive the denial; make the complete required artifact
+available inside the permitted checkout and continue with the selected reviewer.
+Preserve the failed export/final and distinguish recreated deterministic PR
+inventory from the lost backend spill bytes. The serial validation driver creates
+its own output directory; do not pre-create it or remove existing proof logs.
+
 ## Local pre-merge validation
 
 [designed: owner, #127, 2026-10-16] With Python 3.12 or later, Node 20 or later
