@@ -103,6 +103,11 @@ class SharingTests(unittest.TestCase):
             self.assertEqual(target.read_text(), 'old')
 
     def test_writer_does_not_retry_unrelated_or_non_windows_errors(self):
+        with tempfile.TemporaryDirectory() as folder:
+            clock = Clock()
+            with self.environment(viewer, clock), patch.object(viewer.os, 'replace', side_effect=[denied(), None]):
+                viewer.status(Path(folder)/'status', {})
+            self.assertEqual(clock.sleeps, [.01])
         for platform, error in [('linux', denied()), ('win32', denied(32)),
                                 ('win32', OSError(errno.ENOSPC, 'full'))]:
             with self.subTest(platform=platform, error=error), tempfile.TemporaryDirectory() as folder:
@@ -154,6 +159,13 @@ class SharingTests(unittest.TestCase):
             self.assertFalse(c.model.match_pending)
 
     def test_parent_read_unrelated_and_non_windows_errors_propagate(self):
+        with tempfile.TemporaryDirectory() as folder:
+            c = self.controller(folder); (c.directory/'status').write_text(json.dumps(self.value(c)))
+            clock = Clock()
+            with self.environment(watched, clock):
+                with patch.object(Path, 'open', side_effect=denied(None)):self.assertFalse(c.poll())
+                self.assertFalse(c.poll())
+            self.assertEqual(c.last_status, self.value(c))
         for platform, error in [('linux', denied(None)), ('linux', denied()),
                                 ('win32', denied(32)), ('win32', denied(None, errno.EPERM)),
                                 ('win32', OSError(errno.EIO, 'broken read'))]:

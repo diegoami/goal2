@@ -19,3 +19,16 @@ lost sys.path context. The scoped setup adds the helper directory and restores
 the complete original path in finally. This import defect is separate from the
 sharing fail-before proof. The full unchanged original main remains the runtime
 gate; replacing main in the bounded context test does not accept that gate.
+
+[confirmed: sharing-before-final.log, sharing-after-final.log,
+baseline-restoration.json] The final propagation tests first recover from the
+matching transient denial, then check unrelated/non-Windows propagation. All13
+final tests fail against accepted pre-fix product source77b28447, with no
+setup/import failure, and all13 pass on the fix. The original earlier log is
+retained unchanged. Saved product bytes were restored exactly after this serial
+negative control; broader-error mutations under author-mutations-01 also fail
+at behavior assertions.
+
+[confirmed: import-before-final.log, import-after-final.log] Both final context
+tests fail at assertions when the #234 setup/finally is removed; both pass with
+it. This final bounded red does not depend on an import/setup failure.
