@@ -37,7 +37,13 @@ def receipt():
 def render(screen,font,d,scroll=0):
  global current,display
  before=digest(d.__dict__)
- result=paint(screen,font,d,scroll)
+ texts=[]
+ class ReadingTrace:
+  def render(self,text,*args,**kwargs):
+   texts.append(text);return font.render(text,*args,**kwargs)
+  def __getattr__(self,name):return getattr(font,name)
+ result=paint(screen,ReadingTrace(),d,scroll)
+ state['reading_scroll']=result;state['painted_texts']=texts
  after=digest(d.__dict__);state['read_only']=state['read_only'] and before==after
  state.update(before=before,after=after,canonical_project=[list(v.project(-3,-21)),list(v.project(5,25))],font_height=font.get_height(),font_linesize=font.get_linesize())
  if not state['read_only']:
@@ -51,19 +57,20 @@ def postflip():
  flip()
  surface=pygame.display.get_surface()
  state.update(actual_sdl_driver=pygame.display.get_driver(),pygame=pygame.version.ver,sdl=list(pygame.get_sdl_version()),window_size=list(pygame.display.get_window_size()),surface_size=list(surface.get_size()),surface_flags=surface.get_flags(),platform=platform.platform(),wm_info={str(k):val if isinstance(val,(int,str,bool,float,type(None))) else repr(val) for k,val in pygame.display.get_wm_info().items()})
- if sys.platform=='win32' and 'windows_native' not in state:
+ if sys.platform=='win32' and state.get('native_geometry_size')!=list(surface.get_size()):
   import ctypes
   from ctypes import wintypes
   u=ctypes.WinDLL('user32',use_last_error=True);h=pygame.display.get_wm_info()['window'];r=wintypes.RECT();a=wintypes.RECT()
   u.GetWindowRect.argtypes=[wintypes.HWND,ctypes.POINTER(wintypes.RECT)];u.GetDpiForWindow.argtypes=[wintypes.HWND];u.GetDpiForWindow.restype=wintypes.UINT
   assert u.GetWindowRect(h,ctypes.byref(r));assert u.SystemParametersInfoW(0x0030,0,ctypes.byref(a),0)
+  state['native_geometry_size']=list(surface.get_size())
   state['windows_native']={'hwnd':h,'dpi_for_window':u.GetDpiForWindow(h),'window_rect':[r.left,r.top,r.right,r.bottom],'available_desktop':[a.left,a.top,a.right,a.bottom]}
  size=surface.get_size()
  seen=state.setdefault('paint_sizes',[])
  if list(size) not in [entry['pixels'] for entry in seen]:
   factor=min(size[0]/1000,size[1]/720)
   p=out/('surface-%sx%s.png'%size);pygame.image.save(surface,str(p))
-  seen.append({'pixels':list(size),'paint_factor':factor,'painted_body_font_height':state.get('font_height',0)*factor,'canonical_field':list(v.FIELD),'canonical_project':[list(v.project(-3,-21)),list(v.project(5,25))],'capture':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+  seen.append({'pixels':list(size),'paint_factor':factor,'painted_body_font_height':state.get('font_height',0)*factor,'windows_native':state.get('windows_native'),'canonical_field':list(v.FIELD),'canonical_project':[list(v.project(-3,-21)),list(v.project(5,25))],'capture':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
  if current is not None and current['sequence']!=state['last_frame']:
   assert current['sequence']==state['last_frame']+1,'renderer skipped discrete frame'
   state['last_frame']=current['sequence'];state['rendered']+=1
@@ -76,6 +83,15 @@ def postflip():
  if display is not None and display.result is not None and not state.get('complete'):
   state['complete']=True;state['display_lines_sha256']=digest(display.lines());state['display_result_sha256']=digest(display.result)
   p=out/'complete.png';pygame.image.save(surface,str(p));state['captures'].append({'path':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+  pygame.event.post(pygame.event.Event(pygame.KEYDOWN,key=pygame.K_END))
+ elif display is not None and display.result is not None and state.get('complete'):
+  if not state.get('rating_tail') and state['painted_texts'][-1]==display.lines()[-1]:
+   p=out/'rating-tail.png';pygame.image.save(surface,str(p))
+   state['rating_tail']={'scroll':state['reading_scroll'],'last_painted':state['painted_texts'][-1],'expected_last_line':display.lines()[-1],'capture':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'event':'End','observed_after_flip':True}
+   pygame.event.post(pygame.event.Event(pygame.KEYDOWN,key=pygame.K_UP))
+  elif state.get('rating_tail') and not state.get('scrolled_up') and state['reading_scroll']<state['rating_tail']['scroll']:
+   p=out/'scrolled-up.png';pygame.image.save(surface,str(p))
+   state['scrolled_up']={'scroll':state['reading_scroll'],'capture':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'event':'Up','observed_after_flip':True}
  receipt()
 v.render_pitch=render;pygame.display.flip=postflip
 sys.exit(v.main())
@@ -93,7 +109,17 @@ def geometry(window,app,out,report,stage):
  sizes=((900,640),) if ratio>1.5 else ((1440,900),(1050,780),(900,700))
  entries=report.setdefault('geometry',[])
  for width,height in sizes:
-  window.resize(width,height);window.activateWindow();QTest.qWait(80);window.navigate(3);app.processEvents()
+  window.showNormal();window.activateWindow();QTest.qWait(120)
+  attempts=[];deadline=time.monotonic()+3
+  while True:
+   window.resize(width,height);QTest.qWait(100)
+   actual=(window.width(),window.height());attempts.append(list(actual))
+   if actual==(width,height):
+    QTest.qWait(50)
+    if (window.width(),window.height())==(width,height):break
+   assert time.monotonic()<deadline,'requested Qt logical size was not realized'
+  window.navigate(3);app.processEvents()
+  report.setdefault('resize_requests',[]).append({'stage':stage,'requested':[width,height],'observed_attempts':attempts,'normalized_window_state':window.windowState().value})
   assert (window.width(),window.height())==(width,height),'requested Qt logical size was not realized'
   page=window.pages[3]
   for label in (window.match_provenance,window.match_score,window.match_progress,window.fixture_routes):
@@ -197,7 +223,7 @@ def scenario(options):
  sys.excepthook=callback_exception
  report.update(qt=qVersion(),qpa=app.platformName(),requested_qt_scale=os.environ.get('QT_SCALE_FACTOR'))
  with tempfile.TemporaryDirectory(prefix='T79-planning-') as folder:
-  save=Path(folder)/'owned.g2save';m=DesktopModel.open(args.template,args.data,save,country=4);w=ManagementWindow(m);w.show();w.activateWindow();QTest.qWait(150)
+  save=Path(folder)/'owned.g2save';m=DesktopModel.open(args.template,args.data,save,country=4);w=ManagementWindow(m);w.show();assert QTest.qWaitForWindowExposed(w,2000);w.activateWindow();QTest.qWait(150)
   beats=[];heartbeat=QTimer();heartbeat.setInterval(5);heartbeat.timeout.connect(lambda:beats.append(time.monotonic()));heartbeat.start()
   presentation=QTimer();presentation.setInterval(30)
   def click(button):reveal(button);QTest.mouseClick(button,Qt.MouseButton.LeftButton);app.processEvents()
@@ -259,6 +285,7 @@ def scenario(options):
      pump(lambda:w.watched.last_status is not None and
           w.watched.last_status['sequence']==w.watched.display.sequence and
           w.watched.last_status['digest']==w.watched.display.digest(),app=app,timeout=30)
+     QTest.qWait(250)
     w.watched.close_viewer();w.poll_watched();assert viewer.poll() is not None
     metrics=json.loads((child_output/'metrics.json').read_text())
     if metrics.get('read_only') is False:
@@ -288,6 +315,11 @@ def scenario(options):
     assert w.watched.frames_enabled and w.watched.frame_ack==outcome.result['ticks']-1,'final rendered frame acknowledgement missing'
     assert metrics['rendered']==outcome.result['ticks'] and metrics['read_only'] and metrics.get('complete') is True
     assert metrics['last_frame']==outcome.result['ticks']-1
+    assert metrics.get('rating_tail',{}).get('observed_after_flip') and metrics.get('scrolled_up',{}).get('observed_after_flip'),'actual End/Up board interaction was not observed after flip'
+    assert metrics['rating_tail']['last_painted']==w.watched.display.lines()[-1] and metrics['scrolled_up']['scroll']<metrics['rating_tail']['scroll'],'actual scroll did not reach the final original rating and retreat'
+    for interaction in ('rating_tail','scrolled_up'):
+     assert sha(child_output/metrics[interaction]['capture'])==metrics[interaction]['sha256'],'actual board interaction capture hash differs'
+
     assert all(list(size) in [item['pixels'] for item in metrics['paint_sizes']] for size in ((900,640),(1000,720),(1440,900))),'actual compact/larger SDL surfaces not observed'
     for item in metrics['paint_sizes']:
      assert sha(child_output/item['capture'])==item['sha256'],'actual SDL size capture hash differs'
@@ -357,6 +389,7 @@ def negative_controls(options):
  cases=[
   ('render-mutation','goal2/desktop/pygame_viewer.py',"screen.fill(color('background'));lines=display.lines()","display.sequence+=1;screen.fill(color('background'));lines=display.lines()",'test_real_framebuffer_matches_original_text_projection','rendering mutated display state'),
   ('wrapped-board','goal2/desktop/pygame_viewer.py',"rows=wrapped(font,display.lines()[3:3+count],width) if font is not None else range(count)","rows=range(count)",'test_wrapped_commentary_lands_at_board_and_scroll_retains_tail','not greater than 1'),
+  ('rating-tail','goal2/desktop/pygame_viewer.py',"for n,line in enumerate(rows[scroll:scroll+count]):","for n,line in enumerate(rows[scroll:scroll+count-1]):",'test_wrapped_commentary_lands_at_board_and_scroll_retains_tail','manual scroll lost the final rating row'),
   ('future-score','goal2/desktop/match_page.py',"pose=getattr(window,'_match_poses',{}).get(getattr(window.watched,'frame_ack',-1))","pose=(d.events[-1] if d.events and getattr(window.watched,'frame_ack',-1)>=0 else None)",'test_qt_score_uses_consumed_pose_not_future_ingress','First 1 — 0 Second')]
  receipt=[]
  for name,file,before,after,test,expected in cases:
@@ -386,4 +419,4 @@ def negative_controls(options):
  finally:
   path.write_bytes(saved);assert path.read_bytes()==saved
  (out/'controls.json').write_text(json.dumps({'result':'PASS','controls':receipt,'exact_saved_bytes_restored':True},indent=2)+'\n')
- print('PASS4 T79 intended rendering/read-only/board/future-score controls; exact source restored')
+ print('PASS5 T79 intended rendering/read-only/board/future-score controls; exact source restored')

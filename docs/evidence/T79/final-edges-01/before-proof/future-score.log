@@ -1,0 +1,15 @@
+test_qt_score_uses_consumed_pose_not_future_ingress (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_score_uses_consumed_pose_not_future_ingress) ... FAIL
+
+======================================================================
+FAIL: test_qt_score_uses_consumed_pose_not_future_ingress (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_score_uses_consumed_pose_not_future_ingress)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 181, in test_qt_score_uses_consumed_pose_not_future_ingress
+    self.assertNotIn('9 — 8',w.match_score.text());self.assertIn('first rendered sample',w.match_progress.text())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '9 — 8' unexpectedly found in 'First 9 — 8 Second'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.458s
+
+FAILED (failures=1)

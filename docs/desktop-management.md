@@ -103,7 +103,10 @@ QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/country-selection.py --templa
 source-order teams/score and current progress. It follows the current job or saved
 model, so a previous original viewer does not label a new game or quick match.
 During animated original play, Qt shows only the latest acknowledged rendered
-pose; it waits for the first sample rather than displaying future ingress scores.
+pose in both the match surface and persistent live status; it waits for the first
+sample rather than displaying future ingress scores. If another controller owns a
+pending match, the surface shows a generic in-progress context while the explicitly
+last-completed result cards remain available as history.
 The private quick halftime decision uses the same surface, with existing Off/On,
 Substitute and Continue actions. Cancel match stays in the persistent footer.
 

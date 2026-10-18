@@ -240,8 +240,8 @@ class ManagementWindow(QMainWindow):
             if self.watched.poll():
                 self.set_busy(False);self.refresh('Original friendly complete; result can be saved. Scroll the Pygame window for board and Raw rating.')
             elif self.watched.busy and self.watched.display.events:
-                event=self.watched.display.events[-1]
-                self.status.setText(f"Original engine: {event['minute']}′ {event['score'][0]} — {event['score'][1]}")
+                self.present_match()
+                self.status.setText(self.match_provenance.text()+': '+self.match_progress.text()+' '+self.match_score.text())
             if self.watched.process is None:
                 self.watch_timer.stop();self.set_busy(False)
         except (OSError,ValueError,IndexError,KeyError) as exc:

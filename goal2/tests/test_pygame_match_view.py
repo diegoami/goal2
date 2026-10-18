@@ -98,6 +98,11 @@ class PresentationTests(unittest.TestCase):
             live=Display('owned');live.accept(['owned',0,'start',['Denmark','Germany']])
             for n in range(18,49):live.accept(['owned',n-17,'event',{'kind':'commentary','minute':n,'score':[2,1],'data':{'text':f'Original line {n}'}}])
             self.assertEqual(render(screen,font,live,999),9)
+            expected.fill((8,28,24))
+            for n,line in enumerate(['Original engine — friendly','Denmark — Germany','48 min   2 — 1']):
+                expected.blit(font.render(line,True,(200,242,121) if n==2 else (245,242,232)),(20,16+n*30))
+            for n in range(27,49):expected.blit(font.render(f'{n} min Original line {n}',True,(245,242,232)),(20,112+(n-27)*26))
+            self.assertEqual(pygame.image.tobytes(screen,'RGB'),pygame.image.tobytes(expected,'RGB'),'live scroll lost pinned score or ordered commentary')
             self.assertEqual(position(live,8,False,False,True),(8,False,False))
             self.assertEqual(position(live,0,True,False,True),(10**9,True,False))
             live.accept(['owned',32,'event',{'kind':'end','minute':90,'score':[2,1],'data':{}}])
@@ -142,7 +147,9 @@ class PresentationTests(unittest.TestCase):
             send(d,'event',{'kind':'end','minute':90,'score':[1,0],'data':{}})
             rows=[{'name':f'Player {n}','raw':55} for n in range(20)]
             send(d,'complete',{'board':{'statistics':{'corners':[3,4]},'bars':[[1,2],[3,4]]},'ratings':[rows,rows],'man_of_the_match':'Player 0'})
-            scroll,follow,finished=position(d,0,True,False,True,font=font)
+            import inspect
+            options={'font':font} if 'font' in inspect.signature(position).parameters else {}
+            scroll,follow,finished=position(d,0,True,False,True,**options)
             self.assertGreater(scroll,1)
             self.assertEqual(scroll,len(wrapped(font,d.lines()[3:4],960)))
             screen=pygame.Surface((1000,720));render_pitch(screen,font,d,scroll)
@@ -151,6 +158,8 @@ class PresentationTests(unittest.TestCase):
             self.assertEqual(pygame.image.tobytes(screen.subsurface((20,490,*title.get_size())),'RGB'),pygame.image.tobytes(expected,'RGB'))
             tail=render_pitch(screen,font,d,10**9)
             self.assertGreater(tail,scroll)
+            label=font.render('Player 19: 55',True,(245,242,232));expected=pygame.Surface(label.get_size());expected.fill((8,28,24));expected.blit(label,(0,0))
+            self.assertEqual(pygame.image.tobytes(screen.subsurface((20,490+7*26,*label.get_size())),'RGB'),pygame.image.tobytes(expected,'RGB'),'manual scroll lost the final rating row')
             self.assertEqual((follow,finished),(False,True))
         finally:pygame.quit()
 
@@ -158,7 +167,6 @@ class PresentationTests(unittest.TestCase):
         # [designed: T79] Parent presentation remembers frames before the controller drains ACKed ingress.
         from PySide6.QtWidgets import QApplication
         from goal2.desktop.window import ManagementWindow
-        from goal2.desktop.match_page import observe,present
         from goal2.tests.test_pygame_pitch_view import pitch,sample,send
         app=QApplication.instance() or QApplication([])
         with tempfile.TemporaryDirectory() as folder:
@@ -168,14 +176,16 @@ class PresentationTests(unittest.TestCase):
                 f=sample();f['score']=[1,0];f['watermark']=0;send(d,'frame',f)
                 w.watched.display=d;w.watched.token='owned';w.watched.frames_enabled=True;w.watched.frame_ack=-1
                 with patch.object(type(w.watched),'busy',new_callable=lambda:property(lambda self:True)):
-                    before=copy.deepcopy(d.__dict__);observe(w);present(w)
+                    before=copy.deepcopy(d.__dict__);w.poll_watched()
                     self.assertEqual(d.__dict__,before)
                     self.assertNotIn('9 — 8',w.match_score.text());self.assertIn('first rendered sample',w.match_progress.text())
-                    w.watched.frame_ack=0;d.frames.popleft();present(w)
+                    self.assertNotIn('88',w.status.text());self.assertNotIn('9 — 8',w.status.text())
+                    w.watched.frame_ack=0;d.frames.popleft();w.poll_watched()
                     self.assertEqual(w.match_score.text(),'First 1 — 0 Second')
                     self.assertTrue(w.match_progress.text().startswith('7 min'))
                     self.assertNotIn('88',w.match_progress.text())
-                    w.watched.token='replacement';w.watched.frame_ack=-1;observe(w);present(w)
+                    self.assertNotIn('88',w.status.text());self.assertNotIn('9 — 8',w.status.text())
+                    w.watched.token='replacement';w.watched.frame_ack=-1;w.poll_watched()
                     self.assertEqual(w._match_poses,{})
                     self.assertIn('first rendered sample',w.match_progress.text())
             finally:w.close();app.processEvents()
@@ -201,6 +211,28 @@ class PresentationTests(unittest.TestCase):
                 self.assertNotIn('Stale',w.match_score.text());self.assertTrue(w.stop.isEnabled())
                 w.cancel_match();self.assertEqual(w.match_provenance.text(),'No match played')
             finally:w.close();app.processEvents()
+
+    def test_external_job_pending_context_preserves_state_save_and_resets(self):
+        # [designed: T79] A completed view cannot identify an unrelated current match owner.
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.window import ManagementWindow
+        app=QApplication.instance() or QApplication([])
+        with tempfile.TemporaryDirectory() as folder:
+            m=model(Path(folder)/'save');m.save(m.save_path);saved=m.save_path.read_bytes();before=copy.deepcopy(m.state)
+            w=ManagementWindow(m);external=QuickJobs(m,command=[sys.executable,'-c','import time;time.sleep(60)'])
+            try:
+                w.watched.display=Display('old-view');w._match_pose_token='old-view';w._match_poses={0:{'minute':90,'score':(8,7),'watermark':0}}
+                external.start();child=external.process;w.set_busy(True)
+                self.assertEqual(w.match_provenance.text(),'Match in progress')
+                self.assertIn('active match owner',w.match_progress.text());self.assertEqual(w._match_poses,{})
+                w.watched.cancel();w.poll_watched();w.set_busy(False)
+                self.assertTrue(m.match_pending);self.assertIsNone(child.poll());self.assertFalse(w.save.isEnabled())
+                self.assertEqual(w.match_provenance.text(),'Match in progress')
+                self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
+                external.cancel();w.set_busy(False)
+                self.assertEqual(w.match_provenance.text(),'No match played');self.assertEqual(w._match_poses,{})
+                self.assertEqual(m.state,before);self.assertEqual(m.save_path.read_bytes(),saved)
+            finally:external.cancel();w.close();app.processEvents()
 
     def test_qt_heartbeat_blocked_tail_and_actual_viewer_quit(self):
         from PySide6.QtCore import QTimer

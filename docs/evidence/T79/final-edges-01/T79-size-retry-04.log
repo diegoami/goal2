@@ -1,0 +1,26 @@
+dbus-daemon[3058895]: [session uid=1000 pid=3058895 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=3058897 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3058895]: [session uid=1000 pid=3058895 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[3058910]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=3058897 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3058895]: [session uid=1000 pid=3058895 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=3058897 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3058910]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[3058895]: [session uid=1000 pid=3058895 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 3058897
+[
+  {
+    "attempt": 0,
+    "actual": [
+      900,
+      640
+    ],
+    "min": [
+      630,
+      354
+    ],
+    "maximized": false,
+    "window_state": 0,
+    "native_props": "_NET_WM_STATE(ATOM) = _NET_WM_STATE_FOCUSED\nWM_NORMAL_HINTS(WM_SIZE_HINTS):\n\t\tuser specified location: 0, 24\n\t\tuser specified size: 1800 by 1280\n\t\tprogram specified minimum size: 1260 by 708\n\t\tprogram specified resize increment: 2 by 2\n\t\twindow gravity: Static\n"
+  }
+]
+
+(xfconfd:3058919): xfconfd-WARNING **: 00:03:03.936: Name org.xfce.Xfconf lost on the message dbus, exiting.

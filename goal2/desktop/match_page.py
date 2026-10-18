@@ -69,6 +69,8 @@ def values(window):
             progress=f'{event["minute"]} min · original engine running. Cancel match remains available.'
         else:progress='Starting original friendly in Pygame… Cancel match remains available.'
         return 'Original engine — friendly',fixture,progress
+    if getattr(window.model,'match_pending',False):
+        return 'Match in progress',fixture,'Waiting for the active match owner. Saving is unavailable.'
     last=state.last_match
     if last is not None:
         from goal2.game.watched_schema import watched

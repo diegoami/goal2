@@ -1,0 +1,6 @@
+test_qt_score_uses_consumed_pose_not_future_ingress (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_score_uses_consumed_pose_not_future_ingress) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.416s
+
+OK

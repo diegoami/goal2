@@ -1,0 +1,20 @@
+dbus-daemon[2980540]: [session uid=1000 pid=2980540 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=2980543 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2980540]: [session uid=1000 pid=2980540 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[2980558]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=2980543 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2980540]: [session uid=1000 pid=2980540 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=2980543 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[2980558]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[2980540]: [session uid=1000 pid=2980540 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 2980543
+START controls
+PASS controls 20.385
+START units
+PASS units 251.406
+START handoff
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py", line 57, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py", line 51, in main
+    raise AssertionError(f'{name}: returncode={run.returncode}, source bytes unchanged={same}')
+AssertionError: handoff: returncode=1, source bytes unchanged=True

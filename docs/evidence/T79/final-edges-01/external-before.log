@@ -1,0 +1,17 @@
+test_external_job_pending_context_preserves_state_save_and_resets (goal2.tests.test_pygame_match_view.PresentationTests.test_external_job_pending_context_preserves_state_save_and_resets) ... FAIL
+
+======================================================================
+FAIL: test_external_job_pending_context_preserves_state_save_and_resets (goal2.tests.test_pygame_match_view.PresentationTests.test_external_job_pending_context_preserves_state_save_and_resets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 223, in test_external_job_pending_context_preserves_state_save_and_resets
+    self.assertEqual(w.match_provenance.text(),'Match in progress')
+AssertionError: 'No match played' != 'Match in progress'
+- No match played
++ Match in progress
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.958s
+
+FAILED (failures=1)

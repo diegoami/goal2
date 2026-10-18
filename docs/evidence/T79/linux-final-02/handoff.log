@@ -1,0 +1,33 @@
+test_qt_heartbeat_blocked_tail_and_actual_viewer_quit (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit) ... ok
+test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save) ... ok
+test_malformed_stale_ack_and_engine_failure_preserve_state (goal2.tests.test_pygame_match_view.PresentationTests.test_malformed_stale_ack_and_engine_failure_preserve_state) ... ok
+test_optional_dependency_and_qualifier_boundary (goal2.tests.test_pygame_match_view.PresentationTests.test_optional_dependency_and_qualifier_boundary) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 10.221s
+
+OK
+PASS match-handoff: actual product Qt/SDL; full original Malta18 state/events/board/ratings; frame+complete ACK; checkpoint replay; native layout/focus and lifecycle
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 495, in main
+    return (handoff_negative if args.negative_controls else handoff)(args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/match_handoff_scenario.py", line 227, in scenario
+    geometry(w,app,args.output,report,'idle')
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/match_handoff_scenario.py", line 97, in geometry
+    assert (window.width(),window.height())==(width,height),'requested Qt logical size was not realized'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: requested Qt logical size was not realized
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 520, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-venv/bin/python3', '/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'match-handoff', '--template', '/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav', '--data', '/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT', '--evidence-dir', '/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/linux-final-02/handoff/scale-2', '--single-scale']' returned non-zero exit status 1.

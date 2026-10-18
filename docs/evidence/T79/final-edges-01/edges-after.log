@@ -1,0 +1,9 @@
+test_external_job_pending_context_preserves_state_save_and_resets (goal2.tests.test_pygame_match_view.PresentationTests.test_external_job_pending_context_preserves_state_save_and_resets) ... ok
+test_real_framebuffer_matches_original_text_projection (goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection) ... ok
+test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.107s
+
+OK
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)

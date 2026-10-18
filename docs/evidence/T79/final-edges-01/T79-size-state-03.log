@@ -1,0 +1,51 @@
+dbus-daemon[3055542]: [session uid=1000 pid=3055542 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=3055544 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3055542]: [session uid=1000 pid=3055542 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[3055559]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=3055544 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3055542]: [session uid=1000 pid=3055542 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=3055544 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3055559]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[3055542]: [session uid=1000 pid=3055542 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 3055544
+{
+  "before_normal": {
+    "actual": [
+      960,
+      708
+    ],
+    "minimum": [
+      630,
+      354
+    ],
+    "maximized": false,
+    "window_state": 0,
+    "available": [
+      960,
+      720
+    ],
+    "ratio": 2.0
+  },
+  "after_normal": {
+    "actual": [
+      960,
+      708
+    ],
+    "minimum": [
+      630,
+      354
+    ],
+    "maximized": false,
+    "window_state": 0,
+    "available": [
+      960,
+      720
+    ],
+    "ratio": 2.0
+  }
+}
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/.cache/T79-size-state-probe.py", line 10, in <module>
+    w.resize(900,640);QTest.qWait(150);before=take();w.showNormal();QTest.qWait(150);w.resize(900,640);QTest.qWait(150);after=take();print(json.dumps({'before_normal':before,'after_normal':after},indent=2));assert after['actual']==[900,640];w.close()
+                                                                                                                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+(xfconfd:3055567): xfconfd-WARNING **: 00:01:36.482: Name org.xfce.Xfconf lost on the message dbus, exiting.

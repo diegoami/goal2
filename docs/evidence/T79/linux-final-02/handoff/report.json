@@ -1,0 +1,3752 @@
+{
+  "tag": "[designed: T79] Actual Qt/SDL original handoff",
+  "mode": "actual",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "scenario_sha256": "55e14ade9957d8d5192ddd6b2de62d8eae89f696d71e5bbec8ecd6760828b63e",
+  "observer_sha256": "cc94c53ecf2301b3cf88a3f4cbdd9d5635354ff90ba55ca18dde7e867549c744",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "ce1b0a08bf413f385f61d2a8476968e76f869ac272737eaf0db04e5ea8255c72",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_page.py": "3eebb0b598c6ff9f56578619209e53ec7c99881c853ca0aa2d4526e157a34552",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "17cff020e5798c2a8a8561960a72d8a9c9b90f3c8afd733898b82c2421644012",
+    "goal2/desktop/window.py": "f00b851d5d4b5ed55230d4c64835a785f7cd80e6880839488e3950a4ad5480fb",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "repeat_policy": "resume-owned-pre-match-checkpoint",
+  "rounds": [
+    {
+      "round": 0,
+      "rate": 60,
+      "default_rate_first": true,
+      "duplicate_exclusion_visited": true,
+      "fixture": 1376,
+      "countries": [
+        "Yugoslavia",
+        "Malta"
+      ],
+      "ticks": 4466,
+      "final_ack": 4465,
+      "heartbeats": 6633,
+      "live_observations": 6553,
+      "maximum_heartbeat_gap": 0.522187053997186,
+      "original_image_sha256": "31e14ffe3365753b0fb4e7614eea20fca148a30e7377a9571996c5b21567473f",
+      "source_captain": 341,
+      "source_tactics": 250,
+      "source_xi": [
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351
+      ],
+      "source_seeds": [
+        37972,
+        33590
+      ],
+      "final_seeds": [
+        16017,
+        18902
+      ],
+      "full_exact_parity": true,
+      "sdl_metrics_sha256": "6302c77539157a281806af679641627e8c2176ba16c377a92d938b33bc479796",
+      "diagnostics_read_after_writer_reaped": true,
+      "complete_packet_acknowledged": true
+    },
+    {
+      "round": 1,
+      "rate": 240,
+      "default_rate_first": false,
+      "duplicate_exclusion_visited": true,
+      "fixture": 1376,
+      "countries": [
+        "Yugoslavia",
+        "Malta"
+      ],
+      "ticks": 4466,
+      "final_ack": 4465,
+      "heartbeats": 2758,
+      "live_observations": 2669,
+      "maximum_heartbeat_gap": 0.523172771994723,
+      "original_image_sha256": "31e14ffe3365753b0fb4e7614eea20fca148a30e7377a9571996c5b21567473f",
+      "source_captain": 341,
+      "source_tactics": 250,
+      "source_xi": [
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351
+      ],
+      "source_seeds": [
+        37972,
+        33590
+      ],
+      "final_seeds": [
+        16017,
+        18902
+      ],
+      "full_exact_parity": true,
+      "sdl_metrics_sha256": "644f0560eb10861b936b98b6ce9b6cb31873cab8107c5f59ec7a25327053de4b",
+      "diagnostics_read_after_writer_reaped": true,
+      "complete_packet_acknowledged": true
+    }
+  ],
+  "captures": [
+    {
+      "path": "idle-1440x900.png",
+      "sha256": "75df48281437b5bbc5921b7c8ac7fe60eb83f351bc498b0d2c6a61ead9112625"
+    },
+    {
+      "path": "idle-1050x780.png",
+      "sha256": "f5ae3594fc76a8fa31bc88c677269247ac61ceb2222b68897bd8e12a0eb9a5a4"
+    },
+    {
+      "path": "idle-900x700.png",
+      "sha256": "26da3753cd8673772ad9f3fa12dda8788e3397c8545f583f911e1b05bf504662"
+    },
+    {
+      "path": "starting-0-1440x900.png",
+      "sha256": "733976ce8e9e1146d1bbce89ac5b5911660d66f0e5aab28eba1160eda8a9ac01"
+    },
+    {
+      "path": "starting-0-1050x780.png",
+      "sha256": "ba7390f577d33250ea938c7d0c807b359c2c2af38fc624ba9084c202d3f1149d"
+    },
+    {
+      "path": "starting-0-900x700.png",
+      "sha256": "b8c3018ba8ae89cfcb6fa99d318f433c14ce74d18892ae22bc11404b62e51599"
+    },
+    {
+      "path": "live-0-1440x900.png",
+      "sha256": "8d2305473901aed1372d4c58efddbe9150cf3239bc67feb5cf5b83e34a709454"
+    },
+    {
+      "path": "live-0-1050x780.png",
+      "sha256": "2be7c4ffa37af595b9065655b3ebac9932bd2c3db8aa2ca7ae69f11f716c2c0d"
+    },
+    {
+      "path": "live-0-900x700.png",
+      "sha256": "26cb229c41b91718e0511fdaa29e382a2c9c69fbb7db127b090175f97e0cbad1"
+    },
+    {
+      "path": "round-0-qt.png",
+      "sha256": "7d06e7850ba612ce6de2a0324ce6f63a5ce7602929065c39970d74d7f2059314"
+    },
+    {
+      "path": "qualifier-refusal-1440x900.png",
+      "sha256": "65f50b26596e24f1bde22025b0315e1bc21f00d75e754af99bc5039a9d17d269"
+    },
+    {
+      "path": "qualifier-refusal-1050x780.png",
+      "sha256": "aafa41e4b141f650ebb6810beddcf4c1252a530ccbe1e007bf1c80785c5e9e0e"
+    },
+    {
+      "path": "qualifier-refusal-900x700.png",
+      "sha256": "c7704b67a83def7284500366a331bd132faae8e2b846492f2656de95dba41ee7"
+    },
+    {
+      "path": "starting-1-1440x900.png",
+      "sha256": "733976ce8e9e1146d1bbce89ac5b5911660d66f0e5aab28eba1160eda8a9ac01"
+    },
+    {
+      "path": "starting-1-1050x780.png",
+      "sha256": "ba7390f577d33250ea938c7d0c807b359c2c2af38fc624ba9084c202d3f1149d"
+    },
+    {
+      "path": "starting-1-900x700.png",
+      "sha256": "b8c3018ba8ae89cfcb6fa99d318f433c14ce74d18892ae22bc11404b62e51599"
+    },
+    {
+      "path": "live-1-1440x900.png",
+      "sha256": "8d2305473901aed1372d4c58efddbe9150cf3239bc67feb5cf5b83e34a709454"
+    },
+    {
+      "path": "live-1-1050x780.png",
+      "sha256": "2be7c4ffa37af595b9065655b3ebac9932bd2c3db8aa2ca7ae69f11f716c2c0d"
+    },
+    {
+      "path": "live-1-900x700.png",
+      "sha256": "88aea7d745bbb6df0807c140606c8258d33a2f20a5d4bf6347a7bb3d8299542f"
+    },
+    {
+      "path": "round-1-qt.png",
+      "sha256": "7d06e7850ba612ce6de2a0324ce6f63a5ce7602929065c39970d74d7f2059314"
+    },
+    {
+      "path": "completed-1440x900.png",
+      "sha256": "6079c668f7f2e52c557f60ba4148bd215b83e0d57617e17fc0c9748722eefbcc"
+    },
+    {
+      "path": "completed-1050x780.png",
+      "sha256": "d4f9fbabd60ddcb4160035ab488991f174f191f733872f41982e11811ee20cad"
+    },
+    {
+      "path": "completed-900x700.png",
+      "sha256": "34a9954e4bedaac8cd52614fdce67843ac95d57a3796178f031c363d08d87166"
+    },
+    {
+      "path": "quick-halftime-1440x900.png",
+      "sha256": "dfa49376ada1772335ca463ba1ed98fd3a4e4f20497c6a616639a77952debe23"
+    },
+    {
+      "path": "quick-halftime-1050x780.png",
+      "sha256": "e4d2fdab7a0dc64b33b53698549f9e94f8793c7ad40b37b94efd1b9956c0124b"
+    },
+    {
+      "path": "quick-halftime-900x700.png",
+      "sha256": "07ca3deaaff4e98bcacb529e87e5cddc2714b63ad2e97e28f7f56c54111e03c1"
+    },
+    {
+      "path": "quick-half-Halftime-outgoing-player.png",
+      "sha256": "d2cdb6babeeb21e091e92b5f6162a7ca07f0576b2394237f74bf20a2ab6be535"
+    },
+    {
+      "path": "quick-half-Halftime-incoming-player.png",
+      "sha256": "d2cdb6babeeb21e091e92b5f6162a7ca07f0576b2394237f74bf20a2ab6be535"
+    },
+    {
+      "path": "quick-half-Substitute.png",
+      "sha256": "52452049079366332e54496cccc6e52ef7d9e96c4d221a59f9bf659aa7fb75c2"
+    },
+    {
+      "path": "quick-half-Continue-second-half.png",
+      "sha256": "f751862be1ca73556c946ab672c9e7d40f7581ebb335dc665128c9f303b8e7e7"
+    }
+  ],
+  "limits": [
+    "Real product widgets and renderer; observer does not substitute painting",
+    "Qt scale does not establish SDL OS/paint scaling",
+    "Separate retained lifecycle suites remain mandatory"
+  ],
+  "uncaught_qt_callbacks": [],
+  "qt": "6.12.0",
+  "qpa": "xcb",
+  "requested_qt_scale": "1",
+  "qt_ratio": 1.0,
+  "qt_available": [
+    1920,
+    1440
+  ],
+  "opening_save_sha256": "73d83a7d60878f0c0e5d11f41c66976efe0b69daf3958e4ec1e09a90b1ba5f6a",
+  "geometry": [
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        120,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "No match played"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        642,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Choose an eligible play route below. Management edits must be confirmed first."
+    },
+    {
+      "stage": "idle",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        872,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Starting original friendly in Pygame\u2026 Waiting for the first rendered sample. Cancel match remains available."
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        872,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Starting original friendly in Pygame\u2026 Waiting for the first rendered sample. Cancel match remains available."
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        721,
+        38
+      ],
+      "content_bounds": [
+        786,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Starting original friendly in Pygame\u2026 Waiting for the first rendered sample. Cancel match remains available."
+    },
+    {
+      "stage": "starting-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 0 \u2014 0 Malta"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        513,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "0 min \u00b7 rendered pitch sample. Cancel match remains available."
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 0 \u2014 0 Malta"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        513,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "0 min \u00b7 rendered pitch sample. Cancel match remains available."
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 0 \u2014 0 Malta"
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        513,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "0 min \u00b7 rendered pitch sample. Cancel match remains available."
+    },
+    {
+      "stage": "live-0",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        107,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 1 \u2014 0 Malta"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        523,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Full time \u00b7 Full time \u00b7 Save / resume retains this completed game."
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        358,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: original competitive\nWatch unavailable: scheduled friendlies only"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        107,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 1 \u2014 0 Malta"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        523,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Full time \u00b7 Full time \u00b7 Save / resume retains this completed game."
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        358,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: original competitive\nWatch unavailable: scheduled friendlies only"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        107,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 1 \u2014 0 Malta"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        523,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Full time \u00b7 Full time \u00b7 Save / resume retains this completed game."
+    },
+    {
+      "stage": "qualifier-refusal",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        358,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: original competitive\nWatch unavailable: scheduled friendlies only"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        872,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Starting original friendly in Pygame\u2026 Waiting for the first rendered sample. Cancel match remains available."
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        872,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Starting original friendly in Pygame\u2026 Waiting for the first rendered sample. Cancel match remains available."
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        306,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia \u2014 Malta"
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        721,
+        38
+      ],
+      "content_bounds": [
+        786,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Starting original friendly in Pygame\u2026 Waiting for the first rendered sample. Cancel match remains available."
+    },
+    {
+      "stage": "starting-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 0 \u2014 0 Malta"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        513,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "0 min \u00b7 rendered pitch sample. Cancel match remains available."
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 0 \u2014 0 Malta"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        513,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "0 min \u00b7 rendered pitch sample. Cancel match remains available."
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        183,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine \u2014 friendly"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 0 \u2014 0 Malta"
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        513,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "1 min \u00b7 rendered pitch sample. Cancel match remains available."
+    },
+    {
+      "stage": "live-1",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        107,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 1 \u2014 0 Malta"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        523,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Full time \u00b7 Full time \u00b7 Save / resume retains this completed game."
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        358,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: original competitive\nWatch unavailable: scheduled friendlies only"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        107,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 1 \u2014 0 Malta"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        523,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Full time \u00b7 Full time \u00b7 Save / resume retains this completed game."
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        358,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: original competitive\nWatch unavailable: scheduled friendlies only"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        107,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Original engine"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        364,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Yugoslavia 1 \u2014 0 Malta"
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        523,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Full time \u00b7 Full time \u00b7 Save / resume retains this completed game."
+    },
+    {
+      "stage": "completed",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        358,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: original competitive\nWatch unavailable: scheduled friendlies only"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        225,
+        17
+      ],
+      "content_bounds": [
+        1326,
+        17
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Quick simulation (rebuild setup)"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        357,
+        33
+      ],
+      "content_bounds": [
+        1326,
+        33
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Bulgaria 0 \u2014 1 Albania"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        761,
+        19
+      ],
+      "content_bounds": [
+        1326,
+        19
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Halftime \u00b7 private decision. Continue second half or Cancel match; saving remains unavailable."
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1440,
+        900
+      ],
+      "actual": [
+        1440,
+        900
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        1346,
+        38
+      ],
+      "viewport": [
+        1394,
+        614
+      ],
+      "origin": [
+        24,
+        576
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        225,
+        17
+      ],
+      "content_bounds": [
+        936,
+        17
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Quick simulation (rebuild setup)"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        357,
+        33
+      ],
+      "content_bounds": [
+        936,
+        33
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Bulgaria 0 \u2014 1 Albania"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        761,
+        19
+      ],
+      "content_bounds": [
+        936,
+        19
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Halftime \u00b7 private decision. Continue second half or Cancel match; saving remains unavailable."
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        1050,
+        780
+      ],
+      "actual": [
+        1050,
+        780
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        956,
+        38
+      ],
+      "viewport": [
+        1004,
+        494
+      ],
+      "origin": [
+        24,
+        456
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProvenance",
+      "font_pixel_height": 16,
+      "text_bounds": [
+        225,
+        17
+      ],
+      "content_bounds": [
+        786,
+        17
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        74
+      ],
+      "text": "Quick simulation (rebuild setup)"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchScore",
+      "font_pixel_height": 33,
+      "text_bounds": [
+        357,
+        33
+      ],
+      "content_bounds": [
+        786,
+        33
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        99
+      ],
+      "text": "Bulgaria 0 \u2014 1 Albania"
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "matchProgress",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        761,
+        19
+      ],
+      "content_bounds": [
+        786,
+        19
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        34,
+        140
+      ],
+      "text": "Halftime \u00b7 private decision. Continue second half or Cancel match; saving remains unavailable."
+    },
+    {
+      "stage": "quick-halftime",
+      "requested": [
+        900,
+        700
+      ],
+      "actual": [
+        900,
+        700
+      ],
+      "object": "",
+      "font_pixel_height": 19,
+      "text_bounds": [
+        186,
+        38
+      ],
+      "content_bounds": [
+        806,
+        38
+      ],
+      "viewport": [
+        854,
+        414
+      ],
+      "origin": [
+        24,
+        376
+      ],
+      "text": "Play: quick friendly\nWatch: original friendly"
+    }
+  ],
+  "focus": [
+    {
+      "stage": "idle",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "idle",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "idle",
+      "size": [
+        900,
+        700
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "starting-0",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "starting-0",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "starting-0",
+      "size": [
+        900,
+        700
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "live-0",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "live-0",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "live-0",
+      "size": [
+        900,
+        700
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "qualifier-refusal",
+      "size": [
+        900,
+        700
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "starting-1",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "starting-1",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "starting-1",
+      "size": [
+        900,
+        700
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "live-1",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "live-1",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "live-1",
+      "size": [
+        900,
+        700
+      ],
+      "object": "cancelMatch",
+      "accessible_name": "Cancel match"
+    },
+    {
+      "stage": "completed",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "completed",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "completed",
+      "size": [
+        900,
+        700
+      ],
+      "object": "playMatch",
+      "accessible_name": "Play quick friendly"
+    },
+    {
+      "stage": "quick-halftime",
+      "size": [
+        1440,
+        900
+      ],
+      "object": "",
+      "accessible_name": "Halftime outgoing player"
+    },
+    {
+      "stage": "quick-halftime",
+      "size": [
+        1050,
+        780
+      ],
+      "object": "",
+      "accessible_name": "Halftime outgoing player"
+    },
+    {
+      "stage": "quick-halftime",
+      "size": [
+        900,
+        700
+      ],
+      "object": "",
+      "accessible_name": "Halftime outgoing player"
+    }
+  ],
+  "sdl": [
+    {
+      "round": 0,
+      "metrics": {
+        "tag": "[designed: T79] Production render/flip observer",
+        "mode": "actual",
+        "rendered": 4466,
+        "last_frame": 4465,
+        "read_only": true,
+        "captures": [
+          {
+            "path": "frame-0.png",
+            "sha256": "676cb0bf31f232698add0739683e0e8478a5e1e6d348a2203ca6b292ae14f87e"
+          },
+          {
+            "path": "frame-1.png",
+            "sha256": "d3d7fd2a756899ed81beb725f597910c9b194396ff13a1615a6abc8f41b80d9f"
+          },
+          {
+            "path": "complete.png",
+            "sha256": "6e313a0625e069b40580a4cd36af42cb392be82844d10eada2a912e2c813a264"
+          }
+        ],
+        "before": "4d278e8d98f94cfa45b22da882665be1854443c375cc99d7a98ae19730907807",
+        "after": "4d278e8d98f94cfa45b22da882665be1854443c375cc99d7a98ae19730907807",
+        "canonical_project": [
+          [
+            269,
+            231
+          ],
+          [
+            775,
+            367
+          ]
+        ],
+        "font_height": 16,
+        "font_linesize": 18,
+        "actual_sdl_driver": "x11",
+        "pygame": "2.5.8",
+        "sdl": [
+          2,
+          32,
+          10
+        ],
+        "window_size": [
+          1000,
+          720
+        ],
+        "surface_size": [
+          1000,
+          720
+        ],
+        "surface_flags": 16777232,
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+        "wm_info": {
+          "window": 8388610,
+          "display": "<capsule object \"display\" at 0x768f1af1a400>",
+          "surface": "<capsule object \"surface\" at 0x768f1de5be70>",
+          "shell_surface": "<capsule object \"shell_surface\" at 0x768f1af1a6d0>"
+        },
+        "paint_sizes": [
+          {
+            "pixels": [
+              1000,
+              720
+            ],
+            "paint_factor": 1.0,
+            "painted_body_font_height": 16.0,
+            "canonical_field": [
+              93,
+              146,
+              815,
+              273
+            ],
+            "canonical_project": [
+              [
+                269,
+                231
+              ],
+              [
+                775,
+                367
+              ]
+            ],
+            "capture": "surface-1000x720.png",
+            "sha256": "f949cad550dc0d524e1091d3965418fb90ec7b8c4780d2d4913c20745caa5984"
+          },
+          {
+            "pixels": [
+              900,
+              640
+            ],
+            "paint_factor": 0.8888888888888888,
+            "painted_body_font_height": 14.222222222222221,
+            "canonical_field": [
+              93,
+              146,
+              815,
+              273
+            ],
+            "canonical_project": [
+              [
+                269,
+                231
+              ],
+              [
+                775,
+                367
+              ]
+            ],
+            "capture": "surface-900x640.png",
+            "sha256": "09f7e38eb877398318a1750a7fcacacbaf3ce5162cea3a9e091c87dcb6118094"
+          },
+          {
+            "pixels": [
+              1440,
+              900
+            ],
+            "paint_factor": 1.25,
+            "painted_body_font_height": 20.0,
+            "canonical_field": [
+              93,
+              146,
+              815,
+              273
+            ],
+            "canonical_project": [
+              [
+                269,
+                231
+              ],
+              [
+                775,
+                367
+              ]
+            ],
+            "capture": "surface-1440x900.png",
+            "sha256": "c065a1e63c3396669661cfebb4bd41753ea739fe6aebfa363c55bf8b58153601"
+          }
+        ],
+        "visible_slot_count": 22,
+        "ball_hidden": false,
+        "pitch_rect": [
+          93,
+          146,
+          815,
+          273
+        ],
+        "marker_radius": 11,
+        "ball_radius": 4,
+        "complete": true,
+        "display_lines_sha256": "84cee8acb926fe7c092f4e67f86a77b8516e78baf462a046e7e63e8b53040619",
+        "display_result_sha256": "43d2e87e7965349888ab650e35fed930b9dfb138cba1edb5ef58b16472fac6bb"
+      }
+    },
+    {
+      "round": 1,
+      "metrics": {
+        "tag": "[designed: T79] Production render/flip observer",
+        "mode": "actual",
+        "rendered": 4466,
+        "last_frame": 4465,
+        "read_only": true,
+        "captures": [
+          {
+            "path": "frame-0.png",
+            "sha256": "676cb0bf31f232698add0739683e0e8478a5e1e6d348a2203ca6b292ae14f87e"
+          },
+          {
+            "path": "frame-1.png",
+            "sha256": "d3d7fd2a756899ed81beb725f597910c9b194396ff13a1615a6abc8f41b80d9f"
+          },
+          {
+            "path": "complete.png",
+            "sha256": "6e313a0625e069b40580a4cd36af42cb392be82844d10eada2a912e2c813a264"
+          }
+        ],
+        "before": "9e0c35265a3bb6b5cc91054be2fcfbafc10ad2c53e71103fbf4abf9c9db87dae",
+        "after": "9e0c35265a3bb6b5cc91054be2fcfbafc10ad2c53e71103fbf4abf9c9db87dae",
+        "canonical_project": [
+          [
+            269,
+            231
+          ],
+          [
+            775,
+            367
+          ]
+        ],
+        "font_height": 16,
+        "font_linesize": 18,
+        "actual_sdl_driver": "x11",
+        "pygame": "2.5.8",
+        "sdl": [
+          2,
+          32,
+          10
+        ],
+        "window_size": [
+          1000,
+          720
+        ],
+        "surface_size": [
+          1000,
+          720
+        ],
+        "surface_flags": 16777232,
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+        "wm_info": {
+          "window": 8388610,
+          "display": "<capsule object \"display\" at 0x79739b31dfb0>",
+          "surface": "<capsule object \"surface\" at 0x79739cce4ed0>",
+          "shell_surface": "<capsule object \"shell_surface\" at 0x79739b31ec70>"
+        },
+        "paint_sizes": [
+          {
+            "pixels": [
+              1000,
+              720
+            ],
+            "paint_factor": 1.0,
+            "painted_body_font_height": 16.0,
+            "canonical_field": [
+              93,
+              146,
+              815,
+              273
+            ],
+            "canonical_project": [
+              [
+                269,
+                231
+              ],
+              [
+                775,
+                367
+              ]
+            ],
+            "capture": "surface-1000x720.png",
+            "sha256": "f949cad550dc0d524e1091d3965418fb90ec7b8c4780d2d4913c20745caa5984"
+          },
+          {
+            "pixels": [
+              900,
+              640
+            ],
+            "paint_factor": 0.8888888888888888,
+            "painted_body_font_height": 14.222222222222221,
+            "canonical_field": [
+              93,
+              146,
+              815,
+              273
+            ],
+            "canonical_project": [
+              [
+                269,
+                231
+              ],
+              [
+                775,
+                367
+              ]
+            ],
+            "capture": "surface-900x640.png",
+            "sha256": "09f7e38eb877398318a1750a7fcacacbaf3ce5162cea3a9e091c87dcb6118094"
+          },
+          {
+            "pixels": [
+              1440,
+              900
+            ],
+            "paint_factor": 1.25,
+            "painted_body_font_height": 20.0,
+            "canonical_field": [
+              93,
+              146,
+              815,
+              273
+            ],
+            "canonical_project": [
+              [
+                269,
+                231
+              ],
+              [
+                775,
+                367
+              ]
+            ],
+            "capture": "surface-1440x900.png",
+            "sha256": "c065a1e63c3396669661cfebb4bd41753ea739fe6aebfa363c55bf8b58153601"
+          }
+        ],
+        "visible_slot_count": 22,
+        "ball_hidden": false,
+        "pitch_rect": [
+          93,
+          146,
+          815,
+          273
+        ],
+        "marker_radius": 11,
+        "ball_radius": 4,
+        "complete": true,
+        "display_lines_sha256": "84cee8acb926fe7c092f4e67f86a77b8516e78baf462a046e7e63e8b53040619",
+        "display_result_sha256": "43d2e87e7965349888ab650e35fed930b9dfb138cba1edb5ef58b16472fac6bb"
+      }
+    }
+  ],
+  "blocked_next_fixture": {
+    "kind": 5,
+    "id": "original:1469",
+    "watch_disabled": true,
+    "exact_route_explanation": "Watch unavailable: scheduled friendlies only",
+    "defensive_callback_refused": true
+  },
+  "first_completed_save_sha256": "c1933cfa8a7da35a8285558703245e6ce2a61c409d4f16338bb7b8dc3e19cdf4",
+  "retained_saves": {
+    "opening_sha256": "73d83a7d60878f0c0e5d11f41c66976efe0b69daf3958e4ec1e09a90b1ba5f6a",
+    "first_completed_sha256": "c1933cfa8a7da35a8285558703245e6ce2a61c409d4f16338bb7b8dc3e19cdf4",
+    "repeat_completed_sha256": "c1933cfa8a7da35a8285558703245e6ce2a61c409d4f16338bb7b8dc3e19cdf4",
+    "opening_retained": true,
+    "first_completed_retained": true,
+    "separate_owned_files": true
+  },
+  "quick_halftime": {
+    "actual_private_substitution": true,
+    "continue_completed": true,
+    "prior_save_retained": true,
+    "controls": [
+      {
+        "name": "Halftime outgoing player",
+        "text": "Mikhailov",
+        "size": [
+          737,
+          42
+        ]
+      },
+      {
+        "name": "Halftime incoming player",
+        "text": "Velinov",
+        "size": [
+          737,
+          42
+        ]
+      },
+      {
+        "name": "Substitute",
+        "text": "Substitute",
+        "size": [
+          768,
+          42
+        ]
+      },
+      {
+        "name": "Continue second half",
+        "text": "Continue second half",
+        "size": [
+          768,
+          42
+        ]
+      }
+    ]
+  },
+  "both_window_shutdown": {
+    "engine_reaped": true,
+    "viewer_reaped": true,
+    "state_and_save_retained": true,
+    "seconds": 0.07486392499413341
+  },
+  "lifecycle": {
+    "tests": 5,
+    "skips": 0,
+    "result": "PASS",
+    "entries": [
+      "goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit",
+      "goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save",
+      "goal2.tests.test_pygame_match_view.PresentationTests.test_malformed_stale_ack_and_engine_failure_preserve_state",
+      "goal2.tests.test_pygame_match_view.PresentationTests.test_optional_dependency_and_qualifier_boundary",
+      "goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait"
+    ]
+  },
+  "result": "PASS",
+  "cleanup": {
+    "window_closed": true,
+    "pending": false,
+    "owned_processes_reaped": true
+  }
+}

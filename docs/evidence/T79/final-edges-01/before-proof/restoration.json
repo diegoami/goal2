@@ -1,0 +1,27 @@
+{
+  "result": "PASS",
+  "cases": [
+    {
+      "case": "wrapped-board",
+      "before_checkpoint": "0fa2c295",
+      "test": "test_wrapped_commentary_lands_at_board_and_scroll_retains_tail",
+      "returncode": 1,
+      "expected_assertion": "not greater than 1",
+      "sources_restored": {
+        "goal2/desktop/pygame_viewer.py": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+      }
+    },
+    {
+      "case": "future-score",
+      "before_checkpoint": "0fa2c295",
+      "test": "test_qt_score_uses_consumed_pose_not_future_ingress",
+      "returncode": 1,
+      "expected_assertion": "9 \u2014 8",
+      "sources_restored": {
+        "goal2/desktop/match_page.py": "74348d824ada9b51abe3b484e24986e0aa32b3ab4fbaad98d06de105799617a7",
+        "goal2/desktop/window.py": "a95895d766f7012ce9ed0cef5c785d422102e00171483e22cc6f36fe8095371a"
+      }
+    }
+  ],
+  "exact_saved_bytes_restored": true
+}

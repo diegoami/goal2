@@ -1,0 +1,134 @@
+dbus-daemon[3044694]: [session uid=1000 pid=3044694 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=3044696 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3044694]: [session uid=1000 pid=3044694 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[3044714]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=3044696 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3044694]: [session uid=1000 pid=3044694 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=3044696 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[3044714]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[3044694]: [session uid=1000 pid=3044694 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 3044696
+{
+  "ratio": 2.0,
+  "actual": [
+    900,
+    640
+  ],
+  "min": [
+    630,
+    354
+  ],
+  "minimum_hint": [
+    630,
+    354
+  ],
+  "hint": [
+    630,
+    742
+  ],
+  "available": [
+    960,
+    720
+  ],
+  "central_min_hint": [
+    630,
+    354
+  ],
+  "pages": [
+    {
+      "object": "page1",
+      "min": [
+        0,
+        0
+      ],
+      "minimum_hint": [
+        68,
+        68
+      ],
+      "hint": [
+        308,
+        456
+      ],
+      "content_min_hint": [
+        236,
+        582
+      ]
+    },
+    {
+      "object": "page2",
+      "min": [
+        0,
+        0
+      ],
+      "minimum_hint": [
+        68,
+        68
+      ],
+      "hint": [
+        379,
+        456
+      ],
+      "content_min_hint": [
+        291,
+        1568
+      ]
+    },
+    {
+      "object": "page3",
+      "min": [
+        0,
+        0
+      ],
+      "minimum_hint": [
+        68,
+        68
+      ],
+      "hint": [
+        389,
+        456
+      ],
+      "content_min_hint": [
+        279,
+        522
+      ]
+    },
+    {
+      "object": "page4",
+      "min": [
+        0,
+        0
+      ],
+      "minimum_hint": [
+        68,
+        68
+      ],
+      "hint": [
+        348,
+        456
+      ],
+      "content_min_hint": [
+        348,
+        1007
+      ]
+    },
+    {
+      "object": "page5",
+      "min": [
+        0,
+        0
+      ],
+      "minimum_hint": [
+        68,
+        68
+      ],
+      "hint": [
+        439,
+        130
+      ],
+      "content_min_hint": [
+        329,
+        130
+      ]
+    }
+  ]
+}
+
+(xfconfd:3044721): xfconfd-WARNING **: 23:58:05.738: Name org.xfce.Xfconf lost on the message dbus, exiting.
