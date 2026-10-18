@@ -2,8 +2,8 @@
 
 [confirmed: native-01/receipt.json, inventory.json and observations] Main collected
 this evidence from an immutable pushed source archive at
-`c216cdba0e3086a082854290fe07c742dd699a90`, using fresh native Qt processes before
-setting each scale. Windows11 build10.0.26200 / Qt6.12.0 reports actual ratios1/2,
+`c216cdba0e3086a082854290fe07c742dd699a90`, using fresh native Qt processes with
+each scale set before Qt import. Windows11 build10.0.26200 / Qt6.12.0 reports actual ratios1/2,
 with19/7 captures and PASS outcomes in15.223s/13.214s. The ratio1 process exercises
 1440×900,1050×780,900×700; ratio2 starts900×640 before interaction. SDL is
 inapplicable to this overview-only scenario.
