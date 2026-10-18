@@ -1,0 +1,973 @@
+{
+  "tag": "[designed: T76]",
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "qt": "6.12.0",
+  "qpa": "xcb",
+  "requested_scale": "1",
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "scenario_sha256": "0bf25aea032967506661daf483aa3e14ddb32283baaafcf2b8d0143088d3e443",
+  "dispatcher_sha256": "6da3ac8c2ac4892e83da5f1c5210a7e06f342986dde882f4f513043ed62400f4",
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "steps": [
+    "Full IDs250\u2013260, captain260, all8bits; private events/save; Confirm/Discard; invalid10/12/captain; unavailable starter/removal/reserve; navigation/preview return",
+    "Real pending halftime, captain2561 private substitution/no re-entry, disabled management and cancellation without publication"
+  ],
+  "captures": [
+    {
+      "path": "initial.png",
+      "sha256": "cc29560aae41b27c0bb4209bd2808c854d39d252020082a2ce08f01290920228",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "pageHeading"
+    },
+    {
+      "path": "dirty-full-id-detail.png",
+      "sha256": "5be8a2c43e5206fe9bf6b899c0dac8f01d388261d13cfb4978cffdd7a0fdddf0",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 1181,
+      "focus": "tactic8"
+    },
+    {
+      "path": "confirmed-grouped.png",
+      "sha256": "85158ecfda075372ed6806d5ee5349371bb80f6dd7f933957ae125891be116d9",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-10.png",
+      "sha256": "1926b2ee3f14c24fa2819b93382cf3144812ef7d3ae02ea91b247a434c4a9fd1",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "invalid-count-12.png",
+      "sha256": "ddd9800b8bf8d970d60073d281eadbaab6e3d08429f86eabd73498711a5e165f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "unavailable-player-detail.png",
+      "sha256": "8cdaa1d71ebc4a1d5679f3323f54f1c08515dc71e1a900610db2dada73d03345",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-focused-confirm.png",
+      "sha256": "fef7aed6a2a05093a3e47f0b9bdffff6f9b68e67c5555a6448c34aa5e90bd166",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-detail-focused-confirm.png",
+      "sha256": "e32df0e16c0ab980261afd81b6ea82be3095cbded9e35bc674eec0a9a80fe570",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 549,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-tactics-focused-confirm.png",
+      "sha256": "43c20054905281ed0dedc0ecfca39cd719bf6905502aa4c1069e8923233b1658",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 1099,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-1-names.png",
+      "sha256": "a4e8e7cbb57796ea3d5154bfe919f3c516952619e6a682bd6d883fe441e99e41",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-1-values.png",
+      "sha256": "a4e8e7cbb57796ea3d5154bfe919f3c516952619e6a682bd6d883fe441e99e41",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-5-names.png",
+      "sha256": "694f64ad481d95c9c89b6afa3ce4aa937ed0aac4db4297224c6fca31eff1c49b",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-5-values.png",
+      "sha256": "694f64ad481d95c9c89b6afa3ce4aa937ed0aac4db4297224c6fca31eff1c49b",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-9-names.png",
+      "sha256": "beb4cdc4f3ef03cc601378fdfca192e1a41dfe4d3d8a2b7e91adf6a3cb413dc5",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-9-values.png",
+      "sha256": "beb4cdc4f3ef03cc601378fdfca192e1a41dfe4d3d8a2b7e91adf6a3cb413dc5",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-13-names.png",
+      "sha256": "0b97a8cb9eee1fc028394d18b3a1021a72ae14717021a287d72eccfb20f87efa",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-13-values.png",
+      "sha256": "0b97a8cb9eee1fc028394d18b3a1021a72ae14717021a287d72eccfb20f87efa",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-17-names.png",
+      "sha256": "6ee3868ef9e8fab6e2991acdc803c020b2c126caa1bcc7c5e8522d9142f37d02",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-17-values.png",
+      "sha256": "6ee3868ef9e8fab6e2991acdc803c020b2c126caa1bcc7c5e8522d9142f37d02",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-20-names.png",
+      "sha256": "320e5a56a584fd6fe578e8ac48d8d9d652081350ffd39fe928276d74cb9b5734",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-roster-row-20-values.png",
+      "sha256": "320e5a56a584fd6fe578e8ac48d8d9d652081350ffd39fe928276d74cb9b5734",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-selected-detail-segment-0.png",
+      "sha256": "74467a1d91296c7dd62d4f0b3202d9c474ee2fd9af08bd3ab0d565d9eccaa43b",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 369,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-grouped-xi-segment-0.png",
+      "sha256": "14d0fdfac036d15c24d502ab1236e53d9af49b622c0742ef7702239146b853b3",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 491,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1440x900-bench-segment-0.png",
+      "sha256": "e11fab3b03f1b07ef0290d03e55906106053a5e11080629e0048938190f49e55",
+      "size": [
+        1440,
+        900
+      ],
+      "scroll": 841,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-focused-confirm.png",
+      "sha256": "e1cbccfbc1f91fdfee238ff44035acd06a20b7d1145da614fab04717e6030d50",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-detail-focused-confirm.png",
+      "sha256": "6a068f33b209c5c84c0fd1335fceb00d0892ab18e8a9edf28795e6636f900be8",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 619,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-tactics-focused-confirm.png",
+      "sha256": "31637fbf102951b8e50a39abac494f23ccbe1126aab3d182708fb2fd07206b1d",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 1238,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-1-names.png",
+      "sha256": "5dba6e0411c6fff3cd476e688a21cdee0a3804cde7a559ab77d1f198b2ad530f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-1-values.png",
+      "sha256": "0311388b75979945f83abb602cce34063e5ac29e1f17700ed469450c80a1e4c5",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-5-names.png",
+      "sha256": "306bb126ee4f515fc6763348982b5533b03c944646be6a40527476b9ed3819e8",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-5-values.png",
+      "sha256": "9e6d2f4caad490e10f85c0c6aad14993d2c977a929e203fde788fc7d4fb6c160",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-9-names.png",
+      "sha256": "60096a5ab017791edccaecf6b3988eac22d7541e25ba3a5d19fa941aaee70620",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-9-values.png",
+      "sha256": "8ad418709e93956742fb3889d218795ed4890a786f0357be92530e6d8cfc3f9c",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-13-names.png",
+      "sha256": "2435b6a92ede9d173cb91a9e3f3333c3165c2245081762922ac0b24253e9da9d",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-13-values.png",
+      "sha256": "7f5fb2653c2e456314329e501ba22ede1b477e70685bd42668430671f21f8b2f",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-17-names.png",
+      "sha256": "3b307b4704a8530e75630b345d439e738136d3708a561143cc94b42bae652185",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-17-values.png",
+      "sha256": "526361c46b0d591e3b900107f2c895156d1ed65bc2acefbb74c98c70957abb8b",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-20-names.png",
+      "sha256": "dac319d524016478210a304633ebab227f70232cb7a9d6820355ffb08fb5c5b3",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-roster-row-20-values.png",
+      "sha256": "a8afb62f94afcb1147477f1fb5d14b6bf475f6dfbb29128d331c23c70b16b23d",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-selected-detail-segment-0.png",
+      "sha256": "c334ccef334763a5d0ad22aec9d0f069c6822a8999758f59d1061ef8469e16e9",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 369,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-grouped-xi-segment-0.png",
+      "sha256": "3c206b01aed2d4de13de443f428491d5b6cece9e9b806dc7f7f131ad76f85729",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 491,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-1050x780-bench-segment-0.png",
+      "sha256": "160aa25647853a9a57f52d01479e9bacab6ebc2dd75fcdf87d5b49bf5d954d28",
+      "size": [
+        1050,
+        780
+      ],
+      "scroll": 860,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-focused-confirm.png",
+      "sha256": "68429ee541eb66835f08120826e2cf458e4a23863a9414f68c4029b7225df2b2",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 0,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-detail-focused-confirm.png",
+      "sha256": "5324d1929f783df64995f3472a029e729420547572e24051473d6a29b632c0f8",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 668,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-tactics-focused-confirm.png",
+      "sha256": "32cd3405861b0b09c88e1b2c54108f7b1112f291aa3946820fae19620f83e3df",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 1337,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-1-names.png",
+      "sha256": "c99a44d05ec9bacd91f74e55348dbefbb6d76d2623dd3c77914b916672a0aa3c",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-1-values.png",
+      "sha256": "a986f6a50a19350bcabc4923ffd50794af1a75b60f216611a650b3fbf427a6f0",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-5-names.png",
+      "sha256": "07b931ae12f2a2a0a2b655af9af052602d2f0527f30e66ace75299a727c74485",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-5-values.png",
+      "sha256": "c290559202b45d81bdafed0a53bd89746a2301557c4e92eb18ee7293d5c52927",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-9-names.png",
+      "sha256": "7be5cace9134e85458c28bcff499d6f9e6f5411aee1c83ba1d5691310436ce8b",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-9-values.png",
+      "sha256": "d01c05d5c298189a83d9e4636150bd0782b53e1df2bd4d3e638deacfb66e5428",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-13-names.png",
+      "sha256": "3abd1946dda01b6878fbf30d9620e060606843cae12fe0e7a4a03c7523c80caa",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-13-values.png",
+      "sha256": "07ef2f1e5d7461082c991771082f2e9893976f8ceb824b75aa7a22401c907750",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-17-names.png",
+      "sha256": "c15c6a132b20588cb43db452e3cfe6481bcf80e0cea7972262862357e28cdd71",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-17-values.png",
+      "sha256": "9e8a20b5f65a15714cc57c45976026636406e290c6756e4a32615b09b9b267fc",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-20-names.png",
+      "sha256": "638c5824a86c489719bd80090056d01a8ac334c6358c71838a7752e06178dfbe",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-roster-row-20-values.png",
+      "sha256": "8c1bef633456fc94eecb0ed4ba8b958ddf49c9b2d6add5846334721f3dcc91db",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 125,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-selected-detail-segment-0.png",
+      "sha256": "5d2aabe807913f761010366c2ffc9ae1cc2211728012a607a20bc4b6471cec11",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 369,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-grouped-xi-segment-0.png",
+      "sha256": "e0918aec488f488907ca51bd0a52f1f8eb95edf9f12bbe9535eb1e575781207c",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 491,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-grouped-xi-segment-247.png",
+      "sha256": "e8e5a9ab99d08d793cdb6ede6cc5651ca067b84fa5d3b06d3636860c32796373",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 738,
+      "focus": "confirm"
+    },
+    {
+      "path": "long-900x700-bench-segment-0.png",
+      "sha256": "c5d2f3629ba0f1c1babc39e72c96e5a2da699bab3fc9e7777b7c856036f341c8",
+      "size": [
+        900,
+        700
+      ],
+      "scroll": 879,
+      "focus": "confirm"
+    }
+  ],
+  "ratio": 1.0,
+  "roster_coverage": [
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "name_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "value_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    }
+  ],
+  "reading_coverage": [
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "widget": "selected-detail",
+      "height": 110,
+      "intervals": [
+        [
+          0,
+          110
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "widget": "grouped-xi",
+      "height": 338,
+      "intervals": [
+        [
+          0,
+          338
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        1440,
+        900
+      ],
+      "widget": "bench",
+      "height": 224,
+      "intervals": [
+        [
+          0,
+          224
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "widget": "selected-detail",
+      "height": 110,
+      "intervals": [
+        [
+          0,
+          110
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "widget": "grouped-xi",
+      "height": 357,
+      "intervals": [
+        [
+          0,
+          357
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        1050,
+        780
+      ],
+      "widget": "bench",
+      "height": 224,
+      "intervals": [
+        [
+          0,
+          224
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "widget": "selected-detail",
+      "height": 110,
+      "intervals": [
+        [
+          0,
+          110
+        ]
+      ],
+      "text_sha256": "c3ad95d7629ad4c09542049f89e9ba8958a0088f7019fe9266a2aaa7e484d6bc"
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "widget": "grouped-xi",
+      "height": 376,
+      "intervals": [
+        [
+          0,
+          331
+        ],
+        [
+          231,
+          376
+        ]
+      ],
+      "text_sha256": "bcdfb65fb0d7fc6092684f547f90d0523b6f63a53d5619dda39d44e20c81037c"
+    },
+    {
+      "size": [
+        900,
+        700
+      ],
+      "widget": "bench",
+      "height": 224,
+      "intervals": [
+        [
+          0,
+          224
+        ]
+      ],
+      "text_sha256": "f48e0949824f646c5cd79cd2017cb49caf696d171e361296bc75f275b07a5f99"
+    }
+  ],
+  "cleanup_retry_calls": 2,
+  "result": "PASS",
+  "callback_exceptions": [],
+  "clean_widgets": true,
+  "sources_after": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "2e3a910ff374f70386a42fd89a3b88237003a5dcdea85245847bd58b539f1ae4",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "bc6939cba0bd53c26762c1c17521e814a1ad858d8726541f24958e3a6e334add",
+    "goal2/desktop/pygame_viewer.py": "396275867c203fefa53c06c40fb396547da2638554b86ee558656f8df011e631",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba",
+    "goal2/desktop/watched.py": "a489e0cbe06d1871f6f7da0b4a344133b7872ac4f49fa21f03726f8769fa860c",
+    "goal2/desktop/window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "source_unchanged": true
+}

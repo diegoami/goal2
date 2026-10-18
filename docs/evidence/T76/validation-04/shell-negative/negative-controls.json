@@ -1,0 +1,53 @@
+{
+  "tag": "[designed: T74]",
+  "baseline": "08e3c67d2d0dc63a73aae7ee69610639746bf4b8",
+  "pre_surface_fix": "6eaaea2a0d1bca1a6f7dd4d89adfc65f367123fb",
+  "source_before": {
+    "goal2/desktop/window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2/desktop/style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "source": "goal2/desktop/window.py",
+      "expected_assertion": "five-destination navigation is absent",
+      "returncode": 1,
+      "mutant_sha256": "68f01762d7070fddc974e6ecd7f00804d0213e2520bd5a2fd7d98a6c29592031"
+    },
+    {
+      "name": "discard-draft",
+      "source": "goal2/desktop/window.py",
+      "expected_assertion": "navigation changed state/draft/preview/save/job ownership",
+      "returncode": 1,
+      "mutant_sha256": "a8d03a0bfa11fde00fd1933da8019bb2c98aa9c04343e1ebbf0647df98334630"
+    },
+    {
+      "name": "native-surfaces",
+      "source": "goal2/desktop/style.py",
+      "expected_assertion": "native surface contrast failed: combo popup, combo selection, path selection, competition dialog",
+      "returncode": 1,
+      "mutant_sha256": "5cd5046c322a7a119cf25e7746ef45a285646f831efb32d2523613cda22548f8"
+    },
+    {
+      "name": "accessible-names",
+      "source": "goal2/desktop/pages.py",
+      "expected_assertion": "action has no accessible name",
+      "returncode": 1,
+      "mutant_sha256": "05d4a29ea1d41be7a4574cbc33ab127208a7eaa68233d284b79e7d06d0afa581"
+    }
+  ],
+  "accessible_names_fixture": {
+    "old": "154bfbbc5053ba9a18d93bb734464c2a4f10f7bc",
+    "fixed": "d035bade8f3ffd28c5bcf648d6084c04da0c4cee",
+    "old_sha256": "67b047c00d35d7b529db138146f1070de283fa2f3237bf5d2f40b7cb74967186",
+    "fixed_sha256": "a6fade50df7c690e7ce938958a867f48bcddf02b0b83432169aa061c2c22c372",
+    "difference": "    self.table.setAccessibleName('Squad');self.reserves.setAccessibleName('National pool reserves')\n",
+    "mutant_sha256": "05d4a29ea1d41be7a4574cbc33ab127208a7eaa68233d284b79e7d06d0afa581"
+  },
+  "source_after": {
+    "goal2/desktop/window.py": "2c11692bc7db57c87f13053265b39bf7cc04f73e8466eb63aa740fb4ae614022",
+    "goal2/desktop/style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe"
+  }
+}

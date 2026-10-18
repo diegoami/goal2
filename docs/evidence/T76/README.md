@@ -7,6 +7,12 @@ remain in ignored local caches; reports record their SHA256 hashes. Screenshots
 show rebuilt Qt controls and generated long-name fixtures, without copied game
 screens or art.
 
+[designed: T76/#233] The [Windows evidence guide](windows/README.md) labels native-01
+as cleanup failure evidence despite its historical exit0/reportPASS. The
+[cleanup regression proof](cleanup-rework-01/README.md) records the strict
+exception/folder assertions and bounded sharing-retry correction. Earlier raw
+evidence and source-freeze hashes remain unchanged.
+
 ## Preserved failures and corrections
 
 [designed: T76] Evidence is append-only across batches. The first
@@ -99,3 +105,14 @@ interaction, complete roster/reading coverage, clean Qt exit and unchanged-sourc
 checks as offscreen execution. [Source freeze01](source-freeze-01.json) verifies
 both final offscreen and native reports against the exact product/scenario/
 dispatcher bytes, before any evidence-only follow-up. SDL is outside this page.
+
+[designed: T76/#233] The [rework serial receipt](validation-04/progress.json)
+records17 passing focused/retained/proof/control/scenario groups. Strict
+[offscreen1x](linux/run-07/report.json), [offscreen2x](linux/run-07/scale-2/report.json),
+[native Linux1x](linux-native-final/run-02/report.json) and
+[native Linux2x](linux-native-final/run-02/scale-2/report.json) each record zero
+uncaught Qt callbacks, successful sharing retry and unchanged source bytes.
+Both normal and injected-sharing Cancel paths assert absent owned folders and
+the existing cancellation bound. [Source freeze02](source-freeze-02.json)
+anchors all174 product/test/tool files for a separate main-owned Windows attempt.
+It preserves, rather than overwrites, the first attempt and its failure evidence.
