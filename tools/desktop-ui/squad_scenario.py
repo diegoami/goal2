@@ -14,7 +14,7 @@ ROOT=Path(__file__).resolve().parents[2]
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 def scenario(args):
-    from PySide6.QtCore import Qt,QCoreApplication,QEvent,qVersion
+    from PySide6.QtCore import Qt,QCoreApplication,QEvent,qVersion,QPoint
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication,QLabel
     from goal2.desktop.model import DesktopModel
@@ -137,7 +137,7 @@ def scenario(args):
                     assert footer.isVisible() and footer.geometry().bottom()<page.height(),'draft bar is outside page'
                     assert not page.viewport().geometry().intersects(footer.geometry()),'draft bar covers scroll content'
                     assert w.confirm.geometry().right()<footer.width(),'draft action clipped by footer'
-                    assert footer.geometry().right()<page.verticalScrollBar().geometry().left() or not page.verticalScrollBar().isVisible(),'scrollbar overlaps draft action bar'
+                    assert footer.geometry().right()<page.verticalScrollBar().mapTo(page,QPoint(0,0)).x() or not page.verticalScrollBar().isVisible(),'scrollbar overlaps draft action bar'
                     for control in (w.cancel,w.confirm):
                         focus(control);assert control.visibleRegion().boundingRect().height()>0 and control.accessibleName()
                         QTest.keyClick(control,Qt.Key.Key_Tab);app.processEvents();QTest.keyClick(app.focusWidget(),Qt.Key.Key_Backtab);app.processEvents()
@@ -196,6 +196,11 @@ def negative_controls(args):
         (out/(name+'.log')).write_text(r.stdout+r.stderr)
         assert r.returncode!=0 and 'AssertionError' in r.stderr and expected in r.stderr,name+' missed intended assertion: '+r.stderr
         receipt['cases'].append({'name':name,'command':cmd,'returncode':r.returncode,'expected':expected})
+    def legacy(name,scenario_name):
+        cmd=[sys.executable,'-B','tools/desktop-ui/acceptance.py','--scenario',scenario_name,'--template',args.template,'--data',args.data]
+        result=subprocess.run(cmd,cwd=ROOT,env=env,capture_output=True,text=True,timeout=120)
+        (out/(name+'.log')).write_text(result.stdout+result.stderr)
+        receipt.setdefault('legacy_coverage',[]).append({'name':name,'command':cmd,'returncode':result.returncode,'assertion_failed':'AssertionError' in result.stderr})
     try:
         p=paths[0];p.write_bytes(subprocess.check_output(['git','show','f1697ef628508ac19130299194d751990ca7fa9e:goal2/desktop/squad_page.py'],cwd=ROOT))
         # [designed] Restore matching baseline window as it has no additive presentation bindings.
@@ -206,12 +211,16 @@ def negative_controls(args):
         p.write_text(source.replace(old,'candidate.captain=captain & 255;'))
         run('truncated-captain',command+['--evidence-dir',str(out/'truncated-captain')],'Confirm did not publish full IDs/all bits')
         run('truncated-management',[sys.executable,'-B','tools/desktop-ui/acceptance.py','--scenario','management','--template',args.template,'--data',args.data],'AssertionError')
+        legacy('truncated-captain-halftime','campaign-halftime')
         p.write_bytes(saved[p]);p=paths[1];source=p.read_text();old='        self.country.currentIndexChanged.connect(self.country_changed)';assert source.count(old)==1
         p.write_text(source.replace(old,old+'\n        for _,box in self.tactics:box.toggled.connect(lambda *_:self.model.confirm(self.selected_ids(),self.captain.currentData(),self.draft()[2]))'))
         run('eager-tactic',command+['--evidence-dir',str(out/'eager-tactic')],'prematurely published active state')
-        # [designed] Legacy management confirms the final result and has no per-tactic isolation assertion.
-        r=subprocess.run([sys.executable,'-B','tools/desktop-ui/acceptance.py','--scenario','management','--template',args.template,'--data',args.data],cwd=ROOT,env=env,capture_output=True,text=True,timeout=90)
-        (out/'eager-legacy-management.log').write_text(r.stdout+r.stderr);receipt['legacy_eager_management_returncode']=r.returncode
+        # [designed] Record actual legacy coverage without claiming isolation assertions they do not have.
+        legacy('eager-legacy-management','management');legacy('eager-legacy-halftime','campaign-halftime')
+        p.write_bytes(saved[p]);source=p.read_text();old='.data(Qt.ItemDataRole.UserRole) for row in range(20)'
+        assert source.count(old)==1
+        p.write_text(source.replace(old,'.data(Qt.ItemDataRole.UserRole) & 255 for row in range(20)'))
+        run('truncated-player-id',command+['--evidence-dir',str(out/'truncated-player-id')],'full integer player IDs were truncated')
     finally:
         for p,raw in saved.items():p.write_bytes(raw)
         receipt['after']={str(p.relative_to(ROOT)):digest(p) for p in paths};receipt['restored']=all(p.read_bytes()==raw for p,raw in saved.items())

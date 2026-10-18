@@ -1,5 +1,5 @@
 """[designed: T74] Native page containers; the window retains all action ownership."""
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt,QEvent
 from PySide6.QtGui import QShortcut,QKeySequence
 from PySide6.QtWidgets import (QWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QLabel,
  QScrollArea,QStackedWidget,QPushButton,QComboBox,QTableWidget,QHeaderView,QLineEdit,QCheckBox)
@@ -18,6 +18,12 @@ class ShellPage(QScrollArea):
         height=self.footer.sizeHint().height()
         self.setViewportMargins(0,0,0,height)
         self.footer.setGeometry(0,self.height()-height,self.viewport().width(),height);self.footer.raise_()
+
+    def viewportEvent(self,event):
+        result=super().viewportEvent(event)
+        if event.type()==QEvent.Type.Resize and hasattr(self,'footer'):
+            self.footer.resize(self.viewport().width(),self.footer.height())
+        return result
 
     def resizeEvent(self,event):
         super().resizeEvent(event);self.place_footer()

@@ -44,15 +44,15 @@ def refresh(self,*unused):
     rows=self.display_model.view()['players'];selected=self.selected_ids();captain=self.captain.currentData()
     state=self.display_model.state;dirty=self.draft()!=(state.starting_eleven,state.captain,state.country_tactics)
     self.draft_state.setText(('Unconfirmed draft' if dirty else 'Confirmed management')+f' · XI {len(selected)}/11')
-    self.squad_summary.setText(f'Squad · 20 players\nStarting XI · {len(selected)} / 11    Bench · {20-len(selected)}\nSelect a row for raw player detail. XI and tactics remain a private draft until Confirm.')
+    self.squad_summary.setText(f'Squad · 20 players\nStarting XI · {len(selected)} / 11    Bench · {20-len(selected)}\nSelect a row for raw player detail. Changes take effect when you confirm.')
     groups={}
     for row in rows:
         if row['id'] in selected:
             name=row['name']+(' · Captain' if row['id']==captain else '')
             groups.setdefault(row['position'],[]).append(name)
-    self.lineup_board.setText(f'Starting XI · {len(selected)}\nGrouped by existing position; no formation assignments.\n'+ '\n'.join(f'{group} · {len(names)}\n'+', '.join(names) for group,names in groups.items()))
+    self.lineup_board.setText(f'Starting XI · {len(selected)}\nGrouped by position.\n'+ '\n'.join(f'{group} · {len(names)}\n'+', '.join(names) for group,names in groups.items()))
     self.bench_board.setText(f'Bench · {20-len(selected)}\n'+ '\n'.join(row['name']+' · '+row['position'] for row in rows if row['id'] not in selected))
     row=rows[max(0,self.table.currentRow())];availability=row['availability']
     reason=', '.join(availability['reasons']) or 'Available'
     if availability['carried_bookings']:reason+='; carried booking'
-    self.player_detail.setText(f"Player detail · {row['name']}\nID {row['id']} · {row['position']}"+(' · Captain' if row['id']==captain else '')+f"\nAbility {row['ability']} · Energy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}\nRaw values from the player record.")
+    self.player_detail.setText(f"Player detail · {row['name']}\nID {row['id']} · {row['position']}"+(' · Captain' if row['id']==captain else '')+f"\nAbility {row['ability']} · Energy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}")
