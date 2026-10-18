@@ -1,0 +1,57 @@
+[
+  {
+    "name": "standings-ui-02",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/standings.py",
+      "--template",
+      ".cache/e010-r0008-halftime.sav",
+      "--data",
+      ".cache/GOAL.DAT"
+    ],
+    "returncode": 0,
+    "seconds": 0.565
+  },
+  {
+    "name": "competitive-result-ui-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/desktop-ui/competitive.py"
+    ],
+    "returncode": 0,
+    "seconds": 62.29
+  },
+  {
+    "name": "browser-01",
+    "command": [
+      "node",
+      "tools/browser-ui/acceptance.mjs",
+      "--scenario",
+      "campaign-friendlies",
+      "--savestate",
+      ".cache/e010-r0008-halftime.sav",
+      "--goaldat",
+      ".cache/GOAL.DAT"
+    ],
+    "returncode": 0,
+    "seconds": 4.735
+  },
+  {
+    "name": "links-final-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/check_links.py"
+    ],
+    "returncode": 0,
+    "seconds": 0.215
+  },
+  {
+    "name": "provenance-final-01",
+    "command": [
+      "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+      "tools/check_provenance.py"
+    ],
+    "returncode": 0,
+    "seconds": 0.064
+  }
+]

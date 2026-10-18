@@ -47,8 +47,12 @@ def main():
         model.state.campaign=None
         QTest.mouseClick(window.standings,Qt.MouseButton.LeftButton);app.processEvents()
         assert 'unavailable' in window.status.text().lower()
+        destroyed=[];window.destroyed.connect(lambda:destroyed.append(True))
         window.close();window.deleteLater()
         QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
+        # [designed: T80; derived: #164] Assert teardown before destroying the application.
+        assert destroyed,'standings management window was not destroyed'
+        assert not app.topLevelWidgets(),'standings left owned top-level widgets alive'
         app.shutdown()
     print('PASS desktop standings: forced points/GD tie decided by GF; backend/widget qualifiers match; reads preserve state/RNG')
 
