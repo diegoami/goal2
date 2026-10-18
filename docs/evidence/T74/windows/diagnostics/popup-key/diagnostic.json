@@ -1,0 +1,62 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "qt": "6.12.0",
+  "qpa": "windows",
+  "records": [
+    {
+      "label": "initial",
+      "active": "ManagementWindow",
+      "window_active": true,
+      "focus": "pageHeading",
+      "country_focus": false,
+      "popup_type": null,
+      "view_visible": false,
+      "view_window_visible": false,
+      "combo_enabled": true
+    },
+    {
+      "label": "alt-down",
+      "active": "ManagementWindow",
+      "window_active": true,
+      "focus": "country",
+      "country_focus": true,
+      "popup_type": null,
+      "view_visible": false,
+      "view_window_visible": false,
+      "combo_enabled": true
+    },
+    {
+      "label": "reactivated",
+      "active": "ManagementWindow",
+      "window_active": true,
+      "focus": "",
+      "country_focus": false,
+      "popup_type": "QFrame",
+      "view_visible": true,
+      "view_window_visible": true,
+      "combo_enabled": true
+    },
+    {
+      "label": "arrow-click",
+      "active": "ManagementWindow",
+      "window_active": true,
+      "focus": "country",
+      "country_focus": true,
+      "popup_type": "QFrame",
+      "view_visible": true,
+      "view_window_visible": true,
+      "combo_enabled": true
+    },
+    {
+      "label": "f4",
+      "active": "ManagementWindow",
+      "window_active": true,
+      "focus": "country",
+      "country_focus": true,
+      "popup_type": null,
+      "view_visible": false,
+      "view_window_visible": false,
+      "combo_enabled": true
+    }
+  ]
+}

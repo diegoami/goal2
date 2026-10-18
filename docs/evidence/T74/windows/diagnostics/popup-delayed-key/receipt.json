@@ -1,0 +1,18 @@
+{
+  "head": "154bfbbc5053ba9a18d93bb734464c2a4f10f7bc",
+  "folder": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T74-popup-delayed-debug-1792328785400240772",
+  "source": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T74-shell-154bfbbc5053-1792328595076188456",
+  "exit": 0,
+  "protected_unchanged": true,
+  "sources_unchanged": true,
+  "files": {
+    "debug.py": "c29cf2e05985b5e28a7e18e2ca1f3ca739cca10981474eb47ac4fe1f80ccdf2e",
+    "delayed-arrow-click-window.png": "22fd529d81bc4e06392fca35a70a850b6fa55d4c78cc4350fad9a737dcdf49b3",
+    "diagnostic.json": "d3f4a12852d82ab86d46a21ef34cfaafd5a511175549f91ec1fd86a80e0e078a",
+    "fresh-delayed-alt-down-popup.png": "ef5f72292a6b63b466eb5f3f3ec57e3696bc85b26c737619ceb14e21a68d5f7d",
+    "fresh-delayed-alt-down-window.png": "751e01f058e190b8d1b364a5b4ab77df2a539de3502d212a709b8f1beddff17e",
+    "initial-window.png": "29264559b09cb15e2b2ae6ce967cd44a142c40dafc51a13346381305e20f8481",
+    "native.log": "67012f3edb91d112d43112576c0c5feb3cc4055d7933a4d7a8cff53d7ba93dd0",
+    "settled-focus-window.png": "22fd529d81bc4e06392fca35a70a850b6fa55d4c78cc4350fad9a737dcdf49b3"
+  }
+}
