@@ -9,12 +9,12 @@ scope/difficulty needs the main session's retriage before dispatch.
 
 | Contract | Small useful outcome | Difficulty / implementer | Merge after |
 | --- | --- | --- | --- |
-| [T74](../../tasks/T74.md) | Shared Qt visual tokens, shell, navigation, existing save/resume access | Medium / Sol Low | Accepted #182 plan, T70, T71, T66, T80 |
+| [T74](../../tasks/T74.md) | Shared Qt visual tokens, shell, navigation, existing save/resume access | Medium / Sol Low | Accepted #182 plan, T70, T71, T66, T80, T83 |
 | [T75](../../tasks/T75.md) | Country selection identity and overview, preview/active coherence | Medium / Sol Low | T74, #181/PR183 |
 | [T76](../../tasks/T76.md) | Squad/bench/player detail and eight-tactic draft workspace | Hard / Sol Medium | T75, T47, #164 |
 | [T77](../../tasks/T77.md) | Focused reserve search/exchange page, same pool policy | Medium / Sol Low | T76, T71 |
 | [T78](../../tasks/T78.md) | Fixture/result scoreboard and existing standings presentation | Medium / Sol Low | T75, T49, T51 |
-| [T79](../../tasks/T79.md) | Shared Qt/Pygame match presentation and transition | Hard / Sol Medium | T74, T76, T78, T66 |
+| [T79](../../tasks/T79.md) | Shared Qt/Pygame match presentation and transition | Hard / Sol Medium | T74, T76, T78, T66, T83 |
 
 [designed] Every row uses MiniMax M3 review. The child issues below carry these accepted planning contracts; main-session
 retriage and per-slice preflight precede each implementation. Parent #182 remains open for runtime deliverable4. The task index lists
@@ -63,3 +63,11 @@ supplies the split; execution status remains in GitHub labels.
 | T77 | [#196](https://github.com/diegoami/goal2/issues/196) |
 | T78 | [#197](https://github.com/diegoami/goal2/issues/197) |
 | T79 | [#198](https://github.com/diegoami/goal2/issues/198) |
+
+## Owner animation priority
+
+[designed: owner,2026-10-18] The [T81–T83 animated-pitch sequence](../animated-pitch/README.md)
+precedes management GUI implementation. T74 follows T83; T79 styles its accepted
+pitch and frame contract, preserving pacing, final-frame acknowledgement and
+publication semantics. This changes feature ordering without expanding GUI scope
+or weakening any existing runtime/Windows acceptance gate.

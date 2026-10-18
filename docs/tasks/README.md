@@ -114,15 +114,27 @@ retriage govern dispatch. Child issue identities are linked below; GitHub labels
 
 | Task | Title | Issue | Difficulty | Merge after |
 | --- | --- | --- | --- | --- |
-| [T74](T74.md) | Qt football shell and shared visual tokens | [#193](https://github.com/diegoami/goal2/issues/193) | Medium | #182 plan, T70, T71, T66, T80 |
+| [T74](T74.md) | Qt football shell and shared visual tokens | [#193](https://github.com/diegoami/goal2/issues/193) | Medium | #182 plan, T70, T71, T66, T80, T83 |
 | [T75](T75.md) | Country identity, selection and overview | [#194](https://github.com/diegoami/goal2/issues/194) | Medium | T74, #181/PR183 |
 | [T76](T76.md) | Squad/tactics draft workspace | [#195](https://github.com/diegoami/goal2/issues/195) | Hard | T75, T47, #164 |
 | [T77](T77.md) | National pool exchange workspace | [#196](https://github.com/diegoami/goal2/issues/196) | Medium | T76, T71 |
 | [T78](T78.md) | Fixture/result scoreboard and standings | [#197](https://github.com/diegoami/goal2/issues/197) | Medium | T75, T49, T51 |
-| [T79](T79.md) | Qt/Pygame match presentation | [#198](https://github.com/diegoami/goal2/issues/198) | Hard | T74, T76, T78, T66 |
+| [T79](T79.md) | Qt/Pygame match presentation | [#198](https://github.com/diegoami/goal2/issues/198) | Hard | T74, T76, T78, T66, T83 |
 
 ## Continental qualifying desktop prerequisite
 
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
 | [T80](T80.md) | Play pending original competitive fixtures in the desktop (Hard) | [#189](https://github.com/diegoami/goal2/issues/189) | T51 |
+
+## Original-engine animated pitch
+
+[designed: owner,2026-10-18] The [pitch sequence](../design/animated-pitch/README.md)
+precedes the management GUI redesign. Each slice gets independent review and
+main-session preflight before implementation; status stays in issue labels.
+
+| Task | Title | Issue | Difficulty | Merge after |
+| --- | --- | --- | --- | --- |
+| [T81](T81.md) | Validate original pitch coordinates and observation fidelity | [#211](https://github.com/diegoami/goal2/issues/211) | Hard | T66, T80 |
+| [T82](T82.md) | Stream bounded original pitch frames independently of match events | [#212](https://github.com/diegoami/goal2/issues/212) | Hard | T81, T80 |
+| [T83](T83.md) | Watch a numbered animated pitch in Pygame | [#213](https://github.com/diegoami/goal2/issues/213) | Hard | T82, #209 |
