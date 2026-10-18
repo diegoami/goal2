@@ -1,0 +1,27 @@
+test_observation_occurs_before_guest_continues_and_answers (goal2.tests.test_watched_jobs.WatchedJobsTests.test_observation_occurs_before_guest_continues_and_answers) ... FAIL
+
+======================================================================
+FAIL: test_observation_occurs_before_guest_continues_and_answers (goal2.tests.test_watched_jobs.WatchedJobsTests.test_observation_occurs_before_guest_continues_and_answers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/tests/test_watched_jobs.py", line 317, in test_observation_occurs_before_guest_continues_and_answers
+    outcome=_drive_match(self.before,image,Fixture(7,19,21),_observe=observed.append)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/game/watched_match.py", line 184, in _drive_match
+    for ev in match.events():
+              ^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/tests/test_watched_jobs.py", line 306, in events
+    self.assertEqual(observed,[minute], 'minute must be observed before guest resumes')
+AssertionError: Lists differ: [] != [Event(kind='minute', minute=1, score=(0, 0), data={})]
+
+Second list contains 1 additional elements.
+First extra element 0:
+Event(kind='minute', minute=1, score=(0, 0), data={})
+
+- []
++ [Event(kind='minute', minute=1, score=(0, 0), data={})] : minute must be observed before guest resumes
+
+----------------------------------------------------------------------
+Ran 1 test in 0.063s
+
+FAILED (failures=1)

@@ -1,0 +1,54 @@
+{
+  "evidence": "[designed: T65] Final fixed-source focused validation; earlier receipts remain immutable.",
+  "validated_source_commit": "a0b4e553f09d042320e02b90e0db68287d786c23",
+  "product_unchanged_from": "b8232e159bc58e04b0ad951a253ef0539fa27982",
+  "interpreter": "/usr/bin/python3",
+  "source_files": [
+    {
+      "path": "goal2/game/watched_match.py",
+      "sha256": "6d159e7772283e3ba0ee54db8eec7df2c10438b6cb8a5bc9378f7e0632659d29"
+    },
+    {
+      "path": "goal2/game/watched_jobs.py",
+      "sha256": "c121b7b422e13f722941e4965bc5462adfcaf91921e6bf0a51ccd3e4839ddc39"
+    },
+    {
+      "path": "goal2/game/watched_worker.py",
+      "sha256": "05a7c90f67c5f555fd25b96d9d40a7389bdde2703d59a8aacf85910d4b4ecaec"
+    },
+    {
+      "path": "goal2/tests/test_watched_jobs.py",
+      "sha256": "3e56f70dc6b1392cc4dd552d186c727a07cde08d0e3b8157d6a94c7b7183b89b"
+    },
+    {
+      "path": "docs/evidence/T65/negative_controls.py",
+      "sha256": "c46eccfd8370085ef359cea2c98e0f28377a4581159038258ec11733c85cd947"
+    }
+  ],
+  "focused_suite": {
+    "command": "python3 -m unittest goal2.tests.test_watched_jobs -v",
+    "tests": 14,
+    "seconds": 113.578,
+    "result": "PASS",
+    "skips": 0,
+    "log": "acceptance-final-a0b4e55.log"
+  },
+  "negative_controls": {
+    "command": "python3 docs/evidence/T65/negative_controls.py .cache/T65-controls-final-20261018",
+    "count": 11,
+    "result": "all intended assertion failures; no ERROR/module absence/timeout accepted",
+    "report": "controls-final/controls.json",
+    "restoration": "full saved file bytes restored in finally; product hashes verified equal original receipt"
+  },
+  "retained_regressions": {
+    "source_at_start": "37aa2d12e0729f13871398aca92d47bbf9f75b69",
+    "tests": 60,
+    "seconds": 1585.808,
+    "skips": 0,
+    "result": "PASS",
+    "scope": "parent loaded earlier source; queued read guard changed during run; not a fresh final-head all-module claim",
+    "log": "regressions-started-37aa2d1.log"
+  },
+  "asset_identity_receipt": "resources-and-source.json",
+  "timing": "measured, not guaranteed; generous hang guards only"
+}

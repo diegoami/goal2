@@ -1,0 +1,14 @@
+test_large_partial_record_reads_are_bounded (goal2.tests.test_watched_jobs.WatchedJobsTests.test_large_partial_record_reads_are_bounded) ... FAIL
+
+======================================================================
+FAIL: test_large_partial_record_reads_are_bounded (goal2.tests.test_watched_jobs.WatchedJobsTests.test_large_partial_record_reads_are_bounded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/tests/test_watched_jobs.py", line 230, in test_large_partial_record_reads_are_bounded
+    self.assertEqual(len(self.jobs.poll(token)),0)
+AssertionError: 1 != 0
+
+----------------------------------------------------------------------
+Ran 1 test in 0.376s
+
+FAILED (failures=1)

@@ -1,0 +1,15 @@
+test_replacement_and_stale_cancel_cannot_touch_new_job (goal2.tests.test_watched_jobs.WatchedJobsTests.test_replacement_and_stale_cancel_cannot_touch_new_job) ... FAIL
+
+======================================================================
+FAIL: test_replacement_and_stale_cancel_cannot_touch_new_job (goal2.tests.test_watched_jobs.WatchedJobsTests.test_replacement_and_stale_cancel_cannot_touch_new_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/tests/test_watched_jobs.py", line 144, in test_replacement_and_stale_cancel_cannot_touch_new_job
+    with self.assertRaisesRegex(ValueError,'stale'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.355s
+
+FAILED (failures=1)

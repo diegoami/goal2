@@ -1,0 +1,19 @@
+test_stream_outcome_mismatch_and_incomplete_tail_never_publish (goal2.tests.test_watched_jobs.WatchedJobsTests.test_stream_outcome_mismatch_and_incomplete_tail_never_publish) ... FAIL
+
+======================================================================
+FAIL: test_stream_outcome_mismatch_and_incomplete_tail_never_publish (goal2.tests.test_watched_jobs.WatchedJobsTests.test_stream_outcome_mismatch_and_incomplete_tail_never_publish)
+----------------------------------------------------------------------
+ValueError: stale or consumed watched job token
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T65-watched-engine/goal2/tests/test_watched_jobs.py", line 270, in test_stream_outcome_mismatch_and_incomplete_tail_never_publish
+    with self.assertRaisesRegex(ValueError,{'mismatch':'live event stream','tail':'incomplete','trailing':'Invalid watched worker IPC'}[mode]):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "live event stream" does not match "stale or consumed watched job token"
+
+----------------------------------------------------------------------
+Ran 1 test in 9.787s
+
+FAILED (failures=1)
