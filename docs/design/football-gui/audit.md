@@ -34,8 +34,9 @@ not authorization to add new data adapters in this redesign.
 [designed] T66 (#136) is a concurrent integration dependency, not established at
 this audit pin. Its separate Pygame window is limited to original-friendly events,
 commentary, score and result boards. Do not present competitive watching, pitch
-animation, in-play editing or mid-match saves as available. T50's independent
-competition work must supply capability changes before the GUI offers them.
+animation, in-play editing or mid-match saves as available. [T80](../../tasks/T80.md) owns asynchronous competitive Play; T50 owns qualifying
+progression after that seam. Consume their accepted capability interfaces before
+offering new competitive actions; neither task authorizes competitive watching.
 
 ## Original GOAL reference board — private sources, no copied assets
 
@@ -60,8 +61,9 @@ is not proof that a single key caused a transition. Private links require access
 (F002/F007/F010/F011; `players.py` pin); condition/morale basis is
 `0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb` (F018/F019/F020). F010's current
 upstream file contains labels beyond the accepted Qt conventions: this planning
-pass preserves existing `window.TACTICS` strings and masks, including the rebuild
-labels5–8, rather than silently making a rule/label correction. Proposed bars
+study records baseline `window.TACTICS` strings/masks without changing runtime.
+T76 depends on #164 and consumes its corrected accepted label source; it must
+not freeze inherited wrong labels or change masks under a visual redesign. Proposed bars
 show raw ability/energy/confidence values; they must not invent percentages or
 normalize to100 without a proven domain.
 

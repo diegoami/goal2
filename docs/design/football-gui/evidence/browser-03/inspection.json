@@ -1,0 +1,38 @@
+{
+  "scope": "Original HTML proposal only; no real Qt/SDL/Windows or engine acceptance",
+  "source": "docs/design/football-gui/index.html",
+  "checks": [
+    "overview has active country and supported fixture context",
+    "keyboard page navigation focuses the squad heading",
+    "draft changes do not confirm; invalid XI is refused",
+    "preview changes country AND roster and disables active actions",
+    "return restores active country and unconfirmed XI draft",
+    "busy state locks game changes and exposes cancel",
+    "unsupported fixture refuses play and explains why",
+    "empty result has no fake event list",
+    "narrow logical space keeps draft actions and focus accessible",
+    "only explicit new mode activates preview country",
+    "no browser script errors; six screenshots without horizontal shell overflow"
+  ],
+  "screenshots": [
+    "overview-1440x900",
+    "squad-1440x900",
+    "preview-1050x780",
+    "result-1440x900",
+    "result-900x700",
+    "squad-720x450-logical-space"
+  ],
+  "source_sha256": {
+    "index.html": "a9f1ad62c8d47834a889615fbd17f25ac3682d0e6a3ed716ec34f90a7b1ad49a",
+    "study.css": "781667292d78168b6ce30c8689c458247d6ed3bead360c80ba313b4eda8b71d7",
+    "study.js": "43a885f3fcd00b2fa925c8abc517c9bc407a0aa2f1862e275a66576cc1a7a340",
+    "shirt.svg": "c166ebcc0fceaf54cabf8305b5835c66152a45fd6dcbaa88b1818208283f5914",
+    "pitch.svg": "2129c91998ae07dd5a89f764510a659d8af8b83c64d2707e219fe52bbf07b221"
+  },
+  "limitations": [
+    "Invented players/results; browser state only",
+    "720x450 is a reduced logical viewport, not proof of Windows200% scaling",
+    "Prototype does not implement all runtime contracts, source identity IDs, original result boards, pool exchange or save/resume",
+    "Real Qt/SDL and Windows evidence belongs to future T74–T79"
+  ]
+}

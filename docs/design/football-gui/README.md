@@ -5,7 +5,8 @@ not an implemented interface. Open [the interactive study](index.html) locally;
 it has three screens, country previews, active-team return, draft controls and
 capability states using **invented sample players and results**. No original game
 images, fonts, names database or executable bytes are included. The SVG pitch and
-shirt symbols are newly authored geometry. The prototype runs without network access.
+shirt symbols are newly authored geometry. The prototype runs without network access. Its tactic wording records the audit
+baseline; T76 consumes the corrected accepted label source after #164.
 
 [designed] The direction is **the national-team dugout**: deep evergreen surfaces,
 warm paper for reading, a national-color identity rail, large score typography and

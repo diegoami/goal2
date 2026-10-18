@@ -35,7 +35,9 @@
       "depends_on": [
         "#182 planning acceptance",
         "T70",
-        "T71"
+        "T71",
+        "T66",
+        "T80"
       ],
       "owns": [
         "goal2/desktop/window.py (shell composition only)",
@@ -89,7 +91,8 @@
       "reviewer": "MiniMax M3",
       "depends_on": [
         "T75",
-        "T47"
+        "T47",
+        "#164"
       ],
       "owns": [
         "Qt squad/tactics page modules from T74",

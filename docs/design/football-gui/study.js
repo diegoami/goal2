@@ -15,7 +15,7 @@ function navigate(next){page=next;$$('.page').forEach(el=>el.hidden=el.id!==next
 function render(){
  const c=countries[selected],preview=isPreview(),d=viewDraft();
  document.documentElement.style.setProperty('--national',c.color);
- $('.country-stripe').style.background=selected==='nl'?'linear-gradient(90deg,#f77d42 0 30%,#f3efe2 30% 60%,#6c96ba 60%)':'linear-gradient(90deg,#789ed6 0 30%,#f3efe2 30% 60%,#dc7b76 60%)';
+ $('.country-stripe').style.background=selected==='nl'?'linear-gradient(90deg,#c96a65 0 30%,#f3efe2 30% 60%,#6c96ba 60%)':'linear-gradient(90deg,#789ed6 0 30%,#f3efe2 30% 60%,#dc7b76 60%)';
  $$('[data-country-name]').forEach(el=>el.textContent=c.name);$$('.home-mark').forEach(el=>el.textContent=c.mark);
  $('#ownership').textContent=preview?'Preview':'Active game';$('#ownership').style.background=preview?'#ffd17a':'#c8f279';
  $('#mini-state').textContent=preview?'Preview':'Active game';$('#context').textContent=preview?'BROWSE A NATIONAL TEAM':'YOUR NATIONAL TEAM';

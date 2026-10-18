@@ -114,9 +114,9 @@ issue numbers are unassigned. This index records no execution status.
 
 | Task | Title | Issue | Difficulty | Merge after |
 | --- | --- | --- | --- | --- |
-| [T74](T74.md) | Qt football shell and shared visual tokens | Unassigned child of #182 | Medium | #182 plan, T70, T71 |
+| [T74](T74.md) | Qt football shell and shared visual tokens | Unassigned child of #182 | Medium | #182 plan, T70, T71, T66, T80 |
 | [T75](T75.md) | Country identity, selection and overview | Unassigned child of #182 | Medium | T74, #181/PR183 |
-| [T76](T76.md) | Squad/tactics draft workspace | Unassigned child of #182 | Hard | T75, T47 |
+| [T76](T76.md) | Squad/tactics draft workspace | Unassigned child of #182 | Hard | T75, T47, #164 |
 | [T77](T77.md) | National pool exchange workspace | Unassigned child of #182 | Medium | T76, T71 |
 | [T78](T78.md) | Fixture/result scoreboard and standings | Unassigned child of #182 | Medium | T75, T49, T51 |
 | [T79](T79.md) | Qt/Pygame match presentation | Unassigned child of #182 | Hard | T74, T76, T78, T66 |

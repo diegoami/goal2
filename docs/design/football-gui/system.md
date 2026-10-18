@@ -16,7 +16,8 @@ study only. No web runtime, new font dependency or global application state owne
 | corners / movement | 8px panels; 4px buttons; ≤120ms hover | Disable movement for reduced motion; no animated critical status |
 
 [designed] Typography uses system sans (Qt platform default; prototype system-ui)
-with a strong weight hierarchy:14px minimum secondary copy,16px reading/body,
+with a strong weight hierarchy:16px reading/body,14px compact data,12–14px
+supporting labels (11px decorative uppercase metadata only),
 24px section headings,40px country title,56px score at the large target. Scores
 and numeric attributes use tabular figures. Original-style monospacing is limited
 to tiny decorative wordmark and numeric board accents. No dependency on a copied
@@ -46,7 +47,8 @@ T74; later tasks change their page modules rather than all editing `window.py`.
   counts; a pitch motif supplies football identity. Do not imply coordinates,
   formation, preferred positions or draggable player placement. Bench has nine
   records. The mockup deliberately uses grouped strips rather than false 4-3-3.
-- [designed] Tactics: eight existing switches/masks in current display order;
+- [designed] Tactics: eight existing switches/masks in current display order, with accepted
+  labels after #164;
   show both alternative strings and current checked state; no new presets or
   per-player overrides. Persistent **Draft** bar has Confirm and Discard.
 - [designed] Result board: named sides, score, provenance, goals/empty-state;

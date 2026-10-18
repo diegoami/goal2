@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // [designed: #182] Inspect the local original proposal, never accept Qt behavior.
 import { pathToFileURL } from 'node:url';
-import { mkdir, writeFile, access } from 'node:fs/promises';
+import { mkdir, writeFile, readFile, access } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
 const modulePath=process.env.PLAYWRIGHT_MODULE;
@@ -13,6 +14,8 @@ try {await access(output);throw new Error(`Retain existing evidence; choose a ne
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({headless:true});
 const log={scope:'Original HTML proposal only; no real Qt/SDL/Windows or engine acceptance',source:'docs/design/football-gui/index.html',checks:[],screenshots:[]};
+log.source_sha256={};
+for(const name of ['index.html','study.css','study.js','shirt.svg','pitch.svg'])log.source_sha256[name]=createHash('sha256').update(await readFile(resolve('docs/design/football-gui',name))).digest('hex');
 try{
  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
