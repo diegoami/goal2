@@ -1,0 +1,205 @@
+{
+  "claim": "Main audit controls on retained Windows execution; no Windows re-execution",
+  "anchor": "132e78133923692105c2ae1c0b73a614b950c377b7d682db4cb93560157a63f6",
+  "pristine_audit": {
+    "result": "PASS",
+    "claim": "Audit of retained main Windows execution; no Windows re-execution",
+    "native_checkpoint": "7560fbc336fa0efd6ea188c3739eb66e6460df63",
+    "current_head": "659833bec6ab3a93b46e837abbc350a8f0012784",
+    "source_files": 178,
+    "dependency_files": 566,
+    "resources": 2,
+    "protected_files": 6,
+    "native_table_cases": 16,
+    "measurements": [
+      {
+        "scale": "1",
+        "captured_window_dpr": 1.0,
+        "workarea_logical_size": [
+          2560,
+          1392
+        ],
+        "workarea_physical_size": [
+          2560,
+          1392
+        ],
+        "requested_logical_sizes": [
+          [
+            1440,
+            900
+          ],
+          [
+            1050,
+            780
+          ],
+          [
+            900,
+            700
+          ]
+        ],
+        "verified_capture_physical_sizes": [
+          [
+            1440,
+            900
+          ],
+          [
+            1050,
+            780
+          ],
+          [
+            900,
+            700
+          ]
+        ],
+        "native_os_before": {
+          "requested_qt_scale": "1",
+          "qt_ratio": 1.0,
+          "qt_name": "MSI MAG 275QF",
+          "qt_available": [
+            2560,
+            1392
+          ],
+          "primary_pixels": [
+            2560,
+            1440
+          ],
+          "virtual_pixels": [
+            2560,
+            1440
+          ],
+          "workarea_pixels": [
+            2560,
+            1392
+          ],
+          "os_dpi": 96,
+          "qpa": "windows"
+        },
+        "native_os_after": {
+          "requested_qt_scale": "1",
+          "qt_ratio": 1.0,
+          "qt_name": "MSI MAG 275QF",
+          "qt_available": [
+            2560,
+            1392
+          ],
+          "primary_pixels": [
+            2560,
+            1440
+          ],
+          "virtual_pixels": [
+            2560,
+            1440
+          ],
+          "workarea_pixels": [
+            2560,
+            1392
+          ],
+          "os_dpi": 96,
+          "qpa": "windows"
+        },
+        "window_global_position": "not retained by source helper; size/workarea checks are explicit"
+      },
+      {
+        "scale": "2",
+        "captured_window_dpr": 2.0,
+        "workarea_logical_size": [
+          1280,
+          696
+        ],
+        "workarea_physical_size": [
+          2560,
+          1392
+        ],
+        "requested_logical_sizes": [
+          [
+            900,
+            640
+          ]
+        ],
+        "verified_capture_physical_sizes": [
+          [
+            1800,
+            1280
+          ]
+        ],
+        "native_os_before": {
+          "requested_qt_scale": "2",
+          "qt_ratio": 2.0,
+          "qt_name": "MSI MAG 275QF",
+          "qt_available": [
+            1280,
+            696
+          ],
+          "primary_pixels": [
+            2560,
+            1440
+          ],
+          "virtual_pixels": [
+            2560,
+            1440
+          ],
+          "workarea_pixels": [
+            2560,
+            1392
+          ],
+          "os_dpi": 96,
+          "qpa": "windows"
+        },
+        "native_os_after": {
+          "requested_qt_scale": "2",
+          "qt_ratio": 2.0,
+          "qt_name": "MSI MAG 275QF",
+          "qt_available": [
+            1280,
+            696
+          ],
+          "primary_pixels": [
+            2560,
+            1440
+          ],
+          "virtual_pixels": [
+            2560,
+            1440
+          ],
+          "workarea_pixels": [
+            2560,
+            1392
+          ],
+          "os_dpi": 96,
+          "qpa": "windows"
+        },
+        "window_global_position": "not retained by source helper; size/workarea checks are explicit"
+      }
+    ],
+    "main_receipt_sha256": "132e78133923692105c2ae1c0b73a614b950c377b7d682db4cb93560157a63f6",
+    "inventory_files": 32
+  },
+  "controls": [
+    {
+      "name": "wrong-external-anchor",
+      "result": "REJECTED",
+      "reason": "external main receipt anchor differs",
+      "assertion": "assert re.fullmatch('[0-9a-f]{64}',anchor) and sha(original)==anchor,'external main receipt anchor differs'"
+    },
+    {
+      "name": "rewritten-original-receipt",
+      "result": "REJECTED",
+      "reason": "external main receipt anchor differs",
+      "assertion": "assert re.fullmatch('[0-9a-f]{64}',anchor) and sha(original)==anchor,'external main receipt anchor differs'"
+    },
+    {
+      "name": "rewritten-tracked-host-receipt",
+      "result": "REJECTED",
+      "reason": "tracked main receipt differs",
+      "assertion": "assert (evidence/'host-receipt.json').read_bytes()==original.read_bytes(),'tracked main receipt differs'"
+    },
+    {
+      "name": "tampered-capture",
+      "result": "REJECTED",
+      "reason": "",
+      "assertion": "image=safe(report_path.parent,row['capture']);assert sha(image)==row['capture_sha256'];raw=image.read_bytes()"
+    }
+  ],
+  "originals_unchanged": true,
+  "result": "PASS"
+}

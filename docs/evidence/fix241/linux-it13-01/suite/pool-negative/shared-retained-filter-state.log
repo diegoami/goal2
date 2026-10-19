@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/acceptance.py", line 334, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/acceptance.py", line 331, in main
+    elif args.scenario=='campaign-pool':pool(args.template,args.data,args.screenshot)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/acceptance.py", line 205, in pool
+    assert model.state==before and window.reserves.rowCount()>0
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

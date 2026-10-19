@@ -1,0 +1,14 @@
+[
+  {
+    "file": "docs/evidence/fix241/fixed-private-1x.log",
+    "original_sha256": "093f0325f9f9eb6daa4035fecc931506812e8da6aa0d16c2b4114b7621b44c31",
+    "reading_sha256": "fa08db34f6115b22a6b54d9151df938400f24ccfe499f600b83f439409065b7c",
+    "normalization": "terminal blank lines removed only; original full bytes in lossless envelope"
+  },
+  {
+    "file": "docs/evidence/fix241/qt-platform-diagnostic.log",
+    "original_sha256": "586a4419b69def703851bd4a14bc3ab3c231c74df50cc262d9d2464dad82d56d",
+    "reading_sha256": "d3f6e396c3ebe7cc10f847837ff1b501c8592e7c484e6a8464e48a81e9512ce6",
+    "normalization": "terminal blank lines removed only; original full bytes in lossless envelope"
+  }
+]

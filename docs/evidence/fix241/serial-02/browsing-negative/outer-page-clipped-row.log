@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 210, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 208, in main
+    (controls if args.negative_controls else scenario)(args)
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 122, in scenario
+    key(table,Qt.Key.Key_Home,Qt.KeyboardModifier.ControlModifier);assert table.currentRow()==0;visible_selected(table)
+                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 86, in visible_selected
+    assert view.visibleRegion().contains(band),'focused row clipped by outer page'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: focused row clipped by outer page

@@ -1,0 +1,26 @@
+{
+  "claim": "Native display prerequisite probes only; no source acceptance scenario run",
+  "os": {
+    "primary_pixels": [
+      2560,
+      1440
+    ],
+    "workarea_pixels": [
+      2560,
+      1392
+    ],
+    "dpi": 96
+  },
+  "qt": {
+    "qt": "6.12.0",
+    "qpa": "windows",
+    "ratio": 2.0,
+    "available": [
+      1280,
+      696
+    ],
+    "name": "MSI MAG 275QF"
+  },
+  "missing_baseline": "No /mnt/c/Users/diego/projects/goal2-exe installation; actual launcher files required",
+  "recorded_utc": "2026-10-19T07:59:17.294868+00:00"
+}

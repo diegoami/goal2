@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 186, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 184, in main
+    args=parser.parse_args();(controls if args.negative_controls else scenario)(args)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 99, in scenario
+    readonly()
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/player-browsing.py", line 81, in readonly
+    assert all(not w.table.item(r,0).flags() & Qt.ItemFlag.ItemIsUserCheckable for r in range(20)), 'preview XI still checkable'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: preview XI still checkable

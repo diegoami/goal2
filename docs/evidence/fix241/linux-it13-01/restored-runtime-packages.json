@@ -1,0 +1,26 @@
+{
+  "T78": {
+    "wheel_verified": true,
+    "identical_wheel_files": 39,
+    "installer_generated_files_not_recreated": [
+      "unicorn-2.1.4.dist-info/direct_url.json",
+      "unicorn-2.1.4.dist-info/INSTALLER",
+      "unicorn-2.1.4.dist-info/RECORD",
+      "unicorn-2.1.4.dist-info/REQUESTED"
+    ],
+    "directory": "/home/diego/projects/goal2/.cache/.goal2-validation/T78-runtime/python-libs",
+    "claim": "wheel payload verification only; not native installation or acceptance"
+  },
+  "T79": {
+    "wheel_verified": true,
+    "identical_wheel_files": 519,
+    "installer_generated_files_not_recreated": [
+      "pygame_ce-2.5.8.dist-info/direct_url.json",
+      "pygame_ce-2.5.8.dist-info/INSTALLER",
+      "pygame_ce-2.5.8.dist-info/RECORD",
+      "pygame_ce-2.5.8.dist-info/REQUESTED"
+    ],
+    "directory": "/home/diego/projects/goal2/.cache/.goal2-validation/T79-runtime/python-libs",
+    "claim": "wheel payload verification only; not native installation or acceptance"
+  }
+}

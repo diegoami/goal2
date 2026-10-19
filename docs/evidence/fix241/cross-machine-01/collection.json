@@ -1,0 +1,163 @@
+{
+  "tag": "[designed: #241]",
+  "claim": "Safe cross-machine preparation and failed-native evidence; no native acceptance",
+  "runtime_source_checkpoint": "7560fbc336fa0efd6ea188c3739eb66e6460df63",
+  "original_native02_receipt_sha256": "628ad7166ab6ae5fc0d451609b22b6737197b3837ca6cceeb40d8b69769cd574",
+  "files": {
+    "kit/fix241-windows-acceptance.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-acceptance.py",
+      "sha256": "ded82014b803869028ed8d06533bb2b6941be60eb4f152f7a6cb0ba0b8f9c5ba"
+    },
+    "kit/fix241-windows-acceptance-v2.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-acceptance-v2.py",
+      "sha256": "5f4b1a16c6614c0e19d1bd910bbea1f74e4b5472eb07b60293ba439b75ca2079"
+    },
+    "kit/fix241-windows-acceptance-v3.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-acceptance-v3.py",
+      "sha256": "a6097aa3ec57a49bb0d1b8c3be0ef2ecd01faee523639b0445e80fdc41ade8be"
+    },
+    "kit/windows_display_probe.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/windows_display_probe.py",
+      "sha256": "3823de5ab775457aca4e420e760d563ab313fa3efb843d9b8d88b9ab9151fc22"
+    },
+    "kit/fix241-collect-native.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-collect-native.py",
+      "sha256": "20aeb635fe696bd7fc5914a3bdad43828517e027a850966f733af780a6cb550f"
+    },
+    "kit/fix241-native-proof-check.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-proof-check.py",
+      "sha256": "b6338532f846d0b76e7cfb3c1d919362e8b2e900eb2a33692698527f6ead48fd"
+    },
+    "kit/fix241-review-validation.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-review-validation.py",
+      "sha256": "8ed79e9656f3dc6a0bee81890c25bf9563ae7d47d21ccaf512618e503ab369e2"
+    },
+    "kit/stage-review.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/stage-review.py",
+      "sha256": "707ca4914a6df69615a1f09f419342a94238745ac3f785b557a36ebed964e5f8"
+    },
+    "kit/fix241-review-template.md": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-review-template.md",
+      "sha256": "cc4c8ec66aa2b5d184184c8a360c932639ad16eb5412b19b75d25002ee7cbdb0"
+    },
+    "kit/fix241-brief.md": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-brief.md [reading derivative, terminal blank lines trimmed]",
+      "sha256": "1d5216e67c376f1811061096bcd141d74a9755a6834d7dbe0b7dc48257b13a74"
+    },
+    "kit/fix241-display-audit-synthetic.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-display-audit-synthetic.json",
+      "sha256": "4f6f02e66a19562041de064782f76a4ae3bd79d735adfdd3ac91e73220a282be"
+    },
+    "diagnostics/native-01-not-run/inventory.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-01-not-run/inventory.json",
+      "sha256": "88b1b117c605a58803a5755b5960dca8d5ede9f66a94a8ba47c1f1fdfcbf8b09"
+    },
+    "diagnostics/native-01-not-run/staging-stop.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-01-not-run/staging-stop.json",
+      "sha256": "6750026871f76380fa83bd2fed0663ce7f31f813a127defca6a7aa6b50ec4ebb"
+    },
+    "diagnostics/native-02-failed/host-receipt.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/host-receipt.json",
+      "sha256": "628ad7166ab6ae5fc0d451609b22b6737197b3837ca6cceeb40d8b69769cd574"
+    },
+    "diagnostics/native-02-failed/inventory.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/inventory.json",
+      "sha256": "3c6c718600284b9b59d0fa3d5eb043ee5cc538eed63491afa4da340485fdc705"
+    },
+    "diagnostics/native-02-failed/main-native-runner.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/main-native-runner.py",
+      "sha256": "5f4b1a16c6614c0e19d1bd910bbea1f74e4b5472eb07b60293ba439b75ca2079"
+    },
+    "diagnostics/native-02-failed/native-1.log": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/native-1.log",
+      "sha256": "e6796e2e82eb6809783b76935f4996e28737b9c5f21c896648dd69e029bafa80"
+    },
+    "diagnostics/native-02-failed/native-1.py": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/native-1.py",
+      "sha256": "c4f3cb1d082d9a4125eb4f09f465fdab560aa1385c4fc84073653e799f4d0833"
+    },
+    "diagnostics/native-02-failed/native-1.raw-envelope.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/native-1.raw-envelope.json",
+      "sha256": "7505ba71bfb59f83c96d4c8d80a076db753ec11c024e195bf4bc309e0ffe8f30"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/active-1050x780-1.png": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/active-1050x780-1.png",
+      "sha256": "0f88ded1db6afba3f62f280a7aa3a2389b1a177ba2df7a8424b84808e90d4953"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/active-1050x780-2.png": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/active-1050x780-2.png",
+      "sha256": "e1def8f59d5a702b9b54e3e85b39d64c94718cfe2dff762f35d55fa7614ceb7e"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/active-1440x900-1.png": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/active-1440x900-1.png",
+      "sha256": "3d97d5fb5bac08dca0c612b03091cf8290c4f1f6e7fa3d4b5d999f99534eba39"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/active-1440x900-2.png": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/active-1440x900-2.png",
+      "sha256": "07c8966580e22c254daf7a3ddb125d960d1759f2bd6faa3615f9a2af4671b02c"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/active-900x700-1.png": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/active-900x700-1.png",
+      "sha256": "03b9bcebd747b93ab8593d886ea89b79e432c1ed5fb1c3a102284c610a7d201b"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/active-900x700-2.png": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/active-900x700-2.png",
+      "sha256": "3c9d9c9ebf2f3b504625e4908d0c541cd984c159cd301e51946a5e712c983091"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/report.json.raw-envelope.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/report.json",
+      "sha256": "2f3d3e2bb1827af0001d2fc051213bec708a7d31c6c80b654f71c7911db39bea"
+    },
+    "diagnostics/native-02-failed/observations/scale-1/report.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-native-diagnostics/native-02-failed/observations/scale-1/report.json [LF reading derivative]",
+      "sha256": "6cc0b23305f0dc832a641eac814898c5f922883102ecbd9ba7d3aae398b2763d"
+    },
+    "diagnostics/native-geometry.raw-envelope.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-geometry-diagnostic.raw.txt",
+      "sha256": "731ee3a12a3de877e8d4613ae3f0df4e4ae7cf039af94261d937c7a4a4ce22e3"
+    },
+    "diagnostics/native-geometry.log": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-geometry-diagnostic.raw.txt [LF reading derivative]",
+      "sha256": "1ce6b357050df3543bb280c504ad9094f822762f239605ca449a48d0def411cd"
+    },
+    "diagnostics/native-01-service.raw-envelope.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-01.log",
+      "sha256": "34174527b16c3784709db01f190cd21bed80f05502a7102883aa9f75b9bce5d0"
+    },
+    "diagnostics/native-01-service.log": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-01.log [LF reading derivative]",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "diagnostics/native-02-service.raw-envelope.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-02.log",
+      "sha256": "8961c497c1cd6842cae6df680492f31c23613c6b171c8a9e04489096f93e7976"
+    },
+    "diagnostics/native-02-service.log": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-02.log [LF reading derivative] [reading derivative, terminal blank lines trimmed]",
+      "sha256": "ed0d920e5411f87cbd1eb580f470a970dde8873d001e55dd0359e3e28e2bfb79"
+    },
+    "validation/premerge-7560.raw-envelope.json": {
+      "source": "/home/diego/projects/goal2-work/fix241-player-table-browsing/.cache/premerge02.log",
+      "sha256": "aada4afe8f7fb74afe4e02528a254778d8826623be5cf0ba6bb75df986c103fa"
+    },
+    "validation/premerge-7560.log": {
+      "source": "/home/diego/projects/goal2-work/fix241-player-table-browsing/.cache/premerge02.log [LF reading derivative]",
+      "sha256": "63bc87f76b2961df7e739b3b58f685bfa31b446d5f755f8495e5233a24a28cae"
+    },
+    "runtime-metadata/T78-private-runtime-config.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/T78-private-runtime-config.json",
+      "sha256": "f152860acbf7b1ec5a688c07e58809e02bfb39211b2474922e19fa3d2ceec964"
+    },
+    "runtime-metadata/T79-private-runtime-config.json": {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/T79-private-runtime-config.json",
+      "sha256": "988217a10a8e9dfc18772b13825d6e38f68c1e1919d48ec008738def18fa1586"
+    },
+    "kit/historical-geometry-diagnostic.py": {
+      "source": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix241-geometry-diagnostic-1792394789152055881/diagnostic.py",
+      "sha256": "d8e25464c8840adabd788620087afe9bc03de1fceab03631f85162df89f8e7de",
+      "original_sha256": "d8e25464c8840adabd788620087afe9bc03de1fceab03631f85162df89f8e7de",
+      "normalization": "LF reading derivative with terminal blank line removed; original bytes in adjacent envelope"
+    }
+  },
+  "exclusions": "Private original fixtures, saves, executables, runtime libraries, credentials, unrelated tasks, full RUN-NOTES (posted to issue241). Raw CRLF bytes reconstruct from UTF-8 envelopes; diagnostic private inventories are historical snapshots."
+}
