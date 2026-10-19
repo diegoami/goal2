@@ -64,11 +64,39 @@ The original manual/E031 evidence gives five substitutions in a friendly and two
 
 *Full-time menu, `E015-r0007 state 50`, where result context and match actions remain. In knockout play, E031 instead observed an “EXTRA TIME” menu with **play** when level after regulation; extra time also has its own half-time. The length of that extra-time half was not established by the E031 guide. [confirmed: E015-r0007 state 50; E031 C47–C47b; evidence gap: extra-time half length]*
 
+![Managed knockout match at halftime](images/m244-knockout-halftime.png)
+
+*Belgium versus Holland last sixteen after the managed match was started from G4C and **R** requested a quick result, `M244-G4C-07 step 40`. The menu keeps both lineups, formations, score and **play** decision while the header says HALF TIME. Its 0–0 path is a new run, distinct from E031's 2–2 watched path. [confirmed: M244-G4C-07 steps 29–40]*
+
+![Extra-time play menu after regulation](images/m244-extra-time-menu.png)
+
+*The same quick-run continuation reached the menu headed FULL TIME / EXTRA TIME at 0–0, `M244-G4C-07 step 45`; **play** remains the highlighted next action. This is the authentic conditional extra-time state referred to in E031 C47. [confirmed: M244-G4C-07 steps 41–45; E031 C47]*
+
+![Extra-time halftime menu](images/m244-extra-time-halftime.png)
+
+*After one Enter on that menu, the header gained an additional HALF TIME line during extra time, `M244-G4C-07 step 50`. The same management actions remain visible. This proves the additional midpoint screen, without assigning a precise minute length. [confirmed: M244-G4C-07 steps 45–50; E031 C47b]*
+
 ![Original World Cup penalty shoot-out start](images/e031-shootout-start.png)
 
 *Belgium 2–2 Holland, last sixteen, `E031 g1 step 3874`; published savestate SHA-256 `3ea57029282b849fd3114a995178f35e48c420c768f0702b9d3b7d48600dc1fc` and PNG hash are in [image provenance](image-provenance.tsv). The screen itself says “penalty shoot out PRESS ANY KEY”; it is the transition before choosing the order, not an invented order UI. [confirmed: E031 `out/states.tsv`, g1 step 3874; E031 C48]*
 
-After this prompt, the managed team orders its takers using Up/Down and Enter; Esc undoes an order choice. E031 logged numbered picks, individual kick commentary and a sixth-kick continuation after five each were level. The other side's order was not seen. The order picker and scored-kick states need dedicated authentic captures before image coverage is complete. [confirmed: E031 C48b–C49d; evidence gap: order and kick images]
+![Shoot-out prompt after the 0–0 quick continuation](images/m244-shootout-prompt.png)
+
+*The G4C quick continuation also arrived at a separate 0–0 penalty prompt, `M244-G4C-07 step 55`. The next image is reached by one Space. Compare this with the preceding E031 2–2 watched save: both paths show the prompt, but the scores and source runs differ. [confirmed: M244-G4C-07 steps 50–56; E031 g1 step 3874]*
+
+![Penalty taker order picker](images/m244-shootout-order.png)
+
+*One Space opened the managed Holland order picker, `M244-G4C-07 step 56`. The right side shows eleven numbered empty slots; Up/Down and Enter select an order, and the bottom says Esc undoes a pick. The selected player's complete card remains visible while choosing. [confirmed: M244-G4C-07 steps 55–56; E031 C48b]*
+
+![Five penalty takers numbered](images/m244-shootout-five-chosen.png)
+
+*In a second isolated run restored from step 56's private temporary savestate, five single Enter presses filled order slots 1–5 and advanced the selected card, `M244-G4C-08 step 5`. The source state hash and restoration check are in the [capture method](capture-method.md); this is not a new game or a fabricated list. [confirmed: M244-G4C-08 steps 0–5]*
+
+![First shoot-out kick scored](images/m244-shootout-first-goal.png)
+
+*After all eleven choices, the same run displayed Scholefiel's shot and a 0–1 shoot-out score, `M244-G4C-08 step 19`. Event commentary and the ball/pitch stay visible; this image proves a kick outcome, not the final winner. [confirmed: M244-G4C-08 steps 11–19]*
+
+After this prompt, the managed team orders its takers using Up/Down and Enter; Esc undoes an order choice. E031 logged numbered picks, individual kick commentary and a sixth-kick continuation after five each were level. The other side's order was not seen. The order picker and a scored kick are illustrated above. Different taker choices, misses/saves and the complete final penalty board remain alternative-state gaps. [confirmed: E031 C48b–C49d; evidence gap: order and kick images]
 
 ## Statistics and round exit
 
