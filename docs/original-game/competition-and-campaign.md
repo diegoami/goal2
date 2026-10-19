@@ -10,7 +10,7 @@ The original manager hub keeps the managed country, world/European ranking and n
 
 ![Holland country card during the World Cup](images/m244-team-info-2030.png)
 
-*The hub's highlighted **team info** action opened this Holland card with one Enter, `M244-G4C-05 step 3`. It keeps manager and team status, world/European ranking and movement, 4-4-2 formation, squad-stripe and skill bars, eight team tactics and characteristics on one page. The country list at right and top hints invite browsing competitors, while Space opens players. These are displayed labels; the exact units of bars and the formula behind “very good” remain outside this observation. [confirmed: M244-G4C-05 steps 2–3; evidence gap: bar units/status formula]*
+*The hub's highlighted **team info** action opened this Holland card with one Enter, `M244-G4C-05 step 3`. It keeps manager and team status, world/European ranking and movement, 4-4-2 formation, squad-stripe and skill bars, eight team tactics and characteristics on one page. The country list invites browsing competitors. The printed hints offer Space for players, T for tactics and `◄┘` (Enter) for fixtures; this capture separately verifies Space at step 4, while the other hinted transitions were not tested here. The exact units of bars and the formula behind “very good” remain outside this observation. [confirmed: M244-G4C-05 steps 2–4; evidence gap: bar units/status formula]*
 
 ![Holland players from the country card](images/m244-team-info-players-2030.png)
 
@@ -18,21 +18,21 @@ The original manager hub keeps the managed country, world/European ranking and n
 
 ## Fixture list and which matches to watch
 
-![Round fixture list before a watch toggle](images/m244-fixtures.png)
+![Fixture list with a selected match marked for watching](images/m244-fixtures.png)
 
-*Fixture list, `M244-G1A-03 step 4`, opened by a single Enter after one Down on the manager menu. Each row names both teams and labels the fixture “friendly” or “qualifying”; the top-right hint currently says Enter gives an auto result for the selected other match. Up/Down scrolls. [confirmed: M244-G1A-03 steps 2–4]*
+*Fixture list, `M244-G1A-03 step 4`, opened by a single Enter after one Down on the manager menu. Each row names both teams and labels the fixture “friendly” or “qualifying”. The selected Scotland–France row already has a `√`, meaning it is marked to watch. The top-right “auto result” hint names what Enter would do **next** to that row. Up/Down changes selection. [confirmed: M244-G1A-03 steps 2–4; E031 C18]*
 
-![Fixture list after choosing one match to watch](images/m244-fixtures-watch.png)
+![Fixture list after moving selection to an unmarked match](images/m244-fixtures-watch.png)
 
-*One Down on the fixture list moves selection, `M244-G1A-03 step 5`; this capture shows a “watch match” hint for its selected row. The E031 guide separately observed Enter toggling an other-country match between watch and automatic result, with a later “Do you want to watch this match?” prompt for marked games. The prompt depends on match context. [confirmed: M244-G1A-03 steps 4–5; E031 C18, C35]*
+*One Down on the fixture list moves selection to an unmarked row, `M244-G1A-03 step 5`; “watch match” says what Enter would do **next**. The `√` on Scotland–France was already present at step 4; Down did not toggle either match. E031 separately observed Enter marking an other-country match to watch, changing the next-action hint to “auto result”, and a later conditional watch prompt. [confirmed: M244-G1A-03 steps 4–5; E031 C18, C35]*
 
-![Another original fixture marked for watching](images/fixtures-watch.png)
+![Unmarked original fixture with a watch-match next-action hint](images/fixtures-watch.png)
 
-*Italy fixture-list watch state, `E015-r0007 state 18`; the selected row and bottom instructions are legible in the full image. It confirms this is a recurring list state, not unique to the Holland save. [confirmed: E015-r0007 state 18]*
+*Italy fixture list, `E015-r0007 state 18`: the selected row has no `√` and the hint offers “watch match” on Enter. The classifier name `fixtures-watch` describes that hint, not a current watch flag. [confirmed: E015-r0007 state 18; E031 C18]*
 
-![Original fixture list with automatic handling](images/fixtures-auto.png)
+![Marked original fixture with an auto-result next-action hint](images/fixtures-auto.png)
 
-*Automatic-result alternative, `E015-r0007 state 24`. Read the selected-row hint before acting: the same list can present materially different handling for a selected fixture. The exact intervening E015 key burst is not treated as one-key causality. [confirmed: E015-r0007 states 18,24; E031 C18]*
+*Marked-to-watch alternative, `E015-r0007 state 24`: Greece–Hungary has `√`; “auto result” is the action Enter would take **next**. The classifier name `fixtures-auto` describes the hint, not the row's present watch state. The intervening E015 key burst does not prove a single-key toggle; E031 C18 supplies that observation. [confirmed: E015-r0007 states 18,24; E031 C18]*
 
 In **team info**, a country card can be inspected; Space shows that country's players. On your own fixture list, E031 observed Enter canceling a friendly and Enter on the canceled item arranging another. The label/context must be checked before treating Enter as one universal action. [confirmed: E031 C17, C17b, C17c]
 
@@ -48,13 +48,13 @@ In **team info**, a country card can be inspected; Space shows that country's pl
 
 The table visibly has P, W, D, L, F, A and T headings; W/D/L align with results language, but this chapter does not assert an unreviewed formula for T or every tiebreak. A manager uses the table to see whether results are enough to advance, and the adjacent fixtures to see opponents and remaining matches. The full standings rules are in the reviewed archaeology specification rather than deduced from zero-filled opening rows. [confirmed: M244-G1A-03 steps 8–9; reviewed F023; evidence gap: field-by-field display explanation]
 
-![World Cup finals knockout bracket](images/m244-world-finals-bracket.png)
+![World Cup knockout bracket with Championship highlighted](images/m244-world-finals-bracket.png)
 
-*From the 2030 hub, two Downs selected tournament and Enter opened the **Finals** bracket, `M244-G4C-05 step 9`. The sixteen knockout sides, future pairings and a top-scorers panel are visible. The bottom shows Qualifying, Finals and Championship display choices; the player can move Left/Right among them. An empty branch is an unplayed match, not an invented result. [confirmed: M244-G4C-05 steps 6–9]*
+*From the 2030 hub, two Downs selected tournament and Enter opened this World Cup knockout bracket, `M244-G4C-05 step 9`. **Championship** appears highlighted among the Qualifying/Finals/Championship display choices; “FINALS” in the page title may name the campaign stage, so this capture does not establish that the Finals display is selected. Sixteen knockout sides, future pairings and a top-scorers panel are visible. The bottom-left prints “Hit Ins for Championship results”; that action was not exercised here. An empty branch is an unplayed match, not an invented result. [confirmed: M244-G4C-05 steps 6–9; evidence gap: title/display distinction and Ins action]*
 
 ![World Cup qualifying Group A results](images/m244-world-qualifying-a.png)
 
-*One Right changed from Finals to **Qualifying**, `M244-G4C-05 step 10`. Group A's P/W/D/L/F/A/T table sits beside its dated result sequence, so ranking and opponents can be read together. The bottom lists continent choices and prints Up/Down for groups, Space for continent, and Left/Right for display. [confirmed: M244-G4C-05 steps 9–10]*
+*One Right from the preceding bracket changed the visible page to **Qualifying**, `M244-G4C-05 step 10`; the prior image visually highlights Championship, without proving the title's display semantics. Group A's P/W/D/L/F/A/T table sits beside its dated result sequence, so ranking and opponents can be read together. The bottom lists continent choices and prints Up/Down for groups, Space for continent, and Left/Right for display. [confirmed: M244-G4C-05 steps 9–10; evidence gap: title/display distinction]*
 
 ![Adjacent World Cup qualifying group](images/m244-world-qualifying-b.png)
 
@@ -95,7 +95,7 @@ E031's Holland run supplies the observed long loop: 2028 European qualifying/fri
 
 ![Final 2028 qualifying Group F table](images/m244-final-qualifying-table.png)
 
-*After loading the published end-of-qualification G1E checkpoint and choosing **play next game**, the remaining automatic round displayed this completed Group F table, `M244-G1E-06 step 14`. Eire finished above Holland while the right column lists individual qualifying results. The source G1E save hash and single-action path are in the [capture method](capture-method.md). [confirmed: M244-G1E-06 steps 2–14; E031 G1E save register]*
+*After loading the published end-of-qualification G1E checkpoint and choosing **play next game**, step 13 answered N for a match and step 14 acknowledged its result with Enter; this completed Group F table then appeared, `M244-G1E-06 step 14`. Eire finished above Holland while the right column lists individual qualifying results. The source G1E save hash and single-action path are in the [capture method](capture-method.md). [confirmed: M244-G1E-06 steps 2–14; E031 G1E save register]*
 
 ![Holland fails to qualify bulletin](images/m244-elimination-bulletin.png)
 

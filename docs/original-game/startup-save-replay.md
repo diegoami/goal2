@@ -12,7 +12,7 @@ The title screen branches into a new game or a saved `.GL`. The source E015 imag
 
 ![Original file-not-found prompt](images/file-not-found-prompt.png)
 
-*Load failure, `E015-r0008 state 10`. It belongs to the load branch; a player needs a valid saved name. The exact preceding filename and recovery key path need their own single-step record before being specified. [confirmed: E015-r0008 state 10; evidence gap: recovery transition]*
+*Load failure, `E015-r0008 state 10`. It belongs to the load branch; the screen prints `try again? (Y/N)`, so a player is offered retry or refusal after an invalid name. The exact preceding filename and the Y/N transitions need their own single-step record before being specified. [confirmed: E015-r0008 state 10; evidence gap: recovery transition]*
 
 For a new session answer **N**, select one to six local managers with Left/Right and Enter, browse countries, and type each manager's name. The country card's rankings, tactics and skill profile support that choice; the name line allows up to fourteen characters and Esc abort. The first manager walkthrough with those images is in [first session](first-session.md). [confirmed: E031 C12–C15b; E015-r0004 state 2, E015-r0007 states 3 and 10]
 

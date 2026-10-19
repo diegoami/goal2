@@ -76,7 +76,7 @@ The eight visible team lines are defence system, protection, offside, positionin
 
 ![Captain selection before an original watched match](images/captain-select.png)
 
-*Captain prompt, `E015-r0007 state 63`. The card displays the highlighted player and the bottom offers selection. E031 observed Up/Down then Enter accepting another player, while reviewed F030 describes the timeout choice. [confirmed: E015-r0007 state 63; E031 C38–C38b; reviewed F030]*
+*Captain prompt, `E015-r0007 state 63`. The card displays the highlighted player and prints `C-computer select`. E031 observed Up/Down then Enter accepting another player; the C action is a printed hint, while reviewed F030 describes the timeout choice. [confirmed: E015-r0007 state 63; E031 C38–C38b; reviewed F030]*
 
 The in-match **players** branch reuses the player card but adds a **substitutions left** counter and a prompt to take off a starter or put on a bench player. Friendly and competition limits differed in E031: five and two respectively in the observed/manual-backed cases. The two candidate Enters can occur in either order; E031 recorded no visible lineup change after only the first. [confirmed: E031 C41–C41k; original GOAL.HLP]
 
@@ -94,6 +94,6 @@ The in-match **players** branch reuses the player card but adds a **substitution
 
 ![Original illegal-substitution warning](images/squad-substitution-illegal.png)
 
-*Illegal substitution warning, `E015-r0007 state 176`. It is a distinct screen that requires acknowledgment; the preceding action in the E015 keymap must be read as a burst unless a single-key step is independently logged. [confirmed: E015-r0007 state 176; archaeology `docs/screens.md`]*
+*Illegal substitution warning, `E015-r0007 state 176`. It is a distinct screen that prints `PRESS ANY KEY` for acknowledgment; the specific transition and preceding action in the E015 keymap must not be attributed to one key without a single-step record. [confirmed: E015-r0007 state 176; archaeology `docs/screens.md`]*
 
 The bench branch is part of the [watched-match flow](match-and-results.md). A substitution or tactical change here happens before play resumes; use the match menu's **play** again for the next segment. [confirmed: E031 C40b, C41h]

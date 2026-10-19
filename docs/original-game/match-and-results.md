@@ -8,13 +8,13 @@ A match can be processed quickly or watched. The original sometimes asks whether
 
 ![Pre-match menu with lineups and team actions](images/match-menu.png)
 
-*Greece versus Hungary example, `E015-r0007 state 30`. Both formations and eleven-player strips remain visible while the cursor moves among team tactics, players, tournament, match stats and play; Ins toggles automatic action replay, with the current setting named at bottom. This is the place to compare sides and decide whether to change management before kick-off. [confirmed: E015-r0007 state 30; E031 C36–C37]*
+*Greece versus Hungary example, `E015-r0007 state 30`. Both formations and eleven-player strips remain visible while the cursor moves among team tactics, players, tournament, match stats and play; `location:` names the venue. Ins toggles automatic action replay, with the current setting named at bottom. This is the place to compare sides and decide whether to change management before kick-off. [confirmed: E015-r0007 state 30; E031 C36–C37]*
 
 For a managed watched match, **play** leads to captain selection; Enter accepts the highlighted player, or Up/Down chooses another before Enter. A quick result bypasses the watched pitch and its interventions; E031's Holland run used quick rounds for most fixtures while retaining watched examples. The computer's highlighted captain choice is timed according to reviewed F030. [confirmed: E031 C38–C38b, C35, C63; reviewed F030]
 
 ![Original captain card](images/captain-select.png)
 
-*Captain select, `E015-r0007 state 63`. The player card and opponent/score context stay on screen while the selection is made. [confirmed: E015-r0007 state 63]*
+*Captain select, `E015-r0007 state 63`. The player card and opponent/score context stay on screen while the selection is made. The card also prints `C-computer select`; that hint is distinct from the observed Up/Down and Enter choice. [confirmed: E015-r0007 state 63; E031 C38–C38b]*
 
 ## Pitch, speed and commentary
 
@@ -22,11 +22,11 @@ For a managed watched match, **play** leads to captain selection; Enter accepts 
 
 *Live pitch, `E015-r0007 state 31`. The header has match type, sides, score and event text; colored marks, goals and a ball are shown on the pitch. The bottom line prints display, speed, result, commentary and bench key hints. The picture represents a watched other-country game, so do not infer managed-team tactics from it. [confirmed: E015-r0007 state 31; E031 C39–C39c]*
 
-E031 observed **Left** reducing speed by one `»` marker, **Up/Down** changing the display marks, **Space** opening commentary, and **R** moving to the quick result. The displayed F9 suffix and exact meaning of every pitch glyph remain unverified. Speed here is an original-game control, distinct from the remaster's new playback-rate design tracked in #243. [confirmed: E031 C39–C39c, C08; E015-r0007 state 31; evidence gap: F9 and glyph legend]
+E031 observed **Left** reducing speed by one `»` marker, **Up/Down** changing display marks, **Space** opening commentary, and **R** requesting quick continuation. That continuation can still stop at half-time, extra-time and shoot-out decisions, as M244-G4C-07 steps 32–55 show. The pitch prints **Esc/Enter–bench** as a direct management hint, but a single-key use of that route was not recorded. The displayed F9 suffix and exact meaning of every pitch glyph remain unverified. Speed here is an original-game control, distinct from the remaster's playback-rate design tracked in #243. [confirmed: E031 C39–C39c, C08; E015-r0007 state 31; M244-G4C-07 steps 32–55; evidence gap: direct bench key, F9 and glyph legend]
 
 ![Commentary view beside the pitch](images/match-commentary.png)
 
-*Commentary view, `E015-r0007 state 67`. A scroll of event sentences appears beside the pitch while score/time and the bottom control legend remain. A manager can interpret the score in the context of chances and actions. [confirmed: E015-r0007 state 67; E031 C39c]*
+*Commentary view, `E015-r0007 state 67`. A scroll of event sentences appears beside the pitch while score/time remain. The screen prints `Esc-play` for returning to play; that printed exit hint was not separately exercised in this capture. A manager can interpret the score in the context of chances and actions. [confirmed: E015-r0007 state 67; E031 C39c]*
 
 ## Conditional moments
 
@@ -56,17 +56,17 @@ The original manual/E031 evidence gives five substitutions in a friendly and two
 
 ![Illegal substitution overlay](images/squad-substitution-illegal.png)
 
-*Illegal-substitution response, `E015-r0007 state 176`. The blocked attempt is visibly rejected rather than silently applied. The exact predicate needs the adjacent input/state evidence before being stated as a rule. [confirmed: E015-r0007 state 176; evidence gap: precise predicate]*
+*Illegal-substitution response, `E015-r0007 state 176`. The blocked attempt is visibly rejected rather than silently applied; the overlay prints `PRESS ANY KEY` to acknowledge it. The exact rejection predicate and acknowledgment transition need adjacent single-step evidence before being stated as rules. [confirmed: E015-r0007 state 176; evidence gap: precise predicate and key transition]*
 
 ## Full time, extra time and penalties
 
 ![Full-time match menu](images/match-menu-fulltime.png)
 
-*Full-time menu, `E015-r0007 state 50`, where result context and match actions remain. In knockout play, E031 instead observed an “EXTRA TIME” menu with **play** when level after regulation; extra time also has its own half-time. The length of that extra-time half was not established by the E031 guide. [confirmed: E015-r0007 state 50; E031 C47–C47b; evidence gap: extra-time half length]*
+*Full-time menu, `E015-r0007 state 50`, where result context, `location:` and match actions remain. The highlighted action is **exit**, replacing pre-match **play**. In knockout play, E031 instead observed an “EXTRA TIME” menu with **play** when level after regulation; extra time also has its own half-time. The length of that extra-time half was not established by the E031 guide. [confirmed: E015-r0007 state 50; E031 C47–C47b; evidence gap: extra-time half length]*
 
 ![Managed knockout match at halftime](images/m244-knockout-halftime.png)
 
-*Belgium versus Holland last sixteen after the managed match was started from G4C and **R** requested a quick result, `M244-G4C-07 step 40`. The menu keeps both lineups, formations, score and **play** decision while the header says HALF TIME. Its 0–0 path is a new run, distinct from E031's 2–2 watched path. [confirmed: M244-G4C-07 steps 29–40]*
+*Belgium versus Holland last sixteen after the managed match was started from G4C and **R** requested quick continuation, `M244-G4C-07 step 40`. The menu keeps both lineups, formations, score and **play** decision while the header says HALF TIME; its event line also reports `Grun BOOKED`. This is a visible booking event, not a separate card-notice overlay. Its 0–0 path is a new run, distinct from E031's 2–2 watched path. [confirmed: M244-G4C-07 steps 29–40]*
 
 ![Extra-time play menu after regulation](images/m244-extra-time-menu.png)
 
@@ -74,7 +74,7 @@ The original manual/E031 evidence gives five substitutions in a friendly and two
 
 ![Extra-time halftime menu](images/m244-extra-time-halftime.png)
 
-*After one Enter on that menu, the header gained an additional HALF TIME line during extra time, `M244-G4C-07 step 50`. The same management actions remain visible. This proves the additional midpoint screen, without assigning a precise minute length. [confirmed: M244-G4C-07 steps 45–50; E031 C47b]*
+*After one Enter on that menu, the header gained an additional HALF TIME line during extra time, `M244-G4C-07 step 50`. The displayed clock reads `15` and the same management actions remain visible. This proves the additional midpoint screen; the image alone does not establish an extra-time duration rule. [confirmed: M244-G4C-07 steps 45–50; E031 C47b]*
 
 ![Original World Cup penalty shoot-out start](images/e031-shootout-start.png)
 
@@ -102,7 +102,7 @@ After this prompt, the managed team orders its takers using Up/Down and Enter; E
 
 ![Original match statistics and save-summary question](images/match-summary-save-prompt.png)
 
-*Match statistics with a conditional summary-save prompt, `E015-r0007 state 51`. The screen compares the two sides' corners, penalties, shots, fouls, red/yellow cards, possession and territory and lists scorers. The prompt offers a save name; reviewed F030 says it occurs after a watched match and times out to No. [confirmed: E015-r0007 state 51; E031 C51–C51b; reviewed F030]*
+*Match statistics with a conditional summary-save prompt, `E015-r0007 state 51`. The board compares final and half-time scores, scorer names and minutes, corners, free kicks, penalties, shots, shots on target, saves, fouls, red/yellow cards, possession and territory; it also names MAN OF THE MATCH. Shots on target and saves help separate finishing from chance volume, while the half-time score and scorer minutes show when the result changed. The bottom asks Y/N whether to save the match summary to disk; reviewed F030 says it occurs after a watched match and times out to No. [confirmed: E015-r0007 state 51; E031 C51–C51b; reviewed F030]*
 
 ![Saved match summary view](images/match-summary.png)
 

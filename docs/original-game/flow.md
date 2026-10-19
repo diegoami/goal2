@@ -1,6 +1,6 @@
 # Connected original-game flow
 
-Arrows marked **key** below are player actions observed in E031 or printed on a retained screen. **Auto** marks an observed game-driven continuation. **Conditional** means the game asks only in some contexts; a branch in this diagram does not mean every fixture presents it. The diagram condenses E031 C11–C52 and the screen sources in the [inventory](screen-inventory.md); the table following it gives checkable transitions. [confirmed: E031 C11–C52; E015 catalogue]
+Arrows marked **key** below are observed player actions; **printed hint** labels an offered control without a single-step exercise. **Auto** marks an observed game-driven continuation. **Conditional** means the game asks only in some contexts; a branch in this diagram does not mean every fixture presents it. The diagram condenses E031 C11–C52 and the screen sources in the [inventory](screen-inventory.md); the table following it gives checkable transitions. [confirmed: E031 C11–C52; E015 catalogue]
 
 ```mermaid
 flowchart TD
@@ -30,13 +30,22 @@ flowchart TD
   match -->|other side watched| live
   live -->|conditional goal| replayq[Replay / save goal prompts]
   live -->|conditional injury| injury[Injury / substitution opportunity]
-  live -->|key Space or half-time auto| halftime[Half-time menu]
+  live -->|key Space| commentary[Commentary view]
+  commentary -->|printed hint: Esc-play| live
+  live -->|printed hint: Esc or Enter bench, unexercised| bench
+  live -->|half-time auto| halfboard[Half-time board]
+  halfboard -->|key Enter or Space| halftime[Half-time menu]
   halftime -->|key players| bench[Bench / tactics]
   bench -->|key Esc| halftime
   halftime -->|key play| live
-  live -->|key R| quick
+  live -->|key R| fast[Quick continuation with conditional stops]
+  fast -->|conditional half-time stop| halfboard
+  halftime -->|key play after quick stop| fast
+  fast -->|conditional full-time stop| fulltime
   live -->|full time auto| fulltime[Full-time match menu]
   fulltime -->|conditional level knockout| extra[Extra-time halves]
+  extra -->|conditional midpoint| extrahalf[Extra-time half-time menu]
+  extrahalf -->|key play| extra
   extra -->|conditional level| shootout[Penalty order and kicks]
   fulltime -->|after watched match| stats[Statistics / summary prompt]
   shootout --> stats
@@ -59,9 +68,11 @@ flowchart TD
 | Hub → save/quit/replay/summary | F7, F10, F3, F4 respectively; these are separate branches | E031 C23–C26; E015-r0007 states 207, 215, 223–224 |
 | Hub → round → watch prompt | Play next game advances; marked and managed fixtures can ask Y/N | E031 C35–C35c, C68; E015-r0007 states 27–28 |
 | Watch prompt → managed match menu → captain → pitch | Y, then play and Enter for highlighted captain; other-side watch lacks captain | E031 C37–C39, C68b; E015-r0007 states 30–31, 63 |
-| Pitch → halftime/bench → pitch | Half-time is automatic; Enter or Space reached menu, players opens bench, play resumes | E031 C40–C41; E015-r0007 states 44, 76–82 |
+| Pitch → commentary → pitch | Space opened commentary; its printed hint says Esc-play, not separately exercised in this capture | E031 C39c; E015-r0007 state 67 |
+| Pitch → bench (printed) | Legend offers Esc or Enter for bench; a direct in-play transition was not single-step exercised | E031 C39; E015-r0007 states 31,42 |
+| Pitch → half-time board → menu/bench → pitch | Half-time board is automatic; Enter or Space on that board reached menu, players opens bench, play resumes | E031 C40–C41; E015-r0007 states 44, 76–82 |
 | Pitch → conditional replay/taker/injury | Goal, set piece or injury can interrupt with a prompt; timers/defaults differ | E031 C42–C46; reviewed F030 |
-| Pitch → quick result | R during watched match | E031 C08, C68c |
+| Pitch → quick continuation | R during watched match accelerates play; half-time, full-time, extra-time and shoot-out stops can still require acknowledgment or decisions | E031 C08, C68c; M244-G4C-07 steps 32–55 |
 | Full-time → extra time → shoot-out | Knockout draw; extra-time menu and half-time; still level gives order prompt then kicks | E031 C47–C50; E031 g1 step 3874 |
 | Watched result → stats/summary → round results | Post-match summary-save question, stats board, then round list | E031 C24b, C51; E015-r0007 states 50–52 |
 | Results → stage / next manager | Remaining fixtures and winners can advance campaign; multi-manager hub can hand to next player | E031 C16–C16b, C52–C55 |

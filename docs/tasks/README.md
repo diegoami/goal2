@@ -143,9 +143,17 @@ main-session preflight before implementation; status stays in issue labels.
 
 [designed: owner,2026-10-19] Preserve the original information and improve access;
 status remains in GitHub labels. The browsing bug is [#241](https://github.com/diegoami/goal2/issues/241).
+The priority column records the manual audit's **proposed order**, not an owner-approved dispatch;
+the main session still triages scope, dependencies and review for each follow-up. Issues
+[#248](https://github.com/diegoami/goal2/issues/248)–[#251](https://github.com/diegoami/goal2/issues/251)
+are in **goal2**, distinct from the archaeology #248/#249 rows above. [designed: issue #244 audit]
 
-| Task | Title | Issue | Difficulty | Merge after |
-| --- | --- | --- | --- | --- |
-| [T84](T84.md) | Inspect complete original-style player attributes | [#242](https://github.com/diegoami/goal2/issues/242) | Hard | T79, #241 |
-| — | Illustrated original-game manual and UI/flow reference (high priority) | [#244](https://github.com/diegoami/goal2/issues/244) | Documentation | Independent reference for #241–#243 and later UI slices |
-| [T85](T85.md) | Find Play/Watch easily and choose match playback speed | [#243](https://github.com/diegoami/goal2/issues/243) | Medium | T79 |
+| Task | Title | Issue | Difficulty | Priority | Merge after / gate |
+| --- | --- | --- | --- | --- | --- |
+| [T84](T84.md) | Inspect complete original-style player attributes | [#242](https://github.com/diegoami/goal2/issues/242) | Hard | Existing backlog | T79, #241 |
+| — | Illustrated original-game manual and UI/flow reference | [#244](https://github.com/diegoami/goal2/issues/244) | Documentation | High (owner) | Independent reference for #241–#243 and later UI slices |
+| [T85](T85.md) | Find Play/Watch easily and choose match playback speed | [#243](https://github.com/diegoami/goal2/issues/243) | Medium | Existing backlog | T79 |
+| — | Edit player roles, personal tactics and marking in desktop | [#248](https://github.com/diegoami/goal2/issues/248) | Scope/data audit first | High proposed | #241/#242 and supported-state audit; main-session triage |
+| — | Browse campaign fixtures, standings, opponents and history | [#249](https://github.com/diegoami/goal2/issues/249) | Scope/data audit first | High proposed | Available campaign data audit; main-session triage |
+| — | Scope and expose supported watched-match interventions | [#250](https://github.com/diegoami/goal2/issues/250) | Support matrix first | Medium proposed | Watched-kit/worker capability audit; main-session triage |
+| — | Browse retained match summaries and assess saved-goal replay | [#251](https://github.com/diegoami/goal2/issues/251) | Retention audit first | Medium proposed | History-data audit; main-session triage |
