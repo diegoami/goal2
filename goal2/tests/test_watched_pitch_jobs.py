@@ -344,7 +344,12 @@ class OriginalPitchJobsTests(unittest.TestCase):
                     self.assertEqual(frames[-1]['minute'],93 if seed==257 else 91)
                     jobs.ack_frames(token,len(frames)-1)
                     self.assertIsNone(jobs.outcome)
-                    events.extend(jobs.poll(token))
+                    # [designed: #254] Final ACK permits private candidate preparation;
+                    # retain the existing deadline and every final parity assertion.
+                    while jobs.busy:
+                        self.assertLess(time.monotonic(),deadline,'actual original completion did not finish')
+                        app.processEvents();events.extend(jobs.poll(token))
+                        time.sleep(.002)
                     self.assertFalse(jobs.busy);self.assertEqual(jobs.outcome,expected)
                     self.assertEqual(owner.state.mem,expected.memory)
                     self.assertEqual(owner.state.match_count,1)

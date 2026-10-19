@@ -1,0 +1,25 @@
+{
+  "stage": "complete",
+  "driver": "windows",
+  "surface": [
+    1000,
+    720
+  ],
+  "window": [
+    1000,
+    720
+  ],
+  "window_rect": [
+    345,
+    142,
+    1361,
+    901
+  ],
+  "dpi": 96,
+  "qt_scale_requested": "0.6666666666666666",
+  "frame_sequence": 4829,
+  "frame_consumed_before_status": 4829,
+  "capture": "goal2-viewer-zswcjd5m-complete.png",
+  "pid": 9684,
+  "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+}
