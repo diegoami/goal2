@@ -1,0 +1,272 @@
+[
+  {
+    "step": 0,
+    "label": "restored-order",
+    "action": "restore verified 062e210b...",
+    "text_digest": "e7d861296bb822f0544f30e7b8d3fc1c2df1291e127723f346abf78c9d0f4613",
+    "sav_sha256": "45651047d3c56e6b5f6716877a2e8673bf4887b3d1356dcadb3ea59a5ca9be76",
+    "png_sha256": "82c96b933368876251bc5fbbb07091ddab9cfacf33efa708ee8b61c7c5892df5",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 1,
+    "label": "pick-1",
+    "action": "key Return",
+    "text_digest": "36aef29a13227ff3a18204111a471328ab9b38ed92555af4066ee62cb3703740",
+    "sav_sha256": "14ade8f146c9e56a9713a7ede825c4448afdd440e9939795e6cd173042e18d85",
+    "png_sha256": "095c9374da669513e5d5b17b05634c2ecbd7120e1acf2315add0339759cb2b28",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 2,
+    "label": "pick-2",
+    "action": "key Return",
+    "text_digest": "616b75077af67a938d5a9838816c62c801e72e9bc0a25e36ef63f9124581590f",
+    "sav_sha256": "439fc747e1093a6744233cadbc1e7fff7491e14d81f223e759330ba66b85018b",
+    "png_sha256": "e645b7d3f3fe5e88daf57773c33dfab5b365a56b5a4ac8a9886255216370ec6b",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 3,
+    "label": "pick-3",
+    "action": "key Return",
+    "text_digest": "9607b4992b8c3fd57a7084d8e78ddddbdfc6c87416e185ee22abe2f613269e7a",
+    "sav_sha256": "69a055460653f7af843989233143c3e1986f42b78c6b175dc3efc963cb678e67",
+    "png_sha256": "0ef8cf5c1d325fc9bb575b874cf6f48aa48da029b6714f3dc1c5d9882410210a",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 4,
+    "label": "pick-4",
+    "action": "key Return",
+    "text_digest": "77547560467664d97b048c74baef366e60b25e7c34497ea6c55506af94b6dcb1",
+    "sav_sha256": "b352c29ccc5431663346c4a719f4e64ae6683bd833d16bc45936f34f10eef645",
+    "png_sha256": "5907ca64ab2a646cebef90bc4a811f18704f52a7f6ab96ad5de0e941e90d2e51",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 5,
+    "label": "pick-5",
+    "action": "key Return",
+    "text_digest": "394c407fbe0b6d78915fcc7df8f6cad0b90f869f9f71344c36ef0813916bbf3e",
+    "sav_sha256": "fdfeaa43c7f70fef4509a09f5905c26d399ced84564b653651a9db1c7be106a7",
+    "png_sha256": "503748ddbb1db625621320fb41f50e71457e7dcab747aa0e979711e2d7087909",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 6,
+    "label": "pick-6",
+    "action": "key Return",
+    "text_digest": "18d5d5b161c307f6e5577f3d3070a294d0a9353bafcd9217694d095767fb40e6",
+    "sav_sha256": "29b68cbdfa38823ca7c25fd5975a09c46dcc057cc6697c99e089bd80781842a7",
+    "png_sha256": "e4bdb7c1823c83c2c1b927b5dbd30c2899210854ee673d28f12d4417f05d4626",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 7,
+    "label": "pick-7",
+    "action": "key Return",
+    "text_digest": "582f56d4cf5f858387d51aada06b362a6eb33818cf6fb53936e2a58a2fbea503",
+    "sav_sha256": "7512422109dad5bf3c15ce7f293580824d0e551aed328d63f685030e4fea1152",
+    "png_sha256": "685c0ab6a98ca21224aee57d86b3c686c6b85a9042c325baf8c38c3667872d17",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 8,
+    "label": "pick-8",
+    "action": "key Return",
+    "text_digest": "510d4ec4c6fac80575239c23eda40a076d5e75f37f451354f9d51b41dde75c69",
+    "sav_sha256": "bc7fb75c341bcb4df4b1538b50213fd383e110c2e1e9b6d146f8c5ce99871353",
+    "png_sha256": "27c0bbd205bc0147e1988b46f376de61fcedc17fc2d61403a735731357ac2836",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 9,
+    "label": "pick-9",
+    "action": "key Return",
+    "text_digest": "87f144380fc590ffb49f72f92b449df38c5a6a260156e4925d1635a1e79de3e4",
+    "sav_sha256": "d74fa1385e318abcbe6b4a9ba22517997d9c08390ed0f73f079d5eb7b6bda17a",
+    "png_sha256": "2d99ef191202ec589787f891782cf9770e86528c426f7688331980d36298deea",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 10,
+    "label": "pick-10",
+    "action": "key Return",
+    "text_digest": "72e8b2acff6bc49ee1d4095b7a24fa50927ca798b565ff408ed17a3c0bdd8d66",
+    "sav_sha256": "2c0c46d25f26d238aea807c7fd0ea4cffa86cb75d43bc5c6f171f0b61550853b",
+    "png_sha256": "a416f621de9374d323edf2ea8e04eaa70861cc4125da17eb193daf2c54f6fb4a",
+    "bottom": "Holland-------- use ↑↓ then ◄┘ to select the order      Hit Esc to undo",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 11,
+    "label": "pick-11",
+    "action": "key Return",
+    "text_digest": "043e02d6440e5bf040a637342b196e106b7324971ef813c91ee373c3595f4471",
+    "sav_sha256": "067ddb0db12d708ca0694975946a077cbbe215823d834fa65aa992428049cde2",
+    "png_sha256": "83a4776291697293808063ba50ebf220397a53893f2914e6662b7f0cc715e25f",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 12,
+    "label": "kick-wait-1",
+    "action": "wait 0.5s",
+    "text_digest": "7d788e14825b4b5478669a8936da76996421a5556fb6b80ee705bef2a4d85a5e",
+    "sav_sha256": "fca5d75914d3eed6baa608421b3f0cc00eddf0c7480fe5c327437114d472291c",
+    "png_sha256": "23b250134886d2ff56ed6a3ac43fb458db1504869289066b8a226834c98710ac",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 13,
+    "label": "kick-wait-2",
+    "action": "wait 0.5s",
+    "text_digest": "ccd1f87d9b64a6570e83c0d3f0e768e958442597f2f856ad43982a48fce8b4f2",
+    "sav_sha256": "db6064aca1fcc1f1de8c5ac588597c6dfbb9ad31ad557c01ed41a08d13ebb0be",
+    "png_sha256": "96acb6f9f8491880ff82cfc4f214ad6b590481a7b992927129be34b26be49608",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 14,
+    "label": "kick-wait-3",
+    "action": "wait 0.5s",
+    "text_digest": "d2aa81b4140c664500d27121f4df0ad739e8a1ed3d21cc40677d822fb80076e3",
+    "sav_sha256": "c78dde282e2078229cb1a17229683f4a6b243ee5686371c9348c824fa127f605",
+    "png_sha256": "339bc336aebf0a0a718f5c15e3b2953a926c76ba29f2f14ecb67a5cc6d7aae18",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 15,
+    "label": "kick-wait-4",
+    "action": "wait 0.5s",
+    "text_digest": "d15eef5df0162ec2b93a10f9badbd5a929623b5315e0b5ad11f6484830c3fa58",
+    "sav_sha256": "c4c537646903438b158a3a2caffdb40d4b2e136fc522ed32131e69fd670cb5a2",
+    "png_sha256": "a0d10bdb5fd7245084bc52af0fec1d41f5257c04779c12bbcb4eab642bc47482",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 16,
+    "label": "kick-wait-5",
+    "action": "wait 0.5s",
+    "text_digest": "75f0fea47bbc14cb521a4b0babf1f170da4b45241650c4ad13c5ac3c312454aa",
+    "sav_sha256": "43e590af55c9806fd9f6d94ea0bc7bc14ddcf32aca17fc4f2c0e06a89946dc91",
+    "png_sha256": "506149530e60d6a7ed0fcfd56b3301134cb87604c4004ea86136fa6fdd004cc8",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 17,
+    "label": "kick-wait-6",
+    "action": "wait 0.5s",
+    "text_digest": "c1c4ef28520c851412710287b04be799b597277a6ab5932a6ed3cd2c7980d3e0",
+    "sav_sha256": "c4ee64c0b1c97c1146cc7ee8d6266774c1e47cc573b9d11d78a616db2dcaecbd",
+    "png_sha256": "501680fb7a8e26a907a7ab8d5e3903ebfffd21228fb5ce28684092881ad8a733",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 18,
+    "label": "kick-wait-7",
+    "action": "wait 0.5s",
+    "text_digest": "4fecc7328133c12b971df0350836852e7fabd77a5aa5209bb64d5a02a1cf0ed7",
+    "sav_sha256": "a6110208fe72eb7e515840e7d8cc720445aaf5f4e44c4c1ca07ef76ff80338eb",
+    "png_sha256": "67e88f8d1e8fa3738dd31bcaa11f54e98d6d8431abd7c5e9b31977b440432858",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 19,
+    "label": "kick-wait-8",
+    "action": "wait 0.5s",
+    "text_digest": "3495a0a6236819868533aa310ddb25e4d76b671a10a675984049584755bde890",
+    "sav_sha256": "5d9e9bce1020a9ca0ea444800c279eb4d7b6937fe34d72887edd6329115b27cc",
+    "png_sha256": "02224c8cf909c9527bf10a960006aa895a0a3b80d7b132559ccdf55e4017596e",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 20,
+    "label": "kick-wait-9",
+    "action": "wait 0.5s",
+    "text_digest": "3495a0a6236819868533aa310ddb25e4d76b671a10a675984049584755bde890",
+    "sav_sha256": "9a6af43aa551c4d9b611120072216f7a6d58846edd64d3c46bb9dcffa4076e16",
+    "png_sha256": "02224c8cf909c9527bf10a960006aa895a0a3b80d7b132559ccdf55e4017596e",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 21,
+    "label": "kick-wait-10",
+    "action": "wait 0.5s",
+    "text_digest": "d1f97d9316be3a150a960310056d2bfa749b86888faa938c88b5c182fa1e1b71",
+    "sav_sha256": "00bfbec0ec9a57dab2715df8b9088d40d9824418b578ff8ef4a5bf4bf010ef40",
+    "png_sha256": "0b658c20efcab7e590e7b5cd0a8089e00a9275b4fa21b03e262d8c4aac504f42",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 22,
+    "label": "kick-wait-11",
+    "action": "wait 0.5s",
+    "text_digest": "b19f49c96fb39c75d2ff5fc2dba0a5e85b0541cbc543b577fac15cf4b64d13f3",
+    "sav_sha256": "fc7e5cfe5067dd44812008cd7c34f2f87b6a4b3778829ab440c5af1677182a26",
+    "png_sha256": "07fc8fe1987a240326c633408858ea31be84e95c7c9b32648e3191dfede10529",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 23,
+    "label": "kick-wait-12",
+    "action": "wait 0.5s",
+    "text_digest": "ef66eb0701eac09cd62fa66e722bdd85497cbb396ebd8be9edaff9978102f306",
+    "sav_sha256": "41797ef7112ac4deb379db7d8a3980a4e5c9550f0c33068efc13bcf269daf256",
+    "png_sha256": "37a6a39781c1ed18208601989061144804ff38cb27d2761c4527a3ba0c0bfc26",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 24,
+    "label": "kick-wait-13",
+    "action": "wait 0.5s",
+    "text_digest": "a9d767d8f623d2546a16aac7cf29682780332aa88a11c8e9102826f98639aa6b",
+    "sav_sha256": "f1b75292ebab0262ba306c1266b00de5c4b67bd98a1921eeb5e8154fa3e8f15e",
+    "png_sha256": "726e24ac6c0d15d7d40030cf32f007680312c68464c2b144956b1ff530dc3875",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 25,
+    "label": "kick-wait-14",
+    "action": "wait 0.5s",
+    "text_digest": "df2d4ed2ef1689ab6195bd363ef17876c948dc5c8679c726fccf0c8134198fa9",
+    "sav_sha256": "b83e45614d83f4f6626be9a2dfaefb5f96eed96595788763696e06f5f63aea2e",
+    "png_sha256": "3ad022ff05f295b9beac4a5561d6b9c7d809138a12ce1fe9bceb22f2a2fd47e9",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 26,
+    "label": "kick-wait-15",
+    "action": "wait 0.5s",
+    "text_digest": "ae8ba57aa999dc463863561c517d08643b1b33b22da4d2d1e7f311282eab5250",
+    "sav_sha256": "6d48b2df968ceb2ad8449b1f61ac0a1fb6e4f0b5fa73d9e35735ab805c991862",
+    "png_sha256": "73a215c51b5f775c2d3b1b110b998bdfa1355f406b9d572c9a7ffd8c6898e049",
+    "bottom": "  ↓↑-display ←→-speed»»»     R-result   spacebar-commentary  F9-♫  Esc,◄┘-bench",
+    "font": "the savestate's VGA plane 2"
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "step": 0,
+    "label": "00-title",
+    "action": "launch",
+    "text_digest": "cd7f15fbf853b40471d05bad51cb6e6c14cbc8a7307893dba8f5f36c2315c612",
+    "sav_sha256": "7dbbb7f8726b58ad5e6352e125f9418f574b28cc73e15e512cee9cff59fc9dbe",
+    "png_sha256": "e980b8522f9e08886276c7903f5fa6203fbb09be0b07d284b3a200c47e777bc2",
+    "bottom": "\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 Do you want to load a saved game? (Y/N) \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 1,
+    "label": "01-load",
+    "action": "key y",
+    "text_digest": "cd7f15fbf853b40471d05bad51cb6e6c14cbc8a7307893dba8f5f36c2315c612",
+    "sav_sha256": "0096213214c75a017965399e99981e95c88c97c20fdbef619d58d1d3cf977ed8",
+    "png_sha256": "e980b8522f9e08886276c7903f5fa6203fbb09be0b07d284b3a200c47e777bc2",
+    "bottom": "\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 Do you want to load a saved game? (Y/N) \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 2,
+    "label": "02-manager",
+    "action": "key Return",
+    "text_digest": "b85ba6d253d8642ac66e0daf625172f86c7bc0180202d118b6fc3fa827da2b21",
+    "sav_sha256": "01dde8419d3067cf6ca1fe22825928f98dc256a2e97d6adbfe534fe7d6a56d66",
+    "png_sha256": "7eee4d45fa7fdeb35341ccd3702129b4458ed3a78c8fe4293b764593657467af",
+    "bottom": "F1help  F3load goal  F4load summary  F5print screen F7save               F10quit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 3,
+    "label": "03-squad",
+    "action": "key space",
+    "text_digest": "3b9bb4d270dc395396f243df6aaee22ef0c1553745063dcb25b9c69f8f78766d",
+    "sav_sha256": "6d67b0d62a80750cc487693c0b22eb7f217317732b2f69cd8eaa376b4b1ed481",
+    "png_sha256": "15c46347eb961fddefb97053daef4b1862dd247b11f66568367f0074a98a4774",
+    "bottom": "F2-new name R,C-reposition T-tactics               \u25c4\u2518-move player   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 4,
+    "label": "04-next-player",
+    "action": "key Down",
+    "text_digest": "53c34f5b980cc2b8c83f40c1e5741c83737329f1f564ce7e17e363ca13b7df41",
+    "sav_sha256": "65d87e69734a7653c313722fd5e8737a0a56eea9112320210502d5a7070065d5",
+    "png_sha256": "0433257b818389b39b741f0e1f21731478526200347ae14b8081d132695c0392",
+    "bottom": "F2-new name R,C-reposition T-tactics               \u25c4\u2518-move player   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 5,
+    "label": "05-pool",
+    "action": "key Right",
+    "text_digest": "f264192e49b419846e60ade3018fcd0a386579d2dfa2489dc51134db75a038d4",
+    "sav_sha256": "3db6296b4d99d5c76e31a079f673124e5d4c87da0d38c68cffaa3491118fa9e1",
+    "png_sha256": "251a6686a57bcfd95291c3178e0c8511daa5ca7ee329c9112e458b9621bc1b74",
+    "bottom": "F2-new name R,C-reposition T-tactics               \u25c4\u2518-move player   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 6,
+    "label": "06-pool-next",
+    "action": "key Down",
+    "text_digest": "bfb6f6fe8f29dbed20b42a746a9ab116d3d7b9f32d5c981a0216fd93d4164576",
+    "sav_sha256": "2e62f226a82af8bce8d5b52eb4a9509508d27549bf16ded6aeb6641e016321f4",
+    "png_sha256": "da5fe5eeb6dcad057e4930adf2d70423aefe89d35fffce4be9d0967c6abf1d19",
+    "bottom": "F2-new name R,C-reposition T-tactics               \u25c4\u2518-move player   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 7,
+    "label": "07-squad-return",
+    "action": "key Left",
+    "text_digest": "53c34f5b980cc2b8c83f40c1e5741c83737329f1f564ce7e17e363ca13b7df41",
+    "sav_sha256": "51d0bb7fe0debd336dff74b83a9fffaa76c4ab3a19ec6838f9fe0578bda14f95",
+    "png_sha256": "0433257b818389b39b741f0e1f21731478526200347ae14b8081d132695c0392",
+    "bottom": "F2-new name R,C-reposition T-tactics               \u25c4\u2518-move player   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 8,
+    "label": "08-individual-tactics",
+    "action": "key t",
+    "text_digest": "c64d375e193537048e6ca077c768fba123b5af94ad96116ec30dbd5f8e6fd1d7",
+    "sav_sha256": "df688c2633186782ba2d3f52dcc8abda5378658502e8b1a503ce0db59bc390a2",
+    "png_sha256": "c8492ba3f0cc68f478d2e96da6235f608ff7fd63b012e6ac2b9d21ac131b6d9c",
+    "bottom": "\u2193\u2191\u2190\u2192-select    \u25c4\u2518-alter tactic                            Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 9,
+    "label": "09-after-tactics-esc",
+    "action": "key Escape",
+    "text_digest": "53c34f5b980cc2b8c83f40c1e5741c83737329f1f564ce7e17e363ca13b7df41",
+    "sav_sha256": "6fd25b388de176a848148273ee9327551340d9faa4c334479695cc4e5c4bd108",
+    "png_sha256": "0433257b818389b39b741f0e1f21731478526200347ae14b8081d132695c0392",
+    "bottom": "F2-new name R,C-reposition T-tactics               \u25c4\u2518-move player   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 10,
+    "label": "10-after-squad-esc",
+    "action": "key Escape",
+    "text_digest": "dd0b6e7bd3744509cbc6bff0c01364046886d6e3e71e47d8bd0931474e1d38e8",
+    "sav_sha256": "0b87ef024dfef1c3bdab7896dcb4112a20e19822163d3bda44eb57e484700d43",
+    "png_sha256": "bccb086976b6a5acd9645b4e3d4500da1e977c3d866482ad7dcf4b7eb875be2a",
+    "bottom": "F1help  F3load goal  F4load summary  F5print screen F7save               F10quit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 11,
+    "label": "11-team-tactics",
+    "action": "key t",
+    "text_digest": "27134330b664533af2dbe3c27d5b51b389741fc2dd1108d924fe2a48b2e66642",
+    "sav_sha256": "9f5e2e54ee47d7267e3512b28dd67e03fb0efcee4559e62cc957d320ad5de214",
+    "png_sha256": "f66326a555d5f8c3c21540817cd6ec9e19583937fb218d6e58336c384193325b",
+    "bottom": "\u25c4\u2518-change tactic                                                Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  }
+]
