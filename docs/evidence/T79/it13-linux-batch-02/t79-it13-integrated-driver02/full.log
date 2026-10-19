@@ -1,0 +1,21 @@
+START controls
+PASS controls 15.666
+START units
+PASS units 194.189
+START handoff
+PASS handoff 292.388
+START animated-pitch
+PASS animated-pitch 149.777
+START competitive
+PASS competitive 59.087
+START provenance
+PASS provenance 0.065
+START links
+PASS links 0.316
+START working-whitespace
+PASS working-whitespace 0.017
+START authored-whitespace
+PASS authored-whitespace 0.717
+START premerge
+PASS premerge 85.482
+PASS all serial author gates

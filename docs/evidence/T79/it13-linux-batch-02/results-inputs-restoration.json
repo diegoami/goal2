@@ -1,0 +1,10 @@
+{
+  "claim": "[confirmed: accepted T78 native receipt hashes] Restored transferred original generated fixtures, no fabrication",
+  "source": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/T78-implementation-27b62e9e5c17-1792344201461927018/.cache/T78-presentation-inputs-03",
+  "files": {
+    "inventory.json": "7af46eedef586cd6340efb6d5a8be4fcbbde6f143104cf412f06e8383aa2e7b2",
+    "competitive-regulation.g2save": "30daba2cfd5ee333a780d0c267d15266dbdd168010266c8698c65f5f54cdfbcf",
+    "original-friendly-kit1.g2save": "5e9b9f19b9cc88006273b60302b1c0421a2baa9497670409990292b721f4ea67",
+    "competitive-shootout.g2save": "5f0f0204f82450e180f2ec45601f5009e6bf5247271edd06b65a91cdc0f1970c"
+  }
+}

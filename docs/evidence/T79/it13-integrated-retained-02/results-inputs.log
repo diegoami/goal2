@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 504, in main
+    if args.prepare_results_inputs:return prepare(args)
+                                          ^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/results_scenario.py", line 45, in prepare
+    inputs(args)
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/results_scenario.py", line 24, in inputs
+    folder=Path(args.results_input_dir);inventory=json.loads((folder/'inventory.json').read_text())
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/diego/projects/goal2-work/T79-football-ui/.cache/T78-presentation-inputs-03/inventory.json'

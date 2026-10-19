@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "94f42fd42c5028f72aa39e6807ad97b0e99ec6721bbc92508987e71a220c8f8b",
+  "text": "START controls\nPASS controls 15.666\nSTART units\nPASS units 194.189\nSTART handoff\nPASS handoff 292.388\nSTART animated-pitch\nPASS animated-pitch 149.777\nSTART competitive\nPASS competitive 59.087\nSTART provenance\nPASS provenance 0.065\nSTART links\nPASS links 0.316\nSTART working-whitespace\nPASS working-whitespace 0.017\nSTART authored-whitespace\nPASS authored-whitespace 0.717\nSTART premerge\nPASS premerge 85.482\nPASS all serial author gates\n"
+}

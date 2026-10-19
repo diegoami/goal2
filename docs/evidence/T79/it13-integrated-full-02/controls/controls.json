@@ -1,0 +1,86 @@
+{
+  "result": "PASS",
+  "controls": [
+    {
+      "name": "render-mutation",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection",
+        "-v"
+      ],
+      "returncode": 1,
+      "intended_assertion": "rendering mutated display state",
+      "mutant_sha256": "be743dc253a6c4fb78f1e72309f4c714e186d603dec6bca5f3b662f6369080d2",
+      "restored_sha256": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+    },
+    {
+      "name": "wrapped-board",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail",
+        "-v"
+      ],
+      "returncode": 1,
+      "intended_assertion": "not greater than 1",
+      "mutant_sha256": "3c655dd600ffc6d2df0cb6b8b30573e7af4cfc994d07b2a72cd91fbf45cb63cb",
+      "restored_sha256": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+    },
+    {
+      "name": "rating-tail",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail",
+        "-v"
+      ],
+      "returncode": 1,
+      "intended_assertion": "manual scroll lost the final rating row",
+      "mutant_sha256": "3e07b132a21cf13d08154b6619f0be9d7d388dd8bcf4eab8123dd9ff33879d62",
+      "restored_sha256": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+    },
+    {
+      "name": "future-score",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_pygame_match_view.PresentationTests.test_qt_score_uses_consumed_pose_not_future_ingress",
+        "-v"
+      ],
+      "returncode": 1,
+      "intended_assertion": "First 1 \u2014 0 Second",
+      "mutant_sha256": "029712ac8af82bc8cb417635b965f7b1fa7c7360ea8a7f86d35362bcd9ed994b",
+      "restored_sha256": "20ae3e5073affdacbef798fb099c3661ee48832ea691ce3076f1f356d14bde48"
+    },
+    {
+      "name": "real-scenario-render-mutation",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "match-handoff",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-full-02/controls/real-scenario-render-mutation",
+        "--single-scale"
+      ],
+      "returncode": 1,
+      "intended_assertion": "renderer changed Display state",
+      "restored_sha256": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+    }
+  ],
+  "exact_saved_bytes_restored": true
+}

@@ -1,0 +1,26 @@
+START prove-management
+PASS prove-management 12.883
+START prove-friendlies
+PASS prove-friendlies 10.273
+START prove-pool
+PASS prove-pool 4.243
+START prove-halftime
+PASS prove-halftime 11.729
+START acceptance-management
+PASS acceptance-management 7.752
+START acceptance-campaign-friendlies
+PASS acceptance-campaign-friendlies 11.408
+START acceptance-worker
+PASS acceptance-worker 2.18
+START acceptance-campaign-pool
+PASS acceptance-campaign-pool 9.951
+START acceptance-campaign-halftime
+PASS acceptance-campaign-halftime 5.994
+START results-inputs
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/retained_validation_driver.py", line 60, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/retained_validation_driver.py", line 54, in main
+    raise AssertionError(f'{name}: returncode={run.returncode}, source bytes unchanged={same}')
+AssertionError: results-inputs: returncode=1, source bytes unchanged=True

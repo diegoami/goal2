@@ -1,0 +1,172 @@
+{
+  "tag": "[designed: T79] Serial author acceptance",
+  "head": "3bc1ce6fde899d31d046bea96ef4efa3aa3a02ff",
+  "initial_sources": {
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/match_page.py": "20ae3e5073affdacbef798fb099c3661ee48832ea691ce3076f1f356d14bde48",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/pygame_viewer.py": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/fixtures_page.py": "ce1b0a08bf413f385f61d2a8476968e76f869ac272737eaf0db04e5ea8255c72",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "17cff020e5798c2a8a8561960a72d8a9c9b90f3c8afd733898b82c2421644012",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/window.py": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/tests/test_pygame_match_view.py": "c7930ed85e11489e7dc850905aa04fc89c3a653d91010314e64f83b90f43ee29",
+    "goal2/tests/test_pygame_pitch_view.py": "95df082b9e714742d9741eef77a7531e84d443fd0f0fba9b4271b67e315c8f66",
+    "tools/desktop-ui/redesign.py": "ae48ee1008a8ba0149314f6fa2c651b86d3e6875535c7b8399a44c4c96203417",
+    "tools/desktop-ui/match_handoff_scenario.py": "1408e40b0f05e02bdf51ca18708663510306f6fc3133f321908fae7b7ef3c9bc"
+  },
+  "commands": [
+    {
+      "name": "controls",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "match-handoff",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-full-02/controls",
+        "--negative-controls"
+      ],
+      "returncode": 0,
+      "seconds": 15.665566431000116,
+      "source_bytes_unchanged": true,
+      "log_sha256": "af1edd7a148a563d7e6c411f860552bcca6b8e3e369a0c5a3d4a3433cf6e1b59"
+    },
+    {
+      "name": "units",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-m",
+        "unittest",
+        "goal2.tests.test_pygame_match_view",
+        "goal2.tests.test_desktop_quick_jobs",
+        "goal2.tests.test_pygame_pitch_view",
+        "goal2.tests.test_watched_pitch_jobs",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 194.18911794999985,
+      "source_bytes_unchanged": true,
+      "log_sha256": "d930ca8b2075f48f44d6ad0a5b34cb4e1d4321937dac71874038cb7488811a1c"
+    },
+    {
+      "name": "handoff",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "match-handoff",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-full-02/handoff"
+      ],
+      "returncode": 0,
+      "seconds": 292.38844372600033,
+      "source_bytes_unchanged": true,
+      "log_sha256": "4784341902a8e9be2cc8ac1909671a26b3a1612905a1168e69f0faee4b896c1f"
+    },
+    {
+      "name": "animated-pitch",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/animated-pitch.py"
+      ],
+      "returncode": 0,
+      "seconds": 149.77736459900007,
+      "source_bytes_unchanged": true,
+      "log_sha256": "78b78b913bd0ea2345ca7dfa21ecb4792a0c660610c085545b95bbb12700308e"
+    },
+    {
+      "name": "competitive",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/competitive_play.py"
+      ],
+      "returncode": 0,
+      "seconds": 59.08692648700162,
+      "source_bytes_unchanged": true,
+      "log_sha256": "ee44d26249de28fc39557a01f29f21d2eeea8f9967998737ad81f0235dc9e027"
+    },
+    {
+      "name": "provenance",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "tools/check_provenance.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.06527457999982289,
+      "source_bytes_unchanged": true,
+      "log_sha256": "649aa1c85738205a5aea7a00812e572a0b077816339279a70a65811cd84614f8"
+    },
+    {
+      "name": "links",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "tools/check_links.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.3164824460000091,
+      "source_bytes_unchanged": true,
+      "log_sha256": "5d0fe670cd00fd05f768e19e884ce1f5009b33dc74874ac7b081bda809a3f85e"
+    },
+    {
+      "name": "working-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.01725836299920047,
+      "source_bytes_unchanged": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "authored-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "5c26616917d19a77a0e548a0baa2a3997112c477..HEAD",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.7172748600005434,
+      "source_bytes_unchanged": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "premerge",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "tools/check_premerge.py",
+        "--expected-head",
+        "3bc1ce6fde899d31d046bea96ef4efa3aa3a02ff"
+      ],
+      "returncode": 0,
+      "seconds": 85.48192747899884,
+      "source_bytes_unchanged": true,
+      "log_sha256": "2187d3b64602a8fd5d7bf7124dfe837bf5660949ef5f0b2ce56e6d356a941b94"
+    }
+  ],
+  "result": "RUNNING"
+}

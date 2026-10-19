@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 508, in main
+    if args.single_scale:return (overview if args.scenario=='overview' else shell)(args)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 178, in shell
+    assert not failed,'native surface contrast failed: '+', '.join(failed)
+           ^^^^^^^^^^
+AssertionError: native surface contrast failed: combo popup, combo selection, path selection, competition dialog

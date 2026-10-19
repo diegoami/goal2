@@ -1,0 +1,14 @@
+test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail) ... FAIL
+
+======================================================================
+FAIL: test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 153, in test_wrapped_commentary_lands_at_board_and_scroll_retains_tail
+    self.assertGreater(scroll,1)
+AssertionError: 1 not greater than 1
+
+----------------------------------------------------------------------
+Ran 1 test in 0.064s
+
+FAILED (failures=1)

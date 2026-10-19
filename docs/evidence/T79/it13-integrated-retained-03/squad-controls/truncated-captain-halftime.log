@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/desktop/window.py", line 342, in continue_halftime
+    try:self.jobs.continue_match();self.show_halftime();self.status.setText('Playing second half…')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/desktop/jobs.py", line 103, in continue_match
+    self.cancel();raise ValueError('Halftime continuation is stale; active game changed')
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Halftime continuation is stale; active game changed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/desktop/window.py", line 345, in continue_halftime
+    self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh(str(exc))
+                      ^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/desktop/window.py", line 204, in set_busy
+    pool_context(self,busy)
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/desktop/pool_page.py", line 97, in context
+    else:reason=self.model.pool_view()['window']['reason']
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/desktop/model.py", line 63, in pool_view
+    return campaign_pool.view(self.state,self.goaldat,query=query,position=position)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/game/campaign_pool.py", line 67, in view
+    reserves=validate(state)
+             ^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/game/campaign_pool.py", line 35, in validate
+    raise ValueError('pool needs a valid eleven/captain')
+ValueError: pool needs a valid eleven/captain
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/acceptance.py", line 334, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/acceptance.py", line 332, in main
+    elif args.scenario=='campaign-halftime':halftime(args.template,args.data,args.screenshot)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/acceptance.py", line 315, in halftime
+    assert not window.jobs.busy and window.play.isEnabled() and 'stale' in window.status.text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

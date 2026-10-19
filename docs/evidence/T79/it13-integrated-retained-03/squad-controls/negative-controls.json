@@ -1,0 +1,221 @@
+{
+  "tag": "[designed: T76]",
+  "cases": [
+    {
+      "name": "baseline",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "squad",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-retained-03/squad-controls/baseline"
+      ],
+      "returncode": 1,
+      "expected": "grouped XI/bench and draft hierarchy absent",
+      "scale": "1",
+      "mutated_sources": {
+        "goal2/desktop/squad_page.py": "19cc5391bc185a89cce4eb94868532544401ab41661a10621e0a62d92d971aec",
+        "goal2/desktop/window.py": "f2c898127b28b1c6dc1a17e3242966d607cc6029810a15373b4dca6bab6adefd",
+        "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+        "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b"
+      }
+    },
+    {
+      "name": "truncated-captain",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "squad",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-retained-03/squad-controls/truncated-captain"
+      ],
+      "returncode": 1,
+      "expected": "Confirm did not publish full IDs/all bits",
+      "scale": "1",
+      "mutated_sources": {
+        "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+        "goal2/desktop/window.py": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+        "goal2/desktop/model.py": "dd69adb4d339b4c8d386f57ce39d6213a79231c0a16184baa85bd82aa787cbf1",
+        "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b"
+      }
+    },
+    {
+      "name": "truncated-management",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "management",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT"
+      ],
+      "returncode": 1,
+      "expected": "AssertionError",
+      "scale": "1",
+      "mutated_sources": {
+        "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+        "goal2/desktop/window.py": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+        "goal2/desktop/model.py": "dd69adb4d339b4c8d386f57ce39d6213a79231c0a16184baa85bd82aa787cbf1",
+        "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b"
+      }
+    },
+    {
+      "name": "eager-tactic",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "squad",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-retained-03/squad-controls/eager-tactic"
+      ],
+      "returncode": 1,
+      "expected": "prematurely published active state",
+      "scale": "1",
+      "mutated_sources": {
+        "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+        "goal2/desktop/window.py": "279a31323b6673739e1cb10923f4720aa01c57481554a6d71f89fc6b06ad922a",
+        "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+        "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b"
+      }
+    },
+    {
+      "name": "truncated-player-id",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "squad",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-retained-03/squad-controls/truncated-player-id"
+      ],
+      "returncode": 1,
+      "expected": "full integer player IDs were truncated",
+      "scale": "1",
+      "mutated_sources": {
+        "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+        "goal2/desktop/window.py": "6cecd7a30900d74ce8388f173219809b9512d11cdc203bb5fc2b810d05ad89b3",
+        "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+        "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b"
+      }
+    },
+    {
+      "name": "focused-caption-old-border",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "squad",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-retained-03/squad-controls/focused-caption-old-border"
+      ],
+      "returncode": 1,
+      "expected": "footer caption clipped",
+      "scale": "2",
+      "mutated_sources": {
+        "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+        "goal2/desktop/window.py": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+        "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+        "goal2/desktop/style.py": "87deb243321973cdd9793e580f6aba1bcbca1898f13404a357e33e37c0650bba"
+      }
+    }
+  ],
+  "before": {
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/window.py": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b"
+  },
+  "legacy_coverage": [
+    {
+      "name": "truncated-captain-halftime",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "campaign-halftime",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT"
+      ],
+      "returncode": 1,
+      "assertion_failed": true
+    },
+    {
+      "name": "eager-legacy-management",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "management",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT"
+      ],
+      "returncode": 1,
+      "assertion_failed": true
+    },
+    {
+      "name": "eager-legacy-halftime",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "campaign-halftime",
+        "--template",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav",
+        "--data",
+        "/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT"
+      ],
+      "returncode": 0,
+      "assertion_failed": false
+    }
+  ],
+  "after": {
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/window.py": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b"
+  },
+  "restored": true
+}

@@ -1,0 +1,26 @@
+{
+  "tag": "[designed: #241]",
+  "before": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+  "controls": [
+    {
+      "name": "old-disabled-preview",
+      "returncode": 1,
+      "expected": "wheel blocked on roster browsing surface",
+      "log_sha256": "0a2e9765870b4673d1e064d7419cf42d699c28fc6c7adb85503306f35e199542"
+    },
+    {
+      "name": "outer-page-clipped-row",
+      "returncode": 1,
+      "expected": "focused row clipped by outer page",
+      "log_sha256": "9b71a09ae450f9e54810845ba4194cbb9dce83d0f925173c6f7f42bbe110df34"
+    },
+    {
+      "name": "enable-everything",
+      "returncode": 1,
+      "expected": "preview management controls enabled",
+      "log_sha256": "f3c767b05b6e56e63b8acf3722c8518456ed5a86e90d45b2de20270d7b32f78e"
+    }
+  ],
+  "after": "194641f30ca69826aaec504b2c6849698547dae58aaa1cd88a568cb84f870019",
+  "restored": true
+}

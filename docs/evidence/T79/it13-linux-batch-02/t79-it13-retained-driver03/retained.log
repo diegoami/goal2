@@ -1,0 +1,49 @@
+START prove-management
+PASS prove-management 10.019
+START prove-friendlies
+PASS prove-friendlies 9.465
+START prove-pool
+PASS prove-pool 4.295
+START prove-halftime
+PASS prove-halftime 12.43
+START acceptance-management
+PASS acceptance-management 6.955
+START acceptance-campaign-friendlies
+PASS acceptance-campaign-friendlies 10.065
+START acceptance-worker
+PASS acceptance-worker 1.577
+START acceptance-campaign-pool
+PASS acceptance-campaign-pool 7.55
+START acceptance-campaign-halftime
+PASS acceptance-campaign-halftime 4.992
+START results-inputs
+PASS results-inputs 1.075
+START results
+PASS results 26.968
+START results-controls
+PASS results-controls 25.063
+START shell
+PASS shell 49.913
+START shell-controls
+PASS shell-controls 29.384
+START overview
+PASS overview 19.14
+START overview-controls
+PASS overview-controls 4.385
+START squad
+PASS squad 61.009
+START squad-controls
+PASS squad-controls 77.939
+START pool
+PASS pool 32.357
+START pool-controls
+PASS pool-controls 3.686
+START provenance
+PASS provenance 0.07
+START links
+PASS links 0.372
+START working-whitespace
+PASS working-whitespace 0.024
+START authored-whitespace
+PASS authored-whitespace 0.775
+PASS all serial author gates
