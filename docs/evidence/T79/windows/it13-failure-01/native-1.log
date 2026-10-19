@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-production-e4339399b4ff-1792404145643629365\native-1.py", line 25, in <module>
+    runpy.run_path('C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T79-production-e4339399b4ff-1792404145643629365\\tools\\desktop-ui\\redesign.py',run_name="__main__")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-production-e4339399b4ff-1792404145643629365\tools\desktop-ui\redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-production-e4339399b4ff-1792404145643629365\tools\desktop-ui\redesign.py", line 495, in main
+    return (handoff_negative if args.negative_controls else handoff)(args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T79-production-e4339399b4ff-1792404145643629365\tools\desktop-ui\match_handoff_scenario.py", line 304, in scenario
+    assert max((b-a for a,b in zip(beats,beats[1:])),default=0)<1,'Qt heartbeat blocked for a second'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Qt heartbeat blocked for a second

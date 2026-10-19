@@ -1,0 +1,8 @@
+{
+  "claim": "[confirmed: independently rehashed after failure] Native failure retained; not acceptance",
+  "original_receipt_sha256": "9e53b69a47b1155f2eafd4e2899d07959a072acb18565da212306eb14cdb50be",
+  "sources_unchanged": 180,
+  "dependencies_unchanged": 566,
+  "resources_unchanged": 3,
+  "protected_unchanged": 6
+}
