@@ -1,0 +1,17 @@
+{
+  "tag": "[confirmed: evidence-only packaging source carry]",
+  "source_head": "d89cb11d3245d88cb9f0b82f19ba536d67938886",
+  "manifest": "../linux-final-04/source-checkpoint.json",
+  "verified_files": 174,
+  "all_equal": true,
+  "syntax_parsed": [
+    "T79-windows-acceptance-v2.py",
+    "windows_display_probe.py",
+    "linux-native-display.py",
+    "main-review-validation.py",
+    "T79-windows-acceptance.py",
+    "stage-review.py",
+    "T79-windows-acceptance-v3.py"
+  ],
+  "execution_claim": "No native or reviewer job run"
+}

@@ -1,0 +1,65 @@
+# T79 Unify Qt and Pygame match presentation after T66
+
+- **Kind**: slice · **Difficulty**: Hard
+- **Issue**: [#198](https://github.com/diegoami/goal2/issues/198); child of [#182](https://github.com/diegoami/goal2/issues/182). **Branch**: `task/T79-football-ui` · **Merge after**: T74, T76, T78, T66, T83 and [Windows watched-match reliability #236](https://github.com/diegoami/goal2/issues/236).
+- **Implementer**: native Codex **Sol Medium**, owner batch authorization2026-10-18; retains choice through rework.
+- **Reviewer**: owner-selected **MiniMax M3** after validated PR; main launches independent review.
+- **Evidence**: [confirmed: original kit424d599/F014 and T65 accepted worker bridge; designed: owner #182, T66 and system.md] T66 must merge first; its accepted API and paths are required at dispatch. See [audit](../design/football-gui/audit.md) for exact pins and [system](../design/football-gui/system.md) for proposal tokens.
+- **Owns**: `goal2/desktop/pygame_viewer.py`; new Qt presentation helper `match_page.py`; `fixtures_page.py` (delegate existing play/halftime construction without changing T78 cards); `window.py` (minimal presentation calls only); `tools/desktop-ui/redesign.py` (match-handoff dispatch), new `match_handoff_scenario.py`; `goal2/tests/test_pygame_match_view.py` and `goal2/tests/test_pygame_pitch_view.py` (replace obsolete presentation pixel expectations with new substantive rendering/read-only/layout oracles, preserving lifecycle assertions); `docs/desktop-management.md` and `docs/design/football-gui/system.md` when made inaccurate; `docs/evidence/T79/**`.
+- **Scope**: [designed] Apply shared colors, typography intent, scoreboard/provenance and readable original-commentary/result boards to the accepted T66/T83 presentation seam. Style busy/progress/cancel and existing quick halftime decisions coherently. This protects read-only viewer packets, responsive Qt and once-only publication. Preserve the accepted animated pitch, numbered markers, frame consumption and pacing/publication contract; apply style only. No new IPC protocol, engine adapter, competitive watching, new pitch animation, in-play edits or mid-match save.
+- **Done when** (proposed command contracts; main must establish fail-before/mock-positive preflight before dispatch, using verified local resources):
+  1. [designed] `python3 tools/desktop-ui/redesign.py --scenario match-handoff --template <verified-template> --data <verified-GOAL.DAT> --evidence-dir docs/evidence/T79/linux` passes: Run real Qt/SDL events for non-default-country original friendly through progress, result, Save/Resume and repeat; compare ordered displayed values and complete state with direct original output. Verify heartbeat while blocked, duplicate/stale packets, viewer close/failure/repeated cancel, both-window shutdown and save-byte retention; retain T66 bounded reaping checks. Capture Qt+Pygame windows/focus at required sizes/scaling.
+  2. [designed] Run the same scenario on real Windows Qt (and SDL where applicable),100%/200% scaling; retain new repo-owned screenshots, interaction report, exact OS/Qt versions and source-resource hashes under `docs/evidence/T79/windows`. No original screenshots/assets or personal save files enter git. Linux offscreen alone cannot accept this line.
+  3. [designed] `python3 -m unittest goal2.tests.test_pygame_match_view goal2.tests.test_desktop_quick_jobs -v` and applicable existing desktop acceptance/proof commands pass; `python3 tools/check_premerge.py --expected-head <reviewed-sha>` passes on clean exact head. Record a behavioral negative control: Let rendering mutate a packet/state, block the Qt heartbeat, start two jobs or publish on full_time before the tail: the accepted T66 lifecycle checks plus the new handoff scenario must fail. Baseline lacks unified presentation.
+- **Hazards**: [designed] Ordinarily merge accepted main; preserve T66 window.py changes and read its actual module paths. Transitions never run engines. Keep optional-dependency errors actionable; preserve Qt ownership, process limits and original-output labels.
+
+[designed: main preflight clarification, 2026-10-18] Actual merged T66/T83 viewer and lifecycle APIs are the baseline; reuse accepted `style.COLORS` including contrast-corrected divider, preserve animated pitch/project geometry, markers, frame consumption and publication/pacing. Historical stage1/no-animation wording must be attributed historically. Genuine country18 Malta starts as source B versus country32 and supplies IDs341–351. Retained lifecycle/engine/provenance/premerge gates already pass baseline; new presentation/read-only assertions must fail before and pass a planning mock. Qt actual ratio and SDL actual driver/window/surface pixel sizes/font metrics/Windows DPI are separate measurements: QT_SCALE_FACTOR alone cannot prove SDL scaling. Main must establish actual Windows SDL dependency and substantive native mock evidence, then publish concrete scale/capture constraints before implementation GO. Compact Qt200% target900×640;100%1440×900,1050×780,900×700. No protocol/Display/worker/controller/lifecycle-rule edits are authorized.
+
+[designed: main baseline diagnosis #234] The existing direct unittest entrypoint fails before original Qt acceptance because runpy does not supply the watched script sibling directory for navigation.py. A bounded import-context fix may ride in the already-owned test_pygame_match_view.py; restore sys.path afterward and preserve the entire original acceptance. The unmodified failing log is retained; providing PYTHONPATH during main diagnosis is not the committed fix. No test may be skipped or an import error counted as success.
+
+[designed: main prerequisite disposition, #236] Native Windows baseline exposed status replacement/read sharing failures and owned-viewer cleanup sharing before original publication. These reliability/controller changes are a separate prerequisite fix, not T79 styling. Preserve baseline failures; require the prerequisite accepted and merged before presentation implementation GO. The existing T79 Sol Medium choice persists; no reliability source edits are authorized by T79. Any prerequisite import-context correction for #234 must land once and be retained by T79.
+
+[designed: main preflight correction, 2026-10-18; confirmed: docs/evidence/T79/main-preflight-01] Malta18 successfully plays original1376, then its actual calendar has a qualifier. The non-default-country repeat flow must preserve the blocked Watch route and defensive refusal, Resume an owned pre-match checkpoint using the actual Save-path/Resume controls, and replay1376 from the restored complete state/template. Keep the first completed save and opening checkpoint byte-identical in separate owned files. Label this replay explicitly; do not claim two different Malta fixtures or coerce calendar/fixture kinds. The retained T66 acceptance still plays two different original friendlies in sequence, so the existing continuation gate remains mandatory. This corrects the planning probe assumption, adds refusal/checkpoint coverage and changes no engine or product behavior.
+
+[designed: main concrete dispatch contract, 2026-10-18] Read [T79 preflight](../design/football-gui/T79-preflight.md) with this full task. It fixes the named match reading surfaces, authoritative context, per-size Qt geometry/focus and separately measured SDL constraints. Runtime paint/widget mocks are planning evidence only; final Linux/native acceptance must execute the real implementation without those mocks. The source freeze, raw failure corrections and complete-packet ACK/observer ownership distinction are retained under `docs/evidence/T79/main-preflight-02`.
+
+[designed: main scope clarification, 2026-10-18; confirmed: main-preflight-02/pitch-presentation-planning.log] Shared-palette styling necessarily changes three retained pitch-test pixel expectations (background, score text/background/position and country-label background). Main proved all three pass accepted baseline and fail the runtime palette mock at those assertions. Updating those presentation expectations in test_pygame_pitch_view.py is authorized; preserve every independent signed-axis, marker/ball, visibility, watermark, queue, cadence, flip-before-consumption, pacing and ACK assertion. No new pitch animation or lifecycle change is authorized. The accepted competitive_play.py already contains both #237 disabled-route/callback corrections from merged PR235; keep that helper unchanged and use the accepted version.
+
+[confirmed: main native preflight, docs/evidence/T79/main-preflight-03/audit.json] Main completed and audited all12 native Windows baseline/mock/negative jobs on frozen ccc659fc, with four protected original files unchanged. Qt ratios1/2 and SDL driver/window/surface/font/DPI are measured separately. Actual SDL original matches remain1000×720/DPI96; compact/larger synthetic surfaces demonstrate feasibility only. Implementation may now proceed under the concrete contract; final native acceptance must use actual product rendering without planning paint/widget mocks.
+
+
+
+[designed: T24] Both clients use this same contract. Codex native subagents
+receive the full task and this block; the main session supplies the worktree,
+because native Codex dispatch does not invoke Claude's isolation parameter or
+PreToolUse hooks. No-stash, no-force-push, scope and main-session-only merge rules
+remain instructions under Codex's native approval/sandbox controls.
+
+The brief is the task file pasted in full, then this block, then on a rework round the review's URL.
+The `implementer` agent file repeats the run mechanics; this block is the contract, for the main
+session implementing directly as much as for the subagent. Lines an OpenCode reviewer cannot reach
+are the main session's to run (L57).
+
+```text
+You implement <T<nn>>. The task file above is the contract.
+- Build only what the task asks for, even inside a file it requires; say why for each changed file. (L44)
+- A Done-when you cannot meet: stop and report. Never weaken an assertion, skip a test or edit the task file.
+- Every new test fails before your change and passes after it; say how you checked.
+- If you measure: every output a finding or the PR may cite goes under a tracked path the task owns,
+  pushed per batch and every 30 min, never deleted or overwritten; originals out, hashes recorded. (L40)
+- A comment that asserts behaviour at an edge comes with the test that visits that edge.
+- Every behaviour claim carries its evidence tag (CLAUDE.md rule 17); vendored engine files are
+  never edited (rule 18); nothing of the original enters the tree (rule 19).
+- A defect you find outside the task: report it. A one-file mechanical fix that blocks you may
+  ride this PR, declared under Scope in the PR body.
+- Update any document your change makes wrong, in this PR. Never write status into a document.
+- Commit and push after each step, at least every 20 minutes and before any command that runs longer
+  than 5 minutes; after your first push, open the PR as a draft (`gh pr create --draft`). A crash then
+  loses one step, and the branch shows where you are. (L103)
+- A command that can run past 10 minutes never pipes through `tail`/`head`: an agent's tool call
+  has a timeout of its own (L10). Run it detached (`nohup … > log 2>&1 &` or `setsid`), verify it
+  survived the tool call with `ps`, then poll the log in short calls.
+- PR body: Closes #<issue>; Scope (files and why); a fenced block with each Done-when command and
+  the tail of its output; Docs changed.
+```
+

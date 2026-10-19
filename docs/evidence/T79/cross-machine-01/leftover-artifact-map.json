@@ -1,0 +1,428 @@
+{
+  "tag": "[confirmed: exact-byte inventory, no files deleted]",
+  "files": [
+    {
+      "original_path": "docs/evidence/T80/competitive-play-1792351358194653804.json",
+      "sha256": "3a78663235496fa1dd793c432b6db669eca0ae6eb194cccdf2a4daa0c6eeec0b",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T80/competitive-play-1792362331174324713.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T80/competitive-play-1792362331174324713.json",
+      "sha256": "3a78663235496fa1dd793c432b6db669eca0ae6eb194cccdf2a4daa0c6eeec0b",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T80/competitive-play-1792362331174324713.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T80/competitive-play-1792394528264373922.json",
+      "sha256": "3a78663235496fa1dd793c432b6db669eca0ae6eb194cccdf2a4daa0c6eeec0b",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T80/competitive-play-1792394528264373922.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/acceptance.json",
+      "sha256": "1569cf072da014b606667310f8a4e2d1b1b5466e253385663f1584a321fa8ef7",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/acceptance.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/malformed/metrics.json",
+      "sha256": "5fc1fa11d76f19a313761e569368dfdab70247b181207149cb583201cb412df5",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/malformed/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-1/full-time.png",
+      "sha256": "67f4da1d9ae563ef7e926e14a7a388f5de1ce6961bbbd38bb262eb009e7f04fc",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-1/full-time.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-1/half-0.png",
+      "sha256": "6b30d9aea5c169e84d3c7ecf490b3b43b29041b74db42588e3bdab50646a461f",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-1/half-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-1/half-1.png",
+      "sha256": "da692827bc32f93fd8d186a94af58cf07ce1540bb5c8430e0705813e49b07df0",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-1/half-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-1/metrics.json",
+      "sha256": "93d5472293a1c7fe035e365960bc917d61d230defc498bf94629d96e50ce55a5",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-1/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-1/sample-300-selector-0.png",
+      "sha256": "bdb294c805a700371da782566c305edd535a149f206b3ac91cfe56f740e676da",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-1/sample-300-selector-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-1/sample-300-selector-1.png",
+      "sha256": "0dc5b16e5591565049338f4be3917a2ef4efbf2d39a1c71b294f9b8d9ab6b436",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-1/sample-300-selector-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-2/full-time.png",
+      "sha256": "4259a492fe93485a79001b93bc802fbc2814d356e3ccc9729889217de94a786a",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-2/full-time.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-2/half-0.png",
+      "sha256": "48f5936f5fb98ca8c5143da859e1bc1fb09e72e8626b5eb88446d3e17f7748a0",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-2/half-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-2/half-1.png",
+      "sha256": "f07b91261c5996b6cce985b90c79d971bafe866ec5f1f8aaa3076650df01ffc1",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-2/half-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-2/metrics.json",
+      "sha256": "53320962e36c4c25e24835051fd05d51a8a39472e0a81a53ab3fbd0b949f1206",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-2/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-2/sample-300-selector-0.png",
+      "sha256": "9f4992d043416091ef6935c11254a5a46304609970e735a96dd67cdbc0ae5e13",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-2/sample-300-selector-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/round-2/sample-300-selector-1.png",
+      "sha256": "0e53a979319b7fd2a834dc8bf1b1b742703155220bf1e45be6dbc1ca4652ff55",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/round-2/sample-300-selector-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/slow-close/close-request",
+      "sha256": "d53dd99465fc97de9d13400b1e81e696783a43294d5f10bce1f8e5931c9a1355",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/slow-close/close-request",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/slow-close/half-1.png",
+      "sha256": "da692827bc32f93fd8d186a94af58cf07ce1540bb5c8430e0705813e49b07df0",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/slow-close/half-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/slow-close/metrics.json",
+      "sha256": "7249764d250c33dcc9dcc22f1623a401f2b90397b6fdd895012796a1a0dc8a54",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/slow-close/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/slow-close/sample-300-selector-1.png",
+      "sha256": "0dc5b16e5591565049338f4be3917a2ef4efbf2d39a1c71b294f9b8d9ab6b436",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/slow-close/sample-300-selector-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261018T222110.837073Z-xcb-x11/stale/metrics.json",
+      "sha256": "5fc1fa11d76f19a313761e569368dfdab70247b181207149cb583201cb412df5",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/20261018T222110.837073Z-xcb-x11/stale/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/acceptance.json",
+      "sha256": "abfe84c8369ef30a4d21e4b274728d158de6896edb28caae863e795dd975021a",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/acceptance.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/malformed/metrics.json",
+      "sha256": "5fc1fa11d76f19a313761e569368dfdab70247b181207149cb583201cb412df5",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/malformed/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-1/full-time.png",
+      "sha256": "67f4da1d9ae563ef7e926e14a7a388f5de1ce6961bbbd38bb262eb009e7f04fc",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-1/full-time.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-1/half-0.png",
+      "sha256": "6b30d9aea5c169e84d3c7ecf490b3b43b29041b74db42588e3bdab50646a461f",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-1/half-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-1/half-1.png",
+      "sha256": "da692827bc32f93fd8d186a94af58cf07ce1540bb5c8430e0705813e49b07df0",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-1/half-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-1/metrics.json",
+      "sha256": "15881dfc05880d25e2d92579e35d8b159aaf041bd189962d0575d3146146868f",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-1/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-1/sample-300-selector-0.png",
+      "sha256": "bdb294c805a700371da782566c305edd535a149f206b3ac91cfe56f740e676da",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-1/sample-300-selector-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-1/sample-300-selector-1.png",
+      "sha256": "0dc5b16e5591565049338f4be3917a2ef4efbf2d39a1c71b294f9b8d9ab6b436",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-1/sample-300-selector-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-2/full-time.png",
+      "sha256": "4259a492fe93485a79001b93bc802fbc2814d356e3ccc9729889217de94a786a",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-2/full-time.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-2/half-0.png",
+      "sha256": "48f5936f5fb98ca8c5143da859e1bc1fb09e72e8626b5eb88446d3e17f7748a0",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-2/half-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-2/half-1.png",
+      "sha256": "f07b91261c5996b6cce985b90c79d971bafe866ec5f1f8aaa3076650df01ffc1",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-2/half-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-2/metrics.json",
+      "sha256": "63d4228624c55efe833fdc17e251b12edc4ca2a2029d71244d8953142f7794ce",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-2/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-2/sample-300-selector-0.png",
+      "sha256": "9f4992d043416091ef6935c11254a5a46304609970e735a96dd67cdbc0ae5e13",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-2/sample-300-selector-0.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/round-2/sample-300-selector-1.png",
+      "sha256": "0e53a979319b7fd2a834dc8bf1b1b742703155220bf1e45be6dbc1ca4652ff55",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/round-2/sample-300-selector-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/slow-close/close-request",
+      "sha256": "d53dd99465fc97de9d13400b1e81e696783a43294d5f10bce1f8e5931c9a1355",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/slow-close/close-request",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/slow-close/half-1.png",
+      "sha256": "da692827bc32f93fd8d186a94af58cf07ce1540bb5c8430e0705813e49b07df0",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/slow-close/half-1.png",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/slow-close/metrics.json",
+      "sha256": "ad5984fd8ae3c4a3016cf830fd299d1a8b7413ee7e1e2bc8e9a091611d0b91d8",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/slow-close/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/20261019T071839.879520Z-xcb-native/stale/metrics.json",
+      "sha256": "5fc1fa11d76f19a313761e569368dfdab70247b181207149cb583201cb412df5",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/20261019T071839.879520Z-xcb-native/stale/metrics.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792350869781376816/axes.log",
+      "sha256": "3590b1d3096b616c312d8859ac8747276ffa6a35d1963c69f7611fc67c4b9ca6",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792350869781376816/axes.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792350869781376816/ball-visibility.log",
+      "sha256": "cad15eb5d0aa920bfe96d9823f24188fcbc81e3ebad0f0571957b6dcdf25d285",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792350869781376816/ball-visibility.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792350869781376816/consumption.log",
+      "sha256": "94190a2b235bcb935586a6de11cd387cef67dce4822b01b19749066d2214ea84",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792350869781376816/consumption.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792350869781376816/early-consumption.log",
+      "sha256": "d63d5ac7e810c4f4b29c562a7a69dd22cb86ddcbe0e7e20a468ce17161c94b0b",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792350869781376816/early-consumption.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792350869781376816/player-visibility.log",
+      "sha256": "b668a1b177ad72ab9c64332a0ce3ebcf68815802b657cfdd2b9339815b86fdb4",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792350869781376816/player-visibility.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792350869781376816/receipt.json",
+      "sha256": "9cca8334395032292fd0c34407fac5852ac33bf1c0d17398fd5ebb26b4454b67",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792350869781376816/receipt.json",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792359707096127448/axes.log",
+      "sha256": "913280f74b9e8383e0f59fef4484f37a2d113d2bfbe76f67646279b5bc533e8a",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792359707096127448/axes.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792359707096127448/ball-visibility.log",
+      "sha256": "4a15f39b18e58ba67d0e72f52cc7f6e6089d8171d9b7c0a5bdcd069a6c3be4fb",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792359707096127448/ball-visibility.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792359707096127448/consumption.log",
+      "sha256": "0a41df553a0412fb23532a5aba0d6287ec23de166fc2506aea761085ce1bf599",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792359707096127448/consumption.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792359707096127448/early-consumption.log",
+      "sha256": "b822393718ef4cc634d53d48758a2c5167de203507153b0f8f177220a71bd0ff",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792359707096127448/early-consumption.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792359707096127448/player-visibility.log",
+      "sha256": "07d4127c2551b0fe2a35117fcc2c5231ad67988821a2d8d70e28c934550b1f1b",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/retained-generated-artifacts/T83/controls-1792359707096127448/player-visibility.log",
+      "disposition": "historical T79-worktree generated control output; diagnostic/nonacceptance; source head and execution attribution not independently established; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792359707096127448/receipt.json",
+      "sha256": "e0115ad16efb1dbc3f0bc6b9adb1890d47587440bc157596c276d7ddd2544e42",
+      "tracked_copy": "docs/evidence/T79/linux-final-02/retained-artifacts/T83/controls-1792360261083062829/receipt.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792360261083062829/axes.log",
+      "sha256": "daafe1d13815a2b8ec176077a09e843278d5821a5a7393c18b1ab53901385b22",
+      "tracked_copy": "docs/evidence/T79/linux-final-02/retained-artifacts/T83/controls-1792360261083062829/axes.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792360261083062829/ball-visibility.log",
+      "sha256": "e6508430bbe209f4c7b39f19697489ead2992c67779fb8441b894cbf0bed0099",
+      "tracked_copy": "docs/evidence/T79/linux-final-02/retained-artifacts/T83/controls-1792360261083062829/ball-visibility.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792360261083062829/consumption.log",
+      "sha256": "a6112d6c5ab0e2e4d63e293ecd4fb043c8b7fc54d8ebe5de3a90d7eb70a623e0",
+      "tracked_copy": "docs/evidence/T79/linux-final-02/retained-artifacts/T83/controls-1792360261083062829/consumption.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792360261083062829/early-consumption.log",
+      "sha256": "60dcb487ab48c7a0e1fe5e9a0ce16db9f76538a3b3a29aec70e71e801012d368",
+      "tracked_copy": "docs/evidence/T79/linux-final-02/retained-artifacts/T83/controls-1792360261083062829/early-consumption.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792360261083062829/player-visibility.log",
+      "sha256": "83104d7b443f75e4cdf1cd913c236cab3fb438fa78b9306b53946ef8033ab831",
+      "tracked_copy": "docs/evidence/T79/linux-final-02/retained-artifacts/T83/controls-1792360261083062829/player-visibility.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792360261083062829/receipt.json",
+      "sha256": "e0115ad16efb1dbc3f0bc6b9adb1890d47587440bc157596c276d7ddd2544e42",
+      "tracked_copy": "docs/evidence/T79/linux-final-02/retained-artifacts/T83/controls-1792360261083062829/receipt.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792361543280398891/axes.log",
+      "sha256": "9b72c90ccd148580be7a0ee83bd8476794c716bc1e4f4c983ef10ab668bb3f5f",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/controls-1792361543280398891/axes.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792361543280398891/ball-visibility.log",
+      "sha256": "2ff53a3841f58a7abeaecb4bd6da1e3c0605b8ff972f9d929dec162e3f758392",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/controls-1792361543280398891/ball-visibility.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792361543280398891/consumption.log",
+      "sha256": "7605e1387b21fd810b78c78a4f95b299217eb5fba9d87015931ac475f1c4dc20",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/controls-1792361543280398891/consumption.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792361543280398891/early-consumption.log",
+      "sha256": "20a176076d1a787734f077bf6c9be222cbce8867b2a5f873a6449583912d1c2e",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/controls-1792361543280398891/early-consumption.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792361543280398891/player-visibility.log",
+      "sha256": "6415827632654ca8cbed5ec457df13534a197dee9b084c059d8c1941f92adc4d",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/controls-1792361543280398891/player-visibility.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792361543280398891/receipt.json",
+      "sha256": "e0115ad16efb1dbc3f0bc6b9adb1890d47587440bc157596c276d7ddd2544e42",
+      "tracked_copy": "docs/evidence/T79/linux-final-03/retained-artifacts/T83/controls-1792361543280398891/receipt.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792393908069628533/axes.log",
+      "sha256": "21fbd3f14d28be2fed9dbc42fcea07fa60d7afc9d7cfcba54b24a42baef786de",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/controls-1792393908069628533/axes.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792393908069628533/ball-visibility.log",
+      "sha256": "63d3397a3d963ed03b31f77addcfd8631d0feb56c981aebf3b6dbbe01d2f7f5c",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/controls-1792393908069628533/ball-visibility.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792393908069628533/consumption.log",
+      "sha256": "259c3e906994d8d5c253b91645fd7b212f3565f6f2d354ee7b131ecc7664c79c",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/controls-1792393908069628533/consumption.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792393908069628533/early-consumption.log",
+      "sha256": "64c2ae820c53df12ea71de2337b06a778586cbd707e7510cfd8ae4827c2d9017",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/controls-1792393908069628533/early-consumption.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792393908069628533/player-visibility.log",
+      "sha256": "e42fb23973360b3f5e401a0ad3ea2abbf490f081034907777f443dbf7f8f4b89",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/controls-1792393908069628533/player-visibility.log",
+      "disposition": "exact-byte tracked copy; original preserved"
+    },
+    {
+      "original_path": "docs/evidence/T83/controls-1792393908069628533/receipt.json",
+      "sha256": "e0115ad16efb1dbc3f0bc6b9adb1890d47587440bc157596c276d7ddd2544e42",
+      "tracked_copy": "docs/evidence/T79/linux-final-04/retained-artifacts/T83/controls-1792393908069628533/receipt.json",
+      "disposition": "exact-byte tracked copy; original preserved"
+    }
+  ],
+  "total": 70,
+  "mapped": 70,
+  "historical_new_copies": 11
+}

@@ -1,0 +1,89 @@
+{
+  "tag": "[confirmed: cross-machine safe packaging]",
+  "source_head": "d89cb11d3245d88cb9f0b82f19ba536d67938886",
+  "copies": [
+    {
+      "source": "/home/diego/projects/goal2-work/T79-football-ui/.cache/T79-main-review-validation.py",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/main-review-validation.py",
+      "sha256": "8d18e55a6c92f8908682de56bd96a9c796ed58b9b2d66a94e069750f760c8c8f"
+    },
+    {
+      "source": "/home/diego/projects/goal2-work/T79-football-ui/.cache/main-native-display.py",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/linux-native-display.py",
+      "sha256": "d5ec02fcbbde734b1fc106c453f0e147990dd3208ae275dd330b2807d688e885"
+    },
+    {
+      "source": "/home/diego/projects/goal2-work/T79-football-ui/RUN-NOTES.md",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/author-run-notes.txt",
+      "sha256": "e86446bbd8a8b24e880fc83f40160272fe7963a8f26e99badd489fb806bdecc7"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/T79-windows-acceptance.py",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/T79-windows-acceptance.py",
+      "sha256": "720a8a2a5e5ff50be06c428819714134352e9ca973017d145c8f0e8647ea0d97"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/T79-windows-acceptance-v2.py",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/T79-windows-acceptance-v2.py",
+      "sha256": "97601a5e599a8bd91476d3cded76ec945b57de3a07f0339ed893195cc54ef3cd"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/T79-windows-acceptance-v3.py",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/T79-windows-acceptance-v3.py",
+      "sha256": "d1c7137680552bd94b59fb00e9d846b53e972711394282b055668721cb918c0a"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/windows_display_probe.py",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/windows_display_probe.py",
+      "sha256": "3823de5ab775457aca4e420e760d563ab313fa3efb843d9b8d88b9ab9151fc22"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/stage-review.py",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/stage-review.py",
+      "sha256": "707ca4914a6df69615a1f09f419342a94238745ac3f785b557a36ebed964e5f8"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/T79-brief.md",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/T79-brief.txt",
+      "sha256": "3be3a0a1a4f151afa509ce573ed0bca03e3c6cc9b6389a063ba51d0e1691fd1e"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/opencode-preflight/preflight-U2s2rp/selected-model.json",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/nonbilling-preflight/selected-model.json",
+      "sha256": "f8c5c0e773aa2a6470d809984ca25e262f2e194559ac6ebc1bf87ba54fc75625"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/opencode-preflight/preflight-U2s2rp/schema-identity.json",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/nonbilling-preflight/schema-identity.json",
+      "sha256": "444cb3a1caf0907b7c5fde9fac5e104b736409813b9a56a07a951abc6bcb3214"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/opencode-preflight/preflight-U2s2rp/identity.json",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/nonbilling-preflight/identity.json",
+      "sha256": "d37b794326394a479a4c79aff451984671bb353a048ab6a63e0fee527a641e0e"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/opencode-preflight/preflight-U2s2rp/empty-export.json",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/nonbilling-preflight/empty-export.json",
+      "sha256": "3575cf9af95b25e4273078501e102bcd121d8cb91754b4d76a719ffedcf2fac3"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/opencode-preflight/preflight-U2s2rp/actual-config.json",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/nonbilling-preflight/actual-config.json",
+      "sha256": "446e2566b2edea2a7a1431897778c0e193ffe10a643ee459d0ed9f7fa72aaa6c"
+    },
+    {
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/opencode-preflight/preflight-U2s2rp/shutdown.json",
+      "tracked_copy": "docs/evidence/T79/cross-machine-01/nonbilling-preflight/shutdown.json",
+      "sha256": "7acdf51d3479ef548f176bcb661bb4c7c216982b21490a10f52a2493a53833a0"
+    }
+  ],
+  "syntax_only": [
+    "main-review-validation.py",
+    "T79-windows-acceptance-v3.py",
+    "stage-review.py"
+  ],
+  "shared_probe": "windows_display_probe.py is exact shared helper also packaged by fix241; compare SHA256 before adapting",
+  "native_T79_execution": "not run; normal Windows display unavailable",
+  "omitted_preflight": "No databases, auth files, server runtime, logs/profile/config with unknown secret exposure, binaries or dependencies copied. Six inspected metadata receipts contain no credentials or private server nonce."
+}
