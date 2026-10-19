@@ -1,0 +1,92 @@
+[
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 0,
+    "target": "newCampaign",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 0
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 0,
+    "target": "confirm",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 1
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 1,
+    "target": "watchOriginal",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 3
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 3,
+    "target": "save",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 4
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 4,
+    "target": "resume",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 4
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 4,
+    "target": "watchOriginal",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 3
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 3,
+    "target": "save",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 4
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 4,
+    "target": "resume",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 4
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 4,
+    "target": "newCampaign",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 0
+  },
+  {
+    "before_active": true,
+    "before_minimized": false,
+    "before_page": 0,
+    "target": "confirm",
+    "active_wait": true,
+    "active_before_key": true,
+    "after_page": 1
+  }
+]

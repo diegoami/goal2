@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 110, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--expected-receipt-sha256',required=True);a=p.parse_args();print(json.dumps(audit(json.loads(Path(a.config).read_text()),a.expected_receipt_sha256),indent=2))
+                                                                                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 52, in audit
+    assert sha(safe(root,name))==h,('current source differs',name)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('current source differs', 'goal2/desktop/watched.py')

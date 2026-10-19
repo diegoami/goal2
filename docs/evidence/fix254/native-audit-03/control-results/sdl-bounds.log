@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 110, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--expected-receipt-sha256',required=True);a=p.parse_args();print(json.dumps(audit(json.loads(Path(a.config).read_text()),a.expected_receipt_sha256),indent=2))
+                                                                                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 97, in audit
+    rect(item['window_rect'],work);png(safe(report_path.parent,item['capture']),item['surface'])
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 32, in rect
+    x,y,right,bottom=item;assert 0<=x<right<=work[0]and 0<=y<bottom<=work[1],'native window outside physical workarea'
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: native window outside physical workarea
