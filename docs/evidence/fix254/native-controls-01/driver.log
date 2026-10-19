@@ -1,0 +1,13 @@
+START omit-delete-share
+{"receipt": "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-it13-20261019/native-mutant-omit-delete-share01-1792407208681023539/receipt.json", "result": "EXECUTED", "probe_result": "FAIL", "exit": 1, "protected": 6}
+
+PASS intended rejection omit-delete-share
+START legacy-writer
+{"receipt": "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-it13-20261019/native-mutant-legacy-writer01-1792407231127014416/receipt.json", "result": "EXECUTED", "probe_result": "FAIL", "exit": 1, "protected": 6}
+
+PASS intended rejection legacy-writer
+START bypass-reader
+{"receipt": "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-it13-20261019/native-mutant-bypass-reader01-1792407257357518100/receipt.json", "result": "EXECUTED", "probe_result": "FAIL", "exit": 1, "protected": 6}
+
+PASS intended rejection bypass-reader
+PASS all three native controls; task source unchanged
