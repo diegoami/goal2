@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import subprocess
 import sys
 import tempfile
@@ -27,7 +28,7 @@ def fresh(path):
 
 
 def scenario(args):
-    from PySide6.QtCore import Qt,QPoint,QPointF,QCoreApplication,QEvent,qVersion
+    from PySide6.QtCore import Qt,QPoint,QPointF,QRect,QCoreApplication,QEvent,qVersion
     from PySide6.QtGui import QWheelEvent
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication
@@ -37,7 +38,7 @@ def scenario(args):
     app=QApplication([]);out=fresh(args.evidence_dir)
     sources={str(p.relative_to(ROOT)):digest(p) for p in sorted((ROOT/'goal2/desktop').glob('*.py'))}
     report={'tag':'[designed: #241]','platform':platform.platform(),'qt':qVersion(),'qpa':app.platformName(),
-            'scale':os.environ.get('QT_SCALE_FACTOR','1'),'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+            'scale':os.environ.get('QT_SCALE_FACTOR','1'),'source_head':args.source_head or subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
             'sources':sources,'scenario_sha256':digest(__file__),'resources':{k:digest(getattr(args,k)) for k in ('template','data')},'tables':[]}
     callbacks=[];previous=sys.excepthook;w=None
     def callback(kind,error,trace):callbacks.append(''.join(traceback.format_exception(kind,error,trace)))
@@ -71,12 +72,18 @@ def scenario(args):
                 assert widget.isEnabled() and w.isActiveWindow() and app.focusWidget() is widget,'table browsing focus unavailable: '+repr((widget.objectName(),widget.isEnabled(),type(app.focusWidget()).__name__,app.focusWidget().objectName() if app.focusWidget() else None,w.isActiveWindow()))
             def key(widget,code,mods=Qt.KeyboardModifier.NoModifier):
                 focus(widget);QTest.keyClick(widget,code,mods);app.processEvents()
+            def row_band(table,row):
+                # [designed: #241] visibleRegion includes ancestor/page clipping. A one-pixel
+                # vertical band checks the whole row height without requiring horizontal columns.
+                rect=table.visualItemRect(table.item(row,1));bounds=table.viewport().rect()
+                return QRect(bounds.center().x(),rect.top(),1,rect.height())
             def visible_rows(table):
-                return {row for row in range(table.rowCount()) if table.visualItemRect(table.item(row,1)).intersects(table.viewport().rect())}
+                view=table.viewport()
+                return {row for row in range(table.rowCount()) if view.visibleRegion().contains(row_band(table,row))}
             def visible_selected(table):
-                rect=table.visualItemRect(table.item(table.currentRow(),1));bounds=table.viewport().rect()
-                assert rect.top()>=bounds.top() and rect.bottom()<=bounds.bottom(),'focused row outside table viewport'
-                assert table.visibleRegion().boundingRect().height()>0,'table not visible on current page'
+                view=table.viewport();band=row_band(table,table.currentRow())
+                assert view.rect().contains(band),'focused row outside table viewport'
+                assert view.visibleRegion().contains(band),'focused row clipped by outer page'
             def wheel(table,delta):
                 if table.isEnabled():focus(table)
                 view=table.viewport();pos=view.visibleRegion().boundingRect().center()
@@ -144,7 +151,7 @@ def scenario(args):
                         assert detail.visibleRegion().boundingRect().height()>=detail.height(),'selected detail is not fully readable'
                         filename=f'{context}-{width}x{height}-{index}.png';assert w.grab().save(str(out/filename))
                         stable(context_before,'scroll and selection '+context)
-                        report['tables'].append({'context':context,'size':[width,height],'table':table.objectName(),'rows':count,'wheel_coverage':sorted(seen),'selected_ids':identities,'last_detail':detail.text(),'scroll_maximum':bar.maximum(),'capture':filename,'capture_sha256':digest(out/filename)})
+                        report['tables'].append({'context':context,'size':[width,height],'table':table.objectName(),'rows':count,'wheel_coverage':sorted(seen),'selected_ids':identities,'visibility_oracle':'complete row vertical band within viewport visibleRegion (ancestor clipping included)','last_detail':detail.text(),'scroll_maximum':bar.maximum(),'capture':filename,'capture_sha256':digest(out/filename)})
                 if context=='preview':readonly()
             w.country.setCurrentIndex(w.country.findData(13));app.processEvents();assert w.preview is None and w.draft()==active_draft,'active draft not restored on return'
             assert encode(m.state,m.template_bytes)==context_before[0] and save.read_bytes()==saved
@@ -169,6 +176,7 @@ def controls(args):
     def run(name,source,expected):
         path.write_text(source)
         command=[sys.executable,'-B',__file__,'--template',args.template,'--data',args.data,'--evidence-dir',str(out/name),'--context','preview']
+        if args.source_head:command+=['--source-head',args.source_head]
         result=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=180)
         (out/(name+'.log')).write_text(result.stdout)
         receipt['controls'].append({'name':name,'returncode':result.returncode,'expected':expected,'log_sha256':digest(out/(name+'.log'))})
@@ -179,19 +187,24 @@ def controls(args):
         assert source.count(old)==1
         run('old-disabled-preview',source.replace(old,'for widget in (self.table,self.pool_panel):widget.setEnabled(active)'),'wheel blocked on roster browsing surface')
         path.write_bytes(saved)
+        run('outer-page-clipped-row',source.replace(old,old+';self.table.setMinimumHeight(1000)'),'focused row clipped by outer page')
+        path.write_bytes(saved)
         old='        self.stop.setEnabled(busy)';assert source.count(old)==1
         mutation='        for widget in (self.captain,self.confirm,self.cancel,self.save,self.exchange,*[box for _,box in self.tactics]):widget.setEnabled(not busy)\n'+old
         run('enable-everything',source.replace(old,mutation),'preview management controls enabled')
     finally:
         path.write_bytes(saved);receipt['after']=digest(path);receipt['restored']=path.read_bytes()==saved
         (out/'negative-controls.json').write_text(json.dumps(receipt,indent=2)+'\n')
-    assert receipt['restored'];print('PASS browsing negative controls: old preview disable and broad edit enabling rejected; exact saved source restored')
+    assert receipt['restored'];print('PASS browsing negative controls: old preview disable, outer-page clipped row and broad edit enabling rejected; exact saved source restored')
 
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--template',required=True);parser.add_argument('--data',required=True)
     parser.add_argument('--evidence-dir',required=True);parser.add_argument('--negative-controls',action='store_true')
     parser.add_argument('--context',choices=('both','active','preview'),default='both')
-    args=parser.parse_args();(controls if args.negative_controls else scenario)(args)
+    parser.add_argument('--source-head',help='Full immutable source commit for a git-archive/native run')
+    args=parser.parse_args()
+    if args.source_head and not re.fullmatch(r'[0-9a-fA-F]{40}',args.source_head):parser.error('--source-head requires a full 40-digit commit SHA')
+    (controls if args.negative_controls else scenario)(args)
 
 if __name__=='__main__':main()
