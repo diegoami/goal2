@@ -1,0 +1,8 @@
+{
+  "claim": "[confirmed: independently rehashed after failure] Diagnostic native execution retained; not final acceptance",
+  "original_receipt_sha256": "0db10cb656464fd50f29339d5a815d8e45d140f0cbddc4e919d9e580389e4d66",
+  "sources_unchanged": 180,
+  "dependencies_unchanged": 566,
+  "resources_unchanged": 3,
+  "protected_unchanged": 6
+}

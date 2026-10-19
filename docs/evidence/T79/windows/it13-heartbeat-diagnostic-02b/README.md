@@ -1,0 +1,3 @@
+[designed: T79] Diagnostic-only native1x rerun around unchanged committed source. The wrapper transparently times geometry calls and, on failure, records the actual scenario-frame heartbeat gaps. The strict<1second heartbeat assertion and all product/render/protocol behavior remain unchanged. This single-scale diagnostic is separate from final native1x/2x acceptance.
+
+[confirmed: host-receipt.json, preservation.json and observations/scale-1/report.json] Main retained all observations, original receipt, wrapper/probe/runner, UTF-8 CRLF envelopes and LF derivatives, then independently rehashed180sources,566runtimefiles,3resources and6protectedfiles. Original private bytes remain ignored.
