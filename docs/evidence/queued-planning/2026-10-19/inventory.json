@@ -1,0 +1,17 @@
+{
+  "T84-planning-probe.py.txt": {
+    "sha256": "a64cafcc48a49d2362aed60bf96e9535a4df2545a78dac1a661277650e8cdc02",
+    "source": "/home/diego/projects/goal2-work/242-player-attributes/.cache/t84-planning-probe.py",
+    "claim": "Historical preparation only; no execution or acceptance established by this copy"
+  },
+  "T84-field-matrix.md.txt": {
+    "sha256": "d1138db243bf0032e4f42a2f43d3b6661364b3fe9e71a3c2fbcf9255a1c49d83",
+    "source": "/home/diego/projects/goal2-work/242-player-attributes/.cache/field-matrix.md",
+    "claim": "Historical preparation only; no execution or acceptance established by this copy"
+  },
+  "T85-earlier-planning-probe.py.txt": {
+    "sha256": "7f354d5b9693095dd5f28be93cb7bb3b8ac3703f9e07e1374baf6ca1832c3f69",
+    "source": "/home/diego/projects/goal2-work/T85-play-entry-speed/.cache/T85-planning/play-entry-probe.py",
+    "claim": "Historical preparation only; no execution or acceptance established by this copy"
+  }
+}

@@ -1,0 +1,209 @@
+#!/usr/bin/env python3
+"""Ignored feasibility probe; runtime mocks only, NOT final T84 acceptance.
+Run main on Linux with explicit real inputs and a fresh owned --output directory.
+Baseline must exit1 (missing feature). Mock should exit0. Each control should exit1.
+"""
+import argparse,copy,hashlib,importlib.util,json,os,sys,traceback
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+EXTRA=['Age','Caps','Goals','Height (in)','Foot','National position','Club position','Cards','Performance','Readiness',
+ 'Keeping','Kicking','Tackling','Heading','Marking','Passing','Crossing','Feinting','Control','Dribbling','Shooting','Penalties',
+ 'Hardness','Fitness','Leadership','Position tactic','Possession tactic','Passing tactic','Tackling tactic','Mark tactic']
+p=argparse.ArgumentParser();p.add_argument('--mode',choices=['baseline','mock'],required=True)
+p.add_argument('--template',type=Path,required=True);p.add_argument('--data',type=Path,required=True)
+p.add_argument('--output',type=Path,required=True);p.add_argument('--archaeology',type=Path,default=Path('/home/diego/projects/goal2-archaeology'))
+p.add_argument('--control',choices=['wrong-id','stale-record','skill','team-tactics','purity']);args=p.parse_args()
+args.output.mkdir(parents=True,exist_ok=False)
+report={'scope':'planning feasibility only; no final product/Windows acceptance','mode':args.mode,'control':args.control,'scale':os.environ.get('QT_SCALE_FACTOR','1'),'checks':[]}
+def check(name,condition):
+ report['checks'].append({'name':name,'passed':bool(condition)})
+ assert condition,name
+def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+report['inputs']={str(x):sha(x) for x in (args.template,args.data,Path(__file__))}
+try:
+ spec=importlib.util.spec_from_file_location('t84_oracle',args.archaeology/'experiments/E007-q009-player-screen/summarise.py')
+ oracle=importlib.util.module_from_spec(spec);spec.loader.exec_module(oracle)
+ from goal2.game import skills
+ from goal2.game.state import _wrap_raw
+ from goal2.game.session_save import encode
+ from goal2.desktop.model import DesktopModel
+ from goal2.desktop.window import ManagementWindow
+ from PySide6.QtCore import Qt
+ from PySide6.QtTest import QTest
+ from PySide6.QtWidgets import QApplication,QCheckBox,QLabel,QVBoxLayout,QWidget,QScrollArea,QProgressBar,QTableWidgetItem
+ app=QApplication([])
+ model=DesktopModel.open(args.template,args.data,args.output/'owned-save.g2save',country=4)
+ model.save(model.save_path)
+ construction_state=copy.deepcopy(model.state);construction_save=model.save_path.read_bytes()
+ window=ManagementWindow(model);window.show();app.processEvents()
+ class Tables:
+  def __init__(self,state):self.raw=_wrap_raw(state.vga,state.mem)
+  def byte(self,offset):return self.raw.ds_bytes(offset,1)[0]
+  def pstr(self,offset,size):
+   raw=self.raw.ds_bytes(offset,size)
+   if not raw or raw[0]>=size:raise ValueError('invalid Pascal text')
+   return raw[1:1+raw[0]].decode('cp437')
+ def raw_project(state,word):
+  actual=word
+  if args.control=='wrong-id':actual=word&255
+  rec=state.players[actual]
+  if args.control=='stale-record':rec=model.state.players[actual] if state is not model.state else _wrap_raw(state.vga,state.mem).memory(__import__('goal2.engine.players',fromlist=['far_pointer']).far_pointer(_wrap_raw(state.vga,state.mem),0xA91B)[2]+20*actual,20)
+  t=Tables(state);d=oracle.model(rec,word,t)
+  country=bytearray(state.countries[rec[0]])
+  if args.control!='team-tactics':country[0x2d]=state.country_tactics
+  d['tactics']=oracle.tactics(rec,bytes(country),t)
+  d['skill_bars']=skills.skills(rec,skills.load_class_table(t.raw),skills.load_profile_table(t.raw))
+  if args.control=='skill':d['skill_bars'][0]+=1
+  d.update(id=word,name=model.goaldat.player_names[word],record=rec)
+  d['cards']=', '.join(label for mask,label in ((8,'Carried booking'),(16,'Booked'),(32,'Sent off')) if rec[16]&mask) or 'None'
+  perf=int.from_bytes(rec[18:20],'little');d['performance']='No performance' if perf==32767 else f'Raw word {perf} (original rendering unavailable)'
+  if args.control=='purity':state.rng_seed_7b62^=1
+  return d
+ def project(state,word):
+  # Every call has its own pre-call snapshot, including initial table/card construction.
+  before=copy.deepcopy(state);active_before=copy.deepcopy(model.state)
+  draft_before=copy.deepcopy(window.draft());saved_before=model.save_path.read_bytes()
+  d=raw_project(state,word)
+  check(f'projection {word} state/RNG purity immediately',state==before and model.state==active_before)
+  check(f'projection {word} draft/save purity immediately',window.draft()==draft_before and model.save_path.read_bytes()==saved_before)
+  check(f'projection {word} exact full-ID live record',d['id']==word and d['record']==state.players[word])
+  # Independent F008 arithmetic, not skills.skills(), checks the ACTUAL returned projection.
+  expected_skills=oracle.skill_bars(state.players[word],Tables(state))
+  check(f'projection {word} independent skill values',d['skill_bars']==expected_skills)
+  return d
+ def values(d):
+  r=d['record']
+  return [r[1],int.from_bytes(r[8:10],'little'),int.from_bytes(r[10:12],'little'),d['height_in'],d['bias'],d['position'],d['club_position'],d['cards'],d['performance'],d['status'],
+    *d['skill_bars'],oracle.hardness_value(r),r[13],oracle.leadership_value(r),*[d['tactics'][k] or 'Not applicable' for k in ('position','possession','passing','tackling','mark')]]
+ # Independent expectations are ORIGINAL screen-cell observations; never oracle.model output.
+ observations=[o for o in oracle.load() if o['run'] in ('E007-r0009','E007-r0010','E007-r0011','E007-r0012')]
+ check('80 independent original E007 observations present',len(observations)==80)
+ for o in observations:
+  t=o['tables'];rec=o['rec'];shown=o['shown'];d=oracle.model(rec,o['n'],t)
+  for key in ('age','caps','goals','height_in','position','club_position'):
+   check(f"{o['run']} id{o['n']} original {key}",d[key]==shown[key])
+  check(f"id{o['n']} original 12 skills",skills.skills(rec,bytes(t.byte(0x6d25+i) for i in range(169)),bytes(t.byte(0x6dcd+i) for i in range(205)))==list(shown['skills'].values()))
+  for key in ('hardness','fitness','energy','morale','leadership'):
+   check(f"id{o['n']} original {key}",d[key]==(shown['panel'][key]['word'],shown['panel'][key]['bar']))
+  check(f"id{o['n']} original tactics",oracle.tactics(rec,o['country'],t)==shown['tactics'])
+ report['prototype_limits']='Static complete-card widgets demonstrate feasibility; final implementation must wire selected-row refresh, country/preview/exchange/Resume/match completion and provenance-domain guards. No Windows executed. P is original Personal tactic suffix; no suffix means Team.'
+ report['oracle_note']='Prototype reuses existing upstream research decoder; final product must independently pass these same original observations. The oracle comparisons here establish fixture feasibility only.'
+ construction_draft=copy.deepcopy(window.draft())
+ check('window construction preserves state/save',model.state==construction_state and model.save_path.read_bytes()==construction_save)
+ if args.mode=='mock':
+  model.player_attributes=lambda word:project(model.state,word)
+  # Runtime-only table expansion. Existing management cell objects and IDs remain.
+  mocks=[]
+  for index,table,is_squad in ((1,window.table,True),(2,window.reserves,False)):
+   original=[table.horizontalHeaderItem(i).text() for i in range(7)]
+   headers=original+(['ID'] if is_squad else [])+EXTRA
+   table.setColumnCount(len(headers));table.setHorizontalHeaderLabels(headers)
+   for col in range(7,len(headers)):table.setColumnHidden(col,True)
+   toggle=QCheckBox('Show all attributes');toggle.setAccessibleName('Show all attributes');window.pages[index].content.insertWidget(1,toggle)
+   def expand(enabled,t=table):
+    for c in range(7,t.columnCount()):t.setColumnHidden(c,not enabled)
+   toggle.toggled.connect(expand)
+   def fill(t=table,squad=is_squad):
+    for row in range(t.rowCount()):
+     item=t.item(row,0)
+     if item is None:continue
+     word=item.data(Qt.ItemDataRole.UserRole)
+     if word is None:continue
+     d=project(window.display_model.state,word)
+     for col,value in enumerate(([word] if squad else [])+values(d),7):t.setItem(row,col,QTableWidgetItem(str(value)))
+   window._refreshing=True
+   try:fill()
+   finally:window._refreshing=False
+   # One reusable complete card type; pool demonstrates both selected identities.
+   def card(word,parent_layout):
+    d=project(window.display_model.state,word);scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setFixedHeight(330)
+    scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+    panel=QWidget();lay=QVBoxLayout(panel);scroll.setWidget(panel)
+    text=QLabel(f"{d['name']} · ID {word}\n"+'\n'.join(f'{name}: {v}' for name,v in zip(EXTRA[:10],values(d)[:10])))
+    text.setWordWrap(True);text.setAccessibleName('Complete player identity');lay.addWidget(text)
+    for name,value in zip(EXTRA[10:22],d['skill_bars']):
+     bar=QProgressBar();bar.setRange(0,25);bar.setValue(value);bar.setFormat(f'{name}: {value}/25');bar.setAccessibleName(f'{name}: {value} of 25');lay.addWidget(bar)
+    for name in ('hardness','fitness','energy','morale','leadership'):
+     lab=QLabel(f'{name.title()}: {d[name][0]} · original bar {d[name][1]}/14');lab.setWordWrap(True);lay.addWidget(lab)
+    for name,value in d['tactics'].items():
+     lab=QLabel(f'{name.title()} tactic: {value or "Not applicable"}');lab.setWordWrap(True);lay.addWidget(lab)
+    parent_layout.insertWidget(parent_layout.count()-1,scroll);return scroll
+   words=[model.state.managed_squad[0]] if is_squad else [model.state.managed_squad[0],model.pool_view()['reserves'][0]['id']]
+   cards=[card(word,window.pages[index].content) for word in words]
+   mocks.append((index,table,toggle,cards))
+ check('all projection/mock construction preserves state/save/draft',model.state==construction_state and model.save_path.read_bytes()==construction_save and window.draft()==construction_draft)
+ # Same feature gates for baseline and runtime mock. Baseline fails naturally here.
+ check('pure full-player projection API exists',callable(getattr(model,'player_attributes',None)))
+ baseline=copy.deepcopy(model.state);draft=copy.deepcopy(window.draft());saved=model.save_path.read_bytes();encoded=encode(model.state,model.template_bytes)
+ for word in model.state.managed_squad+model.state.campaign.reserve_ids:
+  d=model.player_attributes(word)
+  check(f'full id {word}',d['id']==word and d['record']==model.state.players[word])
+  check(f'full schema {word}',len(values(d))==30)
+ check('complete read preserves state/RNG',model.state==baseline)
+ check('read preserves encoded save',encode(model.state,model.template_bytes)==encoded)
+ check('read preserves draft/file',window.draft()==draft and model.save_path.read_bytes()==saved)
+ # Synthetic copied-state controls ensure the projection reads live fields and management tactics.
+ candidate=copy.deepcopy(model.state);word=2561;r=bytearray(candidate.players[word]);r[1]=19;r[15]=0;r[6]=2;r[7]=3;r[8:10]=(513).to_bytes(2,'little');candidate.players[word]=bytes(r)
+ candidate.country_tactics=candidate.countries[4][0x2d]^15
+ d=project(candidate,word)
+ check('live record/high word/full reserve ID',d['record']==bytes(r) and d['age']==19 and d['caps']==513)
+ expected=Tables(candidate).pstr(0x6aa0+32+16*(candidate.country_tactics&1),16)
+ check('live team tactic fallback',d['tactics']['position']==expected)
+ check('national and club positions independent',d['position']!=d['club_position'])
+ def input_ready(target,page):
+  # Bring the actual control into the outer viewport BEFORE input, then prove native focus.
+  page.ensureWidgetVisible(target,8,8);app.processEvents()
+  window.raise_();window.activateWindow();app.processEvents()
+  check('native window active before input',QTest.qWaitForWindowActive(window,2000) and app.activeWindow() is window)
+  target.setFocus(Qt.FocusReason.OtherFocusReason);app.processEvents()
+  check('actual input control owns focus',app.focusWidget() is target)
+  check('actual input target visible region',target.isVisible() and not target.visibleRegion().isEmpty() and target.visibleRegion().contains(target.rect().center()))
+  # Test the target center against EVERY clipping ancestor, including the outer shell viewport.
+  point=target.mapToGlobal(target.rect().center());ancestor=target
+  while ancestor is not None:
+   check('input target within ancestor '+ancestor.objectName(),ancestor.rect().contains(ancestor.mapFromGlobal(point)))
+   ancestor=ancestor.parentWidget()
+ def visible_item(table,page,item):
+  rect=table.visualItemRect(item)
+  check('final cell fully within table viewport',table.viewport().rect().contains(rect))
+  for point in (rect.topLeft(),rect.topRight(),rect.bottomLeft(),rect.bottomRight()):
+   check('final cell within outer viewport',page.viewport().rect().contains(page.viewport().mapFromGlobal(table.viewport().mapToGlobal(point))))
+ for width,height in ((900,700),(900,640)):
+  window.resize(width,height);app.processEvents()
+  check('requested small window fits',window.width()==width and window.height()==height)
+  for index,table,toggle,cards in mocks:
+   window.navigate(index);app.processEvents();page=window.pages[index]
+   check(f'{index} compact7',sum(not table.isColumnHidden(c) for c in range(table.columnCount()))==7)
+   input_ready(toggle,page);QTest.keyClick(toggle,Qt.Key.Key_Space);app.processEvents()
+   check(f'{index} expanded38/37',table.columnCount()==(38 if index==1 else 37))
+   check(f'{index} all columns visible',all(not table.isColumnHidden(c) for c in range(table.columnCount())))
+   input_ready(table,page);QTest.keyClick(table,Qt.Key.Key_End,Qt.KeyboardModifier.ControlModifier);app.processEvents()
+   check(f'{index} keyboard selects final comparison cell',table.currentColumn()==table.columnCount()-1 and table.currentRow()==table.rowCount()-1)
+   visible_item(table,page,table.currentItem())
+   # Actual visible horizontal scrollbar must also accept mouse input and keyboard End.
+   hbar=table.horizontalScrollBar();input_ready(hbar,page)
+   QTest.mouseClick(hbar,Qt.MouseButton.LeftButton,pos=hbar.rect().center());app.processEvents()
+   input_ready(hbar,page);QTest.keyClick(hbar,Qt.Key.Key_End);app.processEvents()
+   check(f'{index} visible horizontal scrollbar reaches end',hbar.maximum()>0 and hbar.value()==hbar.maximum())
+   for number,card in enumerate(cards):
+    bar=card.verticalScrollBar();input_ready(bar,page)
+    QTest.mouseClick(bar,Qt.MouseButton.LeftButton,pos=bar.rect().center());app.processEvents()
+    input_ready(bar,page);QTest.keyClick(bar,Qt.Key.Key_End);app.processEvents()
+    check(f'{index} card{number} visible scrollbar keyboard end',bar.maximum()>0 and bar.value()==bar.maximum())
+    final=card.widget().layout().itemAt(card.widget().layout().count()-1).widget()
+    final_rect=final.rect()
+    for point in (final_rect.topLeft(),final_rect.bottomRight()):
+     global_point=final.mapToGlobal(point)
+     check('final tactic within card viewport',card.viewport().rect().contains(card.viewport().mapFromGlobal(global_point)))
+     check('final tactic within outer viewport',page.viewport().rect().contains(page.viewport().mapFromGlobal(global_point)))
+   window.grab().save(str(args.output/f'page{index}-{width}x{height}.png'))
+   input_ready(toggle,page);QTest.keyClick(toggle,Qt.Key.Key_Space);app.processEvents()
+ check('widget reading preserves state/RNG/draft/save',model.state==baseline and window.draft()==draft and model.save_path.read_bytes()==saved and encode(model.state,model.template_bytes)==encoded)
+ report['result']='pass';window.close()
+except Exception as exc:
+ report['result']='fail';report['error']=str(exc);report['traceback']=traceback.format_exc()
+finally:
+ (args.output/'report.json').write_text(json.dumps(report,indent=2))
+ print(json.dumps({'result':report['result'],'report':str(args.output/'report.json'),'error':report.get('error'),'checks':len(report['checks'])}))
+ sys.exit(0 if report['result']=='pass' else 1)
