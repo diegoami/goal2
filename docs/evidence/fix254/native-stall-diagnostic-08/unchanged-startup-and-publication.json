@@ -1,0 +1,31 @@
+{
+  "claim": "[confirmed: exact Git byte comparisons] Sampled startup/publication sources are unchanged from accepted main; this does not prove every earlier heartbeat failure has this cause",
+  "accepted_main": "84af745c6b2d68b89077e9fde330fc8538eda031",
+  "rows": [
+    {
+      "path": "goal2/game/session_save.py",
+      "sha256": "fc8d1ea43fafec3e24e946e6a257179e034ef4afcc194f73a0c895a565307365",
+      "byte_identical_to_accepted_main": true
+    },
+    {
+      "path": "goal2/game/watched_jobs.py",
+      "sha256": "3b6c05535eacefee4243295f822add9f2dc7dde5da83da5b109845bc8df23527",
+      "byte_identical_to_accepted_main": true
+    },
+    {
+      "path": "goal2/game/watched_publication.py",
+      "sha256": "2b96c2c93a4bf7701168359b30fc9e60fe7881168653c2bfd2552ccf7ed24ad8",
+      "byte_identical_to_accepted_main": true
+    },
+    {
+      "path": "goal2/game/watched_schema.py",
+      "sha256": "85392f62ab8239e5ad657197ced36f03ffd909e7f5d8fca9f3704a128b78f643",
+      "byte_identical_to_accepted_main": true
+    },
+    {
+      "path": "goal2/engine/original_match/image.py",
+      "sha256": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
+      "byte_identical_to_accepted_main": true
+    }
+  ]
+}
