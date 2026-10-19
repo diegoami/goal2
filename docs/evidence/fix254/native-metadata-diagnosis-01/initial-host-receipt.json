@@ -1,0 +1,23 @@
+{
+  "exit": 1,
+  "directory": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-metadata-diagnostic-1792409716877113566",
+  "source": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-05e70e0162c0-1792409471366591790",
+  "script_sha256": "883cee4d478b1ecc35c10c4fcf77c51e81500cf67a5a4c750ccc227e7e1ac1a6",
+  "log_sha256": "2efd8945db546cf7756d06fe199a1a016ef0d3f8a7a8d0efc65edcac3597834c",
+  "protected_before": {
+    "/mnt/c/Users/diego/projects/goal2-exe/Start-goal2.cmd": "1df00f8ca12e10be100877021ec40ea7013604e7503fa8c40a21a57e7d0d6bb2",
+    "/mnt/c/Users/diego/projects/goal2-exe/Start-goal2-modern.cmd": "e9f680a868083e8a8bb8998c66a77cc0c0e82f20c139179e818d359a8ffc73de",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/desktop.g2save": "ead25fd28628a68d30a9077d07b400e55e5b092c41f32db39e3da312c9f3e0a5",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "/mnt/c/Users/diego/projects/goal2-exe/.goal2-releases/accepted-5c266169/.cache/e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
+  },
+  "protected_after": {
+    "/mnt/c/Users/diego/projects/goal2-exe/Start-goal2.cmd": "1df00f8ca12e10be100877021ec40ea7013604e7503fa8c40a21a57e7d0d6bb2",
+    "/mnt/c/Users/diego/projects/goal2-exe/Start-goal2-modern.cmd": "e9f680a868083e8a8bb8998c66a77cc0c0e82f20c139179e818d359a8ffc73de",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/desktop.g2save": "ead25fd28628a68d30a9077d07b400e55e5b092c41f32db39e3da312c9f3e0a5",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "/mnt/c/Users/diego/projects/goal2-exe/.cache/GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "/mnt/c/Users/diego/projects/goal2-exe/.goal2-releases/accepted-5c266169/.cache/e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
+  }
+}

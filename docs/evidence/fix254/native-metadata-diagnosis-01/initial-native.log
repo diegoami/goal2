@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-metadata-diagnostic-1792409716877113566\diagnostic.py", line 40, in <module>
+    with patch.object(viewer,'_status_replace_api',return_value=(*api[:2],close,api[3])):viewer.status(path,value)
+                                                                                         ~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-05e70e0162c0-1792409471366591790\goal2\desktop\pygame_viewer.py", line 88, in status
+    _replace_status(temporary, path)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-05e70e0162c0-1792409471366591790\goal2\desktop\pygame_viewer.py", line 78, in _replace_status
+    close(handle)
+    ~~~~~^^^^^^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-metadata-diagnostic-1792409716877113566\diagnostic.py", line 38, in close
+    try:inspect('writer_handle_open')
+        ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-metadata-diagnostic-1792409716877113566\diagnostic.py", line 35, in inspect
+    assert run.returncode==0,run.stdout+run.stderr
+           ^^^^^^^^^^^^^^^^^
+AssertionError: Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+    with watched._open_status(p)as stream:row['native_read']=json.loads(stream.read())
+         ^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'goal2.desktop.watched' has no attribute '_open_status'

@@ -1,0 +1,241 @@
+{
+  "claim": "[designed: #254] Actual Qt/SDL original parity/save/resume acceptance; mode frames=True and capture/ACK observation only; preceding fault-injection units separate",
+  "result": "FAIL",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "qt": "6.12.0",
+  "qpa": "windows",
+  "requested_qt_scale": "2",
+  "actual_qt_ratio": 2.0,
+  "controller_errors": [
+    {
+      "error": "ValueError('Pygame window did not start within 10 seconds; check SDL display configuration')",
+      "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-05e70e0162c0-1792409471366591790\\parent-observer.py\", line 87, in observe_poll\n    try:result=poll(self)\n               ~~~~^^^^^^\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-05e70e0162c0-1792409471366591790\\goal2\\desktop\\watched.py\", line 216, in poll\n    raise ValueError('Pygame window did not start within 10 seconds; check SDL display configuration')\nValueError: Pygame window did not start within 10 seconds; check SDL display configuration\n"
+    }
+  ],
+  "frames": [],
+  "complete_acks": [],
+  "qt_captures": [],
+  "sdl": [
+    {
+      "stage": "live",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        772,
+        329,
+        1788,
+        1088
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "2",
+      "frame_sequence": 2,
+      "frame_consumed_before_status": -1,
+      "capture": "goal2-viewer-dxkbdnre-live.png",
+      "pid": 34016,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    }
+  ],
+  "deterministic_tests": 16,
+  "original_acceptance_tests": 1,
+  "callbacks": [],
+  "owned_resources_closed": true,
+  "clean_widgets": true,
+  "import_context_restored": true,
+  "checks": [
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true
+  ],
+  "native_timing": {
+    "starts": [
+      {
+        "start": 16433.1525978,
+        "end": 16433.8944179,
+        "seconds": 0.7418203000015637
+      }
+    ],
+    "slow_polls": [
+      {
+        "start": 16437.1325706,
+        "end": 16437.3298337,
+        "seconds": 0.19726310000260128,
+        "busy": true,
+        "frame_ack": -1,
+        "sequence": 2
+      },
+      {
+        "start": 16437.3507764,
+        "end": 16437.505421,
+        "seconds": 0.15464460000293911,
+        "busy": true,
+        "frame_ack": -1,
+        "sequence": 2
+      },
+      {
+        "start": 16437.5369427,
+        "end": 16437.6894864,
+        "seconds": 0.15254369999820483,
+        "busy": true,
+        "frame_ack": -1,
+        "sequence": 10
+      },
+      {
+        "start": 16437.7219103,
+        "end": 16437.9029476,
+        "seconds": 0.18103730000075302,
+        "busy": true,
+        "frame_ack": -1,
+        "sequence": 25
+      },
+      {
+        "start": 16437.913384,
+        "end": 16438.0883711,
+        "seconds": 0.17498709999927087,
+        "busy": true,
+        "frame_ack": 7,
+        "sequence": 37
+      },
+      {
+        "start": 16438.0992159,
+        "end": 16438.2646048,
+        "seconds": 0.16538889999719686,
+        "busy": true,
+        "frame_ack": 18,
+        "sequence": 48
+      },
+      {
+        "start": 16438.2751057,
+        "end": 16438.449834,
+        "seconds": 0.1747283000004245,
+        "busy": true,
+        "frame_ack": 29,
+        "sequence": 66
+      }
+    ],
+    "slow_status_opens": [
+      {
+        "start": 16437.1327541,
+        "end": 16437.3192825,
+        "seconds": 0.18652840000140714
+      },
+      {
+        "start": 16437.3510336,
+        "end": 16437.4983623,
+        "seconds": 0.14732870000079856
+      },
+      {
+        "start": 16437.5372337,
+        "end": 16437.6752969,
+        "seconds": 0.13806320000003325
+      },
+      {
+        "start": 16437.7220774,
+        "end": 16437.8924831,
+        "seconds": 0.17040569999880972
+      },
+      {
+        "start": 16437.9135213,
+        "end": 16438.0795591,
+        "seconds": 0.1660377999978664
+      },
+      {
+        "start": 16438.099356,
+        "end": 16438.2568078,
+        "seconds": 0.15745180000158143
+      },
+      {
+        "start": 16438.275239,
+        "end": 16438.4382972,
+        "seconds": 0.16305819999979576
+      }
+    ],
+    "heartbeat_gaps": [
+      {
+        "start": 16433.1525965,
+        "end": 16433.898832,
+        "seconds": 0.7462354999988747,
+        "frame_ack": -1,
+        "sequence": 2
+      },
+      {
+        "start": 16433.898832,
+        "end": 16434.0721309,
+        "seconds": 0.17329890000110026,
+        "frame_ack": -1,
+        "sequence": 2
+      },
+      {
+        "start": 16437.1324493,
+        "end": 16437.3402871,
+        "seconds": 0.2078378000005614,
+        "frame_ack": -1,
+        "sequence": 2
+      },
+      {
+        "start": 16437.3507098,
+        "end": 16437.5158226,
+        "seconds": 0.165112799997587,
+        "frame_ack": -1,
+        "sequence": 2
+      },
+      {
+        "start": 16437.5368622,
+        "end": 16437.6998077,
+        "seconds": 0.16294550000020536,
+        "frame_ack": -1,
+        "sequence": 10
+      },
+      {
+        "start": 16437.7218711,
+        "end": 16437.9133479,
+        "seconds": 0.19147680000241962,
+        "frame_ack": -1,
+        "sequence": 25
+      },
+      {
+        "start": 16437.9133479,
+        "end": 16438.0991695,
+        "seconds": 0.18582160000005388,
+        "frame_ack": 7,
+        "sequence": 37
+      },
+      {
+        "start": 16438.0991695,
+        "end": 16438.2750654,
+        "seconds": 0.17589589999988675,
+        "frame_ack": 18,
+        "sequence": 48
+      },
+      {
+        "start": 16438.2750654,
+        "end": 16438.4605154,
+        "seconds": 0.18544999999721767,
+        "frame_ack": 29,
+        "sequence": 66
+      }
+    ],
+    "status_opens": 816,
+    "maximum_status_open": 0.18652840000140714,
+    "maximum_poll": 0.19726310000260128,
+    "maximum_status_read": 0.0002843999973265454,
+    "maximum_status_close": 0.00021909999850322492,
+    "slow_status_reads": [],
+    "slow_status_closes": []
+  }
+}
