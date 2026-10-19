@@ -6,6 +6,16 @@ The original manager hub keeps the managed country, world/European ranking and n
 
 *Holland after loading the published G1A checkpoint, `M244-G1A-02 step 2`; the left card shows Eire as the next opponent and the right column names the twenty. The same screen is the origin for the captured fixture, squad and team-tactic branches. [confirmed: M244-G1A-02 step 2; E031 G1A save register]*
 
+## Country information and opponents
+
+![Holland country card during the World Cup](images/m244-team-info-2030.png)
+
+*The hub's highlighted **team info** action opened this Holland card with one Enter, `M244-G4C-05 step 3`. It keeps manager and team status, world/European ranking and movement, 4-4-2 formation, squad-stripe and skill bars, eight team tactics and characteristics on one page. The country list at right and top hints invite browsing competitors, while Space opens players. These are displayed labels; the exact units of bars and the formula behind “very good” remain outside this observation. [confirmed: M244-G4C-05 steps 2–3; evidence gap: bar units/status formula]*
+
+![Holland players from the country card](images/m244-team-info-players-2030.png)
+
+*One Space from that card opened a player detail for the 2030 Holland twenty, `M244-G4C-05 step 4`. One Esc returned to team info and another to the hub (`steps 5–6`). The card gives an opponent-scouter the same individual labels as the managed squad, including skills, readiness and characteristics, without proving a roster edit in this read-only route. [confirmed: M244-G4C-05 steps 3–6]*
+
 ## Fixture list and which matches to watch
 
 ![Round fixture list before a watch toggle](images/m244-fixtures.png)
@@ -37,6 +47,18 @@ In **team info**, a country card can be inspected; Space shows that country's pl
 *One Down selects Group G, `M244-G1A-03 step 9`. The table and the match list both change; the user sees the context of a group, not an isolated rank. [confirmed: M244-G1A-03 steps 8–9]*
 
 The table visibly has P, W, D, L, F, A and T headings; W/D/L align with results language, but this chapter does not assert an unreviewed formula for T or every tiebreak. A manager uses the table to see whether results are enough to advance, and the adjacent fixtures to see opponents and remaining matches. The full standings rules are in the reviewed archaeology specification rather than deduced from zero-filled opening rows. [confirmed: M244-G1A-03 steps 8–9; reviewed F023; evidence gap: field-by-field display explanation]
+
+![World Cup finals knockout bracket](images/m244-world-finals-bracket.png)
+
+*From the 2030 hub, two Downs selected tournament and Enter opened the **Finals** bracket, `M244-G4C-05 step 9`. The sixteen knockout sides, future pairings and a top-scorers panel are visible. The bottom shows Qualifying, Finals and Championship display choices; the player can move Left/Right among them. An empty branch is an unplayed match, not an invented result. [confirmed: M244-G4C-05 steps 6–9]*
+
+![World Cup qualifying Group A results](images/m244-world-qualifying-a.png)
+
+*One Right changed from Finals to **Qualifying**, `M244-G4C-05 step 10`. Group A's P/W/D/L/F/A/T table sits beside its dated result sequence, so ranking and opponents can be read together. The bottom lists continent choices and prints Up/Down for groups, Space for continent, and Left/Right for display. [confirmed: M244-G4C-05 steps 9–10]*
+
+![Adjacent World Cup qualifying group](images/m244-world-qualifying-b.png)
+
+*One Down moved from Group A to Group B, `M244-G4C-05 step 11`, changing both table and adjacent match list. This captures the scrolling behavior in a later campaign stage. [confirmed: M244-G4C-05 steps 10–11]*
 
 ## History and news
 
