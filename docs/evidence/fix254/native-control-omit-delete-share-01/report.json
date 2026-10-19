@@ -1,0 +1,30 @@
+{
+  "tag": "[designed: #254] Real native status read/replace interleave",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "probe_sha256": "360bdef3f1fd08f566c64e9dfad7a8b1ac6789439c9fca89091749b2f81edee7",
+  "writer_sha256": "efd05b32e07ecc0f84c8282f24a5dcc0d4440dd42877fc4df391acc43335304d",
+  "controller_sha256": "f2e9c03b5508501035b9925b09927ee4cfe30787b915b8187e52e9015a4375e5",
+  "scope": "Actual controller status read and native writer; inert engine/viewer; not match/UI acceptance",
+  "cases": [
+    {
+      "index": 0,
+      "reader_interleave_visited": true,
+      "initial_status_created": true,
+      "production_factory": "_open_status",
+      "writer_exit": 1,
+      "writer_seconds": 0.1196734999994078,
+      "writer_stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import json,sys;from pathlib import Path;from goal2.desktop.pygame_viewer import status;status(Path(sys.argv[1]),json.loads(sys.argv[2]))\r\n                                                                                            ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-mutant-omit-delete-share01-1792407208681259300\\goal2\\desktop\\pygame_viewer.py\", line 67, in status\r\n    _replace_status(temporary, path)\r\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-mutant-omit-delete-share01-1792407208681259300\\goal2\\desktop\\pygame_viewer.py\", line 57, in _replace_status\r\n    raise ctypes.WinError(error)\r\nPermissionError: [WinError 32] Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird.\r\n",
+      "published": false,
+      "old_snapshot_validated": true,
+      "old_snapshot_byte_count": 143,
+      "replacement_complete": false,
+      "replacement_bytes_differ": false,
+      "pending_retained": true,
+      "all_read_handles_closed": true,
+      "owned_writers_reaped": true
+    }
+  ],
+  "result": "FAIL",
+  "failure": "AssertionError('native production writer could not replace status while its actual reader remained open')"
+}

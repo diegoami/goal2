@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "9547e50c407bd1aabf55d9d49fa16d8dcd63579cae89a3879c7ddd542b4d159f",
+  "text": "PASS native status sharing: three held-reader interleaves and 2000 concurrent status writes; validated snapshots and reaped writers\r\n"
+}

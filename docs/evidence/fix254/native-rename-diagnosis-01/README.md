@@ -1,0 +1,9 @@
+# Native single-rename investigation
+
+[confirmed: report.json] Fresh owned text on actual Windows11/Python3.13.15 compares ReplaceFileW, FileRenameInfo and FileRenameInfoEx with flags REPLACE_IF_EXISTS|POSIX_SEMANTICS. Ordinary unshared readers reject replacement; shared readers retain valid old snapshots with the extended rename. Initial target creation also succeeds through the same operation. All owned streams/handles/threads close.
+
+[confirmed: report.json concurrent-2000 rows] ReplaceFileW has23237missing-file opens and7909sharing denials over2000successful writes. Plain rename has1167writer WinError5 failures. Extended rename has2000successful writes,19472complete reads, zero missing/sharing/error/partial-payload observations. These resource-free diagnostics are not match/UI acceptance or a universal atomicity proof.
+
+[confirmed: host-receipt.json] All6protected launcher/save/original hashes remain unchanged. Raw native report/log bytes are preserved in SHA256-tagged UTF8 envelopes; reading derivatives normalize CRLF to LF and terminal newlines to one.
+
+[confirmed: Microsoft API contract] [FILE_RENAME_INFORMATION](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/ns-ntifs-_file_rename_information) documents flag1 replacement plus flag2 retaining existing open handles and subsequent opens targeting the renamed file. [FILE_RENAME_INFO](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_rename_info) supplies the wide filename and pointer-sized root layout for [SetFileInformationByHandle](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileinformationbyhandle). Extended semantics depend on Windows10-era filesystem support; errors on unsupported systems propagate. This host is Windows11/NTFS; no older-host acceptance is claimed.

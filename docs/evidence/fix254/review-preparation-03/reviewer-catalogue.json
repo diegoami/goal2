@@ -1,0 +1,23 @@
+{
+  "nonbilling": true,
+  "listed": 58,
+  "eligible": [
+    {
+      "alias": "mimo-flash",
+      "id": "opencode-go/mimo-v2.6-flash",
+      "family": "mimo",
+      "variant": null
+    },
+    {
+      "alias": "mimo-pro",
+      "id": "opencode-go/mimo-v2.6-pro",
+      "family": "mimo",
+      "variant": null
+    }
+  ],
+  "error_providers": [
+    "zai-coding-plan",
+    "alibaba-token-plan",
+    "minimax"
+  ]
+}

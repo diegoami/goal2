@@ -1,0 +1,9 @@
+{
+  "claim": "[confirmed: independent post-run hashes] Native regression receipt collection, not full match/UI acceptance",
+  "original_receipt_sha256": "cfca09faabca786b9f6cc2ae206a8dea73b596babad0d1b7ee289f72f6590504",
+  "source_files": 179,
+  "probe_sha256": "360bdef3f1fd08f566c64e9dfad7a8b1ac6789439c9fca89091749b2f81edee7",
+  "protected_files": 6,
+  "native_exit": 1,
+  "probe_result": "FAIL"
+}

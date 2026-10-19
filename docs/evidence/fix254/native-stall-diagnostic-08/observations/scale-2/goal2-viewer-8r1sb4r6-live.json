@@ -1,0 +1,25 @@
+{
+  "stage": "live",
+  "driver": "windows",
+  "surface": [
+    1000,
+    720
+  ],
+  "window": [
+    1000,
+    720
+  ],
+  "window_rect": [
+    772,
+    329,
+    1788,
+    1088
+  ],
+  "dpi": 96,
+  "qt_scale_requested": "2",
+  "frame_sequence": 0,
+  "frame_consumed_before_status": -1,
+  "capture": "goal2-viewer-8r1sb4r6-live.png",
+  "pid": 39656,
+  "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+}

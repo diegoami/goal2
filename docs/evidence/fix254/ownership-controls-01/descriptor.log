@@ -1,0 +1,28 @@
+test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) ...
+  test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) (failure='binary-mode') ... FAIL
+  test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) (failure='file-object') ... FAIL
+
+======================================================================
+FAIL: test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) (failure='binary-mode')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_desktop_watched_sharing.py", line 102, in test_native_handle_bridge_failure_closes_only_the_current_owner
+    native_os.close.assert_called_once_with(77)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 960, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) (failure='file-object')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_desktop_watched_sharing.py", line 102, in test_native_handle_bridge_failure_closes_only_the_current_owner
+    native_os.close.assert_called_once_with(77)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 960, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to be called once. Called 0 times.
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=2)

@@ -86,12 +86,30 @@ def completed_candidate(state,fixture,outcome,template,*,competitive=False):
     return candidate
 
 
+class _CompletionPreparation:
+    """[designed: #254] Private computation only; no owner reference or state swap."""
+    def __init__(self, candidate, fixture, outcome, template, competitive):
+        self.inputs = candidate, fixture, outcome, template
+        self.competitive = competitive
+        self.candidate = None
+        self.error = None
+        self.ready = False
+
+    def run(self):
+        try:
+            self.candidate = completed_candidate(*self.inputs, competitive=self.competitive)
+        except BaseException as exc:
+            self.error = exc
+        finally:
+            self.ready = True
+
+
 class WatchedPublication:
     """[designed] Owner supplies state/template_bytes and a validating view(candidate)."""
     _competitive=False
 
     def __init__(self,owner):
-        self.owner=owner;self._pending=None
+        self.owner=owner;self._pending=None;self._preparation=None
 
     def begin(self,fixture):
         if self._pending is not None:raise ValueError('a watched job is already pending')
@@ -106,20 +124,55 @@ class WatchedPublication:
         self._pending=(job.token,original,snapshot,candidate,fixture,bytes(self.owner.template_bytes))
         return job
 
-    def complete(self,token,outcome):
-        if self._pending is None or token!=self._pending[0]:raise ValueError('unknown or consumed watched completion token')
-        _,original,snapshot,candidate,fixture,template=self._pending
-        self._pending=None
+    def _pending_for(self,token):
+        if self._pending is None or token!=self._pending[0]:
+            raise ValueError('unknown or consumed watched completion token')
+        return self._pending
+
+    def _check_owner(self,pending):
+        _,original,snapshot,_,_,template=pending
         if self.owner.state is not original or self.owner.state!=snapshot or self.owner.template_bytes!=template:
             raise ValueError('watched completion is stale; active state changed')
-        candidate=completed_candidate(candidate,fixture,outcome,template,competitive=self._competitive)
-        self.owner.view(candidate)
-        self.owner.state=candidate
-        return candidate
+
+    def prepare_completion(self,token,outcome):
+        """[designed: #254] Bind private computation before leaving the owner thread."""
+        pending=self._pending_for(token)
+        if self._preparation is not None:
+            raise ValueError('watched completion is already preparing')
+        try:
+            self._check_owner(pending)
+        except Exception:
+            self.cancel()
+            raise
+        _,_,_,candidate,fixture,template=pending
+        self._preparation=_CompletionPreparation(candidate,fixture,outcome,template,self._competitive)
+        return self._preparation
+
+    def publish_prepared(self,token,preparation):
+        """[designed: #254] Only the bound prepared candidate may swap active state."""
+        pending=self._pending_for(token)
+        if self._preparation is None or preparation is not self._preparation:
+            raise ValueError('unknown or consumed watched completion preparation')
+        if not preparation.ready:
+            raise ValueError('watched completion is still preparing')
+        self.cancel()
+        if preparation.error is not None:
+            raise preparation.error
+        self._check_owner(pending)
+        self.owner.view(preparation.candidate)
+        self.owner.state=preparation.candidate
+        return preparation.candidate
+
+    def complete(self,token,outcome):
+        """[designed] Synchronous callers retain validated once-only publication."""
+        preparation=self.prepare_completion(token,outcome)
+        preparation.run()
+        return self.publish_prepared(token,preparation)
 
     def cancel(self):
-        """[designed] Cancellation invalidates the token without publishing state."""
+        """[designed] Invalidate both token and prepared result without publishing."""
         self._pending=None
+        self._preparation=None
 
 
 class CompetitivePublication(WatchedPublication):

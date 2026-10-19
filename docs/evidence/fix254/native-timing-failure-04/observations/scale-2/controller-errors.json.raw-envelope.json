@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "d24ba6775185da9c2a26b9c53054306b894699a161498275d38bac352337d9cd",
+  "text": "[\r\n  {\r\n    \"error\": \"ValueError('Pygame window did not start within 10 seconds; check SDL display configuration')\",\r\n    \"traceback\": \"Traceback (most recent call last):\\n  File \\\"C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\fix254-05e70e0162c0-1792409471366591790\\\\parent-observer.py\\\", line 87, in observe_poll\\n    try:result=poll(self)\\n               ~~~~^^^^^^\\n  File \\\"C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\fix254-05e70e0162c0-1792409471366591790\\\\goal2\\\\desktop\\\\watched.py\\\", line 216, in poll\\n    raise ValueError('Pygame window did not start within 10 seconds; check SDL display configuration')\\nValueError: Pygame window did not start within 10 seconds; check SDL display configuration\\n\"\r\n  }\r\n]\r\n"
+}

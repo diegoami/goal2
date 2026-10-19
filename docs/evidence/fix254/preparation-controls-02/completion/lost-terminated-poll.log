@@ -1,0 +1,14 @@
+test_terminated_worker_can_be_reaped_by_poll_without_wait (goal2.tests.test_watched_startup.StartupTests.test_terminated_worker_can_be_reaped_by_poll_without_wait) ... FAIL
+
+======================================================================
+FAIL: test_terminated_worker_can_be_reaped_by_poll_without_wait (goal2.tests.test_watched_startup.StartupTests.test_terminated_worker_can_be_reaped_by_poll_without_wait)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_watched_startup.py", line 226, in test_terminated_worker_can_be_reaped_by_poll_without_wait
+    self.assertIsNotNone(process.poll(),'terminated owned process never reaped by poll')
+AssertionError: unexpectedly None : terminated owned process never reaped by poll
+
+----------------------------------------------------------------------
+Ran 1 test in 2.009s
+
+FAILED (failures=1)

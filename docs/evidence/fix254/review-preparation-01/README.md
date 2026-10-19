@@ -1,0 +1,3 @@
+# Independent review preparation
+
+[confirmed: syntax checks] Setup, serial replay and native evidence audit helpers compile; they have not dispatched a reviewer or established a passing native audit at this checkpoint. Owner selection follows a concrete validated ready PR under AGENTS.md. Setup stages exact trusted helpers, private verified inputs and native original receipt inside the actual review checkout. Serial replay preserves source-mutation isolation and owns its Linux display through the staged integration driver. Native audit requires an independently supplied original receipt anchor; synthetic tampering controls remain separate from actual execution.

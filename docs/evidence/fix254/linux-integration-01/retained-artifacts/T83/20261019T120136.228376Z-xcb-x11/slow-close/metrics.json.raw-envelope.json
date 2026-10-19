@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "cc6fe07f6d454e67044eab251a421ae7bd7bdf64edbe7e2efdfe26be7c21f179",
+  "text": "{\"rendered\": 207, \"changed\": 206, \"selectors\": [1], \"rebindings\": 0, \"last_sequence\": 206, \"last_minute\": 4, \"complete\": false, \"first_flip_monotonic\": 18253.52875883, \"last_flip_monotonic\": 18264.523450198, \"playback_seconds\": 10.994691367999621, \"observed_samples_per_second\": 18.73631492736296, \"minimum_sample_interval\": 0.05263562400068622, \"maximum_sample_interval\": 0.06941277799705858, \"maximum_samples_per_second\": 18.99853984797374, \"selector_samples\": {\"1\": 207}, \"capture_counts\": {\"half-1\": {\"sample_ordinal_within_selector\": 1, \"sequence\": 0, \"minute\": 0, \"hidden_players\": 0, \"visible_players\": 22, \"unique_projected_player_positions\": 2, \"overlap_multiplicities\": [3, 19], \"ball_hidden\": false}}, \"actual_sdl_driver\": \"x11\", \"pygame_version\": \"2.5.8\", \"sdl_version\": [2, 32, 10]}"
+}

@@ -1,0 +1,11 @@
+{
+  "claim": "[confirmed: sharing.log] Existing sharing/deadline/state/packet/cleanup tests and binary/bridge-ownership regressions passed; Linux does not prove Win32 sharing",
+  "command": "python -B -m unittest goal2.tests.test_desktop_watched_sharing -v",
+  "result": "PASS",
+  "tests": 15,
+  "log_sha256": "23be863b6f59633c70225af31bbee977fe23ffbb2952113489f5a49fdd6243a8",
+  "sources": {
+    "goal2/desktop/watched.py": "4fdf59295f03121be17a283bce60ec3ddd8235f057b5d7ae7e530896dbadd5ae",
+    "goal2/tests/test_desktop_watched_sharing.py": "220d38e92a02971287ac65b3f97ebdf416e301529e7cdfc28a66a687ce8e493e"
+  }
+}

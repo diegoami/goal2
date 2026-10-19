@@ -1,0 +1,14 @@
+test_cleanup_failure_keeps_lock_and_can_be_retried (goal2.tests.test_watched_startup.StartupTests.test_cleanup_failure_keeps_lock_and_can_be_retried) ... FAIL
+
+======================================================================
+FAIL: test_cleanup_failure_keeps_lock_and_can_be_retried (goal2.tests.test_watched_startup.StartupTests.test_cleanup_failure_keeps_lock_and_can_be_retried)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_watched_startup.py", line 201, in test_cleanup_failure_keeps_lock_and_can_be_retried
+    self.assertTrue(self.jobs.busy)
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+FAILED (failures=1)

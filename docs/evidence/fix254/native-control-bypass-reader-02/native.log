@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-mutant-bypass-reader02-1792408756583158984\run-probe.py", line 10, in <module>
+    runpy.run_path('C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-mutant-bypass-reader02-1792408756583158984\\tools\\desktop-ui\\native-status-sharing.py',run_name="__main__")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-mutant-bypass-reader02-1792408756583158984\tools\desktop-ui\native-status-sharing.py", line 115, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-mutant-bypass-reader02-1792408756583158984\tools\desktop-ui\native-status-sharing.py", line 80, in main
+    assert row['reader_interleave_visited'],'production read factory was not visited'
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: production read factory was not visited

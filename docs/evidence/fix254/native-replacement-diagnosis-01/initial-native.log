@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\fix254-replace-matrix-1792406905621202541\matrix.py", line 35, in <module>
+    row['target_bytes']=target.read_bytes().decode();row['source_exists']=source.exists()
+                        ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\diego\AppData\Local\Programs\Python\Python313\Lib\pathlib\_abc.py", line 625, in read_bytes
+    with self.open(mode='rb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\diego\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-replace-matrix-1792406905621202541\\observations\\replace-matrix-1tdnrnfl\\status'

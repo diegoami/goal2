@@ -1,0 +1,19 @@
+test_cancel_blocked_encoding_retains_ownership_and_retries_without_launch (goal2.tests.test_watched_startup.StartupTests.test_cancel_blocked_encoding_retains_ownership_and_retries_without_launch) ... FAIL
+
+======================================================================
+FAIL: test_cancel_blocked_encoding_retains_ownership_and_retries_without_launch (goal2.tests.test_watched_startup.StartupTests.test_cancel_blocked_encoding_retains_ownership_and_retries_without_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_watched_startup.py", line 114, in test_cancel_blocked_encoding_retains_ownership_and_retries_without_launch
+    launch.assert_not_called()
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 910, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'Popen' to not have been called. Called 1 times.
+Calls: [call(['owned-worker', '/tmp/goal2-watched-itja90wd/input', '/tmp/goal2-watched-itja90wd/events'], cwd=PosixPath('/home/diego/projects/goal2-work/fix254-native-status-sharing'), stdin=-3, stdout=-3, stderr=<_io.BufferedRandom name='/tmp/goal2-watched-itja90wd/errors'>),
+ call().poll(),
+ call().wait(timeout=0.4969674189997022)].
+
+----------------------------------------------------------------------
+Ran 1 test in 1.007s
+
+FAILED (failures=1)

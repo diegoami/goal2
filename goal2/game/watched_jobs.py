@@ -16,6 +16,8 @@ import struct
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 
 from goal2.engine.original_match.match import Event
 from goal2.game.watched_match import WatchedOutcome
@@ -61,6 +63,72 @@ def _memory(value):
     return memory
 
 
+class _PreparingProcess:
+    """[designed: #254] Own private input preparation until an owner-thread launch.
+
+    The thread only encodes/writes the captured job, never reads the active owner
+    or launches a child. Popen-compatible lifecycle methods retain ownership when
+    a bounded wait expires; cancelled preparation can never launch a worker.
+    """
+    def __init__(self, state, template, source, command, **options):
+        self.args = command
+        self._options = options
+        self._process = None
+        self._cancelled = False
+        self._error = None
+        def prepare():
+            try:
+                source.write_bytes(encode(state, template))
+            except BaseException as exc:
+                self._error = exc
+        self._thread = threading.Thread(target=prepare, name='goal2-watched-input')
+        self._thread.start()
+
+    @property
+    def pid(self):
+        return self._process.pid if self._process is not None else None
+
+    @property
+    def returncode(self):
+        if self._process is not None:
+            return self._process.returncode
+        return 0 if self._cancelled and not self._thread.is_alive() else None
+
+    def poll(self):
+        if self._thread.is_alive():
+            return None
+        self._thread.join()
+        if self._cancelled:
+            return self._process.poll() if self._process is not None else 0
+        if self._error is not None:
+            raise self._error
+        if self._process is None:
+            self._process = subprocess.Popen(self.args, **self._options)
+        return self._process.poll()
+
+    def terminate(self):
+        self._cancelled = True
+        if self._process is not None:
+            self._process.terminate()
+
+    def kill(self):
+        self._cancelled = True
+        if self._process is not None:
+            self._process.kill()
+
+    def wait(self, timeout=None):
+        started = time.monotonic()
+        self._thread.join(timeout)
+        if self._thread.is_alive():
+            raise subprocess.TimeoutExpired(self.args, timeout)
+        if self._process is None:
+            if self._cancelled:
+                return 0
+            self.poll()
+        remaining = None if timeout is None else max(0, timeout-(time.monotonic()-started))
+        return self._process.wait(timeout=remaining)
+
+
 class WatchedJobs:
     """[designed] One active job per owner; token-scoped reads/cancellation.
 
@@ -104,6 +172,8 @@ class WatchedJobs:
         self._frame_buffer = bytearray()
         self._engine_done = False
         self._complete = None
+        self._completion_thread = None
+        self._completion_work = None
         self._sequence = 0
         self._buffer = bytearray()
         try:
@@ -124,7 +194,6 @@ class WatchedJobs:
         self._folder = tempfile.TemporaryDirectory(prefix='goal2-watched-')
         folder = Path(self._folder.name)
         source = folder / 'input'
-        source.write_bytes(encode(job.state, self._template))
         (folder / 'request.json').write_text(json.dumps({'token':job.token, 'fixture':asdict(job.fixture),
             'frames':self._frames_enabled,
             'options':dict(reference_seed=reference_seed, delay_byte=delay_byte, record_draws=record_draws)}))
@@ -132,7 +201,8 @@ class WatchedJobs:
         self._errors = (folder / 'errors').open('w+b')
         self._frames = (folder / 'frames').open('w+b')
         command = [sys.executable, '-m', 'goal2.game.watched_worker'] if self.command is None else list(self.command)
-        self.process = subprocess.Popen(command + [str(source), str(folder / 'events')],
+        self.process = _PreparingProcess(job.state, self._template, source,
+            command + [str(source), str(folder / 'events')],
             cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL, stderr=self._errors)
 
@@ -218,7 +288,25 @@ class WatchedJobs:
                 raise ValueError('pitch frame count differs from completed ticks')
             if self._frame_ack != self._frame_sequence - 1:
                 return
-        self.publication.complete(token, self._complete)
+        # [designed: #254] Full result/image/round validation can be expensive.
+        # It uses only private captured data; owner view/state swap stays here.
+        thread = getattr(self, '_completion_thread', None)
+        if thread is None:
+            work = self.publication.prepare_completion(token, self._complete)
+            self._completion_work = work
+            self._completion_thread = threading.Thread(target=work.run, name='goal2-watched-completion')
+            try:
+                self._completion_thread.start()
+            except BaseException:
+                self._completion_thread = None
+                self._completion_work = None
+                self.publication.cancel()
+                raise
+            return
+        if thread.is_alive():
+            return
+        thread.join()
+        self.publication.publish_prepared(token, self._completion_work)
         self.outcome = self._complete
         self._release()
 
@@ -286,10 +374,6 @@ class WatchedJobs:
 
 
     def _release(self):
-        if getattr(self, '_pitch_owns_pending', False):
-            self.owner.match_pending = False
-            self._pitch_owns_pending = False
-        self.process = None
         for name in ('_journal', '_errors', '_frames'):
             stream = getattr(self, name, None)
             if stream is not None:
@@ -298,19 +382,34 @@ class WatchedJobs:
         if folder is not None:
             folder.cleanup()
             self._folder = None
+        if getattr(self, '_pitch_owns_pending', False):
+            self.owner.match_pending = False
+            self._pitch_owns_pending = False
+        self.process = None
+        self._completion_thread = None
+        self._completion_work = None
 
     def cancel(self, token):
         self._check_token(token)
+        # [designed: #254] Invalidate first; a timed-out preparer/child stays owned
+        # and busy until cancellation can reap it, before any folder is released.
+        self.publication.cancel()
+        self.process.terminate()
         try:
-            self.process.terminate()
-            try:
-                self.process.wait(timeout=0.5)
-            except subprocess.TimeoutExpired:
-                self.process.kill()
-                self.process.wait(timeout=0.5)
-        finally:
-            self.publication.cancel()
-            self._release()
+            self.process.wait(timeout=0.5)
+        except subprocess.TimeoutExpired:
+            self.process.kill()
+            self.process.wait(timeout=0.5)
+        # [designed: #254] Completion starts only after engine exit, so these
+        # bounded waits cannot overlap a running engine/input-preparation wait.
+        thread = getattr(self, '_completion_thread', None)
+        if thread is not None:
+            thread.join(0.5)
+            if thread.is_alive():
+                thread.join(0.5)
+            if thread.is_alive():
+                raise subprocess.TimeoutExpired('watched completion preparation', 1.0)
+        self._release()
 
     def close(self):
         if self.busy:

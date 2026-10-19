@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "d7462be59cead563a0ffa6881b05f378915213ad10fc9391d6248bb46c4e92f4",
+  "text": "test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state) ... FAIL\n\n======================================================================\nFAIL: test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_pygame_pitch_view.py\", line 88, in test_field_bounds_visibility_and_unknown_state\n    self.assertNotEqual(self.pixel(500,469),(255,244,161),'sentinel ball must be hidden')\nAssertionError: (255, 244, 161) == (255, 244, 161) : sentinel ball must be hidden\n\n----------------------------------------------------------------------\nRan 1 test in 0.088s\n\nFAILED (failures=1)\n"
+}

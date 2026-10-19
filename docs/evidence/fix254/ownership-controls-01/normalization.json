@@ -1,0 +1,17 @@
+{
+  "descriptor.log": {
+    "raw_sha256": "3e64dbadd1c3011a1b2739cbb198539cd7cdf34b0d696cc573a11cd82a1d10ed",
+    "reading_sha256": "60001003f86add05157897616a98bc917890fd7b0239be28fa65013203e1e706",
+    "normalization": "remove trailing horizontal whitespace from each reading line; preserve raw bytes in envelope"
+  },
+  "raw-handle.log": {
+    "raw_sha256": "a9c0f607b07ab577ac6405f0fc2cd3f6542ab67ea40f69dcea15f92cb1782672",
+    "reading_sha256": "43137d579de463002661078ee41e081ffc2f913c7b5becd95d11d36db13b7ed7",
+    "normalization": "remove trailing horizontal whitespace from each reading line; preserve raw bytes in envelope"
+  },
+  "rename-handle.log": {
+    "raw_sha256": "88181f8cf6d92217391496eef348130b6d7b4af4a0b62c82301774cdcc06b620",
+    "reading_sha256": "f22bb00e8a90e47c61ea3bb7669726241cb116a7a1980c7d6d62d20e8fd3efc5",
+    "normalization": "remove trailing horizontal whitespace from each reading line; preserve raw bytes in envelope"
+  }
+}

@@ -1,8 +1,11 @@
 """[designed: #236] Deterministic Windows sharing, deadlines and ownership regressions."""
 from contextlib import ExitStack
+import ctypes
 import errno
 import io
 import json
+import os
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 import subprocess
@@ -66,13 +69,81 @@ class SharingTests(unittest.TestCase):
         return {'token': controller.token, 'kind': 'ready', 'sequence': 0,
                 'digest': controller.digests[0], **changes}
 
+
+    def test_status_snapshot_is_binary_and_closes_its_owned_handle(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder)/'status'
+            payload = b'{"value":"owned"}\r\n'
+            path.write_bytes(payload)
+            with watched._open_status(path) as stream:
+                self.assertEqual(stream.read(4097), payload)
+            self.assertTrue(stream.closed)
+
+    def test_native_handle_bridge_failure_closes_only_the_current_owner(self):
+        for failure in ('descriptor', 'binary-mode', 'file-object'):
+            with self.subTest(failure=failure):
+                error = OSError('injected ownership transfer failure')
+                handle = 0x123456789
+                create, close = Mock(return_value=handle), Mock()
+                crt = SimpleNamespace(open_osfhandle=Mock(return_value=77), setmode=Mock())
+                native_os = SimpleNamespace(**{**vars(os), 'name':'nt', 'O_NOINHERIT':0x80,
+                    'O_BINARY':0x8000, 'fdopen':Mock(return_value=io.BytesIO()), 'close':Mock()})
+                if failure == 'descriptor':crt.open_osfhandle.side_effect = error
+                elif failure == 'binary-mode':crt.setmode.side_effect = error
+                else:native_os.fdopen.side_effect = error
+                with patch.object(watched, 'os', native_os), patch.object(watched, '_status_api', return_value=(create,close)), patch.dict(sys.modules, {'msvcrt':crt}):
+                    with self.assertRaises(OSError) as caught:watched._open_status(Path('owned-status'))
+                self.assertIs(caught.exception, error)
+                if failure == 'descriptor':
+                    close.assert_called_once_with(handle)
+                    native_os.close.assert_not_called()
+                else:
+                    close.assert_not_called()
+                    native_os.close.assert_called_once_with(77)
+
+    def test_native_rename_encodes_target_and_closes_only_an_acquired_handle(self):
+        class RenameInfo(ctypes.Structure):
+            _fields_ = [('Flags',ctypes.c_uint32),('RootDirectory',ctypes.c_void_p),
+                        ('FileNameLength',ctypes.c_uint32),('FileName',ctypes.c_uint16*1)]
+        for failure in (None, 'open', 'rename'):
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as folder:
+                target = Path(folder)/'status-\u00e9';temporary = target.with_suffix('.new')
+                handle = 0x123456789
+                create = Mock(return_value=ctypes.c_void_p(-1).value if failure=='open' else handle)
+                close = Mock()
+                def rename(actual_handle, kind, buffer, length):
+                    self.assertEqual(actual_handle,handle)
+                    self.assertEqual(kind,22)
+                    self.assertEqual(length,len(buffer))
+                    info = RenameInfo.from_buffer(buffer)
+                    self.assertEqual(info.Flags,3)
+                    self.assertIsNone(info.RootDirectory)
+                    encoded = os.fspath(target.absolute()).encode('utf-16-le')
+                    self.assertEqual(info.FileNameLength,len(encoded))
+                    self.assertEqual(buffer.raw[RenameInfo.FileName.offset:RenameInfo.FileName.offset+len(encoded)],encoded)
+                    return failure!='rename'
+                operation = Mock(side_effect=rename)
+                error = OSError('injected native rename failure')
+                native_os = SimpleNamespace(**{**vars(os), 'name':'nt', 'replace':Mock()})
+                with patch.object(viewer,'os',native_os), patch.object(viewer,'_status_replace_api',return_value=(create,operation,close,RenameInfo)), patch.object(ctypes,'get_last_error',return_value=32,create=True), patch.object(ctypes,'WinError',return_value=error,create=True):
+                    if failure:
+                        with self.assertRaises(OSError) as caught:viewer._replace_status(temporary,target)
+                        self.assertIs(caught.exception,error)
+                    else:viewer._replace_status(temporary,target)
+                create.assert_called_once_with(os.fspath(temporary),0x10000,7,None,3,0x80,None)
+                native_os.replace.assert_not_called()
+                if failure=='open':
+                    close.assert_not_called();operation.assert_not_called()
+                else:
+                    close.assert_called_once_with(handle);operation.assert_called_once()
+
     def test_writer_retries_same_atomic_payload_without_schema_changes(self):
         with tempfile.TemporaryDirectory() as folder:
             target = Path(folder)/'status'
             target.write_text('old')
             value = {'token':'owned', 'kind':'ready', 'sequence':7, 'digest':'exact',
                      'frame_sequence':3, 'frame_digest':'rendered'}
-            original = viewer.os.replace
+            original = viewer._replace_status
             attempts = []
             def replace(source, destination):
                 attempts.append(Path(source).read_bytes())
@@ -82,7 +153,7 @@ class SharingTests(unittest.TestCase):
                     raise denied()
                 original(source, destination)
             clock = Clock()
-            with self.environment(viewer, clock), patch.object(viewer.os, 'replace', replace):
+            with self.environment(viewer, clock), patch.object(viewer, '_replace_status', replace):
                 viewer.status(target, value)
             self.assertEqual(len(attempts), 3)
             self.assertEqual(len(set(attempts)), 1)
@@ -94,7 +165,7 @@ class SharingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             target = Path(folder)/'status'; target.write_text('old')
             clock = Clock(); error = denied()
-            with self.environment(viewer, clock), patch.object(viewer.os, 'replace', side_effect=error) as replace:
+            with self.environment(viewer, clock), patch.object(viewer, '_replace_status', side_effect=error) as replace:
                 with self.assertRaises(PermissionError) as caught:
                     viewer.status(target, {'kind':'ready'})
             self.assertIs(caught.exception, error)
@@ -105,21 +176,21 @@ class SharingTests(unittest.TestCase):
     def test_writer_does_not_retry_unrelated_or_non_windows_errors(self):
         with tempfile.TemporaryDirectory() as folder:
             clock = Clock()
-            with self.environment(viewer, clock), patch.object(viewer.os, 'replace', side_effect=[denied(), None]):
+            with self.environment(viewer, clock), patch.object(viewer, '_replace_status', side_effect=[denied(), None]):
                 viewer.status(Path(folder)/'status', {})
             self.assertEqual(clock.sleeps, [.01])
         for platform, error in [('linux', denied()), ('win32', denied(32)),
                                 ('win32', OSError(errno.ENOSPC, 'full'))]:
             with self.subTest(platform=platform, error=error), tempfile.TemporaryDirectory() as folder:
                 clock = Clock()
-                with self.environment(viewer, clock, platform), patch.object(viewer.os, 'replace', side_effect=error) as replace:
+                with self.environment(viewer, clock, platform), patch.object(viewer, '_replace_status', side_effect=error) as replace:
                     with self.assertRaises(type(error)) as caught:
                         viewer.status(Path(folder)/'status', {})
                 self.assertIs(caught.exception, error)
                 self.assertEqual(replace.call_count, 1)
                 self.assertEqual(clock.sleeps, [])
         clock = Clock()
-        with self.environment(viewer, clock), patch.object(Path, 'write_text', side_effect=denied()), patch.object(viewer.os, 'replace') as replace:
+        with self.environment(viewer, clock), patch.object(Path, 'write_text', side_effect=denied()), patch.object(viewer, '_replace_status') as replace:
             with self.assertRaises(PermissionError):viewer.status(Path('status'), {})
         replace.assert_not_called()
         self.assertEqual(clock.sleeps, [])
@@ -130,7 +201,7 @@ class SharingTests(unittest.TestCase):
                 c = self.controller(folder); path = c.directory/'status'
                 path.write_text(json.dumps(self.value(c)))
                 clock = Clock()
-                with self.environment(watched, clock), patch.object(Path, 'open', side_effect=error):
+                with self.environment(watched, clock), patch.object(watched, '_open_status', side_effect=error):
                     self.assertFalse(c.poll())
                 self.assertEqual(clock.sleeps, [])
                 self.assertTrue(c.model.match_pending)
@@ -145,11 +216,11 @@ class SharingTests(unittest.TestCase):
             c = self.controller(folder); (c.directory/'status').write_text(json.dumps(self.value(c)))
             clock = Clock(); error = denied(None)
             with self.environment(watched, clock):
-                with patch.object(Path, 'open', side_effect=error):
+                with patch.object(watched, '_open_status', side_effect=error):
                     self.assertFalse(c.poll()); clock.now = .249; self.assertFalse(c.poll())
                 self.assertFalse(c.poll())
                 clock.now = .3
-                with patch.object(Path, 'open', side_effect=error):
+                with patch.object(watched, '_open_status', side_effect=error):
                     self.assertFalse(c.poll()); clock.now = .549; self.assertFalse(c.poll())
                     clock.now = .55
                     with self.assertRaises(PermissionError) as caught:c.poll()
@@ -163,7 +234,7 @@ class SharingTests(unittest.TestCase):
             c = self.controller(folder); (c.directory/'status').write_text(json.dumps(self.value(c)))
             clock = Clock()
             with self.environment(watched, clock):
-                with patch.object(Path, 'open', side_effect=denied(None)):self.assertFalse(c.poll())
+                with patch.object(watched, '_open_status', side_effect=denied(None)):self.assertFalse(c.poll())
                 self.assertFalse(c.poll())
             self.assertEqual(c.last_status, self.value(c))
         for platform, error in [('linux', denied(None)), ('linux', denied()),
@@ -171,7 +242,7 @@ class SharingTests(unittest.TestCase):
                                 ('win32', OSError(errno.EIO, 'broken read'))]:
             with self.subTest(platform=platform, error=error), tempfile.TemporaryDirectory() as folder:
                 c = self.controller(folder); (c.directory/'status').touch(); clock = Clock()
-                with self.environment(watched, clock, platform), patch.object(Path, 'open', side_effect=error):
+                with self.environment(watched, clock, platform), patch.object(watched, '_open_status', side_effect=error):
                     with self.assertRaises(type(error)) as caught:c.poll()
                 self.assertIs(caught.exception, error)
                 self.assertEqual(clock.sleeps, [])
@@ -185,7 +256,7 @@ class SharingTests(unittest.TestCase):
                 path = c.directory/'status'; path.write_text(json.dumps(self.value(c, **changes)))
                 clock = Clock()
                 with self.environment(watched, clock):
-                    with patch.object(Path, 'open', side_effect=denied(None)):self.assertFalse(c.poll())
+                    with patch.object(watched, '_open_status', side_effect=denied(None)):self.assertFalse(c.poll())
                     with self.assertRaises(ValueError):c.poll()
                 c.engine.ack_frames.assert_not_called()
                 self.assertFalse(c.model.match_pending)

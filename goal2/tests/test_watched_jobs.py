@@ -196,8 +196,11 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         self.jobs=WatchedJobs(self.owner)
         for target in ('tempfile.TemporaryDirectory','subprocess.Popen'):
             with patch('goal2.game.watched_jobs.'+target,side_effect=OSError('launch unavailable')):
-                with self.assertRaisesRegex(OSError,'launch unavailable'):
-                    self.jobs.start(Fixture(7,19,21))
+                error = OSError if target == 'tempfile.TemporaryDirectory' else ValueError
+                with self.assertRaisesRegex(error,'launch unavailable'):
+                    token = self.jobs.start(Fixture(7,19,21))
+                    if target == 'subprocess.Popen':
+                        self.until(token, lambda events:False)
             self.assertTrue(self.jobs.publication._pending is None,'failed launch must clear pending publication')
             self.assertFalse(self.jobs.busy)
             self.assertEqual(self.owner.state,self.before)

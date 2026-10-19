@@ -1,0 +1,36 @@
+{
+  "claim": "[confirmed: independent post-run rehashes] Native execution collected; no acceptance claim beyond original result",
+  "original_result": "INCOMPLETE",
+  "original_receipt_sha256": "7cb84324653ecb36f42c285015b94369550c2c50950c4e76e47b9be67bcac4b9",
+  "source_files": 179,
+  "dependency_files": 566,
+  "resources": 3,
+  "protected_files": 6,
+  "normalization": {
+    "host-receipt.json": {
+      "raw_sha256": "7cb84324653ecb36f42c285015b94369550c2c50950c4e76e47b9be67bcac4b9",
+      "reading_sha256": "7cb84324653ecb36f42c285015b94369550c2c50950c4e76e47b9be67bcac4b9",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/engine-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/report.json": {
+      "raw_sha256": "90b05e4a243730432270948d672df65fd1384f2f1ae430e11a8a13618862792a",
+      "reading_sha256": "c0dca46442d5b0a73b15c35aedde4358970f81dcc617f560a2b2cca3393b4b6f",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/viewer-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "native-1.log": {
+      "raw_sha256": "a2dd65d0395c7243591abda66537c23dc43d0790fba7cfe40ad15e2886955706",
+      "reading_sha256": "ea7e832325bf5793b2871b4549dfeeec8f47ca318fd9a56c7cdfc9da9304f4b9",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    }
+  }
+}

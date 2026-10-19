@@ -1,0 +1,71 @@
+{
+  "claim": "[designed: #254] Synthetic tampering controls; only baseline original anchor is actual main native evidence",
+  "result": "PASS",
+  "rows": [
+    {
+      "name": "wrong-external-anchor",
+      "exit": 1,
+      "expected_rejection": "external original receipt anchor differs",
+      "log_sha256": "04fc64ce62b081f770c0118900ad7a7c65fe7b60c8c50da206b3a8567206e3e8",
+      "synthetic_semantic_anchor": true
+    },
+    {
+      "name": "resigned-receipt",
+      "exit": 1,
+      "expected_rejection": "external original receipt anchor differs",
+      "log_sha256": "04fc64ce62b081f770c0118900ad7a7c65fe7b60c8c50da206b3a8567206e3e8",
+      "synthetic_semantic_anchor": false
+    },
+    {
+      "name": "callback",
+      "exit": 1,
+      "expected_rejection": "native controller/callback/cleanup invalid",
+      "log_sha256": "1e654122c954d53aa93ffce6e1f9c2eaca352d72b9cd3a1e4723388f5ae53be4",
+      "synthetic_semantic_anchor": true
+    },
+    {
+      "name": "heartbeat",
+      "exit": 1,
+      "expected_rejection": "native responsiveness invalid",
+      "log_sha256": "8ffe899c28024bdf7645eb1893e5dc7794d32eb4779748587f2900f040bdb86a",
+      "synthetic_semantic_anchor": true
+    },
+    {
+      "name": "frame-ack",
+      "exit": 1,
+      "expected_rejection": "final frame ACK invalid",
+      "log_sha256": "2f4f5d56cbba015e5a718aaddff79c31ac2ff2cee63664bc1d92705d019c6b7c",
+      "synthetic_semantic_anchor": true
+    },
+    {
+      "name": "sdl-bounds",
+      "exit": 1,
+      "expected_rejection": "native window outside physical workarea",
+      "log_sha256": "bceac4f753ae01e1365d27656d2b5c4d3029a4042fb519e6cee5311cd06e4ea6",
+      "synthetic_semantic_anchor": true
+    },
+    {
+      "name": "capture",
+      "exit": 1,
+      "expected_rejection": "assert data[:8]",
+      "log_sha256": "2097590e0d3e478d10812dcfc7709778764caa71ab60c3522d28ddbb0606cee2",
+      "synthetic_semantic_anchor": true
+    },
+    {
+      "name": "protected",
+      "exit": 1,
+      "expected_rejection": "protected baseline differs",
+      "log_sha256": "90740597d089743a86d8b1b6e5a7a8581a1eaa042ae41036cdc36f2fb0fd3b99",
+      "synthetic_semantic_anchor": true
+    },
+    {
+      "name": "current-source",
+      "exit": 1,
+      "expected_rejection": "current source differs",
+      "log_sha256": "3ac9630d274da9d69e62b4d53dac6dd546ad867c32222331aef425318b56310c",
+      "synthetic_semantic_anchor": false
+    }
+  ],
+  "source_restored": true,
+  "original_receipt_sha256": "60d2046d86ea1bbd2b28cc55f2558643b1ca2bda22178772c768c30a7a15e823"
+}

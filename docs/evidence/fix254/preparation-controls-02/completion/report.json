@@ -1,0 +1,58 @@
+{
+  "claim": "Synthetic completion/startup mutation controls, not native execution",
+  "rows": [
+    {
+      "name": "synchronous-candidate",
+      "file": "goal2/game/watched_jobs.py",
+      "exit": 1,
+      "intended_failure": "AssertionError",
+      "mutant_sha256": "d8a95dfb5b78541972f6d32a4fcf0f2afa956eec73186cfd3cb5172c3241f33a",
+      "log_sha256": "3e382d6414a6138c8b57db7b3d627b774a8026430f237791ef1d468cd3b3be1d"
+    },
+    {
+      "name": "missing-owner-recheck",
+      "file": "goal2/game/watched_publication.py",
+      "exit": 1,
+      "intended_failure": "ValueError not raised",
+      "mutant_sha256": "f7730c0f676e7134d09261904fc4ac2fb66beb128ba7c74b33f3617ffc2b69e2",
+      "log_sha256": "176890bae31b177df994074eb2da38665b62ae76439296eedca38a740ec0c153"
+    },
+    {
+      "name": "discard-live-candidate",
+      "file": "goal2/game/watched_jobs.py",
+      "exit": 1,
+      "intended_failure": "TimeoutExpired not raised",
+      "mutant_sha256": "b7f15a0c6405052b8b75d52089bf4f49816057e36189bc8cf10b3413d8c1e630",
+      "log_sha256": "232d7230fa113aae0eb43eef4f53e4a014a60c7009a2cf215723e08d5da1a7a6"
+    },
+    {
+      "name": "accept-forged-candidate",
+      "file": "goal2/game/watched_publication.py",
+      "exit": 1,
+      "intended_failure": "ValueError not raised",
+      "mutant_sha256": "0ba15a9798ad975d3d54c69fef3f6ca549f5461674cbc32823e049751980250c",
+      "log_sha256": "74604a2f3874c82174a7090551a9d97ce3d957808b2b7fc0256915e671750577"
+    },
+    {
+      "name": "lost-terminated-poll",
+      "file": "goal2/game/watched_jobs.py",
+      "exit": 1,
+      "intended_failure": "terminated owned process never reaped by poll",
+      "mutant_sha256": "9df5d28b2c167c83217e37a516a3aa555b7a03b24db272966df6aea2689ea21a",
+      "log_sha256": "81e5c8c6c137cce89d19a86150df5cf40cd4f84f27b011e47df60fb348a69fcf"
+    },
+    {
+      "name": "missing-final-ack",
+      "file": "goal2/game/watched_jobs.py",
+      "exit": 1,
+      "intended_failure": "AssertionError",
+      "mutant_sha256": "83ea35c579b1ba63b3d7385d411a79993e77d6a924b95f277ccd0b704c745b23",
+      "log_sha256": "030cc46fa51aaf15c2aedf6ddd115b6a5bf00940f379f79273300f4071c61d27"
+    }
+  ],
+  "all_sources_restored": true,
+  "source_sha256": {
+    "goal2/game/watched_jobs.py": "8dc838f01515501f414556e58c557aea1ccce1091e8285ec51375e6cc8192e81",
+    "goal2/game/watched_publication.py": "c0626e3902518b6c8d2df30ea7721f3c5577b82141103afe2102b47e990aed42"
+  }
+}

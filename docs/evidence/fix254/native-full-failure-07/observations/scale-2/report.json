@@ -1,0 +1,217 @@
+{
+  "claim": "[designed: #254] Actual Qt/SDL original parity/save/resume acceptance; mode frames=True and capture/ACK observation only; preceding fault-injection units separate",
+  "result": "FAIL",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "qt": "6.12.0",
+  "qpa": "windows",
+  "requested_qt_scale": "2",
+  "actual_qt_ratio": 2.0,
+  "controller_errors": [],
+  "window_states": [],
+  "visibility_preflight": [
+    {
+      "time": 20134.5704163,
+      "visible": true,
+      "minimized": false
+    },
+    {
+      "time": 20231.6373017,
+      "visible": true,
+      "minimized": false
+    },
+    {
+      "time": 20317.1052732,
+      "visible": true,
+      "minimized": false
+    }
+  ],
+  "frames": [
+    {
+      "frames": 4439,
+      "final_ack": 4438,
+      "frame_digest": "07a610d219ed816579ed91bf76319fa97a94062810ac38094034291f036db292",
+      "heartbeats": 3806,
+      "maximum_heartbeat_gap": 2.994480700002896
+    },
+    {
+      "frames": 4830,
+      "final_ack": 4829,
+      "frame_digest": "81b1761ca799f98085f1c50de0d12b18f9aed7a9c09244566d41455e54cb47f1",
+      "heartbeats": 3949,
+      "maximum_heartbeat_gap": 0.5735640999992029
+    }
+  ],
+  "complete_acks": [
+    {
+      "sequence": 5613,
+      "digest": "36e86841b75c998720672d150252fe1c48d025dc61e0a13eb811848e349e7732"
+    },
+    {
+      "sequence": 6225,
+      "digest": "cdc0cee188d810b376d027f60ee6e8d6a8afaea17b23350455d6610328b7761e"
+    }
+  ],
+  "qt_captures": [
+    {
+      "file": "qt-complete-1.png",
+      "ratio": 2.0,
+      "logical_size": [
+        900,
+        640
+      ],
+      "qt_available": [
+        1280,
+        696
+      ],
+      "native_rect": [
+        430,
+        807,
+        2246,
+        2126
+      ],
+      "active": true
+    },
+    {
+      "file": "qt-complete-2.png",
+      "ratio": 2.0,
+      "logical_size": [
+        900,
+        640
+      ],
+      "qt_available": [
+        1280,
+        696
+      ],
+      "native_rect": [
+        430,
+        807,
+        2246,
+        2126
+      ],
+      "active": true
+    }
+  ],
+  "sdl": [
+    {
+      "stage": "complete",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        772,
+        329,
+        1788,
+        1088
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "2",
+      "frame_sequence": 4829,
+      "frame_consumed_before_status": 4829,
+      "capture": "goal2-viewer-jq7dxr1f-complete.png",
+      "pid": 19932,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    },
+    {
+      "stage": "live",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        772,
+        329,
+        1788,
+        1088
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "2",
+      "frame_sequence": 1,
+      "frame_consumed_before_status": -1,
+      "capture": "goal2-viewer-jq7dxr1f-live.png",
+      "pid": 19932,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    },
+    {
+      "stage": "complete",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        772,
+        329,
+        1788,
+        1088
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "2",
+      "frame_sequence": 4438,
+      "frame_consumed_before_status": 4438,
+      "capture": "goal2-viewer-jtjmj8hp-complete.png",
+      "pid": 23048,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    },
+    {
+      "stage": "live",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        772,
+        329,
+        1788,
+        1088
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "2",
+      "frame_sequence": 12,
+      "frame_consumed_before_status": -1,
+      "capture": "goal2-viewer-jtjmj8hp-live.png",
+      "pid": 23048,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    }
+  ],
+  "deterministic_tests": 16,
+  "original_acceptance_tests": 1,
+  "callbacks": [],
+  "owned_resources_closed": true,
+  "clean_widgets": true,
+  "import_context_restored": true,
+  "checks": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true
+  ]
+}

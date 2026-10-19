@@ -1,0 +1,14 @@
+test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting) ... FAIL
+
+======================================================================
+FAIL: test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_pygame_pitch_view.py", line 162, in test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting
+    self.assertEqual(before,previous,'sample acknowledged before SDL flip')
+AssertionError: 0 != -1 : sample acknowledged before SDL flip
+
+----------------------------------------------------------------------
+Ran 1 test in 0.110s
+
+FAILED (failures=1)

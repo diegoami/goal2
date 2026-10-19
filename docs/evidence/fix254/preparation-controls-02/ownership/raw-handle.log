@@ -1,0 +1,17 @@
+test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) ...
+  test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) (failure='descriptor') ... FAIL
+
+======================================================================
+FAIL: test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) (failure='descriptor')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_desktop_watched_sharing.py", line 98, in test_native_handle_bridge_failure_closes_only_the_current_owner
+    close.assert_called_once_with(handle)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 960, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to be called once. Called 0 times.
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (failures=1)

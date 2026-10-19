@@ -1,0 +1,106 @@
+{
+  "claim": "[confirmed: independent post-run rehashes] Native execution collected; no acceptance claim beyond original result",
+  "original_result": "INCOMPLETE",
+  "original_receipt_sha256": "1f204a8506dbf78bb2957f6aab6ab5476ca7c06377c78e1e3bd749f1116d44df",
+  "source_files": 179,
+  "dependency_files": 566,
+  "resources": 3,
+  "protected_files": 6,
+  "normalization": {
+    "host-receipt.json": {
+      "raw_sha256": "1f204a8506dbf78bb2957f6aab6ab5476ca7c06377c78e1e3bd749f1116d44df",
+      "reading_sha256": "1f204a8506dbf78bb2957f6aab6ab5476ca7c06377c78e1e3bd749f1116d44df",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/engine-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/engine-stderr-2.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/engine-stderr-4.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/goal2-viewer-q40pdpqr-complete.json": {
+      "raw_sha256": "75111350cf129b1a7cbf9a3dcb6a888c7326f9466cdd0625b150ad98f38554ba",
+      "reading_sha256": "99868501d08f3da8b6cdc47d95abf35ebcb508b7c52e5f1f5d3de237ab09411c",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/goal2-viewer-q40pdpqr-live.json": {
+      "raw_sha256": "3980367278a428568b2d6a7e94f4158e21a2c9b33dcc4d9383536297b0c738ec",
+      "reading_sha256": "3858159606e2721f10ab089811299893bd3dee7f85be19a2f21c7d4d44f3f5bb",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/goal2-viewer-qelw16sb-complete.json": {
+      "raw_sha256": "5ecac85ac338dbb6cefadbc3b3949c3fdab559f8757a65a2a9a4bf1a0d11a33d",
+      "reading_sha256": "263fe233bf0d59404b647a92b7d0868c07f6253547c82731d72f783e05f98878",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/goal2-viewer-qelw16sb-live.json": {
+      "raw_sha256": "ee07810a1f6a3c4ecdc202b330d7e1868f4f15436a20ca8bd51adcf1112c9b7d",
+      "reading_sha256": "a0b271a0f9f415814a379a1a55cb3c0502d0c4296b6a4090be11603745cfe3af",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/report.json": {
+      "raw_sha256": "66d7d12efd3cd37350c2670a5bb22573522e2fbfe0053e92e026ae1b74197775",
+      "reading_sha256": "201d1d3efa6f5e53721959941d3e486500238f861dd8fde4a46b6a7fa6a52f2d",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/viewer-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/viewer-stderr-2.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/viewer-stderr-4.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/engine-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/goal2-viewer-7wbj59fg-complete.json": {
+      "raw_sha256": "f3a41446741e58332746a79d32e7bdcea8538e03b572e31d7f213b2a533c1de6",
+      "reading_sha256": "9650cfb06ae7889c8388fd097549d4d2cb1a8fde7036d291cfacb5af7f3f7708",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/goal2-viewer-7wbj59fg-live.json": {
+      "raw_sha256": "9cde229813a7d1abd94bebd30a18a686ede0110399da9ca9e4e55d36e23886ed",
+      "reading_sha256": "f06e585e24f6adbcd1fcde71715d7331478a33fd5e0554104c482fcf97ab8bca",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/report.json": {
+      "raw_sha256": "78af80b93885b3a43c13c7b8bb16c85f0a46dd3cf8ffa7bcd5bda28a45f9ba3a",
+      "reading_sha256": "2cc5415237ef2fed95d1e2165d25691da6054644a5e0243f6d1cfa69883daeef",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/viewer-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "native-1.log": {
+      "raw_sha256": "6d1c1dfe50c1edd9d7cc8377399a69c906c1331d6a6376e77c7449bbe9454b43",
+      "reading_sha256": "b1c5f2f21e61795e5631210ec79ef930ff5759cd7316125a2af644eaf2a960d7",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "native-2.log": {
+      "raw_sha256": "ab9fed329cfd08ea9a19bdf78348a066df240013cd64c35f6500bd870b944912",
+      "reading_sha256": "94bb4c77de73bd17272554130b69868f78790009e58e41c9970bdc58cc957c00",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    }
+  }
+}

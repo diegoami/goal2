@@ -1,0 +1,7 @@
+# Native #254 baseline reproduction
+
+[confirmed: host-receipt.json and report.json] Immutable accepted main84af745c was executed by actual Windows CPython3.13.15. The probe invokes real WatchedController.poll with an inert engine/viewer to isolate I/O, holds its real status read handle while an owned native child calls the production status writer, and then resumes the read. The child exhausts the unchanged250ms retry and raises WinError5 on status.new->status. The old complete snapshot remains validated, nothing publishes, and all read handles/writers are closed/reaped. This is a controlled native file-sharing failure, not original-match/UI acceptance or proof that every earlier host failure has the same cause.
+
+[confirmed: collection.json] Main independently rehashed the full178-file accepted source archive, the exact probe input, wrapper/report/log and6protected launcher/save/original files. All protected bytes remained unchanged. Native UTF-8/CRLF text bytes have lossless JSON envelopes; adjacent LF files are reading derivatives. No private originals, saves or binaries enter Git.
+
+[designed: #254] Keep writer/read retry deadlines, packet/digest/frame validation and cleanup bounds unchanged. Investigate delete-sharing for native read handles; final actual-match1x/2x acceptance remains separate. [Microsoft CreateFileW reference](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew) explains the relevant rename-sharing flags.

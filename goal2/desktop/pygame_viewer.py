@@ -1,4 +1,5 @@
 """[designed: T66] SDL child, display only. Scroll with wheel/arrows; End follows live; Escape closes."""
+from functools import cache
 import json
 import os
 from pathlib import Path
@@ -26,6 +27,57 @@ def frame_digest(frame):
     return hashlib.sha256(json.dumps(frame, sort_keys=True).encode()).hexdigest()
 
 
+
+@cache
+def _status_replace_api():
+    """[designed: #254] Bind a single Windows rename that retains open snapshots."""
+    import ctypes
+    from ctypes import wintypes
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    create = kernel.CreateFileW
+    create.argtypes = (wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+                      ctypes.c_void_p, wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE)
+    create.restype = wintypes.HANDLE
+    rename = kernel.SetFileInformationByHandle
+    rename.argtypes = (wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD)
+    rename.restype = wintypes.BOOL
+    close = kernel.CloseHandle
+    close.argtypes = (wintypes.HANDLE,)
+    close.restype = wintypes.BOOL
+
+    class RenameInfo(ctypes.Structure):
+        _fields_ = [('Flags', wintypes.DWORD), ('RootDirectory', wintypes.HANDLE),
+                    ('FileNameLength', wintypes.DWORD), ('FileName', wintypes.WCHAR * 1)]
+
+    return create, rename, close, RenameInfo
+
+
+def _replace_status(temporary, path):
+    """[designed: #254] Publish one complete snapshot without removing its name first."""
+    if os.name != 'nt':
+        return os.replace(temporary, path)
+    import ctypes
+    create, rename, close, info_type = _status_replace_api()
+    name = os.fspath(path.absolute()).encode('utf-16-le')
+    offset = info_type.FileName.offset
+    buffer = ctypes.create_string_buffer(max(ctypes.sizeof(info_type), offset + len(name) + 2))
+    info = info_type.from_buffer(buffer)
+    # [confirmed: Microsoft FILE_RENAME_INFORMATION; native-rename-diagnosis-01]
+    # REPLACE_IF_EXISTS | POSIX_SEMANTICS retains old handles; new opens get the new file.
+    info.Flags = 0x1 | 0x2
+    info.RootDirectory = None
+    info.FileNameLength = len(name)
+    ctypes.memmove(ctypes.addressof(buffer) + offset, name, len(name))
+    handle = create(os.fspath(temporary), 0x10000, 0x1 | 0x2 | 0x4, None, 3, 0x80, None)
+    if handle == ctypes.c_void_p(-1).value:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        if not rename(handle, 22, buffer, len(buffer)):  # FileRenameInfoEx
+            raise ctypes.WinError(ctypes.get_last_error())
+    finally:
+        close(handle)
+
+
 def status(path, value):
     temporary = path.with_suffix('.new')
     temporary.write_text(json.dumps(value))
@@ -33,7 +85,7 @@ def status(path, value):
     deadline = time.monotonic() + .25
     while True:
         try:
-            os.replace(temporary, path)
+            _replace_status(temporary, path)
             return
         except PermissionError as exc:
             remaining = deadline - time.monotonic()

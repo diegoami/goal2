@@ -1,0 +1,7 @@
+[designed: owner-authorized completion preparation extension, 2026-10-19]
+
+The owner explicitly selected “Extend #254 to completion preparation (Recommended)” in response to the native sampler showing a >1-second completion-validation/other-country-results stall after the final frame ACK. This extends the same #254 and retained native Sol Medium implementation choice; no new task or reviewer selection.
+
+Extend Owns to `goal2/game/watched_publication.py`, `goal2/game/watched_jobs.py`, and substantive startup/completion/lifecycle tests and task-owned evidence. Prepare and validate the completed candidate away from the UI thread using private captured input/outcome data. Keep owner-state identity/equality/template checks, final owner view validation and state swap on the owner thread. Preserve exact engine/save/outcome/Memory/RNG/history results, the final-frame/complete ACK rules, one-job locking through preparation and cleanup, cancellation, bounded ownership retention/retry, errors and once-only publication. Do not edit vendored engine code, change packet/save schemas, increase deadlines, weaken the strict heartbeat limit or change installed launchers/saves.
+
+Existing Done-when and full actual sufficient-display Windows Qt1x/2x original-match/replay/save/cleanup acceptance remain mandatory. Add substantive gated-completion regressions and cancellation/staleness/error/once-only controls. Preserve all failed native receipts and require independent exact-source native anchoring/audit and owner-selected independent review before merge.

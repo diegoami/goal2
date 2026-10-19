@@ -77,7 +77,7 @@ class PitchTransportTests(unittest.TestCase):
         self.put([sample()])
         self.jobs._complete=SimpleNamespace(result={'ticks':1})
         self.jobs._engine_done=True
-        with patch.object(self.jobs.publication,'complete') as complete:
+        with patch.object(self.jobs.publication,'publish_prepared',wraps=self.jobs.publication.publish_prepared) as complete, patch('goal2.game.watched_publication.completed_candidate',return_value=copy.deepcopy(self.before)):
             self.jobs._maybe_publish(self.token)
             self.assertTrue(self.jobs.busy,'publication must wait for frame delivery')
             self.assertEqual(len(self.jobs.poll_frames(self.token)),1)
@@ -86,6 +86,11 @@ class PitchTransportTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'invalid'):self.jobs.ack_frames(self.token,1)
             self.jobs.ack_frames(self.token,0)
             self.jobs._maybe_publish(self.token)
+            deadline=time.monotonic()+5
+            while self.jobs.busy:
+                self.jobs._maybe_publish(self.token)
+                self.assertLess(time.monotonic(),deadline,'owned candidate preparation did not finish')
+                time.sleep(.001)
             complete.assert_called_once()
             self.assertFalse(self.jobs.busy)
             self.assertFalse(self.owner.match_pending)
@@ -94,8 +99,8 @@ class PitchTransportTests(unittest.TestCase):
     def test_cancel_after_engine_done_keeps_pending_state_and_prior_save(self):
         self.put([sample()]);self.jobs._engine_done=True
         self.assertTrue(self.owner.match_pending)
-        with patch.object(self.jobs.publication,'complete') as complete:
-            self.jobs.close();complete.assert_not_called()
+        with patch.object(self.jobs.publication,'publish_prepared') as complete, patch.object(self.jobs.publication,'prepare_completion') as prepare:
+            self.jobs.close();complete.assert_not_called();prepare.assert_not_called()
         self.assertFalse(self.owner.match_pending)
         self.assertEqual(self.owner.state,self.before)
         self.assertIsNone(self.jobs.publication._pending)
@@ -339,7 +344,12 @@ class OriginalPitchJobsTests(unittest.TestCase):
                     self.assertEqual(frames[-1]['minute'],93 if seed==257 else 91)
                     jobs.ack_frames(token,len(frames)-1)
                     self.assertIsNone(jobs.outcome)
-                    events.extend(jobs.poll(token))
+                    # [designed: #254] Final ACK permits private candidate preparation;
+                    # retain the existing deadline and every final parity assertion.
+                    while jobs.busy:
+                        self.assertLess(time.monotonic(),deadline,'actual original completion did not finish')
+                        app.processEvents();events.extend(jobs.poll(token))
+                        time.sleep(.002)
                     self.assertFalse(jobs.busy);self.assertEqual(jobs.outcome,expected)
                     self.assertEqual(owner.state.mem,expected.memory)
                     self.assertEqual(owner.state.match_count,1)

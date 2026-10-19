@@ -1,0 +1,51 @@
+{
+  "claim": "[confirmed: independent post-run rehashes] Native execution collected; no acceptance claim beyond original result",
+  "original_result": "INCOMPLETE",
+  "original_receipt_sha256": "85bca10f33fcadaf8279d61af866b099b58e3d342a24d33e45a5b41a5090abf5",
+  "source_files": 179,
+  "dependency_files": 566,
+  "resources": 3,
+  "protected_files": 6,
+  "normalization": {
+    "host-receipt.json": {
+      "raw_sha256": "85bca10f33fcadaf8279d61af866b099b58e3d342a24d33e45a5b41a5090abf5",
+      "reading_sha256": "85bca10f33fcadaf8279d61af866b099b58e3d342a24d33e45a5b41a5090abf5",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/controller-errors.json": {
+      "raw_sha256": "d24ba6775185da9c2a26b9c53054306b894699a161498275d38bac352337d9cd",
+      "reading_sha256": "302255401cdaaf7470fb30633199a0e111ad9f6a9275a367b121527c3b16c305",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/engine-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/goal2-viewer-dxkbdnre-live.json": {
+      "raw_sha256": "6a9d2f8a3d4109cc9fd43bf8e942d7377aa6115dd5f8e093eb4d31cbdfd1a8a3",
+      "reading_sha256": "dceb12a8674b1081db778f1fa2dba7b90c10bf29744d05a4dd3c9b86263bd3b8",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/report.json": {
+      "raw_sha256": "f370eae95e8edda1b8ec7b3cb263ef6417489e3e85a929f4fa9d79ae5c1e8e30",
+      "reading_sha256": "ec207de27a12393398a0cf659b2e11efe2b647bc7f7827918dd90e12196f2286",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/timing.json": {
+      "raw_sha256": "943774a83c34e35c489e0b612b20aaa464a5d422a7873bf32d01a8928efc580f",
+      "reading_sha256": "4e0ea4084d434e98694e564a057fe26b27941636cb1feb3c0a3da763dfc42fb1",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-2/viewer-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "native-2.log": {
+      "raw_sha256": "467c43e24e23ee1c6b0243f29bb6a118eecd220aee970469b1f70eb6d4fe79ff",
+      "reading_sha256": "bef27e8d00c2b6d4848ee26123fad796ebdcde7200ae1823368eea3ba0673e95",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    }
+  }
+}
