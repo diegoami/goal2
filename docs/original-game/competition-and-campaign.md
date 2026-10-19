@@ -16,6 +16,14 @@ The original manager hub keeps the managed country, world/European ranking and n
 
 *One Down on the fixture list moves selection, `M244-G1A-03 step 5`; this capture shows a “watch match” hint for its selected row. The E031 guide separately observed Enter toggling an other-country match between watch and automatic result, with a later “Do you want to watch this match?” prompt for marked games. The prompt depends on match context. [confirmed: M244-G1A-03 steps 4–5; E031 C18, C35]*
 
+![Another original fixture marked for watching](images/fixtures-watch.png)
+
+*Italy fixture-list watch state, `E015-r0007 state 18`; the selected row and bottom instructions are legible in the full image. It confirms this is a recurring list state, not unique to the Holland save. [confirmed: E015-r0007 state 18]*
+
+![Original fixture list with automatic handling](images/fixtures-auto.png)
+
+*Automatic-result alternative, `E015-r0007 state 24`. Read the selected-row hint before acting: the same list can present materially different handling for a selected fixture. The exact intervening E015 key burst is not treated as one-key causality. [confirmed: E015-r0007 states 18,24; E031 C18]*
+
 In **team info**, a country card can be inspected; Space shows that country's players. On your own fixture list, E031 observed Enter canceling a friendly and Enter on the canceled item arranging another. The label/context must be checked before treating Enter as one universal action. [confirmed: E031 C17, C17b, C17c]
 
 ## Tournament and standings

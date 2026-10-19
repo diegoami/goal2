@@ -32,6 +32,14 @@ To replace a squad player, E031 observed Enter on a pool player, Left to the twe
 
 On a player card, **R** steps through positions and **C** restores club position. The E031 guide observed a player move through the fourteen positions. The team card's displayed formation changed after the manager made picks, swaps and role changes (4-4-2, 3-5-2 and 4-3-3 in the E031 session). This establishes an observed connection, not an algorithm for computing a formation from every position combination. [confirmed: E031 C31–C32c]
 
+![Koeman one position forward](images/m244-position-next.png)
+
+*One R on Koeman, `M244-G1A-04 step 5`, changed the current position from sweeper to centre back while club-position stayed sweeper; the right roster code changed S to C. This particular role change also displayed “man to man” on the mark line. [confirmed: M244-G1A-04 steps 4–5]*
+
+![Koeman restored to club position](images/m244-position-club.png)
+
+*One C, `M244-G1A-04 step 6`, restored current position and roster code to sweeper; the displayed mark line returned to blank. Compare these two full cards before and after a deliberate role change. [confirmed: M244-G1A-04 steps 5–6]*
+
 A card may show **injured** or **suspended** instead of ready. This is a reason to inspect readiness before advancing to a fixture; the first screenshot shows only a ready state. The detailed injury/ban eligibility rules should be taken from reviewed findings, not guessed from this card. [confirmed: E031 C34, C34b; evidence gap: all readiness-state images]
 
 ## Individual and team tactics
@@ -40,7 +48,19 @@ A card may show **injured** or **suspended** instead of ready. This is a reason 
 
 *One T on Koeman's card opened the individual editor, `M244-G1A-02 step 8`. Its hint changes to arrows for selection, Enter to alter a tactic, and Esc to leave. The visible categories are position, possession, passing, tackling and mark. [confirmed: M244-G1A-02 steps 7–9]*
 
+![Position tactic flag after Enter](images/m244-position-tactic-toggle.png)
+
+*After opening Koeman's editor, four Downs wrapped the highlight to **position** and one Enter removed a visible trailing `P` from “push forward”, `M244-G1A-04 steps 7–12`. The log proves this before/after display change; the exact meaning of `P` is not established by the image. [confirmed: M244-G1A-04 steps 7–12; evidence gap: P meaning]*
+
 E031 observed Enter cycling a player's own option and the mark row progressing from “Protect zone” to named opposing players. Marking therefore has a player-specific opponent decision; a static image of “Protect zone” is one state only. E031 and the original manual say marks are cleared after each match. [confirmed: E031 C33–C33d; original GOAL.HLP]
+
+![A selected zone mark](images/mark-protect-zone.png)
+
+*Italy match bench, `E015-r0007 state 165`: the individual editor shows “Protect zone P” on the mark row, next to the selected player's skills and a substitutions-left counter. [confirmed: E015-r0007 state 165]*
+
+![A named opponent mark](images/mark-named-opponent.png)
+
+*The adjacent retained state, `E015-r0007 state 166`, shows “J Yusuf” in the mark row. E031 separately recorded one-key cycling from zone to named opponent; the E015 adjacency by itself does not prove which key caused it. The screen also names the opposing player's role under the mark line. [confirmed: E015-r0007 states 165–166; E031 C33c–C33d]*
 
 ![Holland team-tactics card](images/m244-team-tactics.png)
 

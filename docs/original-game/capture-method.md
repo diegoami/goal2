@@ -11,3 +11,5 @@
 | M244-G1A-03 | [capture](captures/m244-g1a-03.json) | title/load, Down fixture list, Enter, Down watch toggle, Esc, Down tournament, Enter, Down group, Esc, Down history, Enter |
 
 [designed: issue #244] New observations support only their shown key and immediate screen transition. They do not establish every later control or condition. The original guide's E031 claims and reviewed findings are cited separately for those.
+
+`M244-G1A-04` adds one-key R/C position changes and an individual-tactic option change from the same verified G1A file. The before/after text and PNG hashes are in its log. [confirmed: M244-G1A-04 steps 4–12]

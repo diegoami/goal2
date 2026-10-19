@@ -32,6 +32,10 @@ E031 observed **Left** reducing speed by one `»` marker, **Up/Down** changing t
 
 After a goal, the original may ask to show an action replay and then whether to save the goal. With automatic replay switched off at the match menu, those questions do not appear according to the reviewed prompt finding. Set-piece taker prompts for corner and goal kick allow a selected player or C for computer choice; their default timeout behavior is in F030, while E031 captured each prompt text. These overlays require their own images before coverage is complete. [confirmed: E031 C37, C42–C43b; reviewed F030; evidence gap: replay/taker prompt screenshots]
 
+![An injury reported during live play](images/injury-event.png)
+
+*Greece versus Hungary live event, `E015-r0007 state 42`: the header reports “Kovacs INJURED” and “Fischer on for Kovacs” while the pitch and score remain visible. This is an observed injury and replacement for the side in this match; it does not prove the managed-team substitution path. [confirmed: E015-r0007 state 42]*
+
 A rival substitution can produce a notice; a managed player's injury can produce an injury notice followed by “SUBSTITUTION OPPORTUNITY”. E031 also observed an injured player left on during a quick continuation repeatedly triggering the notice until the manager removed him. The case of no substitutions remaining was not seen and must not be invented. [confirmed: E031 C44–C46b, C71–C71b; evidence gap: no-substitution case]
 
 ## Half-time and bench
