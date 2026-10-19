@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "77ea7c3d1dce03af9b24c42969b8bf5e4cd11236b30e3383825e1f24db880e9e",
+  "text": "{\r\n  \"phase_timings\": [\r\n    {\r\n      \"stage\": \"idle\",\r\n      \"start\": 12155.4032912,\r\n      \"end\": 12156.399675\r\n    },\r\n    {\r\n      \"stage\": \"starting-0\",\r\n      \"start\": 12172.9072956,\r\n      \"end\": 12176.9930622\r\n    }\r\n  ],\r\n  \"round\": 0,\r\n  \"heartbeat_count\": 85,\r\n  \"long_gaps\": [\r\n    {\r\n      \"start\": 12172.0844892,\r\n      \"end\": 12172.8974168,\r\n      \"seconds\": 0.8129275999999663\r\n    },\r\n    {\r\n      \"start\": 12173.9569573,\r\n      \"end\": 12176.993145,\r\n      \"seconds\": 3.036187699999573\r\n    }\r\n  ]\r\n}\r\n"
+}

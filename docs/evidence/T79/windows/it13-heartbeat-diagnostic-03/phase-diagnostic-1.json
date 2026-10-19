@@ -1,0 +1,75 @@
+{
+  "phase_timings": [
+    {
+      "stage": "idle",
+      "start": 12155.4032912,
+      "end": 12156.399675
+    },
+    {
+      "stage": "starting-0",
+      "start": 12172.9072956,
+      "end": 12176.9930622
+    }
+  ],
+  "slow_calls": [
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12153.3899004,
+      "end": 12153.5143769,
+      "seconds": 0.1244765000010375
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12154.0667699,
+      "end": 12154.1936378,
+      "seconds": 0.12686789999861503
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12154.2460684,
+      "end": 12154.4990404,
+      "seconds": 0.2529720000002271
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12154.7675097,
+      "end": 12154.9122,
+      "seconds": 0.14469030000145722
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12155.1951785,
+      "end": 12155.349825,
+      "seconds": 0.15464649999921676
+    },
+    {
+      "label": "WatchedController.poll",
+      "start": 12173.9601313,
+      "end": 12176.9359758,
+      "seconds": 2.975844499998857
+    },
+    {
+      "label": "ManagementWindow.poll_watched",
+      "start": 12173.9600733,
+      "end": 12176.9599582,
+      "seconds": 2.9998848999985057
+    }
+  ],
+  "heartbeat_samples": [
+    {
+      "round": 0,
+      "gaps": [
+        {
+          "start": 12172.0844892,
+          "end": 12172.8974168,
+          "seconds": 0.8129275999999663
+        },
+        {
+          "start": 12173.9569573,
+          "end": 12176.993145,
+          "seconds": 3.036187699999573
+        }
+      ]
+    }
+  ]
+}
