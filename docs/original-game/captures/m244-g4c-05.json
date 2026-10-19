@@ -1,0 +1,122 @@
+[
+  {
+    "step": 0,
+    "label": "title",
+    "action": "launch",
+    "text_digest": "cd7f15fbf853b40471d05bad51cb6e6c14cbc8a7307893dba8f5f36c2315c612",
+    "sav_sha256": "97cd1f050494545efdeb3cda0dfb8f2dd6c93fe5752a459e047e9c5fc5440deb",
+    "png_sha256": "e980b8522f9e08886276c7903f5fa6203fbb09be0b07d284b3a200c47e777bc2",
+    "bottom": "■■■■■■■■■■■■■■■■■■■ Do you want to load a saved game? (Y/N) ■■■■■■■■■■■■■■■■■■■■",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 1,
+    "label": "load",
+    "action": "key y",
+    "text_digest": "c3b34d7b27300bfae4f02942fb55f10f97e12a040376e5e67b1e3cad6b966ef7",
+    "sav_sha256": "749218f1505cb4312c2fa23e9e92bf29dec3c64c1046e12dd20038b85d9569f1",
+    "png_sha256": "b1cba8088129dee6d79ce49d70f4f039beac210c19fe60957a49e053a3068618",
+    "bottom": "Please enter name of saved game :  G4C▒▒▒▒▒▒.GL      ■■■■■■■■■■■■■■■■■■■■■■■■■■■",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 2,
+    "label": "hub",
+    "action": "key Return",
+    "text_digest": "2a6ec14657da0e4d3edce08429f7a48c6d69c73f5b5e6d6107215d3b8082e4fd",
+    "sav_sha256": "69274e601787629287751b557b6b413e55d1c5486b904f74e425f21569c8c306",
+    "png_sha256": "57ba9d0de137f40cdd3d553a18bd7d4b5607f5ebd2859833a8acf55987aec9ad",
+    "bottom": "F1help  F3load goal  F4load summary  F5print screen F7save               F10quit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 3,
+    "label": "team-info",
+    "action": "key Return",
+    "text_digest": "bbce41a1033b30600914c4627a124747d01f960e57896b7147ce6d76f4ce02c0",
+    "sav_sha256": "2da96601f7742c003069d280858d6501b99574500e03e6d4a0b2e0623195ba6e",
+    "png_sha256": "5c4692ab57485973fdd02df136d76804fee2162a554d82a2d6db430cfda0b30a",
+    "bottom": "spacebar-players T-tactics",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 4,
+    "label": "team-players",
+    "action": "key space",
+    "text_digest": "9b4f707d0f3589479ec60775b7596ba7d0df6a186b64f7d56503b3587ba154bb",
+    "sav_sha256": "2a11a85f19a2856d02c925c1fec6f69ec55eed14c0361898f69629e125a82269",
+    "png_sha256": "51b64cd138c50944697062b7f03f88e8143671a046ff82d75f7672bbe29fca49",
+    "bottom": "                                                                   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 5,
+    "label": "exit-team-players",
+    "action": "key Escape",
+    "text_digest": "bbce41a1033b30600914c4627a124747d01f960e57896b7147ce6d76f4ce02c0",
+    "sav_sha256": "c6dd5673e5a73451a976a761534a9efa85ab05850b679b874f306fdb7e4077ae",
+    "png_sha256": "5c4692ab57485973fdd02df136d76804fee2162a554d82a2d6db430cfda0b30a",
+    "bottom": "spacebar-players T-tactics",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 6,
+    "label": "hub-return",
+    "action": "key Escape",
+    "text_digest": "2a6ec14657da0e4d3edce08429f7a48c6d69c73f5b5e6d6107215d3b8082e4fd",
+    "sav_sha256": "f84f6cb8d1b154bf78048a2efcc08ddc4100ba15fc5dfc7778adeb84559d9cf8",
+    "png_sha256": "57ba9d0de137f40cdd3d553a18bd7d4b5607f5ebd2859833a8acf55987aec9ad",
+    "bottom": "F1help  F3load goal  F4load summary  F5print screen F7save               F10quit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 7,
+    "label": "fixture-selected",
+    "action": "key Down",
+    "text_digest": "5c119be7dab77b37c2bbc90bf28521ed1fec5bce4da6effda6551a95444f7304",
+    "sav_sha256": "81e3baef0e044f23c6d16be4926f1594f1d80f19be2a4b6d929ea5a2e0713b9f",
+    "png_sha256": "1ca2955d59df5e15cc762ca9cd2ff52f2830760b3efd4eadc5425593d8852a2e",
+    "bottom": "F1help  F3load goal  F4load summary  F5print screen F7save               F10quit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 8,
+    "label": "tournament-selected",
+    "action": "key Down",
+    "text_digest": "350102ffb7e582387627a4a77e3730068f7ff3cd80a86463d516a8d9a24182f6",
+    "sav_sha256": "231ee3e106358e2332afd29e8de0454b9f0d0980b799835a9c136a6e80961214",
+    "png_sha256": "df3897484bf191e4d28dea5e7c845e210424809d1672fcdece51cd1d4c4176f4",
+    "bottom": "F1help  F3load goal  F4load summary  F5print screen F7save               F10quit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 9,
+    "label": "tournament-finals",
+    "action": "key Return",
+    "text_digest": "b60f02db5cca13b7b888000439a81d22d724ab559ee69313fa0763e0f53cb780",
+    "sav_sha256": "66e6db6e78b4dfc3b77e368385490214c2426a1874a7905db87cad1ffd84e2a5",
+    "png_sha256": "418827b6d73bab2979f27849f66df51a9ad9d51b8d3ec70f93b0b40e281898ff",
+    "bottom": "Hit Ins for Championship results       Use ←→ to select display        Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 10,
+    "label": "tournament-next-display",
+    "action": "key Right",
+    "text_digest": "c1545ef30f1a520ec46c3b5ced1170232fab895681384f16aed7dea9d18326a5",
+    "sav_sha256": "f7475f135d79604cae994da3072aec85662171cd10549d4854124e5c6412d0e9",
+    "png_sha256": "1726a008e13208d93ecc159eee1f713b3470e449213d540df61d51698b09980d",
+    "bottom": "Hit Ins for Championship results       Use ←→ to select display        Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "step": 11,
+    "label": "tournament-next-group",
+    "action": "key Down",
+    "text_digest": "479c1b841aa54d2dc88a5fe47ec91d96cc007b011a4d3166a3b2d7d147a6029c",
+    "sav_sha256": "0c010c9141a78a8277d406da8d5e75b16af432f9537cb164f64be2a4ab9e98c2",
+    "png_sha256": "9eeb79465d6af26ee29081889a7cf79098965e630f7226219c10e96eb49a9aae",
+    "bottom": "Hit Ins for Championship results       Use ←→ to select display        Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  }
+]
