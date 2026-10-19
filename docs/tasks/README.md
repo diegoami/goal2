@@ -172,12 +172,13 @@ operational status.
 
 | Proposed order | Planning scope | Issue / dependency gate |
 | --- | --- | --- |
-| 0 | Owner direction, backend/frontend/window and first-slice decisions | [O01–O07](../redesign-253/decisions.md); no migration authorized |
+| 0 | Owner direction, backend/frontend/window and first-slice decisions | [O01–O12](../redesign-253/decisions.md); no migration authorized |
 | 1 | Native data/rendering/package proof, split into bounded preflights | [B01/#259](https://github.com/diegoami/goal2/issues/259); direction approval, accepted T79/T84/T85 as applicable |
-| 2a | New/load/country/manager/save onboarding | [B02/#260](https://github.com/diegoami/goal2/issues/260); B01 and #249 available profile data |
-| 2b | Country desk and Team/Pool composition | [B03/#261](https://github.com/diegoami/goal2/issues/261); accepted #241/#242/#243/#198, #249 data; #248 edits only when supported |
+| 2a | New/load/country/manager/save onboarding | [B02/#260](https://github.com/diegoami/goal2/issues/260); B01 and current identity/roster preview; G05 complete profile is unowned |
+| 2b | Country desk and Team/Pool composition | [B03/#261](https://github.com/diegoami/goal2/issues/261); accepted #241/#242/#243/#198, #249 audit/display when available; G03/G05 unowned; #248 edits only when supported |
 | 2c | Preparation→match→result→campaign continuity | [B04/#262](https://github.com/diegoami/goal2/issues/262); B03, T79/T85, #251 projection; #250 capability only where supported |
-| 3 | Deeper management/campaign/intervention/archive information | Reuse [#248](https://github.com/diegoami/goal2/issues/248)–[#251](https://github.com/diegoami/goal2/issues/251) and T50–T59; no duplicate ownership |
+| 3 | Deeper management/campaign/intervention/archive information | Reuse [#248](https://github.com/diegoami/goal2/issues/248)–[#251](https://github.com/diegoami/goal2/issues/251) and T50–T59 within written bounds; O08–O12/G01–G05 remain unowned decisions |
+| 3a | Unowned Watch/scheduling/news/replay/profile capability decisions | [O08–O12 / G01–G05](../redesign-253/decisions.md#unowned-capability-decisions); separate scoped contracts and actual outcomes required before full parity; no task dispatch |
 | 3b | Assistant recommendation and editable identity contracts, then separately approved capabilities | [B06/#265](https://github.com/diegoami/goal2/issues/265); identity support before editable B02 naming, otherwise explicit current/default identity |
 | 4 | Local-manager contract, then separately approved capability | [B07/#264](https://github.com/diegoami/goal2/issues/264); original two-manager evidence; full parity still needs actual capability |
 | 5 | Independent parity and player-task release acceptance | [B05/#263](https://github.com/diegoami/goal2/issues/263); first coherent slice separately from full parity; B06/B07 contracts plus actual supported capabilities; unresolved categories need resolution or explicit owner exceptions |

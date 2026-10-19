@@ -150,8 +150,7 @@
       "S02"
     ],
     "02-country-desk": [
-      "S03",
-      "S14"
+      "S03"
     ],
     "03-team-workspace": [
       "S04"
@@ -160,7 +159,6 @@
       "S05"
     ],
     "05-competition": [
-      "S06",
       "S07"
     ],
     "06-match-preparation": [
@@ -170,9 +168,7 @@
       "S09"
     ],
     "08-result-and-campaign": [
-      "S11",
-      "S12",
-      "S14"
+      "S11"
     ],
     "09-small-window": [
       "S04"
@@ -209,5 +205,7 @@
     "#251": [
       "retained-result-replay-data"
     ]
-  }
+  },
+  "layout_validation_receipt": "evidence/layout-bounds-02.json",
+  "gap_register": "capability-gaps.json"
 }

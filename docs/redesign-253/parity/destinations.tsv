@@ -1,235 +1,235 @@
-id	context	destination	owner
-ST01	ST	S01/S02	B02/B07
-ST02	ST	S01/S02	B07
-ST03	ST	S01/S02	B02/B06/B07
-ST04	ST	S01/S02	B02/B06
-ST05	ST	S01/S02	B02/B07
-ST06	ST	S01/S02	B02/B07
-CO01	CO	S02/S06; ranking summary S03/S08	#249
-CO02	CO	S02/S06; ranking summary S03/S08	#249
-CO03	CO	S02/S06; ranking summary S03/S08	#249
-CO04	CO	S02/S06; ranking summary S03/S08	#249
-CO05	CO	S02/S06; ranking summary S03/S08	#249
-CO06	CO	S02/S06; ranking summary S03/S08	#249
-CO07	CO	S02/S06; ranking summary S03/S08	#249
-CO08	CO	S02/S06; ranking summary S03/S08	#249
-CO09	CO	S02/S06; ranking summary S03/S08	#249
-CO10	CO	S02/S06; ranking summary S03/S08	#249
-CO11	CO	S02/S06; ranking summary S03/S08	#249
-CO12	CO	S02/S06; ranking summary S03/S08	#249
-CO13	CO	S02/S06; ranking summary S03/S08	#249
-CO14	CO	S02/S06; ranking summary S03/S08	#249
-CS01	CS	S02/S06 profile; comparison S08	#249
-CS02	CS	S02/S06 profile; comparison S08	#249
-CS03	CS	S02/S06 profile; comparison S08	#249
-CS04	CS	S02/S06 profile; comparison S08	#249
-CS05	CS	S02/S06 profile; comparison S08	#249
-CS06	CS	S02/S06 profile; comparison S08	#249
-CS07	CS	S02/S06 profile; comparison S08	#249
-CS08	CS	S02/S06 profile; comparison S08	#249
-CC01	CC	S06 team profile; S04 team-tactics context	#249
-CC02	CC	S06 team profile; S04 team-tactics context	#249
-CC03	CC	S06 team profile; S04 team-tactics context	#249
-CC04	CC	S06 team profile; S04 team-tactics context	#249
-HU01	HU	S03	B03/#249/B07
-HU02	HU	S03	B03/#249/B07
-HU03	HU	S03	B03/#249/B07
-HU04	HU	S03	B03/#249/B07
-HU05	HU	S03	B03/#249/B07
-HU06	HU	S03	B03/#249/B07
-HU07	HU	S03	B03/#249/B07
-HU08	HU	S03	B07
-HU09	HU	S03	B03/#249/B07
-PI01	PI	S04/S05/S06/S08/S10 selected card	#242
-PI02	PI	S04/S05/S06/S08/S10 selected card	#242
-PI03	PI	S04/S05/S06/S08/S10 selected card	#242
-PI04	PI	S04/S05/S06/S08/S10 selected card	#242
-PI05	PI	S04/S05/S06/S08/S10 selected card	#242
-PI06	PI	S04/S05/S06/S08/S10 selected card	#242
-PI07	PI	S04/S05/S06/S08/S10 selected card	#242
-PI08	PI	S04/S05/S06/S08/S10 selected card	#242
-PI09	PI	S04/S05/S06/S08/S10 selected card	#242
-PI10	PI	S04/S05/S06/S08/S10 selected card	#242
-PI11	PI	S04/S05/S06/S08/S10 selected card	#242
-SK01	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK02	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK03	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK04	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK05	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK06	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK07	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK08	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK09	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK10	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK11	SK	S04/S05/S06/S08/S10 complete player card	#242
-SK12	SK	S04/S05/S06/S08/S10 complete player card	#242
-PC01	PC	S04/S05/S06/S08/S10 complete player card	#242
-PC02	PC	S04/S05/S06/S08/S10 complete player card	#242
-PC03	PC	S04/S05/S06/S08/S10 complete player card	#242
-PC04	PC	S04/S05/S06/S08/S10 complete player card	#242
-PC05	PC	S04/S05/S06/S08/S10 complete player card	#242
-PT01	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-PT02	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-PT03	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-PT04	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-PT05	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-PT06	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-PT07	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-PT08	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248
-TT01	TT	S04 Team instructions; read-only opponent S06/S08	#248
-TT02	TT	S04 Team instructions; read-only opponent S06/S08	#248
-TT03	TT	S04 Team instructions; read-only opponent S06/S08	#248
-TT04	TT	S04 Team instructions; read-only opponent S06/S08	#248
-TT05	TT	S04 Team instructions; read-only opponent S06/S08	#248
-TT06	TT	S04 Team instructions; read-only opponent S06/S08	#248
-TT07	TT	S04 Team instructions; read-only opponent S06/S08	#248
-TT08	TT	S04 Team instructions; read-only opponent S06/S08	#248
-SD01	SD	S04/S05/S08	#241
-SD02	SD	S04/S05/S08	#241
-SD03	SD	S04/S05/S08	B03
-SD04	SD	S04/S05/S08	B03
-SD05	SD	S04/S05/S08	B06
-SD06	SD	S04/S05/S08	B06
-SD07	SD	S04/S05/S08	B03
-SD08	SD	S04/S05/S08	#250
-SD09	SD	S04/S05/S08	#248
-FX01	FX	S07; next fixture summary S03/S08	#249
-FX02	FX	S07; next fixture summary S03/S08	#249
-FX03	FX	S07; next fixture summary S03/S08	#249
-FX04	FX	S07; next fixture summary S03/S08	#249
-FX05	FX	S07; next fixture summary S03/S08	#249
-FX06	FX	S07; next fixture summary S03/S08	#249
-FX07	FX	S07; next fixture summary S03/S08	#249
-FX08	FX	S07; next fixture summary S03/S08	#249
-FX09	FX	S07; next fixture summary S03/S08	#249
-FX10	FX	S07; next fixture summary S03/S08	#249
-FX11	FX	S07; next fixture summary S03/S08	#249
-FX12	FX	S07; next fixture summary S03/S08	#249
-TB01	TB	S07 group table; comparison excerpt S03	#249
-TB02	TB	S07 group table; comparison excerpt S03	#249
-TB03	TB	S07 group table; comparison excerpt S03	#249
-TB04	TB	S07 group table; comparison excerpt S03	#249
-TB05	TB	S07 group table; comparison excerpt S03	#249
-TB06	TB	S07 group table; comparison excerpt S03	#249
-TB07	TB	S07 group table; comparison excerpt S03	#249
-BR01	BR	S07 bracket/scorers	#249
-BR02	BR	S07 bracket/scorers	#249
-BR03	BR	S07 bracket/scorers	#249
-BR04	BR	S07 bracket/scorers	#249
-BR05	BR	S07 bracket/scorers	#249
-HI01	HI	S12 Country records	#249
-HI02	HI	S12 Country records	#249
-HI03	HI	S12 Country records	#249
-HI04	HI	S12 Country records	#249
-HI05	HI	S12 Country records	#249
-HI06	HI	S12 Country records	#249
-HI07	HI	S12 Country records	#249
-HI08	HI	S12 Country records	#249
-HI09	HI	S12 Country records	#249
-HI10	HI	S12 Country records	#249
-HI11	HI	S12 Country records	#249
-HI12	HI	S12 Country records	#249
-HI13	HI	S12 Country records	#249
-HI14	HI	S12 Country records	#249
-HI15	HI	S12 Country records	#249
-HI16	HI	S12 Country records	#249
-HI17	HI	S12 Country records	#249
-HI18	HI	S12 Country records	#249
-HI19	HI	S12 Country records	#249
-HI20	HI	S12 Country records	#249
-HI21	HI	S12 Country records	#249
-HI22	HI	S12 Country records	#249
-HI23	HI	S12 Country records	#249
-HI24	HI	S12 Country records	#249
-HR01	HR	S12 Country records	#249
-HR02	HR	S12 Country records	#249
-HR03	HR	S12 Country records	#249
-HR04	HR	S12 Country records	#249
-HR05	HR	S12 Country records	#249
-HR06	HR	S12 Country records	#249
-HR07	HR	S12 Country records	#249
-HR08	HR	S12 Country records	#249
-HR09	HR	S12 Country records	#249
-NW01	NW	S14 News; pinned consequence S03; history S12	#249
-NW02	NW	S14 News; pinned consequence S03; history S12	#249
-NW03	NW	S14 News; pinned consequence S03; history S12	#249
-NW04	NW	S14 News; pinned consequence S03; history S12	#249
-NW05	NW	S14 News; pinned consequence S03; history S12	#249
-NW06	NW	S14 News; pinned consequence S03; history S12	#249
-NW07	NW	S14 News; pinned consequence S03; history S12	#249
-NW08	NW	S14 News; pinned consequence S03; history S12	#249
-MP01	MP	S08	#243/B04/#250
-MP02	MP	S08	#243/B04/#250
-MP03	MP	S08	#243/B04/#250
-MP04	MP	S08	#243/B04/#250
-MP05	MP	S08	#243/B04/#250
-MP06	MP	S08	#243/B04/#250
-MP07	MP	S08	#243/B04/#250
-MP08	MP	S08	#243/B04/#250
-MP09	MP	S08	#243/B04/#250
-LI01	LI	S09	#198/#243/B04/#250
-LI02	LI	S09	#198/#243/B04/#250
-LI03	LI	S09	#198/#243/B04/#250
-LI04	LI	S09	#198/#243/B04/#250
-LI05	LI	S09	#198/#243/B04/#250
-LI06	LI	S09	#198/#243/B04/#250
-LI07	LI	S09	#198/#243/B04/#250
-LI08	LI	S09	#198/#243/B04/#250
-LI09	LI	S09	#198/#243/B04/#250
-LI10	LI	S09	#198/#243/B04/#250
-LI11	LI	S09	#198/#243/B04/#250
-IN01	IN	S10 with persistent S09 score/phase	#250/B04
-IN02	IN	S10 with persistent S09 score/phase	#250/B04
-IN03	IN	S10 with persistent S09 score/phase	#250/B04
-IN04	IN	S10 with persistent S09 score/phase	#250/B04
-IN05	IN	S10 with persistent S09 score/phase	#250/B04
-IN06	IN	S10 with persistent S09 score/phase	#250/B04
-IN07	IN	S10 with persistent S09 score/phase	#250/B04
-IN08	IN	S10 with persistent S09 score/phase	#250/B04
-IN09	IN	S10 with persistent S09 score/phase	#250/B04
-IN10	IN	S10 with persistent S09 score/phase	#250/B04
-IN11	IN	S10 with persistent S09 score/phase	#250/B04
-IN12	IN	S10 with persistent S09 score/phase	#250/B04
-IN13	IN	S10 with persistent S09 score/phase	#250/B04
-IN14	IN	S10 with persistent S09 score/phase	#250/B04
-IN15	IN	S10 with persistent S09 score/phase	#250/B04
-IN16	IN	S10 with persistent S09 score/phase	#250/B04
-IN17	IN	S10 with persistent S09 score/phase	#250/B04
-IN18	IN	S10 with persistent S09 score/phase	#250/B04
-PR01	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-PR02	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-PR03	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-PR04	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-PR05	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-PR06	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-PR07	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-PR08	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250/#251
-RS01	RS	S11/S12; latest result summary S03	#251/B04
-RS02	RS	S11/S12; latest result summary S03	#251/B04
-RS03	RS	S11/S12; latest result summary S03	#251/B04
-RS04	RS	S11/S12; latest result summary S03	#251/B04
-RS05	RS	S11/S12; latest result summary S03	#251/B04
-RS06	RS	S11/S12; latest result summary S03	#251/B04
-RS07	RS	S11/S12; latest result summary S03	#251/B04
-RS08	RS	S11/S12; latest result summary S03	#251/B04
-RS09	RS	S11/S12; latest result summary S03	#251/B04
-RS10	RS	S11/S12; latest result summary S03	#251/B04
-RS11	RS	S11/S12; latest result summary S03	#251/B04
-RS12	RS	S11/S12; latest result summary S03	#251/B04
-RS13	RS	S11/S12; latest result summary S03	#251/B04
-RS14	RS	S11/S12; latest result summary S03	#251/B04
-RS15	RS	S11/S12; latest result summary S03	#251/B04
-RS16	RS	S11/S12; latest result summary S03	#251/B04
-RS17	RS	S11/S12; latest result summary S03	#251/B04
-RS18	RS	S11/S12; latest result summary S03	#251/B04
-RS19	RS	S11/S12; latest result summary S03	#251/B04
-SV01	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02
-SV02	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02
-SV03	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02
-SV04	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02
-SV05	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	#251
-SV06	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	#251
-SV07	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	#251
-SV08	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B06
-SV09	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B03
-SV10	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02
+id	context	destination	owner	reuse
+ST01	ST	S01/S02	B02/B07	Within the named contract only; absent data or behavior is not granted by a destination.
+ST02	ST	S01/S02	B07	Within the named contract only; absent data or behavior is not granted by a destination.
+ST03	ST	S01/S02	B02/B06/B07	Within the named contract only; absent data or behavior is not granted by a destination.
+ST04	ST	S01/S02	B02/B06	Within the named contract only; absent data or behavior is not granted by a destination.
+ST05	ST	S01/S02	B02/B07	Within the named contract only; absent data or behavior is not granted by a destination.
+ST06	ST	S01/S02	B02/B07	Within the named contract only; absent data or behavior is not granted by a destination.
+CO01	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO02	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO03	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO04	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO05	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO06	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO07	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO08	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO09	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO10	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO11	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO12	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO13	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CO14	CO	S02/S06; ranking summary S03/S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS01	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS02	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS03	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS04	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS05	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS06	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS07	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CS08	CS	S02/S06 profile; comparison S08	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CC01	CC	S06 team profile; S04 team-tactics context	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CC02	CC	S06 team profile; S04 team-tactics context	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CC03	CC	S06 team profile; S04 team-tactics context	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+CC04	CC	S06 team profile; S04 team-tactics context	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HU01	HU	S03	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HU02	HU	S03	B03	Existing campaign identity/next-fixture state; #249 audit/display when available. New campaign mechanics and B07 local ownership remain separate.
+HU03	HU	S03	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HU04	HU	S03	B03	Existing campaign identity/next-fixture state; #249 audit/display when available. New campaign mechanics and B07 local ownership remain separate.
+HU05	HU	S03	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HU06	HU	S03	B03	Existing campaign identity/next-fixture state; #249 audit/display when available. New campaign mechanics and B07 local ownership remain separate.
+HU07	HU	S03	B03	Existing campaign identity/next-fixture state; #249 audit/display when available. New campaign mechanics and B07 local ownership remain separate.
+HU08	HU	S03	B07	Within the named contract only; absent data or behavior is not granted by a destination.
+HU09	HU	S03	B03	Existing campaign identity/next-fixture state; #249 audit/display when available. New campaign mechanics and B07 local ownership remain separate.
+PI01	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI02	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI03	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI04	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI05	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI06	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI07	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI08	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI09	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI10	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PI11	PI	S04/S05/S06/S08/S10 selected card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK01	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK02	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK03	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK04	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK05	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK06	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK07	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK08	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK09	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK10	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK11	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+SK12	SK	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PC01	PC	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PC02	PC	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PC03	PC	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PC04	PC	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PC05	PC	S04/S05/S06/S08/S10 complete player card	#242	Within the named contract only; absent data or behavior is not granted by a destination.
+PT01	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+PT02	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+PT03	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+PT04	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+PT05	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+PT06	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+PT07	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+PT08	PT	S04 instructions panel; S08/S10 contextual opponent mark	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+TT01	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+TT02	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+TT03	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+TT04	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+TT05	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+TT06	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+TT07	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+TT08	TT	S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation	B03/UNOWNED:G05	Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05.
+SD01	SD	S04/S05/S08	#241	Within the named contract only; absent data or behavior is not granted by a destination.
+SD02	SD	S04/S05/S08	#241	Within the named contract only; absent data or behavior is not granted by a destination.
+SD03	SD	S04/S05/S08	B03	Within the named contract only; absent data or behavior is not granted by a destination.
+SD04	SD	S04/S05/S08	B03	Within the named contract only; absent data or behavior is not granted by a destination.
+SD05	SD	S04/S05/S08	B06	Within the named contract only; absent data or behavior is not granted by a destination.
+SD06	SD	S04/S05/S08	B06	Within the named contract only; absent data or behavior is not granted by a destination.
+SD07	SD	S04/S05/S08	B03	Within the named contract only; absent data or behavior is not granted by a destination.
+SD08	SD	S04/S05/S08	#250	Within the named contract only; absent data or behavior is not granted by a destination.
+SD09	SD	S04/S05/S08	#248	Within the named contract only; absent data or behavior is not granted by a destination.
+FX01	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+FX02	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+FX03	FX	S07; next fixture summary S03/S08	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+FX04	FX	S07; next fixture summary S03/S08	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+FX05	FX	S07; next fixture summary S03/S08	UNOWNED:G02	#249 audit/display when available; its information/navigation scope does not authorize a scheduling mutation.
+FX06	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+FX07	FX	S07; next fixture summary S03/S08	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+FX08	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+FX09	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+FX10	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+FX11	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+FX12	FX	S07; next fixture summary S03/S08	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+TB01	TB	S07 group table; comparison excerpt S03	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+TB02	TB	S07 group table; comparison excerpt S03	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+TB03	TB	S07 group table; comparison excerpt S03	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+TB04	TB	S07 group table; comparison excerpt S03	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+TB05	TB	S07 group table; comparison excerpt S03	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+TB06	TB	S07 group table; comparison excerpt S03	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+TB07	TB	S07 group table; comparison excerpt S03	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+BR01	BR	S07 bracket/scorers	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+BR02	BR	S07 bracket/scorers	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+BR03	BR	S07 bracket/scorers	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+BR04	BR	S07 bracket/scorers	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+BR05	BR	S07 bracket/scorers	#249	Within the named contract only; absent data or behavior is not granted by a destination.
+HI01	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI02	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI03	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI04	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI05	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI06	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI07	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI08	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI09	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI10	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI11	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI12	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI13	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI14	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI15	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI16	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI17	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI18	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI19	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI20	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI21	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI22	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI23	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HI24	HI	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR01	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR02	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR03	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR04	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR05	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR06	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR07	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR08	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+HR09	HR	S12 Country records	UNOWNED:G05	#249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values.
+NW01	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+NW02	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+NW03	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+NW04	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+NW05	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+NW06	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+NW07	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+NW08	NW	S14 News; pinned consequence S03; history S12	UNOWNED:G03	#249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling.
+MP01	MP	S08	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+MP02	MP	S08	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+MP03	MP	S08	#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+MP04	MP	S08	#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+MP05	MP	S08	#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+MP06	MP	S08	#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+MP07	MP	S08	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+MP08	MP	S08	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+MP09	MP	S08	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+LI01	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI02	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI03	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI04	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI05	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI06	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI07	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI08	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI09	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI10	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+LI11	LI	S09	#198/#243/B04/#250	Within the named contract only; absent data or behavior is not granted by a destination.
+IN01	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN02	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN03	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN04	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN05	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN06	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN07	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN08	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN09	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN10	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN11	IN	S10 with persistent S09 score/phase	#250/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+IN12	IN	S10 with persistent S09 score/phase	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+IN13	IN	S10 with persistent S09 score/phase	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+IN14	IN	S10 with persistent S09 score/phase	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+IN15	IN	S10 with persistent S09 score/phase	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+IN16	IN	S10 with persistent S09 score/phase	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+IN17	IN	S10 with persistent S09 score/phase	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+IN18	IN	S10 with persistent S09 score/phase	UNOWNED:G01	#249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate.
+PR01	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+PR02	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+PR03	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+PR04	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250	Support audit and first supported decision only; no promise of every future prompt or competitive Watch. G01 covers additional mode-dependent capability.
+PR05	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+PR06	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	#250	Support audit and first supported decision only; no promise of every future prompt or competitive Watch. G01 covers additional mode-dependent capability.
+PR07	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+PR08	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+RS01	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS02	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS03	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS04	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS05	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS06	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS07	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS08	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS09	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS10	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS11	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS12	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS13	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS14	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS15	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS16	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS17	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS18	RS	S11/S12; latest result summary S03	#251/B04	Within the named contract only; absent data or behavior is not granted by a destination.
+RS19	RS	S11/S12; latest result summary S03	UNOWNED:G04	#251 audit/display when available for already retained summaries; full new capture/export/retention has no delivery owner under G04.
+SV01	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02	Within the named contract only; absent data or behavior is not granted by a destination.
+SV02	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02	Within the named contract only; absent data or behavior is not granted by a destination.
+SV03	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02	Within the named contract only; absent data or behavior is not granted by a destination.
+SV04	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B02	Within the named contract only; absent data or behavior is not granted by a destination.
+SV05	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+SV06	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	UNOWNED:G04	#250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability.
+SV07	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	UNOWNED:G04	#251 audit/display when available for already retained summaries; full new capture/export/retention has no delivery owner under G04.
+SV08	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B06	Within the named contract only; absent data or behavior is not granted by a destination.
+SV09	SV	S13 Game menu; S12 Summaries/Replays; contextual Help	B03	Within the named contract only; absent data or behavior is not granted by a destination.
+SV10	SV	S13 contextual Help: original F5 offer documented; no print action promised	B03	Original printed offer and observed continuation only; actual print output unverified, no new printing capability assigned to B02.

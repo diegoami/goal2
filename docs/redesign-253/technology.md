@@ -38,7 +38,7 @@
 | [designed estimate] Native install/update/resource/saves proof | M; Qt/native deps still not a finished product installer | M; QML/plugin discovery added | M–L; web/runtime plus Python/native payloads | M–L; exported engine plus sidecar/native payloads |
 | [designed estimate] Maintenance / regression preservation | Most game/headless/UI guards reused; composition checks change | Game guards reused; UI acceptance rewritten | Game guards reused; service/desktop/browser matrices added | Game guards reused; engine-UI/bridge matrix added |
 
-[derived: current design/code and official capabilities] Toolkit choice does not solve missing country records, rankings, fixtures, roles, live decisions or replay retention. Those need correct source/persistence/capability contracts regardless of renderer. Conversely, navigation, selected-card placement, meaningful labels and result hierarchy can improve before missing engine features exist. This is why Direction A's parity and acceptance requirements stay toolkit-independent.
+[derived: current design/code and official capabilities] Toolkit choice does not solve missing country records, rankings, fixtures, roles, live decisions or replay retention. Those need correct source/persistence/capability contracts regardless of renderer; G01–G05/O08–O12 explicitly mark delivery still unowned, rather than expanding #249/#250/#251 or T51a. Conversely, navigation, selected-card placement, meaningful labels and result hierarchy can improve before missing engine features exist. This is why Direction A's parity and acceptance requirements stay toolkit-independent.
 
 ## Proposed decision and validation boundary
 
