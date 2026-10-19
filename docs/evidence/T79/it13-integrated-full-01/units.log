@@ -1,0 +1,136 @@
+test_acceptance_exception_restores_complete_import_path (goal2.tests.test_pygame_match_view.AcceptanceImportContextTests.test_acceptance_exception_restores_complete_import_path) ... ok
+test_direct_acceptance_load_restores_complete_import_path (goal2.tests.test_pygame_match_view.AcceptanceImportContextTests.test_direct_acceptance_load_restores_complete_import_path) ... ok
+test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat) ... ok
+test_external_job_pending_context_preserves_state_save_and_resets (goal2.tests.test_pygame_match_view.PresentationTests.test_external_job_pending_context_preserves_state_save_and_resets) ... ok
+test_idle_halftime_controls_remain_visible_disabled_and_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_idle_halftime_controls_remain_visible_disabled_and_read_only) ... ok
+test_malformed_stale_ack_and_engine_failure_preserve_state (goal2.tests.test_pygame_match_view.PresentationTests.test_malformed_stale_ack_and_engine_failure_preserve_state) ... ok
+test_named_match_surface_tracks_current_authority_instead_of_old_viewer (goal2.tests.test_pygame_match_view.PresentationTests.test_named_match_surface_tracks_current_authority_instead_of_old_viewer) ... ok
+test_optional_dependency_and_qualifier_boundary (goal2.tests.test_pygame_match_view.PresentationTests.test_optional_dependency_and_qualifier_boundary) ... ok
+test_order_display_copy_and_once_completion (goal2.tests.test_pygame_match_view.PresentationTests.test_order_display_copy_and_once_completion) ... ok
+test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) ... ok
+test_qt_heartbeat_blocked_tail_and_actual_viewer_quit (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit) ... ok
+test_qt_score_uses_consumed_pose_not_future_ingress (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_score_uses_consumed_pose_not_future_ingress) ... ok
+test_raw_rating_original_word_boundaries (goal2.tests.test_pygame_match_view.PresentationTests.test_raw_rating_original_word_boundaries) ... ok
+test_real_framebuffer_matches_original_text_projection (goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection) ... ok
+test_real_sdl_surface_and_quit_event (goal2.tests.test_pygame_match_view.PresentationTests.test_real_sdl_surface_and_quit_event) ... ok
+test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save) ... ok
+test_standings_tab_reaches_play_and_back_without_state_change (goal2.tests.test_pygame_match_view.PresentationTests.test_standings_tab_reaches_play_and_back_without_state_change) ... ok
+test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail) ... ok
+test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_reading_preserves_long_text_and_compact_pitch_is_read_only) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_isolation_and_process_result_equal_direct_two_matches_with_resume) ... ok
+test_candidate_matches_existing_transport_independent_campaign_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_candidate_matches_existing_transport_independent_campaign_publication) ... ok
+test_failed_launch_cleanup_can_retry_without_a_process (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_failed_launch_cleanup_can_retry_without_a_process) ... ok
+test_failure_and_bad_output_leave_active_state_unchanged (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_failure_and_bad_output_leave_active_state_unchanged) ... ok
+test_launch_failure_and_unsupported_fixture_are_atomic (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_launch_failure_and_unsupported_fixture_are_atomic) ... ok
+test_nonsharing_cleanup_errors_propagate_without_retry_and_retain_ownership (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_nonsharing_cleanup_errors_propagate_without_retry_and_retain_ownership) ... ok
+test_permanent_windows_sharing_is_bounded_retains_ownership_and_can_retry (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_permanent_windows_sharing_is_bounded_retains_ownership_and_can_retry) ... ok
+test_stale_completion_refuses_replaced_and_mutated_active_state (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_stale_completion_refuses_replaced_and_mutated_active_state) ... ok
+test_standalone_repeat_retains_complete_state_without_campaign (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_standalone_repeat_retains_complete_state_without_campaign) ... ok
+test_transient_windows_sharing_cleanup_retries_then_releases_ownership (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_transient_windows_sharing_cleanup_retries_then_releases_ownership) ... ok
+test_unrenderable_saved_result_is_rejected_before_resume_publication (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_unrenderable_saved_result_is_rejected_before_resume_publication) ... ok
+test_worker_and_jobs_import_without_qt_unicorn_or_web (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_worker_and_jobs_import_without_qt_unicorn_or_web) ... ok
+test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status (goal2.tests.test_pygame_pitch_view.PitchController.test_bounded_send_does_not_ack_queued_frames_and_validates_consumed_status) ... ok
+test_accumulated_target_cadence_and_country_color_association (goal2.tests.test_pygame_pitch_view.PitchPixels.test_accumulated_target_cadence_and_country_color_association) ... ok
+test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting) ... ok
+test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state) ... ok
+test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding) ... ok
+test_watermark_minute_terminal_tail_and_bounded_queue (goal2.tests.test_pygame_pitch_view.PitchPixels.test_watermark_minute_terminal_tail_and_bounded_queue) ... ok
+test_saved_byte_projection_visibility_and_consumption_controls (goal2.tests.test_pygame_pitch_view.SavedByteControls.test_saved_byte_projection_visibility_and_consumption_controls) ... ok
+test_actual_finished_cancel_and_close_preserve_prior_save (goal2.tests.test_watched_pitch_jobs.OriginalPitchJobsTests.test_actual_finished_cancel_and_close_preserve_prior_save) ... ok
+test_actual_original_parity_movement_halves_pending_and_once_only (goal2.tests.test_watched_pitch_jobs.OriginalPitchJobsTests.test_actual_original_parity_movement_halves_pending_and_once_only) ... [
+  {
+    "round": 1,
+    "fixture": 1378,
+    "events": 1171,
+    "score": [
+      2,
+      3
+    ],
+    "heartbeats": 904,
+    "digest": "d4cdf329a6085eef31ab69969fcda6a40973f5798305d2fc6bcd9b40a1ce4825",
+    "image_sha256": "3b90568c708215c1ec47c8eb6416e4afb8ef46cf36d4cf3f15397a7fb71f97fd",
+    "engine_year": 0,
+    "captain": 64,
+    "tactics": 152,
+    "eleven": [
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "seeds": [
+      29619,
+      33187
+    ],
+    "state_memory_rng_history_equal": true
+  },
+  {
+    "round": 2,
+    "fixture": 1471,
+    "events": 1392,
+    "score": [
+      2,
+      0
+    ],
+    "heartbeats": 1058,
+    "digest": "3df0a462bc0874183e53aba8b1791bd2988c686f09cb5854536b576741c486ea",
+    "image_sha256": "f13b94f7d91ac3db098c142a7467bcd08e2b6995a798dd93989b0d7a1073bd35",
+    "engine_year": 0,
+    "captain": 64,
+    "tactics": 152,
+    "eleven": [
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "seeds": [
+      36752,
+      2052
+    ],
+    "state_memory_rng_history_equal": true
+  }
+]
+PASS T66 Qt controls + original events/board/raw ratings/MOTM + SDL acknowledgement + save/resume/repeat
+T82 actual seed=257 frames=4279 events=1079 memory_sha256=e4f9f700b98282f51bd791b253c159cf4d561ef68a270c898a153a0ac791e18c seeds=(25058, 61800)
+T82 actual seed=4660 frames=4146 events=1178 memory_sha256=232436908ceb7f7082bd9ae5b5d46e964d1706be8e780e169d1eb033dbf9f104 seeds=(62399, 10535)
+ok
+test_raw_signed_identity_visibility_and_generic_countries (goal2.tests.test_watched_pitch_jobs.PitchObservationTests.test_raw_signed_identity_visibility_and_generic_countries) ... ok
+test_cancel_after_engine_done_keeps_pending_state_and_prior_save (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_cancel_after_engine_done_keeps_pending_state_and_prior_save) ... ok
+test_cancel_close_and_owned_child_death_preserve_prior_save (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_cancel_close_and_owned_child_death_preserve_prior_save) ... ok
+test_child_death_without_completion_rejected (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_child_death_without_completion_rejected) ... ok
+test_completed_frame_count_must_match_original_ticks (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_completed_frame_count_must_match_original_ticks) ... ok
+test_deferred_once_only_publication (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_deferred_once_only_publication) ... ok
+test_future_watermark_waits_then_rejects_at_completion (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_future_watermark_waits_then_rejects_at_completion) ... ok
+test_malformed_json (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_malformed_json) ... ok
+test_owned_death_and_worker_error_cancel_without_publication (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_owned_death_and_worker_error_cancel_without_publication) ... ok
+test_partial_tail_read_is_bounded (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_partial_tail_read_is_bounded) ... ok
+test_schema_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_schema_rejection) ... ok
+test_separate_bounded_consumer_and_ack_order (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_separate_bounded_consumer_and_ack_order) ... ok
+test_sequence_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_sequence_rejection) ... ok
+test_token_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_token_rejection) ... ok
+test_total_buffer_overflow (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_total_buffer_overflow) ... ok
+test_truncated_and_oversized_records (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_truncated_and_oversized_records) ... ok
+test_truncated_record_after_engine_completion (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_truncated_record_after_engine_completion) ... ok
+test_watermark_regression_rejection (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_watermark_regression_rejection) ... ok
+test_writer_packet_total_and_count_budgets (goal2.tests.test_watched_pitch_jobs.PitchTransportTests.test_writer_packet_total_and_count_budgets) ... ok
+
+----------------------------------------------------------------------
+Ran 60 tests in 179.414s
+
+OK

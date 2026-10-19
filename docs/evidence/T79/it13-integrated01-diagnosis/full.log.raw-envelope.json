@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "21b52932aad3987e282aeb30d79c7c2e524c33a1fbbb4eff36e3b5d367c91491",
+  "text": "START controls\nPASS controls 17.075\nSTART units\nPASS units 179.715\nSTART handoff\nTraceback (most recent call last):\n  File \"/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py\", line 57, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py\", line 51, in main\n    raise AssertionError(f'{name}: returncode={run.returncode}, source bytes unchanged={same}')\nAssertionError: handoff: returncode=1, source bytes unchanged=True\n"
+}

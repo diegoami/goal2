@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 495, in main
+    return (handoff_negative if args.negative_controls else handoff)(args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/match_handoff_scenario.py", line 291, in scenario
+    metrics=json.loads((child_output/'metrics.json').read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-full-01/handoff/round-1-sdl/metrics.json'
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 521, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py", line 520, in main
+    subprocess.run(command,env=env,check=True)
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python', '/home/diego/projects/goal2-work/T79-football-ui/tools/desktop-ui/redesign.py', '--scenario', 'match-handoff', '--template', '/home/diego/projects/goal2-work/T79-football-ui/.cache/e010-r0008-halftime.sav', '--data', '/home/diego/projects/goal2-work/T79-football-ui/.cache/GOAL.DAT', '--evidence-dir', '/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-integrated-full-01/handoff', '--single-scale']' returned non-zero exit status 1.

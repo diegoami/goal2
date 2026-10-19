@@ -1,0 +1,11 @@
+{
+  "README.md": "52ad38451f4e7a95563b0e1f3b7d006dc306ab8c1f64af73339d9bfd6fa2cbd2",
+  "full.log": "21b52932aad3987e282aeb30d79c7c2e524c33a1fbbb4eff36e3b5d367c91491",
+  "full.log.raw-envelope.json": "7a19e1df89e5a274ac9357cbafb26bf83c50516703728410a955adcb9a1b4211",
+  "linux-integrated.py.txt": "e215d6d0da5abf538e51d3a9067da0dd5a2b9b4a246915af8ecc42b6fd075fe8",
+  "status.json": "f7bd2e3144aa917d30a7f0b99d44ba1e949b72ff8f0fb401ba7785fc09ded01e",
+  "xfwm.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "xfwm.log.raw-envelope.json": "6acca54530d50921ad7f6033d7691a2d09b046f3f31939b587afceaedf88b350",
+  "xvfb.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "xvfb.log.raw-envelope.json": "6acca54530d50921ad7f6033d7691a2d09b046f3f31939b587afceaedf88b350"
+}

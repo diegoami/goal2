@@ -1,0 +1,12 @@
+START controls
+PASS controls 17.075
+START units
+PASS units 179.715
+START handoff
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py", line 57, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py", line 51, in main
+    raise AssertionError(f'{name}: returncode={run.returncode}, source bytes unchanged={same}')
+AssertionError: handoff: returncode=1, source bytes unchanged=True
