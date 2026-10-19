@@ -1,0 +1,26 @@
+{
+  "claim": "[confirmed: AST comparisons] Original controller/viewer behavior and old assertions preserved; not native execution or independent review",
+  "result": "PASS",
+  "head": "148042e193fe0195785a9b143da59fcdb923aa91",
+  "accepted_main": "84af745c6b2d68b89077e9fde330fc8538eda031",
+  "script_sha256": "2a75a26612410ec6cbf00b5d0c98044094cbfd1ff01fe80d107eb60bcdd18e6c",
+  "rows": [
+    {
+      "file": "goal2/desktop/watched.py",
+      "original_AST_identical_after_reversing_only_status_IO_call": true,
+      "current_sha256": "4fdf59295f03121be17a283bce60ec3ddd8235f057b5d7ae7e530896dbadd5ae"
+    },
+    {
+      "file": "goal2/desktop/pygame_viewer.py",
+      "original_AST_identical_after_reversing_only_status_IO_call": true,
+      "current_sha256": "a52c42aa141dff2366c545b74193165a9bb8866fa15ed73c29cb10044c8fb79b"
+    },
+    {
+      "file": "goal2/tests/test_desktop_watched_sharing.py",
+      "all_original_assertions_identical": true,
+      "existing_tests": 13,
+      "current_tests": 16,
+      "original_assertions": 95
+    }
+  ]
+}
