@@ -206,6 +206,6 @@
       "retained-result-replay-data"
     ]
   },
-  "layout_validation_receipt": "evidence/layout-bounds-02.json",
+  "layout_validation_receipt": "evidence/layout-bounds-03.json",
   "gap_register": "capability-gaps.json"
 }

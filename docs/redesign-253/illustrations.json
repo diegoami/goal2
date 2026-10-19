@@ -1,0 +1,230 @@
+{
+  "evidence": "[designed: #253 static illustration semantics; not game output]",
+  "sheets": [
+    {
+      "layout": "01-country-setup",
+      "scenario": "SETUP",
+      "context": "new career; no active country",
+      "visible_surfaces": [
+        "S02"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "02-country-desk",
+      "scenario": "A",
+      "context": "2030 knockout preparation; competitive Quick only",
+      "visible_surfaces": [
+        "S03"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "03-team-workspace",
+      "scenario": "A",
+      "context": "same twenty-player squad; management draft",
+      "visible_surfaces": [
+        "S04"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "04-pool-compare",
+      "scenario": "D",
+      "context": "1990 friendly interval; pool preview, not confirmed",
+      "visible_surfaces": [
+        "S05"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "05-competition",
+      "scenario": "Q",
+      "context": "2028 qualifying group; independent illustration",
+      "visible_surfaces": [
+        "S07"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "06-match-preparation",
+      "scenario": "B",
+      "context": "1990 scheduled friendly; supported Watch route",
+      "visible_surfaces": [
+        "S08"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "07-live-match",
+      "scenario": "B",
+      "context": "same friendly at38\u2032; Holland1\u20130Belgium",
+      "visible_surfaces": [
+        "S09"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "08-result-and-campaign",
+      "scenario": "C",
+      "context": "2030 knockout result; separate from friendly B",
+      "visible_surfaces": [
+        "S11"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "09-small-window",
+      "scenario": "A",
+      "context": "same Team draft at900\u00d7640; explicit roster scroll",
+      "visible_surfaces": [
+        "S04"
+      ],
+      "illustrative": true
+    },
+    {
+      "layout": "10-match-decisions",
+      "scenario": "C",
+      "context": "independent hypothetical phase previews; changes uncommitted",
+      "visible_surfaces": [
+        "S10"
+      ],
+      "illustrative": true
+    }
+  ],
+  "shared_initial_membership": {
+    "scenarios": [
+      "A",
+      "B",
+      "C"
+    ],
+    "roster": [
+      {
+        "id": "1",
+        "name": "Van Breukelen",
+        "role": "GK",
+        "section": "XI"
+      },
+      {
+        "id": "2",
+        "name": "Koeman",
+        "role": "SW",
+        "section": "XI"
+      },
+      {
+        "id": "3",
+        "name": "Van Aerle",
+        "role": "RB",
+        "section": "XI"
+      },
+      {
+        "id": "4",
+        "name": "Van Tiggelen",
+        "role": "CB",
+        "section": "XI"
+      },
+      {
+        "id": "5",
+        "name": "Fordham",
+        "role": "LB",
+        "section": "XI"
+      },
+      {
+        "id": "6",
+        "name": "Rijkaard",
+        "role": "MF",
+        "section": "XI"
+      },
+      {
+        "id": "7",
+        "name": "Gullit",
+        "role": "MF",
+        "section": "XI"
+      },
+      {
+        "id": "8",
+        "name": "Bergkamp",
+        "role": "MF",
+        "section": "XI"
+      },
+      {
+        "id": "9",
+        "name": "Bosz",
+        "role": "MF",
+        "section": "XI"
+      },
+      {
+        "id": "10",
+        "name": "Van Basten",
+        "role": "FW",
+        "section": "XI"
+      },
+      {
+        "id": "11",
+        "name": "Kieft",
+        "role": "FW",
+        "section": "XI"
+      },
+      {
+        "id": "12",
+        "name": "Hiele",
+        "role": "GK",
+        "section": "Bench"
+      },
+      {
+        "id": "13",
+        "name": "Snelders",
+        "role": "GK",
+        "section": "Bench"
+      },
+      {
+        "id": "14",
+        "name": "De Wolf",
+        "role": "CB",
+        "section": "Bench"
+      },
+      {
+        "id": "15",
+        "name": "Blind",
+        "role": "LB",
+        "section": "Bench"
+      },
+      {
+        "id": "16",
+        "name": "Wouters",
+        "role": "MF",
+        "section": "Bench"
+      },
+      {
+        "id": "17",
+        "name": "Winter",
+        "role": "MF",
+        "section": "Bench"
+      },
+      {
+        "id": "18",
+        "name": "Witschge",
+        "role": "MF",
+        "section": "Bench"
+      },
+      {
+        "id": "19",
+        "name": "Roy",
+        "role": "FW",
+        "section": "Bench"
+      },
+      {
+        "id": "20",
+        "name": "Eijkelkamp",
+        "role": "FW",
+        "section": "Bench"
+      }
+    ]
+  },
+  "independent_pool_preview": "D; Wouters is a selected bench squad member; exchange preview is not carried into another sheet",
+  "scoring_scenarios": {
+    "B": "38 minutes1\u20130; Holland goal31; no Scifo goal12 in this friendly",
+    "C": "Scifo12/Bergkamp31 give halftime1\u20131; Van Basten76/Wilmots81 give regulation2\u20132; hypothetical extra time2\u20132 and penalties6\u20135"
+  },
+  "small_window_relocation": "09 contains a visible squad scrollbar and Bench9 jump;20 names remain in Team, eight rows shown beside full card; selected identities/actions pinned"
+}
