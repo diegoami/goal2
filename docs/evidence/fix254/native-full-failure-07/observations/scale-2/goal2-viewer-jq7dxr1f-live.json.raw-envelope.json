@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "e6063df910aee4184f4dcf8518372367b64c572fcba736001109f039d245c3d3",
+  "text": "{\r\n  \"stage\": \"live\",\r\n  \"driver\": \"windows\",\r\n  \"surface\": [\r\n    1000,\r\n    720\r\n  ],\r\n  \"window\": [\r\n    1000,\r\n    720\r\n  ],\r\n  \"window_rect\": [\r\n    772,\r\n    329,\r\n    1788,\r\n    1088\r\n  ],\r\n  \"dpi\": 96,\r\n  \"qt_scale_requested\": \"2\",\r\n  \"frame_sequence\": 1,\r\n  \"frame_consumed_before_status\": -1,\r\n  \"capture\": \"goal2-viewer-jq7dxr1f-live.png\",\r\n  \"pid\": 19932,\r\n  \"claim\": \"Actual fixed renderer flip observed; no SDL scale inference from Qt ratio\"\r\n}\r\n"
+}

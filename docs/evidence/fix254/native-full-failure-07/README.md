@@ -1,0 +1,7 @@
+# Actual Windows full07 — responsiveness failure retained
+
+[confirmed: original receipt and reports] Frozen source03fa4f83506ec62fdd59f8cc7a0feec92f696fd4. Qt1x passes both actual original matches/parity/save/resume/ACKs/bounds/cleanup, heartbeat gaps0.789/0.603 seconds. Qt2x completes both matches with exact4439/4830 frame ACKs, complete ACKs, parity/save/resume and cleanup, but its first2.9944807-second heartbeat gap violates the strict one-second limit; second gap0.574 seconds. Overall receipt INCOMPLETE, not native acceptance.
+
+[confirmed: scale-2/report.json] All three preflight observations report visible:true/minimized:false; no window-state changes were observed and both captures are active and in bounds. Thus visibility setup did not resolve the recurrent heartbeat failure. Controller errors/callbacks remain empty; owned cleanup passes. No status-sharing or host-scheduling cause is established. Main independently rehashed all179 archived sources,566 runtime files,3 resources and6 protected launcher/save files; protected before/after agree.
+
+[designed: next diagnostic] Sample only this process's stack when its observed heartbeat stalls, and transparently time actual start/poll/status operations and native process creation. Preserve existing behavior, return values, errors, strict limits and all failed evidence. Diagnostic-only output will not replace ordinary both-scale acceptance.
