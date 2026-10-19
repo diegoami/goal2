@@ -1,0 +1,19 @@
+{
+  "claim": "Main receipt anchor held independently of tracked collection; one native Windows execution",
+  "native_receipt_sha256": "132e78133923692105c2ae1c0b73a614b950c377b7d682db4cb93560157a63f6",
+  "frozen_runtime": "7560fbc336fa0efd6ea188c3739eb66e6460df63",
+  "execution_head": "659833bec6ab3a93b46e837abbc350a8f0012784",
+  "native_service": "goal2r-fix241-it13-native01-20261019",
+  "native_invocation": "808a8ba7ca0d4ae4844ddcb609486e6e",
+  "first_collection": "../windows/it13-native-01",
+  "audited_collection": "../windows/it13-native-02",
+  "source_path_issue": "All20 file/hash pairs match; Windows report keys use backslashes and archive uses slashes",
+  "correction": "Reject unsafe paths and duplicate aliases; canonicalize only separators, then require exact full map equality",
+  "scope": "Only docs/evidence/fix241 carry and ignored preparation; no runtime or test source change",
+  "opencode": {
+    "version": "2.0.28",
+    "sha256": "20d305d0140bfe04df7264a4ecb014402b74b6ac0a0f6456ee07ef3325fb4a85",
+    "package": "@opencode/cli-linux-x64@2.0.28",
+    "preflight": "nonbilling PASS"
+  }
+}

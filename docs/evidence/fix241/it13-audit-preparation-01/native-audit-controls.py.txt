@@ -1,0 +1,65 @@
+"""[designed: #241] Tamper only private copies; bind failures to the intended audit checks."""
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import shutil
+import traceback
+
+root = Path.cwd()
+here = Path(__file__).parent
+spec = importlib.util.spec_from_file_location('proof', here / 'native-kit/fix241-native-proof-check.py')
+proof = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(proof)
+config = json.loads((root / '.cache/main-native-proof-config.json').read_text())
+anchor = '132e78133923692105c2ae1c0b73a614b950c377b7d682db4cb93560157a63f6'
+evidence = root / config['evidence']
+original = root / config['original_receipt']
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+before = {str(p): sha(p) for p in evidence.rglob('*') if p.is_file()}
+before[str(original)] = sha(original)
+scratch = root / '.cache/native-proof-mutants-it13-01'
+scratch.mkdir(exist_ok=False)
+cases = []
+def reject(name, selected, expected_anchor, intended):
+    try:
+        proof.audit(selected, expected_anchor)
+    except AssertionError as error:
+        frames = traceback.extract_tb(error.__traceback__)
+        text = str(error) + '\n' + str(frames[-1].line)
+        assert intended in text, (name, text)
+        cases.append({'name': name, 'result': 'REJECTED', 'reason': str(error),
+                      'assertion': frames[-1].line})
+    else:
+        raise AssertionError('tamper accepted: ' + name)
+try:
+    pristine = proof.audit(config, anchor)
+    assert pristine['result'] == 'PASS'
+    reject('wrong-external-anchor', config, '0' * 64, 'external main receipt anchor differs')
+    rewritten = scratch / 'rewritten-original.json'
+    value = json.loads(original.read_text())
+    value['claim'] = 'tampered private copy'
+    rewritten.write_text(json.dumps(value) + '\n')
+    altered = {**config, 'original_receipt': str(rewritten.relative_to(root))}
+    reject('rewritten-original-receipt', altered, anchor, 'external main receipt anchor differs')
+    receipt_copy = scratch / 'host-receipt-copy'
+    shutil.copytree(evidence, receipt_copy)
+    (receipt_copy / 'host-receipt.json').write_text(json.dumps(value) + '\n')
+    altered = {**config, 'evidence': str(receipt_copy.relative_to(root))}
+    reject('rewritten-tracked-host-receipt', altered, anchor, 'tracked main receipt differs')
+    capture_copy = scratch / 'capture-copy'
+    shutil.copytree(evidence, capture_copy)
+    report = json.loads((capture_copy / 'observations/scale-1/report.json').read_text())
+    capture = capture_copy / 'observations/scale-1' / report['tables'][0]['capture']
+    raw = capture.read_bytes()
+    capture.write_bytes(raw[:-1] + bytes([raw[-1] ^ 1]))
+    altered = {**config, 'evidence': str(capture_copy.relative_to(root))}
+    reject('tampered-capture', altered, anchor, 'capture_sha256')
+finally:
+    assert all(sha(Path(name)) == expected for name, expected in before.items())
+result = {'claim': 'Main audit controls on retained Windows execution; no Windows re-execution',
+          'anchor': anchor, 'pristine_audit': pristine, 'controls': cases,
+          'originals_unchanged': True, 'result': 'PASS'}
+(here / 'native-audit-controls.json').write_text(json.dumps(result, indent=2) + '\n')
+print(json.dumps({'result': result['result'], 'rejected_controls': len(cases), 'originals_unchanged': True}))
