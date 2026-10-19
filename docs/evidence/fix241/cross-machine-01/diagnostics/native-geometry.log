@@ -1,0 +1,15 @@
+{"label": "country-13", "actual": [1028, 744], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "13-resize-(1440, 900)-80ms", "actual": [1440, 900], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "13-settled", "actual": [1440, 900], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "13-resize-(1050, 780)-80ms", "actual": [1050, 780], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "13-settled", "actual": [1050, 780], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "13-resize-(900, 700)-80ms", "actual": [900, 700], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "13-settled", "actual": [900, 700], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "country-14", "actual": [900, 700], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "14-resize-(1440, 900)-80ms", "actual": [1028, 744], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "14-settled", "actual": [1028, 744], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "14-resize-(1050, 780)-80ms", "actual": [1050, 780], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "14-settled", "actual": [1050, 780], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "14-resize-(900, 700)-80ms", "actual": [900, 700], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "14-settled", "actual": [900, 700], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}
+{"label": "showNormal-move-resize", "actual": [1028, 744], "minimum": [564, 331], "hint": [564, 331], "state": "WindowState.WindowNoState", "screen": [1024, 768]}

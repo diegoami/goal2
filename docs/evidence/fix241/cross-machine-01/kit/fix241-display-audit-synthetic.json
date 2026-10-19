@@ -1,0 +1,46 @@
+{
+  "kind": "synthetic validator checks only; no native execution",
+  "valid_cases": 2,
+  "rejected_mutants": [
+    {
+      "scale": "1",
+      "mutation": "small-workarea",
+      "rejected": true
+    },
+    {
+      "scale": "1",
+      "mutation": "wrong-ratio",
+      "rejected": true
+    },
+    {
+      "scale": "1",
+      "mutation": "os-qt-disagree",
+      "rejected": true
+    },
+    {
+      "scale": "1",
+      "mutation": "non-native",
+      "rejected": true
+    },
+    {
+      "scale": "2",
+      "mutation": "small-workarea",
+      "rejected": true
+    },
+    {
+      "scale": "2",
+      "mutation": "wrong-ratio",
+      "rejected": true
+    },
+    {
+      "scale": "2",
+      "mutation": "os-qt-disagree",
+      "rejected": true
+    },
+    {
+      "scale": "2",
+      "mutation": "non-native",
+      "rejected": true
+    }
+  ]
+}
