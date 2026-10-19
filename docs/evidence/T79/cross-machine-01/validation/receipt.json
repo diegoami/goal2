@@ -1,0 +1,39 @@
+{
+  "tag": "[confirmed: cross-machine packaging checks]",
+  "premerge_head": "a35b951e1bc13ba13b7524a587abf8a0166737a9",
+  "premerge_result": "PASS",
+  "premerge_node": "24.21.0",
+  "owned_premerge_unit": "goal2-t79-crossmachine-premerge",
+  "owned_unit_inactive": true,
+  "product_helper_test_source_files_unchanged": 174,
+  "syntax_only_preparation": true,
+  "checks": [
+    {
+      "name": "links",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "tools/check_links.py"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "provenance",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "tools/check_provenance.py"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "strict-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "d89cb11d3245d88cb9f0b82f19ba536d67938886",
+        "--check"
+      ],
+      "exit": 0
+    }
+  ],
+  "limit": "This receipt/log commit is evidence-only carry from the premerge head, not a new exact-head premerge claim. No further native/review/validation batch started."
+}
