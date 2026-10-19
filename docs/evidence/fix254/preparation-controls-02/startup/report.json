@@ -1,0 +1,35 @@
+{
+  "claim": "Synthetic startup mutation controls, not native execution",
+  "rows": [
+    {
+      "name": "synchronous-preparation",
+      "exit": 1,
+      "intended_failure": "AssertionError",
+      "source_sha256": "c59170998d92b0f38795f3385be0820117e2ceb3ceddbac02445d7c49c89559a",
+      "log_sha256": "ae500ee8c7b62bf47d39717338455e90af284213f4bb452beb2407e193486d7d"
+    },
+    {
+      "name": "discard-live-preparer",
+      "exit": 1,
+      "intended_failure": "TimeoutExpired not raised",
+      "source_sha256": "d7b024c4115032178bc8a9115f6743c05be17a48a3d12496fcca55c24f1d59ff",
+      "log_sha256": "549a2807e337bc7fb90f4bba6b28109b7484688244b2ecf539125c46ffc21199"
+    },
+    {
+      "name": "cancel-may-launch",
+      "exit": 1,
+      "intended_failure": "Expected",
+      "source_sha256": "5d80b98c0976fabfb2b046f1d3636d2ae455015fd3e3f8b27c61b810695336ee",
+      "log_sha256": "51da3e6c0c3b0241acea55e9d31d8c0af125f584df3aaf70a85a9f87a9614270"
+    },
+    {
+      "name": "release-before-cleanup",
+      "exit": 1,
+      "intended_failure": "False is not true",
+      "source_sha256": "12148c2b21d31fbad9af20545e8fcacdd0c46cd78df4a315593cd4fe2ec57f9c",
+      "log_sha256": "23b299ee674cb274dc8f5f5b4aebe94e3e1f5f7565cbf1044e4f8d8dfb5f19aa"
+    }
+  ],
+  "all_sources_restored": true,
+  "source_sha256": "8dc838f01515501f414556e58c557aea1ccce1091e8285ec51375e6cc8192e81"
+}
