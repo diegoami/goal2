@@ -1,0 +1,14 @@
+test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state) ... FAIL
+
+======================================================================
+FAIL: test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_pygame_pitch_view.py", line 88, in test_field_bounds_visibility_and_unknown_state
+    self.assertNotEqual(self.pixel(500,469),(255,244,161),'sentinel ball must be hidden')
+AssertionError: (255, 244, 161) == (255, 244, 161) : sentinel ball must be hidden
+
+----------------------------------------------------------------------
+Ran 1 test in 0.088s
+
+FAILED (failures=1)

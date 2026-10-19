@@ -1,0 +1,65 @@
+{
+  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.12.15 (main, Oct  9 2026, 15:22:32) [Clang 22.1.3 ]",
+  "qt_platform": "xcb",
+  "receipts": [
+    {
+      "mode": "real original engine and Qt controls",
+      "kind": 2,
+      "index": 21,
+      "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+      "captain_override": null,
+      "budget": [
+        5,
+        5
+      ],
+      "reference_seed": null,
+      "delay_byte": null,
+      "policy": "default play_on",
+      "memory_sha256": "c46612552090c6aefb6674505ea0c39574cd3b9ff5cd03dba53c09fbb10f6980",
+      "events_sha256": "3cf8b2c456e8126cbc61294b3be79cd37d5d07f3eca9a670b0ba98c49d1ae1e7",
+      "seeds": [
+        16321,
+        53210
+      ],
+      "result_label": "Original engine\nDenmark 1 \u2014 1 N.Ireland\n16\u2032 W'thington (N.Ireland)\n23\u2032 Povlsen (Denmark)\nRegulation: 1 \u2014 1\nDraw",
+      "progress_updates": 96,
+      "full_outcome_equals_direct": true,
+      "save_resume_exact": true
+    },
+    {
+      "mode": "real original engine and Qt controls",
+      "kind": 200,
+      "index": 42,
+      "source": "424d5998076da1e4efc399c2715689ddb44d3e1a",
+      "captain_override": null,
+      "budget": [
+        5,
+        5
+      ],
+      "reference_seed": null,
+      "delay_byte": null,
+      "policy": "default play_on",
+      "memory_sha256": "97a934c906a74dbb5d3e19231bc230f966dc509c5a517f7d532cfb63257cee8f",
+      "events_sha256": "af4713bfb35d65c28bc2601e9a2a393bd02ea3802bc29c1d0e6b0b5babd4e443",
+      "seeds": [
+        35165,
+        20148
+      ],
+      "result_label": "Original engine\nDenmark 0 \u2014 0 N.Ireland\nNo goals\nRegulation: 0 \u2014 0\nExtra time: 0 \u2014 0\nPenalties: 4 \u2014 3\nWinner: Denmark",
+      "progress_updates": 126,
+      "full_outcome_equals_direct": true,
+      "save_resume_exact": true
+    },
+    {
+      "mode": "synthetic blocked child and optional-runtime/resource failures",
+      "state_and_prior_save_preserved": true,
+      "mutual_exclusion": [
+        "competitive",
+        "Quick",
+        "friendly Watch"
+      ],
+      "inactive_controller_preserves_other_lock": true
+    }
+  ]
+}

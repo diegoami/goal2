@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "4580df87ee98fc6b1fd610f77c033a8dd494facc313bb7cf6fa1b42c930f7819",
+  "text": "PASS mutation: candidate isolation\nPASS mutation: one in-flight\nPASS mutation: stale completion\nPASS mutation: publication\nPASS mutation: history\nPASS mutation: Qt play wire\nPASS mutation: Qt cancel wire\n"
+}

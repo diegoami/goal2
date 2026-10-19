@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "b5413cb71901c62637be7f4be73e7b2a4cc9bb7e675a982a32d3a814b0ba1d0c",
+  "text": "test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state) ... FAIL\n\n======================================================================\nFAIL: test_field_bounds_visibility_and_unknown_state (goal2.tests.test_pygame_pitch_view.PitchPixels.test_field_bounds_visibility_and_unknown_state)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_pygame_pitch_view.py\", line 87, in test_field_bounds_visibility_and_unknown_state\n    self.assertEqual(self.pixel(508,469),(18,28,37),'sentinel player must be hidden')\nAssertionError: Tuples differ: (45, 135, 245) != (18, 28, 37)\n\nFirst differing element 0:\n45\n18\n\n- (45, 135, 245)\n+ (18, 28, 37) : sentinel player must be hidden\n\n----------------------------------------------------------------------\nRan 1 test in 0.091s\n\nFAILED (failures=1)\n"
+}
