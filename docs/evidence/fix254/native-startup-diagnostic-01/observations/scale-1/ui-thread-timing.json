@@ -1,0 +1,191 @@
+{
+  "slow_operations": [
+    {
+      "name": "publication.begin",
+      "start": 2809.0218794,
+      "end": 2809.3644509,
+      "seconds": 0.34257149999984904
+    },
+    {
+      "name": "publication.begin",
+      "start": 2825.9771627,
+      "end": 2826.3193537,
+      "seconds": 0.34219100000018443
+    },
+    {
+      "name": "controller.start",
+      "start": 2825.9701055,
+      "end": 2826.344677,
+      "seconds": 0.37457150000000183
+    },
+    {
+      "name": "input.encode",
+      "start": 2826.3325829,
+      "end": 2826.6176119,
+      "seconds": 0.2850290000001223
+    },
+    {
+      "name": "controller.poll",
+      "start": 2907.5570865,
+      "end": 2908.7428868,
+      "seconds": 1.18580030000021
+    },
+    {
+      "name": "publication.begin",
+      "start": 2914.8158243,
+      "end": 2915.0464368,
+      "seconds": 0.23061250000000655
+    },
+    {
+      "name": "publication.begin",
+      "start": 2935.9231049,
+      "end": 2936.1461197,
+      "seconds": 0.2230147999998735
+    },
+    {
+      "name": "controller.start",
+      "start": 2935.9164435,
+      "end": 2936.1734068,
+      "seconds": 0.25696330000027956
+    },
+    {
+      "name": "input.encode",
+      "start": 2936.1649785,
+      "end": 2936.4347257,
+      "seconds": 0.2697471999999834
+    },
+    {
+      "name": "controller.poll",
+      "start": 2983.8726058,
+      "end": 2983.9268697,
+      "seconds": 0.05426390000002357
+    },
+    {
+      "name": "controller.poll",
+      "start": 3011.4207826,
+      "end": 3011.4715467,
+      "seconds": 0.05076409999992393
+    },
+    {
+      "name": "controller.poll",
+      "start": 3018.3590608,
+      "end": 3018.4260356,
+      "seconds": 0.06697480000002543
+    },
+    {
+      "name": "controller.poll",
+      "start": 3018.5815718,
+      "end": 3019.4201537,
+      "seconds": 0.8385819000000083
+    },
+    {
+      "name": "publication.begin",
+      "start": 3023.708318,
+      "end": 3024.0631106,
+      "seconds": 0.3547926000001098
+    },
+    {
+      "name": "controller.start",
+      "start": 3023.7017934,
+      "end": 3024.0862185,
+      "seconds": 0.38442510000004404
+    },
+    {
+      "name": "input.encode",
+      "start": 3024.0768312,
+      "end": 3024.4027339,
+      "seconds": 0.32590269999991506
+    }
+  ],
+  "heartbeat_gaps": [
+    {
+      "start": 2825.9700996,
+      "end": 2826.4072874,
+      "seconds": 0.4371877999997196,
+      "frame_ack": -1
+    },
+    {
+      "start": 2826.4072874,
+      "end": 2826.7944226,
+      "seconds": 0.3871352000001025,
+      "frame_ack": -1
+    },
+    {
+      "start": 2935.9164395,
+      "end": 2936.1802055,
+      "seconds": 0.26376600000003236,
+      "frame_ack": -1
+    },
+    {
+      "start": 2936.1802055,
+      "end": 2936.6527567,
+      "seconds": 0.47255119999999806,
+      "frame_ack": -1
+    }
+  ],
+  "stalls": [
+    {
+      "time": 2826.3983774,
+      "last_heartbeat": 2825.9700996,
+      "gap": 0.42827779999970517,
+      "starting": false,
+      "frame_ack": -1
+    },
+    {
+      "time": 2907.9682329,
+      "last_heartbeat": 2907.5569967,
+      "gap": 0.41123620000007577,
+      "starting": false,
+      "frame_ack": 4438
+    },
+    {
+      "time": 2908.078157,
+      "last_heartbeat": 2907.5569967,
+      "gap": 0.5211602999997922,
+      "starting": false,
+      "frame_ack": 4438
+    },
+    {
+      "time": 2908.6040047,
+      "last_heartbeat": 2907.5569967,
+      "gap": 1.0470080000000053,
+      "starting": false,
+      "frame_ack": 4438
+    },
+    {
+      "time": 2936.599156,
+      "last_heartbeat": 2936.1802055,
+      "gap": 0.4189505000003919,
+      "starting": false,
+      "frame_ack": -1
+    },
+    {
+      "time": 3018.9953033,
+      "last_heartbeat": 3018.5815106,
+      "gap": 0.4137927000001582,
+      "starting": false,
+      "frame_ack": 4829
+    },
+    {
+      "time": 3019.1022336,
+      "last_heartbeat": 3018.5815106,
+      "gap": 0.5207230000000891,
+      "starting": false,
+      "frame_ack": 4829
+    },
+    {
+      "time": 3024.140433,
+      "last_heartbeat": 3023.7017894,
+      "gap": 0.4386435999999776,
+      "starting": false,
+      "frame_ack": -1
+    },
+    {
+      "time": 3024.2683368,
+      "last_heartbeat": 3023.7017894,
+      "gap": 0.566547399999763,
+      "starting": false,
+      "frame_ack": -1
+    }
+  ]
+}

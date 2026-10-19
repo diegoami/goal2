@@ -2,6 +2,7 @@
 import copy
 from pathlib import Path
 import subprocess
+import sys
 import threading
 import time
 from types import SimpleNamespace
@@ -209,3 +210,20 @@ class StartupTests(unittest.TestCase):
             self.assertFalse(self.owner.match_pending)
             self.assertFalse(Path(folder.name).exists())
             self.assertEqual(self.owner.state, self.before)
+
+    def test_terminated_worker_can_be_reaped_by_poll_without_wait(self):
+        self.jobs.command=[sys.executable,'-c','import time;time.sleep(60)']
+        token=self.jobs.start(self.job.fixture)
+        process=self.jobs.process
+        deadline=time.monotonic()+5
+        while process.pid is None:
+            self.jobs.poll(token)
+            if time.monotonic()>deadline:self.fail('owned worker did not launch')
+            time.sleep(.001)
+        process.terminate()
+        deadline=time.monotonic()+2
+        while process.poll() is None and time.monotonic()<deadline:time.sleep(.001)
+        self.assertIsNotNone(process.poll(),'terminated owned process never reaped by poll')
+        self.jobs.cancel(token)
+        self.assertFalse(self.jobs.busy)
+        self.assertEqual(self.owner.state,self.before)

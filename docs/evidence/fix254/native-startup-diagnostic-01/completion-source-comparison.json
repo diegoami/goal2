@@ -1,0 +1,22 @@
+{
+  "goal2/game/watched_publication.py": {
+    "sha256": "2b96c2c93a4bf7701168359b30fc9e60fe7881168653c2bfd2552ccf7ed24ad8",
+    "unchanged_from_accepted_84af745c": true
+  },
+  "goal2/game/campaign_rounds.py": {
+    "sha256": "4d53f67570fa49fcfb496f8bb309a6069bac01d3b882696948176f3d1dbba5fe",
+    "unchanged_from_accepted_84af745c": true
+  },
+  "goal2/game/silent_results.py": {
+    "sha256": "9d200056640a3e7b94fc3e956ab696f146534b9e084849127d53e3db75093bb2",
+    "unchanged_from_accepted_84af745c": true
+  },
+  "goal2/engine/quick_engine.py": {
+    "sha256": "d79c6376f5c14f9055ad3d25dab64eafc18d9a2bef72c5e4f51ee04ccfcc2d7c",
+    "unchanged_from_accepted_84af745c": true
+  },
+  "goal2/engine/savestate.py": {
+    "sha256": "ed0e1ce0483b7c00ec10da4824f02395908c65c45b00cdf4c191af17b1cf86a8",
+    "unchanged_from_accepted_84af745c": true
+  }
+}

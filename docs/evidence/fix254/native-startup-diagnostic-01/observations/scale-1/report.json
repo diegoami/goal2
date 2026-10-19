@@ -1,0 +1,219 @@
+{
+  "claim": "[designed: #254] Actual Qt/SDL original parity/save/resume acceptance; mode frames=True and capture/ACK observation only; preceding fault-injection units separate",
+  "result": "FAIL",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "qt": "6.12.0",
+  "qpa": "windows",
+  "requested_qt_scale": "1",
+  "qt_scale_factor": "0.6666666666666666",
+  "actual_qt_ratio": 1.0,
+  "controller_errors": [],
+  "diagnostic_sampler_stopped": true,
+  "window_states": [],
+  "visibility_preflight": [
+    {
+      "time": 2825.9700969,
+      "visible": true,
+      "minimized": false
+    },
+    {
+      "time": 2935.9164379,
+      "visible": true,
+      "minimized": false
+    },
+    {
+      "time": 3023.7017875,
+      "visible": true,
+      "minimized": false
+    }
+  ],
+  "frames": [
+    {
+      "frames": 4439,
+      "final_ack": 4438,
+      "frame_digest": "07a610d219ed816579ed91bf76319fa97a94062810ac38094034291f036db292",
+      "heartbeats": 3538,
+      "maximum_heartbeat_gap": 1.1859220999999707
+    },
+    {
+      "frames": 4830,
+      "final_ack": 4829,
+      "frame_digest": "81b1761ca799f98085f1c50de0d12b18f9aed7a9c09244566d41455e54cb47f1",
+      "heartbeats": 3453,
+      "maximum_heartbeat_gap": 0.838707400000203
+    }
+  ],
+  "complete_acks": [
+    {
+      "sequence": 5613,
+      "digest": "08e51fa3510e450408914bdd39df1e09f3009c314fd39d37dd74d0fa6006af2d"
+    },
+    {
+      "sequence": 6225,
+      "digest": "888ee48454488c89096e8cc11d8ee454b0be3f483f1e6fcc3f440e886b330ad1"
+    }
+  ],
+  "qt_captures": [
+    {
+      "file": "qt-complete-1.png",
+      "ratio": 1.0,
+      "logical_size": [
+        1050,
+        780
+      ],
+      "qt_available": [
+        2560,
+        1528
+      ],
+      "native_rect": [
+        9,
+        20,
+        1081,
+        856
+      ],
+      "active": true
+    },
+    {
+      "file": "qt-complete-2.png",
+      "ratio": 1.0,
+      "logical_size": [
+        1050,
+        780
+      ],
+      "qt_available": [
+        2560,
+        1528
+      ],
+      "native_rect": [
+        9,
+        20,
+        1081,
+        856
+      ],
+      "active": true
+    }
+  ],
+  "sdl": [
+    {
+      "stage": "complete",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        345,
+        142,
+        1361,
+        901
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "0.6666666666666666",
+      "frame_sequence": 4438,
+      "frame_consumed_before_status": 4438,
+      "capture": "goal2-viewer-76tzqmez-complete.png",
+      "pid": 16940,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    },
+    {
+      "stage": "live",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        345,
+        142,
+        1361,
+        901
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "0.6666666666666666",
+      "frame_sequence": 0,
+      "frame_consumed_before_status": -1,
+      "capture": "goal2-viewer-76tzqmez-live.png",
+      "pid": 16940,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    },
+    {
+      "stage": "complete",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        345,
+        142,
+        1361,
+        901
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "0.6666666666666666",
+      "frame_sequence": 4829,
+      "frame_consumed_before_status": 4829,
+      "capture": "goal2-viewer-bkd72l5s-complete.png",
+      "pid": 23260,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    },
+    {
+      "stage": "live",
+      "driver": "windows",
+      "surface": [
+        1000,
+        720
+      ],
+      "window": [
+        1000,
+        720
+      ],
+      "window_rect": [
+        345,
+        142,
+        1361,
+        901
+      ],
+      "dpi": 96,
+      "qt_scale_requested": "0.6666666666666666",
+      "frame_sequence": 0,
+      "frame_consumed_before_status": -1,
+      "capture": "goal2-viewer-bkd72l5s-live.png",
+      "pid": 23260,
+      "claim": "Actual fixed renderer flip observed; no SDL scale inference from Qt ratio"
+    }
+  ],
+  "deterministic_tests": 22,
+  "original_acceptance_tests": 1,
+  "callbacks": [],
+  "owned_resources_closed": true,
+  "clean_widgets": true,
+  "import_context_restored": true,
+  "checks": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true
+  ]
+}

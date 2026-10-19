@@ -99,7 +99,7 @@ class _PreparingProcess:
             return None
         self._thread.join()
         if self._cancelled:
-            return self.returncode
+            return self._process.poll() if self._process is not None else 0
         if self._error is not None:
             raise self._error
         if self._process is None:
@@ -172,6 +172,8 @@ class WatchedJobs:
         self._frame_buffer = bytearray()
         self._engine_done = False
         self._complete = None
+        self._completion_thread = None
+        self._completion_work = None
         self._sequence = 0
         self._buffer = bytearray()
         try:
@@ -286,7 +288,25 @@ class WatchedJobs:
                 raise ValueError('pitch frame count differs from completed ticks')
             if self._frame_ack != self._frame_sequence - 1:
                 return
-        self.publication.complete(token, self._complete)
+        # [designed: #254] Full result/image/round validation can be expensive.
+        # It uses only private captured data; owner view/state swap stays here.
+        thread = getattr(self, '_completion_thread', None)
+        if thread is None:
+            work = self.publication.prepare_completion(token, self._complete)
+            self._completion_work = work
+            self._completion_thread = threading.Thread(target=work.run, name='goal2-watched-completion')
+            try:
+                self._completion_thread.start()
+            except BaseException:
+                self._completion_thread = None
+                self._completion_work = None
+                self.publication.cancel()
+                raise
+            return
+        if thread.is_alive():
+            return
+        thread.join()
+        self.publication.publish_prepared(token, self._completion_work)
         self.outcome = self._complete
         self._release()
 
@@ -366,6 +386,8 @@ class WatchedJobs:
             self.owner.match_pending = False
             self._pitch_owns_pending = False
         self.process = None
+        self._completion_thread = None
+        self._completion_work = None
 
     def cancel(self, token):
         self._check_token(token)
@@ -378,6 +400,15 @@ class WatchedJobs:
         except subprocess.TimeoutExpired:
             self.process.kill()
             self.process.wait(timeout=0.5)
+        # [designed: #254] Completion starts only after engine exit, so these
+        # bounded waits cannot overlap a running engine/input-preparation wait.
+        thread = getattr(self, '_completion_thread', None)
+        if thread is not None:
+            thread.join(0.5)
+            if thread.is_alive():
+                thread.join(0.5)
+            if thread.is_alive():
+                raise subprocess.TimeoutExpired('watched completion preparation', 1.0)
         self._release()
 
     def close(self):
