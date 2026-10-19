@@ -1,0 +1,35 @@
+{
+  "claim": "[confirmed: unchanged Python sources] Complete final repository checks after evidence-only whitespace correction; earlier FAIL preserved",
+  "head": "a3f1deef4bc82b0d5cd24f7aa0d57b0127317f4b",
+  "runtime_head": "e65862c64b332861e776149620f7e7dc6203cd2c",
+  "runtime_groups_passed": 9,
+  "python_sources_unchanged": 174,
+  "rows": [
+    {
+      "name": "authored-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "origin/main...HEAD"
+      ],
+      "exit": 0,
+      "seconds": 0.06438626999806729,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "premerge",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-tools/venv/bin/python",
+        "-B",
+        "tools/check_premerge.py",
+        "--expected-head",
+        "a3f1deef4bc82b0d5cd24f7aa0d57b0127317f4b"
+      ],
+      "exit": 0,
+      "seconds": 87.68419282600007,
+      "log_sha256": "2673c1de22d502aa92b7df7d926ac7142ade45fb859b5e8e9ff736917d59234a"
+    }
+  ],
+  "result": "PASS"
+}
