@@ -126,7 +126,7 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 8cacda74b4c6a5e5d1daef705aa6983adbad9beed4acb574c96cf9b801a4c223  .github/workflows/ci.yml
 
-6a64d92f425168e55fae916db56d40cb69e9ae07a0729054c27359cad48d1535  docs/environment.md
+b6c0a943eff808d361fb06ca5e71abc4c51ad09bdb99afbf8cecdd081c96f24a  docs/environment.md
 
 47f6c62a9f3f51909f249a003baa9a9ff800d201f8f4f0f8efa90684858cff82  docs/process.md
 

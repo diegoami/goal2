@@ -585,6 +585,32 @@ re-vendor/provenance rule.
 
 [confirmed: same receipt and native-demo.png] The deployment smoke used actual Windows Qt6.12.0, received rendered frameACK33, then cancelled and verified owned children/widgets cleanup and callbacks[]. All four existing resource/save/legacy-launcher hashes remained unchanged. The launcher pins this accepted source release. Task/review worktrees use separate runtime directories. Preserve both launcher files, release directories and save directories.
 
+## Moving validation to another computer
+
+[designed: owner handoff,2026-10-19] Fetch the task branch and read its current
+GitHub issue and draft PR before resuming. Recreate the isolated worktree using
+`repoPaths` and the configured `worktreeRoot`; paths in captured scripts and
+receipts identify the originating machine and must be adapted explicitly.
+Preserve the source commit and verify any evidence-only carry before reusing a
+native receipt. Git carries the safe evidence and preparation scripts, but not
+ignored caches, original resources, Python environments or credentials. Set up
+those dependencies locally using this document and
+[the verified runtime procedure](watched-kit-acceptance.md), and verify the
+recorded resource hashes. Never copy credentials into the repository or commit
+original game files. Keep owned native validation folders separate from playable
+releases and saves.
+
+[confirmed: native Windows diagnosis in [#241](https://github.com/diegoami/goal2/issues/241#issuecomment-6262032775)] A disconnected Windows desktop can expose only a
+1024×768 `WinDisc` display. Qt may initially render a larger window off screen,
+then Windows can clamp a later resize despite unchanged widget minimum sizes.
+A full widget screenshot alone therefore does not prove physical visibility.
+Before native GUI acceptance, measure the actual Qt platform, ratio and available
+screen plus native primary/virtual display, workarea and DPI. The required
+logical client targets need at least1440×900 available at Qt1 and900×640 at
+Qt2; allow room for window decorations. Reconnect the normal Windows desktop
+when its screen is insufficient; preserve the failed attempt rather than relax
+size or visibility assertions. Measure SDL separately from Qt scaling.
+
 ## Isolated Linux Qt validation displays
 
 [designed: T79 and Windows-playtest follow-through,2026-10-19] For actual Linux
