@@ -214,7 +214,9 @@ class CompetitiveJobsTests(unittest.TestCase):
     def test_launch_runtime_resource_and_pending_failures_are_actionable(self):
         self.jobs=CompetitiveJobs(self.owner);self.addCleanup(self.jobs.close)
         with patch('goal2.game.watched_jobs.subprocess.Popen',side_effect=OSError('launch unavailable')):
-            with self.assertRaisesRegex(ValueError,'launch unavailable'):self.jobs.start()
+            with self.assertRaisesRegex(ValueError,'launch unavailable'):
+                token=self.jobs.start()
+                self.until(token,lambda seen:False)
         self.assertFalse(self.jobs.busy);self.assertIsNone(self.jobs.publication._pending);self.unchanged()
         import builtins
         original_import=builtins.__import__
