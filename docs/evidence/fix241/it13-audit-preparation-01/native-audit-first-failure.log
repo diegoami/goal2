@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-it13-20261019/native-kit/fix241-native-proof-check.py", line 120, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--config',default='.cache/main-native-proof-config.json');p.add_argument('--expected-receipt-sha256',required=True);a=p.parse_args();print(json.dumps(audit(json.loads(Path(a.config).read_text()),a.expected_receipt_sha256),indent=2))
+                                                                                                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-it13-20261019/native-kit/fix241-native-proof-check.py", line 91, in audit
+    assert report['sources']=={p:h for p,h in r['sources'].items()if p.startswith('goal2/desktop/') and p.endswith('.py')}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

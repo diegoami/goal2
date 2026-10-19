@@ -1,0 +1,68 @@
+{
+  "tag": "[designed: T77]",
+  "before": {
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/window.py": "ac778e4e577eb725252d9c0f524eae49412a2c5a62ec83e45482b903aedbddfd"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "pool",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/fix241-player-table-browsing/docs/evidence/fix241/serial-02/pool-negative/baseline"
+      ],
+      "returncode": 1,
+      "expected": "focused incoming detail/exchange summary absent"
+    },
+    {
+      "name": "filter-state",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/redesign.py",
+        "--scenario",
+        "pool",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT",
+        "--single-scale",
+        "--evidence-dir",
+        "/home/diego/projects/goal2-work/fix241-player-table-browsing/docs/evidence/fix241/serial-02/pool-negative/filter-state"
+      ],
+      "returncode": 1,
+      "expected": "search/filter changed state/RNG/membership"
+    },
+    {
+      "name": "shared-retained-filter-state",
+      "command": [
+        "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+        "-B",
+        "tools/desktop-ui/acceptance.py",
+        "--scenario",
+        "campaign-pool",
+        "--template",
+        ".cache/e010-r0008-halftime.sav",
+        "--data",
+        ".cache/GOAL.DAT"
+      ],
+      "returncode": 1,
+      "expected": "AssertionError"
+    }
+  ],
+  "after": {
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/window.py": "ac778e4e577eb725252d9c0f524eae49412a2c5a62ec83e45482b903aedbddfd"
+  },
+  "restored": true
+}

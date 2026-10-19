@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/acceptance.py", line 334, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/acceptance.py", line 329, in main
+    if args.scenario=='management':management(args.template,args.data,args.screenshot)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2-work/fix241-player-table-browsing/tools/desktop-ui/acceptance.py", line 45, in management
+    assert model.state.captain==260 and model.state.country_tactics==255
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

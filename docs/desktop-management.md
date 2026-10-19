@@ -51,7 +51,10 @@ pool. Preview results belong to that fresh team; the active game's result is
 shown again on return. **New campaign** or **New standalone friendly** explicitly
 makes the selected country active; browsing never replaces the active game or
 writes its save. Management, play, Save, exchanges and the competition table are
-unavailable in a preview. Return to the active country to recover its unconfirmed
+unavailable in a preview. [designed: #241] Both player tables remain scrollable
+with the wheel, scrollbar and keyboard; selecting a row shows its full-ID detail.
+Preview XI checkboxes, captain and tactics remain read-only. Return to the active
+country to recover its unconfirmed
 XI/captain/tactics draft, or use Resume to load a saved game. Country selection
 is unavailable during a match.
 

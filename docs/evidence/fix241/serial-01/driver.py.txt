@@ -1,0 +1,36 @@
+from pathlib import Path
+import hashlib,json,os,subprocess,sys,time,traceback
+root=Path('/home/diego/projects/goal2-work/fix241-player-table-browsing');out=root/'docs/evidence/fix241/serial-01';out.mkdir(parents=True,exist_ok=False)
+py=sys.executable;base=[py,'-B'];resources=['--template','.cache/e010-r0008-halftime.sav','--data','.cache/GOAL.DAT']
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+paths=sorted((root/'goal2').rglob('*.py'))+sorted((root/'tools/desktop-ui').glob('*.py'))
+report={'tag':'[designed: #241]','head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),'before':{str(p.relative_to(root)):digest(p) for p in paths},'cases':[]}
+cases=[]
+def add(name,cmd,scale='1',timeout=240):cases.append((name,cmd,scale,timeout))
+add('browsing-1x',base+['tools/desktop-ui/player-browsing.py']+resources+['--evidence-dir',str(out/'browsing-1x')])
+add('browsing-2x',base+['tools/desktop-ui/player-browsing.py']+resources+['--evidence-dir',str(out/'browsing-2x')],'2')
+add('browsing-negative',base+['tools/desktop-ui/player-browsing.py']+resources+['--evidence-dir',str(out/'browsing-negative'),'--negative-controls'],timeout=480)
+add('country-selection',base+['tools/desktop-ui/country-selection.py']+resources)
+for scenario in ('squad','pool'):
+ for scale in ('1','2'):
+  name=f'{scenario}-{scale}x';add(name,base+['tools/desktop-ui/redesign.py','--scenario',scenario]+resources+['--single-scale','--evidence-dir',str(out/name)],scale)
+ add(scenario+'-negative',base+['tools/desktop-ui/redesign.py','--scenario',scenario]+resources+['--negative-controls','--evidence-dir',str(out/(scenario+'-negative'))],timeout=600)
+add('focused-unit',base+['-m','unittest','goal2.tests.test_desktop_model','goal2.tests.test_desktop_pool','goal2.tests.test_desktop_entry','goal2.tests.test_campaign_substitutions','-v'],timeout=300)
+for name in ('management','campaign-pool','campaign-halftime'):
+ add('acceptance-'+name,base+['tools/desktop-ui/acceptance.py','--scenario',name]+resources)
+for name in ('management','pool','halftime'):add('prove-'+name,base+['tools/desktop-ui/prove-'+name+'.py'],timeout=600)
+for scenario in ('shell','overview'):
+ for scale in ('1','2'):
+  name=f'{scenario}-{scale}x';add(name,base+['tools/desktop-ui/redesign.py','--scenario',scenario]+resources+['--single-scale','--evidence-dir',str(out/name)],scale)
+try:
+ for name,cmd,scale,timeout in cases:
+  print('START',name,flush=True);started=time.time();env={**os.environ,'QT_SCALE_FACTOR':scale}
+  with (out/(name+'.log')).open('xb') as stream:r=subprocess.run(cmd,cwd=root,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,timeout=timeout)
+  item={'name':name,'command':cmd,'scale':scale,'returncode':r.returncode,'seconds':round(time.time()-started,2),'log_sha256':digest(out/(name+'.log'))};report['cases'].append(item)
+  (out/'receipt.json').write_text(json.dumps(report,indent=2)+'\n');print('END',name,r.returncode,flush=True)
+  assert r.returncode==0,'failed '+name+'; see '+str(out/(name+'.log'))
+ report['result']='PASS'
+except BaseException:report['result']='FAIL';report['failure']=traceback.format_exc();raise
+finally:
+ report['after']={str(p.relative_to(root)):digest(p) for p in paths};report['source_restored']=report['before']==report['after'];(out/'receipt.json').write_text(json.dumps(report,indent=2)+'\n')
+ assert report['source_restored'],'source changed during serialized suite'

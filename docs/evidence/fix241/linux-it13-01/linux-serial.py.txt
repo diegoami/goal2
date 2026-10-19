@@ -1,0 +1,85 @@
+"""Main-owned Linux setup/replay; not an independent or Windows review."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import select
+import subprocess
+import sys
+import time
+import traceback
+
+root = Path.cwd()
+out = root / '.cache/linux-resume-it13-20261019'
+out.mkdir(exist_ok=False)
+owned = []
+streams = []
+report = {'claim': 'Main Linux replay on restored machine; no Windows acceptance or independent review',
+          'head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+          'phase': 'starting'}
+
+def status():
+    (out / 'status.json').write_text(json.dumps(report, indent=2) + '\n')
+
+try:
+    assert not subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=no'], text=True).strip()
+    dirs = {name: out / name for name in ('tmp', 'config', 'cache', 'runtime')}
+    for path in dirs.values():
+        path.mkdir()
+    dirs['runtime'].chmod(0o700)
+    env = {**os.environ, 'HARNESS_CLIENT': 'codex', 'QT_QPA_PLATFORM': 'xcb',
+           'SDL_VIDEODRIVER': 'dummy', 'SDL_AUDIODRIVER': 'dummy',
+           'PYTHONDONTWRITEBYTECODE': '1', 'TMPDIR': str(dirs['tmp']),
+           'XDG_CONFIG_HOME': str(dirs['config']), 'XDG_CACHE_HOME': str(dirs['cache']),
+           'XDG_RUNTIME_DIR': str(dirs['runtime']),
+           'LD_LIBRARY_PATH': '/home/diego/projects/goal2/.cache/validation-tools/xcb-libs/extracted/usr/lib/x86_64-linux-gnu'}
+    stream = (out / 'xvfb.log').open('xb')
+    streams.append(stream)
+    display_process = subprocess.Popen(['/usr/bin/Xvfb', '-displayfd', '1', '-screen', '0', '2880x1800x24', '-nolisten', 'tcp'],
+        env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=stream)
+    owned.append(display_process)
+    assert select.select([display_process.stdout], [], [], 15)[0]
+    display = display_process.stdout.readline().decode().strip()
+    assert display.isdigit() and display_process.poll() is None
+    env['DISPLAY'] = ':' + display
+    stream = (out / 'xfwm.log').open('xb')
+    streams.append(stream)
+    wm = subprocess.Popen(['/usr/bin/xfwm4', '--replace', '--compositor=off'],
+        env=env, stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT)
+    owned.append(wm)
+    time.sleep(.5)
+    assert wm.poll() is None
+    report.update(phase='running', display=env['DISPLAY'], owned_pids=[p.pid for p in owned])
+    status()
+    started = time.monotonic()
+    log = out / 'serial.log'
+    with log.open('xb') as stream:
+        run = subprocess.run([sys.executable, '-B', 'docs/evidence/fix241/serial-02/review-driver.py.txt'],
+            env=env, stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT, timeout=2400)
+    report.update(exit=run.returncode, seconds=time.monotonic() - started,
+                  log_sha256=hashlib.sha256(log.read_bytes()).hexdigest())
+    assert run.returncode == 0, log.read_text(errors='replace')[-4000:]
+    receipt = json.loads((root / '.cache/fix241-independent-suite/receipt.json').read_text())
+    assert receipt['result'] == 'PASS' and receipt['source_restored'] and len(receipt['cases']) == 21
+    assert all(row['returncode'] == 0 for row in receipt['cases'])
+    negative = json.loads((root / '.cache/fix241-independent-suite/browsing-negative/negative-controls.json').read_text())
+    assert negative['restored'] and len(negative['controls']) == 3
+    assert all(row['returncode'] != 0 for row in negative['controls'])
+    report.update(phase='complete', result='PASS', groups=21, browsing_controls=3)
+except BaseException:
+    report.update(phase='failed', result='FAIL', failure=traceback.format_exc())
+    raise
+finally:
+    for process in reversed(owned):
+        if process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=10)
+    for stream in streams:
+        stream.close()
+    report['owned_display_cleanup'] = all(p.poll() is not None for p in owned)
+    status()
+print(json.dumps(report))

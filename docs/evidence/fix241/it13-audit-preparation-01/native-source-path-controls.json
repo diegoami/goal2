@@ -1,0 +1,6 @@
+{
+  "claim": "Synthetic source-path validator controls only; no Windows execution",
+  "valid": 2,
+  "rejected": 7,
+  "result": "PASS"
+}

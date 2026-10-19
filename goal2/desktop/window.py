@@ -149,7 +149,7 @@ class ManagementWindow(QMainWindow):
         for row,p in enumerate(view['players']):
             available=p['availability']['available'];selected=p['id'] in state.starting_eleven
             item=QTableWidgetItem();item.setData(Qt.ItemDataRole.UserRole,p['id']);item.setData(Qt.ItemDataRole.UserRole+1,available)
-            item.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable| (Qt.ItemFlag.ItemIsUserCheckable if available or selected else Qt.ItemFlag.NoItemFlags))
+            item.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable| (Qt.ItemFlag.ItemIsUserCheckable if self.preview is None and (available or selected) else Qt.ItemFlag.NoItemFlags))
             item.setCheckState(Qt.CheckState.Checked if selected else Qt.CheckState.Unchecked);self.table.setItem(row,0,item)
             reason=', '.join(p['availability']['reasons']) or 'Available'
             if p['availability']['carried_bookings']:reason+='; carried booking'
@@ -196,7 +196,9 @@ class ManagementWindow(QMainWindow):
         for widget in (self.country,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
         self.overview_return.setEnabled(not busy and self.preview is not None)
         active=not busy and self.preview is None
-        for widget in (self.table,self.captain,self.confirm,self.cancel,self.save,self.pool_panel,self.play,self.watch,self.standings):widget.setEnabled(active)
+        # [designed: #241] Idle previews browse rows/details; management stays active-only.
+        for widget in (self.table,self.pool_panel):widget.setEnabled(not busy)
+        for widget in (self.captain,self.confirm,self.cancel,self.save,self.play,self.watch,self.standings):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
         from goal2.desktop.pool_page import context as pool_context
         pool_context(self,busy)

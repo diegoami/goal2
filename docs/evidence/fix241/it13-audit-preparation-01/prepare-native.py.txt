@@ -1,0 +1,39 @@
+"""Verify transferred native runtime identities before the existing Windows gate."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+root = Path('/home/diego/projects/goal2')
+task = Path('/home/diego/projects/goal2-work/fix241-player-table-browsing')
+keep = root / '.cache/kept/review-receipts'
+here = keep / 'resume-it13-20261019'
+win = Path('/mnt/c/Users/diego/projects/goal2-exe')
+checks = json.loads((here / 'transferred-runtime-check.json').read_text())
+assert all(not row['missing_or_changed'] for row in checks)
+assert [row['verified'] for row in checks] == [43, 523]
+report = {'claim': 'Transferred input prerequisites only; no native scenario acceptance', 'dependencies': {}}
+for name, module in (('T78', 'unicorn'), ('T79', 'pygame')):
+    data = json.loads((task / 'docs/evidence/fix241/cross-machine-01/runtime-metadata' / (name + '-private-runtime-config.json')).read_text())
+    directory = Path(data['directory'])
+    for filename, expected in data['wheels'].items():
+        wheel = directory.parent / 'wheels' / filename
+        assert hashlib.sha256(wheel.read_bytes()).hexdigest() == expected
+    native = subprocess.check_output(['wslpath', '-w', str(directory)], text=True).strip()
+    code = 'import os,sys,json,importlib;os.environ["PYTHONDONTWRITEBYTECODE"]="1";os.environ["PYGAME_HIDE_SUPPORT_PROMPT"]="1";sys.path.insert(0,' + repr(native) + ');m=importlib.import_module(' + repr(module) + ');print(json.dumps({"version":m.__version__,"file":m.__file__}))'
+    raw = subprocess.check_output([str(win / '.venv/Scripts/python.exe'), '-B', '-c', code], stdin=subprocess.DEVNULL, timeout=60)
+    actual = json.loads(raw.decode())
+    assert actual['version'] == data['version']
+    assert actual['file'].replace('\\', '/').lower() == data['native_import']['file'].replace('\\', '/').lower()
+    data['native_import'] = actual
+    target = keep / (name + '-private-runtime-config.json')
+    assert not target.exists()
+    target.write_text(json.dumps(data, indent=2) + '\n')
+    report['dependencies'][name] = actual
+sys.path.insert(0, str(here / 'native-kit'))
+from windows_display_probe import display
+report['display'] = {scale: display(win, scale) for scale in ('1', '2')}
+report['result'] = 'PASS'
+(here / 'native-prerequisites.json').write_text(json.dumps(report, indent=2) + '\n')
+print(json.dumps(report))

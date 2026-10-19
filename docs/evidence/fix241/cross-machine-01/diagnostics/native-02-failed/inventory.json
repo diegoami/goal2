@@ -1,0 +1,15 @@
+{
+  "host-receipt.json": "628ad7166ab6ae5fc0d451609b22b6737197b3837ca6cceeb40d8b69769cd574",
+  "main-native-runner.py": "5f4b1a16c6614c0e19d1bd910bbea1f74e4b5472eb07b60293ba439b75ca2079",
+  "native-1.log": "e6796e2e82eb6809783b76935f4996e28737b9c5f21c896648dd69e029bafa80",
+  "native-1.py": "c4f3cb1d082d9a4125eb4f09f465fdab560aa1385c4fc84073653e799f4d0833",
+  "native-1.raw-envelope.json": "7505ba71bfb59f83c96d4c8d80a076db753ec11c024e195bf4bc309e0ffe8f30",
+  "native-1.raw.txt": "0a3ebe06441cee964530e7626a91f9950cc96e1ac2f72557591e3d0893ca1ebc",
+  "observations/scale-1/active-1050x780-1.png": "0f88ded1db6afba3f62f280a7aa3a2389b1a177ba2df7a8424b84808e90d4953",
+  "observations/scale-1/active-1050x780-2.png": "e1def8f59d5a702b9b54e3e85b39d64c94718cfe2dff762f35d55fa7614ceb7e",
+  "observations/scale-1/active-1440x900-1.png": "3d97d5fb5bac08dca0c612b03091cf8290c4f1f6e7fa3d4b5d999f99534eba39",
+  "observations/scale-1/active-1440x900-2.png": "07c8966580e22c254daf7a3ddb125d960d1759f2bd6faa3615f9a2af4671b02c",
+  "observations/scale-1/active-900x700-1.png": "03b9bcebd747b93ab8593d886ea89b79e432c1ed5fb1c3a102284c610a7d201b",
+  "observations/scale-1/active-900x700-2.png": "3c9d9c9ebf2f3b504625e4908d0c541cd984c159cd301e51946a5e712c983091",
+  "observations/scale-1/report.json": "1ab5df8f05da6f87976b1b6f3a35065281e528181061fe5198326a181c575407"
+}

@@ -1,0 +1,8 @@
+{
+  "head": "659833bec6ab3a93b46e837abbc350a8f0012784",
+  "result": "PASS",
+  "log": "/home/diego/projects/goal2-work/fix241-player-table-browsing/.cache/premerge-it13-evidence.log",
+  "log_sha256": "a70dd8f8d858a5fa9620d75f83da917a94a5659d09023ccfd487e34b9e1db745",
+  "unit": "goal2r-fix241-it13-evidence-premerge-20261019",
+  "invocation": "893861940443411a9f0bfd80dfb5a0b4"
+}
