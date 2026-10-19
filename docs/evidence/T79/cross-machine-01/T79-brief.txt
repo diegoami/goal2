@@ -62,4 +62,3 @@ You implement <T<nn>>. The task file above is the contract.
 - PR body: Closes #<issue>; Scope (files and why); a fenced block with each Done-when command and
   the tail of its output; Docs changed.
 ```
-

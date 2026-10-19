@@ -45,7 +45,9 @@
     {
       "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/T79-brief.md",
       "tracked_copy": "docs/evidence/T79/cross-machine-01/T79-brief.txt",
-      "sha256": "3be3a0a1a4f151afa509ce573ed0bca03e3c6cc9b6389a063ba51d0e1691fd1e"
+      "sha256": "29b0b92d909706aad05c1299297a8314fe21222096214037e5bfea7ed84e7c52",
+      "original_source_sha256": "3be3a0a1a4f151afa509ce573ed0bca03e3c6cc9b6389a063ba51d0e1691fd1e",
+      "normalization": "Removed extra final blank lines from copied Linux brief for strict whitespace; task text unchanged. No native CRLF artifact involved."
     },
     {
       "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/opencode-preflight/preflight-U2s2rp/selected-model.json",
