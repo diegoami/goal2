@@ -1,0 +1,19 @@
+capability	current_build_audit	proposal_destination	owner	dependency_or_limit
+Session state and atomic save/resume	Available Python candidate/writer/loader	S01/S02/S13	B02	Reuse versioned JSON; no original GL compatibility or pending-match saves
+Country desk/navigation	Five current pages; next/last context	S03	B03	Composition only; original country/rank/news data from #249
+Player full card / expanded comparison	Seven compact fields current; T84 contract separate	S04/S05/S06	#242	12 skills/5 characteristics;38/37 expansion; original performance bucket unresolved
+Roster/pool scrolling	Accepted #241;20/80 rows; preview read-only	S04/S05	#241	Preserve full IDs and actual ratios; #252 diagnostics cannot weaken tests
+Personal roles/tactics/mark edits	No desktop editor in audit	S04/S08/S10	#248	Support/state audit first; pre-match T84 projection does not imply live marking
+Country ranks/status/profile/strips	Mostly absent from current UI	S02/S03/S06	#249	T55 ranking mechanics; original status/skill/bar units and strip semantics unresolved
+Fixtures/groups/opponents	Next fixture plus opening table/provisional snapshot	S03/S06/S07	#249	Existing stored schedule first; T50–T54 own additional competition progression
+Country records/news	No comparable browsable history/bulletin	S12/S14	#249	Audit retention; T56–T58 lifecycle/cycle effects; headlines alone do not prove dismissal
+Quick-friendly halftime	Supported current worker/UI path	S10	B04	Reuse accepted unlimited-friendly/five-otherwise remaster policy; no direct watched inference
+Original competitive resolution	Supported Play resolver / stage scores	S08/S11	B04	Reuse accepted controller; no competitive Watch or new knockout rules
+Watch scheduled friendly and speed	SDL live view; default rate; T85 adds visible selector	S08/S09	#243	15/60/120 internal target;Normal default; frozen job; distinct engine routes
+Current match appearance/focus	Accepted SDL surface; T79 independent composition work	S09/S11	#198	Retain renderer contract; no in-play command from styling
+Watched halftime/injury/substitution	Viewer currently read-only; edits locked	S10	#250	Real worker pause/answer/resume proof; no-subs-left original gap
+Captain and set-piece prompts	Default-kit policy; no whole explicit watched desktop choice	S08/S10	#250	Captain/taker types and nominal defaults from F030; keep actual engine semantics
+Extra-time midpoint/shoot-out order	Competitive automatic result stages; no watched order UI	S10/S11	#250	Original prompt/order evidence not current interactive support; don't infer duration
+Summary/history replay retention	Latest result; some campaign results; no archive/replay library	S11/S12	#251	Read-only retained results first; unrecorded statistics explicit; durable replay dependency
+Local manager count/handoff	Single managed country in current state/save	S02/S15	B07	Original2 exercised/1–6 offered; contract plus later approved capability needed
+New toolkit / backend / hosting	No migration selected or authorized	All	B01	Python+Widgets+accepted SDL recommendation; owner choice before any migration; desktop retained

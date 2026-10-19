@@ -157,3 +157,26 @@ are in **goal2**, distinct from the archaeology #248/#249 rows above. [designed:
 | — | Browse campaign fixtures, standings, opponents and history | [#249](https://github.com/diegoami/goal2/issues/249) | Scope/data audit first | High proposed | Available campaign data audit; main-session triage |
 | — | Scope and expose supported watched-match interventions | [#250](https://github.com/diegoami/goal2/issues/250) | Support matrix first | Medium proposed | Watched-kit/worker capability audit; main-session triage |
 | — | Browse retained match summaries and assess saved-goal replay | [#251](https://github.com/diegoami/goal2/issues/251) | Retention audit first | Medium proposed | History-data audit; main-session triage |
+
+
+## Whole-game redesign decision package #253
+
+[designed: owner #253,2026-10-19] The [Country desk proposal](../redesign-253/README.md)
+compares complete desktop directions, original-information parity, technology options
+and a [prioritized rollout](../redesign-253/backlog.md). **Explicit owner direction
+approval is required before redesign implementation or any new child starts.**
+Documentation approval/merge and issue filing are not that approval. Existing
+independently authorized work keeps its own contracts; this proposed order does
+not stop, cancel or redirect T79/T84/T85 or other active scopes. GitHub labels own
+operational status.
+
+| Proposed order | Planning scope | Issue / dependency gate |
+| --- | --- | --- |
+| 0 | Owner direction, backend/frontend/window and first-slice decisions | [O01–O07](../redesign-253/decisions.md); no migration authorized |
+| 1 | Native data/rendering/package proof, split into bounded preflights | [B01/#259](https://github.com/diegoami/goal2/issues/259); direction approval, accepted T79/T84/T85 as applicable |
+| 2a | New/load/country/manager/save onboarding | [B02/#260](https://github.com/diegoami/goal2/issues/260); B01 and #249 available profile data |
+| 2b | Country desk and Team/Pool composition | [B03/#261](https://github.com/diegoami/goal2/issues/261); accepted #241/#242/#243/#198, #249 data; #248 edits only when supported |
+| 2c | Preparation→match→result→campaign continuity | [B04/#262](https://github.com/diegoami/goal2/issues/262); B03, T79/T85, #251 projection; #250 capability only where supported |
+| 3 | Deeper management/campaign/intervention/archive information | Reuse [#248](https://github.com/diegoami/goal2/issues/248)–[#251](https://github.com/diegoami/goal2/issues/251) and T50–T59; no duplicate ownership |
+| 4 | Local-manager contract, then separately approved capability | [B07/#264](https://github.com/diegoami/goal2/issues/264); original two-manager evidence; full parity still needs actual capability |
+| 5 | Independent parity and player-task release acceptance | [B05/#263](https://github.com/diegoami/goal2/issues/263); first coherent slice separately from full parity; unresolved categories need resolution or explicit owner exceptions |

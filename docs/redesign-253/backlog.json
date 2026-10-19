@@ -1,0 +1,86 @@
+[
+  {
+    "key": "B01",
+    "title": "Prove native desktop delivery and choose the retained rendering path",
+    "priority": "P0 \u00b7 decision prerequisite",
+    "size_risk": "M; high integration risk",
+    "dependencies": "O01 direction approval; O02/O03 technology/window assumptions; accepted #198/T79 and #242/T84 outcomes; T85 pacing when exercised",
+    "contract": "backlog/B01.md",
+    "issue": "https://github.com/diegoami/goal2/issues/259",
+    "implementation_authorized": false,
+    "owns": "Validation-only source/artifacts under a new owned evidence directory; packaging/launch recipe for the selected proof. No production UX rollout, new save schema, vendored engine or active T79/T84/T85 worktree changes.",
+    "owned_areas": [
+      "desktop-feasibility-evidence"
+    ]
+  },
+  {
+    "key": "B02",
+    "title": "Add safe new-career, country selection and saved-career onboarding",
+    "priority": "P1 \u00b7 first coherent slice",
+    "size_risk": "M; medium replacement/save risk",
+    "dependencies": "B01 selected desktop path; O01/O02 approval; #249 available country-profile projection; accepted country preview/session save and #242/T84 card. Explicit unavailable fields are allowed in an incremental slice but do not count as full original parity",
+    "contract": "backlog/B02.md",
+    "issue": "https://github.com/diegoami/goal2/issues/260",
+    "implementation_authorized": false,
+    "owns": "Desktop launch/setup/save presentation and minimal existing DesktopModel entry hooks; atomic writer/loader remain authoritative. No generation, RNG, save-schema or campaign-rule changes.",
+    "owned_areas": [
+      "session-onboarding-ui"
+    ]
+  },
+  {
+    "key": "B03",
+    "title": "Compose the Country desk and a shared management workspace",
+    "priority": "P1 \u00b7 first coherent slice",
+    "size_risk": "L; split shell/Team composition before dispatch if independently useful",
+    "dependencies": "B01/B02; accepted #241/#198/#242/#243; #249 available context projections; owner-approved direction. #248 accepted outcomes are required before its editable personal-role/mark controls appear; an initial read-only composition can precede them",
+    "contract": "backlog/B03.md",
+    "issue": "https://github.com/diegoami/goal2/issues/261",
+    "implementation_authorized": false,
+    "owns": "Desktop shared shell/navigation/style and page COMPOSITION only, after dependencies are accepted. Do not change attribute decoding, table default/expanded contract, pool policy, campaign rules, match controller or renderer protocols.",
+    "owned_areas": [
+      "shell-management-composition"
+    ]
+  },
+  {
+    "key": "B04",
+    "title": "Compose preparation, match handoff and results into one clear journey",
+    "priority": "P1 \u00b7 complete first end-to-end slice",
+    "size_risk": "M\u2013L; medium lifecycle/focus risk",
+    "dependencies": "B01 O03 window choice; accepted #198/#243; B03 shared shell; #251 available result projection; #250 only for supported interventions",
+    "contract": "backlog/B04.md",
+    "issue": "https://github.com/diegoami/goal2/issues/262",
+    "implementation_authorized": false,
+    "owns": "Desktop Match centre composition and minimal existing window handoff/return hooks. #198 owns current visual renderer; #243 owns entry/speed; #250 owns interaction support; #251 owns retained-result/archive data. No new engine command, alternate runner, premature publication or mid-match save.",
+    "owned_areas": [
+      "match-journey-composition"
+    ]
+  },
+  {
+    "key": "B05",
+    "title": "Validate the selected redesign against original parity and complete player tasks",
+    "priority": "P2 \u00b7 release acceptance gate",
+    "size_risk": "M; medium evidence/usability risk",
+    "dependencies": "Owner-approved direction; B02/B03/B04; #248/#249/#250/#251 delivered bounded scopes; B07 contract AND its later separately approved multiplayer capability resolution for full parity. All required deferred categories must resolve or receive a named owner exception; the B07 contract alone cannot complete multiplayer parity",
+    "contract": "backlog/B05.md",
+    "issue": "https://github.com/diegoami/goal2/issues/263",
+    "implementation_authorized": false,
+    "owns": "Task-owned validation scenarios, usability protocol/evidence and final release-readiness documentation. No opportunistic UI/engine fixes; defects get scoped issues and exact-head reruns.",
+    "owned_areas": [
+      "redesign-acceptance-evidence"
+    ]
+  },
+  {
+    "key": "B07",
+    "title": "Scope original local-manager ownership, persistence and handoffs",
+    "priority": "P3 \u00b7 explicit full-parity dependency",
+    "size_risk": "S\u2013M planning contract; high later implementation risk",
+    "dependencies": "Owner direction/priority approval; existing P7 intent; source E031 two-manager evidence; single-manager campaign/save audit",
+    "contract": "backlog/B07.md",
+    "issue": "https://github.com/diegoami/goal2/issues/264",
+    "implementation_authorized": false,
+    "owns": "Capability design/evidence and future contract docs only. No multiplayer UI enablement, session-schema migration, engine rewrite or automatic task dispatch.",
+    "owned_areas": [
+      "multimanager-capability-contract"
+    ]
+  }
+]
