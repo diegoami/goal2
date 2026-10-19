@@ -1,0 +1,89 @@
+{
+  "phase_timings": [
+    {
+      "stage": "idle",
+      "start": 12476.3167922,
+      "end": 12477.2859759
+    },
+    {
+      "stage": "starting-0",
+      "start": 12492.7723689,
+      "end": 12493.9572688
+    }
+  ],
+  "slow_calls": [
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12474.036904,
+      "end": 12474.1613921,
+      "seconds": 0.12448810000023514
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12474.683077,
+      "end": 12474.8128604,
+      "seconds": 0.12978339999972377
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12474.8653997,
+      "end": 12475.1221273,
+      "seconds": 0.256727599999067
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12475.5326932,
+      "end": 12475.6542427,
+      "seconds": 0.12154949999967357
+    },
+    {
+      "label": "ManagementWindow.refresh",
+      "start": 12476.1599142,
+      "end": 12476.2736424,
+      "seconds": 0.11372819999996864
+    },
+    {
+      "label": "WatchedController.poll",
+      "start": 12496.8091245,
+      "end": 12497.0747606,
+      "seconds": 0.26563610000084736
+    },
+    {
+      "label": "ManagementWindow.poll_watched",
+      "start": 12496.8090715,
+      "end": 12497.0748779,
+      "seconds": 0.26580640000065614
+    },
+    {
+      "label": "WatchedController.poll",
+      "exception": "ValueError(\"Pygame viewer failed: [WinError 5] Zugriff verweigert: 'C:\\\\\\\\Users\\\\\\\\diego\\\\\\\\projects\\\\\\\\goal2-exe\\\\\\\\.goal2-validation\\\\\\\\T79-production-b6783f9640bb-1792405555430675795\\\\\\\\.cache\\\\\\\\tmp\\\\\\\\goal2-viewer-dffwbqiz\\\\\\\\status.new' -> 'C:\\\\\\\\Users\\\\\\\\diego\\\\\\\\projects\\\\\\\\goal2-exe\\\\\\\\.goal2-validation\\\\\\\\T79-production-b6783f9640bb-1792405555430675795\\\\\\\\.cache\\\\\\\\tmp\\\\\\\\goal2-viewer-dffwbqiz\\\\\\\\status'\")",
+      "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T79-production-b6783f9640bb-1792405555430675795\\native-1.py\", line 45, in observed\n    try: return fn(*args,**kwargs)\n                ~~^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T79-production-b6783f9640bb-1792405555430675795\\goal2\\desktop\\watched.py\", line 132, in poll\n    raise ValueError('Pygame viewer failed: ' + str(value.get('message','unknown error')))\nValueError: Pygame viewer failed: [WinError 5] Zugriff verweigert: 'C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\T79-production-b6783f9640bb-1792405555430675795\\\\.cache\\\\tmp\\\\goal2-viewer-dffwbqiz\\\\status.new' -> 'C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\T79-production-b6783f9640bb-1792405555430675795\\\\.cache\\\\tmp\\\\goal2-viewer-dffwbqiz\\\\status'\n",
+      "start": 12497.1077898,
+      "end": 12497.3141735
+    },
+    {
+      "label": "WatchedController.poll",
+      "start": 12497.1077898,
+      "end": 12497.3141766,
+      "seconds": 0.20638680000047316
+    },
+    {
+      "label": "ManagementWindow.poll_watched",
+      "start": 12497.107669,
+      "end": 12497.3419095,
+      "seconds": 0.23424049999994168
+    }
+  ],
+  "heartbeat_samples": [
+    {
+      "round": 0,
+      "gaps": [
+        {
+          "start": 12491.9291584,
+          "end": 12492.7634579,
+          "seconds": 0.8342995000002702
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "claim": "[confirmed: Git source comparison] Failing native status-writer function and full watched controller are unchanged from accepted main; no T79 reliability edit",
+  "accepted_main": "84af745c6b2d68b89077e9fde330fc8538eda031",
+  "native_head": "b6783f9640bb57cd17624e8692022e1b3b9e0c0d",
+  "status_function_sha256": "3c5abfe640e202ef19d67d1929e35b834461d572673406ed24fc92ea4b433d59",
+  "watched_controller_sha256": "17cff020e5798c2a8a8561960a72d8a9c9b90f3c8afd733898b82c2421644012"
+}

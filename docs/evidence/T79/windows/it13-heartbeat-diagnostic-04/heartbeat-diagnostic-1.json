@@ -1,0 +1,23 @@
+{
+  "phase_timings": [
+    {
+      "stage": "idle",
+      "start": 12476.3167922,
+      "end": 12477.2859759
+    },
+    {
+      "stage": "starting-0",
+      "start": 12492.7723689,
+      "end": 12493.9572688
+    }
+  ],
+  "round": 0,
+  "heartbeat_count": 233,
+  "long_gaps": [
+    {
+      "start": 12491.9291584,
+      "end": 12492.7634579,
+      "seconds": 0.8342995000002702
+    }
+  ]
+}
