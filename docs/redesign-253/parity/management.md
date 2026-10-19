@@ -6,7 +6,7 @@
 
 [confirmed: E031 C11–C16b; M244-G1A-01 steps0–2; E015-r0008 state10] **observed+hint**. Original comparisons: [title-player-count](../../original-game/images/title-player-count.png), [m244-load-name](../../original-game/images/m244-load-name.png), [file-not-found-prompt](../../original-game/images/file-not-found-prompt.png).
 
-[designed] **When/why:** At launch: distinguish starting a career from continuing one; avoid replacing the active game. **Discoverability:** Launch direct; country detail direct; load picker1 action. **Delivery:** B02/B07. **Limits:** One manager supported in rebuild; offered3–6 unexercised in original. Retry text is printed; exact original error recovery unverified. No GL compatibility promised.
+[designed] **When/why:** At launch: distinguish starting a career from continuing one; avoid replacing the active game. **Discoverability:** Launch direct; country detail direct; load picker1 action. **Delivery:** B02/B06/B07. **Limits:** One manager supported in rebuild; offered3–6 unexercised in original. Retry text is printed; exact original error recovery unverified. No GL compatibility promised.
 
 | ID | Original information | Proposed destination | Sole scoped delivery / reuse owner |
 | --- | --- | --- | --- |
