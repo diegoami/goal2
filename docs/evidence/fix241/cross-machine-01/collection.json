@@ -151,6 +151,12 @@
     "runtime-metadata/T79-private-runtime-config.json": {
       "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/T79-private-runtime-config.json",
       "sha256": "988217a10a8e9dfc18772b13825d6e38f68c1e1919d48ec008738def18fa1586"
+    },
+    "kit/historical-geometry-diagnostic.py": {
+      "source": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix241-geometry-diagnostic-1792394789152055881/diagnostic.py",
+      "sha256": "d8e25464c8840adabd788620087afe9bc03de1fceab03631f85162df89f8e7de",
+      "original_sha256": "d8e25464c8840adabd788620087afe9bc03de1fceab03631f85162df89f8e7de",
+      "normalization": "LF reading derivative with terminal blank line removed; original bytes in adjacent envelope"
     }
   },
   "exclusions": "Private original fixtures, saves, executables, runtime libraries, credentials, unrelated tasks, full RUN-NOTES (posted to issue241). Raw CRLF bytes reconstruct from UTF-8 envelopes; diagnostic private inventories are historical snapshots."

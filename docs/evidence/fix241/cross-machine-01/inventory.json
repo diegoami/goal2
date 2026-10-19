@@ -1,6 +1,6 @@
 {
-  "README.md": "cebc0f411da095b5481cc8e099b0c1c8e5dbbc4fd18e75cf006fc1b807201bd7",
-  "collection.json": "9594cac718726ae50858469c031f42987e284f61e61273fefa93cbd783cf656c",
+  "README.md": "d49f925229768d31ba7830829ebc32f1460c2c8946b28347d7ae8dd567c8a179",
+  "collection.json": "62b700ceb851c86059714953ce3dff7f8dc85f09bdbb814c640b670f1ec3f8e5",
   "diagnostics/historical-fixed-private-1x.log.raw-envelope.json": "1f7d271274de1146c7d163d63e0f8a4d41b6abfcd569a6b12ee751e1c8f42ad3",
   "diagnostics/historical-qt-platform-diagnostic.log.raw-envelope.json": "5236fce04bbd0ece4f1500ceac24dff09e5d33d3df40c1d554d9cdf2a32d4a59",
   "diagnostics/native-01-not-run/inventory.json": "88b1b117c605a58803a5755b5960dca8d5ede9f66a94a8ba47c1f1fdfcbf8b09",
@@ -37,6 +37,8 @@
   "kit/fix241-windows-acceptance-v2.py": "5f4b1a16c6614c0e19d1bd910bbea1f74e4b5472eb07b60293ba439b75ca2079",
   "kit/fix241-windows-acceptance-v3.py": "a6097aa3ec57a49bb0d1b8c3be0ef2ecd01faee523639b0445e80fdc41ade8be",
   "kit/fix241-windows-acceptance.py": "ded82014b803869028ed8d06533bb2b6941be60eb4f152f7a6cb0ba0b8f9c5ba",
+  "kit/historical-geometry-diagnostic.py": "d8e25464c8840adabd788620087afe9bc03de1fceab03631f85162df89f8e7de",
+  "kit/historical-geometry-diagnostic.py.raw-envelope.json": "f9c8cff8f1f42d726683d611b841d4d787213b70ad19714dcd7e7e3f2605e5df",
   "kit/stage-review.py": "707ca4914a6df69615a1f09f419342a94238745ac3f785b557a36ebed964e5f8",
   "kit/verify-kit.py": "6fac8e132ed0d040bb941a9cdc9e6ddb6c1ca8e21770d6b8d88930bb64348482",
   "kit/windows_display_probe.py": "3823de5ab775457aca4e420e760d563ab313fa3efb843d9b8d88b9ab9151fc22",
@@ -45,6 +47,9 @@
   "validation/historical-reading-normalization.json": "ca37411f874029b567d97a9d46491af0450e49ca60c08bb6be87035e2ee36cb4",
   "validation/pre-normalization-whitespace.json": "80443d89f8e471216795c864539ebc4a4b8cc3db0907b47454bd40c9150e3a46",
   "validation/pre-normalization-whitespace.log": "acdd1b1978d3fe03bc36d7856bfef9f6a42e2b183e4ad4dedd8ed08469f489d4",
+  "validation/premerge-37634b8b-outcome.json": "6e2efe4229751ffde040134af6c6db78779db8be36659e71254509241b1582e9",
+  "validation/premerge-37634b8b.log": "61d2799a1a4ec023da8436bf902545d91bf62b6c9cec99a380b44a07178cf735",
+  "validation/premerge-37634b8b.raw-envelope.json": "7b72a798b77130fa817c2e1eacb0df28ec116bd7c62773022e7e62cf3f2dd2a4",
   "validation/premerge-7560.log": "63bc87f76b2961df7e739b3b58f685bfa31b446d5f755f8495e5233a24a28cae",
   "validation/premerge-7560.raw-envelope.json": "aada4afe8f7fb74afe4e02528a254778d8826623be5cf0ba6bb75df986c103fa"
 }
