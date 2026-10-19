@@ -1,0 +1,235 @@
+id	context	destination
+ST01	ST	S01/S02
+ST02	ST	S01/S02
+ST03	ST	S01/S02
+ST04	ST	S01/S02
+ST05	ST	S01/S02
+ST06	ST	S01/S02
+CO01	CO	S02/S06; ranking summary S03/S08
+CO02	CO	S02/S06; ranking summary S03/S08
+CO03	CO	S02/S06; ranking summary S03/S08
+CO04	CO	S02/S06; ranking summary S03/S08
+CO05	CO	S02/S06; ranking summary S03/S08
+CO06	CO	S02/S06; ranking summary S03/S08
+CO07	CO	S02/S06; ranking summary S03/S08
+CO08	CO	S02/S06; ranking summary S03/S08
+CO09	CO	S02/S06; ranking summary S03/S08
+CO10	CO	S02/S06; ranking summary S03/S08
+CO11	CO	S02/S06; ranking summary S03/S08
+CO12	CO	S02/S06; ranking summary S03/S08
+CO13	CO	S02/S06; ranking summary S03/S08
+CO14	CO	S02/S06; ranking summary S03/S08
+CS01	CS	S02/S06 profile; comparison S08
+CS02	CS	S02/S06 profile; comparison S08
+CS03	CS	S02/S06 profile; comparison S08
+CS04	CS	S02/S06 profile; comparison S08
+CS05	CS	S02/S06 profile; comparison S08
+CS06	CS	S02/S06 profile; comparison S08
+CS07	CS	S02/S06 profile; comparison S08
+CS08	CS	S02/S06 profile; comparison S08
+CC01	CC	S06 team profile; S04 team-tactics context
+CC02	CC	S06 team profile; S04 team-tactics context
+CC03	CC	S06 team profile; S04 team-tactics context
+CC04	CC	S06 team profile; S04 team-tactics context
+HU01	HU	S03
+HU02	HU	S03
+HU03	HU	S03
+HU04	HU	S03
+HU05	HU	S03
+HU06	HU	S03
+HU07	HU	S03
+HU08	HU	S03
+HU09	HU	S03
+PI01	PI	S04/S05/S06/S08/S10 selected card
+PI02	PI	S04/S05/S06/S08/S10 selected card
+PI03	PI	S04/S05/S06/S08/S10 selected card
+PI04	PI	S04/S05/S06/S08/S10 selected card
+PI05	PI	S04/S05/S06/S08/S10 selected card
+PI06	PI	S04/S05/S06/S08/S10 selected card
+PI07	PI	S04/S05/S06/S08/S10 selected card
+PI08	PI	S04/S05/S06/S08/S10 selected card
+PI09	PI	S04/S05/S06/S08/S10 selected card
+PI10	PI	S04/S05/S06/S08/S10 selected card
+PI11	PI	S04/S05/S06/S08/S10 selected card
+SK01	SK	S04/S05/S06/S08/S10 complete player card
+SK02	SK	S04/S05/S06/S08/S10 complete player card
+SK03	SK	S04/S05/S06/S08/S10 complete player card
+SK04	SK	S04/S05/S06/S08/S10 complete player card
+SK05	SK	S04/S05/S06/S08/S10 complete player card
+SK06	SK	S04/S05/S06/S08/S10 complete player card
+SK07	SK	S04/S05/S06/S08/S10 complete player card
+SK08	SK	S04/S05/S06/S08/S10 complete player card
+SK09	SK	S04/S05/S06/S08/S10 complete player card
+SK10	SK	S04/S05/S06/S08/S10 complete player card
+SK11	SK	S04/S05/S06/S08/S10 complete player card
+SK12	SK	S04/S05/S06/S08/S10 complete player card
+PC01	PC	S04/S05/S06/S08/S10 complete player card
+PC02	PC	S04/S05/S06/S08/S10 complete player card
+PC03	PC	S04/S05/S06/S08/S10 complete player card
+PC04	PC	S04/S05/S06/S08/S10 complete player card
+PC05	PC	S04/S05/S06/S08/S10 complete player card
+PT01	PT	S04 instructions panel; S08/S10 contextual opponent mark
+PT02	PT	S04 instructions panel; S08/S10 contextual opponent mark
+PT03	PT	S04 instructions panel; S08/S10 contextual opponent mark
+PT04	PT	S04 instructions panel; S08/S10 contextual opponent mark
+PT05	PT	S04 instructions panel; S08/S10 contextual opponent mark
+PT06	PT	S04 instructions panel; S08/S10 contextual opponent mark
+PT07	PT	S04 instructions panel; S08/S10 contextual opponent mark
+PT08	PT	S04 instructions panel; S08/S10 contextual opponent mark
+TT01	TT	S04 Team instructions; read-only opponent S06/S08
+TT02	TT	S04 Team instructions; read-only opponent S06/S08
+TT03	TT	S04 Team instructions; read-only opponent S06/S08
+TT04	TT	S04 Team instructions; read-only opponent S06/S08
+TT05	TT	S04 Team instructions; read-only opponent S06/S08
+TT06	TT	S04 Team instructions; read-only opponent S06/S08
+TT07	TT	S04 Team instructions; read-only opponent S06/S08
+TT08	TT	S04 Team instructions; read-only opponent S06/S08
+SD01	SD	S04/S05/S08
+SD02	SD	S04/S05/S08
+SD03	SD	S04/S05/S08
+SD04	SD	S04/S05/S08
+SD05	SD	S04/S05/S08
+SD06	SD	S04/S05/S08
+SD07	SD	S04/S05/S08
+SD08	SD	S04/S05/S08
+SD09	SD	S04/S05/S08
+FX01	FX	S07; next fixture summary S03/S08
+FX02	FX	S07; next fixture summary S03/S08
+FX03	FX	S07; next fixture summary S03/S08
+FX04	FX	S07; next fixture summary S03/S08
+FX05	FX	S07; next fixture summary S03/S08
+FX06	FX	S07; next fixture summary S03/S08
+FX07	FX	S07; next fixture summary S03/S08
+FX08	FX	S07; next fixture summary S03/S08
+FX09	FX	S07; next fixture summary S03/S08
+FX10	FX	S07; next fixture summary S03/S08
+FX11	FX	S07; next fixture summary S03/S08
+FX12	FX	S07; next fixture summary S03/S08
+TB01	TB	S07 group table; comparison excerpt S03
+TB02	TB	S07 group table; comparison excerpt S03
+TB03	TB	S07 group table; comparison excerpt S03
+TB04	TB	S07 group table; comparison excerpt S03
+TB05	TB	S07 group table; comparison excerpt S03
+TB06	TB	S07 group table; comparison excerpt S03
+TB07	TB	S07 group table; comparison excerpt S03
+BR01	BR	S07 bracket/scorers
+BR02	BR	S07 bracket/scorers
+BR03	BR	S07 bracket/scorers
+BR04	BR	S07 bracket/scorers
+BR05	BR	S07 bracket/scorers
+HI01	HI	S12 Country records
+HI02	HI	S12 Country records
+HI03	HI	S12 Country records
+HI04	HI	S12 Country records
+HI05	HI	S12 Country records
+HI06	HI	S12 Country records
+HI07	HI	S12 Country records
+HI08	HI	S12 Country records
+HI09	HI	S12 Country records
+HI10	HI	S12 Country records
+HI11	HI	S12 Country records
+HI12	HI	S12 Country records
+HI13	HI	S12 Country records
+HI14	HI	S12 Country records
+HI15	HI	S12 Country records
+HI16	HI	S12 Country records
+HI17	HI	S12 Country records
+HI18	HI	S12 Country records
+HI19	HI	S12 Country records
+HI20	HI	S12 Country records
+HI21	HI	S12 Country records
+HI22	HI	S12 Country records
+HI23	HI	S12 Country records
+HI24	HI	S12 Country records
+HR01	HR	S12 Country records
+HR02	HR	S12 Country records
+HR03	HR	S12 Country records
+HR04	HR	S12 Country records
+HR05	HR	S12 Country records
+HR06	HR	S12 Country records
+HR07	HR	S12 Country records
+HR08	HR	S12 Country records
+HR09	HR	S12 Country records
+NW01	NW	S14 News; pinned consequence S03; history S12
+NW02	NW	S14 News; pinned consequence S03; history S12
+NW03	NW	S14 News; pinned consequence S03; history S12
+NW04	NW	S14 News; pinned consequence S03; history S12
+NW05	NW	S14 News; pinned consequence S03; history S12
+NW06	NW	S14 News; pinned consequence S03; history S12
+NW07	NW	S14 News; pinned consequence S03; history S12
+NW08	NW	S14 News; pinned consequence S03; history S12
+MP01	MP	S08
+MP02	MP	S08
+MP03	MP	S08
+MP04	MP	S08
+MP05	MP	S08
+MP06	MP	S08
+MP07	MP	S08
+MP08	MP	S08
+MP09	MP	S08
+LI01	LI	S09
+LI02	LI	S09
+LI03	LI	S09
+LI04	LI	S09
+LI05	LI	S09
+LI06	LI	S09
+LI07	LI	S09
+LI08	LI	S09
+LI09	LI	S09
+LI10	LI	S09
+LI11	LI	S09
+IN01	IN	S10 with persistent S09 score/phase
+IN02	IN	S10 with persistent S09 score/phase
+IN03	IN	S10 with persistent S09 score/phase
+IN04	IN	S10 with persistent S09 score/phase
+IN05	IN	S10 with persistent S09 score/phase
+IN06	IN	S10 with persistent S09 score/phase
+IN07	IN	S10 with persistent S09 score/phase
+IN08	IN	S10 with persistent S09 score/phase
+IN09	IN	S10 with persistent S09 score/phase
+IN10	IN	S10 with persistent S09 score/phase
+IN11	IN	S10 with persistent S09 score/phase
+IN12	IN	S10 with persistent S09 score/phase
+IN13	IN	S10 with persistent S09 score/phase
+IN14	IN	S10 with persistent S09 score/phase
+IN15	IN	S10 with persistent S09 score/phase
+IN16	IN	S10 with persistent S09 score/phase
+IN17	IN	S10 with persistent S09 score/phase
+IN18	IN	S10 with persistent S09 score/phase
+PR01	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+PR02	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+PR03	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+PR04	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+PR05	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+PR06	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+PR07	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+PR08	PR	S08 replay preference; S10 prompt; S11 summary retention; S13 filename
+RS01	RS	S11/S12; latest result summary S03
+RS02	RS	S11/S12; latest result summary S03
+RS03	RS	S11/S12; latest result summary S03
+RS04	RS	S11/S12; latest result summary S03
+RS05	RS	S11/S12; latest result summary S03
+RS06	RS	S11/S12; latest result summary S03
+RS07	RS	S11/S12; latest result summary S03
+RS08	RS	S11/S12; latest result summary S03
+RS09	RS	S11/S12; latest result summary S03
+RS10	RS	S11/S12; latest result summary S03
+RS11	RS	S11/S12; latest result summary S03
+RS12	RS	S11/S12; latest result summary S03
+RS13	RS	S11/S12; latest result summary S03
+RS14	RS	S11/S12; latest result summary S03
+RS15	RS	S11/S12; latest result summary S03
+RS16	RS	S11/S12; latest result summary S03
+RS17	RS	S11/S12; latest result summary S03
+RS18	RS	S11/S12; latest result summary S03
+RS19	RS	S11/S12; latest result summary S03
+SV01	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV02	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV03	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV04	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV05	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV06	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV07	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV08	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV09	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
+SV10	SV	S13 Game menu; S12 Summaries/Replays; contextual Help
