@@ -1,0 +1,30 @@
+test_native_rename_encodes_target_and_closes_only_an_acquired_handle (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_rename_encodes_target_and_closes_only_an_acquired_handle) ... 
+  test_native_rename_encodes_target_and_closes_only_an_acquired_handle (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_rename_encodes_target_and_closes_only_an_acquired_handle) (failure=None) ... FAIL
+  test_native_rename_encodes_target_and_closes_only_an_acquired_handle (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_rename_encodes_target_and_closes_only_an_acquired_handle) (failure='rename') ... FAIL
+
+======================================================================
+FAIL: test_native_rename_encodes_target_and_closes_only_an_acquired_handle (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_rename_encodes_target_and_closes_only_an_acquired_handle) (failure=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_desktop_watched_sharing.py", line 138, in test_native_rename_encodes_target_and_closes_only_an_acquired_handle
+    close.assert_called_once_with(handle);operation.assert_called_once()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 960, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to be called once. Called 0 times.
+
+======================================================================
+FAIL: test_native_rename_encodes_target_and_closes_only_an_acquired_handle (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_rename_encodes_target_and_closes_only_an_acquired_handle) (failure='rename')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/fix254-native-status-sharing/goal2/tests/test_desktop_watched_sharing.py", line 138, in test_native_rename_encodes_target_and_closes_only_an_acquired_handle
+    close.assert_called_once_with(handle);operation.assert_called_once()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 960, in assert_called_once_with
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to be called once. Called 0 times.
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=2)
