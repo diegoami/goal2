@@ -1,0 +1,9 @@
+Fatal Python error: pygame_parachute: (pygame parachute) Segmentation Fault
+Python runtime state: initialized
+
+Current thread 0x00007f4acddad740 (most recent call first):
+  File "<string>", line 41 in postflip
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/desktop/pygame_viewer.py", line 206 in main
+  File "<string>", line 79 in <module>
+
+Extension modules: pygame.base, pygame.constants, pygame.rwobject, pygame.rect, pygame.bufferproxy, pygame.math, pygame.surflock, pygame.surface, pygame.window, pygame.display, pygame.draw, pygame.joystick, pygame.event, pygame.imageext, pygame.image, pygame.key, pygame.mouse, pygame.pixelcopy, pygame.mask, pygame.time, pygame.transform, pygame.font, pygame.mixer_music, pygame.mixer, pygame.scrap, pygame.system, pygame._freetype (total: 27)

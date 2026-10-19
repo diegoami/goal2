@@ -1,0 +1,7 @@
+import argparse,importlib.util
+from pathlib import Path
+from types import SimpleNamespace
+p=argparse.ArgumentParser();p.add_argument('--output',required=True);a=p.parse_args()
+here=Path(__file__).parent;s=importlib.util.spec_from_file_location('diagnostic_scenario',here/'diagnostic-traced-scenario.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+root=Path('/home/diego/projects/goal2-work/T79-football-ui')
+m.scenario(SimpleNamespace(template=root/'.cache/e010-r0008-halftime.sav',data=root/'.cache/GOAL.DAT',evidence_dir=a.output))

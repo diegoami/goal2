@@ -1,0 +1,25 @@
+"""[designed: T79] Infrastructure probe only; no match acceptance claim."""
+from pathlib import Path
+import json
+import subprocess
+import sys
+
+out=Path(sys.argv[1]);out.mkdir(parents=True,exist_ok=False)
+code='''import os,sys,platform
+import pygame
+pygame.init();screen=pygame.display.set_mode((1000,720));pygame.display.flip()
+steps=[('driver',pygame.display.get_driver),('version',lambda:pygame.version.ver),('sdl',pygame.get_sdl_version),('window',pygame.display.get_window_size),('surface',screen.get_size),('flags',screen.get_flags),('platform',platform.platform)]
+if sys.argv[1]=='wm':steps.append(('wm-info',pygame.display.get_wm_info))
+for name,call in steps:
+ print('BEFORE',name,flush=True);value=call();print('AFTER',name,repr(value),flush=True)
+pygame.quit()
+'''
+rows=[]
+for mode in ('wm','base'):
+    for attempt in range(12):
+        log=out/(mode+'-'+str(attempt)+'.log')
+        with log.open('xb')as stream:
+            result=subprocess.run([sys.executable,'-B','-c',code,mode],stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,timeout=30)
+        rows.append({'mode':mode,'attempt':attempt,'exit':result.returncode,'log':log.name})
+        print(mode,attempt,result.returncode,flush=True)
+(out/'report.json').write_text(json.dumps({'claim':'SDL metadata startup diagnostic only','rows':rows},indent=2)+'\n')

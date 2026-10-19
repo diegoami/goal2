@@ -1,0 +1,16 @@
+BEFORE driver
+AFTER driver 'x11'
+BEFORE version
+AFTER version '2.5.8'
+BEFORE sdl
+AFTER sdl (2, 32, 10)
+BEFORE window
+AFTER window (1000, 720)
+BEFORE surface
+AFTER surface (1000, 720)
+BEFORE flags
+AFTER flags 16777216
+BEFORE platform
+AFTER platform 'Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43'
+BEFORE wm-info
+AFTER wm-info {'window': 2097154, 'display': <capsule object "display" at 0x7b21404f4600>, 'surface': <capsule object "surface" at 0x7b213f11dc50>, 'shell_surface': <capsule object "shell_surface" at 0x7b21404aad60>}

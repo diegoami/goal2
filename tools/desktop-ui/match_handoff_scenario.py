@@ -56,7 +56,9 @@ def render(screen,font,d,scroll=0):
 def postflip():
  flip()
  surface=pygame.display.get_surface()
- state.update(actual_sdl_driver=pygame.display.get_driver(),pygame=pygame.version.ver,sdl=list(pygame.get_sdl_version()),window_size=list(pygame.display.get_window_size()),surface_size=list(surface.get_size()),surface_flags=surface.get_flags(),platform=platform.platform(),wm_info={str(k):val if isinstance(val,(int,str,bool,float,type(None))) else repr(val) for k,val in pygame.display.get_wm_info().items()})
+ # [confirmed: docs/evidence/T79/it13-handoff-traced-02/round-0-viewer-stderr.log] Non-Windows WM-info query can abort the observer.
+ # [designed: T79] HWND/DPI collection is Windows-only; actual driver/window/surface/font checks stay unchanged.
+ state.update(actual_sdl_driver=pygame.display.get_driver(),pygame=pygame.version.ver,sdl=list(pygame.get_sdl_version()),window_size=list(pygame.display.get_window_size()),surface_size=list(surface.get_size()),surface_flags=surface.get_flags(),platform=platform.platform(),wm_info=({str(k):val if isinstance(val,(int,str,bool,float,type(None))) else repr(val) for k,val in pygame.display.get_wm_info().items()} if sys.platform=='win32' else {}),wm_info_queried=sys.platform=='win32')
  if sys.platform=='win32' and state.get('native_geometry_size')!=list(surface.get_size()):
   import ctypes
   from ctypes import wintypes

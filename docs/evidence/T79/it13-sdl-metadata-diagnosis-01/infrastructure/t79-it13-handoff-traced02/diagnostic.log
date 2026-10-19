@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T79-it13-20261019/diagnostic-traced-entry.py", line 7, in <module>
+    m.scenario(SimpleNamespace(template=root/'.cache/e010-r0008-halftime.sav',data=root/'.cache/GOAL.DAT',evidence_dir=a.output))
+  File "/home/diego/projects/goal2/.cache/kept/review-receipts/T79-it13-20261019/diagnostic-traced-scenario.py", line 300, in scenario
+    metrics=json.loads((child_output/'metrics.json').read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/it13-handoff-traced-02/round-0-sdl/metrics.json'
