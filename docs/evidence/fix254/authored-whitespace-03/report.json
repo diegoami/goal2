@@ -1,0 +1,30 @@
+{
+  "claim": "Lossless raw envelopes retain original proof bytes; reading copies satisfy authored whitespace",
+  "files": [
+    {
+      "file": "docs/evidence/fix254/preparation-controls-01/ownership/descriptor.log",
+      "raw_sha256": "03e571237b534cfc3f2f46f3a556364810ef961537479307d8de52970f4cfe5a",
+      "reading_sha256": "cf59c6bff1072df8202561acf468ad758655d652020cd5f11ea15193cab04dd9"
+    },
+    {
+      "file": "docs/evidence/fix254/preparation-controls-01/ownership/raw-handle.log",
+      "raw_sha256": "ec84ec714600560b0501391579a285abf2ead59aa591110efab5fec5076e9754",
+      "reading_sha256": "765a669ac3112fd03632d9a594c54d98619b122c1d56abe8070021170f786c7c"
+    },
+    {
+      "file": "docs/evidence/fix254/preparation-controls-01/ownership/rename-handle.log",
+      "raw_sha256": "58e9f0386deb3c175bcf4ea2b36940f18e1fa7af3f53929b8cdcd09f7181fe41",
+      "reading_sha256": "8fd4aea52c8126b8b20337f54a9dfcf8a3f6bcf8682ce4e823f325db197e5d2f"
+    },
+    {
+      "file": "docs/evidence/fix254/startup-linux-interrupted-01/lifecycle.log",
+      "raw_sha256": "7fb120eb9eba1a95b447f510ea00db2eb7fd77680a1980a68576d847c23f24b7",
+      "reading_sha256": "5f849f076fbfa5b2e2a7ebca6ca9cadacc9de75d7bc5325c835215999e866595"
+    },
+    {
+      "file": "docs/evidence/fix254/startup-regression-01/before.log",
+      "raw_sha256": "1c2f838b43c3b529dfb590eb5f3488ebcf67d3e9b1b0ef896068176af7d9495d",
+      "reading_sha256": "c75aba639fb94a5dd14bb266e2f012dd7c8b2f2582000bdc329399372407efbf"
+    }
+  ]
+}
