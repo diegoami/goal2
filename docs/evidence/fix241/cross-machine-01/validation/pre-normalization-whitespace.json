@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "origin/main...HEAD"
+  ],
+  "head": "2cb94d73d160828f19e02f75ace1a4e626f18ea9",
+  "returncode": 2,
+  "sha256": "acdd1b1978d3fe03bc36d7856bfef9f6a42e2b183e4ad4dedd8ed08469f489d4",
+  "claim": "Reproduced strict whole-PR whitespace failure before preserving exact originals and normalizing reading derivatives"
+}

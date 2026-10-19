@@ -1,6 +1,8 @@
 {
-  "README.md": "f39cedeb25787cd9d00e8ab6a958fc32f96adac7d45e2741138cbb4796be7cef",
+  "README.md": "cebc0f411da095b5481cc8e099b0c1c8e5dbbc4fd18e75cf006fc1b807201bd7",
   "collection.json": "9594cac718726ae50858469c031f42987e284f61e61273fefa93cbd783cf656c",
+  "diagnostics/historical-fixed-private-1x.log.raw-envelope.json": "1f7d271274de1146c7d163d63e0f8a4d41b6abfcd569a6b12ee751e1c8f42ad3",
+  "diagnostics/historical-qt-platform-diagnostic.log.raw-envelope.json": "5236fce04bbd0ece4f1500ceac24dff09e5d33d3df40c1d554d9cdf2a32d4a59",
   "diagnostics/native-01-not-run/inventory.json": "88b1b117c605a58803a5755b5960dca8d5ede9f66a94a8ba47c1f1fdfcbf8b09",
   "diagnostics/native-01-not-run/staging-stop.json": "6750026871f76380fa83bd2fed0663ce7f31f813a127defca6a7aa6b50ec4ebb",
   "diagnostics/native-01-service.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -40,6 +42,9 @@
   "kit/windows_display_probe.py": "3823de5ab775457aca4e420e760d563ab313fa3efb843d9b8d88b9ab9151fc22",
   "runtime-metadata/T78-private-runtime-config.json": "f152860acbf7b1ec5a688c07e58809e02bfb39211b2474922e19fa3d2ceec964",
   "runtime-metadata/T79-private-runtime-config.json": "988217a10a8e9dfc18772b13825d6e38f68c1e1919d48ec008738def18fa1586",
+  "validation/historical-reading-normalization.json": "ca37411f874029b567d97a9d46491af0450e49ca60c08bb6be87035e2ee36cb4",
+  "validation/pre-normalization-whitespace.json": "80443d89f8e471216795c864539ebc4a4b8cc3db0907b47454bd40c9150e3a46",
+  "validation/pre-normalization-whitespace.log": "acdd1b1978d3fe03bc36d7856bfef9f6a42e2b183e4ad4dedd8ed08469f489d4",
   "validation/premerge-7560.log": "63bc87f76b2961df7e739b3b58f685bfa31b446d5f755f8495e5233a24a28cae",
   "validation/premerge-7560.raw-envelope.json": "aada4afe8f7fb74afe4e02528a254778d8826623be5cf0ba6bb75df986c103fa"
 }
