@@ -147,4 +147,5 @@ status remains in GitHub labels. The browsing bug is [#241](https://github.com/d
 | Task | Title | Issue | Difficulty | Merge after |
 | --- | --- | --- | --- | --- |
 | [T84](T84.md) | Inspect complete original-style player attributes | [#242](https://github.com/diegoami/goal2/issues/242) | Hard | T79, #241 |
+| — | Illustrated original-game manual and UI/flow reference (high priority) | [#244](https://github.com/diegoami/goal2/issues/244) | Documentation | Independent reference for #241–#243 and later UI slices |
 | [T85](T85.md) | Find Play/Watch easily and choose match playback speed | [#243](https://github.com/diegoami/goal2/issues/243) | Medium | T79 |
