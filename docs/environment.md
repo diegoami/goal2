@@ -584,3 +584,20 @@ re-vendor/provenance rule.
 [confirmed: owner-authorized deployment, 2026-10-19; [receipt](evidence/windows-modern-demo/2026-10-19/deployment.json)] Double-click `C:\Users\diego\projects\goal2-exe\Start-goal2-modern.cmd` for the accepted football GUI and animated original-match pitch. This native Windows build uses immutable source `5c26616917d19a77a0e548a0baa2a3997112c477` in `.goal2-releases\accepted-5c266169`, the existing Windows Qt environment, and release-local pygame-ce2.5.8/Unicorn2.1.4. Its verified original reference image stays in the private release cache. Saves are in `.goal2-modern-saves\desktop.g2save`; the launcher resumes that file when present. Confirm selection in **Squad & tactics**, then choose **Fixtures & results → Watch original friendly** for an eligible friendly.
 
 [confirmed: same receipt and native-demo.png] The deployment smoke used actual Windows Qt6.12.0, received rendered frameACK33, then cancelled and verified owned children/widgets cleanup and callbacks[]. All four existing resource/save/legacy-launcher hashes remained unchanged. The launcher pins this accepted source release. Task/review worktrees use separate runtime directories. Preserve both launcher files, release directories and save directories.
+
+## Isolated Linux Qt validation displays
+
+[designed: T79 and Windows-playtest follow-through,2026-10-19] For actual Linux
+GUI checks, use a privately owned Xvfb display at2880×1800 and its own window
+manager. Set `QT_QPA_PLATFORM=xcb` explicitly: starting Xvfb does not override an
+inherited Wayland platform selection. When using staged xcb libraries on this
+machine, `LD_LIBRARY_PATH` points to the running checkout's
+`.cache/xcb-libs/extracted/usr/lib/x86_64-linux-gnu`. Give the owned window manager
+private `XDG_CONFIG_HOME`, `XDG_CACHE_HOME` and `XDG_RUNTIME_DIR`, and keep
+`TMPDIR` inside the checkout cache. Do not operate the user's desktop or terminals.
+
+[derived: T79 retained geometry probes] A1920×1440 test display can constrain
+Qt at scale2 and prevent the required900×640 logical client size from settling.
+Verify actual platform, ratio, available geometry, focus and ancestor clipping;
+requested environment variables or resize calls alone do not prove them.
+Infrastructure focus/geometry failures stay distinct from product regressions.
