@@ -46,7 +46,7 @@
     "title": "Compose preparation, match handoff and results into one clear journey",
     "priority": "P1 \u00b7 complete first end-to-end slice",
     "size_risk": "M\u2013L; medium lifecycle/focus risk",
-    "dependencies": "B01 O03 window choice; accepted #198/#243; B03 shared shell; #251 available result projection; #250 only for supported interventions.",
+    "dependencies": "B01 O03 window choice; accepted #198/#243; B03 shared shell; existing latest result plus #251 audit/display when available for retained summaries only; G01/G04 new capabilities remain unowned; #250 only for supported interventions.",
     "contract": "backlog/B04.md",
     "issue": "https://github.com/diegoami/goal2/issues/262",
     "implementation_authorized": false,

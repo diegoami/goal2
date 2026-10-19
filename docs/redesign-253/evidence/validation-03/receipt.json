@@ -1,0 +1,12 @@
+{
+  "evidence": "[confirmed: #253 rework validation batch03]",
+  "helper_sha256": "b4fa05ed0f80c2e0595a1a8d10b8ab61e428b33dd3821d95c4892b5a2b5e5c71",
+  "selectors_passed": 7,
+  "negative_controls_rejected": 20,
+  "all_saved_bytes_restored": true,
+  "changed_checks_fail_on_prior_reviewed_head": 4,
+  "base_absence_checks_failed": 7,
+  "live_new_issue_bodies_equal": 7,
+  "runtime_evidence": "Earlier runtime06/browser03 retained source-identical; no broad runtime rerun",
+  "scope_extra_path": "docs/model-trials.md focused process lesson only"
+}

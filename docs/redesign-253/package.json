@@ -188,7 +188,7 @@
       "player-card-projection"
     ],
     "#243": [
-      "match-entry-speed"
+      "supported-entry-speed"
     ],
     "#198": [
       "match-renderer-presentation"
@@ -197,15 +197,15 @@
       "personal-instruction-edits"
     ],
     "#249": [
-      "campaign-context-data"
+      "available-fixture-group-display"
     ],
     "#250": [
-      "watched-intervention-support"
+      "watched-support-audit-first-action"
     ],
     "#251": [
-      "retained-result-replay-data"
+      "available-retained-summary-display"
     ]
   },
-  "layout_validation_receipt": "evidence/layout-bounds-03.json",
+  "layout_validation_receipt": "evidence/layout-bounds-04.json",
   "gap_register": "capability-gaps.json"
 }

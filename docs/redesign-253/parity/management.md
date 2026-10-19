@@ -160,11 +160,11 @@
 | PT07 | Trailing P display flag | [designed] S04 instructions panel; S08/S10 contextual opponent mark | [designed] #248 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | PT08 | Current role change and restore club role | [designed] S04 instructions panel; S08/S10 contextual opponent mark | [designed] #248 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 
-## Team tactics · TT
+## Team tactics / player defaults · TT
 
-[confirmed: M244-G1A-02 step11; E015-r0007 state119; E031 C07/C36] **observed**. Original comparisons: [m244-team-tactics](../../original-game/images/m244-team-tactics.png), [team-tactics](../../original-game/images/team-tactics.png).
+[confirmed: M244-G1A-02 step11; E015-r0007 state119; E031 C07/C36; E015-r0007 states3/10; M244-G4C-05 step3] **observed**. Original comparisons: [country-select-name-entry](../../original-game/images/country-select-name-entry.png), [country-select](../../original-game/images/country-select.png), [m244-team-info-2030](../../original-game/images/m244-team-info-2030.png), [m244-team-tactics](../../original-game/images/m244-team-tactics.png), [team-tactics](../../original-game/images/team-tactics.png).
 
-[designed] **When/why:** Before kickoff or supported tactical pause: compare team-wide approach with individual overrides and opponent. **Discoverability:** Eight labelled current values in one panel; edit with explicit choices; no ambiguous unchecked/checked prose **Delivery / unowned decision:** B03/UNOWNED:G05. **Limits:** Current team bits/controls stay with existing management and B03 composition; #248 is personal edits only. O12/G05 covers full setup/opponent defaults. Elements5/8 retain accepted designed wording; no inferred effect.
+[designed] **When/why:** Before kickoff or supported tactical pause: compare team-wide approach with individual overrides and opponent. **Discoverability:** S02 tendency summary plus Complete profile1 action to S06 all8 read-only defaults; S04 all8 direct; supported edits explicit **Delivery / unowned decision:** B03/UNOWNED:G05. **Limits:** Current team bits/controls stay with existing management and B03 composition; #248 is personal edits only. O12/G05 covers full setup/opponent defaults. Elements5/8 retain accepted designed wording; no inferred effect.
 
 | ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
