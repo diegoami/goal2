@@ -1,0 +1,41 @@
+{
+  "claim": "[confirmed: independent post-run rehashes] Native execution collected; no acceptance claim beyond original result",
+  "original_result": "INCOMPLETE",
+  "original_receipt_sha256": "8b729f75c8fd8612937d1b2fda88c2271e37945f047e923bbd474ea893a09b50",
+  "source_files": 179,
+  "dependency_files": 566,
+  "resources": 3,
+  "protected_files": 6,
+  "normalization": {
+    "host-receipt.json": {
+      "raw_sha256": "8b729f75c8fd8612937d1b2fda88c2271e37945f047e923bbd474ea893a09b50",
+      "reading_sha256": "8b729f75c8fd8612937d1b2fda88c2271e37945f047e923bbd474ea893a09b50",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/controller-errors.json": {
+      "raw_sha256": "46e358685cc5b604a322eca9e7588862e2956192427d07baa648200060c6070d",
+      "reading_sha256": "8e3cfa8ad61043ad4399c5b0c961289e3f3309c4318e5cd601025c325cad38a2",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/engine-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/report.json": {
+      "raw_sha256": "5995fb889ea9a90d7907015f6bc128ba3718ce7e7682562bada24f793a30d326",
+      "reading_sha256": "256390514b8cb1f429228542b3dc4992e80989d9bcfe67fd8e345ad4b6de93a5",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "observations/scale-1/viewer-stderr-0.log": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reading_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    },
+    "native-1.log": {
+      "raw_sha256": "b1c13b10b4a7d6189a304a98790ef4abdadab6c75c2caca4ed96d1ca52dc58e0",
+      "reading_sha256": "a0566a2f1e0f93b9a2cc9ae144fd9d404af0843cc6e0b271db268db3c6318e83",
+      "normalization": "CRLF to LF; terminal newlines to one (empty stays empty)"
+    }
+  }
+}

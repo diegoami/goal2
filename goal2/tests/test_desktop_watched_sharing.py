@@ -101,21 +101,41 @@ class SharingTests(unittest.TestCase):
                     close.assert_not_called()
                     native_os.close.assert_called_once_with(77)
 
-    def test_native_replace_falls_back_only_for_an_absent_destination(self):
-        for code, exists in ((2,False), (2,True), (3,False), (5,False), (32,True)):
-            with self.subTest(code=code, exists=exists), tempfile.TemporaryDirectory() as folder:
-                target = Path(folder)/'status';temporary = target.with_suffix('.new')
-                if exists:target.write_bytes(b'old')
-                error = OSError('injected native replacement error')
+    def test_native_rename_encodes_target_and_closes_only_an_acquired_handle(self):
+        class RenameInfo(ctypes.Structure):
+            _fields_ = [('Flags',ctypes.c_uint32),('RootDirectory',ctypes.c_void_p),
+                        ('FileNameLength',ctypes.c_uint32),('FileName',ctypes.c_uint16*1)]
+        for failure in (None, 'open', 'rename'):
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as folder:
+                target = Path(folder)/'status-\u00e9';temporary = target.with_suffix('.new')
+                handle = 0x123456789
+                create = Mock(return_value=ctypes.c_void_p(-1).value if failure=='open' else handle)
+                close = Mock()
+                def rename(actual_handle, kind, buffer, length):
+                    self.assertEqual(actual_handle,handle)
+                    self.assertEqual(kind,22)
+                    self.assertEqual(length,len(buffer))
+                    info = RenameInfo.from_buffer(buffer)
+                    self.assertEqual(info.Flags,3)
+                    self.assertIsNone(info.RootDirectory)
+                    encoded = os.fspath(target.absolute()).encode('utf-16-le')
+                    self.assertEqual(info.FileNameLength,len(encoded))
+                    self.assertEqual(buffer.raw[RenameInfo.FileName.offset:RenameInfo.FileName.offset+len(encoded)],encoded)
+                    return failure!='rename'
+                operation = Mock(side_effect=rename)
+                error = OSError('injected native rename failure')
                 native_os = SimpleNamespace(**{**vars(os), 'name':'nt', 'replace':Mock()})
-                with patch.object(viewer, 'os', native_os), patch.object(viewer, '_status_replace_api', return_value=Mock(return_value=False)), patch.object(ctypes, 'get_last_error', return_value=code, create=True), patch.object(ctypes, 'WinError', return_value=error, create=True):
-                    if code == 2 and not exists:
-                        viewer._replace_status(temporary,target)
-                        native_os.replace.assert_called_once_with(temporary,target)
-                    else:
+                with patch.object(viewer,'os',native_os), patch.object(viewer,'_status_replace_api',return_value=(create,operation,close,RenameInfo)), patch.object(ctypes,'get_last_error',return_value=32,create=True), patch.object(ctypes,'WinError',return_value=error,create=True):
+                    if failure:
                         with self.assertRaises(OSError) as caught:viewer._replace_status(temporary,target)
                         self.assertIs(caught.exception,error)
-                        native_os.replace.assert_not_called()
+                    else:viewer._replace_status(temporary,target)
+                create.assert_called_once_with(os.fspath(temporary),0x10000,7,None,3,0x80,None)
+                native_os.replace.assert_not_called()
+                if failure=='open':
+                    close.assert_not_called();operation.assert_not_called()
+                else:
+                    close.assert_called_once_with(handle);operation.assert_called_once()
 
     def test_writer_retries_same_atomic_payload_without_schema_changes(self):
         with tempfile.TemporaryDirectory() as folder:

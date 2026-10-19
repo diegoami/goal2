@@ -82,12 +82,34 @@ def main():
             assert row['initial_status_created']and row['old_snapshot_validated']and not row['published']and row['pending_retained']
             assert row['replacement_complete']and row['replacement_bytes_differ']
             assert row['all_read_handles_closed']and row['owned_writers_reaped']
+        # [designed: #254] Exercise normal concurrent opens too: a held-reader success
+        # alone missed ReplaceFileW's observed missing-name/sharing intervals.
+        with tempfile.TemporaryDirectory(prefix='fix254-concurrent-')as folder:
+            helper=SharingTests();controller=helper.controller(folder);path=Path(folder)/'status'
+            value=helper.value(controller);viewer.status(path,value)
+            code='import json,sys;from pathlib import Path;from goal2.desktop.pygame_viewer import status;p=Path(sys.argv[1]);v=json.loads(sys.argv[2]);[status(p,v) for _ in range(2000)]'
+            child=subprocess.Popen([sys.executable,'-B','-c',code,str(path),json.dumps(value)],cwd=ROOT,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            row={'writes':2000,'polls':0};report['concurrent']=row;deadline=time.monotonic()+30
+            try:
+                while child.poll()is None:
+                    assert time.monotonic()<deadline,'concurrent status writer deadline'
+                    assert not controller.poll()
+                    assert controller.last_status==value
+                    row['polls']+=1
+                stdout,stderr=child.communicate(timeout=2)
+                row.update(writer_exit=child.returncode,writer_stderr=stderr.decode('utf-8',errors='replace'))
+                assert child.returncode==0 and row['polls']>0
+                assert json.loads(path.read_bytes())==value and controller.model.match_pending
+            finally:
+                if child.poll()is None:child.kill();child.wait(timeout=2)
+                row['owned_writer_reaped']=child.poll()is not None
+                controller.process=None
         report['result']='PASS'
     except BaseException as error:
         report.update(result='FAIL',failure=repr(error));raise
     finally:
         (out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
-    print('PASS native status sharing: three real controller-read/atomic-writer interleaves, complete snapshots, handles closed and writers reaped')
+    print('PASS native status sharing: three held-reader interleaves and 2000 concurrent status writes; validated snapshots and reaped writers')
 
 
 if __name__=='__main__':main()
