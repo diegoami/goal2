@@ -93,4 +93,16 @@ E031's Holland run supplies the observed long loop: 2028 European qualifying/fri
 | G4A/G4C | World Cup group, then knockout last sixteen | E031 save register; E031 C72, C72b |
 | G5A | Four-year cycle completed; 2032 qualifying begins | E031 save register; E031 C65b, C52e |
 
+![Final 2028 qualifying Group F table](images/m244-final-qualifying-table.png)
+
+*After loading the published end-of-qualification G1E checkpoint and choosing **play next game**, the remaining automatic round displayed this completed Group F table, `M244-G1E-06 step 14`. Eire finished above Holland while the right column lists individual qualifying results. The source G1E save hash and single-action path are in the [capture method](capture-method.md). [confirmed: M244-G1E-06 steps 2–14; E031 G1E save register]*
+
+![Holland fails to qualify bulletin](images/m244-elimination-bulletin.png)
+
+*The later bulletin, `M244-G1E-06 step 18`, explicitly reports that Holland failed to qualify for the 2028 European Championships. Newspaper side panels contain harsh headlines about manager A Claude. The image proves the news was shown; the next captured hub is still Holland, so this caption does not infer an automatic dismissal from a headline. [confirmed: M244-G1E-06 steps 18–19]*
+
+![Next stage hub after the bulletin](images/m244-finals-stage-hub.png)
+
+*One Enter acknowledged that bulletin and returned to the Holland hub, `M244-G1E-06 step 19`. The top now says **FINALS**, the next opponent is Yugoslavia and the next fixture is a friendly away; the selected manager and squad remain visible. This is a concrete before/after campaign transition, not a fabricated full tournament flow. [confirmed: M244-G1E-06 steps 18–19]*
+
 When “next opponents” empties, E031 observed **play next game** advancing remaining results and a winners page before the next stage. A player aged after a year transition. The current screenshots still need separate verified images of a winners page, stage transition and later bulletin; these are tracked in [coverage](coverage.md), not represented by an invented graphic. [confirmed: E031 C54–C56, C61–C61b; evidence gap: transition images]
