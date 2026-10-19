@@ -8,7 +8,8 @@
       "visible_surfaces": [
         "S02"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "full-parity target"
     },
     {
       "layout": "02-country-desk",
@@ -17,7 +18,8 @@
       "visible_surfaces": [
         "S03"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "full-parity target"
     },
     {
       "layout": "03-team-workspace",
@@ -26,7 +28,8 @@
       "visible_surfaces": [
         "S04"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "first slice"
     },
     {
       "layout": "04-pool-compare",
@@ -35,7 +38,8 @@
       "visible_surfaces": [
         "S05"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "first slice"
     },
     {
       "layout": "05-competition",
@@ -44,7 +48,8 @@
       "visible_surfaces": [
         "S07"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "full-parity target"
     },
     {
       "layout": "06-match-preparation",
@@ -53,7 +58,8 @@
       "visible_surfaces": [
         "S08"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "first slice"
     },
     {
       "layout": "07-live-match",
@@ -62,7 +68,8 @@
       "visible_surfaces": [
         "S09"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "first slice"
     },
     {
       "layout": "08-result-and-campaign",
@@ -71,7 +78,8 @@
       "visible_surfaces": [
         "S11"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "full-parity target"
     },
     {
       "layout": "09-small-window",
@@ -80,7 +88,8 @@
       "visible_surfaces": [
         "S04"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "first slice"
     },
     {
       "layout": "10-match-decisions",
@@ -89,7 +98,8 @@
       "visible_surfaces": [
         "S10"
       ],
-      "illustrative": true
+      "illustrative": true,
+      "delivery_tier": "full-parity target"
     }
   ],
   "shared_initial_membership": {
@@ -226,5 +236,67 @@
     "B": "38 minutes1\u20130; Holland goal31; no Scifo goal12 in this friendly",
     "C": "Scifo12/Bergkamp31 give halftime1\u20131; Van Basten76/Wilmots81 give regulation2\u20132; hypothetical extra time2\u20132 and penalties6\u20135"
   },
-  "small_window_relocation": "09 contains a visible squad scrollbar and Bench9 jump;20 names remain in Team, eight rows shown beside full card; selected identities/actions pinned"
+  "small_window_relocation": "09 contains a visible squad scrollbar and Bench9 jump;20 names remain in Team, eight rows shown beside full card; selected identities/actions pinned",
+  "illustrative_card_snapshots": {
+    "note": "Authored consistent examples, not current engine output or original player data. IDs2610/2628 use the same card values across scenarios; Barrow2696 differs intentionally. Halftime BoszEnergy16 is a contextual condition example, not a changed player-card snapshot.",
+    "2610": {
+      "name": "J Wouters",
+      "skills": [
+        20,
+        23,
+        5,
+        8,
+        11,
+        14,
+        17,
+        20,
+        23,
+        5,
+        8,
+        11
+      ],
+      "characteristics": [
+        6,
+        24,
+        27,
+        17,
+        4
+      ]
+    },
+    "2628": {
+      "name": "R Koeman",
+      "skills": [
+        4,
+        11,
+        18,
+        4,
+        11,
+        18,
+        4,
+        11,
+        18,
+        4,
+        11,
+        18
+      ],
+      "characteristics": [
+        6,
+        24,
+        28,
+        20,
+        4
+      ]
+    },
+    "2696": {
+      "name": "T Barrow",
+      "biography": "24 yrs / caps1 / goals0 /6ft /right foot",
+      "characteristics": [
+        8,
+        26,
+        25,
+        19,
+        3
+      ]
+    }
+  }
 }

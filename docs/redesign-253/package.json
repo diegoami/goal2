@@ -206,6 +206,6 @@
       "available-retained-summary-display"
     ]
   },
-  "layout_validation_receipt": "evidence/layout-bounds-04.json",
+  "layout_validation_receipt": "evidence/layout-bounds-05.json",
   "gap_register": "capability-gaps.json"
 }

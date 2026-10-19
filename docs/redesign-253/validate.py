@@ -20,6 +20,8 @@ from pathlib import Path
 
 BASE = "3335da830d289cc869f989b73816926c54360ff1"
 MANUAL = "ebdd6879d469a574f6d4b446f59b33a6be3ffd81"
+# Reviewed234-field source inventory at32d6c51c; destination partition must not edit it.
+SOURCE_INVENTORY_SHA256 = "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282"
 GROUPS = {"ST": 6, "CO": 14, "CS": 8, "CC": 4, "HU": 9, "PI": 11,
           "SK": 12, "PC": 5, "PT": 8, "TT": 8, "SD": 9, "FX": 12,
           "TB": 7, "BR": 5, "HI": 24, "HR": 9, "NW": 8, "MP": 9,
@@ -185,7 +187,12 @@ class Package:
         need(Counter(rendered_ids) == Counter(dest.keys()), "rendered matrix omitted/duplicated allocation")
         for key in dest:
             expected_cells = " | [designed] ".join([dest[key]["destination"], dest[key]["owner"], dest[key]["reuse"]])
-            need(any(line.startswith("| " + key + " |") and line.endswith("[designed] " + expected_cells + " |") for line in rendered.splitlines()), "rendered destination/owner/reuse differs: " + key)
+            sid = dest[key]["source_id"]
+            information = source[sid]["information"]
+            if sid != key:
+                information = sid + " — " + information + "; [designed allocation] " + dest[key]["information"]
+            expected_line = "| " + key + " | " + information + " | [designed] " + expected_cells + " |"
+            need(expected_line in rendered.splitlines(), "rendered source/allocation/destination/owner/reuse differs: " + key)
         ledger = self.rows("evidence/screens-inspected.tsv")
         need(len(ledger) == 64 and {r["image"] for r in ledger} == screenshots and len(screenshots) == 64, "64-screen inventory/inspection omission")
         duplicate_hashes = {}
@@ -277,6 +284,7 @@ class Package:
         source = {r["id"]: r for r in src}
         original = {f"{p}{i:02}" for p, count in GROUPS.items() for i in range(1, count + 1)}
         need(len(src) == 234 and set(source) == original, "independent234-source inventory differs")
+        need(sha((self.path / "parity/source-fields.tsv").read_bytes()) == SOURCE_INVENTORY_SHA256, "reviewed original field meanings/categories changed during allocation split")
         need(len({r["category"] for r in src}) == 17 and {r["context"] for r in src} == set(GROUPS), "original categories/contexts lost")
         rows = self.rows("parity/destinations.tsv")
         dest = {r["id"]: r for r in rows}
@@ -332,7 +340,10 @@ class Package:
         texts = {name: [n for n in tree.iter() if n.tag.endswith("text")] for name, tree in trees.items()}
         for name, nodes in texts.items():
             strings = ["".join(n.itertext()) for n in nodes]
-            need(any("FULL-PARITY TARGET" in s or "FIRST SLICE" in s for s in strings), "illustration delivery tier unlabelled: " + name)
+            expected_tier = "FULL-PARITY TARGET" if name in {"01-country-setup", "02-country-desk", "05-competition", "08-result-and-campaign", "10-match-decisions"} else "FIRST SLICE"
+            need(any(s.startswith(expected_tier + " · ") for s in strings), "illustration delivery tier unlabelled/misleading: " + name)
+            record = next(s for s in self.data("illustrations.json")["sheets"] if s["layout"] == name)
+            need(record["delivery_tier"] == ("full-parity target" if expected_tier.startswith("FULL") else "first slice"), "illustration tier registry disagrees: " + name)
             for s in strings:
                 need(not re.search(r"·(?=\d)|remaining:(?=\d)|retains(?=\d)|tied(?=\d)", s), "visible spacing typo: " + name + " " + s)
         hero = ["".join(n.itertext()) for n in texts["02-country-desk"]]
@@ -352,6 +363,11 @@ class Package:
                     need(values, "card value absent: " + name + " " + field)
                     actual = int(min(values, key=lambda n: float(n.get("x"))).text)
                 need(actual == value, "same-ID illustrative card disagrees: " + name + " " + pid + " " + field)
+        for name, pid, xmin, xmax in (("04-pool-compare", "2610", 541, 895), ("10-match-decisions", "2610", 842, 1264), ("03-team-workspace", "2628", 864, 1264), ("09-small-window", "2628", 360, 908)):
+            need(any(re.search(r"\bID\s+" + pid + r"\b", n.text or "") for n in texts[name] if xmin <= float(n.get("x", "0")) <= xmax), "card full-ID identity missing: " + name)
+        need("On: Wouters · Energy 27 · Ready" in [n.text for n in texts["10-match-decisions"]], "incoming condition differs from pinned card")
+        row = next(n for n in texts["03-team-workspace"] if n.get("data-roster-slot") == "16")
+        need(any(n.get("x") == "595" and n.get("y") == row.get("y") and n.text == "27" for n in texts["03-team-workspace"]), "bench condition differs from shared card snapshot")
         pool = trees["04-pool-compare"]
         pool_text = ["".join(n.itertext()) for n in texts["04-pool-compare"]]
         need("Rows 1–7 of 80 · Wheel / Page Down" in pool_text, "pool lacks visible subset count/scroll route")
@@ -364,6 +380,7 @@ class Package:
         need(len(chars[0]) == len(chars[1]) == 5 and all(a != b for a, b in zip(*chars)), "comparison cards copy all characteristics")
         tab = [n for n in trees["05-competition"].iter() if n.get("data-tab") == "Groups"]
         need(len(tab) == 1 and tab[0].get("data-state") == "selected" and tab[0].get("fill") == "#006C5B", "competition has no visible selected Groups tab")
+        need(any(n.text == "Groups" and n.get("fill") == "#FFFFFF" and n.get("x") == "345" for n in texts["05-competition"]), "selected Groups label not visibly contrasted")
         return "all10 tier/spacing sweep;four complete cards consistent;pool seven-of80 scroll;selectedGroups;ranks explicit"
 
     def illustration_contracts(self):
@@ -531,7 +548,7 @@ def negative_controls(package):
     cases = [
         ("missing-skill-allocation", "parity", {dst: lambda t: drop(t, "SK12")}),
         ("missing-skill-from-both-inventories", "parity", {src: lambda t: drop(t, "SK12"), dst: lambda t: drop(t, "SK12")}),
-        ("blank-destination", "parity", {dst: lambda t: re.sub(r"^(SK12\tSK\t)[^\t\n]+", r"\1", t, flags=re.M)}),
+        ("blank-destination", "parity", {dst: lambda t: set_cell(t, "SK12", "destination", "")}),
         ("missing-original-screen", "parity", {"evidence/screens-inspected.tsv": lambda t: drop(t, "captain-select.png")}),
         ("remove-operative-gate", "proposal", {"decisions.md": lambda t: re.sub(r"^## Approval gate\n.*?(?=^## |\Z)", "", t, flags=re.M | re.S)}),
         ("realistic-duplicate-campaign-owner", "backlog", {"backlog.json": duplicate_campaign,
@@ -550,7 +567,48 @@ def negative_controls(package):
         ("small-window-scrollbar-omitted", "proposal", {"layouts/09-small-window.svg": missing_scrollbar}),
         ("team-default-relocation-omitted", "parity", {dst: lambda t: set_cell(t, "TT01", "destination", "S04 Team instructions; S08 preparation"),
           "parity/management.md": lambda t: t.replace("S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation", "S04 Team instructions; S08 preparation", 1)}),
-        ("country-screenshot-team-default-trace-omitted", "parity", {"evidence/screens-inspected.tsv": missing_country_tt})]
+        ("country-screenshot-team-default-trace-omitted", "parity", {"evidence/screens-inspected.tsv": missing_country_tt}),
+        ("quick-continuation-assigned-to-existing-scopes", "backlog", {dst: lambda t: set_cell(t, "LI08", "owner", "#198/#243/B04/#250")}),
+        ("quick-continuation-omitted-from-gap", "backlog", {"capability-gaps.json": omit_quick_gap}),
+        ("quick-continuation-register-assigned-to250", "backlog", {"capabilities.tsv": lambda t: set_cell(t, "Quick continuation during watched play", "owner", "#250", "capability")}),
+        ("quick-continuation-drawn-enabled", "journeys", {"layouts/07-live-match.svg": enable_quick}),
+        ("quick-continuation-flow-claimed-available", "journeys", {"journeys.md": lambda t: t.replace("Quick continuation is unavailable", "Quick continuation is available")}),
+        ("supported-country-identity-marked-unowned", "parity", {dst: lambda t: set_cell(t, "CO01", "owner", "UNOWNED:G05")}),
+        ("supported-friendly-route-marked-unowned", "backlog", {dst: lambda t: set_cell(t, "MP01-S", "owner", "UNOWNED:G01")}),
+        ("captain-residual-allocation-dropped", "parity", {dst: lambda t: drop(t, "MP07-G")}),
+        ("coordinated-mixed-source-and-parts-dropped", "parity", {src: lambda t: drop(t, "MP07"), dst: lambda t: drop(drop(t, "MP07-S"), "MP07-G")}),
+        ("original-manager-rating-source-meaning-erased", "parity", {src: lambda t: set_cell(t, "HU01", "information", "Active managed country and manager name")}),
+        ("split-rendered-information-erased", "parity", {"parity/match.md": lambda t: t.replace("; [designed allocation] " + SPLIT_FIELDS["MP01"]["S"][0], "", 1)}),
+        ("hero-mislabeled-as-first-slice", "proposal", {"layouts/02-country-desk.svg": lambda t: t.replace("FULL-PARITY TARGET", "FIRST SLICE")}),
+        ("hero-ranks-ambiguous", "proposal", {"layouts/02-country-desk.svg": lambda t: t.replace("Holland · world 14 · Europe 3", "World rank 14 / 8 · Europe rank 3 / 9")}),
+        ("same-id-wouters-card-corrupted", "proposal", {"layouts/10-match-decisions.svg": wrong_wouters_card}),
+        ("pool-scrollbar-omitted", "proposal", {"layouts/04-pool-compare.svg": lambda t: remove_svg_element(t, "data-scroll-track", "pool")}),
+        ("pool-visible-count-omitted", "proposal", {"layouts/04-pool-compare.svg": lambda t: t.replace("Rows 1–7 of 80 · Wheel / Page Down", "Wheel / Page Down")}),
+        ("comparison-biography-copied", "proposal", {"layouts/04-pool-compare.svg": lambda t: t.replace("24 yrs · caps 1 · goals 0 · 6′0″ · right foot", "29 yrs · caps 3 · goals 0 · 5′11″ · left foot")}),
+        ("selected-competition-tab-omitted", "proposal", {"layouts/05-competition.svg": unselect_groups}),
+        ("original-live-speed-departure-omitted", "proposal", {"decisions.md": lambda t: "\n".join(line for line in t.split("\n") if "↔-speed" not in line)}),
+        ("team-bits-reassigned-to-player-card-display", "parity", {dst: lambda t: set_cell(t, "TT01", "reuse", "T84 read-only display; #248 owns personal edits only.")})]
+    intended_findings = {
+        "quick-continuation-assigned-to-existing-scopes": "excluded capability assigned",
+        "quick-continuation-omitted-from-gap": "gap field inventory differs",
+        "quick-continuation-register-assigned-to250": "capability register silently extends",
+        "quick-continuation-drawn-enabled": "07 lacks visible quick-continuation refusal/reason",
+        "quick-continuation-flow-claimed-available": "J06 implies available fast-finish",
+        "supported-country-identity-marked-unowned": "supported country identity/list/selection incorrectly unowned",
+        "supported-friendly-route-marked-unowned": "supported/residual scope collapsed or misowned",
+        "captain-residual-allocation-dropped": "need237 independent supported/residual allocations",
+        "coordinated-mixed-source-and-parts-dropped": "234-field audit",
+        "original-manager-rating-source-meaning-erased": "reviewed original field meanings/categories changed",
+        "split-rendered-information-erased": "rendered source/allocation/destination/owner/reuse differs",
+        "hero-mislabeled-as-first-slice": "delivery tier unlabelled/misleading",
+        "hero-ranks-ambiguous": "ranks have ambiguous",
+        "same-id-wouters-card-corrupted": "same-ID illustrative card disagrees",
+        "pool-scrollbar-omitted": "pool lacks actual contained scrollbar",
+        "pool-visible-count-omitted": "pool lacks visible subset count/scroll route",
+        "comparison-biography-copied": "comparison copies outgoing biography",
+        "selected-competition-tab-omitted": "no visible selected Groups tab",
+        "original-live-speed-departure-omitted": "live-speed departure/acceptedT85 boundary unrecorded",
+        "team-bits-reassigned-to-player-card-display": "TT reuse incorrectly assigned"}
     receipts = []
     for name, check, edits in cases:
         saved = {f: (package.path / f).read_bytes() for f in edits}
@@ -562,6 +620,8 @@ def negative_controls(package):
                 (package.path / f).write_text(altered)
             result = run(package, [check])[0]
             need(result["pass"] is False, "control unexpectedly passed: " + name)
+            if name in intended_findings:
+                need(intended_findings[name] in result["finding"], "control rejected for unintended reason: " + name + " " + result["finding"])
         finally:
             for f, data in saved.items():
                 (package.path / f).write_bytes(data)
@@ -582,6 +642,43 @@ def set_cell(text, key, column, value, key_column="id"):
     writer.writeheader()
     writer.writerows(rows)
     return out.getvalue()
+
+
+def omit_quick_gap(text):
+    data = json.loads(text)
+    next(g for g in data["gaps"] if g["id"] == "G01")["fields"].remove("LI08")
+    return json.dumps(data, indent=2) + "\n"
+
+
+def change_svg_attribute(text, selector, attribute, value):
+    tree = ET.fromstring(text)
+    node = next(n for n in tree.iter() if selector(n))
+    node.set(attribute, value)
+    return ET.tostring(tree, encoding="unicode")
+
+
+def enable_quick(text):
+    tree = ET.fromstring(text)
+    box = next(n for n in tree.iter() if n.get("data-action") == "quick-continuation")
+    box.set("data-state", "available")
+    box.set("fill", "#FFFFFF")
+    next(n for n in tree.iter() if n.tag.endswith("text") and n.text == "Finish quickly · unavailable").text = "Finish quickly · supported stops"
+    return ET.tostring(tree, encoding="unicode")
+
+
+def unselect_groups(text):
+    tree = ET.fromstring(text)
+    box = next(n for n in tree.iter() if n.get("data-tab") == "Groups")
+    box.set("data-state", "available")
+    box.set("fill", "#FFFFFF")
+    next(n for n in tree.iter() if n.tag.endswith("text") and n.text == "Groups").set("fill", "#182D36")
+    return ET.tostring(tree, encoding="unicode")
+
+
+def wrong_wouters_card(text):
+    tree = ET.fromstring(text)
+    next(n for n in tree.iter() if n.tag.endswith("text") and n.get("x") == "1029" and n.get("y") == "404").text = "4"
+    return ET.tostring(tree, encoding="unicode")
 
 
 def resolve_gap(text):

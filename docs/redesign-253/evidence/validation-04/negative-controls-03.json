@@ -1,0 +1,530 @@
+{
+  "positive_checks": [
+    {
+      "check": "proposal",
+      "pass": true,
+      "finding": "A/B/C compared; O01\u2013O12/gate;10 static sheets;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
+    },
+    {
+      "check": "parity",
+      "pass": true,
+      "finding": "234 unchanged source fields=237 complete allocations=rendered;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
+    },
+    {
+      "check": "journeys",
+      "pass": true,
+      "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges;25 scoped capability rows;all10 visible-surface mappings"
+    },
+    {
+      "check": "current",
+      "pass": true,
+      "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+    },
+    {
+      "check": "backlog",
+      "pass": true,
+      "finding": "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership;5 unowned scopes tied to owner decisions"
+    },
+    {
+      "check": "technology",
+      "pass": true,
+      "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+    },
+    {
+      "check": "scope",
+      "pass": true,
+      "finding": "98 changed files limited to task docs/index and explicit process lesson;JSON valid;no app/engine/dependency/original payload changes"
+    }
+  ],
+  "negative_controls": [
+    {
+      "control": "missing-skill-allocation",
+      "rejected_by": "parity",
+      "finding": "mixed source fields need237 independent supported/residual allocations",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-skill-from-both-inventories",
+      "rejected_by": "parity",
+      "finding": "required original field missing/renamed: SK12 Penalties",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "blank-destination",
+      "rejected_by": "parity",
+      "finding": "blank/unknown destination: SK12",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-original-screen",
+      "rejected_by": "parity",
+      "finding": "64-screen inventory/inspection omission",
+      "before_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "after_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "remove-operative-gate",
+      "rejected_by": "proposal",
+      "finding": "operative Approval gate section missing",
+      "before_sha256": {
+        "decisions.md": "2e298163b39db215d34bf5aaebc5d7d924837e96e299a696e4d35f279ceb83af"
+      },
+      "after_sha256": {
+        "decisions.md": "2e298163b39db215d34bf5aaebc5d7d924837e96e299a696e4d35f279ceb83af"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "realistic-duplicate-campaign-owner",
+      "rejected_by": "backlog",
+      "finding": "duplicate existing ownership: B03 {'available-fixture-group-display'}",
+      "before_sha256": {
+        "backlog.json": "fc9b0bbbe4a3f20d6a31cdf00b6f8e67757337bb0a15b1a62e685e93a26af18a",
+        "backlog/B03.md": "a2f2601076d9542815f284d0d62a0c56b7148794eae27d81d92987359d4843ff"
+      },
+      "after_sha256": {
+        "backlog.json": "fc9b0bbbe4a3f20d6a31cdf00b6f8e67757337bb0a15b1a62e685e93a26af18a",
+        "backlog/B03.md": "a2f2601076d9542815f284d0d62a0c56b7148794eae27d81d92987359d4843ff"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "watch-flags-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: FX03 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "friendly-rearrangement-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: FX05 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "generated-news-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: NW01 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "competitive-watch-assigned-to250",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: IN12 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "durable-replay-assigned-to251",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: SV06 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "setup-profile-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: CO05 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "resolved-gap-without-owner-choice",
+      "rejected_by": "backlog",
+      "finding": "gap silently assigned/authorized/excepted: G05",
+      "before_sha256": {
+        "capability-gaps.json": "95c5234487c8ef5853526531a351094070b261304e56ac099a6c30ff3ca1deb2"
+      },
+      "after_sha256": {
+        "capability-gaps.json": "95c5234487c8ef5853526531a351094070b261304e56ac099a6c30ff3ca1deb2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "capability-register-profile-overreach",
+      "rejected_by": "backlog",
+      "finding": "capability register silently extends existing contract: Country ranks/status/profile/strips",
+      "before_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "after_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "linked-profile-claimed-as-drawn",
+      "rejected_by": "journeys",
+      "finding": "layout claims a surface not visibly drawn: 05-competition",
+      "before_sha256": {
+        "package.json": "8511342f7295b8ee116b0d2d885852d3248ad087365d5cad62e0be34cf696461"
+      },
+      "after_sha256": {
+        "package.json": "8511342f7295b8ee116b0d2d885852d3248ad087365d5cad62e0be34cf696461"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "formation-disagrees-with-lineup",
+      "rejected_by": "proposal",
+      "finding": "formation contradicts named lineup roles: Belgium",
+      "before_sha256": {
+        "layouts/06-match-preparation.svg": "ff9d0ed50d19e72a345cb4d6bca474f9569b9596291fabcac6d1c96e0253db90"
+      },
+      "after_sha256": {
+        "layouts/06-match-preparation.svg": "ff9d0ed50d19e72a345cb4d6bca474f9569b9596291fabcac6d1c96e0253db90"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-twentieth-bench-name",
+      "rejected_by": "proposal",
+      "finding": "all20 named squad rows not drawn beside full card: 03-team-workspace",
+      "before_sha256": {
+        "layouts/03-team-workspace.svg": "54e997b8d861ff468773f5e02f23d3fbd00de4dff6fb090b2e295b14fdec578c"
+      },
+      "after_sha256": {
+        "layouts/03-team-workspace.svg": "54e997b8d861ff468773f5e02f23d3fbd00de4dff6fb090b2e295b14fdec578c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "small-window-scrollbar-omitted",
+      "rejected_by": "proposal",
+      "finding": "small-window roster scrollbar absent",
+      "before_sha256": {
+        "layouts/09-small-window.svg": "c3342ba1fe126f1df96543aadb26f56e73804a6283405a439a6fa54b3ca56375"
+      },
+      "after_sha256": {
+        "layouts/09-small-window.svg": "c3342ba1fe126f1df96543aadb26f56e73804a6283405a439a6fa54b3ca56375"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "team-default-relocation-omitted",
+      "rejected_by": "parity",
+      "finding": "team tactics/default missing setup/scout context: TT01",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b",
+        "parity/management.md": "52063b62074e92e9f76cdb1ece001883d4c0bdd0e5db860f09bceecf6d783472"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b",
+        "parity/management.md": "52063b62074e92e9f76cdb1ece001883d4c0bdd0e5db860f09bceecf6d783472"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "country-screenshot-team-default-trace-omitted",
+      "rejected_by": "parity",
+      "finding": "country image missing team-default trace: country-select.png",
+      "before_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "after_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-assigned-to-existing-scopes",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: LI08 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-omitted-from-gap",
+      "rejected_by": "backlog",
+      "finding": "gap field inventory differs from independent scope oracle: G01",
+      "before_sha256": {
+        "capability-gaps.json": "95c5234487c8ef5853526531a351094070b261304e56ac099a6c30ff3ca1deb2"
+      },
+      "after_sha256": {
+        "capability-gaps.json": "95c5234487c8ef5853526531a351094070b261304e56ac099a6c30ff3ca1deb2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-register-assigned-to250",
+      "rejected_by": "backlog",
+      "finding": "capability register silently extends existing contract: Quick continuation during watched play",
+      "before_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "after_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-drawn-enabled",
+      "rejected_by": "journeys",
+      "finding": "07 lacks visible quick-continuation refusal/reason",
+      "before_sha256": {
+        "layouts/07-live-match.svg": "00dc13612e6c12fbe480f796b1cb2b12d5f22d5290d3c9cf4b07ecc3252f5481"
+      },
+      "after_sha256": {
+        "layouts/07-live-match.svg": "00dc13612e6c12fbe480f796b1cb2b12d5f22d5290d3c9cf4b07ecc3252f5481"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-flow-claimed-available",
+      "rejected_by": "journeys",
+      "finding": "J06 implies available fast-finish",
+      "before_sha256": {
+        "journeys.md": "e6c2e78fa79ceb83f0faf7b6d9a41518d893735e9dfbd30c9d00124e07b3c864"
+      },
+      "after_sha256": {
+        "journeys.md": "e6c2e78fa79ceb83f0faf7b6d9a41518d893735e9dfbd30c9d00124e07b3c864"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "supported-country-identity-marked-unowned",
+      "rejected_by": "parity",
+      "finding": "supported country identity/list/selection incorrectly unowned",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "supported-friendly-route-marked-unowned",
+      "rejected_by": "backlog",
+      "finding": "supported/residual scope collapsed or misowned: MP01-S",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "captain-residual-allocation-dropped",
+      "rejected_by": "parity",
+      "finding": "mixed source fields need237 independent supported/residual allocations",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "coordinated-mixed-source-and-parts-dropped",
+      "rejected_by": "parity",
+      "finding": "original context/field coverage differs from234-field audit",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "original-manager-rating-source-meaning-erased",
+      "rejected_by": "parity",
+      "finding": "reviewed original field meanings/categories changed during allocation split",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "split-rendered-information-erased",
+      "rejected_by": "parity",
+      "finding": "rendered source/allocation/destination/owner/reuse differs: MP01-S",
+      "before_sha256": {
+        "parity/match.md": "4b03e20569668c514cdc3caf339549191b377942bbd33039cd188468c456675a"
+      },
+      "after_sha256": {
+        "parity/match.md": "4b03e20569668c514cdc3caf339549191b377942bbd33039cd188468c456675a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "hero-mislabeled-as-first-slice",
+      "rejected_by": "proposal",
+      "finding": "illustration delivery tier unlabelled/misleading: 02-country-desk",
+      "before_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "after_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "hero-ranks-ambiguous",
+      "rejected_by": "proposal",
+      "finding": "hero ranks have ambiguous own/opponent notation",
+      "before_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "after_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "same-id-wouters-card-corrupted",
+      "rejected_by": "proposal",
+      "finding": "same-ID illustrative card disagrees: 10-match-decisions 2610 Keeping",
+      "before_sha256": {
+        "layouts/10-match-decisions.svg": "1eb26ded62d7a280b338f50d4069c6f72912ceb37130f83f3427e7eb307fff3a"
+      },
+      "after_sha256": {
+        "layouts/10-match-decisions.svg": "1eb26ded62d7a280b338f50d4069c6f72912ceb37130f83f3427e7eb307fff3a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pool-scrollbar-omitted",
+      "rejected_by": "proposal",
+      "finding": "pool lacks actual contained scrollbar",
+      "before_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "after_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pool-visible-count-omitted",
+      "rejected_by": "proposal",
+      "finding": "pool lacks visible subset count/scroll route",
+      "before_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "after_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "comparison-biography-copied",
+      "rejected_by": "proposal",
+      "finding": "comparison copies outgoing biography into incoming card",
+      "before_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "after_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "selected-competition-tab-omitted",
+      "rejected_by": "proposal",
+      "finding": "competition has no visible selected Groups tab",
+      "before_sha256": {
+        "layouts/05-competition.svg": "0523a41374756b3e31a83b04cc21e63ff5a2d0b8e8efe9f991dbcd7d9ec6cc90"
+      },
+      "after_sha256": {
+        "layouts/05-competition.svg": "0523a41374756b3e31a83b04cc21e63ff5a2d0b8e8efe9f991dbcd7d9ec6cc90"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "original-live-speed-departure-omitted",
+      "rejected_by": "proposal",
+      "finding": "original live-speed departure/acceptedT85 boundary unrecorded",
+      "before_sha256": {
+        "decisions.md": "2e298163b39db215d34bf5aaebc5d7d924837e96e299a696e4d35f279ceb83af"
+      },
+      "after_sha256": {
+        "decisions.md": "2e298163b39db215d34bf5aaebc5d7d924837e96e299a696e4d35f279ceb83af"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "team-bits-reassigned-to-player-card-display",
+      "rejected_by": "parity",
+      "finding": "TT reuse incorrectly assigned to player-cardT84",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    }
+  ],
+  "all_restored": true
+}

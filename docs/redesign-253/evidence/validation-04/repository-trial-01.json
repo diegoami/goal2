@@ -1,0 +1,20 @@
+{
+  "evidence": "[confirmed: #253 R2 repository-check intermediate trial]",
+  "links": {
+    "argv": [
+      "python3",
+      "tools/check_links.py"
+    ],
+    "exit": 1,
+    "stdout": "docs/redesign-253/validation.md:56: broken link evidence/validation-04/repository-checks.json\n",
+    "reason": "Final repository-check receipt had not yet been created; package runtime/semantic checks were unaffected."
+  },
+  "provenance": {
+    "exit": 0,
+    "stdout": "provenance check: 16 file(s) OK\n"
+  },
+  "whitespace": {
+    "exit": 0,
+    "stdout": ""
+  }
+}

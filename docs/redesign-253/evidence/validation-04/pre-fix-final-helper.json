@@ -1,0 +1,85 @@
+{
+  "evidence": "[confirmed: #253 R2 final frozen helper rejects pre-fix reviewed planning inputs]",
+  "pre_fix_head": "32d6c51c78e268fcc65a060ff25aaf950fa0a804",
+  "helper_sha256": "843bd087bfca805b6dde6660b17810ed738c4aa1477a6ea55944be61abb19f7c",
+  "input_archive_sha256": "5246a3ad8f83aa9a4f0adf5c50180f8eb814d8c09c2c47dc493ed12a2439801d",
+  "six_semantic_classes": [
+    {
+      "check": "allocation_contracts",
+      "pass": false,
+      "finding": "mixed source fields need237 independent supported/residual allocations"
+    },
+    {
+      "check": "quick_continuation_contracts",
+      "pass": false,
+      "finding": "quick continuation has no delivery contract;LI08 must beG01/#250 audit only"
+    },
+    {
+      "check": "illustration_quality",
+      "pass": false,
+      "finding": "illustration delivery tier unlabelled/misleading: 01-country-setup"
+    },
+    {
+      "check": "departure_contracts",
+      "pass": false,
+      "finding": "original live-speed departure/acceptedT85 boundary unrecorded"
+    },
+    {
+      "check": "reuse_contracts",
+      "pass": false,
+      "finding": "TT reuse incorrectly assigned to player-cardT84"
+    },
+    {
+      "check": "scope_contracts",
+      "pass": false,
+      "finding": "gap field inventory differs from independent scope oracle: G01"
+    }
+  ],
+  "four_strengthened_selectors": [
+    {
+      "check": "proposal",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "proposal",
+          "pass": false,
+          "finding": "illustration delivery tier unlabelled/misleading: 01-country-setup"
+        }
+      ]
+    },
+    {
+      "check": "parity",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "parity",
+          "pass": false,
+          "finding": "mixed source fields need237 independent supported/residual allocations"
+        }
+      ]
+    },
+    {
+      "check": "journeys",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "journeys",
+          "pass": false,
+          "finding": "quick continuation has no delivery contract;LI08 must beG01/#250 audit only"
+        }
+      ]
+    },
+    {
+      "check": "backlog",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "backlog",
+          "pass": false,
+          "finding": "gap field inventory differs from independent scope oracle: G01"
+        }
+      ]
+    }
+  ],
+  "limit": "Exact task-document archive, no own Git metadata; class checks fail before runtime/manual/Git-dependent validation. This does not claim Git-based scope or current-runtime acceptance on an archive."
+}

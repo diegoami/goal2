@@ -1,0 +1,97 @@
+{
+  "evidence": "[confirmed: #253 Qt6.12 static artifact bounds check]",
+  "method": "QFontMetricsF tight text bounds in1600x1010 canvas; XML/PNG validity. Does not test overlap, game geometry or accessibility; all10 previews visually reviewed.",
+  "helper_sha256": "b7978fcad5e2eaeb7d36c26b1e649484eacdb9d7a010bbe251ca47fe14f9c2f7",
+  "layouts": [
+    {
+      "svg": "01-country-setup.svg",
+      "svg_sha256": "d6af04fde1d246e97f39683d2eef72687d5550a4bac1363319768025d555f039",
+      "png_sha256": "e8d7224d2f6534e754dbe2955a0158916c1483e701d069635f86f43496405e12",
+      "text_elements": 86,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "02-country-desk.svg",
+      "svg_sha256": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3",
+      "png_sha256": "f3160db33789978c1765128fc56ee69dee4adb694f6db8744de27341f5bef12e",
+      "text_elements": 78,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "03-team-workspace.svg",
+      "svg_sha256": "54e997b8d861ff468773f5e02f23d3fbd00de4dff6fb090b2e295b14fdec578c",
+      "png_sha256": "08c3c5d31f6f5ed58844a450b05328f8f35c140eb1f7320a0347dbf6d62cb659",
+      "text_elements": 240,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "04-pool-compare.svg",
+      "svg_sha256": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef",
+      "png_sha256": "2f40fc00920758e53cd5e16914ee5d0a2017ab00f931764050245ec90b47eb02",
+      "text_elements": 126,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "05-competition.svg",
+      "svg_sha256": "0523a41374756b3e31a83b04cc21e63ff5a2d0b8e8efe9f991dbcd7d9ec6cc90",
+      "png_sha256": "72690e9ab19b692a96abc0250332ee4309ee11ea7e709498be1d4c86684913e0",
+      "text_elements": 102,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "06-match-preparation.svg",
+      "svg_sha256": "ff9d0ed50d19e72a345cb4d6bca474f9569b9596291fabcac6d1c96e0253db90",
+      "png_sha256": "c7a7a120fe1a904ebfba2bea75eac83a2f0b5d3ba2dfb9f9e7925efb825cbd08",
+      "text_elements": 83,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "07-live-match.svg",
+      "svg_sha256": "00dc13612e6c12fbe480f796b1cb2b12d5f22d5290d3c9cf4b07ecc3252f5481",
+      "png_sha256": "0211183c3f03468f529b60e7c2633fdfda096b1d87d164152ab39cc7483e898b",
+      "text_elements": 85,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "08-result-and-campaign.svg",
+      "svg_sha256": "aa29e37eec646e2887db01bb9328cd5818bc18c96ded7e81aa8eeda57a30ea4a",
+      "png_sha256": "e45784f5e6eb98b38461f8aec1ad513b09de2fcfebe75923f7af9cc0fb2c9380",
+      "text_elements": 97,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "09-small-window.svg",
+      "svg_sha256": "c3342ba1fe126f1df96543aadb26f56e73804a6283405a439a6fa54b3ca56375",
+      "png_sha256": "ba0d7bbb302f61e7b5590f910576e2090cf0120edcdd197b04a919809995e36d",
+      "text_elements": 101,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    },
+    {
+      "svg": "10-match-decisions.svg",
+      "svg_sha256": "1eb26ded62d7a280b338f50d4069c6f72912ceb37130f83f3427e7eb307fff3a",
+      "png_sha256": "11d3753042d181a7306812ef0307aa83668fe609dcfd67c0052ad6cff4ca0a5b",
+      "text_elements": 155,
+      "font": "DejaVu Sans",
+      "static_svg_and_png_valid": true,
+      "out_of_canvas_text": []
+    }
+  ]
+}
