@@ -1,0 +1,14 @@
+{
+  "tag": "[confirmed: T79 corrected-PATH premerge]",
+  "head": "9414cb01f411142d60089e2cbe29794c817a335b",
+  "result": "PASS",
+  "node": "24.21.0",
+  "node_path": "/home/diego/.nvm/versions/node/v24.21.0/bin",
+  "source_carry": "../linux-final-04/source-checkpoint.json",
+  "product_helper_test_changes": false,
+  "earlier_refusal": "sha-transcription-refusal.log; immediate exact-head refusal, no checks claimed",
+  "logs": {
+    "sha-transcription-refusal.log": "ca934d9d01edfeeec58273019d391149d07e02b756f40539398b04987943135e",
+    "exact-head.log": "5176a1d87529a4fd20860adef731310322135bee27b5cbaf51d01ca951c2812e"
+  }
+}
