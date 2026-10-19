@@ -1,0 +1,1 @@
+[designed: #254] Same actual native original acceptance as preparation01, with transparent controller and SDL-observer exception capture added before re-raising original errors. No product, paint output, status sharing, model/packet behavior, timeout or assertion changed. Exact helpers are preserved before the next actual execution; preparation is not a passing gate.
