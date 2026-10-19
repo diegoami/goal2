@@ -41,8 +41,8 @@
       "sha256": "cc4c8ec66aa2b5d184184c8a360c932639ad16eb5412b19b75d25002ee7cbdb0"
     },
     "kit/fix241-brief.md": {
-      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-brief.md",
-      "sha256": "f6d44edf4dfc737f5a9e71d46fc75d16b59d48fb3a1240eca74bb9939e517504"
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-brief.md [reading derivative, terminal blank lines trimmed]",
+      "sha256": "1d5216e67c376f1811061096bcd141d74a9755a6834d7dbe0b7dc48257b13a74"
     },
     "kit/fix241-display-audit-synthetic.json": {
       "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-display-audit-synthetic.json",
@@ -133,8 +133,8 @@
       "sha256": "8961c497c1cd6842cae6df680492f31c23613c6b171c8a9e04489096f93e7976"
     },
     "diagnostics/native-02-service.log": {
-      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-02.log [LF reading derivative]",
-      "sha256": "0e064af63ca0544d753ff31e95c6961a3e473e2e339785b36c4b9a660144395d"
+      "source": "/home/diego/projects/goal2/.cache/kept/review-receipts/resume-20261019/fix241-windows-02.log [LF reading derivative] [reading derivative, terminal blank lines trimmed]",
+      "sha256": "ed0d920e5411f87cbd1eb580f470a970dde8873d001e55dd0359e3e28e2bfb79"
     },
     "validation/premerge-7560.raw-envelope.json": {
       "source": "/home/diego/projects/goal2-work/fix241-player-table-browsing/.cache/premerge02.log",

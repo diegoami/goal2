@@ -19,4 +19,3 @@ AssertionError: Traceback (most recent call last):
     w.resize(width,height);QTest.qWait(80);assert (w.width(),w.height())==(width,height),'requested logical window size unavailable'
                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError: requested logical window size unavailable
-
