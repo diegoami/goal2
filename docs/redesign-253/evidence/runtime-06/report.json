@@ -1,0 +1,936 @@
+{
+  "evidence": "[confirmed: #253 direct runtime observation]",
+  "audited_commit": "3335da830d289cc869f989b73816926c54360ff1",
+  "runtime_checkout_head": "aab447ae15c6208b6f4295b2a8a845c2942f88e9",
+  "display_pixels": [
+    2880,
+    1800
+  ],
+  "resources": {
+    "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
+  },
+  "sources": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "a52c42aa141dff2366c545b74193165a9bb8866fa15ed73c29cb10044c8fb79b",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "4fdf59295f03121be17a283bce60ec3ddd8235f057b5d7ae7e530896dbadd5ae",
+    "goal2/desktop/window.py": "ac778e4e577eb725252d9c0f524eae49412a2c5a62ec83e45482b903aedbddfd",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "audit_sha256": "309f8a379f26807750c6bea9dea7ab903d6c2419f2ed7541a486d10cd92b5d39",
+  "terminal": {
+    "command": "python -m goal2.loop <verified template> <verified data> --save <owned unused path>",
+    "input": [
+      "Down",
+      "Enter",
+      "Escape"
+    ],
+    "frames": 3,
+    "exit": 0,
+    "save_written": false
+  },
+  "desktop": {
+    "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+    "qt": "6.12.0",
+    "qpa": "xcb",
+    "ratio": 1.0,
+    "screens": [
+      {
+        "file": "desktop-overview-1440.png",
+        "requested": [
+          1440,
+          900
+        ],
+        "actual": [
+          1440,
+          900
+        ],
+        "page": "overview",
+        "vertical_range": 0,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Overview",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Selected country",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "overviewCountry",
+            "text": "Bulgaria",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Next fixture",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "overviewFixture",
+            "text": "Bulgaria \u2014 Albania (Friendly)",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Last result",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "overviewResult",
+            "text": "No result yet\nNo match played",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Team morale: 17     Next fixture: Bulgaria \u2014 Albania (Friendly)",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Return to active game",
+            "enabled": false
+          },
+          {
+            "text": "New campaign",
+            "enabled": true
+          },
+          {
+            "text": "New standalone friendly",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "file": "desktop-squad-1440.png",
+        "requested": [
+          1440,
+          900
+        ],
+        "actual": [
+          1440,
+          900
+        ],
+        "page": "squad",
+        "vertical_range": 1018,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Squad & tactics",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "squadSummary",
+            "text": "Squad \u00b7 20 players\nStarting XI \u00b7 11 / 11    Bench \u00b7 9\nSelect a row for raw player detail. Changes take effect when you confirm.",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "playerDetail",
+            "text": "Player detail \u00b7 Mikhailov\nID 61 \u00b7 Goalkeeper \u00b7 Captain\nAbility 198 \u00b7 Energy 17 \u00b7 Confidence 9\nAvailability: Available",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "lineupBoard",
+            "text": "Starting XI \u00b7 11\nGrouped by position.\nGoalkeeper \u00b7 1\nMikhailov \u00b7 Captain\nDefence \u00b7 3\nTzvetanev, Ivanov, Hubchev\nMidfield \u00b7 4\nSadkov, Petrov, Iliev, Yankov\nMidfield / attack \u00b7 1\nKarashev\nAttack \u00b7 2\nKostadinov, Stoichkov",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "benchBoard",
+            "text": "Bench \u00b7 9\nVelinov \u00b7 Goalkeeper\nTanev \u00b7 Defence\nSirakov \u00b7 Defence\nBalakov \u00b7 Midfield\nSadov \u00b7 Midfield\nYordanov \u00b7 Midfield\nAlexandrov \u00b7 Midfield / attack\nPenev \u00b7 Attack\nMladenov \u00b7 Attack",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Captain",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Team tactics \u00b7 unchecked / checked alternatives",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "draftState",
+            "text": "Unconfirmed draft \u00b7 XI 11/11",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Discard draft",
+            "enabled": true
+          },
+          {
+            "text": "Confirm management",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "file": "desktop-pool-1440.png",
+        "requested": [
+          1440,
+          900
+        ],
+        "actual": [
+          1440,
+          900
+        ],
+        "page": "pool",
+        "vertical_range": 48,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "National pool",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "poolSummary",
+            "text": "Squad 20 / Reserves 80 \u2014 showing 80\nBetween supported friendlies (provisional Q008 policy)",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Outgoing squad player \u00b7 selection only, confirmed XI stays unchanged",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "poolDetail",
+            "text": "No incoming reserve selected. Select a visible reserve row.",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "exchangeSummary",
+            "text": "No outgoing squad player selected\nNo incoming reserve selected",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "poolPolicy",
+            "text": "Between supported friendlies (provisional Q008 policy)",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Exchange selected squad player and reserve",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "file": "desktop-fixtures-1440.png",
+        "requested": [
+          1440,
+          900
+        ],
+        "actual": [
+          1440,
+          900
+        ],
+        "page": "fixtures",
+        "vertical_range": 200,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Fixtures & results",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Next fixture",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "fixtureNext",
+            "text": "Bulgaria \u2014 Albania",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Last completed result",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "scoreboard",
+            "text": "No match played",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Match resolution",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "resultStages",
+            "text": "No completed result",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Off",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "On",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Goals and result details",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "resultDetails",
+            "text": "No result yet\nNo match played",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Play: quick friendly\nWatch: original friendly",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Standings snapshot",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "fixtureTable",
+            "text": "Current positions; qualification is provisional.\n1. Bulgaria   P 0   GF 0   GA 0   GD 0   Pts 0\n2. Spain   P 0   GF 0   GA 0   GD 0   Pts 0\n3. Russia   P 0   GF 0   GA 0   GD 0   Pts 0\n4. Hungary   P 0   GF 0   GA 0   GD 0   Pts 0",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Competition table",
+            "enabled": true
+          },
+          {
+            "text": "Play quick friendly",
+            "enabled": true
+          },
+          {
+            "text": "Watch original friendly",
+            "enabled": true
+          },
+          {
+            "text": "Substitute",
+            "enabled": false
+          },
+          {
+            "text": "Continue second half",
+            "enabled": false
+          }
+        ]
+      },
+      {
+        "file": "desktop-save-1440.png",
+        "requested": [
+          1440,
+          900
+        ],
+        "actual": [
+          1440,
+          900
+        ],
+        "page": "save",
+        "vertical_range": 0,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Save / resume",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Save file",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Save",
+            "enabled": true
+          },
+          {
+            "text": "Resume",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "file": "desktop-overview-900.png",
+        "requested": [
+          900,
+          640
+        ],
+        "actual": [
+          900,
+          640
+        ],
+        "page": "overview",
+        "vertical_range": 228,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Overview",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Selected country",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "overviewCountry",
+            "text": "Bulgaria",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Next fixture",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "overviewFixture",
+            "text": "Bulgaria \u2014 Albania (Friendly)",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Last result",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "overviewResult",
+            "text": "No result yet\nNo match played",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Team morale: 17     Next fixture: Bulgaria \u2014 Albania (Friendly)",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Return to active game",
+            "enabled": false
+          },
+          {
+            "text": "New campaign",
+            "enabled": true
+          },
+          {
+            "text": "New standalone friendly",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "file": "desktop-squad-900.png",
+        "requested": [
+          900,
+          640
+        ],
+        "actual": [
+          900,
+          640
+        ],
+        "page": "squad",
+        "vertical_range": 1278,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Squad & tactics",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "squadSummary",
+            "text": "Squad \u00b7 20 players\nStarting XI \u00b7 11 / 11    Bench \u00b7 9\nSelect a row for raw player detail. Changes take effect when you confirm.",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "playerDetail",
+            "text": "Player detail \u00b7 Mikhailov\nID 61 \u00b7 Goalkeeper \u00b7 Captain\nAbility 198 \u00b7 Energy 17 \u00b7 Confidence 9\nAvailability: Available",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "lineupBoard",
+            "text": "Starting XI \u00b7 11\nGrouped by position.\nGoalkeeper \u00b7 1\nMikhailov \u00b7 Captain\nDefence \u00b7 3\nTzvetanev, Ivanov, Hubchev\nMidfield \u00b7 4\nSadkov, Petrov, Iliev, Yankov\nMidfield / attack \u00b7 1\nKarashev\nAttack \u00b7 2\nKostadinov, Stoichkov",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "benchBoard",
+            "text": "Bench \u00b7 9\nVelinov \u00b7 Goalkeeper\nTanev \u00b7 Defence\nSirakov \u00b7 Defence\nBalakov \u00b7 Midfield\nSadov \u00b7 Midfield\nYordanov \u00b7 Midfield\nAlexandrov \u00b7 Midfield / attack\nPenev \u00b7 Attack\nMladenov \u00b7 Attack",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Captain",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Team tactics \u00b7 unchecked / checked alternatives",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "draftState",
+            "text": "Unconfirmed draft \u00b7 XI 11/11",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Discard draft",
+            "enabled": true
+          },
+          {
+            "text": "Confirm management",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "file": "desktop-pool-900.png",
+        "requested": [
+          900,
+          640
+        ],
+        "actual": [
+          900,
+          640
+        ],
+        "page": "pool",
+        "vertical_range": 308,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "National pool",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "poolSummary",
+            "text": "Squad 20 / Reserves 80 \u2014 showing 80\nBetween supported friendlies (provisional Q008 policy)",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Outgoing squad player \u00b7 selection only, confirmed XI stays unchanged",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "poolDetail",
+            "text": "No incoming reserve selected. Select a visible reserve row.",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "exchangeSummary",
+            "text": "No outgoing squad player selected\nNo incoming reserve selected",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "poolPolicy",
+            "text": "Between supported friendlies (provisional Q008 policy)",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Exchange selected squad player and reserve",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "file": "desktop-fixtures-900.png",
+        "requested": [
+          900,
+          640
+        ],
+        "actual": [
+          900,
+          640
+        ],
+        "page": "fixtures",
+        "vertical_range": 460,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Fixtures & results",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Next fixture",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "fixtureNext",
+            "text": "Bulgaria \u2014 Albania",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Last completed result",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "scoreboard",
+            "text": "No match played",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Match resolution",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "resultStages",
+            "text": "No completed result",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Off",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "On",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Goals and result details",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "resultDetails",
+            "text": "No result yet\nNo match played",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Play: quick friendly\nWatch: original friendly",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "cardHeading",
+            "text": "Standings snapshot",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "fixtureTable",
+            "text": "Current positions; qualification is provisional.\n1. Bulgaria   P 0   GF 0   GA 0   GD 0   Pts 0\n2. Spain   P 0   GF 0   GA 0   GD 0   Pts 0\n3. Russia   P 0   GF 0   GA 0   GD 0   Pts 0\n4. Hungary   P 0   GF 0   GA 0   GD 0   Pts 0",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Competition table",
+            "enabled": true
+          },
+          {
+            "text": "Play quick friendly",
+            "enabled": true
+          },
+          {
+            "text": "Watch original friendly",
+            "enabled": true
+          },
+          {
+            "text": "Substitute",
+            "enabled": false
+          },
+          {
+            "text": "Continue second half",
+            "enabled": false
+          }
+        ]
+      },
+      {
+        "file": "desktop-save-900.png",
+        "requested": [
+          900,
+          640
+        ],
+        "actual": [
+          900,
+          640
+        ],
+        "page": "save",
+        "vertical_range": 0,
+        "labels": [
+          {
+            "name": "pageHeading",
+            "text": "Save / resume",
+            "enabled": true,
+            "visible": true
+          },
+          {
+            "name": "",
+            "text": "Save file",
+            "enabled": true,
+            "visible": true
+          }
+        ],
+        "actions": [
+          {
+            "text": "Save",
+            "enabled": true
+          },
+          {
+            "text": "Resume",
+            "enabled": true
+          }
+        ]
+      }
+    ],
+    "observed": [
+      {
+        "squad_rows": 20,
+        "squad_columns": 7,
+        "headers": [
+          "XI",
+          "Player",
+          "Position",
+          "Ability",
+          "Energy",
+          "Confidence",
+          "Availability"
+        ],
+        "selected_last_row": 19,
+        "player_detail": "Player detail \u00b7 Mladenov\nID 80 \u00b7 Attack\nAbility 198 \u00b7 Energy 32 \u00b7 Confidence 18\nAvailability: Available"
+      },
+      {
+        "play_label": "Play quick friendly",
+        "watch_label": "Watch original friendly",
+        "watch_enabled": true,
+        "watch_rate_control_present": false,
+        "fixture_guidance": "Play: quick friendly\nWatch: original friendly"
+      }
+    ],
+    "navigation_state_unchanged": true,
+    "draft_before_watch": {
+      "displayed": [
+        [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        61,
+        136
+      ],
+      "active": [
+        [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        0,
+        136
+      ]
+    },
+    "draft_after_discard": {
+      "displayed": [
+        [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        61,
+        136
+      ],
+      "active": [
+        [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        0,
+        136
+      ]
+    },
+    "ephemeral_setup_confirmation": "Management confirmed",
+    "watched": {
+      "started": true,
+      "status": "Original engine: 0\u2032 0 \u2014 0",
+      "painted_frame_sequence": 3,
+      "management_enabled": false,
+      "save_enabled": false,
+      "capture": "watched-actual.png",
+      "cancel_restored_state": true
+    },
+    "save_written": false
+  },
+  "resources_after": {
+    "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
+  },
+  "sources_after": {
+    "goal2/desktop/__init__.py": "c27ce0a10f850f02f6def806a8d1adcc4241d6775d1539242acaf6a0c12a6f3d",
+    "goal2/desktop/__main__.py": "8ac908d5710ddbd08478c7aca64c8f978c75e7ef9748ab27f298b2f429681e82",
+    "goal2/desktop/competitive.py": "342e58820d60a5e41737cc81377537cfcd151e7d71a582684c084449dbdf8554",
+    "goal2/desktop/competitive_worker.py": "ce332bd128f31163a42b8e6828e235068ee8d45211056a3d03371427ec9c8119",
+    "goal2/desktop/country_identity.py": "4c5d07d9a8838bcc04f10b5603a338773aa68de5a2bba5f19765a5c0dadba763",
+    "goal2/desktop/fixtures_page.py": "d83c93d40297c2d94ca90b216dcb7077dd8033e181f3a133084ccae19a8eb9bd",
+    "goal2/desktop/jobs.py": "199ede565e2c97559090d2048ca46da02ed34f780718f6bf15c4232256b35e86",
+    "goal2/desktop/match_view.py": "4eaff7f2f13a16952e5f97c63dbcf979fafb07839af55ccd97b0b8175feb070a",
+    "goal2/desktop/model.py": "de7654a0b904705a84b3f431d8ae69c4fbffbdc082e6b970b7cfb035119ac07a",
+    "goal2/desktop/overview_page.py": "cdd9d4c32865e5b600a6cb5253f6bde82753f2b232b0f0f27191a6dea75c4ff0",
+    "goal2/desktop/pages.py": "526cf6be06096810d3c9c60c37af86e29c0720e28f221004654cacf5835511fe",
+    "goal2/desktop/pool_page.py": "c6f03dfe8a873978a3ad2b5aa45960194934dba69cd2bc1ccaba1dddff8714a5",
+    "goal2/desktop/pygame_viewer.py": "a52c42aa141dff2366c545b74193165a9bb8866fa15ed73c29cb10044c8fb79b",
+    "goal2/desktop/save_page.py": "5ffef569816adac8c6b5309cffe83005a39034b7ab034bf740269c8762234ca5",
+    "goal2/desktop/squad_page.py": "89b4aa3b2b3d3ca9a12d13e22f5aa5e737b860019edd92033414b9da07767823",
+    "goal2/desktop/standings.py": "0f13a05374263493cf0290fcb47a4ecac9fd0f4a032085d9deaa8d64a04d6c87",
+    "goal2/desktop/style.py": "2a56c27b046a372867640a98d763286688b6dab671c4ae37d1d1cd500d8a0d1b",
+    "goal2/desktop/watched.py": "4fdf59295f03121be17a283bce60ec3ddd8235f057b5d7ae7e530896dbadd5ae",
+    "goal2/desktop/window.py": "ac778e4e577eb725252d9c0f524eae49412a2c5a62ec83e45482b903aedbddfd",
+    "goal2/desktop/worker.py": "06ea50cc9638084c83848347aceada7eefc2a4dac3959ed7559d19d2f9369f78"
+  },
+  "artifacts": {
+    "desktop-final-roster-row.png": "f457e16c3011425c030cc9153fc706bfc3b8879ae11ef354a0301700f13aa25e",
+    "desktop-fixtures-1440.png": "5cb81996288f3366b5cba78583eb80fa9ad29bea724cf877d2ff7cea6c6dd6bd",
+    "desktop-fixtures-900.png": "6a43d3c542d2d53de87e67235fd191d6850aba9df497abdd8528ca7545e37003",
+    "desktop-overview-1440.png": "b14e2feab93601c9c8166dd59f586a176ef6d67f670eb51d876f2886767a9d47",
+    "desktop-overview-900.png": "714ec443c522209a0fc9c6f8128cf4b75ccbc7f3006b09460cc4d92a8d64e86e",
+    "desktop-pool-1440.png": "711ccde0af7a4eced0305ea654a8b89354eebeb71f4421dd3cb3720da0b96cc6",
+    "desktop-pool-900.png": "31208354ba3c0c33281832b39dbb2fcbba4f41576391ed22516e8dec31dc3536",
+    "desktop-save-1440.png": "78ca31bfec918835fe827abb14ecd1b4b2f00046d2b50691b4762d6226e66971",
+    "desktop-save-900.png": "c59b0e1af5bea380970db3795ec72b05715c04ec69153cc6f69779005e56ed1d",
+    "desktop-squad-1440.png": "23515f01b69f7b62910c851c31655ce6bacff4cab52d1bc6322546190b7bfc7e",
+    "desktop-squad-900.png": "dc89a8756bab937d1b2564da99c408965463560571da1c2005bea899b3f38154",
+    "terminal.txt": "6f41da1f783732f5016b7b39721afbc43fc4b424ed3a6350b0d79627700b563e",
+    "watched-actual.png": "e024242393e7472073ce99411cab0f320f2c29ec8907a9ca01628119e4822704"
+  }
+}

@@ -1,0 +1,81 @@
+SELECT COUNTRY    1/128                                                         
+> Albania                                                                       
+  Austria                                                                       
+  Belgium                                                                       
+  Bulgaria                                                                      
+  Cyprus                                                                        
+  R.C.S                                                                         
+  Denmark                                                                       
+  Eire                                                                          
+  England                                                                       
+  Finland                                                                       
+  France                                                                        
+  Germany                                                                       
+  Greece                                                                        
+  Hungary                                                                       
+  Iceland                                                                       
+  Italy                                                                         
+  Luxembourg                                                                    
+  Malta                                                                         
+  N.Ireland                                                                     
+  Holland                                                                       
+                                                                                
+                                                                                
+                                                                                
+UP/DOWN MOVE  PgUp/PgDn PAGE  ENTER SELECT  ESC QUIT                            
+
+--- actual PTY frame ---
+
+SELECT COUNTRY    2/128                                                         
+  Albania                                                                       
+> Austria                                                                       
+  Belgium                                                                       
+  Bulgaria                                                                      
+  Cyprus                                                                        
+  R.C.S                                                                         
+  Denmark                                                                       
+  Eire                                                                          
+  England                                                                       
+  Finland                                                                       
+  France                                                                        
+  Germany                                                                       
+  Greece                                                                        
+  Hungary                                                                       
+  Iceland                                                                       
+  Italy                                                                         
+  Luxembourg                                                                    
+  Malta                                                                         
+  N.Ireland                                                                     
+  Holland                                                                       
+                                                                                
+                                                                                
+                                                                                
+UP/DOWN MOVE  PgUp/PgDn PAGE  ENTER SELECT  ESC QUIT                            
+
+--- actual PTY frame ---
+
+SELECT ELEVEN  11/11                                                            
+> [x]  1  H Wohlfahrt    Energy:25                                              
+  [x]  2  N Zsak         Energy:26                                              
+  [x]  3  L Streiter     Energy:32                                              
+  [x]  4  R Wazinger     Energy:32                                              
+  [x]  5  G Stoger       Energy:32                                              
+  [x]  6  P Baur         Energy:29                                              
+  [x]  7  I Artner       Energy:32                                              
+  [x]  8  E Prosenik     Energy:21                                              
+  [x]  9  A Herzog       Energy:32                                              
+  [x] 10  A Feirsinger   Energy:22                                              
+  [x] 11  D Pf'nberger   Energy:19                                              
+  [ ] 12  P Konsel       Energy:32                                              
+  [ ] 13  T Pecl         Energy:30                                              
+  [ ] 14  I Schoettel    Energy:17                                              
+  [ ] 15  N Antonitsch   Energy:32                                              
+  [ ] 16  W Mahlich      Energy:32                                              
+  [ ] 17  D Hasenhuttl   Energy:32                                              
+  [ ] 18  A Ogris        Energy:32                                              
+  [ ] 19  T Polster      Energy:29                                              
+  [ ] 20  G Rodax        Energy:19                                              
+CAPTAIN: Wohlfahrt (included)                                                   
+                                                                                
+UP/DOWN MOVE  SPACE toggles highlighted player.                                 
+UP/DOWN MOVE  SPACE TOGGLE  ENTER CONFIRM  ESC CANCEL                           
