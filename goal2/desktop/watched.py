@@ -1,9 +1,11 @@
 """[designed: T66] Qt-polled engine/viewer ownership; viewer never receives state."""
 from contextlib import ExitStack
 from dataclasses import asdict
+from functools import cache
 import importlib.util
 import errno
 import json
+import os
 from pathlib import Path
 import secrets
 import subprocess
@@ -14,6 +16,51 @@ from goal2.desktop.match_view import Display, completion, MAX_PACKET, MAX_JOURNA
 from goal2.game.watched_jobs import WatchedJobs
 from goal2.engine.original_match import Fixture
 from goal2.engine.quick_engine import QuickEngineError
+
+
+@cache
+def _status_api():
+    """[designed: #254] Bind pointer-sized native APIs once, only when Windows reads."""
+    import ctypes
+    from ctypes import wintypes
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    create = kernel.CreateFileW
+    create.argtypes = (wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+                      ctypes.c_void_p, wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE)
+    create.restype = wintypes.HANDLE
+    close = kernel.CloseHandle
+    close.argtypes = (wintypes.HANDLE,)
+    close.restype = wintypes.BOOL
+    return create, close
+
+
+def _open_status(path):
+    """[designed: #254] A read-only snapshot must allow the viewer's atomic replacement."""
+    if os.name != 'nt':
+        return path.open('rb')
+    import ctypes
+    import msvcrt
+    create, close = _status_api()
+    # [confirmed: docs/evidence/fix254/native-before-01/report.json and its Win32 reference]
+    # Read-only access with read/write/delete sharing permits an atomic replacement.
+    read_access = 0x80000000  # GENERIC_READ
+    share_mode = 0x1 | 0x2 | 0x4  # FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE
+    open_existing, normal_attributes = 3, 0x80
+    handle = create(os.fspath(path), read_access, share_mode, None, open_existing, normal_attributes, None)
+    if handle == ctypes.c_void_p(-1).value:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        descriptor = msvcrt.open_osfhandle(handle, os.O_RDONLY | os.O_NOINHERIT)
+    except BaseException:
+        close(handle)
+        raise
+    # [confirmed: https://docs.python.org/3/library/msvcrt.html] The descriptor owns the handle.
+    try:
+        msvcrt.setmode(descriptor, os.O_BINARY)
+        return os.fdopen(descriptor, 'rb')
+    except BaseException:
+        os.close(descriptor)
+        raise
 
 
 class WatchedController:
@@ -106,7 +153,7 @@ class WatchedController:
             path = self.directory / 'status'
             if path.exists():
                 try:
-                    with path.open('rb') as stream:
+                    with _open_status(path) as stream:
                         data = stream.read(4097)
                 except PermissionError as exc:
                     # [confirmed: #236 main-preflight-01] Native open may lack winerror.

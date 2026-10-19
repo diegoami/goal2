@@ -3,6 +3,8 @@ from contextlib import ExitStack
 import errno
 import io
 import json
+import os
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 import subprocess
@@ -65,6 +67,38 @@ class SharingTests(unittest.TestCase):
     def value(self, controller, **changes):
         return {'token': controller.token, 'kind': 'ready', 'sequence': 0,
                 'digest': controller.digests[0], **changes}
+
+
+    def test_status_snapshot_is_binary_and_closes_its_owned_handle(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder)/'status'
+            payload = b'{"value":"owned"}\r\n'
+            path.write_bytes(payload)
+            with watched._open_status(path) as stream:
+                self.assertEqual(stream.read(4097), payload)
+            self.assertTrue(stream.closed)
+
+    def test_native_handle_bridge_failure_closes_only_the_current_owner(self):
+        for failure in ('descriptor', 'binary-mode', 'file-object'):
+            with self.subTest(failure=failure):
+                error = OSError('injected ownership transfer failure')
+                handle = 0x123456789
+                create, close = Mock(return_value=handle), Mock()
+                crt = SimpleNamespace(open_osfhandle=Mock(return_value=77), setmode=Mock())
+                native_os = SimpleNamespace(**{**vars(os), 'name':'nt', 'O_NOINHERIT':0x80,
+                    'O_BINARY':0x8000, 'fdopen':Mock(return_value=io.BytesIO()), 'close':Mock()})
+                if failure == 'descriptor':crt.open_osfhandle.side_effect = error
+                elif failure == 'binary-mode':crt.setmode.side_effect = error
+                else:native_os.fdopen.side_effect = error
+                with patch.object(watched, 'os', native_os), patch.object(watched, '_status_api', return_value=(create,close)), patch.dict(sys.modules, {'msvcrt':crt}):
+                    with self.assertRaises(OSError) as caught:watched._open_status(Path('owned-status'))
+                self.assertIs(caught.exception, error)
+                if failure == 'descriptor':
+                    close.assert_called_once_with(handle)
+                    native_os.close.assert_not_called()
+                else:
+                    close.assert_not_called()
+                    native_os.close.assert_called_once_with(77)
 
     def test_writer_retries_same_atomic_payload_without_schema_changes(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -130,7 +164,7 @@ class SharingTests(unittest.TestCase):
                 c = self.controller(folder); path = c.directory/'status'
                 path.write_text(json.dumps(self.value(c)))
                 clock = Clock()
-                with self.environment(watched, clock), patch.object(Path, 'open', side_effect=error):
+                with self.environment(watched, clock), patch.object(watched, '_open_status', side_effect=error):
                     self.assertFalse(c.poll())
                 self.assertEqual(clock.sleeps, [])
                 self.assertTrue(c.model.match_pending)
@@ -145,11 +179,11 @@ class SharingTests(unittest.TestCase):
             c = self.controller(folder); (c.directory/'status').write_text(json.dumps(self.value(c)))
             clock = Clock(); error = denied(None)
             with self.environment(watched, clock):
-                with patch.object(Path, 'open', side_effect=error):
+                with patch.object(watched, '_open_status', side_effect=error):
                     self.assertFalse(c.poll()); clock.now = .249; self.assertFalse(c.poll())
                 self.assertFalse(c.poll())
                 clock.now = .3
-                with patch.object(Path, 'open', side_effect=error):
+                with patch.object(watched, '_open_status', side_effect=error):
                     self.assertFalse(c.poll()); clock.now = .549; self.assertFalse(c.poll())
                     clock.now = .55
                     with self.assertRaises(PermissionError) as caught:c.poll()
@@ -163,7 +197,7 @@ class SharingTests(unittest.TestCase):
             c = self.controller(folder); (c.directory/'status').write_text(json.dumps(self.value(c)))
             clock = Clock()
             with self.environment(watched, clock):
-                with patch.object(Path, 'open', side_effect=denied(None)):self.assertFalse(c.poll())
+                with patch.object(watched, '_open_status', side_effect=denied(None)):self.assertFalse(c.poll())
                 self.assertFalse(c.poll())
             self.assertEqual(c.last_status, self.value(c))
         for platform, error in [('linux', denied(None)), ('linux', denied()),
@@ -171,7 +205,7 @@ class SharingTests(unittest.TestCase):
                                 ('win32', OSError(errno.EIO, 'broken read'))]:
             with self.subTest(platform=platform, error=error), tempfile.TemporaryDirectory() as folder:
                 c = self.controller(folder); (c.directory/'status').touch(); clock = Clock()
-                with self.environment(watched, clock, platform), patch.object(Path, 'open', side_effect=error):
+                with self.environment(watched, clock, platform), patch.object(watched, '_open_status', side_effect=error):
                     with self.assertRaises(type(error)) as caught:c.poll()
                 self.assertIs(caught.exception, error)
                 self.assertEqual(clock.sleeps, [])
@@ -185,7 +219,7 @@ class SharingTests(unittest.TestCase):
                 path = c.directory/'status'; path.write_text(json.dumps(self.value(c, **changes)))
                 clock = Clock()
                 with self.environment(watched, clock):
-                    with patch.object(Path, 'open', side_effect=denied(None)):self.assertFalse(c.poll())
+                    with patch.object(watched, '_open_status', side_effect=denied(None)):self.assertFalse(c.poll())
                     with self.assertRaises(ValueError):c.poll()
                 c.engine.ack_frames.assert_not_called()
                 self.assertFalse(c.model.match_pending)
