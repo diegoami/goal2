@@ -1,0 +1,34 @@
+dbus-daemon[17264]: [session uid=1000 pid=17264 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=17285 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[17264]: [session uid=1000 pid=17264 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[17301]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=17285 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[17264]: [session uid=1000 pid=17264 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=17285 comm="xfwm4 --compositor=off --sm-client-disable" label="kernel")
+dbus-daemon[17301]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[17264]: [session uid=1000 pid=17264 pidfd=5] Successfully activated service 'org.xfce.Xfconf'
+Owned private display/window manager ready: :99 17285
+START controls
+PASS controls 17.106
+START units
+PASS units 201.829
+START handoff
+PASS handoff 300.802
+START animated-pitch
+PASS animated-pitch 146.571
+START competitive
+PASS competitive 62.071
+START provenance
+PASS provenance 0.065
+START links
+PASS links 0.666
+START working-whitespace
+PASS working-whitespace 0.033
+START authored-whitespace
+PASS authored-whitespace 0.666
+START premerge
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py", line 57, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/diego/projects/goal2-work/T79-football-ui/docs/evidence/T79/validation_driver.py", line 51, in main
+    raise AssertionError(f'{name}: returncode={run.returncode}, source bytes unchanged={same}')
+AssertionError: premerge: returncode=1, source bytes unchanged=True

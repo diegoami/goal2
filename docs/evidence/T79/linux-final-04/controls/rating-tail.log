@@ -1,0 +1,23 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail) ... ALSA lib confmisc.c:855:(parse_card) [error.core] cannot find card '0'
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) [error.core] error evaluating strings
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) [error.core] error evaluating name
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5734:(snd_config_expand) [error.core] Evaluate error: No such file or directory
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) [error.pcm] Unknown PCM default
+FAIL
+
+======================================================================
+FAIL: test_wrapped_commentary_lands_at_board_and_scroll_retains_tail (goal2.tests.test_pygame_match_view.PresentationTests.test_wrapped_commentary_lands_at_board_and_scroll_retains_tail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 162, in test_wrapped_commentary_lands_at_board_and_scroll_retains_tail
+    self.assertEqual(pygame.image.tobytes(screen.subsurface((20,490+7*26,*label.get_size())),'RGB'),pygame.image.tobytes(expected,'RGB'),'manual scroll lost the final rating row')
+AssertionError: b'\x0[1230 chars]x18\x08\x1c\x18\x08\x1c\x18\x08\x1c\x18\x08\x1[20749 chars]\x18' != b'\x0[1230 chars]x18\xf5\xf2\xe8\xf5\xf2\xe8\xf5\xf2\xe8\xf5\xf[19276 chars]\x18' : manual scroll lost the final rating row
+
+----------------------------------------------------------------------
+Ran 1 test in 0.149s
+
+FAILED (failures=1)

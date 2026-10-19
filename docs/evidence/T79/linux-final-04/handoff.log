@@ -1,0 +1,22 @@
+test_qt_heartbeat_blocked_tail_and_actual_viewer_quit (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit) ... ok
+test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save) ... ok
+test_malformed_stale_ack_and_engine_failure_preserve_state (goal2.tests.test_pygame_match_view.PresentationTests.test_malformed_stale_ack_and_engine_failure_preserve_state) ... ok
+test_optional_dependency_and_qualifier_boundary (goal2.tests.test_pygame_match_view.PresentationTests.test_optional_dependency_and_qualifier_boundary) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 9.469s
+
+OK
+PASS match-handoff: actual product Qt/SDL; full original Malta18 state/events/board/ratings; frame+complete ACK; checkpoint replay; native layout/focus and lifecycle
+test_qt_heartbeat_blocked_tail_and_actual_viewer_quit (goal2.tests.test_pygame_match_view.PresentationTests.test_qt_heartbeat_blocked_tail_and_actual_viewer_quit) ... ok
+test_real_viewer_cancel_duplicate_and_failed_start_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_real_viewer_cancel_duplicate_and_failed_start_preserve_save) ... ok
+test_malformed_stale_ack_and_engine_failure_preserve_state (goal2.tests.test_pygame_match_view.PresentationTests.test_malformed_stale_ack_and_engine_failure_preserve_state) ... ok
+test_optional_dependency_and_qualifier_boundary (goal2.tests.test_pygame_match_view.PresentationTests.test_optional_dependency_and_qualifier_boundary) ... ok
+test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait (goal2.tests.test_desktop_quick_jobs.QuickJobCases.test_cancel_reaps_blocked_and_sigterm_ignoring_process_with_bounded_wait) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 8.854s
+
+OK
+PASS match-handoff: actual product Qt/SDL; full original Malta18 state/events/board/ratings; frame+complete ACK; checkpoint replay; native layout/focus and lifecycle

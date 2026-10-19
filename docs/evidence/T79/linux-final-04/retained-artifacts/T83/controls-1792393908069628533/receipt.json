@@ -1,0 +1,37 @@
+[
+  {
+    "name": "axes",
+    "intended_assertion_failed": true,
+    "before": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "mutated": "ff7d529fbcb6de6d632b3788a44f813ac5b019c727b17b9b6a3492aa30ccd94d",
+    "restored": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+  },
+  {
+    "name": "player-visibility",
+    "intended_assertion_failed": true,
+    "before": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "mutated": "2f41a6c0aae3227e63ca8dab698facd07b191e0ec9fd24a9eb2c153b14ce03d8",
+    "restored": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+  },
+  {
+    "name": "ball-visibility",
+    "intended_assertion_failed": true,
+    "before": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "mutated": "399d1f2756a8135af00cff51fef6bdd1a24472460c69eaa24d36e8801f26f7f3",
+    "restored": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+  },
+  {
+    "name": "early-consumption",
+    "intended_assertion_failed": true,
+    "before": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "mutated": "a2366650fedf19ef6b0f40f9dfcaaa91964ae39013c60ff13d2a969061463692",
+    "restored": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+  },
+  {
+    "name": "consumption",
+    "intended_assertion_failed": true,
+    "before": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9",
+    "mutated": "78b1657dcee867c6abf28b7a363397023ea2e8c554aeb9fc6194aa8e5e32c42f",
+    "restored": "6165e66011b2368b259f3333f3d179c1bd14192265306732b17b286ab143a6a9"
+  }
+]

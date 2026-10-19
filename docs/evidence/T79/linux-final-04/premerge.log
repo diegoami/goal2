@@ -1,0 +1,4 @@
+PASS harness.lock: 75 hashes
+PASS original-asset exclusion
+RUN node tools/harness/check-opencode-guard.mjs
+FAIL local pre-merge validation: [Errno 2] No such file or directory: 'node'

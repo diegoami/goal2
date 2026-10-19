@@ -1,0 +1,44 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+test_real_framebuffer_matches_original_text_projection (goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection) ... ALSA lib confmisc.c:855:(parse_card) [error.core] cannot find card '0'
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) [error.core] error evaluating strings
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) [error.core] error evaluating name
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5734:(snd_config_expand) [error.core] Evaluate error: No such file or directory
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) [error.pcm] Unknown PCM default
+FAIL
+
+======================================================================
+FAIL: test_real_framebuffer_matches_original_text_projection (goal2.tests.test_pygame_match_view.PresentationTests.test_real_framebuffer_matches_original_text_projection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_match_view.py", line 87, in test_real_framebuffer_matches_original_text_projection
+    self.assertEqual(d.__dict__,before,'rendering mutated display state')
+AssertionError: {'tok[21 chars]ce': 3, 'countries': ['Denmark', 'Germany'], '[338 chars]901'} != {'tok[21 chars]ce': 2, 'countries': ['Denmark', 'Germany'], '[338 chars]901'}
+  {'_digest': '26dceeabb886efa161151a7d37dd88b392f7c4930d9386949cef8468a34f7901',
+   'consumed': -1,
+   'countries': ['Denmark', 'Germany'],
+   'events': [{'data': {'text': 'Actual original commentary'},
+               'kind': 'commentary',
+               'minute': 17,
+               'score': [2, 1]}],
+   'frame': None,
+   'frame_sequence': -1,
+   'frame_watermark': 0,
+   'frames': deque([]),
+   'next_frame': 0.0,
+   'pitch_rate': None,
+   'result': None,
+-  'sequence': 3,
+?              ^
+
++  'sequence': 2,
+?              ^
+
+   'token': 'owned'} : rendering mutated display state
+
+----------------------------------------------------------------------
+Ran 1 test in 0.240s
+
+FAILED (failures=1)

@@ -1,0 +1,30 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.12.14)
+test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding) ... ALSA lib confmisc.c:855:(parse_card) [error.core] cannot find card '0'
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) [error.core] error evaluating strings
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) [error.core] error evaluating name
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5734:(snd_config_expand) [error.core] Evaluate error: No such file or directory
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) [error.pcm] Unknown PCM default
+FAIL
+
+======================================================================
+FAIL: test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2-work/T79-football-ui/goal2/tests/test_pygame_pitch_view.py", line 62, in test_independent_axes_team_labels_ball_movement_half_and_rebinding
+    self.assertEqual(self.pixel(point[0]+8,point[1]),color,'signed team marker pixels differ')
+AssertionError: Tuples differ: (26, 100, 57) != (245, 105, 45)
+
+First differing element 0:
+26
+245
+
+- (26, 100, 57)
++ (245, 105, 45) : signed team marker pixels differ
+
+----------------------------------------------------------------------
+Ran 1 test in 0.174s
+
+FAILED (failures=1)

@@ -1,0 +1,12 @@
+{
+  "display": ":99",
+  "owned_window_manager_pid": 17285,
+  "command": [
+    "/home/diego/projects/goal2/.cache/validation-venv/bin/python3",
+    "docs/evidence/T79/validation_driver.py",
+    "--output",
+    "docs/evidence/T79/linux-final-04"
+  ],
+  "exit": 1,
+  "owned_window_manager_exit": 0
+}
