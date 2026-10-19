@@ -1,0 +1,38 @@
+[
+  {
+    "label": "00-title",
+    "action": "launch",
+    "text_digest": "cd7f15fbf853b40471d05bad51cb6e6c14cbc8a7307893dba8f5f36c2315c612",
+    "sav_sha256": "eabfcbb01f2d27d5bbe94f5fa4af367a22d18982ada5f56902fce12afe161ce5",
+    "png_sha256": "e980b8522f9e08886276c7903f5fa6203fbb09be0b07d284b3a200c47e777bc2",
+    "tail": "\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 Do you want to load a saved game? (Y/N) \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "label": "01-load",
+    "action": "key y",
+    "text_digest": "f59af6f21253a479562bfa22facf930f445a5f350baeec615ee9944416a3f97c",
+    "sav_sha256": "1bcd0c9cc59d4b417addc09feb3fc5b0cd99e8b9a3badd7f4f36a81003f098b8",
+    "png_sha256": "bd5d0e5e2c1fd7ccdde16a0ac9c05e379587ffa5f569e1a7be816dd1bb3f857d",
+    "tail": "Please enter name of saved game :  G1A\u2592\u2592\u2592\u2592\u2592\u2592.GL      \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "label": "02-manager",
+    "action": "key Return",
+    "text_digest": "b85ba6d253d8642ac66e0daf625172f86c7bc0180202d118b6fc3fa827da2b21",
+    "sav_sha256": "f5e33a1fbef66443a118e7bbc27c4ea4fc0b606e127d6cfcdb43188068967b6a",
+    "png_sha256": "7eee4d45fa7fdeb35341ccd3702129b4458ed3a78c8fe4293b764593657467af",
+    "tail": "F1help  F3load goal  F4load summary  F5print screen F7save               F10quit",
+    "font": "the savestate's VGA plane 2"
+  },
+  {
+    "label": "03-squad",
+    "action": "key space",
+    "text_digest": "3b9bb4d270dc395396f243df6aaee22ef0c1553745063dcb25b9c69f8f78766d",
+    "sav_sha256": "94d16bb12b84a6193ec69936b05b5def460f938054967b855015831ee6726e17",
+    "png_sha256": "15c46347eb961fddefb97053daef4b1862dd247b11f66568367f0074a98a4774",
+    "tail": "F2-new name R,C-reposition T-tactics               \u25c4\u2518-move player   Esc-exit",
+    "font": "the savestate's VGA plane 2"
+  }
+]

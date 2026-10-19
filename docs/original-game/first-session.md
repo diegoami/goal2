@@ -44,7 +44,31 @@ Use **Up/Down** to move the menu highlight and **Enter** to choose. **Team info*
 
 ## Prepare and watch
 
-Before playing, inspect **select squad**. The recorded guide demonstrates switching between the 20-player squad and the national pool with **Left/Right**, replacing a squad player with a pool player, changing positions with **R/C**, and opening individual tactics with **T**. The squad's player card contains identity, role, characteristic bars and readiness indicators. This initial sample still needs a retained, verified *pre-match* squad image; the in-match bench image below is related but has different substitution controls. [confirmed: E031 C27–C34; evidence gap: first-session pre-match squad image]
+Before playing, inspect **select squad**. In the retained G1A save, **Space** on the hub opened the squad immediately. Its upper instructions distinguish the twenty selected players from the wider national pool, and Ins offers the assistant's recommended twenty. [confirmed: M244-G1A-02 steps 2–3; E031 C21, C27, C29]
+
+![Original Holland squad player card](images/m244-squad.png)
+
+*Pre-match Holland squad, `M244-G1A-02 step 3` after one Space key; [capture log](captures/m244-g1a-02.json) records the verified G1A source, state/PNG hashes and screen digest. The selected Van Breukelen card puts name, age, caps/goals, height, dominant foot, position and club position above skill bars; the center has tactics and characteristics; the right strip shows the twenty. The white “ready to play” status is visible. [confirmed: M244-G1A-02 step 3]*
+
+![Next Holland player card after one Down](images/m244-squad-next.png)
+
+*Koeman card after one Down from the prior state, `M244-G1A-02 step 4`. Compare his position, bars and characteristics with Van Breukelen before deciding who belongs in the XI; the card changes as the highlight moves. The bars' scale is not documented here as a precise numeric value. [confirmed: M244-G1A-02 steps 3–4; evidence gap: exact bar scale]*
+
+The card's printed keys are **Up/Down** to find a player, **Left/Right** to toggle squad and pool, **R/C** to reposition, **T** for the selected player's tactics, **Enter** to start a move and **Esc** to leave. E031 separately observed pool replacement as Enter on a pool player, Left, then Enter on a squad player; one Enter alone is only the first half of that move. [confirmed: M244-G1A-02 steps 3–9; E031 C27–C28b, C31, C33]
+
+![National pool player card after one Right](images/m244-pool.png)
+
+*National pool, `M244-G1A-02 step 5` after one Right from the squad card. The selected Stott card and the right-hand pool list replace the twenty-player squad strip. A second observed Down moved to the next pool player in step 6; this is a separate browsing state, not proof that a player was selected. [confirmed: M244-G1A-02 steps 4–6]*
+
+![Selected player's individual tactics](images/m244-individual-tactics.png)
+
+*Koeman's tactics, `M244-G1A-02 step 8` after returning to squad with Left and pressing T. The bottom hint changes to arrow selection, Enter alteration and Esc exit. The middle shows position, possession, passing, tackling and marking choices; these belong to the selected player. [confirmed: M244-G1A-02 steps 7–9; E031 C33–C33d]*
+
+![Team tactics after leaving the squad and pressing T](images/m244-team-tactics.png)
+
+*Holland team tactics, `M244-G1A-02 step 11`. Esc left individual tactics, another Esc returned to the hub, and a single T opened the team card. The eight visible team lines include defence system, protection, offside, positioning, possession, passing, tackling and marking; Enter changes the highlighted line. Team settings and one player's settings are distinct decisions. [confirmed: M244-G1A-02 steps 8–11; E031 C07, C33]*
+
+See the [squad and tactics chapter](squad-and-tactics.md) for player fields, swaps, formation and bench decisions. [confirmed: E031 C27–C34, C41]
 
 ![Original Greece versus Hungary pre-match menu](images/match-menu.png)
 
@@ -58,4 +82,20 @@ When the game presents the watch question, **Y** enters the watched branch and *
 
 During a watched match, **Left** slowed the game by one speed marker in E031; **Space** opened the commentary view; **R** produced a quick result from a live match. At halftime, a board offers Enter to reach the bench/menu, where **players** allows substitutions before **play** begins the second half. The guide reports five substitutions in a friendly and two in competition matches based on its observed screens and original manual. [confirmed: E031 C39, C39c, C08, C40–C41c; original GOAL.HLP]
 
-At full time, inspect **match stats** before returning to the manager menu. The statistics board includes a score, scorers, corners, penalties, shots, fouls, bookings, cards, possession and territory; a later chapter will identify each label and source state. The first illustrated chapter will continue through that board, campaign return, save and load once those specific screenshots are placed. [confirmed: E015-r0007 state 51; E031 C24b, C51; evidence gap: complete first-session image sequence]
+At full time, inspect **match stats** before returning to the manager menu. The board includes scores, scorers, corners, penalties, shots, fouls, bookings, cards, possession and territory. These are the evidence for how the match unfolded, beyond the final score. [confirmed: E015-r0007 states 50–51; E031 C24b, C51]
+
+![Original end-of-match statistics and save-summary prompt](images/match-summary-save-prompt.png)
+
+*Statistics and “save the match summary?” prompt, `E015-r0007 state 51`. This Greece–Hungary example is a separate retained match; the screen places each team's numbers side by side and a conditional Y/N summary question below. [confirmed: E015-r0007 state 51; E031 C51]*
+
+When a round finishes, the results page lists matches and asks for a key to continue. The manager hub then gives the next opponent. Before leaving a useful checkpoint, press **F7**, enter a save name and press **Enter**; the title's **Y** path reloads that `.GL` later. The screenshot below shows the save-name line over the hub. [confirmed: E015-r0007 states 52, 215; E031 C25, C25b, C11]
+
+![Original round results list](images/round-results.png)
+
+*Round results, `E015-r0007 state 52`. The list is the bridge from an individual match back to the wider fixture sequence. [confirmed: E015-r0007 state 52]*
+
+![Original save-name entry over the manager hub](images/save-game-name-entry.png)
+
+*Save-name prompt, `E015-r0007 state 215`. The original prints the proposed filename and `.GL` suffix at the bottom. Esc cancels per the reviewed prompt finding. [confirmed: E015-r0007 state 215; E031 C25; reviewed F030]*
+
+The [match chapter](match-and-results.md) follows intervention, halftime, substitution and results in detail; [startup and save](startup-save-replay.md) illustrates the load and quit alternatives. [confirmed: E031 C35–C51]
