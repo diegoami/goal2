@@ -1,0 +1,9 @@
+{
+  "script": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-replace-matrix-1792406905621202541/matrix.py",
+  "source": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-after01-1792406753945618392",
+  "output": "/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-replace-matrix-1792406905621202541/observations",
+  "windows_script": "C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-replace-matrix-1792406905621202541\\matrix.py",
+  "windows_source": "C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-after01-1792406753945618392",
+  "windows_output": "C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\fix254-replace-matrix-1792406905621202541\\observations",
+  "script_sha256": "f3dfdc64cbb32dac83fd8985b4cec1e54d935dc9c15d1684b7a66e1a32fccd61"
+}

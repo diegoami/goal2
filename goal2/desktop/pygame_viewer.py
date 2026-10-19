@@ -1,4 +1,5 @@
 """[designed: T66] SDL child, display only. Scroll with wheel/arrows; End follows live; Escape closes."""
+from functools import cache
 import json
 import os
 from pathlib import Path
@@ -26,6 +27,36 @@ def frame_digest(frame):
     return hashlib.sha256(json.dumps(frame, sort_keys=True).encode()).hexdigest()
 
 
+
+@cache
+def _status_replace_api():
+    """[designed: #254] Bind the existing-file Windows replacement operation once."""
+    import ctypes
+    from ctypes import wintypes
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    replace = kernel.ReplaceFileW
+    replace.argtypes = (wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.LPCWSTR,
+                       wintypes.DWORD, ctypes.c_void_p, ctypes.c_void_p)
+    replace.restype = wintypes.BOOL
+    return replace
+
+
+def _replace_status(temporary, path):
+    """[designed: #254] Replace a complete status while a delete-shared reader is open."""
+    if os.name != 'nt':
+        return os.replace(temporary, path)
+    import ctypes
+    # [confirmed: docs/evidence/fix254/native-replacement-diagnosis-01/complete-report.json]
+    # ReplaceFileW permits the old open snapshot while publishing the complete new file.
+    if _status_replace_api()(os.fspath(path), os.fspath(temporary), None, 0, None, None):
+        return
+    error = ctypes.get_last_error()
+    # [designed: #254] The first status has no destination to replace; create only in that case.
+    if error == 2 and not path.exists():
+        return os.replace(temporary, path)
+    raise ctypes.WinError(error)
+
+
 def status(path, value):
     temporary = path.with_suffix('.new')
     temporary.write_text(json.dumps(value))
@@ -33,7 +64,7 @@ def status(path, value):
     deadline = time.monotonic() + .25
     while True:
         try:
-            os.replace(temporary, path)
+            _replace_status(temporary, path)
             return
         except PermissionError as exc:
             remaining = deadline - time.monotonic()

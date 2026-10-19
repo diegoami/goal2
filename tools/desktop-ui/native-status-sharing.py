@@ -17,7 +17,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
-from goal2.desktop import watched
+from goal2.desktop import watched, pygame_viewer as viewer
 from goal2.tests.test_desktop_watched_sharing import SharingTests
 
 
@@ -30,6 +30,7 @@ def main():
     report={'tag':'[designed: #254] Real native status read/replace interleave',
             'platform':platform.platform(),'python':sys.version,
             'probe_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            'writer_sha256':hashlib.sha256((ROOT/'goal2/desktop/pygame_viewer.py').read_bytes()).hexdigest(),
             'controller_sha256':hashlib.sha256((ROOT/'goal2/desktop/watched.py').read_bytes()).hexdigest(),
             'scope':'Actual controller status read and native writer; inert engine/viewer; not match/UI acceptance',
             'cases':[],'result':'RUNNING'}
@@ -39,6 +40,8 @@ def main():
             helper=SharingTests();row={'index':index,'reader_interleave_visited':False}
             with tempfile.TemporaryDirectory(prefix='fix254-sharing-')as folder:
                 controller=helper.controller(folder);path=Path(folder)/'status';value=helper.value(controller)
+                assert not path.exists()
+                viewer.status(path,value);row['initial_status_created']=json.loads(path.read_bytes())==value
                 path.write_text(json.dumps(value,indent=2));old=path.read_bytes()
                 original_open=Path.open
                 factory=getattr(watched,'_open_status',lambda target:original_open(target,'rb'))
@@ -76,7 +79,7 @@ def main():
                 report['cases'].append(row)
             assert row['reader_interleave_visited'],'production read factory was not visited'
             assert row['writer_exit']==0,'native production writer could not replace status while its actual reader remained open'
-            assert row['old_snapshot_validated']and not row['published']and row['pending_retained']
+            assert row['initial_status_created']and row['old_snapshot_validated']and not row['published']and row['pending_retained']
             assert row['replacement_complete']and row['replacement_bytes_differ']
             assert row['all_read_handles_closed']and row['owned_writers_reaped']
         report['result']='PASS'

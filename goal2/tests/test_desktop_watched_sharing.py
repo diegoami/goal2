@@ -1,5 +1,6 @@
 """[designed: #236] Deterministic Windows sharing, deadlines and ownership regressions."""
 from contextlib import ExitStack
+import ctypes
 import errno
 import io
 import json
@@ -100,13 +101,29 @@ class SharingTests(unittest.TestCase):
                     close.assert_not_called()
                     native_os.close.assert_called_once_with(77)
 
+    def test_native_replace_falls_back_only_for_an_absent_destination(self):
+        for code, exists in ((2,False), (2,True), (3,False), (5,False), (32,True)):
+            with self.subTest(code=code, exists=exists), tempfile.TemporaryDirectory() as folder:
+                target = Path(folder)/'status';temporary = target.with_suffix('.new')
+                if exists:target.write_bytes(b'old')
+                error = OSError('injected native replacement error')
+                native_os = SimpleNamespace(**{**vars(os), 'name':'nt', 'replace':Mock()})
+                with patch.object(viewer, 'os', native_os), patch.object(viewer, '_status_replace_api', return_value=Mock(return_value=False)), patch.object(ctypes, 'get_last_error', return_value=code, create=True), patch.object(ctypes, 'WinError', return_value=error, create=True):
+                    if code == 2 and not exists:
+                        viewer._replace_status(temporary,target)
+                        native_os.replace.assert_called_once_with(temporary,target)
+                    else:
+                        with self.assertRaises(OSError) as caught:viewer._replace_status(temporary,target)
+                        self.assertIs(caught.exception,error)
+                        native_os.replace.assert_not_called()
+
     def test_writer_retries_same_atomic_payload_without_schema_changes(self):
         with tempfile.TemporaryDirectory() as folder:
             target = Path(folder)/'status'
             target.write_text('old')
             value = {'token':'owned', 'kind':'ready', 'sequence':7, 'digest':'exact',
                      'frame_sequence':3, 'frame_digest':'rendered'}
-            original = viewer.os.replace
+            original = viewer._replace_status
             attempts = []
             def replace(source, destination):
                 attempts.append(Path(source).read_bytes())
@@ -116,7 +133,7 @@ class SharingTests(unittest.TestCase):
                     raise denied()
                 original(source, destination)
             clock = Clock()
-            with self.environment(viewer, clock), patch.object(viewer.os, 'replace', replace):
+            with self.environment(viewer, clock), patch.object(viewer, '_replace_status', replace):
                 viewer.status(target, value)
             self.assertEqual(len(attempts), 3)
             self.assertEqual(len(set(attempts)), 1)
@@ -128,7 +145,7 @@ class SharingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             target = Path(folder)/'status'; target.write_text('old')
             clock = Clock(); error = denied()
-            with self.environment(viewer, clock), patch.object(viewer.os, 'replace', side_effect=error) as replace:
+            with self.environment(viewer, clock), patch.object(viewer, '_replace_status', side_effect=error) as replace:
                 with self.assertRaises(PermissionError) as caught:
                     viewer.status(target, {'kind':'ready'})
             self.assertIs(caught.exception, error)
@@ -139,21 +156,21 @@ class SharingTests(unittest.TestCase):
     def test_writer_does_not_retry_unrelated_or_non_windows_errors(self):
         with tempfile.TemporaryDirectory() as folder:
             clock = Clock()
-            with self.environment(viewer, clock), patch.object(viewer.os, 'replace', side_effect=[denied(), None]):
+            with self.environment(viewer, clock), patch.object(viewer, '_replace_status', side_effect=[denied(), None]):
                 viewer.status(Path(folder)/'status', {})
             self.assertEqual(clock.sleeps, [.01])
         for platform, error in [('linux', denied()), ('win32', denied(32)),
                                 ('win32', OSError(errno.ENOSPC, 'full'))]:
             with self.subTest(platform=platform, error=error), tempfile.TemporaryDirectory() as folder:
                 clock = Clock()
-                with self.environment(viewer, clock, platform), patch.object(viewer.os, 'replace', side_effect=error) as replace:
+                with self.environment(viewer, clock, platform), patch.object(viewer, '_replace_status', side_effect=error) as replace:
                     with self.assertRaises(type(error)) as caught:
                         viewer.status(Path(folder)/'status', {})
                 self.assertIs(caught.exception, error)
                 self.assertEqual(replace.call_count, 1)
                 self.assertEqual(clock.sleeps, [])
         clock = Clock()
-        with self.environment(viewer, clock), patch.object(Path, 'write_text', side_effect=denied()), patch.object(viewer.os, 'replace') as replace:
+        with self.environment(viewer, clock), patch.object(Path, 'write_text', side_effect=denied()), patch.object(viewer, '_replace_status') as replace:
             with self.assertRaises(PermissionError):viewer.status(Path('status'), {})
         replace.assert_not_called()
         self.assertEqual(clock.sleeps, [])
