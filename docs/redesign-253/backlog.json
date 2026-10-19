@@ -18,7 +18,7 @@
     "title": "Add safe new-career, country selection and saved-career onboarding",
     "priority": "P1 \u00b7 first coherent slice",
     "size_risk": "M; medium replacement/save risk",
-    "dependencies": "B01 selected desktop path; O01/O02 approval; #249 available country-profile projection; accepted country preview/session save and #242/T84 card. Explicit unavailable fields are allowed in an incremental slice but do not count as full original parity",
+    "dependencies": "B01 selected desktop path; O01/O02 approval; #249 available country-profile projection; accepted country preview/session save and #242/T84 card. Explicit unavailable fields are allowed in an incremental slice but do not count as full original parity; B06 contract and later identity capability before editable manager naming; incremental current/default identity is explicit",
     "contract": "backlog/B02.md",
     "issue": "https://github.com/diegoami/goal2/issues/260",
     "implementation_authorized": false,
@@ -60,13 +60,27 @@
     "title": "Validate the selected redesign against original parity and complete player tasks",
     "priority": "P2 \u00b7 release acceptance gate",
     "size_risk": "M; medium evidence/usability risk",
-    "dependencies": "Owner-approved direction; B02/B03/B04; #248/#249/#250/#251 delivered bounded scopes; B07 contract AND its later separately approved multiplayer capability resolution for full parity. All required deferred categories must resolve or receive a named owner exception; the B07 contract alone cannot complete multiplayer parity",
+    "dependencies": "Owner-approved direction; B02/B03/B04; #248/#249/#250/#251 delivered bounded scopes; B07 contract AND its later separately approved multiplayer capability resolution for full parity. All required deferred categories must resolve or receive a named owner exception; the B07 contract alone cannot complete multiplayer parity; B06 contract and its later assistant/identity capability resolution are also full-parity prerequisites",
     "contract": "backlog/B05.md",
     "issue": "https://github.com/diegoami/goal2/issues/263",
     "implementation_authorized": false,
     "owns": "Task-owned validation scenarios, usability protocol/evidence and final release-readiness documentation. No opportunistic UI/engine fixes; defects get scoped issues and exact-head reruns.",
     "owned_areas": [
       "redesign-acceptance-evidence"
+    ]
+  },
+  {
+    "key": "B06",
+    "title": "Scope assistant squad recommendations and editable manager/player identities",
+    "priority": "P2 \u00b7 full-parity support prerequisite",
+    "size_risk": "S\u2013M planning contract; medium identity/persistence risk",
+    "dependencies": "Owner direction approval; accepted #242/T84, existing squad/pool/eligibility and versioned save audit; coordinate #248 roles/tactics",
+    "contract": "backlog/B06.md",
+    "issue": "https://github.com/diegoami/goal2/issues/265",
+    "implementation_authorized": false,
+    "owns": "Capability/evidence contract only for assistant recommendations and editable identities; no engine, UI, original-data write or save migration.",
+    "owned_areas": [
+      "assistant-identity-capability-contract"
     ]
   },
   {

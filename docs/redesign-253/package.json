@@ -1,0 +1,213 @@
+{
+  "evidence": "[designed: #253 trace registry; no implementation authorization]",
+  "base_commit": "3335da830d289cc869f989b73816926c54360ff1",
+  "manual_commit": "ebdd6879d469a574f6d4b446f59b33a6be3ffd81",
+  "recommended_direction": "A \u2014 Country desk",
+  "implementation_authorized": false,
+  "surfaces": {
+    "S01": "Launch",
+    "S02": "New career",
+    "S03": "Country desk",
+    "S04": "Team",
+    "S05": "Pool comparison",
+    "S06": "Country profile",
+    "S07": "Competition",
+    "S08": "Preparation",
+    "S09": "Live",
+    "S10": "Decision",
+    "S11": "Result",
+    "S12": "Archive",
+    "S13": "Game save/load",
+    "S14": "Bulletin",
+    "S15": "Local-manager handoff"
+  },
+  "journeys": {
+    "J01": {
+      "surfaces": [
+        "S01",
+        "S02",
+        "S13"
+      ],
+      "edges": [
+        "new",
+        "load",
+        "invalid-save",
+        "replacement",
+        "identity-capability"
+      ]
+    },
+    "J02": {
+      "surfaces": [
+        "S03",
+        "S14"
+      ],
+      "edges": [
+        "next-fixture",
+        "calendar-boundary",
+        "news"
+      ]
+    },
+    "J03": {
+      "surfaces": [
+        "S04",
+        "S05"
+      ],
+      "edges": [
+        "compare",
+        "draft-confirm",
+        "draft-discard",
+        "pool-policy",
+        "assistant-identity-capability"
+      ]
+    },
+    "J04": {
+      "surfaces": [
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "edges": [
+        "opponent-read-only",
+        "group-fixtures",
+        "history-source"
+      ]
+    },
+    "J05": {
+      "surfaces": [
+        "S08",
+        "S09"
+      ],
+      "edges": [
+        "quick",
+        "watch",
+        "speed",
+        "unsupported-route"
+      ]
+    },
+    "J06": {
+      "surfaces": [
+        "S09",
+        "S10"
+      ],
+      "edges": [
+        "live-clock",
+        "commentary",
+        "supported-boundary",
+        "off-on",
+        "cancel"
+      ]
+    },
+    "J07": {
+      "surfaces": [
+        "S10",
+        "S11"
+      ],
+      "edges": [
+        "halftime",
+        "quick-injury-repeat",
+        "extra-time",
+        "extra-midpoint",
+        "shoot-order",
+        "undo",
+        "timed-default",
+        "no-subs-unknown"
+      ]
+    },
+    "J08": {
+      "surfaces": [
+        "S11",
+        "S12",
+        "S03",
+        "S07",
+        "S14"
+      ],
+      "edges": [
+        "statistics",
+        "not-recorded",
+        "round",
+        "continue",
+        "archive",
+        "replay-dependency"
+      ]
+    },
+    "J09": {
+      "surfaces": [
+        "S13",
+        "S15",
+        "S01"
+      ],
+      "edges": [
+        "save",
+        "resume",
+        "quit",
+        "handoff",
+        "multimanager-capability"
+      ]
+    }
+  },
+  "layouts": {
+    "01-country-setup": [
+      "S02"
+    ],
+    "02-country-desk": [
+      "S03",
+      "S14"
+    ],
+    "03-team-workspace": [
+      "S04"
+    ],
+    "04-pool-compare": [
+      "S05"
+    ],
+    "05-competition": [
+      "S06",
+      "S07"
+    ],
+    "06-match-preparation": [
+      "S08"
+    ],
+    "07-live-match": [
+      "S09"
+    ],
+    "08-result-and-campaign": [
+      "S11",
+      "S12",
+      "S14"
+    ],
+    "09-small-window": [
+      "S04"
+    ],
+    "10-match-decisions": [
+      "S10"
+    ]
+  },
+  "existing_owners": {
+    "#241": [
+      "roster-scroll-preview"
+    ],
+    "#252": [
+      "roster-diagnostics"
+    ],
+    "#242": [
+      "player-card-projection"
+    ],
+    "#243": [
+      "match-entry-speed"
+    ],
+    "#198": [
+      "match-renderer-presentation"
+    ],
+    "#248": [
+      "personal-instruction-edits"
+    ],
+    "#249": [
+      "campaign-context-data"
+    ],
+    "#250": [
+      "watched-intervention-support"
+    ],
+    "#251": [
+      "retained-result-replay-data"
+    ]
+  }
+}

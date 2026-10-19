@@ -56,6 +56,8 @@ flowchart LR
 
 [designed] Starting creates one disposable candidate and publishes it only after validation. Automatic welcome/news availability leads to Country desk with **Review your team** and **Prepare next match**. The player opens/acknowledges news; automatic news does not advance fixtures. First-session guidance disappears after completion but stays available through Help.
 
+[designed: B02/B06] Editable manager-name setup depends on B06's name/state/persistence contract and later supported capability. The first incremental B02 slice may keep the current/default identity with a clear explanation; it must not enable an unsupported field or claim naming parity. Player records and guest memory are serialized today; that fact alone does not establish a complete editable identity contract.
+
 ## J02 — the country desk and understanding the next action
 
 [confirmed: manager-menu; M244-G1A-02 step2; M244-G1E-06 step19] The original puts country/next-opponent ranks, fixture type, manager context and twenty-player strip beside the action menu. [designed] S03 combines that orientation with a clear readiness checklist: XI selected, captain selected, unavailable starters, unconfirmed changes and opponent scouted. Each problem links to its exact Team row or preparation field. The next fixture card names competition/phase/home-away and links to the opponent profile; a small group-context card links to the selected group with its fixtures. These cards summarize; the full information stays one named action away.

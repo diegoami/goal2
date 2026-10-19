@@ -1,0 +1,104 @@
+{
+  "evidence": "[confirmed: #253 live filed contract equality audit]",
+  "read_utc": "2026-10-19T19:24:39.227063+00:00",
+  "issues": [
+    {
+      "key": "B01",
+      "issue": 259,
+      "url": "https://github.com/diegoami/goal2/issues/259",
+      "title": "#253 proposal: Prove native desktop delivery and choose the retained rendering path",
+      "normalized_body_sha256": "afe6d501d5596543108a05e91e487591ea7505e774b4d6e98d8022e534d9a3f0",
+      "exact_local_body_excluding_optional_title": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B02",
+      "issue": 260,
+      "url": "https://github.com/diegoami/goal2/issues/260",
+      "title": "#253 proposal: Add safe new-career, country selection and saved-career onboarding",
+      "normalized_body_sha256": "ef14e0da571b2cd34f4036505907b4ea476f615644b3d65e798778f80e4d3f65",
+      "exact_local_body_excluding_optional_title": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B03",
+      "issue": 261,
+      "url": "https://github.com/diegoami/goal2/issues/261",
+      "title": "#253 proposal: Compose the Country desk and a shared management workspace",
+      "normalized_body_sha256": "86a7750ea07ebf8ec6353555f60c6c6bcf4be5765901a313e11e9099e6ae22c0",
+      "exact_local_body_excluding_optional_title": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B04",
+      "issue": 262,
+      "url": "https://github.com/diegoami/goal2/issues/262",
+      "title": "#253 proposal: Compose preparation, match handoff and results into one clear journey",
+      "normalized_body_sha256": "6d8cd860895013d558325d72bfd3c12734e1a41ad07f2b821d1d8057544d3c84",
+      "exact_local_body_excluding_optional_title": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B05",
+      "issue": 263,
+      "url": "https://github.com/diegoami/goal2/issues/263",
+      "title": "#253 proposal: Validate the selected redesign against original parity and complete player tasks",
+      "normalized_body_sha256": "5dbe46dc9fcc1c785947bc8014589c9b929bcd90a57374622e9a844ef3855996",
+      "exact_local_body_excluding_optional_title": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B06",
+      "issue": 265,
+      "url": "https://github.com/diegoami/goal2/issues/265",
+      "title": "#253 proposal: Scope assistant squad recommendations and editable identities",
+      "normalized_body_sha256": "e66c848e3cb956d34882ea289e789ba0cc4a22b9562910a64579723e7e2c478d",
+      "exact_local_body_excluding_optional_title": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B07",
+      "issue": 264,
+      "url": "https://github.com/diegoami/goal2/issues/264",
+      "title": "#253 proposal: Scope original local-manager ownership, persistence and handoffs",
+      "normalized_body_sha256": "c37191af301f2d8abc552bf96793f433c05eaef63f8decfba81213f4c93b1e4b",
+      "exact_local_body_excluding_optional_title": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    }
+  ]
+}

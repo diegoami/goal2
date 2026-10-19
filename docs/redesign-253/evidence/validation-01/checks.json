@@ -1,0 +1,37 @@
+[
+  {
+    "check": "proposal",
+    "pass": true,
+    "finding": "A/B/C compared; O01\u2013O07 and operative gate;10 static annotated SVG/PNG pairs;0 out-of-canvas text"
+  },
+  {
+    "check": "parity",
+    "pass": true,
+    "finding": "234 source=allocated=rendered fields;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes)"
+  },
+  {
+    "check": "journeys",
+    "pass": true,
+    "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges and20 capability dependencies"
+  },
+  {
+    "check": "current",
+    "pass": true,
+    "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+  },
+  {
+    "check": "backlog",
+    "pass": true,
+    "finding": "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership"
+  },
+  {
+    "check": "technology",
+    "pass": true,
+    "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+  },
+  {
+    "check": "scope",
+    "pass": true,
+    "finding": "74 changed files limited to task docs/index;JSON valid;no app/engine/dependency/original payload changes"
+  }
+]
