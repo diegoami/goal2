@@ -39,18 +39,32 @@ LAYOUTS = ["01-country-setup", "02-country-desk", "03-team-workspace",
            "07-live-match", "08-result-and-campaign", "09-small-window",
            "10-match-decisions"]
 GAP_FIELDS = {
-    "G01": {"FX03", "FX04", "FX07", "MP01", "MP02", "MP07", "MP08"} | {f"IN{i:02}" for i in range(12, 19)},
+    "G01": {"FX03", "FX04", "FX07", "MP01-G", "MP02", "MP07-G", "MP08", "LI08"} | {f"IN{i:02}" for i in range(12, 19)},
     "G02": {"FX05"},
     "G03": {f"NW{i:02}" for i in range(1, 9)},
     "G04": {"MP09", "PR01", "PR02", "PR03", "PR05", "PR07", "PR08", "SV05", "SV06", "SV07", "RS19"},
-    "G05": {f"{prefix}{i:02}" for prefix, count in [("CO", 14), ("CS", 8), ("CC", 4), ("HI", 24), ("HR", 9), ("TT", 8)] for i in range(1, count + 1)} | {"HU01", "HU03", "HU05"}}
+    "G05": {f"{prefix}{i:02}" for prefix, count in [("CO", 14), ("CS", 8), ("CC", 4), ("HI", 24), ("HR", 9), ("TT", 8)] for i in range(1, count + 1)} | {"HU01-G", "HU03", "HU05"}}
+GAP_FIELDS["G05"].remove("CO01")
 VISIBLE_SURFACES = dict(zip(LAYOUTS, [[x] for x in ("S02", "S03", "S04", "S05", "S07", "S08", "S09", "S11", "S04", "S10")]))
 ROSTER_NAMES = ["Van Breukelen", "Koeman", "Van Aerle", "Van Tiggelen", "Fordham", "Rijkaard", "Gullit", "Bergkamp", "Bosz", "Van Basten", "Kieft", "Hiele", "Snelders", "De Wolf", "Blind", "Wouters", "Winter", "Witschge", "Roy", "Eijkelkamp"]
 CAP_SCOPE = {"Country ranks/status/profile/strips": "G05", "Complete country records": "G05",
  "Extra-time midpoint/shoot-out order": "G01",
  "Additional watched modes, watch scheduling and mode-dependent decisions": "G01",
+ "Quick continuation during watched play": "G01",
  "Friendly cancellation and rearrangement": "G02", "Generated news and bulletin consequences": "G03",
  "Durable goal/summary capture, export and goal replay": "G04"}
+
+# Independent source-to-allocation partition: source IDs/categories never change.
+SPLIT_FIELDS = {
+    "HU01": {"S": ("Active managed country and existing manager name", "B03"),
+             "G": ("Manager rating and complete manager-profile projection", "UNOWNED:G05")},
+    "MP01": {"S": ("Supported friendly Quick/Watch, competitive Quick and managed side", "#243/B04"),
+             "G": ("Competitive/other-country Watch and unsupported mode-dependent delivery", "UNOWNED:G01")},
+    "MP07": {"S": ("Captain selection in Team and confirmed captain before supported friendly Watch", "B03/#250"),
+             "G": ("Explicit watched captain prompt beyond audited supported first choice", "UNOWNED:G01")}}
+CARD_SKILLS = {"2610": [20, 23, 5, 8, 11, 14, 17, 20, 23, 5, 8, 11],
+               "2628": [4, 11, 18, 4, 11, 18, 4, 11, 18, 4, 11, 18]}
+CARD_CHARACTERISTICS = {"2610": [6, 24, 27, 17, 4], "2628": [6, 24, 28, 20, 4]}
 
 CHECKS = ("proposal", "parity", "journeys", "current", "backlog", "technology", "scope")
 
@@ -116,6 +130,8 @@ class Package:
             w, h = png_size((self.path / "layouts" / (name + ".png")).read_bytes())
             need((w, h) == (1600, 1010), "missing/incorrect layout PNG: " + name)
         self.illustration_contracts()
+        self.illustration_quality()
+        self.departure_contracts()
         bounds = self.data(reg["layout_validation_receipt"])
         need(sha((self.path / "evidence/check_layout_bounds.py").read_bytes()) == bounds["helper_sha256"], "static bounds helper hash differs")
         need({x["svg"] for x in bounds["layouts"]} == {x + ".svg" for x in LAYOUTS}, "bounds receipt omits a layout")
@@ -137,7 +153,7 @@ class Package:
                 need(key in source and source[key]["information"] == name, "required original field missing/renamed: " + key + " " + name)
         expected = {f"{p}{i:02}" for p, count in GROUPS.items() for i in range(1, count + 1)}
         need(set(source) == expected, "original context/field coverage differs from234-field audit")
-        need(set(dest) == set(source), "source/destination field IDs differ")
+        self.allocation_contracts()
         need(len({r["category"] for r in src}) == 17, "missing original category")
         contexts = self.rows("parity/contexts.tsv")
         need({r["context"] for r in contexts} == set(GROUPS) and len(contexts) == 23, "missing/duplicate decision context")
@@ -146,11 +162,11 @@ class Package:
         surfaces = self.data("package.json")["surfaces"]
         screenshots = {p.name for p in (self.root / "docs/original-game/images").glob("*.png")}
         allowed = set(EXISTING) | set(ISSUES) | {"UNOWNED:" + g for g in GAP_FIELDS}
-        for key, row in source.items():
+        for key, d in dest.items():
+            row = source[d["source_id"]]
             need(all(row.values()), "blank evidence/category/source field: " + key)
             need(row["context"] == key[:2], "source context mismatch: " + key)
             need(set(row["screen"].split(";")) <= screenshots, "source screenshot absent: " + key)
-            d = dest[key]
             need(d["context"] == row["context"], "destination context mismatch: " + key)
             targets = set(re.findall(r"S\d+", d["destination"]))
             need(targets and targets <= set(surfaces), "blank/unknown destination: " + key)
@@ -158,14 +174,16 @@ class Package:
             need(owners and owners <= allowed, "unknown delivery/gap vocabulary: " + key)
             need(d["reuse"].strip(), "missing scoped reuse: " + key)
         self.scope_contracts()
+        self.quick_continuation_contracts()
+        self.reuse_contracts()
         for key in (f"TT{i:02}" for i in range(1, 9)):
             need({"S02", "S06"} <= set(re.findall(r"S\d+", dest[key]["destination"])), "team tactics/default missing setup/scout context: " + key)
         for key in ("SD05", "SD06", "SV08", "ST04"):
             need("B06" in dest[key]["owner"], "assistant/identity dependency absent: " + key)
         rendered = "\n".join(self.read("parity/" + f + ".md") for f in ("management", "campaign", "match"))
-        rendered_ids = re.findall(r"^\| ([A-Z]{2}\d{2}) \|", rendered, re.M)
-        need(Counter(rendered_ids) == Counter(source.keys()), "rendered matrix omitted/duplicated field")
-        for key in source:
+        rendered_ids = re.findall(r"^\| ([A-Z]{2}\d{2}(?:-[SG])?) \|", rendered, re.M)
+        need(Counter(rendered_ids) == Counter(dest.keys()), "rendered matrix omitted/duplicated allocation")
+        for key in dest:
             expected_cells = " | [designed] ".join([dest[key]["destination"], dest[key]["owner"], dest[key]["reuse"]])
             need(any(line.startswith("| " + key + " |") and line.endswith("[designed] " + expected_cells + " |") for line in rendered.splitlines()), "rendered destination/owner/reuse differs: " + key)
         ledger = self.rows("evidence/screens-inspected.tsv")
@@ -195,7 +213,7 @@ class Package:
         for key in (f"TT{i:02}" for i in range(1, 9)):
             targets = set(re.findall(r"S\d+", dest[key]["destination"]))
             need({"S02", "S06"} <= targets, "team tactics/default missing setup/scout context: " + key)
-        return "234 source=allocated=rendered fields;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
+        return "234 unchanged source fields=237 complete allocations=rendered;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
 
     def journeys(self):
         reg = self.data("package.json")
@@ -214,12 +232,13 @@ class Package:
         cap = self.rows("capabilities.tsv")
         for phrase in ("Local manager", "identities", "Assistant", "shoot-out", "halftime", "replay", "competitive"):
             need(any(phrase.lower() in " ".join(r.values()).lower() for r in cap), "capability dependency omitted: " + phrase)
-        need(len(cap) == 24 and all(all(r.values()) for r in cap), "incomplete capability register")
+        self.quick_continuation_contracts()
+        need(len(cap) == 25 and all(all(r.values()) for r in cap), "incomplete capability register")
         # Representative drawings need not illustrate every surface covered by journeys.
         exact = VISIBLE_SURFACES
         for key, visible in exact.items():
             need(reg["layouts"][key] == visible, "layout claims a surface not visibly drawn: " + key)
-        return "15 surfaces covered by9 journeys; automatic/player/conditional edges;24 scoped capability rows;all10 visible-surface mappings"
+        return "15 surfaces covered by9 journeys; automatic/player/conditional edges;25 scoped capability rows;all10 visible-surface mappings"
 
     def scope_contracts(self):
         """[designed: R1] Issue existence cannot satisfy excluded capability delivery."""
@@ -249,7 +268,103 @@ class Package:
             need(name in capabilities and "UNOWNED:" + gap in capabilities[name]["owner"], "capability register silently extends existing contract: " + name)
         for key, expected in (("B02", "O12/G05"), ("B05", "O08–O12/G01–G05")):
             need(expected in self.read("backlog/" + key + ".md"), "child hides unowned capability prerequisite: " + key)
+        self.allocation_contracts()
         return "five unowned delivery gaps remain gated; existing issues only bounded conditional reuse"
+
+    def allocation_contracts(self):
+        """[designed: R2] Preserve all original categories, partition mixed delivery."""
+        src = self.rows("parity/source-fields.tsv")
+        source = {r["id"]: r for r in src}
+        original = {f"{p}{i:02}" for p, count in GROUPS.items() for i in range(1, count + 1)}
+        need(len(src) == 234 and set(source) == original, "independent234-source inventory differs")
+        need(len({r["category"] for r in src}) == 17 and {r["context"] for r in src} == set(GROUPS), "original categories/contexts lost")
+        rows = self.rows("parity/destinations.tsv")
+        dest = {r["id"]: r for r in rows}
+        expected = (original - set(SPLIT_FIELDS)) | {key + "-" + part for key, parts in SPLIT_FIELDS.items() for part in parts}
+        need(len(rows) == 237 and set(dest) == expected, "mixed source fields need237 independent supported/residual allocations")
+        for key, row in dest.items():
+            sid = key.split("-")[0]
+            need(row["source_id"] == sid and row["context"] == source[sid]["context"], "allocation loses original source/context: " + key)
+            if sid in SPLIT_FIELDS:
+                information, owner = SPLIT_FIELDS[sid][key[-1]]
+                need(row["information"] == information and row["owner"] == owner, "supported/residual scope collapsed or misowned: " + key)
+            else:
+                need(row["information"] == source[sid]["information"], "unsplit original information changed: " + key)
+        need(dest["CO01"]["owner"] == "B02/B03", "supported country identity/list/selection incorrectly unowned")
+        for context, count in GROUPS.items():
+            need({r["source_id"] for r in rows if r["context"] == context} == {f"{context}{i:02}" for i in range(1, count + 1)}, "allocation drops original category context: " + context)
+        return "234 original sources/17 categories/23 contexts retained;237 exact allocations;four supported areas separated from residual gaps"
+
+    def quick_continuation_contracts(self):
+        """[designed: R2 R1] Existing supported entry cannot imply an in-flight mode switch."""
+        dest = {r["id"]: r for r in self.rows("parity/destinations.tsv")}
+        need(dest["LI08"]["owner"] == "UNOWNED:G01" and "#250 audit only" in dest["LI08"]["reuse"], "quick continuation has no delivery contract;LI08 must beG01/#250 audit only")
+        gaps = {g["id"]: g for g in self.data("capability-gaps.json")["gaps"]}
+        need("LI08" in gaps["G01"]["fields"], "G01 omits original R-result capability")
+        caps = {r["capability"]: r for r in self.rows("capabilities.tsv")}
+        row = caps.get("Quick continuation during watched play", {})
+        need(row.get("owner") == "UNOWNED:G01" and "unavailable" in row.get("dependency_or_limit", "").lower(), "quick continuation missing scoped unavailable capability row")
+        journey = self.read("journeys.md")
+        need("Quick continuation is unavailable" in journey and "no supported in-flight mode switch" in journey, "J06 implies available fast-finish")
+        tree = ET.fromstring((self.path / "layouts/07-live-match.svg").read_bytes())
+        labels = ["".join(n.itertext()) for n in tree.iter() if n.tag.endswith("text")]
+        need("Finish quickly · unavailable" in labels and "No supported in-flight mode switch · G01" in labels, "07 lacks visible quick-continuation refusal/reason")
+        boxes = [n for n in tree.iter() if n.get("data-action") == "quick-continuation"]
+        need(len(boxes) == 1 and boxes[0].get("data-state") == "unavailable" and boxes[0].get("fill") == "#DFE7E3", "07 quick-continuation drawn as enabled")
+        return "LI08/G01;explicit absent in-flight capability;07/J06 unavailable with reason"
+
+    def departure_contracts(self):
+        text = self.read("decisions.md")
+        departures = text.split("## Deliberate departures from the original", 1)[1].split("## Decisions for the owner", 1)[0]
+        need("↔-speed" in departures and "T85" in departures and "freezes" in departures and "separately approved" in departures, "original live-speed departure/acceptedT85 boundary unrecorded")
+        return "original live speed versus accepted frozenT85 recorded as proposed departure;no new engine authority"
+
+    def reuse_contracts(self):
+        rows = {r["id"]: r for r in self.rows("parity/destinations.tsv")}
+        for i in range(1, 9):
+            text = rows[f"TT{i:02}"]["reuse"]
+            need("existing Squad page" in text and "T84 read-only display" not in text and "#248 owns personal edits only" in text, "TT reuse incorrectly assigned to player-cardT84")
+        return "team-bit display remains existing Squad/B03 composition;personal/player scope separate"
+
+    def illustration_quality(self):
+        """[designed: R2 R3/R4] Validate visible values/state, beyond receipt hashes."""
+        trees = {name: ET.fromstring((self.path / "layouts" / (name + ".svg")).read_bytes()) for name in LAYOUTS}
+        texts = {name: [n for n in tree.iter() if n.tag.endswith("text")] for name, tree in trees.items()}
+        for name, nodes in texts.items():
+            strings = ["".join(n.itertext()) for n in nodes]
+            need(any("FULL-PARITY TARGET" in s or "FIRST SLICE" in s for s in strings), "illustration delivery tier unlabelled: " + name)
+            for s in strings:
+                need(not re.search(r"·(?=\d)|remaining:(?=\d)|retains(?=\d)|tied(?=\d)", s), "visible spacing typo: " + name + " " + s)
+        hero = ["".join(n.itertext()) for n in texts["02-country-desk"]]
+        need("Holland · world 14 · Europe 3" in hero and "Belgium · world 8 · Europe 9" in hero, "hero ranks have ambiguous own/opponent notation")
+        need(any("G03 bulletin / G05 ranks" in s and "unowned" in s for s in hero), "hero target hides unowned bulletin/ranks")
+        for name, pid, xmin, xmax in (("04-pool-compare", "2610", 541, 895), ("10-match-decisions", "2610", 842, 1264), ("03-team-workspace", "2628", 864, 1264), ("09-small-window", "2628", 360, 908)):
+            nodes = [n for n in texts[name] if xmin <= float(n.get("x", "0")) <= xmax]
+            for field, value in zip(SKILLS + CHARACTERISTICS, CARD_SKILLS[pid] + CARD_CHARACTERISTICS[pid]):
+                labels = [n for n in nodes if (n.text or "") == field or (n.text or "").startswith(field + " ")]
+                need(len(labels) == 1, "card field absent/ambiguous: " + name + " " + field)
+                label = labels[0]
+                combined = re.fullmatch(re.escape(field) + r" (\d+)", label.text or "")
+                if combined:
+                    actual = int(combined[1])
+                else:
+                    values = [n for n in nodes if n.get("y") == label.get("y") and float(n.get("x", "0")) > float(label.get("x", "0")) and (n.text or "").isdigit()]
+                    need(values, "card value absent: " + name + " " + field)
+                    actual = int(min(values, key=lambda n: float(n.get("x"))).text)
+                need(actual == value, "same-ID illustrative card disagrees: " + name + " " + pid + " " + field)
+        pool = trees["04-pool-compare"]
+        pool_text = ["".join(n.itertext()) for n in texts["04-pool-compare"]]
+        need("Rows 1–7 of 80 · Wheel / Page Down" in pool_text, "pool lacks visible subset count/scroll route")
+        track = [n for n in pool.iter() if n.get("data-scroll-track") == "pool"]
+        thumb = [n for n in pool.iter() if n.get("data-scroll-thumb") == "pool"]
+        need(len(track) == len(thumb) == 1 and float(track[0].get("height")) > float(thumb[0].get("height")) > 0, "pool lacks actual contained scrollbar")
+        bio = [n.text for n in texts["04-pool-compare"] if n.get("y") == "352"]
+        need(len(bio) == 2 and bio[0] != bio[1], "comparison copies outgoing biography into incoming card")
+        chars = [[n.text for n in texts["04-pool-compare"] if n.get("x") == x and any((n.text or "").startswith(c + " ") for c in CHARACTERISTICS)] for x in ("557", "926")]
+        need(len(chars[0]) == len(chars[1]) == 5 and all(a != b for a, b in zip(*chars)), "comparison cards copy all characteristics")
+        tab = [n for n in trees["05-competition"].iter() if n.get("data-tab") == "Groups"]
+        need(len(tab) == 1 and tab[0].get("data-state") == "selected" and tab[0].get("fill") == "#006C5B", "competition has no visible selected Groups tab")
+        return "all10 tier/spacing sweep;four complete cards consistent;pool seven-of80 scroll;selectedGroups;ranks explicit"
 
     def illustration_contracts(self):
         """[designed: R2–R4] Inspect drawn names/sections, scrollbars and scenarios."""
@@ -329,6 +444,8 @@ class Package:
     def backlog(self):
         self.gate()
         self.scope_contracts()
+        self.quick_continuation_contracts()
+        self.reuse_contracts()
         items = self.data("backlog.json")
         need(len(items) == 7 and {x["key"] for x in items} == set(ISSUES), "missing/duplicate new backlog scope")
         all_new_areas = []
@@ -354,6 +471,7 @@ class Package:
         for key, dep in (("B02", "B06"), ("B05", "B06"), ("B05", "B07")):
             need(dep in self.read(by[key]["contract"]), "contract/manifest dependency mismatch: " + key)
         index = (self.root / "docs/tasks/README.md").read_text()
+        need("#251 projection" not in index and "#251 audit/display when available" in index, "task index extends retained-summary contract")
         for n in ISSUES.values():
             need(f"/issues/{n}" in index and f"/issues/{n}" in self.read("backlog.md"), "filed scope absent from proposed order")
         return "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership;5 unowned scopes tied to owner decisions"

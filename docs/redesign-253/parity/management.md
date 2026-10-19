@@ -1,6 +1,6 @@
 # Information parity: management
 
-[confirmed: accepted manual ebdd6879d469a574f6d4b446f59b33a6be3ffd81 and cited source inventory] Original fields are observed labels/states unless explicitly hint/text-supported or unknown. [designed: #253] Destinations and delivery/reuse are proposals, not shipped capabilities. `UNOWNED:Gxx` means no implementation owner exists: the linked owner decision must create a scoped contract before full parity. An existing issue in Reuse is audit/display when available within its written scope, never authority to implement excluded behavior. See [matrix rules](../information-parity.md) and [unowned decisions](../decisions.md#unowned-capability-decisions).
+[confirmed: accepted manual ebdd6879d469a574f6d4b446f59b33a6be3ffd81 and cited source inventory] Original fields are observed labels/states unless explicitly hint/text-supported or unknown. [designed: #253] Destinations and delivery/reuse are proposals, not shipped capabilities. `UNOWNED:Gxx` means no implementation owner exists: the linked owner decision must create a scoped contract before full parity. An existing issue in Reuse is audit/display when available within its written scope, never authority to implement excluded behavior. `-S`/`-G` allocate the supported/residual parts of the same original source ID; the source inventory remains234 fields. See [matrix rules](../information-parity.md) and [unowned decisions](../decisions.md#unowned-capability-decisions).
 
 ## Start and session · ST
 
@@ -8,7 +8,7 @@
 
 [designed] **When/why:** At launch: distinguish starting a career from continuing one; avoid replacing the active game. **Discoverability:** Launch direct; country detail direct; load picker1 action **Delivery / unowned decision:** B02/B06/B07. **Limits:** One manager supported in rebuild; offered3–6 unexercised in original. Retry text is printed; exact original error recovery unverified. No GL compatibility promised.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | ST01 | New game versus load existing game | [designed] S01/S02 | [designed] B02/B07 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | ST02 | Local manager count: offered1–6; two exercised | [designed] S01/S02 | [designed] B07 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -21,11 +21,11 @@
 
 [confirmed: E015-r0007 states3/10; M244-G4C-05 step3; E031 C13–C14b] **observed**. Original comparisons: [country-select-name-entry](../../original-game/images/country-select-name-entry.png), [country-select](../../original-game/images/country-select.png), [m244-team-info-2030](../../original-game/images/m244-team-info-2030.png).
 
-[designed] **When/why:** Before choosing a country or scouting an opponent: judge challenge, experience and the side being managed. **Discoverability:** Identity/rank/difficulty direct; complete profile1 labelled action **Delivery / unowned decision:** UNOWNED:G05. **Limits:** Complete profile delivery is unowned under O12. B02/B03 reuse basic identity and verified current values; #249 audit/display when available only. Original status/skill/difficulty/bar/strip meanings remain unverified; no fabricated scale or authentic kit.
+[designed] **When/why:** Before choosing a country or scouting an opponent: judge challenge, experience and the side being managed. **Discoverability:** Identity/rank/difficulty direct; complete profile1 labelled action **Delivery / unowned decision:** B02/B03/UNOWNED:G05. **Limits:** CO01 identity/list/selection is supported B02/B03 composition. CO02–CO14/CS/CC complete profile/ranking delivery remains unowned O12/G05; #249 audit/display when available only. Unknown status/skill/difficulty/bar/strip meanings stay unknown.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
-| CO01 | Country identity / country list / selected row | [designed] S02/S06; ranking summary S03/S08 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
+| CO01 | Country identity / country list / selected row | [designed] S02 country list/selection; S06 basic country identity; S03/S08 names | [designed] B02/B03 | [designed] Existing country list, identity and selected row; B02/B03 composition. Complete profile/rank fields remain separately allocated CO02–CO14/CS/CC under G05; no rank data inferred from list position. |
 | CO02 | Country status text (e.g. major, very good) | [designed] S02/S06; ranking summary S03/S08 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | CO03 | Country manager identity | [designed] S02/S06; ranking summary S03/S08 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | CO04 | Manager skill text and adjacent bar | [designed] S02/S06; ranking summary S03/S08 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
@@ -46,7 +46,7 @@
 
 [designed] **When/why:** Compare squad strengths and displayed performance before choosing team, tactics or opponent approach. **Discoverability:** All8 labelled rows together; no hidden tooltip-only numbers **Delivery / unowned decision:** UNOWNED:G05. **Limits:** O12 requires a separately scoped source/projection contract. #249 audit/display when available only. Preserve four skill and four performance groups; original bar scale/derivation unknown.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | CS01 | Team skills: keeper | [designed] S02/S06 profile; comparison S08 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | CS02 | Team skills: defence | [designed] S02/S06 profile; comparison S08 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
@@ -63,7 +63,7 @@
 
 [designed] **When/why:** Inspect team condition and tendencies before confirming a tactical plan. **Discoverability:** Four labelled rows direct in team profile; summary at Team **Delivery / unowned decision:** UNOWNED:G05. **Limits:** O12 complete country projection remains unowned; #249 audit/display when available. Verbal labels/bars do not establish numeric units; rebuild calculated morale stays distinct.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | CC01 | Team hardness | [designed] S06 team profile; S04 team-tactics context | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | CC02 | Team fitness | [designed] S06 team profile; S04 team-tactics context | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
@@ -74,11 +74,12 @@
 
 [confirmed: E015-r0007 state16; M244-G1A-02 step2; M244-G1E-06 step19; E031 C16–C21/C54–C55] **observed+text**. Original comparisons: [m244-finals-stage-hub](../../original-game/images/m244-finals-stage-hub.png), [m244-holland-menu](../../original-game/images/m244-holland-menu.png), [manager-menu](../../original-game/images/manager-menu.png).
 
-[designed] **When/why:** After every round: understand who/when/why to prepare and the next available action. **Discoverability:** Direct next-fixture/context/availability; roster preview direct; full roster1 action **Delivery / unowned decision:** B03/B07/UNOWNED:G05. **Limits:** B03 composes verified active state; B07 concerns local ownership. Full manager/rank/host profile fields need O12/G05. #249 audit/display when available; new news generation is O10/G03, never inferred from T51a.
+[designed] **When/why:** After every round: understand who/when/why to prepare and the next available action. **Discoverability:** Direct next-fixture/context/availability; roster preview direct; full roster1 action **Delivery / unowned decision:** B03/B07/UNOWNED:G05. **Limits:** B03 composes verified active state; B07 concerns local ownership. Full manager/rank/host profile fields need O12/G05. #249 audit/display when available; new news generation is O10/G03, never inferred from T51a. HU01-S supported active country/name is distinct from HU01-G unowned manager-rating/profile residue.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
-| HU01 | Active managed country, manager name and manager rating | [designed] S03 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
+| HU01-S | HU01 — Active managed country, manager name and manager rating; [designed allocation] Active managed country and existing manager name | [designed] S03 | [designed] B03 | [designed] Existing active session country/name; B03 composes it. Editable naming still requires B06 and a later supported capability; manager rating is separate HU01-G. |
+| HU01-G | HU01 — Active managed country, manager name and manager rating; [designed allocation] Manager rating and complete manager-profile projection | [designed] S03 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | HU02 | Campaign year and competition/stage title | [designed] S03 | [designed] B03 | [designed] Existing campaign identity/next-fixture state; #249 audit/display when available. New campaign mechanics and B07 local ownership remain separate. |
 | HU03 | Competition host/location in title | [designed] S03 | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | HU04 | Next opponent identity | [designed] S03 | [designed] B03 | [designed] Existing campaign identity/next-fixture state; #249 audit/display when available. New campaign mechanics and B07 local ownership remain separate. |
@@ -94,7 +95,7 @@
 
 [designed] **When/why:** When picking XI, comparing a reserve, captain or substitute: identity, eligibility and role must be beside the choice. **Discoverability:** Selected card direct; comparison pins two cards; small window labelled card pane **Delivery / unowned decision:** #242. **Limits:** T84 field contract owns decoding/display. Exact original performance and card-box rendering unresolved: explicit unavailable text, never fabricated stars/percentages. Opponent card stays read-only.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | PI01 | Player name | [designed] S04/S05/S06/S08/S10 selected card | [designed] #242 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | PI02 | Age | [designed] S04/S05/S06/S08/S10 selected card | [designed] #242 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -114,7 +115,7 @@
 
 [designed] **When/why:** Compare relevant skills for XI/role, reserve exchange, captain, taker or substitution without leaving the decision. **Discoverability:** All12 labels in card; compact table plus Show all attributes retained; numeric domains only per T84 **Delivery / unowned decision:** #242. **Limits:** Bars permit comparison. Exact numeric decoding comes from T84/F008, not image color. Never collapse12 skills into Ability; no invented1–100 scale.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | SK01 | Keeping | [designed] S04/S05/S06/S08/S10 complete player card | [designed] #242 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | SK02 | Kicking | [designed] S04/S05/S06/S08/S10 complete player card | [designed] #242 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -135,7 +136,7 @@
 
 [designed] **When/why:** Before committing a selection: compare temperament, condition and captain suitability in the same view. **Discoverability:** All5 together; Energy/readiness remain in roster rows **Delivery / unowned decision:** #242. **Limits:** Keep fitness versus energy and morale versus rebuild Confidence distinct. Use T84 verified domains; unknown original descriptive buckets are unavailable, not guessed.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | PC01 | Hardness | [designed] S04/S05/S06/S08/S10 complete player card | [designed] #242 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | PC02 | Fitness | [designed] S04/S05/S06/S08/S10 complete player card | [designed] #242 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -149,7 +150,7 @@
 
 [designed] **When/why:** Choose how this player behaves and whom to mark before the match or at an allowed intervention. **Discoverability:** Selected player and all instructions direct; opponent-picker1 action beside both cards **Delivery / unowned decision:** #248. **Limits:** T84 owns read-only projection; #248 owns supported edits. P meaning stays unknown; separate from possession. No invented formation algorithm or live mark context. Named mark resets only when supported source contract establishes it.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | PT01 | Position instruction (stay back / push forward etc.) | [designed] S04 instructions panel; S08/S10 contextual opponent mark | [designed] #248 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | PT02 | Possession instruction | [designed] S04 instructions panel; S08/S10 contextual opponent mark | [designed] #248 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -166,16 +167,16 @@
 
 [designed] **When/why:** Before kickoff or supported tactical pause: compare team-wide approach with individual overrides and opponent. **Discoverability:** S02 tendency summary plus Complete profile1 action to S06 all8 read-only defaults; S04 all8 direct; supported edits explicit **Delivery / unowned decision:** B03/UNOWNED:G05. **Limits:** Current team bits/controls stay with existing management and B03 composition; #248 is personal edits only. O12/G05 covers full setup/opponent defaults. Elements5/8 retain accepted designed wording; no inferred effect.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
-| TT01 | Defence system | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
-| TT02 | Protection | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
-| TT03 | Offside | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
-| TT04 | Positioning | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
-| TT05 | Possession | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
-| TT06 | Passing | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
-| TT07 | Tackling | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
-| TT08 | Marking | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits and T84 read-only display; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT01 | Defence system | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT02 | Protection | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT03 | Offside | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT04 | Positioning | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT05 | Possession | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT06 | Passing | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT07 | Tackling | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
+| TT08 | Marking | [designed] S02/S06 read-only country tactics/defaults; S04 Team instructions; S08 preparation | [designed] B03/UNOWNED:G05 | [designed] Existing team-management bits shown by the existing Squad page; B03 composes that display. T84 owns player cards/personal read-only instructions; #248 owns personal edits only. Complete country/default projection remains G05. |
 
 ## Selection decisions · SD
 
@@ -183,7 +184,7 @@
 
 [designed] **When/why:** Make deliberate team changes with all candidate information and clear confirmation boundaries. **Discoverability:** At wide desktop all20 names/XI-bench split beside full card; at900x640 named scroll/jump to Bench, selected identities pinned **Delivery / unowned decision:** #241/#242/#248/B03/B06/#250. **Limits:** Retain merged #241 scrolling and full IDs; #252 is diagnostics only. Assistant and rename are capability-audit dependencies. Proposed preview/Confirm replaces original immediate assistant mutation; no silent auto-select.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | SD01 | Selected twenty versus wider national pool | [designed] S04/S05/S08 | [designed] #241 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | SD02 | Browse previous/next player and list boundaries | [designed] S04/S05/S08 | [designed] #241 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |

@@ -1,22 +1,24 @@
 # Information parity: match
 
-[confirmed: accepted manual ebdd6879d469a574f6d4b446f59b33a6be3ffd81 and cited source inventory] Original fields are observed labels/states unless explicitly hint/text-supported or unknown. [designed: #253] Destinations and delivery/reuse are proposals, not shipped capabilities. `UNOWNED:Gxx` means no implementation owner exists: the linked owner decision must create a scoped contract before full parity. An existing issue in Reuse is audit/display when available within its written scope, never authority to implement excluded behavior. See [matrix rules](../information-parity.md) and [unowned decisions](../decisions.md#unowned-capability-decisions).
+[confirmed: accepted manual ebdd6879d469a574f6d4b446f59b33a6be3ffd81 and cited source inventory] Original fields are observed labels/states unless explicitly hint/text-supported or unknown. [designed: #253] Destinations and delivery/reuse are proposals, not shipped capabilities. `UNOWNED:Gxx` means no implementation owner exists: the linked owner decision must create a scoped contract before full parity. An existing issue in Reuse is audit/display when available within its written scope, never authority to implement excluded behavior. `-S`/`-G` allocate the supported/residual parts of the same original source ID; the source inventory remains234 fields. See [matrix rules](../information-parity.md) and [unowned decisions](../decisions.md#unowned-capability-decisions).
 
 ## Match preparation · MP
 
 [confirmed: E031 C35–C39/C68b; E015-r0007 states28/30/63; reviewed F030] **observed+text**. Original comparisons: [captain-select](../../original-game/images/captain-select.png), [match-menu](../../original-game/images/match-menu.png), [match-watch-prompt](../../original-game/images/match-watch-prompt.png).
 
-[designed] **When/why:** Before kickoff: review both teams, know how match delivery differs and explicitly start. **Discoverability:** Preparation direct via Play a match; Quick and Watch visible beside prerequisites/speed **Delivery / unowned decision:** #243/B04/#250/UNOWNED:G01/UNOWNED:G04. **Limits:** T85 owns supported entry/speed only, not a new watched mode. #250 audits support/first intervention. Competitive/other-country Watch is unowned O08/G01; replay preferences require O11/G04. Friendly Quick and original Watch remain different routes.
+[designed] **When/why:** Before kickoff: review both teams, know how match delivery differs and explicitly start. **Discoverability:** Preparation direct via Play a match; Quick and Watch visible beside prerequisites/speed **Delivery / unowned decision:** B03/#243/B04/#250/UNOWNED:G01/UNOWNED:G04. **Limits:** T85 owns supported entry/speed only, not a new watched mode. #250 audits support/first intervention. Competitive/other-country Watch is unowned O08/G01; replay preferences require O11/G04. Friendly Quick and original Watch remain different routes. MP01-S/MP07-S supported route/managed side/captain selection are distinct from MP01-G/MP07-G unsupported Watch/prompt residue.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
-| MP01 | Quick versus watched route and side being managed | [designed] S08 | [designed] UNOWNED:G01 | [designed] #249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate. |
+| MP01-S | MP01 — Quick versus watched route and side being managed; [designed allocation] Supported friendly Quick/Watch, competitive Quick and managed side | [designed] S08 | [designed] #243/B04 | [designed] #243 supported entry/speed only; B04 composes existing friendly Quick/Watch and competitive Quick without changing a running route. Unsupported modes are separate MP01-G. |
+| MP01-G | MP01 — Quick versus watched route and side being managed; [designed allocation] Competitive/other-country Watch and unsupported mode-dependent delivery | [designed] S08 | [designed] UNOWNED:G01 | [designed] #249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate. |
 | MP02 | Conditional watch question: Y/N; no timeout | [designed] S08 | [designed] UNOWNED:G01 | [designed] #249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate. |
 | MP03 | Two starting lineups with position codes | [designed] S08 | [designed] #243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | MP04 | Two formation names | [designed] S08 | [designed] #243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | MP05 | Venue/location, match type and stage | [designed] S08 | [designed] #243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | MP06 | Team tactics / players / tournament / statistics actions | [designed] S08 | [designed] #243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
-| MP07 | Captain selection before managed watched play | [designed] S08 | [designed] UNOWNED:G01 | [designed] #249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate. |
+| MP07-S | MP07 — Captain selection before managed watched play; [designed allocation] Captain selection in Team and confirmed captain before supported friendly Watch | [designed] S08 | [designed] B03/#250 | [designed] Existing Squad captain selection and confirmation compose in B03; #250 audits only an explicit watched prompt/first supported action. No new watched prompt follows from pre-match selection; MP07-G stays unowned. |
+| MP07-G | MP07 — Captain selection before managed watched play; [designed allocation] Explicit watched captain prompt beyond audited supported first choice | [designed] S08 | [designed] UNOWNED:G01 | [designed] #249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate. |
 | MP08 | Other-country watch without managed captain | [designed] S08 | [designed] UNOWNED:G01 | [designed] #249 audit/display when available; #243 supported entry/speed only; #250 support audit and first supported intervention only; existing competitive Quick result remains separate. |
 | MP09 | Automatic action replay current setting versus next toggle action | [designed] S08 | [designed] UNOWNED:G04 | [designed] #250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability. |
 
@@ -24,9 +26,9 @@
 
 [confirmed: E031 C39–C40/C08; E015-r0007 states31/42/67; M244-G4C-07 steps32–55] **observed+hint**. Original comparisons: [injury-event](../../original-game/images/injury-event.png), [match-commentary](../../original-game/images/match-commentary.png), [match-live](../../original-game/images/match-live.png).
 
-[designed] **When/why:** During a watched match: follow tension and events, control presentation and discover supported interventions. **Discoverability:** Score/clock/pitch/latest event/speed always visible; commentary inline; Bench named button **Delivery / unowned decision:** #198/#243/B04/#250. **Limits:** Original exact pitch glyphs/F9 meaning unknown. Original Space opens commentary, Esc-play is printed only; direct bench is unexercised. Proposed controls operate only supported worker capability; no hidden no-op bench.
+[designed] **When/why:** During a watched match: follow tension and events, control presentation and discover supported interventions. **Discoverability:** Score/clock/pitch/latest event/speed always visible; commentary inline; Bench named button **Delivery / unowned decision:** #198/#243/B04/#250/UNOWNED:G01. **Limits:** Original exact pitch glyphs/F9 meaning unknown. Original Space opens commentary, Esc-play is printed only; direct bench is unexercised. Proposed controls operate only supported worker capability; no hidden no-op bench. LI08 quick continuation (R-result) is unavailable: no supported in-flight mode switch; O08/G01 requires a separate capability contract. #250 audit only cannot enable it.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | LI01 | Match clock and phase | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | LI02 | Ordered countries and score | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -35,7 +37,7 @@
 | LI05 | Pitch positions of players and ball | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | LI06 | Team identity and selected pitch-label/display mode | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | LI07 | Speed indicator and Left/Right printed legend | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
-| LI08 | Request quick continuation (R), including conditional stops | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
+| LI08 | Request quick continuation (R), including conditional stops | [designed] S09 unavailable quick continuation with reason | [designed] UNOWNED:G01 | [designed] #250 audit only; no retained issue owns an in-flight delivery-mode switch. #198 presentation, #243 pre-match entry/frozen speed and B04 composition do not supply it. |
 | LI09 | Chronological commentary scroll beside pitch | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | LI10 | Bench control offered as Esc/Enter | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | LI11 | F9 glyph/sound suffix | [designed] S09 | [designed] #198/#243/B04/#250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -46,7 +48,7 @@
 
 [designed] **When/why:** At actual engine decision boundary: make an informed intervention, see refusal and resume deliberately. **Discoverability:** Panel opens automatically for supported required choice; Bench button for supported optional pause **Delivery / unowned decision:** #250/B04/UNOWNED:G01. **Limits:** Current quick-friendly halftime is supported separately; #250 audits and delivers only its supported first choice. O08/G01 blocks watched competitive extra-time/order and additional unsupported choices. Original5/2 counts do not replace accepted remaster policy; no-subs-left remains unknown.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | IN01 | Opponent substitution notice | [designed] S10 with persistent S09 score/phase | [designed] #250/B04 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | IN02 | Managed player injured and substitution opportunity | [designed] S10 with persistent S09 score/phase | [designed] #250/B04 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -73,7 +75,7 @@
 
 [designed] **When/why:** At goal/set piece/result: answer a contextual choice with time/default made explicit if runtime enforces one. **Discoverability:** Prompt replaces decision panel, focus stays within it; timer/default text only when supported **Delivery / unowned decision:** #250/UNOWNED:G04. **Limits:** #250 audits supported prompts/first choice; O11/G04 new replay/goal/summary export delivery remains unowned, with #251 audit/display when available only. Nominal6/10s are not guaranteed wall time. No new timers, default Yes or recording invented.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | PR01 | Goal action-replay question and Yes/No | [designed] S08 replay preference; S10 prompt; S11 summary retention; S13 filename | [designed] UNOWNED:G04 | [designed] #250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability. |
 | PR02 | Save-goal question after replay Yes | [designed] S08 replay preference; S10 prompt; S11 summary retention; S13 filename | [designed] UNOWNED:G04 | [designed] #250 prompt/support audit only; #251 audit/display when available and read-only retained summaries; neither authorizes a replay viewer/recording or new export capability. |
@@ -90,7 +92,7 @@
 
 [designed] **When/why:** After the match: explain outcome, retain useful comparison and return to the campaign. **Discoverability:** All comparative stats and scorers direct; round results adjacent tab1 action; archive same schema **Delivery / unowned decision:** #251/B04. **Limits:** Unavailable quick/historical fields say Not recorded, never zero. Preserve source A/B order, normal/extra-time/penalty scores separately. Rebuild raw ratings/provenance are useful extras, not original-parity substitutions.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | RS01 | Full-time score | [designed] S11/S12; latest result summary S03 | [designed] #251/B04 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | RS02 | Half-time score | [designed] S11/S12; latest result summary S03 | [designed] #251/B04 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -118,7 +120,7 @@
 
 [designed] **When/why:** At checkpoints: preserve/resume campaign deliberately; later discover past outcomes without guessing function keys. **Discoverability:** Save Ctrl+S direct; Game menu1 action; Archive navigation direct; Help F1 **Delivery / unowned decision:** B02/B03/B06/#251/UNOWNED:G04. **Limits:** Current rebuild JSON save semantics remain; B06 identity support separate. #251 audit/display when available for retained summaries; O11/G04 for new summary-export/goal replay. F5 print offer is unverified output, not a new print contract.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | SV01 | Save active game; suggested name/last used name | [designed] S13 Game menu; S12 Summaries/Replays; contextual Help | [designed] B02 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | SV02 | Explicit save versus quit decisions | [designed] S13 Game menu; S12 Summaries/Replays; contextual Help | [designed] B02 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |

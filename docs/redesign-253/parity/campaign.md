@@ -1,6 +1,6 @@
 # Information parity: campaign
 
-[confirmed: accepted manual ebdd6879d469a574f6d4b446f59b33a6be3ffd81 and cited source inventory] Original fields are observed labels/states unless explicitly hint/text-supported or unknown. [designed: #253] Destinations and delivery/reuse are proposals, not shipped capabilities. `UNOWNED:Gxx` means no implementation owner exists: the linked owner decision must create a scoped contract before full parity. An existing issue in Reuse is audit/display when available within its written scope, never authority to implement excluded behavior. See [matrix rules](../information-parity.md) and [unowned decisions](../decisions.md#unowned-capability-decisions).
+[confirmed: accepted manual ebdd6879d469a574f6d4b446f59b33a6be3ffd81 and cited source inventory] Original fields are observed labels/states unless explicitly hint/text-supported or unknown. [designed: #253] Destinations and delivery/reuse are proposals, not shipped capabilities. `UNOWNED:Gxx` means no implementation owner exists: the linked owner decision must create a scoped contract before full parity. An existing issue in Reuse is audit/display when available within its written scope, never authority to implement excluded behavior. `-S`/`-G` allocate the supported/residual parts of the same original source ID; the source inventory remains234 fields. See [matrix rules](../information-parity.md) and [unowned decisions](../decisions.md#unowned-capability-decisions).
 
 ## Fixtures and competition · FX
 
@@ -8,7 +8,7 @@
 
 [designed] **When/why:** Prepare own match and understand the wider round/qualification context before advancing. **Discoverability:** Selected group table and matches side-by-side; other groups1 selector; watch action labelled separately **Delivery / unowned decision:** #249/UNOWNED:G01/UNOWNED:G02. **Limits:** Existing #249 is audit/display when available for stored fixtures/groups. O08/G01 owns no task yet for watch flags/other watched modes/round controls; O09/G02 similarly for cancel/rearrange. Printed round controls are not original timing proof.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | FX01 | Fixture row side A and side B | [designed] S07; next fixture summary S03/S08 | [designed] #249 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | FX02 | Fixture type: friendly/qualifying/knockout context | [designed] S07; next fixture summary S03/S08 | [designed] #249 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -29,7 +29,7 @@
 
 [designed] **When/why:** Assess whether results and remaining games are sufficient to progress. **Discoverability:** All7 original columns visible together; supported rebuild GD/Pts additions labelled separately **Delivery / unowned decision:** #249. **Limits:** Exact original T/tiebreak display semantics require source reconciliation. Do not replace original meanings with modern football assumptions. Qualification remains provisional until complete retained schedule resolves.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | TB01 | P: played column | [designed] S07 group table; comparison excerpt S03 | [designed] #249 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | TB02 | W: wins column | [designed] S07 group table; comparison excerpt S03 | [designed] #249 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -45,7 +45,7 @@
 
 [designed] **When/why:** Follow a tournament beyond one group; inspect paths and scoring competition. **Discoverability:** Bracket overview direct; round detail1 action; scorers side pane **Delivery / unowned decision:** #249. **Limits:** Reuse T52/T54 when implemented; do not fabricate future results. Ins action unexercised. Do not silently reinterpret title/display ambiguity.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | BR01 | Sixteen knockout entrants and pairing tree | [designed] S07 bracket/scorers | [designed] #249 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | BR02 | Unplayed branches / future matches | [designed] S07 bracket/scorers | [designed] #249 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
@@ -59,7 +59,7 @@
 
 [designed] **When/why:** After results or when judging a campaign: distinguish current streak from retained best across venue contexts. **Discoverability:** History1 named navigation action; sticky venue/now/top headers **Delivery / unowned decision:** UNOWNED:G05. **Limits:** Full country history projection/retention is unowned O12/G05. #249 audit/display when available only; preserve headers without invented reset/formula. #251 retained match summaries are a different dataset.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | HI01 | Consecutive wins · home · now | [designed] S12 Country records | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | HI02 | Consecutive wins · home · top | [designed] S12 Country records | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
@@ -92,7 +92,7 @@
 
 [designed] **When/why:** Compare seasons and remember national achievements rather than only the last score. **Discoverability:** Archive > Country records1 tab; all dimensions labelled; scroll season rows **Delivery / unowned decision:** UNOWNED:G05. **Limits:** O12/G05 requires established record source/persistence and a separate scoped owner. #249 audit/display when available only. Zero/empty images establish labels, not populated algorithms.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | HR01 | Season label and competition code | [designed] S12 Country records | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
 | HR02 | Season W / D / L / F / A fields | [designed] S12 Country records | [designed] UNOWNED:G05 | [designed] #249 audit/display when available within its fixture/group/opponent scope; rankings/records remain conditional on established source/persistence. T55 mechanics and T84 player projections retain their contracts; B02/B03 may compose verified current identity/team values. |
@@ -110,7 +110,7 @@
 
 [designed] **When/why:** After a round or stage: understand consequences and what changed before the next decision. **Discoverability:** News preview direct; full bulletin1 action; consequential availability pinned to Team **Delivery / unowned decision:** UNOWNED:G03. **Limits:** O10/G03 bulletin generation/retention/routing has no assigned delivery task. #249 audit/display when available only; T51a excludes route-level news/sack. Accepted campaign mechanics do not imply generated news or dismissal.
 
-| ID | Original information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
+| Allocation ID | Original source / allocated information | Proposed destination | Delivery owner / unowned decision | Reuse within existing scope |
 | --- | --- | --- | --- | --- |
 | NW01 | Manager appointment bulletin | [designed] S14 News; pinned consequence S03; history S12 | [designed] UNOWNED:G03 | [designed] #249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling. |
 | NW02 | Group/campaign news | [designed] S14 News; pinned consequence S03; history S12 | [designed] UNOWNED:G03 | [designed] #249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling. |
