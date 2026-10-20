@@ -408,7 +408,7 @@ def repair(model):
 
 
 # [designed: T50] Managed countries whose fixed-seed stage 2 ends in each path.
-QUALIFYING_PATHS=()
+QUALIFYING_PATHS=((7,'qualified'),(4,'eliminated'))
 
 
 def main():
