@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+<title>Clear boundaries and recoverable errors</title><desc>Designed finished-target illustration. Fictional data. Not current build or engine output.</desc>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="#f3f1e9"/>
+<rect x="0" y="0" width="1440" height="78" rx="0" fill="#152d34"/>
+<text x="22" y="29" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="#e7f1e7">GOAL2  /  COUNTRY MANAGER</text>
+<text x="22" y="59" font-family="DejaVu Sans" font-size="17" font-weight="700" fill="white">HOLLAND  •  Alex  •  2030</text>
+<text x="650" y="31" font-family="DejaVu Sans" font-size="15" font-weight="700" fill="#f1ce71">12  FINISHED TARGET</text>
+<text x="650" y="56" font-family="DejaVu Sans" font-size="12" font-weight="400" fill="white">Static illustration • fictional data • not current build</text>
+<rect x="0" y="78" width="170" height="822" rx="0" fill="#152d34"/>
+<text x="22" y="121" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Country desk</text>
+<text x="22" y="175" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Team</text>
+<text x="22" y="229" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Competition</text>
+<text x="22" y="283" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Match centre</text>
+<text x="22" y="337" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Archive</text>
+<rect x="12" y="366" width="146" height="40" rx="5" fill="#006958"/>
+<text x="22" y="391" font-family="DejaVu Sans" font-size="15" font-weight="700" fill="white">Game / Save</text>
+<text x="22" y="819" font-family="DejaVu Sans" font-size="14" font-weight="400" fill="white">Help  /  F1</text>
+<text x="194" y="123" font-family="DejaVu Sans" font-size="28" font-weight="700" fill="#152d34">Clear boundaries and recoverable errors</text>
+<text x="194" y="153" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="#52656a">Three alternative states of the same Holland career • not a sequence of successful actions</text>
+<rect x="170" y="863" width="1270" height="37" rx="0" fill="#e2e8e1"/>
+<text x="194" y="886" font-family="DejaVu Sans" font-size="11" font-weight="400" fill="#52656a">DESIGNED • No game controls are active. Target review is not implementation approval.</text>
+<rect x="194" y="185" width="1220" height="170" rx="7" fill="white" stroke="#d1dbd5"/>
+<text x="212" y="215" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">Load failed / Holland pre-Belgium</text>
+<text x="216" y="262" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">The selected save could not be read. Active career and prior good file remain intact.</text>
+<text x="216" y="309" font-family="DejaVu Sans" font-size="16" font-weight="700" fill="#006958">Retry  /  Choose another save  /  Cancel</text>
+<rect x="194" y="375" width="1220" height="170" rx="7" fill="white" stroke="#d1dbd5"/>
+<text x="212" y="405" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">Starting Watch / Holland v Belgium</text>
+<text x="216" y="452" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Match is starting. Team edits and saving are locked until this job finishes or cancels.</text>
+<text x="216" y="499" font-family="DejaVu Sans" font-size="16" font-weight="700" fill="#006958">Cancel → confirmed pre-match checkpoint; never publish a partial result</text>
+<rect x="194" y="565" width="1220" height="170" rx="7" fill="white" stroke="#d1dbd5"/>
+<text x="212" y="595" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">Watch unavailable / next Eire qualifier</text>
+<text x="216" y="642" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Competitive Watch is not supported here. Your fixture and confirmed team remain selected.</text>
+<text x="216" y="689" font-family="DejaVu Sans" font-size="16" font-weight="700" fill="#006958">Play supported Quick  /  Return to preparation</text>
+<text x="194" y="790" font-family="DejaVu Sans" font-size="13" font-weight="400" fill="#52656a">Save failure likewise keeps the prior good save and active career: Retry / Save elsewhere / Cancel.</text>
+<text x="194" y="813" font-family="DejaVu Sans" font-size="13" font-weight="400" fill="#52656a">Invalid lineup/exchange keeps the draft and names the actual refusal. No silent fallback to a new career or no-op button.</text>
+</svg>

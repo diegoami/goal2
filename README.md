@@ -26,6 +26,11 @@ launch instructions below describe the retained interfaces.
 The plan is [`docs/plan.md`](docs/plan.md); every rule the rebuild plays by, and where it comes
 from, is in [`docs/assumptions.md`](docs/assumptions.md). Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
 
+[designed: #266] The [finished-game vision and visual walkthrough](docs/vision-266/README.md)
+present the proposed destination for owner selection before the redesign plan is committed.
+Static targets, current-build evidence and first-delivery limits are distinct; this package
+does not authorize redesign implementation.
+
 Run the screen chain with local game data and a halftime savestate. The loop
 keeps its rebuild-owned continuation save at `.cache/session.g2save` by
 default. After a friendly, choose **Save and quit**; resume with the save and
