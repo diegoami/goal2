@@ -1,0 +1,104 @@
+{
+  "tag": "[confirmed: #253 audit execution receipts]",
+  "limits": "Failed display/setup attempts are not product failures. Runtime06 is the successful observation; browser03 is the successful browser tour. Discard/Confirm changes only the disposable generated session before Watch; cancellation compares against that confirmed baseline.",
+  "attempts": [
+    {
+      "attempt": "runtime-01",
+      "retained_ignored_path": ".cache/253-observation/failures/runtime-01",
+      "artifact_sha256": {
+        "terminal.txt": "6f41da1f783732f5016b7b39721afbc43fc4b424ed3a6350b0d79627700b563e"
+      },
+      "result": "incomplete setup / not cited as current behavior"
+    },
+    {
+      "attempt": "runtime-02",
+      "retained_ignored_path": ".cache/253-observation/failures/runtime-02",
+      "artifact_sha256": {
+        "terminal.txt": "6f41da1f783732f5016b7b39721afbc43fc4b424ed3a6350b0d79627700b563e"
+      },
+      "result": "incomplete setup / not cited as current behavior"
+    },
+    {
+      "attempt": "runtime-03",
+      "retained_ignored_path": ".cache/253-observation/failures/runtime-03",
+      "artifact_sha256": {
+        "terminal.txt": "6f41da1f783732f5016b7b39721afbc43fc4b424ed3a6350b0d79627700b563e"
+      },
+      "result": "incomplete setup / not cited as current behavior"
+    },
+    {
+      "attempt": "runtime-04",
+      "retained_ignored_path": ".cache/253-observation/failures/runtime-04",
+      "artifact_sha256": {
+        "desktop-pool-1440.png": "711ccde0af7a4eced0305ea654a8b89354eebeb71f4421dd3cb3720da0b96cc6",
+        "desktop-squad-900.png": "dc89a8756bab937d1b2564da99c408965463560571da1c2005bea899b3f38154",
+        "desktop-save-900.png": "c59b0e1af5bea380970db3795ec72b05715c04ec69153cc6f69779005e56ed1d",
+        "desktop-fixtures-900.png": "6a43d3c542d2d53de87e67235fd191d6850aba9df497abdd8528ca7545e37003",
+        "desktop-fixtures-1440.png": "5cb81996288f3366b5cba78583eb80fa9ad29bea724cf877d2ff7cea6c6dd6bd",
+        "desktop-final-roster-row.png": "f457e16c3011425c030cc9153fc706bfc3b8879ae11ef354a0301700f13aa25e",
+        "desktop-save-1440.png": "78ca31bfec918835fe827abb14ecd1b4b2f00046d2b50691b4762d6226e66971",
+        "desktop-overview-900.png": "714ec443c522209a0fc9c6f8128cf4b75ccbc7f3006b09460cc4d92a8d64e86e",
+        "desktop-squad-1440.png": "23515f01b69f7b62910c851c31655ce6bacff4cab52d1bc6322546190b7bfc7e",
+        "desktop-pool-900.png": "31208354ba3c0c33281832b39dbb2fcbba4f41576391ed22516e8dec31dc3536",
+        "terminal.txt": "6f41da1f783732f5016b7b39721afbc43fc4b424ed3a6350b0d79627700b563e",
+        "desktop-overview-1440.png": "b14e2feab93601c9c8166dd59f586a176ef6d67f670eb51d876f2886767a9d47"
+      },
+      "result": "incomplete setup / not cited as current behavior"
+    },
+    {
+      "attempt": "runtime-05",
+      "retained_ignored_path": ".cache/253-observation/failures/runtime-05",
+      "artifact_sha256": {
+        "desktop-pool-1440.png": "711ccde0af7a4eced0305ea654a8b89354eebeb71f4421dd3cb3720da0b96cc6",
+        "desktop-squad-900.png": "dc89a8756bab937d1b2564da99c408965463560571da1c2005bea899b3f38154",
+        "desktop-save-900.png": "c59b0e1af5bea380970db3795ec72b05715c04ec69153cc6f69779005e56ed1d",
+        "desktop-fixtures-900.png": "6a43d3c542d2d53de87e67235fd191d6850aba9df497abdd8528ca7545e37003",
+        "desktop-fixtures-1440.png": "5cb81996288f3366b5cba78583eb80fa9ad29bea724cf877d2ff7cea6c6dd6bd",
+        "desktop-final-roster-row.png": "f457e16c3011425c030cc9153fc706bfc3b8879ae11ef354a0301700f13aa25e",
+        "desktop-save-1440.png": "78ca31bfec918835fe827abb14ecd1b4b2f00046d2b50691b4762d6226e66971",
+        "desktop-overview-900.png": "714ec443c522209a0fc9c6f8128cf4b75ccbc7f3006b09460cc4d92a8d64e86e",
+        "desktop-squad-1440.png": "23515f01b69f7b62910c851c31655ce6bacff4cab52d1bc6322546190b7bfc7e",
+        "desktop-pool-900.png": "31208354ba3c0c33281832b39dbb2fcbba4f41576391ed22516e8dec31dc3536",
+        "terminal.txt": "6f41da1f783732f5016b7b39721afbc43fc4b424ed3a6350b0d79627700b563e",
+        "desktop-overview-1440.png": "b14e2feab93601c9c8166dd59f586a176ef6d67f670eb51d876f2886767a9d47"
+      },
+      "result": "incomplete setup / not cited as current behavior"
+    },
+    {
+      "attempt": "browser-02",
+      "retained_ignored_path": ".cache/253-observation/failures/browser-02",
+      "artifact_sha256": {},
+      "result": "incomplete setup / not cited as current behavior"
+    },
+    {
+      "log": ".cache/253-observation/systemd-04.log",
+      "sha256": "fed546a59b5156d9be2bf5c3b0130345562d2c3b52bfd37612ea872d5cfd8f50",
+      "bytes": 2108,
+      "final_excerpt": "l=\"kernel\")\ndbus-daemon[507308]: Successfully activated service 'org.a11y.atspi.Registry'\nSpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry\ndbus-daemon[507278]: [session uid=1000 pid=507278 pidfd=5] Successfully activated service 'org.xfce.Xfconf'\nTraceback (most recent call last):\n  File \"/home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_current.py\", line 159, in <module>\n    if __name__ == '__main__': main()\n                               ^^^^^^\n  File \"/home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_current.py\", line 148, in main\n    report['desktop'] = desktop(out)\n                        ^^^^^^^^^^^^\n  File \"/home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_current.py\", line 99, in desktop\n    assert report['watched']['painted_frame_sequence'] is not None and report['watched']['painted_frame_sequence'] >= 3, report['watched']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'started': False, 'status': 'Confirm or discard management edits before watching', 'painted_frame_sequence': None, 'management_enabled': True, 'save_enabled': True}\n\n(xfconfd:507316): xfconfd-WARNING **: 20:40:58.643: Name org.xfce.Xfconf lost on the message dbus, exiting.\n"
+    },
+    {
+      "log": ".cache/253-observation/systemd-05.log",
+      "sha256": "fb0ecca43d86dc61e6b73fc8619322e18dd2b03c9a902f0fa13849727acf1301",
+      "bytes": 2109,
+      "final_excerpt": "=\"kernel\")\ndbus-daemon[515723]: [session uid=1000 pid=515723 pidfd=5] Successfully activated service 'org.xfce.Xfconf'\ndbus-daemon[515754]: Successfully activated service 'org.a11y.atspi.Registry'\nSpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry\nTraceback (most recent call last):\n  File \"/home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_current.py\", line 162, in <module>\n    if __name__ == '__main__': main()\n                               ^^^^^^\n  File \"/home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_current.py\", line 151, in main\n    report['desktop'] = desktop(out)\n                        ^^^^^^^^^^^^\n  File \"/home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_current.py\", line 102, in desktop\n    assert report['watched']['painted_frame_sequence'] is not None and report['watched']['painted_frame_sequence'] >= 3, report['watched']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'started': False, 'status': 'Confirm or discard management edits before watching', 'painted_frame_sequence': None, 'management_enabled': True, 'save_enabled': True}\n\n(xfconfd:515762): xfconfd-WARNING **: 20:42:21.807: Name org.xfce.Xfconf lost on the message dbus, exiting.\n"
+    },
+    {
+      "log": ".cache/253-observation/browser-02.log",
+      "sha256": "15a27f2d1825e9cf662b6964108d322afc4bbfc87510cf769cf61be3ef3f0886",
+      "bytes": 475,
+      "final_excerpt": "file:///home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_browser.mjs:23\n browser=await chromium.launch({headless:true});\n                        ^\n\nTypeError: Cannot read properties of undefined (reading 'launch')\n    at file:///home/diego/projects/goal2-work/253-whole-game-redesign/docs/redesign-253/evidence/audit_browser.mjs:23:25\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.21.0\n"
+    },
+    {
+      "log": ".cache/253-observation/browser-03.log",
+      "sha256": "2fd61544f09dc73e25fec116768a710552e14c29139da21091fd778a26eaf0a2",
+      "bytes": 131,
+      "final_excerpt": "{\"out\":\"docs/redesign-253/evidence/browser-03\",\"browser\":\"156.0.8078.4\",\"session_unchanged\":true,\"non_get_requests\":0,\"screens\":2}\n"
+    },
+    {
+      "log": ".cache/253-observation/systemd-06.log",
+      "sha256": "11689cabf4f8f273fda7311cd31205576239c812f53d8fab7a28e9001ca5cdc4",
+      "bytes": 1436,
+      "final_excerpt": "00 pid=518493 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=518509 comm=\"/usr/bin/xfwm4 --compositor=off --sm-client-disabl\" label=\"kernel\")\ndbus-daemon[518493]: [session uid=1000 pid=518493 pidfd=5] Successfully activated service 'org.a11y.Bus'\ndbus-daemon[518523]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=518509 comm=\"/usr/bin/xfwm4 --compositor=off --sm-client-disabl\" label=\"kernel\")\ndbus-daemon[518493]: [session uid=1000 pid=518493 pidfd=5] Activating service name='org.xfce.Xfconf' requested by ':1.2' (uid=1000 pid=518509 comm=\"/usr/bin/xfwm4 --compositor=off --sm-client-disabl\" label=\"kernel\")\ndbus-daemon[518523]: Successfully activated service 'org.a11y.atspi.Registry'\nSpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry\ndbus-daemon[518493]: [session uid=1000 pid=518493 pidfd=5] Successfully activated service 'org.xfce.Xfconf'\n{\"out\": \"docs/redesign-253/evidence/runtime-06\", \"terminal_frames\": 3, \"desktop_captures\": 10, \"watched\": {\"started\": true, \"status\": \"Original engine: 0\\u2032 0 \\u2014 0\", \"painted_frame_sequence\": 3, \"management_enabled\": false, \"save_enabled\": false, \"capture\": \"watched-actual.png\", \"cancel_restored_state\": true}, \"state_unchanged\": true}\n\n(xfconfd:518541): xfconfd-WARNING **: 20:42:48.752: Name org.xfce.Xfconf lost on the message dbus, exiting.\n"
+    }
+  ]
+}

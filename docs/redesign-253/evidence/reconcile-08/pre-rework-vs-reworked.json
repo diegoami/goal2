@@ -1,0 +1,622 @@
+{
+  "evidence": "[confirmed: reconcile-08] the reviewer's twelve R4/R5 attacks applied to the tree as reviewed at 392b32c are accepted by all eight checks of the validator reviewed there, and the equivalent controls are rejected by the reworked validator; every mutation restored byte for byte",
+  "reviewed_head": "392b32c88651d5b0d8d9da64ddcc713c6b694f1b",
+  "scope_base": "9683a47647f21bd2a3274ea5dc56bb8c14e6c5a9",
+  "reviewed_validator_sha256": "ec2e3d984d04554551d91e23c551d715ac2eac825010bac0f58716232cbe0f25",
+  "reworked_validator_sha256": "5c0810984791be26cfd3fb961e9d19d79d4f07300ef250ee49c52d8e6f48753e",
+  "reworked_controls_module_sha256": "d1b2e82be53f907bd9803f000f20bb388fa53a456c25e886886661436af01127",
+  "results": [
+    {
+      "attack": "R4 compact extra dependency row, backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "compact-extra-dependency-row-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "dependency table in backlog.md differs from the approved dependencies",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R4 compact extra dependency row, vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "compact-extra-dependency-row-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "dependency table in vision-reconciliation.md differs from the approved dependencies",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R4 compact extra dependency row, README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "compact-extra-dependency-row-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "dependency table in docs/tasks/README.md differs from the approved dependencies",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R4 compact extra non-prerequisite row, backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "compact-extra-non-prerequisite-row-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "non-prerequisite table in backlog.md differs from the approved pairs",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R4 compact extra non-prerequisite row, vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "compact-extra-non-prerequisite-row-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "non-prerequisite table in vision-reconciliation.md differs from the approved pairs",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R4 compact extra non-prerequisite row, README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "compact-extra-non-prerequisite-row-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "non-prerequisite table in docs/tasks/README.md differs from the approved pairs",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R5 contradiction clause in another table, backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "contradiction-clause-in-another-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "order statement contradicts the approved dependencies in backlog.md: #242 precede #198",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R5 contradiction clause in another table, vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "contradiction-clause-in-another-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "order statement contradicts the approved dependencies in vision-reconciliation.md: #242 precede #198",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R5 contradiction clause in another table, README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "contradiction-clause-in-another-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "order statement contradicts the approved dependencies in docs/tasks/README.md: #242 precede #198",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R5 forward arrow in another table, backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "forward-arrow-in-another-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "order statement contradicts the approved dependencies in backlog.md: #251 \u2192 #262",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R5 forward arrow in another table, vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "forward-arrow-in-another-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "order statement contradicts the approved dependencies in vision-reconciliation.md: #251 \u2192 #262",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "R5 forward arrow in another table, README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "forward-arrow-in-another-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "order statement contradicts the approved dependencies in docs/tasks/README.md: #251 \u2192 #262",
+      "exact_bytes_restored": true
+    }
+  ]
+}

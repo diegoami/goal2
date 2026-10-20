@@ -1,0 +1,1540 @@
+{
+  "evidence": "[confirmed: reconcile-08] a line directly after the last row of a table, with no leading pipe, with only a trailing pipe, or plain text, is rendered by GFM as a further row; applied to the tree as at c68bdea it is accepted by all eight checks of the validator at c68bdea, and rejected by the final validator; every mutation restored byte for byte. Added after the receipts at 04f0fe0, which are kept unchanged.",
+  "reviewed_head": "c68bdea7620c44d9213108304e656e05de53fed3",
+  "scope_base": "9683a47647f21bd2a3274ea5dc56bb8c14e6c5a9",
+  "reviewed_validator_sha256": "5c0810984791be26cfd3fb961e9d19d79d4f07300ef250ee49c52d8e6f48753e",
+  "reworked_validator_sha256": "1dc6dec510497331b133b8182ad7f3d04ad425b5386d29c236c11fd5b2e94d60",
+  "reworked_controls_module_sha256": "71e695f108aef31d5fbb1d9735ce8b2defe3dfbe2021231fe39937ed3435daf4",
+  "results": [
+    {
+      "attack": "pipeless-continuation-row-after-the-dependency-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-after-the-dependency-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in backlog.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-after-the-non-prerequisite-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-after-the-non-prerequisite-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in backlog.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in backlog.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in backlog.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-after-the-dependency-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-after-the-dependency-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in backlog.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in backlog.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-after-the-dependency-table-in-vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-after-the-dependency-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-after-the-dependency-table-in-vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-after-the-dependency-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in vision-reconciliation.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in vision-reconciliation.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-after-the-dependency-table-in-README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-after-the-dependency-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-after-the-non-prerequisite-table-in-README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-after-the-non-prerequisite-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-after-the-dependency-table-in-README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-after-the-dependency-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in docs/tasks/README.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-README",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-README",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in docs/tasks/README.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-in-the-child-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-in-the-child-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "backlog",
+      "reworked_finding": "malformed table row in backlog.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-in-the-child-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-in-the-child-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "backlog",
+      "reworked_finding": "malformed table row in backlog.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-in-the-child-table-in-backlog",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-in-the-child-table-in-backlog",
+      "reworked_validator_rejected": true,
+      "reworked_check": "backlog",
+      "reworked_finding": "table row without pipes in backlog.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-in-the-surface-table",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-in-the-surface-table",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-in-the-surface-table",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-in-the-surface-table",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-in-the-surface-table",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-in-the-surface-table",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in vision-reconciliation.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-in-the-decision-table",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-in-the-decision-table",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in decisions.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-in-the-decision-table",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-in-the-decision-table",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "malformed table row in decisions.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-in-the-decision-table",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-in-the-decision-table",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "table row without pipes in decisions.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "pipeless-continuation-row-in-the-parity-matrix",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "pipeless-continuation-row-in-the-parity-matrix",
+      "reworked_validator_rejected": true,
+      "reworked_check": "parity",
+      "reworked_finding": "malformed table row in parity/management.md: #242 | #198 | lane 2",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "trailing-pipe-only-continuation-row-in-the-parity-matrix",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "trailing-pipe-only-continuation-row-in-the-parity-matrix",
+      "reworked_validator_rejected": true,
+      "reworked_check": "parity",
+      "reworked_finding": "malformed table row in parity/management.md: #242 | #198 | lane 2 |",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "plain-text-line-after-the-last-row-in-the-parity-matrix",
+      "reviewed_validator_checks": [
+        {
+          "check": "proposal",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "parity",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "journeys",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "current",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "backlog",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "technology",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "scope",
+          "exit": 0,
+          "pass": true
+        },
+        {
+          "check": "vision",
+          "exit": 0,
+          "pass": true
+        }
+      ],
+      "reviewed_validator_accepts_all_eight": true,
+      "control": "plain-text-line-after-the-last-row-in-the-parity-matrix",
+      "reworked_validator_rejected": true,
+      "reworked_check": "parity",
+      "reworked_finding": "table row without pipes in parity/management.md: Plain text directly after the table.",
+      "exact_bytes_restored": true
+    }
+  ]
+}

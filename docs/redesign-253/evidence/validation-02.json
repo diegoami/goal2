@@ -1,0 +1,39 @@
+{
+  "evidence": "[confirmed: #253 final repository documentation checks]",
+  "checked_head": "38506d5706bfe087478e45f9924b80f71459030f",
+  "validator_sha256": "d10833f7f56ec48f8e0201c5eb143e9241ddcf56fcdaed67aee928e7d36e267f",
+  "results": [
+    {
+      "command": "python3 tools/check_links.py",
+      "chunk_id": "b49ff7",
+      "wall_time_seconds": 0.54708063,
+      "exit_code": 0,
+      "original_token_count": 8,
+      "output": "links and JSON ok (9793 files)\n"
+    },
+    {
+      "command": "python3 tools/check_provenance.py",
+      "chunk_id": "96cf32",
+      "wall_time_seconds": 0.283976184,
+      "exit_code": 0,
+      "original_token_count": 8,
+      "output": "provenance check: 16 file(s) OK\n"
+    },
+    {
+      "command": "git diff --check",
+      "chunk_id": "73d157",
+      "wall_time_seconds": 0.208082853,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "command": "python3 -I docs/redesign-253/validate.py --all",
+      "chunk_id": "77675f",
+      "wall_time_seconds": 0.491461068,
+      "exit_code": 0,
+      "original_token_count": 323,
+      "output": "[\n  {\n    \"check\": \"proposal\",\n    \"pass\": true,\n    \"finding\": \"A/B/C compared; O01\\u2013O07 and operative gate;10 static annotated SVG/PNG pairs;0 out-of-canvas text\"\n  },\n  {\n    \"check\": \"parity\",\n    \"pass\": true,\n    \"finding\": \"234 source=allocated=rendered fields;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes)\"\n  },\n  {\n    \"check\": \"journeys\",\n    \"pass\": true,\n    \"finding\": \"15 surfaces covered by9 journeys; automatic/player/conditional edges and20 capability dependencies\"\n  },\n  {\n    \"check\": \"current\",\n    \"pass\": true,\n    \"finding\": \"24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves\"\n  },\n  {\n    \"check\": \"backlog\",\n    \"pass\": true,\n    \"finding\": \"7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership\"\n  },\n  {\n    \"check\": \"technology\",\n    \"pass\": true,\n    \"finding\": \"desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions\"\n  },\n  {\n    \"check\": \"scope\",\n    \"pass\": true,\n    \"finding\": \"79 changed files limited to task docs/index;JSON valid;no app/engine/dependency/original payload changes\"\n  }\n]\n"
+    }
+  ]
+}

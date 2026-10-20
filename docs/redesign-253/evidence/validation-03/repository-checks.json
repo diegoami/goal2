@@ -1,0 +1,30 @@
+{
+  "evidence": "[confirmed: #253 R1\u2013R5 repository documentation checks]",
+  "helper_sha256": "b4fa05ed0f80c2e0595a1a8d10b8ab61e428b33dd3821d95c4892b5a2b5e5c71",
+  "checks": [
+    {
+      "command": "python3 tools/check_links.py",
+      "chunk_id": "bbbb9f",
+      "wall_time_seconds": 9.337e-06,
+      "exit_code": 0,
+      "original_token_count": 8,
+      "output": "links and JSON ok (9805 files)\n"
+    },
+    {
+      "command": "python3 tools/check_provenance.py",
+      "chunk_id": "4c5efb",
+      "wall_time_seconds": 0.466210474,
+      "exit_code": 0,
+      "original_token_count": 8,
+      "output": "provenance check: 16 file(s) OK\n"
+    },
+    {
+      "command": "git diff --check",
+      "chunk_id": "f39c97",
+      "wall_time_seconds": 0.748844917,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  ]
+}

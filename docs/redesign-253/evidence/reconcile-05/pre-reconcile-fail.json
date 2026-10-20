@@ -1,0 +1,26 @@
+{
+  "evidence": "[confirmed: reconcile-05] the new and changed checks run against the task-document archive of candidate head bd878531210478cba87143b7de95faf367f40e77 and are rejected",
+  "helper_sha256": "f3a035bdfe201e7a8367ba64703cae175199662495754c0189944a2c6646514f",
+  "candidate_archive_sha256": "69644ac658a942c1bbaf0f85f900c2a7c01e2b7e2d58fa2d4e6d3abc13407260",
+  "archive_command": "git archive --format=tar bd878531210478cba87143b7de95faf367f40e77 docs",
+  "results": [
+    {
+      "check": "proposal",
+      "exit": 1,
+      "pass": false,
+      "finding": "operative gate missing: Explicit owner direction approval is no longer outstanding"
+    },
+    {
+      "check": "backlog",
+      "exit": 1,
+      "pass": false,
+      "finding": "operative gate missing: Explicit owner direction approval is no longer outstanding"
+    },
+    {
+      "check": "vision",
+      "exit": 1,
+      "pass": false,
+      "finding": "operative gate missing: Explicit owner direction approval is no longer outstanding"
+    }
+  ]
+}

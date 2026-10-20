@@ -1,0 +1,38 @@
+{
+  "evidence": "[confirmed: #253 planning validation batch01]",
+  "helper_sha256": "d10833f7f56ec48f8e0201c5eb143e9241ddcf56fcdaed67aee928e7d36e267f",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--all"
+      ],
+      "exit": 0,
+      "stdout": "checks.json"
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--negative-controls"
+      ],
+      "exit": 0,
+      "stdout": "negative-controls.json"
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        ".cache/253-frozen-validator-01.py",
+        "--root",
+        "/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335",
+        "--all"
+      ],
+      "exit": 1,
+      "stdout": "base-absence.json"
+    }
+  ]
+}

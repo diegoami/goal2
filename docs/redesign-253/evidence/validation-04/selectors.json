@@ -1,0 +1,171 @@
+{
+  "evidence": "[confirmed: #253 R2 final seven individual selectors and combined check]",
+  "helper_sha256": "843bd087bfca805b6dde6660b17810ed738c4aa1477a6ea55944be61abb19f7c",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--check",
+        "proposal"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "proposal",
+          "pass": true,
+          "finding": "A/B/C compared; O01\u2013O12/gate;10 static sheets;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--check",
+        "parity"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "parity",
+          "pass": true,
+          "finding": "234 unchanged source fields=237 complete allocations=rendered;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--check",
+        "journeys"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "journeys",
+          "pass": true,
+          "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges;25 scoped capability rows;all10 visible-surface mappings"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--check",
+        "current"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "current",
+          "pass": true,
+          "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--check",
+        "backlog"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "backlog",
+          "pass": true,
+          "finding": "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership;5 unowned scopes tied to owner decisions"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--check",
+        "technology"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "technology",
+          "pass": true,
+          "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--check",
+        "scope"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "scope",
+          "pass": true,
+          "finding": "99 changed files limited to task docs/index and explicit process lesson;JSON valid;no app/engine/dependency/original payload changes"
+        }
+      ]
+    },
+    {
+      "argv": [
+        "python3",
+        "-I",
+        "docs/redesign-253/validate.py",
+        "--all"
+      ],
+      "exit": 0,
+      "stdout": [
+        {
+          "check": "proposal",
+          "pass": true,
+          "finding": "A/B/C compared; O01\u2013O12/gate;10 static sheets;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
+        },
+        {
+          "check": "parity",
+          "pass": true,
+          "finding": "234 unchanged source fields=237 complete allocations=rendered;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
+        },
+        {
+          "check": "journeys",
+          "pass": true,
+          "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges;25 scoped capability rows;all10 visible-surface mappings"
+        },
+        {
+          "check": "current",
+          "pass": true,
+          "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+        },
+        {
+          "check": "backlog",
+          "pass": true,
+          "finding": "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership;5 unowned scopes tied to owner decisions"
+        },
+        {
+          "check": "technology",
+          "pass": true,
+          "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+        },
+        {
+          "check": "scope",
+          "pass": true,
+          "finding": "99 changed files limited to task docs/index and explicit process lesson;JSON valid;no app/engine/dependency/original payload changes"
+        }
+      ]
+    }
+  ]
+}

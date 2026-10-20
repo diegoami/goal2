@@ -1,0 +1,27 @@
+{
+  "evidence": "[confirmed: #253 R2 final validation batch04]",
+  "helper_sha256": "843bd087bfca805b6dde6660b17810ed738c4aa1477a6ea55944be61abb19f7c",
+  "selectors_passed": 7,
+  "combined_check_passed": true,
+  "negative_controls_rejected": 40,
+  "new_R2_substantive_controls": 20,
+  "new_controls_require_intended_semantic_failure": true,
+  "all_saved_bytes_restored": true,
+  "final_helper_semantic_classes_fail_on_pre_fix": 6,
+  "final_helper_selectors_fail_on_pre_fix": 4,
+  "source_inventory_sha256": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+  "original_source_fields": 234,
+  "delivery_allocations": 237,
+  "categories": 17,
+  "contexts": 23,
+  "bounds_receipt": "evidence/layout-bounds-05.json",
+  "bounds_receipt_sha256": "9094c46eafeb22c601a0aabafd243220321c83b9fcd3f973bf84928f1db6b67a",
+  "live_new_issue_bodies_equal": 7,
+  "new_issue_bodies_updated": [
+    262,
+    263
+  ],
+  "existing_independent_issues_edited": [],
+  "runtime_evidence": "Earlier runtime06/browser03 retained source-identical; no new native/engine observation or original payload",
+  "scope_extra_path": "docs/model-trials.md same focused repeated-class process lesson only"
+}

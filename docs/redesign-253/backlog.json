@@ -1,0 +1,107 @@
+[
+  {
+    "key": "B01",
+    "title": "Prove original-style desktop cards, rendering and packaged delivery in bounded slices",
+    "priority": "P1 \u00b7 bounded native proof",
+    "size_risk": "M; high integration risk",
+    "dependencies": "Split cards/accessibility, renderer/focus and packaging/resource/save proofs before dispatch. Consume #198/#242/#243 evidence; those tasks must not depend on completing this whole umbrella. #270 enables the cloud fixture/runtime lane, not native Windows acceptance. Resolve window assumptions through measured proof; retain Python/Qt+SDL unless a failed requirement justifies a separately chosen alternative.",
+    "contract": "backlog/B01.md",
+    "issue": "https://github.com/diegoami/goal2/issues/259",
+    "implementation_authorized": false,
+    "owns": "Validation-only source/artifacts under a new owned evidence directory; packaging/launch recipe for the selected proof. No production UX rollout, new save schema, vendored engine or active T79/T84/T85 worktree changes.",
+    "owned_areas": [
+      "desktop-feasibility-evidence"
+    ],
+    "lane": 2
+  },
+  {
+    "key": "B02",
+    "title": "Add original-style launch, saved-career Resume and safe new-career setup",
+    "priority": "P1 \u00b7 first coherent slice",
+    "size_risk": "M; medium replacement/save risk",
+    "dependencies": "First-loop slice A. Reconcile the launch contract with #253 and the relevant bounded #259 proof, then use supported existing one-manager setup/save behavior. Complete profiles (G05) and editable manager identity (#265) are separately delivered; keep current/default identity explicit in the first slice.",
+    "contract": "backlog/B02.md",
+    "issue": "https://github.com/diegoami/goal2/issues/260",
+    "implementation_authorized": false,
+    "owns": "Desktop launch/setup/save presentation and minimal existing DesktopModel entry hooks; atomic writer/loader remain authoritative. No generation, RNG, save-schema or campaign-rule changes.",
+    "owned_areas": [
+      "session-onboarding-ui"
+    ],
+    "lane": 3
+  },
+  {
+    "key": "B03",
+    "title": "Compose the original-style management shell, Team and pool workspace",
+    "priority": "P1 \u00b7 first coherent slice",
+    "size_risk": "L; split shell/Team composition before dispatch if independently useful",
+    "dependencies": "Split shared shell and Team/pool composition before dispatch. Consume #260 launch context and accepted #198/#242/#243 foundations; use #249 available-data projections. Read-only composition can precede #248 edits and G03/G05 delivery.",
+    "contract": "backlog/B03.md",
+    "issue": "https://github.com/diegoami/goal2/issues/261",
+    "implementation_authorized": false,
+    "owns": "Desktop shared shell/navigation/style and page COMPOSITION only, after dependencies are accepted. Do not change attribute decoding, table default/expanded contract, pool policy, campaign rules, match controller or renderer protocols.",
+    "owned_areas": [
+      "shell-management-composition"
+    ],
+    "lane": 3
+  },
+  {
+    "key": "B04",
+    "title": "Compose match preparation, maximum-pitch play and result/Continue",
+    "priority": "P1 \u00b7 complete first end-to-end slice",
+    "size_risk": "M\u2013L; medium lifecycle/focus risk",
+    "dependencies": "First-loop slice C after the shared shell of #261, accepted #198/#243 and the relevant renderer/focus proof in #259. #250 contributes supported decisions when available, not fabricated controls; #251 contributes retained-summary browsing later. Do not introduce a #251 <-> #262 cycle.",
+    "contract": "backlog/B04.md",
+    "issue": "https://github.com/diegoami/goal2/issues/262",
+    "implementation_authorized": false,
+    "owns": "Desktop Match centre composition and minimal existing window handoff/return hooks. #198 owns current visual renderer; #243 owns entry/speed; #250 owns interaction support; #251 owns retained-result/archive data. No new engine command, alternate runner, premature publication or mid-match save.",
+    "owned_areas": [
+      "match-journey-composition"
+    ],
+    "lane": 3
+  },
+  {
+    "key": "B05",
+    "title": "Validate the first original-style session and track the full-parity gate",
+    "priority": "P1 \u00b7 first-slice acceptance",
+    "size_risk": "later full-parity gate; M; medium evidence/usability risk",
+    "dependencies": "Start bounded first-slice oracles with #260/#261/#262, after defining their contracts; do not wait for all full-parity features to begin validation. Supported-session acceptance and 237-allocation full parity are distinct gates. Full parity still needs G01-G05, #248/#250/#251 and the delivered capabilities beyond #264/#265 contracts.",
+    "contract": "backlog/B05.md",
+    "issue": "https://github.com/diegoami/goal2/issues/263",
+    "implementation_authorized": false,
+    "owns": "Task-owned validation scenarios, usability protocol/evidence and final release-readiness documentation. No opportunistic UI/engine fixes; defects get scoped issues and exact-head reruns.",
+    "owned_areas": [
+      "redesign-acceptance-evidence"
+    ],
+    "lane": 3
+  },
+  {
+    "key": "B06",
+    "title": "Scope assistant squad recommendations and editable identities",
+    "priority": "P2 \u00b7 full-parity support prerequisite",
+    "size_risk": "S\u2013M read-only audit/contract, medium identity/persistence risk",
+    "dependencies": "After #242/shared full-ID player data. Scope assistant recommendations and editable identities separately, coordinate #248, then require supported persistence/algorithm evidence before later feature delivery.",
+    "contract": "backlog/B06.md",
+    "issue": "https://github.com/diegoami/goal2/issues/265",
+    "implementation_authorized": false,
+    "owns": "Capability/evidence contract only for assistant recommendations and editable identities; no engine, UI, original-data write or save migration.",
+    "owned_areas": [
+      "assistant-identity-capability-contract"
+    ],
+    "lane": 5
+  },
+  {
+    "key": "B07",
+    "title": "Scope original local-manager ownership, persistence and handoffs",
+    "priority": "P2 \u00b7 explicit full-parity dependency",
+    "size_risk": "S\u2013M planning contract; high later implementation risk",
+    "dependencies": "Later full-parity contract after the first supported loop. Audit local manager ownership/save/shared-fixture handoff before any multiplayer UI or schema migration. Contract completion is not multiplayer delivery.",
+    "contract": "backlog/B07.md",
+    "issue": "https://github.com/diegoami/goal2/issues/264",
+    "implementation_authorized": false,
+    "owns": "Capability design/evidence and future contract docs only. No multiplayer UI enablement, session-schema migration, engine rewrite or automatic task dispatch.",
+    "owned_areas": [
+      "multimanager-capability-contract"
+    ],
+    "lane": 5
+  }
+]

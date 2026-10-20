@@ -1,0 +1,288 @@
+{
+  "positive_checks": [
+    {
+      "check": "proposal",
+      "pass": true,
+      "finding": "A/B/C compared; O01\u2013O12/gate;10 static sheets;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
+    },
+    {
+      "check": "parity",
+      "pass": true,
+      "finding": "234 source=allocated=rendered fields;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
+    },
+    {
+      "check": "journeys",
+      "pass": true,
+      "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges;24 scoped capability rows;all10 visible-surface mappings"
+    },
+    {
+      "check": "current",
+      "pass": true,
+      "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+    },
+    {
+      "check": "backlog",
+      "pass": true,
+      "finding": "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership;5 unowned scopes tied to owner decisions"
+    },
+    {
+      "check": "technology",
+      "pass": true,
+      "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+    },
+    {
+      "check": "scope",
+      "pass": true,
+      "finding": "88 changed files limited to task docs/index and explicit process lesson;JSON valid;no app/engine/dependency/original payload changes"
+    }
+  ],
+  "negative_controls": [
+    {
+      "control": "missing-skill-allocation",
+      "rejected_by": "parity",
+      "finding": "source/destination field IDs differ",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-skill-from-both-inventories",
+      "rejected_by": "parity",
+      "finding": "required original field missing/renamed: SK12 Penalties",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "blank-destination",
+      "rejected_by": "parity",
+      "finding": "blank/unknown destination: SK12",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-original-screen",
+      "rejected_by": "parity",
+      "finding": "64-screen inventory/inspection omission",
+      "before_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "after_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "remove-operative-gate",
+      "rejected_by": "proposal",
+      "finding": "operative Approval gate section missing",
+      "before_sha256": {
+        "decisions.md": "67d022a52a8b6c16bb8862306b437ca206347d8d8d4b2d6b5660e819c6a45523"
+      },
+      "after_sha256": {
+        "decisions.md": "67d022a52a8b6c16bb8862306b437ca206347d8d8d4b2d6b5660e819c6a45523"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "realistic-duplicate-campaign-owner",
+      "rejected_by": "backlog",
+      "finding": "duplicate existing ownership: B03 {'available-fixture-group-display'}",
+      "before_sha256": {
+        "backlog.json": "fc9b0bbbe4a3f20d6a31cdf00b6f8e67757337bb0a15b1a62e685e93a26af18a",
+        "backlog/B03.md": "a2f2601076d9542815f284d0d62a0c56b7148794eae27d81d92987359d4843ff"
+      },
+      "after_sha256": {
+        "backlog.json": "fc9b0bbbe4a3f20d6a31cdf00b6f8e67757337bb0a15b1a62e685e93a26af18a",
+        "backlog/B03.md": "a2f2601076d9542815f284d0d62a0c56b7148794eae27d81d92987359d4843ff"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "watch-flags-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: FX03 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "friendly-rearrangement-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: FX05 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "generated-news-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: NW01 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "competitive-watch-assigned-to250",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: IN12 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "durable-replay-assigned-to251",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: SV06 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "setup-profile-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: CO05 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "resolved-gap-without-owner-choice",
+      "rejected_by": "backlog",
+      "finding": "gap silently assigned/authorized/excepted: G05",
+      "before_sha256": {
+        "capability-gaps.json": "2aa29e071857e7a4f9bcb012c6560cd9182fb554d11aefe8a526cf60db03d83c"
+      },
+      "after_sha256": {
+        "capability-gaps.json": "2aa29e071857e7a4f9bcb012c6560cd9182fb554d11aefe8a526cf60db03d83c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "capability-register-profile-overreach",
+      "rejected_by": "backlog",
+      "finding": "capability register silently extends existing contract: Country ranks/status/profile/strips",
+      "before_sha256": {
+        "capabilities.tsv": "9dd22a984e266cfb14f12585d61dc252db27af2b7372836987112b86a7c79e0c"
+      },
+      "after_sha256": {
+        "capabilities.tsv": "9dd22a984e266cfb14f12585d61dc252db27af2b7372836987112b86a7c79e0c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "linked-profile-claimed-as-drawn",
+      "rejected_by": "journeys",
+      "finding": "layout claims a surface not visibly drawn: 05-competition",
+      "before_sha256": {
+        "package.json": "054c7c3b5b45b4f439140e8d8b2f62ea0bab9dedbf69fbd7a2861a9ac2e25b61"
+      },
+      "after_sha256": {
+        "package.json": "054c7c3b5b45b4f439140e8d8b2f62ea0bab9dedbf69fbd7a2861a9ac2e25b61"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "formation-disagrees-with-lineup",
+      "rejected_by": "proposal",
+      "finding": "formation contradicts named lineup roles: Belgium",
+      "before_sha256": {
+        "layouts/06-match-preparation.svg": "77300af547a6032cb8655136fa4ad837b0253402eabfbc751cf0fbcd1006fc29"
+      },
+      "after_sha256": {
+        "layouts/06-match-preparation.svg": "77300af547a6032cb8655136fa4ad837b0253402eabfbc751cf0fbcd1006fc29"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-twentieth-bench-name",
+      "rejected_by": "proposal",
+      "finding": "all20 named squad rows not drawn beside full card: 03-team-workspace",
+      "before_sha256": {
+        "layouts/03-team-workspace.svg": "5e4739777881ff1011fff3676c9a98d71401bd177c185dc3291dea0c7ccda17c"
+      },
+      "after_sha256": {
+        "layouts/03-team-workspace.svg": "5e4739777881ff1011fff3676c9a98d71401bd177c185dc3291dea0c7ccda17c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "small-window-scrollbar-omitted",
+      "rejected_by": "proposal",
+      "finding": "small-window roster scrollbar absent",
+      "before_sha256": {
+        "layouts/09-small-window.svg": "2f392cb168ad8b4a4c86ffb33697b09ac8cbf123f5c5edc5d3285c3b2d1d22fc"
+      },
+      "after_sha256": {
+        "layouts/09-small-window.svg": "2f392cb168ad8b4a4c86ffb33697b09ac8cbf123f5c5edc5d3285c3b2d1d22fc"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "team-default-relocation-omitted",
+      "rejected_by": "parity",
+      "finding": "team tactics/default missing setup/scout context: TT01",
+      "before_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2",
+        "parity/management.md": "c1c086db7067d98cf88344fa87437f8f5a431ebaf3336b020d97201515093004"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "1331fc107020c3e3ec85fa3ba864ce895f294ef47a213ed031f99ec53be06cf2",
+        "parity/management.md": "c1c086db7067d98cf88344fa87437f8f5a431ebaf3336b020d97201515093004"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "country-screenshot-team-default-trace-omitted",
+      "rejected_by": "parity",
+      "finding": "country image missing team-default trace: country-select.png",
+      "before_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "after_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "exact_bytes_restored": true
+    }
+  ],
+  "all_restored": true
+}

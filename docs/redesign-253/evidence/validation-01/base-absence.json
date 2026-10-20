@@ -1,0 +1,44 @@
+{
+  "evidence": "[confirmed: #253 exact BASE git-archive absence control]",
+  "base_commit": "3335da830d289cc869f989b73816926c54360ff1",
+  "helper_sha256": "d10833f7f56ec48f8e0201c5eb143e9241ddcf56fcdaed67aee928e7d36e267f",
+  "root_kind": "ignored exact tracked-tree archive, not another task worktree; every check fails on absent proposal before Git-dependent assertions",
+  "exit": 1,
+  "checks": [
+    {
+      "check": "proposal",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/decisions.md'"
+    },
+    {
+      "check": "parity",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/parity/source-fields.tsv'"
+    },
+    {
+      "check": "journeys",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/package.json'"
+    },
+    {
+      "check": "current",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/evidence/runtime-06/report.json'"
+    },
+    {
+      "check": "backlog",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/decisions.md'"
+    },
+    {
+      "check": "technology",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/decisions.md'"
+    },
+    {
+      "check": "scope",
+      "pass": false,
+      "finding": "proposal package absent"
+    }
+  ]
+}

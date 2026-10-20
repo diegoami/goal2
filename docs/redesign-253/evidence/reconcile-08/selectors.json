@@ -1,0 +1,48 @@
+{
+  "evidence": "[confirmed: reconcile-08] all eight checks at the content head; the receipt files are the only later change",
+  "content_head": "04f0fe033c028b2ce1d3fb15ca4c9480e19ecffc",
+  "helper_sha256": "5c0810984791be26cfd3fb961e9d19d79d4f07300ef250ee49c52d8e6f48753e",
+  "exit": 0,
+  "results": [
+    {
+      "check": "proposal",
+      "pass": true,
+      "finding": "accepted #266 direction stated; no obsolete recommendation/selection question; A/B/C historical only; O01\u2013O14/gate;10 historical sheets intact;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
+    },
+    {
+      "check": "parity",
+      "pass": true,
+      "finding": "234 unchanged source fields=237 complete allocations=rendered;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
+    },
+    {
+      "check": "journeys",
+      "pass": true,
+      "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges;25 scoped capability rows;all10 visible-surface mappings"
+    },
+    {
+      "check": "current",
+      "pass": true,
+      "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+    },
+    {
+      "check": "backlog",
+      "pass": true,
+      "finding": "7 filed scoped issues mirrored from live amended bodies;9 existing owners preserved;dependencies, lanes and task index linked;no duplicate area ownership;unowned scopes tied to owner decisions"
+    },
+    {
+      "check": "technology",
+      "pass": true,
+      "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+    },
+    {
+      "check": "scope",
+      "pass": true,
+      "finding": "125 changed files against 9683a476 limited to the plan package, its task index, the focused process lesson and its harness.lock hash (accepted vision, product and engine untouched);JSON valid;no app/engine/dependency/original payload changes"
+    },
+    {
+      "check": "vision",
+      "pass": true,
+      "finding": "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 referenced;O01 closed,O02-O07 open;G01-G05/O13/O14 explicitly unowned;inventory hash unchanged"
+    }
+  ]
+}

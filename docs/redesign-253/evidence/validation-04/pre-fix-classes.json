@@ -1,0 +1,40 @@
+{
+  "evidence": "[confirmed: #253 R2 six strengthened semantic classes fail before data/proposal fixes]",
+  "pre_fix_head": "32d6c51c78e268fcc65a060ff25aaf950fa0a804",
+  "helper_sha256_at_probe": "bf16633d5bbaf99275f593c19291935ae7a33e1d512d741ffb916698484ae505",
+  "only_modified_file_at_probe": "docs/redesign-253/validate.py",
+  "source_inventory_sha256": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+  "checks": [
+    {
+      "check": "allocation_contracts",
+      "pass": false,
+      "finding": "mixed source fields need237 independent supported/residual allocations"
+    },
+    {
+      "check": "quick_continuation_contracts",
+      "pass": false,
+      "finding": "quick continuation has no delivery contract;LI08 must beG01/#250 audit only"
+    },
+    {
+      "check": "illustration_quality",
+      "pass": false,
+      "finding": "illustration delivery tier unlabelled: 01-country-setup"
+    },
+    {
+      "check": "departure_contracts",
+      "pass": false,
+      "finding": "original live-speed departure/acceptedT85 boundary unrecorded"
+    },
+    {
+      "check": "reuse_contracts",
+      "pass": false,
+      "finding": "TT reuse incorrectly assigned to player-cardT84"
+    },
+    {
+      "check": "scope_contracts",
+      "pass": false,
+      "finding": "gap field inventory differs from independent scope oracle: G01"
+    }
+  ],
+  "limit": "Initial amended helper, before its negative controls/final receipt integration; all input documents and SVGs remain byte-identical to pre-fix head."
+}
