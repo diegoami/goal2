@@ -605,7 +605,7 @@ class Package:
                 need(record["gap"] and re.search(r"#\d+|G0\d", record["owner"]) and (record["coverage"] != "undrawn" or not record["screens"]),
                      "undrawn/partial surface lacks a bounded owner or states a drawn screen: " + s)
         text = self.read("vision-reconciliation.md")
-        section = text.split("## Surface-to-screen mapping", 1)[1].split("## Journey-to-screen mapping", 1)[0]
+        section = text.split("## Surface-to-screen mapping", 1)[1].split("## Parity destinations by original context", 1)[0]
         doc_rows = {m[0]: m for m in re.findall(r"^\| (S\d\d) [^|]*\| (drawn|partial|undrawn) \| ([^|]*)\| [^|]*\| (\d+) \|$", section, re.M)}
         need(set(doc_rows) == set(SURFACE_COVERAGE), "reconciliation surface table incomplete")
         for s, (_, coverage, cell, allocations) in doc_rows.items():
@@ -614,6 +614,12 @@ class Package:
             expected = {x[:2] for x in record["screens"]} | ({x[:2] for x in record.get("route_screens", [])} if record["coverage"] == "undrawn" else set())
             need(coverage == record["coverage"] and shown == expected, "reconciliation table disagrees with registry: " + s)
             need(int(allocations) == counts.get(s, 0), "reconciliation allocation count differs from the destination matrix: " + s)
+        # parity destinations by original context
+        context_section = text.split("## Parity destinations by original context", 1)[1].split("## Journey-to-screen mapping", 1)[0] if "## Parity destinations by original context" in text else ""
+        expected_rows = context_screen_rows(reg, self.rows("parity/destinations.tsv"))
+        need(set(expected_rows) == set(GROUPS), "parity context mapping incomplete")
+        shown_rows = [x for x in context_section.splitlines() if re.match(r"^\| [A-Z]{2} \|", x)]
+        need(sorted(shown_rows) == sorted(expected_rows.values()), "reconciliation parity-context table disagrees with the destination matrix and surface registry")
         # journeys
         need(set(reg["journey_screens"]) == {f"J{i:02}" for i in range(1, 10)}, "journey-to-screen registry incomplete")
         journey_section = text.split("## Journey-to-screen mapping", 1)[1].split("## Superseded candidate layouts", 1)[0]
@@ -696,6 +702,22 @@ class Package:
             if path.suffix in (".md", ".py", ".mjs", ".json", ".tsv", ".svg"):
                 need(len(path.read_text()) < 110000, "oversized planning file: " + path.name)
         return f"{len(changed)} changed files against {base[:8]} limited to the plan package, its task index and the focused process lesson (accepted vision, product and engine untouched);JSON valid;no app/engine/dependency/original payload changes"
+
+
+def context_screen_rows(reg, destinations):
+    """[designed: #253 reconciliation] Per original context: the surfaces its allocations name and the accepted screens that draw them."""
+    by_context = {}
+    for r in destinations:
+        by_context.setdefault(r["context"], set()).update(re.findall(r"S\d+", r["destination"]))
+    rows = {}
+    for context, surfaces in by_context.items():
+        records = {s: reg["surface_screens"][s] for s in surfaces}
+        screens = sorted({x[:2] for r in records.values() for x in r["screens"]})
+        partial = sorted(s for s, r in records.items() if r["coverage"] == "partial")
+        undrawn = sorted(s for s, r in records.items() if r["coverage"] == "undrawn")
+        gaps = "; ".join(x for x in (("partial " + ", ".join(partial)) if partial else "", ("undrawn " + ", ".join(undrawn)) if undrawn else "") if x) or "none"
+        rows[context] = "| " + context + " | " + ", ".join(sorted(surfaces)) + " | " + ", ".join(screens) + " | " + gaps + " |"
+    return rows
 
 
 def png_size(data):
@@ -782,6 +804,7 @@ def negative_controls(package):
         ("backlog-drops-cloud-issue", "vision", {"backlog.md": lambda t: t.replace("/issues/270)", "/issues/27)")}),
         ("gap-unowned-statement-removed", "vision", {"decisions.md": lambda t: t.replace("**Unowned: needs a bounded contract before a full-parity claim.**", "", 1)}),
         ("evidence-encoding-obligation-dropped", "vision", {"decisions.md": lambda t: "".join(x for x in t.splitlines(keepends=True) if not x.startswith("| O13 |"))}),
+        ("parity-context-screens-overclaimed", "vision", {"vision-reconciliation.md": lambda t: t.replace("| ST | S01, S02 | 01 | partial S02 |", "| ST | S01, S02 | 01, 02 | none |")}),
         ("technology-claims-toolkit-selected", "vision", {"technology.md": lambda t: t.replace("did not select a toolkit or window arrangement", "selected a toolkit")}),
         ("technology-proof-omits-two-line-commentary", "vision", {"technology.md": lambda t: t.replace("only the latest two commentary lines by default", "commentary by default")}),
         ("child-contract-diverges-from-live-body", "backlog", {"backlog/B03.md": lambda t: t.replace("Split shared shell and Team/pool composition before dispatch.", "Compose everything at once.")}),
@@ -827,6 +850,7 @@ def negative_controls(package):
         "backlog-drops-cloud-issue": "queue issue absent from backlog: #270",
         "gap-unowned-statement-removed": "scope obligation lacks an explicit unowned statement: O08 / G01",
         "evidence-encoding-obligation-dropped": "scope obligation missing: O13",
+        "parity-context-screens-overclaimed": "reconciliation parity-context table disagrees with the destination matrix",
         "technology-claims-toolkit-selected": "technology document must not claim a toolkit was selected",
         "technology-proof-omits-two-line-commentary": "technology proof omits an accepted visual requirement: latest two commentary lines",
         "child-contract-diverges-from-live-body": "local contract differs from the recorded live amended body: B03",

@@ -51,6 +51,36 @@
 | S14 Bulletin | partial | 19 | Generation, retention and news detail: unowned G03; #249 only browses information already held. | 8 |
 | S15 Local-manager handoff | undrawn | — | #264 scopes the contract; delivery unowned. | 0 |
 
+## Parity destinations by original context
+
+[designed] The 237 allocations keep their S01–S15 destinations. This table shows, for each of the 23 original contexts, which surfaces its allocations name and which accepted screens draw them; the last column lists the surfaces the accepted set draws only partly or not at all, whose bounded owners are in the surface table above. The rows are recomputed from the destination matrix and the surface registry by `validate.py --check vision`. A drawn surface still needs its fields reachable there: the [parity matrices](information-parity.md) remain the field-level contract.
+
+| Context | Surfaces named | Accepted screens | Not fully drawn |
+| --- | --- | --- | --- |
+| ST | S01, S02 | 01 | partial S02 |
+| CO | S02, S03, S06, S08 | 01, 02, 05, 09 | partial S02; undrawn S06 |
+| CS | S02, S06, S08 | 01, 05 | partial S02; undrawn S06 |
+| CC | S04, S06 | 03, 11, 14, 16, 17, 18 | undrawn S06 |
+| HU | S03 | 02, 09 | none |
+| PI | S04, S05, S06, S08, S10 | 03, 04, 05, 07, 11, 13, 14, 16, 17, 18 | undrawn S06 |
+| SK | S04, S05, S06, S08, S10 | 03, 04, 05, 07, 11, 13, 14, 16, 17, 18 | undrawn S06 |
+| PC | S04, S05, S06, S08, S10 | 03, 04, 05, 07, 11, 13, 14, 16, 17, 18 | undrawn S06 |
+| PT | S04, S08, S10 | 03, 05, 07, 11, 13, 14, 16, 17, 18 | none |
+| TT | S02, S04, S06, S08 | 01, 03, 05, 11, 14, 16, 17, 18 | partial S02; undrawn S06 |
+| SD | S04, S05, S08 | 03, 04, 05, 11, 14, 16, 17, 18 | none |
+| FX | S03, S07, S08 | 02, 05, 09, 19 | partial S07 |
+| TB | S03, S07 | 02, 09, 19 | partial S07 |
+| BR | S07 | 09, 19 | partial S07 |
+| HI | S12 | 10, 18, 19 | partial S12 |
+| HR | S12 | 10, 18, 19 | partial S12 |
+| NW | S03, S12, S14 | 02, 09, 10, 18, 19 | partial S12, S14 |
+| MP | S08 | 05 | none |
+| LI | S09 | 06, 15 | none |
+| IN | S09, S10 | 06, 07, 13, 15 | none |
+| PR | S08, S10, S11, S13 | 01, 05, 07, 08, 09, 12, 13 | partial S13 |
+| RS | S03, S11, S12 | 02, 08, 09, 10, 18, 19 | partial S12 |
+| SV | S12, S13 | 01, 09, 10, 12, 18, 19 | partial S12, S13 |
+
 ## Journey-to-screen mapping
 
 | Journey | Accepted screens | Note |

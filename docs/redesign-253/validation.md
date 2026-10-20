@@ -2,7 +2,7 @@
 
 [designed: #253] These checks validate a reviewable planning package. They do not accept a future UI, establish performance/usability, decide unknown original meanings or authorize implementation. [validate.py](validate.py) uses stdlib plus read-only Git commands and supports `--root /absolute/checkout`, so a main-owned frozen copy can check the reviewed tree. No reviewer harness or shared permission file is changed here.
 
-## Seven Done-when checks
+## Eight checks
 
 ```text
 python3 -I docs/redesign-253/validate.py --check proposal
@@ -12,18 +12,26 @@ python3 -I docs/redesign-253/validate.py --check current
 python3 -I docs/redesign-253/validate.py --check backlog
 python3 -I docs/redesign-253/validate.py --check technology
 python3 -I docs/redesign-253/validate.py --check scope
+python3 -I docs/redesign-253/validate.py --check vision
 python3 -I docs/redesign-253/validate.py --negative-controls
 ```
 
 | Contract | Structural/semantic trace check and required human judgment |
 | --- | --- |
-| DW1 Clear proposal | A/B/C recommendation, O01–O12/gate,10 static SVG/PNG pairs, visibly labelled independent scenarios and delivery tiers,20 named XI/bench rows beside complete cards in03/10, actual09 scrollbar/jump and valid preview bounds. Repeated full-ID card values,04 pool count/scroll,05 selected tab and unambiguous hero ranks are checked. Human review judges composition, legibility and inner overlap. |
+| DW1 Clear plan | Accepted #266 direction stated; no obsolete recommendation or selection question (A/B/C kept only as a superseded history section); O01 closed, O02–O07 open in product terms, O08–O14 gaps/obligations; reconciled gate; the ten historical SVG/PNG pairs stay intact (not recommendations): visibly labelled independent scenarios and delivery tiers,20 named XI/bench rows beside complete cards in03/10, actual09 scrollbar/jump and valid preview bounds. Repeated full-ID card values,04 pool count/scroll,05 selected tab and unambiguous hero ranks are checked. Human review judges composition, legibility and inner overlap. |
 | DW2 Complete parity | The independently reviewed234-source inventory is byte-pinned, with12 skills/5 characteristics,17 categories and23 contexts. Exactly237 delivery allocations represent every original source: HU01/MP01/MP07 split supported/residual parts, while CO01 identity/list/selection is entirely supported. Source meaning, allocations and rendered information/destination/owner/reuse must agree.64 image-name/hash traces match the accepted manual; TT setup/scout destinations and image traces remain required. |
 | DW3 Feeling/usability |15 surfaces/9 journeys, automatic/player/conditional transitions,25 capability rows and all10 exact visible-surface mappings. LI08 quick continuation is explicitly unavailable in J06/07, with an absent in-flight mode-switch reason. A linked button does not count as a drawn destination; trace coverage cannot prove usability. |
 | DW4 Actual current build | Source/artifact hashes,10 actual Qt page captures,3 PTY states, real SDL paintedframe3/Cancel and2 read-only Chromium captures; confirmed disposable baseline, no save and separate Windows pin. No new runtime tour is needed for this documentation rework. |
 | DW5 Actionable backlog |7 filed new scopes,9 bounded existing owners, explicit unowned G01–G05/O08–O12 and B02/B05 prerequisites. An existing issue ID is insufficient: the independent scope oracle rejects assigning excluded delivery to it. Supported first-slice allocations remain owned; unresolved residue still fails full parity. Human review checks real source/persistence and contract semantics. |
 | DW6 Desktop/technology | Desktop/Python constraints,5 official-source approaches, migration/cost judgments and unresolved choices. No benchmark, migration or prototype is performed. |
-| DW7 Decision first/scope | Only task docs, proposed task index and the focused repeated-class lesson in `docs/model-trials.md`. No broader docs wildcard, production/harness/dependency/original payload allowance. Operative owner approval remains required. |
+| DW7 Scope | Changes measured from the merge-base with `origin/main` (override with `--base`): only the plan package, the task index and the focused repeated-class lesson in `docs/model-trials.md`; the accepted vision, product, engine, harness and dependencies are untouched. No original payload. |
+| DW8 Accepted-vision reconciliation | `--check vision`: the nineteen accepted screens are byte-identical to merge commit `9683a47647f21bd2a3274ea5dc56bb8c14e6c5a9`; S01–S15, J01–J09 and the ten superseded layouts map to them against independent oracles, with the reconciliation tables equal to the registry and the 237-allocation counts; undrawn or partial surfaces name a bounded owner; the approved queue lanes (including #270 as referenced only) appear in the plan and task index; O01 is closed and O02–O07 stay open; G01–G05, O13 and O14 each say plainly they are unowned; the inventory hash is unchanged. `--check backlog` additionally proves the local child contracts equal the recorded live amended bodies of #259–#265 and carry the queue lane and priority. |
+
+## Reconciliation results (R3)
+
+[designed: #253 reconciliation] The reconciliation changed the recommendation, owner questions, screen package, queue and index, not the evidence. [Live amended bodies](evidence/reconcile-05/live-issue-bodies.json) record the sha256 of each mirrored issue body and the labels other than status. The new and changed checks were shown to fail on the unreconciled candidate: [fail-before receipt](evidence/reconcile-05/pre-reconcile-fail.json) runs the same helper against the `bd878531` task-document archive. [Selectors and negative controls](evidence/reconcile-05/) run at the final head: 64 saved-byte controls (the 40 earlier controls, one adapted to the mirrored B03 contract, plus 24 new ones for the accepted direction, screen and parity-context mapping, queue, open choices, unowned obligations, technology proof and mirrored contracts), each rejected for its named reason, each restored byte for byte, with the positives passing before and after. The accepted vision files are never edited; `accepted-screen-bytes-edited` mutates one screen and restores it in `finally`.
+
+[designed: R3 change record] Controls whose subject changed: the gate and A/B/C assertions in `proposal` now assert the accepted direction and the historical-only status of A/B/C; `scope` now measures from the merge-base instead of the audited product pin; `backlog` reads mirrored live bodies instead of the old local text (the control that edited B03 prose now mutates only `backlog.json`, which the duplicate-ownership check still rejects). The ten historical-layout integrity checks, the 234-source hash pin, the 237-allocation oracles and the TT, LI08 and G01–G05 scope controls are unchanged. A cloud reviewer can run everything above from a clean clone without the archaeology checkout; the provenance check (`tools/check_provenance.py`) is outside this package and needs it.
 
 ## Scope, source and drawing controls
 
@@ -51,6 +59,6 @@ python3 -I docs/redesign-253/validate.py --negative-controls
 
 [confirmed: source accounting] [Independent allocation accounting](evidence/validation-04/source-accounting.json) verifies the source inventory equals pre-fix bytes, all234 original IDs/17 categories/23 contexts remain, and237 exact allocations represent them. Splitting delivery does not redefine an original information category or remove any full-parity prerequisite.
 
-[confirmed: contract sync03] [All seven live new issue bodies](evidence/filed-backlog-03.json) match local contracts after only262/B04 and263/B05 changed in R2, excluding an optional repeated title. Existing independent issue contracts remain untouched. This is dated evidence, not operational status or implementation permission.
+[confirmed: contract sync03] [All seven live new issue bodies](evidence/filed-backlog-03.json) match local contracts after only262/B04 and263/B05 changed in R2, excluding an optional repeated title. Existing independent issue contracts remain untouched. This is dated evidence, not operational status or implementation permission. The R3 mirror of the later owner-amended bodies ([receipt](evidence/reconcile-05/live-issue-bodies.json)) supersedes this R2 sync.
 
 [confirmed: repository batch04] [Repository checks](evidence/validation-04/repository-checks.json) retain command/exits for links/JSON, provenance and whitespace. [Batch receipt](evidence/validation-04/receipt.json) binds the helper, checks, control/source/bounds identities and issue sync. Main separately owns independent Opus High review, native denial/scope audit, acceptance and exact-head merge checks; no reviewer approval is claimed here.
