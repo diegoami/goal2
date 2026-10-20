@@ -73,6 +73,19 @@ if rclone listremotes 2>/dev/null | grep -qx 'goal2drive:'; then
   fi
 fi
 
+say "goal2-archaeology (the fidelity tests' run records, check_provenance's pinned commits)"
+# [designed: owner, 2026-10-20] Public; a sibling checkout or $GOAL2_ARCHAEOLOGY wins, else a full
+# clone in .cache/ (check_provenance needs the pinned commits, so never shallow).
+arch=${GOAL2_ARCHAEOLOGY:-}
+[ -z "$arch" ] && [ -d ../goal2-archaeology/.git ] && arch=$(cd ../goal2-archaeology && pwd)
+if [ -z "$arch" ]; then
+  arch="$PWD/.cache/goal2-archaeology"
+  if [ -d "$arch/.git" ]; then git -C "$arch" fetch -q origin || echo "could not update $arch"
+  else git clone -q https://github.com/diegoami/goal2-archaeology.git "$arch" || { echo "could not clone goal2-archaeology"; arch=""; }
+  fi
+fi
+[ -n "$arch" ] && echo "GOAL2_ARCHAEOLOGY=$arch"
+
 say "GitHub"
 if ! command -v gh >/dev/null && command -v apt-get >/dev/null && [ "$(id -u)" = 0 ]; then
   { apt-get install -y -qq gh || { apt-get update -qq && apt-get install -y -qq gh; }; } >/dev/null 2>&1 || echo "could not install gh"
@@ -85,5 +98,6 @@ export PATH="$PWD/.cache/venv/bin:\$HOME/.local/bin:\$PATH"
 export QT_QPA_PLATFORM=offscreen
 export SDL_VIDEODRIVER=dummy
 export SDL_AUDIODRIVER=dummy
+${arch:+export GOAL2_ARCHAEOLOGY="$arch"}
 EOF
 say "done: source .cache/cloud.env, then python3 tools/check_premerge.py --expected-head \$(git rev-parse HEAD) --tests"

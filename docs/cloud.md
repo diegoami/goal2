@@ -21,7 +21,9 @@ session included.
 The session-start hook (`.claude/hooks/session-start.sh`, cloud sessions only) runs
 `tools/cloud_setup.sh`: offscreen Qt libraries, a virtualenv in `.cache/venv` with
 `goal2[desktop,watched,match-view]`, rclone and `gh` if missing, the Drive remote, the original-game
-files pulled into `.cache/` and `GOAL.DAT` verified. It puts `.cache/cloud.env` (the venv on PATH,
+files pulled into `.cache/` and `GOAL.DAT` verified, and a full clone of the public
+goal2-archaeology in `.cache/goal2-archaeology` (its run records feed the fidelity tests;
+`GOAL2_ARCHAEOLOGY` points the tests and `tools/check_provenance.py` at it). It puts `.cache/cloud.env` (the venv on PATH,
 `QT_QPA_PLATFORM=offscreen`, SDL's dummy drivers) into the session's environment and reports the
 branch, gh's login and the Drive remote. Its log is `.cache/cloud-setup.log`. Elsewhere, run
 `tools/cloud_setup.sh` and `source .cache/cloud.env` by hand.
