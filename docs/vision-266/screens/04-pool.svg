@@ -1,0 +1,1031 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+<title>NATIONAL POOL / COMPARE BOTH PLAYERS</title><desc>Designed original-first native desktop target. Fictional story. Not a current-build capture.</desc>
+<rect x="0" y="0" width="1440" height="900" fill="#000000"/>
+<text x="8" y="17" font-family="DejaVu Sans Mono" font-size="14" font-weight="400" fill="#aaaaaa" xml:space="preserve">04 TARGET ILLUSTRATION / FICTIONAL DATA / DESKTOP / NOT CURRENT BUILD</text>
+<text x="20" y="56" font-family="DejaVu Sans Mono" font-size="32" font-weight="700" fill="#ffff55" xml:space="preserve">NATIONAL POOL / COMPARE BOTH PLAYERS</text>
+<text x="1152" y="55" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ffff" xml:space="preserve">[Menu &gt;] [Top v]</text>
+<text x="20" y="85" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ffff" xml:space="preserve">HOLLAND / ALEX / 2030 / POOL EXCHANGE</text>
+<g data-player="NL20" data-snapshot="players">
+<rect x="20" y="108" width="690" height="640" fill="#000000" stroke="#ff5555"/>
+<text x="34" y="140" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ffff55" xml:space="preserve">C DE WIT</text>
+<text x="625" y="140" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+<text x="34" y="170" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Age 30 / Caps 29 / Goals 8</text>
+<text x="34" y="195" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ff55" xml:space="preserve">6′ 0″ / Right foot / OUT / BENCH / READY</text>
+<text x="34" y="220" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">National Forward / Club Forward</text>
+<text x="34" y="245" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Cards: none / Performance: not recorded</text>
+<g data-attribute="Keeping" data-slots="25" data-filled="2">
+<text x="34" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Keeping</text>
+<rect x="158.0" y="264" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="264" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="176.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="182.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="188.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="194.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="200.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="206.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="212.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="218.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="224.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="230.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="236.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="242.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="248.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="254.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">2</text>
+</g>
+</g>
+<g data-attribute="Kicking" data-slots="25" data-filled="14">
+<text x="34" y="308" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Kicking</text>
+<rect x="158.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="248.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="254.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="308" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">14</text>
+</g>
+</g>
+<g data-attribute="Tackling" data-slots="25" data-filled="10">
+<text x="34" y="336" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Tackling</text>
+<rect x="158.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="224.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="230.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="236.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="242.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="248.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="254.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="336" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">10</text>
+</g>
+</g>
+<g data-attribute="Heading" data-slots="25" data-filled="21">
+<text x="34" y="364" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Heading</text>
+<rect x="158.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="248.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="254.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="260.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="266.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="272.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="278.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="284.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="364" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">21</text>
+</g>
+</g>
+<g data-attribute="Marking" data-slots="25" data-filled="8">
+<text x="34" y="392" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Marking</text>
+<rect x="158.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="212.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="218.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="224.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="230.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="236.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="242.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="248.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="254.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="392" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">8</text>
+</g>
+</g>
+<g data-attribute="Passing" data-slots="25" data-filled="16">
+<text x="34" y="420" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Passing</text>
+<rect x="158.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="248.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="254.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="420" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">16</text>
+</g>
+</g>
+<g data-attribute="Crossing" data-slots="25" data-filled="16">
+<text x="34" y="448" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Crossing</text>
+<rect x="158.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="248.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="254.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="448" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">16</text>
+</g>
+</g>
+<g data-attribute="Feinting" data-slots="25" data-filled="16">
+<text x="34" y="476" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Feinting</text>
+<rect x="158.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="248.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="254.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="476" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">16</text>
+</g>
+</g>
+<g data-attribute="Control" data-slots="25" data-filled="19">
+<text x="34" y="504" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Control</text>
+<rect x="158.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="248.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="254.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="260.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="266.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="272.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="504" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">19</text>
+</g>
+</g>
+<g data-attribute="Dribbling" data-slots="25" data-filled="15">
+<text x="34" y="532" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Dribbling</text>
+<rect x="158.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="248.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="254.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="532" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">15</text>
+</g>
+</g>
+<g data-attribute="Shooting" data-slots="25" data-filled="12">
+<text x="34" y="560" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Shooting</text>
+<rect x="158.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="236.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="242.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="248.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="254.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="260.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="266.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="272.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="278.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="284.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="560" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">12</text>
+</g>
+</g>
+<g data-attribute="Penalties" data-slots="25" data-filled="21">
+<text x="34" y="588" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Penalties</text>
+<rect x="158.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="164.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="170.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="176.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="182.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="188.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="194.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="200.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="206.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="212.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="218.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="224.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="230.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="236.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="242.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="248.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="254.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="260.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="266.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="272.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="278.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="284.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="290.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="296.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="302.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="314.0" y="588" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">21</text>
+</g>
+</g>
+<g data-attribute="Hardness" data-slots="14" data-filled="8">
+<text x="378.0" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Hardness</text>
+<rect x="510.0" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="520.1428571428571" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="530.2857142857143" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="540.4285714285714" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="550.5714285714286" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="560.7142857142857" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="570.8571428571429" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="581.0" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="591.1428571428571" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="601.2857142857142" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="611.4285714285714" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="621.5714285714286" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="631.7142857142857" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="641.8571428571429" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="658.0" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">10</text>
+</g>
+</g>
+<g data-descriptor="Hardness">
+<text x="510.0" y="302" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">tough</text>
+</g>
+<g data-attribute="Fitness" data-slots="14" data-filled="10">
+<text x="378.0" y="323" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Fitness</text>
+<rect x="510.0" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="520.1428571428571" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="530.2857142857143" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="540.4285714285714" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="550.5714285714286" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="560.7142857142857" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="570.8571428571429" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="581.0" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="591.1428571428571" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="601.2857142857142" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="611.4285714285714" y="307" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="621.5714285714286" y="307" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="631.7142857142857" y="307" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="641.8571428571429" y="307" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="658.0" y="323" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">25</text>
+</g>
+</g>
+<g data-descriptor="Fitness">
+<text x="510.0" y="345" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">ok</text>
+</g>
+<g data-attribute="Energy" data-slots="14" data-filled="11">
+<text x="378.0" y="366" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Energy</text>
+<rect x="510.0" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="520.1428571428571" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="530.2857142857143" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="540.4285714285714" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="550.5714285714286" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="560.7142857142857" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="570.8571428571429" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="581.0" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="591.1428571428571" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="601.2857142857142" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="611.4285714285714" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="621.5714285714286" y="350" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="631.7142857142857" y="350" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="641.8571428571429" y="350" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="658.0" y="366" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">27</text>
+</g>
+</g>
+<g data-descriptor="Energy">
+<text x="510.0" y="388" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">fine</text>
+</g>
+<g data-attribute="Morale" data-slots="14" data-filled="8">
+<text x="378.0" y="409" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Morale</text>
+<rect x="510.0" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="520.1428571428571" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="530.2857142857143" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="540.4285714285714" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="550.5714285714286" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="560.7142857142857" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="570.8571428571429" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="581.0" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="591.1428571428571" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="601.2857142857142" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="611.4285714285714" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="621.5714285714286" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="631.7142857142857" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="641.8571428571429" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="658.0" y="409" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">20</text>
+</g>
+</g>
+<g data-descriptor="Morale">
+<text x="510.0" y="431" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">ok</text>
+</g>
+<g data-attribute="Leadership" data-slots="14" data-filled="10">
+<text x="378.0" y="452" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Leadership</text>
+<rect x="510.0" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="520.1428571428571" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="530.2857142857143" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="540.4285714285714" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="550.5714285714286" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="560.7142857142857" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="570.8571428571429" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="581.0" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="591.1428571428571" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="601.2857142857142" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="611.4285714285714" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="621.5714285714286" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="631.7142857142857" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="641.8571428571429" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="658.0" y="452" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">5</text>
+</g>
+</g>
+<g data-descriptor="Leadership">
+<text x="510.0" y="474" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">ok</text>
+</g>
+<text x="378.0" y="503" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ff5555" xml:space="preserve">TACTICS / T=TEAM</text>
+<text x="378.0" y="531" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Position</text>
+<text x="510.0" y="531" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Push forward T</text>
+<text x="378.0" y="559" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Possession</text>
+<text x="510.0" y="559" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Keep ball T</text>
+<text x="378.0" y="587" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Passing</text>
+<text x="510.0" y="587" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Short passes T</text>
+<text x="378.0" y="615" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Tackling</text>
+<text x="510.0" y="615" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Avoid injury T</text>
+<text x="378.0" y="643" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Mark</text>
+<text x="510.0" y="643" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Man to man T</text>
+<text x="34" y="731" font-family="DejaVu Sans Mono" font-size="15" font-weight="400" fill="#ff55ff" xml:space="preserve">Original units / descriptor words illustrative</text>
+</g>
+<g data-player="NL21" data-snapshot="players">
+<rect x="730" y="108" width="690" height="640" fill="#000000" stroke="#ff5555"/>
+<text x="744" y="140" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ffff55" xml:space="preserve">R NOOR</text>
+<text x="1335" y="140" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+<text x="744" y="170" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Age 24 / Caps 3 / Goals 1</text>
+<text x="744" y="195" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ff55" xml:space="preserve">5′ 10″ / Left foot / IN / POOL / READY</text>
+<text x="744" y="220" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">National Forward / Club Forward</text>
+<text x="744" y="245" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Cards: none / Performance: not recorded</text>
+<g data-attribute="Keeping" data-slots="25" data-filled="1">
+<text x="744" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Keeping</text>
+<rect x="868.0" y="264" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="880.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="886.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="892.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="898.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="904.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="910.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="916.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="922.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="928.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="934.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="940.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="946.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="952.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="958.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="964.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="970.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="976.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="982.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="988.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="264" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">1</text>
+</g>
+</g>
+<g data-attribute="Kicking" data-slots="25" data-filled="11">
+<text x="744" y="308" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Kicking</text>
+<rect x="868.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="292" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="940.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="946.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="952.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="958.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="964.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="970.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="976.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="982.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="988.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="292" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="308" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">11</text>
+</g>
+</g>
+<g data-attribute="Tackling" data-slots="25" data-filled="8">
+<text x="744" y="336" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Tackling</text>
+<rect x="868.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="320" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="922.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="928.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="934.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="940.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="946.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="952.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="958.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="964.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="970.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="976.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="982.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="988.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="320" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="336" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">8</text>
+</g>
+</g>
+<g data-attribute="Heading" data-slots="25" data-filled="12">
+<text x="744" y="364" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Heading</text>
+<rect x="868.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="348" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="946.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="952.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="958.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="964.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="970.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="976.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="982.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="988.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="348" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="364" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">12</text>
+</g>
+</g>
+<g data-attribute="Marking" data-slots="25" data-filled="7">
+<text x="744" y="392" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Marking</text>
+<rect x="868.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="376" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="916.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="922.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="928.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="934.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="940.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="946.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="952.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="958.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="964.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="970.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="976.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="982.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="988.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="376" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="392" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">7</text>
+</g>
+</g>
+<g data-attribute="Passing" data-slots="25" data-filled="20">
+<text x="744" y="420" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Passing</text>
+<rect x="868.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="946.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="952.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="958.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="964.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="970.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="976.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="982.0" y="404" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="988.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="404" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="420" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">20</text>
+</g>
+</g>
+<g data-attribute="Crossing" data-slots="25" data-filled="20">
+<text x="744" y="448" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Crossing</text>
+<rect x="868.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="946.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="952.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="958.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="964.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="970.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="976.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="982.0" y="432" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="988.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="432" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="448" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">20</text>
+</g>
+</g>
+<g data-attribute="Feinting" data-slots="25" data-filled="23">
+<text x="744" y="476" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Feinting</text>
+<rect x="868.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="946.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="952.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="958.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="964.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="970.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="976.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="982.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="988.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="994.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="1000.0" y="460" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="1006.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="460" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="476" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">23</text>
+</g>
+</g>
+<g data-attribute="Control" data-slots="25" data-filled="22">
+<text x="744" y="504" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Control</text>
+<rect x="868.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="946.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="952.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="958.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="964.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="970.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="976.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="982.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="988.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="994.0" y="488" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="1000.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="488" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="504" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">22</text>
+</g>
+</g>
+<g data-attribute="Dribbling" data-slots="25" data-filled="24">
+<text x="744" y="532" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Dribbling</text>
+<rect x="868.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="946.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="952.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="958.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="964.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="970.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="976.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="982.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="988.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="994.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="1000.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="1006.0" y="516" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="1012.0" y="516" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="532" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">24</text>
+</g>
+</g>
+<g data-attribute="Shooting" data-slots="25" data-filled="18">
+<text x="744" y="560" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Shooting</text>
+<rect x="868.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="946.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="952.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="958.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="964.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="970.0" y="544" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="976.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="982.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="988.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="544" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="560" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">18</text>
+</g>
+</g>
+<g data-attribute="Penalties" data-slots="25" data-filled="15">
+<text x="744" y="588" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Penalties</text>
+<rect x="868.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="874.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="880.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="886.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="892.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="898.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="904.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="910.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="916.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="922.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="928.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="934.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="940.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="946.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="952.0" y="572" width="4.0" height="17" fill="#eeeeee"/>
+<rect x="958.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="964.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="970.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="976.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="982.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="988.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="994.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1000.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1006.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<rect x="1012.0" y="572" width="4.0" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1024.0" y="588" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">15</text>
+</g>
+</g>
+<g data-attribute="Hardness" data-slots="14" data-filled="3">
+<text x="1088.0" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Hardness</text>
+<rect x="1220.0" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1230.142857142857" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1240.2857142857142" y="264" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1250.4285714285713" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1260.5714285714287" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1270.7142857142858" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1280.857142857143" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1291.0" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1301.142857142857" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1311.2857142857142" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1321.4285714285713" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1331.5714285714287" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1341.7142857142858" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1351.857142857143" y="264" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1368.0" y="280" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">4</text>
+</g>
+</g>
+<g data-descriptor="Hardness">
+<text x="1220.0" y="302" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">pushy</text>
+</g>
+<g data-attribute="Fitness" data-slots="14" data-filled="13">
+<text x="1088.0" y="323" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Fitness</text>
+<rect x="1220.0" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1230.142857142857" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1240.2857142857142" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1250.4285714285713" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1260.5714285714287" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1270.7142857142858" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1280.857142857143" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1291.0" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1301.142857142857" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1311.2857142857142" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1321.4285714285713" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1331.5714285714287" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1341.7142857142858" y="307" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1351.857142857143" y="307" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1368.0" y="323" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">31</text>
+</g>
+</g>
+<g data-descriptor="Fitness">
+<text x="1220.0" y="345" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">ok</text>
+</g>
+<g data-attribute="Energy" data-slots="14" data-filled="14">
+<text x="1088.0" y="366" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Energy</text>
+<rect x="1220.0" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1230.142857142857" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1240.2857142857142" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1250.4285714285713" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1260.5714285714287" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1270.7142857142858" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1280.857142857143" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1291.0" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1301.142857142857" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1311.2857142857142" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1321.4285714285713" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1331.5714285714287" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1341.7142857142858" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1351.857142857143" y="350" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<g data-raw="value">
+<text x="1368.0" y="366" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">32</text>
+</g>
+</g>
+<g data-descriptor="Energy">
+<text x="1220.0" y="388" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">fine</text>
+</g>
+<g data-attribute="Morale" data-slots="14" data-filled="11">
+<text x="1088.0" y="409" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Morale</text>
+<rect x="1220.0" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1230.142857142857" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1240.2857142857142" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1250.4285714285713" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1260.5714285714287" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1270.7142857142858" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1280.857142857143" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1291.0" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1301.142857142857" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1311.2857142857142" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1321.4285714285713" y="393" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1331.5714285714287" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1341.7142857142858" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1351.857142857143" y="393" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1368.0" y="409" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">26</text>
+</g>
+</g>
+<g data-descriptor="Morale">
+<text x="1220.0" y="431" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">brimming</text>
+</g>
+<g data-attribute="Leadership" data-slots="14" data-filled="4">
+<text x="1088.0" y="452" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ffbb33" xml:space="preserve">Leadership</text>
+<rect x="1220.0" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1230.142857142857" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1240.2857142857142" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1250.4285714285713" y="436" width="8.142857142857142" height="17" fill="#eeeeee"/>
+<rect x="1260.5714285714287" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1270.7142857142858" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1280.857142857143" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1291.0" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1301.142857142857" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1311.2857142857142" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1321.4285714285713" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1331.5714285714287" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1341.7142857142858" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<rect x="1351.857142857143" y="436" width="8.142857142857142" height="17" fill="#9b009b"/>
+<g data-raw="value">
+<text x="1368.0" y="452" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#eeeeee" xml:space="preserve">2</text>
+</g>
+</g>
+<g data-descriptor="Leadership">
+<text x="1220.0" y="474" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">lacking</text>
+</g>
+<text x="1088.0" y="503" font-family="DejaVu Sans Mono" font-size="20" font-weight="700" fill="#ff5555" xml:space="preserve">TACTICS / T=TEAM</text>
+<text x="1088.0" y="531" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Position</text>
+<text x="1220.0" y="531" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Push forward T</text>
+<text x="1088.0" y="559" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Possession</text>
+<text x="1220.0" y="559" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Keep ball T</text>
+<text x="1088.0" y="587" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Passing</text>
+<text x="1220.0" y="587" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Short passes T</text>
+<text x="1088.0" y="615" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Tackling</text>
+<text x="1220.0" y="615" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Avoid injury T</text>
+<text x="1088.0" y="643" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#ffbb33" xml:space="preserve">Mark</text>
+<text x="1220.0" y="643" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#55ff55" xml:space="preserve">Man to man T</text>
+<text x="744" y="731" font-family="DejaVu Sans Mono" font-size="15" font-weight="400" fill="#ff55ff" xml:space="preserve">Original units / descriptor words illustrative</text>
+</g>
+<text x="20" y="790" font-family="DejaVu Sans Mono" font-size="21" font-weight="400" fill="#55ffff" xml:space="preserve">POOL 80 / 1–7: Noor Groen Hermans van Vliet Jonker Maas Bosman  [Browse &gt;]</text>
+<rect x="20" y="818" width="460" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="32" y="848" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Confirm de Wit &gt; Noor</text>
+<rect x="500" y="818" width="200" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="512" y="848" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Cancel</text>
+<text x="732" y="849" font-family="DejaVu Sans Mono" font-size="23" font-weight="700" fill="#55ff55" xml:space="preserve">XI unchanged / one bench place</text>
+<text x="20" y="885" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#ff55ff" xml:space="preserve">Both full cards stay pinned while browsing / Same original-unit bars</text>
+</svg>
