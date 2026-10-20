@@ -18,32 +18,30 @@ dispatch; it does not replace the shared evidence, provenance or merge rules.
    Ask the owner to choose the implementer/model before starting each new task,
    and wait for the answer; requesting a task alone does not select a model.
    Once chosen for that task, keep the choice for its implementation/rework.
-2. Select/record a task, follow its scope and Done-when, and work in an isolated
-   task branch/worktree under harness.json's `worktreeRoot`. Resolve it with
-   `repoPaths` in tools/harness/lib/common.mjs; never use /tmp for task worktrees.
-   For a native Codex subagent, the main session prepares its worktree before
-   dispatch; do not assume the dispatch tool created one and pastes the full task plus process §4 contract.
-   The main session may implement directly without a subagent.
+2. Select/record a task, follow its scope and Done-when, and work on a task branch in the
+   checkout at hand (a local clone or a cloud session). [designed: owner, 2026-10-20] No
+   worktree or fresh checkout is required; one task at a time per checkout. For a native Codex
+   subagent, paste the full task plus process §4 contract. The main session may implement
+   directly without a subagent.
 3. Follow the shared run-task procedure in
    [.claude/skills/run-task/SKILL.md](.claude/skills/run-task/SKILL.md), using its
    Codex dispatch branch. Keep ignored RUN-NOTES.md, prove regressions, validate,
    commit/push, open a draft PR and mark it ready before asking for review.
-4. [designed: owner, 2026-10-20] Review follows the task's risk tier (CLAUDE.md rule 7a): tier 0
-   has no external review, tier 1 one round, tier 2 per-PR until accepted.
-   For tiers 1-2, ask the owner which OpenCode model reviews only after a concrete PR exists;
-   record the choice and run tools/harness/review.mjs. Codex is family `openai`,
-   so OpenAI reviewers are ineligible. Do not choose or substitute a reviewer.
+4. [designed: owner, 2026-10-20] Per-PR review is optional (CLAUDE.md rule 7a). When the main
+   session runs one, it does so without asking, after a concrete PR exists, with
+   tools/harness/review.mjs on harness.json's reviewer.default, in the current checkout at the
+   PR head; any family may review, OpenAI included. Milestone reviews are started outside the
+   harness with tools/milestone_review.sh (docs/milestone-review.md).
    [designed: T73] An owner-explicit direct Claude review instead follows
-   docs/environment.md's optional backend procedure, with the same independent
-   family, trusted permissions and main-only acceptance rules.
+   docs/environment.md's optional backend procedure.
 5. Detached harness jobs must carry `HARNESS_CLIENT=codex` (and required provider
    keys), because user services do not inherit Codex session markers. Native
    shell tools are detected via CODEX_THREAD_ID or CODEX_SESSION_ID; conflicting
    family overrides fail closed. Do not print credentials.
 6. Claude's PreToolUse hooks are not installed on Codex. Follow the shared no-stash,
-   no-force-push, no-worktree-removal and main-session-only merge rules; retain
+   no-force-push and main-session-only merge rules; retain
    Codex's native approval/sandbox controls. This entrypoint is instruction,
    not a claim of hook enforcement. Never weaken reviewer permissions.
-7. After approval and pre-merge checks, squash-merge under the shared process;
-   preserve task worktrees and file non-blocking follow-ups. Status stays in
+7. After the Done-when and pre-merge checks (and approval, when a review was run), squash-merge
+   under the shared process and file non-blocking follow-ups. Status stays in
    GitHub labels, not documents. Questions alone do not authorize edits.

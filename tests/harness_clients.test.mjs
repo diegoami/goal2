@@ -125,24 +125,9 @@ test('CLI show/dry-run/write use the correct client and preserve Claude defaults
   assert.deepEqual(JSON.parse(fs.readFileSync(file, 'utf8')), c);
 }));
 
-test('Reviewer CLI rejects the Codex/OpenAI family before resolving OpenCode', () => fixture(dir => {
-  const gh = path.join(dir, 'fake-gh.mjs');
-  fs.writeFileSync(gh, 'if(process.argv.includes("--version")) console.log("gh test");');
-  const brief = path.join(dir, 'brief.md');
-  fs.writeFileSync(brief, 'T24 review (test)\nNo live model call is permitted.\n');
-  for (const env of [{ HARNESS_CLIENT: 'codex' }, { CODEX_THREAD_ID: 'test' }, { CODEX_SESSION_ID: 'test' }]) {
-    const run = cli('review.mjs', ['--pr', '1', '--brief', brief, '--reviewer', 'luna'], dir,
-      { ...env, HARNESS_GH_EXE: gh, HARNESS_OPENCODE_EXE: '/missing/opencode-forbidden' });
-    assert.equal(run.status, 1, run.stderr);
-    assert.match(run.stderr, /implementer's model family/);
-    assert.doesNotMatch(run.stderr, /OpenCode unavailable/);
-  }
-}));
-
-
-test('Codex permits a distinct reviewer family; Claude still refuses its own', () => fixture(dir => {
+// [designed: owner, 2026-10-20] Any family may review, the session's own included.
+test('Reviewer CLI accepts the session family and reaches OpenCode resolution', () => fixture(dir => {
   const c = config();
-  c.models.glm = { id: 'zai-coding-plan/glm-5.3-flash', family: 'glm' };
   c.models.claude = { id: 'anthropic/claude-sonnet-4-5', family: 'claude' };
   fs.writeFileSync(path.join(dir, 'harness.json'), JSON.stringify(c));
   const gh = path.join(dir, 'fake-gh.mjs');
@@ -150,12 +135,10 @@ test('Codex permits a distinct reviewer family; Claude still refuses its own', (
   const brief = path.join(dir, 'brief.md');
   fs.writeFileSync(brief, 'T24 review (test)\nNo live model call is permitted.\n');
   const env = { HARNESS_GH_EXE: gh, HARNESS_OPENCODE_EXE: '/missing/opencode-forbidden' };
-  const codex = cli('review.mjs', ['--pr', '1', '--brief', brief, '--reviewer', 'glm'], dir,
-    { ...env, HARNESS_CLIENT: 'codex' });
-  assert.equal(codex.status, 3, codex.stderr);
-  assert.match(codex.stderr, /OpenCode unavailable/);
-  const claude = cli('review.mjs', ['--pr', '1', '--brief', brief, '--reviewer', 'claude'], dir,
-    { ...env, HARNESS_CLIENT: 'claude', CODEX_SESSION_ID: 'inherited-marker' });
-  assert.equal(claude.status, 1, claude.stderr);
-  assert.match(claude.stderr, /implementer's model family/);
+  for (const [reviewer, extra] of [['luna', { HARNESS_CLIENT: 'codex' }], ['luna', { CODEX_THREAD_ID: 'test' }], ['claude', { HARNESS_CLIENT: 'claude' }]]) {
+    const run = cli('review.mjs', ['--pr', '1', '--brief', brief, '--reviewer', reviewer], dir, { ...env, ...extra });
+    assert.equal(run.status, 3, run.stderr);
+    assert.doesNotMatch(run.stderr, /implementer's model family/);
+    assert.match(run.stderr, /OpenCode unavailable/);
+  }
 }));

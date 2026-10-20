@@ -43,8 +43,8 @@ fi
 for n in "${notes[@]}"; do echo "  Setup: $n"; done
 # the harness's own resolver (lib/common.mjs sessionFamily), so the hook and review.mjs agree (Sol's R4 on PR 149)
 fam=$(node --input-type=module -e "import('./tools/harness/lib/common.mjs').then((m) => console.log(m.sessionFamily() ?? 'unknown (set HARNESS_SESSION_FAMILY)'))" 2>/dev/null || echo "unknown (node failed)")
-echo "- This session's family: $fam (from the Anthropic environment; the implementer's family, never the reviewer's)"
+echo "- This session's family: $fam (from the Anthropic environment; any family may review since 2026-10-20)"
 echo "- Defaults (harness.json, switched with /switch-model): implementer $(node -p "require('./harness.json').implementer.default" 2>/dev/null || echo ?), reviewer $(node -p "require('./harness.json').reviewer.default" 2>/dev/null || echo ?), blocked $(node -p "require('./harness.json').blocked.join(', ')" 2>/dev/null || echo ?)"
-echo "Who does what (CLAUDE.md, Choosing models): the main session asks before each implementation (which subagent, or itself directly) and each review (an OpenCode model), proposing these defaults."
+echo "Who does what (CLAUDE.md, Choosing models): the main session asks before each implementation (which subagent, or itself directly); per-PR reviews are optional and run on the default reviewer without asking; milestone reviews start with tools/milestone_review.sh (docs/milestone-review.md). No worktrees are required."
 echo "See docs/environment.md for what each key needs and which hosts the network policy must allow."
 exit 0

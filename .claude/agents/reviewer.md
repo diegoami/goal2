@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: Read-only Claude reviewer of one pull request, only when the user asks for one (the implementer is Claude by default, so this is the same family; OpenCode's review.mjs is the normal reviewer). It checks the PR out in its own worktree, re-runs every Done-when line, and returns its review as its final message; tools/harness/post-review.mjs posts it.
+description: Read-only Claude reviewer of one pull request, when the main session or the user asks for one (any family may review since 2026-10-20; OpenCode's review.mjs is the default reviewer). It works in the checkout at the PR head, re-runs every Done-when line, and returns its review as its final message; tools/harness/post-review.mjs posts it.
 tools: Read, Grep, Glob, Bash
 model: opus
 hooks:
@@ -21,8 +21,9 @@ and the task file; this file says how the review runs. Your Bash commands pass t
 build and test. It runs each command where the user's GitHub credentials are hidden (#68): `git
 push` and `gh` fail, and so may `git fetch`; never retry them.
 
-- Check the PR out in your worktree: `git checkout --detach <sha>`, the commit the brief names;
-  the main session fetched it. Run commands from the worktree root with relative paths;
+- Confirm `git rev-parse HEAD` is the commit the brief names (the main session checked the PR out
+  at it; if not, `git checkout --detach <sha>` in a clean checkout). Run commands from the
+  checkout root with relative paths;
   never `cd`, and never `..` (L31).
 - To test a mutation, save the file's contents, change it in place, rebuild clean, run, then write
   the saved contents back; never `git checkout`, `git restore` or `git reset` the file (rule 9a).

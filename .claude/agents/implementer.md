@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: The implementer subagent for one task or fix, spawned inside Claude Code by /run-task on the model the user chose (an alias such as sonnet, or a model id the session's provider serves), not the orchestrator's. It works in its own worktree on its own branch, commits and pushes there, opens the PR, and reports.
+description: The implementer subagent for one task or fix, spawned inside Claude Code by /run-task on the model the user chose (an alias such as sonnet, or a model id the session's provider serves), not the orchestrator's. It works on its own task branch in the checkout it is given, commits and pushes there, opens the PR, and reports.
 hooks:
   PreToolUse:
     - matcher: "Bash"
@@ -13,25 +13,20 @@ You implement one task (or one fix). The brief is the task file pasted in full; 
 the rest of the contract. Your Bash commands pass through a hook (tools/harness/guard.mjs) that
 refuses git stash, git worktree, any force-push and gh pr merge.
 
-- The main session spawns you with the Agent tool's `isolation: "worktree"` parameter; that
-  gives you your own git worktree, separate from the main checkout (L107). The worktree root
-  is your working directory, but the branch in that worktree is an auto-generated scratch
-  ref (e.g. `worktree-agent-abc5e33612c4c7a2a`). Create the contract's task branch from
-  it — `git checkout -b task/T<nn>-<slug> origin/main` — and do all your work there; the
-  worktree's auto-named branch can be deleted locally with `git branch -D <auto-name>`
-  after the PR is up. Push the task branch (`TaskRef`); `gh pr create --head
-  task/T<nn>-<slug>` opens the PR on the right ref (T18 hit this — leaving the branch
-  auto-named forced a rename later, which auto-closed the original PR). The guard refuses
-  `git worktree`, so creating one is not yours to do — it is already done for you. Run
-  every command from the worktree root with relative paths; never `cd`, and never `..`
-  (L31). Never touch another branch or the main checkout.
+- [designed: owner, 2026-10-20] You work in the checkout you start in (the main checkout, a
+  clone, or a worktree if the main session spawned you with `isolation: "worktree"`); no
+  worktree is required. Create the contract's task branch — `git fetch origin && git checkout
+  -b task/T<nn>-<slug> origin/main` — and do all your work there; push it (`TaskRef`) and open the
+  PR with `gh pr create --head task/T<nn>-<slug>` (T18: a branch left auto-named forced a rename
+  that auto-closed the PR). Run every command from the checkout root with relative paths; never
+  `cd`, and never `..` (L31). Never touch another task's branch.
 - If your task touches any file whose SHA-256 is listed in `harness.lock`
   (e.g. `.claude/agents/implementer.md`, `docs/lessons.md`, `tools/harness/*`), refresh the
   corresponding `harness.lock` entry on your PR branch before claiming the pre-merge
   `grep -E '^[0-9a-f]{64}  ' harness.lock | sha256sum -c --quiet` passes (rule-5 of
   `.github/workflows/ci.yml`). Compute `sha256sum <file>`, replace the old hash line in
   `harness.lock`, commit + push on the PR branch. L108. The main session also refreshes the
-  lock on `main` separately, but the PR branch needs its own refresh — the review worktree
+  lock on `main` separately, but the PR branch needs its own refresh — the review checkout
   reads its own `harness.lock`.
 - Create the branch the task file names (`task/T<nn>-<slug>`, or `fix/<issue>-<slug>`) from
   `origin/main`, push it, and commit and push after every meaningful step.

@@ -6,17 +6,18 @@
 //     [--backend claude --reviewer claude-sonnet --claude-policy /trusted/policy.json]
 //     [--claude-worktree PREPARED_REVIEW_WORKTREE]
 //     [--claude-negative-control COMMAND --claude-session-id UUID --claude-canary COMMAND]...
+//     [--checkout | --worktree]
 //     [--total-timeout-sec N] [--idle-timeout-sec N]   override harness.json's limits for this run
 //   node tools/harness/review.mjs --self-test   (the reader's samples and the named-model checks; no model is called)
 //
 // One reviewer, one run (the owner, 2026-10-11: no chains, no second opinion, no quota check, no
 // resume). --reviewer is a harness.json key or any OpenCode id provider/model[@variant]
-// (lib/named.mjs); without it, harness.json's reviewer.default runs. The reviewer is never the
-// implementer's model family: --exclude names the implementer (a harness.json key, an id or a
-// family), else a model:<name> label on the PR or --issue, else the session's own family (the main
-// session or an agent it spawned implements by default; lib/common.mjs sessionFamily reads it from
-// ANTHROPIC_BASE_URL, or HARNESS_SESSION_FAMILY). Runs use the scripts' own OpenCode data
-// directory. harness.json's blocked list is refused (switch-model.mjs --block/--unblock).
+// (lib/named.mjs); without it, harness.json's reviewer.default runs. [designed: owner, 2026-10-20]
+// Reviews are optional, any model family may review (the implementer's own included), and the
+// review runs in this checkout at the PR head: --checkout lets the script detach a clean checkout
+// there; --worktree keeps the old separate detached worktree under worktreeRoot. The reviewer's
+// agent file always comes from origin/main, never from the PR. Runs use the scripts' own OpenCode
+// data directory. harness.json's blocked list is refused (switch-model.mjs --block/--unblock).
 //
 // The brief's first line is the review header the model prints, e.g. "T07 review (Luna)". The
 // model never writes to GitHub (the agent file denies it); this script is the only writer.
@@ -49,10 +50,11 @@ import { selectClaude, ClaudeError } from './lib/claude-policy.mjs';
 import { preparedClaudeWorktree } from './lib/claude-scope.mjs';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';
+import os from 'node:os';
 import { reviewerPolicy, trustedReviewEnv } from './lib/opencode-policy.mjs';
 import { runOpenCodeWatched, resolveOpenCode, OpenCodeInfraError, keyProblem } from './lib/opencode.mjs';
 import { credentialJail, OFF_WARNING } from './lib/jail.mjs';
-import { namedModel, familiesOfName, familiesOfModel, canonicalFamily, selfTest as namedSelfTest } from './lib/named.mjs';
+import { namedModel, familiesOfName, familiesOfModel, selfTest as namedSelfTest } from './lib/named.mjs';
 import { readReview, doneWhenCount, briefTargets } from './lib/chain.mjs';
 import { planSwitch, defaultVariant } from './lib/switch.mjs';
 import { planPost, publish } from './lib/post.mjs';
@@ -64,12 +66,12 @@ import {
 const say = (s) => console.log(s);
 const die = (code, s) => { console.error(s); process.exit(code); };
 
-const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test'], repeatable: ['env', 'claude-canary'] });
+const a = parseArgs(process.argv.slice(2), { flags: ['apply-label', 'dry-run', 'self-test', 'checkout', 'worktree'], repeatable: ['env', 'claude-canary'] });
 // The run's title names its files (the brief, the logs): a model id's '/' would make a directory
 // there (#145, Sol's R5 on PR 149). The id and variant passed to OpenCode stay as named.
 const fileSafe = (s) => String(s).replace(/[^\w.@-]+/g, '-');
 
-// The family guard's cases (Sol's R1-R5 on PR 149), for --self-test.
+// The family classifier's cases (Sol's R1-R5 on PR 149), for --self-test.
 function guardSelfTest() {
   const failures = [];
   const ok = (what, cond) => { if (!cond) failures.push(what); };
@@ -84,9 +86,8 @@ function guardSelfTest() {
   const refused = (opts) => { try { planSwitch(cfg, opts); return false; } catch (e) { return /^Refused/.test(e.message); } };
   ok('a blocked implementer is refused (R3)', refused({ role: 'implementer', id: 'DeepSeek-v4-pro' }));
   ok('an alias implementer passes', !refused({ role: 'implementer', id: 'sonnet' }));
-  ok('a Claude reviewer in a Claude session is refused (R2)', refused({ id: 'anthropic/claude-sonnet-4-5', variant: 'high', sessionFamily: 'claude' }));
-  ok('a forced family does not pass the session family (R2)',
-    refused({ id: 'openai/gpt-5.6-luna', variant: 'high', family: 'other', force: true, sessionFamily: 'openai' }));
+  // [designed: owner, 2026-10-20] The session's own family may now review.
+  ok('a Claude reviewer in a Claude session is allowed', !refused({ id: 'anthropic/claude-sonnet-4-5', variant: 'high', sessionFamily: 'claude' }));
   ok('a blocked session refuses an alias implementer (round-1 R1)',
     refused({ role: 'implementer', id: 'sonnet', sessionFamily: 'deepseek' }) && refused({ role: 'implementer', id: 'session', sessionFamily: 'deepseek' }));
   ok('an unknown session refuses an alias implementer (round-1 R1)', refused({ role: 'implementer', id: 'sonnet', sessionFamily: null }));
@@ -94,8 +95,6 @@ function guardSelfTest() {
     familiesOfModel({ id: 'openai/codex-mini-latest' }).includes('openai') && familiesOfModel({ id: 'openai/chatgpt-4o-latest' }).includes('openai'));
   ok('a forced implementer entry keeps its id\'s family (round-1 R3)',
     familiesOfName('forced-openai', { 'forced-openai': { id: 'openai/gpt-5.6-luna', family: 'other' } }).includes('openai'));
-  ok('the switcher refuses codex and chatgpt in an openai session (round-1 R2)',
-    ['openai/codex-mini-latest', 'openai/chatgpt-4o-latest'].every((id) => refused({ id, variant: 'high', sessionFamily: 'openai' })));
   ok('a key named after a family keeps that family (round-2 R1)',
     familiesOfName('claude', { claude: { id: 'openai/gpt-5.6-luna', family: 'openai' } }).includes('claude'));
   ok('a blocked session refuses a model-id implementer too (round-2 R2)',
@@ -137,17 +136,8 @@ const config = loadConfig(top0);
 const { top, workRoot, commonDir } = repoPaths(config);
 const rev = config.reviewer;
 
-// The implementer's family never reviews: the session's family always (every Claude Code agent runs
-// through its endpoint), and with it --exclude and the model: labels (Sol's R1 on PR 149: they
-// replaced it).
-const labelsOf = (kind, n) => sh('gh', [kind, 'view', String(n), '--json', 'labels', '--jq', '.labels[].name'], { cwd: top, allowFail: true }).split('\n');
-// All three are united (Sol's round-1 R4: --exclude dropped the labels).
-const named = [...(a.exclude ? a.exclude.split(',').map((s) => s.trim()).filter(Boolean) : []),
-  ...[...labelsOf('pr', a.pr), ...(a.issue ? labelsOf('issue', a.issue) : [])]
-    .filter((l) => l.startsWith('model:')).map((l) => l.slice(6))];
+// [designed: owner, 2026-10-20] Any family may review; the session's is printed for the record.
 const own = sessionFamily();
-if (!own) die(2, `The session's family cannot be told from the client/provider settings: check HARNESS_CLIENT and HARNESS_SESSION_FAMILY.`);
-const implementedBy = [...new Set([...named, own])];
 // The reviewer: the one named, else harness.json's reviewer.default; a harness.json key, or any
 // OpenCode id the user names, provider/model[@variant] (lib/named.mjs).
 const reviewer = a.reviewer ?? rev.default;
@@ -156,10 +146,7 @@ let model;
 try { model = namedModel(reviewer, config.models, config.blocked ?? []); } catch (e) { die(2, e.message); }
 if (!model) die(2, `Unknown reviewer ${reviewer}: give a harness.json key or an OpenCode id, provider/model[@variant].`);
 config.models[reviewer] = model;
-// the session's own family stays in, whatever a harness.json key of that name holds (Sol's round-2 R1)
-const families = [...new Set([canonicalFamily(own), ...implementedBy.flatMap((n) => familiesOfName(n, config.models))])];
-say(`implemented by: ${implementedBy.join(', ')} (${own}: the session's family, from client/provider settings)`);
-if (familiesOfModel(model).some((f) => families.includes(f))) die(1, `Refused: ${reviewer} is the implementer's model family (${families.join(', ')}). Nothing posted.`);
+say(`session family: ${own ?? 'unknown'} (any reviewer family is allowed)`);
 const fallback = 'Nothing posted. Read the run\'s final message (CLAUDE.md, "Choosing models" rule 12) and fix the cause; another reviewer is the user\'s call.';
 // [designed: T73] Optional direct transport requires explicit backend AND selected model/policy.
 const backend = a.backend ?? 'opencode';
@@ -191,10 +178,17 @@ if (!pre.usable.length) die(3, `OpenCode unavailable: ${pre.problems.join('; ')}
 // (or anything else it puts there) would decide what its reviewer may do. Checked on OpenCode
 // 1.18.34: without these two variables a PR's reviewer.md with `git push *: allow` was the one
 // loaded (#10, L34; ic2-conquest's reviewer does the same).
-agentFile = path.join(top, '.opencode', 'agents', `${rev.agent}.md`);
-if (!fs.existsSync(agentFile)) die(2, `The reviewer agent is missing from this checkout: ${agentFile}. Nothing run.`);
+// [designed: owner, 2026-10-20] The review may run in this very checkout at the PR's head, so the
+// agent file is taken from origin/main, never from the working tree.
+sh('git', ['-C', top, 'fetch', '-q', 'origin', 'main']);
+const trustedDir = fs.mkdtempSync(path.join(os.tmpdir(), 'goal2-review-agent-'));
+fs.mkdirSync(path.join(trustedDir, 'agents'));
+agentFile = path.join(trustedDir, 'agents', `${rev.agent}.md`);
+const trustedAgent = sh('git', ['-C', top, 'show', `origin/main:.opencode/agents/${rev.agent}.md`], { allowFail: true });
+if (!trustedAgent) die(2, `The reviewer agent is missing from origin/main: .opencode/agents/${rev.agent}.md. Nothing run.`);
+fs.writeFileSync(agentFile, `${trustedAgent}\n`);
 reviewEnv = pre.version.startsWith('2.') ? trustedReviewEnv(pre.env, reviewerPolicy(agentFile), rev.agent)
-  : { ...pre.env, OPENCODE_CONFIG_DIR: path.join(top, '.opencode'), OPENCODE_DISABLE_PROJECT_CONFIG: '1' };
+  : { ...pre.env, OPENCODE_CONFIG_DIR: trustedDir, OPENCODE_DISABLE_PROJECT_CONFIG: '1' };
 }
 const headSha = sh('gh', ['pr', 'view', String(a.pr), '--json', 'headRefOid', '--jq', '.headRefOid'], { cwd: top });
 // [designed: T73] Pin PR base commit metadata separately from full local diff evidence.
@@ -212,9 +206,19 @@ sh('git', ['-C', top, 'fetch', '-q', 'origin', `pull/${a.pr}/head`]);
 if (baseTipSha) sh('git', ['-C', top, 'fetch', '-q', 'origin', baseTipSha]);
 // [designed: T73] Match the PR's three-dot diff when unrelated main commits land.
 const baseSha = baseTipSha ? sh('git', ['-C', top, 'merge-base', baseTipSha, headSha]) : null;
-// [designed: T72; owner preservation contract] Retain the exact review worktree with its receipts.
-const worktree = backend === 'claude' && a['claude-worktree'] ? fs.realpathSync(a['claude-worktree']) : path.join(workRoot, `${a.pr}-review-${randomBytes(4).toString('hex')}`);
+// [designed: owner, 2026-10-20] By default the review runs in this checkout at the PR's head;
+// --worktree keeps the separate detached worktree (T72), retained with its receipts.
+const separate = a.worktree || (backend === 'claude' && a['claude-worktree']);
+const worktree = !separate ? top : backend === 'claude' && a['claude-worktree'] ? fs.realpathSync(a['claude-worktree']) : path.join(workRoot, `${a.pr}-review-${randomBytes(4).toString('hex')}`);
 const newTree = () => {
+  if (!separate) {
+    if (sh('git', ['-C', top, 'rev-parse', 'HEAD']) !== headSha) {
+      if (!a.checkout) die(2, `This checkout is not at PR ${a.pr}'s head ${headSha}: run gh pr checkout ${a.pr}, or pass --checkout (or --worktree). Nothing run.`);
+      if (sh('git', ['-C', top, 'status', '--porcelain', '--untracked-files=no'])) die(2, 'This checkout has uncommitted changes; commit them before --checkout. Nothing run.');
+      sh('git', ['-C', top, 'checkout', '-q', '--detach', headSha]);
+    }
+    say(`reviewing in this checkout: ${top} at ${headSha}`); return;
+  }
   // [designed: T73] Main may stage offline grammar dependencies before the sole actual review.
   if (backend === 'claude' && a['claude-worktree']) {
     try { preparedClaudeWorktree({ directory: worktree, top, workRoot, commonDir, head: headSha }); } catch { die(2, 'Prepared Claude review worktree must be isolated, same-repository, clean and at the exact PR head.'); }
@@ -225,7 +229,7 @@ const newTree = () => {
   say(`worktree: ${worktree} at ${headSha} (retained)`);
 };
 
-// The review, in a fresh worktree at the PR's head. Resolves { ok: true, value } or
+// The review, in this checkout (or a separate worktree) at the PR's head. Resolves { ok: true, value } or
 // { ok: false, reason, detail }. The header names the default reviewer when none was given.
 const attempt = async (m) => {
       const header = a.reviewer ? briefHeader : briefHeader.replace(/\([^()]*\)\s*$/, `(${m})`);

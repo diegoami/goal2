@@ -1,5 +1,5 @@
 {
-  "rules": "The owner chooses the roster and each OpenCode reviewer. Codex implements directly or through native Codex subagents (implementer.defaultsByClient.codex); Claude Code retains implementer.default and its aliases/provider IDs. OpenCode never implements. Client/family detection is in lib/common.mjs: HARNESS_CLIENT or Codex session markers, then Claude's existing Anthropic endpoint/override rules. Ask the owner to choose the implementer/model before each new task and wait; a task request alone does not select one. A choice explicitly made for that task persists through implementation/rework. Build and validate in isolated worktrees under worktreeRoot, open the PR, then ask the owner which OpenCode model reviews. reviewer.default is proposed only when eligible; never the implementer's family or a blocked entry. No quota chooser, chain, or automatic model substitution. Defaults change through switch-model.mjs and the switch-model skill. (Owner, 2026-10-14; CLAUDE.md Choosing models.)",
+  "rules": "The owner chooses the roster. Codex implements directly or through native Codex subagents (implementer.defaultsByClient.codex); Claude Code retains implementer.default and its aliases/provider IDs. OpenCode never implements. Client/family detection is in lib/common.mjs. Ask the owner to choose the implementer/model before each new task and wait; a choice made for that task persists through implementation/rework. [designed: owner, 2026-10-20] Work happens on a task branch in the checkout at hand (a local clone or a cloud session); no worktree is required. Per-PR review is optional: when the main session runs one, review.mjs uses reviewer.default without asking, in this checkout at the PR head, and any family may review. Big independent reviews happen at milestones, started with tools/milestone_review.sh outside the harness (docs/milestone-review.md). No quota chooser, chain, or automatic model substitution. Defaults change through switch-model.mjs and the switch-model skill.",
   "worktreeRoot": "../{repo}-work",
   "implementer": {
     "default": "sonnet",
@@ -21,7 +21,16 @@
     "default": "luna",
     "startupTimeoutSec": 180,
     "idleTimeoutSec": 600,
-    "totalTimeoutSec": 3600
+    "totalTimeoutSec": 3600,
+    "optional": true
+  },
+  "artifacts": {
+    "localDir": ".cache",
+    "drive": {
+      "folderUrl": "",
+      "rcloneRemote": ""
+    },
+    "note": "[designed: owner, 2026-10-20] Original-game bytes only (CLAUDE.md rule 19, docs/artifacts.md): the owner's private Google Drive folder. Everything else is committed, or a GitHub release asset when over ~50 MB."
   },
   "blocked": [],
   "models": {

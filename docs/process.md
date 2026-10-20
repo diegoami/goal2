@@ -21,9 +21,10 @@ Tag capability jumps, not phases. Release notes come from GitHub when the tag is
 ## 1. Roles
 
 [designed: owner, 2026-10-14] The Codex main session may implement directly or
-dispatch a native Codex subagent into a worktree it prepared under the configured
-worktreeRoot. Claude Code retains its native `implementer` Agent with
-`isolation: "worktree"`, aliases and hooks. In the table's Claude-specific
+dispatch a native Codex subagent. Claude Code retains its native `implementer` Agent,
+aliases and hooks. [designed: owner, 2026-10-20] Work happens on a task branch in the
+checkout at hand (a local clone or a cloud session); no worktree is required (CLAUDE.md
+"Cloud-viable workflow"). In the table's Claude-specific
 dispatch below, substitute the Codex branch only when client=codex; all task,
 evidence, review and merge checks are shared. OpenCode never implements.
 
@@ -39,24 +40,24 @@ Client-aware defaults and commands:
   does not. A Codex family override other than openai is refused, not trusted.
 - Ask for the implementer/model before each new task and wait; a task request
   alone does not select a model. Keep the choice already made for that task.
-  Open the validated PR first, then ask which eligible OpenCode model reviews.
-  Same-family defaults are not proposed or silently replaced.
+  An optional review after the validated PR runs on `reviewer.default` without
+  asking (any family; CLAUDE.md rule 7a).
 
 | Role | Who | Does |
 | --- | --- | --- |
 | Main session | Codex or Claude Code, the session the user talks to | Plans, writes task files, runs `/run-task`, triages, merges, reports |
-| Implementer | Codex: native main session or authorized native Codex subagent in a prepared worktree. Claude: the **`implementer` subagent** spawned inside Claude Code (worktree isolation) on a model of its own, not the orchestrator's (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or **the main session** directly, in its own worktree, where the provider cannot spawn one; asked when not already authorized (CLAUDE.md "Choosing models" rule 1). *Superseded: OpenCode via `implement.mjs` (removed), the GLM/DeepSeek/Sonnet chain (L42), L46's heavier-model rule, the user asked before each run.* | One task, one branch, one PR, in its own worktree |
-| Reviewer | **Selected OpenCode reviewer with follow-ups until accepted** via `tools/harness/review.mjs`, on the model the user names at the question before the review, `harness.json`'s `reviewer.default` (GPT-5.6 Luna) proposed first only if eligible (`sol-6.1` for hard reviews: an engine seam, a fidelity test, a vendored model); never the session's family (L27), never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the quota-checked Sol / Luna / Opus order (L50, L51, L101), the Claude fallback, the user asked at every review.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
+| Implementer | Codex: native main session or authorized native Codex subagent. Claude: the **`implementer` subagent** spawned inside Claude Code on a model of its own, not the orchestrator's (Opus spawns Sonnet; under Z.AI `sonnet` is GLM-5.3 Flash), or **the main session** directly, where the provider cannot spawn one, on the task branch in the checkout at hand; asked when not already authorized (CLAUDE.md "Choosing models" rule 1). *Superseded: OpenCode via `implement.mjs` (removed), the GLM/DeepSeek/Sonnet chain (L42), L46's heavier-model rule, the user asked before each run.* | One task, one branch, one PR |
+| Reviewer (optional) | [designed: owner, 2026-10-20] **`harness.json`'s `reviewer.default`** via `tools/harness/review.mjs`, run without asking when the main session judges a PR warrants it (or `--reviewer` when the owner names one), in the current checkout at the PR head; any model family, never a blocked model. Exit 3: read the final message, fix the cause, run again; exit 4: the main session reads the flagged review and decides (L28). *Superseded: the family rule (L27), the fresh review worktree, the owner asked which model reviews.* | Re-runs the Done-when, audits scope and evidence, posts one PR comment, applies the label |
+| Milestone reviewer | The model the owner picks, started directly with `tools/milestone_review.sh` (OpenCode, Claude Code or Codex CLI), outside the harness ([milestone-review.md](milestone-review.md)) | Reviews everything since the previous milestone, opens one issue per finding, posts AGREE/BLOCK on the milestone issue |
 | Decider | Jev via `tools/harness/jev.mjs` (the `/jev` skill) | Repeated yes/no decisions over many items, at the confident ends only (§12) |
 | Generator | Models on OpenRouter (images, other families) and ElevenLabs (speech, sound, music) | Assets, each committed with a sidecar naming provider, model, prompt, date and cost |
 
 Ask for an implementer/model choice before each new task and wait for the answer;
 keep a choice already explicitly made for that task through rework. After the
-validated PR exists, ask which OpenCode model reviews; propose the configured
-default only if eligible. No quota, tier or chain picks a model; the roster changes
+validated PR exists, a review is optional and runs on the configured default. No quota, tier or chain picks a model; the roster changes
 through `/switch-model`. `lib/common.mjs` reports Codex as OpenAI and retains
 Claude's existing Anthropic endpoint/override detection for its provider family.
-The reviewer is never that family. Reviewer IDs come from `harness.json`,
+Since 2026-10-20 the reviewer may be of that family too. Reviewer IDs come from `harness.json`,
 `models.mjs` or `opencode models`; native implementer IDs come from the client's
 supported models, never from an OpenCode route or an invented alias (L25).
 
@@ -94,12 +95,13 @@ Scope, Done when, Hazards, Implementer, Reviewer, Merge after. Rules:
 ## 3. The loop
 
 `ready → implement → review → approved + exact-head local checks → squash merge → follow-up → unblock → report`.
-[designed: owner, 2026-10-20] The review step follows the task's risk tier (CLAUDE.md rule 7a): tier 0
-(docs, planning, task files, no-outcome fixes) has no external review, only the main session's checks
-and a later milestone review; tier 1 gets one external round, then follow-ups; tier 2 (engine,
-fidelity, save/timing, guards, permissions) keeps per-PR review until accepted.
+[designed: owner, 2026-10-20] The review step is optional (CLAUDE.md rule 7a): the main session
+runs one on `reviewer.default`, without asking, when the risk warrants it (engine, fidelity,
+save/timing, guards, permissions are the usual cases); otherwise the PR merges on its Done-when
+checks and exact-head premerge, and the milestone review ([milestone-review.md](milestone-review.md))
+covers it later.
 [designed: owner, 2026-10-18] Rework sends the full review back to the same branch.
-Once selected, keep the same reviewer and continue meaningful follow-ups until accepted,
+Once a review is run, keep the same reviewer and continue meaningful follow-ups until accepted,
 without repeated retry permission or an automatic round-count stop. Read complete results,
 fix causes and validate the new head. Report real owner design/external-access blockers;
 never silently switch providers, weaken acceptance or bypass safety. The implementer script resumes a pushed branch; it never starts over. Before a merge the
@@ -107,22 +109,25 @@ main session re-runs the check the approval rests on most; a different result is
 
 [designed: owner, 2026-10-14; L114] Only the main session merges, using
 `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>` so the command is bound to the
-approved head. Omit `--delete-branch`, which can delete the local task branch and worktree. Keep
-the task worktree, ignored RUN-NOTES.md and cached assets after the merge; optional cleanup may
-remove only the remote branch.
+approved head. Omit `--delete-branch`, which can delete the local task branch. Keep the
+ignored RUN-NOTES.md and cached assets after the merge; optional cleanup may remove the remote
+branch.
 
 [designed: owner, #127, 2026-10-16; L106] GitHub Actions is manual-only optional
 verification on a fresh runner. Before merging, the main session runs
-`python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean
-implementation checkout and records its successful SHA on the PR. This command
-preserves the former workflow checks; task-specific Done-when checks and, for tiers 1-2
-(CLAUDE.md rule 7a), the independent approving review remain mandatory. A missing or billing-blocked
+`python3 tools/check_premerge.py --expected-head <reviewed-sha>` in a clean
+checkout at that head and records its successful SHA on the PR. This command
+preserves the former workflow checks; task-specific Done-when checks remain mandatory, and an approving review when
+one was run (CLAUDE.md rule 7a). A missing or billing-blocked
 Actions run does not block a locally validated merge. An optional Actions run
 that exposes a real defect must be investigated; its optional trigger does not
 permit ignoring a known failing check. No hosted check replaces exact-head local
 validation.
 
-What the review script guarantees, and why:
+What the review script guarantees, and why ([designed: owner, 2026-10-20] it runs in the
+current checkout at the PR head by default; `--checkout` detaches a clean checkout there,
+`--worktree` keeps the old separate detached worktree; the reviewer's agent file always comes
+from origin/main):
 - [designed: T72] The run client starts with stdin closed; the owned v2 server keeps a separate stdin lease open until export recovery and cancellation finish. (L10)
 - No session in 180 s, no progress in 600 s, or no exit in 1 h kills the run's process tree (L10);
   `--idle-timeout-sec` and `--total-timeout-sec` lengthen them for one run.
@@ -131,9 +136,9 @@ What the review script guarantees, and why:
 - [designed: T72 rework1] Install the exact local grammar dependencies in each fresh reviewer checkout with `npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund` before offline checks. The validator verifies installed hashes and never fetches. Native source-target plugin policy, frozen config snapshots and repeated actual-server checks preserve the legacy static shell operand boundary; external executable plugins or widening plugin policies fail before billing. See docs/environment.md for the supported binary and explicit nonbilling native probes.
 - [designed: T72 rework1] Complete retained outputs and returned records redact the known generated private-server nonce if echoed; receipts disclose this exact redaction and hash safe artifacts afterward. Preserve every other message, tool outcome and final finding.
 - The brief passes by file: the runner writes it to `.harness-brief-<title>.md` at the review
-  worktree's root and the command line carries only a pointer, so a long brief cannot exceed the
+  checkout's root and the command line carries only a pointer, so a long brief cannot exceed the
   command-line limit; the file is never committed and is retained with the logs on every outcome. (L60; designed: T72)
-- [designed: T72] Routine review uses installed current v2 and a privately owned execution server; its worktree, complete export/final and manifest are retained. Explicit v1 compatibility keeps its separate legacy DB. Follow the printed session or run.json with `tools/harness/peek.sh`.
+- [designed: T72] Routine review uses installed current v2 and a privately owned execution server; its complete export/final and manifest are retained under `.cache/harness-reviews/`. Explicit v1 compatibility keeps its separate legacy DB. Follow the printed session or run.json with `tools/harness/peek.sh`.
 - The model runs at the effort its `harness.json` entry names (a heavy model at low, a light one
   at high), in the scripts' own data directory (L27, L29). One model, one run; no chain. The model
   is `reviewer.default`, or `--reviewer` (a harness.json key or `provider/model[@variant]`).
@@ -152,8 +157,8 @@ What the review script guarantees, and why:
 `review.mjs --backend claude --reviewer claude-sonnet`, with a trusted external
 permission file, exact required negative-control command and fixed session UUID.
 See [the direct Claude setup](environment.md#optional-direct-claude-cli-review).
-This optional path preserves model-family exclusion and standard findings/DW
-posting. Native model-free policy/account projection uses an owned pipe lease;
+This optional path keeps standard findings/DW posting (the family exclusion was
+lifted 2026-10-20). Native model-free policy/account projection uses an owned pipe lease;
 the distinct actual review process has closed input. Main alone runs the real
 review and same-reviewer follow-ups after ready PR, audits all native outputs and distinguishes synthetic
 permission checks/parent validation from reviewer-executed checks. Unknown routes,
@@ -169,17 +174,14 @@ How the main session launches and watches a run (L103):
   environment it is given, so each key a run needs is passed with `-E`; never a `bash -c` or
   `bash -lc` script (the safety check flags it).
 - The watch follows the unit (`systemctl --user is-active goal2r-<task>`). A Claude implementer
-  agent is watched by its transcript file's size and its worktree; when its worktree holds
-  uncommitted work more than 20 minutes newer than its last commit, the main session archives it
-  outside the worktree, read-only (it never touches the run's index).
+  agent is watched by its transcript file's size and its checkout's changes and commits.
 - An implementer's PR may be a draft; the main session runs `gh pr ready <pr>` before the review.
 
 ## 4. The implementer brief
 
 [designed: T24] Both clients use this same contract. Codex native subagents
-receive the full task and this block; the main session supplies the worktree,
-because native Codex dispatch does not invoke Claude's isolation parameter or
-PreToolUse hooks. No-stash, no-force-push, scope and main-session-only merge rules
+receive the full task and this block; native Codex dispatch does not invoke
+Claude's PreToolUse hooks. No-stash, no-force-push, scope and main-session-only merge rules
 remain instructions under Codex's native approval/sandbox controls.
 
 The brief is the task file pasted in full, then this block, then on a rework round the review's URL.
@@ -235,7 +237,7 @@ edited vendored file (rule 18), anything of the original committed (rule 19), or
 that never failed (rule 20).
 
 Run mechanics, added to every brief here: the session is killed after 600 s without activity; keep
-every shell command under 5 minutes, and work only inside the review worktree. Undo a mutation by
+every shell command under 5 minutes, and work only inside the review checkout. Undo a mutation by
 writing back the file's saved contents (read it first, restore it in a `finally`), never with
 `git checkout`, `git restore` or `git reset` of the file: those return the last commit and destroy
 any uncommitted work in it (PR 114 round 1). If a reviewer still

@@ -1,5 +1,10 @@
 # Environment
 
+> [designed: owner, 2026-10-20] Worktrees are no longer required and any model family may review
+> (CLAUDE.md "Cloud-viable workflow"): read "review worktree" below as the checkout at the PR head,
+> and the family checks as lifted. Original-game files come from the Google Drive folder
+> ([artifacts.md](artifacts.md)); milestone reviews from [milestone-review.md](milestone-review.md).
+
 What a session needs so the main session can delegate. Everything here is optional: each missing
 piece turns one delegate off. The scripts exit 3; the main session diagnoses the cause
 and asks the owner before substituting a reviewer.

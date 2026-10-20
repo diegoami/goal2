@@ -72,8 +72,7 @@ export function nameOf(config, id) {
 /**
  * The new harness.json for making `id` the default reviewer: the entry is added or updated,
  * reviewer.default becomes its name, and every other model stays for an explicit --reviewer. A
- * model of the session's family (`sessionFamily`, the implementer's) or on the blocked list is
- * refused. A `family` that contradicts a known vendor in the id is refused too, so --family can
+ * model on the blocked list is refused; the session's family is allowed (owner, 2026-10-20). A `family` that contradicts a known vendor in the id is refused too, so --family can
  * never carry a model past the family rule (Luna's R1 on PR 17).
  * Returns { config, name, entry, before, after } or throws with the reason.
  */
@@ -95,9 +94,7 @@ export function planSwitch(config, { role = 'reviewer', id, variant, name, famil
   const entry = { id, ...(variant !== undefined && variant !== null ? { variant } : {}), family: family ?? existing?.family ?? familyOf(id), ...(existing?.note ? { note: existing.note } : {}) };
   const blocked = blockedBy(config, entry);
   if (blocked) throw new Error(`Refused: ${blocked}.`);
-  const own = String(sessionFamily ?? '').toLowerCase();
-  const same = [...familiesOfModel(entry), known].filter(Boolean).some((f) => canonicalFamily(f) === canonicalFamily(own));
-  if (same) throw new Error(`Refused: ${id} is of the session's family (${own}), which implements; the reviewer is never the implementer's family. Set HARNESS_SESSION_FAMILY if the session runs elsewhere.`);
+  // [designed: owner, 2026-10-20] Any family may be the default reviewer, the session's included.
   const next = structuredClone(config);
   next.models = { ...next.models, [n]: entry };
   next.reviewer = { ...next.reviewer, default: n };

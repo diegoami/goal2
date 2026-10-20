@@ -29,8 +29,8 @@ local AGENTS.md  (Codex entrypoint sharing the numbered rules and task process)
 local tests/harness_clients.test.mjs  (Codex/Claude compatibility and CLI family-boundary regressions)
 local docs/tasks/T01.md  (goal2's own: the nothing-committed rule is now 19)
 local .github/workflows/ci.yml  (new: links, review self-test, lock hashes, reviewer grants, no original files)
-3d39f6f226d5690b5c6c10a01a8692182f5bbf4d528a5410fea2bf3cf509c35f  .claude/agents/implementer.md
-93a7341a71c112677f4f1704e3d595d3f50c6a9c23c319c5cde6664d161b5d36  .claude/agents/reviewer.md
+5a0a15f0da1fa5654a5e9d4b1ce163b47980ffcaabc75715fce281c78c0790f0  .claude/agents/implementer.md
+13b5ddb2e7c454be842f24bf7f7e4ac597264b54eeb6d857fc11f1baafcbfc37  .claude/agents/reviewer.md
 9d2227215dcf47b9dc7c41d5c9b7f8c5b79dd962c3fb8c3f8f625032fa5eefae  .claude/settings.json
 218462f453d5432db791c7697d7d34970491af106f8e1d1b95b0e0ef6f86747a  .claude/skills/jev/SKILL.md
 85487b7c9488e8349ac91a7145ca40db476e86193b668eea6197325d1d154a6d  .claude/skills/switch-model/SKILL.md
@@ -40,8 +40,8 @@ c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/block
 47cbba0d641c4cd6c4775627c160615018088d4f4ac09f670cf86395196ad158  docs/lessons.md
 87c5a7954b98d6b283f4e45511f57c84cf399ee7219eabde8f9845bb6e9ba0d7  docs/model-trials.md
 86686b4def5a599da50450efb51caba2e8b46e33af08096df745c5247bfa421d  docs/review-brief.md
-5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md
-807384dd2ad76c5d401785458a2b68c79e22946d040bc8e39566cc05e6de77f1  harness.json
+b0b058a54604ff1f8331e5b3d1a8b83984db567f6035692c1a0725f19970bf8c  docs/running-notes.md
+680fb0791c38d52771ff61156328b546ba84b595947d3a43b787addb71c71e1d  harness.json
 4867325747c19a6f7beee6b8f1a3be22575a6396fc89a915a5ee8ed88ffab4cd  tools/check_links.py
 0628080fdc67ee48bff5ececd479ddb13755edd7db2fa5905838a323d9f041c4  tools/harness/claim.mjs
 518ad06ab39fdd22407b864ba878acf404ffe9dac5a8e9b19b4d44b574fe6342  tools/harness/guard.mjs
@@ -56,14 +56,14 @@ a6bf727222667a4c1744a8d01206e3fd36208203d80df117ff1216e08339ecf7  tools/harness/
 62cea459c5c582403cd6987eb57a57e682ac195452f91b33e114e189572ee9c5  tools/harness/lib/opencode.mjs
 5005d641b97629f37b2e0e4874ca0e46358d101828169bd7b7d74eff3ee10e4c  tools/harness/lib/post.mjs
 e0428f075dfbae4ab0c85380990950d77222dfe2e5e1ac1c2012f0a0640ae113  tools/harness/lib/review-selftest.mjs
-7e842f5068ecf64e94248410328c8bb6ebf01b5787e4d0510dd64c7885d9a85e  tools/harness/lib/switch.mjs
+90dd351c4860934a600477553bc2dfa5bcb9001ddb56a9b062357c256bb5ab80  tools/harness/lib/switch.mjs
 bf717caa54364e8e56a50bab0f07d0212b8300992bc0ad3629cf097ef58e4845  tools/harness/models.mjs
 c4abc459b7720a55a357371f38eb6fbda90ecf7aa40632f79238366f3939fb23  tools/harness/peek.sh
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
-99aa8048f96ae911319846b07d0d7b43056c1f32ce7d19fa2166e853502bea04  tools/harness/review.mjs
+d5ca64e0368c5bb5afb6ce2d6a63d461a026a2e24bbd608f3c870f16339c2982  tools/harness/review.mjs
 d89401578e18253ebfcb82494fbaba1f3825a02533fbd56dfabe0f11b7f41206  tools/harness/switch-model.mjs
-c8d22730d784513e3e8df58a3b2bdb59ec264413f616ce9ec76155f81a94b150  AGENTS.md
-b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs
+3fc7828af8fae79cb3ea30adeac744ec858d1e7b560196e20e9d7916c22c6274  AGENTS.md
+10251f8068f2ec47e26702496d410d4cb3e53c6a9217e39b28e66854b967d28a  tests/harness_clients.test.mjs
 local tools/harness/lib/opencode-protocol.mjs  (T72a explicit protocol contract and offline validation)
 df08f13157d56b6c85e81e6b927ed5c7535f38ba22aafa913281b644dd659838  tools/harness/lib/opencode-protocol.mjs
 local tools/harness/probe-opencode.mjs  (T72a explicit protocol contract and offline validation)
@@ -81,7 +81,7 @@ local tools/harness/lib/opencode-policy.mjs  (T72 private transport and permissi
 local tools/harness/preflight-opencode.mjs  (T72 private transport and permission verification)
 25190e2558c5f44ff1d861bd5038bb1a829b06e06f950c65275446094f2cd450  tools/harness/preflight-opencode.mjs
 local tests/opencode_workflow.test.mjs  (T72 private transport and permission verification)
-d68222c26da50abeaab0ff29d26ce77f96f767c878f743eceaba96386b050ae7  tests/opencode_workflow.test.mjs
+e86a6280ccf07364d883a03d62ddc3b0aa6a83031781552dc825bdd8d4b03b8b  tests/opencode_workflow.test.mjs
 
 2b424f52ca6d69a60ad7e6bdcd078c52cc5277be1e3d405a98aaae4238d24377  tools/harness/lib/opencode-workflow.mjs
 
@@ -126,9 +126,9 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 8cacda74b4c6a5e5d1daef705aa6983adbad9beed4acb574c96cf9b801a4c223  .github/workflows/ci.yml
 
-6a64d92f425168e55fae916db56d40cb69e9ae07a0729054c27359cad48d1535  docs/environment.md
+cf49644f4dc257c1750989f9f135865c0f72425fffb73aad9b5827efe1b6a140  docs/environment.md
 
-00eda032b7aa1d1b44d83ff8218f6d724c380feadb58842f54c2bedf526c2d37  docs/process.md
+681e3567cb5d9f9f8aedf1333ecd94d7e9ea968ea93970956622830b5d05262a  docs/process.md
 
 5446dcc17f2b70e1988ad315af538c31ec7f5cbcb7b94bafab008682f1c853fe  tools/harness/check-opencode-guard.mjs
 

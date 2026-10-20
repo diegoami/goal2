@@ -257,7 +257,7 @@ test('review CLI uses exact fetched head, trusted profile and complete export wh
   const cache = fileURLToPath(new URL('../.cache/workflow-review-tests/', import.meta.url)); fs.mkdirSync(cache, { recursive: true });
   const fixture = fs.mkdtempSync(path.join(cache, 'run-')); const repo = path.join(fixture, 'repo'); fs.mkdirSync(repo);
   const git = (...args) => { const r = spawnSync('git', args, { cwd: repo, encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); return r.stdout.trim(); };
-  git('init', '-q'); git('config', 'user.email', 't72@example.invalid'); git('config', 'user.name', 'T72 nonbilling stub');
+  git('init', '-q', '-b', 'main'); git('config', 'user.email', 't72@example.invalid'); git('config', 'user.name', 'T72 nonbilling stub');
   const cfg = { worktreeRoot: path.join(fixture, 'trees'), reviewer: { agent: 'reviewer', startupTimeoutSec: 2, idleTimeoutSec: 2, totalTimeoutSec: 4 }, models: { m3: selection }, blocked: [] };
   fs.writeFileSync(path.join(repo, 'harness.json'), JSON.stringify(cfg)); fs.mkdirSync(path.join(repo, '.opencode/agents'), { recursive: true }); fs.copyFileSync(agentFile, path.join(repo, '.opencode/agents/reviewer.md'));
   git('add', '.'); git('commit', '-qm', 'Synthetic CLI workflow'); const head = git('rev-parse', 'HEAD'); git('update-ref', 'refs/pull/1/head', head); git('remote', 'add', 'origin', repo);
@@ -265,7 +265,7 @@ test('review CLI uses exact fetched head, trusted profile and complete export wh
   const brief = path.join(fixture, 'brief.md'); fs.writeFileSync(brief, 'T72 stub review (M3)\nSynthetic read-only review.\n');
   const env = { ...process.env, HARNESS_CLIENT: 'codex', HARNESS_GH_EXE: gh, HARNESS_OPENCODE_EXE: stub, HARNESS_OPENCODE_HOME: path.join(fixture, 'runtime'), STUB_HEAD: head, STUB_FINAL: 'T72 stub review (M3)\napprove\nDW1: ran stub → pass\nFinal pass done\napprove\n' };
   delete env.HARNESS_SESSION_FAMILY; delete env.STUB_VERSION;
-  const result = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url)), '--pr', '1', '--brief', brief, '--reviewer', 'm3', '--done-when', '1', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
+  const result = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url)), '--pr', '1', '--brief', brief, '--reviewer', 'm3', '--done-when', '1', '--dry-run', '--worktree'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
   assert.equal(result.status, 0, result.stderr + result.stdout);
   assert.match(result.stdout, /dry run: would post the above/); assert.match(result.stdout, /DW1: ran stub/);
   const runManifest = result.stdout.match(/manifest (.+run\.json)/)?.[1]; assert(runManifest);
@@ -280,9 +280,41 @@ test('review CLI uses exact fetched head, trusted profile and complete export wh
   assert(!receipt.dataHome.startsWith(tree), 'provider DB stays outside reviewer artifact grants');
   assert.equal(spawnSync('git', ['rev-parse', 'HEAD'], { cwd: tree, encoding: 'utf8' }).stdout.trim(), head);
   const stale = path.join(fixture, 'stale.md'); fs.writeFileSync(stale, 'T72 stub review (M3)\nHEAD is '+ 'a'.repeat(40)+'\n');
-  const refused = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url)), '--pr', '1', '--brief', stale, '--reviewer', 'm3', '--dry-run'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
+  const refused = spawnSync(process.execPath, [process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url)), '--pr', '1', '--brief', stale, '--reviewer', 'm3', '--dry-run', '--worktree'], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
   assert.equal(refused.status, 2, refused.stderr); assert.match(refused.stderr, /brief names/);
   assert.equal(fs.readdirSync(cfg.worktreeRoot).length, 1, 'stale head must not launch another worktree');
+});
+
+
+// [designed: owner, 2026-10-20] By default the review runs in this checkout at the PR head, with the
+// agent file from origin/main; a checkout elsewhere is refused unless --checkout is given.
+test('review CLI reviews in place at the PR head and refuses another head without --checkout', () => {
+  const cache = fileURLToPath(new URL('../.cache/workflow-review-tests/', import.meta.url)); fs.mkdirSync(cache, { recursive: true });
+  const fixture = fs.mkdtempSync(path.join(cache, 'inplace-')); const repo = path.join(fixture, 'repo'); fs.mkdirSync(repo);
+  const git = (...args) => { const r = spawnSync('git', args, { cwd: repo, encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); return r.stdout.trim(); };
+  git('init', '-q', '-b', 'main'); git('config', 'user.email', 't72@example.invalid'); git('config', 'user.name', 'in-place stub');
+  const cfg = { worktreeRoot: path.join(fixture, 'trees'), reviewer: { agent: 'reviewer', startupTimeoutSec: 2, idleTimeoutSec: 2, totalTimeoutSec: 4 }, models: { m3: selection }, blocked: [] };
+  fs.writeFileSync(path.join(repo, 'harness.json'), JSON.stringify(cfg)); fs.mkdirSync(path.join(repo, '.opencode/agents'), { recursive: true }); fs.copyFileSync(agentFile, path.join(repo, '.opencode/agents/reviewer.md'));
+  fs.writeFileSync(path.join(repo, '.gitignore'), '.cache/\n.harness-brief-*\n');
+  git('add', '.'); git('commit', '-qm', 'base'); git('remote', 'add', 'origin', repo);
+  git('checkout', '-qb', 'task'); fs.writeFileSync(path.join(repo, 'change.txt'), 'x\n'); git('add', '.'); git('commit', '-qm', 'task');
+  const head = git('rev-parse', 'HEAD'); git('update-ref', 'refs/pull/1/head', head);
+  const gh = path.join(fixture, 'gh.mjs'); fs.writeFileSync(gh, `if(process.argv.includes('--version')) console.log('gh stub'); else if(process.argv.includes('headRefOid')) console.log(process.env.STUB_HEAD); else if(!process.argv.includes('labels')) process.exit(9);`);
+  const brief = path.join(fixture, 'brief.md'); fs.writeFileSync(brief, 'T72 stub review (M3)\nSynthetic read-only review.\n');
+  const env = { ...process.env, HARNESS_CLIENT: 'claude', HARNESS_GH_EXE: gh, HARNESS_OPENCODE_EXE: stub, HARNESS_OPENCODE_HOME: path.join(fixture, 'runtime'), STUB_HEAD: head, STUB_FINAL: 'T72 stub review (M3)\napprove\nDW1: ran stub → pass\nFinal pass done\napprove\n' };
+  delete env.HARNESS_SESSION_FAMILY; delete env.STUB_VERSION;
+  const script = process.env.T72_REVIEW_SCRIPT || fileURLToPath(new URL('../tools/harness/review.mjs', import.meta.url));
+  const run = (...extra) => spawnSync(process.execPath, [script, '--pr', '1', '--brief', brief, '--reviewer', 'm3', '--done-when', '1', '--dry-run', ...extra], { cwd: repo, env, encoding: 'utf8', timeout: 12000 });
+  const result = run();
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  assert.match(result.stdout, /reviewing in this checkout/);
+  const runManifest = result.stdout.match(/manifest (.+run\.json)/)?.[1]; assert(runManifest);
+  assert(fs.realpathSync(runManifest).startsWith(fs.realpathSync(path.join(repo, '.cache/harness-reviews')) + path.sep));
+  assert(!fs.existsSync(cfg.worktreeRoot), 'no worktree is made by default');
+  git('checkout', '-q', 'main');
+  const away = run(); assert.equal(away.status, 2, away.stderr); assert.match(away.stderr, /not at PR 1's head/);
+  const moved = run('--checkout'); assert.equal(moved.status, 0, moved.stderr + moved.stdout);
+  assert.equal(git('rev-parse', 'HEAD'), head);
 });
 
 test('progress advances and active owned-server descendants terminate on cancellation', async () => {

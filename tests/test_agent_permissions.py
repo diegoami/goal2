@@ -37,13 +37,14 @@ def under_tmp(pattern):
     return bool(parts) and parts[0] == "tmp"
 
 
-AGENTS = ("reviewer",)
+# [designed: owner, 2026-10-20] the milestone reviewer (docs/milestone-review.md) joins it
+AGENTS = ("milestone-reviewer", "reviewer")
 
 
 class AgentTmpGrantTests(unittest.TestCase):
-    def test_the_reviewer_is_the_one_opencode_agent(self):
+    def test_the_reviewers_are_the_only_opencode_agents(self):
         names = sorted(p.stem for p in (ROOT / ".opencode" / "agents").glob("*.md"))
-        self.assertEqual(names, ["reviewer"])
+        self.assertEqual(names, list(AGENTS))
 
     def test_tmp_is_open_to_the_reviewer(self):
         for agent in AGENTS:

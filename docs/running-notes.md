@@ -1,5 +1,8 @@
 # Running notes — `RUN-NOTES.md`
 
+> [designed: owner, 2026-10-20] Worktrees are no longer required: read "worktree" below as the
+> checkout the implementer works in (CLAUDE.md "Cloud-viable workflow").
+
 > A per-worktree file where the implementer tracks its own progress in real time. If a
 > run is interrupted (wall clock, process kill, orphan collision, owner intervention),
 > the next implementer reads this file as the authoritative handoff.
