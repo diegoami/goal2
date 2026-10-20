@@ -8,7 +8,9 @@ country competently for idle play (the owner, 2026-10-11), built from the eviden
 
 [designed: owner, 2026-10-20] The project runs from any checkout, a cloud session included. The
 earlier review harness (OpenCode protocol, guards, jail, model switching, worktrees, per-PR review
-gates) was removed; it is kept on the branch `local`.
+gates) was removed; it is kept on the branch `local`. A fresh checkout is prepared with `tools/cloud_setup.sh`
+([docs/cloud.md](docs/cloud.md)). The first release is lane 3 of the approved queue, the bounded
+first supported session (`docs/redesign-253/vision-reconciliation.md`; O03/O04 resolved 2026-10-20).
 
 ## Working rules
 1. The main session plans, triages, talks to the owner and merges. It implements itself or spawns

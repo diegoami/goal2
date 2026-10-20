@@ -80,3 +80,14 @@ rewriting `main`, deleting an issue); a new external dependency.
 
 `task`, `bug`, `fix`, `triage:needed`, `post-playable`, `milestone-review`, `review`,
 `status:{ready,in-progress,in-review,rework,blocked,escalated,merged}`.
+
+## 9. Autonomous runs
+
+[designed: owner, 2026-10-20] A session may work towards the first release (lane 3 of the
+approved queue in `docs/redesign-253/vision-reconciliation.md`) on its own: it takes the queue's
+issues in order, writes their task files, implements, checks and merges them without asking. It
+stops only for a design decision the documents do not settle (CLAUDE.md rule 7), a Done-when that
+would have to weaken, and each milestone: there it opens the milestone issue
+([milestone-review.md](milestone-review.md)) and waits for the independent review and the owner's
+playtest. Between milestones it may ask for an independent review of a risky PR by naming it for
+`tools/review_pr.sh`.

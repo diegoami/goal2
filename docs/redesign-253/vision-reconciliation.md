@@ -169,7 +169,7 @@
 
 ## Open owner choices
 
-[designed] The direction is **not** asked again. These remain open and are stated in product terms on [decisions.md](decisions.md#decisions-for-the-owner): O02 whether the desktop toolkit stays PySide6 Widgets plus the SDL pitch unless measured proof fails a concrete requirement; O03 whether the first release must play the match inside one window or may use two coordinated windows; O04 what the first release contains and whether any original category is deliberately excluded from the complete product (none is excluded now); O05 whether local managers come after the first release; O06 which accepted departures from the original stand; O07 which platforms and window sizes the product must support. The window and toolkit choices need the measured proof of [#259](https://github.com/diegoami/goal2/issues/259); the design choice implies no migration.
+[designed] The direction is **not** asked again. These remain open and are stated in product terms on [decisions.md](decisions.md#decisions-for-the-owner): O02 whether the desktop toolkit stays PySide6 Widgets plus the SDL pitch unless measured proof fails a concrete requirement; O03 (resolved by the owner, 2026-10-20: two coordinated windows for the first release); O04 (resolved by the owner, 2026-10-20: the bounded first supported session, lane 3; no original category is excluded from the complete product); O05 whether local managers come after the first release; O06 which accepted departures from the original stand; O07 which platforms and window sizes the product must support. The window and toolkit choices need the measured proof of [#259](https://github.com/diegoami/goal2/issues/259); the design choice implies no migration.
 
 ## Evidence boundaries
 

@@ -134,7 +134,9 @@ CHILD_PRIORITY = {"B01": "P1", "B02": "P1", "B03": "P1", "B04": "P1", "B05": "P1
 OBLIGATIONS = {"O08 / G01": "bounded contract", "O09 / G02": "bounded contract", "O10 / G03": "bounded contract",
                "O11 / G04": "bounded contract", "O12 / G05": "bounded contract", "O13": "bounded original-evidence contract",
                "O14": "bounded implementation contract"}
-OPEN_CHOICES = ("O02", "O03", "O04", "O05", "O06", "O07")
+OPEN_CHOICES = ("O02", "O05", "O06", "O07")
+# [designed: owner, 2026-10-20] O03 (two coordinated windows) and O04 (the bounded first session) are resolved.
+RESOLVED_CHOICES = ("O03", "O04")
 OBSOLETE_PHRASES = ("Recommend A", "Recommend **A", "(recommended)", "Select A/B/C", "select **A Country desk**",
                     "Direction A", "recommended_direction")
 CHECKS = ("proposal", "parity", "journeys", "current", "backlog", "technology", "scope", "vision")
@@ -845,6 +847,8 @@ class Package:
         need("Closed" in rows.get("O01", "") and "resolved" in rows.get("O01", ""), "O01 must be closed: the direction is not asked again")
         for key in OPEN_CHOICES:
             need("[designed: open]" in rows.get(key, ""), "genuinely open owner choice missing or mislabeled: " + key)
+        for key in RESOLVED_CHOICES:
+            need("[designed: owner, 2026-10-20] **Resolved" in rows.get(key, ""), "owner-resolved choice reopened or missing: " + key)
         for key, contract in OBLIGATIONS.items():
             row = rows.get(key, "")
             need(row, "scope obligation missing: " + key)
@@ -859,7 +863,7 @@ class Package:
         for phrase in ("retractable", "maximum-size pitch", "latest two commentary lines"):
             need(phrase in tech, "technology proof omits an accepted visual requirement: " + phrase)
         self.allocation_contracts()
-        return "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 referenced;O01 closed,O02-O07 open;G01-G05/O13/O14 explicitly unowned;inventory hash unchanged"
+        return "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 referenced;O01 closed,O03-O04 resolved,O02/O05-O07 open;G01-G05/O13/O14 explicitly unowned;inventory hash unchanged"
 
     def technology(self):
         self.gate()
