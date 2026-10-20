@@ -1,0 +1,1547 @@
+{
+ "final": {
+  "completed": [
+   "original:1",
+   "original:2",
+   "original:3",
+   "original:4"
+  ],
+  "match_count": 4,
+  "results": [
+   {
+    "engine": "goal2-scenario:fictional:1",
+    "fixture_id": "original:1",
+    "mode": "quick",
+    "score": [
+     1,
+     0
+    ],
+    "teams": [
+     1,
+     2
+    ]
+   },
+   {
+    "engine": "goal2-scenario:fictional:1",
+    "fixture_id": "original:2",
+    "mode": "watched",
+    "resolution": null,
+    "score": [
+     1,
+     1
+    ],
+    "teams": [
+     3,
+     1
+    ]
+   },
+   {
+    "engine": "goal2-scenario:fictional:1",
+    "fixture_id": "original:3",
+    "mode": "competitive",
+    "resolution": {
+     "extra_time": null,
+     "kind": 2,
+     "penalties": null,
+     "regulation": [
+      2,
+      0
+     ],
+     "winner": 0
+    },
+    "score": [
+     2,
+     0
+    ],
+    "teams": [
+     1,
+     4
+    ]
+   },
+   {
+    "engine": "goal2-scenario:fictional:1",
+    "fixture_id": "original:4",
+    "mode": "competitive",
+    "resolution": {
+     "extra_time": [
+      1,
+      1
+     ],
+     "kind": 200,
+     "penalties": [
+      3,
+      4
+     ],
+     "regulation": [
+      0,
+      0
+     ],
+     "winner": 1
+    },
+    "score": [
+     1,
+     1
+    ],
+    "teams": [
+     5,
+     1
+    ]
+   }
+  ]
+ },
+ "fixture_1_quick": {
+  "halftime": {
+   "available": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    9,
+    11,
+    12,
+    16,
+    17,
+    2,
+    7,
+    8,
+    13,
+    14,
+    15,
+    18,
+    101
+   ],
+   "bench": [
+    2,
+    7,
+    8,
+    13,
+    14,
+    15,
+    18,
+    19,
+    101
+   ],
+   "captain": 9,
+   "changes": [],
+   "eleven": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    9,
+    10,
+    11,
+    12,
+    16,
+    17
+   ],
+   "kind": 1,
+   "removed": [],
+   "score": [
+    0,
+    0
+   ],
+   "teams": [
+    1,
+    2
+   ]
+  },
+  "injured_incoming_refused": "Incoming player is unavailable",
+  "last_match": {
+   "engine": "goal2-scenario:fictional:1",
+   "goals": [
+    {
+     "minute": 52,
+     "player": 16,
+     "team": 0
+    }
+   ],
+   "half_time_score": [
+    0,
+    0
+   ],
+   "mode": "quick",
+   "score": [
+    1,
+    0
+   ],
+   "substitutions": [
+    [
+     10,
+     13
+    ]
+   ],
+   "teams": [
+    1,
+    2
+   ]
+  },
+  "next": "Southmere \u2014 Northmarch (Friendly)",
+  "result": "Fictional scenario \u2014 Northmarch 1 \u2014 0 Eastvale\nHalf-time: 0 \u2014 0\n52\u2032 T Bredahl (Northmarch)",
+  "substitution": [
+   10,
+   13
+  ]
+ },
+ "fixture_2_watched": {
+  "display": [
+   "Original engine \u2014 friendly",
+   "Southmere \u2014 Northmarch",
+   "90 min   1 \u2014 1",
+   "1 min Kick-off: Southmere against Northmarch (fictional scenario)",
+   "38 min Goal for Southmere: T Tollund",
+   "64 min Goal for Northmarch: A Ostdahl",
+   "Original full-time board",
+   "Man of the match: A Ostdahl",
+   "corners: 3 \u2014 2",
+   "free_kicks: 5 \u2014 6",
+   "penalties: 0 \u2014 0",
+   "shots: 5 \u2014 5",
+   "on_target: 4 \u2014 4",
+   "saves: 2 \u2014 1",
+   "fouls: 4 \u2014 7",
+   "bookings: 0 \u2014 0",
+   "red_cards: 0 \u2014 0",
+   "injuries: 0 \u2014 0",
+   "Original bars: [[26, 18], [17, 21]]",
+   "Southmere \u2014 Raw rating",
+   "H Hedmark: 79",
+   "J Varholt: 86",
+   "K Tolholt: 43",
+   "L Breholt: 50",
+   "M Ostholt: 57",
+   "N Lunholt: 64",
+   "P Marholt: 71",
+   "R Hedholt: 78",
+   "S Varlund: 85",
+   "T Tollund: 42",
+   "A Brelund: 49",
+   "Northmarch \u2014 Raw rating",
+   "B Tolberg: 49",
+   "D Ostberg: 63",
+   "E Lunberg: 70",
+   "F Marberg: 77",
+   "G Hedberg: 84",
+   "K Brevik: 55",
+   "L Ostvik: 62",
+   "M Lunvik: 69",
+   "N Marvik: 76",
+   "T Bredahl: 54",
+   "A Ostdahl: 61"
+  ],
+  "events": 16,
+  "frames_rendered": 24,
+  "last_match": {
+   "engine": "goal2-scenario:fictional:1",
+   "goals": [
+    {
+     "minute": 38,
+     "player": 50,
+     "team": 0
+    },
+    {
+     "minute": 64,
+     "player": 17,
+     "team": 1
+    }
+   ],
+   "half_time_score": [
+    1,
+    0
+   ],
+   "man_of_the_match": 17,
+   "mode": "watched",
+   "resolution": null,
+   "score": [
+    1,
+    1
+   ],
+   "teams": [
+    3,
+    1
+   ]
+  },
+  "next": "Northmarch \u2014 Westholm (Fictional competitive)",
+  "result": "Fictional scenario \u2014 Southmere 1 \u2014 1 Northmarch\nHalf-time: 1 \u2014 0\n38\u2032 T Tollund (Southmere)\n64\u2032 A Ostdahl (Northmarch)"
+ },
+ "fixture_3_competitive": {
+  "last_match": {
+   "engine": "goal2-scenario:fictional:1",
+   "goals": [
+    {
+     "minute": 12,
+     "player": 12,
+     "team": 0
+    },
+    {
+     "minute": 80,
+     "player": 16,
+     "team": 0
+    }
+   ],
+   "half_time_score": [
+    1,
+    0
+   ],
+   "man_of_the_match": 16,
+   "mode": "competitive",
+   "resolution": {
+    "extra_time": null,
+    "kind": 2,
+    "penalties": null,
+    "regulation": [
+     2,
+     0
+    ],
+    "winner": 0
+   },
+   "score": [
+    2,
+    0
+   ],
+   "teams": [
+    1,
+    4
+   ]
+  },
+  "next": "Lowfield \u2014 Northmarch (Fictional competitive)",
+  "play_label": "Play fictional competitive",
+  "result": "Fictional scenario \u2014 Northmarch 2 \u2014 0 Westholm\nHalf-time: 1 \u2014 0\n12\u2032 N Marvik (Northmarch)\n80\u2032 T Bredahl (Northmarch)\nRegulation: 2 \u2014 0\nWinner: Northmarch"
+ },
+ "fixture_4_competitive": {
+  "last_match": {
+   "engine": "goal2-scenario:fictional:1",
+   "goals": [
+    {
+     "minute": 95,
+     "player": 89,
+     "team": 0
+    },
+    {
+     "minute": 112,
+     "player": 16,
+     "team": 1
+    }
+   ],
+   "half_time_score": [
+    0,
+    0
+   ],
+   "man_of_the_match": 16,
+   "mode": "competitive",
+   "resolution": {
+    "extra_time": [
+     1,
+     1
+    ],
+    "kind": 200,
+    "penalties": [
+     3,
+     4
+    ],
+    "regulation": [
+     0,
+     0
+    ],
+    "winner": 1
+   },
+   "score": [
+    1,
+    1
+   ],
+   "teams": [
+    5,
+    1
+   ]
+  },
+  "next": "Northmarch \u2014 Eastvale (Unsupported fixture)",
+  "play_label": "Play unavailable",
+  "result": "Fictional scenario \u2014 Lowfield 1 \u2014 1 Northmarch\nHalf-time: 0 \u2014 0\n95\u2032 E Marness (Lowfield)\n112\u2032 T Bredahl (Northmarch)\nRegulation: 0 \u2014 0\nExtra time: 1 \u2014 1\nPenalties: 3 \u2014 4\nWinner: Northmarch"
+ },
+ "fixture_5_unsupported": {
+  "competitive": "No supported pending competitive fixture; use Quick or friendly Watch",
+  "quick": "Quick supports scheduled friendlies only in the fictional scenario",
+  "save": "Saving refused: this is a fictional scenario, not a career",
+  "view": {
+   "countries": [
+    [
+     1,
+     "Northmarch"
+    ],
+    [
+     2,
+     "Eastvale"
+    ],
+    [
+     3,
+     "Southmere"
+    ],
+    [
+     4,
+     "Westholm"
+    ],
+    [
+     5,
+     "Lowfield"
+    ]
+   ],
+   "country": 1,
+   "country_name": "Northmarch",
+   "fixture": "Northmarch \u2014 Eastvale (Unsupported fixture)",
+   "morale": 32,
+   "play_label": "Play unavailable",
+   "players": [
+    {
+     "ability": 77,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 37,
+     "energy": 35,
+     "id": 1,
+     "name": "B Tolberg",
+     "position": "Goalkeeper"
+    },
+    {
+     "ability": 64,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 50,
+     "energy": 74,
+     "id": 2,
+     "name": "C Breberg",
+     "position": "Goalkeeper"
+    },
+    {
+     "ability": 51,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 63,
+     "energy": 49,
+     "id": 3,
+     "name": "D Ostberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 88,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 76,
+     "energy": 56,
+     "id": 4,
+     "name": "E Lunberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 75,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 29,
+     "energy": 63,
+     "id": 5,
+     "name": "F Marberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 62,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 42,
+     "energy": 70,
+     "id": 6,
+     "name": "G Hedberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 49,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 55,
+     "energy": 109,
+     "id": 7,
+     "name": "H Varvik",
+     "position": "Defence"
+    },
+    {
+     "ability": 86,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 68,
+     "energy": 116,
+     "id": 8,
+     "name": "J Tolvik",
+     "position": "Defence"
+    },
+    {
+     "ability": 73,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 81,
+     "energy": 31,
+     "id": 9,
+     "name": "K Brevik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 60,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 34,
+     "energy": 1,
+     "id": 10,
+     "name": "L Ostvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 47,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 47,
+     "energy": 45,
+     "id": 11,
+     "name": "M Lunvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 84,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 60,
+     "energy": 52,
+     "id": 12,
+     "name": "N Marvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 71,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 73,
+     "energy": 83,
+     "id": 13,
+     "name": "P Hedvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 58,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 26,
+     "energy": 98,
+     "id": 14,
+     "name": "R Vardahl",
+     "position": "Midfield"
+    },
+    {
+     "ability": 45,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 39,
+     "energy": 105,
+     "id": 15,
+     "name": "S Toldahl",
+     "position": "Midfield"
+    },
+    {
+     "ability": 82,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 52,
+     "energy": 80,
+     "id": 16,
+     "name": "T Bredahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 69,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 65,
+     "energy": 87,
+     "id": 17,
+     "name": "A Ostdahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 56,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 78,
+     "energy": 66,
+     "id": 18,
+     "name": "B Lundahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 43,
+     "availability": {
+      "available": false,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": [
+       "Injured"
+      ]
+     },
+     "confidence": 31,
+     "energy": 0,
+     "id": 19,
+     "name": "C Mardahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 77,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 77,
+     "energy": 107,
+     "id": 101,
+     "name": "T Oststr\u00f6m",
+     "position": "Defence"
+    }
+   ]
+  },
+  "watch": "Watch supports scheduled friendlies only; pending qualifiers are unsupported"
+ },
+ "lane": "goal2 fictional scenario (T86); not original data, not a career",
+ "management": {
+  "captain": 9,
+  "eleven": [
+   1,
+   3,
+   4,
+   5,
+   6,
+   9,
+   10,
+   11,
+   12,
+   16,
+   17
+  ],
+  "exchange": [
+   20,
+   101
+  ],
+  "squad": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   101
+  ],
+  "tactics": 48
+ },
+ "opening": {
+  "captain_card": {
+   "ability": 73,
+   "age": 32,
+   "availability": {
+    "available": true,
+    "ban_fixtures": 0,
+    "carried_bookings": 0,
+    "reasons": []
+   },
+   "caps": 29,
+   "characteristics": [
+    14,
+    23,
+    1,
+    10,
+    19
+   ],
+   "confidence": 77,
+   "country": "Northmarch",
+   "energy": 63,
+   "evidence": "[designed: T86] fictional values; no original meaning",
+   "goals": 10,
+   "id": 9,
+   "name": "K Brevik",
+   "position": "Midfield",
+   "skills": [
+    2,
+    18,
+    9,
+    0,
+    16,
+    7,
+    23,
+    14,
+    5,
+    21,
+    12,
+    3
+   ]
+  },
+  "pool": {
+   "reserves": [
+    {
+     "ability": 49,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 31,
+     "energy": 89,
+     "id": 107,
+     "name": "F Brerud",
+     "position": 0,
+     "position_group": "Goalkeeper"
+    },
+    {
+     "ability": 77,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 73,
+     "energy": 107,
+     "id": 101,
+     "name": "T Oststr\u00f6m",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 64,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 26,
+     "energy": 114,
+     "id": 102,
+     "name": "A Lunstr\u00f6m",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 86,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 44,
+     "energy": 96,
+     "id": 108,
+     "name": "G Ostrud",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 73,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 57,
+     "energy": 103,
+     "id": 109,
+     "name": "H Lunrud",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 51,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 39,
+     "energy": 61,
+     "id": 103,
+     "name": "B Marstr\u00f6m",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 88,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 52,
+     "energy": 68,
+     "id": 104,
+     "name": "C Hedstr\u00f6m",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 60,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 70,
+     "energy": 110,
+     "id": 110,
+     "name": "J Marrud",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 75,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 65,
+     "energy": 75,
+     "id": 105,
+     "name": "D Varrud",
+     "position": 3,
+     "position_group": "Attack"
+    },
+    {
+     "ability": 62,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 78,
+     "energy": 82,
+     "id": 106,
+     "name": "E Tolrud",
+     "position": 3,
+     "position_group": "Attack"
+    }
+   ],
+   "squad": [
+    {
+     "ability": 77,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 33,
+     "energy": 67,
+     "id": 1,
+     "name": "B Tolberg",
+     "position": 0,
+     "position_group": "Goalkeeper"
+    },
+    {
+     "ability": 64,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 46,
+     "energy": 74,
+     "id": 2,
+     "name": "C Breberg",
+     "position": 0,
+     "position_group": "Goalkeeper"
+    },
+    {
+     "ability": 51,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 59,
+     "energy": 81,
+     "id": 3,
+     "name": "D Ostberg",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 88,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 72,
+     "energy": 88,
+     "id": 4,
+     "name": "E Lunberg",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 75,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 25,
+     "energy": 95,
+     "id": 5,
+     "name": "F Marberg",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 62,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 38,
+     "energy": 102,
+     "id": 6,
+     "name": "G Hedberg",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 49,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 51,
+     "energy": 109,
+     "id": 7,
+     "name": "H Varvik",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 86,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 64,
+     "energy": 116,
+     "id": 8,
+     "name": "J Tolvik",
+     "position": 1,
+     "position_group": "Defence"
+    },
+    {
+     "ability": 73,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 77,
+     "energy": 63,
+     "id": 9,
+     "name": "K Brevik",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 60,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 30,
+     "energy": 70,
+     "id": 10,
+     "name": "L Ostvik",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 47,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 43,
+     "energy": 77,
+     "id": 11,
+     "name": "M Lunvik",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 84,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 56,
+     "energy": 84,
+     "id": 12,
+     "name": "N Marvik",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 71,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 69,
+     "energy": 91,
+     "id": 13,
+     "name": "P Hedvik",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 58,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 22,
+     "energy": 98,
+     "id": 14,
+     "name": "R Vardahl",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 45,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 35,
+     "energy": 105,
+     "id": 15,
+     "name": "S Toldahl",
+     "position": 2,
+     "position_group": "Midfield"
+    },
+    {
+     "ability": 82,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 48,
+     "energy": 112,
+     "id": 16,
+     "name": "T Bredahl",
+     "position": 3,
+     "position_group": "Attack"
+    },
+    {
+     "ability": 69,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 61,
+     "energy": 119,
+     "id": 17,
+     "name": "A Ostdahl",
+     "position": 3,
+     "position_group": "Attack"
+    },
+    {
+     "ability": 56,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 74,
+     "energy": 66,
+     "id": 18,
+     "name": "B Lundahl",
+     "position": 3,
+     "position_group": "Attack"
+    },
+    {
+     "ability": 43,
+     "availability": {
+      "available": false,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": [
+       "Injured"
+      ]
+     },
+     "confidence": 27,
+     "energy": 0,
+     "id": 19,
+     "name": "C Mardahl",
+     "position": 3,
+     "position_group": "Attack"
+    },
+    {
+     "ability": 80,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 1,
+      "reasons": []
+     },
+     "confidence": 40,
+     "energy": 80,
+     "id": 20,
+     "name": "D Heddahl",
+     "position": 3,
+     "position_group": "Attack"
+    }
+   ],
+   "window": {
+    "allowed": true,
+    "reason": "Between fictional friendlies"
+   }
+  },
+  "refusals": {
+   "injured_starter": "unavailable starters: 19: Injured",
+   "save": "Saving refused: this is a fictional scenario, not a career"
+  },
+  "view": {
+   "countries": [
+    [
+     1,
+     "Northmarch"
+    ],
+    [
+     2,
+     "Eastvale"
+    ],
+    [
+     3,
+     "Southmere"
+    ],
+    [
+     4,
+     "Westholm"
+    ],
+    [
+     5,
+     "Lowfield"
+    ]
+   ],
+   "country": 1,
+   "country_name": "Northmarch",
+   "fixture": "Northmarch \u2014 Eastvale (Friendly)",
+   "morale": 31,
+   "play_label": "Play quick friendly",
+   "players": [
+    {
+     "ability": 77,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 33,
+     "energy": 67,
+     "id": 1,
+     "name": "B Tolberg",
+     "position": "Goalkeeper"
+    },
+    {
+     "ability": 64,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 46,
+     "energy": 74,
+     "id": 2,
+     "name": "C Breberg",
+     "position": "Goalkeeper"
+    },
+    {
+     "ability": 51,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 59,
+     "energy": 81,
+     "id": 3,
+     "name": "D Ostberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 88,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 72,
+     "energy": 88,
+     "id": 4,
+     "name": "E Lunberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 75,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 25,
+     "energy": 95,
+     "id": 5,
+     "name": "F Marberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 62,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 38,
+     "energy": 102,
+     "id": 6,
+     "name": "G Hedberg",
+     "position": "Defence"
+    },
+    {
+     "ability": 49,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 51,
+     "energy": 109,
+     "id": 7,
+     "name": "H Varvik",
+     "position": "Defence"
+    },
+    {
+     "ability": 86,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 64,
+     "energy": 116,
+     "id": 8,
+     "name": "J Tolvik",
+     "position": "Defence"
+    },
+    {
+     "ability": 73,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 77,
+     "energy": 63,
+     "id": 9,
+     "name": "K Brevik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 60,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 30,
+     "energy": 70,
+     "id": 10,
+     "name": "L Ostvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 47,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 43,
+     "energy": 77,
+     "id": 11,
+     "name": "M Lunvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 84,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 56,
+     "energy": 84,
+     "id": 12,
+     "name": "N Marvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 71,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 69,
+     "energy": 91,
+     "id": 13,
+     "name": "P Hedvik",
+     "position": "Midfield"
+    },
+    {
+     "ability": 58,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 22,
+     "energy": 98,
+     "id": 14,
+     "name": "R Vardahl",
+     "position": "Midfield"
+    },
+    {
+     "ability": 45,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 35,
+     "energy": 105,
+     "id": 15,
+     "name": "S Toldahl",
+     "position": "Midfield"
+    },
+    {
+     "ability": 82,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 48,
+     "energy": 112,
+     "id": 16,
+     "name": "T Bredahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 69,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 61,
+     "energy": 119,
+     "id": 17,
+     "name": "A Ostdahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 56,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": []
+     },
+     "confidence": 74,
+     "energy": 66,
+     "id": 18,
+     "name": "B Lundahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 43,
+     "availability": {
+      "available": false,
+      "ban_fixtures": 0,
+      "carried_bookings": 0,
+      "reasons": [
+       "Injured"
+      ]
+     },
+     "confidence": 27,
+     "energy": 0,
+     "id": 19,
+     "name": "C Mardahl",
+     "position": "Attack"
+    },
+    {
+     "ability": 80,
+     "availability": {
+      "available": true,
+      "ban_fixtures": 0,
+      "carried_bookings": 1,
+      "reasons": []
+     },
+     "confidence": 40,
+     "energy": 80,
+     "id": 20,
+     "name": "D Heddahl",
+     "position": "Attack"
+    }
+   ]
+  }
+ }
+}

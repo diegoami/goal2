@@ -1,0 +1,11 @@
+# DW5: python3 -m unittest discover -s goal2/tests -v; origin/main 9683a47 (archive copy) vs branch code at a8ce6e1;
+# no .cache in either tree; gh shadowed on PATH so no test fetches anything.
+main: Ran 457 tests in 11.183s
+main: FAILED (failures=2, errors=125, skipped=50)
+branch: Ran 519 tests in 21.332s
+branch: FAILED (failures=2, errors=125, skipped=65)
+main FAILED (failures=2, errors=125, skipped=50) 222
+branch FAILED (failures=2, errors=125, skipped=65) 222
+failing on main: 119 failing on branch: 119
+new failures versus main: []
+fixed versus main: []

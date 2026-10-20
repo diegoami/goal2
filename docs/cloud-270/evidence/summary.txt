@@ -1,0 +1,13 @@
+# T86 resource-free evidence at a8ce6e139d8274cce2c3a5fa6788f48cfc739609
+python 3.13.16
+.cache present: False
+GOAL.DAT files: []
+import PySide6: rc=1 ModuleNotFoundError: No module named 'PySide6'
+import pygame: rc=1 ModuleNotFoundError: No module named 'pygame'
+import unicorn: rc=1 ModuleNotFoundError: No module named 'unicorn'
+DW1/DW2 rc=0: OK (skipped=15)
+DW2 not-configured lines: 15
+DW3 walkthrough (plain): sha256=a3a791772eaa84e839104b92ab76ad4eeffc7eb1ca1ba2bcef848572d717759d bytes=28549
+DW3 walkthrough (plain): sha256=a3a791772eaa84e839104b92ab76ad4eeffc7eb1ca1ba2bcef848572d717759d bytes=28549
+DW3 walkthrough --redraw 4: sha256=a3a791772eaa84e839104b92ab76ad4eeffc7eb1ca1ba2bcef848572d717759d bytes=28549
+DW3 byte-identical: plain/plain=True plain/redraw=True

@@ -1,0 +1,82 @@
+test_regulation_extra_time_and_shoot_out (test_scenario_branches.CompetitiveBranches.test_regulation_extra_time_and_shoot_out) ... ok
+test_unsupported_actions_are_refused_and_named (test_scenario_branches.CompetitiveBranches.test_unsupported_actions_are_refused_and_named) ... ok
+test_display_refuses_wrong_token_and_out_of_order_packets (test_scenario_branches.ControllerBranches.test_display_refuses_wrong_token_and_out_of_order_packets) ... ok
+test_frames_are_rendered_acknowledged_and_completion_shown (test_scenario_branches.ControllerBranches.test_frames_are_rendered_acknowledged_and_completion_shown) ... ok
+test_unacknowledged_frames_block_publication_until_cancel (test_scenario_branches.ControllerBranches.test_unacknowledged_frames_block_publication_until_cancel) ... ok
+test_viewer_close_cancels_the_match (test_scenario_branches.ControllerBranches.test_viewer_close_cancels_the_match) ... ok
+test_viewer_status_faults_cancel_without_publication (test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication) ... ok
+test_bad_half_time_preview_cancels (test_scenario_branches.QuickBranches.test_bad_half_time_preview_cancels) ... ok
+test_cancel_kills_a_child_that_ignores_terminate (test_scenario_branches.QuickBranches.test_cancel_kills_a_child_that_ignores_terminate) ... ok
+test_early_output_waits_for_worker_exit (test_scenario_branches.QuickBranches.test_early_output_waits_for_worker_exit) ... ok
+test_half_time_injury_supported_decision_and_continuation (test_scenario_branches.QuickBranches.test_half_time_injury_supported_decision_and_continuation) ... ok
+test_output_bound_to_another_template_or_count_is_refused (test_scenario_branches.QuickBranches.test_output_bound_to_another_template_or_count_is_refused) ... ok
+test_slow_completion_publishes_once_only_after_exit (test_scenario_branches.QuickBranches.test_slow_completion_publishes_once_only_after_exit) ... ok
+test_stale_half_time_continuation_cancels (test_scenario_branches.QuickBranches.test_stale_half_time_continuation_cancels) ... ok
+test_win_and_draw_results (test_scenario_branches.QuickBranches.test_win_and_draw_results) ... ok
+test_clock_score_commentary_half_time_decision_and_draw (test_scenario_branches.WatchedBranches.test_clock_score_commentary_half_time_decision_and_draw) ... ok
+test_complete_packet_waits_for_child_exit (test_scenario_branches.WatchedBranches.test_complete_packet_waits_for_child_exit) ... ok
+test_consumed_token_cannot_publish_again (test_scenario_branches.WatchedBranches.test_consumed_token_cannot_publish_again) ... ok
+test_duplicate_mismatched_or_foreign_completion_is_refused (test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused) ... ok
+test_frame_acknowledgements_are_cumulative_and_bounded (test_scenario_branches.WatchedBranches.test_frame_acknowledgements_are_cumulative_and_bounded) ... ok
+test_injury_reaches_the_published_squad (test_scenario_branches.WatchedBranches.test_injury_reaches_the_published_squad) ... ok
+test_slow_completion_never_publishes_early (test_scenario_branches.WatchedBranches.test_slow_completion_never_publishes_early) ... ok
+test_cancel_never_publishes (test_scenario_contract.FakeQuickContract.test_cancel_never_publishes) ... ok
+test_early_output_is_not_read_before_exit (test_scenario_contract.FakeQuickContract.test_early_output_is_not_read_before_exit) ... ok
+test_failure_leaves_the_active_game (test_scenario_contract.FakeQuickContract.test_failure_leaves_the_active_game) ... ok
+test_stale_completion_is_refused (test_scenario_contract.FakeQuickContract.test_stale_completion_is_refused) ... ok
+test_success_publishes_once_and_one_job_at_a_time (test_scenario_contract.FakeQuickContract.test_success_publishes_once_and_one_job_at_a_time) ... ok
+test_unreadable_output_is_refused (test_scenario_contract.FakeQuickContract.test_unreadable_output_is_refused) ... ok
+test_cancel_never_publishes_and_releases_the_token (test_scenario_contract.FakeWatchedContract.test_cancel_never_publishes_and_releases_the_token) ... ok
+test_error_packet_fails_the_job (test_scenario_contract.FakeWatchedContract.test_error_packet_fails_the_job) ... ok
+test_exit_without_completion_fails_the_job (test_scenario_contract.FakeWatchedContract.test_exit_without_completion_fails_the_job) ... ok
+test_out_of_order_packet_is_refused (test_scenario_contract.FakeWatchedContract.test_out_of_order_packet_is_refused) ... ok
+test_repeated_packet_is_refused (test_scenario_contract.FakeWatchedContract.test_repeated_packet_is_refused) ... ok
+test_stale_owner_is_refused (test_scenario_contract.FakeWatchedContract.test_stale_owner_is_refused) ... ok
+test_success_publishes_once (test_scenario_contract.FakeWatchedContract.test_success_publishes_once) ... ok
+test_truncated_record_fails_the_job (test_scenario_contract.FakeWatchedContract.test_truncated_record_fails_the_job) ... ok
+test_wrong_token_packet_is_refused (test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused) ... ok
+test_cancel_never_publishes (test_scenario_contract.RealQuickContract.test_cancel_never_publishes) ... test_scenario_contract.RealQuickContract.test_cancel_never_publishes: real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)
+skipped 'real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)'
+test_early_output_is_not_read_before_exit (test_scenario_contract.RealQuickContract.test_early_output_is_not_read_before_exit) ... test_scenario_contract.RealQuickContract.test_early_output_is_not_read_before_exit: real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)
+skipped 'real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)'
+test_failure_leaves_the_active_game (test_scenario_contract.RealQuickContract.test_failure_leaves_the_active_game) ... test_scenario_contract.RealQuickContract.test_failure_leaves_the_active_game: real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)
+skipped 'real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)'
+test_stale_completion_is_refused (test_scenario_contract.RealQuickContract.test_stale_completion_is_refused) ... test_scenario_contract.RealQuickContract.test_stale_completion_is_refused: real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)
+skipped 'real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)'
+test_success_publishes_once_and_one_job_at_a_time (test_scenario_contract.RealQuickContract.test_success_publishes_once_and_one_job_at_a_time) ... test_scenario_contract.RealQuickContract.test_success_publishes_once_and_one_job_at_a_time: real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)
+skipped 'real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)'
+test_unreadable_output_is_refused (test_scenario_contract.RealQuickContract.test_unreadable_output_is_refused) ... test_scenario_contract.RealQuickContract.test_unreadable_output_is_refused: real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)
+skipped 'real backend: not configured (.cache/GOAL.DAT, .cache/e010-r0008-halftime.sav)'
+test_cancel_never_publishes_and_releases_the_token (test_scenario_contract.RealWatchedContract.test_cancel_never_publishes_and_releases_the_token) ... test_scenario_contract.RealWatchedContract.test_cancel_never_publishes_and_releases_the_token: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_error_packet_fails_the_job (test_scenario_contract.RealWatchedContract.test_error_packet_fails_the_job) ... test_scenario_contract.RealWatchedContract.test_error_packet_fails_the_job: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_exit_without_completion_fails_the_job (test_scenario_contract.RealWatchedContract.test_exit_without_completion_fails_the_job) ... test_scenario_contract.RealWatchedContract.test_exit_without_completion_fails_the_job: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_out_of_order_packet_is_refused (test_scenario_contract.RealWatchedContract.test_out_of_order_packet_is_refused) ... test_scenario_contract.RealWatchedContract.test_out_of_order_packet_is_refused: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_repeated_packet_is_refused (test_scenario_contract.RealWatchedContract.test_repeated_packet_is_refused) ... test_scenario_contract.RealWatchedContract.test_repeated_packet_is_refused: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_stale_owner_is_refused (test_scenario_contract.RealWatchedContract.test_stale_owner_is_refused) ... test_scenario_contract.RealWatchedContract.test_stale_owner_is_refused: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_success_publishes_once (test_scenario_contract.RealWatchedContract.test_success_publishes_once) ... test_scenario_contract.RealWatchedContract.test_success_publishes_once: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_truncated_record_fails_the_job (test_scenario_contract.RealWatchedContract.test_truncated_record_fails_the_job) ... test_scenario_contract.RealWatchedContract.test_truncated_record_fails_the_job: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_wrong_token_packet_is_refused (test_scenario_contract.RealWatchedContract.test_wrong_token_packet_is_refused) ... test_scenario_contract.RealWatchedContract.test_wrong_token_packet_is_refused: real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))
+skipped "real backend: not configured (.cache/e0afff6751747233-e006-1000-r0001.sav, unicorn (python3 -m pip install '.[watched]'))"
+test_confirm_validates_like_desktop_model_and_is_atomic (test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic) ... ok
+test_desktop_entry_has_no_demo_fallback (test_scenario_factory.ScenarioFactoryTests.test_desktop_entry_has_no_demo_fallback) ... ok
+test_exchange_repairs_eleven_and_captain_only_in_a_friendly_window (test_scenario_factory.ScenarioFactoryTests.test_exchange_repairs_eleven_and_captain_only_in_a_friendly_window) ... ok
+test_factory_supplies_country_squad_pool_cards_xi_captain_tactics_and_fixtures (test_scenario_factory.ScenarioFactoryTests.test_factory_supplies_country_squad_pool_cards_xi_captain_tactics_and_fixtures) ... ok
+test_fiction_is_marked_and_refused_by_career_paths (test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths) ... ok
+test_reads_never_advance_or_mutate_the_session (test_scenario_factory.ScenarioFactoryTests.test_reads_never_advance_or_mutate_the_session) ... ok
+test_view_and_pool_keep_the_desktop_dto_keys_and_real_availability (test_scenario_factory.ScenarioFactoryTests.test_view_and_pool_keep_the_desktop_dto_keys_and_real_availability) ... ok
+test_redraw_and_view_calls_never_advance_the_session (test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session) ... ok
+test_session_reaches_every_next_fixture_through_the_controllers (test_scenario_walkthrough.WalkthroughTests.test_session_reaches_every_next_fixture_through_the_controllers) ... ok
+test_two_runs_are_byte_identical (test_scenario_walkthrough.WalkthroughTests.test_two_runs_are_byte_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 62 tests in 9.754s
+
+OK (skipped=15)

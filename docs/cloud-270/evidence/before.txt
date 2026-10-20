@@ -1,0 +1,10 @@
+# Rule 21: the new tests fail before the change.
+# HEAD 8e6fd2d archive with origin/main's goal2/desktop/{jobs,watched,competitive}.py and
+# goal2/game/watched_jobs.py restored (the four injection points removed), then:
+#   python3 -B -m unittest discover -s goal2/tests -p 'test_scenario_*.py'
+FAILED (errors=43, skipped=15)
+TypeError: WatchedJobs.__init__() got an unexpected keyword argument 'runtime'       x18
+TypeError: QuickJobs.__init__() got an unexpected keyword argument 'runtime'         x17
+TypeError: WatchedController.__init__() got an unexpected keyword argument 'runtime' x7
+TypeError: CompetitiveJobs.__init__() got an unexpected keyword argument 'runtime'   x1
+# On origin/main itself goal2/scenario does not exist, so every test_scenario_* module fails to import.

@@ -1,0 +1,40 @@
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_display_refuses_wrong_token_and_out_of_order_packets
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_unacknowledged_frames_block_publication_until_cancel
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_output_bound_to_another_template_or_count_is_refused
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_complete_packet_waits_for_child_exit
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_consumed_token_cannot_publish_again
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_frame_acknowledgements_are_cumulative_and_bounded
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_cancel_never_publishes
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_early_output_is_not_read_before_exit
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_stale_completion_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_cancel_never_publishes_and_releases_the_token
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_out_of_order_packet_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_repeated_packet_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_stale_owner_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused
+baseline pass: goal2.tests.test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths
+baseline pass: goal2.tests.test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session
+fails as named [wrong-ID] journal token -> test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused (does not match "Invalid watched worker IPC: Watched worker exited \(0\))
+fails as named [wrong-ID] viewer status token -> test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication (fault='stale-token'\)[\s\S]*?ValueError not raised)
+fails as named [wrong-ID] display packet token -> test_scenario_branches.ControllerBranches.test_display_refuses_wrong_token_and_out_of_order_packets (packet=\['x{48}'[\s\S]*?ValueError not raised)
+fails as named [wrong-ID] quick output bound to its template -> test_scenario_branches.QuickBranches.test_output_bound_to_another_template_or_count_is_refused (fault='wrong-template'\)[\s\S]*?ValueError not raised)
+fails as named [wrong-ID] scenario publication refuses an unmarked owner -> test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths (ValueError not raised)
+fails as named [wrong-ID] scenario codec refuses an unmarked file -> test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths (KeyError: 'state')
+fails as named [out-of-order] journal sequence (gap) -> test_scenario_contract.FakeWatchedContract.test_out_of_order_packet_is_refused (does not match "Invalid watched worker IPC: Watched worker exited \(0\))
+fails as named [out-of-order] journal sequence (repeat) -> test_scenario_contract.FakeWatchedContract.test_repeated_packet_is_refused (does not match "Invalid watched worker IPC: Watched worker exited \(0\))
+fails as named [out-of-order] display packet sequence -> test_scenario_branches.ControllerBranches.test_display_refuses_wrong_token_and_out_of_order_packets (packet=\['t{48}', 1[\s\S]*?ValueError not raised)
+fails as named [out-of-order] viewer acknowledgement regression -> test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication (fault='regress'\)[\s\S]*?ValueError not raised)
+fails as named [early-publication] quick output read only after exit -> test_scenario_contract.FakeQuickContract.test_early_output_is_not_read_before_exit (Friendly worker failed \(None\))
+fails as named [early-publication] watched completion only after exit -> test_scenario_branches.WatchedBranches.test_complete_packet_waits_for_child_exit (exited \(None\) without completion)
+fails as named [early-publication] publication waits for the last frame acknowledgement -> test_scenario_branches.ControllerBranches.test_unacknowledged_frames_block_publication_until_cancel (True is not false)
+fails as named [stale/duplicate] quick stale completion -> test_scenario_contract.FakeQuickContract.test_stale_completion_is_refused (ValueError not raised)
+fails as named [stale/duplicate] watched stale owner -> test_scenario_contract.FakeWatchedContract.test_stale_owner_is_refused (ValueError not raised)
+fails as named [stale/duplicate] duplicate completion packet -> test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused (fault='duplicate'\)[\s\S]*?ValueError not raised)
+fails as named [stale/duplicate] consumed publication token -> test_scenario_branches.WatchedBranches.test_consumed_token_cannot_publish_again (TypeError: cannot unpack non-iterable NoneType)
+fails as named [stale/duplicate] duplicate frame acknowledgement -> test_scenario_branches.WatchedBranches.test_frame_acknowledgements_are_cumulative_and_bounded (sequence=1\)[\s\S]*?ValueError not raised)
+fails as named [cancel] quick cancel -> test_scenario_contract.FakeQuickContract.test_cancel_never_publishes (True is not false)
+fails as named [cancel] watched cancel invalidates the publication token -> test_scenario_contract.FakeWatchedContract.test_cancel_never_publishes_and_releases_the_token (a watched job is already pending)
+fails as named [redraw] a view that advances the session -> test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session (Halftime continuation is stale; active game changed)
+21 mutations, 0 problems
