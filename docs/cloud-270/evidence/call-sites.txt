@@ -1,0 +1,176 @@
+M goal2/scenario/__init__.py:24: mutation "require_scenario raises for unmarked values" → `test_scenario_sites.CodecAndModelSites.test_require_scenario_refuses_unmarked_values`
+N goal2/scenario/__main__.py:19: command-line entry point
+M goal2/scenario/factory.py:107: mutation "calendar completes only the next fixture" → `test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution`
+M goal2/scenario/factory.py:111: mutation "competitive completion needs its resolution" → `test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution`
+M goal2/scenario/factory.py:112: mutation "competitive resolution validated" → `test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution`
+M goal2/scenario/factory.py:114: mutation "friendly completion has no resolution" → `test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution`
+M goal2/scenario/factory.py:143: mutation "scenario encoder refuses an unmarked state" → `test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths`
+M goal2/scenario/factory.py:157: mutation "decoder refuses an unmarked state" → `test_scenario_sites.CodecAndModelSites.test_codec_refuses_unmarked_malformed_or_untyped_data`
+M goal2/scenario/factory.py:164: mutation "decoder refuses malformed records" → `test_scenario_sites.CodecAndModelSites.test_codec_refuses_unmarked_malformed_or_untyped_data`
+M goal2/scenario/factory.py:174: mutation "encoder requires template bytes" → `test_scenario_sites.CodecAndModelSites.test_codec_refuses_unmarked_malformed_or_untyped_data`
+M goal2/scenario/factory.py:183: mutation "decoder names unreadable files" → `test_scenario_sites.CodecAndModelSites.test_codec_refuses_unmarked_malformed_or_untyped_data`
+M goal2/scenario/factory.py:185: mutation "scenario codec refuses an unmarked file" → `test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths`
+M goal2/scenario/model.py:35: mutation "scenario view refuses an unmarked state" → `test_scenario_guards.ModelAndRuntimeGuards.test_view_and_result_text_refuse_unmarked_or_foreign_results`
+M goal2/scenario/model.py:37: mutation "view refuses a malformed squad" → `test_scenario_sites.CodecAndModelSites.test_view_refuses_malformed_squads_and_records_and_pool_queries`
+M goal2/scenario/model.py:42: mutation "view refuses a malformed record" → `test_scenario_sites.CodecAndModelSites.test_view_refuses_malformed_squads_and_records_and_pool_queries`
+M goal2/scenario/model.py:63: mutation "card only for own players" → `test_scenario_factory.ScenarioFactoryTests.test_factory_supplies_country_squad_pool_cards_xi_captain_tactics_and_fixtures`
+M goal2/scenario/model.py:70: mutation "confirm needs eleven distinct squad players" → `test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic`
+M goal2/scenario/model.py:72: mutation "confirm needs the captain in the eleven" → `test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic`
+M goal2/scenario/model.py:74: mutation "confirm needs eight-bit tactics" → `test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic`
+M goal2/scenario/model.py:75: mutation "confirm refuses unavailable starters" → `test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic`
+M goal2/scenario/model.py:92: mutation "pool refuses an invalid query" → `test_scenario_sites.CodecAndModelSites.test_view_refuses_malformed_squads_and_records_and_pool_queries`
+M goal2/scenario/model.py:109: mutation "exchange only in a friendly window" → `test_scenario_guards.ModelAndRuntimeGuards.test_exchange_window_closes_outside_friendlies`
+M goal2/scenario/model.py:111: mutation "exchange needs a squad player and a reserve" → `test_scenario_factory.ScenarioFactoryTests.test_exchange_repairs_eleven_and_captain_only_in_a_friendly_window`
+M goal2/scenario/model.py:133: mutation "scenario result text refuses a non-fictional result" → `test_scenario_guards.ModelAndRuntimeGuards.test_view_and_result_text_refuse_unmarked_or_foreign_results`
+M goal2/scenario/model.py:150: mutation "scenario model refuses to save" → `test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths`
+M goal2/scenario/model.py:153: mutation "scenario model refuses to resume" → `test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths`
+M goal2/scenario/runtime.py:23: mutation "owner check refuses an unmarked state" → `test_scenario_sites.PublicationSites.test_begin_rechecks_the_owner_after_construction`
+M goal2/scenario/runtime.py:25: mutation "publication refuses a foreign template" → `test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths`
+M goal2/scenario/runtime.py:31: mutation "completion must be an outcome" → `test_scenario_sites.PublicationSites.test_failed_preparation_is_raised_not_published`
+M goal2/scenario/runtime.py:33: mutation "scenario publication runs validate_result" → `test_scenario_guards.PublicationGuards.test_malformed_result_is_refused_by_result_validation`
+M goal2/scenario/runtime.py:38: mutation "completion bound to the pending fixture" → `test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused`
+M goal2/scenario/runtime.py:40: mutation "competitive kind bound to the job" → `test_scenario_guards.PublicationGuards.test_competitive_kind_must_match_the_job`
+M goal2/scenario/runtime.py:42: mutation "completion bound to its declared input" → `test_scenario_guards.PublicationGuards.test_foreign_input_image_is_refused`
+M goal2/scenario/runtime.py:46: mutation "completion memory must be scenario JSON" → `test_scenario_sites.PublicationSites.test_each_memory_relation_is_checked`
+M goal2/scenario/runtime.py:50: mutation "completion memory must carry the fiction mark" → `test_scenario_guards.PublicationGuards.test_unmarked_completion_memory_is_refused`
+M goal2/scenario/runtime.py:93: mutation "scenario publication refuses an unmarked owner" → `test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths`
+M goal2/scenario/runtime.py:98: mutation "one pending scenario job" → `test_scenario_sites.PublicationSites.test_one_pending_job_and_one_preparation`
+M goal2/scenario/runtime.py:99: mutation "begin rechecks the owner" → `test_scenario_sites.PublicationSites.test_begin_rechecks_the_owner_after_construction`
+M goal2/scenario/runtime.py:106: mutation "job bound to the scheduled fixture" → `test_scenario_guards.PublicationGuards.test_job_must_be_the_scheduled_fixture`
+M goal2/scenario/runtime.py:116: mutation "one scenario preparation" → `test_scenario_sites.PublicationSites.test_one_pending_job_and_one_preparation`
+M goal2/scenario/runtime.py:118: mutation "owner check before preparation" → `test_scenario_guards.PublicationGuards.test_prepare_refuses_an_owner_changed_before_preparation`
+M goal2/scenario/runtime.py:121: mutation "stale preparation invalidates the token" → `test_scenario_guards.PublicationGuards.test_prepare_refuses_an_owner_changed_before_preparation`
+M goal2/scenario/runtime.py:139: mutation "quick check refuses an unmarked state" → `test_scenario_sites.CodecAndModelSites.test_quick_check_refuses_unmarked_state`
+M goal2/scenario/runtime.py:141: mutation "quick check refuses a foreign template" → `test_scenario_guards.ModelAndRuntimeGuards.test_quick_check_refuses_unavailable_starters_and_foreign_templates`
+M goal2/scenario/runtime.py:144: mutation "quick only for a scheduled friendly" → `test_scenario_guards.ModelAndRuntimeGuards.test_quick_refuses_a_competitive_fixture`
+M goal2/scenario/runtime.py:145: mutation "quick check refuses unavailable starters" → `test_scenario_guards.ModelAndRuntimeGuards.test_quick_check_refuses_unavailable_starters_and_foreign_templates`
+M goal2/scenario/runtime.py:164: mutation "completion board requires scenario memory" → `test_scenario_sites.PublicationSites.test_completion_board_requires_scenario_memory`
+M goal2/scenario/scripts.py:40: mutation "unknown script refused" → `test_scenario_sites.CodecAndModelSites.test_scripts_refuse_unknown_names_and_extra_time_in_friendlies`
+M goal2/scenario/scripts.py:93: mutation "quick friendly refuses extra time" → `test_scenario_sites.CodecAndModelSites.test_scripts_refuse_unknown_names_and_extra_time_in_friendlies`
+M goal2/scenario/scripts.py:127: mutation "watched friendly refuses extra time" → `test_scenario_sites.CodecAndModelSites.test_scripts_refuse_unknown_names_and_extra_time_in_friendlies`
+N goal2/scenario/walkthrough.py:29: walkthrough self-check; a missing refusal fails test_scenario_walkthrough
+N goal2/scenario/walkthrough.py:49: walkthrough self-check (deadline)
+N goal2/scenario/worker.py:87: fake child's own re-validation; the claimed site is QuickJobs.substitute's swap
+N goal2/scenario/worker.py:241: fake child argument check
+N goal2/scenario/worker.py:248: fake child argument check
+M goal2/desktop/jobs.py:33: mutation "one quick job at a time" → `test_scenario_contract.FakeQuickContract.test_success_publishes_once_and_one_job_at_a_time`
+N goal2/desktop/jobs.py:34: #233 cleanup retry; owned by test_desktop_quick_jobs
+N goal2/desktop/jobs.py:36: T47 guard; every scenario state has a calendar, owned by test_desktop_quick_jobs
+N goal2/desktop/jobs.py:52: bare re-raise after cleanup; the cleanup is the claimed part where listed
+M goal2/desktop/jobs.py:64: mutation "halftime preview is validated" → `test_scenario_sites.ControllerSites.test_quick_preview_shape_values_and_identity_are_checked`
+M goal2/desktop/jobs.py:66: mutation "invalid preview cancels the job" → `test_scenario_branches.QuickBranches.test_bad_half_time_preview_cancels`
+M goal2/desktop/jobs.py:74: mutation "quick non-zero exit fails" → `test_scenario_contract.FakeQuickContract.test_failure_leaves_the_active_game`
+M goal2/desktop/jobs.py:77: mutation "quick stale completion" → `test_scenario_contract.FakeQuickContract.test_stale_completion_is_refused`
+M goal2/desktop/jobs.py:80: mutation "quick output bound to its template" → `test_scenario_branches.QuickBranches.test_output_bound_to_another_template_or_count_is_refused`
+M goal2/desktop/jobs.py:89: mutation "preview has exactly the known fields" → `test_scenario_sites.ControllerSites.test_quick_preview_shape_values_and_identity_are_checked`
+M goal2/desktop/jobs.py:92: mutation "preview values are integer lists" → `test_scenario_sites.ControllerSites.test_quick_preview_shape_values_and_identity_are_checked`
+M goal2/desktop/jobs.py:99: mutation "preview matches the pending game" → `test_scenario_sites.ControllerSites.test_quick_preview_shape_values_and_identity_are_checked`
+M goal2/desktop/jobs.py:101: mutation "halftime preview bound to the fixture" → `test_scenario_branches.QuickBranches.test_bad_half_time_preview_cancels`
+M goal2/desktop/jobs.py:105: mutation "substitution needs a pending decision" → `test_scenario_sites.ControllerSites.test_substitution_needs_a_pending_half_time_decision`
+M goal2/desktop/jobs.py:107: mutation "substitution validated by swap" → `test_scenario_branches.QuickBranches.test_half_time_injury_supported_decision_and_continuation`
+M goal2/desktop/jobs.py:112: mutation "halftime continuation used once" → `test_scenario_branches.QuickBranches.test_half_time_injury_supported_decision_and_continuation`
+M goal2/desktop/jobs.py:115: mutation "halftime continuation stale" → `test_scenario_branches.QuickBranches.test_stale_half_time_continuation_cancels`
+N goal2/desktop/jobs.py:130: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/desktop/jobs.py:132: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/game/watched_jobs.py:43: existing T65 journal bound/shape guard; owned by test_watched_jobs, not claimed by T86
+N goal2/game/watched_jobs.py:54: existing T65 journal bound/shape guard; owned by test_watched_jobs, not claimed by T86
+N goal2/game/watched_jobs.py:62: existing T65 journal bound/shape guard; owned by test_watched_jobs, not claimed by T86
+N goal2/game/watched_jobs.py:104: #254 input preparation error propagation; owned by test_watched_jobs
+N goal2/game/watched_jobs.py:123: #254 bounded wait; owned by test_watched_jobs
+N goal2/game/watched_jobs.py:141: T65 one bridge per owner; owned by test_watched_jobs
+N goal2/game/watched_jobs.py:160: argument type check; owned by test_watched_pitch_jobs
+M goal2/game/watched_jobs.py:162: mutation "one watched job at a time" → `test_scenario_sites.ControllerSites.test_watched_bridge_runs_one_job_and_respects_a_pending_match`
+M goal2/game/watched_jobs.py:164: mutation "pitch job refuses while a match is pending" → `test_scenario_sites.ControllerSites.test_watched_bridge_runs_one_job_and_respects_a_pending_match`
+N goal2/game/watched_jobs.py:189: bare re-raise after cleanup; the cleanup is the claimed part where listed
+M goal2/game/watched_jobs.py:215: mutation "_check_token raises" → `test_scenario_sites.ControllerSites.test_stale_tokens_are_refused_at_every_entry`
+M goal2/game/watched_jobs.py:218: mutation "poll checks its token" → `test_scenario_sites.ControllerSites.test_stale_tokens_are_refused_at_every_entry`
+M goal2/game/watched_jobs.py:223: mutation "watched stale owner" → `test_scenario_contract.FakeWatchedContract.test_stale_owner_is_refused`
+N goal2/game/watched_jobs.py:234: existing T65 journal bound/shape guard; owned by test_watched_jobs, not claimed by T86
+M goal2/game/watched_jobs.py:241: mutation "journal token" → `test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused`
+M goal2/game/watched_jobs.py:251: mutation "completion events equal the streamed events" → `test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused`
+M goal2/game/watched_jobs.py:254: mutation "error packet is named as the worker failure" → `test_scenario_contract.FakeWatchedContract.test_error_packet_fails_the_job`
+M goal2/game/watched_jobs.py:256: mutation "unknown journal kind refused" → `test_scenario_sites.ControllerSites.test_unknown_and_long_truncated_journal_records_fail`
+M goal2/game/watched_jobs.py:263: mutation "watched exit without completion fails" → `test_scenario_contract.FakeWatchedContract.test_exit_without_completion_fails_the_job`
+M goal2/game/watched_jobs.py:267: mutation "truncated journal fails" → `test_scenario_contract.FakeWatchedContract.test_truncated_record_fails_the_job`
+M goal2/game/watched_jobs.py:271: mutation "partial long record fails" → `test_scenario_sites.ControllerSites.test_unknown_and_long_truncated_journal_records_fail`
+M goal2/game/watched_jobs.py:275: mutation "journal failure cancels the job" → `test_scenario_sites.ControllerSites.test_unknown_and_long_truncated_journal_records_fail`
+N goal2/game/watched_jobs.py:288: existing T82/T83 pitch budget/shape guard; owned by test_watched_pitch_jobs/prove_watched_pitch_jobs
+M goal2/game/watched_jobs.py:292: mutation "frame count equals completed ticks" → `test_scenario_guards.ViewerGuards.test_frame_count_must_equal_completed_ticks`
+N goal2/game/watched_jobs.py:308: bare re-raise after cleanup; the cleanup is the claimed part where listed
+M goal2/game/watched_jobs.py:324: mutation "poll_frames checks its token" → `test_scenario_sites.ControllerSites.test_stale_tokens_are_refused_at_every_entry`
+N goal2/game/watched_jobs.py:326: existing T82/T83 pitch budget/shape guard; owned by test_watched_pitch_jobs/prove_watched_pitch_jobs
+M goal2/game/watched_jobs.py:330: mutation "frame poll stale owner" → `test_scenario_sites.ControllerSites.test_frame_token_and_frame_stale_owner_cancel`
+N goal2/game/watched_jobs.py:333: existing T82/T83 pitch budget/shape guard; owned by test_watched_pitch_jobs/prove_watched_pitch_jobs
+N goal2/game/watched_jobs.py:343: existing T82/T83 pitch budget/shape guard; owned by test_watched_pitch_jobs/prove_watched_pitch_jobs
+M goal2/game/watched_jobs.py:348: mutation "frame token refused" → `test_scenario_sites.ControllerSites.test_frame_token_and_frame_stale_owner_cancel`
+N goal2/game/watched_jobs.py:352: existing T82/T83 pitch budget/shape guard; owned by test_watched_pitch_jobs/prove_watched_pitch_jobs
+N goal2/game/watched_jobs.py:360: existing T82/T83 pitch budget/shape guard; owned by test_watched_pitch_jobs/prove_watched_pitch_jobs
+N goal2/game/watched_jobs.py:362: existing T82/T83 pitch budget/shape guard; owned by test_watched_pitch_jobs/prove_watched_pitch_jobs
+M goal2/game/watched_jobs.py:367: mutation "frame failure cancels the job" → `test_scenario_sites.ControllerSites.test_frame_token_and_frame_stale_owner_cancel`
+M goal2/game/watched_jobs.py:371: mutation "ack_frames checks its token" → `test_scenario_sites.ControllerSites.test_stale_tokens_are_refused_at_every_entry`
+M goal2/game/watched_jobs.py:374: mutation "duplicate frame acknowledgement" → `test_scenario_branches.WatchedBranches.test_frame_acknowledgements_are_cumulative_and_bounded`
+M goal2/game/watched_jobs.py:397: mutation "cancel checks its token" → `test_scenario_sites.ControllerSites.test_stale_tokens_are_refused_at_every_entry`
+N goal2/game/watched_jobs.py:415: #254 bounded completion-thread wait; owned by test_watched_completion
+N goal2/desktop/watched.py:51: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/desktop/watched.py:56: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/desktop/watched.py:63: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+M goal2/desktop/watched.py:91: mutation "watch only for a scheduled friendly" → `test_scenario_branches.CompetitiveBranches.test_unsupported_actions_are_refused_and_named`
+N goal2/desktop/watched.py:98: argument type check; owned by test_watched_pitch_jobs
+M goal2/desktop/watched.py:100: mutation "watch refuses while a match is pending" → `test_scenario_sites.ControllerSites.test_controller_refuses_while_a_match_is_pending`
+N goal2/desktop/watched.py:104: original optional-runtime gate; the scenario runtime supplies require_* instead (default path unchanged)
+N goal2/desktop/watched.py:106: original optional-runtime gate; the scenario runtime supplies require_* instead (default path unchanged)
+N goal2/desktop/watched.py:137: start-failure message wrapper; cleanup owned by test_desktop_watched_sharing
+N goal2/desktop/watched.py:138: bare re-raise after cleanup; the cleanup is the claimed part where listed
+N goal2/desktop/watched.py:145: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+N goal2/desktop/watched.py:167: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/desktop/watched.py:173: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/desktop/watched.py:177: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+M goal2/desktop/watched.py:181: mutation "viewer status token" → `test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication`
+N goal2/desktop/watched.py:183: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+M goal2/desktop/watched.py:192: mutation "viewer status digest" → `test_scenario_guards.ViewerGuards.test_status_digest_must_match_the_sent_stream`
+M goal2/desktop/watched.py:194: mutation "viewer acknowledgement regression" → `test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication`
+N goal2/desktop/watched.py:198: T83 type check of frame_sequence; owned by test_pygame_pitch_view
+M goal2/desktop/watched.py:205: mutation "rendered frame acknowledgement names the delivered frame" → `test_scenario_guards.ViewerGuards.test_frame_acknowledgement_must_name_the_delivered_frame`
+N goal2/desktop/watched.py:214: T83 pitch status shape; owned by test_pygame_pitch_view
+N goal2/desktop/watched.py:220: T66 start timeout; owned by test_pygame_match_view
+M goal2/desktop/watched.py:222: mutation "viewer exit fails the match" → `test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication`
+M goal2/desktop/watched.py:240: mutation "controller failure cancels the match" → `test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication`
+N goal2/desktop/watched.py:264: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/desktop/watched.py:267: existing #236/#254 Windows status/cleanup handling; owned by test_desktop_watched_sharing
+N goal2/desktop/watched.py:279: bare re-raise after cleanup; the cleanup is the claimed part where listed
+M goal2/desktop/competitive.py:21: mutation "competitive only for a supported kind" → `test_scenario_branches.CompetitiveBranches.test_unsupported_actions_are_refused_and_named`
+C goal2/desktop/competitive.py:25: mutation "competitive index must be canonical" → `test_scenario_sites.ControllerSites.test_competitive_binds_the_original_index_format_and_one_job`; an id whose suffix does not parse also fails the canonical check with the same message, so removing this site alone changes no outcome (T86 rework 2 run)
+M goal2/desktop/competitive.py:27: mutation "competitive index must be canonical" → `test_scenario_sites.ControllerSites.test_competitive_binds_the_original_index_format_and_one_job`
+N goal2/desktop/competitive.py:36: original optional-runtime gate; the scenario runtime supplies require_* instead (default path unchanged)
+N goal2/desktop/competitive.py:43: T80 one bridge per owner; owned by test_desktop_competitive_jobs
+M goal2/desktop/competitive.py:61: mutation "one competitive job at a time" → `test_scenario_sites.ControllerSites.test_competitive_binds_the_original_index_format_and_one_job`
+M goal2/desktop/competitive.py:63: mutation "competitive refuses while another match is pending" → `test_scenario_guards.ModelAndRuntimeGuards.test_competitive_play_refuses_while_another_match_is_pending`
+N goal2/desktop/competitive.py:70: start-failure message wrapper; owned by test_desktop_competitive_jobs
+N goal2/desktop/competitive.py:79: message prefix wrapper; the wrapped guards are listed for watched_jobs.py
+N goal2/game/watched_publication.py:23: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:24: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:27: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:32: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:38: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:41: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:44: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:62: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:66: T64 original candidate builder; replaced on the scenario path by runtime._completed (owned by test_watched_publication)
+N goal2/game/watched_publication.py:115: base begin; overridden by ScenarioPublication.begin (its own site is listed)
+M goal2/game/watched_publication.py:129: mutation "consumed publication token" → `test_scenario_branches.WatchedBranches.test_consumed_token_cannot_publish_again`
+M goal2/game/watched_publication.py:135: mutation "_check_owner raises" → `test_scenario_guards.PublicationGuards.test_publish_refuses_an_owner_changed_after_preparation`
+N goal2/game/watched_publication.py:141: base prepare_completion; overridden by ScenarioPublication (its own site is listed)
+N goal2/game/watched_publication.py:143: base prepare_completion; overridden by ScenarioPublication (its own site is listed)
+N goal2/game/watched_publication.py:146: base prepare_completion; overridden by ScenarioPublication (its own site is listed)
+M goal2/game/watched_publication.py:155: mutation "publication needs the bound preparation" → `test_scenario_sites.PublicationSites.test_preparation_must_be_bound_and_finished`
+M goal2/game/watched_publication.py:157: mutation "publication waits for the finished preparation" → `test_scenario_sites.PublicationSites.test_preparation_must_be_bound_and_finished`
+M goal2/game/watched_publication.py:160: mutation "failed preparation is raised" → `test_scenario_sites.PublicationSites.test_failed_preparation_is_raised_not_published`
+M goal2/game/watched_publication.py:161: mutation "final owner check in publish_prepared" → `test_scenario_guards.PublicationGuards.test_publish_refuses_an_owner_changed_after_preparation`
+M goal2/desktop/match_view.py:56: mutation "display packet token" → `test_scenario_branches.ControllerBranches.test_display_refuses_wrong_token_and_out_of_order_packets`
+N goal2/desktop/match_view.py:60: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+N goal2/desktop/match_view.py:66: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+N goal2/desktop/match_view.py:72: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+N goal2/desktop/match_view.py:82: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+N goal2/desktop/match_view.py:86: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+N goal2/desktop/match_view.py:89: existing T66 presentation guard; owned by test_pygame_match_view, not claimed by T86
+175 sites: 103 with their own mutation, 1 covered by another named mutation, 71 not claimed; 0 problems

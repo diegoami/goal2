@@ -1,0 +1,91 @@
+baseline pass: goal2.tests.test_scenario_branches.CompetitiveBranches.test_unsupported_actions_are_refused_and_named
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_display_refuses_wrong_token_and_out_of_order_packets
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_unacknowledged_frames_block_publication_until_cancel
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_viewer_close_cancels_the_match
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_bad_half_time_preview_cancels
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_half_time_injury_supported_decision_and_continuation
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_output_bound_to_another_template_or_count_is_refused
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_stale_half_time_continuation_cancels
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_complete_packet_waits_for_child_exit
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_consumed_token_cannot_publish_again
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused
+baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_frame_acknowledgements_are_cumulative_and_bounded
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_cancel_never_publishes
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_early_output_is_not_read_before_exit
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_failure_leaves_the_active_game
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_stale_completion_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_success_publishes_once_and_one_job_at_a_time
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_cancel_never_publishes_and_releases_the_token
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_error_packet_fails_the_job
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_exit_without_completion_fails_the_job
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_out_of_order_packet_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_repeated_packet_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_stale_owner_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_truncated_record_fails_the_job
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused
+baseline pass: goal2.tests.test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic
+baseline pass: goal2.tests.test_scenario_factory.ScenarioFactoryTests.test_exchange_repairs_eleven_and_captain_only_in_a_friendly_window
+baseline pass: goal2.tests.test_scenario_factory.ScenarioFactoryTests.test_factory_supplies_country_squad_pool_cards_xi_captain_tactics_and_fixtures
+baseline pass: goal2.tests.test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_competitive_play_refuses_while_another_match_is_pending
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_exchange_window_closes_outside_friendlies
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_quick_check_refuses_unavailable_starters_and_foreign_templates
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_quick_refuses_a_competitive_fixture
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_real_backend_reports_every_missing_item
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_view_and_result_text_refuse_unmarked_or_foreign_results
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_competitive_kind_must_match_the_job
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_foreign_input_image_is_refused
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_incomplete_event_stream_is_refused
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_job_must_be_the_scheduled_fixture
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_malformed_result_is_refused_by_result_validation
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_prepare_refuses_an_owner_changed_before_preparation
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_publish_refuses_an_owner_changed_after_preparation
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_unmarked_completion_memory_is_refused
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_frame_acknowledgement_must_name_the_delivered_frame
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_frame_count_must_equal_completed_ticks
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_status_cannot_acknowledge_unsent_packets
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_status_digest_must_match_the_sent_stream
+baseline pass: goal2.tests.test_scenario_sites.CodecAndModelSites.test_codec_refuses_unmarked_malformed_or_untyped_data
+baseline pass: goal2.tests.test_scenario_sites.CodecAndModelSites.test_quick_check_refuses_unmarked_state
+baseline pass: goal2.tests.test_scenario_sites.CodecAndModelSites.test_require_scenario_refuses_unmarked_values
+baseline pass: goal2.tests.test_scenario_sites.CodecAndModelSites.test_scripts_refuse_unknown_names_and_extra_time_in_friendlies
+baseline pass: goal2.tests.test_scenario_sites.CodecAndModelSites.test_view_refuses_malformed_squads_and_records_and_pool_queries
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_competitive_binds_the_original_index_format_and_one_job
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_controller_refuses_while_a_match_is_pending
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_frame_token_and_frame_stale_owner_cancel
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_quick_preview_shape_values_and_identity_are_checked
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_stale_tokens_are_refused_at_every_entry
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_substitution_needs_a_pending_half_time_decision
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_unknown_and_long_truncated_journal_records_fail
+baseline pass: goal2.tests.test_scenario_sites.ControllerSites.test_watched_bridge_runs_one_job_and_respects_a_pending_match
+baseline pass: goal2.tests.test_scenario_sites.PublicationSites.test_begin_rechecks_the_owner_after_construction
+baseline pass: goal2.tests.test_scenario_sites.PublicationSites.test_completion_board_requires_scenario_memory
+baseline pass: goal2.tests.test_scenario_sites.PublicationSites.test_each_memory_relation_is_checked
+baseline pass: goal2.tests.test_scenario_sites.PublicationSites.test_failed_preparation_is_raised_not_published
+baseline pass: goal2.tests.test_scenario_sites.PublicationSites.test_one_pending_job_and_one_preparation
+baseline pass: goal2.tests.test_scenario_sites.PublicationSites.test_preparation_must_be_bound_and_finished
+baseline pass: goal2.tests.test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session
+fails as named [wrong-ID] journal token -> test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused (does not match "Invalid watched worker IPC: Watched worker exited \(0\))
+Traceback (most recent call last):
+  File "/home/user/goal2/.claude/worktrees/agent-a0d1b1a00af74a5a1/docs/cloud-270/mutations.py", line 473, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/home/user/goal2/.claude/worktrees/agent-a0d1b1a00af74a5a1/docs/cloud-270/mutations.py", line 454, in main
+    copy_tree(Path(folder))
+    ~~~~~~~~~^^^^^^^^^^^^^^
+  File "/home/user/goal2/.claude/worktrees/agent-a0d1b1a00af74a5a1/docs/cloud-270/mutations.py", line 429, in copy_tree
+    shutil.copy2(source, destination)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/shutil.py", line 468, in copy2
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/shutil.py", line 273, in copyfile
+    _fastcopy_sendfile(fsrc, fdst)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/usr/lib/python3.13/shutil.py", line 164, in _fastcopy_sendfile
+    raise err from None
+  File "/usr/lib/python3.13/shutil.py", line 150, in _fastcopy_sendfile
+    sent = os.sendfile(outfd, infd, offset, blocksize)
+OSError: [Errno 28] No space left on device: '/home/user/goal2/.claude/worktrees/agent-a0d1b1a00af74a5a1/docs/vision-266/screens/02-country-desk.png' -> '/tmp/goal2-T86-mutant-6yq6nw8k/docs/vision-266/screens/02-country-desk.png'

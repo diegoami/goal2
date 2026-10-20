@@ -1,0 +1,6 @@
+# docs/cloud-270/mutations.py, batch 2: five consecutive full runs, code at 9284b6187a06df605182ef04b801b30577e4f1ab
+batch 2 run 1: exit 0: 121 mutations, 0 problems (819s, /tmp free at start 11324 MiB)
+batch 2 run 2: exit 0: 121 mutations, 0 problems (877s, /tmp free at start 7264 MiB)
+batch 2 run 3: exit 0: 121 mutations, 0 problems (911s, /tmp free at start 7264 MiB)
+batch 2 run 4: exit 0: 121 mutations, 0 problems (854s, /tmp free at start 7264 MiB)
+batch 2 run 5: exit 0: 121 mutations, 0 problems (892s, /tmp free at start 7264 MiB)

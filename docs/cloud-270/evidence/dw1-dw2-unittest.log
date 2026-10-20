@@ -91,11 +91,30 @@ test_frame_acknowledgement_must_name_the_delivered_frame (test_scenario_guards.V
 test_frame_count_must_equal_completed_ticks (test_scenario_guards.ViewerGuards.test_frame_count_must_equal_completed_ticks) ... ok
 test_status_cannot_acknowledge_unsent_packets (test_scenario_guards.ViewerGuards.test_status_cannot_acknowledge_unsent_packets) ... ok
 test_status_digest_must_match_the_sent_stream (test_scenario_guards.ViewerGuards.test_status_digest_must_match_the_sent_stream) ... ok
+test_codec_refuses_unmarked_malformed_or_untyped_data (test_scenario_sites.CodecAndModelSites.test_codec_refuses_unmarked_malformed_or_untyped_data) ... ok
+test_quick_check_refuses_unmarked_state (test_scenario_sites.CodecAndModelSites.test_quick_check_refuses_unmarked_state) ... ok
+test_require_scenario_refuses_unmarked_values (test_scenario_sites.CodecAndModelSites.test_require_scenario_refuses_unmarked_values) ... ok
+test_scripts_refuse_unknown_names_and_extra_time_in_friendlies (test_scenario_sites.CodecAndModelSites.test_scripts_refuse_unknown_names_and_extra_time_in_friendlies) ... ok
+test_view_refuses_malformed_squads_and_records_and_pool_queries (test_scenario_sites.CodecAndModelSites.test_view_refuses_malformed_squads_and_records_and_pool_queries) ... ok
+test_competitive_binds_the_original_index_format_and_one_job (test_scenario_sites.ControllerSites.test_competitive_binds_the_original_index_format_and_one_job) ... ok
+test_controller_refuses_while_a_match_is_pending (test_scenario_sites.ControllerSites.test_controller_refuses_while_a_match_is_pending) ... ok
+test_frame_token_and_frame_stale_owner_cancel (test_scenario_sites.ControllerSites.test_frame_token_and_frame_stale_owner_cancel) ... ok
+test_quick_preview_shape_values_and_identity_are_checked (test_scenario_sites.ControllerSites.test_quick_preview_shape_values_and_identity_are_checked) ... ok
+test_stale_tokens_are_refused_at_every_entry (test_scenario_sites.ControllerSites.test_stale_tokens_are_refused_at_every_entry) ... ok
+test_substitution_needs_a_pending_half_time_decision (test_scenario_sites.ControllerSites.test_substitution_needs_a_pending_half_time_decision) ... ok
+test_unknown_and_long_truncated_journal_records_fail (test_scenario_sites.ControllerSites.test_unknown_and_long_truncated_journal_records_fail) ... ok
+test_watched_bridge_runs_one_job_and_respects_a_pending_match (test_scenario_sites.ControllerSites.test_watched_bridge_runs_one_job_and_respects_a_pending_match) ... ok
+test_begin_rechecks_the_owner_after_construction (test_scenario_sites.PublicationSites.test_begin_rechecks_the_owner_after_construction) ... ok
+test_completion_board_requires_scenario_memory (test_scenario_sites.PublicationSites.test_completion_board_requires_scenario_memory) ... ok
+test_each_memory_relation_is_checked (test_scenario_sites.PublicationSites.test_each_memory_relation_is_checked) ... ok
+test_failed_preparation_is_raised_not_published (test_scenario_sites.PublicationSites.test_failed_preparation_is_raised_not_published) ... ok
+test_one_pending_job_and_one_preparation (test_scenario_sites.PublicationSites.test_one_pending_job_and_one_preparation) ... ok
+test_preparation_must_be_bound_and_finished (test_scenario_sites.PublicationSites.test_preparation_must_be_bound_and_finished) ... ok
 test_redraw_and_view_calls_never_advance_the_session (test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session) ... ok
 test_session_reaches_every_next_fixture_through_the_controllers (test_scenario_walkthrough.WalkthroughTests.test_session_reaches_every_next_fixture_through_the_controllers) ... ok
 test_two_runs_are_byte_identical (test_scenario_walkthrough.WalkthroughTests.test_two_runs_are_byte_identical) ... ok
 
 ----------------------------------------------------------------------
-Ran 81 tests in 10.906s
+Ran 100 tests in 12.400s
 
 OK (skipped=15)

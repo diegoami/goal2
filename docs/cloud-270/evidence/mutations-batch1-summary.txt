@@ -1,0 +1,7 @@
+# docs/cloud-270/mutations.py, five consecutive full runs, code at 9284b6187a06df605182ef04b801b30577e4f1ab
+run 1: exit 0: 121 mutations, 0 problems (905s)
+run 2: exit 0: 121 mutations, 0 problems (862s)
+run 3: exit 0: 121 mutations, 0 problems (843s)
+run 4: exit 0: 121 mutations, 0 problems (899s)
+run 5: exit 1: OSError: [Errno 28] No space left on device: '/home/user/goal2/.claude/worktrees/agent-a0d1b1a00af74a5a1/docs/vision-266/screens/02-country-desk.png' -> '/tmp/goal2-T86-mutant-6yq6nw8k/docs/vision-266/screens/02-country-desk.png' (37s)
+call_sites.py exit 0: 175 sites: 103 with their own mutation, 1 covered by another named mutation, 71 not claimed; 0 problems
