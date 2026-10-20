@@ -16,19 +16,19 @@ tracked files with those extensions.
 
 ## The Google Drive folder
 
-[The folder](https://drive.google.com/drive/folders/1svRkGxtpasuTbwFuNU2NAHyU10Ac8KUU) is private
+[The folder](https://drive.google.com/drive/folders/12fgdrQUQB4pHdq0ibY-NP-aU8jgNaRzc) is private
 to the owner. Its location is in `artifacts.json`:
 
 ```json
 { "localDir": ".cache",
-  "drive": { "folderUrl": "https://drive.google.com/drive/folders/1svRkGxtpasuTbwFuNU2NAHyU10Ac8KUU",
+  "drive": { "folderUrl": "https://drive.google.com/drive/folders/12fgdrQUQB4pHdq0ibY-NP-aU8jgNaRzc",
              "rcloneRemote": "goal2drive:" } }
 ```
 
 - By hand: open the folder and save the files into `.cache/`.
 - With [rclone](https://rclone.org), once per machine (a browser login; the remote sees only this
   folder):
-  `rclone config create goal2drive drive scope=drive root_folder_id=1svRkGxtpasuTbwFuNU2NAHyU10Ac8KUU`.
+  `rclone config create goal2drive drive scope=drive root_folder_id=12fgdrQUQB4pHdq0ibY-NP-aU8jgNaRzc`.
   Then `python3 tools/artifacts.py pull` copies the folder into `.cache/`, `pull GOAL.DAT` one
   file, `push .cache/<file>` uploads one, and `where` prints the location.
 - In a cloud session: run `rclone config create` there with `config_token=<token>` taken from a
