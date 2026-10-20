@@ -157,3 +157,11 @@ are in **goal2**, distinct from the archaeology #248/#249 rows above. [designed:
 | — | Browse campaign fixtures, standings, opponents and history | [#249](https://github.com/diegoami/goal2/issues/249) | Scope/data audit first | High proposed | Available campaign data audit; main-session triage |
 | — | Scope and expose supported watched-match interventions | [#250](https://github.com/diegoami/goal2/issues/250) | Support matrix first | Medium proposed | Watched-kit/worker capability audit; main-session triage |
 | — | Browse retained match summaries and assess saved-goal replay | [#251](https://github.com/diegoami/goal2/issues/251) | Retention audit first | Medium proposed | History-data audit; main-session triage |
+
+## Cloud development
+
+[designed: owner, 2026-10-20] [#270](https://github.com/diegoami/goal2/issues/270) is split before dispatch; T86 is its first slice. Its remaining slices are proposed in T86's seam document.
+
+| Task | Title | Issue | Difficulty | Merge after |
+| --- | --- | --- | --- | --- |
+| [T86](T86.md) | Asset-free scenario seam: deterministic desktop test doubles | [#270](https://github.com/diegoami/goal2/issues/270) | Hard | — |
