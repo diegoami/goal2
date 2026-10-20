@@ -99,14 +99,15 @@ def group_table(slots, fixtures, results, *, stage, places):
     return tuple(TableRow(c,**stats[c],rank=i+1,advances=i<places) for i,c in enumerate(order))
 
 
-def opening_group(state, template):
-    """[derived: T41a/F023 §3] Recover original draw slots from saved ordered pairs.
+def opening_groups(campaign, template):
+    """[derived: T41a/F023 §3] Recover all 32 original draw groups from saved ordered pairs.
 
-    [designed] Complete opening stage-2/5 schedules only. A legacy or later-stage
-    session without those source rows has no fabricated table. No RNG is used.
+    [designed] Complete opening stage-2/5 schedules only; None for a legacy or
+    later-stage session without those source rows. No draw is repeated and no RNG is used.
+    Returns (continent, group, slots) in source continent/group order.
     """
     from goal2.game.campaign_schedule import _read_tables
-    c=state.campaign
+    c=campaign
     if c is None or c.world is None or c.cycle!=1 or c.stage not in (2,5):return None
     # [confirmed: F023 §3] Source order is round, continent, group; one group fixture each round.
     _,schedule,_,_,_=_read_tables(template)
@@ -117,6 +118,7 @@ def opening_group(state, template):
             rounds[f.round_number].append(f)
     if any(len(rows)!=32 for rows in rounds.values()):
         raise ValueError('complete opening group schedule is required')
+    groups=[]
     for index in range(32):
         continent,group=index//8+1,index%8+1
         slots=[None]*4
@@ -127,10 +129,23 @@ def opening_group(state, template):
                 slots[slot-1]=country
         if any(not _integer(n,1,128) for n in slots) or len(set(slots))!=4:
             raise ValueError('invalid recovered source group')
+        groups.append((continent,group,tuple(slots)))
+    if len({country for _,_,slots in groups for country in slots})!=128:
+        raise ValueError('saved opening groups do not cover all 128 countries once')
+    return tuple(groups)
+
+
+def opening_group(state, template):
+    """[derived: T41a/F023 §3] The managed country's recovered opening group. [designed] None
+    without a complete opening schedule."""
+    c=state.campaign
+    groups=opening_groups(c,template)
+    if groups is None:return None
+    for continent,group,slots in groups:
         if state.managed_country in slots:
             # [confirmed: F023 §§4,7] Europe gets two WC places, America one;
             # Africa/Asia group winners enter playoffs. Continental groups supply one winner.
             places=2 if c.stage==5 and continent==1 else 1
-            return {'continent':continent,'group':group,'slots':tuple(slots),'places':places,
+            return {'continent':continent,'group':group,'slots':slots,'places':places,
                     'playoff':c.stage==5 and continent in (3,4)}
     raise ValueError('managed country is absent from the saved opening groups')

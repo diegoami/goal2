@@ -27,7 +27,7 @@ class ManagementWindow(QMainWindow):
         self.standings.clicked.connect(self.show_standings)
         self.watch.clicked.connect(self.start_watched)
         self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
-        self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData()),'New campaign created',replace=True))
+        self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData(),self.start_year.currentData()),'New campaign created',replace=True))
         self.friendly.clicked.connect(lambda:self.action(lambda:model.new_friendly(self.country.currentData()),'New standalone friendly created',replace=True))
         self.play.clicked.connect(self.start_match);self.stop.clicked.connect(self.cancel_match)
         self.confirm.clicked.connect(self.confirm_draft);self.cancel.clicked.connect(lambda:self.refresh('Draft discarded'))
@@ -87,7 +87,7 @@ class ManagementWindow(QMainWindow):
             else:
                 from goal2.desktop.model import DesktopModel
                 candidate=DesktopModel(self.model.goaldat,self.model.template_bytes,self.model.save_path)
-                candidate.new_campaign(country)
+                candidate.new_campaign(country,self.start_year.currentData())
                 if self.preview is None:self.active_draft=self.draft()
                 self.preview=candidate;self.refresh()
         except (OSError,ValueError,IndexError,KeyError) as exc:
@@ -191,7 +191,7 @@ class ManagementWindow(QMainWindow):
     def set_busy(self,busy):
         busy=bool(busy or getattr(self.model,'match_pending',False))
         # [designed: T70] Prevent conflicting edits while keeping the UI responsive.
-        for widget in (self.country,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
+        for widget in (self.country,self.start_year,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
         self.overview_return.setEnabled(not busy and self.preview is not None)
         active=not busy and self.preview is None
         # [designed: #241] Idle previews browse rows/details; management stays active-only.

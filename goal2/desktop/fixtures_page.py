@@ -26,6 +26,7 @@ def build(self,model,TACTICS):
     self.result=card(layout,'Goals and result details','resultDetails')
     self.fixture_routes=QLabel();self.fixture_routes.setWordWrap(True);self.fixture_routes.setTextFormat(Qt.TextFormat.PlainText);layout.addWidget(self.fixture_routes)
     self.fixture_table=card(layout,'Standings snapshot','fixtureTable')
+    self.qualifying=card(layout,'Continental qualifying','continentalQualifying')
 
 
 def card(layout,title,name):
@@ -88,6 +89,24 @@ def refresh(self,display,view):
             'Current positions; qualification is provisional.\n'+
             '\n'.join(f"{r['rank']}. {r['name']}   P {r['played']}   GF {r['goals_for']}   GA {r['goals_against']}   GD {r['goal_difference']}   Pts {r['points']}" for r in table['rows']))
     except (ValueError,KeyError,IndexError) as exc:self.fixture_table.setText('Standings unavailable: '+str(exc))
+    self.qualifying.setText(qualifying_text(display))
+
+
+# [confirmed: F023 §§4,7] Continent numbers 1..4 are Europe, America, Africa and Asia.
+CONTINENTS={1:'Europe',2:'America',3:'Africa',4:'Asia'}
+
+
+def qualifying_text(display):
+    """[designed: T50] The managed stage-2 status; the 32 finalists once every fixture is played."""
+    try:
+        view=display.qualifying()
+    except (ValueError,KeyError,IndexError) as exc:return 'Qualifying unavailable: '+str(exc)
+    if view is None:return 'No continental qualifying stage in this campaign'
+    lines=[f"{CONTINENTS[view['continent']]}, group {view['group']}",view['text']]
+    if view['qualifiers'] is not None:
+        lines.append('Continental finalists (group winners):')
+        lines+=[f"{CONTINENTS[c]}: "+', '.join(names) for c,names in view['qualifiers'].items()]
+    return '\n'.join(lines)
 
 
 def enabled(self,active):
@@ -98,5 +117,8 @@ def enabled(self,active):
     watch=pending is not None and pending.kind==1
     competitive=pending is not None and pending.kind!=1 and pending.kind in KINDS
     self.play.setEnabled(active and (quick or competitive));self.watch.setEnabled(active and watch)
-    self.fixture_routes.setText(('Play: '+('quick friendly' if quick else 'original competitive') if quick or competitive else 'Play unavailable: unsupported pending fixture')+
+    # [designed: T50] A finished stage is not an unsupported fixture: the finals builder is T52's.
+    finished=state.campaign is not None and pending is None
+    self.fixture_routes.setText(('Play: '+('quick friendly' if quick else 'original competitive') if quick or competitive else
+        'Play unavailable: this stage is complete; the next stage is not available yet' if finished else 'Play unavailable: unsupported pending fixture')+
         '\n'+('Watch: original friendly' if watch else 'Watch unavailable: scheduled friendlies only'))
