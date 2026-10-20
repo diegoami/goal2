@@ -304,7 +304,10 @@ class ControllerBranches(unittest.TestCase):
     def test_viewer_close_cancels_the_match(self):
         held = self.model.state
         watch = self.controller('close');watch.start(frames=False)
+        # [designed: T86 rework 2] 'closed' is the viewer's only status, so no event can flow
+        # before it: cancellation is the single outcome, whatever the scheduling.
         finish(self, lambda: watch.poll() is False and not watch.busy)
+        self.assertEqual(watch.display.events, [])
         self.assertFalse(self.model.match_pending)
         self.assertIs(self.model.state, held)
 

@@ -59,7 +59,7 @@ class ScenarioFactoryTests(unittest.TestCase):
         before = copy.deepcopy(self.model.state)
         held = self.model.state
         eleven = list(before.starting_eleven)
-        for args, message in (((eleven[:10], eleven[0], 0), 'eleven distinct'),
+        for args, message in (((eleven[:10], eleven[0], 0), 'Choose eleven distinct'),
                               ((eleven, 2, 0), 'Captain'), ((eleven, eleven[0], 256), 'eight-bit'),
                               (([19] + eleven[1:], eleven[1], 0), 'unavailable starters')):
             with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):

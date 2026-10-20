@@ -112,11 +112,23 @@ and stale-owner guards. It overrides only the two steps that need original memor
    (`original:<n>`), because `pending_fixture` binds to it. Fiction is identified by
    the mark, never by the identifier.
 
-[designed: T86 rework 1] Every guard claimed on this page and in the
-`goal2/scenario` docstrings has a named control. `docs/cloud-270/mutations.py`
-removes each guard on its own in a scratch copy, and that control must then fail for
-the stated reason. This includes the result validator run by the scenario publication
-and the owner check `publish_prepared` makes after preparation.
+[designed: T86 rework 2] The guard sweep is per **call site**, not per guard type.
+`docs/cloud-270/call_sites.py` lists every `raise` and guard call (`_require_owner`,
+`_check_*`, `require_scenario`, `require_available`, `validate_*`, `swap`) in
+`goal2/scenario` and in the six real modules named above. It assigns each site one
+class:
+- **M**: the `docs/cloud-270/mutations.py` entry that removes that site alone; its
+  named control must then fail for the stated reason.
+- **C**: covered by another site's named mutation, because removing this site alone
+  changes no outcome. Currently there is one: the competitive fixture-id parse, which
+  the canonical-format check repeats.
+- **N**: not claimed by T86, with the existing owner named (re-raises, Windows/#254
+  handling, T65/T82/T66 bounds, T64's original candidate builder, which the scenario
+  path replaces).
+
+An unclassified site makes `call_sites.py` exit 1. Two guards close this slice's
+earlier gaps: the result validator the scenario publication runs, and the owner checks
+before publication (at `begin`, at `prepare_completion` and in `publish_prepared`).
 
 ## Shared contract cases
 

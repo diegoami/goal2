@@ -19,10 +19,12 @@ from pathlib import Path
 
 ROLE_FAULTS = {
     'quick': ('fail', 'garbage', 'early', 'early-garbage', 'hang', 'ignore-term', 'slow',
-              'wrong-template', 'double-count', 'bad-halftime'),
+              'wrong-template', 'double-count', 'bad-halftime', 'halftime-missing-key',
+              'halftime-bad-values', 'halftime-bad-captain'),
     'watched': ('wrong-token', 'gap', 'repeat', 'error', 'crash', 'hang', 'truncated', 'slow',
                 'early', 'duplicate', 'mismatch', 'bad-result', 'bad-stats', 'no-end', 'bad-kind',
-                'bad-image', 'bad-memory', 'few-frames'),
+                'bad-image', 'bad-memory', 'few-frames', 'unknown-kind', 'truncated-long',
+                'frame-wrong-token'),
     'viewer': ('stale-token', 'regress', 'no-ack', 'close', 'crash', 'bad-digest', 'future',
                'bad-frame-digest'),
 }
@@ -69,6 +71,12 @@ def quick(args):
         packet = scripts.halftime(state, fixture, script)
         if fault == 'bad-halftime':
             packet['teams'].reverse()
+        if fault == 'halftime-missing-key':
+            del packet['removed']
+        if fault == 'halftime-bad-values':
+            packet['eleven'][0] = str(packet['eleven'][0])
+        if fault == 'halftime-bad-captain':
+            packet['captain'] = packet['eleven'][1] if packet['captain'] == packet['eleven'][0] else packet['eleven'][0]
         write_json(source.parent / 'halftime.json', packet)
         command = source.parent / 'continue.json'
         while not command.exists():
@@ -110,6 +118,11 @@ def watched(args, competitive):
             return 4
         if fault == 'error':
             send('error', 'RuntimeError: deliberate fictional failure');return 1
+        if fault == 'unknown-kind':
+            send('commentary', 'not a journal kind');return 0
+        if fault == 'truncated-long':
+            import struct
+            stream.write(struct.pack('!I', 100) + b'x' * 10);return 0
         if fault == 'truncated':
             stream.write(b'\x00\x00');return 0
         if fault in ('wrong-token', 'gap', 'repeat', 'hang'):
@@ -138,7 +151,7 @@ def watched(args, competitive):
                 send('event', event)
                 written += 1
                 while poses and poses[0]['watermark'] <= written:
-                    write_frame(frame_stream, token, poses.pop(0))
+                    write_frame(frame_stream, 'f' * 48 if fault == 'frame-wrong-token' else token, poses.pop(0))
                 if fault == 'slow':
                     time.sleep(.01)
         result = played['result']
@@ -209,10 +222,13 @@ def viewer(args):
             # regression written at sequence >= 3 always follows an accepted sequence >= 1.
             if fault == 'regress' and display.sequence >= 3:
                 status('ready', 0, Display(token).digest(), pitch);held = True
+            elif fault == 'close':
+                # [designed: T86 rework 2] The first and only status is 'closed'. Events flow only
+                # after an accepted status, so the parent never sees a 'ready' and cannot
+                # finish the match before reading the close (the R3 race).
+                status('closed', display.sequence, display.digest(), pitch);held = True
             else:
                 status('ready', display.sequence, display.digest(), pitch)
-            if fault == 'close' and display.sequence >= 3:
-                status('closed', display.sequence, display.digest(), pitch);return 0
         time.sleep(.005)
     return 0
 
