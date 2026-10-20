@@ -149,23 +149,29 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
+BLOCK_START = re.compile(r"#{1,6}(\s|$)|>|```|~~~|<|[-*+]\s|\d{1,9}[.)]\s|(-\s*){3,}$|(\*\s*){3,}$|(_\s*){3,}$")
+
+
 def table_blocks(lines):
-    """[designed: #253 rework R4] A table is the whole contiguous block of pipe-led lines: (index of its first line, its lines)."""
+    """[designed: #253 rework R4] GFM table extent: a table starts at a pipe-led line and takes EVERY following line, pipe or not, until a blank
+    line, another block start (heading, quote, fence, HTML, list item, rule) or the end of the text: (index of its first line, its lines)."""
     blocks, current = [], None
     for i, line in enumerate(lines):
-        if line.lstrip().startswith("|"):
-            if current is None:
-                current = (i, [])
-                blocks.append(current)
-            current[1].append(line)
-        else:
+        s = line.strip()
+        if current is not None and (not s or BLOCK_START.match(s)):
             current = None
+        if current is not None:
+            current[1].append(line)
+        elif s.startswith("|"):
+            current = (i, [line])
+            blocks.append(current)
     return blocks
 
 
 def table_cells(line, where):
-    """Cells of one pipe row, whitespace-insensitive; a pipe row must also end with a pipe."""
+    """Cells of one table row, whitespace-insensitive; a row must begin and end with a pipe, as every row of these documents does."""
     s = line.strip()
+    need("|" in s, f"table row without pipes in {where}: {s[:70]}")
     need(len(s) > 1 and s.startswith("|") and s.endswith("|"), f"malformed table row in {where}: {s[:70]}")
     return [c.strip() for c in s[1:-1].split("|")]
 

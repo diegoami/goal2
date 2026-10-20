@@ -63,6 +63,19 @@ def table_controls():
         add(f"contradiction-split-across-cells-in-another-table-in-{short}", "vision",
             {key: append_block("[designed] Additional queue relation:\n\n| Issue | Relation | Issue |\n| --- | --- | --- |\n| see #242 | must precede | #198 |")},
             f"order statement contradicts the approved dependencies in {label}")
+    # GFM continuation: every line after the last row, pipe-led or not, is a further row of the same table until a blank line
+    continuations = (("pipeless-continuation-row", "#242 | #198 | lane 2", "malformed table row in {}"),
+                     ("trailing-pipe-only-continuation-row", "#242 | #198 | lane 2 |", "malformed table row in {}"),
+                     ("plain-text-line-after-the-last-row", "Plain text directly after the table.", "table row without pipes in {}"))
+    for label, key in QUEUE_FILES:
+        short = label.split("/")[-1].removesuffix(".md")
+        for form, line, reason in continuations:
+            add(f"{form}-after-the-dependency-table-in-{short}", "vision", {key: lambda t, line=line: after_line(t, last_dependency, line)}, reason.format(label))
+            add(f"{form}-after-the-non-prerequisite-table-in-{short}", "vision", {key: lambda t, line=line: after_line(t, last_non_prerequisite, line)}, reason.format(label))
+    for place, check, key, anchor in (("child-table-in-backlog", "backlog", "backlog.md", "| [B07]("), ("surface-table", "vision", "vision-reconciliation.md", "| S15 "),
+                                      ("decision-table", "vision", "decisions.md", "| O02 |"), ("parity-matrix", "parity", "parity/management.md", "| ST01 |")):
+        for form, line, reason in continuations:
+            add(f"{form}-in-the-{place}", check, {key: lambda t, line=line, anchor=anchor: after_line(t, anchor, line)}, reason.format(key))
     add("compact-lane-row-with-an-order-word", "vision",
         {"backlog.md": lambda t: t.replace("(retirement and replacement safeguard)", "(retirement and replacement safeguard, before #117)", 1).replace("| 4 Independent career stream | Real", "|4 Independent career stream|Real", 1)},
         "queue lane text in backlog.md states an order outside the canonical dependency table: before")
