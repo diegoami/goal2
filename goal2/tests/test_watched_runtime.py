@@ -18,17 +18,21 @@ from watched_evidence import IMAGES, verify_vendor
 from goal2.engine.original_match import Image, Match, Fixture
 from goal2.engine.original_match.assets import reference_image, AssetError, REFERENCE
 from goal2.game.state import from_savestate, to_savestate
+from goal2.tests import requires
 
 
 class RuntimeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        requires.require(**requires.WATCHED)
         cls.raw = reference_image(ROOT / ".cache")
         cls.image = Image.from_savestate(cls.raw)
 
+    @requires.need(archaeology=True)
     def test_all_ten_files_are_exact_accepted_source(self):
         self.assertEqual(verify_vendor(), 10)
 
+    @requires.need(archaeology=True)
     def test_changed_vendor_bytes_and_added_files_are_rejected(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

@@ -13,6 +13,7 @@ from goal2.game.watched_publication import WatchedPublication
 from goal2.game.watched_schema import LEGACY_ENGINE_ID,ENGINE_ID
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests.test_watched_adapter import direct
+from goal2.tests import requires
 
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE='9fb725ac914afabfdaa830198fc3a514c87c243f'
@@ -23,8 +24,8 @@ class LegacyCompatibilityTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.evidence=json.loads((ROOT/'docs/evidence/T51a-watched-kit.json').read_text())['legacy']
-        if not (FOLDER/'manifest.json').is_file():
-            raise RuntimeError('generate real historical saves first: python3 tools/export_watched_legacy.py --source '+SOURCE)
+        requires.require(**requires.WATCHED)
+        requires.require(generated={FOLDER.name+'/manifest.json':'python3 tools/export_watched_legacy.py --source '+SOURCE})
         cls.manifest=json.loads((FOLDER/'manifest.json').read_text())
         if cls.manifest!=cls.evidence:raise AssertionError('legacy input/output/source evidence differs')
 

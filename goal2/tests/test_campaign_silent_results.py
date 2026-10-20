@@ -15,8 +15,10 @@ from goal2.game.quick_match import begin_full_match
 from goal2.game.session_save import encode,decode,SessionSaveError
 from goal2.game.campaign_rounds import Scheduled,prepare,advance,validate_state
 from goal2.game.silent_results import SilentResolver
+from goal2.tests import requires
 ROOT=Path(__file__).resolve().parents[2]
 
+@requires.need(**requires.HALFTIME)
 class SilentRoundCases(unittest.TestCase):
     def setUp(self):
         self.folder=tempfile.TemporaryDirectory();self.addCleanup(self.folder.cleanup)

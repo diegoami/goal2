@@ -7,7 +7,9 @@ from goal2.game import campaign_pool as pool, campaign_energy
 from goal2.game.session_save import encode,decode
 from goal2.engine.quick_engine import LCG
 from goal2.tests import test_campaign_pool as cases
+from goal2.tests import requires
 
+@requires.need(**requires.HALFTIME)
 class PoolFlow(unittest.TestCase):
     setUp=cases.PoolCases.setUp
     # [designed] Reuse the real-data setup, without inheriting its test methods.

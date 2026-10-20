@@ -13,6 +13,7 @@ from goal2.engine.quick_engine import LCG
 from goal2.game.state import to_savestate
 from goal2.engine.savestate import Savestate
 from goal2.web.server import WebSession, StalePlaySubmission
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -79,6 +80,7 @@ class EnergyReferenceCases(unittest.TestCase):
             self.assertEqual(restored[:14] + restored[15:], r[:14] + r[15:])
 
 
+@requires.need(**requires.HALFTIME)
 class CampaignContinuations(unittest.TestCase):
     def setUp(self):
         self.session = WebSession.load(ROOT / '.cache/e010-r0008-halftime.sav', ROOT / '.cache/GOAL.DAT')
