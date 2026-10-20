@@ -159,26 +159,31 @@ are in **goal2**, distinct from the archaeology #248/#249 rows above. [designed:
 | — | Browse retained match summaries and assess saved-goal replay | [#251](https://github.com/diegoami/goal2/issues/251) | Retention audit first | Medium proposed | History-data audit; main-session triage |
 
 
-## Whole-game redesign decision package #253
+## Whole-game plan #253
 
-[designed: owner #253,2026-10-19] The [Country desk proposal](../redesign-253/README.md)
-compares complete desktop directions, original-information parity, technology options
-and a [prioritized rollout](../redesign-253/backlog.md). **Explicit owner direction
-approval is required before redesign implementation or any new child starts.**
-Documentation approval/merge and issue filing are not that approval. Existing
-independently authorized work keeps its own contracts; this proposed order does
+[designed: owner-approved queue, 2026-10-20] The [reconciled whole-game plan](../redesign-253/README.md)
+holds the parity inventory, capability boundaries and open owner choices for the
+accepted original-first desktop vision ([#266](https://github.com/diegoami/goal2/issues/266),
+[docs/vision-266](../vision-266/README.md)). The visual direction is decided and is not
+asked again; the earlier "Country desk" candidate is superseded history. The
+[queue below](../redesign-253/backlog.md#approved-queue-and-first-supported-session)
+is the owner-approved order, not a dispatch queue: each task keeps its own bounded preflight and
+the repository's implementer and reviewer choice, and **plan acceptance is not implementation
+approval**. Existing independently authorized work keeps its own contracts; this order does
 not stop, cancel or redirect T79/T84/T85 or other active scopes. GitHub labels own
 operational status.
 
-| Proposed order | Planning scope | Issue / dependency gate |
+| Lane | Planning scope | Issue / dependency gate |
 | --- | --- | --- |
-| 0 | Owner direction, backend/frontend/window and first-slice decisions | [O01–O12](../redesign-253/decisions.md); no migration authorized |
-| 1 | Native data/rendering/package proof, split into bounded preflights | [B01/#259](https://github.com/diegoami/goal2/issues/259); direction approval, accepted T79/T84/T85 as applicable |
-| 2a | New/load/country/manager/save onboarding | [B02/#260](https://github.com/diegoami/goal2/issues/260); B01 and current identity/roster preview; G05 complete profile is unowned |
-| 2b | Country desk and Team/Pool composition | [B03/#261](https://github.com/diegoami/goal2/issues/261); accepted #241/#242/#243/#198, #249 audit/display when available; G03/G05 unowned; #248 edits only when supported |
-| 2c | Preparation→match→result→campaign continuity | [B04/#262](https://github.com/diegoami/goal2/issues/262); B03, T79/T85, #251 audit/display when available; #250 capability only where supported |
-| 3 | Deeper management/campaign/intervention/archive information | Reuse [#248](https://github.com/diegoami/goal2/issues/248)–[#251](https://github.com/diegoami/goal2/issues/251) and T50–T59 within written bounds; O08–O12/G01–G05 remain unowned decisions |
-| 3a | Unowned Watch/scheduling/news/replay/profile capability decisions | [O08–O12 / G01–G05](../redesign-253/decisions.md#unowned-capability-decisions); separate scoped contracts and actual outcomes required before full parity; no task dispatch |
-| 3b | Assistant recommendation and editable identity contracts, then separately approved capabilities | [B06/#265](https://github.com/diegoami/goal2/issues/265); identity support before editable B02 naming, otherwise explicit current/default identity |
-| 4 | Local-manager contract, then separately approved capability | [B07/#264](https://github.com/diegoami/goal2/issues/264); original two-manager evidence; full parity still needs actual capability |
-| 5 | Independent parity and player-task release acceptance | [B05/#263](https://github.com/diegoami/goal2/issues/263); first coherent slice separately from full parity; B06/B07 contracts plus actual supported capabilities; unresolved categories need resolution or explicit owner exceptions |
+| 1 | Reconcile this plan; prepare bounded cloud slices | [#253](https://github.com/diegoami/goal2/issues/253); [#270](https://github.com/diegoami/goal2/issues/270) P0 cloud issue (referenced, not pre-split here); [#208](https://github.com/diegoami/goal2/issues/208)/[#268](https://github.com/diegoami/goal2/issues/268) keep their own tooling scope |
+| 2 | Native validation, complete cards/bars, Play/Watch and speed; consuming proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240), then [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243); [B01/#259](https://github.com/diegoami/goal2/issues/259) split proofs, no circular prerequisite |
+| 3a | Launch, Resume and safe new career | [B02/#260](https://github.com/diegoami/goal2/issues/260); relevant #259 proof; G05 complete profile and #265 identity are separate |
+| 3b | Original-style shell, Team and pool | [B03/#261](https://github.com/diegoami/goal2/issues/261) (split shell and Team/pool); #260 context, #198/#242/#243, #249 available information |
+| 3c | Preparation, maximum-pitch play, result and Continue | [B04/#262](https://github.com/diegoami/goal2/issues/262); #261 shell, #198/#243, renderer/focus proof; #250 only supported decisions |
+| 3d | First-slice acceptance oracles, started alongside 3a-3c | [B05/#263](https://github.com/diegoami/goal2/issues/263); first-slice acceptance is distinct from the 237-allocation full-parity gate |
+| 3e | Available fixtures, tables and opponents; retained-history browsing | [#249](https://github.com/diegoami/goal2/issues/249) available-information slice; [#251](https://github.com/diegoami/goal2/issues/251) after the base match journey |
+| 4 | Independent career stream | [#110](https://github.com/diegoami/goal2/issues/110) -> [#112](https://github.com/diegoami/goal2/issues/112) -> [#113](https://github.com/diegoami/goal2/issues/113) -> [#114](https://github.com/diegoami/goal2/issues/114) -> [#115](https://github.com/diegoami/goal2/issues/115) -> [#116](https://github.com/diegoami/goal2/issues/116) -> [#117](https://github.com/diegoami/goal2/issues/117) -> [#118](https://github.com/diegoami/goal2/issues/118) -> [#119](https://github.com/diegoami/goal2/issues/119); [#155](https://github.com/diegoami/goal2/issues/155) before #117; UI cosmetics are not a predecessor |
+| 5a | Supported decisions, retained records and replay | [#248](https://github.com/diegoami/goal2/issues/248), [#250](https://github.com/diegoami/goal2/issues/250), [#251](https://github.com/diegoami/goal2/issues/251) within their written bounds |
+| 5b | Assistant/identity and local-manager contracts | [B06/#265](https://github.com/diegoami/goal2/issues/265), [B07/#264](https://github.com/diegoami/goal2/issues/264): contracts only; actual delivery unowned |
+| 5c | Scope gaps with no delivery owner | [G01-G05, O13, O14](../redesign-253/decisions.md#unowned-capability-decisions): unowned, each needs a bounded contract before a full-parity claim; no task dispatch |
+| 6 | Full-parity acceptance | B05/#263 full-parity gate; actual supported capabilities for B06/B07 and G01-G05, or explicit owner-named exceptions |

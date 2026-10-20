@@ -1,100 +1,107 @@
 [
   {
     "key": "B01",
-    "title": "Prove native desktop delivery and choose the retained rendering path",
-    "priority": "P0 \u00b7 decision prerequisite",
+    "title": "Prove original-style desktop cards, rendering and packaged delivery in bounded slices",
+    "priority": "P1 \u00b7 bounded native proof",
     "size_risk": "M; high integration risk",
-    "dependencies": "O01 direction approval; O02/O03 technology/window assumptions; accepted #198/T79 and #242/T84 outcomes; T85 pacing when exercised.",
+    "dependencies": "Split cards/accessibility, renderer/focus and packaging/resource/save proofs before dispatch. Consume #198/#242/#243 evidence; those tasks must not depend on completing this whole umbrella. #270 enables the cloud fixture/runtime lane, not native Windows acceptance. Resolve window assumptions through measured proof; retain Python/Qt+SDL unless a failed requirement justifies a separately chosen alternative.",
     "contract": "backlog/B01.md",
     "issue": "https://github.com/diegoami/goal2/issues/259",
     "implementation_authorized": false,
     "owns": "Validation-only source/artifacts under a new owned evidence directory; packaging/launch recipe for the selected proof. No production UX rollout, new save schema, vendored engine or active T79/T84/T85 worktree changes.",
     "owned_areas": [
       "desktop-feasibility-evidence"
-    ]
+    ],
+    "lane": 2
   },
   {
     "key": "B02",
-    "title": "Add safe new-career, country selection and saved-career onboarding",
+    "title": "Add original-style launch, saved-career Resume and safe new-career setup",
     "priority": "P1 \u00b7 first coherent slice",
     "size_risk": "M; medium replacement/save risk",
-    "dependencies": "B01 selected desktop path; O01/O02 approval; existing country identity/roster preview; O12/G05 separately scoped full-profile projection if required; #249 audit/display when available for fixture/opponent context only; accepted country preview/session save and #242/T84 card. B06 contract and a later supported identity outcome precede editable manager-name acceptance. An incremental slice may retain the current/default manager identity with an explicit unavailable explanation; it cannot claim full naming or profile parity.",
+    "dependencies": "First-loop slice A. Reconcile the launch contract with #253 and the relevant bounded #259 proof, then use supported existing one-manager setup/save behavior. Complete profiles (G05) and editable manager identity (#265) are separately delivered; keep current/default identity explicit in the first slice.",
     "contract": "backlog/B02.md",
     "issue": "https://github.com/diegoami/goal2/issues/260",
     "implementation_authorized": false,
     "owns": "Desktop launch/setup/save presentation and minimal existing DesktopModel entry hooks; atomic writer/loader remain authoritative. No generation, RNG, save-schema or campaign-rule changes.",
     "owned_areas": [
       "session-onboarding-ui"
-    ]
+    ],
+    "lane": 3
   },
   {
     "key": "B03",
-    "title": "Compose the Country desk and a shared management workspace",
+    "title": "Compose the original-style management shell, Team and pool workspace",
     "priority": "P1 \u00b7 first coherent slice",
     "size_risk": "L; split shell/Team composition before dispatch if independently useful",
-    "dependencies": "B01/B02; accepted #241/#198/#242/#243; #249 audit/display when available for stored fixture/group/opponent context; O10/G03 bulletin and O12/G05 profile/history delivery remain unowned; owner-approved direction. #248 accepted outcomes are required before its editable personal-role/mark controls appear; an initial read-only composition can precede them.",
+    "dependencies": "Split shared shell and Team/pool composition before dispatch. Consume #260 launch context and accepted #198/#242/#243 foundations; use #249 available-data projections. Read-only composition can precede #248 edits and G03/G05 delivery.",
     "contract": "backlog/B03.md",
     "issue": "https://github.com/diegoami/goal2/issues/261",
     "implementation_authorized": false,
     "owns": "Desktop shared shell/navigation/style and page COMPOSITION only, after dependencies are accepted. Do not change attribute decoding, table default/expanded contract, pool policy, campaign rules, match controller or renderer protocols.",
     "owned_areas": [
       "shell-management-composition"
-    ]
+    ],
+    "lane": 3
   },
   {
     "key": "B04",
-    "title": "Compose preparation, match handoff and results into one clear journey",
+    "title": "Compose match preparation, maximum-pitch play and result/Continue",
     "priority": "P1 \u00b7 complete first end-to-end slice",
     "size_risk": "M\u2013L; medium lifecycle/focus risk",
-    "dependencies": "B01 O03 window choice; accepted #198/#243; B03 shared shell; existing latest result plus #251 audit/display when available for retained summaries only; G01/G04 new capabilities remain unowned; #250 only for supported interventions.",
+    "dependencies": "First-loop slice C after the shared shell of #261, accepted #198/#243 and the relevant renderer/focus proof in #259. #250 contributes supported decisions when available, not fabricated controls; #251 contributes retained-summary browsing later. Do not introduce a #251 <-> #262 cycle.",
     "contract": "backlog/B04.md",
     "issue": "https://github.com/diegoami/goal2/issues/262",
     "implementation_authorized": false,
     "owns": "Desktop Match centre composition and minimal existing window handoff/return hooks. #198 owns current visual renderer; #243 owns entry/speed; #250 owns interaction support; #251 owns retained-result/archive data. No new engine command, alternate runner, premature publication or mid-match save.",
     "owned_areas": [
       "match-journey-composition"
-    ]
+    ],
+    "lane": 3
   },
   {
     "key": "B05",
-    "title": "Validate the selected redesign against original parity and complete player tasks",
-    "priority": "P2 \u00b7 release acceptance gate",
-    "size_risk": "M; medium evidence/usability risk",
-    "dependencies": "Owner-approved direction; B02/B03/B04; #248/#249/#250/#251 delivered bounded scopes only; O08\u2013O12/G01\u2013G05 have no capability owner and require separately approved scoped contracts plus actual outcomes before full parity; B07 contract AND its later separately approved multiplayer capability resolution for full parity. All required unowned/deferred categories must acquire an approved scope and supported outcome or receive an explicit named owner parity exception; neither exists in this proposal; the B07 contract alone cannot complete multiplayer parity. B06 contract AND its later supported assistant/identity capability resolution are also full-parity prerequisites.",
+    "title": "Validate the first original-style session and track the full-parity gate",
+    "priority": "P1 \u00b7 first-slice acceptance",
+    "size_risk": "later full-parity gate; M; medium evidence/usability risk",
+    "dependencies": "Start bounded first-slice oracles with #260/#261/#262, after defining their contracts; do not wait for all full-parity features to begin validation. Supported-session acceptance and 237-allocation full parity are distinct gates. Full parity still needs G01-G05, #248/#250/#251 and the delivered capabilities beyond #264/#265 contracts.",
     "contract": "backlog/B05.md",
     "issue": "https://github.com/diegoami/goal2/issues/263",
     "implementation_authorized": false,
     "owns": "Task-owned validation scenarios, usability protocol/evidence and final release-readiness documentation. No opportunistic UI/engine fixes; defects get scoped issues and exact-head reruns.",
     "owned_areas": [
       "redesign-acceptance-evidence"
-    ]
+    ],
+    "lane": 3
   },
   {
     "key": "B06",
-    "title": "Scope assistant squad recommendations and editable manager/player identities",
+    "title": "Scope assistant squad recommendations and editable identities",
     "priority": "P2 \u00b7 full-parity support prerequisite",
-    "size_risk": "S\u2013M planning contract; medium identity/persistence risk",
-    "dependencies": "Owner-approved direction; accepted #242/T84 fields, existing squad/pool/eligibility and versioned session/save boundaries; coordinate #248's role/tactic edits without duplicating them.",
+    "size_risk": "S\u2013M read-only audit/contract, medium identity/persistence risk",
+    "dependencies": "After #242/shared full-ID player data. Scope assistant recommendations and editable identities separately, coordinate #248, then require supported persistence/algorithm evidence before later feature delivery.",
     "contract": "backlog/B06.md",
     "issue": "https://github.com/diegoami/goal2/issues/265",
     "implementation_authorized": false,
     "owns": "Capability/evidence contract only for assistant recommendations and editable identities; no engine, UI, original-data write or save migration.",
     "owned_areas": [
       "assistant-identity-capability-contract"
-    ]
+    ],
+    "lane": 5
   },
   {
     "key": "B07",
     "title": "Scope original local-manager ownership, persistence and handoffs",
-    "priority": "P3 \u00b7 explicit full-parity dependency",
+    "priority": "P2 \u00b7 explicit full-parity dependency",
     "size_risk": "S\u2013M planning contract; high later implementation risk",
-    "dependencies": "Owner direction/priority approval; existing P7 intent; source E031 two-manager evidence; single-manager campaign/save audit.",
+    "dependencies": "Later full-parity contract after the first supported loop. Audit local manager ownership/save/shared-fixture handoff before any multiplayer UI or schema migration. Contract completion is not multiplayer delivery.",
     "contract": "backlog/B07.md",
     "issue": "https://github.com/diegoami/goal2/issues/264",
     "implementation_authorized": false,
     "owns": "Capability design/evidence and future contract docs only. No multiplayer UI enablement, session-schema migration, engine rewrite or automatic task dispatch.",
     "owned_areas": [
       "multimanager-capability-contract"
-    ]
+    ],
+    "lane": 5
   }
 ]

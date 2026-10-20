@@ -1,0 +1,148 @@
+{
+  "evidence": "[confirmed: GitHub REST read, 2026-10-20] live amended bodies of #259-#265 mirrored into docs/redesign-253/backlog/; no issue was edited, closed or relabelled by this package",
+  "mirrored": [
+    {
+      "key": "B01",
+      "issue": 259,
+      "url": "https://github.com/diegoami/goal2/issues/259",
+      "title": "Prove original-style desktop cards, rendering and packaged delivery in bounded slices",
+      "updated_at": "2026-10-20T10:00:44Z",
+      "labels": [
+        "area:cloud",
+        "area:ui",
+        "difficulty:hard",
+        "enhancement",
+        "priority:P1",
+        "task"
+      ],
+      "milestone": "Playable original-style session",
+      "live_body_sha256": "f18f0c4f902a316ddeae545535bdd1101b6cd5909c0852c3ede6b330233f893c",
+      "local_file": "docs/redesign-253/backlog/B01.md"
+    },
+    {
+      "key": "B02",
+      "issue": 260,
+      "url": "https://github.com/diegoami/goal2/issues/260",
+      "title": "Add original-style launch, saved-career Resume and safe new-career setup",
+      "updated_at": "2026-10-20T10:00:46Z",
+      "labels": [
+        "area:ui",
+        "difficulty:medium",
+        "enhancement",
+        "priority:P1",
+        "task"
+      ],
+      "milestone": "Playable original-style session",
+      "live_body_sha256": "1af09b32a1f0962e75b88eee4ac226d219a01da87b8101c07b817bf2ffb7250a",
+      "local_file": "docs/redesign-253/backlog/B02.md"
+    },
+    {
+      "key": "B03",
+      "issue": 261,
+      "url": "https://github.com/diegoami/goal2/issues/261",
+      "title": "Compose the original-style management shell, Team and pool workspace",
+      "updated_at": "2026-10-20T10:00:48Z",
+      "labels": [
+        "area:ui",
+        "difficulty:hard",
+        "enhancement",
+        "priority:P1",
+        "task"
+      ],
+      "milestone": "Playable original-style session",
+      "live_body_sha256": "151385323d058ebd9502c084ed53d39df6e6dc84349e7eb61b920164af8821b9",
+      "local_file": "docs/redesign-253/backlog/B03.md"
+    },
+    {
+      "key": "B04",
+      "issue": 262,
+      "url": "https://github.com/diegoami/goal2/issues/262",
+      "title": "Compose match preparation, maximum-pitch play and result/Continue",
+      "updated_at": "2026-10-20T10:00:50Z",
+      "labels": [
+        "area:ui",
+        "difficulty:hard",
+        "enhancement",
+        "priority:P1",
+        "task"
+      ],
+      "milestone": "Playable original-style session",
+      "live_body_sha256": "0851fd69ce9520325c1e6e8759c82b822aa955dec5efc9f994da5a1d7598f7b1",
+      "local_file": "docs/redesign-253/backlog/B04.md"
+    },
+    {
+      "key": "B05",
+      "issue": 263,
+      "url": "https://github.com/diegoami/goal2/issues/263",
+      "title": "Validate the first original-style session and track the full-parity gate",
+      "updated_at": "2026-10-20T10:00:54Z",
+      "labels": [
+        "area:tooling",
+        "area:ui",
+        "difficulty:hard",
+        "enhancement",
+        "priority:P1",
+        "task"
+      ],
+      "milestone": "Playable original-style session",
+      "live_body_sha256": "736df4ca4240d6a8e61ee5ba61d2907f121b135b43e1527c03b7b62ae4f02233",
+      "local_file": "docs/redesign-253/backlog/B05.md"
+    },
+    {
+      "key": "B06",
+      "issue": 265,
+      "url": "https://github.com/diegoami/goal2/issues/265",
+      "title": "Scope assistant squad recommendations and editable identities",
+      "updated_at": "2026-10-20T10:01:22Z",
+      "labels": [
+        "area:career",
+        "area:ui",
+        "difficulty:medium",
+        "enhancement",
+        "post-playable",
+        "priority:P2",
+        "task"
+      ],
+      "milestone": "Original information/decision parity",
+      "live_body_sha256": "ff9d081b13e905c8f0a99f2f4130b18efbeb303bcbb7ecc0a480f7fd1df88a75",
+      "local_file": "docs/redesign-253/backlog/B06.md"
+    },
+    {
+      "key": "B07",
+      "issue": 264,
+      "url": "https://github.com/diegoami/goal2/issues/264",
+      "title": "Scope original local-manager ownership, persistence and handoffs",
+      "updated_at": "2026-10-20T10:01:20Z",
+      "labels": [
+        "area:career",
+        "difficulty:medium",
+        "enhancement",
+        "post-playable",
+        "priority:P2",
+        "task"
+      ],
+      "milestone": "Original information/decision parity",
+      "live_body_sha256": "aed16d4fcb28d8bbfe8883a91f2e1cb953081987b73ffa088431e4b75d9e8656",
+      "local_file": "docs/redesign-253/backlog/B07.md"
+    }
+  ],
+  "referenced": [
+    {
+      "issue": 270,
+      "url": "https://github.com/diegoami/goal2/issues/270",
+      "title": "Cloud development: deterministic engine mocks, runtime bootstrap and minimal resource inventory",
+      "updated_at": "2026-10-20T10:00:35Z",
+      "labels": [
+        "area:cloud",
+        "difficulty:hard",
+        "enhancement",
+        "priority:P0",
+        "task"
+      ],
+      "milestone": "Cloud-ready development",
+      "live_body_sha256": "94b13d4b69f815c3c016446a0c86cb7d17100db4cde4dde6be5bd29cac9f2c58",
+      "mirrored": false,
+      "note": "referenced only; #270 is its own P0 cloud issue and is neither implemented nor pre-split here"
+    }
+  ]
+}
