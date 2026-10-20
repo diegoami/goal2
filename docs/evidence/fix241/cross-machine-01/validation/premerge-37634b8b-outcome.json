@@ -1,9 +1,0 @@
-{
-  "head": "37634b8b398f9e60e9ad7677999e40cb70a230a0",
-  "result": "PASS",
-  "exit": 0,
-  "unit": "goal2r-fix241-handoff-premerge.service",
-  "invocation": "59b83df36d9e4b0c88ae2f7661fbf5df",
-  "log_sha256": "61d2799a1a4ec023da8436bf902545d91bf62b6c9cec99a380b44a07178cf735",
-  "claim": "Exact-head premerge ran at this predecessor; final subsequent evidence-only geometry-script/log collection did not rerun long checks. Main must validate final accepted review head."
-}

@@ -1,8 +1,0 @@
-[designed: #181] Retained Qt-free desktop suite, captured terminal result.
-$ python3 -B -m unittest goal2.tests.test_desktop_model goal2.tests.test_desktop_entry goal2.tests.test_desktop_pool goal2.tests.test_desktop_quick_jobs -v
-Ran 19 tests in 18.809s
-OK
-
-Local fixture SHA-256 (original bytes remain ignored):
-.cache/e010-r0008-halftime.sav ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949
-.cache/GOAL.DAT bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca

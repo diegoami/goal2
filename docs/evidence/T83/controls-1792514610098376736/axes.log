@@ -1,0 +1,14 @@
+test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding) ... ERROR
+
+======================================================================
+ERROR: test_independent_axes_team_labels_ball_movement_half_and_rebinding (goal2.tests.test_pygame_pitch_view.PitchPixels.test_independent_axes_team_labels_ball_movement_half_and_rebinding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_pygame_pitch_view.py", line 42, in setUp
+    import pygame
+ModuleNotFoundError: No module named 'pygame'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

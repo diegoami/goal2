@@ -1,3 +1,0 @@
-Traceback (most recent call last):
-  File "<string>", line 16, in <module>
-AssertionError: Halftime: 0 substitutions selected. No re-entry. Saving is unavailable until full time; cancel preserves the previous game.

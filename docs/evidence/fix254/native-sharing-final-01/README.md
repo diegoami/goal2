@@ -1,3 +1,0 @@
-# Final-source real Windows sharing regression
-
-[confirmed: actual native report and independently rehashed receipt] Source88a0407e. The production controller read path and actual writer pass three deliberately held-reader interleavings plus2000concurrent production writes/controller polls, with complete snapshot validation and owned writer/handle cleanup. All181source files and six protected launcher/save files match; protected before/after agree. This resource-free native regression is separate from full original-match UI acceptance. Earlier real failing/reverted sharing controls remain retained.

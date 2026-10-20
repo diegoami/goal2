@@ -1,6 +1,0 @@
-test_partial_startup_allocation_cleanup_and_retry_preserve_save (goal2.tests.test_pygame_match_view.PresentationTests.test_partial_startup_allocation_cleanup_and_retry_preserve_save) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 3.602s
-
-OK

@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/.cache/main-native-proof-check.py", line 128, in <module>
-    args=parser.parse_args();print(json.dumps(audit(json.loads(Path(args.config).read_text()),args.expected_receipt_sha256),indent=2))
-                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/diego/projects/goal2-work/fix236-windows-viewer-sharing/.cache/main-native-proof-check.py", line 71, in audit
-    assert sha(safe(evidence,name))==want,('native artifact differs',name)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: ('native artifact differs', 'observations/scale-2/qt-complete-2.png')

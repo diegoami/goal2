@@ -4,12 +4,11 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+node_modules/
 
-# DOSBox-X savestates (rule 19)
+# The original game's bytes stay out (CLAUDE.md rule 14, docs/artifacts.md)
 *.sav
 *.g2save
 
-
-# Implementation notes (per docs/running-notes.md)
+# Scratch notes
 RUN-NOTES.md
-

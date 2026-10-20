@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/diego/projects/goal2-work/T66-pygame-match-view/docs/evidence/T66/negative_controls.py", line 55, in <module>
-    if __name__=='__main__':main()
-                            ^^^^^^
-  File "/home/diego/projects/goal2-work/T66-pygame-match-view/docs/evidence/T66/negative_controls.py", line 47, in main
-    if not intended:raise AssertionError(f'{name} did not produce intended assertion failure; inspect retained log')
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: once-publication did not produce intended assertion failure; inspect retained log

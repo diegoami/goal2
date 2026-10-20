@@ -1,8 +1,0 @@
-{
-  "result": "NOT_RUN",
-  "stage": "protected-file inventory, before archive/Qt execution",
-  "reason": "Main stopped overbroad entire Windows project traversal; replaced with explicit accepted original/save folders and both launcher hashes. No app window started or source copied.",
-  "old_runner_sha256": "ded82014b803869028ed8d06533bb2b6941be60eb4f152f7a6cb0ba0b8f9c5ba",
-  "owned_unit": "goal2-main-fix241-windows-01.service",
-  "stopped": true
-}

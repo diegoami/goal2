@@ -16,18 +16,21 @@ tracked files with those extensions.
 
 ## The Google Drive folder
 
-Configured in `harness.json`:
+[The folder](https://drive.google.com/drive/folders/1svRkGxtpasuTbwFuNU2NAHyU10Ac8KUU) is private
+to the owner. Its location is in `artifacts.json`:
 
 ```json
-"artifacts": {
-  "localDir": ".cache",
-  "drive": { "folderUrl": "<the folder's share link>", "rcloneRemote": "<remote>:<path>" }
-}
+{ "localDir": ".cache",
+  "drive": { "folderUrl": "https://drive.google.com/drive/folders/1svRkGxtpasuTbwFuNU2NAHyU10Ac8KUU",
+             "rcloneRemote": "goal2drive:" } }
 ```
 
-- To download by hand: open `folderUrl` and save the files into `.cache/`.
-- With [rclone](https://rclone.org) (`rclone config`, a remote of type `drive`, once per machine):
-  `python3 tools/artifacts.py pull` copies the folder into `.cache/`; `pull GOAL.DAT` one file;
-  `push .cache/<file>` uploads one; `where` prints the configured location.
-- In a cloud session, configure rclone from a token kept in the environment (never committed), or
-  pull by hand and upload into the session.
+- By hand: open the folder and save the files into `.cache/`.
+- With [rclone](https://rclone.org), once per machine (a browser login; the remote sees only this
+  folder):
+  `rclone config create goal2drive drive scope=drive root_folder_id=1svRkGxtpasuTbwFuNU2NAHyU10Ac8KUU`.
+  Then `python3 tools/artifacts.py pull` copies the folder into `.cache/`, `pull GOAL.DAT` one
+  file, `push .cache/<file>` uploads one, and `where` prints the location.
+- In a cloud session: run `rclone config create` there with `config_token=<token>` taken from a
+  configured machine (`rclone config show goal2drive`), kept in a secret, never committed; or pull
+  by hand and upload into the session.

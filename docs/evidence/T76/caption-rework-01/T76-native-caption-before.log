@@ -1,6 +1,0 @@
-[{"text": "Confirm management", "widget": [154, 42], "contents": [132, 36], "font_advance": 135, "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0", "ratio": 2.0}, {"text": "Discard draft", "widget": [97, 42], "contents": [75, 36], "font_advance": 79, "font": "Segoe UI,-1,14,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0", "ratio": 2.0}]
-Traceback (most recent call last):
-  File "C:\Users\diego\projects\goal2-exe\.goal2-validation\T76-caption-before-1792346408385594072\probe.py", line 14, in <module>
-    print(json.dumps(rows));w.close();assert all(r['font_advance']<=r['contents'][0] for r in rows),'focused footer caption clipped'
-                                             ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: focused footer caption clipped

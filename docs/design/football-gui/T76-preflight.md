@@ -1,6 +1,6 @@
 # T76 concrete acceptance details
 
-[designed: T76; derived: main planning evidence](../../evidence/T76/preflight/README.md)
+designed: T76; derived: main planning evidence (`../../evidence/T76/preflight/README.md`, removed 2026-10-20; on branch `local`)
 These requirements pin the existing task; planning mocks are not implementation
 acceptance. Source baseline is accepted `f1697ef628508ac19130299194d751990ca7fa9e`.
 

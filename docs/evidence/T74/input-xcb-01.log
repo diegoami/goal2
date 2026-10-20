@@ -1,2 +1,0 @@
-PASS shell: 62 real navigation transitions; state/draft/preview/save/job invariants; 15 captures; actual ratio 1.0
-PASS shell: 42 real navigation transitions; state/draft/preview/save/job invariants; 5 captures; actual ratio 2.0

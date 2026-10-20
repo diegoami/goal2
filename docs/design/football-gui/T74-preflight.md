@@ -12,13 +12,13 @@
 
 [confirmed: planning receipts] The baseline actual ManagementWindow lacks five-page navigation. A runtime-only mock around that same window/controls passes five mouse and five shortcut/focus transitions with state/draft/preview/save/job invariants. A runtime page-refresh mutant fails the intended dirty-draft assertion. The same mock passes native Windows ratios1 and2. These are mechanical feasibility checks, not T74 style/sizing acceptance. The first Linux mock lacked stable active-window focus timing; its partial receipt is preserved and not counted as proof. Explicit offscreen/window settling corrected setup without weakening assertions or editing product source.
 
-- [Linux final baseline/mock receipt](../../evidence/T74/preflight/linux-02.json)
-- [Linux partial focus-setup receipt](../../evidence/T74/preflight/linux-partial-01.json)
-- [Windows100% mock log](../../evidence/T74/preflight/windows-1.log)
-- [Windows200% mock log](../../evidence/T74/preflight/windows-2.log)
-- [Actual Windows100% metadata](../../evidence/T74/preflight/windows-metadata-1.json)
-- [Actual Windows200% metadata](../../evidence/T74/preflight/windows-metadata-2.json)
-- [Initial WSL scale projection](../../evidence/T74/preflight/scale-env-01.json)
-- [Corrected native scale projection](../../evidence/T74/preflight/scale-env-02.json)
+- Linux final baseline/mock receipt (`../../evidence/T74/preflight/linux-02.json`, removed 2026-10-20; on branch `local`)
+- Linux partial focus-setup receipt (`../../evidence/T74/preflight/linux-partial-01.json`, removed 2026-10-20; on branch `local`)
+- Windows100% mock log (`../../evidence/T74/preflight/windows-1.log`, removed 2026-10-20; on branch `local`)
+- Windows200% mock log (`../../evidence/T74/preflight/windows-2.log`, removed 2026-10-20; on branch `local`)
+- Actual Windows100% metadata (`../../evidence/T74/preflight/windows-metadata-1.json`, removed 2026-10-20; on branch `local`)
+- Actual Windows200% metadata (`../../evidence/T74/preflight/windows-metadata-2.json`, removed 2026-10-20; on branch `local`)
+- Initial WSL scale projection (`../../evidence/T74/preflight/scale-env-01.json`, removed 2026-10-20; on branch `local`)
+- Corrected native scale projection (`../../evidence/T74/preflight/scale-env-02.json`, removed 2026-10-20; on branch `local`)
 
 [derived: source hashes in receipts] Window/model bytes were unchanged at accepted354e8e7. The code-shaped mock was executed from main's ignored verification tools; it is not an application shell or an unconditional acceptance stub. Original templates/data stayed ignored; receipts contain only rebuild observations and hashes. Final implementation must satisfy every task line on its own real shell, including Windows sizes/focus/scaling, retained workers and exact-head validation.

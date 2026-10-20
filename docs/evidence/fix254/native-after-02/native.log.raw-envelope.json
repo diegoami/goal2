@@ -1,5 +1,0 @@
-{
-  "encoding": "utf-8",
-  "sha256": "ee2f95ff99286328a379265dbb8035cdf69d9b1b1f36968f7e0478cab71d1875",
-  "text": "PASS native status sharing: three real controller-read/atomic-writer interleaves, complete snapshots, handles closed and writers reaped\r\n"
-}

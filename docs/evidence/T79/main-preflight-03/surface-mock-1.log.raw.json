@@ -1,6 +1,0 @@
-{
-  "encoding": "utf-8",
-  "raw_sha256": "e823226f54cc042db576f114709e876602157606e9fe4c839631374f21f635d3",
-  "raw_utf8": "PASS T79 MOCK-ONLY real SDL planning surface; read-only synthetic packets; shared palette; pinned source-order text and geometry\r\n",
-  "derived_lf_file": "surface-mock-1.log"
-}

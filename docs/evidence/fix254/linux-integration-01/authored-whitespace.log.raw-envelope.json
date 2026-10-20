@@ -1,5 +1,0 @@
-{
-  "encoding": "utf-8",
-  "sha256": "0d812c04e79b5794e018d9de26547fecea94732e0a4355870af9515068cd91e9",
-  "text": "docs/evidence/fix254/ownership-controls-01/descriptor.log:1: trailing whitespace.\n+test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) ... \ndocs/evidence/fix254/ownership-controls-01/raw-handle.log:1: trailing whitespace.\n+test_native_handle_bridge_failure_closes_only_the_current_owner (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_handle_bridge_failure_closes_only_the_current_owner) ... \ndocs/evidence/fix254/ownership-controls-01/rename-handle.log:1: trailing whitespace.\n+test_native_rename_encodes_target_and_closes_only_an_acquired_handle (goal2.tests.test_desktop_watched_sharing.SharingTests.test_native_rename_encodes_target_and_closes_only_an_acquired_handle) ... \n"
-}

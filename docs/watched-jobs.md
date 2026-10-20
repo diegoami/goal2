@@ -60,4 +60,4 @@ The suite compares real seeds 257 and 70 for countries7/19, fixture21/year0,
 captain0, no requested substitutions, delay0 and draw recording enabled. It checks
 the complete synchronous result, ordered events, Memory and both seeds, and prints
 measured worker time without a hardware-dependent performance assertion. Retained
-attempts and controls are under [task evidence](evidence/T65/).
+attempts and controls are under task evidence (`evidence/T65/`, removed 2026-10-20; on branch `local`).

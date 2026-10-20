@@ -1,5 +1,0 @@
-usage: redesign.py [-h] --scenario {shell,overview} --template TEMPLATE --data
-                   DATA --evidence-dir EVIDENCE_DIR [--single-scale]
-                   [--negative-controls]
-                   [--surface-input-control {wrong-focus,country-change}]
-redesign.py: error: argument --scenario: invalid choice: 'results' (choose from shell, overview)

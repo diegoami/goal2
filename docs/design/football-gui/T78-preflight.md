@@ -1,6 +1,6 @@
 # T78 concrete acceptance details
 
-[designed: T78; derived: main planning evidence](../../evidence/T78/preflight/README.md)
+designed: T78; derived: main planning evidence (`../../evidence/T78/preflight/README.md`, removed 2026-10-20; on branch `local`)
 Planning is not implementation acceptance. The product baseline is accepted
 `f1697ef628508ac19130299194d751990ca7fa9e`; the T76 task amendment changes docs only.
 

@@ -1,7 +1,0 @@
-test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation (goal2.tests.test_desktop_watched_sharing.SharingTests.test_partial_startup_failure_retains_folder_and_retry_cleans_before_new_allocation) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.013s
-
-OK
-{"result": "CONFIRMED TEST FIXTURE COVERAGE GAP", "test_nominally_passed": true, "actual_unintended_startup_exceptions": ["'types.SimpleNamespace' object has no attribute 'executable'", "'types.SimpleNamespace' object has no attribute 'executable'"], "claim": "launch/engine cases encounter missing mock sys.executable instead of intended Popen/engine failure"}

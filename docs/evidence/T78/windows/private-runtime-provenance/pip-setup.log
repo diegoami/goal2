@@ -1,9 +1,0 @@
-Collecting unicorn==2.1.4
-  Downloading unicorn-2.1.4-cp37-abi3-win_amd64.whl.metadata (4.3 kB)
-Downloading unicorn-2.1.4-cp37-abi3-win_amd64.whl (15.9 MB)
-   ---------------------------------------- 15.9/15.9 MB 65.1 MB/s  0:00:00
-Saved c:\users\diego\projects\goal2-exe\.goal2-validation\t78-runtime-unicorn214-1792344046090252984\wheels\unicorn-2.1.4-cp37-abi3-win_amd64.whl
-Successfully downloaded unicorn
-Processing C:\Users\diego\projects\goal2-exe\.goal2-validation\T78-runtime-unicorn214-1792344046090252984\wheels\unicorn-2.1.4-cp37-abi3-win_amd64.whl
-Installing collected packages: unicorn
-Successfully installed unicorn-2.1.4

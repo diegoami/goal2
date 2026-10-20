@@ -1,5 +1,0 @@
-{
-  "encoding": "utf-8",
-  "sha256": "7da6ba9fed375b1a1b08a88a4373cb8421e99e8a6647bdb71a6a17974dbea983",
-  "text": "{\n  \"script\": \"/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-replace-matrix-1792406905621202541/matrix.py\",\n  \"source\": \"/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-after01-1792406753945618392\",\n  \"output\": \"/mnt/c/Users/diego/projects/goal2-exe/.goal2-validation/fix254-replace-matrix-1792406905621202541/observations\",\n  \"windows_script\": \"C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\fix254-replace-matrix-1792406905621202541\\\\matrix.py\",\n  \"windows_source\": \"C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\fix254-after01-1792406753945618392\",\n  \"windows_output\": \"C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\fix254-replace-matrix-1792406905621202541\\\\observations\",\n  \"script_sha256\": \"f3dfdc64cbb32dac83fd8985b4cec1e54d935dc9c15d1684b7a66e1a32fccd61\"\n}\n"
-}

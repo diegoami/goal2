@@ -232,7 +232,7 @@ to500ms after child reaping and stream closure. Permanent or unrelated errors
 propagate. Failed teardown retains references for retry and keeps its pending
 match lock; a completed old viewer never releases a newer job's lock.
 
-See [T66 evidence](evidence/T66/README.md) for retained text-mode checks and
+See T66 evidence (`evidence/T66/README.md`, removed 2026-10-20; on branch `local`) for retained text-mode checks and
 [T83 evidence](evidence/T83/README.md) for animated pitch display acceptance.
 
 ```sh
@@ -298,6 +298,6 @@ python3 tools/desktop-ui/redesign.py --scenario results --template .cache/e010-r
 [derived: evidence/T78/README.md] The retained Windows proof runs this scenario
 at measured 100%/200% with Qt 6.12.0 and the declared optional Unicorn 2.1.4 runtime
 in a private validation directory. Host bootstrap and missing-runtime failures
-are preserved alongside the final passing proof in [T78 evidence](evidence/T78/README.md).
+are preserved alongside the final passing proof in T78 evidence (`evidence/T78/README.md`, removed 2026-10-20; on branch `local`).
 Those setup corrections leave product code and the existing Windows environment
 unchanged; dependency provenance is recorded without committing package bytes.

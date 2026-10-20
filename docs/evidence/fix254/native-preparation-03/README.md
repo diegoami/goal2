@@ -1,5 +1,0 @@
-# Timing and remaining validation preparation
-
-[designed: #254] The Qt2x timing diagnostic transparently records actual status open/read/close, viewer status-write, controller poll/start and Qt heartbeat timings. It preserves actual bytes/results/errors and all original checks, including gap<1second, mode, parity, frame/complete ACKs and cleanup. It runs only Qt2x to locate the already-observed pause; it cannot establish complete two-scale acceptance. Product source is unchanged.
-
-[confirmed: main syntax checks] These helpers compile. They have not executed at this checkpoint: the read-only native proof checker and synthetic tampering controls require a real passing original receipt with an independently supplied anchor; Linux integration requires its own serial private X11/D-Bus run. Preparation is not execution, native acceptance or independent review. Keep source-mutating controls and every source reader serial within each checkout. Native launches retain hash guards and protected files; Linux helpers retain owned display cleanup.

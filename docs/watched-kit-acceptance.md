@@ -297,7 +297,7 @@ The focused publication/save commands pass6/5 tests, and the complete Python
 suite passes473 tests with no skips. All12 publication/save mutation controls,
 all6 browser scenarios and both retained Qt flows pass. Commands, durations,
 log digests, baseline failures and scope are recorded in
-[evidence/T64-watched-publication.json](evidence/T64-watched-publication.json).
+`evidence/T64-watched-publication.json` (removed 2026-10-20; on branch `local`).
 
 ## Kit2 friendly application compatibility
 
@@ -370,8 +370,8 @@ shoot-out or player-energy values are changed only in the resumed result.
 
 [designed: T51a] The bounded evidence is split to keep each report readable:
 [source/legacy/owner-budget inputs](evidence/T51a-watched-kit.json),
-[commands and negative controls](evidence/T51a-watched-validation.json), and
-[stamp/save/strict-record matrices and snapshot diagnosis](evidence/T51a-watched-matrices.json).
+commands and negative controls (`evidence/T51a-watched-validation.json`, removed 2026-10-20; on branch `local`), and
+stamp/save/strict-record matrices and snapshot diagnosis (`evidence/T51a-watched-matrices.json`, removed 2026-10-20; on branch `local`).
 The first full-run failure and both source-pin diagnostics remain in these
 reports; the corrected fresh full-suite result is recorded separately.
 

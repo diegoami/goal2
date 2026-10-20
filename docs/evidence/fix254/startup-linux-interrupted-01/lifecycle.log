@@ -1,3 +1,0 @@
-test_acceptance_exception_restores_complete_import_path (goal2.tests.test_pygame_match_view.AcceptanceImportContextTests.test_acceptance_exception_restores_complete_import_path) ... ok
-test_direct_acceptance_load_restores_complete_import_path (goal2.tests.test_pygame_match_view.AcceptanceImportContextTests.test_direct_acceptance_load_restores_complete_import_path) ... ok
-test_original_qt_save_resume_repeat (goal2.tests.test_pygame_match_view.OriginalQtAcceptance.test_original_qt_save_resume_repeat) ...

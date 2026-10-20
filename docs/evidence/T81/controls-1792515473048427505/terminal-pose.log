@@ -1,0 +1,15 @@
+test_half_selector_and_terminal_boundaries (goal2.tests.test_pitch_observation.ProjectionTests.test_half_selector_and_terminal_boundaries) ... FAIL
+
+======================================================================
+FAIL: test_half_selector_and_terminal_boundaries (goal2.tests.test_pitch_observation.ProjectionTests.test_half_selector_and_terminal_boundaries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_pitch_observation.py", line 55, in test_half_selector_and_terminal_boundaries
+    self.assertEqual(probe.observe_boundary(event), expected, 'completed pitch boundary')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True != False : completed pitch boundary
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

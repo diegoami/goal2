@@ -11,7 +11,7 @@
 | Visual inspection | Open all nineteen rendered targets, including both actual 900×640 panes. Compare with the original squad/pool, tactics, history, summary and career references. Check type/overlap, five descriptor slots, decision tradeoffs, colors/team legend, records, context, navigation and restore handles. Static images do not prove native geometry, focus, scroll or scaling. |
 | `python3 tools/check_links.py` / `git diff --check` | Repository-relative targets exist, JSON parses and whitespace checks pass. External immutable GitHub links are references, not locally validated links. |
 
-[designed: reviewer setup] The earlier independent Claude review could regenerate the illustrations after installing Inkscape, but its full premerge stopped at missing guard dependencies. Each fresh review checkout needs the setup explicitly prescribed by [the repository environment instructions](../environment.md):
+[designed: reviewer setup] The earlier independent Claude review could regenerate the illustrations after installing Inkscape, but its full premerge stopped at missing guard dependencies. Each fresh review checkout needs the setup explicitly prescribed by the repository environment instructions (`../environment.md`, removed 2026-10-20; on branch `local`):
 
 ```bash
 npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund

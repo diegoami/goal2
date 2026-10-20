@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 110, in <module>
-    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--expected-receipt-sha256',required=True);a=p.parse_args();print(json.dumps(audit(json.loads(Path(a.config).read_text()),a.expected_receipt_sha256),indent=2))
-                                                                                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 85, in audit
-    assert re.fullmatch('[0-9a-f]{64}',frame['frame_digest'])and frame['heartbeats']>5 and 0<frame['maximum_heartbeat_gap']<1,'native responsiveness invalid'
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: native responsiveness invalid

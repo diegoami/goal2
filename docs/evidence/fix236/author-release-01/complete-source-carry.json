@@ -1,9 +1,0 @@
-{
-  "result": "PASS",
-  "native_checkpoint": "dfed1519af51dcb105d2526621eec9b313dd4b83",
-  "verified_tracked_paths": 6307,
-  "claim": "All tracked paths outside owned fix236 evidence retain exact native-checkpoint bytes.",
-  "complete_checked_manifest_sha256": "c4ab990e6ae9c48330ef32bd3ed0c0c10281bdceb94879d2cd64bafce5f3dd81",
-  "complete_checked_manifest_retained": ".cache/fix236-complete-source-carry-full.json",
-  "reviewer_reproduction": "git diff --exit-code dfed1519af51dcb105d2526621eec9b313dd4b83 -- . :(exclude)docs/evidence/fix236"
-}

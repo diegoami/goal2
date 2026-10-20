@@ -1,5 +1,0 @@
-{
-  "encoding": "utf-8",
-  "sha256": "393e9f12155bfea85e9cf5c78904b4a33caa684774e6507809241e4b4abf78d6",
-  "raw_text": "Traceback (most recent call last):\r\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T85-planning-1792362961322526067\\baseline.py\", line 12, in <module>\r\n    runpy.run_path('C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\T85-planning-1792362961322526067\\\\probe.py',run_name=\"__main__\")\r\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<frozen runpy>\", line 294, in run_path\r\n  File \"<frozen runpy>\", line 98, in _run_module_code\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T85-planning-1792362961322526067\\probe.py\", line 49, in <module>\r\n    assert entry is not None,'primary Play a match entry absent'\r\n           ^^^^^^^^^^^^^^^^^\r\nAssertionError: primary Play a match entry absent\r\n"
-}

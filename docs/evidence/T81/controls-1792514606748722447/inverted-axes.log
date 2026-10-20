@@ -1,0 +1,22 @@
+test_signed_draw_axes (goal2.tests.test_pitch_observation.ProjectionTests.test_signed_draw_axes) ... FAIL
+
+======================================================================
+FAIL: test_signed_draw_axes (goal2.tests.test_pitch_observation.ProjectionTests.test_signed_draw_axes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_pitch_observation.py", line 27, in test_signed_draw_axes
+    self.assertEqual(probe.project_xy(-3, 17), [17, -3], 'original draw axes')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [-3, 17] != [17, -3]
+
+First differing element 0:
+-3
+17
+
+- [-3, 17]
++ [17, -3] : original draw axes
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)

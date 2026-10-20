@@ -1,0 +1,8 @@
+{
+  "note": "[designed: owner, 2026-10-20] Original-game bytes only (CLAUDE.md rule 14, docs/artifacts.md): the owner's private Google Drive folder. Everything else is committed, or a GitHub release asset when over ~50 MB.",
+  "localDir": ".cache",
+  "drive": {
+    "folderUrl": "https://drive.google.com/drive/folders/1svRkGxtpasuTbwFuNU2NAHyU10Ac8KUU",
+    "rcloneRemote": "goal2drive:"
+  }
+}

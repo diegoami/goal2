@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 110, in <module>
-    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--expected-receipt-sha256',required=True);a=p.parse_args();print(json.dumps(audit(json.loads(Path(a.config).read_text()),a.expected_receipt_sha256),indent=2))
-                                                                                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/diego/projects/goal2/.cache/kept/review-receipts/fix254-resume-20261019/native-proof-check.py", line 80, in audit
-    assert v['controller_errors']==v['callbacks']==[]and v['owned_resources_closed']is True and v['owned_preparation_threads_closed']is True and v['clean_widgets']is True and v['import_context_restored']is True,'native controller/callback/cleanup invalid'
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: native controller/callback/cleanup invalid

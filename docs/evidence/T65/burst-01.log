@@ -1,6 +1,0 @@
-test_exited_burst_drains_in_bounded_batches_without_buffer_growth (goal2.tests.test_watched_jobs.WatchedJobsTests.test_exited_burst_drains_in_bounded_batches_without_buffer_growth) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.425s
-
-OK

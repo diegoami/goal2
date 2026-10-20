@@ -1,9 +1,0 @@
-START squad-positive
-END squad-positive 0 restored True
-START squad-controls
-END squad-controls 0 restored True
-START results-positive
-END results-positive 0 restored True
-START results-controls
-END results-controls 0 restored True
-PASS retained batch

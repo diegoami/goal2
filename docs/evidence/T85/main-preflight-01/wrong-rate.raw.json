@@ -1,5 +1,0 @@
-{
-  "encoding": "utf-8",
-  "sha256": "f286844f7ae73aa7cda186f16e9cc0a0f2b85d0d4f1474f01a4ac2bd9f2e7f31",
-  "raw_text": "Traceback (most recent call last):\r\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T85-planning-1792362961322526067\\wrong-rate.py\", line 12, in <module>\r\n    runpy.run_path('C:\\\\Users\\\\diego\\\\projects\\\\goal2-exe\\\\.goal2-validation\\\\T85-planning-1792362961322526067\\\\probe.py',run_name=\"__main__\")\r\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<frozen runpy>\", line 294, in run_path\r\n  File \"<frozen runpy>\", line 98, in _run_module_code\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"C:\\Users\\diego\\projects\\goal2-exe\\.goal2-validation\\T85-planning-1792362961322526067\\probe.py\", line 65, in <module>\r\n    assert calls==[15],f'wrong playback rate binding: {calls}'\r\n           ^^^^^^^^^^^\r\nAssertionError: wrong playback rate binding: [60]\r\n"
-}

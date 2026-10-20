@@ -1,8 +1,0 @@
-{
-  "claim": "Main Linux replay on restored machine; no Windows acceptance or independent review",
-  "head": "3cea0f9b7547f4eb4438434faf1b18af660a0e49",
-  "phase": "failed",
-  "result": "FAIL",
-  "failure": "Traceback (most recent call last):\n  File \"/home/diego/projects/goal2/.cache/kept/review-receipts/resume-it13-20261019/linux-serial.py\", line 43, in <module>\n    assert display.isdigit() and display_process.poll() is None\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
-  "owned_display_cleanup": true
-}

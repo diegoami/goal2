@@ -4,7 +4,7 @@
 independent review of everything merged since the previous milestone. It is **not run by the
 harness**: the owner (or the main session, when the owner asks) starts a reviewer CLI directly with
 `tools/milestone_review.sh`, on whatever tool and model the owner picks. Per-PR reviews are optional
-(CLAUDE.md rule 7a); the milestone review is where independent eyes look at the integrated result.
+(CLAUDE.md rule 4); the milestone review is where independent eyes look at the integrated result.
 
 ## When
 
@@ -48,7 +48,7 @@ example `m3-campaign-ui`) on **exactly the reviewed commit** of `main`.
    owner. AGREE: the main session tags the reviewed SHA
    (`git tag -a m<n>-<slug> <sha> -m "<issue URL>" && git push origin m<n>-<slug>`), closes the
    issue, and SHOULD findings stay open as ordinary issues. The owner's playtest accompanies the
-   review (rule 7a); the owner may also tag without a review, and the issue records that.
+   review; the owner may also tag without a review, and the issue records that.
 
 ## Severities
 

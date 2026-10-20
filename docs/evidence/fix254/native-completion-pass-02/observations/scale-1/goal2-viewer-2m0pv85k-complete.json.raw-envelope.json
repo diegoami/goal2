@@ -1,5 +1,0 @@
-{
-  "encoding": "utf-8",
-  "sha256": "7ac23671515d342ab7c31d17eb3972190b1ad2dd537b16e1371ceb171dd30b43",
-  "text": "{\r\n  \"stage\": \"complete\",\r\n  \"driver\": \"windows\",\r\n  \"surface\": [\r\n    1000,\r\n    720\r\n  ],\r\n  \"window\": [\r\n    1000,\r\n    720\r\n  ],\r\n  \"window_rect\": [\r\n    345,\r\n    142,\r\n    1361,\r\n    901\r\n  ],\r\n  \"dpi\": 96,\r\n  \"qt_scale_requested\": \"0.6666666666666666\",\r\n  \"frame_sequence\": 4438,\r\n  \"frame_consumed_before_status\": 4438,\r\n  \"capture\": \"goal2-viewer-2m0pv85k-complete.png\",\r\n  \"pid\": 21088,\r\n  \"claim\": \"Actual fixed renderer flip observed; no SDL scale inference from Qt ratio\"\r\n}\r\n"
-}

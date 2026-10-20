@@ -1,6 +1,6 @@
 name: CI
 
-# [designed: owner, #127] Optional fresh-runner verification; local checks gate merges.
+# [designed: owner, #127, 2026-10-20] Optional fresh-runner verification; local checks gate merges.
 on:
   workflow_dispatch:
 
@@ -10,15 +10,10 @@ permissions:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      # [designed: T72] Explicit locked setup; the validator itself stays offline.
-      - run: npm ci --prefix tools/harness/opencode-guard --ignore-scripts --no-audit --no-fund
       - run: python3 tools/check_premerge.py --expected-head "$GITHUB_SHA"
