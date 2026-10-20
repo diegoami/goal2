@@ -1,20 +1,50 @@
+baseline pass: goal2.tests.test_scenario_branches.CompetitiveBranches.test_unsupported_actions_are_refused_and_named
 baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_display_refuses_wrong_token_and_out_of_order_packets
 baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_unacknowledged_frames_block_publication_until_cancel
+baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_viewer_close_cancels_the_match
 baseline pass: goal2.tests.test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_bad_half_time_preview_cancels
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_half_time_injury_supported_decision_and_continuation
 baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_output_bound_to_another_template_or_count_is_refused
+baseline pass: goal2.tests.test_scenario_branches.QuickBranches.test_stale_half_time_continuation_cancels
 baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_complete_packet_waits_for_child_exit
 baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_consumed_token_cannot_publish_again
 baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused
 baseline pass: goal2.tests.test_scenario_branches.WatchedBranches.test_frame_acknowledgements_are_cumulative_and_bounded
 baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_cancel_never_publishes
 baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_early_output_is_not_read_before_exit
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_failure_leaves_the_active_game
 baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_stale_completion_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeQuickContract.test_success_publishes_once_and_one_job_at_a_time
 baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_cancel_never_publishes_and_releases_the_token
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_error_packet_fails_the_job
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_exit_without_completion_fails_the_job
 baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_out_of_order_packet_is_refused
 baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_repeated_packet_is_refused
 baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_stale_owner_is_refused
+baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_truncated_record_fails_the_job
 baseline pass: goal2.tests.test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused
+baseline pass: goal2.tests.test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic
 baseline pass: goal2.tests.test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_competitive_play_refuses_while_another_match_is_pending
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_exchange_window_closes_outside_friendlies
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_quick_check_refuses_unavailable_starters_and_foreign_templates
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_quick_refuses_a_competitive_fixture
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_real_backend_reports_every_missing_item
+baseline pass: goal2.tests.test_scenario_guards.ModelAndRuntimeGuards.test_view_and_result_text_refuse_unmarked_or_foreign_results
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_competitive_kind_must_match_the_job
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_foreign_input_image_is_refused
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_incomplete_event_stream_is_refused
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_job_must_be_the_scheduled_fixture
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_malformed_result_is_refused_by_result_validation
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_prepare_refuses_an_owner_changed_before_preparation
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_publish_refuses_an_owner_changed_after_preparation
+baseline pass: goal2.tests.test_scenario_guards.PublicationGuards.test_unmarked_completion_memory_is_refused
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_frame_acknowledgement_must_name_the_delivered_frame
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_frame_count_must_equal_completed_ticks
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_status_cannot_acknowledge_unsent_packets
+baseline pass: goal2.tests.test_scenario_guards.ViewerGuards.test_status_digest_must_match_the_sent_stream
 baseline pass: goal2.tests.test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session
 fails as named [wrong-ID] journal token -> test_scenario_contract.FakeWatchedContract.test_wrong_token_packet_is_refused (does not match "Invalid watched worker IPC: Watched worker exited \(0\))
 fails as named [wrong-ID] viewer status token -> test_scenario_branches.ControllerBranches.test_viewer_status_faults_cancel_without_publication (fault='stale-token'\)[\s\S]*?ValueError not raised)
@@ -37,4 +67,47 @@ fails as named [stale/duplicate] duplicate frame acknowledgement -> test_scenari
 fails as named [cancel] quick cancel -> test_scenario_contract.FakeQuickContract.test_cancel_never_publishes (True is not false)
 fails as named [cancel] watched cancel invalidates the publication token -> test_scenario_contract.FakeWatchedContract.test_cancel_never_publishes_and_releases_the_token (a watched job is already pending)
 fails as named [redraw] a view that advances the session -> test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session (Halftime continuation is stale; active game changed)
-21 mutations, 0 problems
+fails as named [R1 result-schema] scenario publication runs validate_result -> test_scenario_guards.PublicationGuards.test_malformed_result_is_refused_by_result_validation (ValueError not raised)
+fails as named [R2 stale] final owner check in publish_prepared -> test_scenario_guards.PublicationGuards.test_publish_refuses_an_owner_changed_after_preparation (change='value'\)[\s\S]*?ValueError not raised)
+fails as named [stale/duplicate] owner check before preparation -> test_scenario_guards.PublicationGuards.test_prepare_refuses_an_owner_changed_before_preparation (ValueError not raised)
+fails as named [wrong-ID] job bound to the scheduled fixture -> test_scenario_guards.PublicationGuards.test_job_must_be_the_scheduled_fixture (ValueError not raised)
+fails as named [early-publication] completion needs exactly one end and full_time -> test_scenario_guards.PublicationGuards.test_incomplete_event_stream_is_refused (ValueError not raised)
+fails as named [wrong-ID] completion bound to its declared input -> test_scenario_guards.PublicationGuards.test_foreign_input_image_is_refused (ValueError not raised)
+fails as named [wrong-ID] completion memory must carry the fiction mark -> test_scenario_guards.PublicationGuards.test_unmarked_completion_memory_is_refused (ValueError not raised)
+fails as named [wrong-ID] competitive kind bound to the job -> test_scenario_guards.PublicationGuards.test_competitive_kind_must_match_the_job (does not match "Competitive Play failed: Invalid watched worker IPC: invalid competitive resolution fields)
+fails as named [wrong-ID] completion events equal the streamed events -> test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused (fault='mismatch'\)[\s\S]*?ValueError not raised)
+fails as named [wrong-ID] completion bound to the pending fixture -> test_scenario_branches.WatchedBranches.test_duplicate_mismatched_or_foreign_completion_is_refused (fault='bad-result'\)[\s\S]*?(does not match|ValueError not raised))
+fails as named [wrong-ID] viewer status digest -> test_scenario_guards.ViewerGuards.test_status_digest_must_match_the_sent_stream (ValueError not raised)
+fails as named [out-of-order] viewer status names a sent sequence -> test_scenario_guards.ViewerGuards.test_status_cannot_acknowledge_unsent_packets (KeyError)
+fails as named [wrong-ID] rendered frame acknowledgement names the delivered frame -> test_scenario_guards.ViewerGuards.test_frame_acknowledgement_must_name_the_delivered_frame (ValueError not raised)
+fails as named [early-publication] frame count equals completed ticks -> test_scenario_guards.ViewerGuards.test_frame_count_must_equal_completed_ticks (ValueError not raised)
+fails as named [cancel] viewer close cancels the match -> test_scenario_branches.ControllerBranches.test_viewer_close_cancels_the_match (fictional child exceeded its deadline)
+fails as named [early-publication] watched exit without completion fails -> test_scenario_contract.FakeWatchedContract.test_exit_without_completion_fails_the_job (does not match)
+fails as named [early-publication] truncated journal fails -> test_scenario_contract.FakeWatchedContract.test_truncated_record_fails_the_job (watched child exceeded its deadline)
+fails as named [failure] watched error packet fails the job -> test_scenario_contract.FakeWatchedContract.test_error_packet_fails_the_job (does not match)
+fails as named [failure] quick non-zero exit fails -> test_scenario_contract.FakeQuickContract.test_failure_leaves_the_active_game (FileNotFoundError: .*output\.g2save)
+fails as named [stale/duplicate] one quick job at a time -> test_scenario_contract.FakeQuickContract.test_success_publishes_once_and_one_job_at_a_time (ValueError not raised)
+fails as named [stale/duplicate] halftime continuation used once -> test_scenario_branches.QuickBranches.test_half_time_injury_supported_decision_and_continuation (in continue_match[\s\S]*?TypeError: 'NoneType' object is not subscriptable)
+fails as named [stale/duplicate] halftime continuation stale -> test_scenario_branches.QuickBranches.test_stale_half_time_continuation_cancels (ValueError not raised)
+fails as named [wrong-ID] halftime preview bound to the fixture -> test_scenario_branches.QuickBranches.test_bad_half_time_preview_cancels (ValueError not raised)
+fails as named [wrong-ID] quick output bound to one more match -> test_scenario_branches.QuickBranches.test_output_bound_to_another_template_or_count_is_refused (fault='double-count'\)[\s\S]*?ValueError not raised)
+fails as named [unsupported] quick only for a scheduled friendly -> test_scenario_guards.ModelAndRuntimeGuards.test_quick_refuses_a_competitive_fixture (ValueError not raised)
+fails as named [wrong-ID] quick check refuses a foreign template -> test_scenario_guards.ModelAndRuntimeGuards.test_quick_check_refuses_unavailable_starters_and_foreign_templates (ValueError not raised)
+fails as named [unsupported] quick check refuses unavailable starters -> test_scenario_guards.ModelAndRuntimeGuards.test_quick_check_refuses_unavailable_starters_and_foreign_templates (ValueError not raised)
+fails as named [unsupported] watch only for a scheduled friendly -> test_scenario_branches.CompetitiveBranches.test_unsupported_actions_are_refused_and_named (does not match|ValueError not raised)
+fails as named [unsupported] competitive only for a supported kind -> test_scenario_branches.CompetitiveBranches.test_unsupported_actions_are_refused_and_named (does not match|ValueError not raised)
+fails as named [stale/duplicate] competitive refuses while another match is pending -> test_scenario_guards.ModelAndRuntimeGuards.test_competitive_play_refuses_while_another_match_is_pending (ValueError not raised)
+fails as named [stale/duplicate] calendar completes only the next fixture -> test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution (ValueError not raised)
+fails as named [wrong-ID] competitive completion needs its resolution -> test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution (ValueError not raised)
+fails as named [wrong-ID] competitive resolution validated -> test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution (ValueError not raised)
+fails as named [wrong-ID] friendly completion has no resolution -> test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution (ValueError not raised)
+fails as named [fiction mark] scenario encoder refuses an unmarked state -> test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths (ValueError not raised)
+fails as named [fiction mark] scenario model refuses to save -> test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths (ValueError not raised)
+fails as named [fiction mark] scenario model refuses to resume -> test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths (ValueError not raised)
+fails as named [fiction mark] scenario view refuses an unmarked state -> test_scenario_guards.ModelAndRuntimeGuards.test_view_and_result_text_refuse_unmarked_or_foreign_results (ValueError not raised)
+fails as named [fiction mark] scenario result text refuses a non-fictional result -> test_scenario_guards.ModelAndRuntimeGuards.test_view_and_result_text_refuse_unmarked_or_foreign_results (KeyError|ValueError not raised)
+fails as named [fiction mark] publication refuses a foreign template -> test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths (ValueError not raised)
+fails as named [unsupported] exchange only in a friendly window -> test_scenario_guards.ModelAndRuntimeGuards.test_exchange_window_closes_outside_friendlies (does not match|ValueError not raised)
+fails as named [unsupported] confirm refuses unavailable starters -> test_scenario_factory.ScenarioFactoryTests.test_confirm_validates_like_desktop_model_and_is_atomic (unavailable starters'\)[\s\S]*?ValueError not raised)
+fails as named [DW2] real backend reports missing items -> test_scenario_guards.ModelAndRuntimeGuards.test_real_backend_reports_every_missing_item (AssertionError)
+64 mutations, 0 problems

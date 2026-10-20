@@ -72,11 +72,30 @@ test_factory_supplies_country_squad_pool_cards_xi_captain_tactics_and_fixtures (
 test_fiction_is_marked_and_refused_by_career_paths (test_scenario_factory.ScenarioFactoryTests.test_fiction_is_marked_and_refused_by_career_paths) ... ok
 test_reads_never_advance_or_mutate_the_session (test_scenario_factory.ScenarioFactoryTests.test_reads_never_advance_or_mutate_the_session) ... ok
 test_view_and_pool_keep_the_desktop_dto_keys_and_real_availability (test_scenario_factory.ScenarioFactoryTests.test_view_and_pool_keep_the_desktop_dto_keys_and_real_availability) ... ok
+test_calendar_completes_only_the_next_fixture_with_its_resolution (test_scenario_guards.ModelAndRuntimeGuards.test_calendar_completes_only_the_next_fixture_with_its_resolution) ... ok
+test_competitive_play_refuses_while_another_match_is_pending (test_scenario_guards.ModelAndRuntimeGuards.test_competitive_play_refuses_while_another_match_is_pending) ... ok
+test_exchange_window_closes_outside_friendlies (test_scenario_guards.ModelAndRuntimeGuards.test_exchange_window_closes_outside_friendlies) ... ok
+test_quick_check_refuses_unavailable_starters_and_foreign_templates (test_scenario_guards.ModelAndRuntimeGuards.test_quick_check_refuses_unavailable_starters_and_foreign_templates) ... ok
+test_quick_refuses_a_competitive_fixture (test_scenario_guards.ModelAndRuntimeGuards.test_quick_refuses_a_competitive_fixture) ... ok
+test_real_backend_reports_every_missing_item (test_scenario_guards.ModelAndRuntimeGuards.test_real_backend_reports_every_missing_item) ... ok
+test_view_and_result_text_refuse_unmarked_or_foreign_results (test_scenario_guards.ModelAndRuntimeGuards.test_view_and_result_text_refuse_unmarked_or_foreign_results) ... ok
+test_competitive_kind_must_match_the_job (test_scenario_guards.PublicationGuards.test_competitive_kind_must_match_the_job) ... ok
+test_foreign_input_image_is_refused (test_scenario_guards.PublicationGuards.test_foreign_input_image_is_refused) ... ok
+test_incomplete_event_stream_is_refused (test_scenario_guards.PublicationGuards.test_incomplete_event_stream_is_refused) ... ok
+test_job_must_be_the_scheduled_fixture (test_scenario_guards.PublicationGuards.test_job_must_be_the_scheduled_fixture) ... ok
+test_malformed_result_is_refused_by_result_validation (test_scenario_guards.PublicationGuards.test_malformed_result_is_refused_by_result_validation) ... ok
+test_prepare_refuses_an_owner_changed_before_preparation (test_scenario_guards.PublicationGuards.test_prepare_refuses_an_owner_changed_before_preparation) ... ok
+test_publish_refuses_an_owner_changed_after_preparation (test_scenario_guards.PublicationGuards.test_publish_refuses_an_owner_changed_after_preparation) ... ok
+test_unmarked_completion_memory_is_refused (test_scenario_guards.PublicationGuards.test_unmarked_completion_memory_is_refused) ... ok
+test_frame_acknowledgement_must_name_the_delivered_frame (test_scenario_guards.ViewerGuards.test_frame_acknowledgement_must_name_the_delivered_frame) ... ok
+test_frame_count_must_equal_completed_ticks (test_scenario_guards.ViewerGuards.test_frame_count_must_equal_completed_ticks) ... ok
+test_status_cannot_acknowledge_unsent_packets (test_scenario_guards.ViewerGuards.test_status_cannot_acknowledge_unsent_packets) ... ok
+test_status_digest_must_match_the_sent_stream (test_scenario_guards.ViewerGuards.test_status_digest_must_match_the_sent_stream) ... ok
 test_redraw_and_view_calls_never_advance_the_session (test_scenario_walkthrough.WalkthroughTests.test_redraw_and_view_calls_never_advance_the_session) ... ok
 test_session_reaches_every_next_fixture_through_the_controllers (test_scenario_walkthrough.WalkthroughTests.test_session_reaches_every_next_fixture_through_the_controllers) ... ok
 test_two_runs_are_byte_identical (test_scenario_walkthrough.WalkthroughTests.test_two_runs_are_byte_identical) ... ok
 
 ----------------------------------------------------------------------
-Ran 62 tests in 9.754s
+Ran 81 tests in 10.906s
 
 OK (skipped=15)

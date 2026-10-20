@@ -160,7 +160,9 @@ MUTATIONS = [
      C + 'FakeQuickContract.test_success_publishes_once_and_one_job_at_a_time', r'ValueError not raised'),
     ('stale/duplicate', 'halftime continuation used once', 'goal2/desktop/jobs.py',
      '        if not self.busy or self.halftime is None or self.continued:', '        if not self.busy:',
-     B + 'QuickBranches.test_half_time_injury_supported_decision_and_continuation', r'ValueError not raised'),
+     # [derived: T86 rework run] Unguarded, the second continuation reaches the continue.json write.
+     B + 'QuickBranches.test_half_time_injury_supported_decision_and_continuation',
+     r"in continue_match[\s\S]*?TypeError: 'NoneType' object is not subscriptable"),
     ('stale/duplicate', 'halftime continuation stale', 'goal2/desktop/jobs.py',
      'if self.model.state is not self.original or encode(self.model.state,self.model.template_bytes)!=self.snapshot:', 'if False:',
      B + 'QuickBranches.test_stale_half_time_continuation_cancels', r'ValueError not raised'),

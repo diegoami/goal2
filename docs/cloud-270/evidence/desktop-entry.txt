@@ -1,3 +1,3 @@
-# DW4: desktop entry on origin/main (archive) vs branch, same interpreter
+# DW4: desktop entry, origin/main archive vs 1d45026fa929e5457e7f39ff9f63890f0c1ca6de archive
 python3 -m goal2.desktop --data /nonexistent: identical=True rc=2 stderr='__main__.py: error: choose exactly one of --template or --resume'
 python3 -m goal2.desktop --template /nonexistent --data /nonexistent: identical=True rc=2 stderr='Desktop needs PySide6. Install the desktop extra: python3 -m pip install ".[desktop]"'
