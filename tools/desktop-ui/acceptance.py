@@ -351,9 +351,16 @@ def continental(template,data,screenshot=None):
             campaign=model.state.campaign
             assert (campaign.start_year,campaign.stage,model.state.managed_country)==(1992,2,country)
             assert 'In progress' in window.qualifying.text()
+            click(window.confirm);assert model.state.captain in model.state.starting_eleven,window.status.text()
             competitive=0
             while (pending:=model.state.campaign.next_fixture) is not None:
                 if repair(model):window.refresh()
+                state=model.state
+                if window.draft()!=(state.starting_eleven,state.captain,state.country_tactics):
+                    # The original engine reorders the squad after a competitive match; Play then
+                    # asks for a Confirm of the unchanged team (filed separately), as a manager does.
+                    click(window.confirm);assert window.status.text()=='Management confirmed',window.status.text()
+                    assert set(model.state.starting_eleven)==set(state.starting_eleven) and model.state.captain==state.captain
                 done=len(model.state.campaign.completed_fixture_ids)
                 if pending.kind==1:
                     expected_state=direct_play(model.state,model.template_bytes)
@@ -403,6 +410,8 @@ def repair(model):
         bench=[w for w in free if w not in eleven];group=rows[word]['position']
         eleven[i]=next((w for w in bench if rows[w]['position']==group),None) or next(
             w for w in bench if (rows[w]['position']=='Goalkeeper')==(group=='Goalkeeper'))
+    # Confirm submits the eleven in squad-row order, as the window's draft does.
+    eleven=[w for w in state.managed_squad if w in eleven]
     model.confirm(eleven,state.captain if state.captain in eleven else eleven[0],state.country_tactics)
     return True
 
