@@ -54,9 +54,9 @@
 | 04 Pool comparison | Reuse equally complete pinned cards and one named bench-for-reserve exchange. Revise typography, colors and all attribute bars; candidate browsing is an explicit pool strip/Browse route with cards pinned, rather than shrinking the cards. | 04 |
 | 05 Competition | Reuse table beside its fixtures; revise to the same opening campaign context. Do not import an independent 2028 table into a 2030 match. Wider tables/brackets/scorers remain target routes. | 02, 09, 10, 18, 19 |
 | 06 Preparation | Reuse both named XIs and honest mode/speed language. Carry the confirmed pool exchange and captain forward; do not imply competitive Watch is working. | 05 |
-| 07 Live | Retain coherent score/phase, reject permanent commentary column/chrome. Default playing field occupies 82.2% of the authored canvas (85.3% including surround), with two latest lines; the same 38-minute instant has optional expanded navigation/commentary. Target interventions remain unproven. | 06,07,15 |
+| 07 Live | Retain coherent score/phase, reject permanent commentary column/chrome. Default playing field occupies 82.2% of the authored canvas (85.3% including surround), with two latest lines; the same 38-minute instant has optional expanded navigation/commentary. Target interventions remain unproven. | 06, 07, 15 |
 | 08 Results | Revise: replace the independent 2030 knockout/penalty example with the actual story's 2–1 friendly, same scorers/minutes and halftime 1–1. Friendly leaves group points unchanged. | 08, 09 |
-| 09 Small window | Retain identity/actions and every category; use 900×640 Player/Roster/Plan panes with large 18px card text and all 17 bars visible, rather than fitting a tiny roster beside a tiny card. | 11, 17 |
+| 09 Small window | Retain identity/actions and every category; use 900×640 Player/Roster/Tactics panes with large 18px card text and all 17 bars visible, rather than fitting a tiny roster beside a tiny card. | 11, 17 |
 | 10 Decisions | Revise: main story is one halftime 1–1 substitution, Bos→Jansen, explicitly resumed. Show knockout extra-time/order as labelled conditional branches of a later campaign, never consecutive states of this friendly. | 07, 13 |
 
 ## Missing capability is not missing evidence
