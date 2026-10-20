@@ -73,7 +73,7 @@ def table_controls():
             add(f"{form}-after-the-dependency-table-in-{short}", "vision", {key: lambda t, line=line: after_line(t, last_dependency, line)}, reason.format(label))
             add(f"{form}-after-the-non-prerequisite-table-in-{short}", "vision", {key: lambda t, line=line: after_line(t, last_non_prerequisite, line)}, reason.format(label))
     for place, check, key, anchor in (("child-table-in-backlog", "backlog", "backlog.md", "| [B07]("), ("surface-table", "vision", "vision-reconciliation.md", "| S15 "),
-                                      ("decision-table", "vision", "decisions.md", "| O02 |"), ("parity-matrix", "parity", "parity/management.md", "| ST01 |")):
+                                      ("decision-table", "vision", "decisions.md", "| O07 |"), ("parity-matrix", "parity", "parity/management.md", "| ST06 |")):
         for form, line, reason in continuations:
             add(f"{form}-in-the-{place}", check, {key: lambda t, line=line, anchor=anchor: after_line(t, anchor, line)}, reason.format(key))
     add("compact-lane-row-with-an-order-word", "vision",
