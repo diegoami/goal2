@@ -47,7 +47,20 @@ Codex default at implementer.defaultsByClient.codex. See process §1 for dispatc
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.
 6. The reviewer is never the implementer's model family. It re-runs every Done-when line itself.
-7. Merge only with an approving review and the main session's pre-merge checks pass (process.md §3 — re-run the check the approval rests on, plus `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean implementation checkout; Actions is manual-only optional verification (owner, #127, 2026-10-16)). [designed: owner, 2026-10-18] Once the reviewer is selected, continue same-reviewer follow-ups and rework until accepted, without asking again for each review. This supersedes fixed round-count stops and one-trial limits as retry-permission gates. Read complete results, fix causes and validate each new head; never silently switch provider/model, weaken acceptance or bypass safety. Report real blockers needing an owner design or external-access decision. Merge only the accepted exact head after required checks, from the main session, without asking again (`--squash`).
+7. Merge only with an approving review (tier 0: the main session's own checks, rule 7a) and the main session's pre-merge checks pass (process.md §3 — re-run the check the approval rests on, plus `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean implementation checkout; Actions is manual-only optional verification (owner, #127, 2026-10-16)). [designed: owner, 2026-10-18] Once the reviewer is selected, continue same-reviewer follow-ups and rework until accepted, without asking again for each review. This supersedes fixed round-count stops and one-trial limits as retry-permission gates. Read complete results, fix causes and validate each new head; never silently switch provider/model, weaken acceptance or bypass safety. Report real blockers needing an owner design or external-access decision. Merge only the accepted exact head after required checks, from the main session, without asking again (`--squash`).
+7a. [designed: owner, 2026-10-20] **Review by risk tier.** The task file names its tier (an issue
+    without one: the main session, at dispatch); when unsure, the higher tier.
+    - **Tier 0:** docs, planning, task files and small fixes that change no outcome. No external
+      review: the main session runs the task's checks and exact-head premerge, merges, and lists
+      the PR for the next milestone review.
+    - **Tier 1:** features and UI slices. One external review round by another family; what remains
+      after one rework becomes follow-up issues, unless it is a real defect in what the task
+      delivers (process.md §5 "Proportionate reviews").
+    - **Tier 2:** engine, fidelity, vendored model, save/timing, guards and permissions. Per-PR
+      review until accepted, as rules 6-7 say.
+    - **Milestone review:** at each queue milestone, one review by another family over the
+      integrated result, plus the owner's playtest; its findings become issues.
+    Rules 6-7's external review applies to tiers 1-2.
 8. Relay review findings in full. Read a run's final message before you retry or re-route it (L55).
 9. A test proves behaviour only if it fails without that behaviour; re-take a claim that nothing failed.
 9a. Undo a mutation or scratch edit by writing back the file's saved contents (read it first, restore

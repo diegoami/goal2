@@ -62,7 +62,7 @@ c4abc459b7720a55a357371f38eb6fbda90ecf7aa40632f79238366f3939fb23  tools/harness/
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
 99aa8048f96ae911319846b07d0d7b43056c1f32ce7d19fa2166e853502bea04  tools/harness/review.mjs
 d89401578e18253ebfcb82494fbaba1f3825a02533fbd56dfabe0f11b7f41206  tools/harness/switch-model.mjs
-eb39991040695f70a241d081bbbe237cb005fa5124f89f3a786cb7524d3cb3e8  AGENTS.md
+c8d22730d784513e3e8df58a3b2bdb59ec264413f616ce9ec76155f81a94b150  AGENTS.md
 b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs
 local tools/harness/lib/opencode-protocol.mjs  (T72a explicit protocol contract and offline validation)
 df08f13157d56b6c85e81e6b927ed5c7535f38ba22aafa913281b644dd659838  tools/harness/lib/opencode-protocol.mjs
@@ -128,7 +128,7 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 6a64d92f425168e55fae916db56d40cb69e9ae07a0729054c27359cad48d1535  docs/environment.md
 
-2958aafe4b001143af752fa32af3da4fa89c9586b77c7e94ba1d7bebcd74ce17  docs/process.md
+d62a86cb76b6fdc9341b39642fcdf7acd17b1d63d5c34a5f3f019b84aadd8eae  docs/process.md
 
 5446dcc17f2b70e1988ad315af538c31ec7f5cbcb7b94bafab008682f1c853fe  tools/harness/check-opencode-guard.mjs
 

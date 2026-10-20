@@ -167,7 +167,7 @@ never the implementer's family.
    label the task `status:blocked` and stop.
 
 Never:
-- merge without an approving review, passing task checks and exact-head local validation;
+- merge without an approving review (tier 0, CLAUDE.md rule 7a: the main session's own checks), passing task checks and exact-head local validation;
 - weaken a Done-when;
 - let the implementer's model family review its PR;
 - relay part of a review;

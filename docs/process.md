@@ -94,6 +94,10 @@ Scope, Done when, Hazards, Implementer, Reviewer, Merge after. Rules:
 ## 3. The loop
 
 `ready → implement → review → approved + exact-head local checks → squash merge → follow-up → unblock → report`.
+[designed: owner, 2026-10-20] The review step follows the task's risk tier (CLAUDE.md rule 7a): tier 0
+(docs, planning, task files, no-outcome fixes) has no external review, only the main session's checks
+and a later milestone review; tier 1 gets one external round, then follow-ups; tier 2 (engine,
+fidelity, save/timing, guards, permissions) keeps per-PR review until accepted.
 [designed: owner, 2026-10-18] Rework sends the full review back to the same branch.
 Once selected, keep the same reviewer and continue meaningful follow-ups until accepted,
 without repeated retry permission or an automatic round-count stop. Read complete results,
