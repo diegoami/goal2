@@ -77,7 +77,9 @@ never the implementer's family.
      (`docs/running-notes.md`), pushing after every commit and at least every 20 minutes, opening
      the PR as a draft after the first push and `gh pr ready` before the review.
 
-3. **Review.** If no reviewer is selected for this task, ask the user ONE question (CLAUDE.md "Choosing models" rule 2): which
+3. **Review.** [designed: owner, 2026-10-20] A tier-0 task (CLAUDE.md rule 7a) skips this step:
+   go to step 4 with the main session's own Done-when checks and exact-head premerge as its
+   approval, and list the PR for the next milestone review. For tiers 1-2: if no reviewer is selected for this task, ask the user ONE question (CLAUDE.md "Choosing models" rule 2): which
    OpenCode model reviews? Put `harness.json`'s `reviewer.default` first (`sol-6.1` for hard
    reviews: an engine seam, a fidelity test, a vendored model), then the registered models that are neither of the session's family nor
    blocked (`switch-model.mjs --show`). Record the answer on the PR. Label `status:in-review`.

@@ -115,8 +115,8 @@ remove only the remote branch.
 verification on a fresh runner. Before merging, the main session runs
 `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean
 implementation checkout and records its successful SHA on the PR. This command
-preserves the former workflow checks; task-specific Done-when checks and the
-independent approving review remain mandatory. A missing or billing-blocked
+preserves the former workflow checks; task-specific Done-when checks and, for tiers 1-2
+(CLAUDE.md rule 7a), the independent approving review remain mandatory. A missing or billing-blocked
 Actions run does not block a locally validated merge. An optional Actions run
 that exposes a real defect must be investigated; its optional trigger does not
 permit ignoring a known failing check. No hosted check replaces exact-head local
@@ -249,7 +249,7 @@ unproven. Accept what is about 80-90% likely, worded with its confidence and wha
 possible; narrow a claim's wording rather than add runs or rounds, and file stronger evidence as
 a follow-up.
 
-Proportionate reviews (the owner, 2026-10-20, after #253/PR #271 took four rounds over its own
+[designed: owner, 2026-10-20] Proportionate reviews (the owner, 2026-10-20, after #253/PR #271 took four rounds over its own
 planning-doc checker while its content was accepted every round):
 1. **Review the task, not its tooling.** Blocking findings concern the task's Done-when and the one
    claim its Scope protects. Crafted-input attacks on helper scripts, validators, receipts or test
