@@ -83,9 +83,46 @@ LAYOUT_SUCCESSOR = {"01-country-setup": {"01"}, "02-country-desk": {"02"}, "03-t
                     "04-pool-compare": {"04"}, "05-competition": {"09", "19"}, "06-match-preparation": {"05"},
                     "07-live-match": {"06", "15"}, "08-result-and-campaign": {"08", "09"},
                     "09-small-window": {"11", "17"}, "10-match-decisions": {"07", "13"}}
-QUEUE_LANES = {1: {253, 270}, 2: {198, 242, 243, 259}, 3: {260, 261, 262, 249, 263},
-               4: {110, 112, 113, 114, 115, 116, 117, 118, 119}, 5: {248, 250, 251, 265, 264}}
+QUEUE_LANES = {1: [253, 270], 2: [198, 242, 243, 259], 3: [260, 261, 262, 249, 263],
+               4: [110, 112, 113, 114, 115, 116, 117, 118, 119], 5: [248, 250, 251, 265, 264]}
 QUEUE_EXTRA = {155, 208, 268}   # #155 before #117; #208/#268 keep their own tooling scope
+# [designed: #253 rework R2] Approved dependency ORDER (amendment of 2026-10-20), not just membership: (before, after).
+PRECEDENCE = {2: [(198, 242), (198, 243)], 3: [(260, 261), (261, 262), (262, 251)],
+              4: [(a, b) for a, b in zip(QUEUE_LANES[4], QUEUE_LANES[4][1:])]}
+# Rendered arrows that must appear in order: lane 3 (text between arrows allowed) and lane 4 (strict chain).
+CHAIN_LANE3 = (260, 261, 262)
+CHAIN_LANE4 = tuple(QUEUE_LANES[4])
+# [designed: #253 rework R1] Independent screen/journey oracles, derived from the accepted storyboard (not from the registry).
+SURFACE_NAMES = {"S01": "Launch", "S02": "New career", "S03": "Country desk", "S04": "Team", "S05": "Pool comparison",
+                 "S06": "Country profile", "S07": "Competition", "S08": "Preparation", "S09": "Live", "S10": "Decision",
+                 "S11": "Result", "S12": "Archive", "S13": "Game save/load", "S14": "Bulletin", "S15": "Local-manager handoff"}
+SURFACE_SCREEN_ORACLE = {"S01": ["01"], "S02": ["01"], "S03": ["02", "09"], "S04": ["03", "11", "14", "16", "17", "18"], "S05": ["04"],
+                         "S06": [], "S07": ["09", "19"], "S08": ["05"], "S09": ["06", "15"], "S10": ["07", "13"], "S11": ["08"],
+                         "S12": ["10", "18", "19"], "S13": ["01", "09", "12"], "S14": ["19"], "S15": []}
+SURFACE_ROUTE_ORACLE = {"S06": ["02", "05"], "S15": []}
+SURFACE_OWNER_ORACLE = {"S02": {"#260"}, "S06": {"#261", "G05"}, "S07": {"#249", "#261"}, "S12": {"#251", "G04"},
+                        "S13": {"#260"}, "S14": {"G03", "#249"}, "S15": {"#264"}}
+JOURNEY_SCREEN_ORACLE = {"J01": ["01", "12"], "J02": ["02", "09"], "J03": ["03", "04", "11", "14", "16", "17"], "J04": ["02", "05", "19"],
+                         "J05": ["05", "12"], "J06": ["06", "07", "15"], "J07": ["07", "13"], "J08": ["08", "09", "10", "18", "19"],
+                         "J09": ["01", "09", "12"]}
+JOURNEY_ORACLE = {"J01": (["S01", "S02", "S13"], ["new", "load", "invalid-save", "replacement", "identity-capability"]),
+                  "J02": (["S03", "S14"], ["next-fixture", "calendar-boundary", "news"]),
+                  "J03": (["S04", "S05"], ["compare", "draft-confirm", "draft-discard", "pool-policy", "assistant-identity-capability"]),
+                  "J04": (["S06", "S07", "S08"], ["opponent-read-only", "group-fixtures", "history-source"]),
+                  "J05": (["S08", "S09"], ["quick", "watch", "speed", "unsupported-route"]),
+                  "J06": (["S09", "S10"], ["live-clock", "commentary", "supported-boundary", "off-on", "cancel"]),
+                  "J07": (["S10", "S11"], ["halftime", "quick-injury-repeat", "extra-time", "extra-midpoint", "shoot-order", "undo", "timed-default", "no-subs-unknown"]),
+                  "J08": (["S11", "S12", "S03", "S07", "S14"], ["statistics", "not-recorded", "round", "continue", "archive", "replay-dependency"]),
+                  "J09": (["S13", "S15", "S01"], ["save", "resume", "quit", "handoff", "multimanager-capability"])}
+# [designed: #253 rework sweep] Evidence that two mutable files used to vouch for each other is now also pinned by hash,
+# so a coordinated edit of a file and its receipt fails. The live amended bodies are the external truth for #259-#265.
+PINNED_EVIDENCE = {"evidence/layout-bounds-05.json": "9094c46eafeb22c601a0aabafd243220321c83b9fcd3f973bf84928f1db6b67a",
+                   "evidence/runtime-06/report.json": "9a53a126f3502706682b6342445bb53f4b47cae3d1c5021f2df2115f35972209",
+                   "evidence/browser-03/report.json": "eda0e1a332026c2ac6f8368150366755a695df7a99d84853f02f08d6edd05ace"}
+LIVE_BODY_SHA256 = {"B01": "f18f0c4f902a316ddeae545535bdd1101b6cd5909c0852c3ede6b330233f893c", "B02": "1af09b32a1f0962e75b88eee4ac226d219a01da87b8101c07b817bf2ffb7250a",
+                    "B03": "151385323d058ebd9502c084ed53d39df6e6dc84349e7eb61b920164af8821b9", "B04": "0851fd69ce9520325c1e6e8759c82b822aa955dec5efc9f994da5a1d7598f7b1",
+                    "B05": "736df4ca4240d6a8e61ee5ba61d2907f121b135b43e1527c03b7b62ae4f02233", "B06": "ff9d081b13e905c8f0a99f2f4130b18efbeb303bcbb7ecc0a480f7fd1df88a75",
+                    "B07": "aed16d4fcb28d8bbfe8883a91f2e1cb953081987b73ffa088431e4b75d9e8656"}
 CHILD_LANE = {"B01": 2, "B02": 3, "B03": 3, "B04": 3, "B05": 3, "B06": 5, "B07": 5}
 CHILD_PRIORITY = {"B01": "P1", "B02": "P1", "B03": "P1", "B04": "P1", "B05": "P1", "B06": "P2", "B07": "P2"}
 # Scope obligations that stay under #253: each must say plainly that it has no delivery owner.
@@ -174,6 +211,8 @@ class Package:
         self.illustration_contracts()
         self.illustration_quality()
         self.departure_contracts()
+        need(sha((self.path / reg["layout_validation_receipt"]).read_bytes()) == PINNED_EVIDENCE[reg["layout_validation_receipt"]],
+             "layout bounds receipt differs from the pinned reviewed receipt")
         bounds = self.data(reg["layout_validation_receipt"])
         need(sha((self.path / "evidence/check_layout_bounds.py").read_bytes()) == bounds["helper_sha256"], "static bounds helper hash differs")
         need({x["svg"] for x in bounds["layouts"]} == {x + ".svg" for x in LAYOUTS}, "bounds receipt omits a layout")
@@ -272,8 +311,10 @@ class Package:
         need(set(re.findall(r"^\| (S\d{2}) \|", text, re.M)) == surfaces, "screen hierarchy prose incomplete")
         need(set(re.findall(r"^## (J\d{2})", text, re.M)) == journeys, "journey prose incomplete")
         need({x for j in reg["journeys"].values() for x in j["surfaces"]} == surfaces, "journeys omit a surface")
-        for j in reg["journeys"].values():
+        need(reg["surfaces"] == SURFACE_NAMES, "surface names differ from the independent oracle")
+        for key, j in reg["journeys"].items():
             need(j["edges"] and set(j["surfaces"]) <= surfaces, "empty/unknown journey edge")
+            need((j["surfaces"], j["edges"]) == JOURNEY_ORACLE[key], "journey surfaces or edges differ from the independent oracle: " + key)
         for phrase in ("automatic", "player", "Start second half", "Start extra time", "Resume extra time", "Undo", "timed", "No-substitutions-left", "view-only", "Not recorded", "atomic", "handoff", "B06", "B07"):
             need(phrase in text, "significant transition/capability missing: " + phrase)
         cap = self.rows("capabilities.tsv")
@@ -468,6 +509,8 @@ class Package:
         return "all10 mappings honest;20 named XI/bench rows;explicit small-window relocation and independent scenarios"
 
     def current(self):
+        for name in ("evidence/runtime-06/report.json", "evidence/browser-03/report.json"):
+            need(sha((self.path / name).read_bytes()) == PINNED_EVIDENCE[name], "observation report differs from the pinned reviewed report: " + name)
         r = self.data("evidence/runtime-06/report.json")
         b = self.data("evidence/browser-03/report.json")
         need(r["audited_commit"] == b["audited_product_commit"] == BASE, "wrong current product pin")
@@ -546,12 +589,16 @@ class Package:
             head, _, body = text.partition("\n\n")
             need(head.startswith("# " + key + ": ") and body.endswith("\n"), "child contract heading/format differs: " + key)
             need(sha(body[:-1].encode()) == record["live_body_sha256"], "local contract differs from the recorded live amended body: " + key)
+            need(record["live_body_sha256"] == LIVE_BODY_SHA256[key], "contract and receipt differ from the pinned live amended body: " + key)
             need(body.startswith("## Owner-approved queue amendment") and "**Queue:**" in body, "child contract lacks the owner-approved queue amendment: " + key)
             need("O01 direction approval" not in body and "Explicit owner selection/approval of the #253 redesign direction is required" not in body,
                  "child contract keeps the superseded direction gate: " + key)
             x = by[key]
             need(x["lane"] == CHILD_LANE[key] and x["priority"].startswith(CHILD_PRIORITY[key] + " "), "child lane/priority differs from the approved queue: " + key)
             need("**Priority:** " + CHILD_PRIORITY[key] in body, "contract priority differs from the approved queue: " + key)
+        shown = {m[0]: (int(m[1]), m[2]) for m in re.findall(r"^\| \[(B\d\d)\]\([^)]*\) · \[#\d+\]\([^)]*\) \| (\d) \| [^|]*\| (P\d) ", self.read("backlog.md"), re.M)}
+        for key in ISSUES:
+            need(shown.get(key) == (CHILD_LANE[key], CHILD_PRIORITY[key]), "backlog.md child lane/priority differs from the approved queue: " + key)
         for key in ("B01", "B03", "B04"):
             need("retract" in self.read("backlog/" + key + ".md"), "visual acceptance omits retractable bars: " + key)
         match = self.read("backlog/B04.md")
@@ -567,6 +614,33 @@ class Package:
             if m:
                 rows[m.group(1)] = line
         return rows
+
+    @staticmethod
+    def lane_text(doc):
+        """Plain text of each queue lane's rows (links flattened, arrows normalised), keyed by lane number."""
+        lanes = {}
+        for line in doc.splitlines():
+            m = re.match(r"^\| (\d)(?:[a-e])?(?: |\|)", line)
+            if m and line.count("|") >= 4:
+                flat = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", line).replace("->", "→")
+                lanes[int(m.group(1))] = lanes.get(int(m.group(1)), "") + " " + flat
+        return lanes
+
+    def queue_order(self, name, doc):
+        """[designed: #253 rework R2] The documents render the approved dependency order, not just the issue links."""
+        lanes = self.lane_text(doc)
+        for lane, pairs in PRECEDENCE.items():
+            cell = lanes.get(lane, "")
+            for before, after in pairs:
+                first = {n: (re.search(rf"#{n}\b", cell).start() if re.search(rf"#{n}\b", cell) else None) for n in (before, after)}
+                need(first[before] is not None and first[after] is not None and first[before] < first[after],
+                     f"queue precedence violated in {name}: #{before} before #{after}")
+        chain4 = r"\s*→\s*".join("#" + str(n) for n in CHAIN_LANE4)
+        need(re.search(chain4, lanes.get(4, "")), f"career chain differs from the approved #110 → … → #119 order in {name}")
+        need(re.search(r"#155\s+before\s+#117", lanes.get(4, "")), f"#155 before #117 constraint missing in {name}")
+        if name != "docs/tasks/README.md":
+            chain3 = r"[^→|]*→[^→|]*".join("#" + str(n) for n in CHAIN_LANE3)
+            need(re.search(chain3, lanes.get(3, "")), f"launch → shell → match order differs from the approved order in {name}")
 
     def vision(self):
         """[designed: #253 reconciliation] The accepted #266 direction, its screens, the queue and the open choices."""
@@ -604,12 +678,16 @@ class Package:
             else:
                 need(record["gap"] and re.search(r"#\d+|G0\d", record["owner"]) and (record["coverage"] != "undrawn" or not record["screens"]),
                      "undrawn/partial surface lacks a bounded owner or states a drawn screen: " + s)
+                need(all(tok in record["owner"] for tok in SURFACE_OWNER_ORACLE[s]), "undrawn/partial surface names the wrong bounded owner: " + s)
+            need(sorted(x[:2] for x in record["screens"]) == SURFACE_SCREEN_ORACLE[s], "surface screen identity differs from the independent oracle: " + s)
+            need(sorted(x[:2] for x in record.get("route_screens", [])) == SURFACE_ROUTE_ORACLE.get(s, []), "surface route-screen identity differs from the independent oracle: " + s)
         text = self.read("vision-reconciliation.md")
         section = text.split("## Surface-to-screen mapping", 1)[1].split("## Parity destinations by original context", 1)[0]
-        doc_rows = {m[0]: m for m in re.findall(r"^\| (S\d\d) [^|]*\| (drawn|partial|undrawn) \| ([^|]*)\| [^|]*\| (\d+) \|$", section, re.M)}
+        doc_rows = {m[0]: m for m in re.findall(r"^\| (S\d\d) [^|]*\| (drawn|partial|undrawn) \| ([^|]*)\| ([^|]*)\| (\d+) \|$", section, re.M)}
         need(set(doc_rows) == set(SURFACE_COVERAGE), "reconciliation surface table incomplete")
-        for s, (_, coverage, cell, allocations) in doc_rows.items():
+        for s, (_, coverage, cell, owner_cell, allocations) in doc_rows.items():
             record = reg["surface_screens"][s]
+            need(all(tok in owner_cell for tok in SURFACE_OWNER_ORACLE.get(s, set())), "reconciliation table names the wrong bounded owner: " + s)
             shown = set(re.findall(r"\b(\d\d)\b", cell))
             expected = {x[:2] for x in record["screens"]} | ({x[:2] for x in record.get("route_screens", [])} if record["coverage"] == "undrawn" else set())
             need(coverage == record["coverage"] and shown == expected, "reconciliation table disagrees with registry: " + s)
@@ -626,6 +704,7 @@ class Package:
         journeys = {m[0]: set(re.findall(r"\b(\d\d)\b", m[1])) for m in re.findall(r"^\| (J\d\d) [^|]*\| ([^|]*)\|", journey_section, re.M)}
         for j, screens in reg["journey_screens"].items():
             need(screens and set(screens) <= set(VISION_SCREENS), "journey cites no/unknown accepted screen: " + j)
+            need(sorted(x[:2] for x in screens) == JOURNEY_SCREEN_ORACLE[j], "journey screen identity differs from the independent oracle: " + j)
             need(journeys.get(j) == {x[:2] for x in screens}, "reconciliation journey table disagrees with registry: " + j)
         # candidate layouts are superseded, each with an accepted successor
         need(set(reg["superseded_layouts"]) == set(LAYOUTS), "superseded layout mapping incomplete")
@@ -637,13 +716,16 @@ class Package:
         lay = self.read("layouts.md")
         need("Superseded as screen recommendations" in lay and "historical evidence, not a recommendation" in lay, "layouts.md does not declare the candidate sheets superseded")
         need("not a recommendation" in (self.path / "layouts/SUPERSEDED.md").read_text(), "layouts directory lacks its superseded marker")
-        # queue
-        lanes = {q["lane"]: set(q["issues"]) for q in reg["queue"]["lanes"]}
-        need(lanes == QUEUE_LANES, "queue lanes differ from the owner-approved queue")
-        need(set(reg["queue"]["lanes"][3]["before"]["117"]) == {155} and set(reg["queue"]["lanes"][0]["separate"]) == {208, 268}, "queue ordering constraints differ")
+        # queue: ordered lanes, then the rendered order in every document that states it
+        lanes = {q["lane"]: q["issues"] for q in reg["queue"]["lanes"]}
+        for lane, expected in QUEUE_LANES.items():
+            need(lanes.get(lane) == expected, f"queue lane order differs from the approved order: lane {lane}")
+        need(reg["queue"]["lanes"][3]["before"] == {"117": [155]} and reg["queue"]["lanes"][0]["separate"] == [208, 268], "queue ordering constraints differ")
         index = (self.root / "docs/tasks/README.md").read_text()
         plan = self.read("backlog.md")
-        for n in sorted(set().union(*QUEUE_LANES.values()) | QUEUE_EXTRA):
+        for name, doc in (("docs/tasks/README.md", index), ("backlog.md", plan), ("vision-reconciliation.md", text)):
+            self.queue_order(name, doc)
+        for n in sorted(QUEUE_EXTRA | {n for lane in QUEUE_LANES.values() for n in lane}):
             for name, doc in (("task index", index), ("backlog", plan), ("reconciliation", text)):
                 need(f"/issues/{n}" in doc, f"queue issue absent from {name}: #{n}")
         need("referenced, not implemented or pre-split here" in plan and "referenced, not implemented or pre-split here" in text, "#270 is not recorded as referenced only")
@@ -735,8 +817,13 @@ def run(package, checks):
     return results
 
 
+_PKG = None
+
+
 def negative_controls(package):
     """[designed: #253] Realistic omissions, not token injection; exact bytes restore."""
+    global _PKG
+    _PKG = package
     initial = run(package, CHECKS)
     need(all(x["pass"] for x in initial), "positive package must pass before controls: " + str(initial))
     src = "parity/source-fields.tsv"
@@ -809,7 +896,36 @@ def negative_controls(package):
         ("technology-proof-omits-two-line-commentary", "vision", {"technology.md": lambda t: t.replace("only the latest two commentary lines by default", "commentary by default")}),
         ("child-contract-diverges-from-live-body", "backlog", {"backlog/B03.md": lambda t: t.replace("Split shared shell and Team/pool composition before dispatch.", "Compose everything at once.")}),
         ("child-priority-drifts-from-queue", "backlog", {"backlog.json": lambda t: edit_json(t, lambda d: next(x for x in d if x["key"] == "B06").update(priority="P1 · full-parity support prerequisite"))}),
-        ("cloud-issue-mirrored-instead-of-referenced", "backlog", {"evidence/reconcile-05/live-issue-bodies.json": lambda t: edit_json(t, lambda d: d["referenced"][0].update(mirrored=True))})]
+        ("cloud-issue-mirrored-instead-of-referenced", "backlog", {"evidence/reconcile-05/live-issue-bodies.json": lambda t: edit_json(t, lambda d: d["referenced"][0].update(mirrored=True))}),
+        # [designed: #253 rework R1/R2 and sweep] coordinated registry+prose edits, ordered dependencies and receipt pins
+        ("pool-surface-coordinated-to-start-resume", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["surface_screens"]["S05"].update(screens=["01-start-resume"])),
+          "vision-reconciliation.md": lambda t: regen_context_rows(t.replace("| S05 Pool comparison | drawn | 04 |", "| S05 Pool comparison | drawn | 01 |"))}),
+        ("conditional-journey-coordinated-to-start-resume", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["journey_screens"].update(J07=["01-start-resume"])),
+          "vision-reconciliation.md": lambda t: t.replace("| J07 Half-time, extra time, shoot-out | 07, 13 |", "| J07 Half-time, extra time, shoot-out | 01 |")}),
+        ("journey-edges-replaced-with-unused", "journeys", {"package.json": lambda t: edit_json(t, lambda d: d["journeys"]["J07"].update(edges=["unused"]))}),
+        ("journey-surfaces-replaced", "journeys", {"package.json": lambda t: edit_json(t, lambda d: d["journeys"]["J07"].update(surfaces=["S10", "S11", "S01"]))}),
+        ("surface-owner-coordinated-wrong", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["surface_screens"]["S06"].update(owner=d["surface_screens"]["S06"]["owner"].replace("#261", "#198"))),
+          "vision-reconciliation.md": lambda t: t.replace("#261 composes the route and adds the screen to its contract; complete profile", "#198 composes the route and adds the screen to its contract; complete profile")}),
+        ("child-lane-prose-drift", "backlog", {"backlog.md": lambda t: t.replace("[#260](https://github.com/diegoami/goal2/issues/260) | 3 |", "[#260](https://github.com/diegoami/goal2/issues/260) | 2 |")}),
+        ("career-chain-reversed-everywhere", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][3]["issues"].reverse()),
+          "backlog.md": reverse_chain, "vision-reconciliation.md": reverse_chain, "../../docs/tasks/README.md": reverse_chain}),
+        ("career-chain-reversed-in-task-index-only", "vision", {"../../docs/tasks/README.md": reverse_chain}),
+        ("career-chain-reversed-in-backlog-only", "vision", {"backlog.md": reverse_chain}),
+        ("career-arrows-removed-order-kept", "vision", {"backlog.md": lambda t: reverse_chain(t, keep_order=True)}),
+        ("retirement-constraint-dropped", "vision", {"../../docs/tasks/README.md": lambda t: t.replace("[#155](https://github.com/diegoami/goal2/issues/155) before #117", "[#155](https://github.com/diegoami/goal2/issues/155)")}),
+        ("launch-shell-order-reversed", "vision", {"vision-reconciliation.md": lambda t: t.replace(
+            "[#260](https://github.com/diegoami/goal2/issues/260) → [#261](https://github.com/diegoami/goal2/issues/261)",
+            "[#261](https://github.com/diegoami/goal2/issues/261) → [#260](https://github.com/diegoami/goal2/issues/260)")}),
+        ("foundation-order-reversed-in-registry", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][1]["issues"].insert(0, d["queue"]["lanes"][1]["issues"].pop(1)))}),
+        ("launch-lane-reordered-in-registry", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][2]["issues"].insert(0, d["queue"]["lanes"][2]["issues"].pop(1)))}),
+        ("layout-and-bounds-receipt-coordinated", "proposal", {"layouts/06-match-preparation.svg": lambda t: t + "\n",
+          "evidence/layout-bounds-05.json": lambda t: edit_json(t, lambda d: next(x for x in d["layouts"] if x["svg"] == "06-match-preparation.svg").update(
+              svg_sha256=sha((_PKG.path / "layouts/06-match-preparation.svg").read_bytes())))}),
+        ("runtime-audit-source-and-report-coordinated", "current", {"evidence/runtime-06/audit-source.py": lambda t: t + "\n",
+          "evidence/runtime-06/report.json": lambda t: edit_json(t, lambda d: d.update(audit_sha256=sha((_PKG.path / "evidence/runtime-06/audit-source.py").read_bytes())))}),
+        ("contract-and-receipt-coordinated-edit", "backlog", {"backlog/B03.md": lambda t: t.replace("Split shared shell and Team/pool composition before dispatch.", "Compose everything at once."),
+          "evidence/reconcile-05/live-issue-bodies.json": lambda t: edit_json(t, lambda d: next(x for x in d["mirrored"] if x["key"] == "B03").update(
+              live_body_sha256=sha((_PKG.path / "backlog/B03.md").read_text().partition("\n\n")[2][:-1].encode())))})]
 
     intended_findings = {
         "quick-continuation-assigned-to-existing-scopes": "excluded capability assigned",
@@ -845,7 +961,7 @@ def negative_controls(package):
         "superseded-layout-without-successor": "superseded layout lacks its accepted successor: 05-competition",
         "candidate-layouts-recommended-again": "layouts.md does not declare the candidate sheets superseded",
         "accepted-screen-bytes-edited": "accepted screen differs from the pinned merge commit: docs/vision-266/screens/06-watched.svg",
-        "queue-lane-issue-dropped": "queue lanes differ from the owner-approved queue",
+        "queue-lane-issue-dropped": "queue lane order differs from the approved order: lane 1",
         "task-index-drops-career-stream": "queue issue absent from task index: #119",
         "backlog-drops-cloud-issue": "queue issue absent from backlog: #270",
         "gap-unowned-statement-removed": "scope obligation lacks an explicit unowned statement: O08 / G01",
@@ -855,7 +971,24 @@ def negative_controls(package):
         "technology-proof-omits-two-line-commentary": "technology proof omits an accepted visual requirement: latest two commentary lines",
         "child-contract-diverges-from-live-body": "local contract differs from the recorded live amended body: B03",
         "child-priority-drifts-from-queue": "child lane/priority differs from the approved queue: B06",
-        "cloud-issue-mirrored-instead-of-referenced": "#270 must be referenced, not mirrored or pre-split here"}
+        "cloud-issue-mirrored-instead-of-referenced": "#270 must be referenced, not mirrored or pre-split here",
+        "pool-surface-coordinated-to-start-resume": "surface screen identity differs from the independent oracle: S05",
+        "conditional-journey-coordinated-to-start-resume": "journey screen identity differs from the independent oracle: J07",
+        "journey-edges-replaced-with-unused": "journey surfaces or edges differ from the independent oracle: J07",
+        "journey-surfaces-replaced": "journey surfaces or edges differ from the independent oracle: J07",
+        "surface-owner-coordinated-wrong": "undrawn/partial surface names the wrong bounded owner: S06",
+        "child-lane-prose-drift": "backlog.md child lane/priority differs from the approved queue: B02",
+        "career-chain-reversed-everywhere": "queue lane order differs from the approved order: lane 4",
+        "career-chain-reversed-in-task-index-only": "queue precedence violated in docs/tasks/README.md: #110 before #112",
+        "career-chain-reversed-in-backlog-only": "queue precedence violated in backlog.md: #110 before #112",
+        "career-arrows-removed-order-kept": "career chain differs from the approved #110 → … → #119 order in backlog.md",
+        "retirement-constraint-dropped": "#155 before #117 constraint missing in docs/tasks/README.md",
+        "launch-shell-order-reversed": "queue precedence violated in vision-reconciliation.md: #260 before #261",
+        "foundation-order-reversed-in-registry": "queue lane order differs from the approved order: lane 2",
+        "launch-lane-reordered-in-registry": "queue lane order differs from the approved order: lane 3",
+        "layout-and-bounds-receipt-coordinated": "layout bounds receipt differs from the pinned reviewed receipt",
+        "runtime-audit-source-and-report-coordinated": "observation report differs from the pinned reviewed report: evidence/runtime-06/report.json",
+        "contract-and-receipt-coordinated-edit": "contract and receipt differ from the pinned live amended body: B03"}
     receipts = []
     for name, check, edits in cases:
         saved = {f: (package.path / f).read_bytes() for f in edits}
@@ -879,6 +1012,20 @@ def negative_controls(package):
                          "exact_bytes_restored": True})
     need(all(x["pass"] for x in run(package, CHECKS)), "package failed after restoration")
     return {"positive_checks": initial, "negative_controls": receipts, "all_restored": True}
+
+
+def regen_context_rows(text):
+    """Coordinated-control helper: rebuild the reconciliation parity-context rows from the registry as it is on disk."""
+    reg = json.loads((_PKG.path / "package.json").read_text())
+    rows = context_screen_rows(reg, _PKG.rows("parity/destinations.tsv"))
+    return "".join((rows[m.group(1)] + "\n") if (m := re.match(r"^\| ([A-Z]{2}) \|", line)) and m.group(1) in rows else line for line in text.splitlines(keepends=True))
+
+
+def reverse_chain(text, keep_order=False):
+    """Control helper: reverse the rendered #110 -> ... -> #119 chain (or, with keep_order, drop only its arrows)."""
+    m = re.search(r"((?:\[#\d+\]\([^)]*\) (?:→|->) )+\[#119\]\([^)]*\))", text)
+    tokens = re.findall(r"\[#\d+\]\([^)]*\)", m.group(1))
+    return text[:m.start()] + ((", " if keep_order else " → ").join(tokens if keep_order else reversed(tokens))) + text[m.end():]
 
 
 def edit_json(text, change):
