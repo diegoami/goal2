@@ -86,12 +86,17 @@ LAYOUT_SUCCESSOR = {"01-country-setup": {"01"}, "02-country-desk": {"02"}, "03-t
 QUEUE_LANES = {1: [253, 270], 2: [198, 242, 243, 259], 3: [260, 261, 262, 249, 263],
                4: [110, 112, 113, 114, 115, 116, 117, 118, 119], 5: [248, 250, 251, 265, 264]}
 QUEUE_EXTRA = {155, 208, 268}   # #155 before #117; #208/#268 keep their own tooling scope
-# [designed: #253 rework R2] Approved dependency ORDER (amendment of 2026-10-20), not just membership: (before, after).
-PRECEDENCE = {2: [(198, 242), (198, 243)], 3: [(260, 261), (261, 262), (262, 251)],
-              4: [(a, b) for a, b in zip(QUEUE_LANES[4], QUEUE_LANES[4][1:])]}
-# Rendered arrows that must appear in order: lane 3 (text between arrows allowed) and lane 4 (strict chain).
-CHAIN_LANE3 = (260, 261, 262)
-CHAIN_LANE4 = tuple(QUEUE_LANES[4])
+# [designed: #253 rework R3] Every approved dependency as an explicit directed pair (before, after, source), held here and
+# nowhere else as an oracle. The registry and the canonical tables in three documents must equal it exactly. Prose is not
+# interpreted: order words and arrows are forbidden in lane rows, reverse arrows everywhere, and a clause that names two issues
+# around an order word may not contradict a pair.
+DEPENDENCIES = [(198, 242, "lane 2"), (198, 243, "lane 2"), (260, 261, "lane 3"), (261, 262, "lane 3"), (262, 251, "lane 3"),
+                (110, 112, "lane 4"), (112, 113, "lane 4"), (113, 114, "lane 4"), (114, 115, "lane 4"), (115, 116, "lane 4"),
+                (116, 117, "lane 4"), (117, 118, "lane 4"), (118, 119, "lane 4"), (155, 117, "lane 4")]
+NOT_PREREQUISITE = [(259, 198, "lane 2"), (259, 242, "lane 2"), (259, 243, "lane 2")]
+FOLLOW_ON = {3: [251]}   # #251 follows the base match journey (#262); the lane's follow_on list must say so
+DEPENDENCY_HEADER = "| Before | After | Source |"
+NOT_PREREQUISITE_HEADER = "| Not a prerequisite | Of | Source |"
 # [designed: #253 rework R1] Independent screen/journey oracles, derived from the accepted storyboard (not from the registry).
 SURFACE_NAMES = {"S01": "Launch", "S02": "New career", "S03": "Country desk", "S04": "Team", "S05": "Pool comparison",
                  "S06": "Country profile", "S07": "Competition", "S08": "Preparation", "S09": "Live", "S10": "Decision",
@@ -590,6 +595,8 @@ class Package:
             need(head.startswith("# " + key + ": ") and body.endswith("\n"), "child contract heading/format differs: " + key)
             need(sha(body[:-1].encode()) == record["live_body_sha256"], "local contract differs from the recorded live amended body: " + key)
             need(record["live_body_sha256"] == LIVE_BODY_SHA256[key], "contract and receipt differ from the pinned live amended body: " + key)
+            live_dependencies = re.search(r"- \*\*Dependencies:\*\* (.*)", body).group(1).replace("[designed: approved queue, 2026-10-20] ", "")
+            need(by[key]["dependencies"] == live_dependencies, "backlog.json dependencies differ from the pinned live body: " + key)
             need(body.startswith("## Owner-approved queue amendment") and "**Queue:**" in body, "child contract lacks the owner-approved queue amendment: " + key)
             need("O01 direction approval" not in body and "Explicit owner selection/approval of the #253 redesign direction is required" not in body,
                  "child contract keeps the superseded direction gate: " + key)
@@ -616,34 +623,49 @@ class Package:
         return rows
 
     @staticmethod
-    def lane_text(doc):
-        """Plain text of each queue lane's rows (links flattened, arrows normalised), keyed by lane number."""
-        lanes = {}
-        for line in doc.splitlines():
-            m = re.match(r"^\| (\d)(?:[a-e])?(?: |\|)", line)
-            if m and line.count("|") >= 4:
-                flat = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", line).replace("->", "→")
-                lanes[int(m.group(1))] = lanes.get(int(m.group(1)), "") + " " + flat
-        return lanes
+    def parse_pairs(name, doc, header):
+        lines = doc.splitlines()
+        need(lines.count(header) == 1, f"{name} lacks exactly one '{header}' table")
+        i = lines.index(header) + 2
+        rows = []
+        while i < len(lines) and (m := re.match(r"^\| #(\d+) \| #(\d+) \| ([^|]+?) \|$", lines[i])):
+            rows.append((int(m.group(1)), int(m.group(2)), m.group(3)))
+            i += 1
+        return rows
 
-    def queue_order(self, name, doc):
-        """[designed: #253 rework R2] The documents render the approved dependency order, not just the issue links."""
-        lanes = self.lane_text(doc)
-        for lane, pairs in PRECEDENCE.items():
-            cell = lanes.get(lane, "")
-            for before, after in pairs:
-                first = {n: (re.search(rf"#{n}\b", cell).start() if re.search(rf"#{n}\b", cell) else None) for n in (before, after)}
-                need(first[before] is not None and first[after] is not None and first[before] < first[after],
-                     f"queue precedence violated in {name}: #{before} before #{after}")
-        chain4 = r"\s*→\s*".join("#" + str(n) for n in CHAIN_LANE4)
-        need(re.search(chain4, lanes.get(4, "")), f"career chain differs from the approved #110 → … → #119 order in {name}")
-        need(re.search(r"#155\s+before\s+#117", lanes.get(4, "")), f"#155 before #117 constraint missing in {name}")
-        if name != "docs/tasks/README.md":
-            chain3 = r"[^→|]*→[^→|]*".join("#" + str(n) for n in CHAIN_LANE3)
-            need(re.search(chain3, lanes.get(3, "")), f"launch → shell → match order differs from the approved order in {name}")
+    def queue_dependencies(self, name, doc):
+        """[designed: #253 rework R3] Mechanical checks only, not a reading of prose: (1) the canonical dependency and
+        non-prerequisite tables equal the oracle pairs, so a reversed, missing or extra row fails; (2) lane rows state no
+        order word or arrow; (3) no reverse arrow anywhere in the file; (4) a clause that names two issues around an order
+        word (before/precede/then/after/follows/an arrow) does not contradict an approved pair."""
+        need("←" not in doc and "<-" not in doc, f"reverse arrow between queue issues in {name}")
+        lane_rows = [x for x in doc.splitlines() if re.match(r"^\| \d[a-e]?(?: |\|)", x) and x.count("|") >= 4]
+        need(len(lane_rows) >= 5, f"queue lane rows missing in {name}")
+        words = re.compile(r"(?i)\b(before|after|precede\w*|follow\w*|then|prerequisite\w*|predecessor\w*|successor\w*|depend\w*)\b|→|->")
+        for row in lane_rows:
+            hit = words.search(re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", row))
+            need(not hit, f"queue lane text in {name} states an order outside the canonical dependency table: {hit.group(0) if hit else ''}")
+        need(sorted(self.parse_pairs(name, doc, DEPENDENCY_HEADER)) == sorted(DEPENDENCIES), f"dependency table in {name} differs from the approved dependencies")
+        need(sorted(self.parse_pairs(name, doc, NOT_PREREQUISITE_HEADER)) == sorted(NOT_PREREQUISITE), f"non-prerequisite table in {name} differs from the approved pairs")
+        edges = {(a, b) for a, b, _ in DEPENDENCIES}
+        rest = "\n".join(x for x in doc.splitlines() if x not in lane_rows and not x.startswith("| #"))
+        rest = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", rest)
+        for clause in re.split(r"[.;|\n]", rest):
+            tokens = list(re.finditer(r"#(\d+)\b|\b(before|precede\w*|then|after|follow\w*|succeed\w*)\b|→|->", clause, re.I))
+            for i, tok in enumerate(tokens):
+                if tok.group(1):
+                    continue
+                left = next((x for x in reversed(tokens[:i]) if x.group(1)), None)
+                right = next((x for x in tokens[i + 1:] if x.group(1)), None)
+                if left and right and left.group(1) != right.group(1):
+                    a, b = int(left.group(1)), int(right.group(1))
+                    backward = tok.group(2) is not None and re.match(r"(?i)after|follow|succeed", tok.group(2))
+                    claim = (b, a) if backward else (a, b)
+                    need((claim[1], claim[0]) not in edges, f"order statement contradicts the approved dependencies in {name}: #{a} {tok.group(0)} #{b}")
 
     def vision(self):
-        """[designed: #253 reconciliation] The accepted #266 direction, its screens, the queue and the open choices."""
+        """[designed: #253 reconciliation] The accepted #266 direction, its screens, the queue and the open choices. Relations
+        (screen mappings, queue order) are compared with oracles held in this file, never with the registry they sit in."""
         self.gate()
         reg = self.data("package.json")
         need("recommended_direction" not in reg, "registry still carries the superseded recommendation")
@@ -716,15 +738,22 @@ class Package:
         lay = self.read("layouts.md")
         need("Superseded as screen recommendations" in lay and "historical evidence, not a recommendation" in lay, "layouts.md does not declare the candidate sheets superseded")
         need("not a recommendation" in (self.path / "layouts/SUPERSEDED.md").read_text(), "layouts directory lacks its superseded marker")
-        # queue: ordered lanes, then the rendered order in every document that states it
-        lanes = {q["lane"]: q["issues"] for q in reg["queue"]["lanes"]}
+        # queue: ordered lanes, follow_on, directed dependency pairs in the registry and in each document's canonical tables
+        qreg = reg["queue"]
+        need([q["lane"] for q in qreg["lanes"]] == sorted(QUEUE_LANES), "queue lanes are not listed in lane order")
+        lanes = {q["lane"]: q for q in qreg["lanes"]}
         for lane, expected in QUEUE_LANES.items():
-            need(lanes.get(lane) == expected, f"queue lane order differs from the approved order: lane {lane}")
-        need(reg["queue"]["lanes"][3]["before"] == {"117": [155]} and reg["queue"]["lanes"][0]["separate"] == [208, 268], "queue ordering constraints differ")
+            need(lanes[lane]["issues"] == expected, f"queue lane order differs from the approved order: lane {lane}")
+            need(set(lanes[lane]) <= {"lane", "name", "issues", "separate", "follow_on", "note"}, f"queue lane carries an unreviewed relation field: lane {lane}")
+            need(lanes[lane].get("follow_on", []) == FOLLOW_ON.get(lane, []), f"queue follow-on differs from the approved queue: lane {lane}")
+        need(lanes[1].get("separate") == [208, 268] and not any("separate" in lanes[n] for n in (2, 3, 4, 5)), "queue ordering constraints differ")
+        need([(x["before"], x["after"], x["source"]) for x in qreg["dependencies"]] == DEPENDENCIES, "queue dependencies in the registry differ from the approved pairs")
+        need([(x["not_prerequisite"], x["of"], x["source"]) for x in qreg["not_prerequisite"]] == NOT_PREREQUISITE, "queue non-prerequisites in the registry differ from the approved pairs")
+        need(all(any(a == n for _, a, _ in DEPENDENCIES) for ns in FOLLOW_ON.values() for n in ns), "a follow-on issue has no approved predecessor pair")
         index = (self.root / "docs/tasks/README.md").read_text()
         plan = self.read("backlog.md")
         for name, doc in (("docs/tasks/README.md", index), ("backlog.md", plan), ("vision-reconciliation.md", text)):
-            self.queue_order(name, doc)
+            self.queue_dependencies(name, doc)
         for n in sorted(QUEUE_EXTRA | {n for lane in QUEUE_LANES.values() for n in lane}):
             for name, doc in (("task index", index), ("backlog", plan), ("reconciliation", text)):
                 need(f"/issues/{n}" in doc, f"queue issue absent from {name}: #{n}")
@@ -738,7 +767,10 @@ class Package:
             row = rows.get(key, "")
             need(row, "scope obligation missing: " + key)
             need("nowned" in row and contract + " before a full-parity claim" in row, "scope obligation lacks an explicit unowned statement: " + key)
-            need(key.split(" / ")[-1] in text, "reconciliation omits the scope obligation: " + key)
+            token = key.split(" / ")[-1]
+            gap_section = text.split("## Scope gaps and their owners", 1)[1].split("## Open owner choices", 1)[0]
+            gap_row = next((x for x in gap_section.splitlines() if x.startswith("| " + token + " ")), "")
+            need("unowned" in gap_row.lower() and "bounded" in gap_row.lower(), "reconciliation lacks the unowned scope-gap row: " + token)
         tech = self.read("technology.md")
         need("did not select a toolkit" in tech, "technology document must not claim a toolkit was selected")
         for phrase in ("retractable", "maximum-size pitch", "latest two commentary lines"):
@@ -907,15 +939,31 @@ def negative_controls(package):
         ("surface-owner-coordinated-wrong", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["surface_screens"]["S06"].update(owner=d["surface_screens"]["S06"]["owner"].replace("#261", "#198"))),
           "vision-reconciliation.md": lambda t: t.replace("#261 composes the route and adds the screen to its contract; complete profile", "#198 composes the route and adds the screen to its contract; complete profile")}),
         ("child-lane-prose-drift", "backlog", {"backlog.md": lambda t: t.replace("[#260](https://github.com/diegoami/goal2/issues/260) | 3 |", "[#260](https://github.com/diegoami/goal2/issues/260) | 2 |")}),
-        ("career-chain-reversed-everywhere", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][3]["issues"].reverse()),
-          "backlog.md": reverse_chain, "vision-reconciliation.md": reverse_chain, "../../docs/tasks/README.md": reverse_chain}),
-        ("career-chain-reversed-in-task-index-only", "vision", {"../../docs/tasks/README.md": reverse_chain}),
-        ("career-chain-reversed-in-backlog-only", "vision", {"backlog.md": reverse_chain}),
-        ("career-arrows-removed-order-kept", "vision", {"backlog.md": lambda t: reverse_chain(t, keep_order=True)}),
-        ("retirement-constraint-dropped", "vision", {"../../docs/tasks/README.md": lambda t: t.replace("[#155](https://github.com/diegoami/goal2/issues/155) before #117", "[#155](https://github.com/diegoami/goal2/issues/155)")}),
-        ("launch-shell-order-reversed", "vision", {"vision-reconciliation.md": lambda t: t.replace(
-            "[#260](https://github.com/diegoami/goal2/issues/260) → [#261](https://github.com/diegoami/goal2/issues/261)",
-            "[#261](https://github.com/diegoami/goal2/issues/261) → [#260](https://github.com/diegoami/goal2/issues/260)")}),
+        # [designed: #253 rework R3] directed dependency pairs: the reviewer's four attacks and the class around them
+        ("foundation-arrows-reversed", "vision", {"backlog.md": lambda t: t.replace(
+            "[#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved), [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243)",
+            "[#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved) ← [#242](https://github.com/diegoami/goal2/issues/242) ← [#243](https://github.com/diegoami/goal2/issues/243)")}),
+        ("history-dependency-inverted-prose", "vision", {"backlog.md": lambda t: t.replace("retained-history browsing. |", "retained-history browsing must precede the base match journey. |")}),
+        ("history-inverted-and-followon-removed-coordinated", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][2].pop("follow_on")),
+          "backlog.md": lambda t: drop_row(t.replace("retained-history browsing. |", "retained-history browsing must precede the base match journey. |"), 262, 251, "lane 3")}),
+        ("followon-removed-in-registry-only", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][2].pop("follow_on"))}),
+        ("followon-removed-in-prose-only", "vision", {"backlog.md": lambda t: drop_row(t, 262, 251, "lane 3")}),
+        ("lane-objects-swapped-in-registry-array", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"].insert(1, d["queue"]["lanes"].pop(2)))}),
+        ("canonical-row-reversed-in-backlog", "vision", {"backlog.md": lambda t: swap_row(t, 110, 112, "lane 4")}),
+        ("canonical-row-reversed-in-reconciliation", "vision", {"vision-reconciliation.md": lambda t: swap_row(t, 260, 261, "lane 3")}),
+        ("canonical-row-reversed-in-task-index", "vision", {"../../docs/tasks/README.md": lambda t: swap_row(t, 198, 243, "lane 2")}),
+        ("canonical-row-missing-in-reconciliation", "vision", {"vision-reconciliation.md": lambda t: drop_row(t, 198, 242, "lane 2")}),
+        ("retirement-constraint-row-dropped", "vision", {"../../docs/tasks/README.md": lambda t: drop_row(t, 155, 117, "lane 4")}),
+        ("non-prerequisite-row-dropped", "vision", {"../../docs/tasks/README.md": lambda t: t.replace("| #259 | #198 | lane 2 |\n", "", 1)}),
+        ("career-order-reversed-everywhere", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][3]["issues"].reverse()),
+          "backlog.md": reverse_lane4_rows, "vision-reconciliation.md": reverse_lane4_rows, "../../docs/tasks/README.md": reverse_lane4_rows}),
+        ("registry-dependency-reversed", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["dependencies"][0].update(before=242, after=198))}),
+        ("order-word-contradicts-outside-lane-rows", "vision", {"backlog.md": lambda t: t.replace("they are not schedules.", "they are not schedules. #251 must precede #262.", 1)}),
+        ("backward-order-word-contradicts-outside-lane-rows", "vision", {"vision-reconciliation.md": lambda t: t.replace("This reconciliation records a plan.", "This reconciliation records a plan; #261 follows #262.", 1)}),
+        ("reverse-arrow-in-reconciliation", "vision", {"vision-reconciliation.md": lambda t: t.replace("## Scope gaps and their owners", "#262 <- #261\n\n## Scope gaps and their owners", 1)}),
+        ("order-word-reintroduced-in-lane-row", "vision", {"backlog.md": lambda t: t.replace("(retirement and replacement safeguard)", "(retirement and replacement safeguard, before #117)", 1)}),
+        ("child-dependencies-diverge-from-live-body", "backlog", {"backlog.json": lambda t: edit_json(t, lambda d: next(x for x in d if x["key"] == "B03").update(dependencies=next(y for y in d if y["key"] == "B03")["dependencies"] + " Also after #262."))}),
+        ("reconciliation-scope-gap-row-removed", "vision", {"vision-reconciliation.md": lambda t: "".join(x for x in t.splitlines(keepends=True) if not x.startswith("| G04 "))}),
         ("foundation-order-reversed-in-registry", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][1]["issues"].insert(0, d["queue"]["lanes"][1]["issues"].pop(1)))}),
         ("launch-lane-reordered-in-registry", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][2]["issues"].insert(0, d["queue"]["lanes"][2]["issues"].pop(1)))}),
         ("layout-and-bounds-receipt-coordinated", "proposal", {"layouts/06-match-preparation.svg": lambda t: t + "\n",
@@ -978,12 +1026,26 @@ def negative_controls(package):
         "journey-surfaces-replaced": "journey surfaces or edges differ from the independent oracle: J07",
         "surface-owner-coordinated-wrong": "undrawn/partial surface names the wrong bounded owner: S06",
         "child-lane-prose-drift": "backlog.md child lane/priority differs from the approved queue: B02",
-        "career-chain-reversed-everywhere": "queue lane order differs from the approved order: lane 4",
-        "career-chain-reversed-in-task-index-only": "queue precedence violated in docs/tasks/README.md: #110 before #112",
-        "career-chain-reversed-in-backlog-only": "queue precedence violated in backlog.md: #110 before #112",
-        "career-arrows-removed-order-kept": "career chain differs from the approved #110 → … → #119 order in backlog.md",
-        "retirement-constraint-dropped": "#155 before #117 constraint missing in docs/tasks/README.md",
-        "launch-shell-order-reversed": "queue precedence violated in vision-reconciliation.md: #260 before #261",
+        "foundation-arrows-reversed": "reverse arrow between queue issues in backlog.md",
+        "history-dependency-inverted-prose": "queue lane text in backlog.md states an order outside the canonical dependency table: precede",
+        "history-inverted-and-followon-removed-coordinated": "queue follow-on differs from the approved queue: lane 3",
+        "followon-removed-in-registry-only": "queue follow-on differs from the approved queue: lane 3",
+        "followon-removed-in-prose-only": "dependency table in backlog.md differs from the approved dependencies",
+        "lane-objects-swapped-in-registry-array": "queue lanes are not listed in lane order",
+        "canonical-row-reversed-in-backlog": "dependency table in backlog.md differs from the approved dependencies",
+        "canonical-row-reversed-in-reconciliation": "dependency table in vision-reconciliation.md differs from the approved dependencies",
+        "canonical-row-reversed-in-task-index": "dependency table in docs/tasks/README.md differs from the approved dependencies",
+        "canonical-row-missing-in-reconciliation": "dependency table in vision-reconciliation.md differs from the approved dependencies",
+        "retirement-constraint-row-dropped": "dependency table in docs/tasks/README.md differs from the approved dependencies",
+        "non-prerequisite-row-dropped": "non-prerequisite table in docs/tasks/README.md differs from the approved pairs",
+        "career-order-reversed-everywhere": "queue lane order differs from the approved order: lane 4",
+        "registry-dependency-reversed": "queue dependencies in the registry differ from the approved pairs",
+        "order-word-contradicts-outside-lane-rows": "order statement contradicts the approved dependencies in backlog.md",
+        "backward-order-word-contradicts-outside-lane-rows": "order statement contradicts the approved dependencies in vision-reconciliation.md",
+        "reverse-arrow-in-reconciliation": "reverse arrow between queue issues in vision-reconciliation.md",
+        "order-word-reintroduced-in-lane-row": "queue lane text in backlog.md states an order outside the canonical dependency table: before",
+        "child-dependencies-diverge-from-live-body": "backlog.json dependencies differ from the pinned live body: B03",
+        "reconciliation-scope-gap-row-removed": "reconciliation lacks the unowned scope-gap row: G04",
         "foundation-order-reversed-in-registry": "queue lane order differs from the approved order: lane 2",
         "launch-lane-reordered-in-registry": "queue lane order differs from the approved order: lane 3",
         "layout-and-bounds-receipt-coordinated": "layout bounds receipt differs from the pinned reviewed receipt",
@@ -1021,11 +1083,21 @@ def regen_context_rows(text):
     return "".join((rows[m.group(1)] + "\n") if (m := re.match(r"^\| ([A-Z]{2}) \|", line)) and m.group(1) in rows else line for line in text.splitlines(keepends=True))
 
 
-def reverse_chain(text, keep_order=False):
-    """Control helper: reverse the rendered #110 -> ... -> #119 chain (or, with keep_order, drop only its arrows)."""
-    m = re.search(r"((?:\[#\d+\]\([^)]*\) (?:→|->) )+\[#119\]\([^)]*\))", text)
-    tokens = re.findall(r"\[#\d+\]\([^)]*\)", m.group(1))
-    return text[:m.start()] + ((", " if keep_order else " → ").join(tokens if keep_order else reversed(tokens))) + text[m.end():]
+def swap_row(text, before, after, source):
+    """Control helper: write a canonical dependency row in the reverse direction."""
+    old = f"| #{before} | #{after} | {source} |"
+    assert old in text, old
+    return text.replace(old, f"| #{after} | #{before} | {source} |", 1)
+
+
+def drop_row(text, before, after, source):
+    old = f"| #{before} | #{after} | {source} |\n"
+    assert old in text, old
+    return text.replace(old, "", 1)
+
+
+def reverse_lane4_rows(text):
+    return re.sub(r"^\| #(\d+) \| #(\d+) \| lane 4 \|$", lambda m: f"| #{m.group(2)} | #{m.group(1)} | lane 4 |", text, flags=re.M)
 
 
 def edit_json(text, change):

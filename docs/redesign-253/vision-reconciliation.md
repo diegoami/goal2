@@ -121,10 +121,37 @@
 | Lane | Work | Issues | Rule |
 | --- | --- | --- | --- |
 | 1 Now | Reconcile this plan; prepare bounded cloud slices | [#253](https://github.com/diegoami/goal2/issues/253) (this package), [#270](https://github.com/diegoami/goal2/issues/270) P0 cloud issue; [#208](https://github.com/diegoami/goal2/issues/208)/[#268](https://github.com/diegoami/goal2/issues/268) keep their own narrow tooling scope | #270 is referenced, not implemented or pre-split here. |
-| 2 Existing foundations | Native validation, then complete cards/bars, then Play/Watch/speed; proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved), [#242](https://github.com/diegoami/goal2/issues/242), [#243](https://github.com/diegoami/goal2/issues/243), [#259](https://github.com/diegoami/goal2/issues/259) | Existing author/reviewer choices persist. #259 is split into consuming proofs and creates no circular prerequisite for #198/#242/#243. |
-| 3 First supported session | Launch/Resume, then shell and Team/pool, then preparation/pitch/result/Continue | [#260](https://github.com/diegoami/goal2/issues/260) → [#261](https://github.com/diegoami/goal2/issues/261) (split shell and Team/pool) → [#262](https://github.com/diegoami/goal2/issues/262); [#249](https://github.com/diegoami/goal2/issues/249) available-information slice; [#263](https://github.com/diegoami/goal2/issues/263) first-slice oracles alongside; [#251](https://github.com/diegoami/goal2/issues/251) retained-history browsing after the base match journey | The first release is smaller than full parity. |
-| 4 Independent career stream | Real national career | [#110](https://github.com/diegoami/goal2/issues/110) → [#112](https://github.com/diegoami/goal2/issues/112) → [#113](https://github.com/diegoami/goal2/issues/113) → [#114](https://github.com/diegoami/goal2/issues/114) → [#115](https://github.com/diegoami/goal2/issues/115) → [#116](https://github.com/diegoami/goal2/issues/116) → [#117](https://github.com/diegoami/goal2/issues/117) → [#118](https://github.com/diegoami/goal2/issues/118) → [#119](https://github.com/diegoami/goal2/issues/119); [#155](https://github.com/diegoami/goal2/issues/155) before #117 | UI cosmetics are not a predecessor. |
-| 5 Full parity | Supported decisions, retained records, assistant/identity, local managers | [#248](https://github.com/diegoami/goal2/issues/248), [#250](https://github.com/diegoami/goal2/issues/250), [#251](https://github.com/diegoami/goal2/issues/251) (records, then separately scoped replay), [#265](https://github.com/diegoami/goal2/issues/265), [#264](https://github.com/diegoami/goal2/issues/264), plus the scope gaps below | P3 polish and legacy maintenance are outside the delivery critical path and have no delivery milestone. |
+| 2 Existing foundations | Native validation, complete cards/bars, Play/Watch/speed; proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved), [#242](https://github.com/diegoami/goal2/issues/242), [#243](https://github.com/diegoami/goal2/issues/243), [#259](https://github.com/diegoami/goal2/issues/259) | Existing author/reviewer choices persist. #259 is split into consuming proofs. |
+| 3 First supported session | Launch/Resume, shell and Team/pool, preparation/pitch/result/Continue | [#260](https://github.com/diegoami/goal2/issues/260), [#261](https://github.com/diegoami/goal2/issues/261) (split shell and Team/pool), [#262](https://github.com/diegoami/goal2/issues/262); [#249](https://github.com/diegoami/goal2/issues/249) available-information slice; [#263](https://github.com/diegoami/goal2/issues/263) first-slice oracles alongside; [#251](https://github.com/diegoami/goal2/issues/251) retained-history browsing | The first release is smaller than full parity. |
+| 4 Independent career stream | Real national career | [#110](https://github.com/diegoami/goal2/issues/110), [#112](https://github.com/diegoami/goal2/issues/112), [#113](https://github.com/diegoami/goal2/issues/113), [#114](https://github.com/diegoami/goal2/issues/114), [#115](https://github.com/diegoami/goal2/issues/115), [#116](https://github.com/diegoami/goal2/issues/116), [#117](https://github.com/diegoami/goal2/issues/117), [#118](https://github.com/diegoami/goal2/issues/118), [#119](https://github.com/diegoami/goal2/issues/119); [#155](https://github.com/diegoami/goal2/issues/155) | UI cosmetics are not part of this stream’s order. |
+| 5 Full parity | Supported decisions, retained records, assistant/identity, local managers | [#248](https://github.com/diegoami/goal2/issues/248), [#250](https://github.com/diegoami/goal2/issues/250), [#251](https://github.com/diegoami/goal2/issues/251) (records and separately scoped replay), [#265](https://github.com/diegoami/goal2/issues/265), [#264](https://github.com/diegoami/goal2/issues/264), plus the scope gaps below | P3 polish and legacy maintenance are outside the delivery critical path and have no delivery milestone. |
+
+### Approved dependencies
+
+[designed: owner-approved queue, 2026-10-20] Dependency order is stated **only** in the two tables below (and mirrored in `package.json`); the lane rows above list issues without order. `validate.py --check vision` parses these rows and requires them to equal its independent list of the approved pairs: a reversed, missing or extra row fails, and so does a reverse arrow between issues or an order word that contradicts them elsewhere in this file. “#262” is the base match journey. The tables do not order #249, #263, lane 1 or lane 5, because the approved queue states no order for them. UI cosmetics are not part of the career stream’s order.
+
+| Before | After | Source |
+| --- | --- | --- |
+| #198 | #242 | lane 2 |
+| #198 | #243 | lane 2 |
+| #260 | #261 | lane 3 |
+| #261 | #262 | lane 3 |
+| #262 | #251 | lane 3 |
+| #110 | #112 | lane 4 |
+| #112 | #113 | lane 4 |
+| #113 | #114 | lane 4 |
+| #114 | #115 | lane 4 |
+| #115 | #116 | lane 4 |
+| #116 | #117 | lane 4 |
+| #117 | #118 | lane 4 |
+| #118 | #119 | lane 4 |
+| #155 | #117 | lane 4 |
+
+| Not a prerequisite | Of | Source |
+| --- | --- | --- |
+| #259 | #198 | lane 2 |
+| #259 | #242 | lane 2 |
+| #259 | #243 | lane 2 |
 
 ## Scope gaps and their owners
 

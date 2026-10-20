@@ -176,14 +176,41 @@ operational status.
 | Lane | Planning scope | Issue / dependency gate |
 | --- | --- | --- |
 | 1 | Reconcile this plan; prepare bounded cloud slices | [#253](https://github.com/diegoami/goal2/issues/253); [#270](https://github.com/diegoami/goal2/issues/270) P0 cloud issue (referenced, not pre-split here); [#208](https://github.com/diegoami/goal2/issues/208)/[#268](https://github.com/diegoami/goal2/issues/268) keep their own tooling scope |
-| 2 | Native validation, complete cards/bars, Play/Watch and speed; consuming proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240), then [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243); [B01/#259](https://github.com/diegoami/goal2/issues/259) split proofs, no circular prerequisite |
+| 2 | Native validation, complete cards/bars, Play/Watch and speed; consuming proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240), [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243); [B01/#259](https://github.com/diegoami/goal2/issues/259) split proofs |
 | 3a | Launch, Resume and safe new career | [B02/#260](https://github.com/diegoami/goal2/issues/260); relevant #259 proof; G05 complete profile and #265 identity are separate |
 | 3b | Original-style shell, Team and pool | [B03/#261](https://github.com/diegoami/goal2/issues/261) (split shell and Team/pool); #260 context, #198/#242/#243, #249 available information |
 | 3c | Preparation, maximum-pitch play, result and Continue | [B04/#262](https://github.com/diegoami/goal2/issues/262); #261 shell, #198/#243, renderer/focus proof; #250 only supported decisions |
 | 3d | First-slice acceptance oracles, started alongside 3a-3c | [B05/#263](https://github.com/diegoami/goal2/issues/263); first-slice acceptance is distinct from the 237-allocation full-parity gate |
-| 3e | Available fixtures, tables and opponents; retained-history browsing | [#249](https://github.com/diegoami/goal2/issues/249) available-information slice; [#251](https://github.com/diegoami/goal2/issues/251) after the base match journey |
-| 4 | Independent career stream | [#110](https://github.com/diegoami/goal2/issues/110) -> [#112](https://github.com/diegoami/goal2/issues/112) -> [#113](https://github.com/diegoami/goal2/issues/113) -> [#114](https://github.com/diegoami/goal2/issues/114) -> [#115](https://github.com/diegoami/goal2/issues/115) -> [#116](https://github.com/diegoami/goal2/issues/116) -> [#117](https://github.com/diegoami/goal2/issues/117) -> [#118](https://github.com/diegoami/goal2/issues/118) -> [#119](https://github.com/diegoami/goal2/issues/119); [#155](https://github.com/diegoami/goal2/issues/155) before #117; UI cosmetics are not a predecessor |
+| 3e | Available fixtures, tables and opponents; retained-history browsing | [#249](https://github.com/diegoami/goal2/issues/249) available-information slice; [#251](https://github.com/diegoami/goal2/issues/251) retained-history browsing |
+| 4 | Independent career stream | [#110](https://github.com/diegoami/goal2/issues/110), [#112](https://github.com/diegoami/goal2/issues/112), [#113](https://github.com/diegoami/goal2/issues/113), [#114](https://github.com/diegoami/goal2/issues/114), [#115](https://github.com/diegoami/goal2/issues/115), [#116](https://github.com/diegoami/goal2/issues/116), [#117](https://github.com/diegoami/goal2/issues/117), [#118](https://github.com/diegoami/goal2/issues/118), [#119](https://github.com/diegoami/goal2/issues/119); [#155](https://github.com/diegoami/goal2/issues/155) |
 | 5a | Supported decisions, retained records and replay | [#248](https://github.com/diegoami/goal2/issues/248), [#250](https://github.com/diegoami/goal2/issues/250), [#251](https://github.com/diegoami/goal2/issues/251) within their written bounds |
 | 5b | Assistant/identity and local-manager contracts | [B06/#265](https://github.com/diegoami/goal2/issues/265), [B07/#264](https://github.com/diegoami/goal2/issues/264): contracts only; actual delivery unowned |
-| 5c | Scope gaps with no delivery owner | [G01-G05, O13, O14](../redesign-253/decisions.md#unowned-capability-decisions): unowned, each needs a bounded contract before a full-parity claim; no task dispatch |
+| 5c | Scope gaps with no delivery owner | [G01-G05, O13, O14](../redesign-253/decisions.md#unowned-capability-decisions): unowned; each full-parity claim needs a bounded contract; no task dispatch |
 | 6 | Full-parity acceptance | B05/#263 full-parity gate; actual supported capabilities for B06/B07 and G01-G05, or explicit owner-named exceptions |
+
+### Approved dependencies
+
+[designed: owner-approved queue, 2026-10-20] Dependency order is stated **only** in the two tables below (and mirrored in `docs/redesign-253/package.json`); the lane rows above list issues without order. `validate.py --check vision` parses these rows and requires them to equal its independent list of the approved pairs: a reversed, missing or extra row fails, and so does a reverse arrow between issues or an order word that contradicts them elsewhere in this file. “#262” is the base match journey. The tables do not order #249, #263, lane 1 or lane 5, because the approved queue states no order for them. UI cosmetics are not part of the career stream’s order.
+
+| Before | After | Source |
+| --- | --- | --- |
+| #198 | #242 | lane 2 |
+| #198 | #243 | lane 2 |
+| #260 | #261 | lane 3 |
+| #261 | #262 | lane 3 |
+| #262 | #251 | lane 3 |
+| #110 | #112 | lane 4 |
+| #112 | #113 | lane 4 |
+| #113 | #114 | lane 4 |
+| #114 | #115 | lane 4 |
+| #115 | #116 | lane 4 |
+| #116 | #117 | lane 4 |
+| #117 | #118 | lane 4 |
+| #118 | #119 | lane 4 |
+| #155 | #117 | lane 4 |
+
+| Not a prerequisite | Of | Source |
+| --- | --- | --- |
+| #259 | #198 | lane 2 |
+| #259 | #242 | lane 2 |
+| #259 | #243 | lane 2 |

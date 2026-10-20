@@ -487,7 +487,7 @@
           243,
           259
         ],
-        "note": "#198/PR #240 native validation (#254/#255 resolved), then #242 cards/bars and #243 Play/Watch/speed; #259 is split into consuming proofs and is not a prerequisite of those three"
+        "note": "#198/PR #240 native validation (#254/#255 resolved), #242 cards/bars, #243 Play/Watch/speed, and #259 split into consuming proofs; dependency order is in queue.dependencies"
       },
       {
         "lane": 3,
@@ -502,7 +502,7 @@
         "follow_on": [
           251
         ],
-        "note": "#260 launch/Resume, then #261 shell and Team/pool, then #262 preparation/pitch/result/Continue; #249 available-information slice; #263 first-slice oracles start alongside; #251 retained-history browsing follows the base match journey"
+        "note": "#260 launch/Resume, #261 shell and Team/pool, #262 preparation/pitch/result/Continue; #249 available-information slice; #263 first-slice oracles alongside; #251 retained-history browsing (follow_on); dependency order is in queue.dependencies"
       },
       {
         "lane": 4,
@@ -518,12 +518,7 @@
           118,
           119
         ],
-        "before": {
-          "117": [
-            155
-          ]
-        },
-        "note": "UI cosmetics are not a predecessor of this stream"
+        "note": "real national career stream; dependency order is in queue.dependencies; UI cosmetics are not part of the stream"
       },
       {
         "lane": 5,
@@ -536,6 +531,95 @@
           264
         ],
         "note": "supported decisions, retained records and separately scoped replay, assistant/identity, local managers; plus the scope gaps G01-G05 and the evidence obligations O13-O14; P3 polish and legacy maintenance are outside the delivery critical path"
+      }
+    ],
+    "dependencies": [
+      {
+        "before": 198,
+        "after": 242,
+        "source": "lane 2"
+      },
+      {
+        "before": 198,
+        "after": 243,
+        "source": "lane 2"
+      },
+      {
+        "before": 260,
+        "after": 261,
+        "source": "lane 3"
+      },
+      {
+        "before": 261,
+        "after": 262,
+        "source": "lane 3"
+      },
+      {
+        "before": 262,
+        "after": 251,
+        "source": "lane 3"
+      },
+      {
+        "before": 110,
+        "after": 112,
+        "source": "lane 4"
+      },
+      {
+        "before": 112,
+        "after": 113,
+        "source": "lane 4"
+      },
+      {
+        "before": 113,
+        "after": 114,
+        "source": "lane 4"
+      },
+      {
+        "before": 114,
+        "after": 115,
+        "source": "lane 4"
+      },
+      {
+        "before": 115,
+        "after": 116,
+        "source": "lane 4"
+      },
+      {
+        "before": 116,
+        "after": 117,
+        "source": "lane 4"
+      },
+      {
+        "before": 117,
+        "after": 118,
+        "source": "lane 4"
+      },
+      {
+        "before": 118,
+        "after": 119,
+        "source": "lane 4"
+      },
+      {
+        "before": 155,
+        "after": 117,
+        "source": "lane 4"
+      }
+    ],
+    "not_prerequisite": [
+      {
+        "not_prerequisite": 259,
+        "of": 198,
+        "source": "lane 2"
+      },
+      {
+        "not_prerequisite": 259,
+        "of": 242,
+        "source": "lane 2"
+      },
+      {
+        "not_prerequisite": 259,
+        "of": 243,
+        "source": "lane 2"
       }
     ]
   }

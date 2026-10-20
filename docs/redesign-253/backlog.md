@@ -7,10 +7,37 @@
 | Lane | Outcome | Issues and dependencies |
 | --- | --- | --- |
 | 1 Now | Reconcile this plan; prepare bounded cloud slices | [#253](https://github.com/diegoami/goal2/issues/253) with this package; [#270](https://github.com/diegoami/goal2/issues/270) is its own P0 cloud issue (deterministic engine test doubles, runtime bootstrap, resource inventory, inherited #82 acceptance) and is **referenced, not implemented or pre-split here**; [#208](https://github.com/diegoami/goal2/issues/208)/[#268](https://github.com/diegoami/goal2/issues/268) keep their own narrow tooling scope. |
-| 2 Existing foundations | Native validation, complete cards/bars, Play/Watch and speed; proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved), then [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243), reconciled to the black/large-text/bar target on their own issues. [B01/#259](https://github.com/diegoami/goal2/issues/259) is split into consuming proofs (cards/accessibility, renderer/focus, package/resource/save) and creates no circular prerequisite for #198/#242/#243. Window and toolkit questions are answered by measured proof ([technology.md](technology.md#window-and-platform-questions-that-still-need-measured-proof)); Python/Qt+SDL is retained unless a concrete requirement fails. |
-| 3 First supported session | One coherent original-style session | [B02/#260](https://github.com/diegoami/goal2/issues/260) launch/Resume → [B03/#261](https://github.com/diegoami/goal2/issues/261) shell and Team/pool (split before dispatch) → [B04/#262](https://github.com/diegoami/goal2/issues/262) preparation/maximum-pitch/result/Continue; the available-information slice of [#249](https://github.com/diegoami/goal2/issues/249); [B05/#263](https://github.com/diegoami/goal2/issues/263) first-slice oracles start alongside, not after all full-parity work; [#251](https://github.com/diegoami/goal2/issues/251) retained-history browsing follows the base match journey. |
-| 4 Independent career stream | Real national career | [#110](https://github.com/diegoami/goal2/issues/110) → [#112](https://github.com/diegoami/goal2/issues/112) → [#113](https://github.com/diegoami/goal2/issues/113) → [#114](https://github.com/diegoami/goal2/issues/114) → [#115](https://github.com/diegoami/goal2/issues/115) → [#116](https://github.com/diegoami/goal2/issues/116) → [#117](https://github.com/diegoami/goal2/issues/117) → [#118](https://github.com/diegoami/goal2/issues/118) → [#119](https://github.com/diegoami/goal2/issues/119), with [#155](https://github.com/diegoami/goal2/issues/155) before #117. UI cosmetics are not a predecessor. |
-| 5 Full parity | Supported decisions, retained records, assistant/identity, local managers, scope gaps | [#248](https://github.com/diegoami/goal2/issues/248)/[#250](https://github.com/diegoami/goal2/issues/250) supported decisions; [#251](https://github.com/diegoami/goal2/issues/251) retained records, then separately scoped replay; [B06/#265](https://github.com/diegoami/goal2/issues/265) assistant/identity and [B07/#264](https://github.com/diegoami/goal2/issues/264) local-manager **contracts**; plus [G01–G05, O13 and O14](vision-reconciliation.md#scope-gaps-and-their-owners), each unowned until it has a bounded contract. P3 polish and legacy maintenance are outside the delivery critical path and have no delivery milestone. |
+| 2 Existing foundations | Native validation, complete cards/bars, Play/Watch and speed; proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved), [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243), each reconciled to the black/large-text/bar target on its own issue; [B01/#259](https://github.com/diegoami/goal2/issues/259) split into consuming proofs (cards/accessibility, renderer/focus, package/resource/save). Window and toolkit questions are answered by measured proof ([technology.md](technology.md#window-and-platform-questions-that-still-need-measured-proof)); Python/Qt+SDL is retained unless a concrete requirement fails. |
+| 3 First supported session | One coherent original-style session | [B02/#260](https://github.com/diegoami/goal2/issues/260) launch/Resume; [B03/#261](https://github.com/diegoami/goal2/issues/261) shell and Team/pool (split into two pieces); [B04/#262](https://github.com/diegoami/goal2/issues/262) preparation/maximum-pitch/result/Continue; the available-information slice of [#249](https://github.com/diegoami/goal2/issues/249); [B05/#263](https://github.com/diegoami/goal2/issues/263) first-slice oracles, started alongside rather than held for all full-parity work; [#251](https://github.com/diegoami/goal2/issues/251) retained-history browsing. |
+| 4 Independent career stream | Real national career | [#110](https://github.com/diegoami/goal2/issues/110), [#112](https://github.com/diegoami/goal2/issues/112), [#113](https://github.com/diegoami/goal2/issues/113), [#114](https://github.com/diegoami/goal2/issues/114), [#115](https://github.com/diegoami/goal2/issues/115), [#116](https://github.com/diegoami/goal2/issues/116), [#117](https://github.com/diegoami/goal2/issues/117), [#118](https://github.com/diegoami/goal2/issues/118), [#119](https://github.com/diegoami/goal2/issues/119) and [#155](https://github.com/diegoami/goal2/issues/155) (retirement and replacement safeguard). |
+| 5 Full parity | Supported decisions, retained records, assistant/identity, local managers, scope gaps | [#248](https://github.com/diegoami/goal2/issues/248)/[#250](https://github.com/diegoami/goal2/issues/250) supported decisions; [#251](https://github.com/diegoami/goal2/issues/251) retained records and separately scoped replay; [B06/#265](https://github.com/diegoami/goal2/issues/265) assistant/identity and [B07/#264](https://github.com/diegoami/goal2/issues/264) local-manager **contracts**; plus [G01–G05, O13 and O14](vision-reconciliation.md#scope-gaps-and-their-owners), each unowned until it has a bounded contract. P3 polish and legacy maintenance are outside the delivery critical path and have no delivery milestone. |
+
+### Approved dependencies
+
+[designed: owner-approved queue, 2026-10-20] Dependency order is stated **only** in the two tables below (and mirrored in `package.json`); the lane rows above list issues without order. `validate.py --check vision` parses these rows and requires them to equal its independent list of the approved pairs: a reversed, missing or extra row fails, and so does a reverse arrow between issues or an order word that contradicts them elsewhere in this file. “#262” is the base match journey. The tables do not order #249, #263, lane 1 or lane 5, because the approved queue states no order for them. UI cosmetics are not part of the career stream’s order.
+
+| Before | After | Source |
+| --- | --- | --- |
+| #198 | #242 | lane 2 |
+| #198 | #243 | lane 2 |
+| #260 | #261 | lane 3 |
+| #261 | #262 | lane 3 |
+| #262 | #251 | lane 3 |
+| #110 | #112 | lane 4 |
+| #112 | #113 | lane 4 |
+| #113 | #114 | lane 4 |
+| #114 | #115 | lane 4 |
+| #115 | #116 | lane 4 |
+| #116 | #117 | lane 4 |
+| #117 | #118 | lane 4 |
+| #118 | #119 | lane 4 |
+| #155 | #117 | lane 4 |
+
+| Not a prerequisite | Of | Source |
+| --- | --- | --- |
+| #259 | #198 | lane 2 |
+| #259 | #242 | lane 2 |
+| #259 | #243 | lane 2 |
 
 [designed] The four undated GitHub delivery milestones are **Cloud-ready development**, **Playable original-style session**, **Complete national career** and **Original information/decision parity**. They organize issues; they are not schedules.
 
