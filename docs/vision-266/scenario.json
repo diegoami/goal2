@@ -42,7 +42,7 @@
     {
       "key": "NL02",
       "name": "M Vos",
-      "role": "SW",
+      "role": "RB",
       "age": 26,
       "caps": 20,
       "goals": 2,
@@ -70,8 +70,8 @@
       "availability": "Ready",
       "cards": "No card flags",
       "performance": "Not recorded",
-      "national_position": "SW",
-      "club_position": "SW"
+      "national_position": "RB",
+      "club_position": "RB"
     },
     {
       "key": "NL03",
@@ -178,7 +178,7 @@
     {
       "key": "NL06",
       "name": "S Bakker",
-      "role": "RB",
+      "role": "MF",
       "age": 30,
       "caps": 24,
       "goals": 1,
@@ -206,8 +206,8 @@
       "availability": "Ready",
       "cards": "No card flags",
       "performance": "Not recorded",
-      "national_position": "RB",
-      "club_position": "RB"
+      "national_position": "MF",
+      "club_position": "MF"
     },
     {
       "key": "NL07",

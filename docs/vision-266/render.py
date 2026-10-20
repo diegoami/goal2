@@ -145,6 +145,10 @@ class Sheet:
 def validate_scenario():
     assert len(P)==21 and len(D['initial_squad'])==20 and len(set(D['initial_squad']))==20
     assert len(D['xi'])==11 and set(D['xi'])<=set(D['initial_squad']) and D['captain'] in D['xi']
+    # [designed] The authored 4–4–2 must match the displayed starting roles.
+    roles=[P[k]['role'] for k in D['xi']]
+    assert roles.count('GK')==1 and sum(r in ('LB','RB','CB','SW') for r in roles)==4
+    assert roles.count('MF')==4 and roles.count('FW')==2
     ex=D['pool_exchange']; assert ex['out'] not in D['xi'] and ex['in'] not in D['initial_squad']
     squad=[ex['in'] if k==ex['out'] else k for k in D['initial_squad']]
     sub=D['halftime_exchange']; assert sub['out'] in D['xi'] and sub['in'] in squad and sub['in'] not in D['xi']
@@ -281,7 +285,7 @@ def draw(directory):
     keep(s,'10-career')
     s=Sheet(11,'Team  /  J Jansen','900×640 logical client • pre-kickoff after Noor exchange • same full-card data',small=True,active='Team')
     s.panel(20,167,390,411,'Squad20 • XI11 / Bench9')
-    s.lines(36,222,['Rows1–8 of20   ↓ contained scrollbar', '✓ R van Dalen    GK', '✓ M Vos          SW', '✓ L de Boer C    CB', '✓ T Visser       CB', '✓ J Meijer       LB', '✓ S Bakker       RB', '✓ D Vermeer      MF', '✓ P Bos          MF', '', 'Selected: J Jansen • Noor on bench'],14,26)
+    s.lines(36,222,['Rows1–8 of20   ↓ contained scrollbar', '✓ R van Dalen    GK', '✓ M Vos          RB', '✓ L de Boer C    CB', '✓ T Visser       CB', '✓ J Meijer       LB', '✓ S Bakker       MF', '✓ D Vermeer      MF', '✓ P Bos          MF', '', 'Selected: J Jansen • Noor on bench'],14,26)
     s.rect(395,242,5,225,'#e2e8e1',2); s.rect(395,242,5,90,GREEN,2)
     s.button(36,530,'Jump to bench9',170); s.button(224,530,'Confirm / Discard',170)
     s.card(430,167,'NL14',450,compact=True,context='Bench • ready • no unconfirmed changes')
