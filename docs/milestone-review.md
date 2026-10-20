@@ -24,8 +24,8 @@ example `m3-campaign-ui`) on **exactly the reviewed commit** of `main`.
    ```
 
    then the PRs merged since (`gh pr list --state merged --search "merged:>=<date>"`), the checks
-   run on the candidate (`python3 tools/check_premerge.py --expected-head <sha>` and the game's
-   tests), what changed in plain words, the claims to verify with `file:line`, and the known owner
+   run on the candidate (`python3 tools/check_premerge.py --expected-head <sha> --slow`: every
+   game test, the slow ones included), what changed in plain words, the claims to verify with `file:line`, and the known owner
    decisions (not defects). From then on `main` takes only fixes for the milestone's findings.
 2. The owner starts the review from any clean checkout of this repository:
 

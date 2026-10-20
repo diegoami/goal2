@@ -29,6 +29,9 @@ def consumer_modules():
 
 
 class CompetitiveTests(accepted.CompetitiveTests):
+    # [designed: #275] The vendored test stays as accepted; only when it runs is ours: about 63 s
+    # alone on 32 CPUs, so it runs with the slow tests (GOAL2_SLOW=1).
+    test_penalties_after_extra_time = requires.need(slow=True)(accepted.CompetitiveTests.test_penalties_after_extra_time)
     @classmethod
     def setUpClass(cls):
         cls.image = consumer.Image.from_savestate(reference_image(ROOT / ".cache"))

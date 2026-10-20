@@ -21,6 +21,7 @@ from goal2.game.watched_jobs import WatchedJobs, MAX_PACKET, MAX_MEMORY, READ_BU
 from goal2.game.watched_match import _drive_match, run_watched_match
 from goal2.tests import test_watched_adapter as adapter
 from goal2.tests.test_watched_publication import Owner
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -254,6 +255,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         self.assertEqual([event.minute for event in seen],list(range(2000)))
         self.assertEqual(self.owner.state,self.before)
 
+    @requires.need(slow=True)  # [designed: #275] about 66 s alone on 32 CPUs
     def test_stream_outcome_mismatch_and_incomplete_tail_never_publish(self):
         for mode in ('mismatch','tail','trailing'):
             token=self.bridge('blocked')
@@ -275,6 +277,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
             self.assertEqual(self.owner.state,self.before)
             self.jobs.close()
 
+    @requires.need(slow=True)  # [designed: #275] about 97 s alone on 32 CPUs
     def test_verified_normal_and_injury_jobs_equal_synchronous_and_publish_once(self):
         for seed in (257,70):
             self.owner.state=adapter.WatchedAdapter.state(self)

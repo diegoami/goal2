@@ -102,6 +102,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'requires kit2'):pub.complete(job.token,replay)
         self.assertEqual(owner.state,before)
 
+    @requires.need(slow=True)  # [designed: #275] about 79 s alone on 32 CPUs
     def test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals(self):
         from goal2.game.campaign_rounds import World,Scheduled as WorldFixture
         from goal2.tests.test_watched_adapter import direct_image

@@ -117,6 +117,7 @@ class CompetitiveJobsTests(unittest.TestCase):
         self.assertEqual(self.owner.state,self.before,'failed/pending job published active state')
         self.assertEqual(self.owner.save_path.read_bytes(),self.saved,'failed/pending job changed prior save')
 
+    @requires.need(slow=True)  # [designed: #275] about 90 s alone on 32 CPUs
     def test_real_kind2_and_tied_knockout_match_direct_result_events_memory_seeds(self):
         for kind,index in ((2,21),(200,42)):
             with self.subTest(kind=kind):

@@ -81,6 +81,13 @@ def require(**needs) -> None:
         raise unittest.SkipTest(reason)
 
 
+def cases(items, keep=1):
+    """[designed: owner, 2026-10-20, #275] A batch test's cases: all of them when slow tests run
+    (GOAL2_SLOW=1), else the first `keep`, so the default run still plays one real case."""
+    items = list(items)
+    return items if SLOW else items[:keep]
+
+
 def need(**needs):
     """Decorator: skip a class or method when a requirement is absent."""
     reason = absent(**needs)

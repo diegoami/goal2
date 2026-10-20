@@ -305,6 +305,7 @@ sys.exit(pygame_viewer.main())
 
 class OriginalQtAcceptance(unittest.TestCase):
     @requires.need(modules=("PySide6", "pygame"))
+    @requires.need(slow=True)  # [designed: #275] about 124 s alone on 32 CPUs
     def test_original_qt_save_resume_repeat(self):
         import runpy
         # [designed: #234] run_path does not add the helper's sibling import directory.

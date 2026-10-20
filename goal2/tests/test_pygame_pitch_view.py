@@ -210,7 +210,8 @@ class PitchController(unittest.TestCase):
 class SavedByteControls(unittest.TestCase):
     def test_saved_byte_projection_visibility_and_consumption_controls(self):
         import time
-        directory=ROOT/'docs/evidence/T83'/f'controls-{time.time_ns()}'
+        # [designed: #275] Receipts go to the git-ignored cache, never into tracked docs/evidence.
+        directory=ROOT/'.cache/test-receipts/T83'/f'controls-{time.time_ns()}'
         directory.mkdir(parents=True)
         target=ROOT/'goal2/desktop/pygame_viewer.py';original=target.read_bytes()
         cases=[('axes','CENTER[0] + y * SCALE[0], CENTER[1] + x * SCALE[1]','CENTER[0] + x * SCALE[0], CENTER[1] + y * SCALE[1]','test_independent_axes_team_labels_ball_movement_half_and_rebinding','signed team marker pixels differ'),

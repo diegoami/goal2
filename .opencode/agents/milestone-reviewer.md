@@ -41,8 +41,8 @@ one comment on the issue and stop.
 
 - The launcher has already checked this checkout out at the candidate. Confirm
   `git rev-parse HEAD` equals the Candidate; if it does not, say so on the issue and stop.
-- Run the checks: `python3 tools/check_premerge.py --expected-head <candidate>` and
-  `python3 -m unittest discover -s goal2/tests -t . -q`. Report the tail of anything failing.
+- Run the checks: `python3 tools/check_premerge.py --expected-head <candidate> --slow` (every
+  game test, the slow ones included). Report the tail of anything failing.
 
 ## Review
 
