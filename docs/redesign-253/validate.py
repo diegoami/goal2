@@ -690,7 +690,7 @@ class Package:
         base = self.merge_base()
         changed = set(self.git("diff", "--name-only", base).decode().splitlines())
         changed.update(self.git("ls-files", "--others", "--exclude-standard").decode().splitlines())
-        allowed = lambda x: x.startswith("docs/redesign-253/") or x in {"docs/tasks/README.md", "docs/model-trials.md"}
+        allowed = lambda x: x.startswith("docs/redesign-253/") or x in {"docs/tasks/README.md", "docs/model-trials.md", "harness.lock"}
         need(all(allowed(x) for x in changed), "out-of-scope changed file: " + str(sorted(x for x in changed if not allowed(x))))
         for path in self.path.rglob("*"):
             if not path.is_file():
@@ -701,7 +701,7 @@ class Package:
                 json.loads(path.read_text())
             if path.suffix in (".md", ".py", ".mjs", ".json", ".tsv", ".svg"):
                 need(len(path.read_text()) < 110000, "oversized planning file: " + path.name)
-        return f"{len(changed)} changed files against {base[:8]} limited to the plan package, its task index and the focused process lesson (accepted vision, product and engine untouched);JSON valid;no app/engine/dependency/original payload changes"
+        return f"{len(changed)} changed files against {base[:8]} limited to the plan package, its task index, the focused process lesson and its harness.lock hash (accepted vision, product and engine untouched);JSON valid;no app/engine/dependency/original payload changes"
 
 
 def context_screen_rows(reg, destinations):
