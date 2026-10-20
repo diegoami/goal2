@@ -1,0 +1,8 @@
+# DW5: python3 -m unittest discover -s goal2/tests -v; origin/main 9683a47 archive vs 1d45026fa929e5457e7f39ff9f63890f0c1ca6de archive; no .cache in either; gh shadowed on PATH so no test fetches anything.
+main: Ran 457 tests in 11.920s
+main: FAILED (failures=2, errors=125, skipped=50)
+branch: Ran 538 tests in 22.789s
+branch: FAILED (failures=2, errors=125, skipped=65)
+failing on main: 119 failing on branch: 119
+new failures versus main: []
+fixed versus main: []
