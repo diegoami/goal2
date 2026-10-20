@@ -1,55 +1,123 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
-<title>The country desk</title><desc>Designed finished-target illustration. Fictional data. Not current build or engine output.</desc>
-<rect x="0" y="0" width="1440" height="900" rx="0" fill="#f3f1e9"/>
-<rect x="0" y="0" width="1440" height="78" rx="0" fill="#152d34"/>
-<text x="22" y="29" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="#e7f1e7">GOAL2  /  COUNTRY MANAGER</text>
-<text x="22" y="59" font-family="DejaVu Sans" font-size="17" font-weight="700" fill="white">HOLLAND  •  Alex  •  2030</text>
-<text x="650" y="31" font-family="DejaVu Sans" font-size="15" font-weight="700" fill="#f1ce71">02  FINISHED TARGET</text>
-<text x="650" y="56" font-family="DejaVu Sans" font-size="12" font-weight="400" fill="white">Static illustration • fictional data • not current build</text>
-<rect x="0" y="78" width="170" height="822" rx="0" fill="#152d34"/>
-<rect x="12" y="96" width="146" height="40" rx="5" fill="#006958"/>
-<text x="22" y="121" font-family="DejaVu Sans" font-size="15" font-weight="700" fill="white">Country desk</text>
-<text x="22" y="175" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Team</text>
-<text x="22" y="229" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Competition</text>
-<text x="22" y="283" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Match centre</text>
-<text x="22" y="337" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Archive</text>
-<text x="22" y="391" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Game / Save</text>
-<text x="22" y="819" font-family="DejaVu Sans" font-size="14" font-weight="400" fill="white">Help  /  F1</text>
-<text x="194" y="123" font-family="DejaVu Sans" font-size="28" font-weight="700" fill="#152d34">The country desk</text>
-<text x="194" y="153" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="#52656a">World qualifying campaign • before the Belgium friendly</text>
-<rect x="170" y="863" width="1270" height="37" rx="0" fill="#e2e8e1"/>
-<text x="194" y="886" font-family="DejaVu Sans" font-size="11" font-weight="400" fill="#52656a">DESIGNED • No game controls are active. Target review is not implementation approval.</text>
-<rect x="194" y="185" width="754" height="256" rx="7" fill="white" stroke="#d1dbd5"/>
-<text x="212" y="215" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">Next challenge  /  scheduled friendly</text>
-<text x="216" y="269" font-family="DejaVu Sans" font-size="36" font-weight="700" fill="#152d34">Holland v Belgium</text>
-<text x="216" y="311" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">At home • Holland rank 14 / Belgium rank 8 (illustrative)</text>
-<text x="216" y="343" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Friendly: no qualification points at stake.</text>
-<text x="216" y="375" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Then Eire in qualifying • review the team before kickoff</text>
-<rect x="216" y="383" width="230" height="40" rx="5" fill="#006958"/>
-<text x="229" y="409" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="white">Prepare Belgium</text>
-<rect x="970" y="185" width="444" height="256" rx="7" fill="white" stroke="#d1dbd5"/>
-<text x="988" y="215" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">Your campaign</text>
-<text x="992" y="249" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="#52656a">Qualifying • Group F • opening table</text>
-<text x="992" y="283" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="#52656a">Holland / Eire / Denmark / Luxembourg</text>
-<text x="992" y="317" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="#52656a">All played 0 • no results yet</text>
-<text x="992" y="351" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="#52656a">Standings and group fixtures together</text>
-<rect x="992" y="377" width="230" height="40" rx="5" fill="#006958"/>
-<text x="1005" y="403" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="white">Open competition</text>
-<rect x="194" y="463" width="754" height="280" rx="7" fill="white" stroke="#d1dbd5"/>
-<text x="212" y="493" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">Your people</text>
-<text x="216" y="525" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Twenty in the squad • eleven starters / nine bench</text>
-<text x="216" y="563" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Captain: L de Boer • current plan: 4–4–2</text>
-<text x="216" y="601" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Review C de Wit against reserve R Noor.</text>
-<text x="216" y="639" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Readiness and availability stay beside each decision.</text>
-<rect x="216" y="675" width="230" height="40" rx="5" fill="#006958"/>
-<text x="229" y="701" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="white">Review Team</text>
-<rect x="970" y="463" width="444" height="280" rx="7" fill="white" stroke="#d1dbd5"/>
-<text x="988" y="493" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">National story</text>
-<text x="992" y="525" font-family="DejaVu Sans" font-size="16" font-weight="400" fill="#52656a">Latest news and career records live here.</text>
-<text x="992" y="561" font-family="DejaVu Sans" font-size="16" font-weight="400" fill="#52656a">This save has no completed match yet.</text>
-<text x="992" y="597" font-family="DejaVu Sans" font-size="16" font-weight="400" fill="#52656a">Future records are not fabricated.</text>
-<text x="992" y="633" font-family="DejaVu Sans" font-size="16" font-weight="400" fill="#52656a"></text>
-<text x="992" y="669" font-family="DejaVu Sans" font-size="16" font-weight="400" fill="#52656a">Open Country profile / Archive</text>
-<text x="194" y="790" font-family="DejaVu Sans" font-size="13" font-weight="400" fill="#52656a">The next action and national context come first. Original country/profile/history categories remain discoverable.</text>
-<text x="194" y="813" font-family="DejaVu Sans" font-size="13" font-weight="400" fill="#52656a">Rankings, generated bulletin and complete records are finished-target data; current main does not supply all of them.</text>
+<title>WORLD CUP 2030 / QUALIFYING</title><desc>Designed original-first native desktop target. Fictional story. Not a current-build capture.</desc>
+<rect x="0" y="0" width="1440" height="900" fill="#000000"/>
+<text x="8" y="17" font-family="DejaVu Sans Mono" font-size="14" font-weight="400" fill="#aaaaaa" xml:space="preserve">02 TARGET ILLUSTRATION / FICTIONAL DATA / DESKTOP / NOT CURRENT BUILD</text>
+<g data-chrome="top">
+<rect x="8" y="27" width="1424" height="79" fill="#000000" stroke="#55ffff"/>
+<text x="24" y="63" font-family="DejaVu Sans Mono" font-size="34" font-weight="700" fill="#55ffff" xml:space="preserve">GOAL2</text>
+<text x="178" y="61" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ffff55" xml:space="preserve">HOLLAND</text>
+<text x="178" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Alex / 2030 / World qualifying</text>
+<text x="728" y="60" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">Next: Holland v Belgium</text>
+<text x="728" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Friendly at home</text>
+<text x="1220" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">[Top ^]</text>
+</g><g data-chrome="side">
+<rect x="8" y="118" width="150" height="754" fill="#000000" stroke="#55ffff"/>
+<text x="17" y="145" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">[&lt; Hide]</text>
+<rect x="14" y="180" width="138" height="38" fill="#aaaaaa"/>
+<text x="22" y="205" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#000000" xml:space="preserve">Country</text>
+<text x="22" y="273" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Team</text>
+<text x="22" y="341" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Fixtures</text>
+<text x="22" y="409" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Match</text>
+<text x="22" y="477" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">History</text>
+<text x="22" y="545" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Save</text>
+<text x="20" y="844" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">F1 Help</text>
+</g>
+<text x="178" y="147" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ff5555" xml:space="preserve">WORLD CUP 2030 / QUALIFYING</text>
+<rect x="178" y="174" width="390" height="221" fill="#000000" stroke="#ff5555"/>
+<rect x="191" y="173" width="182" height="28" fill="#000000"/>
+<text x="196" y="194" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#ff5555" xml:space="preserve">YOUR COUNTRY</text>
+<text x="198" y="236" font-family="DejaVu Sans Mono" font-size="27" font-weight="400" fill="#eeeeee" xml:space="preserve">HOLLAND</text>
+<text x="198" y="279" font-family="DejaVu Sans Mono" font-size="27" font-weight="400" fill="#eeeeee" xml:space="preserve">Manager  Alex</text>
+<text x="198" y="322" font-family="DejaVu Sans Mono" font-size="27" font-weight="400" fill="#eeeeee" xml:space="preserve">World    14</text>
+<text x="198" y="365" font-family="DejaVu Sans Mono" font-size="27" font-weight="400" fill="#eeeeee" xml:space="preserve">Europe    3</text>
+<rect x="178" y="416" width="390" height="228" fill="#000000" stroke="#ff5555"/>
+<rect x="191" y="415" width="196" height="28" fill="#000000"/>
+<text x="196" y="436" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#ff5555" xml:space="preserve">NEXT OPPONENT</text>
+<text x="198" y="483" font-family="DejaVu Sans Mono" font-size="32" font-weight="700" fill="#ff5555" xml:space="preserve">BELGIUM</text>
+<text x="198" y="531" font-family="DejaVu Sans Mono" font-size="25" font-weight="400" fill="#eeeeee" xml:space="preserve">World     8</text>
+<text x="198" y="572" font-family="DejaVu Sans Mono" font-size="25" font-weight="400" fill="#eeeeee" xml:space="preserve">Europe    9</text>
+<text x="198" y="613" font-family="DejaVu Sans Mono" font-size="25" font-weight="400" fill="#eeeeee" xml:space="preserve">Friendly / Home</text>
+<rect x="178" y="665" width="390" height="141" fill="#000000" stroke="#55ffff"/>
+<rect x="191" y="664" width="196" height="28" fill="#000000"/>
+<text x="196" y="685" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">YOUR CAMPAIGN</text>
+<text x="198" y="717" font-family="DejaVu Sans Mono" font-size="23" font-weight="400" fill="#ffff55" xml:space="preserve">Group F / Played 0</text>
+<text x="198" y="759" font-family="DejaVu Sans Mono" font-size="23" font-weight="400" fill="#ffff55" xml:space="preserve">Next qualifier: Eire</text>
+<rect x="590" y="187" width="390" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="602" y="217" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Country info</text>
+<rect x="590" y="266" width="390" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="602" y="296" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Fixture list</text>
+<rect x="590" y="345" width="390" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="602" y="375" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Tournament</text>
+<rect x="590" y="424" width="390" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="602" y="454" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">History</text>
+<rect x="590" y="503" width="390" height="44" fill="#aaaaaa" stroke="#55ffff"/>
+<text x="602" y="533" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#000000" xml:space="preserve">Select squad</text>
+<rect x="590" y="582" width="390" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="602" y="612" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Prepare Belgium</text>
+<text x="594" y="708" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ff55" xml:space="preserve">20 ready / XI 11</text>
+<text x="594" y="751" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Captain: L de Boer</text>
+<rect x="1000" y="174" width="422" height="632" fill="#000000" stroke="#55ffff"/>
+<text x="1015" y="204" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">SQUAD 20 / XI 11 / BENCH 9</text>
+<text x="1015" y="242" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">+</text>
+<text x="1039" y="242" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">R van Dalen</text>
+<text x="1292" y="242" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">GK</text>
+<text x="1015" y="270" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
+<text x="1039" y="270" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">M Vos</text>
+<text x="1292" y="270" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">RB</text>
+<text x="1015" y="298" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
+<text x="1039" y="298" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">L de Boer</text>
+<text x="1292" y="298" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">CB C</text>
+<text x="1015" y="326" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
+<text x="1039" y="326" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">T Visser</text>
+<text x="1292" y="326" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">CB</text>
+<text x="1015" y="354" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
+<text x="1039" y="354" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">J Meijer</text>
+<text x="1292" y="354" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">LB</text>
+<text x="1015" y="382" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
+<text x="1039" y="382" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">S Bakker</text>
+<text x="1292" y="382" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+<text x="1015" y="410" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
+<text x="1039" y="410" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">D Vermeer</text>
+<text x="1292" y="410" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+<text x="1015" y="438" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
+<text x="1039" y="438" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">P Bos</text>
+<text x="1292" y="438" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+<text x="1015" y="466" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
+<text x="1039" y="466" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">A Kuiper</text>
+<text x="1292" y="466" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+<text x="1015" y="494" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">+</text>
+<text x="1039" y="494" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">N Smit</text>
+<text x="1292" y="494" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+<text x="1015" y="522" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">+</text>
+<text x="1039" y="522" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">F Mulder</text>
+<text x="1292" y="522" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+<text x="1015" y="550" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">-</text>
+<text x="1039" y="550" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">E Kok</text>
+<text x="1292" y="550" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">GK</text>
+<text x="1015" y="578" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">-</text>
+<text x="1039" y="578" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">B Peters</text>
+<text x="1292" y="578" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">CB</text>
+<rect x="1011" y="584" width="356" height="27" fill="#aaaaaa"/>
+<text x="1015" y="606" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#000000" xml:space="preserve">-</text>
+<text x="1039" y="606" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#000000" xml:space="preserve">J Jansen</text>
+<text x="1292" y="606" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#000000" xml:space="preserve">MF</text>
+<text x="1015" y="634" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">-</text>
+<text x="1039" y="634" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">K van Leeuwen</text>
+<text x="1292" y="634" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+<text x="1015" y="662" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">-</text>
+<text x="1039" y="662" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">W Dekker</text>
+<text x="1292" y="662" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">LB</text>
+<text x="1015" y="690" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">-</text>
+<text x="1039" y="690" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">G Brouwer</text>
+<text x="1292" y="690" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">RB</text>
+<text x="1015" y="718" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">-</text>
+<text x="1039" y="718" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">H Dijkstra</text>
+<text x="1292" y="718" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+<text x="1015" y="746" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">-</text>
+<text x="1039" y="746" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">I van Dijk</text>
+<text x="1292" y="746" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+<text x="1015" y="774" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">-</text>
+<text x="1039" y="774" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">C de Wit</text>
+<text x="1292" y="774" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+<text x="178" y="885" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#ff55ff" xml:space="preserve">F1 Help / F7 Save / All ranks are illustrative / Top + side bars: retract</text>
 </svg>

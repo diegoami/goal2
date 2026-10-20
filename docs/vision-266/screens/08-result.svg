@@ -1,53 +1,65 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
-<title>Holland  2 — 1  Belgium</title><desc>Designed finished-target illustration. Fictional data. Not current build or engine output.</desc>
-<rect x="0" y="0" width="1440" height="900" rx="0" fill="#f3f1e9"/>
-<rect x="0" y="0" width="1440" height="78" rx="0" fill="#152d34"/>
-<text x="22" y="29" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="#e7f1e7">GOAL2  /  COUNTRY MANAGER</text>
-<text x="22" y="59" font-family="DejaVu Sans" font-size="17" font-weight="700" fill="white">HOLLAND  •  Alex  •  2030</text>
-<text x="650" y="31" font-family="DejaVu Sans" font-size="15" font-weight="700" fill="#f1ce71">08  FINISHED TARGET</text>
-<text x="650" y="56" font-family="DejaVu Sans" font-size="12" font-weight="400" fill="white">Static illustration • fictional data • not current build</text>
-<rect x="0" y="78" width="170" height="822" rx="0" fill="#152d34"/>
-<text x="22" y="121" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Country desk</text>
-<text x="22" y="175" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Team</text>
-<text x="22" y="229" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Competition</text>
-<rect x="12" y="258" width="146" height="40" rx="5" fill="#006958"/>
-<text x="22" y="283" font-family="DejaVu Sans" font-size="15" font-weight="700" fill="white">Match centre</text>
-<text x="22" y="337" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Archive</text>
-<text x="22" y="391" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="white">Game / Save</text>
-<text x="22" y="819" font-family="DejaVu Sans" font-size="14" font-weight="400" fill="white">Help  /  F1</text>
-<text x="194" y="123" font-family="DejaVu Sans" font-size="28" font-weight="700" fill="#152d34">Holland  2 — 1  Belgium</text>
-<text x="194" y="153" font-family="DejaVu Sans" font-size="15" font-weight="400" fill="#52656a">Full time • scheduled friendly • half-time1–1 • no extra time or shoot-out</text>
-<rect x="170" y="863" width="1270" height="37" rx="0" fill="#e2e8e1"/>
-<text x="194" y="886" font-family="DejaVu Sans" font-size="11" font-weight="400" fill="#52656a">DESIGNED • No game controls are active. Target review is not implementation approval.</text>
-<rect x="194" y="185" width="580" height="535" rx="7" fill="white" stroke="#d1dbd5"/>
-<text x="212" y="215" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">What happened</text>
-<text x="216" y="251" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">Holland</text>
-<text x="216" y="288" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">18′  D Vermeer</text>
-<text x="216" y="325" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">68′  N Smit</text>
-<text x="216" y="362" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a"></text>
-<text x="216" y="399" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">Belgium</text>
-<text x="216" y="436" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">42′  L Laurent</text>
-<text x="216" y="473" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a"></text>
-<text x="216" y="510" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">Half-time: 1–1  /  Full time: 2–1</text>
-<text x="216" y="547" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">Half-time change: Bos → Jansen</text>
-<text x="216" y="584" font-family="DejaVu Sans" font-size="18" font-weight="400" fill="#52656a">Man of the match: Not recorded</text>
-<rect x="794" y="185" width="620" height="535" rx="7" fill="white" stroke="#d1dbd5"/>
-<text x="812" y="215" font-family="DejaVu Sans" font-size="18" font-weight="700" fill="#152d34">Statistics  /  Holland : Belgium</text>
-<text x="816" y="250" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Corners                    4 : 3</text>
-<text x="816" y="288" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Free kicks                  8 : 10</text>
-<text x="816" y="326" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Penalties                    0 : 0</text>
-<text x="816" y="364" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Shots                      12 : 9</text>
-<text x="816" y="402" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">On target                    6 : 5</text>
-<text x="816" y="440" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Saves                        4 : 4</text>
-<text x="816" y="478" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Fouls                        8 : 8</text>
-<text x="816" y="516" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Yellow cards                 0 : 0</text>
-<text x="816" y="554" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Red cards                    0 : 0</text>
-<text x="816" y="592" font-family="DejaVu Sans" font-size="17" font-weight="400" fill="#52656a">Possession / Territory      Not recorded</text>
-<rect x="194" y="760" width="330" height="40" rx="5" fill="#006958"/>
-<text x="207" y="786" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="white">Continue to country desk</text>
-<rect x="546" y="760" width="240" height="40" rx="5" fill="#006958"/>
-<text x="559" y="786" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="white">Round results</text>
-<rect x="808" y="760" width="260" height="40" rx="5" fill="#006958"/>
-<text x="821" y="786" font-family="DejaVu Sans" font-size="14" font-weight="700" fill="white">Retained summary</text>
-<text x="194" y="836" font-family="DejaVu Sans" font-size="13" font-weight="400" fill="#52656a">A genuine zero remains 0. Missing data stays Not recorded. New summary capture/replay needs durable support.</text>
+<title>FULL TIME / HOLLAND 2 - 1 BELGIUM</title><desc>Designed original-first native desktop target. Fictional story. Not a current-build capture.</desc>
+<rect x="0" y="0" width="1440" height="900" fill="#000000"/>
+<text x="8" y="17" font-family="DejaVu Sans Mono" font-size="14" font-weight="400" fill="#aaaaaa" xml:space="preserve">08 TARGET ILLUSTRATION / FICTIONAL DATA / DESKTOP / NOT CURRENT BUILD</text>
+<g data-chrome="top">
+<rect x="8" y="27" width="1424" height="79" fill="#000000" stroke="#55ffff"/>
+<text x="24" y="63" font-family="DejaVu Sans Mono" font-size="34" font-weight="700" fill="#55ffff" xml:space="preserve">GOAL2</text>
+<text x="178" y="61" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ffff55" xml:space="preserve">HOLLAND</text>
+<text x="178" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Alex / 2030 / World qualifying</text>
+<text x="728" y="60" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">Result: Holland 2-1 Belgium</text>
+<text x="728" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Friendly / Half-time 1-1</text>
+<text x="1220" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">[Top ^]</text>
+</g><g data-chrome="side">
+<rect x="8" y="118" width="150" height="754" fill="#000000" stroke="#55ffff"/>
+<text x="17" y="145" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">[&lt; Hide]</text>
+<text x="22" y="205" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Country</text>
+<text x="22" y="273" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Team</text>
+<text x="22" y="341" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Fixtures</text>
+<rect x="14" y="384" width="138" height="38" fill="#aaaaaa"/>
+<text x="22" y="409" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#000000" xml:space="preserve">Match</text>
+<text x="22" y="477" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">History</text>
+<text x="22" y="545" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Save</text>
+<text x="20" y="844" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">F1 Help</text>
+</g>
+<text x="178" y="147" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ff5555" xml:space="preserve">FULL TIME / HOLLAND 2 - 1 BELGIUM</text>
+<text x="178" y="203" font-family="DejaVu Sans Mono" font-size="26" font-weight="700" fill="#ffbb33" xml:space="preserve">HALF TIME 1 : 1</text>
+<rect x="178" y="235" width="346" height="515" fill="#000000" stroke="#55ffff"/>
+<rect x="191" y="234" width="224" height="28" fill="#000000"/>
+<text x="196" y="255" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">HOLLAND SCORERS</text>
+<text x="196" y="310" font-family="DejaVu Sans Mono" font-size="25" font-weight="400" fill="#ffff55" xml:space="preserve">D Vermeer    18′</text>
+<text x="196" y="374" font-family="DejaVu Sans Mono" font-size="25" font-weight="400" fill="#ffff55" xml:space="preserve">N Smit       68′</text>
+<rect x="542" y="235" width="512" height="515" fill="#000000" stroke="#ff5555"/>
+<rect x="555" y="234" width="322" height="28" fill="#000000"/>
+<text x="560" y="255" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#ff5555" xml:space="preserve">STATISTICS / HOL : BEL</text>
+<text x="560" y="300" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Corners</text>
+<text x="855" y="300" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">4 : 3</text>
+<text x="560" y="343" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Free kicks</text>
+<text x="855" y="343" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">8 : 10</text>
+<text x="560" y="386" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Penalties</text>
+<text x="855" y="386" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">0 : 0</text>
+<text x="560" y="429" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Shots</text>
+<text x="855" y="429" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">12 : 9</text>
+<text x="560" y="472" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">On target</text>
+<text x="855" y="472" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">6 : 5</text>
+<text x="560" y="515" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Saves</text>
+<text x="855" y="515" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">4 : 4</text>
+<text x="560" y="558" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Fouls</text>
+<text x="855" y="558" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">8 : 8</text>
+<text x="560" y="601" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Yellow cards</text>
+<text x="855" y="601" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">0 : 0</text>
+<text x="560" y="644" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff55ff" xml:space="preserve">Red cards</text>
+<text x="855" y="644" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">0 : 0</text>
+<rect x="1072" y="235" width="350" height="515" fill="#000000" stroke="#55ffff"/>
+<rect x="1085" y="234" width="224" height="28" fill="#000000"/>
+<text x="1090" y="255" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">BELGIUM SCORERS</text>
+<text x="1090" y="310" font-family="DejaVu Sans Mono" font-size="25" font-weight="400" fill="#ffff55" xml:space="preserve">L Laurent  42′</text>
+<text x="178" y="788" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#eeeeee" xml:space="preserve">Possession / Territory / MOTM: Not recorded</text>
+<rect x="178" y="817" width="230" height="44" fill="#aaaaaa" stroke="#55ffff"/>
+<text x="190" y="847" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#000000" xml:space="preserve">Continue</text>
+<rect x="426" y="817" width="280" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="438" y="847" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Round results</text>
+<rect x="724" y="817" width="220" height="44" fill="#000000" stroke="#55ffff"/>
+<text x="736" y="847" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#55ffff" xml:space="preserve">Summary</text>
+<text x="178" y="885" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#ff55ff" xml:space="preserve">Friendly / No extra time or shoot-out / Bos &gt; Jansen at half-time</text>
 </svg>

@@ -37,7 +37,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "GK",
-      "club_position": "GK"
+      "club_position": "GK",
+      "tactics": {
+        "Position": "Leave box",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL02",
@@ -71,7 +78,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "RB",
-      "club_position": "RB"
+      "club_position": "RB",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL03",
@@ -105,7 +119,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "CB",
-      "club_position": "CB"
+      "club_position": "CB",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL04",
@@ -139,7 +160,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "CB",
-      "club_position": "CB"
+      "club_position": "CB",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL05",
@@ -173,7 +201,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "LB",
-      "club_position": "LB"
+      "club_position": "LB",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL06",
@@ -207,7 +242,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "MF",
-      "club_position": "MF"
+      "club_position": "MF",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL07",
@@ -241,7 +283,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "MF",
-      "club_position": "MF"
+      "club_position": "MF",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL08",
@@ -275,7 +324,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "MF",
-      "club_position": "MF"
+      "club_position": "MF",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL09",
@@ -309,7 +365,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "MF",
-      "club_position": "MF"
+      "club_position": "MF",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL10",
@@ -343,7 +406,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "FW",
-      "club_position": "FW"
+      "club_position": "FW",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL11",
@@ -377,7 +447,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "FW",
-      "club_position": "FW"
+      "club_position": "FW",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL12",
@@ -411,7 +488,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "GK",
-      "club_position": "GK"
+      "club_position": "GK",
+      "tactics": {
+        "Position": "Leave box",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL13",
@@ -445,7 +529,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "CB",
-      "club_position": "CB"
+      "club_position": "CB",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL14",
@@ -479,7 +570,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "MF",
-      "club_position": "MF"
+      "club_position": "MF",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL15",
@@ -513,7 +611,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "MF",
-      "club_position": "MF"
+      "club_position": "MF",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL16",
@@ -547,7 +652,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "LB",
-      "club_position": "LB"
+      "club_position": "LB",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL17",
@@ -581,7 +693,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "RB",
-      "club_position": "RB"
+      "club_position": "RB",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL18",
@@ -615,7 +734,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "MF",
-      "club_position": "MF"
+      "club_position": "MF",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL19",
@@ -649,7 +775,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "FW",
-      "club_position": "FW"
+      "club_position": "FW",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL20",
@@ -683,7 +816,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "FW",
-      "club_position": "FW"
+      "club_position": "FW",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     },
     {
       "key": "NL21",
@@ -717,7 +857,14 @@
       "cards": "No card flags",
       "performance": "Not recorded",
       "national_position": "FW",
-      "club_position": "FW"
+      "club_position": "FW",
+      "tactics": {
+        "Position": "Push forward",
+        "Possession": "Keep ball",
+        "Passing": "Short passes",
+        "Tackling": "Avoid injury",
+        "Mark": "Team default"
+      }
     }
   ],
   "initial_squad": [

@@ -1,145 +1,211 @@
-"""[designed: #266] Offline static illustration authoring; never runs the game.
+"""[designed: #266 owner rework] Original-first static desktop illustrations.
 
-Run without arguments to retain SVG/PNG exports; --check regenerates in a
-temporary directory and verifies the committed exports. Requires Pillow and
-Inkscape only in the author's environment, not in the application.
+Authoring only: no game modules, runtime, original assets or executable UI.
+Pillow measures authored DejaVu Sans Mono text; Inkscape exports SVG to PNG.
+--check regenerates in a temporary directory and compares retained bytes.
 """
 from pathlib import Path
+from collections import Counter
 import argparse
 import html
 import json
 import os
 import subprocess
 import tempfile
+import xml.etree.ElementTree as ET
 from PIL import ImageFont
 
 ROOT = Path(__file__).resolve().parent
 D = json.loads((ROOT / 'scenario.json').read_text())
 P = {p['key']: p for p in D['players']}
-INK, GREEN, PAPER, MUTED = '#152d34', '#006958', '#f3f1e9', '#52656a'
+BLACK, WHITE, GREY = '#000000', '#eeeeee', '#aaaaaa'
+RED, CYAN, YELLOW = '#ff5555', '#55ffff', '#ffff55'
+GREEN, MAGENTA, GOLD = '#55ff55', '#ff55ff', '#ffbb33'
+EDGE, EMPTY = '#777777', '#9b009b'
+ROLE_COLORS = {'GK': GREEN, 'SW': RED, 'CB': RED, 'LB': RED, 'RB': RED, 'MF': CYAN, 'FW': YELLOW}
+ROLE_NAMES = {'GK':'Goalkeeper','SW':'Sweeper','CB':'Centre back','LB':'Left back','RB':'Right back','MF':'Midfield','FW':'Forward'}
 SKILLS = ['Keeping', 'Kicking', 'Tackling', 'Heading', 'Marking', 'Passing',
           'Crossing', 'Feinting', 'Control', 'Dribbling', 'Shooting', 'Penalties']
-FONT_ROOT = Path('/usr/share/fonts/truetype/dejavu')
+CHARS = ['Hardness', 'Fitness', 'Energy', 'Morale', 'Leadership']
 FONTS = {}
 
 
 def font(size, bold=False):
     key = (size, bold)
     if key not in FONTS:
-        FONTS[key] = ImageFont.truetype(str(FONT_ROOT / ('DejaVuSans-Bold.ttf' if bold else 'DejaVuSans.ttf')), size)
+        suffix = '-Bold' if bold else ''
+        FONTS[key] = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansMono'+suffix+'.ttf', size)
     return FONTS[key]
 
 
 class Sheet:
-    def __init__(self, number, title, subtitle, small=False, active='Country desk', dark=False):
-        self.w, self.h = (900, 640) if small else (1440, 900)
-        self.parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}">',
-                      f'<title>{html.escape(title)}</title><desc>Designed finished-target illustration. Fictional data. Not current build or engine output.</desc>']
-        self.bounds = []
-        self.rect(0, 0, self.w, self.h, PAPER)
-        self.rect(0, 0, self.w, 78 if not small else 65, INK)
-        self.text(22, 29, 'GOAL2  /  COUNTRY MANAGER', 14, '#e7f1e7', True)
-        self.text(22, 59 if not small else 52, 'HOLLAND  •  Alex  •  2030', 17, 'white', True)
-        self.text(650 if not small else 465, 31, f'{number:02}  FINISHED TARGET', 15, '#f1ce71', True)
-        self.text(650 if not small else 465, 56 if not small else 52, 'Static illustration • fictional data • not current build', 12, 'white')
-        self.small = small
+    def __init__(self, number, title, *, active='Country', focus=False, small=False, match=False):
         self.number = number
-        if small:
-            self.text(20, 91, 'Country desk   |   Team   |   Competition   |   Match centre   |   Archive   |   Game', 14, INK)
-            self.text(20, 123, title, 22, INK, True)
-            self.text(20, 148, subtitle, 13)
+        self.w, self.h = (900, 640) if small else (1440, 900)
+        self.small, self.focus, self.match = small, focus, match
+        self.parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}">',
+                      f'<title>{html.escape(title)}</title><desc>Designed original-first native desktop target. Fictional story. Not a current-build capture.</desc>']
+        self.bounds, self.bars = [], []
+        self.rect(0, 0, self.w, self.h, BLACK)
+        self.text(8, 17, f'{number:02} TARGET ILLUSTRATION / FICTIONAL DATA / DESKTOP / NOT CURRENT BUILD', 14, GREY)
+        self.x, self.y = (20, 102) if focus else (178, 174)
+        if match:
+            return
+        if focus:
+            self.text(20, 56, title, 26 if small else 32, YELLOW, True)
+            self.text(self.w-288 if not small else 614, 55, '[Menu >] [Top v]', 18, CYAN)
+            self.text(20, 85, 'HOLLAND / ALEX / 2030    [Roster] [Player] [Plan]', 18, CYAN)
         else:
-            self.rect(0, 78, 170, 822, INK)
-            for i, item in enumerate(['Country desk', 'Team', 'Competition', 'Match centre', 'Archive', 'Game / Save']):
-                y = 121 + i * 54
-                if item == active:
-                    self.rect(12, y - 25, 146, 40, GREEN, 5)
-                self.text(22, y, item, 15, 'white', item == active)
-            self.text(22, 819, 'Help  /  F1', 14, 'white')
-            self.text(194, 123, title, 28, INK, True)
-            self.text(194, 153, subtitle, 15)
-        self.rect(0 if small else 170, self.h - 37, self.w if small else self.w - 170, 37, '#e2e8e1')
-        self.text(16 if small else 194, self.h - 14, 'DESIGNED • No game controls are active. Target review is not implementation approval.', 11)
+            self.parts.append('<g data-chrome="top">')
+            self.box(8, 27, self.w-16, 79, CYAN)
+            self.text(24, 63, 'GOAL2', 34, CYAN, True)
+            self.text(178, 61, 'HOLLAND', 30, YELLOW, True)
+            self.text(178, 91, 'Alex / 2030 / World qualifying', 20, WHITE)
+            context={8:('Result: Holland 2-1 Belgium','Friendly / Half-time 1-1'),
+                     9:('Next: Holland v Eire','Qualifying / Belgium friendly completed'),
+                     10:('Country career archive','Later milestones / not the next fixture'),
+                     12:('Holland / same career','Alternative save and fixture states'),
+                     13:('Hypothetical knockout','Later branch / not the Belgium friendly'),
+                     15:('Match: Holland v Belgium','Friendly at home / first half')}.get(number,('Next: Holland v Belgium','Friendly at home'))
+            self.text(728, 60, context[0], 25, CYAN, True)
+            self.text(728, 91, context[1], 20, WHITE)
+            self.text(1220, 91, '[Top ^]', 20, CYAN)
+            self.parts.append('</g><g data-chrome="side">')
+            self.box(8, 118, 150, 754, CYAN)
+            self.text(17, 145, '[< Hide]', 20, CYAN)
+            for i, item in enumerate(['Country', 'Team', 'Fixtures', 'Match', 'History', 'Save']):
+                yy=205+i*68
+                if item==active:
+                    self.rect(14, yy-25, 138, 38, GREY)
+                self.text(22, yy, item, 21, BLACK if item==active else CYAN, True)
+            self.text(20, 844, 'F1 Help', 20, CYAN)
+            self.parts.append('</g>')
+            self.text(178, 147, title, 30, RED, True)
 
-    def rect(self, x, y, w, h, fill='white', radius=0, stroke=None):
-        assert x >= 0 and y >= 0 and x+w <= self.w and y+h <= self.h, (x,y,w,h)
-        self.parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{radius}" fill="{fill}"'+(f' stroke="{stroke}"' if stroke else '')+'/>')
+    def rect(self, x, y, w, h, fill=BLACK, stroke=None):
+        assert x>=0 and y>=0 and x+w<=self.w and y+h<=self.h, (x,y,w,h)
+        self.parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{fill}"'+(f' stroke="{stroke}"' if stroke else '')+'/>')
 
-    def text(self, x, y, value, size=15, fill=MUTED, bold=False):
-        value = str(value)
-        f = font(size, bold)
-        box = f.getbbox(value)
-        width = f.getlength(value)
-        assert x >= 0 and x+width <= self.w-8 and y-size >= 0 and y+box[3]-size <= self.h, (value,x,y,width)
-        self.bounds.append((value,x,y,width,size))
-        self.parts.append(f'<text x="{x}" y="{y}" font-family="DejaVu Sans" font-size="{size}" font-weight="{700 if bold else 400}" fill="{fill}">{html.escape(value)}</text>')
+    def text(self, x, y, value, size=22, fill=WHITE, bold=False, width=None):
+        value=str(value); measured=font(size,bold).getlength(value)
+        assert x>=0 and y-size>=0 and x+measured<=self.w-5 and y+4<=self.h, (value,x,y,measured)
+        if width is not None: assert measured<=width, (value,measured,width)
+        self.bounds.append((value,x,y,size,measured))
+        self.parts.append(f'<text x="{x}" y="{y}" font-family="DejaVu Sans Mono" font-size="{size}" font-weight="{700 if bold else 400}" fill="{fill}" xml:space="preserve">{html.escape(value)}</text>')
 
-    def lines(self, x, y, values, size=15, step=27, **kw):
-        for i,v in enumerate(values): self.text(x,y+i*step,v,size,**kw)
+    def lines(self, x, y, values, size=22, step=34, fill=WHITE, width=None):
+        for i, value in enumerate(values): self.text(x,y+i*step,value,size,fill,width=width)
 
-    def panel(self, x, y, w, h, title):
-        self.rect(x,y,w,h,'white',7,'#d1dbd5')
-        self.text(x+18,y+30,title,18,INK,True)
+    def box(self, x, y, w, h, color=EDGE, label=None):
+        self.rect(x,y,w,h,BLACK,color)
+        if label:
+            self.rect(x+13,y-1,min(w-26,len(label)*14+14),28,BLACK)
+            self.text(x+18,y+20,label,22,color,True,width=w-32)
 
-    def button(self, x, y, label, w=210, disabled=False):
-        self.rect(x,y,w,40,'#e2e6e4' if disabled else GREEN,5)
-        self.text(x+13,y+26,label,14,MUTED if disabled else 'white',True)
-        assert font(14,True).getlength(label) < w-20, label
+    def button(self, x, y, label, w=260, selected=False, disabled=False):
+        fill=GREY if selected else BLACK
+        color=GREY if disabled else CYAN
+        self.rect(x,y,w,44,fill,color)
+        self.text(x+12,y+30,label,22,BLACK if selected else color,True,width=w-24)
 
-    def card(self, x, y, key, w=360, compact=False, context='Squad • bench • ready'):
-        p=P[key]
-        h=411 if compact else 586
-        self.panel(x,y,w,h,p['name']+'  /  '+p['role'])
-        self.lines(x+16,y+58,[f"{p['age']} years • {p['caps']} caps • {p['goals']} goals • {p['height']}",
-                                  f"{p['foot']} foot • national {p['national_position']} / club {p['club_position']}",
-                                  context, 'Cards: '+p['cards'], 'Performance: '+p['performance']],12,20)
-        self.text(x+16,y+164,'ILLUSTRATIVE SOURCE UNITS • NOT %',10,MUTED,True)
-        start=y+188
+    def bar(self, x, y, width, slots, filled, label, raw, *, size=20, label_width=135):
+        self.parts.append(f'<g data-attribute="{html.escape(label)}" data-slots="{slots}" data-filled="{filled}">')
+        self.text(x,y,label,size,GOLD,True,width=label_width-4)
+        bar_x=x+label_width
+        bar_w=width-label_width-44
+        assert bar_w>=60 and 0<=filled<=slots
+        for i in range(slots):
+            step=bar_w/slots
+            self.rect(bar_x+i*step,y-size+4,max(1,step-2),size-3,WHITE if i<filled else EMPTY)
+        self.text(x+width-38,y,raw,size,WHITE,True,width=38)
+        self.parts.append('</g>')
+        self.bars.append((label,raw,slots,filled,bar_w))
+
+    def card(self, x, y, key, w, h=632, *, compact=False, context='BENCH / READY'):
+        p=P[key]; size=18 if compact else (22 if w>=780 else 20); row=23 if compact else 28
+        self.box(x,y,w,h,RED)
+        self.text(x+14,y+32,p['name'].upper(),26 if compact else 30,ROLE_COLORS[p['role']],True)
+        self.text(x+w-85,y+32,p['role'],26 if compact else 30,ROLE_COLORS[p['role']],True)
+        self.text(x+14,y+62,f"Age {p['age']} / Caps {p['caps']} / Goals {p['goals']}",size,WHITE)
+        self.text(x+14,y+87,f"{p['height']} / {p['foot']} foot / {context}",size,GREEN)
+        self.text(x+14,y+112,f"National {ROLE_NAMES[p['national_position']]} / Club {ROLE_NAMES[p['club_position']]}",size,WHITE)
+        self.text(x+14,y+137,'Cards: none / Performance: not recorded',size,WHITE)
+        start=y+172
+        gap=26; half=(w-28-gap)/2
         for i,(name,val) in enumerate(zip(SKILLS,p['skills'])):
-            col=i//6; row=i%6; xx=x+16+col*((w-32)/2)
-            yy=start+row*(21 if compact else 29)
-            self.text(xx,yy,name,12 if compact else 14)
-            self.text(xx+(w-32)/2-31,yy,val,12 if compact else 14,INK,True)
-        base=start+6*(21 if compact else 29)+7
-        chars=[('Hardness',p['hardness']),('Fitness',p['fitness']),('Energy',p['energy']),('Morale',p['morale']),('Leadership',p['leadership'])]
-        if compact:
-            self.lines(x+16,base,['  •  '.join(f'{k} {v}' for k,v in chars[:3]), '  •  '.join(f'{k} {v}' for k,v in chars[3:])],11,21)
-            self.lines(x+16,base+48,['Instructions: Team defaults (five categories)', 'Open personal / team instructions'],11,20)
-        else:
-            for i,(name,val) in enumerate(chars):
-                self.text(x+16,base+i*25,name,13)
-                self.text(x+w-45,base+i*25,val,13,INK,True)
-            self.lines(x+16,base+143,['Position / Possession / Passing / Tackling', 'Team defaults • Mark: team default', 'Personal / Team source remains explicit'],11,20)
+            self.bar(x+14,start+i*row,half,25,val,name,val,size=size,label_width=124 if not compact else 116)
+        # [confirmed: T84 field contract F008/F018/F019] Illustrative decoded
+        # values, using the established 14-cell characteristic bar formulas.
+        chars=[('Hardness',p['hardness'],p['hardness']*14//16),('Fitness',p['fitness'],p['fitness']*14//32),
+               ('Energy',p['energy'],p['energy']*14//32),('Morale',p['morale'],p['morale']*14//32),
+               ('Leadership',p['leadership'],p['leadership']*14//7)]
+        right=x+14+half+gap
+        right_label=148 if size==22 else (132 if not compact else 122)
+        for i,(name,raw,filled) in enumerate(chars):
+            self.bar(right,start+i*row,half,14,filled,name,raw,size=size,label_width=right_label)
+        self.text(right,start+5*row+17,'TACTICS / T=TEAM',size,RED,True)
+        for i,name in enumerate(['Position','Possession','Passing','Tackling','Mark']):
+            self.text(right,start+6*row+17+i*row,name,size,GOLD)
+            self.text(right+right_label,start+6*row+17+i*row,p['tactics'][name]+' T',18,GREEN,width=half-right_label)
+        self.text(x+14,y+h-17,'Bars + original units / illustrative values',15,MAGENTA)
 
-    def roster(self, x, y, keys, xi, row=25):
-        self.text(x,y,'XI   PLAYER',12,MUTED,True)
-        for offset,label in [(255,'POS'),(295,'ABIL'),(339,'ENG'),(381,'CONF'),(434,'READY')]:
-            self.text(x+offset,y,label,10,MUTED,True)
+    def roster(self, x, y, keys, xi, *, wide=False, row=28, selected='NL14'):
+        self.text(x,y,'SQUAD 20 / XI 11 / BENCH 9',21,CYAN,True)
         for i,k in enumerate(keys):
-            yy=y+30+i*row
-            if k=='NL14': self.rect(x-3,yy-18,492,row,'#d9eee3',0,GREEN)
-            elif i%2==0: self.rect(x-3,yy-18,492,row,'#f1f5f0')
-            self.text(x,yy,'✓' if k in xi else '—',13,GREEN,True)
-            self.text(x+29,yy,P[k]['name']+('  C' if k==D['captain'] else ''),13,INK,k==D['captain'])
-            for offset,value in [(255,P[k]['role']),(295,210),(339,P[k]['energy']),(381,P[k]['morale']),(434,'Yes')]:
-                self.text(x+offset,yy,value,11)
+            yy=y+38+i*row
+            if k==selected: self.rect(x-4,yy-22,400 if wide else 356,27,GREY)
+            selected_color=BLACK if k==selected else ROLE_COLORS[P[k]['role']]
+            self.text(x,yy,'+' if k in xi else '-',24,selected_color)
+            self.text(x+24,yy,P[k]['name'],24,selected_color,True)
+            self.text(x+277,yy,P[k]['role']+(' C' if k==D['captain'] else ''),24,selected_color,True)
 
-    def note(self, lines):
-        self.lines(194,790,lines,13,23)
+    def footer(self, value):
+        self.text(20 if self.focus or self.match else 178,self.h-15,value,18,MAGENTA)
 
     def save(self, directory, slug):
-        # [designed] The complete-card illustrations must actually retain every
-        # category; image-byte regeneration alone cannot establish that contract.
-        count = {3: 1, 4: 2, 7: 2, 11: 1}.get(self.number, 0)
+        count={3:1,4:2,7:2,11:1,14:1}.get(self.number,0)
         if count:
-            texts = [b[0] for b in self.bounds]
-            for category in SKILLS + ['Hardness', 'Fitness', 'Energy', 'Morale', 'Leadership']:
-                assert sum(category in value for value in texts) >= count, (slug, category)
-        if self.number == 3:
-            assert all(any(P[key]['name'] in b[0] for b in self.bounds) for key in D['initial_squad'])
+            labels=Counter(b[0] for b in self.bars)
+            assert all(labels[name]==count for name in SKILLS+CHARS), (slug,labels)
+        if self.number in (3,14):
+            assert all(any(P[k]['name'] in b[0] for b in self.bounds) for k in D['initial_squad'])
+        if self.number==6:
+            assert self.pitch_fraction>=0.85 and self.visible_commentary_lines==2
         path=directory/(slug+'.svg')
-        path.write_text('\n'.join(self.parts+['</svg>'])+'\n')
-        return path, len(self.bounds)
+        svg='\n'.join(self.parts+['</svg>'])+'\n'
+        check_svg(svg,self.number)
+        path.write_text(svg)
+        return path, len(self.bounds), len(self.bars)
+
+
+def check_svg(svg, number):
+    """[designed] Check visible shapes, not just authoring bookkeeping."""
+    root=ET.fromstring(svg); ns={'s':'http://www.w3.org/2000/svg'}
+    groups=root.findall('.//s:g',ns)
+    bars=[g for g in groups if 'data-attribute' in g.attrib]
+    expected={3:1,4:2,7:2,11:1,14:1}.get(number,0)
+    if expected:
+        assert Counter(g.attrib['data-attribute'] for g in bars)==Counter({k:expected for k in SKILLS+CHARS})
+    else:
+        assert not bars
+    for group in bars:
+        rects=group.findall('s:rect',ns)
+        assert len(rects)==int(group.attrib['data-slots']), 'A labelled value without its bar is not sufficient'
+        assert sum(r.attrib['fill']==WHITE for r in rects)==int(group.attrib['data-filled'])
+        assert all(r.attrib['fill'] in (WHITE,EMPTY) for r in rects)
+        assert all(int(t.attrib['font-size'])>=18 for t in group.findall('s:text',ns))
+    if number in (3,14):
+        texts=root.findall('.//s:text',ns)
+        for key in D['initial_squad']:
+            assert any(t.text==P[key]['name'] and int(t.attrib['font-size'])>=24 for t in texts)
+    chrome={g.attrib['data-chrome'] for g in groups if 'data-chrome' in g.attrib}
+    if number in (6,11,14): assert not chrome
+    if number in (3,15): assert chrome=={'top','side'}
+    if number==6:
+        field=next(g for g in groups if g.attrib.get('data-pitch')=='schematic').find('s:rect',ns)
+        assert float(field.attrib['width'])*float(field.attrib['height'])/(float(root.attrib['width'])*float(root.attrib['height']))>=.85
+        recent=next(g for g in groups if g.attrib.get('data-commentary')=='recent')
+        assert len(recent.findall('s:text',ns))==2
 
 
 def validate_scenario():
@@ -167,165 +233,228 @@ def validate_scenario():
     return squad,xi
 
 
+
+def team_sheet(number, *, focus=False, small=False):
+    s=Sheet(number,'SELECT YOUR TEAM',active='Team',focus=focus,small=small)
+    if small:
+        s.card(20,103,'NL14',860,h=468,compact=True,context='BENCH / READY')
+        s.button(20,584,'Roster 20 >',220)
+        s.button(258,584,'Confirm team',240)
+        s.button(516,584,'Discard',190)
+        return s
+    x,y=s.x,s.y
+    s.box(x,y,414,632,CYAN)
+    s.roster(x+14,y+30,D['initial_squad'],D['xi'])
+    card_x=x+432; card_w=s.w-card_x-18
+    s.card(card_x,y,'NL14',card_w)
+    s.button(x,824,'Pool / Compare',240)
+    s.button(x+258,824,'Attribute table',250)
+    s.button(x+526,824,'Team tactics',240)
+    s.button(x+784,824,'Confirm team',250)
+    s.footer('Arrows: select / Tab: move / Enter: confirm / F11: hide top + side bars')
+    return s
+
+
+def pitch(s, x, y, w, h):
+    s.parts.append('<g data-pitch="schematic">')
+    s.rect(x,y,w,h,'#062706')
+    s.rect(x+9,y+9,w-18,h-18,BLACK,GREY)
+    mid=x+w/2; top=y+9; bottom=y+h-9; cy=y+h/2
+    s.parts.append(f'<path d="M{mid} {top} V{bottom}" stroke="{GREY}" fill="none"/><circle cx="{mid}" cy="{cy}" r="{h*.13}" stroke="{GREY}" fill="none"/>')
+    for side in [0,1]:
+        bx=x+9 if side==0 else x+w-9-w*.15
+        s.rect(bx,y+h*.27,w*.15,h*.46,BLACK,GREY)
+        gx=x+9 if side==0 else x+w-9-w*.06
+        s.rect(gx,y+h*.40,w*.06,h*.20,BLACK,GREY)
+    spots=[(.06,.5),(.21,.17),(.20,.39),(.23,.63),(.18,.83),(.41,.12),(.39,.35),(.42,.61),(.38,.86),(.60,.24),(.63,.70)]
+    for side,color in [(0,CYAN),(1,YELLOW)]:
+        for i,(px,py) in enumerate(spots):
+            if side: px=1-px; py=min(.94,py+.04)
+            xx=x+w*px; yy=y+h*py
+            role=P[D['xi'][i]]['role']
+            s.text(xx,yy,role,26 if w<1100 else 32,color,True)
+    s.parts.append(f'<circle cx="{mid+31}" cy="{cy-20}" r="6" fill="white"/>')
+    s.parts.append('</g>')
+    s.pitch_fraction=w*h/(s.w*s.h)
+
+
 def draw(directory):
     squad,second_xi=validate_scenario()
     exports=[]
     def keep(s,slug): exports.append(s.save(directory,slug))
-    s=Sheet(1,'Return to your country','Start / Resume • the same career remains yours',active='Game / Save')
-    s.panel(194,185,700,481,'Your saved career')
-    s.text(222,268,'HOLLAND',42,INK,True)
-    s.lines(222,314,['Alex • 2030 World qualifying campaign', 'Next fixture: Holland v Belgium • scheduled friendly', 'Next competitive opponent: Eire • qualifying', 'Last committed checkpoint: before Belgium', 'One manager • confirmed team • no match pending'],18,43)
-    s.button(222,584,'Resume Holland',250)
-    s.panel(916,185,498,481,'Start something new')
-    s.lines(938,249,['New career → choose country → inspect players', 'Review identity, manager count and challenge.', 'Starting replaces no save without your choice.', '', 'Country profiles and editable identities need', 'their supported data and persistence paths.'],16,36)
-    s.button(938,545,'Choose country',250)
-    s.button(938,599,'Open another save',250)
-    s.note(['A new career has its own explicit review/start step; Resume keeps the saved country and checkpoint.', 'Complete local-manager setup belongs to the target; first delivery can clearly offer one manager only.'])
+
+    s=Sheet(1,'RETURN TO YOUR COUNTRY',active='Save')
+    s.box(178,174,720,598,RED,'SAVED CAREER')
+    s.text(204,266,'HOLLAND',60,YELLOW,True)
+    s.lines(204,321,['MANAGER   Alex','CAMPAIGN  2030 World qualifying','NEXT      Belgium / Friendly / Home','THEN      Eire / Qualifying','SAVE      Before Belgium','TEAM      Confirmed / 20 players'],24,51)
+    s.button(204,668,'RESUME HOLLAND',430,selected=True)
+    s.box(920,174,502,598,CYAN,'NEW GAME')
+    s.text(942,245,'CHOOSE YOUR COUNTRY',27,YELLOW,True)
+    s.lines(942,301,['Holland       World 14','Belgium       World  8','Denmark       World  4','Eire          World 24'],24,45,fill=GREEN)
+    s.button(942,515,'New career >',440)
+    s.button(942,584,'Open another save',440)
+    s.lines(942,695,['One manager first.','Review before starting.'],21,33,fill=MAGENTA)
+    s.footer('Arrows: choose / Enter: accept / Esc: back / Existing saves stay yours')
     keep(s,'01-start-resume')
-    s=Sheet(2,'The country desk','World qualifying campaign • before the Belgium friendly')
-    s.panel(194,185,754,256,'Next challenge  /  scheduled friendly')
-    s.text(216,269,'Holland v Belgium',36,INK,True)
-    s.lines(216,311,['At home • Holland rank 14 / Belgium rank 8 (illustrative)', 'Friendly: no qualification points at stake.', 'Then Eire in qualifying • review the team before kickoff'],17,32)
-    s.button(216,383,'Prepare Belgium',230)
-    s.panel(970,185,444,256,'Your campaign')
-    s.lines(992,249,['Qualifying • Group F • opening table', 'Holland / Eire / Denmark / Luxembourg', 'All played 0 • no results yet', 'Standings and group fixtures together'],15,34)
-    s.button(992,377,'Open competition',230)
-    s.panel(194,463,754,280,'Your people')
-    s.lines(216,525,['Twenty in the squad • eleven starters / nine bench', 'Captain: L de Boer • current plan: 4–4–2', 'Review C de Wit against reserve R Noor.', 'Readiness and availability stay beside each decision.'],17,38)
-    s.button(216,675,'Review Team',230)
-    s.panel(970,463,444,280,'National story')
-    s.lines(992,525,['Latest news and career records live here.', 'This save has no completed match yet.', 'Future records are not fabricated.', '', 'Open Country profile / Archive'],16,36)
-    s.note(['The next action and national context come first. Original country/profile/history categories remain discoverable.', 'Rankings, generated bulletin and complete records are finished-target data; current main does not supply all of them.'])
+
+    s=Sheet(2,'WORLD CUP 2030 / QUALIFYING')
+    s.box(178,174,390,221,RED,'YOUR COUNTRY')
+    s.lines(198,236,['HOLLAND','Manager  Alex','World    14','Europe    3'],27,43,fill=WHITE)
+    s.box(178,416,390,228,RED,'NEXT OPPONENT')
+    s.text(198,483,'BELGIUM',32,RED,True)
+    s.lines(198,531,['World     8','Europe    9','Friendly / Home'],25,41)
+    s.box(178,665,390,141,CYAN,'YOUR CAMPAIGN')
+    s.lines(198,717,['Group F / Played 0','Next qualifier: Eire'],23,42,fill=YELLOW)
+    for yy,label in [(187,'Country info'),(266,'Fixture list'),(345,'Tournament'),(424,'History'),(503,'Select squad'),(582,'Prepare Belgium')]:
+        s.button(590,yy,label,390,selected=label=='Select squad')
+    s.text(594,708,'20 ready / XI 11',25,GREEN,True)
+    s.text(594,751,'Captain: L de Boer',24,YELLOW)
+    s.box(1000,174,422,632,CYAN)
+    s.roster(1015,204,D['initial_squad'],D['xi'])
+    s.footer('F1 Help / F7 Save / All ranks are illustrative / Top + side bars: retract')
     keep(s,'02-country-desk')
-    s=Sheet(3,'Make an informed team choice','Same pre-match squad • select a row, inspect the complete card, review your plan',active='Team')
-    s.panel(194,185,535,586,'Squad 20  /  XI 11  /  Bench 9')
-    s.roster(211,247,D['initial_squad'],D['xi'],23)
-    s.card(749,185,'NL14',360,context='J Jansen • bench • ready')
-    s.panel(1129,185,285,586,'Your plan')
-    s.lines(1147,246,['Formation: 4–4–2', 'Captain: L de Boer', 'Team instructions', 'Player instructions', 'National pool / Compare', '', 'No unconfirmed changes', 'Selected: J Jansen', '', 'Show all attributes', 'Squad: 38 columns', 'Pool: 37 columns', 'Contained horizontal scroll'],14,34)
-    s.note(['All twenty names stay in Team; seven compact columns are retained. Complete details never become an aggregate rating.', 'Unknown performance meaning is not guessed. Role/marking edits depend on supported state and context.'])
-    keep(s,'03-team')
-    s=Sheet(4,'Compare before replacing a squad place','Before kickoff • one bench place changes • original eligibility rules still apply',active='Team')
-    s.panel(194,185,340,586,'National pool  /  reserves 80')
-    s.lines(212,251,['Search / position filter', 'Rows 1–7 of 80 • contained scroll', 'R Noor          FW     Ready', 'V Groen         FW     Ready', 'W Hermans       MF     Ready', 'X van Vliet     CB     Ready', 'Y Jonker        GK     Ready', 'Z Maas          MF     Ready', 'A Bosman        FW     Ready', '', 'Pinned: C de Wit → R Noor', 'Neither player is in the XI.', 'Review → Confirm or Cancel'],14,34)
-    s.rect(517,315,5,230,'#e2e8e1',2)
-    s.rect(517,315,5,28,GREEN,2)
-    s.card(554,185,'NL20',420,context='Outgoing • squad bench • ready')
-    s.card(994,185,'NL21',420,context='Incoming • national pool • ready')
-    s.button(554,788,'Confirm de Wit → Noor',290)
-    s.text(870,814,'After this step: Noor on bench; de Wit in pool.',14)
+
+    keep(team_sheet(3),'03-team')
+
+    s=Sheet(4,'NATIONAL POOL / COMPARE BOTH PLAYERS',active='Team',focus=True)
+    s.card(20,108,'NL20',690,h=640,context='OUT / BENCH / READY')
+    s.card(730,108,'NL21',690,h=640,context='IN / POOL / READY')
+    s.text(20,790,'POOL 80 / 1–7: Noor Groen Hermans van Vliet Jonker Maas Bosman  [Browse >]',21,CYAN)
+    s.button(20,818,'Confirm de Wit > Noor',460)
+    s.button(500,818,'Cancel',200)
+    s.text(732,849,'XI unchanged / one bench place',23,GREEN,True)
+    s.footer('Both full cards stay pinned while browsing / Same original-unit bars')
     keep(s,'04-pool')
-    s=Sheet(5,'Prepare both sides, then choose how to play','Holland v Belgium • scheduled friendly • Noor has replaced de Wit on the bench',active='Match centre')
-    s.panel(194,185,378,564,'Holland  /  4–4–2')
-    for i,k in enumerate(D['xi']): s.text(214,251+i*30,P[k]['name']+('  C' if k==D['captain'] else '')+'  /  '+P[k]['role'],16,INK)
-    s.text(214,620,'XI11 • Bench9 • all ready',14)
-    s.button(214,678,'Review Team',220)
-    s.panel(592,185,378,564,'Belgium  /  4–4–2')
-    for i,name in enumerate(D['belgium_xi']): s.text(612,251+i*30,name,16,INK)
-    s.button(612,678,'Inspect opponent',220)
-    s.panel(990,185,424,564,'Match delivery')
-    s.lines(1010,249,['Quick result', 'Resolve without watched pitch playback.', 'Supported decisions may still pause play.', '', 'Watch match', 'Follow the pitch and commentary.', 'Current friendly Watch is view-only.', 'Target interventions need proven support.', '', 'Playback: Slow  |  Normal ✓  |  Fast', 'Choose now; frozen during this match.', 'Quick / Watch can produce different results.'],14,29)
-    s.button(1010,635,'Start Watch',250)
-    s.button(1010,687,'Start Quick',250)
-    s.note(['The story chooses Watch at Normal. No match starts while team changes await confirmation.', 'The next Eire qualifier is a different fixture: competitive Quick exists; competitive Watch remains a capability gap.'])
+
+    s=Sheet(5,'HOLLAND v BELGIUM / FRIENDLY',active='Match')
+    for x,title,names in [(178,'HOLLAND / 4-4-2',[P[k]['name']+(' C' if k==D['captain'] else '') for k in D['xi']]),(594,'BELGIUM / 4-4-2',D['belgium_xi'])]:
+        s.box(x,174,390,620,CYAN,title)
+        for i,name in enumerate(names):
+            color=ROLE_COLORS[P[D['xi'][i]]['role']]
+            s.text(x+18,239+i*43,name,24,color,True)
+        s.button(x+14,725,'Players / tactics',360)
+    s.box(1010,174,412,620,RED,'PLAY')
+    s.lines(1030,248,['QUICK RESULT','No watched pitch.','Decisions may pause.'],24,37,fill=WHITE)
+    s.button(1030,359,'Start Quick',370)
+    s.lines(1030,470,['WATCH MATCH','Follow the pitch.','Friendly: view-only.'],24,37,fill=WHITE)
+    s.button(1030,579,'Start Watch',370,selected=True)
+    s.text(1030,682,'SPEED: Normal',26,YELLOW,True)
+    s.text(1030,729,'Slow / Normal / Fast',21,CYAN)
+    s.text(1030,771,'Set before kickoff.',21,MAGENTA)
+    s.footer('Noor on bench / Quick and Watch may differ / Confirm changes before Start')
     keep(s,'05-preparation')
-    s=Sheet(6,'HOLLAND   1 — 0   BELGIUM     38′','First half • Vermeer 18′ • this is one illustrative supplied frame, not simulated motion',active='Match centre')
-    s.rect(194,185,780,520,GREEN,7)
-    s.rect(222,213,724,464,'#227e69',0,'#c8e0d3')
-    s.parts.append('<path d="M584 213 V677 M222 325 H310 V565 H222 M946 325 H858 V565 H946" fill="none" stroke="#c8e0d3" stroke-width="2"/><circle cx="584" cy="445" r="63" fill="none" stroke="#c8e0d3" stroke-width="2"/>')
-    for team in range(2):
-        for i in range(11):
-            x=267+(i%4)*157+(40 if team else 0); y=256+(i//4)*145+(46 if team else 0)
-            s.parts.append(f'<circle cx="{x}" cy="{y}" r="15" fill="'+('#f5cc69' if team==0 else '#f0f2ed')+'"/>')
-            s.text(x-7,y+5,i+1,11,INK,True)
-    s.parts.append('<circle cx="620" cy="425" r="7" fill="white" stroke="#152d34" stroke-width="3"/>')
-    s.text(214,739,'● Holland   ○ Belgium   • Ball / supplied positions only',16,INK)
-    s.panel(994,185,420,520,'Commentary  /  Follow live')
-    s.lines(1014,252,['38′  Play continues', '35′  Belgium builds an attack', '31′  Keeper collects', '18′  Goal — D Vermeer', '       Holland leads 1–0', '', 'Score, clock and event log agree.', 'No invented timer or interpolation.', '', 'Speed: Normal • chosen before kickoff'],16,35)
-    s.button(194,782,'Manage — unavailable now',300,True)
-    s.text(515,807,'No supported decision at this moment. Commentary remains readable.',14)
+
+    s=Sheet(6,'Holland1-0Belgium / 38 minutes / default pitch focus',match=True,focus=True)
+    pitch(s,8,63,1424,776)
+    s.rect(0,23,1440,40,BLACK)
+    s.text(18,53,'HOLLAND  1 - 0  BELGIUM',30,CYAN,True)
+    s.text(660,53,'38′ FIRST HALF',28,WHITE,True)
+    s.text(1056,51,'[Menu >] [Top v]',22,MAGENTA)
+    s.rect(8,840,1424,60,BLACK)
+    s.parts.append('<g data-commentary="recent">')
+    s.text(20,863,'35′ Belgium builds an attack',22,YELLOW)
+    s.text(20,892,'38′ Play continues',22,CYAN)
+    s.parts.append('</g>')
+    s.text(1020,892,'[C] Commentary >',22,MAGENTA)
+    s.visible_commentary_lines=2
     keep(s,'06-watched')
-    s=Sheet(7,'Half-time   /   Holland 1 — 1 Belgium','Vermeer 18′ • Laurent 42′ • finished-target supported decision, not current watched capability',active='Match centre')
-    s.card(194,185,'NL08',390,context='Off • starter • eligible')
-    s.card(604,185,'NL14',390,context='On • bench • ready')
-    s.panel(1014,185,400,586,'Review the change')
-    s.lines(1034,249,['Off: P Bos • midfield', 'On: J Jansen • midfield', 'XI remains eleven.', 'Captain remains L de Boer.', '', 'Friendly policy: unlimited changes.', 'Actual eligibility/refusals still apply.', '', 'Confirm substitution, then Resume.', 'Cancel keeps the committed XI.', 'No real-time touchline commands.'],15,35)
-    s.text(1034,638,'Open squad20 / XI11 / Bench9',15,GREEN,True)
-    s.button(1034,664,'Confirm Bos → Jansen',350)
-    s.button(194,790,'Resume second half',290)
-    s.text(508,815,'This story confirms the change. Current friendly Watch remains view-only.',14)
+
+    s=Sheet(7,'HALF-TIME / HOLLAND 1 - 1 BELGIUM',active='Match',focus=True)
+    s.card(20,108,'NL08',690,h=640,context='OFF / XI / ELIGIBLE')
+    s.card(730,108,'NL14',690,h=640,context='ON / BENCH / READY')
+    s.text(20,790,'Vermeer 18′ / Laurent 42′ / Friendly: unlimited changes',25,YELLOW)
+    s.button(20,818,'Confirm Bos > Jansen',440)
+    s.button(480,818,'Resume second half',400)
+    s.button(900,818,'Squad / Bench >',340)
+    s.footer('Target supported decision / Current friendly Watch is view-only / Cancel keeps XI')
     keep(s,'07-half-time')
-    s=Sheet(8,'Holland  2 — 1  Belgium','Full time • scheduled friendly • half-time1–1 • no extra time or shoot-out',active='Match centre')
-    s.panel(194,185,580,535,'What happened')
-    s.lines(216,251,['Holland', '18′  D Vermeer', '68′  N Smit', '', 'Belgium', '42′  L Laurent', '', 'Half-time: 1–1  /  Full time: 2–1', 'Half-time change: Bos → Jansen', 'Man of the match: Not recorded'],18,37)
-    s.panel(794,185,620,535,'Statistics  /  Holland : Belgium')
-    stats=['Corners                    4 : 3','Free kicks                  8 : 10','Penalties                    0 : 0','Shots                      12 : 9','On target                    6 : 5','Saves                        4 : 4','Fouls                        8 : 8','Yellow cards                 0 : 0','Red cards                    0 : 0','Possession / Territory      Not recorded']
-    s.lines(816,250,stats,17,38)
-    s.button(194,760,'Continue to country desk',330)
-    s.button(546,760,'Round results',240)
-    s.button(808,760,'Retained summary',260)
-    s.text(194,836,'A genuine zero remains 0. Missing data stays Not recorded. New summary capture/replay needs durable support.',13)
+
+    s=Sheet(8,'FULL TIME / HOLLAND 2 - 1 BELGIUM',active='Match')
+    s.text(178,203,'HALF TIME 1 : 1',26,GOLD,True)
+    s.box(178,235,346,515,CYAN,'HOLLAND SCORERS')
+    s.lines(196,310,['D Vermeer    18′','N Smit       68′'],25,64,fill=YELLOW)
+    s.box(542,235,512,515,RED,'STATISTICS / HOL : BEL')
+    stats=[('Corners','4 : 3'),('Free kicks','8 : 10'),('Penalties','0 : 0'),('Shots','12 : 9'),('On target','6 : 5'),('Saves','4 : 4'),('Fouls','8 : 8'),('Yellow cards','0 : 0'),('Red cards','0 : 0')]
+    for i,(label,value) in enumerate(stats):
+        s.text(560,300+i*43,label,24,MAGENTA)
+        s.text(855,300+i*43,value,24,GREEN)
+    s.box(1072,235,350,515,CYAN,'BELGIUM SCORERS')
+    s.text(1090,310,'L Laurent  42′',25,YELLOW)
+    s.text(178,788,'Possession / Territory / MOTM: Not recorded',24,WHITE)
+    s.button(178,817,'Continue',230,selected=True)
+    s.button(426,817,'Round results',280)
+    s.button(724,817,'Summary',220)
+    s.footer('Friendly / No extra time or shoot-out / Bos > Jansen at half-time')
     keep(s,'08-result')
-    s=Sheet(9,'Your next challenge is Eire','After the Belgium friendly • keep the national story and prepare the qualifier')
-    s.panel(194,185,754,278,'Last result  /  Holland 2–1 Belgium')
-    s.lines(216,254,['Vermeer18′, Smit68′ / Laurent42′', 'Half-time1–1 • Bos→Jansen at the interval', 'No qualification points awarded for this friendly.', 'Your squad still includes Noor; de Wit remains in the pool.'],17,38)
-    s.button(216,395,'Prepare Eire qualifier',290)
-    s.panel(970,185,444,278,'Group F  /  qualifying')
-    s.lines(992,251,['Country         P W D L F A T', 'Holland         0 0 0 0 0 0 0', 'Eire            0 0 0 0 0 0 0', 'Denmark         0 0 0 0 0 0 0', 'Luxembourg      0 0 0 0 0 0 0'],15,34)
-    s.panel(194,485,1220,258,'Save this career, then return')
-    s.lines(216,547,['Confirm the next team before saving: match effects and final XI are authoritative, not copied from the pre-match picture.', 'Save → success → close → Resume Holland at the same committed post-Belgium checkpoint.', 'Fixtures, country profile, rankings and Archive remain available routes; the next opponent is Eire.', 'The first delivery may stop at an explained unsupported future-stage boundary; that is not a finished career.'],17,37)
-    s.note(['The friendly did not advance the qualifying table. Later competitive results must use the actual accepted standings rules.', 'Next: prepare again, play the qualifier, follow the campaign, then revisit the people and records.'])
+
+    s=Sheet(9,'NEXT: EIRE / QUALIFYING')
+    s.box(178,174,570,275,CYAN,'LAST MATCH')
+    s.text(196,253,'HOLLAND 2 - 1 BELGIUM',32,YELLOW,True)
+    s.lines(196,306,['Vermeer 18′ / Smit 68′','Belgium: Laurent 42′','Half-time 1-1 / Bos > Jansen'],24,46)
+    s.box(770,174,652,405,CYAN,'GROUP F / QUALIFYING')
+    s.text(788,244,'COUNTRY       P W D L F A T',24,CYAN)
+    s.lines(788,298,['Holland       0 0 0 0 0 0 0','Eire          0 0 0 0 0 0 0','Denmark       0 0 0 0 0 0 0','Luxembourg    0 0 0 0 0 0 0'],24,57,fill=YELLOW)
+    s.box(178,472,570,300,RED,'YOUR TEAM')
+    s.lines(196,540,['Noor remains in the squad.','de Wit remains in the pool.','Jansen came on for Bos.','Review the next XI, then save.'],24,46,fill=GREEN)
+    s.lines(790,635,['Friendly: no qualifying points.','Next fixture: Holland v Eire.','Save > close > Resume this career.'],24,45)
+    s.button(178,817,'Prepare Eire',300,selected=True)
+    s.button(500,817,'Save career',280)
+    s.button(802,817,'History',230)
+    s.footer('Same country / Same saved career / Competitive Watch remains unavailable')
     keep(s,'09-continue')
-    s=Sheet(10,'A country over successive campaigns','Longer-career target • later milestones, not states immediately after the Belgium friendly',active='Archive')
-    for x,title,lines in [(194,'2030  /  pursue qualification',['Review the group and remaining fixtures.', 'Earn finals or understand elimination.', 'Blank future pairings stay unplayed.', 'Do not fabricate automatic qualification.']), (814,'After the campaign',['Keep results, scorers and country records.', 'Read supported bulletin consequences.', 'Continue after disappointment.', 'A headline alone never means dismissal.'])]:
-        s.panel(x,185,600,235,title); s.lines(x+20,247,lines,17,35)
-    s.panel(194,442,1220,295,'2032 and beyond  /  your country changes, your decisions continue')
-    s.lines(216,506,['Ageing, retirement and national-pool replacement belong to the complete career.', 'Illustrative later record: P Bos leaves the squad; new candidate S van Rijn awaits comparison.', 'No retirement threshold, generated record or automatic promotion is inferred from that example.', 'Manager / national-team history, rankings, full profile and retained summaries tell the longer story.', 'Complete local-manager play hands off the correct country without losing shared fixture/save ownership.'],18,39)
-    s.note(['These are desired outcomes over existing evidenced contracts, not newly specified progression rules or a delivery plan.', 'Full country projections, generated news, durable records/replay and local-manager capability still need their named support.'])
+
+    s=Sheet(10,'YOUR COUNTRY / CAREER RECORD',active='History')
+    s.box(178,174,1244,244,GOLD,'CAREER / LATER MILESTONES')
+    s.text(196,244,'2030  QUALIFYING > FINALS IF EARNED > NEXT CAMPAIGN',28,YELLOW,True)
+    s.lines(196,301,['Qualification and elimination both have a clear continuation.','Results / top scorers / caps / best place / largest wins and defeats'],24,48,fill=CYAN)
+    s.box(178,443,600,341,RED,'LATER SQUAD UPDATE / ILLUSTRATIVE')
+    s.lines(198,515,['P Bos leaves the squad.','S van Rijn awaits comparison.','Review the new national pool.','Actual ages and retirement','follow the evidenced rules.'],24,47,fill=GREEN)
+    s.box(800,443,622,341,CYAN,'2032 AND SUBSEQUENT CYCLES')
+    s.lines(820,515,['Your country continues.','Campaign results stay discoverable.','News describes actual consequences.','A headline alone is not dismissal.','Local managers retain their country.'],24,47,fill=YELLOW)
+    s.footer('Later-career target / Not an immediate jump after Belgium / Missing records stay explicit')
     keep(s,'10-career')
-    s=Sheet(11,'Team  /  J Jansen','900×640 logical client • pre-kickoff after Noor exchange • same full-card data',small=True,active='Team')
-    s.panel(20,167,390,411,'Squad20 • XI11 / Bench9')
-    s.lines(36,222,['Rows1–8 of20   ↓ contained scrollbar', '✓ R van Dalen    GK', '✓ M Vos          RB', '✓ L de Boer C    CB', '✓ T Visser       CB', '✓ J Meijer       LB', '✓ S Bakker       MF', '✓ D Vermeer      MF', '✓ P Bos          MF', '', 'Selected: J Jansen • Noor on bench'],14,26)
-    s.rect(395,242,5,225,'#e2e8e1',2); s.rect(395,242,5,90,GREEN,2)
-    s.button(36,530,'Jump to bench9',170); s.button(224,530,'Confirm / Discard',170)
-    s.card(430,167,'NL14',450,compact=True,context='Bench • ready • no unconfirmed changes')
-    s.text(20,596,'Larger text: labelled Roster / Player card / Plan panes, with selected identity and actions retained.',12)
-    keep(s,'11-small-window')
-    s=Sheet(12,'Clear boundaries and recoverable errors','Three alternative states of the same Holland career • not a sequence of successful actions',active='Game / Save')
-    rows=[('Load failed / Holland pre-Belgium','The selected save could not be read. Active career and prior good file remain intact.', 'Retry  /  Choose another save  /  Cancel'),('Starting Watch / Holland v Belgium','Match is starting. Team edits and saving are locked until this job finishes or cancels.', 'Cancel → confirmed pre-match checkpoint; never publish a partial result'),('Watch unavailable / next Eire qualifier','Competitive Watch is not supported here. Your fixture and confirmed team remain selected.', 'Play supported Quick  /  Return to preparation')]
-    for i,(title,line,action) in enumerate(rows):
-        y=185+i*190; s.panel(194,y,1220,170,title); s.text(216,y+77,line,17); s.text(216,y+124,action,16,GREEN,True)
-    s.note(['Save failure likewise keeps the prior good save and active career: Retry / Save elsewhere / Cancel.', 'Invalid lineup/exchange keeps the draft and names the actual refusal. No silent fallback to a new career or no-op button.'])
+
+    keep(team_sheet(11,focus=True,small=True),'11-small-window')
+
+    s=Sheet(12,'CLEAR REFUSALS / RECOVERABLE ERRORS',active='Save')
+    states=[('LOAD FAILED / HOLLAND','Selected save could not be read.','Keep current career and prior good save.','Retry / Choose another / Cancel'),
+            ('STARTING WATCH / BELGIUM','Starting match... Team edits and save locked.','Cancel returns to the confirmed checkpoint.','Cancel match'),
+            ('WATCH UNAVAILABLE / EIRE','Competitive Watch is not supported.','Keep this fixture and the confirmed team.','Start supported Quick / Return')]
+    for i,(title,line1,line2,actions) in enumerate(states):
+        y=174+i*211
+        s.box(178,y,1244,185,RED,title)
+        s.text(196,y+66,line1,26,WHITE)
+        s.text(196,y+108,line2,24,YELLOW)
+        s.text(196,y+154,actions,25,CYAN,True)
+    s.footer('Three alternative states / Save failure keeps the exit decision pending')
     keep(s,'12-unavailable-errors')
-    s=Sheet(13,'Conditional phases belong to the fixture','Later knockout branch of the career • hypothetical tied match, not the Belgium friendly',active='Match centre')
-    s.panel(194,185,590,522,'Branch A  /  level after normal time')
-    s.lines(216,252,['Regulation: 1–1', 'Show the supplied competition phase.', 'Offer only a supported extra-time action.', '', 'At the supplied midpoint:', 'show current score, eligible team and choices;', 'Resume continues the same match.', '', 'If extra time produces a winner:', 'explain regulation and extra-time scores;', 'go to results without penalty ordering.'],17,36)
-    s.panel(804,185,610,522,'Branch B  /  still level after extra time')
-    s.lines(826,252,['Regulation1–1 / after extra time1–1', 'Eligible XI • complete order preview (illustrative)', 'Same example roster after Bos → Jansen'],16,30)
+
+    s=Sheet(13,'KNOCKOUT DECISIONS / CONDITIONAL',active='Match')
+    s.box(178,174,586,620,RED,'EXTRA TIME / IF REQUIRED')
+    s.text(196,245,'NORMAL TIME 1 : 1',30,YELLOW,True)
+    s.lines(196,304,['Continue only at a supported phase.','At the supplied midpoint:','  Score / team / eligible decisions','  Confirm changes > Resume','A winner goes straight to results.'],23,56)
+    s.button(196,671,'Squad / full bars >',540)
+    s.box(786,174,636,620,CYAN,'STILL LEVEL / ORDER TAKERS')
+    s.text(804,245,'AFTER EXTRA TIME 1 : 1',29,YELLOW,True)
     for i,k in enumerate(second_xi):
-        s.text(826+(i//6)*275,365+(i%6)*35,f'{i+1:02}  '+P[k]['name'],16,INK)
-    s.button(826,603,'Undo',160); s.button(1004,603,'Confirm order',220)
-    s.text(826,680,'Watched ordering is a capability gap today.',16)
-    s.note(['Both branches preserve complete eligible-player cards and XI/bench context; they do not enable new modes or rules.', 'Competitive Quick has supported resolution output. That is not proof of interactive competitive Watch or taker ordering.'])
+        xx=804+(i//6)*305; yy=315+(i%6)*48
+        s.text(xx,yy,f'{i+1:02} '+P[k]['name'],23,ROLE_COLORS[P[k]['role']],True)
+    s.button(804,671,'Undo',170)
+    s.button(992,671,'Confirm order',400)
+    s.text(804,761,'Only supplied time/defaults.',24,MAGENTA)
+    s.footer('Later hypothetical knockout / Not the Belgium friendly / Watched ordering needs support')
     keep(s,'13-conditional')
-    s=Sheet(14,'Which game do you want to return to?','Same Holland v Belgium fixture, same parity requirement • three credible organizations')
-    options=[(194,'A  COUNTRY DESK',GREEN,['Repeated management decisions stay close.', 'Compact tables beside complete cards.', 'Recommended. Screens02–09 show it.']), (604,'B  BROADCAST CAREER',INK,['More screen space for match spectacle.', 'Details and comparisons require drawers.', 'Greater art/motion and navigation cost.']), (1014,'C  COMMAND ROOM','#66583b',['Closest to the original menu rhythm.', 'Modern type, controls and visible keys.', 'More hopping between decisions.'])]
-    for x,title,color,lines in options:
-        s.rect(x,185,400,70,color,7); s.text(x+15,229,title,16,'white',True)
-        s.rect(x,270,400,448,'white',7,'#d1dbd5'); s.lines(x+16,617,lines,14,33)
-    s.rect(210,290,368,66,'#e3eee3',5); s.text(224,318,'Holland v Belgium  /  Prepare',16,GREEN,True)
-    s.text(224,343,'Country • campaign • next action',13)
-    s.rect(210,373,209,190,'#eef2ed',5); s.text(223,401,'SQUAD20  /  XI11',14,INK,True)
-    s.lines(223,433,['Name       Pos     Ready','Van Dalen   GK      Yes','De Boer     CB      Yes','Jansen      MF      Yes','All rows / full comparison'],12,27)
-    s.rect(431,373,147,190,'#e3eee3',5); s.lines(442,405,['PLAYER CARD','Biography','12 skills','5 characteristics','Instructions'],12,30)
-    s.rect(620,290,368,273,INK,5); s.text(636,322,'HOLLAND v BELGIUM',22,'white',True)
-    s.rect(636,345,336,148,GREEN,5); s.text(664,416,'MATCH / NATIONAL STORY',16,'white',True)
-    s.text(636,530,'Open Team drawer  /  Open campaign drawer',12,'white')
-    s.rect(1030,290,368,273,'#eeeade',5); s.text(1045,321,'Holland  /  Manager menu',18,INK,True)
-    s.lines(1045,360,['1 Squad              2 Team tactics','3 Fixtures           4 Tournament','5 Country            6 History','F1 Help   /   F7 Save'],14,39)
-    s.text(1045,536,'Choose → separate complete decision page',12)
-    s.note(['Aesthetic direction changes navigation and reading effort; none removes complete cards or adds new football mechanics.', 'Owner selection comes before reconciling the existing plan/backlog. Toolkit choice follows the selected experience.'])
-    keep(s,'14-directions')
+
+    keep(team_sheet(14,focus=True),'14-directions')
+
+    s=Sheet(15,'HOLLAND 1 - 0 BELGIUM / 38′',active='Match')
+    # [designed] The open drawers use space only on explicit request. The closed
+    # state is sheet06, with the same minute, score and event chronology.
+    pitch(s,178,174,830,650)
+    s.box(1024,174,398,650,CYAN,'COMMENTARY / [C] HIDE')
+    s.lines(1042,243,['18′ GOAL: Vermeer','Holland leads 1-0.','','31′ Keeper collects','','35′ Belgium builds','an attack.','','38′ Play continues'],23,48,fill=CYAN)
+    s.footer('C: close commentary / F11: retract bars / Both return space to the pitch')
+    keep(s,'15-watched-drawers')
     return exports
 
 
@@ -336,7 +465,7 @@ def main():
     target=ROOT/'screens'; target.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='goal2-vision-266-') as tmp:
         out=Path(tmp); exports=draw(out)
-        for svg,_ in exports:
+        for svg,_,_ in exports:
             env={**os.environ,'INKSCAPE_PROFILE_DIR':str(out/'inkscape-profile')}
             subprocess.run(['inkscape',str(svg),'--export-type=png','--export-filename='+str(svg.with_suffix('.png'))],check=True,capture_output=True,env=env)
             for suffix in ['.svg','.png']:
@@ -346,8 +475,8 @@ def main():
                         raise SystemExit('FAIL missing/stale export: '+str(dest))
                 else: dest.write_bytes(source.read_bytes())
         if args.check:
-            assert {p.name for p in target.iterdir()}=={p.with_suffix(s).name for p,_ in exports for s in ['.svg','.png']}
-        print(f'PASS illustrative roster/pool/XI/captain/substitution and score chronology; {len(exports)} sheets, {sum(n for _,n in exports)} measured text bounds; '+('exports identical' if args.check else 'exports written'))
+            assert {p.name for p in target.iterdir()}=={p.with_suffix(s).name for p,_,_ in exports for s in ['.svg','.png']}
+        print(f'PASS coherent story; {len(exports)} sheets; {sum(n for _,n,_ in exports)} measured text bounds; {sum(n for _,_,n in exports)} attribute bars; default pitch >=85%, commentary2 lines; '+('exports identical' if args.check else 'exports written'))
 
 
 if __name__=='__main__': main()

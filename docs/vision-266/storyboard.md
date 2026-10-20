@@ -1,6 +1,6 @@
 # One country, one coherent story
 
-[designed: #266] **All fourteen images below are final-target illustrations, not current-build captures.** They use fictional players and authored outcomes, not original assets or engine output. Each image has a visible target label. They show desired appearance and decisions without claiming a toolkit, embedded renderer or working missing capability. [Current-build captures and limits](evidence.md#current-reality) are separate.
+[designed: #266, revised to owner feedback2026-10-20] **All fifteen new images below are final-target desktop illustrations, not current-build captures.** The original GOAL2 is now the visual baseline: black, distinct functional colors, large characters, information up front and segmented attribute bars. The former paper/emerald direction and three-way style choice are superseded. New screens use fictional players/authored outcomes, not original assets or engine output; each has a target label. Original comparison images are separately captioned. No toolkit, embedding or missing game capability is proven. [Feedback/source study](evidence.md#owner-correction-and-original-screen-study) and [current-build limits](evidence.md#current-reality) stay separate.
 
 [designed] The single main story is Holland, manager Alex, in an illustrative 2030 qualifying campaign. Resume before a scheduled home friendly with Belgium. Replace bench forward C de Wit with reserve R Noor, keep the XI/captain, choose Watch at Normal, reach half-time1–1, bring on J Jansen for P Bos, win2–1, then prepare the Eire qualifier. No qualification points are awarded for the friendly. New/start and error panels are alternative routes in that same career. Later-career/knockout panels are explicitly later possibilities, not hidden state changes in the friendly.
 
@@ -14,19 +14,27 @@
 
 ![Finished target: next opponent, campaign, team and national story](screens/02-country-desk.png)
 
-[designed] Belgium is a friendly before qualifying begins. The national context, team readiness and one preparation route remain adjacent. Group F has no played games; rankings are illustrative target data. Complete profiles, generated bulletin and history remain G03/G05 capability gaps, not evidence supplied by this image. [Original hub/country/campaign reference](../original-game/competition-and-campaign.md). [SVG](screens/02-country-desk.svg).
+[designed] Belgium is a friendly before qualifying begins. The full role-colored twenty, own/opponent ranks and direct original-like menu put information in view immediately. Group F has no played games; rankings are illustrative target data. Complete profiles, generated bulletin and history remain G03/G05 gaps. The visible top/side bars have explicit retract controls. [Original hub/country/campaign reference](../original-game/competition-and-campaign.md). [SVG](screens/02-country-desk.svg).
 
 ## 03 Understand the whole squad
 
-![Finished target: all twenty names, seven compact columns, full Jansen card and plan](screens/03-team.png)
+**Original reference — authentic reconstructed screen, not a new target:**
 
-[designed] J Jansen is on the bench; L de Boer captains the unchanged XI. The selected complete card retains identity/biography, national/club positions, cards, performance/readiness, twelve skills, five characteristics and instructions. The plan routes lead to all eight team and five personal tactic categories; missing supported edits stay explicit. Extended tables preserve T84's38/37 columns. [Original full cards/tactics](../original-game/squad-and-tactics.md). [SVG](screens/03-team.svg).
+![Original GOAL2 full squad: color-coded names and segmented bars](../original-game/images/m244-squad.png)
+
+[confirmed: M244-G1A-02 step3, accepted manual ebdd6879] Black, large character cells, distinct colors, dense card/roster and twelve skill/five characteristic bars are the reference. Original bars do not by themselves prove their numeric meanings; [verified field evidence](evidence.md#owner-correction-and-original-screen-study) is separate.
+
+**Revised desktop target:**
+
+![Finished target: large color-coded twenty and full Jansen bar card](screens/03-team.png)
+
+[designed] J Jansen is on the bench; L de Boer captains the unchanged XI. Large role-colored names and the complete selected card retain identity/biography, named national/club positions, cards, performance/readiness, all twelve skills/five characteristics as bars and raw values, plus five instruction values/source. T means the Team default, not a new tactic. Unknown descriptors/performance are not guessed. Attribute table preserves the seven-column compact and38/37-column expanded contracts; Team tactics leads to all eight categories. [Original full cards/tactics](../original-game/squad-and-tactics.md). [SVG](screens/03-team.svg).
 
 ## 04 Compare both people before an exchange
 
 ![Finished target: pinned de Wit and Noor complete cards beside the pool browser](screens/04-pool.png)
 
-[designed] Both candidates are forwards outside the XI, so this exchange changes only one bench place. The cards use the same category order and complete detail. Their numbers are authored illustration units; they do not assert that these are decoded records or ratings. The story confirms de Wit→Noor; subsequent preparation retains Noor, with twenty squad members and nine on the bench. The original exchange eligibility/window remains authoritative. This panel's pool count is an illustrative80, with seven visible rows and contained scrolling, not a promise that every country has the same source dataset. [SVG](screens/04-pool.svg).
+[designed] Both candidates are forwards outside the XI, so one bench place changes. Both complete large-type bar cards stay pinned; the candidate strip lists seven names, and Browse opens the filtered/scrollable pool without losing outgoing/incoming identity. Noor's crossing20/shooting18 bars are visibly longer than de Wit's16/12. These are authored original-unit examples, not decoded records or ratings. The story confirms de Wit→Noor; later preparation retains Noor with20 squad/9 bench. Original eligibility/window remains authoritative. The80-pool count is illustrative, not a universal dataset promise. [SVG](screens/04-pool.svg).
 
 ## 05 Prepare, choose Quick or Watch, then start
 
@@ -36,15 +44,23 @@
 
 ## 06 Feel the match
 
-![Finished target: Holland leads1–0 at38 minutes, pitch beside matching commentary](screens/06-watched.png)
+**Original reference — authentic reconstructed default pitch:**
 
-[designed] D Vermeer scored at18′; Holland leads1–0 at38′. Clock, phase, score and commentary agree. The numbered schematic pitch is a composition illustration, not physical positions, a real sample, interpolated motion or a new engine. Manage is unavailable because there is no supported decision at this instant. The planned complete game exposes only actual eligible interventions. [Original match evidence](../original-game/match-and-results.md). [SVG](screens/06-watched.svg).
+![Original GOAL2 live match: large black pitch below a short score/event strip](../original-game/images/match-live.png)
+
+[confirmed: E015-r0007 state31; accepted manual ebdd6879] The default live view dedicates the main area to the pitch. [Expanded original commentary](../original-game/images/match-commentary.png) is a separately observed state.
+
+**Revised desktop target — default:**
+
+![Finished target: maximum pitch, large role characters, score and two latest lines; full commentary hidden](screens/06-watched.png)
+
+[designed: owner direction] D Vermeer scored at18′; Holland leads1–0 at38′. Top/side bars and full commentary are retracted by default; a thin score/phase HUD and the latest two lines remain. The pitch occupies about85% of this authored canvas, maximized into the remaining space. Team-colored role characters and a white ball are schematic, not a real sample, physical dimensions, interpolated motion or new engine. Menu/Top edge handles restore navigation; C opens full commentary. There is no always-visible coaching panel or supported decision at this instant. Presentation toggles cannot answer prompts or alter timing. [Original match evidence](../original-game/match-and-results.md). [SVG](screens/06-watched.svg).
 
 ## 07 Make a supported decision, then resume
 
 ![Finished target: half-time1–1, complete off/on cards and explicit confirmation/resume](screens/07-half-time.png)
 
-[designed] L Laurent equalizes for Belgium at42′. At half-time1–1, the later target permits Bos→Jansen in midfield. Confirm replaces one starter with one bench player and keeps captain L de Boer. This story applies the change and explicitly resumes. The cards retain the drawing's fixed illustrative values; they are not evidence of match-energy evolution. Runtime values must come from the actual paused state. Current friendly Watch is view-only; #250's bounded audit/first action and G01's missing mode-dependent capability still govern implementation. The friendly policy shown is the accepted remaster policy, not the original five-substitution observation. [SVG](screens/07-half-time.svg).
+[designed] L Laurent equalizes at42′. At half-time1–1, the target presents Bos→Jansen in midfield through the same complete bar cards; captain L de Boer remains. This story confirms the change and explicitly resumes. Fixed drawing values are not evidence of match-energy evolution; runtime cards must read the actual paused state. Current friendly Watch is view-only: #250's bounded audit/first action and G01 still govern implementation. A decision can request attention even when chrome is hidden; retracting it never silently answers/dismisses a prompt. Friendly unlimited changes is the accepted remaster policy, not the original observed five. [SVG](screens/07-half-time.svg).
 
 ## 08 Understand the result
 
@@ -68,7 +84,7 @@
 
 ![Finished target: actual900×640 illustration with readable full card and contained roster scrolling](screens/11-small-window.png)
 
-[designed] This returns to the explicitly labelled pre-kickoff post-pool state, with Jansen on the bench and Noor retained. Eight roster rows fit beside the same complete card; contained scrolling and Jump to bench reach every name. Selected identity and Confirm/Discard actions stay pinned. At increased text scale, labelled Roster/Player card/Plan panes replace simultaneous columns before text shrinks. That relocation requires actual keyboard/screen-reader/scale acceptance; a static900×640 PNG proves only the proposed composition. [SVG](screens/11-small-window.svg).
+[designed] The actual900×640 target shows the pre-kickoff post-pool state, Jansen on the bench and Noor retained. Chrome is retracted and labelled Roster/Player/Plan panes give the full card18px text, all17 bars and readable instruction values. Roster20 reaches every name/bench choice with contained scrolling; selected identity and Confirm/Discard remain visible. This replaces the first draft's tiny simultaneous roster/card rather than shrinking information to fit. Pane/focus/scale/screen-reader behavior still needs native acceptance. [SVG](screens/11-small-window.svg).
 
 ## 12 Know why an action is unavailable
 
@@ -82,8 +98,14 @@
 
 [designed] The labels deliberately separate these hypothetical later knockout branches from the Belgium friendly. An actual tie after normal time may require extra time under the supported competition rules. A later tie after extra time may require order/undo/confirmation and supplied kicks. Complete eligible-player cards and XI/bench context remain required, as in the main halftime example. Show actual defaults/timing only; never impose a new timeout. Competitive Quick result stages exist separately from interactive watched extra time/order, which remains G01 capability work. [Original conditional evidence](../original-game/match-and-results.md). [SVG](screens/13-conditional.svg).
 
-## 14 Three credible directions
+## 14 Retract the chrome, keep the information
 
-![Finished-target alternatives: Country desk, Broadcast career and Modern command room](screens/14-directions.png)
+![Finished target: same Team and full bar card with top/side chrome retracted](screens/14-directions.png)
 
-[designed] All three use the same fixture and retain full information parity. Country desk puts recurring decisions together. Broadcast career gives the next match/pitch more space and moves comparisons into drawers. Modern command room retains the original menu/screen rhythm with visible modern controls. The alternatives change navigation and emphasis, not the rules. Country desk is recommended because the repeated task is comparing players in a campaign context; broadcast emphasis remains a legitimate owner preference. [Select in product terms](README.md#product-choices-for-the-owner). [SVG](screens/14-directions.svg).
+[designed: owner direction] This is the same initial pre-pool twenty, selection, bar values and instructions as03, with the large top and side bars retracted. More space goes directly to the information. Menu/Top edge handles and keyboard actions restore each bar; selection, draft, scroll and underlying career are preserved. No hover-only controls or surprise automatic hiding while editing. The old three-way direction comparison is superseded by the owner's original-as-baseline instruction. [Revised product choices](README.md#product-choices-for-the-owner). [SVG](screens/14-directions.svg).
+
+## 15 Open commentary only when wanted
+
+![Finished target: the same38-minute1–0 match with navigation and full commentary temporarily open](screens/15-watched-drawers.png)
+
+[designed] This is exactly06's38-minute1–0 instant, not a second match or a simulation pause. The player has explicitly opened navigation and full commentary, reducing the pitch while reading history. C closes commentary; each bar's retract control or the focus shortcut restores pitch space. The default remains06, showing only the latest lines. Proposed bindings are presentation controls, not proof of original keys, engine pause/timing changes or a new in-flight Quick/Watch switch. [SVG](screens/15-watched-drawers.svg).
