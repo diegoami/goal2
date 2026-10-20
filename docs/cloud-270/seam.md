@@ -127,6 +127,20 @@ once and runs it against two backends:
 Fault workers (wrong token, gap, duplicate completion, early output, slow exit, crash)
 read only `request.json` or argv, so the same fault runs against either backend.
 
+## Known boundaries of this slice
+
+- [confirmed: T86 run of `match_view.Display.lines()`] The real presentation's first
+  line is always `Original engine — friendly`, so the fictional walkthrough's
+  display lines carry it too. The programmatic marks above identify the fiction. A
+  *visible* demo label is a UI decision for the slices that own the screens
+  (#242/#260–#262). This slice does not edit the presentation.
+- [designed: T86] The real-backend contract cases have not run in the cloud
+  container that built this slice: GOAL.DAT, the E010/E006 savestates and Unicorn
+  are absent. They turn on when slice 3 stages resources.
+- [designed: T86] The fake children prove protocol handling, publication and the
+  fiction boundary. They do not prove original RNG, timing or match fidelity, which
+  remain the fidelity tests' job (CLAUDE.md rule 20).
+
 ## Proposed split of #270's remaining slices (proposal only)
 
 | Slice | Proposed content | Depends on |
