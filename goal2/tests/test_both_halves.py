@@ -8,7 +8,6 @@ exercises consecutive halves on one mutable engine instance.
 (T01); the adapter is the state adapter (T06/T07). E010-r0001 is a
 half-time savestate; the engine runs the second half from it.
 """
-import os
 import subprocess
 import unittest
 from pathlib import Path
@@ -19,11 +18,12 @@ from goal2 import cli  # noqa: F401
 
 from goal2.engine.quick_engine import simulate
 from goal2.engine.savestate import Savestate
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent.parent / "goal2-archaeology")))
+ARCHAEOLOGY = requires.archaeology()
 E010_RUNS = ARCHAEOLOGY / "runs" / "E010"
 
 
@@ -69,6 +69,7 @@ class BothHalvesReproducibility(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        requires.require(archaeology=True)
         cls.records = []
         for n in range(1, 11):
             record_path = E010_RUNS / f"E007-r{n:04d}.json" if False else E010_RUNS / f"E010-r{n:04d}.json"

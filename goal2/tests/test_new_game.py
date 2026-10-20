@@ -9,7 +9,6 @@ the test fetches on demand and skips with the reason when the fetch fails.
 array is the fidelity oracle (release E006 of goal2-archaeology).]
 """
 import hashlib
-import os
 import subprocess
 import sys
 import unittest
@@ -26,7 +25,6 @@ ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 DAT = CACHE / "GOAL.DAT"
 SAV = CACHE / "e006-r0001-main.sav"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent / "goal2-archaeology")))
 RELEASE = "E006"
 REPO = "diegoami/goal2-archaeology"
 

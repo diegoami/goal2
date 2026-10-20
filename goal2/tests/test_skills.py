@@ -11,7 +11,6 @@ bars are the fidelity oracle (experiments/E007-q009-player-screen).]
 """
 import hashlib
 import json
-import os
 import subprocess
 import sys
 import unittest
@@ -19,13 +18,12 @@ from pathlib import Path
 
 from goal2.game import skills
 from goal2.engine.savestate import Savestate
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
-# [designed] The archaeology repo is a sibling of the goal2 repo
-# (`~/projects/goal2-archaeology`); the default walks up from the worktree
-# to find it. Set GOAL2_ARCHAEOLOGY to override.
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent.parent / "goal2-archaeology")))
+# [designed: #275] One resolver for every test (requires.archaeology); set GOAL2_ARCHAEOLOGY to override.
+ARCHAEOLOGY = requires.archaeology()
 E007_RUNS = ARCHAEOLOGY / "runs" / "E007"
 CACHE = ROOT / ".cache"
 
@@ -169,6 +167,7 @@ class TableLoaders(unittest.TestCase):
         """[confirmed: F008, E007] The tables loaded from the E006-r0001
         savestate must match the tables recorded in E007-r0009's observations
         (same DOS session). Skips when the E007 run file is absent."""
+        requires.require(archaeology=True)
         run_path = E007_RUNS / "E007-r0009.json"
         if not run_path.is_file():
             raise unittest.SkipTest(f"E007 run not found at {run_path}")
@@ -234,6 +233,7 @@ class E007Fidelity(unittest.TestCase):
     def setUpClass(cls):
         # [confirmed: F008, E007] Skip if any of the 4 required E007 run files
         # are absent; a partial directory is not enough.
+        requires.require(archaeology=True)
         for rec_num in range(9, 13):  # r0009..r0012
             rec_path = E007_RUNS / f"E007-r{rec_num:04d}.json"
             if not rec_path.is_file():

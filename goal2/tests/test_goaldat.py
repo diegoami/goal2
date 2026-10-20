@@ -25,7 +25,6 @@ from goal2.data.goaldat import SHA256, SIZE
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 DAT = CACHE / "GOAL.DAT"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent / "goal2-archaeology")))
 RELEASE = "goal2-original"
 REPO = "diegoami/goal2-archaeology"
 

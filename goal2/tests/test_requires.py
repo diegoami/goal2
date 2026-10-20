@@ -27,8 +27,10 @@ class Reasons(unittest.TestCase):
             self.assertEqual(requires.absent(generated={"legacy/manifest.json": "python3 tools/x.py"}),
                              "generated file .cache/legacy/manifest.json absent: python3 tools/x.py")
         with patch.dict("os.environ", {"GOAL2_ARCHAEOLOGY": "/nonexistent/goal2-archaeology"}):
+            self.assertEqual(requires.archaeology(), Path("/nonexistent/goal2-archaeology"))
             self.assertIsNone(requires.archaeology_path())
-            self.assertIn("goal2-archaeology checkout absent", requires.absent(archaeology=True))
+            self.assertEqual(requires.absent(archaeology=True), "goal2-archaeology checkout absent: "
+                             "set GOAL2_ARCHAEOLOGY, or run tools/cloud_setup.sh")
         with patch.object(requires, "SLOW", False):
             self.assertEqual(requires.absent(slow=True), "slow test: set GOAL2_SLOW=1 to run it")
         with patch.object(requires, "SLOW", True):

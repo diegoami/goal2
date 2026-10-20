@@ -33,15 +33,22 @@ WATCHED = {"modules": ("unicorn",), "files": (REFERENCE["asset"],)}
 HALFTIME = {"files": ("GOAL.DAT", "e010-r0008-halftime.sav")}
 
 
-def archaeology_path() -> Path | None:
-    """The goal2-archaeology checkout tools/check_provenance.py resolves, or None when absent."""
+def archaeology() -> Path:
+    """The goal2-archaeology checkout every test reads, resolved once for all of them as
+    tools/check_provenance.py resolves it (`$GOAL2_ARCHAEOLOGY`, a sibling checkout, the
+    `.cache/` clone of tools/cloud_setup.sh); the path may not exist."""
     sys.path.insert(0, str(ROOT / "tools"))
     try:
         from check_provenance import _archaeology
     finally:
         sys.path.remove(str(ROOT / "tools"))
+    return _archaeology()
+
+
+def archaeology_path() -> Path | None:
+    """The goal2-archaeology checkout, or None when it is absent."""
     try:
-        path = _archaeology()
+        path = archaeology()
     except (OSError, RuntimeError, ValueError):
         return None
     return path if (path / ".git").exists() else None
@@ -60,7 +67,7 @@ def absent(modules=(), files=(), generated=None, archaeology=False, slow=False) 
         if not (CACHE / name).exists():
             return f"generated file .cache/{name} absent: {command}"
     if archaeology and archaeology_path() is None:
-        return "goal2-archaeology checkout absent: clone it beside goal2 or set GOAL2_ARCHAEOLOGY"
+        return "goal2-archaeology checkout absent: set GOAL2_ARCHAEOLOGY, or run tools/cloud_setup.sh"
     if slow and not SLOW:
         return "slow test: set GOAL2_SLOW=1 to run it"
     return None

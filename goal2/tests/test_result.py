@@ -31,11 +31,6 @@ from goal2.ui.result import _render, run_result
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
-ARCHAEOLOGY = Path(
-    __import__("os").environ.get(
-        "GOAL2_ARCHAEOLOGY", str(ROOT.parent.parent / "goal2-archaeology")
-    )
-)
 
 
 # ── Fixture loading ────────────────────────────────────────────────────────
