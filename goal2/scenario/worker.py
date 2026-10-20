@@ -150,7 +150,9 @@ def watched(args, competitive):
         if fault == 'bad-kind':
             result['kind'] = 201
         if fault == 'bad-image':
+            # [designed: T86] Memory agrees with the result, so only the input-image binding refuses it.
             result['image_sha256'] = '0' * 64
+            memory = json.dumps(dict(json.loads(memory), image_sha256='0' * 64), sort_keys=True).encode()
         if fault == 'bad-memory':
             memory = json.dumps(dict(json.loads(memory), mark='career')).encode()
         sent = list(events)

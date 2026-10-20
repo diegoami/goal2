@@ -112,6 +112,12 @@ and stale-owner guards. It overrides only the two steps that need original memor
    (`original:<n>`), because `pending_fixture` binds to it. Fiction is identified by
    the mark, never by the identifier.
 
+[designed: T86 rework 1] Every guard claimed on this page and in the
+`goal2/scenario` docstrings has a named control. `docs/cloud-270/mutations.py`
+removes each guard on its own in a scratch copy, and that control must then fail for
+the stated reason. This includes the result validator run by the scenario publication
+and the owner check `publish_prepared` makes after preparation.
+
 ## Shared contract cases
 
 [designed: T86] `goal2/tests/test_scenario_contract.py` defines each protocol case
