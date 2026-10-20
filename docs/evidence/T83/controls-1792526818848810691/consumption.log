@@ -1,0 +1,16 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.13.16)
+test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting) ... FAIL
+
+======================================================================
+FAIL: test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting (goal2.tests.test_pygame_pitch_view.PitchPixels.test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/goal2/goal2/tests/test_pygame_pitch_view.py", line 157, in test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting
+    self.assertEqual(value['frame_sequence'],value['test_flip_sequence'],'ACK must match actually flipped sample')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -1 != 0 : ACK must match actually flipped sample
+
+----------------------------------------------------------------------
+Ran 1 test in 0.112s
+
+FAILED (failures=1)

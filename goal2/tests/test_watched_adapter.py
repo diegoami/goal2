@@ -13,6 +13,7 @@ from goal2.engine.original_match.check import EXPECTED_FAMILY
 from goal2.game.state import from_savestate
 from goal2.game.campaign import CampaignState, Fixture as CampaignFixture
 from goal2.game.watched_match import prepare_watched, run_watched_match, engine_year
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -61,6 +62,7 @@ def direct(state, fixture, year=None, seed=None, delay=None):
 class WatchedAdapter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        requires.require(**requires.WATCHED)
         cls.raw = reference_image(ROOT / '.cache')
 
     def state(self):
@@ -135,6 +137,7 @@ class WatchedAdapter(unittest.TestCase):
         image.memory[p:p+2] = (7).to_bytes(2,'little'); s.mem = image.memory_component()
         self.compare(s,Fixture(7,19,22),year=7)
 
+    @requires.need(**requires.HALFTIME)
     def test_real_fresh_campaigns_transfer_next_free_count_and_context(self):
         from goal2.data.goaldat import load
         from goal2.game.campaign_schedule import start_opening_campaign

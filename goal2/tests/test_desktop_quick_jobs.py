@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from types import SimpleNamespace
+from goal2.tests import requires
 from goal2.desktop.model import DesktopModel
 from goal2.desktop.jobs import QuickJobs
 from goal2.desktop.worker import play
@@ -15,6 +16,7 @@ from goal2.game.session_save import encode
 
 ROOT=Path(__file__).resolve().parents[2]
 
+@requires.need(**requires.HALFTIME)
 class QuickJobCases(unittest.TestCase):
     def setUp(self):
         self.folder=tempfile.TemporaryDirectory();self.addCleanup(self.folder.cleanup)

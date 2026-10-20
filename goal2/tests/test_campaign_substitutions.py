@@ -16,12 +16,14 @@ from goal2.game.state import to_savestate
 from goal2.game.session_save import encode
 from goal2.game.substitutions import plan,swap
 from goal2.game.campaign_rounds import prepare as prepare_round
+from goal2.tests import requires
 ROOT=Path(__file__).resolve().parents[2]
 # [designed] Complete pre-T47 uninterrupted continuations, base65ab461, source
 # E010-r0008 template, country4, captain61/tactics165. Explicit JSON save hashes.
 GOLDEN=('7415d6828c7947bd75e421190fc6d0b61e0cf78162ad564cca7bd6720666cb13',
         '0287107911367819be773c00a174ad4b7ad59eb6f41bbbf70856a9bfd4238f0a')
 
+@requires.need(**requires.HALFTIME)
 class HalftimeCases(unittest.TestCase):
     def setUp(self):
         self.folder=tempfile.TemporaryDirectory();self.addCleanup(self.folder.cleanup)

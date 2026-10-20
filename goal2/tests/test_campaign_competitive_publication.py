@@ -14,6 +14,7 @@ from goal2.game import watched_publication
 from goal2.game.watched_match import WatchedOutcome
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests.test_campaign_competitive_match import state,run,independent_runtime
+from goal2.tests import requires
 
 
 def publication(owner):
@@ -89,6 +90,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         s,raw,f=campaign(21,2);owner=Owner(s,raw);pub,job=self.begin(owner,f)
         from goal2.game.competitive_match import prepare_competitive
         root=Path(__file__).resolve().parents[2]
+        requires.require(generated={'watched-legacy-v3-9fb725ac914a/standalone.g2save': 'python3 tools/export_watched_legacy.py --source 9fb725ac914afabfdaa830198fc3a514c87c243f'})
         legacy,_=session_save.decode((root/'.cache/watched-legacy-v3-9fb725ac914a/standalone.g2save').read_bytes())
         original=legacy.last_match['original']
         self.assertEqual(original['kit'],'1');self.assertEqual(original['index'],f.index)

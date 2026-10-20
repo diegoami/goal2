@@ -19,6 +19,7 @@ from pathlib import Path
 
 from goal2.data import goaldat
 from goal2.game import new_game
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -367,6 +368,7 @@ class LCGDrawOrderRegression(unittest.TestCase):
 class DW3Example(unittest.TestCase):
     """[designed] The DW3 example: a one-liner that prints a player's bytes."""
 
+    @requires.need(files=("GOAL.DAT",))
     def test_dw3_example_runs(self):
         # DW3: `python3 -c "from goal2.game import new_game; ..."` must work.
         # This test runs the same Python and asserts the output is non-empty.

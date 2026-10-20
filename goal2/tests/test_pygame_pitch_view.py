@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 from goal2.desktop.match_view import Display
 from goal2.desktop import pygame_viewer as viewer
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -37,6 +38,7 @@ def pitch():
 def send(d,kind,value):d.accept(['owned',d.sequence,kind,value])
 
 
+@requires.need(modules=("pygame",))
 class PitchPixels(unittest.TestCase):
     def setUp(self):
         import pygame
@@ -204,6 +206,7 @@ class PitchController(unittest.TestCase):
                     finally:c.close()
 
 
+@requires.need(modules=("pygame",))
 class SavedByteControls(unittest.TestCase):
     def test_saved_byte_projection_visibility_and_consumption_controls(self):
         import time

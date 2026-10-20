@@ -33,7 +33,9 @@ one, `git pull` and take the next free number.
    Rework goes back to the same branch; non-blocking findings become one `T<nn> follow-up` issue.
 4. **Checks**: every Done-when line on the PR head, and
    `python3 tools/check_premerge.py --expected-head <sha>` in a clean checkout at that head
-   (`--tests` adds the game test modules; opt-in until #275 makes them skip cleanly).
+   (it runs every game test module; a test whose optional dependency, original-game file or
+   goal2-archaeology checkout is absent skips with its reason, `goal2/tests/requires.py`; `--slow`
+   adds the slow tests, `--no-tests` leaves the game tests out).
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
    `git switch main && git pull`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <reviewed-sha>`, then

@@ -4,6 +4,7 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 from goal2.game.standings import TableFixture, group_table, opening_group
+from goal2.tests import requires
 
 
 def fixture(i,a,b,kind=2):return TableFixture(str(i),kind,a,b)
@@ -85,6 +86,7 @@ class Standings(unittest.TestCase):
         with self.assertRaises(ValueError):self.table(fs,rs,stage=8)
         with self.assertRaises(ValueError):self.table([fixture(1,1,5)],[score(1,1,5,1,0)])
 
+    @requires.need(**requires.HALFTIME)
     def test_opening_group_recovers_saved_source_slots_without_rng(self):
         from goal2.desktop.model import DesktopModel
         from goal2.game.campaign_schedule import build_opening_campaign

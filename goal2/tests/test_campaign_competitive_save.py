@@ -18,6 +18,7 @@ from goal2.game.watched_publication import WatchedPublication
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests.test_campaign_competitive_match import run,independent_runtime
 from goal2.tests.test_campaign_competitive_publication import campaign,publication,completed
+from goal2.tests import requires
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -35,6 +36,7 @@ def select(s):
 @lru_cache(maxsize=None)
 def opening_qualifier():
     from goal2.data.goaldat import load
+    requires.require(**requires.HALFTIME)
     raw=(ROOT/'.cache/e010-r0008-halftime.sav').read_bytes()
     data=load((ROOT/'.cache/GOAL.DAT').read_bytes())
     s,_=start_opening_campaign(data,raw,managed_country=4,start_year=1990,seed_7b62=4660,seed_8336=33590)

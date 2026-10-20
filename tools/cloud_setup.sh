@@ -73,6 +73,17 @@ if rclone listremotes 2>/dev/null | grep -qx 'goal2drive:'; then
   fi
 fi
 
+say "goal2-archaeology checkout beside goal2 (the evidence some game tests read)"
+# [designed: #275] Public; a blobless clone keeps the history the pinned commits need and fetches
+# file contents on demand. Without it those tests skip (goal2/tests/requires.py).
+arch="${GOAL2_ARCHAEOLOGY:-$(dirname "$PWD")/goal2-archaeology}"
+if [ -e "$arch/.git" ]; then
+  git -C "$arch" fetch -q origin 2>/dev/null || echo "could not fetch $arch; using it as it is"
+else
+  GIT_LFS_SKIP_SMUDGE=1 git clone -q --filter=blob:none https://github.com/diegoami/goal2-archaeology "$arch" \
+    || echo "could not clone goal2-archaeology; the tests that read it will skip"
+fi
+
 say "GitHub"
 if ! command -v gh >/dev/null && command -v apt-get >/dev/null && [ "$(id -u)" = 0 ]; then
   { apt-get install -y -qq gh || { apt-get update -qq && apt-get install -y -qq gh; }; } >/dev/null 2>&1 || echo "could not install gh"
@@ -86,4 +97,4 @@ export QT_QPA_PLATFORM=offscreen
 export SDL_VIDEODRIVER=dummy
 export SDL_AUDIODRIVER=dummy
 EOF
-say "done: source .cache/cloud.env, then python3 tools/check_premerge.py --expected-head \$(git rev-parse HEAD) --tests"
+say "done: source .cache/cloud.env, then python3 tools/check_premerge.py --expected-head \$(git rev-parse HEAD)"
