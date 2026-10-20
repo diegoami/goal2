@@ -20,6 +20,8 @@ from pathlib import Path
 
 BASE = "3335da830d289cc869f989b73816926c54360ff1"
 MANUAL = "ebdd6879d469a574f6d4b446f59b33a6be3ffd81"
+# [designed: #253 reconciliation] Merge commit of accepted vision #266 / PR #267; its screens are pinned by bytes.
+VISION = "9683a47647f21bd2a3274ea5dc56bb8c14e6c5a9"
 # Reviewed234-field source inventory at32d6c51c; destination partition must not edit it.
 SOURCE_INVENTORY_SHA256 = "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282"
 GROUPS = {"ST": 6, "CO": 14, "CS": 8, "CC": 4, "HU": 9, "PI": 11,
@@ -68,7 +70,32 @@ CARD_SKILLS = {"2610": [20, 23, 5, 8, 11, 14, 17, 20, 23, 5, 8, 11],
                "2628": [4, 11, 18, 4, 11, 18, 4, 11, 18, 4, 11, 18]}
 CARD_CHARACTERISTICS = {"2610": [6, 24, 27, 17, 4], "2628": [6, 24, 28, 20, 4]}
 
-CHECKS = ("proposal", "parity", "journeys", "current", "backlog", "technology", "scope")
+# [designed: #253 reconciliation] Independent oracles for the accepted-vision mapping: a registry that
+# drops a screen, claims an undrawn surface or re-recommends a superseded layout cannot satisfy itself.
+VISION_SCREENS = ["01-start-resume", "02-country-desk", "03-team", "04-pool", "05-preparation", "06-watched",
+                  "07-half-time", "08-result", "09-continue", "10-career", "11-small-window", "12-unavailable-errors",
+                  "13-conditional", "14-team-focus", "15-watched-drawers", "16-team-tactics", "17-small-roster",
+                  "18-later-squad", "19-campaign"]
+SURFACE_COVERAGE = {"S01": "drawn", "S02": "partial", "S03": "drawn", "S04": "drawn", "S05": "drawn", "S06": "undrawn",
+                    "S07": "partial", "S08": "drawn", "S09": "drawn", "S10": "drawn", "S11": "drawn", "S12": "partial",
+                    "S13": "partial", "S14": "partial", "S15": "undrawn"}
+LAYOUT_SUCCESSOR = {"01-country-setup": {"01"}, "02-country-desk": {"02"}, "03-team-workspace": {"03", "14", "16"},
+                    "04-pool-compare": {"04"}, "05-competition": {"09", "19"}, "06-match-preparation": {"05"},
+                    "07-live-match": {"06", "15"}, "08-result-and-campaign": {"08", "09"},
+                    "09-small-window": {"11", "17"}, "10-match-decisions": {"07", "13"}}
+QUEUE_LANES = {1: {253, 270}, 2: {198, 242, 243, 259}, 3: {260, 261, 262, 249, 263},
+               4: {110, 112, 113, 114, 115, 116, 117, 118, 119}, 5: {248, 250, 251, 265, 264}}
+QUEUE_EXTRA = {155, 208, 268}   # #155 before #117; #208/#268 keep their own tooling scope
+CHILD_LANE = {"B01": 2, "B02": 3, "B03": 3, "B04": 3, "B05": 3, "B06": 5, "B07": 5}
+CHILD_PRIORITY = {"B01": "P1", "B02": "P1", "B03": "P1", "B04": "P1", "B05": "P1", "B06": "P2", "B07": "P2"}
+# Scope obligations that stay under #253: each must say plainly that it has no delivery owner.
+OBLIGATIONS = {"O08 / G01": "bounded contract", "O09 / G02": "bounded contract", "O10 / G03": "bounded contract",
+               "O11 / G04": "bounded contract", "O12 / G05": "bounded contract", "O13": "bounded original-evidence contract",
+               "O14": "bounded implementation contract"}
+OPEN_CHOICES = ("O02", "O03", "O04", "O05", "O06", "O07")
+OBSOLETE_PHRASES = ("Recommend A", "Recommend **A", "(recommended)", "Select A/B/C", "select **A Country desk**",
+                    "Direction A", "recommended_direction")
+CHECKS = ("proposal", "parity", "journeys", "current", "backlog", "technology", "scope", "vision")
 
 
 def need(condition, message):
@@ -81,9 +108,10 @@ def sha(data):
 
 
 class Package:
-    def __init__(self, root):
+    def __init__(self, root, base=None):
         self.root = root.resolve()
         self.path = self.root / "docs/redesign-253"
+        self.base = base
 
     def read(self, name):
         return (self.path / name).read_text()
@@ -102,23 +130,35 @@ class Package:
         match = re.search(r"^## Approval gate\n(.*?)(?=^## |\Z)", text, re.M | re.S)
         need(match, "operative Approval gate section missing")
         gate = match.group(1)
-        for phrase in ("Explicit owner direction approval is required", "new child issue starts",
-                       "not implementation approval", "No toolkit, backend-language or architecture migration is authorized",
+        for phrase in ("Explicit owner direction approval is no longer outstanding", "no new child issue starts from it automatically",
+                       "Plan acceptance is not implementation approval", "No toolkit, backend-language or architecture migration is authorized",
                        "Existing independently authorized work retains its own scope"):
             need(phrase in gate, "operative gate missing: " + phrase)
         need(self.data("package.json")["implementation_authorized"] is False, "registry authorizes implementation")
 
     def proposal(self):
         self.gate()
-        for f in ("README.md", "assessment.md", "information-parity.md", "journeys.md",
-                  "layouts.md", "decisions.md", "technology.md", "backlog.md", "validation.md"):
+        for f in ("README.md", "assessment.md", "information-parity.md", "journeys.md", "layouts.md", "decisions.md",
+                  "technology.md", "backlog.md", "validation.md", "vision-reconciliation.md"):
             need(len(self.read(f)) > 700, "proposal document absent/empty: " + f)
         index = self.read("README.md")
         need("being assembled" not in index, "transient index instead of decision package")
-        need("Recommend A: Country desk" in index, "no clear recommended direction")
+        need("The direction is chosen" in index and "docs/vision-266" in index.replace("../vision-266", "docs/vision-266"),
+             "README does not state the accepted #266 direction")
+        for f in ("README.md", "decisions.md", "technology.md", "backlog.md", "journeys.md", "assessment.md", "layouts.md",
+                  "information-parity.md", "vision-reconciliation.md", "backlog.json", "package.json", "capability-gaps.json"):
+            for phrase in OBSOLETE_PHRASES:
+                need(phrase not in self.read(f), "obsolete direction recommendation or selection question in " + f + ": " + phrase)
         options = self.read("decisions.md")
-        for item in ("Country desk", "Broadcast career", "Modern command room", *[f"O{i:02}" for i in range(1, 13)]):
-            need(item in options, "missing option/owner decision: " + item)
+        history = re.search(r"^## Historical candidate directions \(superseded\)\n(.*?)(?=^## |\Z)", options, re.M | re.S)
+        need(history, "historical candidate directions not marked superseded")
+        for item in ("Country desk", "Broadcast career", "Modern command room"):
+            need(item in history.group(1), "historical candidate direction missing: " + item)
+        outside = options.replace(history.group(0), "")
+        for term in ("paper", "emerald"):
+            need(term not in outside, "obsolete visual selection outside the historical section: " + term)
+        for i in range(1, 15):
+            need(f"O{i:02}" in options, "missing owner decision: " + f"O{i:02}")
         reg = self.data("package.json")
         need(reg["base_commit"] == BASE and reg["manual_commit"] == MANUAL, "proposal pins changed")
         need(set(reg["layouts"]) == set(LAYOUTS), "representative layout inventory differs")
@@ -141,7 +181,7 @@ class Package:
             need(item["static_svg_and_png_valid"] is True and item["out_of_canvas_text"] == [], "invalid/clipped static layout")
             file = self.path / "layouts" / item["svg"]
             need(sha(file.read_bytes()) == item["svg_sha256"] and sha(file.with_suffix(".png").read_bytes()) == item["png_sha256"], "layout changed after bounds/visual validation")
-        return "A/B/C compared; O01–O12/gate;10 static sheets;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
+        return "accepted #266 direction stated; no obsolete recommendation/selection question; A/B/C historical only; O01–O14/gate;10 historical sheets intact;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
 
     def parity(self):
         src = self.rows("parity/source-fields.tsv")
@@ -273,7 +313,7 @@ class Package:
         capabilities = {r["capability"]: r for r in self.rows("capabilities.tsv")}
         for name, gap in CAP_SCOPE.items():
             need(name in capabilities and "UNOWNED:" + gap in capabilities[name]["owner"], "capability register silently extends existing contract: " + name)
-        for key, expected in (("B02", "O12/G05"), ("B05", "O08–O12/G01–G05")):
+        for key, expected in (("B02", "G05"), ("B05", "G01-G05")):
             need(expected in self.read("backlog/" + key + ".md"), "child hides unowned capability prerequisite: " + key)
         self.allocation_contracts()
         return "five unowned delivery gaps remain gated; existing issues only bounded conditional reuse"
@@ -476,22 +516,147 @@ class Package:
             need(not (set(x["owned_areas"]) & protected), "duplicate existing ownership: " + x["key"] + " " + str(set(x["owned_areas"]) & protected))
             all_new_areas += x["owned_areas"]
             body = self.read(x["contract"])
-            for phrase in ("Player problem:", "Dependencies:", "Original reference:", "Intended behavior:", "Owned surfaces / exclusions:", "## Acceptance criteria", "## Validation", "not implementation approval", "Existing independently authorized work retains its own scope"):
+            for phrase in ("Player problem:", "Dependencies:", "Original reference:", "Intended behavior:", "Owned surfaces / exclusions:", "## Acceptance criteria", "## Validation",
+                           "Owner-approved queue amendment", "no automatic dispatch", "Bounded scope, acceptance preflight"):
                 need(phrase in body, "child contract missing " + phrase + ": " + x["key"])
             need(len(re.findall(r"^\d\. \[designed\]", body, re.M)) >= 5, "child acceptance criteria missing")
             need("https://github.com/diegoami/goal2/blob/" + MANUAL + "/docs/original-game/" in body, "child original references not absolute/pinned")
         need(len(all_new_areas) == len(set(all_new_areas)), "duplicate new scope ownership")
         by = {x["key"]: x for x in items}
-        for key, deps in {"B01": ["#242"], "B02": ["G05", "B06"], "B03": ["#248", "#249"], "B05": ["B06", "B07", "G01–G05", "capability"]}.items():
+        for key, deps in {"B01": ["#242", "#243"], "B02": ["G05", "#265"], "B03": ["#248", "#249"], "B05": ["G01-G05", "#264", "#265"]}.items():
             for dep in deps:
                 need(dep in by[key]["dependencies"], "dependency absent: " + key + " " + dep)
-        for key, dep in (("B02", "B06"), ("B05", "B06"), ("B05", "B07")):
+        for key, dep in (("B02", "#265"), ("B05", "#265"), ("B05", "#264")):
             need(dep in self.read(by[key]["contract"]), "contract/manifest dependency mismatch: " + key)
+        self.mirror_contracts(by)
         index = (self.root / "docs/tasks/README.md").read_text()
-        need("#251 projection" not in index and "#251 audit/display when available" in index, "task index extends retained-summary contract")
+        need("#251 projection" not in index, "task index extends retained-summary contract")
         for n in ISSUES.values():
             need(f"/issues/{n}" in index and f"/issues/{n}" in self.read("backlog.md"), "filed scope absent from proposed order")
-        return "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership;5 unowned scopes tied to owner decisions"
+        return "7 filed scoped issues mirrored from live amended bodies;9 existing owners preserved;dependencies, lanes and task index linked;no duplicate area ownership;unowned scopes tied to owner decisions"
+
+    def mirror_contracts(self, by):
+        """[designed: #253 reconciliation] Local child contracts equal the recorded live amended bodies; lane/priority agree."""
+        receipt = self.data("evidence/reconcile-05/live-issue-bodies.json")
+        mirrored = {r["key"]: r for r in receipt["mirrored"]}
+        need(set(mirrored) == set(ISSUES), "live-body receipt omits a child scope")
+        for key, record in mirrored.items():
+            need(record["issue"] == ISSUES[key] and record["local_file"] == "docs/redesign-253/backlog/" + key + ".md", "receipt names the wrong issue/file: " + key)
+            text = self.read("backlog/" + key + ".md")
+            head, _, body = text.partition("\n\n")
+            need(head.startswith("# " + key + ": ") and body.endswith("\n"), "child contract heading/format differs: " + key)
+            need(sha(body[:-1].encode()) == record["live_body_sha256"], "local contract differs from the recorded live amended body: " + key)
+            need(body.startswith("## Owner-approved queue amendment") and "**Queue:**" in body, "child contract lacks the owner-approved queue amendment: " + key)
+            need("O01 direction approval" not in body and "Explicit owner selection/approval of the #253 redesign direction is required" not in body,
+                 "child contract keeps the superseded direction gate: " + key)
+            x = by[key]
+            need(x["lane"] == CHILD_LANE[key] and x["priority"].startswith(CHILD_PRIORITY[key] + " "), "child lane/priority differs from the approved queue: " + key)
+            need("**Priority:** " + CHILD_PRIORITY[key] in body, "contract priority differs from the approved queue: " + key)
+        for key in ("B01", "B03", "B04"):
+            need("retract" in self.read("backlog/" + key + ".md"), "visual acceptance omits retractable bars: " + key)
+        match = self.read("backlog/B04.md")
+        need("Maximize pitch area" in match and "latest two lines" in match, "match contract omits maximum pitch / two-line commentary")
+        referenced = {r["issue"]: r for r in receipt["referenced"]}
+        need(270 in referenced and referenced[270]["mirrored"] is False, "#270 must be referenced, not mirrored or pre-split here")
+
+    def decision_rows(self):
+        text = self.read("decisions.md")
+        rows = {}
+        for line in text.splitlines():
+            m = re.match(r"^\| (O\d\d(?: / G\d\d)?) \|", line)
+            if m:
+                rows[m.group(1)] = line
+        return rows
+
+    def vision(self):
+        """[designed: #253 reconciliation] The accepted #266 direction, its screens, the queue and the open choices."""
+        self.gate()
+        reg = self.data("package.json")
+        need("recommended_direction" not in reg, "registry still carries the superseded recommendation")
+        d = reg["accepted_direction"]
+        need(d["merge_commit"] == VISION and d["issue"].endswith("/issues/266") and d["pull_request"].endswith("/pull/267")
+             and d["owner_acceptance"].endswith("issues/266#issuecomment-6287825622") and d["docs"] == "docs/vision-266/", "accepted direction record differs")
+        for phrase in ("black", "large characters", "attribute bars", "maximum-size match pitch", "hidden by default", "retractable"):
+            need(phrase in d["summary"], "accepted direction summary omits: " + phrase)
+        # accepted screens: byte-identical to the pinned merge commit; the plan never edits them
+        need(reg["vision_screens"] == VISION_SCREENS, "accepted screen inventory differs from the nineteen of #266")
+        story = (self.root / "docs/vision-266/storyboard.md").read_text()
+        need(re.findall(r"^## (\d\d) ", story, re.M) == [s[:2] for s in VISION_SCREENS], "storyboard no longer lists the nineteen accepted screens")
+        for name in VISION_SCREENS:
+            for ext in (".png", ".svg"):
+                rel = "docs/vision-266/screens/" + name + ext
+                data = (self.root / rel).read_bytes()
+                if ext == ".png":
+                    png_size(data)
+                need(sha(data) == sha(self.git("show", VISION + ":" + rel)), "accepted screen differs from the pinned merge commit: " + rel)
+        # surfaces
+        need(set(reg["surface_screens"]) == set(SURFACE_COVERAGE) == set(reg["surfaces"]), "surface-to-screen registry incomplete")
+        counts = Counter()
+        for r in self.rows("parity/destinations.tsv"):
+            for s in set(re.findall(r"S\d+", r["destination"])):
+                counts[s] += 1
+        need(set(counts) <= set(SURFACE_COVERAGE), "parity destination names a surface the registry does not map")
+        for s, record in reg["surface_screens"].items():
+            need(record["coverage"] == SURFACE_COVERAGE[s], "surface coverage differs from the accepted-screen oracle: " + s)
+            need(set(record["screens"]) <= set(VISION_SCREENS) and set(record.get("route_screens", [])) <= set(VISION_SCREENS), "surface cites an unknown accepted screen: " + s)
+            if record["coverage"] == "drawn":
+                need(record["screens"], "drawn surface without accepted screen: " + s)
+            else:
+                need(record["gap"] and re.search(r"#\d+|G0\d", record["owner"]) and (record["coverage"] != "undrawn" or not record["screens"]),
+                     "undrawn/partial surface lacks a bounded owner or states a drawn screen: " + s)
+        text = self.read("vision-reconciliation.md")
+        section = text.split("## Surface-to-screen mapping", 1)[1].split("## Journey-to-screen mapping", 1)[0]
+        doc_rows = {m[0]: m for m in re.findall(r"^\| (S\d\d) [^|]*\| (drawn|partial|undrawn) \| ([^|]*)\| [^|]*\| (\d+) \|$", section, re.M)}
+        need(set(doc_rows) == set(SURFACE_COVERAGE), "reconciliation surface table incomplete")
+        for s, (_, coverage, cell, allocations) in doc_rows.items():
+            record = reg["surface_screens"][s]
+            shown = set(re.findall(r"\b(\d\d)\b", cell))
+            expected = {x[:2] for x in record["screens"]} | ({x[:2] for x in record.get("route_screens", [])} if record["coverage"] == "undrawn" else set())
+            need(coverage == record["coverage"] and shown == expected, "reconciliation table disagrees with registry: " + s)
+            need(int(allocations) == counts.get(s, 0), "reconciliation allocation count differs from the destination matrix: " + s)
+        # journeys
+        need(set(reg["journey_screens"]) == {f"J{i:02}" for i in range(1, 10)}, "journey-to-screen registry incomplete")
+        journey_section = text.split("## Journey-to-screen mapping", 1)[1].split("## Superseded candidate layouts", 1)[0]
+        journeys = {m[0]: set(re.findall(r"\b(\d\d)\b", m[1])) for m in re.findall(r"^\| (J\d\d) [^|]*\| ([^|]*)\|", journey_section, re.M)}
+        for j, screens in reg["journey_screens"].items():
+            need(screens and set(screens) <= set(VISION_SCREENS), "journey cites no/unknown accepted screen: " + j)
+            need(journeys.get(j) == {x[:2] for x in screens}, "reconciliation journey table disagrees with registry: " + j)
+        # candidate layouts are superseded, each with an accepted successor
+        need(set(reg["superseded_layouts"]) == set(LAYOUTS), "superseded layout mapping incomplete")
+        layout_section = text.split("## Superseded candidate layouts", 1)[1].split("## Approved queue", 1)[0]
+        shown_layouts = {m[0]: set(re.findall(r"\b(\d\d)\b", m[1])) for m in re.findall(r"^\| (\d\d) [^|]*\| ([^|]*)\|", layout_section, re.M)}
+        for name, successors in reg["superseded_layouts"].items():
+            need(successors and {x[:2] for x in successors} == LAYOUT_SUCCESSOR[name], "superseded layout lacks its accepted successor: " + name)
+            need(shown_layouts.get(name[:2]) == LAYOUT_SUCCESSOR[name], "reconciliation layout table disagrees with registry: " + name)
+        lay = self.read("layouts.md")
+        need("Superseded as screen recommendations" in lay and "historical evidence, not a recommendation" in lay, "layouts.md does not declare the candidate sheets superseded")
+        need("not a recommendation" in (self.path / "layouts/SUPERSEDED.md").read_text(), "layouts directory lacks its superseded marker")
+        # queue
+        lanes = {q["lane"]: set(q["issues"]) for q in reg["queue"]["lanes"]}
+        need(lanes == QUEUE_LANES, "queue lanes differ from the owner-approved queue")
+        need(set(reg["queue"]["lanes"][3]["before"]["117"]) == {155} and set(reg["queue"]["lanes"][0]["separate"]) == {208, 268}, "queue ordering constraints differ")
+        index = (self.root / "docs/tasks/README.md").read_text()
+        plan = self.read("backlog.md")
+        for n in sorted(set().union(*QUEUE_LANES.values()) | QUEUE_EXTRA):
+            for name, doc in (("task index", index), ("backlog", plan), ("reconciliation", text)):
+                need(f"/issues/{n}" in doc, f"queue issue absent from {name}: #{n}")
+        need("referenced, not implemented or pre-split here" in plan and "referenced, not implemented or pre-split here" in text, "#270 is not recorded as referenced only")
+        # open owner choices and unowned obligations
+        rows = self.decision_rows()
+        need("Closed" in rows.get("O01", "") and "resolved" in rows.get("O01", ""), "O01 must be closed: the direction is not asked again")
+        for key in OPEN_CHOICES:
+            need("[designed: open]" in rows.get(key, ""), "genuinely open owner choice missing or mislabeled: " + key)
+        for key, contract in OBLIGATIONS.items():
+            row = rows.get(key, "")
+            need(row, "scope obligation missing: " + key)
+            need("nowned" in row and contract + " before a full-parity claim" in row, "scope obligation lacks an explicit unowned statement: " + key)
+            need(key.split(" / ")[-1] in text, "reconciliation omits the scope obligation: " + key)
+        tech = self.read("technology.md")
+        need("did not select a toolkit" in tech, "technology document must not claim a toolkit was selected")
+        for phrase in ("retractable", "maximum-size pitch", "latest two commentary lines"):
+            need(phrase in tech, "technology proof omits an accepted visual requirement: " + phrase)
+        self.allocation_contracts()
+        return "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 referenced;O01 closed,O02-O07 open;G01-G05/O13/O14 explicitly unowned;inventory hash unchanged"
 
     def technology(self):
         self.gate()
@@ -503,13 +668,24 @@ class Package:
         need("2026-10-19" in t and "No numeric" in t, "capabilities/estimates not bounded")
         return "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
 
+    def merge_base(self):
+        """[designed: #253 reconciliation] Changed files are measured from where this branch left main, not from the audited product pin."""
+        if self.base:
+            return self.base
+        for ref in ("origin/main", "main"):
+            try:
+                return self.git("merge-base", "HEAD", ref).decode().strip()
+            except subprocess.CalledProcessError:
+                continue
+        raise ValueError("no origin/main or main to measure the change from: fetch it or pass --base <rev>")
+
     def scope(self):
         need((self.path / "package.json").exists(), "proposal package absent")
-        changed = set(self.git("diff", "--name-only", BASE).decode().splitlines())
+        base = self.merge_base()
+        changed = set(self.git("diff", "--name-only", base).decode().splitlines())
         changed.update(self.git("ls-files", "--others", "--exclude-standard").decode().splitlines())
-        need(changed, "no planning deliverable")
         allowed = lambda x: x.startswith("docs/redesign-253/") or x in {"docs/tasks/README.md", "docs/model-trials.md"}
-        need(all(allowed(x) for x in changed), "out-of-scope changed file: " + str([x for x in changed if not allowed(x)]))
+        need(all(allowed(x) for x in changed), "out-of-scope changed file: " + str(sorted(x for x in changed if not allowed(x))))
         for path in self.path.rglob("*"):
             if not path.is_file():
                 continue
@@ -519,7 +695,7 @@ class Package:
                 json.loads(path.read_text())
             if path.suffix in (".md", ".py", ".mjs", ".json", ".tsv", ".svg"):
                 need(len(path.read_text()) < 110000, "oversized planning file: " + path.name)
-        return f"{len(changed)} changed files limited to task docs/index and explicit process lesson;JSON valid;no app/engine/dependency/original payload changes"
+        return f"{len(changed)} changed files against {base[:8]} limited to the plan package, its task index and the focused process lesson (accepted vision, product and engine untouched);JSON valid;no app/engine/dependency/original payload changes"
 
 
 def png_size(data):
@@ -551,8 +727,7 @@ def negative_controls(package):
         ("blank-destination", "parity", {dst: lambda t: set_cell(t, "SK12", "destination", "")}),
         ("missing-original-screen", "parity", {"evidence/screens-inspected.tsv": lambda t: drop(t, "captain-select.png")}),
         ("remove-operative-gate", "proposal", {"decisions.md": lambda t: re.sub(r"^## Approval gate\n.*?(?=^## |\Z)", "", t, flags=re.M | re.S)}),
-        ("realistic-duplicate-campaign-owner", "backlog", {"backlog.json": duplicate_campaign,
-          "backlog/B03.md": lambda t: t.replace("COMPOSITION only", "COMPOSITION and available fixture/group display ownership")}),
+        ("realistic-duplicate-campaign-owner", "backlog", {"backlog.json": duplicate_campaign}),
         ("watch-flags-assigned-to249", "backlog", {dst: lambda t: set_cell(t, "FX03", "owner", "#249")}),
         ("friendly-rearrangement-assigned-to249", "backlog", {dst: lambda t: set_cell(t, "FX05", "owner", "#249")}),
         ("generated-news-assigned-to249", "backlog", {dst: lambda t: set_cell(t, "NW01", "owner", "#249")}),
@@ -587,7 +762,32 @@ def negative_controls(package):
         ("comparison-biography-copied", "proposal", {"layouts/04-pool-compare.svg": lambda t: t.replace("24 yrs · caps 1 · goals 0 · 6′0″ · right foot", "29 yrs · caps 3 · goals 0 · 5′11″ · left foot")}),
         ("selected-competition-tab-omitted", "proposal", {"layouts/05-competition.svg": unselect_groups}),
         ("original-live-speed-departure-omitted", "proposal", {"decisions.md": lambda t: "\n".join(line for line in t.split("\n") if "↔-speed" not in line)}),
-        ("team-bits-reassigned-to-player-card-display", "parity", {dst: lambda t: set_cell(t, "TT01", "reuse", "T84 read-only display; #248 owns personal edits only.")})]
+        ("team-bits-reassigned-to-player-card-display", "parity", {dst: lambda t: set_cell(t, "TT01", "reuse", "T84 read-only display; #248 owns personal edits only.")}),
+        # [designed: #253 reconciliation] controls for the accepted-vision mapping, queue and open-choice records
+        ("obsolete-recommendation-restored", "proposal", {"README.md": lambda t: t.replace("The direction is chosen.**", "The direction is chosen.** Recommend A: Country desk.")}),
+        ("obsolete-recommendation-in-registry", "proposal", {"package.json": lambda t: edit_json(t, lambda d: d.update(recommended_direction="A"))}),
+        ("visual-style-question-reasked", "proposal", {"decisions.md": lambda t: t.replace("\n\n## Unowned capability decisions", "\n| O15 | [designed: open] | Select the paper or the original look. | | |\n\n## Unowned capability decisions")}),
+        ("direction-question-reasked", "vision", {"decisions.md": lambda t: t.replace("| O01 | [designed: resolved] **Closed** |", "| O01 | [designed: open] |")}),
+        ("accepted-screen-dropped-from-registry", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["vision_screens"].remove("19-campaign"))}),
+        ("drawn-surface-without-screen", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["surface_screens"]["S04"].update(screens=[]))}),
+        ("undrawn-surface-claimed-drawn", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["surface_screens"]["S06"].update(coverage="drawn", screens=["02-country-desk"]))}),
+        ("undrawn-surface-owner-dropped", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["surface_screens"]["S15"].update(owner=""))}),
+        ("reconciliation-screen-claim-diverges", "vision", {"vision-reconciliation.md": lambda t: t.replace("| S05 Pool comparison | drawn | 04 |", "| S05 Pool comparison | drawn | 03 |")}),
+        ("reconciliation-allocation-count-wrong", "vision", {"vision-reconciliation.md": lambda t: t.replace("| S08 Preparation | drawn | 05 | — | 106 |", "| S08 Preparation | drawn | 05 | — | 105 |")}),
+        ("superseded-layout-without-successor", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["superseded_layouts"].update({"05-competition": []}))}),
+        ("candidate-layouts-recommended-again", "vision", {"layouts.md": lambda t: t.replace("Superseded as screen recommendations.", "Recommended screens.")}),
+        ("accepted-screen-bytes-edited", "vision", {"../vision-266/screens/06-watched.svg": lambda t: t + "\n"}),
+        ("queue-lane-issue-dropped", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][0]["issues"].remove(270))}),
+        ("task-index-drops-career-stream", "vision", {"../../docs/tasks/README.md": lambda t: t.replace("/issues/119)", "/issues/9119)")}),
+        ("backlog-drops-cloud-issue", "vision", {"backlog.md": lambda t: t.replace("/issues/270)", "/issues/27)")}),
+        ("gap-unowned-statement-removed", "vision", {"decisions.md": lambda t: t.replace("**Unowned: needs a bounded contract before a full-parity claim.**", "", 1)}),
+        ("evidence-encoding-obligation-dropped", "vision", {"decisions.md": lambda t: "".join(x for x in t.splitlines(keepends=True) if not x.startswith("| O13 |"))}),
+        ("technology-claims-toolkit-selected", "vision", {"technology.md": lambda t: t.replace("did not select a toolkit or window arrangement", "selected a toolkit")}),
+        ("technology-proof-omits-two-line-commentary", "vision", {"technology.md": lambda t: t.replace("only the latest two commentary lines by default", "commentary by default")}),
+        ("child-contract-diverges-from-live-body", "backlog", {"backlog/B03.md": lambda t: t.replace("Split shared shell and Team/pool composition before dispatch.", "Compose everything at once.")}),
+        ("child-priority-drifts-from-queue", "backlog", {"backlog.json": lambda t: edit_json(t, lambda d: next(x for x in d if x["key"] == "B06").update(priority="P1 · full-parity support prerequisite"))}),
+        ("cloud-issue-mirrored-instead-of-referenced", "backlog", {"evidence/reconcile-05/live-issue-bodies.json": lambda t: edit_json(t, lambda d: d["referenced"][0].update(mirrored=True))})]
+
     intended_findings = {
         "quick-continuation-assigned-to-existing-scopes": "excluded capability assigned",
         "quick-continuation-omitted-from-gap": "gap field inventory differs",
@@ -608,7 +808,30 @@ def negative_controls(package):
         "comparison-biography-copied": "comparison copies outgoing biography",
         "selected-competition-tab-omitted": "no visible selected Groups tab",
         "original-live-speed-departure-omitted": "live-speed departure/acceptedT85 boundary unrecorded",
-        "team-bits-reassigned-to-player-card-display": "TT reuse incorrectly assigned"}
+        "team-bits-reassigned-to-player-card-display": "TT reuse incorrectly assigned",
+        "obsolete-recommendation-restored": "obsolete direction recommendation or selection question in README.md",
+        "obsolete-recommendation-in-registry": "obsolete direction recommendation or selection question in package.json",
+        "visual-style-question-reasked": "obsolete visual selection outside the historical section: paper",
+        "direction-question-reasked": "O01 must be closed",
+        "accepted-screen-dropped-from-registry": "accepted screen inventory differs",
+        "drawn-surface-without-screen": "drawn surface without accepted screen: S04",
+        "undrawn-surface-claimed-drawn": "surface coverage differs from the accepted-screen oracle: S06",
+        "undrawn-surface-owner-dropped": "undrawn/partial surface lacks a bounded owner or states a drawn screen: S15",
+        "reconciliation-screen-claim-diverges": "reconciliation table disagrees with registry: S05",
+        "reconciliation-allocation-count-wrong": "reconciliation allocation count differs from the destination matrix: S08",
+        "superseded-layout-without-successor": "superseded layout lacks its accepted successor: 05-competition",
+        "candidate-layouts-recommended-again": "layouts.md does not declare the candidate sheets superseded",
+        "accepted-screen-bytes-edited": "accepted screen differs from the pinned merge commit: docs/vision-266/screens/06-watched.svg",
+        "queue-lane-issue-dropped": "queue lanes differ from the owner-approved queue",
+        "task-index-drops-career-stream": "queue issue absent from task index: #119",
+        "backlog-drops-cloud-issue": "queue issue absent from backlog: #270",
+        "gap-unowned-statement-removed": "scope obligation lacks an explicit unowned statement: O08 / G01",
+        "evidence-encoding-obligation-dropped": "scope obligation missing: O13",
+        "technology-claims-toolkit-selected": "technology document must not claim a toolkit was selected",
+        "technology-proof-omits-two-line-commentary": "technology proof omits an accepted visual requirement: latest two commentary lines",
+        "child-contract-diverges-from-live-body": "local contract differs from the recorded live amended body: B03",
+        "child-priority-drifts-from-queue": "child lane/priority differs from the approved queue: B06",
+        "cloud-issue-mirrored-instead-of-referenced": "#270 must be referenced, not mirrored or pre-split here"}
     receipts = []
     for name, check, edits in cases:
         saved = {f: (package.path / f).read_bytes() for f in edits}
@@ -632,6 +855,12 @@ def negative_controls(package):
                          "exact_bytes_restored": True})
     need(all(x["pass"] for x in run(package, CHECKS)), "package failed after restoration")
     return {"positive_checks": initial, "negative_controls": receipts, "all_restored": True}
+
+
+def edit_json(text, change):
+    data = json.loads(text)
+    change(data)
+    return json.dumps(data, indent=2) + "\n"
 
 
 def set_cell(text, key, column, value, key_column="id"):
@@ -730,11 +959,12 @@ def duplicate_campaign(text):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="checkout root; helper may live outside it")
+    parser.add_argument("--base", default=None, help="revision the scope check measures changes from (default: merge-base with origin/main)")
     parser.add_argument("--check", choices=CHECKS)
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--negative-controls", action="store_true")
     args = parser.parse_args()
-    package = Package(args.root)
+    package = Package(args.root, args.base)
     if args.negative_controls:
         try:
             result = negative_controls(package)

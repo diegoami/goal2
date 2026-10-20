@@ -429,7 +429,9 @@
       "02-country-desk"
     ],
     "03-team-workspace": [
-      "03-team"
+      "03-team",
+      "14-team-focus",
+      "16-team-tactics"
     ],
     "04-pool-compare": [
       "04-pool"
