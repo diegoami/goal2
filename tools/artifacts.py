@@ -53,12 +53,12 @@ def main(argv: list[str]) -> int:
         sources = [join(cfg["remote"], n) for n in names] or [cfg["remote"]]
         for src in sources:
             dest = cfg["localDir"] if not names else cfg["localDir"] / Path(src).name
-            subprocess.run([exe, "copy" if not names else "copyto", src, str(dest), "--progress"], check=True)
+            subprocess.run([exe, "copy" if not names else "copyto", src, str(dest)], check=True)
         return 0
     if not names:
         sys.exit("push needs at least one file")
     for name in names:
-        subprocess.run([exe, "copyto", name, join(cfg["remote"], Path(name).name), "--progress"], check=True)
+        subprocess.run([exe, "copyto", name, join(cfg["remote"], Path(name).name)], check=True)
     return 0
 
 

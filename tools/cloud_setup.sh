@@ -46,19 +46,31 @@ rclone version | head -1
 
 say "Drive remote goal2drive and the original-game files"
 folder=$(python3 -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")
-if ! rclone listremotes 2>/dev/null | grep -qx 'goal2drive:'; then
-  if [ -n "${GOAL2_RCLONE_TOKEN:-}" ]; then
-    # RCLONE_DRIVE_CLIENT_ID/SECRET: the owner's own OAuth client, when the token was made with it
-    rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" \
-      ${RCLONE_DRIVE_CLIENT_ID:+client_id="$RCLONE_DRIVE_CLIENT_ID"} \
-      ${RCLONE_DRIVE_CLIENT_SECRET:+client_secret="$RCLONE_DRIVE_CLIENT_SECRET"} --non-interactive >/dev/null
-  else
-    echo "GOAL2_RCLONE_TOKEN is not set: no remote, no original-game files (docs/artifacts.md)"
-  fi
+token_ok() {  # the whole JSON value of rclone.conf's `token = {...}`, refresh_token included
+  printf '%s' "$1" | python3 -c "import json,sys; t=json.load(sys.stdin); sys.exit(0 if t.get('refresh_token') else 1)" 2>/dev/null
+}
+# With the secret set, the remote is (re)created every time, so a corrected secret replaces a bad one.
+if [ -z "${GOAL2_RCLONE_TOKEN:-}" ]; then
+  rclone listremotes 2>/dev/null | grep -qx 'goal2drive:' \
+    || echo "GOAL2_RCLONE_TOKEN is not set: no remote, no original-game files (docs/cloud.md)"
+elif ! token_ok "$GOAL2_RCLONE_TOKEN"; then
+  echo "GOAL2_RCLONE_TOKEN is not the whole token: set it to the JSON after 'token = ' in rclone.conf,"
+  echo "from { to }, with refresh_token in it (it starts with {\"access_token\":...). No remote created."
+  rclone config delete goal2drive >/dev/null 2>&1 || true
+else
+  # RCLONE_DRIVE_CLIENT_ID/SECRET: the owner's own OAuth client, when the token was made with it
+  rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" \
+    ${RCLONE_DRIVE_CLIENT_ID:+client_id="$RCLONE_DRIVE_CLIENT_ID"} \
+    ${RCLONE_DRIVE_CLIENT_SECRET:+client_secret="$RCLONE_DRIVE_CLIENT_SECRET"} --non-interactive >/dev/null \
+    || echo "could not create the goal2drive remote"
 fi
+# A Drive failure never stops the setup: the rest (gh, cloud.env) still runs.
 if rclone listremotes 2>/dev/null | grep -qx 'goal2drive:'; then
-  python3 tools/artifacts.py pull
-  python3 tools/check_goaldat.py .cache/GOAL.DAT && echo "GOAL.DAT verified"
+  if python3 tools/artifacts.py pull; then
+    python3 tools/check_goaldat.py .cache/GOAL.DAT >/dev/null && echo "GOAL.DAT verified" || echo "GOAL.DAT missing or wrong"
+  else
+    echo "pulling the original-game files failed; check the token and the network (docs/cloud.md)"
+  fi
 fi
 
 say "GitHub"
