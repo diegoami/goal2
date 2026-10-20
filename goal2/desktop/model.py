@@ -16,6 +16,12 @@ from goal2.game.state import from_savestate, to_savestate
 from goal2.engine.savestate import Savestate
 
 
+# [designed: owner, 2026-10-20, T50] New campaign offers both source start calendars:
+# [confirmed: F025 §2 P8] 1990 opens at stage 5 (World Cup qualifying), 1992 at stage 2
+# (continental qualifying). 1990 stays the default.
+START_YEARS=((1990,'1990 · World Cup qualifying first'),(1992,'1992 · Continental qualifying first'))
+
+
 class DesktopModel:
     """[designed: T69] Own one active game; publish validated candidates only."""
     def __init__(self,goaldat,template_bytes,save_path):
@@ -42,12 +48,14 @@ class DesktopModel:
         except (OSError,ValueError,IndexError,KeyError,zipfile.BadZipFile,zlib.error,struct.error) as exc:
             raise ValueError(f'Cannot resume game: {exc}') from exc
 
-    def new_campaign(self,country):
+    def new_campaign(self,country,start_year=1990):
         """[designed] Explicit new-game action, never a selector/redraw callback."""
         if type(country) is not int or not 1<=country<=128:
             raise ValueError('Country must be an integer from1 to128')
+        if start_year not in dict(START_YEARS):
+            raise ValueError('Start year must be one of '+', '.join(str(y) for y,_ in START_YEARS))
         candidate,_=start_opening_campaign(self.goaldat,self.template_bytes,managed_country=country,
-                                         start_year=1990,seed_7b62=4660,seed_8336=33590)
+                                         start_year=start_year,seed_7b62=4660,seed_8336=33590)
         self.view(candidate)
         self.state=candidate
 
@@ -150,6 +158,20 @@ class DesktopModel:
         rows=[dict(asdict(r),name=self.goaldat.country_names[r.country],played=r.played,
                    goal_difference=r.goal_difference) for r in table]
         return dict(group,stage=campaign.stage,rows=rows)
+
+    def qualifying(self):
+        """[derived: F023 §4; designed: T50] Named stage-2 outcome, or None outside stage 2."""
+        from goal2.game import continental_qualifying
+        state=self.state
+        result=continental_qualifying.outcome(state.campaign,self.template_bytes,state.managed_country)
+        if result is None:return None
+        names=self.goaldat.country_names;own=result['managed']
+        status={'in progress':f"In progress: {own['rank']}. in group {own['group']}; only the group winner qualifies",
+                'qualified':f"Qualified for the continental finals as winner of group {own['group']}",
+                'eliminated':f"Eliminated: finished {own['rank']}. in group {own['group']}"}[own['status']]
+        qualifiers=None if result['qualifiers'] is None else {
+            continent:[names[c] for c in winners] for continent,winners in result['qualifiers'].items()}
+        return dict(result['managed'],complete=result['complete'],text=status,qualifiers=qualifiers)
 
     def confirm(self,eleven,captain,tactics):
         """[designed: T69; derived: T36/T44] Validate before changing live state."""

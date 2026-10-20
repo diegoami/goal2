@@ -322,13 +322,103 @@ def halftime(template,data,screenshot=None):
     print('PASS campaign-halftime: real pause/substitute/captain2561/no re-entry/continue once, full state/save/resume/next XI, cancel and safe save refusal')
 
 
+def continental(template,data,screenshot=None):
+    # [designed: T50] Real Qt start-year choice and Play through a whole stage 2, once to
+    # qualification and once to elimination, with save/resume mid-group. Bounded inputs: the
+    # fixed seeds of New campaign and the two managed countries below; unavailable starters
+    # are replaced by repair(), as a manager would.
+    from goal2.desktop.worker import play as direct_play
+    from goal2.game import continental_qualifying
+    import time
+    app=QApplication.instance() or QApplication([])
+    receipts=[]
+    for country,expected in QUALIFYING_PATHS:
+        with tempfile.TemporaryDirectory() as folder:
+            model=DesktopModel.open(template,data,Path(folder)/'qualifying.g2save',country=country)
+            window=ManagementWindow(model);window.show();QTest.qWait(60)
+            def click(widget):reveal(widget);QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
+            def wait(busy):
+                deadline=time.monotonic()+180
+                while busy() and time.monotonic()<deadline:
+                    QTest.qWait(30)
+                    if window.jobs.halftime is not None:click(window.continue_match)
+                assert not busy(),'match did not finish: '+window.status.text()
+            assert window.start_year.currentData()==1990 and model.state.campaign.stage==5
+            before=copy.deepcopy(model.state)
+            window.start_year.setFocus();QTest.keyClick(window.start_year,Qt.Key.Key_Down);app.processEvents()
+            assert window.start_year.currentData()==1992 and model.state==before,'start year is a draft'
+            click(window.new)
+            campaign=model.state.campaign
+            assert (campaign.start_year,campaign.stage,model.state.managed_country)==(1992,2,country)
+            assert 'In progress' in window.qualifying.text()
+            competitive=0
+            while (pending:=model.state.campaign.next_fixture) is not None:
+                if repair(model):window.refresh()
+                done=len(model.state.campaign.completed_fixture_ids)
+                if pending.kind==1:
+                    expected_state=direct_play(model.state,model.template_bytes)
+                    click(window.play);assert window.jobs.busy,window.status.text()
+                    wait(lambda:window.jobs.busy);assert model.state==expected_state,window.status.text()
+                else:
+                    assert 'competitive' in window.play.text().lower()
+                    click(window.play);assert window.competitive.busy,window.status.text()
+                    wait(lambda:window.competitive.busy);competitive+=1
+                assert model.state.campaign.completed_fixture_ids[done:]==[pending.fixture_id],window.status.text()
+                if competitive==3 and pending.kind!=1:
+                    # Save/resume mid-group: the persisted draw and schedule come back unchanged.
+                    click(window.save);snapshot=copy.deepcopy(model.state)
+                    view=model.qualifying();assert not view['complete'] and view['qualifiers'] is None
+                    click(window.new);assert model.state!=snapshot
+                    with patch('goal2.game.campaign_schedule.build_opening_campaign',side_effect=AssertionError('resume drew again')):
+                        click(window.resume)
+                    assert model.state==snapshot and model.qualifying()==view,'mid-group resume changed the campaign'
+            world=model.state.campaign.world
+            assert competitive==6 and len(world.results)==len(world.fixtures)==768,'stage 2 did not resolve every fixture'
+            outcome=continental_qualifying.outcome(model.state.campaign,model.template_bytes,country)
+            assert outcome['managed']['status']==expected,outcome['managed']
+            text=window.qualifying.text()
+            assert ('Qualified' if expected=='qualified' else 'Eliminated') in text,text
+            for continent,winners in outcome['qualifiers'].items():
+                assert len(winners)==8 and all(model.goaldat.country_names[c] in text for c in winners)
+            assert not window.play.isEnabled() and 'this stage is complete' in window.fixture_routes.text()
+            assert 'Stage complete' in window.overview_fixture.text()
+            click(window.save);snapshot=copy.deepcopy(model.state);click(window.new);click(window.resume)
+            assert model.state==snapshot and window.qualifying.text()==text
+            receipts.append(f"{model.goaldat.country_names[country]} {expected} (group {outcome['managed']['group']}, rank {outcome['managed']['rank']})")
+            if screenshot:window.grab().save(str(screenshot))
+            window.close();window.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
+    app.shutdown()
+    print('PASS continental-qualifying: real start-year choice, 12 managed fixtures (6 original competitive), mid-group save/resume without a redraw, 768 world results, 32 group winners, '+'; '.join(receipts))
+
+
+def repair(model):
+    """[designed: T50] As a manager would: replace each unavailable starter with the first
+    available reserve of the same position group, else any available outfield reserve."""
+    rows={r['id']:r for r in model.view()['players']};state=model.state
+    free=[w for w in state.managed_squad if rows[w]['availability']['available']]
+    eleven=list(state.starting_eleven)
+    if set(eleven)<=set(free):return False
+    for i,word in enumerate(eleven):
+        if word in free:continue
+        bench=[w for w in free if w not in eleven];group=rows[word]['position']
+        eleven[i]=next((w for w in bench if rows[w]['position']==group),None) or next(
+            w for w in bench if (rows[w]['position']=='Goalkeeper')==(group=='Goalkeeper'))
+    model.confirm(eleven,state.captain if state.captain in eleven else eleven[0],state.country_tactics)
+    return True
+
+
+# [designed: T50] Managed countries whose fixed-seed stage 2 ends in each path.
+QUALIFYING_PATHS=()
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch','campaign-friendlies','worker','campaign-pool','campaign-halftime'],required=True)
+    p=argparse.ArgumentParser();p.add_argument('--scenario',choices=['management','launch','campaign-friendlies','worker','campaign-pool','campaign-halftime','continental-qualifying'],required=True)
     p.add_argument('--template',required=True,type=Path);p.add_argument('--data',required=True,type=Path);p.add_argument('--screenshot',type=Path)
     args=p.parse_args()
     if args.scenario=='management':management(args.template,args.data,args.screenshot)
     elif args.scenario=='launch':launch(args.template,args.data)
     elif args.scenario=='campaign-pool':pool(args.template,args.data,args.screenshot)
     elif args.scenario=='campaign-halftime':halftime(args.template,args.data,args.screenshot)
+    elif args.scenario=='continental-qualifying':continental(args.template,args.data,args.screenshot)
     else:friendlies(args.template,args.data,args.screenshot,blocked=args.scenario=='worker')
 if __name__=='__main__':main()

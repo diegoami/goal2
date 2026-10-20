@@ -53,6 +53,7 @@ an explicit seed and reports the post-draw seed. start_opening_campaign
 projects only the selected country's rows into a T40 campaign and starts its
 live primary RNG at that post-draw seed. Other countries' rows remain metadata;
 the managed projection itself does not simulate results; T48 retains full rows and resolves unattended results through the [atomic turn coordinator](campaign-silent-results.md).
+[designed: T50] The stage-2 group winners are read from those persisted results once the stage is complete; see [continental qualifying](continental-qualifying.md).
 
 [designed: T41a] The T40 schema retains its existing home_country and
 away_country storage keys for version-2 compatibility. In opening metadata

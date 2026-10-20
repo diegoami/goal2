@@ -63,8 +63,10 @@ is unavailable during a match.
 management draft. A Resume that fails validation leaves the active game and draft
 unchanged.
 
-[designed] **New campaign** starts a fresh 1990 campaign with initial seeds 4660/33590,
-using the shared opening campaign generator. A redraw or Resume does not regenerate
+[designed] **New campaign** starts a fresh campaign with initial seeds 4660/33590,
+using the shared opening campaign generator. [designed: owner, 2026-10-20, T50] Its **Start year**
+choice is 1990 (default; World Cup qualifying first) or 1992 (continental qualifying first,
+[continental qualifying](continental-qualifying.md)); previews use the chosen year. A redraw or Resume does not regenerate
 players; previews generate separate records. The displayed twenty records show
 original names, position groups, ability, energy, confidence and eligibility;
 team morale uses the confirmed eleven. Position groups use the runtime POS_LINE
