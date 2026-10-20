@@ -95,8 +95,8 @@ DEPENDENCIES = [(198, 242, "lane 2"), (198, 243, "lane 2"), (260, 261, "lane 3")
                 (116, 117, "lane 4"), (117, 118, "lane 4"), (118, 119, "lane 4"), (155, 117, "lane 4")]
 NOT_PREREQUISITE = [(259, 198, "lane 2"), (259, 242, "lane 2"), (259, 243, "lane 2")]
 FOLLOW_ON = {3: [251]}   # #251 follows the base match journey (#262); the lane's follow_on list must say so
-DEPENDENCY_HEADER = "| Before | After | Source |"
-NOT_PREREQUISITE_HEADER = "| Not a prerequisite | Of | Source |"
+DEPENDENCY_HEADER = ["Before", "After", "Source"]
+NOT_PREREQUISITE_HEADER = ["Not a prerequisite", "Of", "Source"]
 # [designed: #253 rework R1] Independent screen/journey oracles, derived from the accepted storyboard (not from the registry).
 SURFACE_NAMES = {"S01": "Launch", "S02": "New career", "S03": "Country desk", "S04": "Team", "S05": "Pool comparison",
                  "S06": "Country profile", "S07": "Competition", "S08": "Preparation", "S09": "Live", "S10": "Decision",
@@ -147,6 +147,60 @@ def need(condition, message):
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def table_blocks(lines):
+    """[designed: #253 rework R4] A table is the whole contiguous block of pipe-led lines: (index of its first line, its lines)."""
+    blocks, current = [], None
+    for i, line in enumerate(lines):
+        if line.lstrip().startswith("|"):
+            if current is None:
+                current = (i, [])
+                blocks.append(current)
+            current[1].append(line)
+        else:
+            current = None
+    return blocks
+
+
+def table_cells(line, where):
+    """Cells of one pipe row, whitespace-insensitive; a pipe row must also end with a pipe."""
+    s = line.strip()
+    need(len(s) > 1 and s.startswith("|") and s.endswith("|"), f"malformed table row in {where}: {s[:70]}")
+    return [c.strip() for c in s[1:-1].split("|")]
+
+
+def parse_block(block, where):
+    """(header cells, [(line index, line, cells)]); the separator is verified and every row must have the header's cell count."""
+    start, lines = block
+    header = table_cells(lines[0], where)
+    need(len(lines) >= 2, f"table without a separator row in {where}")
+    separator = table_cells(lines[1], where)
+    need(len(separator) == len(header) and all(re.fullmatch(r":?-{3,}:?", c) for c in separator), f"table without a separator row in {where}: {lines[0].strip()[:50]}")
+    rows = []
+    for offset, line in enumerate(lines[2:], 2):
+        cells = table_cells(line, where)
+        need(len(cells) == len(header), f"table row with {len(cells)} cells under a {len(header)}-cell header in {where}: {line.strip()[:70]}")
+        rows.append((start + offset, line, cells))
+    return header, rows
+
+
+def keyed_rows(text, first_header, key_pattern, where, headers=None):
+    """Parse whole every table headed by `headers` (default first_header): each row's first cell must match key_pattern, once. {key: cells}."""
+    found, tables = {}, 0
+    for block in table_blocks(text.splitlines()):
+        header, rows = parse_block(block, where)
+        if header[0] not in (headers or (first_header,)):
+            continue
+        tables += 1
+        for _, line, cells in rows:
+            m = re.fullmatch(key_pattern, cells[0])
+            need(m, f"unparsed row in the {header[0]} table of {where}: {line.strip()[:70]}")
+            key = m.group(1)
+            need(key not in found, f"duplicate {key} row in the {header[0]} table of {where}")
+            found[key] = cells
+    need(tables, f"no {first_header} table in {where}")
+    return found
 
 
 class Package:
@@ -267,7 +321,15 @@ class Package:
         for key in ("SD05", "SD06", "SV08", "ST04"):
             need("B06" in dest[key]["owner"], "assistant/identity dependency absent: " + key)
         rendered = "\n".join(self.read("parity/" + f + ".md") for f in ("management", "campaign", "match"))
-        rendered_ids = re.findall(r"^\| ([A-Z]{2}\d{2}(?:-[SG])?) \|", rendered, re.M)
+        # [designed: #253 rework R4] whole-table parse: a row that is not an allocation row fails instead of being skipped
+        rendered_ids = []
+        for f in ("management", "campaign", "match"):
+            for block in table_blocks(self.read("parity/" + f + ".md").splitlines()):
+                header, rows = parse_block(block, "parity/" + f + ".md")
+                need(header[0] == "Allocation ID", f"parity/{f}.md has a table that is not an allocation matrix: {header[0]}")
+                for _, line, cells in rows:
+                    need(re.fullmatch(r"[A-Z]{2}\d{2}(?:-[SG])?", cells[0]), f"unparsed allocation row in parity/{f}.md: {line.strip()[:70]}")
+                    rendered_ids.append(cells[0])
         need(Counter(rendered_ids) == Counter(dest.keys()), "rendered matrix omitted/duplicated allocation")
         for key in dest:
             expected_cells = " | [designed] ".join([dest[key]["destination"], dest[key]["owner"], dest[key]["reuse"]])
@@ -313,7 +375,7 @@ class Package:
         journeys = {f"J{i:02}" for i in range(1, 10)}
         need(set(reg["surfaces"]) == surfaces, "screen hierarchy incomplete")
         need(set(reg["journeys"]) == journeys, "journey registry incomplete")
-        need(set(re.findall(r"^\| (S\d{2}) \|", text, re.M)) == surfaces, "screen hierarchy prose incomplete")
+        need(set(keyed_rows(text, "Key", r"(S\d{2})", "journeys.md")) == surfaces, "screen hierarchy prose incomplete")
         need(set(re.findall(r"^## (J\d{2})", text, re.M)) == journeys, "journey prose incomplete")
         need({x for j in reg["journeys"].values() for x in j["surfaces"]} == surfaces, "journeys omit a surface")
         need(reg["surfaces"] == SURFACE_NAMES, "surface names differ from the independent oracle")
@@ -603,7 +665,10 @@ class Package:
             x = by[key]
             need(x["lane"] == CHILD_LANE[key] and x["priority"].startswith(CHILD_PRIORITY[key] + " "), "child lane/priority differs from the approved queue: " + key)
             need("**Priority:** " + CHILD_PRIORITY[key] in body, "contract priority differs from the approved queue: " + key)
-        shown = {m[0]: (int(m[1]), m[2]) for m in re.findall(r"^\| \[(B\d\d)\]\([^)]*\) · \[#\d+\]\([^)]*\) \| (\d) \| [^|]*\| (P\d) ", self.read("backlog.md"), re.M)}
+        shown = {}
+        for key, cells in keyed_rows(self.read("backlog.md"), "ID / issue", r"\[(B\d\d)\]\([^)]*\) · \[#\d+\]\([^)]*\)", "backlog.md").items():
+            need(re.fullmatch(r"\d", cells[1]) and re.match(r"P\d\b", cells[3]), "backlog.md child row lacks a lane or priority: " + key)
+            shown[key] = (int(cells[1]), cells[3][:2])
         for key in ISSUES:
             need(shown.get(key) == (CHILD_LANE[key], CHILD_PRIORITY[key]), "backlog.md child lane/priority differs from the approved queue: " + key)
         for key in ("B01", "B03", "B04"):
@@ -614,43 +679,54 @@ class Package:
         need(270 in referenced and referenced[270]["mirrored"] is False, "#270 must be referenced, not mirrored or pre-split here")
 
     def decision_rows(self):
-        text = self.read("decisions.md")
-        rows = {}
-        for line in text.splitlines():
-            m = re.match(r"^\| (O\d\d(?: / G\d\d)?) \|", line)
-            if m:
-                rows[m.group(1)] = line
-        return rows
+        rows = keyed_rows(self.read("decisions.md"), "ID", r"(O\d\d(?: / G\d\d)?)", "decisions.md", headers=("ID", "Decision / gap"))
+        return {key: " | ".join(cells) for key, cells in rows.items()}
 
     @staticmethod
-    def parse_pairs(name, doc, header):
-        lines = doc.splitlines()
-        need(lines.count(header) == 1, f"{name} lacks exactly one '{header}' table")
-        i = lines.index(header) + 2
-        rows = []
-        while i < len(lines) and (m := re.match(r"^\| #(\d+) \| #(\d+) \| ([^|]+?) \|$", lines[i])):
-            rows.append((int(m.group(1)), int(m.group(2)), m.group(3)))
-            i += 1
-        return rows
+    def canonical_table(name, doc, header):
+        """[designed: #253 rework R4] The one table headed `header`, parsed whole: each row is two issue numbers and a source. (pairs, its line indices)."""
+        blocks = [b for b in table_blocks(doc.splitlines()) if table_cells(b[1][0], name) == header]
+        need(len(blocks) == 1, f"{name} lacks exactly one '{' | '.join(header)}' table")
+        _, rows = parse_block(blocks[0], name)
+        pairs = []
+        for _, line, cells in rows:
+            m = re.fullmatch(r"#(\d+)", cells[0]), re.fullmatch(r"#(\d+)", cells[1])
+            need(all(m) and cells[2], f"unparsed row in the '{header[0]}' table of {name}: {line.strip()[:70]}")
+            pairs.append((int(m[0].group(1)), int(m[1].group(1)), cells[2]))
+        start, block_lines = blocks[0]
+        return pairs, set(range(start, start + len(block_lines)))
 
     def queue_dependencies(self, name, doc):
-        """[designed: #253 rework R3] Mechanical checks only, not a reading of prose: (1) the canonical dependency and
-        non-prerequisite tables equal the oracle pairs, so a reversed, missing or extra row fails; (2) lane rows state no
-        order word or arrow; (3) no reverse arrow anywhere in the file; (4) a clause that names two issues around an order
-        word (before/precede/then/after/follows/an arrow) does not contradict an approved pair."""
+        """[designed: #253 rework R3/R4] Mechanical checks, not a reading of prose: (1) both canonical tables, parsed whole, equal the oracle
+        pairs; (2) lane rows state no order word or arrow; (3) no reverse arrow in the file; (4) every line outside the canonical tables, table
+        cells included, is scanned for a clause naming two issues around an order word or arrow that contradicts a pair; (5) no other table
+        row has two bare issue numbers as its first two cells."""
         need("←" not in doc and "<-" not in doc, f"reverse arrow between queue issues in {name}")
-        lane_rows = [x for x in doc.splitlines() if re.match(r"^\| \d[a-e]?(?: |\|)", x) and x.count("|") >= 4]
-        need(len(lane_rows) >= 5, f"queue lane rows missing in {name}")
+        lines = doc.splitlines()
+        dependencies, dependency_lines = self.canonical_table(name, doc, DEPENDENCY_HEADER)
+        non_prerequisites, non_prerequisite_lines = self.canonical_table(name, doc, NOT_PREREQUISITE_HEADER)
+        need(sorted(dependencies) == sorted(DEPENDENCIES), f"dependency table in {name} differs from the approved dependencies")
+        need(sorted(non_prerequisites) == sorted(NOT_PREREQUISITE), f"non-prerequisite table in {name} differs from the approved pairs")
+        canonical = dependency_lines | non_prerequisite_lines
+        lane_lines = set()
+        for block in table_blocks(lines):
+            if block[0] in (min(dependency_lines), min(non_prerequisite_lines)):
+                continue
+            for index, line in enumerate(block[1], block[0]):
+                cells = table_cells(line, name)
+                need(not (len(cells) >= 2 and re.fullmatch(r"#\d+", cells[0]) and re.fullmatch(r"#\d+", cells[1])),
+                     f"table row outside the canonical tables relates two issues in {name}: {line.strip()[:70]}")
+                if re.match(r"\d[a-e]?(?:\s|$)", cells[0]) and len(cells) >= 3:
+                    lane_lines.add(index)
+        need(len(lane_lines) >= 5, f"queue lane rows missing in {name}")
         words = re.compile(r"(?i)\b(before|after|precede\w*|follow\w*|then|prerequisite\w*|predecessor\w*|successor\w*|depend\w*)\b|→|->")
-        for row in lane_rows:
-            hit = words.search(re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", row))
+        for index in sorted(lane_lines):
+            hit = words.search(re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", lines[index]))
             need(not hit, f"queue lane text in {name} states an order outside the canonical dependency table: {hit.group(0) if hit else ''}")
-        need(sorted(self.parse_pairs(name, doc, DEPENDENCY_HEADER)) == sorted(DEPENDENCIES), f"dependency table in {name} differs from the approved dependencies")
-        need(sorted(self.parse_pairs(name, doc, NOT_PREREQUISITE_HEADER)) == sorted(NOT_PREREQUISITE), f"non-prerequisite table in {name} differs from the approved pairs")
         edges = {(a, b) for a, b, _ in DEPENDENCIES}
-        rest = "\n".join(x for x in doc.splitlines() if x not in lane_rows and not x.startswith("| #"))
+        rest = "\n".join(x for i, x in enumerate(lines) if i not in canonical and i not in lane_lines)
         rest = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", rest)
-        for clause in re.split(r"[.;|\n]", rest):
+        for clause in re.split(r"[.;\n]", rest):
             tokens = list(re.finditer(r"#(\d+)\b|\b(before|precede\w*|then|after|follow\w*|succeed\w*)\b|→|->", clause, re.I))
             for i, tok in enumerate(tokens):
                 if tok.group(1):
@@ -705,9 +781,10 @@ class Package:
             need(sorted(x[:2] for x in record.get("route_screens", [])) == SURFACE_ROUTE_ORACLE.get(s, []), "surface route-screen identity differs from the independent oracle: " + s)
         text = self.read("vision-reconciliation.md")
         section = text.split("## Surface-to-screen mapping", 1)[1].split("## Parity destinations by original context", 1)[0]
-        doc_rows = {m[0]: m for m in re.findall(r"^\| (S\d\d) [^|]*\| (drawn|partial|undrawn) \| ([^|]*)\| ([^|]*)\| (\d+) \|$", section, re.M)}
+        doc_rows = keyed_rows(section, "Surface", r"(S\d\d)(?: .*)?", "vision-reconciliation.md")
         need(set(doc_rows) == set(SURFACE_COVERAGE), "reconciliation surface table incomplete")
         for s, (_, coverage, cell, owner_cell, allocations) in doc_rows.items():
+            need(coverage in ("drawn", "partial", "undrawn") and re.fullmatch(r"\d+", allocations), "reconciliation surface row lacks a coverage word or an allocation count: " + s)
             record = reg["surface_screens"][s]
             need(all(tok in owner_cell for tok in SURFACE_OWNER_ORACLE.get(s, set())), "reconciliation table names the wrong bounded owner: " + s)
             shown = set(re.findall(r"\b(\d\d)\b", cell))
@@ -718,12 +795,12 @@ class Package:
         context_section = text.split("## Parity destinations by original context", 1)[1].split("## Journey-to-screen mapping", 1)[0] if "## Parity destinations by original context" in text else ""
         expected_rows = context_screen_rows(reg, self.rows("parity/destinations.tsv"))
         need(set(expected_rows) == set(GROUPS), "parity context mapping incomplete")
-        shown_rows = [x for x in context_section.splitlines() if re.match(r"^\| [A-Z]{2} \|", x)]
+        shown_rows = ["| " + " | ".join(c) + " |" for c in keyed_rows(context_section, "Context", r"([A-Z]{2})", "vision-reconciliation.md").values()]
         need(sorted(shown_rows) == sorted(expected_rows.values()), "reconciliation parity-context table disagrees with the destination matrix and surface registry")
         # journeys
         need(set(reg["journey_screens"]) == {f"J{i:02}" for i in range(1, 10)}, "journey-to-screen registry incomplete")
         journey_section = text.split("## Journey-to-screen mapping", 1)[1].split("## Superseded candidate layouts", 1)[0]
-        journeys = {m[0]: set(re.findall(r"\b(\d\d)\b", m[1])) for m in re.findall(r"^\| (J\d\d) [^|]*\| ([^|]*)\|", journey_section, re.M)}
+        journeys = {k: set(re.findall(r"\b(\d\d)\b", c[1])) for k, c in keyed_rows(journey_section, "Journey", r"(J\d\d)(?: .*)?", "vision-reconciliation.md").items()}
         for j, screens in reg["journey_screens"].items():
             need(screens and set(screens) <= set(VISION_SCREENS), "journey cites no/unknown accepted screen: " + j)
             need(sorted(x[:2] for x in screens) == JOURNEY_SCREEN_ORACLE[j], "journey screen identity differs from the independent oracle: " + j)
@@ -731,7 +808,7 @@ class Package:
         # candidate layouts are superseded, each with an accepted successor
         need(set(reg["superseded_layouts"]) == set(LAYOUTS), "superseded layout mapping incomplete")
         layout_section = text.split("## Superseded candidate layouts", 1)[1].split("## Approved queue", 1)[0]
-        shown_layouts = {m[0]: set(re.findall(r"\b(\d\d)\b", m[1])) for m in re.findall(r"^\| (\d\d) [^|]*\| ([^|]*)\|", layout_section, re.M)}
+        shown_layouts = {k: set(re.findall(r"\b(\d\d)\b", c[1])) for k, c in keyed_rows(layout_section, "Candidate sheet", r"(\d\d)(?: .*)?", "vision-reconciliation.md").items()}
         for name, successors in reg["superseded_layouts"].items():
             need(successors and {x[:2] for x in successors} == LAYOUT_SUCCESSOR[name], "superseded layout lacks its accepted successor: " + name)
             need(shown_layouts.get(name[:2]) == LAYOUT_SUCCESSOR[name], "reconciliation layout table disagrees with registry: " + name)
@@ -769,7 +846,8 @@ class Package:
             need("nowned" in row and contract + " before a full-parity claim" in row, "scope obligation lacks an explicit unowned statement: " + key)
             token = key.split(" / ")[-1]
             gap_section = text.split("## Scope gaps and their owners", 1)[1].split("## Open owner choices", 1)[0]
-            gap_row = next((x for x in gap_section.splitlines() if x.startswith("| " + token + " ")), "")
+            gap_rows = keyed_rows(gap_section, "Obligation", r"(O\d\d|G\d\d)(?: .*)?", "vision-reconciliation.md")
+            gap_row = " | ".join(gap_rows.get(token, []))
             need("unowned" in gap_row.lower() and "bounded" in gap_row.lower(), "reconciliation lacks the unowned scope-gap row: " + token)
         tech = self.read("technology.md")
         need("did not select a toolkit" in tech, "technology document must not claim a toolkit was selected")
@@ -1051,6 +1129,9 @@ def negative_controls(package):
         "layout-and-bounds-receipt-coordinated": "layout bounds receipt differs from the pinned reviewed receipt",
         "runtime-audit-source-and-report-coordinated": "observation report differs from the pinned reviewed report: evidence/runtime-06/report.json",
         "contract-and-receipt-coordinated-edit": "contract and receipt differ from the pinned live amended body: B03"}
+    extra_cases, extra_findings = load_table_controls(package)
+    cases += extra_cases
+    intended_findings.update(extra_findings)
     receipts = []
     for name, check, edits in cases:
         saved = {f: (package.path / f).read_bytes() for f in edits}
@@ -1074,6 +1155,18 @@ def negative_controls(package):
                          "exact_bytes_restored": True})
     need(all(x["pass"] for x in run(package, CHECKS)), "package failed after restoration")
     return {"positive_checks": initial, "negative_controls": receipts, "all_restored": True}
+
+
+def load_table_controls(package):
+    """[designed: #253 rework R4] The table-parsing controls live in table_controls.py beside this file (kept apart so each file stays readable);
+    the checkout under test supplies it, so a frozen copy of this helper needs only the tree."""
+    import importlib.util
+    path = package.path / "table_controls.py"
+    need(path.is_file(), "table_controls.py missing from the package")
+    spec = importlib.util.spec_from_file_location("table_controls", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.table_controls()
 
 
 def regen_context_rows(text):
