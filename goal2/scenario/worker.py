@@ -21,8 +21,10 @@ ROLE_FAULTS = {
     'quick': ('fail', 'garbage', 'early', 'early-garbage', 'hang', 'ignore-term', 'slow',
               'wrong-template', 'double-count', 'bad-halftime'),
     'watched': ('wrong-token', 'gap', 'repeat', 'error', 'crash', 'hang', 'truncated', 'slow',
-                'early', 'duplicate', 'mismatch', 'bad-result'),
-    'viewer': ('stale-token', 'regress', 'no-ack', 'close', 'crash'),
+                'early', 'duplicate', 'mismatch', 'bad-result', 'bad-stats', 'no-end', 'bad-kind',
+                'bad-image', 'bad-memory', 'few-frames'),
+    'viewer': ('stale-token', 'regress', 'no-ack', 'close', 'crash', 'bad-digest', 'future',
+               'bad-frame-digest'),
 }
 ROLE_FAULTS['competitive'] = ROLE_FAULTS['watched']
 
@@ -125,7 +127,11 @@ def watched(args, competitive):
         image = hashlib.sha256(source.read_bytes()).hexdigest()
         played = scripts.match(state, fixture, image, competitive=competitive, name=script)
         events = played['events']
+        if fault == 'no-end':
+            events = [e for e in events if e.kind != 'end']
         poses = scripts.frames(state, fixture, played) if request.get('frames') else []
+        if fault == 'few-frames':
+            poses = poses[:-1]
         with open(source.parent / 'frames', 'ab') as frame_stream:
             written = 0
             for event in events:
@@ -136,12 +142,21 @@ def watched(args, competitive):
                 if fault == 'slow':
                     time.sleep(.01)
         result = played['result']
+        memory = played['memory']
         if fault == 'bad-result':
             result['index'] += 1
+        if fault == 'bad-stats':
+            result['board']['statistics']['shots'] = [-1, -1]
+        if fault == 'bad-kind':
+            result['kind'] = 201
+        if fault == 'bad-image':
+            result['image_sha256'] = '0' * 64
+        if fault == 'bad-memory':
+            memory = json.dumps(dict(json.loads(memory), mark='career')).encode()
         sent = list(events)
         if fault == 'mismatch':
             sent[0] = Event(sent[0].kind, sent[0].minute + 1, sent[0].score, sent[0].data)
-        outcome = WatchedOutcome(result, played['memory'], tuple(sent), played['seeds'], played['engine_year'])
+        outcome = WatchedOutcome(result, memory, tuple(sent), played['seeds'], played['engine_year'])
         send('complete', outcome)
         if fault == 'duplicate':
             send('complete', outcome)
@@ -165,8 +180,13 @@ def viewer(args):
     def status(kind, sequence, value_digest, frames):
         value = {'token': '0' * 48 if fault == 'stale-token' else token, 'kind': kind,
                  'sequence': sequence, 'digest': value_digest}
+        if fault == 'bad-digest':
+            value['digest'] = '0' * 64
+        if fault == 'future':
+            value['sequence'] = sequence + 5
         if frames:
-            value.update(frame_sequence=display.consumed, frame_digest=digest)
+            value.update(frame_sequence=display.consumed,
+                         frame_digest='0' * 64 if fault == 'bad-frame-digest' and digest else digest)
         temporary = folder / 'status.tmp'
         temporary.write_text(json.dumps(value));_replace_status(temporary, folder / 'status')
     if fault == 'crash':
