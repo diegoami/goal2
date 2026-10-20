@@ -10,10 +10,20 @@ from goal2.engine.savestate import Savestate
 from goal2.game.state import to_savestate
 
 
+class _OriginalQuick:
+    """[designed: T86] Default runtime: the existing matchup check and session codec."""
+    @staticmethod
+    def check(state,template):
+        resolve_full_matchup(Savestate(to_savestate(state,original=template)),state)
+    encode=staticmethod(encode);load=staticmethod(load)
+
+
 class QuickJobs:
-    """[designed] One snapshot/job at a time, validated once-only publication."""
-    def __init__(self,model,*,command=None):
+    """[designed] One snapshot/job at a time, validated once-only publication.
+    [designed: T86] `runtime` is the one injection point (check/encode/load); None keeps the original path."""
+    def __init__(self,model,*,command=None,runtime=None):
         self.model=model;self.command=command;self.process=None;self.folder=None
+        self.runtime=_OriginalQuick if runtime is None else runtime
         self.halftime=None;self.continued=False;self.interactive=False
 
     @property
@@ -25,7 +35,7 @@ class QuickJobs:
         model=self.model
         if halftime and model.state.campaign is None:raise ValueError('Halftime interaction requires a campaign')
         self.interactive=halftime;self.halftime=None;self.continued=False
-        resolve_full_matchup(Savestate(to_savestate(model.state,original=model.template_bytes)),model.state)
+        encode=self.runtime.encode;self.runtime.check(model.state,model.template_bytes)
         self.original=model.state
         self.snapshot=encode(model.state,model.template_bytes)
         self.folder=tempfile.TemporaryDirectory(prefix='goal2-friendly-')
@@ -57,6 +67,7 @@ class QuickJobs:
                     self.halftime=packet
             return None
         try:
+            encode,load=self.runtime.encode,self.runtime.load
             self.errors.flush()
             if code!=0:
                 detail=(self.directory/'error.txt').read_text(errors='replace')[-1500:]
@@ -99,6 +110,7 @@ class QuickJobs:
         """[designed: T47] One command for the same running child; stale fails closed."""
         if not self.busy or self.halftime is None or self.continued:
             raise ValueError('Halftime continuation was already used or is unavailable')
+        encode=self.runtime.encode
         if self.model.state is not self.original or encode(self.model.state,self.model.template_bytes)!=self.snapshot:
             self.cancel();raise ValueError('Halftime continuation is stale; active game changed')
         from goal2.desktop.worker import write_json

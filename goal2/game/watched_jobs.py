@@ -70,7 +70,7 @@ class _PreparingProcess:
     or launches a child. Popen-compatible lifecycle methods retain ownership when
     a bounded wait expires; cancelled preparation can never launch a worker.
     """
-    def __init__(self, state, template, source, command, **options):
+    def __init__(self, state, template, source, command, *, encoder=encode, **options):
         self.args = command
         self._options = options
         self._process = None
@@ -78,7 +78,7 @@ class _PreparingProcess:
         self._error = None
         def prepare():
             try:
-                source.write_bytes(encode(state, template))
+                source.write_bytes(encoder(state, template))
             except BaseException as exc:
                 self._error = exc
         self._thread = threading.Thread(target=prepare, name='goal2-watched-input')
@@ -136,12 +136,14 @@ class WatchedJobs:
     returns newly observed events. Completion is available as outcome and published
     exactly once by poll. cancel/close bound termination and never publish.
     """
-    def __init__(self, owner, *, command=None):
+    def __init__(self, owner, *, command=None, runtime=None):
         if getattr(owner, '_watched_jobs', None) is not None:
             raise ValueError('active game already has a watched bridge')
         owner._watched_jobs = self
         self.owner = owner
-        self.publication = WatchedPublication(owner)
+        # [designed: T86] The one injection point: None keeps original publication/codec.
+        self.runtime = runtime
+        self.publication = WatchedPublication(owner) if runtime is None else runtime.publication(owner, competitive=False)
         self.command = command
         self.process = None
         self.token = None
@@ -201,8 +203,10 @@ class WatchedJobs:
         self._errors = (folder / 'errors').open('w+b')
         self._frames = (folder / 'frames').open('w+b')
         command = [sys.executable, '-m', 'goal2.game.watched_worker'] if self.command is None else list(self.command)
+        runtime = getattr(self, 'runtime', None)
         self.process = _PreparingProcess(job.state, self._template, source,
             command + [str(source), str(folder / 'events')],
+            encoder=encode if runtime is None else runtime.encode,
             cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL, stderr=self._errors)
 

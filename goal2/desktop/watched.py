@@ -64,9 +64,11 @@ def _open_status(path):
 
 
 class WatchedController:
-    def __init__(self, model, *, engine_command=None, viewer_command=None):
+    def __init__(self, model, *, engine_command=None, viewer_command=None, runtime=None):
         self.model = model
-        self.engine = WatchedJobs(model, command=engine_command)
+        # [designed: T86] The one injection point: None keeps original gates/publication/completion.
+        self.runtime = runtime
+        self.engine = WatchedJobs(model, command=engine_command, runtime=runtime)
         self.viewer_command = viewer_command
         self.process = None
         self.folder = None
@@ -96,9 +98,11 @@ class WatchedController:
             raise ValueError('frames must be boolean')
         if getattr(self.model, 'match_pending', False):
             raise ValueError('A match is already running')
-        if importlib.util.find_spec('pygame') is None:
+        if self.runtime is not None:
+            self.runtime.require_watch()
+        elif importlib.util.find_spec('pygame') is None:
             raise ValueError("Watch requires pygame-ce: python3 -m pip install '.[desktop,watched,match-view]'")
-        if importlib.util.find_spec('unicorn') is None:
+        elif importlib.util.find_spec('unicorn') is None:
             raise ValueError("Watch requires Unicorn: python3 -m pip install '.[watched]'")
         pending = self.fixture()
         self.close_viewer()
@@ -227,7 +231,8 @@ class WatchedController:
                 if not self.engine.busy:
                     self.model.match_pending = False
                     self._pending_owned = False
-                    self.send('complete', completion(self.engine.outcome,self.model.goaldat.player_names))
+                    finish = completion if self.runtime is None else self.runtime.completion
+                    self.send('complete', finish(self.engine.outcome,self.model.goaldat.player_names))
                     return True
             return False
         except Exception:

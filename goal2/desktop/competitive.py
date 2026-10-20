@@ -38,12 +38,15 @@ def require_runtime():
 
 class CompetitiveJobs(WatchedJobs):
     """[designed] Separate bridge/token; parent owns state and match-pending exclusion."""
-    def __init__(self, owner, *, command=None):
+    def __init__(self, owner, *, command=None, runtime=None):
         if getattr(owner, '_competitive_jobs', None) is not None:
             raise ValueError('active game already has a competitive bridge')
         owner._competitive_jobs = self
         self.owner = owner
-        self.publication = CompetitivePublication(owner)
+        # [designed: T86] The one injection point: None keeps the original runtime/publication.
+        self.runtime = runtime
+        self.publication = (CompetitivePublication(owner) if runtime is None
+                            else runtime.publication(owner, competitive=True))
         self.command = ([sys.executable, '-m', 'goal2.desktop.competitive_worker']
                         if command is None else list(command))
         self.process = None
@@ -58,7 +61,7 @@ class CompetitiveJobs(WatchedJobs):
             raise ValueError('competitive bridge is closed or a match is already running')
         if getattr(self.owner, 'match_pending', False):
             raise ValueError('Another match is already running; finish or cancel it first')
-        require_runtime()
+        require_runtime() if self.runtime is None else self.runtime.require_competitive()
         fixture = pending_fixture(self.owner.state)
         try:
             token = super().start(fixture, reference_seed=reference_seed,
