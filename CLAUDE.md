@@ -16,11 +16,15 @@ first supported session (`docs/redesign-253/vision-reconciliation.md`; O03/O04 r
 1. The main session plans, triages, talks to the owner and merges. It implements itself or spawns
    a subagent (`.claude/agents/implementer.md`) on its own judgment; the owner names a model only
    when they want a specific one.
-2. Work on a task branch in the checkout at hand; one task at a time per checkout. No worktrees.
-   Never `git stash`, never force-push, never rewrite `main`.
-3. One task, one branch, one PR, squash-merged by the main session
-   (`gh pr merge <pr> --squash --match-head-commit <sha>`) once its Done-when lines and
-   `python3 tools/check_premerge.py --expected-head <sha>` pass.
+2. Work on a branch in the checkout at hand; one task at a time per checkout. No worktrees.
+   Locally a task branch `task/T<nn>-<slug>`; in a cloud session the session's own `claude/…`
+   branch, for every task of that session (process.md §3). Never `git stash`, never force-push,
+   never rewrite `main`.
+3. One task, one PR, merged by the main session once its Done-when lines and
+   `python3 tools/check_premerge.py --expected-head <sha>` pass: locally
+   `gh pr merge <pr> --squash --match-head-commit <sha>`; in a cloud session
+   `gh pr merge <pr> --merge --match-head-commit <sha>` (never squash), then
+   `git pull --ff-only origin main` on the session branch.
 4. Reviews are optional. Per PR, when the risk warrants it (engine, fidelity, vendored model,
    saves, timing), run `tools/review_pr.sh <pr> <opencode|claude|codex> <model>`; any model may
    review. At each milestone, one big independent review: `tools/milestone_review.sh`

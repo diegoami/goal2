@@ -6,9 +6,10 @@ description: The implementer subagent for one goal2 task or fix. It works on its
 You implement one task (or one fix). The brief is the task file pasted in full plus
 `docs/process.md` §4's block; that is your contract. `CLAUDE.md` has the rules.
 
-- Work in the checkout you start in. Create the branch the task names
-  (`git fetch origin && git checkout -b task/T<nn>-<slug> origin/main`, or `fix/<issue>-<slug>`),
-  and touch no other branch.
+- Work in the checkout you start in, on the branch the brief names (`docs/process.md` §3):
+  locally `task/T<nn>-<slug>` (`git fetch origin && git checkout -b task/T<nn>-<slug> origin/main`
+  if it does not exist); in a cloud session the session's own `claude/…` branch, never a new one.
+  Touch no other branch.
 - Commit and push after every meaningful step; after the first push open the PR as a draft
   (`gh pr create --draft --head <branch>`).
 - Never `git stash`, force-push, rewrite history or merge.

@@ -1,7 +1,0 @@
-{
-  "baseline.json": "Original remains ignored, exact original hash in originals.json; safe split catalogue and summary are committed derivatives, not a byte-identical baseline.json.",
-  "requests.json": "Original remains ignored with exact hash; each complete request is split into requests/*.json.",
-  "openapi.raw.json": "Original excluded from tracked catalogue; exact original hash retained.",
-  "nativeProvider": "Explicit owned loopback only; reported zero fake tokens are simulated.",
-  "transportNonce": "Known own generated transport nonce redacted consistently before artifact hashing; no provider credentials inspected."
-}

@@ -1,9 +1,0 @@
-{
-  "args": [
-    "api",
-    "--help"
-  ],
-  "code": 0,
-  "stdout": "DESCRIPTION\n  Make a request to the running server\n\nUSAGE\n  opencode api [flags] <operation | method path...>\n\nARGUMENTS\n  operation | method path... string OpenAPI operation ID, or an HTTP method followed by a path\n\nFLAGS\n  --standalone           Run with a private server instead of the background service\n  --server string        Connect to a server URL instead of the background service\n  --data, -d string      Request body\n  --header, -H string    Request header in name:value form\n  --param key=value      OpenAPI path or query parameter\n\nGLOBAL FLAGS\n  --help, -h                                                          Show help information\n  --version, -v                                                       Show version information\n  --wizard                                                            Start wizard mode for a command\n  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)\n  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)\n  --print-logs                                                        Print logs to stderr (server logs require --standalone)\n",
-  "stderr": ""
-}

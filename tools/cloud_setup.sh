@@ -29,6 +29,9 @@ say "Python environment in .cache/venv with goal2[desktop,watched,match-view]"
 .cache/venv/bin/python -m pip install -q -e '.[desktop,watched,match-view]'
 
 say "rclone"
+if ! command -v rclone >/dev/null && command -v apt-get >/dev/null && [ "$(id -u)" = 0 ]; then
+  apt-get install -y -qq rclone >/dev/null 2>&1 || true
+fi
 if ! command -v rclone >/dev/null; then
   tmp=$(mktemp -d)
   zip="rclone-$RCLONE_VERSION-linux-amd64.zip"
@@ -45,7 +48,10 @@ say "Drive remote goal2drive and the original-game files"
 folder=$(python3 -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")
 if ! rclone listremotes 2>/dev/null | grep -qx 'goal2drive:'; then
   if [ -n "${GOAL2_RCLONE_TOKEN:-}" ]; then
-    rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" --non-interactive >/dev/null
+    # RCLONE_DRIVE_CLIENT_ID/SECRET: the owner's own OAuth client, when the token was made with it
+    rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" \
+      ${RCLONE_DRIVE_CLIENT_ID:+client_id="$RCLONE_DRIVE_CLIENT_ID"} \
+      ${RCLONE_DRIVE_CLIENT_SECRET:+client_secret="$RCLONE_DRIVE_CLIENT_SECRET"} --non-interactive >/dev/null
   else
     echo "GOAL2_RCLONE_TOKEN is not set: no remote, no original-game files (docs/artifacts.md)"
   fi
@@ -56,7 +62,10 @@ if rclone listremotes 2>/dev/null | grep -qx 'goal2drive:'; then
 fi
 
 say "GitHub"
-gh auth status >/dev/null 2>&1 && echo "gh is logged in" || echo "gh is not logged in: set GH_TOKEN with push and merge rights"
+if ! command -v gh >/dev/null && command -v apt-get >/dev/null && [ "$(id -u)" = 0 ]; then
+  { apt-get install -y -qq gh || { apt-get update -qq && apt-get install -y -qq gh; }; } >/dev/null 2>&1 || echo "could not install gh"
+fi
+gh auth status >/dev/null 2>&1 && echo "gh is logged in" || echo "gh is not logged in: set GH_TOKEN (docs/cloud.md)"
 
 cat > .cache/cloud.env <<EOF
 # written by tools/cloud_setup.sh

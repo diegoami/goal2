@@ -27,16 +27,27 @@ one, `git pull` and take the next free number.
 
 1. **Check** the task is ready and its Merge-after tasks are merged; run its Done-when lines on
    `main` (they must fail).
-2. **Implement** on `task/T<nn>-<slug>` (or `fix/<issue>-<slug>`) from `origin/main`, in the
-   checkout at hand: the main session itself, or the `implementer` subagent with the brief below.
+2. **Implement** on the work branch (below), in the checkout at hand: the main session itself, or the `implementer` subagent with the brief below.
    Commit and push after each step; open the PR as a draft after the first push.
 3. **Review, when warranted**: `tools/review_pr.sh <pr> <cli> <model>` posts one review comment.
    Rework goes back to the same branch; non-blocking findings become one `T<nn> follow-up` issue.
 4. **Checks**: every Done-when line on the PR head, and
    `python3 tools/check_premerge.py --expected-head <sha>` in a clean checkout at that head
    (`--tests` adds the game test modules; opt-in until #275 makes them skip cleanly).
-5. **Merge**: `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
-   `git switch main && git pull`. Unblock tasks whose Merge-after are now merged. Report.
+5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
+   `git switch main && git pull`; in a cloud session
+   `gh pr merge <pr> --merge --match-head-commit <reviewed-sha>`, then
+   `git pull --ff-only origin main`. Unblock tasks whose Merge-after are now merged. Report.
+
+**Branches.** [designed: owner, 2026-10-20, as in malpaco cd81d225] Locally, each task has its
+own branch, `task/T<nn>-<slug>` (or `fix/<issue>-<slug>`) from `origin/main`, squash-merged. A
+cloud session (Claude Code on the web) starts on its own `claude/…` branch and may be able to
+push only there, so that branch is the work branch for every task of the session, one PR per
+task, first brought level with `git pull --ff-only origin main`. Cloud PRs merge with a merge
+commit, never squash: the session branch is then contained in `main`, the next task starts from
+it after a fast-forward, and no force-push is ever needed. A PR still open when a session ends is
+continued by the next session (check it out and finish it, or continue from it on the new
+session's branch).
 
 ## 4. The implementer brief
 

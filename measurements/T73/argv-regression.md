@@ -1,9 +1,0 @@
-# T73 native positional-prompt regression
-
-[confirmed: argv-main-failure.json; original main-owned manifest retained] The first acceptance launch passed model-free account/policy projection but native print exited1 after286ms. Stdout was empty: no init, tool, result or model generation. Stderr required stdin or a prompt. This is an invocation failure before inference, not a paid formatting retry or review result.
-
-[confirmed: argv-native-before.json and argv-unit-before.txt] The earlier synthetic probe appended --max-turns after the variadic --add-dir flags, accidentally terminating that option before its prompt. Removing that masking option and using the same shared claudeReviewArgs helper as production reproduced native exit1 with0 loopback requests. The exact-prompt unit assertion also failed before correction.
-
-[designed: T73; confirmed: argv-native-after.json] Production and native loopback now both call claudeReviewArgs, which appends the supported -- option terminator before the single positional prompt. No extra masking option is appended. The actual pinned native binary completed2 local scripted requests; compound/Python/research/tmp checks passed and only the planned canary was denied. Synthetic-only credentials/fresh config/isolated remotes[] fixture remain unchanged. No external model inference or Sonnet review occurred.
-
-[confirmed: argv-all-tests.txt]14 production-entrypoint tests pass, including the argv delimiter regression and existing native shapes, denial/identity/coverage deletion controls, lifecycle and permission checks. Terminal manifests now carry finished/durationMs on success and failure; tests verify those fields. Main must prepare the new head/policy/brief and alone rerun the actual review. Original failed review worktree/receipts remain preserved.

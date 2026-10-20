@@ -1,8 +1,0 @@
-{
-  "root": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/runs/run-tn8MY3",
-  "physicalRoot": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/runs/run-tn8MY3",
-  "guard": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/runs/run-tn8MY3/native-guard-mPkCgg",
-  "guardSource": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/runs/run-tn8MY3/native-guard-mPkCgg/server.js",
-  "dataHome": "/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r2/native-normal/preflight-xHgBOb/runtime/v2/data",
-  "zeroGeneration": true
-}

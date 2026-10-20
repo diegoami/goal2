@@ -1,7 +1,7 @@
 # T<nn> <Title>
 
 - **Kind**: feature | slice | fix | correction (of T<nn>, bug #<n>) | infrastructure
-- **Issue**: #<n> · **Branch**: `task/T<nn>-<slug>` · **Merge after**: T<nn>, …
+- **Issue**: #<n> · **Branch**: `task/T<nn>-<slug>` locally (a cloud session uses its own branch) · **Merge after**: T<nn>, …
 - **Evidence**: the goal2-archaeology findings (F-numbers + commits) and the goal2 state this task
   rests on, with the evidence tags its claims will carry (CLAUDE.md rule 12).
 - **Owns**: directories or files. A task that measures owns a tracked path for its outputs, e.g.

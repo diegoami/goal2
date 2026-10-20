@@ -1,6 +1,0 @@
-opencode: manifest /home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/native-controls/operand-loss/native-Q3R2JK/receipts/T72-native-guard-8f0027928624-czTFJR/run.json
-opencode: private server pid 136276
-opencode: session ses_eb58d5d20ffeYafAWlWCfBVbn4 started; manifest /home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/native-controls/operand-loss/native-Q3R2JK/receipts/T72-native-guard-8f0027928624-czTFJR/run.json
-opencode: session ses_eb58d5d20ffeYafAWlWCfBVbn4 progress
-opencode: session ses_eb58d5d20ffeYafAWlWCfBVbn4 progress
-{"root":"/home/diego/projects/goal2-work/T72-opencode2-harness/.cache/T72-r1/native-controls/operand-loss/native-Q3R2JK","outcome":{"reason":"permission-rejected","message":"permission rejected in complete session export"},"tools":[{"id":"external-proc-metadata","status":"completed"},{"id":"external-cat","status":"completed"},{"id":"external-quoted","status":"completed"},{"id":"external-nested","status":"completed"},{"id":"external-relative","status":"completed"},{"id":"inside-cat","status":"completed"},{"id":"tmp-cat","status":"completed"},{"id":"research-cat","status":"completed"},{"id":"git-deny","status":"error","error":{"type":"permission.rejected","message":"Permission denied: shell"}}]}

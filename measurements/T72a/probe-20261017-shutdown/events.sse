@@ -1,6 +1,0 @@
-data: {"id":"evt_149e6872f001rRW4znzjxqAhcs","type":"server.connected","data":{}}
-
-: heartbeat
-
-data: {"id":"evt_149e6873e001ctVIlLvAbXD3wF","created":1792241207102,"type":"session.created","location":{"directory":"/home/diego/projects/goal2-work/T72a-opencode2-protocol"},"data":{"sessionID":"ses_eb61978ccffexeX2fMyzxBczXo","slug":"quick-eagle","version":"2.0.28","projectID":"18205a66481f455f28fc093fd822a040e8af9580","location":{"directory":"/home/diego/projects/goal2-work/T72a-opencode2-protocol"},"subpath":"","title":"T72a-owned-empty-never-prompted","agent":"reviewer","model":{"id":"MiniMax-M3","providerID":"minimax","variant":"thinking"}},"durable":{"aggregateID":"ses_eb61978ccffexeX2fMyzxBczXo","seq":0,"version":1}}
-
