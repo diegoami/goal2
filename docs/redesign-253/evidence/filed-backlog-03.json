@@ -1,0 +1,109 @@
+{
+  "evidence": "[confirmed: #253 R2 live new-contract body equality]",
+  "read_utc": "2026-10-19T21:10:27.103102+00:00",
+  "updated_new_issue_bodies": [
+    262,
+    263
+  ],
+  "existing_independent_contracts_edited": [],
+  "issues": [
+    {
+      "key": "B01",
+      "number": 259,
+      "url": "https://github.com/diegoami/goal2/issues/259",
+      "normalized_body_sha256": "afe6d501d5596543108a05e91e487591ea7505e774b4d6e98d8022e534d9a3f0",
+      "raw_remote_body_sha256": "2a9c6f6579d458445c4cb6677c41b6145b8bdaa9ac9b75d01e06beb7226c6dc6",
+      "local_body_equal": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B02",
+      "number": 260,
+      "url": "https://github.com/diegoami/goal2/issues/260",
+      "normalized_body_sha256": "6bfcb38fb97ccbc1ad3e9b1edb6ebec7a9969b35866232f17c1bf8a17241a95e",
+      "raw_remote_body_sha256": "1e22454133910196c445ae99672307199af096b67cb2915d4b1eda60986da58a",
+      "local_body_equal": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B03",
+      "number": 261,
+      "url": "https://github.com/diegoami/goal2/issues/261",
+      "normalized_body_sha256": "a2fc92a1a79b099d7edb7a45b47e7c26683f71f1e6310eaeaf3767bebfe5e97d",
+      "raw_remote_body_sha256": "aa31f8f1579dbef6cfced662ea7552170e8512f9ef1823185c09e54f05413b7f",
+      "local_body_equal": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B04",
+      "number": 262,
+      "url": "https://github.com/diegoami/goal2/issues/262",
+      "normalized_body_sha256": "74744eb69a7e70079c4d84d01a6c5ddf747a4c5e523ebf2c4a2c46b45856a408",
+      "raw_remote_body_sha256": "74744eb69a7e70079c4d84d01a6c5ddf747a4c5e523ebf2c4a2c46b45856a408",
+      "local_body_equal": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B05",
+      "number": 263,
+      "url": "https://github.com/diegoami/goal2/issues/263",
+      "normalized_body_sha256": "8f6dee9b40e5622598deba9a793023e278bf6c6d5e9444bdfe4f49c1d19c4b16",
+      "raw_remote_body_sha256": "8f6dee9b40e5622598deba9a793023e278bf6c6d5e9444bdfe4f49c1d19c4b16",
+      "local_body_equal": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B06",
+      "number": 265,
+      "url": "https://github.com/diegoami/goal2/issues/265",
+      "normalized_body_sha256": "e66c848e3cb956d34882ea289e789ba0cc4a22b9562910a64579723e7e2c478d",
+      "raw_remote_body_sha256": "04f8ef3052c8a4e8acbb454f85fb61b50180c5b069d2df606c769aa8f64683c1",
+      "local_body_equal": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    },
+    {
+      "key": "B07",
+      "number": 264,
+      "url": "https://github.com/diegoami/goal2/issues/264",
+      "normalized_body_sha256": "c37191af301f2d8abc552bf96793f433c05eaef63f8decfba81213f4c93b1e4b",
+      "raw_remote_body_sha256": "746e2e1e11749eb13ba65fd8b0140df405cafe26d9410cdc96c61509c5b48e46",
+      "local_body_equal": true,
+      "labels_at_read": [
+        "enhancement",
+        "triage:needed",
+        "post-playable"
+      ],
+      "implementation_authorized": false
+    }
+  ]
+}

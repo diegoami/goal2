@@ -1,0 +1,48 @@
+{
+  "evidence": "[confirmed: reconcile-06] the reviewer's attacks pass the validator reviewed at 193b2f0 and are rejected by the reworked validator; every mutation restored byte for byte",
+  "reviewed_validator": "docs/redesign-253/validate.py at 193b2f0a9d104341ecebafc3a2feca310fe80157",
+  "reviewed_validator_sha256": "f3a035bdfe201e7a8367ba64703cae175199662495754c0189944a2c6646514f",
+  "reworked_validator_sha256": "0266646ea90adf0e41e4a3565e63aa60e74d4b11c14c88eb0104ff214f9483c1",
+  "results": [
+    {
+      "attack": "pool-surface-to-start-resume (reviewer attack 1, coordinated registry + prose + regenerated context rows)",
+      "check": "vision",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reworked_validator_exit": 1,
+      "reworked_validator_pass": false,
+      "reworked_finding": "surface screen identity differs from the independent oracle: S05",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "conditional-journey-to-start-resume (reviewer attack 2, coordinated registry + prose)",
+      "check": "vision",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reworked_validator_exit": 1,
+      "reworked_validator_pass": false,
+      "reworked_finding": "journey screen identity differs from the independent oracle: J07",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "career-chain-reversed (reviewer attack 3, registry + three documents)",
+      "check": "vision",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reworked_validator_exit": 1,
+      "reworked_validator_pass": false,
+      "reworked_finding": "queue lane order differs from the approved order: lane 4",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "journey-edges-replaced-with-unused (reviewer variant)",
+      "check": "journeys",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reworked_validator_exit": 1,
+      "reworked_validator_pass": false,
+      "reworked_finding": "journey surfaces or edges differ from the independent oracle: J07",
+      "exact_bytes_restored": true
+    }
+  ]
+}

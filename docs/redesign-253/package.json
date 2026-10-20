@@ -1,0 +1,626 @@
+{
+  "evidence": "[designed: #253 trace registry; no implementation authorization]",
+  "base_commit": "3335da830d289cc869f989b73816926c54360ff1",
+  "manual_commit": "ebdd6879d469a574f6d4b446f59b33a6be3ffd81",
+  "accepted_direction": {
+    "issue": "https://github.com/diegoami/goal2/issues/266",
+    "pull_request": "https://github.com/diegoami/goal2/pull/267",
+    "merge_commit": "9683a47647f21bd2a3274ea5dc56bb8c14e6c5a9",
+    "owner_acceptance": "https://github.com/diegoami/goal2/issues/266#issuecomment-6287825622",
+    "docs": "docs/vision-266/",
+    "summary": "original-first desktop: black screens, strong functional colors, large characters, complete graphical attribute bars, maximum-size match pitch, full commentary hidden by default with the latest two lines visible, independently retractable top and side bars",
+    "supersedes": "candidate direction A Country desk (paper/ink/emerald) and the A/B/C direction-selection question"
+  },
+  "implementation_authorized": false,
+  "surfaces": {
+    "S01": "Launch",
+    "S02": "New career",
+    "S03": "Country desk",
+    "S04": "Team",
+    "S05": "Pool comparison",
+    "S06": "Country profile",
+    "S07": "Competition",
+    "S08": "Preparation",
+    "S09": "Live",
+    "S10": "Decision",
+    "S11": "Result",
+    "S12": "Archive",
+    "S13": "Game save/load",
+    "S14": "Bulletin",
+    "S15": "Local-manager handoff"
+  },
+  "journeys": {
+    "J01": {
+      "surfaces": [
+        "S01",
+        "S02",
+        "S13"
+      ],
+      "edges": [
+        "new",
+        "load",
+        "invalid-save",
+        "replacement",
+        "identity-capability"
+      ]
+    },
+    "J02": {
+      "surfaces": [
+        "S03",
+        "S14"
+      ],
+      "edges": [
+        "next-fixture",
+        "calendar-boundary",
+        "news"
+      ]
+    },
+    "J03": {
+      "surfaces": [
+        "S04",
+        "S05"
+      ],
+      "edges": [
+        "compare",
+        "draft-confirm",
+        "draft-discard",
+        "pool-policy",
+        "assistant-identity-capability"
+      ]
+    },
+    "J04": {
+      "surfaces": [
+        "S06",
+        "S07",
+        "S08"
+      ],
+      "edges": [
+        "opponent-read-only",
+        "group-fixtures",
+        "history-source"
+      ]
+    },
+    "J05": {
+      "surfaces": [
+        "S08",
+        "S09"
+      ],
+      "edges": [
+        "quick",
+        "watch",
+        "speed",
+        "unsupported-route"
+      ]
+    },
+    "J06": {
+      "surfaces": [
+        "S09",
+        "S10"
+      ],
+      "edges": [
+        "live-clock",
+        "commentary",
+        "supported-boundary",
+        "off-on",
+        "cancel"
+      ]
+    },
+    "J07": {
+      "surfaces": [
+        "S10",
+        "S11"
+      ],
+      "edges": [
+        "halftime",
+        "quick-injury-repeat",
+        "extra-time",
+        "extra-midpoint",
+        "shoot-order",
+        "undo",
+        "timed-default",
+        "no-subs-unknown"
+      ]
+    },
+    "J08": {
+      "surfaces": [
+        "S11",
+        "S12",
+        "S03",
+        "S07",
+        "S14"
+      ],
+      "edges": [
+        "statistics",
+        "not-recorded",
+        "round",
+        "continue",
+        "archive",
+        "replay-dependency"
+      ]
+    },
+    "J09": {
+      "surfaces": [
+        "S13",
+        "S15",
+        "S01"
+      ],
+      "edges": [
+        "save",
+        "resume",
+        "quit",
+        "handoff",
+        "multimanager-capability"
+      ]
+    }
+  },
+  "layouts": {
+    "01-country-setup": [
+      "S02"
+    ],
+    "02-country-desk": [
+      "S03"
+    ],
+    "03-team-workspace": [
+      "S04"
+    ],
+    "04-pool-compare": [
+      "S05"
+    ],
+    "05-competition": [
+      "S07"
+    ],
+    "06-match-preparation": [
+      "S08"
+    ],
+    "07-live-match": [
+      "S09"
+    ],
+    "08-result-and-campaign": [
+      "S11"
+    ],
+    "09-small-window": [
+      "S04"
+    ],
+    "10-match-decisions": [
+      "S10"
+    ]
+  },
+  "existing_owners": {
+    "#241": [
+      "roster-scroll-preview"
+    ],
+    "#252": [
+      "roster-diagnostics"
+    ],
+    "#242": [
+      "player-card-projection"
+    ],
+    "#243": [
+      "supported-entry-speed"
+    ],
+    "#198": [
+      "match-renderer-presentation"
+    ],
+    "#248": [
+      "personal-instruction-edits"
+    ],
+    "#249": [
+      "available-fixture-group-display"
+    ],
+    "#250": [
+      "watched-support-audit-first-action"
+    ],
+    "#251": [
+      "available-retained-summary-display"
+    ]
+  },
+  "layout_validation_receipt": "evidence/layout-bounds-05.json",
+  "gap_register": "capability-gaps.json",
+  "vision_screens": [
+    "01-start-resume",
+    "02-country-desk",
+    "03-team",
+    "04-pool",
+    "05-preparation",
+    "06-watched",
+    "07-half-time",
+    "08-result",
+    "09-continue",
+    "10-career",
+    "11-small-window",
+    "12-unavailable-errors",
+    "13-conditional",
+    "14-team-focus",
+    "15-watched-drawers",
+    "16-team-tactics",
+    "17-small-roster",
+    "18-later-squad",
+    "19-campaign"
+  ],
+  "surface_screens": {
+    "S01": {
+      "coverage": "drawn",
+      "screens": [
+        "01-start-resume"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S02": {
+      "coverage": "partial",
+      "screens": [
+        "01-start-resume"
+      ],
+      "gap": "country preview, manager identity and review-before-start are not drawn; screen 01 shows only the country list and the New career route",
+      "owner": "#260 supplies the missing screen in its contract; G05 profile data and #265 editable identity stay separate"
+    },
+    "S03": {
+      "coverage": "drawn",
+      "screens": [
+        "02-country-desk",
+        "09-continue"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S04": {
+      "coverage": "drawn",
+      "screens": [
+        "03-team",
+        "11-small-window",
+        "14-team-focus",
+        "16-team-tactics",
+        "17-small-roster",
+        "18-later-squad"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S05": {
+      "coverage": "drawn",
+      "screens": [
+        "04-pool"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S06": {
+      "coverage": "undrawn",
+      "screens": [],
+      "route_screens": [
+        "02-country-desk",
+        "05-preparation"
+      ],
+      "gap": "the country profile and opponent scout pane is only a route (Country info, Inspect Belgium); no accepted screen draws it",
+      "owner": "#261 composes the route and must add the screen to its contract; complete profile data is unowned G05"
+    },
+    "S07": {
+      "coverage": "partial",
+      "screens": [
+        "19-campaign",
+        "09-continue"
+      ],
+      "gap": "group table with fixtures is drawn; the groups selector, bracket and scorers are routes only",
+      "owner": "#249 supplies available data; #261 shell composes the routes and adds the missing screens to its contract"
+    },
+    "S08": {
+      "coverage": "drawn",
+      "screens": [
+        "05-preparation"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S09": {
+      "coverage": "drawn",
+      "screens": [
+        "06-watched",
+        "15-watched-drawers"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S10": {
+      "coverage": "drawn",
+      "screens": [
+        "07-half-time",
+        "13-conditional"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S11": {
+      "coverage": "drawn",
+      "screens": [
+        "08-result"
+      ],
+      "gap": "",
+      "owner": ""
+    },
+    "S12": {
+      "coverage": "partial",
+      "screens": [
+        "10-career",
+        "18-later-squad",
+        "19-campaign"
+      ],
+      "gap": "career records and a completed-campaign archive are drawn; the retained-match browser and replay tab are not",
+      "owner": "#251 retained-match browsing; durable replay capture is unowned G04; full records are unowned G05"
+    },
+    "S13": {
+      "coverage": "partial",
+      "screens": [
+        "01-start-resume",
+        "09-continue",
+        "12-unavailable-errors"
+      ],
+      "gap": "Resume, Save and the load/save refusals are drawn; Save as, overwrite and Quit dialogs are not",
+      "owner": "#260 supplies the missing dialogs in its contract"
+    },
+    "S14": {
+      "coverage": "partial",
+      "screens": [
+        "19-campaign"
+      ],
+      "gap": "a finished 2032 bulletin is drawn; generation, retention and the news detail pane are not",
+      "owner": "generated and retained bulletins are unowned G03; #249 only browses information already held"
+    },
+    "S15": {
+      "coverage": "undrawn",
+      "screens": [],
+      "route_screens": [],
+      "gap": "local-manager handoff is not drawn and has no engine support",
+      "owner": "#264 scopes the contract only; actual local-manager delivery is unowned until a bounded contract exists"
+    }
+  },
+  "journey_screens": {
+    "J01": [
+      "01-start-resume",
+      "12-unavailable-errors"
+    ],
+    "J02": [
+      "02-country-desk",
+      "09-continue"
+    ],
+    "J03": [
+      "03-team",
+      "04-pool",
+      "11-small-window",
+      "14-team-focus",
+      "16-team-tactics",
+      "17-small-roster"
+    ],
+    "J04": [
+      "02-country-desk",
+      "05-preparation",
+      "19-campaign"
+    ],
+    "J05": [
+      "05-preparation",
+      "12-unavailable-errors"
+    ],
+    "J06": [
+      "06-watched",
+      "15-watched-drawers",
+      "07-half-time"
+    ],
+    "J07": [
+      "07-half-time",
+      "13-conditional"
+    ],
+    "J08": [
+      "08-result",
+      "09-continue",
+      "10-career",
+      "18-later-squad",
+      "19-campaign"
+    ],
+    "J09": [
+      "01-start-resume",
+      "09-continue",
+      "12-unavailable-errors"
+    ]
+  },
+  "superseded_layouts": {
+    "01-country-setup": [
+      "01-start-resume"
+    ],
+    "02-country-desk": [
+      "02-country-desk"
+    ],
+    "03-team-workspace": [
+      "03-team",
+      "14-team-focus",
+      "16-team-tactics"
+    ],
+    "04-pool-compare": [
+      "04-pool"
+    ],
+    "05-competition": [
+      "19-campaign",
+      "09-continue"
+    ],
+    "06-match-preparation": [
+      "05-preparation"
+    ],
+    "07-live-match": [
+      "06-watched",
+      "15-watched-drawers"
+    ],
+    "08-result-and-campaign": [
+      "08-result",
+      "09-continue"
+    ],
+    "09-small-window": [
+      "11-small-window",
+      "17-small-roster"
+    ],
+    "10-match-decisions": [
+      "07-half-time",
+      "13-conditional"
+    ]
+  },
+  "queue": {
+    "source": "https://github.com/diegoami/goal2/issues/253#issuecomment-6287891360",
+    "applied": "https://github.com/diegoami/goal2/issues/253#issuecomment-6288245660",
+    "triage": "https://github.com/diegoami/goal2/issues/253#issuecomment-6288421712",
+    "lanes": [
+      {
+        "lane": 1,
+        "name": "Now",
+        "issues": [
+          253,
+          270
+        ],
+        "separate": [
+          208,
+          268
+        ],
+        "note": "reconcile #253/PR #258 (this package) and prepare bounded #270 cloud slices; #208/#268 keep their own narrow tooling scope"
+      },
+      {
+        "lane": 2,
+        "name": "Existing foundations",
+        "issues": [
+          198,
+          242,
+          243,
+          259
+        ],
+        "note": "#198/PR #240 native validation (#254/#255 resolved), #242 cards/bars, #243 Play/Watch/speed, and #259 split into consuming proofs; dependency order is in queue.dependencies"
+      },
+      {
+        "lane": 3,
+        "name": "First supported session",
+        "issues": [
+          260,
+          261,
+          262,
+          249,
+          263
+        ],
+        "follow_on": [
+          251
+        ],
+        "note": "#260 launch/Resume, #261 shell and Team/pool, #262 preparation/pitch/result/Continue; #249 available-information slice; #263 first-slice oracles alongside; #251 retained-history browsing (follow_on); dependency order is in queue.dependencies"
+      },
+      {
+        "lane": 4,
+        "name": "Independent career stream",
+        "issues": [
+          110,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119
+        ],
+        "note": "real national career stream; dependency order is in queue.dependencies; UI cosmetics are not part of the stream"
+      },
+      {
+        "lane": 5,
+        "name": "Full parity",
+        "issues": [
+          248,
+          250,
+          251,
+          265,
+          264
+        ],
+        "note": "supported decisions, retained records and separately scoped replay, assistant/identity, local managers; plus the scope gaps G01-G05 and the evidence obligations O13-O14; P3 polish and legacy maintenance are outside the delivery critical path"
+      }
+    ],
+    "dependencies": [
+      {
+        "before": 198,
+        "after": 242,
+        "source": "lane 2"
+      },
+      {
+        "before": 198,
+        "after": 243,
+        "source": "lane 2"
+      },
+      {
+        "before": 260,
+        "after": 261,
+        "source": "lane 3"
+      },
+      {
+        "before": 261,
+        "after": 262,
+        "source": "lane 3"
+      },
+      {
+        "before": 262,
+        "after": 251,
+        "source": "lane 3"
+      },
+      {
+        "before": 110,
+        "after": 112,
+        "source": "lane 4"
+      },
+      {
+        "before": 112,
+        "after": 113,
+        "source": "lane 4"
+      },
+      {
+        "before": 113,
+        "after": 114,
+        "source": "lane 4"
+      },
+      {
+        "before": 114,
+        "after": 115,
+        "source": "lane 4"
+      },
+      {
+        "before": 115,
+        "after": 116,
+        "source": "lane 4"
+      },
+      {
+        "before": 116,
+        "after": 117,
+        "source": "lane 4"
+      },
+      {
+        "before": 117,
+        "after": 118,
+        "source": "lane 4"
+      },
+      {
+        "before": 118,
+        "after": 119,
+        "source": "lane 4"
+      },
+      {
+        "before": 155,
+        "after": 117,
+        "source": "lane 4"
+      }
+    ],
+    "not_prerequisite": [
+      {
+        "not_prerequisite": 259,
+        "of": 198,
+        "source": "lane 2"
+      },
+      {
+        "not_prerequisite": 259,
+        "of": 242,
+        "source": "lane 2"
+      },
+      {
+        "not_prerequisite": 259,
+        "of": 243,
+        "source": "lane 2"
+      }
+    ]
+  }
+}

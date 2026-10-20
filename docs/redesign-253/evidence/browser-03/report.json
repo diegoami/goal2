@@ -1,0 +1,45 @@
+{
+  "evidence": "[confirmed: #253 direct Chromium observation]",
+  "audited_product_commit": "3335da830d289cc869f989b73816926c54360ff1",
+  "runtime_checkout_head": "aab447ae15c6208b6f4295b2a8a845c2942f88e9",
+  "browser": "156.0.8078.4",
+  "viewport": [
+    1440,
+    900
+  ],
+  "sources": {
+    "goal2/web/server.py": "dad2dd94bfadee7b04d3bcb9501a4ed28b80863618f22ae628eac8be827257d2",
+    "goal2/web/static/index.html": "b2af1f63e51ed566b32b0d99c2a51d0ec67e4d08ee9a88d50d3608367ab0e592",
+    "goal2/web/static/app.mjs": "969ca46f526331088a9722a34c4b6384672572c50236521e60f993ff470eb219",
+    "goal2/web/static/styles.css": "b36fd2e0f7667f0e74e249d06ac2818e624c13fe01da28abe514e84edae0af19"
+  },
+  "sources_after": {
+    "goal2/web/server.py": "dad2dd94bfadee7b04d3bcb9501a4ed28b80863618f22ae628eac8be827257d2",
+    "goal2/web/static/index.html": "b2af1f63e51ed566b32b0d99c2a51d0ec67e4d08ee9a88d50d3608367ab0e592",
+    "goal2/web/static/app.mjs": "969ca46f526331088a9722a34c4b6384672572c50236521e60f993ff470eb219",
+    "goal2/web/static/styles.css": "b36fd2e0f7667f0e74e249d06ac2818e624c13fe01da28abe514e84edae0af19"
+  },
+  "resources": {
+    "template": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "data": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "session_unchanged": true,
+  "non_get_requests": [],
+  "save_written": false,
+  "screens": [
+    {
+      "file": "browser-dashboard.png",
+      "destination": "dashboard",
+      "text": "INTERNATIONAL TEAM\n\nTeam overview\n\nDenmark team at a glance.\n\nDE\nDenmark\nGame session\nSave to or load from the configured .g2save file.\nLoad saved session\nSave session\n\nSession changes are held in this server until saved.\n\nNew campaign\nCountry\nAlbania\nAustria\nBelgium\nBulgaria\nCyprus\nR.C.S\nDenmark\nEire\nEngland\nFinland\nFrance\nGermany\nGreece\nHungary\nIceland\nItaly\nLuxembourg\nMalta\nN.Ireland\nHolland\nNorway\nPoland\nPortugal\nRomania\nScotland\nSpain\nSweden\nSwitzerland\nTurkey\nRussia\nWales\nYugoslavia\nAntigua\nArgentina\nBahamas\nBarbados\nBolivia\nBrazil\nCanada\nChile\nColombia\nCosta Rica\nCuba\nDominica\nEcuador\nEl Salvador\nGrenada\nGuatemala\nGuyana\nHaiti\nHonduras\nJamaica\nMexico\nNeth. Antilles\nNicaragua\nPanama\nParaguay\nPeru\nPuerto Rico\nSurinam\nTrinidad/Tobago\nU.S.A\nUruguay\nVenezuela\nAlgeria\nAngola\nBurkina Faso\nCameroon\nCongo\nEgypt\nMali\nGabon\nGhana\nGuinea\nIvory Coast\nKenya\nNiger\nLiberia\nSouth Africa\nMadagascar\nMalawi\nMorocco\nMozambique\nNigeria\nGambia\nSenegal\nSierra Leone\nMauritania\nSudan\nTanzania\nTogo\nTunisia\nUganda\nZaire\nZambia\nZimbabwe\nAustralia\nBangladesh\nMyanmar\nChina\nFiji\nHong Kong\nIndia\nIndonesia\nIran\nIraq\nIsrael\nJapan\nJordan\nKuwait\nLebanon\nMalaysia\nNepal\nBahrain\nNew Zealand\nNorth Korea\nOman\nPakistan\nQatar\nSaudi Arabia\nSingapore\nSouth Korea\nSri Lanka\nSyria\nTaiwan\nThailand\nU.A.E\nYemen AR\nStart year\nSeed\nSecond seed\nStart new campaign\n\nStarting a campaign replaces the current session. Save first to keep it.\n\nFRIENDLY MATCHUP\n\nDenmark vs Sweden\nREADY\nDE\nDenmark\nTEAM A\nEXPLICIT PLAY REQUIRED\nVS\nReady for an explicit Play action\nSW\nSweden\nTEAM B\nNo match has been simulated\nPlay friendly\n\nTEAM STATUS\n\nSquad at a glance\nManage squad →\nXI\n\nStarting eleven draft\n\n11 / 11 selected\nBrowser draft ready\nC\n\nDraft captain\n\nSchmeichel\nDraft choice\n↗\n\nMean energy value\n\n18\nMean for selected players\n\nCURRENT GAME STATE\n\nConfirmed team\n\nStarting eleven: Schmeichel, Olsen, Piechnik, Christofte, Andersen, Sivebaek, Vilfort, Larsen, Jensen, Laudrup, Povlsen\n\nCaptain: Not set\n\nTactics: full pitch (element 5) · stand ground (element 6) · play safe (element 7) · stay back (element 1) · quick pass (element 2) · short passes (element 3) · go in hard (element 4) · man to man (element 8)\n\nNEXT STEP\n\nReview your starting eleven\n✦\n\nChoose your country above; lineup changes stay a draft for review.\n\nOpen squad →\n\nTEAM IDENTITY\n\nDE\nDenmark\n\nCountry squad · 20 players\n\nCountry players and their values come from the loaded game.\n\ngoal2 local browser view · Your country choice stays selected as you work"
+    },
+    {
+      "file": "browser-squad.png",
+      "destination": "squad",
+      "text": "DENMARK · TEAM MANAGEMENT\n\nYour squad\n\nSelect eleven players for your draft.\n\n↺ Reset draft\ni\n\nDraft choices — edit your eleven, captain and tactics, then confirm them into this local game session.\n\nXI\n11 of 11 selected\nEleven selected; this remains a browser draft.\nDraft captain\nSchmeichel\nOlsen\nPiechnik\nChristofte\nAndersen\nSivebaek\nVilfort\nLarsen\nJensen\nLaudrup\nPovlsen\nMEAN ENERGY\n18\n\nPLAYER ROSTER\n\nAvailable players 20\nPlayer values come from the loaded game\nStarting eleven draft\n\tPLAYER\tPOSITION CODE\tABILITY\tENERGY\tCONFIDENCE\tCAPTAIN\n\t\n01\nP\nSchmeichelC\n\t\n0\ncode 0\n\t225\t14\t10\t\n\t\n02\nL\nOlsen\n\t\n1\ncode 1\n\t241\t25\t13\t\n\t\n03\nT\nPiechnik\n\t\n2\ncode 2\n\t241\t25\t24\t\n\t\n04\nK\nChristofte\n\t\n2\ncode 2\n\t241\t16\t9\t\n\t\n05\nH\nAndersen\n\t\n3\ncode 3\n\t210\t7\t6\t\n\t\n06\nJ\nSivebaek\n\t\n4\ncode 4\n\t225\t13\t26\t\n\t\n07\nK\nVilfort\n\t\n5\ncode 5\n\t210\t25\t23\t\n\t\n08\nH\nLarsen\n\t\n7\ncode 7\n\t241\t20\t17\t\n\t\n09\nJ\nJensen\n\t\n8\ncode 8\n\t180\t25\t12\t\n\t\n10\nB\nLaudrup\n\t\n9\ncode 9\n\t241\t18\t28\t\n\t\n11\nF\nPovlsen\n\t\nD\ncode 13\n\t241\t13\t10\t\n\t\n12\nM\nKrogh\n\t\n0\ncode 0\n\t225\t19\t1\t\n\t\n13\nP\nNielsen\n\t\n1\ncode 1\n\t241\t30\t10\t\n\t\n14\nK\nNielsen\n\t\n2\ncode 2\n\t210\t32\t23\t\n\t\n15\nC\nKristensen\n\t\n3\ncode 3\n\t241\t32\t1\t\n\t\n16\nJ\nMolby\n\t\n5\ncode 5\n\t241\t32\t11\t\n\t\n17\nM\nBruun\n\t\nA\ncode 10\n\t225\t19\t17\t\n\t\n18\nL\nElstrup\n\t\nC\ncode 12\n\t241\t22\t18\t\n\t\n19\nT\nFrank\n\t\nD\ncode 13\n\t180\t22\t17\t\n\t\n20\nB\nKristensen\n\t\nD\ncode 13\n\t241\t32\t13\t\n\nTEAM INSTRUCTIONS\n\nTactics draft\nEight elements · one bit each\nfull pitch\nElement 5 · Rebuild label\nstand ground\nElement 6 · F010 confirmed label\nplay safe\nElement 7 · F010 confirmed label\nstay back\nElement 1 · F010 confirmed label\nquick pass\nElement 2 · F010 confirmed label\nshort passes\nElement 3 · F010 confirmed label\ngo in hard\nElement 4 · F010 confirmed label\nman to man\nElement 8 · Rebuild label\n\nElements 1–4, 6 and 7 use labels confirmed by F010. Labels for 5 and 8 retain the rebuild's designed wording.\n\nConfirmed team morale: 16\n\nPosition codes come from the loaded game data.\n\nDraft valid. Confirm to update the local game session, or cancel to restore confirmed choices.\n\nCancel draft\nConfirm team\nConfirmation updates the local session only · No match is simulated or saved"
+    }
+  ],
+  "artifacts": {
+    "browser-dashboard.png": "2a126f9231970cec8ddebe296a85a483cf966f2e45ea6d63282ea151523a2ada",
+    "browser-squad.png": "58837d749a13ee93256512d36e28d0f98f901bdec9f7361b7c5fa5827e05dc1a"
+  }
+}

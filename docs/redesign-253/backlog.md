@@ -1,0 +1,91 @@
+# Prioritized rollout and linked implementation backlog
+
+[designed: owner-approved queue, 2026-10-20] The order below is the owner-approved queue ([audit and dependency order](https://github.com/diegoami/goal2/issues/253#issuecomment-6287891360), [applied](https://github.com/diegoami/goal2/issues/253#issuecomment-6288245660), [triage](https://github.com/diegoami/goal2/issues/253#issuecomment-6288421712)). It reconciles this package to accepted [#266](https://github.com/diegoami/goal2/issues/266). It is **not a dispatch queue**: each task keeps its own bounded preflight and the repository’s implementer and reviewer choice, and no GitHub issue is filed, edited, closed or relabelled by this package. Status lives in GitHub labels, not here. Existing independently authorized T79/T84/T85 and other work retain their contracts. There is no parallel backlog: [#259](https://github.com/diegoami/goal2/issues/259)–[#265](https://github.com/diegoami/goal2/issues/265) are the filed children, and their local contracts under [backlog/](backlog/) mirror the live amended bodies ([receipt](evidence/reconcile-05/live-issue-bodies.json)).
+
+## Approved queue and first supported session
+
+| Lane | Outcome | Issues and dependencies |
+| --- | --- | --- |
+| 1 Now | Reconcile this plan; prepare bounded cloud slices | [#253](https://github.com/diegoami/goal2/issues/253) with this package; [#270](https://github.com/diegoami/goal2/issues/270) is its own P0 cloud issue (deterministic engine test doubles, runtime bootstrap, resource inventory, inherited #82 acceptance) and is **referenced, not implemented or pre-split here**; [#208](https://github.com/diegoami/goal2/issues/208)/[#268](https://github.com/diegoami/goal2/issues/268) keep their own narrow tooling scope. |
+| 2 Existing foundations | Native validation, complete cards/bars, Play/Watch and speed; proofs | [#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved), [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243), each reconciled to the black/large-text/bar target on its own issue; [B01/#259](https://github.com/diegoami/goal2/issues/259) split into consuming proofs (cards/accessibility, renderer/focus, package/resource/save). Window and toolkit questions are answered by measured proof ([technology.md](technology.md#window-and-platform-questions-that-still-need-measured-proof)); Python/Qt+SDL is retained unless a concrete requirement fails. |
+| 3 First supported session | One coherent original-style session | [B02/#260](https://github.com/diegoami/goal2/issues/260) launch/Resume; [B03/#261](https://github.com/diegoami/goal2/issues/261) shell and Team/pool (split into two pieces); [B04/#262](https://github.com/diegoami/goal2/issues/262) preparation/maximum-pitch/result/Continue; the available-information slice of [#249](https://github.com/diegoami/goal2/issues/249); [B05/#263](https://github.com/diegoami/goal2/issues/263) first-slice oracles, started alongside rather than held for all full-parity work; [#251](https://github.com/diegoami/goal2/issues/251) retained-history browsing. |
+| 4 Independent career stream | Real national career | [#110](https://github.com/diegoami/goal2/issues/110), [#112](https://github.com/diegoami/goal2/issues/112), [#113](https://github.com/diegoami/goal2/issues/113), [#114](https://github.com/diegoami/goal2/issues/114), [#115](https://github.com/diegoami/goal2/issues/115), [#116](https://github.com/diegoami/goal2/issues/116), [#117](https://github.com/diegoami/goal2/issues/117), [#118](https://github.com/diegoami/goal2/issues/118), [#119](https://github.com/diegoami/goal2/issues/119) and [#155](https://github.com/diegoami/goal2/issues/155) (retirement and replacement safeguard). |
+| 5 Full parity | Supported decisions, retained records, assistant/identity, local managers, scope gaps | [#248](https://github.com/diegoami/goal2/issues/248)/[#250](https://github.com/diegoami/goal2/issues/250) supported decisions; [#251](https://github.com/diegoami/goal2/issues/251) retained records and separately scoped replay; [B06/#265](https://github.com/diegoami/goal2/issues/265) assistant/identity and [B07/#264](https://github.com/diegoami/goal2/issues/264) local-manager **contracts**; plus [G01–G05, O13 and O14](vision-reconciliation.md#scope-gaps-and-their-owners), each unowned until it has a bounded contract. P3 polish and legacy maintenance are outside the delivery critical path and have no delivery milestone. |
+
+### Approved dependencies
+
+[designed: owner-approved queue, 2026-10-20] Dependency order is stated **only** in the two tables below (and mirrored in `package.json`); the lane rows above list issues without order. `validate.py --check vision` parses these rows and requires them to equal its independent list of the approved pairs: a reversed, missing or extra row fails, and so does a reverse arrow between issues or an order word that contradicts them elsewhere in this file. “#262” is the base match journey. The tables do not order #249, #263, lane 1 or lane 5, because the approved queue states no order for them. UI cosmetics are not part of the career stream’s order.
+
+| Before | After | Source |
+| --- | --- | --- |
+| #198 | #242 | lane 2 |
+| #198 | #243 | lane 2 |
+| #260 | #261 | lane 3 |
+| #261 | #262 | lane 3 |
+| #262 | #251 | lane 3 |
+| #110 | #112 | lane 4 |
+| #112 | #113 | lane 4 |
+| #113 | #114 | lane 4 |
+| #114 | #115 | lane 4 |
+| #115 | #116 | lane 4 |
+| #116 | #117 | lane 4 |
+| #117 | #118 | lane 4 |
+| #118 | #119 | lane 4 |
+| #155 | #117 | lane 4 |
+
+| Not a prerequisite | Of | Source |
+| --- | --- | --- |
+| #259 | #198 | lane 2 |
+| #259 | #242 | lane 2 |
+| #259 | #243 | lane 2 |
+
+[designed] The four undated GitHub delivery milestones are **Cloud-ready development**, **Playable original-style session**, **Complete national career** and **Original information/decision parity**. They organize issues; they are not schedules.
+
+[designed: #253] The first supported session is deliberately **new/load → country desk → full Team card/pool comparison → confirmed team → supported friendly Preparation → Quick with current halftime choice or Watch with current view-only pitch → explained result → next fixture → Save/Resume**. It reuses engine logic and works before whole-cycle/multiplayer capabilities arrive. The accepted screens are its visual target. Setup uses verified current identity/roster data; missing complete country profiles, generated news, new Watch/scheduling/in-flight quick-continuation and replay/export capabilities remain visibly unavailable under G01–G05. The first slice cannot promise an absent archive or bulletin. It must say which original information remains unsupported; its delivery is not described as complete parity. A complete four-year national career still depends on the accepted campaign sequence, including elimination, rankings, ageing/recreation and next-cycle state.
+
+## Child issue contracts
+
+[designed: #253] Each linked issue contains the player problem, accepted original screenshots, intended behavior, owned surfaces/exclusions, priority, dependency, estimate/risk, five acceptance criteria and validation approach, plus the owner-approved queue amendment of 2026-10-20 that sets its lane, priority and visual acceptance. The [local contract files](backlog/) mirror the live amended bodies; [backlog.json](backlog.json) records identities, lane, priority, dependency, ownership and the gate for trace checks, not operational status.
+
+| ID / issue | Lane | Player outcome | Priority / size and risk | Main boundaries |
+| --- | --- | --- | --- | --- |
+| [B01](backlog/B01.md) · [#259](https://github.com/diegoami/goal2/issues/259) | 2 | [designed] Evidence-based native rendering/distribution proofs | P1 bounded native proof; M across split proofs, high integration risk | Split into cards/accessibility, renderer/focus and package/resource/save proofs before dispatch; consumes #198/#242/#243; no backend port or unapproved toolkit switch. |
+| [B02](backlog/B02.md) · [#260](https://github.com/diegoami/goal2/issues/260) | 3 | [designed] Clear launch, Resume and safe new-career setup (accepted screen 01) | P1 first coherent slice; M, medium replacement/save risk | One manager, existing identity and atomic saves; current/default identity stated explicitly; G05 profile and #265 identity delivered separately; neutral launch, not the fictional Holland/Alex identity. |
+| [B03](backlog/B03.md) · [#261](https://github.com/diegoami/goal2/issues/261) | 3 | [designed] Original-style management shell and shared Team/pool workspace (accepted screens 02–04, 11, 14, 16, 17) | P1 first coherent slice; L, split shell and Team/pool before dispatch | Reuse current fields/cards/edits; all twenty names and both full bar cards; independent retractable bars; no competing decoder, campaign dataset, pool policy or match protocol. |
+| [B04](backlog/B04.md) · [#262](https://github.com/diegoami/goal2/issues/262) | 3 | [designed] Preparation, maximum-pitch play and result/Continue (accepted screens 05–09, 12, 15) | P1 completes first slice; M–L, medium lifecycle/focus risk | After #261, #198/#243 and the renderer/focus proof; #250 only supported decisions; #251 follows, no #251↔#262 cycle; no new runner, mid-match save or premature publication. |
+| [B05](backlog/B05.md) · [#263](https://github.com/diegoami/goal2/issues/263) | 3 | [designed] First-slice oracles now; separate full-parity gate | P1 first-slice acceptance, later full-parity gate; M, medium evidence/usability risk | Supported-session acceptance and the 237-allocation full-parity claim are distinct gates; static storyboard PNGs are not runtime evidence. |
+| [B06](backlog/B06.md) · [#265](https://github.com/diegoami/goal2/issues/265) | 5 | [designed] Supported assistant and editable identity contracts | P2 full-parity support prerequisite; S–M read-only audit/contract, medium identity/persistence risk | After #242 shared full-ID player data; coordinate #248; contract only, delivery unowned (O14). |
+| [B07](backlog/B07.md) · [#264](https://github.com/diegoami/goal2/issues/264) | 5 | [designed] Honest local-manager support contract | P2 explicit full-parity dependency; S–M planning, high later migration risk | Later contract after the first loop; audit ownership/save/shared-fixture handoff before any multiplayer UI or schema migration; contract only, delivery unowned (O14). |
+
+[designed estimate: #253] S means a bounded1–3-day scope, M roughly4–8 days, L roughly2–4 weeks; these are relative planning bands, not commitments. Validation/research and native environment constraints may change them. Any task exceeding one implementer run or three independent layers splits under the repository process before dispatch. No T-number or executable Done-when command is invented for an unapproved child; main freezes meaningful failing/positive commands from accepted predecessors when authorized to start it.
+
+## Reuse ledger and capability dependencies
+
+| Existing bounded contract | Conditional reuse / exclusions |
+| --- | --- |
+| #241 and diagnostic follow-up #252 | [designed] Preserve real20/80-row scrolling, preview purity/full IDs and accepted actual scale targets. Diagnostic improvements cannot weaken required assertions. No duplicate scrolling issue is filed. |
+| #242 / T84 | [designed] All original identity/roles,12 skills/5 characteristics, discipline/performance and instruction-source projections;7 defaults,38/37 expanded columns; both comparison cards. The proposal does not change its field/domain contract. |
+| #243 / T85 | [designed] Prominent route, honest Quick/Watch capabilities, Slow/Normal/Fast at15/60/120 internally, default60/session-local/frozen, no stale/ignored selected rate and no draft bypass. Human labels avoid internal sample counts. |
+| #198 / T79 | [designed] Shared Qt/SDL appearance/focus/size/board handling only. B04 consumes its accepted handoff, rather than changing an active renderer. |
+| #248 | [designed] Supported roles/club restore, personal tactics/marking and formation summary edits; independent source/state audit; before/after decision persists or refuses safely. T84 remains the display owner. |
+| #249 | [designed] Audit/display when available for stored fixture/group/opponent information. Watch flags/rearrangement, generated news and complete profile/rank/record sources are not assigned here: G01/G02/G03/G05 are unowned. T50–T59 keep their own mechanics; T51a explicitly excludes route-level news/sack handling. |
+| #250 | [designed] Prompt/action support matrix and first actual watched intervention. Test real pause/answer/resume continuation, frame order/ACK/tail, cancellation/save safety and small-window input. Only supported first-choice delivery is in scope. G01 covers unassigned additional modes/competitive extra-time/order; G04 replay recording/playback/export. Auditing a prompt does not authorize those capabilities. |
+| #251 | [designed] Audit/display when available for already retained match summaries, preserving source order/provenance and explicit Not recorded. New durable capture/retention/export or goal playback is unowned G04; full country records are G05 and generated news G03. |
+
+[designed: #253] The [capability register](capabilities.tsv) states which proposal surfaces are composition over current capabilities and which need missing state/source/worker work. Original unknown meanings remain evidence gaps; unsupported rebuild behavior is a separate category. Existing issues own only their written supported/audit/display slices. The [unowned capability decisions](decisions.md#unowned-capability-decisions) (G01–G05, O13, O14) explicitly have no delivery owner and no implementation authorization. B06 fills the assistant/identity contract and B07 the local-manager contract; no duplicate issues are created for #248–#251.
+
+## Measurable acceptance, without invented results
+
+| Task | Proposed pass criterion and meaningful failure |
+| --- | --- |
+| U01 Select a team / compare a reserve | [designed] All12 skills,5 characteristics, current/club roles, eligibility, lineup/bench and captain are readable in the decision context, with outgoing/incoming identities pinned. Removing Penalties, Leadership, readiness or one comparison card must fail coverage/input checks. Complete selection and save retain full IDs. |
+| U02 Find the next match / delivery / speed | [designed] Country desk→Prepare is1 named action; Quick/Watch and speed are visible together there. At least4/5 fresh participants complete without coaching; median locate time≤30s. This is a proposed study threshold, not a measured result. Unavailable routes provide reasons; no silent match start. |
+| U03 Make a supported intervention | [designed] The first slice uses the existing quick-friendly halftime exchange; later #250 may supply its first supported watched choice after audit; additional modes/choices still need O08/G01 scope. Candidate information, count, confirmation/refusal and explicit resume are visible. A real continuation/state/RNG/event/frame oracle detects an ignored choice or premature publication. Unsupported actions are not counted as a successful task. |
+| U04 Explain a result | [designed] Read FT/HT/scorers/minutes/MOTM and each available original statistic, and distinguish normal goals, extra time and penalty kicks. Unknown historical/quick fields are explicitly Not recorded. Removing a category or substituting zero must fail. |
+| U05 Return to campaign | [designed] From a completed result, Continue leads to the next supported fixture or a clear stage boundary, preserving country, draft rules and current availability. Wider round/table routes and explicit news/record availability explanations remain discoverable; returning cannot play the match twice. |
+| U06 Save and resume | [designed] Complete confirmed state, template continuation, RNG, identities and retained result/history equal uninterrupted play. Save/error/replacement/cancel keep the previous good checkpoint. A selected preview or unconfirmed draft cannot masquerade as the saved active game. |
+| U07 Desktop access | [designed] Real Windows/Linux at actual1x/2x and900×640/1440×900, increased text scale, keyboard-only and screen-reader tasks; no critical clipping, lost focus, color-only state or unreachable table/card/action. Compare actual platform/ratio/client/ancestor geometry; requested variables alone are insufficient. |
+
+[designed: #253] B05 reports counts/times and failure causes for each supported task; it does not silently exclude struggling participants or manufacture product failures from environment setup. Full original parity requires234/234 source field/state destinations populated with supported information/actions, with any additional discovered field added to the inventory. Owner-named exceptions are explicit scope decisions, never an implementer's way to make a missing value pass.
+
+[designed: unowned capability sequencing] O08/G01 Watch/flags, O09/G02 rearrangement, O10/G03 generated news, O11/G04 durable goal/summary capture/replay and O12/G05 complete country projections are P2 full-parity prerequisites. They are deliberately unassigned decisions, not hidden work in #249/#250/#251/T51a. Each first needs a bounded source/state/persistence contract and independent acceptance plan; estimates for actual capability implementation follow that audit. No gap has been approved, excepted, filed as an active task or dispatched. See [gap register](capability-gaps.json) for exact field membership and next-contract acceptance.

@@ -1,0 +1,91 @@
+{
+  "evidence": "[confirmed: #253 strengthened checks fail on exact prior tracked-tree archives]",
+  "helper_sha256": "b4fa05ed0f80c2e0595a1a8d10b8ab61e428b33dd3821d95c4892b5a2b5e5c71",
+  "prior_head": "d5552569abf38f0c82736383bcb5dd20df979d36",
+  "prior_changed_checks": [
+    {
+      "check": "proposal",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "proposal",
+          "pass": false,
+          "finding": "missing option/owner decision: O08"
+        }
+      ]
+    },
+    {
+      "check": "parity",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "parity",
+          "pass": false,
+          "finding": "'reuse'"
+        }
+      ]
+    },
+    {
+      "check": "journeys",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "journeys",
+          "pass": false,
+          "finding": "incomplete capability register"
+        }
+      ]
+    },
+    {
+      "check": "backlog",
+      "exit": 1,
+      "stdout": [
+        {
+          "check": "backlog",
+          "pass": false,
+          "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-r1-d555/docs/redesign-253/capability-gaps.json'"
+        }
+      ]
+    }
+  ],
+  "prior_limit": "Archive has no own Git metadata; only design/scope-contract checks that fail before Git reads are used, not a claim of Git-based scope verification on an archive.",
+  "initial_base": "3335da830d289cc869f989b73816926c54360ff1",
+  "base_all_exit": 1,
+  "base_all": [
+    {
+      "check": "proposal",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/decisions.md'"
+    },
+    {
+      "check": "parity",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/parity/source-fields.tsv'"
+    },
+    {
+      "check": "journeys",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/package.json'"
+    },
+    {
+      "check": "current",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/evidence/runtime-06/report.json'"
+    },
+    {
+      "check": "backlog",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/decisions.md'"
+    },
+    {
+      "check": "technology",
+      "pass": false,
+      "finding": "[Errno 2] No such file or directory: '/home/diego/projects/goal2-work/253-whole-game-redesign/.cache/253-base-3335/docs/redesign-253/decisions.md'"
+    },
+    {
+      "check": "scope",
+      "pass": false,
+      "finding": "proposal package absent"
+    }
+  ]
+}

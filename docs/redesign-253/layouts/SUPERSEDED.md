@@ -1,0 +1,3 @@
+# Superseded candidate layouts
+
+[designed: owner, 2026-10-20] The ten `01…10` SVG/PNG pairs in this directory are the earlier “Country desk” candidate (paper/ink/emerald) for #253. They are historical, hash-pinned review evidence and are **not a recommendation**. The accepted screens are the nineteen illustrations in [docs/vision-266/screens/](../../vision-266/screens/). The [mapping](../vision-reconciliation.md#superseded-candidate-layouts) names each sheet’s accepted successor. Do not build from these files, and do not edit them: their hashes are recorded in [evidence/layout-bounds-05.json](../evidence/layout-bounds-05.json).

@@ -1,0 +1,7 @@
+{
+  "evidence": "[confirmed: #253 R3 class-sweep fail-before check]",
+  "command": "python3 -I docs/redesign-253/validate.py --check proposal",
+  "exit": 1,
+  "stdout": "[\n  {\n    \"check\": \"proposal\",\n    \"pass\": false,\n    \"finding\": \"formation contradicts named lineup roles: Belgium\"\n  }\n]\n",
+  "finding": "The11 named Belgium roles imply4\u20134\u20132, whereas its authored heading said5\u20134\u20131. Correcting the illustration only; no game rule or current runtime claim changes."
+}

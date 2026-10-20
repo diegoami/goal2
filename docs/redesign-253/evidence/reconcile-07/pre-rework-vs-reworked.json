@@ -1,0 +1,63 @@
+{
+  "evidence": "[confirmed: reconcile-07] the reviewer's R3 attacks (and the lane-array observation) applied to the tree as reviewed at 23fddf9 pass the validator reviewed there, and the equivalent controls are rejected by the reworked validator; every mutation restored byte for byte",
+  "reviewed_head": "23fddf988880983b9cabfe3fd3f6a8af13eb5e68",
+  "reviewed_validator_sha256": "0266646ea90adf0e41e4a3565e63aa60e74d4b11c14c88eb0104ff214f9483c1",
+  "reworked_validator_sha256": "ec2e3d984d04554551d91e23c551d715ac2eac825010bac0f58716232cbe0f25",
+  "results": [
+    {
+      "attack": "foundation-arrows-reversed (reviewer variant 1)",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reviewed_validator_finding": "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 refer",
+      "control": "foundation-arrows-reversed",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "reverse arrow between queue issues in backlog.md",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "history-dependency-inverted-prose (reviewer variant 2)",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reviewed_validator_finding": "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 refer",
+      "control": "history-dependency-inverted-prose",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "queue lane text in backlog.md states an order outside the canonical dependency table: precede",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "history-inverted-and-followon-removed-coordinated (reviewer variant 3)",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reviewed_validator_finding": "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 refer",
+      "control": "history-inverted-and-followon-removed-coordinated",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "queue follow-on differs from the approved queue: lane 3",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "followon-removed-in-registry-only (reviewer variant 4)",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reviewed_validator_finding": "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 refer",
+      "control": "followon-removed-in-registry-only",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "queue follow-on differs from the approved queue: lane 3",
+      "exact_bytes_restored": true
+    },
+    {
+      "attack": "lane-objects-swapped-in-registry-array (reviewer observation)",
+      "reviewed_validator_exit": 0,
+      "reviewed_validator_pass": true,
+      "reviewed_validator_finding": "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 refer",
+      "control": "lane-objects-swapped-in-registry-array",
+      "reworked_validator_rejected": true,
+      "reworked_check": "vision",
+      "reworked_finding": "queue lanes are not listed in lane order",
+      "exact_bytes_restored": true
+    }
+  ]
+}

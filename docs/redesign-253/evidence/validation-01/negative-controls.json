@@ -1,0 +1,118 @@
+{
+  "positive_checks": [
+    {
+      "check": "proposal",
+      "pass": true,
+      "finding": "A/B/C compared; O01\u2013O07 and operative gate;10 static annotated SVG/PNG pairs;0 out-of-canvas text"
+    },
+    {
+      "check": "parity",
+      "pass": true,
+      "finding": "234 source=allocated=rendered fields;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes)"
+    },
+    {
+      "check": "journeys",
+      "pass": true,
+      "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges and20 capability dependencies"
+    },
+    {
+      "check": "current",
+      "pass": true,
+      "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+    },
+    {
+      "check": "backlog",
+      "pass": true,
+      "finding": "7 filed scoped gated issues;9 existing owners preserved;dependencies and task index linked;no duplicate area ownership"
+    },
+    {
+      "check": "technology",
+      "pass": true,
+      "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+    },
+    {
+      "check": "scope",
+      "pass": true,
+      "finding": "75 changed files limited to task docs/index;JSON valid;no app/engine/dependency/original payload changes"
+    }
+  ],
+  "negative_controls": [
+    {
+      "control": "missing-skill-allocation",
+      "rejected_by": "parity",
+      "finding": "source/destination field IDs differ",
+      "before_sha256": {
+        "parity/destinations.tsv": "940ef962ee0b4cc0fbe0097f9cec7390c66e9f866f7aab58ec2363bb4ce2a427"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "940ef962ee0b4cc0fbe0097f9cec7390c66e9f866f7aab58ec2363bb4ce2a427"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-skill-from-both-inventories",
+      "rejected_by": "parity",
+      "finding": "required original field missing/renamed: SK12 Penalties",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d24a2121adba64db7dc31f1444f8d3b9aaf3500f35d19e9c7d147f83334f07aa",
+        "parity/destinations.tsv": "940ef962ee0b4cc0fbe0097f9cec7390c66e9f866f7aab58ec2363bb4ce2a427"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d24a2121adba64db7dc31f1444f8d3b9aaf3500f35d19e9c7d147f83334f07aa",
+        "parity/destinations.tsv": "940ef962ee0b4cc0fbe0097f9cec7390c66e9f866f7aab58ec2363bb4ce2a427"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "blank-destination",
+      "rejected_by": "parity",
+      "finding": "blank/unknown destination: SK12",
+      "before_sha256": {
+        "parity/destinations.tsv": "940ef962ee0b4cc0fbe0097f9cec7390c66e9f866f7aab58ec2363bb4ce2a427"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "940ef962ee0b4cc0fbe0097f9cec7390c66e9f866f7aab58ec2363bb4ce2a427"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-original-screen",
+      "rejected_by": "parity",
+      "finding": "64-screen inventory/inspection omission",
+      "before_sha256": {
+        "evidence/screens-inspected.tsv": "07977954d142f4e5991364ef41e5d432c9415ebc37aa9b5887493f205ca50970"
+      },
+      "after_sha256": {
+        "evidence/screens-inspected.tsv": "07977954d142f4e5991364ef41e5d432c9415ebc37aa9b5887493f205ca50970"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "remove-operative-gate",
+      "rejected_by": "proposal",
+      "finding": "operative Approval gate section missing",
+      "before_sha256": {
+        "decisions.md": "3fceca916b8630a83772baf07d1e6c26b0385d049212d17d8ec5950e5c038b03"
+      },
+      "after_sha256": {
+        "decisions.md": "3fceca916b8630a83772baf07d1e6c26b0385d049212d17d8ec5950e5c038b03"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "realistic-duplicate-campaign-owner",
+      "rejected_by": "backlog",
+      "finding": "duplicate existing ownership: B03 {'campaign-context-data'}",
+      "before_sha256": {
+        "backlog.json": "108ae9b13d1064d238741aac9aeec81f402ced47eca5e9b41061ed016cdf2027",
+        "backlog/B03.md": "7b7aafdbccc1e050112853579fd361cdffddb4b62e85d209765d0c7fedde0447"
+      },
+      "after_sha256": {
+        "backlog.json": "108ae9b13d1064d238741aac9aeec81f402ced47eca5e9b41061ed016cdf2027",
+        "backlog/B03.md": "7b7aafdbccc1e050112853579fd361cdffddb4b62e85d209765d0c7fedde0447"
+      },
+      "exact_bytes_restored": true
+    }
+  ],
+  "all_restored": true
+}

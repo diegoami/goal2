@@ -1,0 +1,25 @@
+{
+  "evidence": "[confirmed: reconcile-05]",
+  "content_head": "5562ad0dd2ba968198f71919fc15d60bd73d0ba8",
+  "checks": [
+    {
+      "check": "links-and-json",
+      "argv": [
+        "tools/check_links.py"
+      ],
+      "exit": 0,
+      "stdout": "links and JSON ok (9870 files)\n"
+    },
+    {
+      "check": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "origin/main...HEAD"
+      ],
+      "exit": 0,
+      "stdout": ""
+    }
+  ]
+}
