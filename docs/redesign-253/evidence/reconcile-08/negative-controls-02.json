@@ -1,0 +1,2153 @@
+{
+  "positive_checks": [
+    {
+      "check": "proposal",
+      "pass": true,
+      "finding": "accepted #266 direction stated; no obsolete recommendation/selection question; A/B/C historical only; O01\u2013O14/gate;10 historical sheets intact;20-name XI/bench strips;explicit scenarios;0 out-of-canvas text"
+    },
+    {
+      "check": "parity",
+      "pass": true,
+      "finding": "234 unchanged source fields=237 complete allocations=rendered;12 skills/5 characteristics;23 contexts/17 categories;64 pinned image-name/hash traces (63 distinct byte hashes);5 explicit unowned capability decisions;country TT traces"
+    },
+    {
+      "check": "journeys",
+      "pass": true,
+      "finding": "15 surfaces covered by9 journeys; automatic/player/conditional edges;25 scoped capability rows;all10 visible-surface mappings"
+    },
+    {
+      "check": "current",
+      "pass": true,
+      "finding": "24 source hashes match3335da83;10 actual Qt captures;PTY3 states;painted SDL frame3/cancel;2 browser captures/0 writes;no saves"
+    },
+    {
+      "check": "backlog",
+      "pass": true,
+      "finding": "7 filed scoped issues mirrored from live amended bodies;9 existing owners preserved;dependencies, lanes and task index linked;no duplicate area ownership;unowned scopes tied to owner decisions"
+    },
+    {
+      "check": "technology",
+      "pass": true,
+      "finding": "desktop/Python constraints;5 frontend approaches;primary sources;relative cost/migration/owner decisions"
+    },
+    {
+      "check": "scope",
+      "pass": true,
+      "finding": "131 changed files against 9683a476 limited to the plan package, its task index, the focused process lesson and its harness.lock hash (accepted vision, product and engine untouched);JSON valid;no app/engine/dependency/original payload changes"
+    },
+    {
+      "check": "vision",
+      "pass": true,
+      "finding": "accepted #266 pinned and byte-identical (19 screens);15 surfaces/9 journeys/10 superseded layouts mapped;undrawn surfaces owned;queue lanes 1-5 incl. #270 referenced;O01 closed,O02-O07 open;G01-G05/O13/O14 explicitly unowned;inventory hash unchanged"
+    }
+  ],
+  "negative_controls": [
+    {
+      "control": "missing-skill-allocation",
+      "rejected_by": "parity",
+      "finding": "mixed source fields need237 independent supported/residual allocations",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-skill-from-both-inventories",
+      "rejected_by": "parity",
+      "finding": "required original field missing/renamed: SK12 Penalties",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "blank-destination",
+      "rejected_by": "parity",
+      "finding": "blank/unknown destination: SK12",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-original-screen",
+      "rejected_by": "parity",
+      "finding": "64-screen inventory/inspection omission",
+      "before_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "after_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "remove-operative-gate",
+      "rejected_by": "proposal",
+      "finding": "operative Approval gate section missing",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "realistic-duplicate-campaign-owner",
+      "rejected_by": "backlog",
+      "finding": "duplicate existing ownership: B03 {'available-fixture-group-display'}",
+      "before_sha256": {
+        "backlog.json": "2ac73fc4ce47c043a9142b4a14fe5609b08d476872f614a7018d208a3d522ba8"
+      },
+      "after_sha256": {
+        "backlog.json": "2ac73fc4ce47c043a9142b4a14fe5609b08d476872f614a7018d208a3d522ba8"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "watch-flags-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: FX03 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "friendly-rearrangement-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: FX05 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "generated-news-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: NW01 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "competitive-watch-assigned-to250",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: IN12 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "durable-replay-assigned-to251",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: SV06 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "setup-profile-assigned-to249",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: CO05 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "resolved-gap-without-owner-choice",
+      "rejected_by": "backlog",
+      "finding": "gap silently assigned/authorized/excepted: G05",
+      "before_sha256": {
+        "capability-gaps.json": "87842b42ecd7d8d373bb9e559a8f7c4f218f061e225eca64e0e7ccbab13d593b"
+      },
+      "after_sha256": {
+        "capability-gaps.json": "87842b42ecd7d8d373bb9e559a8f7c4f218f061e225eca64e0e7ccbab13d593b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "capability-register-profile-overreach",
+      "rejected_by": "backlog",
+      "finding": "capability register silently extends existing contract: Country ranks/status/profile/strips",
+      "before_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "after_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "linked-profile-claimed-as-drawn",
+      "rejected_by": "journeys",
+      "finding": "layout claims a surface not visibly drawn: 05-competition",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "formation-disagrees-with-lineup",
+      "rejected_by": "proposal",
+      "finding": "formation contradicts named lineup roles: Belgium",
+      "before_sha256": {
+        "layouts/06-match-preparation.svg": "ff9d0ed50d19e72a345cb4d6bca474f9569b9596291fabcac6d1c96e0253db90"
+      },
+      "after_sha256": {
+        "layouts/06-match-preparation.svg": "ff9d0ed50d19e72a345cb4d6bca474f9569b9596291fabcac6d1c96e0253db90"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "missing-twentieth-bench-name",
+      "rejected_by": "proposal",
+      "finding": "all20 named squad rows not drawn beside full card: 03-team-workspace",
+      "before_sha256": {
+        "layouts/03-team-workspace.svg": "54e997b8d861ff468773f5e02f23d3fbd00de4dff6fb090b2e295b14fdec578c"
+      },
+      "after_sha256": {
+        "layouts/03-team-workspace.svg": "54e997b8d861ff468773f5e02f23d3fbd00de4dff6fb090b2e295b14fdec578c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "small-window-scrollbar-omitted",
+      "rejected_by": "proposal",
+      "finding": "small-window roster scrollbar absent",
+      "before_sha256": {
+        "layouts/09-small-window.svg": "c3342ba1fe126f1df96543aadb26f56e73804a6283405a439a6fa54b3ca56375"
+      },
+      "after_sha256": {
+        "layouts/09-small-window.svg": "c3342ba1fe126f1df96543aadb26f56e73804a6283405a439a6fa54b3ca56375"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "team-default-relocation-omitted",
+      "rejected_by": "parity",
+      "finding": "team tactics/default missing setup/scout context: TT01",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b",
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b",
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "country-screenshot-team-default-trace-omitted",
+      "rejected_by": "parity",
+      "finding": "country image missing team-default trace: country-select.png",
+      "before_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "after_sha256": {
+        "evidence/screens-inspected.tsv": "9b9555b019e1760ee59b1935e7ade15b2f22d988c8ff6b89c02805f5d88b255c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-assigned-to-existing-scopes",
+      "rejected_by": "backlog",
+      "finding": "excluded capability assigned to an existing issue: LI08 requires explicit unowned delivery; existing issues are reuse only",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-omitted-from-gap",
+      "rejected_by": "backlog",
+      "finding": "gap field inventory differs from independent scope oracle: G01",
+      "before_sha256": {
+        "capability-gaps.json": "87842b42ecd7d8d373bb9e559a8f7c4f218f061e225eca64e0e7ccbab13d593b"
+      },
+      "after_sha256": {
+        "capability-gaps.json": "87842b42ecd7d8d373bb9e559a8f7c4f218f061e225eca64e0e7ccbab13d593b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-register-assigned-to250",
+      "rejected_by": "backlog",
+      "finding": "capability register silently extends existing contract: Quick continuation during watched play",
+      "before_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "after_sha256": {
+        "capabilities.tsv": "33bccba73803c4dea10c28a8f56e89fd2d2737832df31ae11e451dd449540e68"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-drawn-enabled",
+      "rejected_by": "journeys",
+      "finding": "07 lacks visible quick-continuation refusal/reason",
+      "before_sha256": {
+        "layouts/07-live-match.svg": "00dc13612e6c12fbe480f796b1cb2b12d5f22d5290d3c9cf4b07ecc3252f5481"
+      },
+      "after_sha256": {
+        "layouts/07-live-match.svg": "00dc13612e6c12fbe480f796b1cb2b12d5f22d5290d3c9cf4b07ecc3252f5481"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "quick-continuation-flow-claimed-available",
+      "rejected_by": "journeys",
+      "finding": "J06 implies available fast-finish",
+      "before_sha256": {
+        "journeys.md": "e8dc747e4ff9cad44904c8149136b0510b77114744eb377610d7311fb7b94dc7"
+      },
+      "after_sha256": {
+        "journeys.md": "e8dc747e4ff9cad44904c8149136b0510b77114744eb377610d7311fb7b94dc7"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "supported-country-identity-marked-unowned",
+      "rejected_by": "parity",
+      "finding": "supported country identity/list/selection incorrectly unowned",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "supported-friendly-route-marked-unowned",
+      "rejected_by": "backlog",
+      "finding": "supported/residual scope collapsed or misowned: MP01-S",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "captain-residual-allocation-dropped",
+      "rejected_by": "parity",
+      "finding": "mixed source fields need237 independent supported/residual allocations",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "coordinated-mixed-source-and-parts-dropped",
+      "rejected_by": "parity",
+      "finding": "original context/field coverage differs from234-field audit",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282",
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "original-manager-rating-source-meaning-erased",
+      "rejected_by": "parity",
+      "finding": "reviewed original field meanings/categories changed during allocation split",
+      "before_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282"
+      },
+      "after_sha256": {
+        "parity/source-fields.tsv": "d69ee5bff1afde58e0de4d0235b8bc63cb7d73d8be6761b687fa78523cf34282"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "split-rendered-information-erased",
+      "rejected_by": "parity",
+      "finding": "rendered source/allocation/destination/owner/reuse differs: MP01-S",
+      "before_sha256": {
+        "parity/match.md": "e91778d6947e3c8d31c1fc43357a46acc77f08def60da7262ecfb08b5caa6c03"
+      },
+      "after_sha256": {
+        "parity/match.md": "e91778d6947e3c8d31c1fc43357a46acc77f08def60da7262ecfb08b5caa6c03"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "hero-mislabeled-as-first-slice",
+      "rejected_by": "proposal",
+      "finding": "illustration delivery tier unlabelled/misleading: 02-country-desk",
+      "before_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "after_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "hero-ranks-ambiguous",
+      "rejected_by": "proposal",
+      "finding": "hero ranks have ambiguous own/opponent notation",
+      "before_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "after_sha256": {
+        "layouts/02-country-desk.svg": "3fdaf28fecd6e200a904080ef9e59a50f8e6dec9c81238aefddf9988da5e97d3"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "same-id-wouters-card-corrupted",
+      "rejected_by": "proposal",
+      "finding": "same-ID illustrative card disagrees: 10-match-decisions 2610 Keeping",
+      "before_sha256": {
+        "layouts/10-match-decisions.svg": "1eb26ded62d7a280b338f50d4069c6f72912ceb37130f83f3427e7eb307fff3a"
+      },
+      "after_sha256": {
+        "layouts/10-match-decisions.svg": "1eb26ded62d7a280b338f50d4069c6f72912ceb37130f83f3427e7eb307fff3a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pool-scrollbar-omitted",
+      "rejected_by": "proposal",
+      "finding": "pool lacks actual contained scrollbar",
+      "before_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "after_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pool-visible-count-omitted",
+      "rejected_by": "proposal",
+      "finding": "pool lacks visible subset count/scroll route",
+      "before_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "after_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "comparison-biography-copied",
+      "rejected_by": "proposal",
+      "finding": "comparison copies outgoing biography into incoming card",
+      "before_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "after_sha256": {
+        "layouts/04-pool-compare.svg": "0b90a560f82978b98f37a0f51e2c18ea4038238169c2eaf594fec974622365ef"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "selected-competition-tab-omitted",
+      "rejected_by": "proposal",
+      "finding": "competition has no visible selected Groups tab",
+      "before_sha256": {
+        "layouts/05-competition.svg": "0523a41374756b3e31a83b04cc21e63ff5a2d0b8e8efe9f991dbcd7d9ec6cc90"
+      },
+      "after_sha256": {
+        "layouts/05-competition.svg": "0523a41374756b3e31a83b04cc21e63ff5a2d0b8e8efe9f991dbcd7d9ec6cc90"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "original-live-speed-departure-omitted",
+      "rejected_by": "proposal",
+      "finding": "original live-speed departure/acceptedT85 boundary unrecorded",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "team-bits-reassigned-to-player-card-display",
+      "rejected_by": "parity",
+      "finding": "TT reuse incorrectly assigned to player-cardT84",
+      "before_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "after_sha256": {
+        "parity/destinations.tsv": "822d2674bcd66f4a00b947d3d3af5b0dfe08466882f79ad11bd39e679abac78b"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "obsolete-recommendation-restored",
+      "rejected_by": "proposal",
+      "finding": "obsolete direction recommendation or selection question in README.md: Recommend A",
+      "before_sha256": {
+        "README.md": "fb45b98704897a64237307e786006b075c4abb20fbeebd0b3ce9356402766cd8"
+      },
+      "after_sha256": {
+        "README.md": "fb45b98704897a64237307e786006b075c4abb20fbeebd0b3ce9356402766cd8"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "obsolete-recommendation-in-registry",
+      "rejected_by": "proposal",
+      "finding": "obsolete direction recommendation or selection question in package.json: recommended_direction",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "visual-style-question-reasked",
+      "rejected_by": "proposal",
+      "finding": "obsolete visual selection outside the historical section: paper",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "direction-question-reasked",
+      "rejected_by": "vision",
+      "finding": "O01 must be closed: the direction is not asked again",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "accepted-screen-dropped-from-registry",
+      "rejected_by": "vision",
+      "finding": "accepted screen inventory differs from the nineteen of #266",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "drawn-surface-without-screen",
+      "rejected_by": "vision",
+      "finding": "drawn surface without accepted screen: S04",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "undrawn-surface-claimed-drawn",
+      "rejected_by": "vision",
+      "finding": "surface coverage differs from the accepted-screen oracle: S06",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "undrawn-surface-owner-dropped",
+      "rejected_by": "vision",
+      "finding": "undrawn/partial surface lacks a bounded owner or states a drawn screen: S15",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "reconciliation-screen-claim-diverges",
+      "rejected_by": "vision",
+      "finding": "reconciliation table disagrees with registry: S05",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "reconciliation-allocation-count-wrong",
+      "rejected_by": "vision",
+      "finding": "reconciliation allocation count differs from the destination matrix: S08",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "superseded-layout-without-successor",
+      "rejected_by": "vision",
+      "finding": "superseded layout lacks its accepted successor: 05-competition",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "candidate-layouts-recommended-again",
+      "rejected_by": "vision",
+      "finding": "layouts.md does not declare the candidate sheets superseded",
+      "before_sha256": {
+        "layouts.md": "2ed77a9f1d8d55d3f1a443007d94a95e00d19e443d8457752358a1bc109b59b4"
+      },
+      "after_sha256": {
+        "layouts.md": "2ed77a9f1d8d55d3f1a443007d94a95e00d19e443d8457752358a1bc109b59b4"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "accepted-screen-bytes-edited",
+      "rejected_by": "vision",
+      "finding": "accepted screen differs from the pinned merge commit: docs/vision-266/screens/06-watched.svg",
+      "before_sha256": {
+        "../vision-266/screens/06-watched.svg": "212c913fac360196ef1aab9cb3ea8d9031f64c3307e33cc096990c1f71247de0"
+      },
+      "after_sha256": {
+        "../vision-266/screens/06-watched.svg": "212c913fac360196ef1aab9cb3ea8d9031f64c3307e33cc096990c1f71247de0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "queue-lane-issue-dropped",
+      "rejected_by": "vision",
+      "finding": "queue lane order differs from the approved order: lane 1",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "task-index-drops-career-stream",
+      "rejected_by": "vision",
+      "finding": "queue issue absent from task index: #119",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "backlog-drops-cloud-issue",
+      "rejected_by": "vision",
+      "finding": "queue issue absent from backlog: #270",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "gap-unowned-statement-removed",
+      "rejected_by": "vision",
+      "finding": "scope obligation lacks an explicit unowned statement: O08 / G01",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "evidence-encoding-obligation-dropped",
+      "rejected_by": "vision",
+      "finding": "scope obligation missing: O13",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "parity-context-screens-overclaimed",
+      "rejected_by": "vision",
+      "finding": "reconciliation parity-context table disagrees with the destination matrix and surface registry",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "technology-claims-toolkit-selected",
+      "rejected_by": "vision",
+      "finding": "technology document must not claim a toolkit was selected",
+      "before_sha256": {
+        "technology.md": "85baf85b153300475fd11691eeff638f210368edfb11f09fe6c741c2c59a8ebf"
+      },
+      "after_sha256": {
+        "technology.md": "85baf85b153300475fd11691eeff638f210368edfb11f09fe6c741c2c59a8ebf"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "technology-proof-omits-two-line-commentary",
+      "rejected_by": "vision",
+      "finding": "technology proof omits an accepted visual requirement: latest two commentary lines",
+      "before_sha256": {
+        "technology.md": "85baf85b153300475fd11691eeff638f210368edfb11f09fe6c741c2c59a8ebf"
+      },
+      "after_sha256": {
+        "technology.md": "85baf85b153300475fd11691eeff638f210368edfb11f09fe6c741c2c59a8ebf"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "child-contract-diverges-from-live-body",
+      "rejected_by": "backlog",
+      "finding": "local contract differs from the recorded live amended body: B03",
+      "before_sha256": {
+        "backlog/B03.md": "8ffbe5bc66a8d439028651a66e9ceaf122eb01bb42c07bb09d1166ada9b47c3e"
+      },
+      "after_sha256": {
+        "backlog/B03.md": "8ffbe5bc66a8d439028651a66e9ceaf122eb01bb42c07bb09d1166ada9b47c3e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "child-priority-drifts-from-queue",
+      "rejected_by": "backlog",
+      "finding": "child lane/priority differs from the approved queue: B06",
+      "before_sha256": {
+        "backlog.json": "2ac73fc4ce47c043a9142b4a14fe5609b08d476872f614a7018d208a3d522ba8"
+      },
+      "after_sha256": {
+        "backlog.json": "2ac73fc4ce47c043a9142b4a14fe5609b08d476872f614a7018d208a3d522ba8"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "cloud-issue-mirrored-instead-of-referenced",
+      "rejected_by": "backlog",
+      "finding": "#270 must be referenced, not mirrored or pre-split here",
+      "before_sha256": {
+        "evidence/reconcile-05/live-issue-bodies.json": "b8f839d18a4687651bef17504cc9de4d68f244a75e5a808d8e8eac3e504eb2e9"
+      },
+      "after_sha256": {
+        "evidence/reconcile-05/live-issue-bodies.json": "b8f839d18a4687651bef17504cc9de4d68f244a75e5a808d8e8eac3e504eb2e9"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pool-surface-coordinated-to-start-resume",
+      "rejected_by": "vision",
+      "finding": "surface screen identity differs from the independent oracle: S05",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "conditional-journey-coordinated-to-start-resume",
+      "rejected_by": "vision",
+      "finding": "journey screen identity differs from the independent oracle: J07",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "journey-edges-replaced-with-unused",
+      "rejected_by": "journeys",
+      "finding": "journey surfaces or edges differ from the independent oracle: J07",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "journey-surfaces-replaced",
+      "rejected_by": "journeys",
+      "finding": "journey surfaces or edges differ from the independent oracle: J07",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "surface-owner-coordinated-wrong",
+      "rejected_by": "vision",
+      "finding": "undrawn/partial surface names the wrong bounded owner: S06",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "child-lane-prose-drift",
+      "rejected_by": "backlog",
+      "finding": "backlog.md child lane/priority differs from the approved queue: B02",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "foundation-arrows-reversed",
+      "rejected_by": "vision",
+      "finding": "reverse arrow between queue issues in backlog.md",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "history-dependency-inverted-prose",
+      "rejected_by": "vision",
+      "finding": "queue lane text in backlog.md states an order outside the canonical dependency table: precede",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "history-inverted-and-followon-removed-coordinated",
+      "rejected_by": "vision",
+      "finding": "queue follow-on differs from the approved queue: lane 3",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "followon-removed-in-registry-only",
+      "rejected_by": "vision",
+      "finding": "queue follow-on differs from the approved queue: lane 3",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "followon-removed-in-prose-only",
+      "rejected_by": "vision",
+      "finding": "dependency table in backlog.md differs from the approved dependencies",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "lane-objects-swapped-in-registry-array",
+      "rejected_by": "vision",
+      "finding": "queue lanes are not listed in lane order",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "canonical-row-reversed-in-backlog",
+      "rejected_by": "vision",
+      "finding": "dependency table in backlog.md differs from the approved dependencies",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "canonical-row-reversed-in-reconciliation",
+      "rejected_by": "vision",
+      "finding": "dependency table in vision-reconciliation.md differs from the approved dependencies",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "canonical-row-reversed-in-task-index",
+      "rejected_by": "vision",
+      "finding": "dependency table in docs/tasks/README.md differs from the approved dependencies",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "canonical-row-missing-in-reconciliation",
+      "rejected_by": "vision",
+      "finding": "dependency table in vision-reconciliation.md differs from the approved dependencies",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "retirement-constraint-row-dropped",
+      "rejected_by": "vision",
+      "finding": "dependency table in docs/tasks/README.md differs from the approved dependencies",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "non-prerequisite-row-dropped",
+      "rejected_by": "vision",
+      "finding": "non-prerequisite table in docs/tasks/README.md differs from the approved pairs",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "career-order-reversed-everywhere",
+      "rejected_by": "vision",
+      "finding": "queue lane order differs from the approved order: lane 4",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0",
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad",
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c",
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0",
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "registry-dependency-reversed",
+      "rejected_by": "vision",
+      "finding": "queue dependencies in the registry differ from the approved pairs",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "order-word-contradicts-outside-lane-rows",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in backlog.md: #251 precede #262",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "backward-order-word-contradicts-outside-lane-rows",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in vision-reconciliation.md: #261 follows #262",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "reverse-arrow-in-reconciliation",
+      "rejected_by": "vision",
+      "finding": "reverse arrow between queue issues in vision-reconciliation.md",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "order-word-reintroduced-in-lane-row",
+      "rejected_by": "vision",
+      "finding": "queue lane text in backlog.md states an order outside the canonical dependency table: before",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "child-dependencies-diverge-from-live-body",
+      "rejected_by": "backlog",
+      "finding": "backlog.json dependencies differ from the pinned live body: B03",
+      "before_sha256": {
+        "backlog.json": "2ac73fc4ce47c043a9142b4a14fe5609b08d476872f614a7018d208a3d522ba8"
+      },
+      "after_sha256": {
+        "backlog.json": "2ac73fc4ce47c043a9142b4a14fe5609b08d476872f614a7018d208a3d522ba8"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "reconciliation-scope-gap-row-removed",
+      "rejected_by": "vision",
+      "finding": "reconciliation lacks the unowned scope-gap row: G04",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "foundation-order-reversed-in-registry",
+      "rejected_by": "vision",
+      "finding": "queue lane order differs from the approved order: lane 2",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "launch-lane-reordered-in-registry",
+      "rejected_by": "vision",
+      "finding": "queue lane order differs from the approved order: lane 3",
+      "before_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "after_sha256": {
+        "package.json": "027236d890c82cc730d4477f84562511ccefd04b809467dddba110430e1260ad"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "layout-and-bounds-receipt-coordinated",
+      "rejected_by": "proposal",
+      "finding": "layout bounds receipt differs from the pinned reviewed receipt",
+      "before_sha256": {
+        "layouts/06-match-preparation.svg": "ff9d0ed50d19e72a345cb4d6bca474f9569b9596291fabcac6d1c96e0253db90",
+        "evidence/layout-bounds-05.json": "9094c46eafeb22c601a0aabafd243220321c83b9fcd3f973bf84928f1db6b67a"
+      },
+      "after_sha256": {
+        "layouts/06-match-preparation.svg": "ff9d0ed50d19e72a345cb4d6bca474f9569b9596291fabcac6d1c96e0253db90",
+        "evidence/layout-bounds-05.json": "9094c46eafeb22c601a0aabafd243220321c83b9fcd3f973bf84928f1db6b67a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "runtime-audit-source-and-report-coordinated",
+      "rejected_by": "current",
+      "finding": "observation report differs from the pinned reviewed report: evidence/runtime-06/report.json",
+      "before_sha256": {
+        "evidence/runtime-06/audit-source.py": "309f8a379f26807750c6bea9dea7ab903d6c2419f2ed7541a486d10cd92b5d39",
+        "evidence/runtime-06/report.json": "9a53a126f3502706682b6342445bb53f4b47cae3d1c5021f2df2115f35972209"
+      },
+      "after_sha256": {
+        "evidence/runtime-06/audit-source.py": "309f8a379f26807750c6bea9dea7ab903d6c2419f2ed7541a486d10cd92b5d39",
+        "evidence/runtime-06/report.json": "9a53a126f3502706682b6342445bb53f4b47cae3d1c5021f2df2115f35972209"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "contract-and-receipt-coordinated-edit",
+      "rejected_by": "backlog",
+      "finding": "contract and receipt differ from the pinned live amended body: B03",
+      "before_sha256": {
+        "backlog/B03.md": "8ffbe5bc66a8d439028651a66e9ceaf122eb01bb42c07bb09d1166ada9b47c3e",
+        "evidence/reconcile-05/live-issue-bodies.json": "b8f839d18a4687651bef17504cc9de4d68f244a75e5a808d8e8eac3e504eb2e9"
+      },
+      "after_sha256": {
+        "backlog/B03.md": "8ffbe5bc66a8d439028651a66e9ceaf122eb01bb42c07bb09d1166ada9b47c3e",
+        "evidence/reconcile-05/live-issue-bodies.json": "b8f839d18a4687651bef17504cc9de4d68f244a75e5a808d8e8eac3e504eb2e9"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-dependency-row-in-backlog",
+      "rejected_by": "vision",
+      "finding": "dependency table in backlog.md differs from the approved dependencies",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-non-prerequisite-row-in-backlog",
+      "rejected_by": "vision",
+      "finding": "non-prerequisite table in backlog.md differs from the approved pairs",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "fully-compact-extra-dependency-row-in-backlog",
+      "rejected_by": "vision",
+      "finding": "dependency table in backlog.md differs from the approved dependencies",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "dependency-row-without-closing-pipe-in-backlog",
+      "rejected_by": "vision",
+      "finding": "malformed table row in backlog.md: | #242 | #198 | lane 2",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "dependency-row-with-two-cells-in-backlog",
+      "rejected_by": "vision",
+      "finding": "table row with 2 cells under a 3-cell header in backlog.md: | #242 | #198 |",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "non-prerequisite-row-with-a-word-instead-of-an-issue-in-backlog",
+      "rejected_by": "vision",
+      "finding": "unparsed row in the 'Not a prerequisite' table of backlog.md: | #198 | later | lane 2 |",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-header-copy-of-the-dependency-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "backlog.md lacks exactly one 'Before | After | Source' table",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "issue-pair-table-with-another-header-in-backlog",
+      "rejected_by": "vision",
+      "finding": "table row outside the canonical tables relates two issues in backlog.md: | #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "contradiction-clause-in-another-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in backlog.md: #242 precede #198",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "forward-arrow-in-another-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in backlog.md: #251 \u2192 #262",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "contradiction-split-across-cells-in-another-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in backlog.md: #242 precede #198",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-dependency-row-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "dependency table in vision-reconciliation.md differs from the approved dependencies",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-non-prerequisite-row-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "non-prerequisite table in vision-reconciliation.md differs from the approved pairs",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "fully-compact-extra-dependency-row-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "dependency table in vision-reconciliation.md differs from the approved dependencies",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "dependency-row-without-closing-pipe-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "malformed table row in vision-reconciliation.md: | #242 | #198 | lane 2",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "dependency-row-with-two-cells-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "table row with 2 cells under a 3-cell header in vision-reconciliation.md: | #242 | #198 |",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "non-prerequisite-row-with-a-word-instead-of-an-issue-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "unparsed row in the 'Not a prerequisite' table of vision-reconciliation.md: | #198 | later | lane 2 |",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-header-copy-of-the-dependency-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "vision-reconciliation.md lacks exactly one 'Before | After | Source' table",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "issue-pair-table-with-another-header-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "table row outside the canonical tables relates two issues in vision-reconciliation.md: | #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "contradiction-clause-in-another-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in vision-reconciliation.md: #242 precede #198",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "forward-arrow-in-another-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in vision-reconciliation.md: #251 \u2192 #262",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "contradiction-split-across-cells-in-another-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in vision-reconciliation.md: #242 precede #198",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-dependency-row-in-README",
+      "rejected_by": "vision",
+      "finding": "dependency table in docs/tasks/README.md differs from the approved dependencies",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-non-prerequisite-row-in-README",
+      "rejected_by": "vision",
+      "finding": "non-prerequisite table in docs/tasks/README.md differs from the approved pairs",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "fully-compact-extra-dependency-row-in-README",
+      "rejected_by": "vision",
+      "finding": "dependency table in docs/tasks/README.md differs from the approved dependencies",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "dependency-row-without-closing-pipe-in-README",
+      "rejected_by": "vision",
+      "finding": "malformed table row in docs/tasks/README.md: | #242 | #198 | lane 2",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "dependency-row-with-two-cells-in-README",
+      "rejected_by": "vision",
+      "finding": "table row with 2 cells under a 3-cell header in docs/tasks/README.md: | #242 | #198 |",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "non-prerequisite-row-with-a-word-instead-of-an-issue-in-README",
+      "rejected_by": "vision",
+      "finding": "unparsed row in the 'Not a prerequisite' table of docs/tasks/README.md: | #198 | later | lane 2 |",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-header-copy-of-the-dependency-table-in-README",
+      "rejected_by": "vision",
+      "finding": "docs/tasks/README.md lacks exactly one 'Before | After | Source' table",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "issue-pair-table-with-another-header-in-README",
+      "rejected_by": "vision",
+      "finding": "table row outside the canonical tables relates two issues in docs/tasks/README.md: | #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "contradiction-clause-in-another-table-in-README",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in docs/tasks/README.md: #242 precede #198",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "forward-arrow-in-another-table-in-README",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in docs/tasks/README.md: #251 \u2192 #262",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "contradiction-split-across-cells-in-another-table-in-README",
+      "rejected_by": "vision",
+      "finding": "order statement contradicts the approved dependencies in docs/tasks/README.md: #242 precede #198",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-after-the-dependency-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "malformed table row in backlog.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-after-the-non-prerequisite-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "malformed table row in backlog.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "malformed table row in backlog.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "malformed table row in backlog.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-after-the-dependency-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in backlog.md: Plain text directly after the table.",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-backlog",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in backlog.md: Plain text directly after the table.",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-after-the-dependency-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-after-the-dependency-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in vision-reconciliation.md: Plain text directly after the table.",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-vision-reconciliation",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in vision-reconciliation.md: Plain text directly after the table.",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-after-the-dependency-table-in-README",
+      "rejected_by": "vision",
+      "finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-after-the-non-prerequisite-table-in-README",
+      "rejected_by": "vision",
+      "finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-after-the-dependency-table-in-README",
+      "rejected_by": "vision",
+      "finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-after-the-non-prerequisite-table-in-README",
+      "rejected_by": "vision",
+      "finding": "malformed table row in docs/tasks/README.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-after-the-dependency-table-in-README",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in docs/tasks/README.md: Plain text directly after the table.",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-after-the-non-prerequisite-table-in-README",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in docs/tasks/README.md: Plain text directly after the table.",
+      "before_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "after_sha256": {
+        "../../docs/tasks/README.md": "ff90a4bc71749c21c799d56281ce51fade6d3259240a167f69ffcca14a48851c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-in-the-child-table-in-backlog",
+      "rejected_by": "backlog",
+      "finding": "malformed table row in backlog.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-in-the-child-table-in-backlog",
+      "rejected_by": "backlog",
+      "finding": "malformed table row in backlog.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-in-the-child-table-in-backlog",
+      "rejected_by": "backlog",
+      "finding": "table row without pipes in backlog.md: Plain text directly after the table.",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-in-the-surface-table",
+      "rejected_by": "vision",
+      "finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-in-the-surface-table",
+      "rejected_by": "vision",
+      "finding": "malformed table row in vision-reconciliation.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-in-the-surface-table",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in vision-reconciliation.md: Plain text directly after the table.",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-in-the-decision-table",
+      "rejected_by": "vision",
+      "finding": "malformed table row in decisions.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-in-the-decision-table",
+      "rejected_by": "vision",
+      "finding": "malformed table row in decisions.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-in-the-decision-table",
+      "rejected_by": "vision",
+      "finding": "table row without pipes in decisions.md: Plain text directly after the table.",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "pipeless-continuation-row-in-the-parity-matrix",
+      "rejected_by": "parity",
+      "finding": "malformed table row in parity/management.md: #242 | #198 | lane 2",
+      "before_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "after_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "trailing-pipe-only-continuation-row-in-the-parity-matrix",
+      "rejected_by": "parity",
+      "finding": "malformed table row in parity/management.md: #242 | #198 | lane 2 |",
+      "before_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "after_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "plain-text-line-after-the-last-row-in-the-parity-matrix",
+      "rejected_by": "parity",
+      "finding": "table row without pipes in parity/management.md: Plain text directly after the table.",
+      "before_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "after_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-lane-row-with-an-order-word",
+      "rejected_by": "vision",
+      "finding": "queue lane text in backlog.md states an order outside the canonical dependency table: before",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-child-row-in-backlog",
+      "rejected_by": "backlog",
+      "finding": "duplicate B02 row in the ID / issue table of backlog.md",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "malformed-child-row-in-backlog",
+      "rejected_by": "backlog",
+      "finding": "table row with 2 cells under a 5-cell header in backlog.md: | [B09](backlog/B09.md) \u00b7 [#999](https://github.com/diegoami/goal2/iss",
+      "before_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "after_sha256": {
+        "backlog.md": "f19296abce0d29d2ed0852384fb24d5e49ef1ec5caeb6b3730be1030da4dce2c"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-decision-row",
+      "rejected_by": "vision",
+      "finding": "duplicate O02 row in the ID table of decisions.md",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "unparsed-decision-row",
+      "rejected_by": "vision",
+      "finding": "unparsed row in the ID table of decisions.md: | later | open | x | y |",
+      "before_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "after_sha256": {
+        "decisions.md": "c6c19b2da282e3c9bd8922fbc52d8a4c4532685b83cf4c0835d047de03acc35e"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-allocation-row",
+      "rejected_by": "parity",
+      "finding": "rendered matrix omitted/duplicated allocation",
+      "before_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "after_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "malformed-allocation-row",
+      "rejected_by": "parity",
+      "finding": "table row with 2 cells under a 5-cell header in parity/management.md: | CS99 | x |",
+      "before_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "after_sha256": {
+        "parity/management.md": "7c8259dec8fb7ef191c24451b7b64c4da6363375dae0f76382af8f964674364a"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "unparsed-allocation-row",
+      "rejected_by": "parity",
+      "finding": "unparsed allocation row in parity/match.md: | later | a | b | c | d |",
+      "before_sha256": {
+        "parity/match.md": "e91778d6947e3c8d31c1fc43357a46acc77f08def60da7262ecfb08b5caa6c03"
+      },
+      "after_sha256": {
+        "parity/match.md": "e91778d6947e3c8d31c1fc43357a46acc77f08def60da7262ecfb08b5caa6c03"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-screen-hierarchy-row",
+      "rejected_by": "journeys",
+      "finding": "screen hierarchy prose incomplete",
+      "before_sha256": {
+        "journeys.md": "e8dc747e4ff9cad44904c8149136b0510b77114744eb377610d7311fb7b94dc7"
+      },
+      "after_sha256": {
+        "journeys.md": "e8dc747e4ff9cad44904c8149136b0510b77114744eb377610d7311fb7b94dc7"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-surface-row",
+      "rejected_by": "vision",
+      "finding": "duplicate S02 row in the Surface table of vision-reconciliation.md",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "compact-extra-surface-row",
+      "rejected_by": "vision",
+      "finding": "reconciliation surface table incomplete",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-context-row",
+      "rejected_by": "vision",
+      "finding": "duplicate ST row in the Context table of vision-reconciliation.md",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-journey-row",
+      "rejected_by": "vision",
+      "finding": "duplicate J02 row in the Journey table of vision-reconciliation.md",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-layout-row",
+      "rejected_by": "vision",
+      "finding": "duplicate 02 row in the Candidate sheet table of vision-reconciliation.md",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    },
+    {
+      "control": "duplicate-compact-scope-gap-row",
+      "rejected_by": "vision",
+      "finding": "duplicate G03 row in the Obligation table of vision-reconciliation.md",
+      "before_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "after_sha256": {
+        "vision-reconciliation.md": "ce93f1a42247b004881e350f6a33584803bb7db75dbf4c93cc1ce1114a042bb0"
+      },
+      "exact_bytes_restored": true
+    }
+  ],
+  "all_restored": true,
+  "evidence": "[confirmed: reconcile-08] 173 saved-byte controls (143 of the first reconcile-08 receipt plus 30 continuation-row controls); every mutation restored byte for byte",
+  "content_head": "08696e5f11c0e9cd0b2629c2a2d11b716d4c07d2",
+  "helper_sha256": "1dc6dec510497331b133b8182ad7f3d04ad425b5386d29c236c11fd5b2e94d60",
+  "controls_module_sha256": "71e695f108aef31d5fbb1d9735ce8b2defe3dfbe2021231fe39937ed3435daf4"
+}
