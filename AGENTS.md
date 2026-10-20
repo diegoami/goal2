@@ -28,7 +28,9 @@ dispatch; it does not replace the shared evidence, provenance or merge rules.
    [.claude/skills/run-task/SKILL.md](.claude/skills/run-task/SKILL.md), using its
    Codex dispatch branch. Keep ignored RUN-NOTES.md, prove regressions, validate,
    commit/push, open a draft PR and mark it ready before asking for review.
-4. Ask the owner which OpenCode model reviews only after a concrete PR exists;
+4. [designed: owner, 2026-10-20] Review follows the task's risk tier (CLAUDE.md rule 7a): tier 0
+   has no external review, tier 1 one round, tier 2 per-PR until accepted.
+   For tiers 1-2, ask the owner which OpenCode model reviews only after a concrete PR exists;
    record the choice and run tools/harness/review.mjs. Codex is family `openai`,
    so OpenAI reviewers are ineligible. Do not choose or substitute a reviewer.
    [designed: T73] An owner-explicit direct Claude review instead follows

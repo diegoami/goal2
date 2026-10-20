@@ -29,7 +29,12 @@ Any one is enough; a blocking finding means rework, never approve.
 2. What this task protects can be got past: <name it: the guard, check, permission, invariant,
    rule value or file this task exists to protect>. A bypass you proved is blocking, even when it
    looks like an edge case. Never "follow-up hardening" or "outside the threat model" unless the
-   task says so; if it does, quote the line. (L47)
+   task says so; if it does, quote the line. (L47) [designed: owner, 2026-10-20] This item covers what the task protects, not its
+   helper tooling: crafted-input attacks on validators, receipts or test scripts, and adversarial
+   bypasses of a docs/planning PR's consistency checks, are follow-ups, not blocking (process.md §5
+   "Proportionate reviews"). A finding class that already returned once is narrowed by the main
+   session and filed, not reviewed a third time, unless it is a real defect in what the task
+   delivers, which stays blocking.
 3. Behaviour the task forbids, or behaviour nobody asked for, inside a file the task requires. (L44)
 4. <project-specific items: a constant with no evidence, a test that passes with the behaviour
    deleted, a status written into a document>

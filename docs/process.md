@@ -94,6 +94,10 @@ Scope, Done when, Hazards, Implementer, Reviewer, Merge after. Rules:
 ## 3. The loop
 
 `ready → implement → review → approved + exact-head local checks → squash merge → follow-up → unblock → report`.
+[designed: owner, 2026-10-20] The review step follows the task's risk tier (CLAUDE.md rule 7a): tier 0
+(docs, planning, task files, no-outcome fixes) has no external review, only the main session's checks
+and a later milestone review; tier 1 gets one external round, then follow-ups; tier 2 (engine,
+fidelity, save/timing, guards, permissions) keeps per-PR review until accepted.
 [designed: owner, 2026-10-18] Rework sends the full review back to the same branch.
 Once selected, keep the same reviewer and continue meaningful follow-ups until accepted,
 without repeated retry permission or an automatic round-count stop. Read complete results,
@@ -111,8 +115,8 @@ remove only the remote branch.
 verification on a fresh runner. Before merging, the main session runs
 `python3 tools/check_premerge.py --expected-head <reviewed-sha>` in the clean
 implementation checkout and records its successful SHA on the PR. This command
-preserves the former workflow checks; task-specific Done-when checks and the
-independent approving review remain mandatory. A missing or billing-blocked
+preserves the former workflow checks; task-specific Done-when checks and, for tiers 1-2
+(CLAUDE.md rule 7a), the independent approving review remain mandatory. A missing or billing-blocked
 Actions run does not block a locally validated merge. An optional Actions run
 that exposes a real defect must be investigated; its optional trigger does not
 permit ignoring a known failing check. No hosted check replaces exact-head local
@@ -244,6 +248,28 @@ showed): a theoretical bypass is blocking only if it makes a claim false as word
 unproven. Accept what is about 80-90% likely, worded with its confidence and what remains
 possible; narrow a claim's wording rather than add runs or rounds, and file stronger evidence as
 a follow-up.
+
+[designed: owner, 2026-10-20] Proportionate reviews (the owner, 2026-10-20, after #253/PR #271 took four rounds over its own
+planning-doc checker while its content was accepted every round):
+1. **Review the task, not its tooling.** Blocking findings concern the task's Done-when and the one
+   claim its Scope protects. Crafted-input attacks on helper scripts, validators, receipts or test
+   tooling are out of scope unless the task itself delivers that tool as a protection (a guard, a
+   permission, an engine seam).
+2. **Docs and planning PRs: content first.** The reviewer judges the content. Their helper checks
+   are consistency checks for honest edits; an adversarial bypass of one is never blocking.
+3. **Same-class cap.** When the same class of finding returns in a second round, the main session
+   narrows the claim and files a follow-up issue instead of a third round on that class. Only a
+   real defect in what the task delivers keeps blocking.
+4. **Severity bar.** Blocking means a real user or implementer would hit it through normal use or
+   honest editing. A problem that needs deliberately crafted input is a follow-up, unless defeating
+   crafted input is the task's own protected claim.
+5. **Modest claims.** Implementers do not write guarantees their checks cannot back; a smaller
+   claim beats a bigger checker.
+6. **Reviews are posted on the PR.** `review.mjs` posts its own runs. A review run outside it (for
+   example in the reviewer's own cloud session) ends by posting the complete review as one PR
+   comment (`gh api repos/<owner>/<repo>/issues/<pr>/comments -X POST -F body=@<file>` where gh's
+   GraphQL commands are unavailable), exactly once, changing no labels; the main session then
+   reads it and applies the label it supports.
 
 Before merging an approval that carries non-blocking findings, the main session reads them: a
 proven way past what the task protects is rework whatever the reviewer rated it; it says so on the

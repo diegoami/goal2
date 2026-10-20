@@ -39,7 +39,7 @@ c6ffaa08eb490d11e8f208b7f8ec7a1e291d55c3cee01e58aa84466fe1983f89  docs/jev/block
 46c4f6e3ca23871e59c25366e8acf9818e43113546f0cd107571ae110f6c10cb  docs/jev/breaks-play.md
 47cbba0d641c4cd6c4775627c160615018088d4f4ac09f670cf86395196ad158  docs/lessons.md
 87c5a7954b98d6b283f4e45511f57c84cf399ee7219eabde8f9845bb6e9ba0d7  docs/model-trials.md
-cd45ffdb24c319d0e614cf6c0c99a69042e71bcfb4e742578ca8f000a2ce5e48  docs/review-brief.md
+86686b4def5a599da50450efb51caba2e8b46e33af08096df745c5247bfa421d  docs/review-brief.md
 5f342c55adb68402a36fbfe811596a6906637ebf3e4cf92e133d316611c8f95d  docs/running-notes.md
 807384dd2ad76c5d401785458a2b68c79e22946d040bc8e39566cc05e6de77f1  harness.json
 4867325747c19a6f7beee6b8f1a3be22575a6396fc89a915a5ee8ed88ffab4cd  tools/check_links.py
@@ -62,7 +62,7 @@ c4abc459b7720a55a357371f38eb6fbda90ecf7aa40632f79238366f3939fb23  tools/harness/
 4406fa454bd0d403e85230c2d3f08e3bfddd0c53f44731b23dbdf5c50bc9a92f  tools/harness/post-review.mjs
 99aa8048f96ae911319846b07d0d7b43056c1f32ce7d19fa2166e853502bea04  tools/harness/review.mjs
 d89401578e18253ebfcb82494fbaba1f3825a02533fbd56dfabe0f11b7f41206  tools/harness/switch-model.mjs
-eb39991040695f70a241d081bbbe237cb005fa5124f89f3a786cb7524d3cb3e8  AGENTS.md
+c8d22730d784513e3e8df58a3b2bdb59ec264413f616ce9ec76155f81a94b150  AGENTS.md
 b7390d1140ede579fab9cfbf5c41d4a0ec67d53ed4b80ef8d1b5b420aeaa69da  tests/harness_clients.test.mjs
 local tools/harness/lib/opencode-protocol.mjs  (T72a explicit protocol contract and offline validation)
 df08f13157d56b6c85e81e6b927ed5c7535f38ba22aafa913281b644dd659838  tools/harness/lib/opencode-protocol.mjs
@@ -128,7 +128,7 @@ local tools/harness/probe-opencode-guard.mjs  (T72 native shell operand compatib
 
 6a64d92f425168e55fae916db56d40cb69e9ae07a0729054c27359cad48d1535  docs/environment.md
 
-47f6c62a9f3f51909f249a003baa9a9ff800d201f8f4f0f8efa90684858cff82  docs/process.md
+00eda032b7aa1d1b44d83ff8218f6d724c380feadb58842f54c2bedf526c2d37  docs/process.md
 
 5446dcc17f2b70e1988ad315af538c31ec7f5cbcb7b94bafab008682f1c853fe  tools/harness/check-opencode-guard.mjs
 
