@@ -7,9 +7,11 @@ from unittest.mock import patch
 from goal2.desktop.model import DesktopModel
 from goal2.game.campaign_schedule import start_opening_campaign
 from goal2.game.session_save import encode
+from goal2.tests import requires
 
 ROOT=Path(__file__).resolve().parents[2]
 
+@requires.need(**requires.HALFTIME)
 class DesktopModelCases(unittest.TestCase):
     def setUp(self):
         self.folder=tempfile.TemporaryDirectory();self.addCleanup(self.folder.cleanup)

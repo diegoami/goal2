@@ -8,10 +8,12 @@ from unittest.mock import patch
 
 from goal2.web.server import WebSession, StalePlaySubmission
 from goal2.game.session_save import encode, decode
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
+@requires.need(**requires.HALFTIME)
 class CampaignFriendlies(unittest.TestCase):
     def setUp(self):
         self.session = WebSession.load(ROOT / ".cache/e010-r0008-halftime.sav", ROOT / ".cache/GOAL.DAT")

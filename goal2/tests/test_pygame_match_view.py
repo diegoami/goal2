@@ -13,6 +13,7 @@ from unittest.mock import patch
 from goal2.desktop.match_view import Display, raw_rating, completion
 from goal2.desktop.watched import WatchedController
 from goal2.desktop.jobs import QuickJobs
+from goal2.tests import requires
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -27,6 +28,7 @@ def pump(predicate, *, app=None, timeout=120):
 
 
 def model(path):
+    requires.require(**requires.HALFTIME)
     from goal2.desktop.model import DesktopModel
     return DesktopModel.open(ROOT/'.cache/e010-r0008-halftime.sav',ROOT/'.cache/GOAL.DAT',path,country=4)
 
@@ -53,6 +55,7 @@ class PresentationTests(unittest.TestCase):
         self.assertIn('Denmark — Raw rating',d.lines());self.assertIn('Man of the match: A',d.lines())
         with self.assertRaises(ValueError):d.accept(['owned',4,'complete',result])
 
+    @requires.need(modules=("pygame",))
     def test_real_sdl_surface_and_quit_event(self):
         import pygame
         pygame.init()
@@ -70,6 +73,7 @@ class PresentationTests(unittest.TestCase):
             self.assertEqual(states,[(14,False,True),(10**9,True,True)])
         finally:pygame.quit()
 
+    @requires.need(modules=("pygame",))
     def test_real_framebuffer_matches_original_text_projection(self):
         import pygame
         from goal2.desktop.pygame_viewer import render
@@ -116,6 +120,7 @@ class PresentationTests(unittest.TestCase):
             self.assertEqual(position(live,7,False,True,False),(7,False,True))
         finally:pygame.quit()
 
+    @requires.need(modules=("PySide6", "pygame"))
     def test_qt_heartbeat_blocked_tail_and_actual_viewer_quit(self):
         from PySide6.QtCore import QTimer
         from PySide6.QtWidgets import QApplication
@@ -177,6 +182,7 @@ sys.exit(pygame_viewer.main())
                 self.assertIsNone(c.process)
             finally:c.close()
 
+    @requires.need(modules=("pygame",))
     def test_real_viewer_cancel_duplicate_and_failed_start_preserve_save(self):
         from goal2.tests.test_watched_jobs import CONTROLLED
         with tempfile.TemporaryDirectory() as folder:
@@ -213,6 +219,7 @@ sys.exit(pygame_viewer.main())
                 self.assertIsNone(c.process);self.assertFalse(c.busy);self.assertEqual(m.state,before)
             finally:c.close()
 
+    @requires.need(modules=("pygame",))
     def test_partial_startup_allocation_cleanup_and_retry_preserve_save(self):
         from goal2.tests.test_watched_jobs import CONTROLLED
         original_open=Path.open
@@ -297,6 +304,8 @@ sys.exit(pygame_viewer.main())
 
 
 class OriginalQtAcceptance(unittest.TestCase):
+    @requires.need(modules=("PySide6", "pygame"))
+    @requires.need(slow=True)  # [designed: #275] about 124 s alone on 32 CPUs
     def test_original_qt_save_resume_repeat(self):
         import runpy
         # [designed: #234] run_path does not add the helper's sibling import directory.

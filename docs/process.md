@@ -33,7 +33,13 @@ one, `git pull` and take the next free number.
    Rework goes back to the same branch; non-blocking findings become one `T<nn> follow-up` issue.
 4. **Checks**: every Done-when line on the PR head, and
    `python3 tools/check_premerge.py --expected-head <sha>` in a clean checkout at that head
-   (`--tests` adds the game test modules; opt-in until #275 makes them skip cleanly).
+   (it runs every game test module; a test whose optional dependency, original-game file or
+   goal2-archaeology checkout is absent skips with its reason, `goal2/tests/requires.py`).
+   [designed: owner, 2026-10-20] The slow tests (full matches under the emulator) run when it
+   counts: the gate runs them by itself when the commit changes what they guard since
+   `origin/main` (the engine, watched and competitive matches, saves, the match view, the
+   dependencies: `SLOW_PATHS` in the script), and always with `--slow`, which every milestone
+   candidate uses. `--fast` never runs them; `--no-tests` leaves the game tests out.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
    `git switch main && git pull`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <reviewed-sha>`, then

@@ -9,7 +9,6 @@ from a hard-coded mirror). [confirmed: E010-r0001's outcome is the same on every
 """
 import hashlib
 import json
-import os
 import shutil
 import subprocess
 import unittest
@@ -18,12 +17,13 @@ import zlib
 from pathlib import Path
 
 from goal2 import cli
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 SAV = CACHE / "e010-r0001-halftime.sav"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent / "goal2-archaeology")))
+ARCHAEOLOGY = requires.archaeology()
 RECORD = ARCHAEOLOGY / "runs" / "E010" / "E010-r0001.json"
 RELEASE = "E010"
 REPO = "diegoami/goal2-archaeology"

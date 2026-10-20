@@ -9,7 +9,6 @@ the test fetches on demand and skips with the reason when the fetch fails.
 array is the fidelity oracle (release E006 of goal2-archaeology).]
 """
 import hashlib
-import os
 import subprocess
 import sys
 import unittest
@@ -19,13 +18,13 @@ from pathlib import Path
 
 from goal2.data import goaldat
 from goal2.game import new_game
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 DAT = CACHE / "GOAL.DAT"
 SAV = CACHE / "e006-r0001-main.sav"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent / "goal2-archaeology")))
 RELEASE = "E006"
 REPO = "diegoami/goal2-archaeology"
 
@@ -367,6 +366,7 @@ class LCGDrawOrderRegression(unittest.TestCase):
 class DW3Example(unittest.TestCase):
     """[designed] The DW3 example: a one-liner that prints a player's bytes."""
 
+    @requires.need(files=("GOAL.DAT",))
     def test_dw3_example_runs(self):
         # DW3: `python3 -c "from goal2.game import new_game; ..."` must work.
         # This test runs the same Python and asserts the output is non-empty.

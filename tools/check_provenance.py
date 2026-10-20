@@ -34,7 +34,8 @@ def _archaeology() -> Path:
     """Resolve the goal2-archaeology checkout path.
 
     Order: `$GOAL2_ARCHAEOLOGY`, the sibling of the main checkout (when run from there),
-    the grandparent of a worktree under `<repo>-work/<name>/`, or the path's parent.
+    the grandparent of a worktree under `<repo>-work/<name>/`, the clone tools/cloud_setup.sh
+    makes in `.cache/goal2-archaeology`, or the path's parent.
     [designed: looks for the archaeology checkout by walking up from the worktree or main
     checkout. The user can override with `$GOAL2_ARCHAEOLOGY` for unusual layouts.]
     """
@@ -44,6 +45,7 @@ def _archaeology() -> Path:
     candidates = [
         DEFAULT_ARCHAEOLOGY,                              # sibling of the main checkout
         ROOT.parent.parent / "goal2-archaeology",         # grandparent of a worktree
+        ROOT / ".cache" / "goal2-archaeology",            # tools/cloud_setup.sh's clone (#275)
         ROOT.parent / "goal2-archaeology",                # last resort
     ]
     for c in candidates:

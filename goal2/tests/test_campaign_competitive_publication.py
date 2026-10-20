@@ -14,6 +14,7 @@ from goal2.game import watched_publication
 from goal2.game.watched_match import WatchedOutcome
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests.test_campaign_competitive_match import state,run,independent_runtime
+from goal2.tests import requires
 
 
 def publication(owner):
@@ -89,6 +90,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         s,raw,f=campaign(21,2);owner=Owner(s,raw);pub,job=self.begin(owner,f)
         from goal2.game.competitive_match import prepare_competitive
         root=Path(__file__).resolve().parents[2]
+        requires.require(generated={'watched-legacy-v3-9fb725ac914a/standalone.g2save': 'python3 tools/export_watched_legacy.py --source 9fb725ac914afabfdaa830198fc3a514c87c243f'})
         legacy,_=session_save.decode((root/'.cache/watched-legacy-v3-9fb725ac914a/standalone.g2save').read_bytes())
         original=legacy.last_match['original']
         self.assertEqual(original['kit'],'1');self.assertEqual(original['index'],f.index)
@@ -100,6 +102,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'requires kit2'):pub.complete(job.token,replay)
         self.assertEqual(owner.state,before)
 
+    @requires.need(slow=True)  # [designed: #275] about 79 s alone on 32 CPUs
     def test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals(self):
         from goal2.game.campaign_rounds import World,Scheduled as WorldFixture
         from goal2.tests.test_watched_adapter import direct_image

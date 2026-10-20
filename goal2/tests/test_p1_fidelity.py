@@ -13,7 +13,6 @@ field.
 """
 import hashlib
 import json
-import os
 import subprocess
 import sys
 import unittest
@@ -22,13 +21,14 @@ from pathlib import Path
 from goal2.data import goaldat
 from goal2.game import new_game, skills
 from goal2.engine.savestate import Savestate
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 DAT = CACHE / "GOAL.DAT"
 SAV = CACHE / "e006-r0001-main.sav"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent.parent / "goal2-archaeology")))
+ARCHAEOLOGY = requires.archaeology()
 E007_RUNS = ARCHAEOLOGY / "runs" / "E007"
 
 # [confirmed: T02] GOAL.DAT's expected sha256.
@@ -107,6 +107,7 @@ def _e006_or_skip() -> "Savestate":
 
 def _e007_or_skip() -> list[Path]:
     """[confirmed: E007] Return the 4 E007 run files (r0009..r0012), or skip."""
+    requires.require(archaeology=True)
     if not E007_RUNS.is_dir():
         raise unittest.SkipTest(f"E007 runs not found at {E007_RUNS}")
     paths = [E007_RUNS / f"E007-r{n:04d}.json" for n in (9, 10, 11, 12)]

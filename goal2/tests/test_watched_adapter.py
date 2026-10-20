@@ -13,6 +13,7 @@ from goal2.engine.original_match.check import EXPECTED_FAMILY
 from goal2.game.state import from_savestate
 from goal2.game.campaign import CampaignState, Fixture as CampaignFixture
 from goal2.game.watched_match import prepare_watched, run_watched_match, engine_year
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -61,6 +62,7 @@ def direct(state, fixture, year=None, seed=None, delay=None):
 class WatchedAdapter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        requires.require(**requires.WATCHED)
         cls.raw = reference_image(ROOT / '.cache')
 
     def state(self):
@@ -93,7 +95,7 @@ class WatchedAdapter(unittest.TestCase):
         return got
 
     def test_ten_strict_t62_inputs(self):
-        for seed, want in EXPECTED_FAMILY.items():
+        for seed, want in requires.cases(EXPECTED_FAMILY.items()):  # [designed: #275] all ten with GOAL2_SLOW=1
             with self.subTest(seed=hex(seed)):
                 outcome = self.compare(self.state(), Fixture(7, 19, 21), seed=seed, delay=0)
                 r = outcome.result
@@ -108,6 +110,7 @@ class WatchedAdapter(unittest.TestCase):
             c = type('Calendar', (), dict(start_year=start, cycle=cycle, stage=stage))()
             self.assertEqual(engine_year(c), word)
 
+    @requires.need(slow=True)  # [designed: #275] about 243 s alone on 32 CPUs
     def test_campaign_natural_reseed_and_source_fixture_identity(self):
         s = self.state()
         f = CampaignFixture('original:21',1,1,2,1,7,19)
@@ -135,6 +138,8 @@ class WatchedAdapter(unittest.TestCase):
         image.memory[p:p+2] = (7).to_bytes(2,'little'); s.mem = image.memory_component()
         self.compare(s,Fixture(7,19,22),year=7)
 
+    @requires.need(**requires.HALFTIME)
+    @requires.need(slow=True)  # [designed: #275] about 59 s alone on 32 CPUs
     def test_real_fresh_campaigns_transfer_next_free_count_and_context(self):
         from goal2.data.goaldat import load
         from goal2.game.campaign_schedule import start_opening_campaign
@@ -163,6 +168,7 @@ class WatchedAdapter(unittest.TestCase):
             with self.assertRaises(ValueError):prepare_watched(bad,template,fixture)
             self.assertEqual(bad,invalid_before)
 
+    @requires.need(slow=True)  # [designed: #275] about 60 s alone on 32 CPUs
     def test_changed_squad_tactics_captain_side_b_and_opaque_memory(self):
         s = self.state()
         s.starting_eleven[10] = s.managed_squad[15]

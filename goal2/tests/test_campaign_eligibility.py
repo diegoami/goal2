@@ -10,6 +10,7 @@ from goal2.engine.quick_engine import QuickMatch
 from goal2.engine.savestate import Savestate
 from goal2.game.state import to_savestate
 from goal2.web.server import WebSession
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -58,6 +59,7 @@ class EligibilityReferenceCases(unittest.TestCase):
         self.assertEqual(players, before)
 
 
+@requires.need(**requires.HALFTIME)
 class EligibilityContinuations(unittest.TestCase):
     def setUp(self):
         self.session = WebSession.load(ROOT / '.cache/e010-r0008-halftime.sav', ROOT / '.cache/GOAL.DAT')

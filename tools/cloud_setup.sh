@@ -100,4 +100,4 @@ export SDL_VIDEODRIVER=dummy
 export SDL_AUDIODRIVER=dummy
 ${arch:+export GOAL2_ARCHAEOLOGY="$arch"}
 EOF
-say "done: source .cache/cloud.env, then python3 tools/check_premerge.py --expected-head \$(git rev-parse HEAD) --tests"
+say "done: source .cache/cloud.env, then python3 tools/check_premerge.py --expected-head \$(git rev-parse HEAD)"

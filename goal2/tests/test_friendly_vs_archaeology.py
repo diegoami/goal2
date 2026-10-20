@@ -9,7 +9,6 @@ recorded outcome from the archaeology repo's `runs/E010/` directory.
 observations (full-time state). E010-r0001 is the primary record.
 """
 import json
-import os
 import subprocess
 import unittest
 from pathlib import Path
@@ -20,11 +19,12 @@ from goal2 import cli  # noqa: F401
 
 from goal2.engine.quick_engine import simulate
 from goal2.engine.savestate import Savestate
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent.parent / "goal2-archaeology")))
+ARCHAEOLOGY = requires.archaeology()
 E010_RUNS = ARCHAEOLOGY / "runs" / "E010"
 
 
@@ -128,6 +128,7 @@ class FriendlyVsArchaeology(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        requires.require(archaeology=True)
         cls.records = []
         # [designed] Distinguish "record absent" (skip) from "parse
         # error" (fail). A missing record is normal on a clean

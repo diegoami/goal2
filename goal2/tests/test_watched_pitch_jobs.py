@@ -15,6 +15,7 @@ from goal2.game.watched_pitch import (snapshot, validate, write_frame, MAX_FRAME
     MAX_FRAME_PACKET, MAX_FRAMES, FRAME_READ_BUDGET, FRAME_POLL_BUDGET)
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests import test_watched_adapter as adapter
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -250,6 +251,7 @@ class OriginalPitchJobsTests(unittest.TestCase):
 
     def state(self):return adapter.WatchedAdapter.state(self)
 
+    @requires.need(slow=True)  # [designed: #275] about 68 s alone on 32 CPUs
     def test_actual_finished_cancel_and_close_preserve_prior_save(self):
         from goal2.desktop.model import DesktopModel
         from goal2.game.session_save import save
@@ -273,6 +275,7 @@ class OriginalPitchJobsTests(unittest.TestCase):
                     save(target,owner.state,self.raw);self.assertEqual(target.read_bytes(),prior)
                 finally:jobs.close()
 
+    @requires.need(slow=True)  # [designed: #275] about 178 s alone on 32 CPUs
     def test_actual_original_parity_movement_halves_pending_and_once_only(self):
         from PySide6.QtCore import QCoreApplication, QTimer
         app=QCoreApplication.instance() or QCoreApplication([])

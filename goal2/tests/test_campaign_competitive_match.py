@@ -14,6 +14,7 @@ from goal2.engine.original_match.assets import reference_image
 from goal2.game.state import from_savestate
 from goal2.game import watched_match
 from goal2.tests.test_watched_adapter import direct_image
+from goal2.tests import requires
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -26,6 +27,7 @@ def api():
 
 
 def state(managed=7):
+    requires.require(**requires.WATCHED)
     raw=reference_image(ROOT/'.cache');s=from_savestate(raw)
     s.managed_country=managed;s.managed_squad=Image(s.mem).squad(managed)
     s.starting_eleven=s.managed_squad[:11];s.captain=0  # [confirmed: E034] Original captain pick, no override.
@@ -42,7 +44,8 @@ def run(s,raw,f,**options):
 def independent_runtime():
     """[designed] Load an isolated exact export, never a global original_match alias."""
     sys.path.insert(0,str(ROOT/'tools'))
-    from watched_evidence import stage
+    from watched_evidence import stage,IMAGES
+    requires.require(files=tuple(IMAGES),archaeology=True)
     folder=stage();package=folder/'runtime/original_match'
     name='t51_accepted_original_match'
     spec=importlib.util.spec_from_file_location(name,package/'__init__.py',submodule_search_locations=[str(package)])
@@ -68,6 +71,7 @@ class CompetitiveAdapterTests(unittest.TestCase):
             with self.subTest(fixture=bad),self.assertRaises(ValueError):fn(s,raw,bad)
         self.assertEqual(s,before)
 
+    @requires.need(slow=True)  # [designed: #275] about 303 s alone on 32 CPUs
     def test_owner_budget_cases_match_independent_execution_and_guest_stamps(self):
         independent,probe=independent_runtime()
         report=ROOT/'.cache'/('T51-adapter-cases-'+str(time.time_ns())+'.jsonl')

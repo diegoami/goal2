@@ -150,8 +150,9 @@ class SavedByteControls(unittest.TestCase):
         # cache prefix plus -B excludes existing timestamp/size-based bytecode.
         path = ROOT / 'tools/probe_watched_pitch.py'
         saved = path.read_bytes()
-        folder = EVIDENCE / ('controls-' + str(time.time_ns()))
-        folder.mkdir()
+        # [designed: #275] Receipts go to the git-ignored cache, never into tracked docs/evidence.
+        folder = ROOT / '.cache/test-receipts/T81' / ('controls-' + str(time.time_ns()))
+        folder.mkdir(parents=True)
         mutations = [
             ('sentinel-visibility', 'return ((x & 255) | ((y & 255) << 8)) == sentinel', 'return False',
              'ProjectionTests.test_predicates_are_not_lifecycle_clamps', 'original sentinel visibility'),

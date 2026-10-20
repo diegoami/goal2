@@ -10,7 +10,6 @@ half-time savestate; the engine runs the second half from it.
 """
 import hashlib
 import json
-import os
 import subprocess
 import sys
 import unittest
@@ -29,12 +28,13 @@ from goal2.engine.savestate import Savestate
 from goal2.game.quick_match import run_full_match
 from goal2.ui.input import Key
 from goal2.ui.squad import run_squad_select
+from goal2.tests import requires
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 SAV = CACHE / "e010-r0001-halftime.sav"
-ARCHAEOLOGY = Path(os.environ.get("GOAL2_ARCHAEOLOGY", str(ROOT.parent.parent / "goal2-archaeology")))
+ARCHAEOLOGY = requires.archaeology()
 E010_RUNS = ARCHAEOLOGY / "runs" / "E010"
 
 # [confirmed: E010 release manifest] E010-r0001's asset sha256[:16].
@@ -100,6 +100,7 @@ class EngineOnAdaptedState(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        requires.require(archaeology=True)
         cls.records = []
         for n in range(1, 11):
             record_path = E010_RUNS / f"E010-r{n:04d}.json"

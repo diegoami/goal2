@@ -20,6 +20,7 @@ from goal2.game.watched_jobs import _write
 from goal2.tests.test_campaign_competitive_publication import campaign
 from goal2.tests.test_campaign_competitive_match import run
 from goal2.data.goaldat import load
+from goal2.tests import requires
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -73,6 +74,8 @@ sys.exit(5 if mode=='nonzero' else 0)
 class CompetitiveJobsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        requires.require(**requires.WATCHED)
+        requires.require(files=("GOAL.DAT",))
         cls.data = load((ROOT/'.cache/GOAL.DAT').read_bytes())
         cls.fixture_dir = tempfile.TemporaryDirectory(prefix='goal2-T80-fixtures-')
         cls.fixture_file = Path(cls.fixture_dir.name)/'knockout.json-journal'
@@ -114,6 +117,7 @@ class CompetitiveJobsTests(unittest.TestCase):
         self.assertEqual(self.owner.state,self.before,'failed/pending job published active state')
         self.assertEqual(self.owner.save_path.read_bytes(),self.saved,'failed/pending job changed prior save')
 
+    @requires.need(slow=True)  # [designed: #275] about 90 s alone on 32 CPUs
     def test_real_kind2_and_tied_knockout_match_direct_result_events_memory_seeds(self):
         for kind,index in ((2,21),(200,42)):
             with self.subTest(kind=kind):

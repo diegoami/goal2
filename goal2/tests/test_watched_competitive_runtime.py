@@ -8,11 +8,13 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
-from watched_evidence import SOURCE, stage, verify_vendor
+from watched_evidence import IMAGES, SOURCE, stage, verify_vendor
 from run_watched_scenario import selected_source
 import goal2.engine.original_match as consumer
 from goal2.engine.original_match.assets import reference_image
+from goal2.tests import requires
 
+requires.require(modules=("unicorn",), files=tuple(IMAGES), archaeology=True)
 FOLDER = stage()
 spec = importlib.util.spec_from_file_location("accepted_competitive_tests", FOLDER / "tests/test_original_match.py")
 accepted = importlib.util.module_from_spec(spec)
@@ -27,6 +29,9 @@ def consumer_modules():
 
 
 class CompetitiveTests(accepted.CompetitiveTests):
+    # [designed: #275] The vendored test stays as accepted; only when it runs is ours: about 63 s
+    # alone on 32 CPUs, so it runs with the slow tests (GOAL2_SLOW=1).
+    test_penalties_after_extra_time = requires.need(slow=True)(accepted.CompetitiveTests.test_penalties_after_extra_time)
     @classmethod
     def setUpClass(cls):
         cls.image = consumer.Image.from_savestate(reference_image(ROOT / ".cache"))
