@@ -149,29 +149,25 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-BLOCK_START = re.compile(r"#{1,6}(\s|$)|>|```|~~~|<|[-*+]\s|\d{1,9}[.)]\s|(-\s*){3,}$|(\*\s*){3,}$|(_\s*){3,}$")
-
-
 def table_blocks(lines):
-    """[designed: #253 rework R4] GFM table extent: a table starts at a pipe-led line and takes EVERY following line, pipe or not, until a blank
-    line, another block start (heading, quote, fence, HTML, list item, rule) or the end of the text: (index of its first line, its lines)."""
+    """[designed: #253 rework R4/R6] This repository's rule, stricter than GFM (whose rendering is not modelled): a table starts at a pipe-led
+    line and takes every following line up to the first blank line or the end of the text, whatever it contains: (first index, its lines)."""
     blocks, current = [], None
     for i, line in enumerate(lines):
-        s = line.strip()
-        if current is not None and (not s or BLOCK_START.match(s)):
+        if not line.strip():
             current = None
-        if current is not None:
+        elif current is not None:
             current[1].append(line)
-        elif s.startswith("|"):
+        elif line.lstrip().startswith("|"):
             current = (i, [line])
             blocks.append(current)
     return blocks
 
 
 def table_cells(line, where):
-    """Cells of one table row, whitespace-insensitive; a row must begin and end with a pipe, as every row of these documents does."""
+    """Cells of one row, whitespace-insensitive. Every line of a table must be a row that begins and ends with a pipe."""
     s = line.strip()
-    need("|" in s, f"table row without pipes in {where}: {s[:70]}")
+    need("|" in s, f"table must end with a blank line in {where}: {s[:70]}")
     need(len(s) > 1 and s.startswith("|") and s.endswith("|"), f"malformed table row in {where}: {s[:70]}")
     return [c.strip() for c in s[1:-1].split("|")]
 
@@ -684,6 +680,9 @@ class Package:
         referenced = {r["issue"]: r for r in receipt["referenced"]}
         need(270 in referenced and referenced[270]["mirrored"] is False, "#270 must be referenced, not mirrored or pre-split here")
 
+    def table_controls_pin(self):
+        return f"{len(load_table_controls(self)[0])} table controls match the pin"
+
     def decision_rows(self):
         rows = keyed_rows(self.read("decisions.md"), "ID", r"(O\d\d(?: / G\d\d)?)", "decisions.md", headers=("ID", "Decision / gap"))
         return {key: " | ".join(cells) for key, cells in rows.items()}
@@ -1023,33 +1022,6 @@ def negative_controls(package):
         ("surface-owner-coordinated-wrong", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["surface_screens"]["S06"].update(owner=d["surface_screens"]["S06"]["owner"].replace("#261", "#198"))),
           "vision-reconciliation.md": lambda t: t.replace("#261 composes the route and adds the screen to its contract; complete profile", "#198 composes the route and adds the screen to its contract; complete profile")}),
         ("child-lane-prose-drift", "backlog", {"backlog.md": lambda t: t.replace("[#260](https://github.com/diegoami/goal2/issues/260) | 3 |", "[#260](https://github.com/diegoami/goal2/issues/260) | 2 |")}),
-        # [designed: #253 rework R3] directed dependency pairs: the reviewer's four attacks and the class around them
-        ("foundation-arrows-reversed", "vision", {"backlog.md": lambda t: t.replace(
-            "[#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved), [#242](https://github.com/diegoami/goal2/issues/242) and [#243](https://github.com/diegoami/goal2/issues/243)",
-            "[#198](https://github.com/diegoami/goal2/issues/198) (PR #240; #254/#255 resolved) ← [#242](https://github.com/diegoami/goal2/issues/242) ← [#243](https://github.com/diegoami/goal2/issues/243)")}),
-        ("history-dependency-inverted-prose", "vision", {"backlog.md": lambda t: t.replace("retained-history browsing. |", "retained-history browsing must precede the base match journey. |")}),
-        ("history-inverted-and-followon-removed-coordinated", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][2].pop("follow_on")),
-          "backlog.md": lambda t: drop_row(t.replace("retained-history browsing. |", "retained-history browsing must precede the base match journey. |"), 262, 251, "lane 3")}),
-        ("followon-removed-in-registry-only", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][2].pop("follow_on"))}),
-        ("followon-removed-in-prose-only", "vision", {"backlog.md": lambda t: drop_row(t, 262, 251, "lane 3")}),
-        ("lane-objects-swapped-in-registry-array", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"].insert(1, d["queue"]["lanes"].pop(2)))}),
-        ("canonical-row-reversed-in-backlog", "vision", {"backlog.md": lambda t: swap_row(t, 110, 112, "lane 4")}),
-        ("canonical-row-reversed-in-reconciliation", "vision", {"vision-reconciliation.md": lambda t: swap_row(t, 260, 261, "lane 3")}),
-        ("canonical-row-reversed-in-task-index", "vision", {"../../docs/tasks/README.md": lambda t: swap_row(t, 198, 243, "lane 2")}),
-        ("canonical-row-missing-in-reconciliation", "vision", {"vision-reconciliation.md": lambda t: drop_row(t, 198, 242, "lane 2")}),
-        ("retirement-constraint-row-dropped", "vision", {"../../docs/tasks/README.md": lambda t: drop_row(t, 155, 117, "lane 4")}),
-        ("non-prerequisite-row-dropped", "vision", {"../../docs/tasks/README.md": lambda t: t.replace("| #259 | #198 | lane 2 |\n", "", 1)}),
-        ("career-order-reversed-everywhere", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][3]["issues"].reverse()),
-          "backlog.md": reverse_lane4_rows, "vision-reconciliation.md": reverse_lane4_rows, "../../docs/tasks/README.md": reverse_lane4_rows}),
-        ("registry-dependency-reversed", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["dependencies"][0].update(before=242, after=198))}),
-        ("order-word-contradicts-outside-lane-rows", "vision", {"backlog.md": lambda t: t.replace("they are not schedules.", "they are not schedules. #251 must precede #262.", 1)}),
-        ("backward-order-word-contradicts-outside-lane-rows", "vision", {"vision-reconciliation.md": lambda t: t.replace("This reconciliation records a plan.", "This reconciliation records a plan; #261 follows #262.", 1)}),
-        ("reverse-arrow-in-reconciliation", "vision", {"vision-reconciliation.md": lambda t: t.replace("## Scope gaps and their owners", "#262 <- #261\n\n## Scope gaps and their owners", 1)}),
-        ("order-word-reintroduced-in-lane-row", "vision", {"backlog.md": lambda t: t.replace("(retirement and replacement safeguard)", "(retirement and replacement safeguard, before #117)", 1)}),
-        ("child-dependencies-diverge-from-live-body", "backlog", {"backlog.json": lambda t: edit_json(t, lambda d: next(x for x in d if x["key"] == "B03").update(dependencies=next(y for y in d if y["key"] == "B03")["dependencies"] + " Also after #262."))}),
-        ("reconciliation-scope-gap-row-removed", "vision", {"vision-reconciliation.md": lambda t: "".join(x for x in t.splitlines(keepends=True) if not x.startswith("| G04 "))}),
-        ("foundation-order-reversed-in-registry", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][1]["issues"].insert(0, d["queue"]["lanes"][1]["issues"].pop(1)))}),
-        ("launch-lane-reordered-in-registry", "vision", {"package.json": lambda t: edit_json(t, lambda d: d["queue"]["lanes"][2]["issues"].insert(0, d["queue"]["lanes"][2]["issues"].pop(1)))}),
         ("layout-and-bounds-receipt-coordinated", "proposal", {"layouts/06-match-preparation.svg": lambda t: t + "\n",
           "evidence/layout-bounds-05.json": lambda t: edit_json(t, lambda d: next(x for x in d["layouts"] if x["svg"] == "06-match-preparation.svg").update(
               svg_sha256=sha((_PKG.path / "layouts/06-match-preparation.svg").read_bytes())))}),
@@ -1110,34 +1082,20 @@ def negative_controls(package):
         "journey-surfaces-replaced": "journey surfaces or edges differ from the independent oracle: J07",
         "surface-owner-coordinated-wrong": "undrawn/partial surface names the wrong bounded owner: S06",
         "child-lane-prose-drift": "backlog.md child lane/priority differs from the approved queue: B02",
-        "foundation-arrows-reversed": "reverse arrow between queue issues in backlog.md",
-        "history-dependency-inverted-prose": "queue lane text in backlog.md states an order outside the canonical dependency table: precede",
-        "history-inverted-and-followon-removed-coordinated": "queue follow-on differs from the approved queue: lane 3",
-        "followon-removed-in-registry-only": "queue follow-on differs from the approved queue: lane 3",
-        "followon-removed-in-prose-only": "dependency table in backlog.md differs from the approved dependencies",
-        "lane-objects-swapped-in-registry-array": "queue lanes are not listed in lane order",
-        "canonical-row-reversed-in-backlog": "dependency table in backlog.md differs from the approved dependencies",
-        "canonical-row-reversed-in-reconciliation": "dependency table in vision-reconciliation.md differs from the approved dependencies",
-        "canonical-row-reversed-in-task-index": "dependency table in docs/tasks/README.md differs from the approved dependencies",
-        "canonical-row-missing-in-reconciliation": "dependency table in vision-reconciliation.md differs from the approved dependencies",
-        "retirement-constraint-row-dropped": "dependency table in docs/tasks/README.md differs from the approved dependencies",
-        "non-prerequisite-row-dropped": "non-prerequisite table in docs/tasks/README.md differs from the approved pairs",
-        "career-order-reversed-everywhere": "queue lane order differs from the approved order: lane 4",
-        "registry-dependency-reversed": "queue dependencies in the registry differ from the approved pairs",
-        "order-word-contradicts-outside-lane-rows": "order statement contradicts the approved dependencies in backlog.md",
-        "backward-order-word-contradicts-outside-lane-rows": "order statement contradicts the approved dependencies in vision-reconciliation.md",
-        "reverse-arrow-in-reconciliation": "reverse arrow between queue issues in vision-reconciliation.md",
-        "order-word-reintroduced-in-lane-row": "queue lane text in backlog.md states an order outside the canonical dependency table: before",
-        "child-dependencies-diverge-from-live-body": "backlog.json dependencies differ from the pinned live body: B03",
-        "reconciliation-scope-gap-row-removed": "reconciliation lacks the unowned scope-gap row: G04",
-        "foundation-order-reversed-in-registry": "queue lane order differs from the approved order: lane 2",
-        "launch-lane-reordered-in-registry": "queue lane order differs from the approved order: lane 3",
         "layout-and-bounds-receipt-coordinated": "layout bounds receipt differs from the pinned reviewed receipt",
         "runtime-audit-source-and-report-coordinated": "observation report differs from the pinned reviewed report: evidence/runtime-06/report.json",
         "contract-and-receipt-coordinated-edit": "contract and receipt differ from the pinned live amended body: B03"}
     extra_cases, extra_findings = load_table_controls(package)
     cases += extra_cases
     intended_findings.update(extra_findings)
+    pin = "table_controls.py"
+    pinned = (("table-controls-module-emptied", lambda s: "def table_controls():\n    return [], {}\n", "missing control IDs"),
+              ("table-controls-one-control-removed", lambda s: s.replace('add("duplicate-compact-scope-gap-row", "vision",', '(lambda *a: None)("duplicate-compact-scope-gap-row", "vision",'),
+               "missing control IDs: ['duplicate-compact-scope-gap-row']"),
+              ("table-controls-edited-with-the-pin-unchanged", lambda s: s.replace("table must end with a blank line in {}", "x in {}", 1), "its digest differs from the pin"))
+    for name, change, reason in pinned:
+        cases.append((name, "table_controls_pin", {pin: change}))
+        intended_findings[name] = reason
     receipts = []
     for name, check, edits in cases:
         saved = {f: (package.path / f).read_bytes() for f in edits}
@@ -1163,16 +1121,56 @@ def negative_controls(package):
     return {"positive_checks": initial, "negative_controls": receipts, "all_restored": True}
 
 
+TABLE_CONTROLS_SHA256 = "f1e3817d9abc5fb466eb49f28de8e4d205d3bcb22913459e392bc3b9c64e3b5a"
+
+
+def expected_table_control_ids():
+    """[designed: #253 rework R7] The exact identities the pinned module must define, so removing a control fails by name."""
+    files = ("backlog", "vision-reconciliation", "README")
+    base = ("compact-extra-dependency-row", "compact-extra-non-prerequisite-row", "fully-compact-extra-dependency-row", "dependency-row-without-closing-pipe",
+            "dependency-row-with-two-cells", "non-prerequisite-row-with-a-word-instead-of-an-issue", "compact-header-copy-of-the-dependency-table",
+            "issue-pair-table-with-another-header", "contradiction-clause-in-another-table", "forward-arrow-in-another-table", "contradiction-split-across-cells-in-another-table")
+    forms = ("pipeless-continuation-row", "trailing-pipe-only-continuation-row", "plain-text-line-after-the-last-row", "inline-html-led-row", "autolink-led-row",
+             "heading-line-directly-after-the-table")
+    ids = [f"{x}-in-{f}" for f in files for x in base]
+    ids += [f"{x}-after-the-{table}-table-in-{f}" for f in files for x in forms for table in ("dependency", "non-prerequisite")]
+    ids += [f"{x}-in-the-{place}" for place in ("child-table-in-backlog", "surface-table", "decision-table", "parity-matrix") for x in forms]
+    return ids + ["compact-lane-row-with-an-order-word", "duplicate-compact-child-row-in-backlog", "malformed-child-row-in-backlog", "duplicate-compact-decision-row",
+                  "unparsed-decision-row", "duplicate-compact-allocation-row", "malformed-allocation-row", "unparsed-allocation-row", "compact-extra-screen-hierarchy-row",
+                  "duplicate-compact-surface-row", "compact-extra-surface-row", "duplicate-compact-context-row", "duplicate-compact-journey-row",
+                  "duplicate-compact-layout-row", "duplicate-compact-scope-gap-row",
+                  "foundation-arrows-reversed", "history-dependency-inverted-prose",
+                  "history-inverted-and-followon-removed-coordinated", "followon-removed-in-registry-only",
+                  "followon-removed-in-prose-only", "lane-objects-swapped-in-registry-array",
+                  "canonical-row-reversed-in-backlog", "canonical-row-reversed-in-reconciliation",
+                  "canonical-row-reversed-in-task-index", "canonical-row-missing-in-reconciliation",
+                  "retirement-constraint-row-dropped", "non-prerequisite-row-dropped",
+                  "career-order-reversed-everywhere", "registry-dependency-reversed",
+                  "order-word-contradicts-outside-lane-rows", "backward-order-word-contradicts-outside-lane-rows",
+                  "reverse-arrow-in-reconciliation", "order-word-reintroduced-in-lane-row",
+                  "child-dependencies-diverge-from-live-body", "reconciliation-scope-gap-row-removed",
+                  "foundation-order-reversed-in-registry", "launch-lane-reordered-in-registry"]
+
+
 def load_table_controls(package):
-    """[designed: #253 rework R4] The table-parsing controls live in table_controls.py beside this file (kept apart so each file stays readable);
-    the checkout under test supplies it, so a frozen copy of this helper needs only the tree."""
-    import importlib.util
+    """[designed: #253 rework R7] table_controls.py comes from the tree under test, so this helper pins its SHA256 and its control IDs: any
+    other module, an emptied one or one with a control removed fails by name instead of shrinking the suite."""
     path = package.path / "table_controls.py"
     need(path.is_file(), "table_controls.py missing from the package")
-    spec = importlib.util.spec_from_file_location("table_controls", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module.table_controls()
+    data, problems, cases, findings = path.read_bytes(), [], [], {}
+    if sha(data) != TABLE_CONTROLS_SHA256:
+        problems.append("its digest differs from the pin held in validate.py")
+    try:
+        scope = {"__name__": "table_controls"}
+        exec(compile(data, str(path), "exec"), scope)
+        cases, findings = scope["table_controls"]()
+        ids, expected = sorted(c[0] for c in cases), sorted(expected_table_control_ids())
+        if ids != expected:
+            problems.append(f"missing control IDs: {sorted(set(expected) - set(ids))[:4]}; unexpected: {sorted(set(ids) - set(expected))[:4]}")
+    except Exception as e:
+        problems.append(f"it does not load: {type(e).__name__}")
+    need(not problems, "table_controls.py differs from the frozen pin: " + "; ".join(problems))
+    return cases, findings
 
 
 def regen_context_rows(text):
@@ -1180,23 +1178,6 @@ def regen_context_rows(text):
     reg = json.loads((_PKG.path / "package.json").read_text())
     rows = context_screen_rows(reg, _PKG.rows("parity/destinations.tsv"))
     return "".join((rows[m.group(1)] + "\n") if (m := re.match(r"^\| ([A-Z]{2}) \|", line)) and m.group(1) in rows else line for line in text.splitlines(keepends=True))
-
-
-def swap_row(text, before, after, source):
-    """Control helper: write a canonical dependency row in the reverse direction."""
-    old = f"| #{before} | #{after} | {source} |"
-    assert old in text, old
-    return text.replace(old, f"| #{after} | #{before} | {source} |", 1)
-
-
-def drop_row(text, before, after, source):
-    old = f"| #{before} | #{after} | {source} |\n"
-    assert old in text, old
-    return text.replace(old, "", 1)
-
-
-def reverse_lane4_rows(text):
-    return re.sub(r"^\| #(\d+) \| #(\d+) \| lane 4 \|$", lambda m: f"| #{m.group(2)} | #{m.group(1)} | lane 4 |", text, flags=re.M)
 
 
 def edit_json(text, change):
