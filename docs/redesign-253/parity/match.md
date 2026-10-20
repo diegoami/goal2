@@ -132,4 +132,3 @@
 | SV08 | Manager rename via F2 | [designed] S13 Game menu; S12 Summaries/Replays; contextual Help | [designed] B06 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | SV09 | Help offered by F1 | [designed] S13 Game menu; S12 Summaries/Replays; contextual Help | [designed] B03 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | SV10 | Print screen offered by F5 | [designed] S13 contextual Help: original F5 offer documented; no print action promised | [designed] B03 | [designed] Original printed offer and observed continuation only; actual print output unverified, no new printing capability assigned to B02. |
-

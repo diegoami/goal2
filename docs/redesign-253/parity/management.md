@@ -195,4 +195,3 @@
 | SD07 | Choose captain from XI | [designed] S04/S05/S08 | [designed] B03 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | SD08 | Computer captain selection hint/default | [designed] S04/S05/S08 | [designed] #250 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
 | SD09 | Formation updates after picks/swaps/roles | [designed] S04/S05/S08 | [designed] #248 | [designed] Within the named contract only; absent data or behavior is not granted by a destination. |
-

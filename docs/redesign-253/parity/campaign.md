@@ -120,4 +120,3 @@
 | NW06 | Pressure / SACK headlines without inferred dismissal | [designed] S14 News; pinned consequence S03; history S12 | [designed] UNOWNED:G03 | [designed] #249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling. |
 | NW07 | Elimination news and continued manager hub | [designed] S14 News; pinned consequence S03; history S12 | [designed] UNOWNED:G03 | [designed] #249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling. |
 | NW08 | Winners / stage transition / next calendar cycle | [designed] S14 News; pinned consequence S03; history S12 | [designed] UNOWNED:G03 | [designed] #249 audit/display when available; T50–T59 retain only their own accepted mechanics. T51a explicitly excludes route-level news/sack handling. |
-

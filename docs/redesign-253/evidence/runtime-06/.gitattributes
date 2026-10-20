@@ -1,0 +1,2 @@
+# [designed: #253] Captured terminal frames keep their exact bytes (hash-pinned by report.json); fixed-width padding is not a whitespace defect.
+terminal.txt -whitespace
