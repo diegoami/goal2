@@ -26,20 +26,20 @@
 <rect x="178" y="174" width="1244" height="185" fill="#000000" stroke="#ff5555"/>
 <rect x="191" y="173" width="308" height="28" fill="#000000"/>
 <text x="196" y="194" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#ff5555" xml:space="preserve">LOAD FAILED / HOLLAND</text>
-<text x="196" y="240" font-family="DejaVu Sans Mono" font-size="26" font-weight="400" fill="#eeeeee" xml:space="preserve">Selected save could not be read.</text>
-<text x="196" y="282" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Keep current career and prior good save.</text>
-<text x="196" y="328" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">Retry / Choose another / Cancel</text>
+<text x="196" y="240" font-family="DejaVu Sans Mono" font-size="26" font-weight="400" fill="#eeeeee" xml:space="preserve">Could not open Holland-before-Belgium.sav</text>
+<text x="196" y="282" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Your current career is still open.</text>
+<text x="196" y="328" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">[Retry] [Choose another save] [Cancel]</text>
 <rect x="178" y="385" width="1244" height="185" fill="#000000" stroke="#ff5555"/>
 <rect x="191" y="384" width="350" height="28" fill="#000000"/>
 <text x="196" y="405" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#ff5555" xml:space="preserve">STARTING WATCH / BELGIUM</text>
-<text x="196" y="451" font-family="DejaVu Sans Mono" font-size="26" font-weight="400" fill="#eeeeee" xml:space="preserve">Starting match... Team edits and save locked.</text>
-<text x="196" y="493" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Cancel returns to the confirmed checkpoint.</text>
-<text x="196" y="539" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">Cancel match</text>
+<text x="196" y="451" font-family="DejaVu Sans Mono" font-size="26" font-weight="400" fill="#eeeeee" xml:space="preserve">Holland v Belgium / Friendly / Normal</text>
+<text x="196" y="493" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Starting match...</text>
+<text x="196" y="539" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">[Cancel match]</text>
 <rect x="178" y="596" width="1244" height="185" fill="#000000" stroke="#ff5555"/>
 <rect x="191" y="595" width="350" height="28" fill="#000000"/>
 <text x="196" y="616" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#ff5555" xml:space="preserve">WATCH UNAVAILABLE / EIRE</text>
-<text x="196" y="662" font-family="DejaVu Sans Mono" font-size="26" font-weight="400" fill="#eeeeee" xml:space="preserve">Competitive Watch is not supported.</text>
-<text x="196" y="704" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Keep this fixture and the confirmed team.</text>
-<text x="196" y="750" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">Start supported Quick / Return</text>
-<text x="178" y="885" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#ff55ff" xml:space="preserve">Three alternative states / Save failure keeps the exit decision pending</text>
+<text x="196" y="662" font-family="DejaVu Sans Mono" font-size="26" font-weight="400" fill="#eeeeee" xml:space="preserve">Holland v Eire / World qualifying</text>
+<text x="196" y="704" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Watch is available for scheduled friendlies.</text>
+<text x="196" y="750" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">[Start Quick] [Return to preparation]</text>
+<text x="178" y="885" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#ff55ff" xml:space="preserve">Esc: cancel / F1: Help</text>
 </svg>

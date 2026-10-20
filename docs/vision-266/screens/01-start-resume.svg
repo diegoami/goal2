@@ -2,27 +2,8 @@
 <title>RETURN TO YOUR COUNTRY</title><desc>Designed original-first native desktop target. Fictional story. Not a current-build capture.</desc>
 <rect x="0" y="0" width="1440" height="900" fill="#000000"/>
 <text x="8" y="17" font-family="DejaVu Sans Mono" font-size="14" font-weight="400" fill="#aaaaaa" xml:space="preserve">01 TARGET ILLUSTRATION / FICTIONAL DATA / DESKTOP / NOT CURRENT BUILD</text>
-<g data-chrome="top">
-<rect x="8" y="27" width="1424" height="79" fill="#000000" stroke="#55ffff"/>
-<text x="24" y="63" font-family="DejaVu Sans Mono" font-size="34" font-weight="700" fill="#55ffff" xml:space="preserve">GOAL2</text>
-<text x="178" y="61" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ffff55" xml:space="preserve">HOLLAND</text>
-<text x="178" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Alex / 2030 / World qualifying</text>
-<text x="728" y="60" font-family="DejaVu Sans Mono" font-size="25" font-weight="700" fill="#55ffff" xml:space="preserve">Next: Holland v Belgium</text>
-<text x="728" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#eeeeee" xml:space="preserve">Friendly at home</text>
-<text x="1220" y="91" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">[Top ^]</text>
-</g><g data-chrome="side">
-<rect x="8" y="118" width="150" height="754" fill="#000000" stroke="#55ffff"/>
-<text x="17" y="145" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">[&lt; Hide]</text>
-<text x="22" y="205" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Country</text>
-<text x="22" y="273" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Team</text>
-<text x="22" y="341" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Fixtures</text>
-<text x="22" y="409" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">Match</text>
-<text x="22" y="477" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">History</text>
-<rect x="14" y="520" width="138" height="38" fill="#aaaaaa"/>
-<text x="22" y="545" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#000000" xml:space="preserve">Save</text>
-<text x="20" y="844" font-family="DejaVu Sans Mono" font-size="20" font-weight="400" fill="#55ffff" xml:space="preserve">F1 Help</text>
-</g>
-<text x="178" y="147" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ff5555" xml:space="preserve">RETURN TO YOUR COUNTRY</text>
+<text x="20" y="73" font-family="DejaVu Sans Mono" font-size="36" font-weight="700" fill="#55ffff" xml:space="preserve">GOAL2 / START OR RESUME</text>
+<text x="20" y="137" font-family="DejaVu Sans Mono" font-size="30" font-weight="700" fill="#ff5555" xml:space="preserve">RETURN TO YOUR COUNTRY</text>
 <rect x="178" y="174" width="720" height="598" fill="#000000" stroke="#ff5555"/>
 <rect x="191" y="173" width="182" height="28" fill="#000000"/>
 <text x="196" y="194" font-family="DejaVu Sans Mono" font-size="22" font-weight="700" fill="#ff5555" xml:space="preserve">SAVED CAREER</text>

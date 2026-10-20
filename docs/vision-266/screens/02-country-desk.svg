@@ -58,66 +58,106 @@
 <text x="594" y="751" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">Captain: L de Boer</text>
 <rect x="1000" y="174" width="422" height="632" fill="#000000" stroke="#55ffff"/>
 <text x="1015" y="204" font-family="DejaVu Sans Mono" font-size="21" font-weight="700" fill="#55ffff" xml:space="preserve">SQUAD 20 / XI 11 / BENCH 9</text>
+<g data-roster="NL01">
 <text x="1015" y="242" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">+</text>
 <text x="1039" y="242" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">R van Dalen</text>
 <text x="1292" y="242" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">GK</text>
+</g>
+<g data-roster="NL02">
 <text x="1015" y="270" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
 <text x="1039" y="270" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">M Vos</text>
 <text x="1292" y="270" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">RB</text>
+</g>
+<g data-roster="NL03">
 <text x="1015" y="298" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
 <text x="1039" y="298" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">L de Boer</text>
 <text x="1292" y="298" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">CB C</text>
+</g>
+<g data-roster="NL04">
 <text x="1015" y="326" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
 <text x="1039" y="326" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">T Visser</text>
 <text x="1292" y="326" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">CB</text>
+</g>
+<g data-roster="NL05">
 <text x="1015" y="354" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">+</text>
 <text x="1039" y="354" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">J Meijer</text>
 <text x="1292" y="354" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">LB</text>
+</g>
+<g data-roster="NL06">
 <text x="1015" y="382" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
 <text x="1039" y="382" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">S Bakker</text>
 <text x="1292" y="382" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+</g>
+<g data-roster="NL07">
 <text x="1015" y="410" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
 <text x="1039" y="410" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">D Vermeer</text>
 <text x="1292" y="410" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+</g>
+<g data-roster="NL08">
 <text x="1015" y="438" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
 <text x="1039" y="438" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">P Bos</text>
 <text x="1292" y="438" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+</g>
+<g data-roster="NL09">
 <text x="1015" y="466" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">+</text>
 <text x="1039" y="466" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">A Kuiper</text>
 <text x="1292" y="466" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+</g>
+<g data-roster="NL10">
 <text x="1015" y="494" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">+</text>
 <text x="1039" y="494" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">N Smit</text>
 <text x="1292" y="494" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+</g>
+<g data-roster="NL11">
 <text x="1015" y="522" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">+</text>
 <text x="1039" y="522" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">F Mulder</text>
 <text x="1292" y="522" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+</g>
+<g data-roster="NL12">
 <text x="1015" y="550" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ff55" xml:space="preserve">-</text>
 <text x="1039" y="550" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">E Kok</text>
 <text x="1292" y="550" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ff55" xml:space="preserve">GK</text>
+</g>
+<g data-roster="NL13">
 <text x="1015" y="578" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">-</text>
 <text x="1039" y="578" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">B Peters</text>
 <text x="1292" y="578" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">CB</text>
+</g>
+<g data-roster="NL14">
 <rect x="1011" y="584" width="356" height="27" fill="#aaaaaa"/>
 <text x="1015" y="606" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#000000" xml:space="preserve">-</text>
 <text x="1039" y="606" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#000000" xml:space="preserve">J Jansen</text>
 <text x="1292" y="606" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#000000" xml:space="preserve">MF</text>
+</g>
+<g data-roster="NL15">
 <text x="1015" y="634" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">-</text>
 <text x="1039" y="634" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">K van Leeuwen</text>
 <text x="1292" y="634" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+</g>
+<g data-roster="NL16">
 <text x="1015" y="662" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">-</text>
 <text x="1039" y="662" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">W Dekker</text>
 <text x="1292" y="662" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">LB</text>
+</g>
+<g data-roster="NL17">
 <text x="1015" y="690" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ff5555" xml:space="preserve">-</text>
 <text x="1039" y="690" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">G Brouwer</text>
 <text x="1292" y="690" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ff5555" xml:space="preserve">RB</text>
+</g>
+<g data-roster="NL18">
 <text x="1015" y="718" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#55ffff" xml:space="preserve">-</text>
 <text x="1039" y="718" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">H Dijkstra</text>
 <text x="1292" y="718" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#55ffff" xml:space="preserve">MF</text>
+</g>
+<g data-roster="NL19">
 <text x="1015" y="746" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">-</text>
 <text x="1039" y="746" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">I van Dijk</text>
 <text x="1292" y="746" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+</g>
+<g data-roster="NL20">
 <text x="1015" y="774" font-family="DejaVu Sans Mono" font-size="24" font-weight="400" fill="#ffff55" xml:space="preserve">-</text>
 <text x="1039" y="774" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">C de Wit</text>
 <text x="1292" y="774" font-family="DejaVu Sans Mono" font-size="24" font-weight="700" fill="#ffff55" xml:space="preserve">FW</text>
+</g>
 <text x="178" y="885" font-family="DejaVu Sans Mono" font-size="18" font-weight="400" fill="#ff55ff" xml:space="preserve">F1 Help / F7 Save / All ranks are illustrative / Top + side bars: retract</text>
 </svg>
