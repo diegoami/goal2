@@ -8,6 +8,7 @@ from goal2.game.campaign import CampaignState, Fixture as Scheduled
 from goal2.game.watched_match import run_watched_match
 from goal2.game.watched_publication import WatchedPublication, ENGINE_ID
 from goal2.tests import test_watched_adapter as adapter
+from goal2.tests import requires
 direct = adapter.direct
 
 
@@ -25,7 +26,7 @@ class WatchedPublicationTests(unittest.TestCase):
         return adapter.WatchedAdapter.state(self)
 
     def test_all_ten_strict_cases_publish_direct_runner_memory_once(self):
-        for seed,want in EXPECTED_FAMILY.items():
+        for seed,want in requires.cases(EXPECTED_FAMILY.items()):  # [designed: #275] all ten with GOAL2_SLOW=1
             with self.subTest(seed=seed):
                 state=self.state();before=copy.deepcopy(state);owner=Owner(state,self.raw)
                 publication=WatchedPublication(owner);job=publication.begin(Fixture(7,19,21))

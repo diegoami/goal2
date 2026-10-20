@@ -71,6 +71,7 @@ class CompetitiveAdapterTests(unittest.TestCase):
             with self.subTest(fixture=bad),self.assertRaises(ValueError):fn(s,raw,bad)
         self.assertEqual(s,before)
 
+    @requires.need(slow=True)  # [designed: #275] about 303 s alone on 32 CPUs
     def test_owner_budget_cases_match_independent_execution_and_guest_stamps(self):
         independent,probe=independent_runtime()
         report=ROOT/'.cache'/('T51-adapter-cases-'+str(time.time_ns())+'.jsonl')

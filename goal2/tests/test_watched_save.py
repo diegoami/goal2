@@ -9,6 +9,7 @@ from goal2.tests import test_watched_publication as publication
 Owner = publication.Owner
 from goal2.game.watched_match import run_watched_match
 from goal2.engine.original_match import Fixture
+from goal2.tests import requires
 
 
 class WatchedSaveTests(unittest.TestCase):
@@ -47,6 +48,7 @@ class WatchedSaveTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'injected'):pub.complete(job.token,outcome)
         self.assertEqual(owner.state,before)
 
+    @requires.need(slow=True)  # [designed: #275] about 158 s alone on 32 CPUs
     def test_fresh_1990_1992_campaign_history_and_deterministic_next_fixture(self):
         from pathlib import Path
         from goal2.data.goaldat import load

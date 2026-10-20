@@ -57,6 +57,7 @@ def opening_qualifier():
 
 
 class CompetitiveSaveTests(unittest.TestCase):
+    @requires.need(slow=True)  # [designed: #275] about 155 s alone on 32 CPUs
     def test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues(self):
         try:before,after,raw,f,job,out=opening_qualifier()
         except ValueError as exc:self.fail('actual competitive publication unavailable: '+str(exc))
@@ -125,6 +126,7 @@ class CompetitiveSaveTests(unittest.TestCase):
         print('T51 actual qualifier evidence '+str(report.relative_to(ROOT)),flush=True)
         print(f'T51 actual country4 qualifier kind={f.kind} index={f.index} score={out.result["score"]} winner={out.result["winner"]} next deterministic PASS',flush=True)
 
+    @requires.need(slow=True)  # [designed: #275] about 50 s alone on 32 CPUs
     def test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage(self):
         s,raw,f=campaign();s.campaign.fixtures+=(Scheduled('original:43',1,1,2,1,7,19),Scheduled('original:44',1,1,2,1,7,19))
         owner=Owner(s,raw);pub=publication(owner)
