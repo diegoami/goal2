@@ -47,6 +47,15 @@ def apply_style(window):
     QLabel#deskOwn, QLabel#deskOpponent {{font-size:22px;color:{c['text']};}}
     QLabel#deskCampaign {{font-size:20px;color:{c['yellow']};}}
     QLabel#deskReadiness {{font-size:22px;color:{c['green']};font-weight:700;}}
+    QLabel#resultTitle {{font-size:30px;color:{c['red']};font-weight:700;}}
+    QLabel#resultSubtitle {{font-size:22px;color:{c['gold']};font-weight:700;}}
+    QFrame#resultPanel {{background:{c['background']};border:2px solid {c['cyan']};}}
+    QLabel#resultHeading {{font-size:20px;color:{c['cyan']};font-weight:700;}}
+    QLabel#resultScorersA, QLabel#resultScorersB {{font-size:20px;color:{c['yellow']};}}
+    QLabel#resultStatistics {{font-size:18px;color:{c['green']};}}
+    QLabel#resultMotm {{font-size:26px;color:{c['yellow']};font-weight:700;}}
+    QLabel#resultNote {{font-size:14px;color:{c['magenta']};}}
+    QPushButton#resultContinue, QPushButton#resultRound {{font-size:20px;padding:8px 16px;}}
     QLabel#prepTitle {{font-size:28px;color:{c['red']};font-weight:700;}}
     QFrame#playPanel {{background:{c['background']};border:2px solid {c['red']};}}
     QLabel#prepHeading {{font-size:20px;color:{c['red']};font-weight:700;}}

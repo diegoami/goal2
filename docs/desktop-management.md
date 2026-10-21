@@ -118,6 +118,13 @@ line, are light-magenta ☺. Each mark fills one grid cell, so neighbours never 
 cell the last drawn in the original's order shows, and the ball hides under a player. With the
 full commentary open, Up/Down scroll it.
 
+[designed: T97; accepted vision #266 screen 08] When a match ends, **Fixtures & match** opens its
+result: FULL TIME and the score, the kind, half time and engine, each side's scorers, the
+original's statistics (with regulation, extra time and penalties for a competitive match), the raw
+possession/territory bars marked "meaning unverified", man of the match and the substitutions. A
+quick result keeps only the score and goals; the rest reads "Not recorded". **Round results**
+opens the table; **Continue** returns to the Country desk with **Prepare match** focused.
+
 [designed: T78] Fixtures & results groups the next named fixture, last completed
 score, engine provenance, goals and a read-only standings snapshot. Ordinary
 goals retain source A/B order; competitive regulation, cumulative extra-time

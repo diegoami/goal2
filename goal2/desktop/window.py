@@ -309,7 +309,7 @@ class ManagementWindow(QMainWindow):
     def poll_watched(self):
         try:
             if self.watched.poll():
-                self.set_busy(False);self.refresh('Original friendly complete; result can be saved. Scroll the Pygame window for board and Raw rating.')
+                self.set_busy(False);self.refresh('Original friendly complete; result can be saved.');self.match_finished()
             elif self.watched.busy and self.watched.display.events:
                 event=self.watched.display.events[-1]
                 self.status.setText(f"Original engine: {event['minute']}′ {event['score'][0]} — {event['score'][1]}")
@@ -324,7 +324,7 @@ class ManagementWindow(QMainWindow):
             events=self.competitive.poll(self.competitive.token)
             if not self.competitive.busy:
                 self.competitive_timer.stop();self.set_busy(False)
-                self.refresh('Original competitive match complete; result can be saved')
+                self.refresh('Original competitive match complete; result can be saved');self.match_finished()
             elif events:
                 event=events[-1]
                 self.status.setText(f"Original competitive engine: {event.minute}′ {event.score[0]} — {event.score[1]}")
@@ -334,10 +334,15 @@ class ManagementWindow(QMainWindow):
     def poll_match(self):
         try:
             if self.jobs.poll():
-                self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh('Friendly complete; confirm management before the next match')
+                self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh('Friendly complete; confirm management before the next match');self.match_finished()
             elif self.jobs.halftime is not self.half_preview:self.show_halftime()
         except (OSError,ValueError,IndexError,KeyError) as exc:
             self.timer.stop();self.set_busy(False);self.show_halftime();self.status.setText(str(exc))
+
+    def match_finished(self):
+        """[designed: T97] Every completed match opens its result."""
+        from goal2.desktop.fixtures_page import open_result
+        open_result(self)
 
     def cancel_match(self):
         self.timer.stop();self.watched.cancel();self.watch_timer.stop();self.jobs.cancel()

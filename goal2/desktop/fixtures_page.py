@@ -16,6 +16,7 @@ def build(self,model,TACTICS):
     self.play=QPushButton('Play quick friendly');self.stop=QPushButton('Cancel match');self.stop.setEnabled(False)
     self.watch=QPushButton('Watch original friendly');self.watch.setObjectName('watchOriginal')
     preparation(self,self.pages[3].content)
+    result_section(self,self.pages[3].content)
     half_bar=QGridLayout();self.half_out=QComboBox();self.half_in=QComboBox()
     self.substitute=QPushButton('Substitute');self.continue_match=QPushButton('Continue second half')
     half_bar.addWidget(QLabel('Off'),0,0);half_bar.addWidget(self.half_out,0,1);half_bar.addWidget(self.substitute,0,2)
@@ -63,6 +64,77 @@ def preparation(self,layout):
         self.speed_buttons.append(button)
     self.speed_group.button(60).setChecked(True)
     self.prep_note=text('','prepNote')
+
+
+def result_section(self,layout):
+    """[designed: T97; accepted vision #266 screen 08] Full time: score, half-time, each side's
+    scorers, the original's statistics and man of the match; Continue and Round results."""
+    from PySide6.QtWidgets import QFrame
+    from goal2.desktop.roster import Columns
+    self.result_open=False
+    self.result_box=QWidget();self.result_box.setObjectName('resultSection');box=QVBoxLayout(self.result_box)
+    box.setContentsMargins(0,0,0,0);box.setSpacing(10);layout.insertWidget(1,self.result_box)
+    self.result_title=QLabel();self.result_title.setObjectName('resultTitle');self.result_title.setWordWrap(True);box.addWidget(self.result_title)
+    self.result_subtitle=QLabel();self.result_subtitle.setObjectName('resultSubtitle');self.result_subtitle.setWordWrap(True);box.addWidget(self.result_subtitle)
+    columns=Columns(1000);box.addWidget(columns);self.result_panels=[]
+    for name in ('resultScorersA','resultStatistics','resultScorersB'):
+        panel=QFrame();panel.setObjectName('resultPanel');body=QVBoxLayout(panel)
+        heading=QLabel();heading.setObjectName('resultHeading');body.addWidget(heading)
+        text=QLabel();text.setObjectName(name);text.setWordWrap(True);text.setTextFormat(Qt.TextFormat.PlainText)
+        text.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);body.addWidget(text);body.addStretch(1)
+        columns.box.addWidget(panel,2 if name=='resultStatistics' else 1);self.result_panels.append((heading,text))
+    self.result_motm=QLabel();self.result_motm.setObjectName('resultMotm');self.result_motm.setWordWrap(True);box.addWidget(self.result_motm)
+    actions=QHBoxLayout();box.addLayout(actions)
+    self.result_continue=QPushButton('Continue');self.result_continue.setObjectName('resultContinue')
+    self.result_round=QPushButton('Round results');self.result_round.setObjectName('resultRound')
+    for button in (self.result_continue,self.result_round):actions.addWidget(button)
+    actions.addStretch(1)
+    self.result_note=QLabel();self.result_note.setObjectName('resultNote');self.result_note.setWordWrap(True);box.addWidget(self.result_note)
+    self.result_continue.clicked.connect(lambda:continue_after_result(self))
+    self.result_round.clicked.connect(self.show_standings)
+    self.result_box.hide()
+
+
+def open_result(self):
+    """[designed: T97] A match has just finished: show its result first, Continue focused."""
+    self.result_open=True;refresh_result(self);self.navigate(3)
+    self.pages[3].verticalScrollBar().setValue(0);self.result_continue.setFocus()
+
+
+def continue_after_result(self):
+    """[designed: T97; accepted screen 09] Continue: back to the Country desk and the next fixture."""
+    self.result_open=False;refresh_result(self);self.navigate(0)
+    self.desk_routes[0].setFocus()
+
+
+def refresh_result(self):
+    from goal2.game.match_report import report,NOT_RECORDED
+    display=self.display_model
+    value=report(display.state.last_match,display.goaldat) if self.result_open and self.preview is None else None
+    self.result_box.setVisible(value is not None)
+    if value is None:return
+    a,b=value['teams'];score=value['score']
+    self.result_title.setText(f'FULL TIME / {a.upper()} {score[0]} - {score[1]} {b.upper()}')
+    half=value['half_time']
+    self.result_subtitle.setText(f"{value['kind'].upper()} / HALF TIME "+(f'{half[0]} : {half[1]}' if half else NOT_RECORDED.upper())+f" / {value['engine']}")
+    for (heading,text),side,team in ((self.result_panels[0],0,a),(self.result_panels[2],1,b)):
+        heading.setText(f'{team.upper()} SCORERS')
+        text.setText('\n'.join(f'{name}  {minute}′' for name,minute in value['scorers'][side]) or 'No goals')
+    heading,text=self.result_panels[1]
+    heading.setText(f'STATISTICS / {a[:3].upper()} : {b[:3].upper()}')
+    if value['statistics'] is None:
+        text.setText(NOT_RECORDED+': the quick simulation keeps the score and goals only.')
+    else:
+        rows=[f'{label:<14}{x:>3} : {y}' for label,(x,y) in value['statistics']]
+        rows+=['',f"Bars (raw)    {value['bars'][0][0]}:{value['bars'][0][1]}  {value['bars'][1][0]}:{value['bars'][1][1]}",'Meaning unverified']
+        stages=value['stages']
+        if stages:
+            for key,label in (('regulation','Regulation'),('extra_time','Extra time'),('penalties','Penalties')):
+                if stages[key] is not None:rows.append(f'{label:<14}{stages[key][0]:>3} : {stages[key][1]}')
+        text.setText('\n'.join(rows))
+    self.result_motm.setText('MAN OF THE MATCH: '+(value['man_of_the_match'] or NOT_RECORDED))
+    subs=[f'{off} > {on} {minute}′' for team,off,on,minute in value['substitutions']]
+    self.result_note.setText(' / '.join(subs) if subs else 'No substitutions recorded')
 
 
 def playback_rate(self):
@@ -156,6 +228,7 @@ def snapshot(display,view=None):
 def refresh(self,display,view):
     """[designed: T78] All cards follow the displayed country, including fresh previews."""
     data=snapshot(display,view)
+    refresh_result(self)
     self.fixture_next.setText(data['next']);self.scoreboard.setText(data['score'])
     self.result_stages.setText(data['stages']);self.result.setText(data['detail'])
     try:
