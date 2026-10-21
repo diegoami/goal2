@@ -41,7 +41,7 @@ def campaign_year(campaign):
 class DesktopModel:
     """[designed: T69] Own one active game; publish validated candidates only."""
     def __init__(self,goaldat,template_bytes,save_path):
-        self.goaldat=goaldat;self.template_bytes=template_bytes
+        self.state=None;self.goaldat=goaldat;self.template_bytes=template_bytes
         self.save_path=Path(save_path);self.state=None
         # [designed: T87] The state last created, resumed or saved; later confirmed changes are unsaved.
         self.saved=None
@@ -72,10 +72,47 @@ class DesktopModel:
             raise ValueError('Country must be an integer from1 to128')
         if start_year not in dict(START_YEARS):
             raise ValueError('Start year must be one of '+', '.join(str(y) for y,_ in START_YEARS))
-        candidate,_=start_opening_campaign(self.goaldat,self.template_bytes,managed_country=country,
+        candidate,_=start_opening_campaign(self._goaldat,self.template_bytes,managed_country=country,
                                          start_year=start_year,seed_7b62=4660,seed_8336=33590)
+        # [designed: T92] A new game keeps the manager (the same person); renamed players do not carry.
+        if self.state is not None:candidate.manager_name=self.state.manager_name
         self.view(candidate)
         self.state=candidate;self.mark_saved()
+
+    # [designed: T92] Every view reads names through the game: GOAL.DAT's names with this
+    # session's renames applied (goal2.game.identities), never a copy that can go stale.
+    @property
+    def goaldat(self):
+        from goal2.game.identities import named
+        renames=self.state.player_renames if self.state is not None else {}
+        if not renames:return self._goaldat
+        key=(id(self._goaldat),tuple(sorted(renames.items())))
+        if getattr(self,'_named',(None,))[0]!=key:self._named=(key,named(self._goaldat,self.state))
+        return self._named[1]
+
+    @goaldat.setter
+    def goaldat(self,value):
+        self._goaldat=value;self._named=(None,)
+
+    @property
+    def manager(self):
+        """[designed: T92] The manager's name, or the numbered default until one is given."""
+        return self.state.manager_name if self.state is not None and self.state.manager_name else MANAGER
+
+    def rename_player(self,word,text):
+        """[designed: T92] Rename a squad or pool player of the active game; returns the name."""
+        from goal2.game import identities
+        candidate=copy.deepcopy(self.state)
+        name=identities.rename_player(candidate,self._goaldat,word,text)
+        self.state=candidate
+        return name
+
+    def rename_manager(self,text):
+        from goal2.game import identities
+        candidate=copy.deepcopy(self.state)
+        name=identities.rename_manager(candidate,text)
+        self.state=candidate
+        return name
 
     def mark_saved(self):
         self.saved=copy.deepcopy(self.state)
@@ -201,7 +238,7 @@ class DesktopModel:
     def summary(self):
         """[designed: T86] What the Launch window shows of a validated career."""
         state=self.state;names=self.goaldat.country_names;campaign=state.campaign
-        rows={'country':names[state.managed_country],'manager':MANAGER}
+        rows={'country':names[state.managed_country],'manager':self.manager}
         if campaign is None:
             rows.update(campaign='Standalone friendly',next='Quick friendly',then='—',checkpoint='Between friendlies')
         else:

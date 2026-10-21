@@ -155,8 +155,11 @@ class ManagementWindow(QMainWindow):
                 self.active_draft=None
             else:
                 from goal2.desktop.model import DesktopModel
-                candidate=DesktopModel(self.model.goaldat,self.model.template_bytes,self.model.save_path)
+                # [designed: T92] A preview starts from GOAL.DAT's names (renames belong to the
+                # active game) and shows the same manager, whom a new campaign keeps.
+                candidate=DesktopModel(self.model._goaldat,self.model.template_bytes,self.model.save_path)
                 candidate.new_campaign(country,self.start_year.currentData())
+                candidate.state.manager_name=self.model.state.manager_name
                 if self.preview is None:self.active_draft=self.draft()
                 self.preview=candidate;self.refresh()
         except (OSError,ValueError,IndexError,KeyError) as exc:
@@ -269,7 +272,7 @@ class ManagementWindow(QMainWindow):
         active=not busy and self.preview is None
         # [designed: #241] Idle previews browse rows/details; management stays active-only.
         for widget in (self.table,self.pool_panel):widget.setEnabled(not busy)
-        for widget in (self.captain,self.confirm,self.cancel,self.save,self.save_as,self.play,self.watch,self.standings):widget.setEnabled(active)
+        for widget in (self.captain,self.confirm,self.cancel,self.save,self.save_as,self.play,self.watch,self.standings,self.rename,self.desk_manager):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
         from goal2.desktop.pool_page import context as pool_context
         pool_context(self,busy)
@@ -352,6 +355,48 @@ class ManagementWindow(QMainWindow):
         if draft is not None and shown is not None and (set(draft[0]),draft[1],draft[2])!=(set(shown[0]),shown[1],shown[2]):
             lost.append('an unconfirmed squad, captain or tactics draft')
         return lost
+
+    def prompt_text(self,title,label,current,maximum):
+        """[designed: T92] A one-line text question; the text, or None on Cancel. The current
+        name starts selected, so the first key replaces it as in the original (E031 C30b)."""
+        from PySide6.QtWidgets import QInputDialog,QLineEdit
+        dialog=QInputDialog(self);dialog.setWindowTitle(title);dialog.setLabelText(label)
+        dialog.setTextValue(current);dialog.setObjectName('namePrompt')
+        edit=dialog.findChild(QLineEdit)
+        if edit is not None:edit.setMaxLength(maximum);edit.selectAll()
+        return dialog.textValue() if dialog.exec() else None
+
+    def rename_guard(self):
+        if self.jobs.busy or self.competitive.busy or self.watched.busy:
+            self.status.setText('Finish or cancel the match first');return False
+        return self.require_active()
+
+    def keep_draft(self,operation,message):
+        """Apply a name change to the active game, keeping any unconfirmed draft and selection."""
+        draft=self.draft();row=self.table.currentRow()
+        try:operation()
+        except ValueError as exc:self.status.setText(str(exc));return
+        self.refresh(message);self.apply_draft(draft)
+        if row>=0:self.table.setCurrentCell(row,1)
+
+    def rename_selected(self):
+        """[designed: T92; confirmed: E031 C30] F2: rename the selected squad player, maximum 12."""
+        if not self.rename_guard():return
+        from goal2.game.identities import PLAYER_MAX
+        row=max(0,self.table.currentRow());word=self.table.item(row,0).data(Qt.ItemDataRole.UserRole)
+        old=self.model.goaldat.player_names[word]
+        text=self.prompt_text('Rename player',f'New surname for {old} (maximum {PLAYER_MAX})',old,PLAYER_MAX)
+        if text is None:return
+        self.keep_draft(lambda:self.model.rename_player(word,text),f'Renamed {old} to {text.strip()}')
+
+    def rename_manager(self):
+        """[designed: T92; confirmed: E031 C15] The manager's name, maximum 14."""
+        if not self.rename_guard():return
+        from goal2.game.identities import MANAGER_MAX
+        old=self.model.state.manager_name
+        text=self.prompt_text('Manager name',f'Your name (maximum {MANAGER_MAX})',old,MANAGER_MAX)
+        if text is None:return
+        self.keep_draft(lambda:self.model.rename_manager(text),f'Manager name: {text.strip()}')
 
     def ask(self,title,text,choices):
         """A modal question; choices are (key, label) with the safest last. Returns the key."""

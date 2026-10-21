@@ -25,6 +25,13 @@ def build(self,model,TACTICS):
     card_area.setWidgetResizable(True);card_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
     card_area.setFrameShape(QScrollArea.Shape.NoFrame)
     card_area.setWidget(self.team_card);card_area.setMinimumHeight(644);team.box.addWidget(card_area,1)
+    from PySide6.QtGui import QKeySequence,QShortcut
+    actions=QHBoxLayout();layout.addLayout(actions)
+    self.rename=QPushButton('Rename (F2)');self.rename.setObjectName('renamePlayer');self.rename.setAccessibleName('Rename the selected player')
+    self.rename.clicked.connect(self.rename_selected);actions.addWidget(self.rename);actions.addStretch(1)
+    # [confirmed: E031 C30] F2 renames the player on the card; here, on the Team page.
+    self.rename_shortcut=QShortcut(QKeySequence('F2'),self)
+    self.rename_shortcut.activated.connect(lambda:self.page_stack.currentIndex()==1 and self.rename_selected())
     self.team_roster.current_changed.connect(lambda row:self.table.setCurrentCell(row,1))
     self.team_roster.toggled.connect(lambda row:toggle(self,row))
     self.squad_summary=reading_label('squadSummary');layout.addWidget(self.squad_summary)

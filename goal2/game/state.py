@@ -94,6 +94,10 @@ class GameState:
     # [designed: T40] Campaign metadata remains separate from friendly match
     # state; legacy sessions leave this unset and keep their v1 meaning.
     campaign: "CampaignState | None" = None
+    # [designed: T92; owner, 2026-10-21] In-game renames (goal2.game.identities): player number
+    # to surname, and the manager's name; empty means GOAL.DAT's names and "Manager 1".
+    player_renames: dict = field(default_factory=dict)
+    manager_name: str = ''
 
 
 def from_savestate(state_bytes: bytes) -> GameState:

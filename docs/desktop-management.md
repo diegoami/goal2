@@ -76,6 +76,14 @@ captain, tactics and draft bar stay below as the attribute table. **Pool** pins 
 cards of the outgoing (OUT) and incoming (IN) player above the browser. Ranks come from the
 country records [confirmed: F007 via `goal2.game.country_card`].
 
+[designed: T92; owner, 2026-10-21; confirmed: E031 C15/C30] **Rename (F2)** on Team renames the
+selected player (surname, at most 12 characters; the initial stays), and **Manager name** on the
+Country desk sets the manager's name (at most 14). Both change the active game at once, like the
+original's F2, keep any unconfirmed draft, and are refused in a preview or during a match. A name
+is printable CP437, stripped of outer spaces; the original name removes a rename. Renames live in
+the session save (version 4, written only when something is renamed) and never in `GOAL.DAT`;
+every view reads names through the game. A new campaign keeps the manager's name.
+
 [designed: T78] Fixtures & results groups the next named fixture, last completed
 score, engine provenance, goals and a read-only standings snapshot. Ordinary
 goals retain source A/B order; competitive regulation, cumulative extra-time
