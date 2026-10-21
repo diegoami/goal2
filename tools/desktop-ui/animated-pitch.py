@@ -140,7 +140,7 @@ def main():
             w.watched.viewer_command = [sys.executable, '-c', VIEWER, str(target), str(slow), str(close_after)]
             # [designed] First run exercises the production default. Later runs only
             # accelerate its fixed discrete rate, preserving each sampled pose.
-            w.watched.start = original_start if rate is None else lambda **kw: original_start(playback_rate=rate, **kw)
+            w.watched.start = original_start if rate is None else lambda **kw: original_start(**{**kw, 'playback_rate': rate})  # the window passes its own rate (T95)
             return target
 
         def click_watch():

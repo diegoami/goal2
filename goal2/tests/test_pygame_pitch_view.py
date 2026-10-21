@@ -79,7 +79,8 @@ class PitchPixels(unittest.TestCase):
         """The exact pixels of a marker label as the viewer's font draws it on black."""
         import pygame
         cx,cy,sx,sy=geometry(self.SIZE)
-        font=viewer.mono(max(14,min(40,round(sy*1.4))),True)
+        # [designed: T96] One glyph per grid cell: 0.6 em advance within a column, the row's height.
+        font=viewer.mono(max(10,min(round(sy),int(sx/0.6))),True)
         label=font.render(text,True,colour);rect=label.get_rect(center=centre)
         expected=pygame.Surface(label.get_size());expected.fill((0,0,0));expected.blit(label,(0,0))
         return pygame.image.tobytes(self.screen.subsurface(rect),'RGB'),pygame.image.tobytes(expected,'RGB')
@@ -87,9 +88,11 @@ class PitchPixels(unittest.TestCase):
     def test_independent_axes_role_codes_ball_movement_half_and_rebinding(self):
         import pygame
         d=pitch(IDENTITY);f=sample()
-        f['players'][0]=[1,1,1,101,-3,-21,0,False]
+        # Slot 2 (outfield; slots 1 and 12 are keepers, always ☺ [confirmed: 0791:0691]).
+        f['players'][1]=[2,1,2,101,-3,-21,0,False]
         f['players'][21]=[22,0,11,122,5,25,13,False]
-        for n in range(1,21):f['players'][n][7]=True
+        for n in range(2,21):f['players'][n][7]=True
+        f['players'][0][7]=True
         send(d,'frame',f);self.assertTrue(d.advance(0));viewer.render_pitch(self.screen,self.font,d)
         pygame.display.flip();d.rendered()
         # [derived: T81] Signed [y,x], positive right/down: (-3,-21) is up and left of the centre.
@@ -101,13 +104,13 @@ class PitchPixels(unittest.TestCase):
         self.assertGreater(self.count(YELLOW,self.point(-4,13),6),0,'signed ball pixels differ')
         old=pygame.image.tobytes(self.screen,'RGB')
         g=copy.deepcopy(f);g.update(sequence=1,minute=46,remaining=45,selector=0,attack=[-1,1])
-        g['players'][0][3]=777;g['players'][0][4:6]=[-2,-20];g['ball']=[-3,14,False]
+        g['players'][1][3]=777;g['players'][1][4:6]=[-2,-20];g['ball']=[-3,14,False]
         send(d,'frame',g);self.assertFalse(d.advance(.001));self.assertEqual(d.consumed,0)
         self.assertTrue(d.advance(1));viewer.render_pitch(self.screen,self.font,d);pygame.display.flip();d.rendered()
         self.assertNotEqual(pygame.image.tobytes(self.screen,'RGB'),old)
         # A rebound word without a role shows its slot number; no rotation or interpolation.
-        actual,expected=self.glyph('1',WHITE,self.point(-2,-20));self.assertEqual(actual,expected,'half/rebind must not rotate or interpolate')
-        self.assertEqual(d.frame['players'][0][3],777);self.assertEqual(d.consumed,1)
+        actual,expected=self.glyph('2',WHITE,self.point(-2,-20));self.assertEqual(actual,expected,'half/rebind must not rotate or interpolate')
+        self.assertEqual(d.frame['players'][1][3],777);self.assertEqual(d.consumed,1)
 
     def test_field_bounds_visibility_and_unknown_state(self):
         d=pitch(IDENTITY);f=sample();f['ball']=[11,0,True]
@@ -166,8 +169,9 @@ class PitchPixels(unittest.TestCase):
         # [designed] Small scheduler lateness must not reset the target and halve playback rate.
         for instant in (.018,.034,.051,.068):
             self.assertTrue(d.advance(instant),'deadline drift reduced the fixed playback target')
-        d.frame['players'][0][7]=False;d.frame['players'][21][7]=False
-        d.frame['players'][0][4:6]=[-4,-20];d.frame['players'][21][4:6]=[4,20]
+        d.frame['players'][1][3]=101
+        d.frame['players'][1][7]=False;d.frame['players'][21][7]=False
+        d.frame['players'][1][4:6]=[-4,-20];d.frame['players'][21][4:6]=[4,20]
         viewer.render_pitch(self.screen,self.font,d)
         # Managed side 1: team 1 gold, team 0 white; the header names carry the same colours.
         self.assertEqual(*self.glyph('B',GOLD,self.point(-4,-20)),'country names must identify marker colors')
@@ -265,8 +269,8 @@ class SavedByteControls(unittest.TestCase):
         directory.mkdir(parents=True)
         target=ROOT/'goal2/desktop/pygame_viewer.py';original=target.read_bytes()
         cases=[('axes','        return round(cx + gy * sx), round(cy + gx * sy)','        return round(cx + gx * sx), round(cy + gy * sy)','test_independent_axes_role_codes_ball_movement_half_and_rebinding','signed team marker pixels differ'),
-               ('player-visibility','            if hidden:\n','            if False:\n','test_field_bounds_visibility_and_unknown_state','sentinel player must be hidden'),
-               ('ball-visibility','        if not hidden:\n','        if True:\n','test_field_bounds_visibility_and_unknown_state','sentinel ball must be hidden'),
+               ('player-visibility','            if not hidden:\n                occupied','            if True:\n                occupied','test_field_bounds_visibility_and_unknown_state','sentinel player must be hidden'),
+               ('ball-visibility','        if not hidden and at(bx, by) not in occupied:\n','        if True:\n','test_field_bounds_visibility_and_unknown_state','sentinel ball must be hidden'),
                ('early-consumption','                pygame.display.flip()','                display.rendered()\n                pygame.display.flip()','test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting','sample acknowledged before SDL flip'),
                ('consumption','                display.rendered()','                pass # mutant: no rendered acknowledgement','test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting','ACK must match actually flipped sample')]
         receipt=[]

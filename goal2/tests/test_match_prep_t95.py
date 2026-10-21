@@ -55,10 +55,10 @@ class Preparation(unittest.TestCase):
     def test_the_chosen_speed_reaches_the_watched_controller(self):
         w = self.window;w.confirm_draft()
         self.assertEqual(w.speed_group.checkedId(), 60, 'Normal keeps the default 60')
-        # [confirmed: E031 C39; owner, 2026-10-21] the original's five speeds.
+        # [confirmed: 0791:9372, speed byte 0..5; owner, 2026-10-21 "Six, as the code"]
         self.assertEqual([(b.text(), w.speed_group.id(b)) for b in w.speed_buttons],
-                         [('Slowest', 15), ('Slow', 30), ('Normal', 60), ('Fast', 120), ('Fastest', 240)])
-        for name, rate in (('Slowest', 15), ('Slow', 30), ('Fast', 120), ('Fastest', 240), ('Normal', 60)):
+                         [('Slowest', 10), ('Slower', 15), ('Slow', 30), ('Normal', 60), ('Fast', 120), ('Fastest', 240)])
+        for name, rate in (('Slowest', 10), ('Slower', 15), ('Slow', 30), ('Fast', 120), ('Fastest', 240), ('Normal', 60)):
             next(b for b in w.speed_buttons if b.text() == name).click()
             w.navigate(0);w.refresh();w.navigate(3)
             self.assertEqual(w.speed_group.checkedId(), rate, 'the choice survives navigation and refresh')
@@ -86,8 +86,8 @@ class InMatchSpeed(unittest.TestCase):
 
     def test_steps_clamp_and_change_only_pacing(self):
         d = self.display();digest = d.digest()
-        self.assertEqual([d.step_rate(-1) for _ in range(3)], [30, 15, 15])
-        self.assertEqual([d.step_rate(1) for _ in range(5)], [30, 60, 120, 240, 240])
+        self.assertEqual([d.step_rate(-1) for _ in range(4)], [30, 15, 10, 10])
+        self.assertEqual([d.step_rate(1) for _ in range(6)], [15, 30, 60, 120, 240, 240])
         self.assertEqual((d.speed_name(), d.digest(), d.sequence), ('Fastest', digest, 2), 'no packet, digest or ACK changes')
         from goal2.desktop.match_view import Display
         self.assertIsNone(Display('x').step_rate(1), 'text-only watching has no pitch pacing')

@@ -7,7 +7,13 @@ Slot labels are local ordinals, current player words may rebind each tick.
 import json
 import struct
 
-VERSION = 1
+VERSION = 2
+# [designed: T96] Version 2 adds the officials and the player on the ball; version 1 stays valid.
+VERSIONS = (1, 2)
+# [confirmed: static 0791:9119 move_referee, 0791:8E24 track_offside_line, 0791:8537 (T96
+# research)] The referee's sprite record (row = signed x +0, column = signed y +1), the two
+# linesmen's at DS:82E2 + 6 * side, and the pitch slot on the ball, DS:830B.
+REFEREE, LINESMEN, HOLDER = 0x82EE, (0x82E2, 0x82E8), 0x830B
 MAX_FRAME_PACKET = 4096
 MAX_FRAME_BYTES = 16 * 1024 * 1024
 MAX_FRAMES = 8192
@@ -38,7 +44,13 @@ def snapshot(match, event, sequence, watermark):
     threshold, remaining = m.rd(0x8319, 1), m.rd(0x831B)
     selector = int(signed(threshold) < remaining)
     table = [signed(v) for v in m.read(m.DS * 16 + 0x7920, 2)]
-    return dict(version=VERSION, sequence=sequence, watermark=watermark, minute=event.minute,
+    def official(address):
+        raw = m.read(m.DS * 16 + address, 2)
+        return [signed(raw[0]), signed(raw[1])]
+    referee = official(REFEREE)
+    officials = {'referee': referee + [((referee[0] & 255) | ((referee[1] & 255) << 8)) == sentinel],
+                 'linesmen': [official(a) for a in LINESMEN], 'holder': m.rd(HOLDER, 1)}
+    return dict(version=VERSION, sequence=sequence, watermark=watermark, minute=event.minute, officials=officials,
                 score=list(event.score), subtick=m.rd(0x831D), threshold=threshold,
                 remaining=remaining, selector=selector,
                 attack=[table[selector], table[1 ^ selector]], sentinel=sentinel,
@@ -54,9 +66,11 @@ def validate(value, sequence, previous_watermark):
     """[designed] Strict v1 shape; retain out-of-field signed coordinates and raw state."""
     keys = {'version','sequence','watermark','minute','score','subtick','threshold','remaining',
             'selector','attack','sentinel','ball','players'}
+    if isinstance(value, dict) and value.get('version') == 2 and type(value['version']) is int:
+        keys = keys | {'officials'}
     if not isinstance(value, dict) or set(value) != keys:
         raise ValueError('invalid pitch frame schema')
-    if (type(value['version']) is not int or value['version'] != VERSION
+    if (type(value['version']) is not int or value['version'] not in VERSIONS
             or not integer(value['sequence'], 0, MAX_FRAMES-1) or value['sequence'] != sequence
             or not integer(value['watermark'], previous_watermark, 2**31-1)):
         raise ValueError('invalid pitch frame order/watermark')
@@ -75,6 +89,15 @@ def validate(value, sequence, previous_watermark):
     ball = value['ball']
     if type(ball) is not list or len(ball) != 3 or not pose(*ball):
         raise ValueError('invalid pitch frame ball')
+    if 'officials' in value:
+        officials = value['officials']
+        if (not isinstance(officials, dict) or set(officials) != {'referee', 'linesmen', 'holder'}
+                or type(officials['referee']) is not list or len(officials['referee']) != 3
+                or not pose(*officials['referee']) or not integer(officials['holder'], 0, 255)
+                or type(officials['linesmen']) is not list or len(officials['linesmen']) != 2
+                or any(type(l) is not list or len(l) != 2 or not all(integer(v, -128, 127) for v in l)
+                       for l in officials['linesmen'])):
+            raise ValueError('invalid pitch frame officials')
     players = value['players']
     if type(players) is not list or len(players) != 22:
         raise ValueError('invalid pitch frame players')

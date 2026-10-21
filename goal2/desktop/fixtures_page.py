@@ -59,7 +59,7 @@ def preparation(self,layout):
     for name,rate in SPEEDS:
         button=QPushButton(name);button.setObjectName('speed'+name);button.setCheckable(True)
         button.setAccessibleName(f'Watch speed {name}, {rate} samples per second')
-        self.speed_group.addButton(button,rate);row.addWidget(button,len(self.speed_buttons)//3,len(self.speed_buttons)%3)
+        self.speed_group.addButton(button,rate);row.addWidget(button,len(self.speed_buttons)//3,len(self.speed_buttons)%3)  # two rows of three
         self.speed_buttons.append(button)
     self.speed_group.button(60).setChecked(True)
     self.prep_note=text('','prepNote')
