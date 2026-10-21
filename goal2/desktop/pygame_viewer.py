@@ -194,7 +194,7 @@ def marker_size(sx, sy):
 
 def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAULT_MARKS):
     """[designed: T94; accepted vision #266 screen 06] Score header, maximum pitch with each
-    player's one-letter role code, the last two commentary lines; C shows the full commentary."""
+    player's one-letter role code, the last two commentary lines; Space shows the full commentary."""
     import pygame
     width, height = screen.get_size()
     (left, top, w, h), (sx, sy) = layout(width, height)
@@ -261,7 +261,7 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
             for ox, oy in spots:
                 label = marker.render('☺', True, MAGENTA)
                 screen.blit(label, label.get_rect(center=at(ox, oy)))
-    hint = small.render('[←→] Speed  [↑↓] Marks  [C] Commentary  [Esc] Close', True, MAGENTA)
+    hint = small.render('[←→] Speed  [↑↓] Marks  [Space] Commentary  [Esc] Close', True, MAGENTA)
     screen.blit(hint, (width - hint.get_width() - 18, height - FOOTER + 8))
     lines = visible.commentary()
     footer = mono(22 if wide else 18)
@@ -306,8 +306,14 @@ def main():
             running = True
             while running:
                 for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+                    # [confirmed: E031 C08/C39c, E015 r0013] Space opens the commentary
+                    # ("spacebar-commentary"); in it, Esc returns to play ("Esc-play").
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                         commentary = not commentary
+                        continue
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and commentary:
+                        commentary = False
+                        continue
                     # [confirmed: E031 C39] Left slows the match by one step; Right speeds it up.
                     if event.type == pygame.KEYDOWN and event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                         display.step_rate(-1 if event.key == pygame.K_LEFT else 1)
