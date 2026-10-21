@@ -40,6 +40,12 @@ one, `git pull` and take the next free number.
    `origin/main` (the engine, watched and competitive matches, saves, the match view, the
    dependencies: `SLOW_PATHS` in the script), and always with `--slow`, which every milestone
    candidate uses. `--fast` never runs them; `--no-tests` leaves the game tests out.
+   [designed: owner, 2026-10-20, #278] The **Windows** workflow (`.github/workflows/windows.yml`)
+   runs on every PR and on `main`. It runs the same gate on a native Windows runner, with real
+   Windows Qt and SDL, the `spawn` worker and Windows file replacement. With the original files
+   (the `GOAL2_RCLONE_TOKEN` secret) it also runs the worker, save, page and two-window scenarios.
+   A PR merges with it green as well. Run it with **slow** from the Actions tab for a milestone
+   candidate. It uploads screenshots and logs only.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
    `git switch main && git pull`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <reviewed-sha>`, then

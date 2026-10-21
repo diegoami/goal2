@@ -1,0 +1,105 @@
+name: Windows
+
+# [designed: owner, 2026-10-20, #278] Native Windows checks on every PR: the game tests, the worker,
+# saves and the Qt/SDL scenarios with the real Windows platforms. goal2 is public, so hosted runners
+# cost nothing. Nothing of the original game leaves the runner: no .cache/ content and no
+# original-game file is ever uploaded, and the Drive token is only read from the secret.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      slow:
+        description: Run the slow tests too (milestone candidates)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONUTF8: '1'
+      GOAL2_ARCHAEOLOGY: ${{ github.workspace }}/.cache/goal2-archaeology
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # check_premerge compares with origin/main and wants the PR's own head, not the merge ref.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install goal2
+        run: python -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'
+      - name: Original-game files (owner's Drive, when the secret is available)
+        env:
+          GOAL2_RCLONE_TOKEN: ${{ secrets.GOAL2_RCLONE_TOKEN }}
+        run: |
+          if [ -z "$GOAL2_RCLONE_TOKEN" ]; then
+            echo "No GOAL2_RCLONE_TOKEN (a fork PR, or the secret is unset): tests needing the original files skip."
+            exit 0
+          fi
+          version=v1.75.2;zip=rclone-$version-windows-amd64.zip
+          curl -sSfL "https://downloads.rclone.org/$version/$zip" -o "$RUNNER_TEMP/$zip"
+          curl -sSfL "https://downloads.rclone.org/$version/SHA256SUMS" -o "$RUNNER_TEMP/SHA256SUMS"
+          (cd "$RUNNER_TEMP" && grep " $zip\$" SHA256SUMS | sha256sum -c -)
+          unzip -q "$RUNNER_TEMP/$zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/rclone-$version-windows-amd64" >> "$GITHUB_PATH"
+          export PATH="$RUNNER_TEMP/rclone-$version-windows-amd64:$PATH"
+          folder=$(python -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")
+          rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" --non-interactive > /dev/null
+          python tools/artifacts.py pull
+          python tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"
+      - name: goal2-archaeology (full clone; check_provenance needs its pinned commits)
+        run: git clone -q https://github.com/diegoami/goal2-archaeology.git "$GOAL2_ARCHAEOLOGY"
+      - name: Game tests and pre-merge checks (native Windows Qt and SDL)
+        run: |
+          slow=
+          [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
+          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee windows-premerge.log
+      - name: Native scenarios (worker, saves, two windows)
+        if: ${{ hashFiles('.cache/GOAL.DAT') != '' }}
+        run: |
+          mkdir -p windows-evidence
+          A="--template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT"
+          for s in worker management launch campaign-friendlies; do
+            echo "== acceptance $s"
+            python tools/desktop-ui/acceptance.py --scenario $s $A --screenshot windows-evidence/acceptance-$s.png 2>&1 | tail -n 5 | tee -a windows-evidence/scenarios.log
+          done
+          for s in shell overview squad pool; do
+            echo "== redesign $s"
+            python tools/desktop-ui/redesign.py --scenario $s $A --evidence-dir windows-evidence/redesign-$s 2>&1 | tail -n 5 | tee -a windows-evidence/scenarios.log
+          done
+          echo "== watched (Qt and SDL windows)"
+          python tools/desktop-ui/watched.py 2>&1 | tail -n 5 | tee -a windows-evidence/scenarios.log
+          ! grep -E "Error|FAIL" windows-evidence/scenarios.log
+      - name: Keep only screenshots and logs
+        if: always()
+        run: |
+          mkdir -p upload
+          cp windows-premerge.log upload/ 2>/dev/null || true
+          if [ -d windows-evidence ]; then
+            (cd windows-evidence && find . -type f \( -name '*.png' -o -name '*.log' -o -name '*.json' \) -print0 | xargs -0 -I{} cp --parents {} ../upload/)
+          fi
+          # [designed: #278] Refuse to upload anything with an original-game extension.
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+            echo "an original-game file reached the upload; refusing" && exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-evidence
+          path: upload
+          if-no-files-found: ignore

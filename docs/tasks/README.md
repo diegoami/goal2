@@ -233,3 +233,4 @@ operational status.
 | [T95](T95.md) | Match preparation: both elevens, Quick or Watch, and the speed | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
 | [T96](T96.md) | The original's pitch marks, officials and six speeds | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
 | [T97](T97.md) | The result of a finished match, and Continue | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
+| [T98](T98.md) | A Windows GitHub Actions workflow on every PR | [#278](https://github.com/diegoami/goal2/issues/278) | Medium |
