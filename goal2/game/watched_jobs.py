@@ -63,19 +63,19 @@ def _memory(value):
     return memory
 
 
-def _remove_folder(folder, attempts=20, pause=0.05):
+def _remove_folder(folder, attempts=40, pause=0.05):
     """[designed: #309] Remove a job's private folder. Windows can refuse to delete a file for a
     moment after the process that held it ended (WinError 32, seen on the Windows runner during
-    a cancel at startup); retry for about a second, then leave the temporary folder behind rather
-    than fail the release that already ended the job."""
+    a cancel at startup), so a refusal is retried for about two seconds. One that persists is
+    raised, keeping the job owned and retryable as #254 requires."""
     for attempt in range(attempts):
         try:
             folder.cleanup()
-            return True
+            return
         except PermissionError:
-            if attempt + 1 < attempts:
-                time.sleep(pause)
-    return False
+            if attempt + 1 == attempts:
+                raise
+            time.sleep(pause)
 
 
 class _PreparingProcess:

@@ -133,9 +133,10 @@ class WatchedJobsTests(unittest.TestCase):
                 self.assertEqual(self.owner.state,self.before)
                 self.jobs.close()
 
-    def test_cancel_survives_a_folder_windows_still_holds(self):
-        """[designed: #309] Windows can refuse to delete a file for a moment after its process
-        ended (WinError 32, seen on the Windows runner): cancel retries, then leaves the folder."""
+    def test_cancel_outlasts_a_brief_windows_lock_and_raises_a_lasting_one(self):
+        """[designed: #309; #254] Windows can refuse to delete a file for a moment after its
+        process ended (WinError 32, seen on the Windows runner): cancel retries that. A refusal
+        that lasts is raised with the job still owned, and a later cancel finishes it."""
         import tempfile as _tempfile
         real = _tempfile.TemporaryDirectory.cleanup
         for refusals in (2, 10**6):
@@ -149,16 +150,19 @@ class WatchedJobsTests(unittest.TestCase):
                         raise PermissionError(32, 'The process cannot access the file because it is being used by another process')
                     return real(directory)
                 with patch.object(_tempfile.TemporaryDirectory, 'cleanup', cleanup):
+                    if refusals == 2:
+                        self.jobs.cancel(token)
+                        self.assertEqual(calls[0], 3)
+                    else:
+                        with self.assertRaises(PermissionError):
+                            self.jobs.cancel(token)
+                        self.assertEqual(calls[0], 40)
+                        self.assertTrue(self.jobs.busy, 'a lasting refusal keeps the job owned (#254)')
+                if refusals != 2:
                     self.jobs.cancel(token)
                 self.assertFalse(self.jobs.busy);self.assertIsNone(self.jobs._folder)
-                # Two refusals then success removes it now; a folder still held after every retry
-                # is left to TemporaryDirectory's own finalizer instead of failing the cancel.
-                if refusals == 2:
-                    self.assertFalse(folder.exists())
-                self.assertEqual(calls[0], 3 if refusals == 2 else 20)
+                self.assertFalse(folder.exists())
                 self.assertEqual(self.owner.state, self.before)
-                if folder.exists():
-                    import shutil;shutil.rmtree(folder)
                 self.jobs.close();self.jobs = None
 
     def test_killed_worker_and_bounded_shutdown(self):
