@@ -92,8 +92,7 @@ def refresh(self,display,view):
     self.qualifying.setText(qualifying_text(display))
 
 
-# [confirmed: F023 §§4,7] Continent numbers 1..4 are Europe, America, Africa and Asia.
-CONTINENTS={1:'Europe',2:'America',3:'Africa',4:'Asia'}
+from goal2.desktop.model import CONTINENTS
 
 
 def qualifying_text(display):

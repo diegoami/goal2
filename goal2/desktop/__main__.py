@@ -8,9 +8,13 @@ def main(argv=None):
     parser=argparse.ArgumentParser(description='goal2 desktop country management')
     parser.add_argument('--template',type=Path);parser.add_argument('--data',required=True,type=Path)
     parser.add_argument('--save',type=Path,default=Path('.cache/desktop.g2save'))
-    parser.add_argument('--resume',type=Path);parser.add_argument('--country',type=int,default=1)
+    parser.add_argument('--resume',type=Path);parser.add_argument('--country',type=int)
     args=parser.parse_args(argv)
-    if bool(args.template)==bool(args.resume):parser.error('choose exactly one of --template or --resume')
+    # [designed: T86] Without --resume or --country the Launch window chooses; those two
+    # flags keep opening management directly for scripts.
+    direct=args.resume is not None or args.country is not None
+    if args.resume is not None and (args.template or args.country is not None):parser.error('--resume excludes --template and --country')
+    if args.country is not None and not args.template:parser.error('--country needs --template')
     try:
         from PySide6.QtWidgets import QApplication
     except ImportError:
@@ -18,19 +22,26 @@ def main(argv=None):
         return 2
     from goal2.desktop.model import DesktopModel
     from goal2.desktop.window import ManagementWindow
-    try:
-        model=(DesktopModel.from_save(args.resume,args.data) if args.resume
-               else DesktopModel.open(args.template,args.data,args.save,country=args.country))
-    except (OSError,ValueError) as exc:
-        print(str(exc),file=sys.stderr);return 2
+    windows=[]
+    def opened(model):
+        window=ManagementWindow(model);window.show();windows.append(window)
+    if direct:
+        try:
+            model=(DesktopModel.from_save(args.resume,args.data) if args.resume
+                   else DesktopModel.open(args.template,args.data,args.save,country=args.country))
+        except (OSError,ValueError) as exc:
+            print(str(exc),file=sys.stderr);return 2
     app=QApplication.instance() or QApplication(sys.argv[:1])
-    window=ManagementWindow(model);window.show()
+    if direct:opened(model)
+    else:
+        from goal2.desktop.launch import LaunchWindow
+        windows.append(LaunchWindow(args.data,args.template,args.save,opened));windows[-1].show()
     try:
         return app.exec()
     finally:
         # [designed: T69] Destroy widgets before QApplication/X11 plugin teardown.
         from PySide6.QtCore import QCoreApplication,QEvent
-        window.close();window.deleteLater()
+        for window in windows:window.close();window.deleteLater()
         QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
         app.shutdown()
 

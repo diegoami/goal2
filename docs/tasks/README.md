@@ -214,3 +214,11 @@ operational status.
 | #259 | #198 | lane 2 |
 | #259 | #242 | lane 2 |
 | #259 | #243 | lane 2 |
+
+### Lane 3 task files
+
+[designed: autonomous run, 2026-10-21] #260 is split into two independently mergeable slices.
+
+| Task | Title | Issue | Difficulty |
+| --- | --- | --- | --- |
+| [T86](T86.md) | Launch with Resume, Open another save and a reviewed new career | [#260](https://github.com/diegoami/goal2/issues/260) | Medium |

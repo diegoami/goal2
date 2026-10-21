@@ -19,7 +19,23 @@ from goal2.engine.savestate import Savestate
 # [designed: owner, 2026-10-20, T50] New campaign offers both source start calendars:
 # [confirmed: F025 §2 P8] 1990 opens at stage 5 (World Cup qualifying), 1992 at stage 2
 # (continental qualifying). 1990 stays the default.
-START_YEARS=((1990,'1990 · World Cup qualifying first'),(1992,'1992 · Continental qualifying first'))
+START_YEARS=((1990,'1990 (World Cup first)'),(1992,'1992 (Continental first)'))
+
+# [confirmed: F023 §§2-7 at goal2-archaeology 3656a2d26e0f57a410d648edeaa6cd9eb7d1f607] The
+# competition each calendar stage plays; [designed: T86] the wording.
+STAGES={2:'Continental qualifying',3:'Continental finals groups',4:'Continental semi-finals and final',
+        5:'World Cup qualifying',6:'World Cup play-offs',7:'World Cup finals groups',8:'World Cup knockout'}
+# [confirmed: F023 §§4,7] Continent numbers 1..4 are Europe, America, Africa and Asia.
+CONTINENTS={1:'Europe',2:'America',3:'Africa',4:'Asia'}
+# [designed: T86] Until #265 delivers manager names, the one manager is shown by number.
+MANAGER='Manager 1 (naming arrives later, #265)'
+
+
+def campaign_year(campaign):
+    """[derived: F025 §2 displayed year = base + 2 * word; docs/watched-kit-acceptance.md] The
+    source year of the campaign's current stage."""
+    word=2*(campaign.cycle-1)+int(campaign.stage>=5)-int(campaign.start_year%4==2)
+    return campaign.start_year+2*word
 
 
 class DesktopModel:
@@ -159,6 +175,36 @@ class DesktopModel:
                    goal_difference=r.goal_difference) for r in table]
         return dict(group,stage=campaign.stage,rows=rows)
 
+    def fixture_label(self,fixture):
+        """[designed: T86] Opponent and competition of a scheduled fixture, without claiming a home side."""
+        state=self.state;names=self.goaldat.country_names
+        opponent=fixture.side_b if fixture.side_a==state.managed_country else fixture.side_a
+        kind='Friendly' if fixture.kind==1 else 'Qualifier' if fixture.kind in (2,5) else STAGES.get(fixture.stage,'Competitive')
+        return f'{names[opponent]} / {kind}'
+
+    def summary(self):
+        """[designed: T86] What the Launch window shows of a validated career."""
+        state=self.state;names=self.goaldat.country_names;campaign=state.campaign
+        rows={'country':names[state.managed_country],'manager':MANAGER}
+        if campaign is None:
+            rows.update(campaign='Standalone friendly',next='Quick friendly',then='—',checkpoint='Between friendlies')
+        else:
+            completed=set(campaign.completed_fixture_ids)
+            pending=[f for f in campaign.fixtures if f.fixture_id not in completed]
+            rows['campaign']=f'{campaign_year(campaign)} {STAGES[campaign.stage]}'
+            rows['next']=self.fixture_label(pending[0]) if pending else 'Stage complete'
+            rows['then']=self.fixture_label(pending[1]) if len(pending)>1 else '—'
+            rows['checkpoint']=('Before '+names[pending[0].side_b if pending[0].side_a==state.managed_country else pending[0].side_a]
+                                if pending else 'After the last fixture of the stage')
+        captain=names_of(self,[state.captain])[0] if state.captain else 'chosen by the original at kickoff'
+        rows['team']=f'Confirmed / {len(state.managed_squad)} players / captain {captain}'
+        return rows
+
+    def countries(self):
+        """[confirmed: F007] Every country with its world rank, continent and rank within it."""
+        from goal2.game.new_game import country_rank
+        return [(n,self.goaldat.country_names[n],*country_rank(self.goaldat,n)) for n in range(1,129)]
+
     def qualifying(self):
         """[derived: F023 §4; designed: T50] Named stage-2 outcome, or None outside stage 2."""
         from goal2.game import continental_qualifying
@@ -209,3 +255,8 @@ class DesktopModel:
         except (OSError,ValueError,IndexError,KeyError,zipfile.BadZipFile,zlib.error,struct.error) as exc:
             raise ValueError(f'Cannot resume game: {exc}') from exc
         self.state=candidate;self.template_bytes=raw;self.save_path=Path(path)
+
+
+def names_of(model,words):
+    """[designed] Player names by player word."""
+    return [model.goaldat.player_names[w] for w in words]

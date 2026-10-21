@@ -8,6 +8,25 @@ python3 -m venv .venv
 . .venv/bin/activate
 python3 -m pip install '.[desktop]'
 python3 -m goal2.desktop --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --save .cache/desktop.g2save
+```
+
+[designed: T86; accepted vision #266 screen 01] That command opens the **Launch** window. Its
+**Saved career** panel summarises the save at `--save`, as the validating loader reads it:
+country, manager (the one-manager default; names arrive with #265), campaign year and stage,
+next and following fixture, checkpoint and confirmed team. **Resume** validates the file again
+and opens management. **Open another save** takes a path. A missing, corrupt or incompatible
+save names the reason and offers **Retry** and **Load another**, with nothing else changed.
+**New career** lists the 128 countries with world and continent rank. A private preview shows
+the first fixture and the twenty players, and names the profile categories this build does not
+show yet (G05/O12). The start year is 1990 or 1992. **Review** comes before **Start career**.
+Browsing, review and starting write no save; the new career is saved only when you save it.
+Arrows choose, Enter accepts and Esc goes back. The window keeps its text size at 900×640 and
+scrolls the preview instead ([original start, load and save](original-game/startup-save-replay.md)).
+`--resume <save>`, or `--country <n>` with `--template`, still opens management directly for
+scripts. Check it with `python3 tools/desktop-ui/launch.py --template … --data …`, offscreen and
+under `QT_QPA_PLATFORM=xcb xvfb-run -a -s "-screen 0 3200x2000x24"` with `QT_SCALE_FACTOR` 1 and 2.
+
+```sh
 python3 -m goal2.desktop --resume .cache/desktop.g2save --data .cache/GOAL.DAT
 ```
 
