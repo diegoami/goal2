@@ -228,3 +228,4 @@ operational status.
 | [T90](T90.md) | The management shell in the accepted original style | [#261](https://github.com/diegoami/goal2/issues/261) | Medium |
 | [T91](T91.md) | The Country desk, Team and Pool pages in the accepted original style | [#261](https://github.com/diegoami/goal2/issues/261) | Medium |
 | [T92](T92.md) | Rename a player and the manager | [#293](https://github.com/diegoami/goal2/issues/293) | Medium |
+| [T93](T93.md) | Localized names for the national pool | [#295](https://github.com/diegoami/goal2/issues/295) | Medium |

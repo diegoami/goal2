@@ -84,6 +84,13 @@ is printable CP437, stripped of outer spaces; the original name removes a rename
 the session save (version 4, written only when something is renamed) and never in `GOAL.DAT`;
 every view reads names through the game. A new campaign keeps the manager's name.
 
+[designed: owner, 2026-10-21; T93, #295] The national pool's 80 players carry common surnames of
+the managed nation for the 32 best-ranked countries in GOAL.DAT and Greece
+(`goal2/data/pool_names.json`, written for the rebuild, not real players). The original gives
+every country the same mostly English pool names [confirmed: F002 R003, F007]; other countries
+keep them. The names follow the managed country and are never saved; renames apply on top. The
+pool search ignores accents ("kovacs" finds "Kovács").
+
 [designed: T78] Fixtures & results groups the next named fixture, last completed
 score, engine provenance, goals and a read-only standings snapshot. Ordinary
 goals retain source A/B order; competitive regulation, cumulative extra-time

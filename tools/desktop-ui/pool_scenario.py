@@ -11,6 +11,20 @@ import tempfile
 import traceback
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[2]
+def type_text(widget,text):
+    """Type text as key events; QTest.keyClicks cannot synthesize non-ASCII keys (localized
+    pool names, T93), so those characters arrive as key events carrying their text."""
+    from PySide6.QtGui import QKeyEvent
+    from PySide6.QtCore import QEvent,Qt
+    from PySide6.QtTest import QTest
+    from PySide6.QtWidgets import QApplication
+    for ch in text:
+        if ch.isascii():QTest.keyClicks(widget,ch)
+        else:
+            for kind in (QEvent.Type.KeyPress,QEvent.Type.KeyRelease):
+                QApplication.sendEvent(widget,QKeyEvent(kind,Qt.Key.Key_unknown,Qt.KeyboardModifier.NoModifier,ch))
+
+
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def fresh(path):
     path=Path(path)
@@ -59,7 +73,7 @@ def scenario(args):
         def search(text):
             before=copy.deepcopy(m.state);draft=copy.deepcopy(w.draft());focus(w.search)
             QTest.keyClick(w.search,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier);QTest.keyClick(w.search,Qt.Key.Key_Backspace)
-            if text:QTest.keyClicks(w.search,text)
+            if text:type_text(w.search,text)
             app.processEvents();stable(before,'search/filter',draft)
         def position(code):
             before=copy.deepcopy(m.state);draft=copy.deepcopy(w.draft());focus(w.position);QTest.keyClick(w.position,Qt.Key.Key_Home)

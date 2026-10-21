@@ -15,6 +15,20 @@ from goal2.desktop.model import DesktopModel
 from goal2.desktop.window import ManagementWindow
 
 
+def type_text(widget,text):
+    """Type text as key events; QTest.keyClicks cannot synthesize non-ASCII keys (localized
+    pool names, T93), so those characters arrive as key events carrying their text."""
+    from PySide6.QtGui import QKeyEvent
+    from PySide6.QtCore import QEvent,Qt
+    from PySide6.QtTest import QTest
+    from PySide6.QtWidgets import QApplication
+    for ch in text:
+        if ch.isascii():QTest.keyClicks(widget,ch)
+        else:
+            for kind in (QEvent.Type.KeyPress,QEvent.Type.KeyRelease):
+                QApplication.sendEvent(widget,QKeyEvent(kind,Qt.Key.Key_unknown,Qt.KeyboardModifier.NoModifier,ch))
+
+
 def management(template,data,screenshot=None):
     app=QApplication.instance() or QApplication([])
     with tempfile.TemporaryDirectory() as folder:
@@ -186,7 +200,7 @@ def pool(template,data,screenshot=None):
         def search(text):
             reveal(window.search);window.search.setFocus();QTest.keyClick(window.search,Qt.Key.Key_A,Qt.KeyboardModifier.ControlModifier)
             QTest.keyClick(window.search,Qt.Key.Key_Backspace)
-            if text:QTest.keyClicks(window.search,text)
+            if text:type_text(window.search,text)
             app.processEvents()
         def position(code):
             reveal(window.position);window.position.setFocus();QTest.keyClick(window.position,Qt.Key.Key_Home)

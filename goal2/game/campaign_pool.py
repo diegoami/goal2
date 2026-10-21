@@ -58,6 +58,11 @@ def window(state):
     return {'allowed':True,'reason':'Between supported friendlies (provisional Q008 policy)'}
 
 
+def fold(text):
+    import unicodedata
+    return ''.join(c for c in unicodedata.normalize('NFKD', text) if not unicodedata.combining(c)).casefold()
+
+
 def view(state, goaldat, *, query='', position=None):
     """[derived: F011] Position+6 ordering; [designed] ID breaks equal keys.
 
@@ -82,7 +87,8 @@ def view(state, goaldat, *, query='', position=None):
                 'position':record[6],'position_group':groups[lines[record[6]]],'energy':record[14],'confidence':record[12],
                 'availability':eligibility.info(record)}
     rows=[row(w) for w in sorted(reserves,key=lambda w:(state.players[w][6],w))]
-    rows=[x for x in rows if query.casefold() in x['name'].casefold() and (position is None or x['position']==position)]
+    # [designed: T93] Accents fold away, so "kovacs" finds the localized "Kovács".
+    rows=[x for x in rows if fold(query) in fold(x['name']) and (position is None or x['position']==position)]
     return {'squad':[row(w) for w in sorted(state.managed_squad,key=lambda w:(state.players[w][6],w))], 'reserves':rows,'window':window(state)}
 
 
