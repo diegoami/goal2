@@ -119,6 +119,12 @@ class ManagementWindow(QMainWindow):
         self.pages[index].verticalScrollBar().setValue(0)
         self.pages[index].heading.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
+    def team_view(self,index):
+        """[designed: T99] The Team page's views: 0 roster and card, 1 Team tactics, 2 the
+        attribute table. Presentation only; the draft is untouched."""
+        from goal2.desktop.squad_page import show_view
+        show_view(self,index)
+
     @property
     def display_model(self):
         # [designed: #181] A preview owns generated records, never the active game.
@@ -280,7 +286,7 @@ class ManagementWindow(QMainWindow):
         active=not busy and self.preview is None
         # [designed: #241] Idle previews browse rows/details; management stays active-only.
         for widget in (self.table,self.pool_panel):widget.setEnabled(not busy)
-        for widget in (self.captain,self.confirm,self.cancel,self.save,self.save_as,self.play,self.watch,self.standings,self.rename,self.desk_manager):widget.setEnabled(active)
+        for widget in (self.captain,self.confirm,self.confirm_plan,self.cancel,self.save,self.save_as,self.play,self.watch,self.standings,self.rename,self.desk_manager):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
         from goal2.desktop.pool_page import context as pool_context
         pool_context(self,busy)
