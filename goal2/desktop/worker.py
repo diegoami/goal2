@@ -2,6 +2,7 @@
 [derived: T41/T42/T43/T44/T45] Existing friendly runner owns condition changes.
 """
 import copy
+import fcntl  # T98 Done-when 2: a deliberate POSIX-only fault; reverted next commit
 import sys
 from goal2.engine.savestate import Savestate
 from goal2.game.state import to_savestate
