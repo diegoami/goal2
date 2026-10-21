@@ -26,14 +26,15 @@ attack.
 | 6 | Central midfield | Ç | Ç |
 | 7 | Left midfield | M | **m** |
 | 8 | Right midfield | M | M |
-| 9 | Forward midfield | F | F (not in the owner's list; owner to confirm) |
+| 9 | Forward midfield | F | F |
 | 10 | Left winger | W | **w** |
 | 11 | Right winger | W | W |
 | 12 | Centre forward | ¢ | ¢ |
 | 13 | Striker | $ | $ |
 
-[designed: owner, 2026-10-21] Lower case marks the left-hand back, midfielder and winger. The
-original prints both sides in one letter. [designed] The codes given to the fictional players
+[designed: owner, 2026-10-21; confirmed by the owner the same day, with F] Lower case marks the
+left-hand back, midfielder and winger. The original prints both sides in one letter. F (forward
+midfield) keeps the original's code. [designed] The codes given to the fictional players
 of these sheets are in [codes.json](codes.json), consistent with each player's two-letter role
 and the 4-4-2 spots (right to left: B C C b, M Ç Ç m, $ ¢). Regenerate and check with
 `python3 docs/vision-266/render.py --role-codes [--check]` (Pillow and Inkscape). Without
