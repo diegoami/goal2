@@ -222,3 +222,4 @@ operational status.
 | Task | Title | Issue | Difficulty |
 | --- | --- | --- | --- |
 | [T86](T86.md) | Launch with Resume, Open another save and a reviewed new career | [#260](https://github.com/diegoami/goal2/issues/260) | Medium |
+| [T87](T87.md) | Game save menu, Save as, and explicit replacement and quit decisions | [#260](https://github.com/diegoami/goal2/issues/260) | Medium |

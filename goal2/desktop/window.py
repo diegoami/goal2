@@ -27,12 +27,17 @@ class ManagementWindow(QMainWindow):
         self.standings.clicked.connect(self.show_standings)
         self.watch.clicked.connect(self.start_watched)
         self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
-        self.new.clicked.connect(lambda:self.action(lambda:model.new_campaign(self.country.currentData(),self.start_year.currentData()),'New campaign created',replace=True))
-        self.friendly.clicked.connect(lambda:self.action(lambda:model.new_friendly(self.country.currentData()),'New standalone friendly created',replace=True))
+        # [designed: T87] Replacing the game asks first when progress or a draft would be lost.
+        self.new.clicked.connect(lambda:self.decide('Start a new campaign') and self.action(lambda:model.new_campaign(self.country.currentData(),self.start_year.currentData()),'New campaign created',replace=True))
+        self.friendly.clicked.connect(lambda:self.decide('Start a standalone friendly') and self.action(lambda:model.new_friendly(self.country.currentData()),'New standalone friendly created',replace=True))
         self.play.clicked.connect(self.start_match);self.stop.clicked.connect(self.cancel_match)
         self.confirm.clicked.connect(self.confirm_draft);self.cancel.clicked.connect(lambda:self.refresh('Draft discarded'))
-        self.save.clicked.connect(lambda:self.action(lambda:model.save(self.path.text()),'Game saved; unconfirmed edits are excluded'))
-        self.resume.clicked.connect(lambda:self.action(lambda:model.resume(self.path.text()),'Game resumed',replace=True))
+        self.save.clicked.connect(lambda:self.save_to(self.path.text()))
+        self.save_as.clicked.connect(self.save_as_dialog)
+        self.resume.clicked.connect(lambda:self.decide('Resume another save') and self.action(lambda:model.resume(self.path.text()),'Game resumed',replace=True))
+        self._closing=False
+        from goal2.desktop.save_page import game_menu
+        game_menu(self)
         self.search.textChanged.connect(self.refresh_pool);self.position.currentIndexChanged.connect(self.refresh_pool)
         self.exchange.clicked.connect(self.exchange_selected)
         self.table.itemChanged.connect(self.selection_changed)
@@ -156,6 +161,8 @@ class ManagementWindow(QMainWindow):
         self.update_captain();self.captain.setCurrentIndex(max(0,self.captain.findData(state.captain)))
         for element,box in self.tactics:box.setChecked(bool(state.country_tactics & (1<<(element-1))))
         self.path.setText(str(self.model.save_path));self._refreshing=False
+        # [designed: T87] What the window shows for the confirmed team; a draft is a change from it.
+        if self.preview is None:self.shown_draft=self.draft()
         self.refresh_squad()
         self.refresh_pool()
         self.set_busy(getattr(self.model,'match_pending',False))
@@ -196,7 +203,7 @@ class ManagementWindow(QMainWindow):
         active=not busy and self.preview is None
         # [designed: #241] Idle previews browse rows/details; management stays active-only.
         for widget in (self.table,self.pool_panel):widget.setEnabled(not busy)
-        for widget in (self.captain,self.confirm,self.cancel,self.save,self.play,self.watch,self.standings):widget.setEnabled(active)
+        for widget in (self.captain,self.confirm,self.cancel,self.save,self.save_as,self.play,self.watch,self.standings):widget.setEnabled(active)
         for _,box in self.tactics:box.setEnabled(active)
         from goal2.desktop.pool_page import context as pool_context
         pool_context(self,busy)
@@ -268,7 +275,76 @@ class ManagementWindow(QMainWindow):
         if self.competitive.busy:self.competitive.cancel(self.competitive.token)
         self.set_busy(False);self.show_halftime();self.refresh('Match cancelled; game unchanged')
 
+    # [designed: T87] Save, Save as, and the decisions before replacing or quitting -----------------
+    def losses(self):
+        """What replacing or quitting now would lose, in words."""
+        lost=[]
+        if self.model.unsaved:lost.append('progress confirmed since the last save')
+        draft=self.active_draft if self.preview is not None else self.draft()
+        shown=getattr(self,'shown_draft',None)
+        # Compared as a set: the engine's squad reorder (#280) is not a manager's edit.
+        if draft is not None and shown is not None and (set(draft[0]),draft[1],draft[2])!=(set(shown[0]),shown[1],shown[2]):
+            lost.append('an unconfirmed squad, captain or tactics draft')
+        return lost
+
+    def ask(self,title,text,choices):
+        """A modal question; choices are (key, label) with the safest last. Returns the key."""
+        from PySide6.QtWidgets import QMessageBox
+        box=QMessageBox(self);box.setWindowTitle(title);box.setText(text);box.setObjectName('decision')
+        buttons={box.addButton(label,QMessageBox.ButtonRole.AcceptRole if key!='cancel' else QMessageBox.ButtonRole.RejectRole):key
+                 for key,label in choices}
+        cancel=[b for b,k in buttons.items() if k=='cancel']
+        if cancel:box.setEscapeButton(cancel[0]);box.setDefaultButton(cancel[0])
+        box.exec()
+        return buttons.get(box.clickedButton(),'cancel')
+
+    def decide(self,verb):
+        """True when the caller may go on: nothing would be lost, or the player chose."""
+        lost=self.losses();running=bool(getattr(self.model,'match_pending',False))
+        if not lost and not running:return True
+        text=verb+'?\n'+('\n'.join('This loses '+item+'.' for item in lost))
+        choices=[]
+        if running:
+            text+='\nThe running match will be cancelled; saving waits until it has finished.'
+        elif self.model.unsaved:
+            choices.append(('save','Save and continue'))
+        choices+=[('discard','Continue without saving'),('cancel','Cancel')]
+        choice=self.ask(verb,text.strip(),choices)
+        if choice=='cancel':
+            self.status.setText(verb+' cancelled; nothing changed');return False
+        if choice=='save':return self.save_to(str(self.model.save_path))
+        return True
+
+    def save_to(self,path):
+        """Save the confirmed state; a different existing file is overwritten only after asking."""
+        from pathlib import Path
+        if getattr(self.model,'match_pending',False):
+            self.status.setText('Saving during a match is unavailable; cancel or finish first');return False
+        target=Path(path).expanduser()
+        if target.exists() and target.resolve()!=self.model.save_path.resolve():
+            if self.ask('Overwrite save',f'{target} already exists. Replace it with this game?',
+                        (('overwrite','Overwrite'),('cancel','Cancel')))!='overwrite':
+                self.status.setText('Save cancelled; '+str(target)+' was not changed');return False
+        try:self.model.save(target)
+        except (OSError,ValueError) as exc:
+            self.status.setText(str(exc));return False
+        self.path.setText(str(self.model.save_path))
+        self.status.setText('Game saved to '+str(self.model.save_path)+('; the unconfirmed draft is not included' if self.losses() else ''))
+        return True
+
+    def save_as_dialog(self):
+        from PySide6.QtWidgets import QInputDialog
+        path,ok=QInputDialog.getText(self,'Save as','Save file',text=str(self.model.save_path))
+        if ok and path.strip():self.save_to(path.strip())
+
+    def quit_game(self):
+        if self.decide('Quit'):
+            self._closing=True;self.close()
+
     def closeEvent(self,event):
+        # [designed: T87] Only a user's close asks; programmatic close() (tests, scripts) never blocks.
+        if event.spontaneous() and not self._closing and not self.decide('Quit'):
+            event.ignore();return
         self.timer.stop();self.watch_timer.stop();self.competitive_timer.stop();self.watched.close();self.jobs.cancel();self.competitive.close();super().closeEvent(event)
 
     def refresh_pool(self):

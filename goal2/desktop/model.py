@@ -43,6 +43,8 @@ class DesktopModel:
     def __init__(self,goaldat,template_bytes,save_path):
         self.goaldat=goaldat;self.template_bytes=template_bytes
         self.save_path=Path(save_path);self.state=None
+        # [designed: T87] The state last created, resumed or saved; later confirmed changes are unsaved.
+        self.saved=None
 
     @classmethod
     def open(cls,template_path,data_path,save_path,*,country=1):
@@ -73,12 +75,20 @@ class DesktopModel:
         candidate,_=start_opening_campaign(self.goaldat,self.template_bytes,managed_country=country,
                                          start_year=start_year,seed_7b62=4660,seed_8336=33590)
         self.view(candidate)
-        self.state=candidate
+        self.state=candidate;self.mark_saved()
+
+    def mark_saved(self):
+        self.saved=copy.deepcopy(self.state)
+
+    @property
+    def unsaved(self):
+        """[designed: T87] Confirmed changes since the last create, resume or save."""
+        return self.state!=self.saved
 
     def new_friendly(self,country):
         """[designed: T70] Explicit fresh standalone mode, no campaign ledger."""
         self.new_campaign(country)
-        self.state.campaign=None
+        self.state.campaign=None;self.mark_saved()
 
     def pool_view(self,*,query='',position=None):
         """[derived: T45; designed: T71] Display-only source pool view."""
@@ -242,7 +252,7 @@ class DesktopModel:
             save_state(Path(path),self.state,self.template_bytes)
         except (OSError,ValueError) as exc:
             raise ValueError(f'Cannot save game: {exc}') from exc
-        self.save_path=Path(path)
+        self.save_path=Path(path);self.mark_saved()
 
     def resume(self,path):
         """[designed] Validate the complete saved continuation before publishing."""
@@ -254,7 +264,7 @@ class DesktopModel:
             self.view(candidate)
         except (OSError,ValueError,IndexError,KeyError,zipfile.BadZipFile,zlib.error,struct.error) as exc:
             raise ValueError(f'Cannot resume game: {exc}') from exc
-        self.state=candidate;self.template_bytes=raw;self.save_path=Path(path)
+        self.state=candidate;self.template_bytes=raw;self.save_path=Path(path);self.mark_saved()
 
 
 def names_of(model,words):
