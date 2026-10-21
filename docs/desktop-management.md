@@ -48,9 +48,20 @@ play remain Qt/Unicorn-independent. Linux Qt needs its platform libraries; X11
 uses libxcb-cursor0 and libxkbcommon-x11-0 in addition to existing X/GL libraries.
 Offscreen acceptance does not replace the actual X11 window check.
 
-[designed: T74] The persistent country header sits above five destinations:
-**Overview** (Ctrl+1), **Squad & tactics** (Ctrl+2), **National pool** (Ctrl+3),
-**Fixtures & results** (Ctrl+4), and **Save / resume** (Ctrl+5).
+[designed: T74; renamed T90] Five destinations: **Country** (Ctrl+1, formerly Overview),
+**Team** (Ctrl+2, formerly Squad & tactics), **Pool** (Ctrl+3), **Fixtures & match** (Ctrl+4)
+and **Save** (Ctrl+5).
+
+[designed: T90; accepted vision #266 screens 02/03/11/14] The window is the accepted original
+style: black screens, DejaVu Sans Mono, cyan frames, a yellow country, gold labels, green values,
+magenta hints and a yellow focus. A **top bar** shows GOAL2, the country, the career line
+(manager / year / stage), the context and the next fixture; **[Top ^]** retracts it. A **side
+bar** holds the five destinations; **[< Hide]** retracts it, and a window narrower than 1100 px
+starts with it retracted. A retracted bar leaves its handle (**[v Top]**, **[Menu >]**) in one
+short row above the page. **F11** hides both bars, or restores both when either is hidden.
+Retracting moves focus out of the bar; restoring returns it. Page, drafts, scroll and selection
+are untouched. The browse-another-country selector is on the Country page. Role codes use the
+original's line colours [confirmed: F008 `DS:699A`].
 
 [designed: T78] Fixtures & results groups the next named fixture, last completed
 score, engine provenance, goals and a read-only standings snapshot. Ordinary
@@ -73,9 +84,8 @@ role as the original's one-letter code (G S C b B D Ç m M F w W ¢ $; club role
 coloured by line, and the pool filter lists the codes with the original's position names. No
 attribute total (the overall ability byte) is shown anywhere, including the browser UI.
 
-[designed: T75] The header shows the displayed country's full name beside an
-original generic shirt and neutral decorative stripe. The art is a fallback for
-every country, not a national kit. Overview shows that country's next fixture in
+[designed: T75; T90] The top bar shows the displayed country's full name (the T75 generic
+shirt art is no longer drawn in it). Country shows that country's next fixture in
 source A/B order and last result with its provenance, or an honest empty state.
 **Return to active game** restores the active country and its unconfirmed draft;
 New campaign and New standalone friendly remain explicit replacement actions.

@@ -49,7 +49,7 @@ def shell(args):
             'transitions':[],'captures':[],'reachable':[]}
     # [designed] Both enabled and disabled reading colors, and the focus boundary, are measured.
     pairs=(('body','text','background',4.5),('panel text','text','panel',4.5),
-           ('disabled','secondary','panel',4.5),('table','ink','paper',4.5),
+           ('disabled','secondary','panel',4.5),('table','text','paper',4.5),  # [designed: T90] light text on the black table
            ('selected','ink','accent',4.5),('focus','focus','panel',3),('control boundary','divider','panel',3),('selected focus','ink','accent',3))
     report['contrast']={}
     for name,foreground,background,minimum in pairs:
@@ -64,7 +64,7 @@ def shell(args):
         screen=window.screen();report['available']=[screen.availableGeometry().width(),screen.availableGeometry().height()]
         assert hasattr(window,'navigation') and len(window.navigation)==5,'five-destination navigation is absent'
         assert len(window.pages)==5,'five destination pages are absent'
-        names=('Overview','Squad & tactics','National pool','Fixtures & results','Save / resume')
+        names=('Country','Team','Pool','Fixtures & match','Save')
         assert tuple(b.accessibleName() for b in window.navigation)==names,'navigation names/order changed'
         starts=[]
         patches=[patch.object(controller,'start',side_effect=lambda *a,kind=kind,**kw:starts.append(kind))
@@ -353,6 +353,8 @@ def overview(args):
                 QTest.mouseClick(button,Qt.MouseButton.LeftButton);app.processEvents()
             assert hasattr(w,'overview_country_identity'),'country identity and overview hierarchy are absent'
             def select(number):
+                # [designed: T90] The country selector lives on the Country page.
+                w.navigate(0);app.processEvents()
                 active(w.country);QTest.keyClick(w.country,Qt.Key.Key_Down,Qt.KeyboardModifier.AltModifier,80);app.processEvents();QTest.qWait(100)
                 view=w.country.view();assert view.isVisible(),'country popup did not open'
                 assert view.hasFocus() and app.activePopupWidget() is view.window(),'country popup does not own native input'
