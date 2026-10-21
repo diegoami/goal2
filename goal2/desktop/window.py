@@ -155,8 +155,11 @@ class ManagementWindow(QMainWindow):
                 self.active_draft=None
             else:
                 from goal2.desktop.model import DesktopModel
-                candidate=DesktopModel(self.model.goaldat,self.model.template_bytes,self.model.save_path)
+                # [designed: T92] A preview starts from GOAL.DAT's names (renames belong to the
+                # active game) and shows the same manager, whom a new campaign keeps.
+                candidate=DesktopModel(self.model._goaldat,self.model.template_bytes,self.model.save_path)
                 candidate.new_campaign(country,self.start_year.currentData())
+                candidate.state.manager_name=self.model.state.manager_name
                 if self.preview is None:self.active_draft=self.draft()
                 self.preview=candidate;self.refresh()
         except (OSError,ValueError,IndexError,KeyError) as exc:

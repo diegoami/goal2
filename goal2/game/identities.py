@@ -65,6 +65,9 @@ def to_data(state):
     """The save's `identities` object, or None when nothing is renamed."""
     if not state.player_renames and not state.manager_name:
         return None
+    # Refuse a malformed rename before it is saved, not when the save is resumed.
+    from_data({'players': {str(w): n for w, n in state.player_renames.items()},
+               **({'manager': state.manager_name} if state.manager_name else {})}, 3061)
     data = {'players': {str(w): n for w, n in sorted(state.player_renames.items())}}
     if state.manager_name:
         data['manager'] = state.manager_name

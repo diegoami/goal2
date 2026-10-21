@@ -123,6 +123,18 @@ class Renaming(unittest.TestCase):
             self.model.match_pending = False
         self.assertEqual(called, []);self.assertEqual(self.model.state.player_renames, {})
 
+    def test_a_preview_shows_original_names_and_the_same_manager(self):
+        w = self.window;word = self.model.state.managed_squad[0]
+        self.model.rename_player(word, 'Smith');self.model.rename_manager('Coach');w.refresh()
+        w.country.setCurrentIndex(w.country.findData(13));self.app.processEvents()
+        self.assertEqual(w.preview.goaldat.player_names[word], self.model._goaldat.player_names[word])
+        self.assertTrue(w.career_line.text().startswith('Coach / '))
+
+    def test_a_malformed_rename_is_refused_on_save(self):
+        self.model.state.player_renames = {5: 'Thirteenchars'}
+        with self.assertRaises(SessionSaveError):
+            encode(self.model.state, self.model.template_bytes)
+
     def test_a_malformed_identities_object_is_refused(self):
         self.model.rename_player(self.model.state.managed_squad[0], 'Smith')
         doc = document(self.model)
