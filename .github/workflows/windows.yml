@@ -70,8 +70,13 @@ jobs:
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
           python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee windows-premerge.log
       - name: Native scenarios (worker, saves, two windows)
-        if: ${{ hashFiles('.cache/GOAL.DAT') != '' }}
         run: |
+          # hashFiles() did not guard this step (it ran with .cache/ holding only the archaeology
+          # clone), so the shell checks the original files itself.
+          if [ ! -f .cache/GOAL.DAT ] || [ ! -f .cache/e010-r0008-halftime.sav ]; then
+            echo "No original files (GOAL2_RCLONE_TOKEN unset): the native scenarios skip."
+            exit 0
+          fi
           mkdir -p windows-evidence
           A="--template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT"
           for s in worker management launch campaign-friendlies; do
