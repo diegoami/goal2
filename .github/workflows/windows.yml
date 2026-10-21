@@ -73,6 +73,7 @@ jobs:
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
           python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee windows-premerge.log
       - name: Native scenarios (worker, saves, two windows)
+        shell: bash --noprofile --norc -o pipefail {0}
         run: |
           # hashFiles() did not guard this step (it ran with .cache/ holding only the archaeology
           # clone), so the shell checks the original files itself.
@@ -82,16 +83,20 @@ jobs:
           fi
           mkdir -p windows-evidence
           A="--template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT"
+          # Each scenario's full output is kept (windows-evidence/<name>.log); the log shows its tail.
+          run() { name=$1;shift;echo "== $name" | tee -a windows-evidence/scenarios.log
+                  "$@" > windows-evidence/$name.log 2>&1;code=$?;tail -n 5 windows-evidence/$name.log | tee -a windows-evidence/scenarios.log
+                  [ $code = 0 ] || echo "FAIL $name (exit $code)" | tee -a windows-evidence/scenarios.log; }
           for s in worker management launch campaign-friendlies; do
-            echo "== acceptance $s"
-            python tools/desktop-ui/acceptance.py --scenario $s $A --screenshot windows-evidence/acceptance-$s.png 2>&1 | tail -n 5 | tee -a windows-evidence/scenarios.log
+            run acceptance-$s python tools/desktop-ui/acceptance.py --scenario $s $A --screenshot windows-evidence/acceptance-$s.png
           done
+          # The redesign scenarios check layout at scale 1 and 2, offscreen as on Linux
+          # (docs/desktop-management.md): at scale 2 the 900x640 window needs 1800x1280, more than
+          # the runner's screen, which would clamp it. Native windows are the scenarios above and below.
           for s in shell overview squad pool; do
-            echo "== redesign $s"
-            python tools/desktop-ui/redesign.py --scenario $s $A --evidence-dir windows-evidence/redesign-$s 2>&1 | tail -n 5 | tee -a windows-evidence/scenarios.log
+            run redesign-$s env QT_QPA_PLATFORM=offscreen python tools/desktop-ui/redesign.py --scenario $s $A --evidence-dir windows-evidence/redesign-$s
           done
-          echo "== watched (Qt and SDL windows)"
-          python tools/desktop-ui/watched.py 2>&1 | tail -n 5 | tee -a windows-evidence/scenarios.log
+          run watched python tools/desktop-ui/watched.py
           ! grep -E "Error|FAIL" windows-evidence/scenarios.log
       - name: Keep only screenshots and logs
         if: always()
