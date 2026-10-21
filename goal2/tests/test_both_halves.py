@@ -42,7 +42,7 @@ def _fetch_e010(n: int = 1) -> bytes:
         for f in CACHE.iterdir():
             if f.name.endswith(suffix):
                 if f != sav_path:
-                    f.rename(sav_path)
+                    f.replace(sav_path)  # [designed: #278] overwrites on Windows too
                 break
     if not sav_path.is_file():
         raise FileNotFoundError(f"E010-r{n:04d} savestate not found in {CACHE}")

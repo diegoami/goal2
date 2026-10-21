@@ -117,7 +117,7 @@ def _fetch_e006_state() -> bytes:
         # Look for an existing file with the release asset name first.
         for f in CACHE.iterdir():
             if f.name.startswith(E006_R0001_SHA[:16]) and f.suffix == ".sav":
-                f.rename(sav_path)
+                f.replace(sav_path)  # [designed: #278] overwrites on Windows too
                 break
         if not sav_path.is_file():
             subprocess.run(
@@ -129,7 +129,7 @@ def _fetch_e006_state() -> bytes:
             for f in CACHE.iterdir():
                 if f.name.startswith(E006_R0001_SHA[:16]) and f.suffix == ".sav":
                     if f != sav_path:
-                        f.rename(sav_path)
+                        f.replace(sav_path)  # [designed: #278] overwrites on Windows too
                     break
     data = sav_path.read_bytes()
     if hashlib.sha256(data).hexdigest() != E006_R0001_SHA:
