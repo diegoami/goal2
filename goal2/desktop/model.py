@@ -84,9 +84,9 @@ class DesktopModel:
     @property
     def goaldat(self):
         from goal2.game.identities import named
-        renames=self.state.player_renames if self.state is not None else {}
-        if not renames:return self._goaldat
-        key=(id(self._goaldat),tuple(sorted(renames.items())))
+        if self.state is None:return self._goaldat
+        # [designed: T93] The managed country's localized pool, then the renames.
+        key=(id(self._goaldat),self.state.managed_country,tuple(sorted(self.state.player_renames.items())))
         if getattr(self,'_named',(None,))[0]!=key:self._named=(key,named(self._goaldat,self.state))
         return self._named[1]
 
@@ -103,7 +103,7 @@ class DesktopModel:
         """[designed: T92] Rename a squad or pool player of the active game; returns the name."""
         from goal2.game import identities
         candidate=copy.deepcopy(self.state)
-        name=identities.rename_player(candidate,self._goaldat,word,text)
+        name=identities.rename_player(candidate,identities.base(self._goaldat,candidate),word,text)
         self.state=candidate
         return name
 

@@ -50,8 +50,18 @@ def rename_manager(state, text):
     return state.manager_name
 
 
+def base(goaldat, state):
+    """The names a rename starts from: GOAL.DAT's, with the managed country's localized pool
+    (goal2.game.pool_names, T93)."""
+    if state is None:
+        return goaldat
+    from goal2.game.pool_names import localize
+    return localize(goaldat, state.managed_country)
+
+
 def named(goaldat, state):
-    """GOAL.DAT's names with this session's renames applied; the same object when there are none."""
+    """The names every view shows: base() with this session's renames applied."""
+    goaldat = base(goaldat, state)
     renames = getattr(state, 'player_renames', None) if state is not None else None
     if not renames:
         return goaldat
