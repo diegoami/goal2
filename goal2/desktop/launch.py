@@ -44,8 +44,9 @@ QComboBox, QLineEdit {{background:{COLORS['background']};color:{COLORS['list']};
 QComboBox:focus, QLineEdit:focus, QListWidget:focus {{border:3px solid {COLORS['focus']};}}
 """
 HINT = 'Arrows: choose / Enter: accept / Esc: back / Existing saves stay yours'
-# [designed: T86] The original country card's categories this build does not show yet.
-UNAVAILABLE = 'Tactics and skill profile: not shown yet (profile data, G05/O12)'
+# [designed: T89] Each page names only its own keys, so the line never wraps.
+HINTS = {0: HINT, 1: 'Arrows: country / Enter: review / Space: players / Esc: back',
+         2: 'Enter: start / Esc: back to countries', 3: 'Arrows: player / Esc: back to countries'}
 
 
 def fields(layout, rows):
@@ -177,17 +178,12 @@ class LaunchWindow(QMainWindow):
         self.to_players.clicked.connect(self.show_players);body.addWidget(self.to_players)
         self.country_list.installEventFilter(self)
         layout.addWidget(left, 2)
-        # [designed: accepted vision #266 screen 11] A small window scrolls the preview pane
-        # rather than shrinking or clipping its text.
-        right = QFrame();right.setObjectName('newPanel');side = QVBoxLayout(right)
-        heading = QLabel('PREVIEW');heading.setObjectName('newHeading');side.addWidget(heading)
-        self.preview_country = QLabel();self.preview_country.setObjectName('previewCountry');side.addWidget(self.preview_country)
-        self.preview_fields = fields(side, (('ranking', 'RANKING'), ('first', 'FIRST'), ('profile', 'PROFILE')))
-        players = QLabel('PLAYERS');players.setObjectName('newHeading');side.addWidget(players)
-        self.roster = QLabel();self.roster.setObjectName('previewRoster');self.roster.setWordWrap(True)
-        self.roster.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse);side.addWidget(self.roster, 1)
+        # [designed: T89; accepted vision #266 screen 11] The original's country card; a small
+        # window stacks and scrolls it rather than shrinking or clipping its text.
+        from goal2.desktop.country_card import CountryCardView
+        self.country_card = CountryCardView()
         scroll = QScrollArea();scroll.setObjectName('previewPane');scroll.setWidgetResizable(True)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);scroll.setWidget(right)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);scroll.setWidget(self.country_card)
         scroll.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         layout.addWidget(scroll, 3)
         self.pages.addWidget(page)
@@ -214,15 +210,10 @@ class LaunchWindow(QMainWindow):
         if country is None:return
         self.browser.new_campaign(country, year)
         # Every value below reads the private candidate only.
-        number, name, world, continent, within = self.browser.countries()[country - 1]
-        self.preview_country.setText(name.upper())
-        self.preview_fields['ranking'].setText(f'World {world} / {CONTINENTS[continent]} {within}')
+        from goal2.game.country_card import card
         summary = self.browser.summary()
-        self.preview_fields['first'].setText(f"{summary['campaign']}: {summary['next']}")
-        self.preview_fields['profile'].setText(UNAVAILABLE)
-        rows = self.browser.view()['players']
-        # [designed: owner, 2026-10-21] Role codes, never an overall ability (#283, #286).
-        self.roster.setText('\n'.join(f"{r['role']}  {r['name']} · {r['position']}" for r in rows))
+        self.country_card.set_card(card(self.browser.state, country, self.browser.goaldat),
+                                   f"{summary['campaign']}: {summary['next']}")
         self.previewed = (country, year)
 
     # Players -----------------------------------------------------------------------------
@@ -235,7 +226,6 @@ class LaunchWindow(QMainWindow):
         self.player_list = QListWidget();self.player_list.setObjectName('playerList')
         self.player_list.setAccessibleName('Players with role codes');self.player_list.setMinimumWidth(240)
         body.addWidget(self.player_list, 1)
-        hint = QLabel('Arrows: player / Esc: countries');hint.setObjectName('launchNote');body.addWidget(hint)
         layout.addWidget(left, 1)
         self.player_card = PlayerCardView()
         scroll = QScrollArea();scroll.setObjectName('cardPane');scroll.setWidget(self.player_card)
@@ -308,7 +298,7 @@ class LaunchWindow(QMainWindow):
     def show_page(self, index):
         if index == 1:
             self.fill_countries()
-        self.pages.setCurrentIndex(index)
+        self.pages.setCurrentIndex(index);self.hint.setText(HINTS[index])
         first = {0: self.resume if self.resume.isEnabled() else self.new_career if self.new_career.isEnabled() else self.other_path,
                  1: self.country_list, 2: self.start, 3: self.player_list}[index]
         first.setFocus(Qt.FocusReason.OtherFocusReason)

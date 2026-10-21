@@ -27,7 +27,11 @@ initial, role code, age, caps, goals, height, foot, readiness, national and club
 performance (raw; its meaning is not decoded), the twelve skill bars with their values, the five
 characteristics with bar, value and the original's word, and the tactics and mark line. Every
 value equals what the original's own player screen prints [confirmed: F008, E007]. No attribute
-total is shown. Narrow windows stack the card and scroll it. The window keeps its text size at 900×640 and
+total is shown. Narrow windows stack the card and scroll it. [designed: T89] The browse page shows
+the selected country's card in the original's structure: manager; ranking now; formation with
+the eleven's role codes; first fixture; the three team tactics and the five player defaults.
+Status, skill, top ranking, strips, team skill and performance bars and the characteristics
+aggregates read "not decoded yet (G05)" until archaeology decodes them. The window keeps its text size at 900×640 and
 scrolls the preview instead ([original start, load and save](original-game/startup-save-replay.md)).
 `--resume <save>`, or `--country <n>` with `--template`, still opens management directly for
 scripts. Check it with `python3 tools/desktop-ui/launch.py --template … --data …`, offscreen and
