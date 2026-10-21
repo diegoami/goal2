@@ -63,6 +63,25 @@ def _open_status(path):
         raise
 
 
+def pitch_identity(model, fixture):
+    """[designed: T94; confirmed: F002 R011 DS:69A8 via goal2.game.roles] The viewer's start
+    packet: both countries, each squad player's one-letter role code (the managed country's
+    current twenty, pool exchanges included), the managed side and the fixture's kind."""
+    from goal2.game import roles
+    state = model.state;codes = roles.tables(state)[0]
+    def squad(country):
+        if country == state.managed_country:
+            return list(state.managed_squad)
+        record = state.countries[country]
+        return [int.from_bytes(record[2 * i:2 * i + 2], 'little') for i in range(20)]
+    words = squad(fixture.side_a) + squad(fixture.side_b)
+    sides = (fixture.side_a, fixture.side_b)
+    return {'countries': [model.goaldat.country_names[c] for c in sides],
+            'roles': {str(w): codes[state.players[w][6]] for w in words if state.players[w][6] < 14},
+            'managed': sides.index(state.managed_country) if state.managed_country in sides else None,
+            'kind': 'Friendly' if fixture.kind == 1 else 'Qualifier'}
+
+
 class WatchedController:
     def __init__(self, model, *, engine_command=None, viewer_command=None):
         self.model = model
@@ -117,7 +136,10 @@ class WatchedController:
             self._status_read_deadline = None
             self.frame_ack = -1
             self.frame_receipts = {}
-            self.send('start', [self.model.goaldat.country_names[w] for w in (pending.side_a,pending.side_b)])
+            # [designed: T94] Only the pitch draws codes and colours; text-only watching keeps
+            # the two-country start.
+            self.send('start', pitch_identity(self.model, pending) if frames else
+                      [self.model.goaldat.country_names[w] for w in (pending.side_a,pending.side_b)])
             if frames:
                 self.send('pitch', {'rate': playback_rate})
             command = self.viewer_command or [sys.executable, '-m', 'goal2.desktop.pygame_viewer']

@@ -39,6 +39,11 @@ class Display:
         self.token = token
         self.sequence = 0
         self.countries = None
+        # [designed: T94] Optional pitch identity: player word -> one-letter role code, the
+        # managed side (0/1 or None) and the fixture kind's label.
+        self.roles = {}
+        self.managed = None
+        self.kind = 'Friendly'
         self.events = []
         self.result = None
         self.pitch_rate = None
@@ -56,6 +61,8 @@ class Display:
             raise ValueError('stale or out-of-order viewer packet')
         _, _, kind, value = packet
         if kind == 'start' and self.sequence == 0:
+            if isinstance(value, dict):
+                value = self._identity(value)
             if not isinstance(value, list) or len(value) != 2 or any(not isinstance(v, str) for v in value):
                 raise ValueError('invalid viewer countries')
             self.countries = copy.deepcopy(value)
@@ -89,6 +96,35 @@ class Display:
             raise ValueError('invalid viewer transition')
         self._digest = hashlib.sha256((self._digest + json.dumps(packet,sort_keys=True)).encode()).hexdigest()
         self.sequence += 1
+
+    def _identity(self, value):
+        """[designed: T94] {'countries': [a, b], 'roles': {word: code}, 'managed': 0|1|None,
+        'kind': label}; strict, so a malformed identity is refused like any other packet."""
+        if set(value) != {'countries', 'roles', 'managed', 'kind'}:
+            raise ValueError('invalid viewer identity')
+        roles, managed, label = value['roles'], value['managed'], value['kind']
+        if (not isinstance(roles, dict) or len(roles) > 64
+                or any(not (k.isascii() and k.isdigit()) or not 1 <= int(k) <= 3060 or not isinstance(c, str) or len(c) != 1
+                       for k, c in roles.items())):
+            raise ValueError('invalid viewer roles')
+        if managed not in (0, 1, None) or type(managed) is bool:
+            raise ValueError('invalid viewer managed side')
+        if not isinstance(label, str) or not 0 < len(label) <= 40:
+            raise ValueError('invalid viewer fixture kind')
+        countries = value['countries']
+        if not isinstance(countries, list) or len(countries) != 2 or any(not isinstance(v, str) for v in countries):
+            raise ValueError('invalid viewer countries')
+        # Nothing is kept until the whole identity is valid.
+        self.roles = {int(k): c for k, c in roles.items()};self.managed = managed;self.kind = label
+        return countries
+
+    def code(self, word, number):
+        """The marker label: the player's role code, or his slot number when none was sent."""
+        return self.roles.get(word, str(number))
+
+    def commentary(self):
+        """The visible commentary lines, oldest first."""
+        return [f"{e['minute']}′ {e['data'].get('text', '')}" for e in self.events if e['kind'] == 'commentary']
 
     def advance(self, now):
         """[designed: T83] Select one due discrete pose; no elapsed-time catch-up or interpolation."""

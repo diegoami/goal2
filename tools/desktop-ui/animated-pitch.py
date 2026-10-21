@@ -29,9 +29,9 @@ state={'rendered':0,'changed':0,'selectors':[],'rebindings':0,'last_sequence':-1
        'minimum_sample_interval':None,'maximum_sample_interval':None,'maximum_samples_per_second':None,
        'selector_samples':{},'capture_counts':{}}
 current=None;previous=None;display=None;last_pixels=None;caption_set=False
-def render(screen,font,d,scroll=0):
+def render(screen,font,d,*rest):
  global current,display
- result=original_render(screen,font,d,scroll)
+ result=original_render(screen,font,d,*rest)
  current=d.frame;display=d
  return result
 def flip():
@@ -69,7 +69,7 @@ def flip():
   key=str(selector);state['selector_samples'][key]=state['selector_samples'].get(key,0)+1
   ordinal=state['selector_samples'][key]
   if ordinal in (1,300):
-   counts=collections.Counter(v.project(p[4],p[5]) for p in current['players'] if not p[7])
+   counts=collections.Counter(v.project(p[4],p[5],pygame.display.get_surface().get_size()) for p in current['players'] if not p[7])
    name=('half-' if ordinal==1 else 'sample-300-selector-')+key
    state['capture_counts'][name]={'sample_ordinal_within_selector':ordinal,'sequence':current['sequence'],
     'minute':current['minute'],'hidden_players':sum(p[7] for p in current['players']),
