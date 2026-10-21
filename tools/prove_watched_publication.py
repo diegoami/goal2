@@ -65,7 +65,7 @@ MUTATIONS=[
      '''    try:
         from goal2.game.watched_schema import needs_version3, validate_saved_watched
         validate_saved_watched(state)
-        if needs_version3(state) and version != VERSION:
+        if needs_version3(state) and version not in (_WATCHED_VERSION, VERSION):
             raise ValueError("watched results require session version 3")
     except (ValueError, IndexError, KeyError, TypeError) as exc:
         raise SessionSaveError(f"invalid watched data: {exc}") from exc
