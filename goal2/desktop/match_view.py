@@ -8,10 +8,11 @@ import json
 MAX_PACKET = 256 * 1024
 MAX_JOURNAL = 16 * 1024 * 1024
 PLAYBACK_RATE = 60
-# [confirmed: E031 C39; F005/F006 speed byte [DS:A923]+0x3F, 0 = no delay] The original has five
-# match speeds and changes them during play with Left/Right. [designed: owner, 2026-10-21] The
-# rebuild's five, in samples per second (presentation pacing only); Normal keeps the default.
-SPEEDS = (('Slowest', 15), ('Slow', 30), ('Normal', 60), ('Fast', 120), ('Fastest', 240))
+# [confirmed: E031 C39; F006; static 0791:9372 (seg_0791_08.c:170-178)] The original's speed byte
+# [DS:A923]+0x3F runs 0..5 (0 = no delay), stepped with Left/Right during play: six speeds.
+# [designed: owner, 2026-10-21] The rebuild's six, in samples per second (presentation pacing
+# only); Normal keeps the default.
+SPEEDS = (('Slowest', 10), ('Slower', 15), ('Slow', 30), ('Normal', 60), ('Fast', 120), ('Fastest', 240))
 MAX_BACKLOG = 64
 
 

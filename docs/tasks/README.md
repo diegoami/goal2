@@ -231,3 +231,4 @@ operational status.
 | [T93](T93.md) | Localized names for the national pool | [#295](https://github.com/diegoami/goal2/issues/295) | Medium |
 | [T94](T94.md) | The watched pitch in the accepted original style | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
 | [T95](T95.md) | Match preparation: both elevens, Quick or Watch, and the speed | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
+| [T96](T96.md) | The original's pitch marks, officials and six speeds | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |

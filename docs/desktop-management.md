@@ -96,7 +96,8 @@ the fixture's title, our eleven from the current draft and the opponent's stored
 computer may swap injured players at kickoff [confirmed: F024]), each with codes and formation.
 The **Play** panel explains Quick (no pitch, the result at once) and Watch (the original on the
 pitch, friendlies only) beside their buttons, and holds the watching speeds (the original
-changes its speed with Left/Right [confirmed: E031 C39]), which are **Slowest** 15, **Slow** 30, **Normal** 60 (the default), **Fast** 120 or
+changes its speed with Left/Right over six steps [confirmed: E031 C39; 0791:9372]), which are
+**Slowest** 10, **Slower** 15, **Slow** 30, **Normal** 60 (the default), **Fast** 120 or
 **Fastest** 240 samples per second. It is chosen before kickoff, and **Left/Right** in the pitch
 window step it during play, as in the original. It changes presentation only, never the result. The Country desk's first route,
 **Prepare match**, leads here.
@@ -108,6 +109,14 @@ white), and the latest two commentary lines. **C** opens the full commentary, wh
 the full-time board; wheel or arrows scroll it, End follows live, Esc closes the window. Sides
 follow the original's positions [confirmed: F013]: a side attacking right has its right-side
 players (B, M, W) below its left-side ones.
+
+[confirmed: T96, static 0791:9372/05C6/0691/A3B6] In the pitch window **Up/Down** cycle the
+original's five player marks: little men (☺, the player on the ball ☻), role codes (the
+default, as in the original), arrows showing each side's direction, H/A, and shirt digits.
+Keepers are always ☺. The referee and the two linesmen, who run the touchlines at the offside
+line, are light-magenta ☺. Each mark fills one grid cell, so neighbours never overlap; on a shared
+cell the last drawn in the original's order shows, and the ball hides under a player. With the
+full commentary open, Up/Down scroll it.
 
 [designed: T78] Fixtures & results groups the next named fixture, last completed
 score, engine provenance, goals and a read-only standings snapshot. Ordinary

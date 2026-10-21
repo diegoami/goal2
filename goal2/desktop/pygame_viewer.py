@@ -161,7 +161,36 @@ def mono(size, bold=False):
     return font
 
 
-def render_pitch(screen, font, display, scroll=0, commentary=False):
+# [confirmed: DS:0883 (T96 research)] The order the original draws the 22 pitch slots each tick.
+DRAW_ORDER = (22, 11, 1, 12, 6, 17, 2, 13, 21, 10, 18, 7, 3, 20, 9, 14, 5, 16, 4, 15, 8, 19)
+# [confirmed: 0791:9372 Up/Down step DS:066A over 0..4, initial 1; 0791:05C6 the five styles]
+MARKS = ('Little men', 'Role codes', 'Arrows', 'Home/away', 'Numbers')
+DEFAULT_MARKS = 1
+
+
+def glyph(marks, slot, code, selector, holder):
+    """[confirmed: 0791:05C6, 0791:0691 and the draw at 0791:8537] A player's character: keepers
+    (slots 1 and 12) are always ☺; style 0 ☺, 1 the role code, 2 an arrow DS:06D4[(slot < 12) xor
+    (remaining > threshold)], 3 DS:06D2[slot < 12] (H for slots 1..11), 4 the slot digit
+    (slot - 1) % 11 + 0x2F. A ☺ on the player on the ball (DS:830B) is drawn ☻."""
+    if slot in (1, 12) or marks == 0:
+        return '☻' if slot == holder else '☺'
+    if marks == 1:
+        return code
+    if marks == 2:
+        return '►' if int(slot < 12) ^ selector else '◄'
+    if marks == 3:
+        return 'H' if slot < 12 else 'A'
+    return chr((slot - 1) % 11 + 0x2F)
+
+
+def marker_size(sx, sy):
+    """[designed: T96] The largest DejaVu Sans Mono size whose advance (0.6 em) fits one column
+    and whose height fits one row, so neighbouring cells never overlap."""
+    return max(10, min(round(sy), int(sx / 0.6)))
+
+
+def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAULT_MARKS):
     """[designed: T94; accepted vision #266 screen 06] Score header, maximum pitch with each
     player's one-letter role code, the last two commentary lines; C shows the full commentary."""
     import pygame
@@ -203,16 +232,34 @@ def render_pitch(screen, font, display, scroll=0, commentary=False):
         mouth = sorted((line, line + side * round(1.2 * sx)))
         pygame.draw.rect(screen, GREY, (mouth[0], at(-2, 0)[1], mouth[1] - mouth[0], at(2, 0)[1] - at(-2, 0)[1]), 1)
     if frame is not None:
-        marker = mono(max(14, min(40, round(sy * 1.4))), True)
-        for slot, team, number, word, px, py, state, hidden in frame['players']:
-            if hidden:
-                continue
-            label = marker.render(display.code(word, number), True, colours[team])
-            screen.blit(label, label.get_rect(center=at(px, py)))
+        # One character per grid cell, as in the original's text screen: the glyph fits its cell
+        # and, of players on one cell, the last drawn in the original's order shows.
+        marker = mono(marker_size(sx, sy), True)
+        occupied = {}
+        players = {p[0]: p for p in frame['players']}
+        holder = frame.get('officials', {}).get('holder')
+        for slot in DRAW_ORDER:
+            _, team, number, word, px, py, state, hidden = players[slot]
+            if not hidden:
+                occupied[at(px, py)] = (glyph(marks, slot, display.code(word, number), frame['selector'], holder), colours[team])
+        for point, (text, colour) in occupied.items():
+            label = marker.render(text, True, colour)
+            screen.blit(label, label.get_rect(center=point))
         bx, by, hidden = frame['ball']
-        if not hidden:
+        # [confirmed: 0791:8F10 draw_ball] The ball shows only on an empty cell.
+        if not hidden and at(bx, by) not in occupied:
             pygame.draw.circle(screen, YELLOW, at(bx, by), max(3, round(sy * 0.3)))
-    hint = small.render('[←→] Speed  [C] Commentary  [Esc] Close', True, MAGENTA)
+        officials = frame.get('officials')
+        if officials:
+            # [confirmed: 0791:A3B6 glyph 0x0D01; 8E24 and 9119 draw after the players] The two
+            # linesmen on the touchlines and the referee: light magenta faces over the players.
+            spots = [tuple(l) for l in officials['linesmen']]
+            if not officials['referee'][2]:
+                spots.append(tuple(officials['referee'][:2]))
+            for ox, oy in spots:
+                label = marker.render('☺', True, MAGENTA)
+                screen.blit(label, label.get_rect(center=at(ox, oy)))
+    hint = small.render('[←→] Speed  [↑↓] Marks  [C] Commentary  [Esc] Close', True, MAGENTA)
     screen.blit(hint, (width - hint.get_width() - 18, height - FOOTER + 8))
     lines = visible.commentary()
     footer = mono(22 if wide else 18)
@@ -251,6 +298,7 @@ def main():
         follow = True
         finished = False
         commentary = False
+        marks = DEFAULT_MARKS
         buffer = b''
         with (folder / 'display').open('rb') as source:
             running = True
@@ -261,6 +309,12 @@ def main():
                     # [confirmed: E031 C39] Left slows the match by one step; Right speeds it up.
                     if event.type == pygame.KEYDOWN and event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                         display.step_rate(-1 if event.key == pygame.K_LEFT else 1)
+                    # [confirmed: 0791:9372] Up/Down step the marks on the pitch; with the
+                    # commentary open, or with no pitch (text-only watching), they scroll.
+                    if (event.type == pygame.KEYDOWN and event.key in (pygame.K_UP, pygame.K_DOWN)
+                            and display.pitch_rate and not commentary and display.result is None):
+                        marks = (marks + (1 if event.key == pygame.K_DOWN else -1)) % len(MARKS)
+                        continue
                     scroll, follow, keep_open = navigation(event, scroll, follow)
                     running = running and keep_open
                 if source.tell() > MAX_JOURNAL:
@@ -282,7 +336,7 @@ def main():
                                                      changed or display.sequence != previous_sequence)
                 screen = pygame.display.get_surface()
                 if display.pitch_rate:
-                    scroll = render_pitch(screen, font, display, scroll, commentary)
+                    scroll = render_pitch(screen, font, display, scroll, commentary, marks)
                 else:
                     scroll = render(screen, font, display, scroll)
                 pygame.display.flip()
