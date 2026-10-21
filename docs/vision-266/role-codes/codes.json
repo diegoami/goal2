@@ -1,0 +1,117 @@
+{
+  "tag": "[confirmed: goal2-archaeology F002 R011 at a737716a, DS:69A8 `G S C B B D 80 M M F W W 9B 24` (CP437: 80 = Ç, 9B = ¢, 24 = $), names at DS:69B6] the original's fourteen one-letter roster codes; [designed: owner, 2026-10-21] lower case marks the left-hand back, midfielder and winger (b, m, w), which the original prints in the same letter as the right; [designed] the per-player assignment of these fictional illustrations",
+  "schema": [
+    [
+      "G",
+      "Goalkeeper",
+      "GK"
+    ],
+    [
+      "S",
+      "Sweeper",
+      "SW"
+    ],
+    [
+      "C",
+      "Centre back",
+      "CB"
+    ],
+    [
+      "b",
+      "Left back",
+      "LB"
+    ],
+    [
+      "B",
+      "Right back",
+      "RB"
+    ],
+    [
+      "D",
+      "Defensive midfield",
+      "MF"
+    ],
+    [
+      "Ç",
+      "Central midfield",
+      "MF"
+    ],
+    [
+      "m",
+      "Left midfield",
+      "MF"
+    ],
+    [
+      "M",
+      "Right midfield",
+      "MF"
+    ],
+    [
+      "F",
+      "Forward midfield",
+      "MF"
+    ],
+    [
+      "w",
+      "Left wing",
+      "FW"
+    ],
+    [
+      "W",
+      "Right wing",
+      "FW"
+    ],
+    [
+      "¢",
+      "Centre forward",
+      "FW"
+    ],
+    [
+      "$",
+      "Striker",
+      "FW"
+    ]
+  ],
+  "players": {
+    "NL01": "G",
+    "NL02": "B",
+    "NL03": "C",
+    "NL04": "C",
+    "NL05": "b",
+    "NL06": "M",
+    "NL07": "Ç",
+    "NL08": "Ç",
+    "NL09": "m",
+    "NL10": "$",
+    "NL11": "¢",
+    "NL12": "G",
+    "NL13": "C",
+    "NL14": "Ç",
+    "NL15": "D",
+    "NL16": "b",
+    "NL17": "B",
+    "NL18": "M",
+    "NL19": "W",
+    "NL20": "w",
+    "NL21": "$",
+    "NL22": "m"
+  },
+  "club": {
+    "NL03": "S",
+    "NL14": "W"
+  },
+  "belgium_xi": [
+    "G",
+    "B",
+    "C",
+    "C",
+    "b",
+    "M",
+    "Ç",
+    "Ç",
+    "m",
+    "$",
+    "¢"
+  ],
+  "original_order": "Position values 0..13 in the original's order; F (forward midfield, value 9) is the original's code and is not in the owner's 2026-10-21 list: owner to confirm"
+}
