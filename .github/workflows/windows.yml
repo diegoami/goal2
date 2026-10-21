@@ -31,7 +31,9 @@ jobs:
         shell: bash
     env:
       PYTHONUTF8: '1'
-      GOAL2_ARCHAEOLOGY: ${{ github.workspace }}/.cache/goal2-archaeology
+      # Outside .cache/: the owner's Drive folder may hold a goal2-archaeology/ of its own, which
+      # the pull copies into .cache/.
+      GOAL2_ARCHAEOLOGY: ${{ github.workspace }}/../goal2-archaeology
     steps:
       - uses: actions/checkout@v4
         with:
