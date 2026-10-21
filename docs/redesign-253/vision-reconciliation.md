@@ -153,6 +153,27 @@
 | #259 | #242 | lane 2 |
 | #259 | #243 | lane 2 |
 
+## Owner decisions for the match work — 2026-10-21
+
+[designed: owner, 2026-10-21, answering the main session in the cloud session]
+
+1. **Windows acceptance moves to the milestone.** A cloud container cannot run real Windows. Each
+   match task (#262 and the work folded into it) is accepted under Linux xcb at `QT_SCALE_FACTOR`
+   1 and 2, for both Qt and the SDL pitch. Real Windows acceptance at 100 % and 200 % becomes one
+   check of the whole first release, under #259 and #263, run by the owner or a local session.
+2. **PR #240 (T79) is superseded.** It predates the T90/T91 redesign and uses the old palette. The
+   match presentation is rebuilt on the accepted original style:
+   - maximum pitch;
+   - the last two commentary lines, with the full commentary on request;
+   - independently retractable bars;
+   - one-letter role codes on the pitch, sides placed correctly (folded from #283).
+
+   Its still-valid lifecycle, controller and ACK tests are kept. #198 (T79) and #243 (T85) are
+   folded into fresh slices of #262, and their Windows lines move to the milestone check (1).
+3. **Who builds.** As CLAUDE.md rule 1: the main session implements or spawns a subagent, and
+   runs an independent review of the engine and lifecycle risk. The per-task model names in
+   T79/T85 lapse.
+
 ## Scope gaps and their owners
 
 [designed: owner amendment] These are planning obligations of #253, not capabilities silently assigned to page-composition issues. Each row names a bounded owner or states plainly that it is unowned and needs a bounded contract before any full-parity claim. No fabricated action and no blanket parity exception is approved. The [gap register](capability-gaps.json) keeps the field membership; [decisions.md](decisions.md#unowned-capability-decisions) keeps the owner choices.
