@@ -55,6 +55,12 @@ with patch('goal2.game.watched_match.Match',Guest):sys.exit(watched_worker.main(
 '''
 
 
+# [designed: #307] Setup waits for a job cancelled at once: wait() first joins the thread that
+# encodes the job's input (26.7 MB, 0.37 s idle on Linux), which passed 2 s on a loaded Windows
+# runner. These waits only end the setup; no test here bounds the encode itself.
+SETUP_WAIT = 60
+
+
 class WatchedJobsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -226,7 +232,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
     def test_large_partial_record_reads_are_bounded(self):
         token=self.bridge('blocked')
         process=self.jobs.process
-        process.terminate();process.wait(timeout=2)
+        process.terminate();process.wait(timeout=SETUP_WAIT)
         self.jobs._journal.seek(0);self.jobs._journal.truncate()
         with open(self.jobs._journal.name,'ab') as stream:
             _write(stream,token,0,'event',Event('commentary',1,(0,0),{'text':'x'*(READ_BUDGET*3)}))
@@ -240,7 +246,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
     def test_exited_burst_drains_in_bounded_batches_without_buffer_growth(self):
         token=self.bridge('blocked')
         process=self.jobs.process
-        process.terminate();process.wait(timeout=2)
+        process.terminate();process.wait(timeout=SETUP_WAIT)
         self.jobs._journal.seek(0);self.jobs._journal.truncate()
         with open(self.jobs._journal.name,'ab') as stream:
             for number in range(2000):_write(stream,token,number,'event',Event('minute',number,(0,0)))
@@ -259,7 +265,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
     def test_stream_outcome_mismatch_and_incomplete_tail_never_publish(self):
         for mode in ('mismatch','tail','trailing'):
             token=self.bridge('blocked')
-            self.jobs.process.terminate();self.jobs.process.wait(timeout=2)
+            self.jobs.process.terminate();self.jobs.process.wait(timeout=SETUP_WAIT)
             self.jobs._journal.seek(0);self.jobs._journal.truncate()
             # [designed] Real valid output isolates stream/tail validation from schema errors.
             outcome=run_watched_match(self.owner.state,self.raw,Fixture(7,19,21),reference_seed=257,delay_byte=0)

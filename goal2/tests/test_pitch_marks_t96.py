@@ -158,7 +158,10 @@ class Drawing(unittest.TestCase):
                 return seen
         self.assertEqual(run([pygame.K_DOWN, pygame.K_DOWN])[-1], 3, 'Down steps forward from the default 1')
         self.assertEqual(run([pygame.K_UP, pygame.K_UP])[-1], 4, 'Up steps back and wraps over 0..4')
-        self.assertEqual(run([pygame.K_c, pygame.K_DOWN])[-1], 1, 'with the commentary open, Down scrolls')
+        self.assertEqual(run([pygame.K_SPACE, pygame.K_DOWN])[-1], 1, 'with the commentary open (Space), Down scrolls')
+        # [confirmed: E031 C39c] In the commentary Esc returns to play: the viewer stays open.
+        self.assertEqual(run([pygame.K_SPACE, pygame.K_ESCAPE, pygame.K_DOWN])[-1], 2, 'Esc closes the commentary, not the match')
+        self.assertEqual(run([pygame.K_c, pygame.K_DOWN])[-1], 2, 'C no longer opens the commentary')
 
     def test_up_down_scroll_text_only_watching(self):
         import json, sys

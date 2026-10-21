@@ -105,8 +105,10 @@ window step it during play, as in the original. It changes presentation only, ne
 [designed: T94; accepted vision #266 screen 06] **Watching** opens the pitch window in the
 original style: countries, score, minute and fixture kind on one line, the pitch filling the
 resizable window, each player shown by his one-letter role code (the managed side gold, the other
-white), and the latest two commentary lines. **C** opens the full commentary, which also holds
-the full-time board; wheel or arrows scroll it, End follows live, Esc closes the window. Sides
+white), and the latest two commentary lines. **Space** opens the full commentary, which also holds
+the full-time board; wheel or arrows scroll it, End follows live, and Esc returns to play
+[confirmed: goal2-archaeology E031 C08/C39c, E015 r0013, 53d7ef5; #306]. Esc on the pitch closes
+the window. Sides
 follow the original's positions [confirmed: F013]: a side attacking right has its right-side
 players (B, M, W) below its left-side ones.
 
