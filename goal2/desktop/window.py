@@ -12,10 +12,9 @@ TACTICS=((5,'Half pitch / full pitch'),(6,'Sag back to box / stand ground'),(7,'
          (4,'Avoid injury / go in hard'),(8,'Zone / man to man'))
 
 
-# [confirmed: m244-squad screenshot; F028 DS:0D5C] The original colours a role code by line:
-# green goalkeeper, red defence, cyan midfield, yellow attack. [designed: #286] Darker shades
-# keep them readable on the current light table until #261 brings the black original style.
-LINE_COLOURS={'goalkeeper':'#1a7f37','defence':'#b60205','midfield':'#0b6e8f','attack':'#8a6d00','unknown':'#000000'}
+# [confirmed: m244-squad screenshot; F008 DS:699A; F028 DS:0D5C] The original colours a role code
+# by line: green goalkeeper, red defence, cyan midfield, yellow attack (the accepted palette).
+from goal2.desktop.player_card import LINE as LINE_COLOURS
 
 
 def role_colour(item,line):
@@ -59,6 +58,44 @@ class ManagementWindow(QMainWindow):
         for _,box in self.tactics:box.toggled.connect(lambda *args:refresh_squad(self))
         self.refresh()
         self.country.currentIndexChanged.connect(self.country_changed)
+
+    def set_bars(self,top=None,side=None):
+        """[designed: T90] Retract or restore the top and side bars independently; focus never
+        stays inside a hidden bar and returns where it was on restore."""
+        focus=self.focusWidget()
+        hiding=[bar for bar,show in ((self.top_bar,top),(self.side_bar,side)) if show is False and bar.isVisible()]
+        if focus is not None and any(bar.isAncestorOf(focus) for bar in hiding):
+            self._bar_focus=focus;self.pages[self.page_stack.currentIndex()].heading.setFocus()
+        for bar,handle,show in ((self.top_bar,self.show_top,top),(self.side_bar,self.show_side,side)):
+            if show is None:continue
+            bar.setVisible(show);handle.setVisible(not show)
+        (self.handles if self.top_bar.isHidden() else self.top_layout).insertWidget(0,self.show_side,0,Qt.AlignmentFlag.AlignTop)
+        restore=getattr(self,'_bar_focus',None)
+        if restore is not None and restore.isVisible():
+            restore.setFocus();self._bar_focus=None
+
+    # [designed: T90; accepted vision #266 screen 11] Below this width the side bar collapses to
+    # its [Menu >] handle; crossing back restores it. The player can open or close it any time.
+    NARROW_SHELL=1100
+
+    def resizeEvent(self,event):
+        super().resizeEvent(event)
+        narrow=self.width()<self.NARROW_SHELL
+        if narrow!=getattr(self,'_narrow_shell',None):
+            self._narrow_shell=narrow;self.set_bars(side=not narrow)
+
+    def refresh_header(self,display,view):
+        """[designed: T90] The top bar: country, career line, next fixture."""
+        state=display.state;names=display.goaldat.country_names
+        try:summary=display.summary()
+        except (ValueError,KeyError,IndexError):summary=None
+        self.career_line.setText(' / '.join(x for x in (summary['manager'].split(' (')[0],summary['campaign']) if x) if summary else '')
+        fixture=state.campaign.next_fixture if state.campaign else None
+        if fixture is None:
+            self.next_line.setText('Next: '+('quick friendly' if state.campaign is None else 'stage complete'));self.next_detail.setText('')
+        else:
+            self.next_line.setText(f'Next: {names[fixture.side_a]} v {names[fixture.side_b]}')
+            self.next_detail.setText('Friendly' if fixture.kind==1 else 'Competitive')
 
     def navigate(self,index):
         """[designed: T74] Presentation only; preserve draft and job ownership."""
@@ -155,6 +192,7 @@ class ManagementWindow(QMainWindow):
         display=self.display_model;view=display.view();state=display.state;self._refreshing=True
         self.context.setText(('Preview · active game: '+self.model.goaldat.country_names[self.model.state.managed_country]) if self.preview is not None else 'Active game')
         self.title.setText(view['country_name']);self.country.setCurrentIndex(self.country.findData(view['country']))
+        self.refresh_header(display,view)
         from goal2.desktop.overview_page import refresh as refresh_overview
         refresh_overview(self,display,view)
         from goal2.desktop.fixtures_page import refresh as refresh_fixtures
