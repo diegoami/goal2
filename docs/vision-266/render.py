@@ -24,6 +24,23 @@ GREEN, MAGENTA, GOLD = '#55ff55', '#ff55ff', '#ffbb33'
 EDGE, EMPTY = '#777777', '#9b009b'
 ROLE_COLORS = {'GK': GREEN, 'SW': RED, 'CB': RED, 'LB': RED, 'RB': RED, 'MF': CYAN, 'FW': YELLOW}
 ROLE_NAMES = {'GK':'Goalkeeper','SW':'Sweeper','CB':'Centre back','LB':'Left back','RB':'Right back','MF':'Midfield','FW':'Forward'}
+# [designed: owner, 2026-10-21] --role-codes draws the one-letter role codes of role-codes/codes.json
+# instead of the two-letter roles; the default output (the accepted, pinned screens) is unchanged.
+CODES = None
+
+
+def role_label(p, key=None):
+    """The role a sheet prints: the two-letter role, or its one-letter code with --role-codes."""
+    if CODES is None:return p['role']
+    if key is None:key = p.get('key')
+    return CODES['players'][key]
+
+
+def position_name(p, which):
+    if CODES is None:return ROLE_NAMES[p[which]]
+    codes = CODES['club'] if which == 'club_position' else {}
+    code = codes.get(p['key'], CODES['players'][p['key']])
+    return f"{CODES['names'][code]} ({code})"
 SKILLS = ['Keeping', 'Kicking', 'Tackling', 'Heading', 'Marking', 'Passing',
           'Crossing', 'Feinting', 'Control', 'Dribbling', 'Shooting', 'Penalties']
 CHARS = ['Hardness', 'Fitness', 'Energy', 'Morale', 'Leadership']
@@ -139,10 +156,10 @@ class Sheet:
         self.parts.append(f'<g data-player="{key}" data-snapshot="{snapshot}">')
         self.box(x,y,w,h,RED)
         self.text(x+14,y+32,p['name'].upper(),26 if compact else 30,ROLE_COLORS[p['role']],True)
-        self.text(x+w-85,y+32,p['role'],26 if compact else 30,ROLE_COLORS[p['role']],True)
+        self.text(x+w-85,y+32,role_label(p),26 if compact else 30,ROLE_COLORS[p['role']],True)
         self.text(x+14,y+62,f"Age {p['age']} / Caps {p['caps']} / Goals {p['goals']}",size,WHITE)
         self.text(x+14,y+87,f"{p['height']} / {p['foot']} foot / {context}",size,GREEN)
-        self.text(x+14,y+112,f"National {ROLE_NAMES[p['national_position']]} / Club {ROLE_NAMES[p['club_position']]}",size,WHITE)
+        self.text(x+14,y+112,f"National {position_name(p,'national_position')} / Club {position_name(p,'club_position')}",size,WHITE)
         self.text(x+14,y+137,'Cards: none / Performance: not recorded'+(' / Words illustrative' if compact else ''),size,WHITE)
         start=y+(157 if compact else 172)
         gap=26; half=(w-28-gap)/2
@@ -183,7 +200,7 @@ class Sheet:
             selected_color=BLACK if k==selected else ROLE_COLORS[P[k]['role']]
             self.text(x,yy,'+' if k in xi else '-',24,selected_color)
             self.text(x+24,yy,P[k]['name'],24,selected_color,True)
-            self.text(x+277,yy,P[k]['role']+(' C' if k==D['captain'] else ''),24,selected_color,True)
+            self.text(x+277,yy,role_label(P[k])+(' C' if k==D['captain'] else ''),24,selected_color,True)
             self.parts.append('</g>')
 
     def footer(self, value):
@@ -361,7 +378,7 @@ def pitch(s, x, y, w, h):
         for i,(px,py) in enumerate(spots):
             if side: px=1-px; py=min(.94,py+.04)
             xx=x+w*px; yy=y+h*py
-            role=P[D['xi'][i]]['role'] if side==0 else D['belgium_xi'][i]['role']
+            role=role_label(P[D['xi'][i]]) if side==0 else (D['belgium_xi'][i]['role'] if CODES is None else CODES['belgium_xi'][i])
             s.text(xx,yy,role,26 if w<1100 else 32,color,True)
     s.parts.append(f'<circle cx="{mid+31}" cy="{cy-20}" r="6" fill="white"/>')
     s.parts.append('</g>')
@@ -602,7 +619,7 @@ def draw(directory):
     for i,k in enumerate(squad[:11]):
         yy=160+i*28
         s.text(38,yy,f'{i+1:02}  '+P[k]['name'],24,ROLE_COLORS[P[k]['role']],True)
-        s.text(370,yy,P[k]['role']+(' C' if k==D['captain'] else ''),24,ROLE_COLORS[P[k]['role']])
+        s.text(370,yy,role_label(P[k])+(' C' if k==D['captain'] else ''),24,ROLE_COLORS[P[k]['role']])
         s.text(580,yy,'XI / Ready',24,GREEN)
     s.rect(855,142,8,320,EMPTY)
     s.rect(855,142,8,176,GREY)
@@ -642,13 +659,36 @@ def draw(directory):
     return exports
 
 
+def load_codes():
+    """[designed: owner, 2026-10-21] Read and check role-codes/codes.json: fourteen distinct
+    one-letter codes, each player's code inside its two-letter role, Belgium's in its XI order."""
+    global CODES
+    codes=json.loads((ROOT/'role-codes'/'codes.json').read_text())
+    schema=codes['schema'];names={c:n for c,n,_ in schema};family={c:r for c,_,r in schema}
+    assert len(schema)==14 and len(names)==14 and all(len(c)==1 for c in names),'fourteen distinct one-letter codes, one per original position value'
+    assert set(codes['players'])==set(P),'every illustrated player has a code'
+    for key,code in codes['players'].items():
+        assert family[code]==P[key]['role'],f'{key}: {code} is not a {P[key]["role"]}'
+    for key,code in codes['club'].items():
+        assert family[code]==P[key]['club_position'],f'{key}: club {code}'
+    assert [family[c] for c in codes['belgium_xi']]==[p['role'] for p in D['belgium_xi']]
+    xi=[codes['players'][k] for k in D['xi']]
+    assert xi==codes['belgium_xi']==['G','B','C','C','b','M','Ç','Ç','m','$','¢'],'4-4-2 in pitch-spot order'
+    CODES=dict(codes,names=names)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check',action='store_true')
+    parser.add_argument('--role-codes',action='store_true',help='draw role-codes/ with the one-letter role codes')
     args=parser.parse_args()
     target=ROOT/'screens'; target.mkdir(exist_ok=True)
+    if args.role_codes:load_codes();target=ROOT/'role-codes'
     with tempfile.TemporaryDirectory(prefix='goal2-vision-266-') as tmp:
         out=Path(tmp); exports=draw(out)
+        if args.role_codes:
+            # Only the sheets whose drawing changes: those that print a role.
+            exports=[e for e in exports if e[0].read_bytes()!=(ROOT/'screens'/e[0].name).read_bytes()]
         for svg,_,_ in exports:
             env={**os.environ,'INKSCAPE_PROFILE_DIR':str(out/'inkscape-profile')}
             subprocess.run(['inkscape',str(svg),'--export-type=png','--export-filename='+str(svg.with_suffix('.png'))],check=True,capture_output=True,env=env)
@@ -659,7 +699,8 @@ def main():
                         raise SystemExit('FAIL missing/stale export: '+str(dest))
                 else: dest.write_bytes(source.read_bytes())
         if args.check:
-            assert {p.name for p in target.iterdir()}=={p.with_suffix(s).name for p,_,_ in exports for s in ['.svg','.png']}
+            kept={p.name for p in target.iterdir()}-({'codes.json','README.md'} if args.role_codes else set())
+            assert kept=={p.with_suffix(s).name for p,_,_ in exports for s in ['.svg','.png']}
         print(f'PASS coherent story; {len(exports)} sheets; {sum(n for _,n,_ in exports)} measured text bounds; {sum(n for _,_,n in exports)} attribute bars; actual field >=82%, commentary 2 lines; '+('exports identical' if args.check else 'exports written'))
 
 

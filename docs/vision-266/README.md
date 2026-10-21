@@ -6,6 +6,8 @@
 
 [designed] The [nineteen-screen visual walkthrough](storyboard.md) follows the same illustrative Holland career from Resume through a friendly, the next competitive fixture and later campaigns. Every new image is a **finished-target illustration**, including unavailable/error states. None is a current capture or executable prototype. [Current-build evidence](evidence.md#current-reality) stays separate. The revised candidate awaits owner review; requesting these changes did not approve the whole vision, commit the plan or authorize implementation.
 
+[designed: owner, 2026-10-21] **Roles are one-letter codes**, as in the original (G S C b B D Ç m M F w W ¢ $), on the pitch, in lists and on cards. The accepted screens print two-letter roles; [role-codes/](role-codes/README.md) redraws the ten affected sheets and supersedes them for role display.
+
 ## Look and feel: unmistakably GOAL2
 
 [designed: owner direction] Use black screens, large monospaced characters, thin functional rules and strong, varied color. Red identifies headings/field groups, gold attribute labels, green readiness/values and goalkeepers, cyan navigation/midfield, yellow emphasis/forwards and magenta help/events; defenders use red and selection has a silver field with dark text. Labels, positions and focus remain readable without color alone. This is a modern rendering of the original's information language, not a new simulation or copied original asset/font.
