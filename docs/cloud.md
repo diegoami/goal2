@@ -28,6 +28,22 @@ goal2-archaeology in `.cache/goal2-archaeology` (its run records feed the fideli
 branch, gh's login and the Drive remote. Its log is `.cache/cloud-setup.log`. Elsewhere, run
 `tools/cloud_setup.sh` and `source .cache/cloud.env` by hand.
 
+## GitHub from a cloud session
+
+[designed: owner, 2026-10-21, after the first goal2-archaeology cloud run] The session's proxy lets
+only GitHub's REST API through: `gh`'s GraphQL commands (`gh pr create`, `gh pr merge`, `gh pr view`,
+`gh issue list`, `gh release download`, `gh auth status`) fail with 403. Use the session's built-in
+GitHub tools, or `gh api` (REST), for example:
+
+- merge with the merge commit process.md §3 asks for, pinned to the checked head:
+  `gh api -X PUT repos/diegoami/goal2/pulls/<n>/merge -f merge_method=merge -f sha=<head sha>`
+  (goal2 squashes only locally; a cloud session always merges like this);
+- open a PR: `gh api repos/diegoami/goal2/pulls -f title=... -f head=<branch> -f base=main -F draft=true -f body=@<file>`;
+- the login check: `gh api user --jq .login`.
+
+Release assets come over plain HTTPS from the public release (the setup falls back to it); their
+downloads redirect to `release-assets.githubusercontent.com`, which the network settings must allow.
+
 ## Branches
 
 The session starts on its own `claude/…` branch, the work branch for every task of the session;

@@ -93,7 +93,7 @@ say "GitHub"
 if ! command -v gh >/dev/null && command -v apt-get >/dev/null && [ "$(id -u)" = 0 ]; then
   { apt-get install -y -qq gh || { apt-get update -qq && apt-get install -y -qq gh; }; } >/dev/null 2>&1 || echo "could not install gh"
 fi
-gh auth status >/dev/null 2>&1 && echo "gh is logged in" || echo "gh is not logged in: set GH_TOKEN (docs/cloud.md)"
+gh api user --jq .login >/dev/null 2>&1 && echo "gh is logged in" || echo "gh is not logged in: set GH_TOKEN (docs/cloud.md)"
 
 cat > .cache/cloud.env <<EOF
 # written by tools/cloud_setup.sh

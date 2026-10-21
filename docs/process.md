@@ -43,7 +43,7 @@ one, `git pull` and take the next free number.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
    `git switch main && git pull`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <reviewed-sha>`, then
-   `git pull --ff-only origin main`. Unblock tasks whose Merge-after are now merged. Report.
+   `git pull --ff-only origin main` (a cloud session merges through the REST API: `docs/cloud.md`, "GitHub from a cloud session"). Unblock tasks whose Merge-after are now merged. Report.
 
 **Branches.** [designed: owner, 2026-10-20, as in malpaco cd81d225] Locally, each task has its
 own branch, `task/T<nn>-<slug>` (or `fix/<issue>-<slug>`) from `origin/main`, squash-merged. A
