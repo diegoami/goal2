@@ -95,8 +95,8 @@ pool search ignores accents ("kovacs" finds "Kovács").
 the fixture's title, our eleven from the current draft and the opponent's stored eleven (the
 computer may swap injured players at kickoff [confirmed: F024]), each with codes and formation.
 The **Play** panel explains Quick (no pitch, the result at once) and Watch (the original on the
-pitch, friendlies only) beside their buttons, and holds the original's five watching speeds
-[confirmed: E031 C39]: **Slowest** 15, **Slow** 30, **Normal** 60 (the default), **Fast** 120 or
+pitch, friendlies only) beside their buttons, and holds the watching speeds (the original
+changes its speed with Left/Right [confirmed: E031 C39]), which are **Slowest** 15, **Slow** 30, **Normal** 60 (the default), **Fast** 120 or
 **Fastest** 240 samples per second. It is chosen before kickoff, and **Left/Right** in the pitch
 window step it during play, as in the original. It changes presentation only, never the result. The Country desk's first route,
 **Prepare match**, leads here.
