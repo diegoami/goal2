@@ -61,7 +61,7 @@ def _fetch_e010_r0001() -> bytes:
         for f in CACHE.iterdir():
             if f.name.endswith("-E010-r0001-halftime.sav"):
                 if f != sav_path:
-                    f.rename(sav_path)
+                    f.replace(sav_path)  # [designed: #278] overwrites on Windows too
                 break
     if not sav_path.is_file():
         raise FileNotFoundError("E010-r0001 halftime savestate not in cache")
@@ -96,7 +96,7 @@ def _fetch_e006_r0001_main() -> bytes:
             # E006 asset names end with `-e006-1000-r0001.sav`.
             if f.name.endswith("-e006-1000-r0001.sav"):
                 if f != sav_path:
-                    f.rename(sav_path)
+                    f.replace(sav_path)  # [designed: #278] overwrites on Windows too
                 break
     if not sav_path.is_file():
         raise FileNotFoundError("E006-r0001-main savestate not in cache")

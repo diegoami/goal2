@@ -71,8 +71,29 @@ def terminal_input() -> Iterator[None]:
         termios.tcsetattr(fd, termios.TCSANOW, saved)
 
 
+def _windows_ready(fd: int) -> bool:
+    """[designed: #278] Whether a Windows descriptor has a byte to read without blocking: a
+    pipe through PeekNamedPipe, the console through msvcrt.kbhit."""
+    import ctypes
+    import msvcrt
+    available = ctypes.c_ulong(0)
+    handle = msvcrt.get_osfhandle(fd)
+    if ctypes.windll.kernel32.PeekNamedPipe(ctypes.c_void_p(handle), None, 0, None, ctypes.byref(available), None):
+        return available.value > 0
+    return bool(msvcrt.kbhit())
+
+
 def _read_byte(stream: BinaryIO, fd: int | None, timeout: float | None) -> bytes:
-    """[designed: T25] Read descriptors directly to avoid buffered/select races."""
+    """[designed: T25] Read descriptors directly to avoid buffered/select races.
+    [designed: #278] Windows has no select on pipes or the console, so a timed read polls."""
+    if fd is not None and os.name == "nt":
+        if timeout is not None:
+            deadline = time.monotonic() + timeout
+            while not _windows_ready(fd):
+                if time.monotonic() >= deadline:
+                    return b""
+                time.sleep(0.005)
+        return os.read(fd, 1)
     if fd is not None:
         readable, _, _ = select.select([fd], [], [], timeout)
         if not readable:
@@ -88,15 +109,13 @@ def read_key(_stdin: BinaryIO | None = None) -> Key:
     are ``\x1b[A`` / ``\x1b[B`` and PageUp/PageDown are ``\x1b[5~`` / ``\x1b[6~``.
     Escape continuation bytes share an absolute ``ESCAPE_TIMEOUT`` window.
     [designed: T25] ``_stdin`` supports injected streams; descriptor-backed streams use
-    select/os.read, while in-memory streams retain their ordinary read path.
+    select/os.read (on Windows a polled read), while in-memory streams retain their ordinary
+    read path.
     """
     stream = _stdin if _stdin is not None else getattr(sys.stdin, "buffer", sys.stdin)
-    if os.name == "posix":
-        try:
-            fd = stream.fileno()
-        except (AttributeError, OSError, ValueError):
-            fd = None
-    else:
+    try:
+        fd = stream.fileno()
+    except (AttributeError, OSError, ValueError):
         fd = None
 
     while True:

@@ -51,6 +51,8 @@ PRs merge with a merge commit, never squash (process.md §3).
 
 ## Limits
 
-Qt runs offscreen and SDL with dummy drivers: screenshots work, nothing is shown. Native Windows,
-2× scaling and accessibility gates, and the owner's playtest, stay local. A clone made by hand can
+Qt runs offscreen and SDL with dummy drivers: screenshots work, nothing is shown. Native Windows
+is covered by the Windows workflow on every PR (#278; `docs/process.md` §3): the game tests, the
+`spawn` worker, saves, and the Qt/SDL scenarios with the real Windows platforms. What stays with the
+owner, at milestones: true 2× scaling, accessibility gates and the playtest. A clone made by hand can
 be shallow (`git clone --depth 1`, about 20 MB instead of the 157 MiB history).

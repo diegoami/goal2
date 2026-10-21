@@ -46,7 +46,7 @@ def _fetch_e006() -> bytes:
         for f in CACHE.iterdir():
             if f.name.startswith(E006_R0001_SHA[:16]) and f.suffix == ".sav":
                 if f != SAV:
-                    f.rename(SAV)
+                    f.replace(SAV)  # [designed: #278] overwrites on Windows too
                 break
     data = SAV.read_bytes()
     if hashlib.sha256(data).hexdigest() != E006_R0001_SHA:

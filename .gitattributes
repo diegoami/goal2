@@ -1,0 +1,5 @@
+# [designed: #278] Text files check out with LF on every platform: tests hash and patch source and
+# evidence files byte for byte, which a Windows CRLF checkout would change.
+* text=auto eol=lf
+# Committed with mixed line endings; kept byte-exact.
+docs/original-game/image-provenance.tsv -text

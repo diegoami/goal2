@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import struct
+import sys
 import time
 import unittest
 from unittest.mock import patch
@@ -36,7 +37,7 @@ class PitchTransportTests(unittest.TestCase):
     def setUp(self):
         self.owner=Owner(adapter.WatchedAdapter.state(self),self.raw)
         self.before=copy.deepcopy(self.owner.state)
-        self.jobs=WatchedJobs(self.owner,command=['/bin/sleep','60'])
+        self.jobs=WatchedJobs(self.owner,command=[sys.executable,'-c','import time;time.sleep(60)'])
         self.token=self.jobs.start(Fixture(7,19,21),frames=True)
         self.process=self.jobs.process
         # [designed] Synthetic file injection never impersonates an actual original run.
@@ -179,7 +180,7 @@ class PitchTransportTests(unittest.TestCase):
     def test_owned_death_and_worker_error_cancel_without_publication(self):
         import subprocess
         from goal2.game.watched_jobs import _write
-        sibling=subprocess.Popen(['/bin/sleep','60'])
+        sibling=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'])
         try:
             with open(self.jobs._journal.name,'ab') as f:_write(f,self.token,0,'error','synthetic frame overflow')
             with self.assertRaisesRegex(ValueError,'synthetic frame overflow'):self.jobs.poll(self.token)

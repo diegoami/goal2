@@ -21,3 +21,4 @@ include = ["goal2*"]
 
 [tool.setuptools.package-data]
 "goal2.web" = ["static/*.html", "static/*.mjs", "static/*.css"]
+"goal2.desktop" = ["fonts/*.ttf", "fonts/LICENSE"]

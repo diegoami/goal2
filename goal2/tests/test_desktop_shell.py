@@ -40,6 +40,9 @@ class Shell(unittest.TestCase):
                                        ROOT / '.cache/never-written.g2save', country=8)
         self.window = ManagementWindow(self.model);self.window.show()
         self.window.activateWindow();QTest.qWaitForWindowActive(self.window)
+        # A screen smaller than the 1440x900 window clamps it below NARROW_SHELL and collapses the
+        # side bar (the 1024x768 default of a hosted Windows runner, #278).
+        self.assertGreaterEqual(self.window.width(), ManagementWindow.NARROW_SHELL, 'the screen is too small for these tests')
         self.addCleanup(lambda: (self.window.close(), self.window.deleteLater(), self.app.processEvents()))
 
     def purity(self):

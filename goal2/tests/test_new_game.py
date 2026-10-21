@@ -73,7 +73,7 @@ def _fetch_state() -> bytes:
             for f in d.iterdir():
                 if f.name.startswith(asset_prefix) and f.suffix in (".sav", ".zip"):
                     if f != SAV:
-                        f.rename(SAV)
+                        f.replace(SAV)  # [designed: #278] overwrites on Windows too
                     return SAV.read_bytes()
         raise FileNotFoundError(
             f"no .sav asset found for {asset_prefix}* in {search_dirs}"

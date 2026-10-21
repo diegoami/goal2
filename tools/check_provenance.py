@@ -154,7 +154,8 @@ def main(argv: list[str] | None = None) -> int:
     for path in files:
         # The repo-relative path under ROOT, normalised (R2: same-basename collisions are
         # distinguishable by path).
-        rel = path.relative_to(ROOT)
+        # [designed: #278] Reported as POSIX paths, as PROVENANCE.md writes them, on every platform.
+        rel = path.relative_to(ROOT).as_posix()
         seen.add(_normalize(rel))
         row = by_row_path.get(_normalize(rel))
         if row is None:
