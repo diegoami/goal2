@@ -156,7 +156,9 @@ def mono(size, bold=False):
             font.size('x');return font
         except pygame.error:
             _FONTS.clear()
-    path = pygame.font.match_font('dejavusansmono', bold=bold)
+    # [designed: #278] The bundled font, as the desktop's: Windows has no DejaVu Sans Mono, and
+    # pygame's default font is not monospaced and has no ☺ ☻.
+    path = str(Path(__file__).with_name('fonts') / ('DejaVuSansMono-Bold.ttf' if bold else 'DejaVuSansMono.ttf'))
     _FONTS[size, bold] = font = pygame.font.Font(path, size)
     return font
 

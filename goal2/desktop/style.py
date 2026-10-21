@@ -8,10 +8,24 @@ COLORS=dict(background='#000000',panel='#000000',raised='#1a1a1a',text='#eeeeee'
  # [designed: accepted #266] the functional colours.
  cyan='#55ffff',red='#ff5555',yellow='#ffff55',green='#55ff55',magenta='#ff55ff',gold='#ffbb33')
 FONT="'DejaVu Sans Mono','Consolas','Courier New',monospace"
+# [designed: #278, found by the Windows workflow] The game ships its monospace font: Windows has no
+# DejaVu Sans Mono, and its fallbacks have other metrics, so the shell's minimum size outgrew the
+# 900x700 target. DejaVu fonts (fonts/LICENSE: Bitstream Vera, free to redistribute) are bundled.
+from pathlib import Path
+FONT_FILES=tuple(Path(__file__).with_name('fonts')/name for name in ('DejaVuSansMono.ttf','DejaVuSansMono-Bold.ttf'))
+_LOADED=[]
+
+
+def load_fonts():
+    """Register the bundled fonts with Qt once per process; returns their font ids."""
+    if not _LOADED:
+        from PySide6.QtGui import QFontDatabase
+        _LOADED.extend(QFontDatabase.addApplicationFont(str(path)) for path in FONT_FILES)
+    return list(_LOADED)
 
 
 def apply_style(window):
-    c=COLORS
+    load_fonts();c=COLORS
     window.setStyleSheet(f"""
     QMainWindow, QDialog, QScrollArea, QScrollArea > QWidget > QWidget, QWidget#shellRoot, QStackedWidget {{background:{c['background']};color:{c['text']};}}
     QWidget {{font-family:{FONT};font-size:16px;color:{c['text']};}}

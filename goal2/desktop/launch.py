@@ -78,7 +78,8 @@ class LaunchWindow(QMainWindow):
         self.pages = QStackedWidget();outer.addWidget(self.pages, 1)
         self.hint = QLabel(HINT);self.hint.setObjectName('launchHint');self.hint.setWordWrap(True);outer.addWidget(self.hint)
         self._build_launch();self._build_browse();self._build_review();self._build_players()
-        self.setStyleSheet(STYLE)
+        from goal2.desktop.style import load_fonts
+        load_fonts();self.setStyleSheet(STYLE)
         QShortcut(QKeySequence(Qt.Key.Key_Escape), self, activated=self.back)
         self.preview_timer = QTimer(self);self.preview_timer.setSingleShot(True);self.preview_timer.setInterval(120)
         self.preview_timer.timeout.connect(self.preview)
