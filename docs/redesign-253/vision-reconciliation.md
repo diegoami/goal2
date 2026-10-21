@@ -178,8 +178,16 @@
    and during play; a friendly allows 5 substitutions [confirmed: goal2-archaeology E031 C40,
    C41–C41h, 53d7ef5]. #250's first supported intervention is that half-time bench, proven
    seed-exact on a real fixture. The bench during play follows after the first release.
-5. **The team tactics and the attribute table take the accepted style** (owner playtest, #304):
-   screens 03 and 16 govern the Team page below the card.
+5. **The Team page copies the original's squad and team-tactics screens** (owner, 2026-10-21, on
+   the T99 build, #304). The owner's words: "no tables, no numbers when you can have bars, no
+   lifeless list of players, copy the style of goal2". The original screens
+   (`docs/original-game/images/m244-squad.png`, `m244-team-tactics.png`) govern over the accepted
+   screens 03 and 16 where they differ:
+   - the roster is a strip on the right, under the country name: the XI, a rule, then the bench;
+   - each row shows the role-coloured initial and name, and the role letter;
+   - the card shows skills as bars without numbers, and each characteristic as a bar with its word
+     inside;
+   - there is no attribute table.
 
 ## Scope gaps and their owners
 
