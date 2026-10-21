@@ -308,7 +308,7 @@ def negative_controls(args):
 
 def overview(args):
     """[designed: T75] Native controls prove displayed-country ownership and overview."""
-    from PySide6.QtCore import Qt,QPoint,qVersion
+    from PySide6.QtCore import Qt,QPoint,QTimer,qVersion
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication,QLabel
     from goal2.desktop.model import DesktopModel
@@ -412,7 +412,17 @@ def overview(args):
             assert w.context.text()=='Active game'
             assert w.overview_result.text()=='Quick simulation (rebuild setup)\n'+m.result_text()and encode(m.state,m.template_bytes)==encoded and save.read_bytes()==saved
             # Explicit replacement actions and Resume use the existing guarded callbacks.
-            select(13);click(w.new);assert m.state.managed_country==13 and w.preview is None
+            # [designed: T87] Replacing with the invalid draft still held asks first; answer by mouse.
+            asked=[]
+            def continue_without_saving():
+                box=app.activeModalWidget()
+                if box is None:QTimer.singleShot(20,continue_without_saving);return
+                asked.append(box.text())
+                button=next(b for b in box.buttons() if b.text()=='Continue without saving')
+                QTest.mouseClick(button,Qt.MouseButton.LeftButton)
+            select(13);QTimer.singleShot(20,continue_without_saving);click(w.new)
+            assert len(asked)==1 and 'unconfirmed squad, captain or tactics draft' in asked[0],asked
+            assert m.state.managed_country==13 and w.preview is None
             assert w.overview_country_identity.text().startswith(m.view()['country_name'])and w.overview_result.text()=='No result yet\n'+m.result_text()
             assert w.title.text()==m.view()['country_name'] and w.selected_ids()==m.state.starting_eleven
             select(5);click(w.friendly);assert m.state.managed_country==5 and m.state.campaign is None and w.preview is None

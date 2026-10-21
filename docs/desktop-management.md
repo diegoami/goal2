@@ -79,8 +79,22 @@ is unavailable during a match.
 
 [designed: #181] A successful **New campaign**, **New standalone friendly**, or
 **Resume** explicitly replaces the active game and discards any unconfirmed
-management draft. A Resume that fails validation leaves the active game and draft
+management draft, after the question described below (T87). A Resume that fails validation leaves the active game and draft
 unchanged.
+
+[designed: T87; original save/quit: [start, load, save and quit](original-game/startup-save-replay.md)]
+The **Game** menu holds **Save** (Ctrl+S), **Save as…** and **Quit** (Ctrl+Q); the Save page
+has the same Save as. Before New campaign, New standalone friendly, Resume or Quit (menu,
+Ctrl+Q or the window's close button), the window asks if anything would be lost. It names
+**progress confirmed since the last save** (since the game was created, resumed or saved) and
+an **unconfirmed squad, captain or tactics draft**. The engine's squad reorder after an
+original match (#280) is not counted as a draft. It offers **Save and continue** (only when
+there is progress to save), **Continue without saving** and **Cancel** (Esc). Save never confirms a
+draft. A failed save shows its reason and nothing is replaced: the window stays open and the
+previous save is untouched. Saving to a different existing file asks before overwriting. While a
+match runs, saving is refused, and Quit warns that the match will be cancelled. Check it with
+`python3 tools/desktop-ui/save-decisions.py --template … --data …`, offscreen and under
+`xvfb-run` (xcb) at `QT_SCALE_FACTOR` 1 and 2.
 
 [designed] **New campaign** starts a fresh campaign with initial seeds 4660/33590,
 using the shared opening campaign generator. [designed: owner, 2026-10-20, T50] Its **Start year**
