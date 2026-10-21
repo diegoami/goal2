@@ -230,3 +230,4 @@ operational status.
 | [T92](T92.md) | Rename a player and the manager | [#293](https://github.com/diegoami/goal2/issues/293) | Medium |
 | [T93](T93.md) | Localized names for the national pool | [#295](https://github.com/diegoami/goal2/issues/295) | Medium |
 | [T94](T94.md) | The watched pitch in the accepted original style | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
+| [T95](T95.md) | Match preparation: both elevens, Quick or Watch, and the speed | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |

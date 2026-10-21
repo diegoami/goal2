@@ -21,14 +21,18 @@ class RosterView(QWidget):
     toggled = Signal(int)
     activated = Signal(int)
 
-    def __init__(self, title='SQUAD', parent=None, toggles=True):
+    def __init__(self, title='SQUAD', parent=None, toggles=True, capacity=20, marks=True):
         super().__init__(parent)
         self.title = title;self.rows = [];self.current = -1;self.toggles = toggles
+        # [designed: T95] A fixed caption (e.g. "GREECE / 4-4-2") instead of the squad counts.
+        self.caption = None
         self.setObjectName('roster');self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-        self.setMinimumSize(300, TOP + 20 * ROW + 12)
+        # [designed: T95] A line-up holds eleven rows and needs no XI marks.
+        self.capacity = capacity;self.marks = marks
+        self.setMinimumSize(300, TOP + capacity * ROW + 12)
 
     def sizeHint(self):
-        return QSize(WIDTH, TOP + 20 * ROW + 12)
+        return QSize(WIDTH, TOP + self.capacity * ROW + 12)
 
     def set_rows(self, rows, current=None):
         self.rows = list(rows)
@@ -82,7 +86,7 @@ class RosterView(QWidget):
         font.setPixelSize(20);font.setBold(True);painter.setFont(font);metrics = QFontMetrics(font)
         xi = sum(1 for r in self.rows if r[4])
         painter.setPen(QColor(CYAN));title = QFont(font);title.setPixelSize(17);painter.setFont(title)
-        painter.drawText(14, 30, f'{self.title} {len(self.rows)} / XI {xi} / BENCH {len(self.rows) - xi}')
+        painter.drawText(14, 30, self.caption or f'{self.title} {len(self.rows)} / XI {xi} / BENCH {len(self.rows) - xi}')
         painter.setFont(font);code_x = self.width() - 64
         for i, (_, name, code, line, in_xi, captain) in enumerate(self.rows):
             y = TOP + 20 + i * ROW
@@ -90,7 +94,8 @@ class RosterView(QWidget):
             if i == self.current:
                 painter.fillRect(10, y - 22, self.width() - 20, ROW - 2, QColor(GREY));colour = QColor(BLACK)
             painter.setPen(QColor(BLACK) if i == self.current else QColor(LINE['goalkeeper'] if in_xi else LINE['defence']))
-            painter.drawText(14, y, '+' if in_xi else '-')
+            if self.marks:
+                painter.drawText(14, y, '+' if in_xi else '-')
             painter.setPen(colour)
             painter.drawText(40, y, metrics.elidedText(name, Qt.TextElideMode.ElideRight, code_x - 48))
             painter.drawText(code_x, y, code + (' C' if captain else ''))

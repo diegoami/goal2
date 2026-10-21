@@ -47,6 +47,14 @@ def apply_style(window):
     QLabel#deskOwn, QLabel#deskOpponent {{font-size:22px;color:{c['text']};}}
     QLabel#deskCampaign {{font-size:20px;color:{c['yellow']};}}
     QLabel#deskReadiness {{font-size:22px;color:{c['green']};font-weight:700;}}
+    QLabel#prepTitle {{font-size:28px;color:{c['red']};font-weight:700;}}
+    QFrame#playPanel {{background:{c['background']};border:2px solid {c['red']};}}
+    QLabel#prepHeading {{font-size:20px;color:{c['red']};font-weight:700;}}
+    QLabel#prepQuick, QLabel#prepWatch {{font-size:18px;color:{c['text']};}}
+    QLabel#prepSpeedHeading {{font-size:20px;color:{c['yellow']};font-weight:700;}}
+    QLabel#prepNote {{font-size:14px;color:{c['magenta']};}}
+    QPushButton#speedSlow:checked, QPushButton#speedNormal:checked, QPushButton#speedFast:checked {{background:{c['accent']};color:{c['ink']};}}
+    QPushButton#deskPrepare {{font-size:20px;text-align:left;padding:8px 12px;}}
     QLabel#poolCardCaption {{font-size:20px;color:{c['yellow']};font-weight:700;}}
     QLabel#deskCaptain {{font-size:20px;color:{c['yellow']};}}
     QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager {{font-size:20px;text-align:left;padding:8px 12px;}}
