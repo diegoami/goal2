@@ -77,7 +77,7 @@ class WebCountryTests(unittest.TestCase):
         self.assertEqual([p["id"] for p in result["players"]], list(range(1101, 1121)))
         player = result["players"][0]
         self.assertEqual(player, {"id": 1101, "name": "Player 1101", "initials": "P", "number": 1,
-                                 "ability": 1101 % 256, "position": 1101 % 14,
+                                 "position": 1101 % 14,
                                  "energy": 1101 % 26, "confidence": 17})
         self.assertEqual(result["matchup"]["opponent"], {"id": 7, "name": "Nation 007"})
 

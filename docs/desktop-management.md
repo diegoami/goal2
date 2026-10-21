@@ -57,6 +57,11 @@ same guarded Save. Status and Cancel match remain visible across destinations.
 At small sizes, scroll the current page to reach its remaining actions; tables
 retain their native row/column navigation, and Tab moves to the next control.
 
+[designed: owner, 2026-10-21; #283, #286] Squad and pool tables and details show each player's
+role as the original's one-letter code (G S C b B D Ç m M F w W ¢ $; club role in details),
+coloured by line, and the pool filter lists the codes with the original's position names. No
+attribute total (the overall ability byte) is shown anywhere, including the browser UI.
+
 [designed: T75] The header shows the displayed country's full name beside an
 original generic shirt and neutral decorative stripe. The art is a fallback for
 every country, not a national kit. Overview shows that country's next fixture in

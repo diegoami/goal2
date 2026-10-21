@@ -4,8 +4,11 @@
 
 ## Exact expanded columns
 
-[designed] Squad defaults (7): XI, Player, Position, Ability, Energy, Confidence, Availability.
-Pool defaults (7): ID, Player, Position, Ability, Energy, Confidence, Availability.
+[designed: owner, 2026-10-21; #286, #283] No attribute total is ever shown: record +4 (the hidden
+overall the skills are scaled from) never appears. The role is the original's one-letter code
+(+6 through `DS:69A8`, lower case for the left side; club role from +7).
+Squad defaults (7): XI, Player, Role, Position, Energy, Confidence, Availability.
+Pool defaults (7): ID, Player, Role, Position, Energy, Confidence, Availability.
 Append ID to squad only (pool already has it). Append these SAME thirty attributes to both tables, in this order:
 
 1. Age

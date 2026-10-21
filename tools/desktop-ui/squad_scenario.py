@@ -89,7 +89,7 @@ def scenario(args):
                                            'scroll':w.pages[1].verticalScrollBar().value(),'focus':app.focusWidget().objectName() if app.focusWidget() else None})
             def detail(row):
                 w.table.setCurrentCell(row,1);app.processEvents();p=model.view()['players'][row];text=w.player_detail.text()
-                for value in (p['name'],str(p['id']),p['position'],f"Ability {p['ability']}",f"Energy {p['energy']}",f"Confidence {p['confidence']}"):
+                for value in (p['name'],str(p['id']),p['position'],f"Role {p['role']}",f"Energy {p['energy']}",f"Confidence {p['confidence']}"):
                     assert value in text,'selected player raw detail missing '+value
                 for reason in p['availability']['reasons']:assert reason in text,'selected detail omitted availability'
                 if p['availability']['carried_bookings']:assert 'carried booking' in text
