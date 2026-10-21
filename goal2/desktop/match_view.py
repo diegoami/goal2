@@ -8,6 +8,10 @@ import json
 MAX_PACKET = 256 * 1024
 MAX_JOURNAL = 16 * 1024 * 1024
 PLAYBACK_RATE = 60
+# [confirmed: E031 C39; F005/F006 speed byte [DS:A923]+0x3F, 0 = no delay] The original has five
+# match speeds and changes them during play with Left/Right. [designed: owner, 2026-10-21] The
+# rebuild's five, in samples per second (presentation pacing only); Normal keeps the default.
+SPEEDS = (('Slowest', 15), ('Slow', 30), ('Normal', 60), ('Fast', 120), ('Fastest', 240))
 MAX_BACKLOG = 64
 
 
@@ -125,6 +129,19 @@ class Display:
     def commentary(self):
         """The visible commentary lines, oldest first."""
         return [f"{e['minute']}′ {e['data'].get('text', '')}" for e in self.events if e['kind'] == 'commentary']
+
+    def step_rate(self, step):
+        """[designed: T95] Left/Right in the viewer: the next slower or faster of SPEEDS. Local
+        presentation pacing: it changes no packet, digest or acknowledgement."""
+        rates = [rate for _, rate in SPEEDS]
+        if self.pitch_rate is None:
+            return None
+        current = min(range(len(rates)), key=lambda i: abs(rates[i] - self.pitch_rate))
+        self.pitch_rate = rates[max(0, min(len(rates) - 1, current + step))]
+        return self.pitch_rate
+
+    def speed_name(self):
+        return next((name for name, rate in SPEEDS if rate == self.pitch_rate), f'{self.pitch_rate}/s')
 
     def advance(self, now):
         """[designed: T83] Select one due discrete pose; no elapsed-time catch-up or interpolation."""

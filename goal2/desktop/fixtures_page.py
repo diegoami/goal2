@@ -29,9 +29,7 @@ def build(self,model,TACTICS):
     self.qualifying=card(layout,'Continental qualifying','continentalQualifying')
 
 
-# [designed: #243/T85 contract, folded into T95] Watched playback in samples per second; Normal
-# keeps the controller's default. Presentation pacing only: the original's output is unchanged.
-SPEEDS=(('Slow',15),('Normal',60),('Fast',120))
+from goal2.desktop.match_view import SPEEDS
 
 
 def preparation(self,layout):
@@ -55,13 +53,14 @@ def preparation(self,layout):
     body.addWidget(self.play)
     text('WATCH MATCH\nFollow the original on the pitch, in its own window. Friendlies only.','prepWatch')
     body.addWidget(self.watch)
-    text('SPEED (watching; set before kickoff)','prepSpeedHeading')
-    row=QHBoxLayout();body.addLayout(row)
+    text('SPEED (watching; Left/Right change it during the match)','prepSpeedHeading')
+    row=QGridLayout();body.addLayout(row)
     self.speed_group=QButtonGroup(panel);self.speed_group.setExclusive(True);self.speed_buttons=[]
     for name,rate in SPEEDS:
         button=QPushButton(name);button.setObjectName('speed'+name);button.setCheckable(True)
         button.setAccessibleName(f'Watch speed {name}, {rate} samples per second')
-        self.speed_group.addButton(button,rate);row.addWidget(button);self.speed_buttons.append(button)
+        self.speed_group.addButton(button,rate);row.addWidget(button,len(self.speed_buttons)//3,len(self.speed_buttons)%3)
+        self.speed_buttons.append(button)
     self.speed_group.button(60).setChecked(True)
     self.prep_note=text('','prepNote')
 

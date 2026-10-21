@@ -55,7 +55,10 @@ class Preparation(unittest.TestCase):
     def test_the_chosen_speed_reaches_the_watched_controller(self):
         w = self.window;w.confirm_draft()
         self.assertEqual(w.speed_group.checkedId(), 60, 'Normal keeps the default 60')
-        for name, rate in (('Slow', 15), ('Fast', 120), ('Normal', 60)):
+        # [confirmed: E031 C39; owner, 2026-10-21] the original's five speeds.
+        self.assertEqual([(b.text(), w.speed_group.id(b)) for b in w.speed_buttons],
+                         [('Slowest', 15), ('Slow', 30), ('Normal', 60), ('Fast', 120), ('Fastest', 240)])
+        for name, rate in (('Slowest', 15), ('Slow', 30), ('Fast', 120), ('Fastest', 240), ('Normal', 60)):
             next(b for b in w.speed_buttons if b.text() == name).click()
             w.navigate(0);w.refresh();w.navigate(3)
             self.assertEqual(w.speed_group.checkedId(), rate, 'the choice survives navigation and refresh')
@@ -72,6 +75,53 @@ class Preparation(unittest.TestCase):
         self.assertIs(w.desk_routes[0], prepare);prepare.click()
         self.assertEqual(w.page_stack.currentIndex(), 3)
         self.assertTrue(w.pages[3].isAncestorOf(w.play) and w.pages[3].isAncestorOf(w.watch))
+
+
+class InMatchSpeed(unittest.TestCase):
+    """[confirmed: E031 C39] Left slows the match by one step, Right speeds it up."""
+    def display(self, rate=60):
+        from goal2.desktop.match_view import Display
+        d = Display('owned');d.accept(['owned', 0, 'start', ['A', 'B']]);d.accept(['owned', 1, 'pitch', {'rate': rate}])
+        return d
+
+    def test_steps_clamp_and_change_only_pacing(self):
+        d = self.display();digest = d.digest()
+        self.assertEqual([d.step_rate(-1) for _ in range(3)], [30, 15, 15])
+        self.assertEqual([d.step_rate(1) for _ in range(5)], [30, 60, 120, 240, 240])
+        self.assertEqual((d.speed_name(), d.digest(), d.sequence), ('Fastest', digest, 2), 'no packet, digest or ACK changes')
+        from goal2.desktop.match_view import Display
+        self.assertIsNone(Display('x').step_rate(1), 'text-only watching has no pitch pacing')
+
+    def test_a_slower_step_paces_samples_further_apart(self):
+        from goal2.tests.test_pygame_pitch_view import sample
+        d = self.display()
+        for n in range(3):d.accept(['owned', d.sequence, 'frame', sample(n)])
+        # A step applies from the next interval: the sample already due at 1/60 s stays due.
+        self.assertTrue(d.advance(0));d.step_rate(-1)
+        self.assertTrue(d.advance(1 / 60 + .001))
+        self.assertFalse(d.advance(2 / 60 + .002), 'at 30/s the next sample is not due 1/60 s later')
+        self.assertTrue(d.advance(1 / 60 + 1 / 30 + .002))
+
+    @requires.need(modules=('pygame',))
+    def test_the_viewer_loop_applies_left(self):
+        import json, sys, tempfile
+        import pygame
+        from goal2.desktop import pygame_viewer as viewer
+        from goal2.tests.test_pygame_pitch_view import sample
+        with tempfile.TemporaryDirectory() as folder:
+            packets = [['owned', 0, 'start', ['A', 'B']], ['owned', 1, 'pitch', {'rate': 60}], ['owned', 2, 'frame', sample(0)]]
+            (Path(folder) / 'display').write_text(''.join(json.dumps(p) + '\n' for p in packets))
+            seen = [];calls = [0]
+            real = viewer.render_pitch
+            def render(*args):
+                seen.append(args[2].pitch_rate);return real(*args)
+            def events():
+                calls[0] += 1
+                return [pygame.event.Event(pygame.KEYDOWN, key=pygame.K_LEFT)] if calls[0] == 2 else (
+                    [pygame.event.Event(pygame.QUIT)] if calls[0] == 4 else [])
+            with patch.object(sys, 'argv', ['viewer', folder, 'owned']), patch.object(viewer, 'render_pitch', render), patch('pygame.event.get', events):
+                self.assertEqual(viewer.main(), 0)
+        self.assertEqual((seen[0], seen[-1]), (60, 30))
 
 
 if __name__ == '__main__':

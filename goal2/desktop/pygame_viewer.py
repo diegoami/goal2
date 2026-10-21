@@ -173,12 +173,16 @@ def render_pitch(screen, font, display, scroll=0, commentary=False):
     colours = TEAM_COLORS if display.managed != 1 else TEAM_COLORS[::-1]
     frame = display.frame
     score = frame['score'] if frame is not None else (visible.events[-1]['score'] if visible.events else [0, 0])
-    big, small = mono(30, True), mono(22)
+    # Narrow windows get smaller header and footer type, so nothing overlaps.
+    wide = width >= 1200
+    big, small = mono(30 if wide else 24, True), mono(22 if wide else 17)
     x = 18
     for part, colour in ((names[0].upper(), colours[0]), (f'  {score[0]} - {score[1]}  ', CYAN), (names[1].upper(), colours[1])):
         label = big.render(part, True, colour);screen.blit(label, (x, 10));x += label.get_width()
     minute = frame['minute'] if frame is not None else (visible.events[-1]['minute'] if visible.events else 0)
     screen.blit(big.render(f'   {minute}′ / {display.kind.upper()}', True, CYAN), (x, 10))
+    speed = small.render(f'SPEED {display.speed_name().upper()}', True, YELLOW)
+    screen.blit(speed, (width - speed.get_width() - 18, 16))
     # The field: border, playing grid, halfway line, centre circle, goal mouths and boxes.
     pygame.draw.rect(screen, BORDER, (left, top, w, h), 6)
     cx, cy = left + w / 2, top + h / 2
@@ -208,12 +212,17 @@ def render_pitch(screen, font, display, scroll=0, commentary=False):
         bx, by, hidden = frame['ball']
         if not hidden:
             pygame.draw.circle(screen, YELLOW, at(bx, by), max(3, round(sy * 0.3)))
+    hint = small.render('[←→] Speed  [C] Commentary  [Esc] Close', True, MAGENTA)
+    screen.blit(hint, (width - hint.get_width() - 18, height - FOOTER + 8))
     lines = visible.commentary()
-    footer = mono(22)
+    footer = mono(22 if wide else 18)
+    room = width - 36 - hint.get_width() - 24
     for n, line in enumerate(lines[-2:]):
+        # The first footer line shares its row with the key hint; long lines end in an ellipsis.
+        limit = room if n == 0 else width - 36
+        while footer.size(line)[0] > limit and len(line) > 1:
+            line = line[:-2] + '…'
         screen.blit(footer.render(line, True, YELLOW if n == 0 and len(lines) > 1 else CYAN), (18, height - FOOTER + 6 + n * 28))
-    hint = small.render('[C] Commentary  [Esc] Close', True, MAGENTA)
-    screen.blit(hint, (width - hint.get_width() - 18, height - FOOTER + 34))
     if commentary or display.result is not None:
         # The full commentary, or the board at full time, over the right part of the pitch.
         rows = visible.lines()[3:] if display.result is not None else lines
@@ -249,6 +258,9 @@ def main():
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                         commentary = not commentary
+                    # [confirmed: E031 C39] Left slows the match by one step; Right speeds it up.
+                    if event.type == pygame.KEYDOWN and event.key in (pygame.K_LEFT, pygame.K_RIGHT):
+                        display.step_rate(-1 if event.key == pygame.K_LEFT else 1)
                     scroll, follow, keep_open = navigation(event, scroll, follow)
                     running = running and keep_open
                 if source.tell() > MAX_JOURNAL:
