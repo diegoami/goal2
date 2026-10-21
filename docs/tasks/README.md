@@ -232,3 +232,4 @@ operational status.
 | [T94](T94.md) | The watched pitch in the accepted original style | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
 | [T95](T95.md) | Match preparation: both elevens, Quick or Watch, and the speed | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
 | [T96](T96.md) | The original's pitch marks, officials and six speeds | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
+| [T97](T97.md) | The result of a finished match, and Continue | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |
