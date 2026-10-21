@@ -70,6 +70,12 @@ def main():
             w.country_list.setFocus();key(Qt.Key.Key_Home)
             for _ in range(6):key(Qt.Key.Key_Down)
             w.start_year.setFocus();key(Qt.Key.Key_Down);assert w.start_year.currentData() == 1992
+            # [designed: T89] The country card follows the choice, fills its pane, never clipped.
+            w.preview();app.processEvents()
+            assert w.country_card.card['name'] == 'Denmark' and w.country_card.card['formation'] == '5-4-1'
+            pane = w.country_card.parentWidget().parentWidget()
+            assert pane.horizontalScrollBar().maximum() == 0 and w.country_card.width() == pane.viewport().width(), 'country card wider than its pane'
+            assert w.country_card.narrow == (pane.viewport().width() < 740)
             w.country_list.setFocus();key(Qt.Key.Key_Return)
             assert w.pages.currentIndex() == 2 and w.review_fields['country'].text() == 'Denmark'
             counts.append(reachable('review'))
@@ -122,7 +128,7 @@ def main():
         assert code == 0 and seen == [1, [4]], (code, seen)
         assert save.read_bytes() == saved
     print(f"PASS launch window ({platform}, ratio {ratio:g}): keyboard reach and in-window geometry on every page, "
-          f"failed load kept the save, Retry/Load another, New career → Review → Start, Players by Space (20 complete cards), Resume by Enter, real entry Launch → management; "
+          f"failed load kept the save, Retry/Load another, New career → country card → Review → Start, Players by Space (20 complete cards), Resume by Enter, real entry Launch → management; "
           + '; '.join(receipts))
 
 

@@ -224,3 +224,4 @@ operational status.
 | [T86](T86.md) | Launch with Resume, Open another save and a reviewed new career | [#260](https://github.com/diegoami/goal2/issues/260) | Medium |
 | [T87](T87.md) | Game save menu, Save as, and explicit replacement and quit decisions | [#260](https://github.com/diegoami/goal2/issues/260) | Medium |
 | [T88](T88.md) | Complete original-style player cards, browsed from New career | [#288](https://github.com/diegoami/goal2/issues/288) | Hard |
+| [T89](T89.md) | The original country card when choosing a country | [#288](https://github.com/diegoami/goal2/issues/288) | Medium |
