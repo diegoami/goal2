@@ -41,6 +41,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: A 1920x1080 screen (the hosted runner's 1024x768 clamps the 1440x900 window)
+        shell: pwsh
+        run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Install goal2
         run: python -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'
       - name: Original-game files (owner's Drive, when the secret is available)
