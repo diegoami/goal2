@@ -104,15 +104,19 @@ class Display:
             raise ValueError('invalid viewer identity')
         roles, managed, label = value['roles'], value['managed'], value['kind']
         if (not isinstance(roles, dict) or len(roles) > 64
-                or any(not k.isdigit() or not 1 <= int(k) <= 3060 or not isinstance(c, str) or len(c) != 1
+                or any(not (k.isascii() and k.isdigit()) or not 1 <= int(k) <= 3060 or not isinstance(c, str) or len(c) != 1
                        for k, c in roles.items())):
             raise ValueError('invalid viewer roles')
         if managed not in (0, 1, None) or type(managed) is bool:
             raise ValueError('invalid viewer managed side')
         if not isinstance(label, str) or not 0 < len(label) <= 40:
             raise ValueError('invalid viewer fixture kind')
+        countries = value['countries']
+        if not isinstance(countries, list) or len(countries) != 2 or any(not isinstance(v, str) for v in countries):
+            raise ValueError('invalid viewer countries')
+        # Nothing is kept until the whole identity is valid.
         self.roles = {int(k): c for k, c in roles.items()};self.managed = managed;self.kind = label
-        return value['countries']
+        return countries
 
     def code(self, word, number):
         """The marker label: the player's role code, or his slot number when none was sent."""

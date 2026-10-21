@@ -136,7 +136,10 @@ class WatchedController:
             self._status_read_deadline = None
             self.frame_ack = -1
             self.frame_receipts = {}
-            self.send('start', pitch_identity(self.model, pending))
+            # [designed: T94] Only the pitch draws codes and colours; text-only watching keeps
+            # the two-country start.
+            self.send('start', pitch_identity(self.model, pending) if frames else
+                      [self.model.goaldat.country_names[w] for w in (pending.side_a,pending.side_b)])
             if frames:
                 self.send('pitch', {'rate': playback_rate})
             command = self.viewer_command or [sys.executable, '-m', 'goal2.desktop.pygame_viewer']
