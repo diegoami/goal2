@@ -125,8 +125,16 @@ class ManagementWindow(QMainWindow):
         return self.preview if self.preview is not None else self.model
 
     def draft(self):
-        return (self.selected_ids(),self.captain.currentData(),
+        return (self.drafted_eleven(),self.captain.currentData(),
                 sum(1<<(element-1) for element,box in self.tactics if box.isChecked()))
+
+    def drafted_eleven(self):
+        """[designed: #280] The checked eleven in the stored order: players kept from the stored
+        eleven first, then new ones in row order. An original match may return the squad
+        reordered (watched_publication takes the image's squad), so a row-ordered list would make
+        an unchanged team look edited."""
+        selected=self.selected_ids();stored=self.display_model.state.starting_eleven
+        return [w for w in stored if w in selected]+[w for w in selected if w not in stored]
 
     def apply_draft(self,draft):
         eleven,captain,bits=draft;self._refreshing=True
@@ -262,7 +270,7 @@ class ManagementWindow(QMainWindow):
     def confirm_draft(self):
         if not self.require_active():return
         bits=sum(1<<(element-1) for element,box in self.tactics if box.isChecked())
-        self.action(lambda:self.model.confirm(self.selected_ids(),self.captain.currentData(),bits),'Management confirmed')
+        self.action(lambda:self.model.confirm(self.drafted_eleven(),self.captain.currentData(),bits),'Management confirmed')
 
     def set_busy(self,busy):
         busy=bool(busy or getattr(self.model,'match_pending',False))
@@ -285,7 +293,7 @@ class ManagementWindow(QMainWindow):
         try:
             bits=sum(1<<(element-1) for element,box in self.tactics if box.isChecked())
             state=self.model.state
-            if (self.selected_ids()!=state.starting_eleven or self.captain.currentData()!=state.captain or bits!=state.country_tactics):
+            if (self.drafted_eleven()!=state.starting_eleven or self.captain.currentData()!=state.captain or bits!=state.country_tactics):
                 raise ValueError('Confirm or discard management edits before playing')
             pending=state.campaign.next_fixture if state.campaign else None
             if pending is not None and pending.kind!=1:

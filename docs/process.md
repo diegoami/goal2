@@ -74,7 +74,9 @@ You implement <T<nn>>. The task file above is the contract.
 
 ## 5. Reviews
 
-Optional per PR (`tools/review_pr.sh`); the big independent one is at each milestone
+[designed: owner, 2026-10-21] Opening a PR starts no review: the main session opens it and goes on
+to its checks. Reviews are optional per PR (`tools/review_pr.sh`), run when the owner asks; the big
+independent one is at each milestone
 ([milestone-review.md](milestone-review.md)). A review proves its findings (a command, or a
 mutation a test fails on) or labels them unverified. Blocking means a real player or implementer
 would hit it through normal use; a theoretical bypass of helper tooling is a follow-up. Before
