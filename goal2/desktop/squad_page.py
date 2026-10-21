@@ -13,6 +13,20 @@ def reading_label(name):
 
 def build(self,model,TACTICS):
     page=self.pages[1];layout=page.content
+    # [designed: T91; accepted vision #266 screen 03] The twenty beside the selected player's
+    # complete card (T88). The table, boards and controls below are the attribute table.
+    from goal2.desktop.roster import Columns,RosterView
+    from goal2.desktop.player_card import PlayerCardView
+    from PySide6.QtWidgets import QScrollArea
+    team=Columns(1096);team.setObjectName('teamDesk');layout.addWidget(team)
+    self.team_roster=RosterView('SQUAD');self.team_roster.setFixedWidth(320);self.team_roster.setAccessibleDescription('Up/Down: select; Space: in or out of the XI')
+    team.box.addWidget(self.team_roster,0,Qt.AlignmentFlag.AlignTop)
+    self.team_card=PlayerCardView();card_area=QScrollArea();card_area.setObjectName('teamCard')
+    card_area.setWidgetResizable(True);card_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+    card_area.setFrameShape(QScrollArea.Shape.NoFrame)
+    card_area.setWidget(self.team_card);card_area.setMinimumHeight(644);team.box.addWidget(card_area,1)
+    self.team_roster.current_changed.connect(lambda row:self.table.setCurrentCell(row,1))
+    self.team_roster.toggled.connect(lambda row:toggle(self,row))
     self.squad_summary=reading_label('squadSummary');layout.addWidget(self.squad_summary)
     self.table=QTableWidget(20,7);self.table.setObjectName('squad')
     self.table.setHorizontalHeaderLabels(['XI','Player','Role','Position','Energy','Confidence','Availability'])
@@ -38,6 +52,26 @@ def build(self,model,TACTICS):
     page.set_footer(footer)
 
 
+def toggle(self,row):
+    """[designed: T91] Space on the roster flips the same XI check box the table holds, so the
+    window's existing rules decide; an unavailable or preview row says why it cannot."""
+    item=self.table.item(row,0)
+    if item is None:return
+    if not item.flags() & Qt.ItemFlag.ItemIsUserCheckable:
+        if self.preview is not None:self.require_active()
+        else:self.status.setText('Unavailable players cannot start')
+        return
+    item.setCheckState(Qt.CheckState.Unchecked if item.checkState()==Qt.CheckState.Checked else Qt.CheckState.Checked)
+
+
+def roster_rows(self,rows,selected,captain):
+    goaldat=self.display_model.goaldat
+    def name(word):
+        initial=goaldat.player_initials[word] if word<len(goaldat.player_initials) else ''
+        return (initial+' ' if initial else '')+goaldat.player_names[word]
+    return [(r['id'],name(r['id']),r['role'],r['line'],r['id'] in selected,r['id']==captain) for r in rows]
+
+
 def refresh(self,*unused):
     """[designed: T76] Read widgets for presentation; never publish draft state."""
     if self._refreshing:return
@@ -52,7 +86,14 @@ def refresh(self,*unused):
             groups.setdefault(row['position'],[]).append(name)
     self.lineup_board.setText(f'Starting XI · {len(selected)}\nGrouped by position.\n'+ '\n'.join(f'{group} · {len(names)}\n'+', '.join(names) for group,names in groups.items()))
     self.bench_board.setText(f'Bench · {20-len(selected)}\n'+ '\n'.join(row['name']+' · '+row['position'] for row in rows if row['id'] not in selected))
-    row=rows[max(0,self.table.currentRow())];availability=row['availability']
+    current=max(0,self.table.currentRow());roster=roster_rows(self,rows,selected,captain)
+    self.team_roster.set_rows(roster,current);self.country_roster.set_rows(roster,current)
+    from goal2.game.player_card import card
+    self.team_card.set_card(card(self.display_model.state,rows[current]['id'],self.display_model.goaldat,team_tactics=self.draft()[2]))
+    ready=sum(1 for r in rows if r['availability']['available'])
+    self.desk_readiness.setText(f'{ready} ready / XI {len(selected)}')
+    self.desk_captain.setText('Captain: '+(next((n for w,n,*_ in roster if w==captain),'chosen at kickoff') if captain else 'chosen at kickoff'))
+    row=rows[current];availability=row['availability']
     reason=', '.join(availability['reasons']) or 'Available'
     if availability['carried_bookings']:reason+='; carried booking'
     self.player_detail.setText(f"Player detail · {row['name']}\nID {row['id']} · {row['position']}"+(' · Captain' if row['id']==captain else '')+f"\nRole {row['role']} · club {row['club_role']} · Energy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}")

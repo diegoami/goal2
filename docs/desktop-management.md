@@ -63,6 +63,19 @@ Retracting moves focus out of the bar; restoring returns it. Page, drafts, scrol
 are untouched. The browse-another-country selector is on the Country page. Role codes use the
 original's line colours [confirmed: F008 `DS:699A`].
 
+[designed: T91; accepted vision #266 screens 02/03/04] **Country** is the desk: *Your country*
+(manager, world and continental rank), *Next opponent* (its ranks and the fixture), *Your
+campaign* and *Last result*; the routes **Select squad**, **Pool**, **Fixture list** and
+**Country card** (the T89 card); the readiness line (`<n> ready / XI <k>`) and the captain; and
+the twenty: `+` in the XI, `-` on the bench, the initial and name in the role's line colour, the
+code and `C` for the captain. Enter on a player opens him on Team; the desk never changes the XI.
+**Team** shows the same twenty beside the selected player's complete card (T88), whose tactic
+words follow the draft. Up/Down select, Space puts the player in or out of the XI under the
+table's rules (an unavailable player cannot start; a preview cannot change). The table, boards,
+captain, tactics and draft bar stay below as the attribute table. **Pool** pins the complete
+cards of the outgoing (OUT) and incoming (IN) player above the browser. Ranks come from the
+country records [confirmed: F007 via `goal2.game.country_card`].
+
 [designed: T78] Fixtures & results groups the next named fixture, last completed
 score, engine provenance, goals and a read-only standings snapshot. Ordinary
 goals retain source A/B order; competitive regulation, cumulative extra-time
