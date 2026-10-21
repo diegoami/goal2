@@ -13,6 +13,16 @@ def label(name,accessible):
 
 def build(self,model,TACTICS):
     page=self.pages[2];layout=page.content
+    # [designed: T91; accepted vision #266 screen 04] Both complete cards stay pinned above the
+    # pool browser: the outgoing squad player and the incoming reserve.
+    from goal2.desktop.roster import Columns
+    from goal2.desktop.player_card import PlayerCardView
+    cards=Columns(816);cards.setObjectName('poolCards');layout.addWidget(cards)
+    self.pool_out_card=PlayerCardView();self.pool_in_card=PlayerCardView()
+    for view,caption,name in ((self.pool_out_card,'OUT · squad player','Outgoing player card'),(self.pool_in_card,'IN · pool reserve','Incoming player card')):
+        column=QWidget();body=QVBoxLayout(column);body.setContentsMargins(0,0,0,0);body.setSpacing(4)
+        heading=QLabel(caption);heading.setObjectName('poolCardCaption');body.addWidget(heading)
+        view.setAccessibleDescription(name);body.addWidget(view,1);cards.box.addWidget(column,1)
     pool_panel=QWidget();pool_layout=QVBoxLayout(pool_panel);self.pool_panel=pool_panel
     self.pool_summary=label('poolSummary','National pool membership');pool_layout.addWidget(self.pool_summary)
     outgoing=QLabel('Outgoing squad player · selection only, confirmed XI stays unchanged');outgoing.setWordWrap(True);pool_layout.addWidget(outgoing)
@@ -87,6 +97,10 @@ def selection(self):
     if player:
         reason=', '.join(player['availability']['reasons']) or 'Available'
         outgoing_text=f"Outgoing · {player['name']} · ID {outgoing}\nRole {player['role']} (club {player['club_role']}) · {player['position_group']} · Energy {player['energy']} · Confidence {player['confidence']}\nAvailability: {reason}"
+    from goal2.game.player_card import card
+    display=self.display_model
+    self.pool_out_card.set_card(card(display.state,outgoing,display.goaldat) if player else None)
+    self.pool_in_card.set_card(card(display.state,incoming,display.goaldat) if row else None)
     self.exchange_summary.setText(outgoing_text+'\n'+(f"Incoming · {row['name']} · ID {incoming}" if row else 'No incoming reserve selected'))
 
 

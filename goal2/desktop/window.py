@@ -70,6 +70,7 @@ class ManagementWindow(QMainWindow):
             if show is None:continue
             bar.setVisible(show);handle.setVisible(not show)
         (self.handles if self.top_bar.isHidden() else self.top_layout).insertWidget(0,self.show_side,0,Qt.AlignmentFlag.AlignTop)
+        self.fit_columns()
         restore=getattr(self,'_bar_focus',None)
         if restore is not None and restore.isVisible():
             restore.setFocus();self._bar_focus=None
@@ -83,6 +84,16 @@ class ManagementWindow(QMainWindow):
         narrow=self.width()<self.NARROW_SHELL
         if narrow!=getattr(self,'_narrow_shell',None):
             self._narrow_shell=narrow;self.set_bars(side=not narrow)
+        self.fit_columns()
+
+    # [designed: T91] The pages' fixed frame around their content: window and page margins, the
+    # page scroll bar, and the side bar with its spacing when it shows.
+    PAGE_FRAME=78
+
+    def fit_columns(self):
+        from goal2.desktop.roster import Columns
+        side=0 if self.side_bar.isHidden() else self.side_bar.sizeHint().width()+8
+        for columns in self.findChildren(Columns):columns.arrange(self.width()-self.PAGE_FRAME-side)
 
     def refresh_header(self,display,view):
         """[designed: T90] The top bar: country, career line, next fixture."""
@@ -100,6 +111,10 @@ class ManagementWindow(QMainWindow):
     def navigate(self,index):
         """[designed: T74] Presentation only; preserve draft and job ownership."""
         self.page_stack.setCurrentIndex(index)
+        # [designed: T91] Settle the shown page's layout now: a page laid out while hidden
+        # would otherwise change height after the player is already on it.
+        from PySide6.QtCore import QCoreApplication,QEvent
+        for _ in range(3):QCoreApplication.sendPostedEvents(None,QEvent.Type.LayoutRequest)
         for number,button in enumerate(self.navigation):button.setChecked(number==index)
         self.pages[index].verticalScrollBar().setValue(0)
         self.pages[index].heading.setFocus(Qt.FocusReason.ShortcutFocusReason)

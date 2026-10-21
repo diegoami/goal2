@@ -42,6 +42,14 @@ def apply_style(window):
     QTableCornerButton::section {{background:{c['background']};border:0;}}
     QFrame#overviewCard {{background:{c['background']};border:2px solid {c['red']};}}
     QLabel#cardHeading {{font-size:14px;color:{c['red']};font-weight:700;}}
+    QFrame#deskPanel {{background:{c['background']};border:2px solid {c['red']};}}
+    QLabel#deskHeading {{font-size:20px;color:{c['red']};font-weight:700;}}
+    QLabel#deskOwn, QLabel#deskOpponent {{font-size:22px;color:{c['text']};}}
+    QLabel#deskCampaign {{font-size:20px;color:{c['yellow']};}}
+    QLabel#deskReadiness {{font-size:22px;color:{c['green']};font-weight:700;}}
+    QLabel#poolCardCaption {{font-size:20px;color:{c['yellow']};font-weight:700;}}
+    QLabel#deskCaptain {{font-size:20px;color:{c['yellow']};}}
+    QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard {{font-size:20px;text-align:left;padding:8px 12px;}}
     QLabel#overviewCountry {{font-size:24px;font-weight:700;color:{c['yellow']};}}
     QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;color:{c['green']};}}
     QLabel#lineupBoard,QLabel#benchBoard,QLabel#playerDetail {{background:{c['background']};border:2px solid {c['cyan']};padding:16px;}}

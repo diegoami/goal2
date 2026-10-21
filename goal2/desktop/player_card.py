@@ -38,8 +38,16 @@ class PlayerCardView(QWidget):
     def sizeHint(self):
         return QSize(WIDTH, HEIGHT)
 
+    # [designed: T91] The height follows the width at layout time (not after a resize event, which
+    # a hidden page delays), so a page never grows under the player after it is shown.
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, width):
+        return NARROW_HEIGHT if width < WIDTH else HEIGHT
+
     def resizeEvent(self, event):
-        height = NARROW_HEIGHT if self.narrow else HEIGHT
+        height = self.heightForWidth(self.width())
         if self.minimumHeight() != height:self.setMinimumHeight(height)
         super().resizeEvent(event)
 
