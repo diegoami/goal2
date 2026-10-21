@@ -1,7 +1,7 @@
 """[designed: T99; accepted vision #266 screens 03/16] Team tactics and the attribute table.
 
 The Team page holds three views: 0 the roster and the card with its routes, 1 Team tactics, 2 the
-attribute table. A tactic row's word follows its bit [confirmed: m244-team-tactics screenshot;
+attribute table. A tactic row's word follows its bit [confirmed: docs/original-game/images/m244-team-tactics.png;
 the tactic bits of window.TACTICS]; the draft and Confirm/Discard are unchanged.
 """
 from pathlib import Path

@@ -47,7 +47,8 @@ def main():
         app.processEvents()
         assert tuple(element for element, _ in TACTICS) == (5, 6, 7, 1, 2, 3, 4, 8)
         boxes = dict(window.tactics)
-        labels = {element: box.text() for element, box in boxes.items()}
+        # [designed: T99] A tactic row carries the TACTICS label as its alternatives.
+        labels = {element: box.property("alternatives") for element, box in boxes.items()}
         assert labels[6] == "Sag back to box / stand ground", labels
         assert labels[7] == "Play safe / offside trap", labels
         assert labels[1] == "Stay back / push forward", labels
@@ -57,6 +58,7 @@ def main():
                 box.setChecked(False)
             reveal(boxes[element]);QTest.mouseClick(boxes[element], Qt.MouseButton.LeftButton)
             assert boxes[element].isChecked(), f"element {element} checkbox did not toggle"
+            assert boxes[element].accessibleName().lower().endswith(labels[element].split(" / ")[1]), boxes[element].accessibleName()
             reveal(window.confirm);QTest.mouseClick(window.confirm, Qt.MouseButton.LeftButton)
             expected = 1 << (element - 1)
             assert model.state.country_tactics == expected, (

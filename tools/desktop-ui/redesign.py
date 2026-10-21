@@ -177,7 +177,7 @@ def shell(args):
             assert snapshot()==before,'surface inspection changed state/draft/preview/save/job ownership: '+json.dumps(report['surface_snapshot_delta'])
             assert not failed,'native surface contrast failed: '+', '.join(failed)
             # [designed] Dirty active controls are deliberately different from confirmed state.
-            window.navigate(1);window.pages[1].ensureWidgetVisible(window.tactics[0][1]);app.processEvents()
+            window.navigate(1);window.team_view(1);window.pages[1].ensureWidgetVisible(window.tactics[0][1]);app.processEvents()
             QTest.mouseClick(window.tactics[0][1],Qt.MouseButton.LeftButton,pos=QPoint(10,window.tactics[0][1].height()//2));app.processEvents()
             dirty=copy.deepcopy(window.draft())
             assert dirty[2]!=model.state.country_tactics,'test did not establish dirty tactics'
@@ -206,7 +206,9 @@ def shell(args):
             before=snapshot();QTest.keyClick(window,Qt.Key.Key_S,Qt.KeyboardModifier.ControlModifier);app.processEvents()
             assert snapshot()==before,'Save shortcut mutated pending ownership'
             model.match_pending=False;window.set_busy(False)
-            actions=(window.new,window.friendly,window.table,window.captain,window.confirm,window.cancel,
+            # [designed: T99] The Team page's routes and its two views' actions are actions too.
+            actions=(window.new,window.friendly,*window.team_routes,window.table,window.table_back,window.captain,
+                     window.confirm_plan,window.discard_plan,window.confirm,window.cancel,
                      *(box for _,box in window.tactics),window.search,window.position,window.reserves,window.exchange,
                      window.standings,window.play,window.watch,window.half_out,window.half_in,
                      window.substitute,window.continue_match,window.path,window.save,window.resume)
@@ -219,6 +221,10 @@ def shell(args):
                     assert page.horizontalScrollBar().maximum()==0,'shell needs horizontal scrolling'
                     page_actions=[w for w in actions if page.isAncestorOf(w)]
                     for widget in page_actions:
+                        # [designed: T99] A Team-page control lives in one of the page's views; show it first.
+                        views=getattr(window,'team_views',None)
+                        if views is not None and views.isAncestorOf(widget):
+                            window.team_view(next(i for i in range(views.count()) if views.widget(i).isAncestorOf(widget)));app.processEvents()
                         footer=getattr(page,'footer',None)
                         surface=footer if footer is not None and footer.isAncestorOf(widget) else page.viewport()
                         if surface is footer:

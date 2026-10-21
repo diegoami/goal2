@@ -11,7 +11,7 @@ def reading_label(name):
     return label
 
 
-# [confirmed: m244-team-tactics screenshot; F010 elements] The original's category for each tactic
+# [confirmed: docs/original-game/images/m244-team-tactics.png; F010 elements] The original's category for each tactic
 # element: 5..7 are the team tactics, 1..4 and 8 the player defaults (game/country_card).
 CATEGORIES={5:'Defence system',6:'Protection',7:'Offside',1:'Positioning',2:'Possession',
             3:'Passing',4:'Tackling',8:'Marking'}

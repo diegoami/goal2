@@ -11,5 +11,10 @@ def reveal(widget):
             window.activateWindow();QApplication.processEvents()
             QTest.keyClick(window,Qt.Key.Key_1+index,Qt.KeyboardModifier.ControlModifier)
             assert window.page_stack.currentIndex()==index,'retained proof could not reveal page'
+            # [designed: T99] A Team-page control lives in one of the page's views; show that view.
+            views=getattr(window,'team_views',None)
+            if views is not None and views.isAncestorOf(widget):
+                window.team_view(next(i for i in range(views.count()) if views.widget(i).isAncestorOf(widget)))
+                assert views.widget(views.currentIndex()).isAncestorOf(widget),'retained proof could not reveal Team view'
             page.ensureWidgetVisible(widget);QApplication.processEvents()
             return

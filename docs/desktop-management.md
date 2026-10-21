@@ -71,10 +71,24 @@ the twenty: `+` in the XI, `-` on the bench, the initial and name in the role's 
 code and `C` for the captain. Enter on a player opens him on Team; the desk never changes the XI.
 **Team** shows the same twenty beside the selected player's complete card (T88), whose tactic
 words follow the draft. Up/Down select, Space puts the player in or out of the XI under the
-table's rules (an unavailable player cannot start; a preview cannot change). The table, boards,
-captain, tactics and draft bar stay below as the attribute table. **Pool** pins the complete
+table's rules (an unavailable player cannot start; a preview cannot change). Below them are the
+routes **Pool / Compare >**, **Attribute table >**, **Team tactics >** and **Rename (F2)**; the
+draft bar stays at the foot of the page in every view. **Pool** pins the complete
 cards of the outgoing (OUT) and incoming (IN) player above the browser. Ranks come from the
 country records [confirmed: F007 via `goal2.game.country_card`].
+
+[designed: T99; accepted vision #266 screen 16; owner playtest 2026-10-21, #304] **Team tactics**
+holds, on the left, the team headed `<COUNTRY> / XI n / d-m-a` (the formation counted from the
+drafted eleven's lines, never stored [derived: `goal2/game/country_card.py`]), the manager, the
+captain and the grouped XI and bench; on the right, **TEAM DEFAULTS**, eight rows in the order
+Defence system, Protection, Offside, Positioning, Possession, Passing, Tackling, Marking, each with
+its current word. A row is element k's bit `1<<(k-1)`; its word is the first alternative when the
+bit is clear and the second when it is set [confirmed: `docs/original-game/images/m244-team-tactics.png`; F010].
+Space, Enter or a click switches the selected row; Up/Down move between rows. **Confirm plan** is
+Confirm management; **Discard / Team** is Discard draft, then back to the roster. Team skills are
+not shown: no aggregate is verified (G05). The **Attribute table** holds the squad summary, the
+seven-column table (the XI column's indicators green in the XI, red outlined on the bench) and the
+selected player's detail, with **< Team**. Escape on either view returns to the roster.
 
 [designed: T92; owner, 2026-10-21; confirmed: E031 C15/C30] **Rename (F2)** on Team renames the
 selected player (surname, at most 12 characters; the initial stays), and **Manager name** on the
@@ -398,12 +412,12 @@ python3 tools/desktop-ui/competitive_play.py
 QT_QPA_PLATFORM=xcb xvfb-run -a python3 tools/desktop-ui/competitive_play.py
 ```
 
-[designed: T76] **Squad & tactics** retains the twenty-player source-order roster.
-Select a row to read its full ID, position group, raw ability/energy/confidence
-and availability. The grouped starting XI and bench reflect the private draft,
+[designed: T76] **Team** (formerly Squad & tactics) retains the twenty-player source-order roster.
+In the attribute table, select a row to read its full ID, position group, raw energy/confidence
+and availability. The grouped starting XI and bench on Team tactics reflect the private draft,
 with explicit Captain text; grouping does not assign a formation. The fixed
 Confirm management / Discard draft bar stays visible while the page scrolls.
-Space toggles native XI/tactics controls; Enter activates a focused draft action.
+Space toggles the XI and the tactic rows; Enter switches a tactic row or activates a focused draft action.
 Draft edits survive navigation and country preview/return; Save writes confirmed
 state, and match play still requires confirmed management.
 

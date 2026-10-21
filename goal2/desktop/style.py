@@ -95,7 +95,7 @@ def apply_style(window):
     QPushButton[tacticRow="true"] {{font-size:20px;min-height:44px;border:0;}}
     QLabel#tacticsHint {{color:{c['magenta']};font-size:16px;}}
     QPushButton#teamPool, QPushButton#teamTableRoute, QPushButton#teamTacticsRoute, QPushButton#renamePlayer, QPushButton#confirmPlan, QPushButton#discardPlan, QPushButton#tableBack {{font-size:20px;padding:4px 12px;}}
-    QTableWidget#squad {{font-size:18px;font-weight:700;gridline-color:#333333;}}
+    QTableWidget#squad {{font-weight:700;gridline-color:#333333;}}
     QTableWidget#squad::indicator {{width:18px;height:18px;}}
     QTableWidget#squad::indicator:unchecked {{background:{c['background']};border:2px solid {c['red']};}}
     QTableWidget#squad::indicator:checked {{background:{c['green']};border:2px solid {c['green']};}}

@@ -101,7 +101,10 @@ def scenario(args):
             key(w.captain,Qt.Key.Key_End);assert w.captain.currentData()==260,'captain full ID was truncated'
             assert tuple(e for e,_ in w.tactics)==(5,6,7,1,2,3,4,8)
             for element,box in w.tactics:
-                assert box.text()==dict(TACTICS)[element]
+                # [designed: T99] A tactic row carries the TACTICS label as its alternatives and
+                # names its category and current word; the word follows the bit.
+                assert box.property('alternatives')==dict(TACTICS)[element]
+                assert box.accessibleName().endswith(': '+(lambda x:x[:1].upper()+x[1:])(dict(TACTICS)[element].split(' / ')[int(box.isChecked())]))
                 key(box,Qt.Key.Key_Space)
                 if not box.isChecked():key(box,Qt.Key.Key_Space)
             assert w.draft()==(wanted,260,255)
@@ -155,7 +158,11 @@ def scenario(args):
             w.refresh()
             for width,height in sizes:
                 w.resize(width,height);w.navigate(1);app.processEvents();page=w.pages[1]
-                for scroll,label in ((0,'roster'),(page.verticalScrollBar().maximum()//2,'detail'),(page.verticalScrollBar().maximum(),'tactics')):
+                # [designed: T99] The roster, the detail and the tactics are the Team page's views 0, 2 and 1.
+                def top(widget):return widget.mapTo(page.widget(),QPoint(0,0)).y()
+                for fraction,label,view in ((0,'roster',0),(2,'detail',2),(1,'tactics',1)):
+                    w.team_view(view);app.processEvents()
+                    scroll=page.verticalScrollBar().maximum()//fraction if fraction else 0
                     page.verticalScrollBar().setValue(scroll);app.processEvents()
                     footer=page.footer
                     assert footer.isVisible() and footer.geometry().bottom()<page.height(),'draft bar is outside page'
@@ -172,8 +179,9 @@ def scenario(args):
                 def visible_rows(column):
                     viewport=w.table.viewport().rect()
                     return {row for row in range(20) if viewport.contains(w.table.visualItemRect(w.table.item(row,column)))}
+                w.team_view(2);app.processEvents()
                 for row in (0,4,8,12,16,19):
-                    page.verticalScrollBar().setValue(w.table.y()-8);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
+                    page.verticalScrollBar().setValue(top(w.table)-8);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
                     name_rows.update(visible_rows(1))
                     capture(f'long-{width}x{height}-roster-row-{row+1}-names')
                     w.table.scrollToItem(w.table.item(row,6));app.processEvents()
@@ -185,13 +193,14 @@ def scenario(args):
                 # [designed] Read every table column through its native contained horizontal scroll.
                 for row in range(20):
                     for col in range(7):w.table.scrollToItem(w.table.item(row,col));app.processEvents();assert w.table.item(row,col).text() or col==0
-                for widget,name in ((w.player_detail,'selected-detail'),(w.lineup_board,'grouped-xi'),(w.bench_board,'bench')):
+                for widget,name,view in ((w.player_detail,'selected-detail',2),(w.lineup_board,'grouped-xi',1),(w.bench_board,'bench',1)):
+                    w.team_view(view);app.processEvents()
                     # [designed] Overlap viewport segments so long wrapped values are readable in full across captures.
                     intervals=[];step=max(40,page.viewport().height()-100)
                     for offset in range(0,widget.height(),step):
-                        page.verticalScrollBar().setValue(widget.y()-16+offset);app.processEvents()
-                        top=page.verticalScrollBar().value()-widget.y();bottom=top+page.viewport().height()
-                        intervals.append([max(0,top),min(widget.height(),bottom)])
+                        page.verticalScrollBar().setValue(top(widget)-16+offset);app.processEvents()
+                        first=page.verticalScrollBar().value()-top(widget);bottom=first+page.viewport().height()
+                        intervals.append([max(0,first),min(widget.height(),bottom)])
                         capture(f'long-{width}x{height}-{name}-segment-{offset}')
                         if bottom>=widget.height():break
                     assert intervals[0][0]==0 and max(end for start,end in intervals)>=widget.height(),'scroll captures missed a reading area'
