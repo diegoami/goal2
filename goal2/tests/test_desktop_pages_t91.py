@@ -49,7 +49,8 @@ class Pages(unittest.TestCase):
         self.assertIn(self.model.goaldat.player_names[captain], w.desk_captain.text())
         # Routes go to the existing pages; the card is the T89 card of the displayed country.
         before = self.state()
-        for button, index in zip(w.desk_routes, (1, 2, 3)):
+        self.assertEqual(len(w.desk_routes), 4)  # T95 added Prepare match first
+        for button, index in zip(w.desk_routes, (3, 1, 2, 3)):
             button.click();self.assertEqual(w.page_stack.currentIndex(), index)
         w.navigate(0);w.desk_card.click();self.app.processEvents()
         self.assertTrue(w.country_card_view.isVisible());self.assertEqual(w.country_card_view.card, own)

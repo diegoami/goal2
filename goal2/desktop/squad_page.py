@@ -104,3 +104,6 @@ def refresh(self,*unused):
     reason=', '.join(availability['reasons']) or 'Available'
     if availability['carried_bookings']:reason+='; carried booking'
     self.player_detail.setText(f"Player detail · {row['name']}\nID {row['id']} · {row['position']}"+(' · Captain' if row['id']==captain else '')+f"\nRole {row['role']} · club {row['club_role']} · Energy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}")
+    if hasattr(self,'lineup_own'):
+        from goal2.desktop.fixtures_page import refresh_preparation
+        refresh_preparation(self)

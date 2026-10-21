@@ -267,7 +267,7 @@ class ManagementWindow(QMainWindow):
     def set_busy(self,busy):
         busy=bool(busy or getattr(self.model,'match_pending',False))
         # [designed: T70] Prevent conflicting edits while keeping the UI responsive.
-        for widget in (self.country,self.start_year,self.new,self.friendly,self.resume,self.path):widget.setEnabled(not busy)
+        for widget in (self.country,self.start_year,self.new,self.friendly,self.resume,self.path,*self.speed_buttons):widget.setEnabled(not busy)
         self.overview_return.setEnabled(not busy and self.preview is not None)
         active=not busy and self.preview is None
         # [designed: #241] Idle previews browse rows/details; management stays active-only.
@@ -302,7 +302,8 @@ class ManagementWindow(QMainWindow):
             state=self.model.state
             if self.draft()!=(state.starting_eleven,state.captain,state.country_tactics):
                 raise ValueError('Confirm or discard management edits before watching')
-            self.watched.start();self.set_busy(True);self.status.setText('Starting original friendly in Pygame…');self.watch_timer.start()
+            from goal2.desktop.fixtures_page import playback_rate
+            self.watched.start(playback_rate=playback_rate(self));self.set_busy(True);self.status.setText('Starting original friendly in Pygame…');self.watch_timer.start()
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def poll_watched(self):

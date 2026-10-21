@@ -91,6 +91,16 @@ every country the same mostly English pool names [confirmed: F002 R003, F007]; o
 keep them. The names follow the managed country and are never saved; renames apply on top. The
 pool search ignores accents ("kovacs" finds "Kovács").
 
+[designed: T95; accepted vision #266 screen 05] **Fixtures & match** opens with the match:
+the fixture's title, our eleven from the current draft and the opponent's stored eleven (the
+computer may swap injured players at kickoff [confirmed: F024]), each with codes and formation.
+The **Play** panel explains Quick (no pitch, the result at once) and Watch (the original on the
+pitch, friendlies only) beside their buttons, and holds the watching speeds (the original
+changes its speed with Left/Right [confirmed: E031 C39]), which are **Slowest** 15, **Slow** 30, **Normal** 60 (the default), **Fast** 120 or
+**Fastest** 240 samples per second. It is chosen before kickoff, and **Left/Right** in the pitch
+window step it during play, as in the original. It changes presentation only, never the result. The Country desk's first route,
+**Prepare match**, leads here.
+
 [designed: T94; accepted vision #266 screen 06] **Watching** opens the pitch window in the
 original style: countries, score, minute and fixture kind on one line, the pitch filling the
 resizable window, each player shown by his one-letter role code (the managed side gold, the other

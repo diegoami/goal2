@@ -43,7 +43,7 @@ def build(self,model,TACTICS):
     left.addStretch(1)
     middle=QVBoxLayout();middle.setSpacing(12);holder=QWidget();holder.setLayout(middle);desk.box.addWidget(holder,2)
     self.desk_routes=[]
-    for text,name,index in (('Select squad','deskTeam',1),('Pool','deskPool',2),('Fixture list','deskFixtures',3)):
+    for text,name,index in (('Prepare match','deskPrepare',3),('Select squad','deskTeam',1),('Pool','deskPool',2),('Fixture list','deskFixtures',3)):
         button=QPushButton(text);button.setObjectName(name);button.setAccessibleName(text)
         button.clicked.connect(lambda checked=False,i=index:self.navigate(i));middle.addWidget(button);self.desk_routes.append(button)
     self.desk_card=QPushButton('Country card');self.desk_card.setObjectName('deskCard');self.desk_card.setCheckable(True)
