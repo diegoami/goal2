@@ -1,5 +1,9 @@
 # Full-cycle playable campaign backlog
 
+> [designed: owner, 2026-10-22] The first version runs the original's whole game as goal2's core
+> (stage 3, #308): the rules below are then the original's own. This backlog's remaining Python rule
+> tasks (T52-T59, #112-#119) move to the **long-term** track, the independent executable.
+
 [designed: owner clarification, 2026-10-16] Campaign tasks remain active in
 parallel with the [original watched-engine backlog](watched-engine-backlog.md).
 Proceed through the campaign dependencies; the engine-kit acceptance gate does

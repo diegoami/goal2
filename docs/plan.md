@@ -21,7 +21,10 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
    (goal2's first external one) and the original's game files at run time, loaded locally or fetched by full verified hash, never
    committed (the owner: the game is abandonware, the registered version included). The exact port (goal2-archaeology PR 243)
    and the close-enough engine (estimates/98-close-enough-engine.md) stay open options, chosen after the first playable exists;
-   stage 3 (the whole game as a headless core) stays a later owner decision. Stage 4 is small, last and unscheduled: the package will deliver the engine image from the private release at build time (#130/#148). This supersedes decision 2
+   stage 3 (the whole game as a headless core) is **the first version** [designed: owner, 2026-10-22, #308]:
+   the original's whole game runs under Unicorn as goal2's core, and goal2 is the desktop interface and the bot over it.
+   The long-term goal stays an **independent executable** (no original files at run time), fed by goal2-archaeology's
+   findings and engine port; the Python rule tasks T52-T59 (#112-#119) move to that track (label `long-term`). Stage 4 is small, last and unscheduled: the package will deliver the engine image from the private release at build time (#130/#148). This supersedes decision 2
    (the quick engine as the watched match's stand-in) once stage 1 lands; until then the stand-in stays.
 5. **The main session drafts** this plan and the register.
 

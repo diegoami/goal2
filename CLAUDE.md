@@ -11,6 +11,8 @@ earlier review harness (OpenCode protocol, guards, jail, model switching, worktr
 gates) was removed; it is kept on the branch `local`. A fresh checkout is prepared with `tools/cloud_setup.sh`
 ([docs/cloud.md](docs/cloud.md)). The first release is lane 3 of the approved queue, the bounded
 first supported session (`docs/redesign-253/vision-reconciliation.md`; O03/O04 resolved 2026-10-20).
+[designed: owner, 2026-10-22] It runs the original's whole game under Unicorn as goal2's core (stage 3,
+#308); the long-term goal stays an independent executable, fed by goal2-archaeology (label `long-term`).
 
 ## Working rules
 1. The main session plans, triages, talks to the owner and merges. It implements itself or spawns

@@ -113,7 +113,7 @@ preflight; this planning update supplies no new measured time estimate. Historic
 adapter, once-only original post-match publication, and a real desktop friendly
 with original commentary/boards/ratings/man of the match, save/resume and another
 fixture. Keep the stand-in until that path is proven; update A-WATCH-1 only then.
-Further whole-core adoption remains an owner decision; campaign work continues under its separate authorization. Stage 3 whole-core work and stage 4 packaging implementation are not dispatched by this backlog.
+[designed: owner, 2026-10-22] Stage 3, the whole game as goal2's core, is the first version: #308 dispatches it. Stage 4 packaging implementation is not dispatched by this backlog.
 
 [designed: owner #148; T68] The desktop pivot preserves T60–T64 evidence and
 state contracts. T65 uses a local process and IPC, with no HTTP session layer;
