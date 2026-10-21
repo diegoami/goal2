@@ -20,6 +20,7 @@ permission:
     "git reset *": deny
     "git stash *": deny
     "gh pr merge *": deny
+    "gh pr close *": deny
     "gh pr edit *": deny
     "gh issue edit *": deny
     "gh issue close *": deny

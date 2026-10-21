@@ -2,9 +2,10 @@
 # [designed: owner, 2026-10-20] An optional review of one PR by a reviewer CLI, called directly
 # (CLAUDE.md rule 4). Any model may review. Usage:
 #   tools/review_pr.sh <pr> <opencode|claude|codex> <model> [--print]
-# Checks the PR out (refuses with uncommitted tracked changes), runs the CLI with
-# .opencode/agents/reviewer.md's instructions from origin/main, and posts its final message as one
-# PR comment. --print shows the command instead of running it.
+# Checks the PR out (refuses with uncommitted tracked changes) and runs the CLI with
+# .opencode/agents/reviewer.md's instructions from origin/main; the reviewer posts its own review as
+# one PR comment (2026-10-22: the old harness posted for it, which blocked reviewers run by hand).
+# The output is kept under .cache/reviews/. --print shows the command instead of running it.
 set -euo pipefail
 pr=${1:?usage: tools/review_pr.sh <pr> <opencode|claude|codex> <model> [--print]}
 cli=${2:?give the CLI: opencode, claude or codex}
@@ -37,6 +38,5 @@ mkdir -p .cache/reviews
 out=".cache/reviews/pr$pr-$(date -u +%Y%m%dT%H%M%SZ).md"
 echo "reviewing PR #$pr at $head with $cli ($model); output in $out"
 "${cmd[@]}" </dev/null | tee "$out"
-[ -s "$out" ] || { echo "No review came back; nothing posted." >&2; exit 3; }
-{ cat "$out"; printf '\n\n— %s (%s), via tools/review_pr.sh at %s\n' "$cli" "$model" "$head"; } > "$out.post"
-gh pr comment "$pr" --body-file "$out.post"
+[ -s "$out" ] || { echo "No review came back." >&2; exit 3; }
+echo "The reviewer posts its review on PR #$pr itself; its output is in $out."

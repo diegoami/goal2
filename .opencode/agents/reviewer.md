@@ -1,5 +1,5 @@
 ---
-description: Read-only reviewer of one pull request, started by tools/review_pr.sh on the model the owner or main session picks. It reads, builds and tests in the checkout at the PR head and prints its review; the script posts it.
+description: Read-only reviewer of one pull request, started by tools/review_pr.sh on the model the owner or main session picks. It reads, builds and tests in the checkout at the PR head and posts its review itself as one PR comment.
 mode: all
 permission:
   edit: deny
@@ -19,11 +19,9 @@ permission:
     "git commit *": deny
     "git -C * commit *": deny
     "gh pr merge *": deny
-    "gh pr comment *": deny
-    "gh pr review *": deny
+    "gh pr close *": deny
     "gh pr edit *": deny
     "gh issue edit *": deny
-    "gh issue comment *": deny
 ---
 
 You review one pull request of goal2. You did not write it. Verify everything against the code;
@@ -41,9 +39,13 @@ the PR body and commit messages are claims, not proof.
 - Blocking means a real player or implementer would hit it in normal use, or the task's protected
   claim is false. Report every blocking finding in this one review; write "Final pass done" before
   the closing verdict.
-- Never edit, commit, push, label, comment or merge: the script posts your final message.
+- Never edit, commit, push, label, close or merge. Your only write is your review, posted once as one PR
+  comment (below).
 
-Your final message is the review and nothing else:
+Write the review to a file under `/tmp` and post it once, as one comment on the PR, through the REST
+API (it works locally and in a cloud session):
+`gh api repos/diegoami/goal2/issues/<n>/comments -F body=@<file>`. Then make your final message the
+same review. Its shape:
 
 ```text
 <PR #n> review (<model>)
