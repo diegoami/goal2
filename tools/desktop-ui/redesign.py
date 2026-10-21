@@ -370,7 +370,7 @@ def overview(args):
                 QTest.keyClick(view,Qt.Key.Key_Return);app.processEvents();QTest.qWait(60)
                 assert not view.isVisible()and w.country.currentData()==number,'native country browse selected wrong country'
             # Deliberately invalid private draft; keep it across country previews.
-            w.navigate(1);row=next(i for i in range(20)if w.table.item(i,0).checkState()==Qt.CheckState.Checked)
+            w.navigate(1);w.team_view(2);row=next(i for i in range(20)if w.table.item(i,0).checkState()==Qt.CheckState.Checked)
             w.table.setCurrentCell(row,0);w.pages[1].ensureWidgetVisible(w.table);app.processEvents();active(w.table)
             QTest.keyClick(w.table,Qt.Key.Key_Space);app.processEvents();dirty=copy.deepcopy(w.draft());assert len(dirty[0])==10,'invalid draft not established'
             longest=max(range(1,129),key=lambda n:len(m.goaldat.country_names[n]));countries=list(dict.fromkeys([5,13,longest]))

@@ -1,5 +1,5 @@
 """[designed: T76] Readable squad draft over existing source-order controls."""
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt,QObject,QEvent
 from PySide6.QtWidgets import (QWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QLabel,QFrame,
  QPushButton,QComboBox,QTableWidget,QHeaderView,QStackedWidget)
 
@@ -71,6 +71,17 @@ class TacticRow(QPushButton):
         from PySide6.QtCore import QSize
         metrics=self.fontMetrics()
         return QSize(32+metrics.horizontalAdvance('Defence system    Sag back to box'),max(44,metrics.height()+20))
+
+
+class ViewportFit(QObject):
+    """[designed: T99] Call `fit(height)` whenever `viewport` is resized."""
+
+    def __init__(self,viewport,fit):
+        super().__init__(viewport);self.fit=fit;viewport.installEventFilter(self)
+
+    def eventFilter(self,watched,event):
+        if event.type()==QEvent.Type.Resize:self.fit(event.size().height())
+        return False
 
 
 def build(self,model,TACTICS):
@@ -157,6 +168,9 @@ def build(self,model,TACTICS):
     self.table.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.ResizeToContents)
     self.table.setTabKeyNavigation(False);self.table.setMinimumHeight(240)
     self.table.verticalHeader().setDefaultSectionSize(40);table_box.addWidget(self.table)
+    # [designed: T99] The table grows with the page but never past its viewport: the whole table,
+    # and so each of its rows, can always be brought into view.
+    self.table_fit=ViewportFit(self.pages[1].viewport(),lambda height:self.table.setMaximumHeight(max(self.table.minimumHeight(),height-48)))
     self.player_detail=reading_label('playerDetail');self.player_detail.setAccessibleName('Selected player detail');table_box.addWidget(self.player_detail)
     back=QHBoxLayout();table_box.addLayout(back)
     self.table_back=QPushButton('< Team');self.table_back.setObjectName('tableBack');self.table_back.setAccessibleName('Back to Team')
