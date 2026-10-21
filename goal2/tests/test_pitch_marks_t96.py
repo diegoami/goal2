@@ -148,10 +148,11 @@ class Drawing(unittest.TestCase):
                 def render(*args):
                     seen.append(args[5]);return real(*args)
                 def events():
+                    # The keys start on the second loop, once the pitch packet has been read.
                     calls[0] += 1
-                    if calls[0] <= len(keys):
-                        return [pygame.event.Event(pygame.KEYDOWN, key=keys[calls[0] - 1])]
-                    return [pygame.event.Event(pygame.QUIT)] if calls[0] == len(keys) + 2 else []
+                    if 2 <= calls[0] <= len(keys) + 1:
+                        return [pygame.event.Event(pygame.KEYDOWN, key=keys[calls[0] - 2])]
+                    return [pygame.event.Event(pygame.QUIT)] if calls[0] == len(keys) + 3 else []
                 with patch.object(sys, 'argv', ['viewer', folder, 'owned']), patch.object(viewer, 'render_pitch', render), patch('pygame.event.get', events):
                     self.assertEqual(viewer.main(), 0)
                 return seen
@@ -159,6 +160,27 @@ class Drawing(unittest.TestCase):
         self.assertEqual(run([pygame.K_UP, pygame.K_UP])[-1], 4, 'Up steps back and wraps over 0..4')
         self.assertEqual(run([pygame.K_c, pygame.K_DOWN])[-1], 1, 'with the commentary open, Down scrolls')
 
+    def test_up_down_scroll_text_only_watching(self):
+        import json, sys
+        import pygame
+        from goal2.desktop import pygame_viewer as viewer
+        def final_scroll(keys):
+            with tempfile.TemporaryDirectory() as folder:
+                packets = [['owned', 0, 'start', ['A', 'B']]] + [
+                    ['owned', n + 1, 'event', {'kind': 'commentary', 'minute': n, 'score': [0, 0], 'data': {'text': f'line {n}'}}] for n in range(60)]
+                (Path(folder) / 'display').write_text(''.join(json.dumps(p) + '\n' for p in packets))
+                scrolls = [];calls = [0];real = viewer.render
+                def render(*args):
+                    scrolls.append(real(*args));return scrolls[-1]
+                def events():
+                    calls[0] += 1
+                    if calls[0] == 4:
+                        return [pygame.event.Event(pygame.KEYDOWN, key=k) for k in keys]
+                    return [pygame.event.Event(pygame.QUIT)] if calls[0] == 6 else []
+                with patch.object(sys, 'argv', ['viewer', folder, 'owned']), patch.object(viewer, 'render', render), patch('pygame.event.get', events):
+                    self.assertEqual(viewer.main(), 0)
+                return scrolls[-1]
+        self.assertLess(final_scroll([pygame.K_UP]), final_scroll([]), 'with no pitch, Up scrolls the text commentary back')
 
 if __name__ == '__main__':
     unittest.main()

@@ -309,10 +309,10 @@ def main():
                     # [confirmed: E031 C39] Left slows the match by one step; Right speeds it up.
                     if event.type == pygame.KEYDOWN and event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                         display.step_rate(-1 if event.key == pygame.K_LEFT else 1)
-                    # [confirmed: 0791:9372] Up/Down step the marks; with the commentary open
-                    # they scroll it instead.
+                    # [confirmed: 0791:9372] Up/Down step the marks on the pitch; with the
+                    # commentary open, or with no pitch (text-only watching), they scroll.
                     if (event.type == pygame.KEYDOWN and event.key in (pygame.K_UP, pygame.K_DOWN)
-                            and not commentary and display.result is None):
+                            and display.pitch_rate and not commentary and display.result is None):
                         marks = (marks + (1 if event.key == pygame.K_DOWN else -1)) % len(MARKS)
                         continue
                     scroll, follow, keep_open = navigation(event, scroll, follow)

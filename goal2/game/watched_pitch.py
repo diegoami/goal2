@@ -63,7 +63,7 @@ def integer(value, low, high):
 
 
 def validate(value, sequence, previous_watermark):
-    """[designed] Strict v1 shape; retain out-of-field signed coordinates and raw state."""
+    """[designed; T96] Strict shape of version 1, or of version 2 with its officials; retain out-of-field signed coordinates and raw state."""
     keys = {'version','sequence','watermark','minute','score','subtick','threshold','remaining',
             'selector','attack','sentinel','ball','players'}
     if isinstance(value, dict) and value.get('version') == 2 and type(value['version']) is int:
