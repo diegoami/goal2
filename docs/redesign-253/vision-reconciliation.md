@@ -173,6 +173,13 @@
 3. **Who builds.** As CLAUDE.md rule 1: the main session implements or spawns a subagent, and
    runs an independent review of the engine and lifecycle risk. The per-task model names in
    T79/T85 lapse.
+4. **The half-time bench of a watched match is in the first release** (owner, 2026-10-21, after the
+   Windows playtest, #305). The original opens the bench with Esc or Enter at the half-time board
+   and during play; a friendly allows 5 substitutions [confirmed: goal2-archaeology E031 C40,
+   C41–C41h, 53d7ef5]. #250's first supported intervention is that half-time bench, proven
+   seed-exact on a real fixture. The bench during play follows after the first release.
+5. **The team tactics and the attribute table take the accepted style** (owner playtest, #304):
+   screens 03 and 16 govern the Team page below the card.
 
 ## Scope gaps and their owners
 
