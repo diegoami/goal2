@@ -33,6 +33,7 @@ QLabel#fieldName {{color:{COLORS['text']};}}
 QLabel#launchHint, QLabel#launchNote {{color:{COLORS['hint']};}}
 QLabel#launchError {{color:{COLORS['saved']};font-weight:700;}}
 QScrollArea#previewPane, QScrollArea#previewPane > QWidget > QWidget {{background:{COLORS['background']};border:0;}}
+QScrollArea#cardPane, QScrollArea#cardPane > QWidget > QWidget {{background:{COLORS['background']};border:0;}}
 QListWidget {{background:{COLORS['background']};color:{COLORS['list']};border:1px solid {COLORS['title']};}}
 QListWidget::item:selected {{background:{COLORS['list']};color:{COLORS['background']};}}
 QPushButton {{background:{COLORS['background']};color:{COLORS['button']};border:2px solid {COLORS['button']};
@@ -75,7 +76,7 @@ class LaunchWindow(QMainWindow):
         title = QLabel('GOAL2 / START OR RESUME');title.setObjectName('launchTitle');outer.addWidget(title)
         self.pages = QStackedWidget();outer.addWidget(self.pages, 1)
         self.hint = QLabel(HINT);self.hint.setObjectName('launchHint');self.hint.setWordWrap(True);outer.addWidget(self.hint)
-        self._build_launch();self._build_browse();self._build_review()
+        self._build_launch();self._build_browse();self._build_review();self._build_players()
         self.setStyleSheet(STYLE)
         QShortcut(QKeySequence(Qt.Key.Key_Escape), self, activated=self.back)
         self.preview_timer = QTimer(self);self.preview_timer.setSingleShot(True);self.preview_timer.setInterval(120)
@@ -171,6 +172,10 @@ class LaunchWindow(QMainWindow):
         year.addWidget(self.start_year, 1);body.addLayout(year)
         self.to_review = QPushButton('Review >');self.to_review.setObjectName('launchToReview')
         self.to_review.clicked.connect(self.review);body.addWidget(self.to_review)
+        # [designed: owner, 2026-10-21] As the original's country selection: Space shows the players.
+        self.to_players = QPushButton('Players (Space) >');self.to_players.setObjectName('launchPlayers')
+        self.to_players.clicked.connect(self.show_players);body.addWidget(self.to_players)
+        self.country_list.installEventFilter(self)
         layout.addWidget(left, 2)
         # [designed: accepted vision #266 screen 11] A small window scrolls the preview pane
         # rather than shrinking or clipping its text.
@@ -220,6 +225,55 @@ class LaunchWindow(QMainWindow):
         self.roster.setText('\n'.join(f"{r['role']}  {r['name']} · {r['position']}" for r in rows))
         self.previewed = (country, year)
 
+    # Players -----------------------------------------------------------------------------
+    def _build_players(self):
+        """[designed: T88] The previewed country's twenty, each with its complete card."""
+        from goal2.desktop.player_card import PlayerCardView
+        page = QWidget();layout = QHBoxLayout(page);layout.setSpacing(20)
+        left = QFrame();left.setObjectName('newPanel');body = QVBoxLayout(left)
+        self.players_heading = QLabel();self.players_heading.setObjectName('chooseHeading');body.addWidget(self.players_heading)
+        self.player_list = QListWidget();self.player_list.setObjectName('playerList')
+        self.player_list.setAccessibleName('Players with role codes');self.player_list.setMinimumWidth(240)
+        body.addWidget(self.player_list, 1)
+        hint = QLabel('Arrows: player / Esc: countries');hint.setObjectName('launchNote');body.addWidget(hint)
+        layout.addWidget(left, 1)
+        self.player_card = PlayerCardView()
+        scroll = QScrollArea();scroll.setObjectName('cardPane');scroll.setWidget(self.player_card)
+        scroll.setWidgetResizable(True);scroll.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        layout.addWidget(scroll, 3)
+        self.pages.addWidget(page)
+        self.player_list.currentRowChanged.connect(self.show_card)
+
+    def show_players(self):
+        from PySide6.QtGui import QColor
+        from goal2.desktop.player_card import LINE
+        from goal2.game.player_card import card
+        country, year = self.selection()
+        if country is None:return
+        if getattr(self, 'previewed', None) != (country, year):self.preview()
+        state = self.browser.state
+        self.cards = [card(state, word, self.browser.goaldat) for word in state.managed_squad]
+        self.players_heading.setText(self.browser.goaldat.country_names[country].upper() + ' / PLAYERS')
+        self.player_list.clear()
+        for i, c in enumerate(self.cards):
+            if i == 11:
+                rule = QListWidgetItem('─' * 18);rule.setFlags(Qt.ItemFlag.NoItemFlags);self.player_list.addItem(rule)
+            item = QListWidgetItem(f"{c['role']}  {c['full_name']}");item.setData(Qt.ItemDataRole.UserRole, i)
+            item.setForeground(QColor(LINE[c['line']]));self.player_list.addItem(item)
+        self.show_page(3);self.player_list.setCurrentRow(0)
+
+    def show_card(self, row):
+        item = self.player_list.item(row)
+        index = None if item is None else item.data(Qt.ItemDataRole.UserRole)
+        self.player_card.set_card(None if index is None else self.cards[index])
+
+    def eventFilter(self, watched, event):
+        from PySide6.QtCore import QEvent
+        if watched is self.country_list and event.type() == QEvent.Type.KeyPress and event.key() == Qt.Key.Key_Space:
+            self.show_players();return True
+        return super().eventFilter(watched, event)
+
     # Review ----------------------------------------------------------------------------
     def _build_review(self):
         page = QWidget();layout = QVBoxLayout(page)
@@ -256,12 +310,12 @@ class LaunchWindow(QMainWindow):
             self.fill_countries()
         self.pages.setCurrentIndex(index)
         first = {0: self.resume if self.resume.isEnabled() else self.new_career if self.new_career.isEnabled() else self.other_path,
-                 1: self.country_list, 2: self.start}[index]
+                 1: self.country_list, 2: self.start, 3: self.player_list}[index]
         first.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def back(self):
         index = self.pages.currentIndex()
-        if index:self.show_page(index - 1)
+        if index:self.show_page(1 if index == 3 else index - 1)
 
     def focusables(self):
         page = self.pages.currentWidget()

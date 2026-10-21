@@ -20,7 +20,14 @@ save names the reason and offers **Retry** and **Load another**, with nothing el
 the first fixture and the twenty players, and names the profile categories this build does not
 show yet (G05/O12). The start year is 1990 or 1992. **Review** comes before **Start career**.
 Browsing, review and starting write no save; the new career is saved only when you save it.
-Arrows choose, Enter accepts and Esc goes back. The window keeps its text size at 900×640 and
+Arrows choose, Enter accepts and Esc goes back. [designed: owner, 2026-10-21; T88] On the
+country list, **Space** (or **Players**) shows that country's twenty: role codes on the left,
+squad then bench, and each player's complete card on the right. The card has the name with
+initial, role code, age, caps, goals, height, foot, readiness, national and club position, cards,
+performance (raw; its meaning is not decoded), the twelve skill bars with their values, the five
+characteristics with bar, value and the original's word, and the tactics and mark line. Every
+value equals what the original's own player screen prints [confirmed: F008, E007]. No attribute
+total is shown. Narrow windows stack the card and scroll it. The window keeps its text size at 900×640 and
 scrolls the preview instead ([original start, load and save](original-game/startup-save-replay.md)).
 `--resume <save>`, or `--country <n>` with `--template`, still opens management directly for
 scripts. Check it with `python3 tools/desktop-ui/launch.py --template … --data …`, offscreen and
