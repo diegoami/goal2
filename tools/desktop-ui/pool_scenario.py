@@ -76,7 +76,7 @@ def scenario(args):
             expected=campaign_pool.view(m.state,m.goaldat,query=w.search.text(),position=w.position.currentData())['reserves']
             assert w.reserves.rowCount()==len(expected),'filtered row count differs'
             for i,row in enumerate(expected):
-                values=(str(row['id']),row['name'],f"{row['position']} — {row['position_group']}",str(row['ability']),str(row['energy']),str(row['confidence']),', '.join(row['availability']['reasons']) or 'Available')
+                values=(str(row['id']),row['name'],row['role'],row['position_name'],str(row['energy']),str(row['confidence']),', '.join(row['availability']['reasons']) or 'Available')
                 assert tuple(w.reserves.item(i,j).text() for j in range(7))==values,'reserve raw values/order differ'
         def reading(label):
             reveal(label);app.processEvents();rect=label.contentsRect();needed=label.fontMetrics().boundingRect(QRect(0,0,rect.width(),10000),int(Qt.TextFlag.TextWordWrap),label.text())
@@ -103,7 +103,7 @@ def scenario(args):
         reserve(2561);assert 'ID 261' in w.exchange_summary.text() and 'ID 2561' in w.exchange_summary.text()
         target=next(x for x in campaign_pool.view(m.state,m.goaldat)['reserves'] if x['id']==2561)
         outgoing=next(x for x in campaign_pool.view(m.state,m.goaldat)['squad'] if x['id']==261)
-        assert all(str(outgoing[k]) in w.exchange_summary.text() for k in ('id','name','ability','energy','confidence','position_group')),'outgoing summary missing raw field'
+        assert all(str(outgoing[k]) in w.exchange_summary.text() for k in ('id','name','role','energy','confidence','position_group')),'outgoing summary missing raw field'
         search(target['name'].swapcase());position(target['position']);rows();reserve(2561);capture('filtered')
         other=next(row for row in campaign_pool.view(m.state,m.goaldat)['reserves'] if row['id']!=2561 and row['name'].casefold() not in target['name'].casefold() and row['position']==target['position'])
         search(other['name']);rows();assert w.reserves.rowCount()>0 and all(int(w.reserves.item(i,0).text())!=2561 for i in range(w.reserves.rowCount())),'hidden-selection fixture did not retain other visible rows'
@@ -114,7 +114,7 @@ def scenario(args):
         capture('empty-filter')
         before=copy.deepcopy(m.state);w.exchange_selected();stable(before,'missing selection');assert 'Select one' in w.status.text(),'existing no-selection callback error absent'
         search('');position(None);rows();reserve(2561)
-        assert all(str(target[k]) in w.pool_detail.text() for k in ('id','name','ability','energy','confidence','position_group')),'selected detail missing raw field'
+        assert all(str(target[k]) in w.pool_detail.text() for k in ('id','name','role','energy','confidence','position_group')),'selected detail missing raw field'
         # [designed: T77/M1] Reading coverage belongs to each supported size, not initial geometry.
         report['table_reading_by_size']=[]
         sizes=((1440,900),(1050,780),(900,700)) if report['ratio']==1 else ((900,640),)

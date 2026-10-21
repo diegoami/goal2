@@ -376,7 +376,7 @@ def overview(args):
                     assert (w.table.item(i,0).checkState()==Qt.CheckState.Checked)==(player['id']in expected.state.starting_eleven)
                     reason=', '.join(player['availability']['reasons'])or'Available'
                     if player['availability']['carried_bookings']:reason+='; carried booking'
-                    values=(player['name'],player['position'],player['ability'],player['energy'],player['confidence'],reason)
+                    values=(player['name'],player['role'],player['position_name'],player['energy'],player['confidence'],reason)
                     assert [w.table.item(i,col).text()for col in range(1,7)]==[str(value)for value in values],'preview player fields differ from independent model'
                 assert w.overview_fixture.text()==(v['fixture']or('Standalone friendly / no campaign fixture' if expected.state.campaign is None else 'No supported fixture'))
                 assert w.overview_result.text()=='No result yet\n'+expected.result_text()

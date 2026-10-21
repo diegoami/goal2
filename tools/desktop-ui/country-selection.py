@@ -34,7 +34,7 @@ def main():
             for row,player in enumerate(view['players']):
                 reason=', '.join(player['availability']['reasons']) or 'Available'
                 if player['availability']['carried_bookings']:reason+='; carried booking'
-                assert [window.table.item(row,col).text() for col in range(1,7)]==[str(value) for value in (player['name'],player['position'],player['ability'],player['energy'],player['confidence'],reason)]
+                assert [window.table.item(row,col).text() for col in range(1,7)]==[str(value) for value in (player['name'],player['role'],player['position_name'],player['energy'],player['confidence'],reason)]
             assert window.selected_ids()==state.starting_eleven
             assert window.captain.currentData()==(state.captain if state.captain in state.starting_eleven else state.starting_eleven[0])
             assert [box.isChecked() for bit,box in window.tactics]==[bool(state.country_tactics & (1<<(bit-1))) for bit,box in window.tactics]

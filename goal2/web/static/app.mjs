@@ -185,7 +185,6 @@ function renderSquad(focusSelector = null) {
       <td class="select-col"><input class="player-check" type="checkbox" aria-label="Select ${safe(player.name)} for starting eleven draft" data-select="${player.id}" ${isSelected ? 'checked' : ''} ${busy || (player.availability && !player.availability.available && !isSelected) ? 'disabled' : ''}></td>
       <td><div class="player-cell"><span class="player-number">${String(player.number).padStart(2, '0')}</span><span class="player-initials">${safe(player.initials)}</span><span class="player-name">${safe(player.name)}${player.availability && !player.availability.available ? `<small class="availability-reason">${safe(player.availability.reasons.join(", "))}</small>` : player.availability?.carried_bookings ? '<small class="availability-reason">1 booking carried</small>' : ""}${captain ? '<span class="captain-mark" aria-label="Draft captain">C</span>' : ''}</span></div></td>
       <td><span class="position-cell"><span class="role-chip">${Number(player.position).toString(16).toUpperCase()}</span>code ${player.position}</span></td>
-      <td><span class="rating-value">${player.ability}</span></td>
       <td><span class="energy-value">${player.energy}</span></td>
       <td><span class="confidence-value">${player.confidence}</span></td>
       <td class="captain-cell"><input type="radio" name="captain" aria-label="Make ${safe(player.name)} draft captain" data-captain="${player.id}" ${captain ? 'checked' : ''} ${isSelected && !busy ? '' : 'disabled'}></td>

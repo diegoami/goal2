@@ -346,7 +346,6 @@ class WebSession:
                 "initials": (self.goaldat.player_initials[player_id]
                              if player_id < len(self.goaldat.player_initials) else ""),
                 "number": len(players) + 1,
-                "ability": record[0x04],
                 "position": record[0x07],
                 "energy": record[0x0E],
                 "confidence": record[0x0C],

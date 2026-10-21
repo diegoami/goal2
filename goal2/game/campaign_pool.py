@@ -70,9 +70,15 @@ def view(state, goaldat, *, query='', position=None):
     from goal2.game.state import _wrap_raw
     lines=_wrap_raw(state.vga,state.mem).ds_bytes(0xd4e,16)
     groups=('Goalkeeper','Defence','Midfield','Attack','Defence / midfield','Midfield / attack')
+    # [designed: owner, 2026-10-21; #283/#286] One-letter role codes; no overall ability, ever.
+    from goal2.game import roles
+    table=roles.tables(state);names=roles.names(state)
     def row(w):
         record=state.players[w]
-        return {'id':w,'name':goaldat.player_names[w],'ability':record[4],
+        code,line=roles.role(state,record[6],cache=table)
+        return {'id':w,'name':goaldat.player_names[w],'role':code,'line':line,
+                'club_role':roles.role(state,record[7],cache=table)[0],
+                'position_name':names[record[6]] if record[6]<14 else 'unknown position',
                 'position':record[6],'position_group':groups[lines[record[6]]],'energy':record[14],'confidence':record[12],
                 'availability':eligibility.info(record)}
     rows=[row(w) for w in sorted(reserves,key=lambda w:(state.players[w][6],w))]

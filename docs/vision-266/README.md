@@ -6,6 +6,8 @@
 
 [designed] The [nineteen-screen visual walkthrough](storyboard.md) follows the same illustrative Holland career from Resume through a friendly, the next competitive fixture and later campaigns. Every new image is a **finished-target illustration**, including unavailable/error states. None is a current capture or executable prototype. [Current-build evidence](evidence.md#current-reality) stays separate. The revised candidate awaits owner review; requesting these changes did not approve the whole vision, commit the plan or authorize implementation.
 
+[designed: owner, 2026-10-21] **Every screen the player sees follows this design**; that is the goal of the first release. **No attribute total is ever shown**: the original shows skill bars, characteristics and roles, never an overall ability. **Choosing a country lets the player browse its card and every player's complete card**, as the original's country selection does (Space: players).
+
 [designed: owner, 2026-10-21] **Roles are one-letter codes**, as in the original (G S C b B D Ç m M F w W ¢ $), on the pitch, in lists and on cards. The accepted screens print two-letter roles; [role-codes/](role-codes/README.md) redraws the ten affected sheets and supersedes them for role display.
 
 ## Look and feel: unmistakably GOAL2

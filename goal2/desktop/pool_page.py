@@ -19,10 +19,12 @@ def build(self,model,TACTICS):
     self.pool_outgoing=QComboBox();self.pool_outgoing.setObjectName('poolOutgoing');self.pool_outgoing.setAccessibleName('Outgoing squad player');pool_layout.addWidget(self.pool_outgoing)
     filter_bar=QHBoxLayout();self.search=QLineEdit();self.search.setPlaceholderText('Search reserve name')
     self.position=QComboBox();self.position.addItem('All position codes',None)
-    for code in range(14):self.position.addItem(f'Position code {code}',code)
+    # [confirmed: F002 DS:69A8/69B6] The original's codes and position names.
+    from goal2.game import roles
+    for value,(code,name) in enumerate(zip(roles.tables(model.state)[0],roles.names(model.state))):self.position.addItem(f'{code} · {name}',value)
     filter_bar.addWidget(self.search,1);filter_bar.addWidget(self.position);pool_layout.addLayout(filter_bar)
     self.reserves=QTableWidget(0,7);self.reserves.setObjectName('reserves')
-    self.reserves.setHorizontalHeaderLabels(['ID','Player','Position','Ability','Energy','Confidence','Availability'])
+    self.reserves.setHorizontalHeaderLabels(['ID','Player','Role','Position','Energy','Confidence','Availability'])
     self.reserves.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows);self.reserves.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
     self.reserves.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
     self.reserves.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.ResizeToContents)
@@ -78,13 +80,13 @@ def selection(self):
     row=next((r for r in rows if r['id']==incoming),None)
     if row:
         reason=', '.join(row['availability']['reasons']) or 'Available'
-        self.pool_detail.setText(f"Reserve detail · {row['name']}\nID {row['id']} · Position code {row['position']} · {row['position_group']}\nAbility {row['ability']} · Energy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}")
+        self.pool_detail.setText(f"Reserve detail · {row['name']}\nID {row['id']} · Role {row['role']} (club {row['club_role']}) · {row['position_group']}\nEnergy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}")
     else:self.pool_detail.setText('No incoming reserve selected. Select a visible reserve row.')
     outgoing=self.pool_outgoing.currentData();player=next((r for r in (view['squad'] if view else []) if r['id']==outgoing),None)
     outgoing_text='No outgoing squad player selected'
     if player:
         reason=', '.join(player['availability']['reasons']) or 'Available'
-        outgoing_text=f"Outgoing · {player['name']} · ID {outgoing}\nPosition code {player['position']} · {player['position_group']} · Ability {player['ability']} · Energy {player['energy']} · Confidence {player['confidence']}\nAvailability: {reason}"
+        outgoing_text=f"Outgoing · {player['name']} · ID {outgoing}\nRole {player['role']} (club {player['club_role']}) · {player['position_group']} · Energy {player['energy']} · Confidence {player['confidence']}\nAvailability: {reason}"
     self.exchange_summary.setText(outgoing_text+'\n'+(f"Incoming · {row['name']} · ID {incoming}" if row else 'No incoming reserve selected'))
 
 

@@ -216,7 +216,8 @@ class LaunchWindow(QMainWindow):
         self.preview_fields['first'].setText(f"{summary['campaign']}: {summary['next']}")
         self.preview_fields['profile'].setText(UNAVAILABLE)
         rows = self.browser.view()['players']
-        self.roster.setText('\n'.join(f"{r['name']} · {r['position']} · {r['ability']}" for r in rows))
+        # [designed: owner, 2026-10-21] Role codes, never an overall ability (#283, #286).
+        self.roster.setText('\n'.join(f"{r['role']}  {r['name']} · {r['position']}" for r in rows))
         self.previewed = (country, year)
 
     # Review ----------------------------------------------------------------------------

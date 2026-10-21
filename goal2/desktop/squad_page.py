@@ -15,7 +15,7 @@ def build(self,model,TACTICS):
     page=self.pages[1];layout=page.content
     self.squad_summary=reading_label('squadSummary');layout.addWidget(self.squad_summary)
     self.table=QTableWidget(20,7);self.table.setObjectName('squad')
-    self.table.setHorizontalHeaderLabels(['XI','Player','Position','Ability','Energy','Confidence','Availability'])
+    self.table.setHorizontalHeaderLabels(['XI','Player','Role','Position','Energy','Confidence','Availability'])
     self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
     self.table.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.ResizeToContents)
     self.table.setTabKeyNavigation(False);self.table.setMinimumHeight(240)
@@ -55,4 +55,4 @@ def refresh(self,*unused):
     row=rows[max(0,self.table.currentRow())];availability=row['availability']
     reason=', '.join(availability['reasons']) or 'Available'
     if availability['carried_bookings']:reason+='; carried booking'
-    self.player_detail.setText(f"Player detail · {row['name']}\nID {row['id']} · {row['position']}"+(' · Captain' if row['id']==captain else '')+f"\nAbility {row['ability']} · Energy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}")
+    self.player_detail.setText(f"Player detail · {row['name']}\nID {row['id']} · {row['position']}"+(' · Captain' if row['id']==captain else '')+f"\nRole {row['role']} · club {row['club_role']} · Energy {row['energy']} · Confidence {row['confidence']}\nAvailability: {reason}")

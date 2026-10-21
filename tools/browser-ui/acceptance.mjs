@@ -563,7 +563,8 @@ try {
       const player = expected.players[index];
       assert.equal(await row.locator('[data-select]').getAttribute('data-select'), String(player.id), 'roster player ID is the Python runtime ID');
       assert((await row.locator('.player-name').innerText()).startsWith(player.name), `roster name ${player.name}`);
-      assert.equal((await row.locator('.rating-value').textContent()).trim(), String(player.ability), 'ability is record byte +4');
+      // [designed: owner, 2026-10-21; #286] No overall ability is ever shown.
+      assert.equal(await row.locator('.rating-value').count(), 0, 'no ability total is displayed');
       assert.equal((await row.locator('.energy-value').textContent()).trim(), String(player.energy), 'energy is record byte +0xE');
       assert.equal((await row.locator('.confidence-value').textContent()).trim(), String(player.confidence), 'confidence is record byte +0xC');
       assert((await row.locator('.position-cell').innerText()).includes(`code ${player.position}`), 'position is source code +7');

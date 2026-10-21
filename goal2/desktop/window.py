@@ -12,6 +12,18 @@ TACTICS=((5,'Half pitch / full pitch'),(6,'Sag back to box / stand ground'),(7,'
          (4,'Avoid injury / go in hard'),(8,'Zone / man to man'))
 
 
+# [confirmed: m244-squad screenshot; F028 DS:0D5C] The original colours a role code by line:
+# green goalkeeper, red defence, cyan midfield, yellow attack. [designed: #286] Darker shades
+# keep them readable on the current light table until #261 brings the black original style.
+LINE_COLOURS={'goalkeeper':'#1a7f37','defence':'#b60205','midfield':'#0b6e8f','attack':'#8a6d00','unknown':'#000000'}
+
+
+def role_colour(item,line):
+    from PySide6.QtGui import QColor,QFont
+    item.setForeground(QColor(LINE_COLOURS[line]));font=QFont(item.font());font.setBold(True);item.setFont(font)
+    item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+
+
 class ManagementWindow(QMainWindow):
     """[designed] All widget access and active-state publication stay on the Qt thread."""
     def __init__(self,model):
@@ -156,8 +168,9 @@ class ManagementWindow(QMainWindow):
             item.setCheckState(Qt.CheckState.Checked if selected else Qt.CheckState.Unchecked);self.table.setItem(row,0,item)
             reason=', '.join(p['availability']['reasons']) or 'Available'
             if p['availability']['carried_bookings']:reason+='; carried booking'
-            for col,value in enumerate((p['name'],p['position'],p['ability'],p['energy'],p['confidence'],reason),1):
+            for col,value in enumerate((p['name'],p['role'],p['position_name'],p['energy'],p['confidence'],reason),1):
                 cell=QTableWidgetItem(str(value));cell.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable);self.table.setItem(row,col,cell)
+                if col==2:role_colour(cell,p['line'])
         self.update_captain();self.captain.setCurrentIndex(max(0,self.captain.findData(state.captain)))
         for element,box in self.tactics:box.setChecked(bool(state.country_tactics & (1<<(element-1))))
         self.path.setText(str(self.model.save_path));self._refreshing=False
@@ -360,9 +373,10 @@ class ManagementWindow(QMainWindow):
             self.exchange.setEnabled(view['window']['allowed'] and not self.jobs.busy and self.preview is None)
             self.reserves.setRowCount(len(view['reserves']))
             for row,p in enumerate(view['reserves']):
-                values=(p['id'],p['name'],f"{p['position']} — {p['position_group']}",p['ability'],p['energy'],p['confidence'],', '.join(p['availability']['reasons']) or 'Available')
+                values=(p['id'],p['name'],p['role'],p['position_name'],p['energy'],p['confidence'],', '.join(p['availability']['reasons']) or 'Available')
                 for col,value in enumerate(values):
                     item=QTableWidgetItem(str(value));item.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable)
+                    if col==2:role_colour(item,p['line'])
                     if col==0:item.setData(Qt.ItemDataRole.UserRole,p['id'])
                     self.reserves.setItem(row,col,item)
             from goal2.desktop.pool_page import refresh as refresh_pool_page
