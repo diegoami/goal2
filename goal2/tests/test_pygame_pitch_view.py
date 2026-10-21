@@ -1,4 +1,4 @@
-"""[designed: T83] Real SDL pixel/causal playback and saved-byte controls."""
+"""[designed: T83; restyled T94] Real SDL pixel/causal playback and saved-byte controls."""
 import copy
 import hashlib
 import json
@@ -26,9 +26,9 @@ def sample(sequence=0, watermark=0):
                   11,0,13,True] for s in range(1,23)])
 
 
-def pitch():
+def pitch(identity=None):
     d=Display('owned')
-    d.accept(['owned',0,'start',['First','Second']])
+    d.accept(['owned',0,'start',identity or ['First','Second']])
     # [designed] Assertion provides a behavioral before-failure rather than import ERROR.
     assert callable(getattr(viewer,'render_pitch',None)), 'numbered pitch renderer missing'
     d.accept(['owned',1,'pitch',{'rate':60}])
@@ -38,98 +38,148 @@ def pitch():
 def send(d,kind,value):d.accept(['owned',d.sequence,kind,value])
 
 
+# [designed: T94] The accepted palette, restated here rather than read from the viewer.
+GOLD,WHITE,GREY,YELLOW,CYAN=(255,187,51),(238,238,238),(170,170,170),(255,255,85),(85,255,255)
+IDENTITY={'countries':['First','Second'],'roles':{'101':'B','122':'w'},'managed':0,'kind':'Friendly'}
+
+
+def geometry(size):
+    """[derived: F013 IN_PLAY |x|<=8, |y|<=37; designed: T94 52 px header, 64 px footer, 8 px
+    sides, 1.5/2.5 grid units of margin] Restated independently of pygame_viewer.layout."""
+    w,h=size[0]-16,size[1]-52-64
+    return 8+w/2,52+h/2,w/79,h/19
+
+
 @requires.need(modules=("pygame",))
 class PitchPixels(unittest.TestCase):
+    SIZE=(1440,900)
+
     def setUp(self):
         import pygame
         pygame.init()
-        self.screen=pygame.display.set_mode((1000,720))
+        self.screen=pygame.display.set_mode(self.SIZE)
         self.font=pygame.font.Font(None,24)
 
     def tearDown(self):
         import pygame
         pygame.quit()
 
-    def pixel(self,x,y):return tuple(self.screen.get_at((x,y)))[:3]
+    def pixel(self,x,y):return tuple(self.screen.get_at((round(x),round(y))))[:3]
 
-    def test_independent_axes_team_labels_ball_movement_half_and_rebinding(self):
+    def point(self,x,y):
+        cx,cy,sx,sy=geometry(self.SIZE);x=max(-9.5,min(9.5,x));y=max(-39.5,min(39.5,y))
+        return round(cx+y*sx),round(cy+x*sy)
+
+    def count(self,colour,centre,radius=18):
+        x0,y0=centre
+        width,height=self.SIZE
+        return sum(self.pixel(x,y)==colour for x in range(max(0,x0-radius),min(width,x0+radius)) for y in range(max(0,y0-radius),min(height,y0+radius)))
+
+    def glyph(self,text,colour,centre):
+        """The exact pixels of a marker label as the viewer's font draws it on black."""
         import pygame
-        d=pitch();f=sample()
+        cx,cy,sx,sy=geometry(self.SIZE)
+        font=viewer.mono(max(14,min(40,round(sy*1.4))),True)
+        label=font.render(text,True,colour);rect=label.get_rect(center=centre)
+        expected=pygame.Surface(label.get_size());expected.fill((0,0,0));expected.blit(label,(0,0))
+        return pygame.image.tobytes(self.screen.subsurface(rect),'RGB'),pygame.image.tobytes(expected,'RGB')
+
+    def test_independent_axes_role_codes_ball_movement_half_and_rebinding(self):
+        import pygame
+        d=pitch(IDENTITY);f=sample()
         f['players'][0]=[1,1,1,101,-3,-21,0,False]
         f['players'][21]=[22,0,11,122,5,25,13,False]
+        for n in range(1,21):f['players'][n][7]=True
         send(d,'frame',f);self.assertTrue(d.advance(0));viewer.render_pitch(self.screen,self.font,d)
         pygame.display.flip();d.rendered()
-        # [derived: T81] Independent fixed [y,x], positive right/down; no project() oracle reuse.
-        for point,color in [((269,231),(245,105,45)),((775,367),(45,135,245))]:
-            self.assertEqual(self.pixel(point[0]+8,point[1]),color,'signed team marker pixels differ')
-        self.assertEqual(self.pixel(643,214),(255,244,161),'signed ball pixels differ')
-        for point,label in [((269,231),'1'),((775,367),'11')]:
-            expected=pygame.Surface((28,28));expected.fill((26,100,57))
-            pygame.draw.circle(expected,(10,20,27),(14,14),13)
-            pygame.draw.circle(expected,(245,105,45) if label=='1' else (45,135,245),(14,14),11)
-            text=self.font.render(label,True,(255,255,255));expected.blit(text,text.get_rect(center=(14,14)))
-            actual=self.screen.subsurface((point[0]-14,point[1]-14,28,28))
-            self.assertEqual(pygame.image.tobytes(actual,'RGB'),pygame.image.tobytes(expected,'RGB'),'readable local slot pixels differ')
+        # [derived: T81] Signed [y,x], positive right/down: (-3,-21) is up and left of the centre.
+        cx,cy,_,_=geometry(self.SIZE);left,right=self.point(-3,-21),self.point(5,25)
+        self.assertTrue(left[0]<cx<right[0] and left[1]<cy<right[1])
+        # The managed side (team 0) is gold, the other white; each marker is its role code.
+        actual,expected=self.glyph('B',WHITE,left);self.assertEqual(actual,expected,'signed team marker pixels differ')
+        actual,expected=self.glyph('w',GOLD,right);self.assertEqual(actual,expected,'signed team marker pixels differ')
+        self.assertGreater(self.count(YELLOW,self.point(-4,13),6),0,'signed ball pixels differ')
         old=pygame.image.tobytes(self.screen,'RGB')
         g=copy.deepcopy(f);g.update(sequence=1,minute=46,remaining=45,selector=0,attack=[-1,1])
         g['players'][0][3]=777;g['players'][0][4:6]=[-2,-20];g['ball']=[-3,14,False]
         send(d,'frame',g);self.assertFalse(d.advance(.001));self.assertEqual(d.consumed,0)
         self.assertTrue(d.advance(1));viewer.render_pitch(self.screen,self.font,d);pygame.display.flip();d.rendered()
         self.assertNotEqual(pygame.image.tobytes(self.screen,'RGB'),old)
-        self.assertEqual(self.pixel(280+8,248),(245,105,45),'half/rebind must not rotate or interpolate')
+        # A rebound word without a role shows its slot number; no rotation or interpolation.
+        actual,expected=self.glyph('1',WHITE,self.point(-2,-20));self.assertEqual(actual,expected,'half/rebind must not rotate or interpolate')
         self.assertEqual(d.frame['players'][0][3],777);self.assertEqual(d.consumed,1)
 
     def test_field_bounds_visibility_and_unknown_state(self):
-        d=pitch();f=sample();f['ball']=[11,0,True]
+        d=pitch(IDENTITY);f=sample();f['ball']=[11,0,True]
         send(d,'frame',f);d.advance(0);viewer.render_pitch(self.screen,self.font,d)
-        self.assertEqual(self.pixel(93,160),(213,231,204),'left playing-grid boundary')
-        self.assertEqual(self.pixel(907,160),(213,231,204),'right playing-grid boundary')
-        self.assertEqual(self.pixel(200,146),(213,231,204),'top playing-grid boundary')
-        self.assertEqual(self.pixel(200,418),(213,231,204),'bottom playing-grid boundary')
-        self.assertEqual(self.pixel(508,469),(18,28,37),'sentinel player must be hidden')
-        self.assertNotEqual(self.pixel(500,469),(255,244,161),'sentinel ball must be hidden')
-        g=copy.deepcopy(f);g['sequence']=1;g['players'][0][4:8]=[11,1,255,False];g['ball']=[10,2,False]
+        top_left,bottom_right=self.point(-8,-37),self.point(8,37)
+        self.assertEqual(self.pixel(top_left[0],(top_left[1]+bottom_right[1])/2),GREY,'left playing-grid boundary')
+        self.assertEqual(self.pixel(bottom_right[0],top_left[1]+40),GREY,'right playing-grid boundary')
+        self.assertEqual(self.pixel(top_left[0]+60,top_left[1]),GREY,'top playing-grid boundary')
+        self.assertEqual(self.pixel(top_left[0]+60,bottom_right[1]),GREY,'bottom playing-grid boundary')
+        # Every sample player is the sentinel (hidden) and the ball is hidden.
+        self.assertEqual(self.count(GOLD,self.point(11,0))+self.count(WHITE,self.point(11,0)),0,'sentinel player must be hidden')
+        self.assertEqual(self.count(YELLOW,self.point(11,0),8),0,'sentinel ball must be hidden')
+        g=copy.deepcopy(f);g['sequence']=1;g['players'][21][4:8]=[11,1,255,False];g['ball']=[10,2,False]
         send(d,'frame',g);d.advance(1);viewer.render_pitch(self.screen,self.font,d)
-        self.assertEqual(self.pixel(519,469),(245,105,45),'non-sentinel out-of-field/unknown state must draw')
-        self.assertEqual(self.pixel(522,452),(255,244,161),'non-sentinel ball must draw')
+        self.assertGreater(self.count(GOLD,self.point(11,1)),0,'non-sentinel out-of-field/unknown state must draw')
+        self.assertGreater(self.count(YELLOW,self.point(10,2),8),0,'non-sentinel ball must draw')
 
-    def test_watermark_minute_terminal_tail_and_bounded_queue(self):
-        d=pitch()
-        for minute,text in [(0,'Kickoff'),(90,'FULL TIME')]:
+    def test_two_latest_commentary_lines_full_panel_watermark_and_bounded_queue(self):
+        import pygame
+        d=pitch(IDENTITY)
+        for minute,text in [(0,'Kickoff'),(3,'Corner'),(5,'Shot'),(90,'FULL TIME')]:
             send(d,'event',dict(kind='commentary',minute=minute,score=[0,0],data={'text':text}))
         send(d,'event',dict(kind='end',minute=90,score=[1,0],data={}))
-        f=sample(watermark=1);send(d,'frame',f)
+        f=sample(watermark=3);send(d,'frame',f)
         self.assertEqual(d.visible().events,[],'ingress must not leak before first pose')
-        d.advance(0);viewer.render_pitch(self.screen,self.font,d)
-        self.assertEqual(d.visible().lines()[2],'7 min   1 — 0')
-        self.assertNotIn('90 min FULL TIME',d.visible().lines(),'future commentary leaked before watermark')
+        d.advance(0)
+        visible=d.visible().commentary()
+        self.assertEqual(visible,['0′ Kickoff','3′ Corner','5′ Shot'])
+        self.assertNotIn('90′ FULL TIME',visible,'future commentary leaked before watermark')
+        viewer.render_pitch(self.screen,self.font,d)
         self.assertEqual(d.consumed,-1,'selection/queueing must not acknowledge an unseen frame')
-        import pygame
-        expected=self.font.render('7 min   1 — 0',True,(232,239,229))
-        label=pygame.Surface(expected.get_size());label.fill((18,28,37));label.blit(expected,(0,0))
-        self.assertEqual(pygame.image.tobytes(self.screen.subsurface((20,62,*expected.get_size())),'RGB'),pygame.image.tobytes(label,'RGB'),'readable min label pixels differ')
+        footer=viewer.mono(22)
+        def drawn(line,colour,y):
+            label=footer.render(line,True,colour);expected=pygame.Surface(label.get_size());expected.fill((0,0,0));expected.blit(label,(0,0))
+            return pygame.image.tobytes(self.screen.subsurface((18,y,*label.get_size())),'RGB')==pygame.image.tobytes(expected,'RGB')
+        bottom=self.SIZE[1]-64+6
+        self.assertTrue(drawn('3′ Corner',YELLOW,bottom) and drawn('5′ Shot',CYAN,bottom+28),'the latest two lines are shown')
+        self.assertFalse(drawn('0′ Kickoff',YELLOW,bottom),'older commentary is hidden by default')
+        header=viewer.mono(30,True).render('   7′ / FRIENDLY',True,CYAN)
+        self.assertGreater(sum(self.pixel(x,24)==CYAN for x in range(18,900)),0,'minute/score header')
+        before=pygame.image.tobytes(self.screen,'RGB')
+        viewer.render_pitch(self.screen,self.font,d,0,True)
+        self.assertNotEqual(pygame.image.tobytes(self.screen,'RGB'),before,'C opens the full commentary')
         pygame.display.flip();d.rendered();self.assertEqual(d.consumed,0)
         send(d,'complete',{'board':{'statistics':{},'bars':[]},'ratings':[[],[]],'man_of_the_match':'A'})
-        self.assertIn('90 min FULL TIME',d.visible().lines());self.assertEqual(d.frame['sequence'],0)
+        self.assertIn('90′ FULL TIME',d.visible().commentary());self.assertEqual(d.frame['sequence'],0)
         other=pitch()
         for n in range(64):send(other,'frame',sample(n))
         with self.assertRaisesRegex(ValueError,'backlog'):send(other,'frame',sample(64))
         self.assertEqual(len(other.frames),64)
 
-    def test_accumulated_target_cadence_and_country_color_association(self):
-        import pygame
-        d=pitch()
+    def test_accumulated_target_cadence_and_managed_side_colours(self):
+        d=pitch(dict(IDENTITY,managed=1))
         for n in range(5):send(d,'frame',sample(n))
         self.assertTrue(d.advance(0))
         # [designed] Small scheduler lateness must not reset the target and halve playback rate.
         for instant in (.018,.034,.051,.068):
             self.assertTrue(d.advance(instant),'deadline drift reduced the fixed playback target')
+        d.frame['players'][0][7]=False;d.frame['players'][21][7]=False
+        d.frame['players'][0][4:6]=[-4,-20];d.frame['players'][21][4:6]=[4,20]
         viewer.render_pitch(self.screen,self.font,d)
-        for x,name,color in [(40,'First',(45,135,245)),(520,'Second',(245,105,45))]:
-            text=self.font.render(name,True,color)
-            expected=pygame.Surface(text.get_size());expected.fill((18,28,37));expected.blit(text,(0,0))
-            actual=self.screen.subsurface((x,37,*text.get_size()))
-            self.assertEqual(pygame.image.tobytes(actual,'RGB'),pygame.image.tobytes(expected,'RGB'),'country names must identify marker colors')
+        # Managed side 1: team 1 gold, team 0 white; the header names carry the same colours.
+        self.assertEqual(*self.glyph('B',GOLD,self.point(-4,-20)),'country names must identify marker colors')
+        self.assertEqual(*self.glyph('w',WHITE,self.point(4,20)),'country names must identify marker colors')
+        self.assertGreater(sum(self.pixel(x,y)==WHITE for x in range(18,200) for y in range(14,40)),0,'first country in its colour')
+
+    def test_the_pitch_fills_the_window_at_every_size(self):
+        for size in ((900,640),(1440,900),(2880,1800)):
+            (left,top,w,h),(sx,sy)=viewer.layout(*size)
+            self.assertGreaterEqual(w*h/(size[0]*size[1]),.75 if size[0]>=1440 else .7,size)
+            self.assertTrue(0<=left and left+w<=size[0] and 0<=top and top+h<=size[1])
+            self.assertGreater(sx*37,w*.4);self.assertGreater(sy*8,h*.35)
 
     def test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting(self):
         import pygame
@@ -214,7 +264,7 @@ class SavedByteControls(unittest.TestCase):
         directory=ROOT/'.cache/test-receipts/T83'/f'controls-{time.time_ns()}'
         directory.mkdir(parents=True)
         target=ROOT/'goal2/desktop/pygame_viewer.py';original=target.read_bytes()
-        cases=[('axes','CENTER[0] + y * SCALE[0], CENTER[1] + x * SCALE[1]','CENTER[0] + x * SCALE[0], CENTER[1] + y * SCALE[1]','test_independent_axes_team_labels_ball_movement_half_and_rebinding','signed team marker pixels differ'),
+        cases=[('axes','        return round(cx + gy * sx), round(cy + gx * sy)','        return round(cx + gx * sx), round(cy + gy * sy)','test_independent_axes_role_codes_ball_movement_half_and_rebinding','signed team marker pixels differ'),
                ('player-visibility','            if hidden:\n','            if False:\n','test_field_bounds_visibility_and_unknown_state','sentinel player must be hidden'),
                ('ball-visibility','        if not hidden:\n','        if True:\n','test_field_bounds_visibility_and_unknown_state','sentinel ball must be hidden'),
                ('early-consumption','                pygame.display.flip()','                display.rendered()\n                pygame.display.flip()','test_actual_loop_flips_each_pose_before_consumption_and_closes_while_waiting','sample acknowledged before SDL flip'),

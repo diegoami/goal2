@@ -229,3 +229,4 @@ operational status.
 | [T91](T91.md) | The Country desk, Team and Pool pages in the accepted original style | [#261](https://github.com/diegoami/goal2/issues/261) | Medium |
 | [T92](T92.md) | Rename a player and the manager | [#293](https://github.com/diegoami/goal2/issues/293) | Medium |
 | [T93](T93.md) | Localized names for the national pool | [#295](https://github.com/diegoami/goal2/issues/295) | Medium |
+| [T94](T94.md) | The watched pitch in the accepted original style | [#262](https://github.com/diegoami/goal2/issues/262) | Medium |

@@ -7,18 +7,32 @@ import sys
 import time
 from goal2.desktop.match_view import Display, MAX_PACKET, MAX_JOURNAL
 
-# [designed: T83] Modern schematic scale; T81 proves signed axes, not physical metres/art.
-CENTER = (500, 282)
-SCALE = (11, 17)
-FIELD = (93, 146, 815, 273)
-TEAM_COLORS = ((45, 135, 245), (245, 105, 45))
-GRASS = (26, 100, 57)
-MARKING = (213, 231, 204)
+# [designed: T94; accepted vision #266 screen 06] The accepted original style: black, large
+# type, the managed side gold and the other white (strips are not decoded, G05).
+BLACK, WHITE, GREY = (0, 0, 0), (238, 238, 238), (170, 170, 170)
+CYAN, YELLOW, GOLD, MAGENTA = (85, 255, 255), (255, 255, 85), (255, 187, 51), (255, 85, 255)
+BORDER = (0, 80, 0)
+TEAM_COLORS = (GOLD, WHITE)
+# [confirmed: F013, kit424d599 seg_0791_05.asm:535-598] The in-play grid: |x| <= 8, |y| <= 37.
+GRID = (8, 37)
+# [designed: T94] Grid units of room around the field for out-of-field positions.
+MARGIN = (1.5, 2.5)
+HEADER, FOOTER = 52, 64
 
 
-def project(x, y):
+def layout(width, height):
+    """[designed: T94] The pitch takes the whole window between a one-line score header and the
+    two-line commentary footer; returns the pitch rectangle and the grid's pixel scale."""
+    left, top = 8, HEADER
+    w, h = max(1, width - 16), max(1, height - HEADER - FOOTER)
+    scale = (w / (2 * (GRID[1] + MARGIN[1])), h / (2 * (GRID[0] + MARGIN[0])))
+    return (left, top, w, h), scale
+
+
+def project(x, y, size=(1440, 900)):
     """[derived: T81/F013 at424d599] Fixed screen=[signed y,signed x], positive right/down."""
-    return CENTER[0] + y * SCALE[0], CENTER[1] + x * SCALE[1]
+    (left, top, w, h), (sx, sy) = layout(*size)
+    return round(left + w / 2 + y * sx), round(top + h / 2 + x * sy)
 
 
 def frame_digest(frame):
@@ -130,50 +144,87 @@ def render(screen, font, display, scroll=0):
 
 
 
-def render_pitch(screen, font, display, scroll=0):
-    """[designed: T83] Schematic evidenced playing grid; exact samples, local slot labels."""
+_FONTS = {}
+
+
+def mono(size, bold=False):
+    """DejaVu Sans Mono at a pixel size; a font from an earlier pygame session is reloaded."""
     import pygame
-    screen.fill((18, 28, 37))
+    font = _FONTS.get((size, bold))
+    if font is not None:
+        try:
+            font.size('x');return font
+        except pygame.error:
+            _FONTS.clear()
+    path = pygame.font.match_font('dejavusansmono', bold=bold)
+    _FONTS[size, bold] = font = pygame.font.Font(path, size)
+    return font
+
+
+def render_pitch(screen, font, display, scroll=0, commentary=False):
+    """[designed: T94; accepted vision #266 screen 06] Score header, maximum pitch with each
+    player's one-letter role code, the last two commentary lines; C shows the full commentary."""
+    import pygame
+    width, height = screen.get_size()
+    (left, top, w, h), (sx, sy) = layout(width, height)
+    screen.fill(BLACK)
     visible = display.visible()
-    lines = visible.lines()
-    for n, line in enumerate(lines[:3]):
-        if n != 1:
-            screen.blit(font.render(line, True, (232, 239, 229)), (20, 12+n*25))
-    for team, name in enumerate(display.countries or ['Starting…']):
-        x = 20 + team * 480
-        pygame.draw.circle(screen, TEAM_COLORS[team], (x+8,46), 8)
-        screen.blit(font.render(name, True, TEAM_COLORS[team]), (x+20,37))
-    pygame.draw.rect(screen, GRASS, (60, 112, 880, 340))
-    pygame.draw.rect(screen, MARKING, FIELD, 2)
-    pygame.draw.line(screen, MARKING, (500,146), (500,418), 2)
-    pygame.draw.ellipse(screen, MARKING, (448,248,104,68), 2)
-    # [designed] Mouth abs(x)<2 is evidenced; box/net decoration is schematic.
-    for x in (77, 907):
-        pygame.draw.rect(screen, MARKING, (x,256,16,52), 2)
-    for x in (93, 797):
-        pygame.draw.rect(screen, MARKING, (x,197,110,170), 2)
+    names = display.countries or ['Starting…', '']
+    colours = TEAM_COLORS if display.managed != 1 else TEAM_COLORS[::-1]
     frame = display.frame
+    score = frame['score'] if frame is not None else (visible.events[-1]['score'] if visible.events else [0, 0])
+    big, small = mono(30, True), mono(22)
+    x = 18
+    for part, colour in ((names[0].upper(), colours[0]), (f'  {score[0]} - {score[1]}  ', CYAN), (names[1].upper(), colours[1])):
+        label = big.render(part, True, colour);screen.blit(label, (x, 10));x += label.get_width()
+    minute = frame['minute'] if frame is not None else (visible.events[-1]['minute'] if visible.events else 0)
+    screen.blit(big.render(f'   {minute}′ / {display.kind.upper()}', True, CYAN), (x, 10))
+    # The field: border, playing grid, halfway line, centre circle, goal mouths and boxes.
+    pygame.draw.rect(screen, BORDER, (left, top, w, h), 6)
+    cx, cy = left + w / 2, top + h / 2
+    def at(gx, gy):
+        # [designed: T94] A position beyond the drawn margin is shown at the pitch's edge.
+        gx = max(-GRID[0] - MARGIN[0], min(GRID[0] + MARGIN[0], gx))
+        gy = max(-GRID[1] - MARGIN[1], min(GRID[1] + MARGIN[1], gy))
+        return round(cx + gy * sx), round(cy + gx * sy)
+    grid_left, grid_top = at(-GRID[0], -GRID[1]);grid_right, grid_bottom = at(GRID[0], GRID[1])
+    pygame.draw.rect(screen, GREY, (grid_left, grid_top, grid_right - grid_left + 1, grid_bottom - grid_top + 1), 1)
+    pygame.draw.line(screen, GREY, (round(cx), grid_top), (round(cx), grid_bottom), 1)
+    pygame.draw.ellipse(screen, GREY, (round(cx - 4.7 * sx), round(cy - 2 * sy), round(9.4 * sx), round(4 * sy)), 1)
+    for side in (-1, 1):
+        # [designed] Box depth 10 and half-width 5 are schematic; the mouth |x| < 2 is evidenced.
+        line = at(0, side * GRID[1])[0]
+        box = sorted((line, at(0, side * (GRID[1] - 10))[0]))
+        pygame.draw.rect(screen, GREY, (box[0], at(-5, 0)[1], box[1] - box[0], at(5, 0)[1] - at(-5, 0)[1]), 1)
+        mouth = sorted((line, line + side * round(1.2 * sx)))
+        pygame.draw.rect(screen, GREY, (mouth[0], at(-2, 0)[1], mouth[1] - mouth[0], at(2, 0)[1] - at(-2, 0)[1]), 1)
     if frame is not None:
-        for slot, team, number, word, x, y, state, hidden in frame['players']:
+        marker = mono(max(14, min(40, round(sy * 1.4))), True)
+        for slot, team, number, word, px, py, state, hidden in frame['players']:
             if hidden:
                 continue
-            point = project(x,y)
-            pygame.draw.circle(screen, (10,20,27), point, 13)
-            pygame.draw.circle(screen, TEAM_COLORS[team], point, 11)
-            label = font.render(str(number), True, (255,255,255))
-            screen.blit(label, label.get_rect(center=point))
-        x,y,hidden = frame['ball']
+            label = marker.render(display.code(word, number), True, colours[team])
+            screen.blit(label, label.get_rect(center=at(px, py)))
+        bx, by, hidden = frame['ball']
         if not hidden:
-            point = project(x,y)
-            pygame.draw.circle(screen, (10,20,27), point, 6)
-            pygame.draw.circle(screen, (255,244,161), point, 4)
-    screen.blit(font.render('Slot labels 1-11 | wheel/arrows: commentary / board | End: follow | Esc: close',
-                            True, (232,239,229)), (20,88))
-    rows = lines[3:]
-    scroll = max(0, min(scroll, max(0,len(rows)-8)))
-    for n,line in enumerate(rows[scroll:scroll+8]):
-        screen.blit(font.render(line, True, (232,239,229)), (20,490+n*26))
+            pygame.draw.circle(screen, YELLOW, at(bx, by), max(3, round(sy * 0.3)))
+    lines = visible.commentary()
+    footer = mono(22)
+    for n, line in enumerate(lines[-2:]):
+        screen.blit(footer.render(line, True, YELLOW if n == 0 and len(lines) > 1 else CYAN), (18, height - FOOTER + 6 + n * 28))
+    hint = small.render('[C] Commentary  [Esc] Close', True, MAGENTA)
+    screen.blit(hint, (width - hint.get_width() - 18, height - FOOTER + 34))
+    if commentary or display.result is not None:
+        # The full commentary, or the board at full time, over the right part of the pitch.
+        rows = visible.lines()[3:] if display.result is not None else lines
+        panel = pygame.Rect(left + w * 0.45, top + 6, w * 0.55 - 6, h - 12)
+        pygame.draw.rect(screen, BLACK, panel);pygame.draw.rect(screen, CYAN, panel, 2)
+        fit = max(1, int((panel.height - 16) // 26))
+        scroll = max(0, min(scroll, max(0, len(rows) - fit)))
+        for n, line in enumerate(rows[scroll:scroll + fit]):
+            screen.blit(footer.render(line, True, WHITE), (panel.x + 12, panel.y + 8 + n * 26))
     return scroll
+
 
 def main():
     folder, token = Path(sys.argv[1]), sys.argv[2]
@@ -181,7 +232,8 @@ def main():
     try:
         import pygame
         pygame.init()
-        screen = pygame.display.set_mode((1000, 720))
+        # [designed: T94] A large resizable window; the pitch follows its size.
+        screen = pygame.display.set_mode((1440, 900), pygame.RESIZABLE)
         pygame.display.set_caption('goal2 — Original friendly')
         font = pygame.font.Font(None, 24)
         clock = pygame.time.Clock()
@@ -189,11 +241,14 @@ def main():
         scroll = 0
         follow = True
         finished = False
+        commentary = False
         buffer = b''
         with (folder / 'display').open('rb') as source:
             running = True
             while running:
                 for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+                        commentary = not commentary
                     scroll, follow, keep_open = navigation(event, scroll, follow)
                     running = running and keep_open
                 if source.tell() > MAX_JOURNAL:
@@ -213,7 +268,11 @@ def main():
                 visible = display.visible()
                 scroll, follow, finished = position(visible, scroll, follow, finished,
                                                      changed or display.sequence != previous_sequence)
-                scroll = (render_pitch if display.pitch_rate else render)(screen, font, display, scroll)
+                screen = pygame.display.get_surface()
+                if display.pitch_rate:
+                    scroll = render_pitch(screen, font, display, scroll, commentary)
+                else:
+                    scroll = render(screen, font, display, scroll)
                 pygame.display.flip()
                 # [designed] One due sample per loop and one real flip before consumption.
                 display.rendered()
