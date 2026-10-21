@@ -168,7 +168,7 @@ class ManagementWindow(QMainWindow):
             item.setCheckState(Qt.CheckState.Checked if selected else Qt.CheckState.Unchecked);self.table.setItem(row,0,item)
             reason=', '.join(p['availability']['reasons']) or 'Available'
             if p['availability']['carried_bookings']:reason+='; carried booking'
-            for col,value in enumerate((p['name'],p['role'],p['position'],p['energy'],p['confidence'],reason),1):
+            for col,value in enumerate((p['name'],p['role'],p['position_name'],p['energy'],p['confidence'],reason),1):
                 cell=QTableWidgetItem(str(value));cell.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable);self.table.setItem(row,col,cell)
                 if col==2:role_colour(cell,p['line'])
         self.update_captain();self.captain.setCurrentIndex(max(0,self.captain.findData(state.captain)))
@@ -373,7 +373,7 @@ class ManagementWindow(QMainWindow):
             self.exchange.setEnabled(view['window']['allowed'] and not self.jobs.busy and self.preview is None)
             self.reserves.setRowCount(len(view['reserves']))
             for row,p in enumerate(view['reserves']):
-                values=(p['id'],p['name'],p['role'],p['position_group'],p['energy'],p['confidence'],', '.join(p['availability']['reasons']) or 'Available')
+                values=(p['id'],p['name'],p['role'],p['position_name'],p['energy'],p['confidence'],', '.join(p['availability']['reasons']) or 'Available')
                 for col,value in enumerate(values):
                     item=QTableWidgetItem(str(value));item.setFlags(Qt.ItemFlag.ItemIsEnabled|Qt.ItemFlag.ItemIsSelectable)
                     if col==2:role_colour(item,p['line'])

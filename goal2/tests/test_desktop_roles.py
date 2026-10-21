@@ -39,8 +39,8 @@ class Roles(unittest.TestCase):
         for row in rows:
             record = state.players[row['id']]
             self.assertNotIn('ability', row)
-            self.assertEqual((row['role'], row['line'], row['club_role']),
-                             (CODES[record[6]], LINES[record[6]], CODES[record[7]]))
+            self.assertEqual((row['role'], row['line'], row['club_role'], row['position_name']),
+                             (CODES[record[6]], LINES[record[6]], CODES[record[7]], NAMES[record[6]]))
         self.assertGreater(len({row['role'] for row in rows}), 5, 'the 100 players cover many roles')
 
     @requires.need(modules=('PySide6',))
@@ -54,9 +54,9 @@ class Roles(unittest.TestCase):
                 headers = [table.horizontalHeaderItem(c).text() for c in range(table.columnCount())]
                 self.assertNotIn('Ability', headers);self.assertEqual(headers[2], 'Role')
             for row, player in enumerate(self.model.view()['players']):
-                self.assertEqual(window.table.item(row, 2).text(), player['role'])
+                self.assertEqual([window.table.item(row, c).text() for c in (2, 3)], [player['role'], player['position_name']])
             for row, player in enumerate(self.model.pool_view()['reserves']):
-                self.assertEqual(window.reserves.item(row, 2).text(), player['role'])
+                self.assertEqual([window.reserves.item(row, c).text() for c in (2, 3)], [player['role'], player['position_name']])
             window.reserves.setCurrentCell(0, 1);app.processEvents()
             from goal2.desktop.pool_page import refresh as refresh_pool
             refresh_pool(window)

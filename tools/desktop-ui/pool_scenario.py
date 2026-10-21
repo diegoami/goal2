@@ -76,7 +76,7 @@ def scenario(args):
             expected=campaign_pool.view(m.state,m.goaldat,query=w.search.text(),position=w.position.currentData())['reserves']
             assert w.reserves.rowCount()==len(expected),'filtered row count differs'
             for i,row in enumerate(expected):
-                values=(str(row['id']),row['name'],row['role'],row['position_group'],str(row['energy']),str(row['confidence']),', '.join(row['availability']['reasons']) or 'Available')
+                values=(str(row['id']),row['name'],row['role'],row['position_name'],str(row['energy']),str(row['confidence']),', '.join(row['availability']['reasons']) or 'Available')
                 assert tuple(w.reserves.item(i,j).text() for j in range(7))==values,'reserve raw values/order differ'
         def reading(label):
             reveal(label);app.processEvents();rect=label.contentsRect();needed=label.fontMetrics().boundingRect(QRect(0,0,rect.width(),10000),int(Qt.TextFlag.TextWordWrap),label.text())

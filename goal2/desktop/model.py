@@ -149,7 +149,7 @@ class DesktopModel:
         rows=[]
         # [designed: owner, 2026-10-21; #283/#286] One-letter role codes; no overall ability, ever.
         from goal2.game import roles
-        table=roles.tables(state)
+        table=roles.tables(state);names=roles.names(state)
         for word in state.managed_squad:
             record=state.players[word]
             if len(record)!=20:
@@ -157,6 +157,7 @@ class DesktopModel:
             code,line=roles.role(state,record[6],cache=table)
             rows.append({'id':word,'name':self.goaldat.player_names[word],'role':code,'line':line,
                          'club_role':roles.role(state,record[7],cache=table)[0],
+                         'position_name':names[record[6]] if record[6]<14 else 'unknown position',
                          'position':groups[lines[record[6]]],'energy':record[14],
                          'confidence':record[12],'availability':eligibility.info(record)})
         self.result_text(state)  # [designed: T70] Validate renderable results before publication.
