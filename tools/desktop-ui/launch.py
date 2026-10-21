@@ -74,6 +74,22 @@ def main():
             assert w.pages.currentIndex() == 2 and w.review_fields['country'].text() == 'Denmark'
             counts.append(reachable('review'))
             w.start.setFocus();key(Qt.Key.Key_Escape);assert w.pages.currentIndex() == 1
+            # [designed: T88] Space shows the players; every card is complete and inside the window.
+            w.country_list.setFocus();key(Qt.Key.Key_Space)
+            assert w.pages.currentIndex() == 3 and w.focusWidget() is w.player_list
+            counts.append(reachable('players'))
+            pane = w.player_card.parentWidget().parentWidget()
+            seen_cards = []
+            for _ in range(20):
+                app.processEvents();card = w.player_card.card;seen_cards.append(card['id'])
+                assert 'ability' not in card and all(v is not None for _, v in card['skills']), card['full_name']
+                assert pane.horizontalScrollBar().maximum() == 0, f'{width}×{height}: card scrolls sideways'
+                viewport = pane.viewport()
+                assert w.player_card.width() == viewport.width(), 'card wider than its pane'
+                assert w.player_card.height() <= viewport.height() or pane.verticalScrollBar().maximum() > 0, 'card clipped'
+                key(Qt.Key.Key_Down)
+            assert len(set(seen_cards)) == 20, f'browsed {len(set(seen_cards))} of 20 players'
+            key(Qt.Key.Key_Escape);assert w.pages.currentIndex() == 1 and save.read_bytes() == saved
             w.country_list.setFocus();key(Qt.Key.Key_Return);w.start.setFocus();key(Qt.Key.Key_Return)
             assert len(opened) == 1 and opened[0].state.managed_country == 7 and opened[0].state.campaign.stage == 2
             assert save.read_bytes() == saved, 'starting a career wrote the save'
@@ -106,7 +122,7 @@ def main():
         assert code == 0 and seen == [1, [4]], (code, seen)
         assert save.read_bytes() == saved
     print(f"PASS launch window ({platform}, ratio {ratio:g}): keyboard reach and in-window geometry on every page, "
-          f"failed load kept the save, Retry/Load another, New career → Review → Start, Resume by Enter, real entry Launch → management; "
+          f"failed load kept the save, Retry/Load another, New career → Review → Start, Players by Space (20 complete cards), Resume by Enter, real entry Launch → management; "
           + '; '.join(receipts))
 
 

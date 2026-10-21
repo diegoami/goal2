@@ -110,6 +110,27 @@ class Launch(unittest.TestCase):
         self.assertEqual(self.opened[0].save_path, self.save)
         self.assertEqual(self.files(), before, 'starting a career writes no save')
 
+    def test_space_shows_every_player_with_a_complete_card_and_writes_nothing(self):
+        from goal2.game.player_card import card
+        before = self.files()
+        w = self.window();w.new_career.click();w.country_list.setCurrentRow(6);self.app.processEvents()
+        w.country_list.setFocus();self.key(w, Qt.Key.Key_Space)
+        self.assertEqual(w.pages.currentIndex(), 3);self.assertIs(w.focusWidget(), w.player_list)
+        self.assertEqual(w.players_heading.text(), 'DENMARK / PLAYERS')
+        state = w.browser.state
+        expected = [card(state, word, w.browser.goaldat) for word in state.managed_squad]
+        items = [w.player_list.item(i) for i in range(w.player_list.count())]
+        players = [i for i in items if i.data(Qt.ItemDataRole.UserRole) is not None]
+        self.assertEqual(len(items), 21, 'twenty players and the rule after the eleven')
+        self.assertEqual([i.text() for i in players], [f"{c['role']}  {c['full_name']}" for c in expected])
+        for step in range(19):self.key(w, Qt.Key.Key_Down)
+        self.assertEqual(w.player_card.card, expected[19], 'arrows reach the last bench player')
+        self.assertNotIn('ability', w.player_card.card)
+        self.key(w, Qt.Key.Key_Escape)
+        self.assertEqual(w.pages.currentIndex(), 1);self.assertIs(w.focusWidget(), w.country_list)
+        w.to_players.click();self.assertEqual(w.pages.currentIndex(), 3)
+        self.assertEqual((self.opened, self.files()), ([], before))
+
     def test_new_career_needs_the_template(self):
         w = self.window(template=None)
         self.assertFalse(w.new_career.isEnabled())
