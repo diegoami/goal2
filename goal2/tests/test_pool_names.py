@@ -78,6 +78,12 @@ class InTheGame(unittest.TestCase):
         model.rename_player(2561, localized)
         self.assertEqual((model.state.player_renames, model.goaldat.player_names[2561]), ({}, localized))
 
+    def test_search_ignores_accents(self):
+        model = self.model(14)
+        self.assertIn('Kovács', pool_names.table()[14][1])
+        for query in ('kovacs', 'KOVÁCS', 'Kovács'):
+            self.assertIn('Kovács', [r['name'] for r in model.pool_view(query=query)['reserves']], query)
+
     def test_an_altered_country_name_keeps_its_own_names(self):
         goaldat = load((ROOT / '.cache/GOAL.DAT').read_bytes())
         names = list(goaldat.country_names);names[GREECE] = 'Hellas'

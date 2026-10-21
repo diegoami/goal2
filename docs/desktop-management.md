@@ -88,7 +88,8 @@ every view reads names through the game. A new campaign keeps the manager's name
 the managed nation for the 32 best-ranked countries in GOAL.DAT and Greece
 (`goal2/data/pool_names.json`, written for the rebuild, not real players). The original gives
 every country the same mostly English pool names [confirmed: F002 R003, F007]; other countries
-keep them. The names follow the managed country and are never saved; renames apply on top.
+keep them. The names follow the managed country and are never saved; renames apply on top. The
+pool search ignores accents ("kovacs" finds "Kovács").
 
 [designed: T78] Fixtures & results groups the next named fixture, last completed
 score, engine provenance, goals and a read-only standings snapshot. Ordinary
