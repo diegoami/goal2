@@ -209,11 +209,11 @@ class CompetitiveJobsTests(unittest.TestCase):
                 self.assertEqual(self.owner.save_path.read_bytes(),self.saved)
                 self.jobs.close();self.owner.state=copy.deepcopy(self.before)
                 _,self.owner.template_bytes,_=campaign()
-        old=self.bridge('blocked');self.jobs.cancel(old)
+        old=self.bridge('blocked');self.jobs.cancel_and_reap(old)
         new=self.jobs.start()
         with self.assertRaisesRegex(ValueError,'stale'):self.jobs.cancel(old)
         self.assertEqual(self.jobs.token,new);self.assertTrue(self.jobs.busy)
-        self.jobs.cancel(new);self.unchanged()
+        self.jobs.cancel_and_reap(new);self.unchanged()
 
     def test_launch_runtime_resource_and_pending_failures_are_actionable(self):
         self.jobs=CompetitiveJobs(self.owner);self.addCleanup(self.jobs.close)
