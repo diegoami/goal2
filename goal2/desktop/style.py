@@ -83,7 +83,6 @@ def apply_style(window):
     QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager {{font-size:20px;text-align:left;padding:8px 12px;}}
     QLabel#overviewCountry {{font-size:24px;font-weight:700;color:{c['yellow']};}}
     QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;color:{c['green']};}}
-    QLabel#lineupBoard,QLabel#benchBoard,QLabel#playerDetail {{background:{c['background']};border:2px solid {c['cyan']};padding:16px;}}
     QLabel#tacticsTitle {{font-size:26px;font-weight:700;color:{c['red']};}}
     QFrame#tacticsTeam {{background:{c['background']};border:2px solid {c['gold']};}}
     QFrame#tacticsDefaults {{background:{c['background']};border:2px solid {c['red']};}}
@@ -91,17 +90,9 @@ def apply_style(window):
     QLabel#tacticsDefaultsHeading {{font-size:20px;font-weight:700;color:{c['red']};}}
     QLabel#tacticsManager, QLabel#captainLabel {{font-size:20px;color:{c['yellow']};}}
     QComboBox#captain {{font-size:20px;color:{c['yellow']};}}
-    QFrame#tacticsTeam QLabel#lineupBoard, QFrame#tacticsTeam QLabel#benchBoard {{border:0;padding:4px 0px;font-size:18px;color:{c['green']};}}
     QPushButton[tacticRow="true"] {{font-size:20px;min-height:44px;border:0;}}
     QLabel#tacticsHint {{color:{c['magenta']};font-size:16px;}}
-    QPushButton#teamPool, QPushButton#teamTableRoute, QPushButton#teamTacticsRoute, QPushButton#renamePlayer, QPushButton#confirmPlan, QPushButton#discardPlan, QPushButton#tableBack {{font-size:20px;padding:4px 12px;}}
-    QTableWidget#squad {{font-weight:700;gridline-color:#333333;}}
-    QTableWidget#squad::indicator {{width:18px;height:18px;}}
-    QTableWidget#squad::indicator:unchecked {{background:{c['background']};border:2px solid {c['red']};}}
-    QTableWidget#squad::indicator:checked {{background:{c['green']};border:2px solid {c['green']};}}
-    QTableWidget#squad::indicator:disabled {{background:{c['background']};border:2px dotted #777777;}}
-    QTableWidget#squad::indicator:checked:disabled {{background:#777777;border:2px solid #777777;}}
-    QLabel#squadSummary {{font-size:18px;color:{c['yellow']};}}
+    QPushButton#teamPool, QPushButton#teamTacticsRoute, QPushButton#renamePlayer, QPushButton#confirmPlan, QPushButton#discardPlan {{font-size:20px;padding:4px 12px;}}
     QWidget#draftBar {{background:{c['background']};border-top:2px solid {c['cyan']};}}
     QLabel#draftState {{color:{c['warning']};font-size:14px;font-weight:700;}}
     QWidget#draftBar QPushButton {{border:3px solid {c['cyan']};}}

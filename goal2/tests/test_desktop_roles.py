@@ -60,9 +60,11 @@ class Roles(unittest.TestCase):
             window.reserves.setCurrentCell(0, 1);app.processEvents()
             from goal2.desktop.pool_page import refresh as refresh_pool
             refresh_pool(window)
-            for label in (window.player_detail, window.pool_detail, window.exchange_summary):
+            for label in (window.pool_detail, window.exchange_summary):
                 self.assertNotIn('Ability', label.text())
-            self.assertIn('Role ', window.player_detail.text())
+            # [designed: T99] The selected player's detail is his card: it names his role, no ability.
+            card = window.team_card.card;player = self.model.view()['players'][max(0, window.table.currentRow())]
+            self.assertNotIn('ability', card);self.assertEqual((card['id'], card['role']), (player['id'], player['role']))
             self.assertEqual([window.position.itemText(i) for i in range(1, 15)],
                              [f'{c} · {n}' for c, n in zip(CODES, NAMES)])
         finally:

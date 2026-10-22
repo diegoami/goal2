@@ -1,6 +1,11 @@
 """[designed: T88; accepted vision #266 screen 03] The complete player card, painted in the
-original style: black, large monospaced type, line colours, segmented bars with the raw value
-beside each. The data is goal2.game.player_card's; no attribute total is ever drawn (#286).
+original style: black, large monospaced type, line colours, segmented bars. The data is
+goal2.game.player_card's; no attribute total is ever drawn (#286).
+
+[designed: owner, 2026-10-21, T99 "no numbers when you can have bars"; confirmed:
+`docs/original-game/images/m244-squad.png`] As in the original, a skill is its bar alone, and a
+characteristic is its bar with the descriptor word inside it; the raw values stay in the
+accessible name.
 """
 from PySide6.QtCore import Qt, QRectF, QSize
 from PySide6.QtGui import QColor, QFont, QPainter
@@ -27,7 +32,7 @@ class PlayerCardView(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.card = None
+        self.card = None;self.drawn = []
         self.setObjectName('playerCard');self.setMinimumSize(NARROW_WIDTH, HEIGHT)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
@@ -63,6 +68,17 @@ class PlayerCardView(QWidget):
         font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
         font.setPixelSize(size);font.setBold(bold);painter.setFont(font)
         painter.setPen(QColor(color));painter.drawText(int(x), int(y), str(value))
+        self.drawn.append(str(value))
+
+    def fitted(self, value, width, size, bold=True):
+        """The largest pixel size up to `size` at which `value` fits `width` (never elided)."""
+        from PySide6.QtGui import QFontMetrics
+        while size > 10:
+            font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
+            font.setPixelSize(size);font.setBold(bold)
+            if QFontMetrics(font).horizontalAdvance(value) <= width:break
+            size -= 1
+        return size
 
     def bar(self, painter, x, y, width, filled, cells):
         """[designed: accepted #266] Segmented bar: light filled cells, magenta empty ones."""
@@ -72,13 +88,16 @@ class PlayerCardView(QWidget):
             painter.fillRect(QRectF(x + i * step + 1, y - 15, step - 2, 18), QColor(colour))
 
     def paintEvent(self, event):
+        # Every string painted, for the checks that no number stands beside a bar.
+        self.drawn = []
         painter = QPainter(self);painter.fillRect(self.rect(), QColor(BLACK))
         painter.setPen(QColor(RED));painter.drawRect(1, 1, self.width() - 3, self.height() - 3)
         c = self.card
         if c is None:
             self.text(painter, 20, 40, 'Choose a player', GREY);painter.end();return
         colour = LINE[c['line']]
-        self.text(painter, 16, 38, c['full_name'].upper(), colour, 28, True)
+        name = c['full_name'].upper()
+        self.text(painter, 16, 38, name, colour, self.fitted(name, self.width() - 100, 28), True)
         self.text(painter, self.width() - 60, 38, c['role'], colour, 30, True)
         cards = ', '.join(c['cards']) or 'none'
         performance = 'not recorded' if c['performance'] is None else f"raw {c['performance']} (meaning not decoded)"
@@ -96,22 +115,24 @@ class PlayerCardView(QWidget):
         for line, tone, size in header:
             self.text(painter, 16, y, line, tone, size);y += 26
         top = y + 12
-        # Twelve skills: label, 25-cell bar, the original-unit value.
+        # Twelve skills: label and 25-cell bar, no number.
+        skill_width = (self.width() - 160) if self.narrow else 250
         for i, (name, value) in enumerate(c['skills']):
             row = top + i * 30
             self.text(painter, 16, row, name.capitalize(), GOLD, 20, True)
-            self.bar(painter, 140, row, 220, value, 25)
-            self.text(painter, 368, row, bar_text(value), WHITE, 20)
-        # Five characteristics: label, 14-cell bar, raw value, and the original's word.
+            self.bar(painter, 140, row, skill_width, value, 25)
+        # Five characteristics: label and 14-cell bar with the original's word inside it.
         x, top = (16, top + 12 * 30 + 20) if self.narrow else (410, top)
-        bar_x = x + 150
+        bar_x = x + 150;bar_width = min(200, self.width() - bar_x - 16)
         for i, (name, word, bar, raw) in enumerate(c['characteristics']):
-            row = top + i * 50
+            row = top + i * 36
             self.text(painter, x, row, name.capitalize(), GOLD, 20, True)
-            self.bar(painter, bar_x, row, 150, bar, 14)
-            self.text(painter, bar_x + 156, row, bar_text(raw), WHITE, 20)
-            self.text(painter, bar_x, row + 21, word, GREEN, 16)
-        top += 5 * 50 + 16
+            self.bar(painter, bar_x, row, bar_width, bar, 14)
+            font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace);font.setPixelSize(16)
+            from PySide6.QtGui import QFontMetrics
+            painter.fillRect(QRectF(bar_x + 1, row - 15, QFontMetrics(font).horizontalAdvance(word) + 6, 18), QColor(GREY))
+            self.text(painter, bar_x + 4, row, word, BLACK, 16)
+        top += 5 * 36 + 16
         self.text(painter, x, top, 'TACTICS / P = PERSONAL', RED, 20, True)
         rows = [(name, word + (' P' if personal else '')) for name, word, personal in c['tactics']]
         for i, (name, word) in enumerate(rows + [('mark', c['mark'] or '—')]):

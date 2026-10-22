@@ -1,10 +1,10 @@
-"""[designed: T99; accepted vision #266 screens 03/16] Team tactics and the attribute table.
-
-The Team page holds three views: 0 the roster and the card with its routes, 1 Team tactics, 2 the
-attribute table. A tactic row's word follows its bit [confirmed: docs/original-game/images/m244-team-tactics.png;
+"""[designed: T99; owner, 2026-10-21; confirmed: `docs/original-game/images/m244-squad.png`]
+The Team page in the original's style: the roster strip on the right of two views, 0 the card with
+its routes and 1 Team tactics; no table. A tactic row's word follows its bit [confirmed: docs/original-game/images/m244-team-tactics.png;
 the tactic bits of window.TACTICS]; the draft and Confirm/Discard are unchanged.
 """
 from pathlib import Path
+import re
 import unittest
 
 from goal2.tests import requires
@@ -113,35 +113,68 @@ class TeamTactics(unittest.TestCase):
         self.assertEqual(w.team_views.currentIndex(), 0);self.assertEqual(self.visible_views(), [0])
         self.assertEqual(self.state(), before)
 
-    def test_view_0_shows_no_check_box_and_no_table(self):
-        w = self.window;w.navigate(1);w.team_view(0);self.app.processEvents()
-        page = w.pages[1]
-        shown = [x for x in page.findChildren(QWidget) if x.isVisible()]
-        self.assertFalse([x for x in shown if isinstance(x, (QCheckBox, QTableWidget))])
+    def test_no_view_shows_a_check_box_a_table_or_a_skill_number(self):
+        w = self.window;w.navigate(1);page = w.pages[1]
         self.assertFalse(page.findChildren(QCheckBox), 'a tactic is still a check box')
-        self.assertTrue(w.team_roster.isVisible() and w.team_card.isVisible())
+        self.assertEqual(w.team_views.count(), 2, 'there is no table view')
+        for view in (0, 1):
+            w.team_view(view);self.app.processEvents()
+            shown = [x for x in page.findChildren(QWidget) if x.isVisible()]
+            self.assertFalse([x for x in shown if isinstance(x, (QCheckBox, QTableWidget))], view)
+            self.assertTrue(w.team_roster.isVisible(), 'the strip shows on every view')
+            self.assertTrue(w.team_views.widget(view).isVisible())
+        self.assertFalse(w.table.isVisible())
+        w.team_view(0)
+        self.assertEqual([b.text() for b in w.team_routes], ['Pool / Compare >', 'Team tactics >', 'Rename (F2)'])
         for button in w.team_routes:self.assertTrue(button.isVisible(), button.text())
-        self.assertEqual([b.text() for b in w.team_routes],
-                         ['Pool / Compare >', 'Attribute table >', 'Team tactics >', 'Rename (F2)'])
-        for widget in (w.captain, w.lineup_board, w.bench_board, w.player_detail, w.squad_summary, w.table,
-                       *(row for _, row in w.tactics)):
-            self.assertFalse(widget.isVisible(), widget.objectName())
+        for row in range(20):
+            w.team_roster.set_current(row);w.team_card.grab()
+            card = w.team_card.card;drawn = w.team_card.drawn
+            self.assertTrue(drawn and card['full_name'].upper() in drawn)
+            self.assertFalse([t for t in drawn if re.fullmatch(r'\s*\d+\s*', t)], 'a number beside a bar')
+            # Each characteristic's word is drawn, inside its bar.
+            for _, word, _, _ in card['characteristics']:self.assertIn(word, drawn)
+            for name, _ in card['skills']:self.assertIn(name.capitalize(), drawn)
+
+    def test_the_strip_lists_the_xi_a_rule_then_the_bench_and_space_moves(self):
+        w = self.window;w.navigate(1);strip = w.team_roster;before = self.state()
+        squad = list(self.model.state.managed_squad)
+
+        def check():
+            eleven = w.drafted_eleven();bench = [x for x in squad if x not in eleven]
+            self.assertEqual([strip.rows[i][0] for i in strip.order], eleven + bench)
+            self.assertEqual(strip.eleven(), len(eleven))
+            last, first = strip.row_rect(strip.order[len(eleven) - 1]), strip.row_rect(strip.order[len(eleven)])
+            self.assertGreater(first.top() - last.top(), last.height() + 8, 'no rule between the XI and the bench')
+            return eleven, bench
+        eleven, bench = check()
+        self.assertEqual(eleven, list(self.model.state.starting_eleven))
+        starter = eleven[3];strip.set_current(squad.index(starter));strip.setFocus()
+        QTest.keyClick(strip, Qt.Key.Key_Space);self.app.processEvents()
+        eleven, bench = check();self.assertIn(starter, bench);self.assertEqual(len(eleven), 10)
+        QTest.keyClick(strip, Qt.Key.Key_Space);self.app.processEvents()
+        eleven, bench = check();self.assertEqual(eleven, list(self.model.state.starting_eleven))
+        # Up/Down follow the displayed order across the rule; a click selects the row it hits.
+        strip.set_current(strip.order[10]);QTest.keyClick(strip, Qt.Key.Key_Down)
+        self.assertEqual(strip.current, strip.order[11])
+        target = strip.order[15];QTest.mouseClick(strip, Qt.MouseButton.LeftButton, pos=strip.row_rect(target).center())
+        self.assertEqual((strip.current, w.table.currentRow()), (target, target))
+        self.assertEqual(w.team_card.card['id'], squad[target])
+        self.assertEqual(self.state(), before, 'the strip only drafts')
 
     def test_each_route_reaches_its_view_and_escape_returns(self):
         w = self.window;w.navigate(1);before = self.state()
-        for route, view, shown in ((w.team_tactics_route, 1, (w.captain, w.lineup_board, w.bench_board, w.confirm_plan, w.discard_plan, *(r for _, r in w.tactics))),
-                                   (w.team_table_route, 2, (w.squad_summary, w.table, w.player_detail, w.table_back))):
-            route.click();self.app.processEvents()
-            self.assertEqual((w.team_views.currentIndex(), self.visible_views()), (view, [view]))
-            for widget in shown:self.assertTrue(widget.isVisible(), widget.objectName())
-            self.assertFalse(w.team_roster.isVisible())
-            QTest.keyClick(QApplication.focusWidget(), Qt.Key.Key_Escape);self.app.processEvents()
-            self.assertEqual(w.team_views.currentIndex(), 0)
-            self.assertIs(QApplication.focusWidget(), w.team_roster, 'Escape returns with the roster focused')
-        # Escape from the page heading works too; < Team returns from the table.
+        w.team_tactics_route.click();self.app.processEvents()
+        self.assertEqual((w.team_views.currentIndex(), self.visible_views()), (1, [1]))
+        for widget in (w.captain, w.confirm_plan, w.discard_plan, w.team_roster, *(r for _, r in w.tactics)):
+            self.assertTrue(widget.isVisible(), widget.objectName())
+        self.assertFalse(w.team_card.isVisible())
+        QTest.keyClick(QApplication.focusWidget(), Qt.Key.Key_Escape);self.app.processEvents()
+        self.assertEqual(w.team_views.currentIndex(), 0)
+        self.assertIs(QApplication.focusWidget(), w.team_roster, 'Escape returns with the roster focused')
+        # Escape from the page heading works too.
         w.team_view(1);w.pages[1].heading.setFocus();QTest.keyClick(w.pages[1].heading, Qt.Key.Key_Escape)
         self.assertEqual(w.team_views.currentIndex(), 0)
-        w.team_view(2);w.table_back.click();self.assertEqual(w.team_views.currentIndex(), 0)
         w.team_pool.click();self.assertEqual(w.page_stack.currentIndex(), 2)
         self.assertEqual(self.state(), before)
 
