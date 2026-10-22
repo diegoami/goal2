@@ -171,6 +171,8 @@ def main():
                 deadline = time.monotonic() + 600
                 while w.watched.busy and time.monotonic() < deadline:
                     app.processEvents()
+                    # [designed: T102] The bench opens at each decision; Esc with nothing chosen plays on.
+                    if w.bench.decision is not None:w.bench.escape()
                     if w.watched.busy:
                         locked()
                         assert m.state == before and save.read_bytes() == saved

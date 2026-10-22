@@ -259,6 +259,36 @@ class EngineCases(unittest.TestCase):
         self.assertEqual(job.model.state.starting_eleven, job.before.starting_eleven)
 
 
+@requires.need(**requires.WATCHED)
+class CancelWhileWaiting(unittest.TestCase):
+    def test_a_worker_waiting_for_the_bench_is_cancelled_within_the_contract(self):
+        """[designed: #254, #311] A worker blocked on a bench answer still ends by cancel_and_reap."""
+        import sys
+        from goal2.engine.original_match import Fixture
+        from goal2.game.watched_jobs import WatchedJobs
+        from goal2.tests import test_watched_adapter as adapter
+        from goal2.tests.test_watched_jobs import CONTROLLED
+        from goal2.tests.test_watched_publication import Owner
+        adapter.WatchedAdapter.setUpClass();self.raw = adapter.WatchedAdapter.raw
+        owner = Owner(adapter.WatchedAdapter.state(self), self.raw)
+        before = copy.deepcopy(owner.state)
+        jobs = WatchedJobs(owner, command=[sys.executable, '-c', CONTROLLED, 'blocked'])
+        try:
+            token = jobs.start(Fixture(7, 19, 21), bench=True)
+            deadline = time.monotonic() + 60
+            while jobs.waiting is None:
+                self.assertLess(time.monotonic(), deadline, 'the bench decision never arrived')
+                jobs.poll(token);time.sleep(.01)
+            process = jobs.process;time.sleep(.5)
+            self.assertIsNone(process.poll(), 'the worker should be waiting for the answer')
+            started = time.monotonic();jobs.cancel_and_reap(token)
+            self.assertLess(time.monotonic() - started, 2)
+            self.assertIsNotNone(process.poll());self.assertFalse(jobs.busy)
+            self.assertEqual(owner.state, before)
+        finally:
+            jobs.close()
+
+
 class StubWatched:
     """The window's watched controller, reduced to the bench's channel."""
     def __init__(self, decision):
