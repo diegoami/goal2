@@ -124,6 +124,9 @@ class Job:
         if not jobs.busy:
             return False
         jobs.poll_frames(token)
+        if not jobs.busy:
+            # The last poll published the match and released the job's folder.
+            return False
         self.count_written()
         self.worst = max(self.worst, self.written - 1 - self.ack)
         received = jobs._frame_sequence - 1
