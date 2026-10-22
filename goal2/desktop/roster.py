@@ -103,7 +103,11 @@ class RosterView(QWidget):
 
     def mousePressEvent(self, event):
         self.setFocus(Qt.FocusReason.MouseFocusReason)
-        self.set_current(self.row_at(event.position().y()))
+        row = self.row_at(event.position().y())
+        # [designed: T99] A click on the current row reports it again, so a listener that has no
+        # selection yet (the hidden table) follows the strip.
+        if row >= 0 and row == self.current:self.current_changed.emit(row)
+        else:self.set_current(row)
 
     def mouseDoubleClickEvent(self, event):
         row = self.row_at(event.position().y())

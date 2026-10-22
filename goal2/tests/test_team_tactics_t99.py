@@ -160,6 +160,10 @@ class TeamTactics(unittest.TestCase):
         target = strip.order[15];QTest.mouseClick(strip, Qt.MouseButton.LeftButton, pos=strip.row_rect(target).center())
         self.assertEqual((strip.current, w.table.currentRow()), (target, target))
         self.assertEqual(w.team_card.card['id'], squad[target])
+        # A click on the current row selects it again for a table that lost its selection.
+        w.table.setCurrentCell(-1, -1);self.assertEqual(strip.current, 0)
+        QTest.mouseClick(strip, Qt.MouseButton.LeftButton, pos=strip.row_rect(0).center())
+        self.assertEqual(w.table.currentRow(), 0)
         # While a match runs the strip cannot change the XI (the hidden table is disabled).
         selected = w.selected_ids();w.set_busy(True);strip.setFocus()
         QTest.keyClick(strip, Qt.Key.Key_Space);self.assertEqual(w.selected_ids(), selected)
