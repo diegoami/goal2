@@ -53,7 +53,23 @@ guest refusal/no-progress, unexpected exit, malformed/truncated IPC and stale
 ownership. The worker uses the caller's Python interpreter; install the optional
 runtime using the instructions in [watched kit acceptance](watched-kit-acceptance.md).
 Diagnostic seed/delay/draw-recording options are explicit `start` keyword arguments.
-Stage-1 workers accept friendly fixtures only and expose no in-play controls.
+Stage-1 workers accept friendly fixtures only; without `bench=True` they expose no in-play controls.
+
+[designed: T102] `start(..., bench=True)` gives the job to a watching player. A second private
+journal, `commands`, in the same mode-0700 folder, is written only by the parent and read only by
+the child, with the events journal's rules (length-prefixed JSON, the job's token, a strict
+sequence, at most 4 KiB a record and 2 MiB in all). At a `half_time`, `pause` or `substitution`
+decision the child sends the event and waits; `waiting` holds it and `answer(token, pairs)` sends
+the (off, on) pairs (none plays on). The child passes them to `Match.answer` as they are; whether a
+pair is legal is the original's. After an answer with pairs the child sends an `answered` record,
+not an event of the match, with what the original `made`, `requested` (at a pause, for the next
+stoppage) and `refused` (with the reason; with no substitutions left the original's "no more
+substitutes"), and the engine's `substitutions_left`; `reports` collects them. `pause(token)` is
+the player's Enter in play (`Match.pause`). With pitch samples, each `ack_frames` is forwarded, and
+the child writes sample k only once sample k − `LEAD` (64) is acknowledged. A child waiting for an
+answer or an acknowledgement is cancelled like any other (#254). `extra_time` and `shootout_order`
+keep their default answers; without `bench`, and for `run_watched_match`, every decision plays on.
+Acceptance: `python3 -m unittest goal2.tests.test_watched_bench_t102 -v`.
 
 [designed] Acceptance is `python3 -m unittest goal2.tests.test_watched_jobs -v`.
 The suite compares real seeds 257 and 70 for countries7/19, fixture21/year0,

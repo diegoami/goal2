@@ -114,9 +114,10 @@ class WatchedController:
 
     def start(self, *, frames=True, playback_rate=PLAYBACK_RATE, **options):
         # [designed] No wall-clock delay; record the accepted original RNG transcript.
-        # [designed: T102] The watching player has the bench: decisions wait for the answer and the
-        # engine is paced to the pitch view.
-        options = {'delay_byte':0, 'record_draws':True, 'bench':True, **options}
+        # [designed: T102] On the pitch the watching player has the bench: decisions wait for the
+        # answer and the engine is paced to the view. The text-only presentation (frames=False,
+        # kept for compatibility checks) plays on as before.
+        options = {'delay_byte':0, 'record_draws':True, 'bench':frames, **options}
         if type(frames) is not bool:
             raise ValueError('frames must be boolean')
         if getattr(self.model, 'match_pending', False):
