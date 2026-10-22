@@ -300,7 +300,7 @@ class Core:
 
         `title_key`: a key the player presses while the title's tune plays (a 'title-tune' poll, screens.py): the tune
         ends at the first poll and the title's read takes the key, so boot returns the wait after the title. [designed:
-        T106] The desktop boots so (the tune is about 70 s under Unicorn). [derived: measured by
+        T106] The desktop boots so (the tune is about a minute under Unicorn). [derived: measured by
         goal2/tests/test_core_new_game_t106.py] Its new game then differs from one after the whole tune only in the
         tune's own counters, DS:7966 and DS:7968."""
         _need_unicorn()

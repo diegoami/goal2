@@ -14,6 +14,7 @@ byte-for-byte new game, the module's one real case in the default run (about a s
 import hashlib
 import json
 import os
+import re
 import subprocess
 import tempfile
 import unittest
@@ -153,7 +154,7 @@ class Steps(unittest.TestCase):
                    "manager-menu")
         for wait, step, screen in zip(waits, STEPS, screens):
             state = cache(E038.format(step))
-            theirs = Core.start(state, goal_dat=requires.CACHE / "GOAL.DAT").wait
+            theirs = Core.start(state, goal_dat=requires.CACHE / "GOAL.DAT")
             self.assertEqual(wait.kind, theirs.kind, step)                      # the kind of E038's state
             self.assertEqual(wait.site, theirs.site, step)
             self.assertEqual(wait.text, decode_text(text_page(state)), step)    # the text oracle: DOSBox-X's screen
@@ -187,10 +188,10 @@ class Steps(unittest.TestCase):
         self.assertEqual(views.desk(driver.wait.state)["manager"], "B Ob")
         # The browser: its list in the screen's right column, the browsed country's card in its panel.
         from goal2.core import Core
-        wait = Core.start(cache(E038.format("country-select")), goal_dat=requires.CACHE / "GOAL.DAT").wait
+        wait = Core.start(cache(E038.format("country-select")), goal_dat=requires.CACHE / "GOAL.DAT")
         browse = views.country_select(wait.state)
         self.assertEqual(sorted(c["country"] for c in browse["countries"]), list(range(1, 129)))
-        column = [row[65:80].rstrip("-") for row in wait.text.splitlines()[7:23]]
+        column = [re.search(r"│([^│]+?)-*│$", row).group(1) for row in wait.text.splitlines()[7:23]]
         self.assertEqual(column, [c["name"] for c in browse["countries"][:16]])
         self.assertEqual((browse["country"], wait.view["country"]), (DENMARK, DENMARK))
         self.assertEqual((browse["start_year"], browse["stage"]), (2028, 2))       # E038 at DOS 2026 (F033)
@@ -264,7 +265,7 @@ class Refusals(unittest.TestCase):
 
 @requires.need(**NEEDS, slow=True)
 class StartYear(unittest.TestCase):
-    """E039's two dates from the date call, each through the whole title tune (about 70 s each under Unicorn)."""
+    """E039's two dates from the date call, each through the whole title tune (about a minute each under Unicorn)."""
 
     @classmethod
     def setUpClass(cls):
@@ -311,6 +312,8 @@ class StartYear(unittest.TestCase):
                          title_key="n")
         self.assertEqual(wait.kind, "title-player-count")
         self.assertEqual([(p.kind, p.polls, p.keys) for p in wait.passed], [("title-tune", 1, (ord("n"),))])
+        wait = wait.core.press(ENTER)                 # one manager: 1771:9B85 has set the game record (E039's records)
+        self.assertEqual(wait.kind, "country-select")
         self.assertEqual((game_word(wait.core, 0x3A), game_word(wait.core, 0x3C, 1)), (1990, 5))
         # The desktop's boot (N pressed during the tune) against the whole tune at the same date and time.
         quick = Driver(Core.boot(cache(DATE_CALL), E039["E039-r0001"][0], dos_time=E038_TIME,
@@ -344,12 +347,14 @@ class Desktop(unittest.TestCase):
         from goal2.desktop.launch import LaunchWindow
         app, found, out = self.app, [], {}
 
-        def fits(window, what):
+        def fits(window, what, margin=True):
             for size in SIZES:
                 window.resize(*size);app.processEvents()
                 found.extend(f"{what} at {size}: {p}" for p in problems(window))
                 page = window.pages.currentWidget();need = page.minimumSizeHint()
-                if need.width() > 0.9 * page.width() or need.height() > 0.9 * page.height():
+                # [designed: T105's margin] the new pages ask for at most 90 % of their room; the browser is the
+                # Python route's page (T89, T101) with the core's data, checked by problems() as it always was.
+                if margin and (need.width() > 0.9 * page.width() or need.height() > 0.9 * page.height()):
                     found.append(f"{what} at {size}: needs {need.width()}x{need.height()} of {page.width()}x"
                                  f"{page.height()}, more than 90 %")
 
@@ -361,7 +366,7 @@ class Desktop(unittest.TestCase):
                 row = out["list"].index(20)                                # Holland
                 launch.country_list.setCurrentRow(row);launch.preview();app.processEvents()
                 out["card"] = launch.country_card.card["name"]
-                fits(launch, "browse")
+                fits(launch, "browse", margin=False)
                 launch.review();app.processEvents()
                 out["campaign"] = launch.review_fields["campaign"].text()
                 fits(launch, "review")

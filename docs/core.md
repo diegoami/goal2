@@ -196,7 +196,7 @@ driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arro
   chooses the start year by the date the core answers, as a player setting the PC clock would; the date is an
   input to the interrupt, never written into memory, and kept in the core save. DOS answers 1980–2099 only.
   Between the date call and the title's read the original makes no other interrupt: 333 polls of the title's tune
-  (`title-tune`, answered "no key", about 70 s under Unicorn) and speaker port I/O, which Unicorn drops (an OUT) or
+  (`title-tune`, answered "no key", about a minute under Unicorn) and speaker port I/O, which Unicorn drops (an OUT) or
   reads as 0 (an IN), as E039's trace answered them.
 - **The interrupts served** [confirmed: F032, E038-r0001, NG-7, NG-8]: from the title's read to the first manager
   menu, GOAL.DAT's open, ten reads and close (INT 21h 3Dh/3Fh/3Eh) through Turbo Pascal's `MsDos` 235C:0000 and
@@ -256,6 +256,6 @@ screen are slow tests: they run with `GOAL2_SLOW=1` (the screen tours play a who
 eleven minutes; the captain prompt's two cases about three), and the pre-merge gate runs them whenever `goal2/core/`
 or either module changes (`SLOW_PATHS`, docs/process.md). The default run keeps one real case of each module.
 `goal2.tests.test_core_new_game_t106` (T106) keeps E038's byte-for-byte new game (about a second) in the default
-run; its slow cases boot E039's two dates through the whole title tune (about 70 s each) and drive Launch's new
+run; its slow cases boot E039's two dates through the whole title tune (about a minute each) and drive Launch's new
 career to the main window. `goal2.tests.test_core_desktop_t105` (T105) is guarded the same way, with `goal2/desktop/core_*`; its default run
 keeps the E006 text oracle, and its slow cases play E010-r0001's second half (about 20 s) and open the window.
