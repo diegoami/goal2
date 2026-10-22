@@ -288,11 +288,13 @@ class Unknown(unittest.TestCase):
         from goal2.core.screens import SITES
         core = Core.start(savestate(TEMPLATE)).core
         core.press(ESC)
-        for _ in range(3):
-            core.press(DOWN)                                 # the menu's "history"
-        self.assertEqual(core.wait.view["label"], "history")
+        for _ in range(2):
+            core.press(DOWN)                                 # the menu's "tournament"
+        self.assertEqual(core.press(ENTER).kind, "tournament")
+        # [T105] the history is mapped now; the tournament's championship display (Left, 1771:9509, reading at
+        # 1771:9567) is not.
         with self.assertRaises(UnknownScreen) as caught:
-            core.press(ENTER)
+            core.press(LEFT)
         e = caught.exception
         self.assertRegex(e.site, r"^[0-9A-F]{4}:[0-9A-F]{4}$")
         self.assertNotIn(e.site, SITES)
