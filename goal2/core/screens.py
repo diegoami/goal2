@@ -83,6 +83,14 @@ KINDS = {k.name: k for k in (
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
     Kind("match-summary-save-prompt", _YES_NO, polled=True, evidence=_CAT),
+    # the new game (T106): [confirmed: catalogue.tsv's screen rows, E015-r0001 state 2, E015-r0004 state 2,
+    # E015-r0007 states 3 and 10]
+    Kind("title-load-prompt", _YES_NO, evidence=_CAT),
+    Kind("title-player-count", keys(("←→", "Left Right"), ("◄┘", "Return")), evidence=_CAT),
+    Kind("country-select", keys(("INS", "Insert"), ("spacebar", "space"), ("←→↑↓", "Left Right Up Down"),
+                                ("◄┘", "Return")), evidence=_CAT),
+    Kind("country-select-name-entry", keys(("Esc", "Escape"), ("characters", "(typed)"), ("◄┘", "Return")),
+         polled=True, evidence=_CAT + "; polled: F032 (poll 214B:0DB9, read 214B:112B)"),
     # -- [designed] goal2 kinds for screens no kinds.tsv rule names; keys from the hints they print (docs/core.md)
     Kind("team-info", keys(("←→↑↓", "Left Right Up Down"), ("◄┘", "Return"), ("Esc", "Escape"), ("INS", "Insert"),
                            ("spacebar", "space"), ("T", "t")), designed=True,
@@ -107,6 +115,9 @@ KINDS = {k.name: k for k in (
          evidence="[designed] 'Do you want an action replay? (Y/N)' (0791:0B7C asked by 0C65 at 0C87)"),
     Kind("substitution-notice", keys(("any key", "(any)")), designed=True, polled=True,
          evidence="[designed] the computer side's substitution: 'SUBSTITUTION ... press any key' (0791:C50C)"),
+    Kind("title-tune", _YES_NO, designed=True, polled=True,
+         evidence="[designed] the title's tune under the load question (1771:06F3): it ends at a key, which the "
+                  "title's read then takes; its keys are the question's"),
 )}
 DESIGNED = tuple(k for k, v in KINDS.items() if v.designed)
 
@@ -170,6 +181,8 @@ SELECT_CURSOR = 0x0C1B        # 0791:E44F: the squad cursor 1..20 (word), u214b_
 SUBS_ALLOWED, SUMMARY_FILE = 0x9B41, 0x066D   # 0791:E44F: 9B41 set, substitutions now (E2A0); 066D clear
 MANAGER_NAMES = ("team info", "fixture list", "tournament", "history", "select squad", "play next game")
 MATCH_MENU_ITEMS = ("team tactics", "players", "tournament", "match stats", "play")   # ED8A per side (kit screens.py)
+PLAYER_COUNT = 0x0C4E         # manager_count_menu 1771:0021: the highlighted count 1..6, u214b_menu_move_word_wrap(6, 0xC4E)
+GAME = 0xA923                 # the game record (globals.tsv): +1 the current manager (set_managed_countries 1771:2D15)
 
 
 def is_managed(f, country):
@@ -194,16 +207,50 @@ def _team_info(f):
     # 1771:26B9 country_list_screen(mode) [bp+6]; local_3 [bp-1] set: the players view (seg_1771_04.asm 26CB).
     # Mode 1 is the main menu's team info (000E:767D); mode 3 the history's browser (main_menu_loop item 4,
     # named/seg_000E_05.c `country_list_screen(3)`; it first shows the manager's country's history, 1771:1D5C);
-    # mode 2, the new game's PLEASE SELECT YOUR COUNTRY (DS:14F4), is not reached by the core (docs/core.md) and has
-    # no entry.
+    # mode 2 is the new game's PLEASE SELECT YOUR COUNTRY (DS:14F4), called by set_managed_countries 1771:2D15 for
+    # each manager (push cs; call, returning to 1771:2D55: E038-r0001's country-select state, F032).
     if f.byte(f.bp, -1) != 0:
         return None
-    return {1: "team-info", 3: "history-browse"}.get(f.byte(f.bp, 6))
+    mode = f.byte(f.bp, 6)
+    if mode == 2:
+        return "country-select" if f.far_caller(f.bp) == "1771:2D55" else None
+    return {1: "team-info", 3: "history-browse"}.get(mode)
 
 
 def _team_info_view(f):
+    # [confirmed: named/seg_1771_02.c 26B9] Up and Down move the row DS:0DB6 (1..16) within a column of 16, crossing
+    # to the next or previous column at its ends; Left and Right move the column's first index DS:0DB4 (1, 17, ...,
+    # 113) by 16; the country is the order's byte DS:0DB4 + DS:0DB6 - 1.
     row, top = f.ds_byte(BROWSE_ROW), f.ds_word(BROWSE_TOP)
-    return {"country": f.far_byte(COUNTRY_ORDER, row + top - 1), "row": row}
+    out = {"country": f.far_byte(COUNTRY_ORDER, row + top - 1), "row": row}
+    if f.byte(f.bp, 6) == 2:
+        out.update(top=top, index=top + row - 1, manager=f.far_byte(GAME, 1))
+    return out
+
+
+def _title_tune(f):
+    # [confirmed: named/seg_1771_01.c 080C, 07B4, 06F3] The title (1771:080C) draws the load question, then plays its
+    # tune (07B4 near-calls 06F3 at 07B8), which polls "key pressed?" before each note (returns 0723 and 0782) and
+    # returns at a key; 080C near-calls 07B4 at 0857 and then reads the key (1771:085F). E039's traces: 216 + 117
+    # polls when no key comes.
+    return "title-tune" if f.near_caller(f.bp) == 0x07BB and f.near_caller(f.up(f.bp)) == 0x085A else None
+
+
+def _name_entry(f, bp):
+    # [confirmed: F032 (E038-r0001's trace); seg_214B_02.asm 1086, 1124, 1128; named/seg_1771_01.c 09A0,
+    # seg_1771_02.c 2D15] The manager's name is edited by the line editor 214B:1086 (u214b_edit_string_input),
+    # far-called by 1771:09A0 at 0A1D, which set_managed_countries 1771:2D15 calls after the country is chosen
+    # (push cs; call, returning to 1771:2E05). The editor near-calls its cursor wait 214B:0D90 at 1124, which polls
+    # (return 0DB9), and reads at 1128 (return 112B). `bp` is the editor's frame.
+    return ("country-select-name-entry" if f.far_caller(bp) == "1771:0A22" and f.far_caller(f.up(bp)) == "1771:2E05"
+            else None)
+
+
+def _bulletin(f):
+    # 000E:05F6, the news pages' key wait, near-called by: post_match_news_and_sack 4E0E at 4F6F; welcome_new_manager
+    # 000E:68A4 at 6961 ("APPOINT A NEW MANAGER", F032's first bulletin); announce_stage_to_manager 000E:60CB at 6622
+    # ("GROUPS ARE ANNOUNCED", the second) [confirmed: named/seg_000E_04.c, seg_000E_05.c; E038-r0001's trace].
+    return "bulletin" if f.near_caller(f.bp) in (0x4F72, 0x6964, 0x6625) else None
 
 
 def _fixture(f):
@@ -340,8 +387,17 @@ SITES = {s.site: s for s in (
     Site("214B:157C", False, "214B:1560 menu reader", "T100; " + _ROUTES, _menu_reader, _menu_view),
     Site("0791:041A", False, "0791:0106 draw_match_summary", "T100; " + _ROUTES, _board),
     Site("0791:E61F", False, "0791:E44F select_team_screen", _ROUTES, _select_team, _select_view),
-    Site("000E:0629", False, "000E:05F6, the news pages' key wait", _ROUTES,
-         lambda f: "bulletin" if f.near_caller(f.bp) == 0x4F72 else None),   # post_match_news_and_sack 4E0E at 4F6F
+    Site("000E:0629", False, "000E:05F6, the news pages' key wait", _ROUTES + "; E038-r0001's after-name states",
+         _bulletin),
+    # -- the new game's reads (T106) [confirmed: F032, E038-r0001: each state's 08DD frame and callers] ----------------
+    Site("1771:085F", False, "1771:080C (the title), far-called by the main program at 0000:0024",
+         "E038-r0001's title-keywait state; E039's records", lambda f: "title-load-prompt"
+         if f.far_caller(f.bp) == "0000:0029" else None),
+    Site("1771:0081", False, "1771:0021 manager_count_menu, near-called by 1771:080C at 08A5",
+         "E038-r0001's title-player-count state", lambda f: "title-player-count" if f.near_caller(f.bp) == 0x08A8
+         else None, lambda f: {"managers": f.ds_byte(PLAYER_COUNT)}),
+    Site("214B:112B", False, "214B:1086 the line editor (reads after its cursor wait's poll says a key waits)",
+         "F032; E038-r0001's trace", lambda f: _name_entry(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
     Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live"),
     Site("0791:CC54", True, "0791:CC2E wait_or_key", "T100 (F030); " + _ROUTES, _wait_or_key),
@@ -351,6 +407,13 @@ SITES = {s.site: s for s in (
          lambda f: _ask(f.near_caller(f.bp))),
     Site("0791:C5C8", True, "0791:C50C show_computer_substitution_notice (C5C3; reads at C5CC)", _ROUTES,
          lambda f: "substitution-notice"),
+    Site("1771:0723", True, "1771:06F3, the title's tune (before each note)", "E039's traces (NG-10)", _title_tune),
+    Site("1771:0782", True, "1771:06F3, the title's tune (the second run of notes)", "E039's traces (NG-10)",
+         _title_tune),
+    # the cursor wait 214B:0D90, near-called by the editor at 1124, polls at 0DB9 (F032); the editor's frame is [bp].
+    Site("214B:0DB9", True, "214B:0D90, the line editor 214B:1086's cursor wait (1124; reads at 112B)",
+         "F032; E038-r0001's trace", lambda f: _name_entry(f, f.up(f.bp)) if f.near_caller(f.bp) == 0x1127
+         else None),
 )}
 
 

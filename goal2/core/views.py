@@ -21,6 +21,7 @@ named/seg_*.c; the vendored kit's `Image`, PROVENANCE.md). [confirmed] cites the
 from __future__ import annotations
 
 from goal2.engine.original_match.image import Image
+from goal2.core.runner import CP437_LOW
 
 # [confirmed: globals.tsv; image.py] the far pointers
 COUNTRIES, COUNTRY_SIZE, MANAGERS, GAME, FIXTURES, FIXTURE_LISTS, GROUP_TABLES = (
@@ -343,3 +344,87 @@ def history(state, country=None):
     return {"country": country, "name": mem.country_name(country), "successes": successes, "results": results,
             "records": records, "statistics": statistics, "top_scorers": _top(mem, country, True),
             "top_caps": _top(mem, country, False)}
+
+
+# -- the new game (T106) ---------------------------------------------------------------------------------------------
+# [confirmed: named/seg_1771_02.c 1771:26B9 country_list_screen; screens.py BROWSE_TOP, BROWSE_ROW, COUNTRY_ORDER] The
+# browser lists the countries in the order DS:9B56 (a far pointer to DS:9C7E or DS:9BFD, by the game record's +0x40
+# or INS), columns of 16 from DS:0DB4, the row DS:0DB6.
+COUNTRY_ORDER, BROWSE_TOP, BROWSE_ROW = 0x9B56, 0x0DB4, 0x0DB6
+# [confirmed: goal2/game/country_card.py tactic_word (F008)] the tactic words, and the card's two groups
+TACTIC_WORDS, MARKING_WORDS = 0x6AA0, 0x0E90
+TEAM_TACTICS = (("defence system", 5), ("protection", 6), ("offside", 7))
+PLAYER_DEFAULTS = (("positioning", 1), ("possession", 2), ("passing", 3), ("tackling", 4), ("marking", 8))
+
+
+def country_select(state):
+    """The country browser of a new game (1771:26B9 mode 2, PLEASE SELECT YOUR COUNTRY): the 128 countries in the
+    order it lists them, each with its name and rankings (000E:715E's fields), and the browsed one (the order's byte
+    DS:0DB4 + DS:0DB6 - 1), the manager choosing (+1) and the start year and stage the title's new game set
+    (1771:9B85: +0x3A, +0x3C) [confirmed: NG-9]."""
+    mem = Memory(state)
+    order = mem.far(COUNTRY_ORDER)
+    top, row = mem.ds_word(BROWSE_TOP), mem.ds_byte(BROWSE_ROW)
+    countries = [_rankings(mem, mem.byte(order + i)) for i in range(1, 129)]     # the order's bytes 1..128
+    return {"countries": countries, "index": top + row - 1, "top": top, "row": row,
+            "country": countries[top + row - 2]["country"], "manager": mem.game(1),
+            "start_year": mem.game(0x3A, 2), "stage": mem.game(0x3C)}
+
+
+def country_card(state, country):
+    """A country as the new game's browser shows it (draw_team_panel, 1771:26B9), in the shape of the Python route's
+    card (goal2/game/country_card.py) so the desktop's card paints it: the name, the manager (1771:0947 of the
+    country's +0x2E, as the browser's F3 edits it), the world rank +0x2B, the continent's name (DS:6E92) and the rank
+    within it +0x2A, the formation (the eleven's lines, DS:0D5C), the eleven's codes (DS:69A8) and the tactic words
+    of the country's tactics byte +0x2D. [designed] The fields no finding decodes stay as the Python route names
+    them (country_card.UNDECODED)."""
+    from goal2.game.country_card import UNDECODED
+    mem = Memory(state)
+    if not 1 <= country <= 128:
+        raise ValueError("country must be 1..128")
+    rank = _rankings(mem, country)
+    team = squad(mem, country)
+    eleven = team[:11]
+    formation = "-".join(str(sum(1 for p in eleven if p["line"] == line)) for line in LINES[1:])
+    tactics = mem.country(country, 0x2D)
+
+    def word(element):
+        bit = tactics >> (element - 1) & 1
+        if element == 8:
+            return mem.pstr(mem.ds * 16 + MARKING_WORDS + 11 * bit, 10)
+        return mem.pstr(mem.ds * 16 + TACTIC_WORDS + 32 * element + 16 * bit, 15)
+    return {"country": country, "name": rank["name"], "manager": mem.manager_name(mem.country(country, 0x2E)),
+            "world": rank["world_rank"], "continent": rank["continent"], "continental": rank["continent_rank"],
+            "formation": formation, "eleven": [p["code"] for p in eleven],
+            "team_tactics": [(n, word(e)) for n, e in TEAM_TACTICS],
+            "player_defaults": [(n, word(e)) for n, e in PLAYER_DEFAULTS],
+            "players": [p["player"] for p in team], "squad": team, "not_decoded": UNDECODED}
+
+
+# [confirmed: named/seg_000E_01.c 000E:070B, 062F, 075F, 05F6] A bulletin is composed in the page buffer [DS:A96E]
+# (000E:038E unpacks its template) and moved to the screen by 000E:05F6 before its key read: 070B writes line n of
+# the middle story at column 0x1F, row n + 8 (20 characters, centred and upper-cased), 062F the left story at column 5
+# and 075F the right at column 0x3B, rows 0x0B..0x0D (18 characters). The animation 000E:0572 draws on the screen
+# only, so the buffer holds the page as composed.
+PAGE_BUFFER = 0xA96E
+# [derived: the writers' columns and rows above, 1-based; E038-r0001's bulletins] each story's masthead row and box:
+# (masthead row, first row, last row, first column, last column), 0-based, the box's inside.
+BULLETIN_PANELS = {"left": (8, 10, 18, 3, 22), "middle": (6, 8, 20, 29, 50), "right": (8, 10, 18, 57, 76)}
+FILLER = set("≡░ ")                   # [derived: the template's text lines] the page's filler glyphs, words of no story
+
+
+def bulletin(state):
+    """THE SOCCER BULLETIN as its writers composed it in the page buffer: each story's masthead and its lines, top
+    to bottom, without the template's filler (rows made of ≡ and ░ only)."""
+    mem = Memory(state)
+    base = mem.far(PAGE_BUFFER)
+
+    def cells(row, a, b):
+        raw = bytes(mem.mem[base + 160 * row + 2 * a:base + 160 * row + 2 * b + 2:2])
+        return "".join(" " if c == 0 else CP437_LOW[c - 1] if c < 32 else bytes([c]).decode("cp437")
+                       for c in raw).strip()
+    out = {}
+    for name, (head, first, last, a, b) in BULLETIN_PANELS.items():
+        lines = [cells(r, a, b) for r in range(first, last + 1)]
+        out[name] = {"masthead": cells(head, a, b), "lines": [t for t in lines if t and not set(t) <= FILLER]}
+    return out
