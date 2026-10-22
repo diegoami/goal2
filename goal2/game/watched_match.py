@@ -180,6 +180,9 @@ NO_MORE_SUBSTITUTES = 'no more substitutes'
 # [confirmed: the kit's Match._close_plan and _flush] The events one menu visit ends with; the first
 # other event (a tick, a decision, commentary) means the original plays on.
 MENU_OUTCOMES = ('substitution', 'refused', 'substitution_requested', 'tactics', 'position', 'player_tactics')
+# [designed: T102] The reason of an inferred refusal (_report) with substitutions still left: the
+# original showed nothing goal2 can quote.
+NOT_MADE = 'not made by the original'
 
 
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
@@ -190,9 +193,13 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     without one every decision keeps the play-on default. It has three methods:
     `decide(event)` returns the (off, on) pairs to answer (empty plays on); `pause_now(sequence)`,
     asked after each observed pitch sample, returns True for the original's Enter in play
-    (Match.pause); `answered(report)` receives what the engine made of each answer with pairs
+    (Match.pause), and `pause_dropped(sequence)` hears when the original could not take that Enter
+    (#316); `answered(report)` receives what the engine made of each answer with pairs
     (`made`, `refused` with the reason, `requested` at a pause, and the engine's
     `substitutions_left`) once the original plays on. Answering is the only way it touches the match.
+    [confirmed: the kit's Match._on_notice] An empty answer at a `substitution` stoppage that carries
+    `requested` pairs still makes them (the default is what was asked for); its report has those
+    pairs as `asked`, as if they had been answered (#316).
     """
     if reference_seed is not None:
         _integer(reference_seed,0,65535,'reference seed')
@@ -214,8 +221,8 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
             from goal2.game.watched_pitch import snapshot
             _observe_pitch(snapshot(match, ev, frame_sequence, len(events)))
             frame_sequence += 1
-            if policy is not None and policy.pause_now(frame_sequence - 1):
-                _pause(match)
+            if policy is not None and policy.pause_now(frame_sequence - 1) and not _pause(match):
+                policy.pause_dropped(frame_sequence - 1)
             continue
         events.append(copy.deepcopy(ev))
         if _observe is not None:
@@ -236,10 +243,14 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
                 pairs = [[int(off), int(on)] for off, on in policy.decide(copy.deepcopy(ev))]
                 if pairs:
                     match.answer(substitutions=pairs)
-                    report = {'context': ev.data['context'], 'asked': pairs, 'made': [], 'reasons': {},
-                              'requested': []}
                 else:
                     match.answer()
+                    if ev.data['context'] == 'substitution':
+                        # The engine's default makes the requested pairs; they are reported as asked.
+                        pairs = [[int(off), int(on)] for off, on in ev.data.get('requested') or []]
+                if pairs:
+                    report = {'context': ev.data['context'], 'asked': pairs, 'made': [], 'reasons': {},
+                              'requested': []}
                 previous_decision = None
                 continue
             identity = (ev.minute,ev.data)
@@ -260,18 +271,25 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
 
 def _pause(match):
     """[designed: T102] The original's Enter in play; asked when the match has no poll left (the
-    final whistle, a waiting decision) it is dropped, as a key pressed then would be."""
+    final whistle, a waiting decision, the kit's shoot-out) it is dropped, as a key pressed then
+    would be. Returns whether it was taken [designed: #316]."""
     from goal2.engine.original_match.match import MatchError
     try:
         match.pause()
     except MatchError:
-        pass
+        return False
+    return True
 
 
 def _report(match, report):
-    """[designed: T102] What the engine made of one answer. A pair asked and neither made nor
-    requested is refused: with the kit's reason when it gave one, else, with no substitutions
-    left, the original's panel [confirmed: F027 E544; E015-r0013 state 790].
+    """[designed: T102] What the engine made of one answer.
+    [derived: the kit emits a `substitution` event for each swap made and a `refused` event for a
+    job it gives up with a reason; at 0 substitutions left its plan presses no Enter for the swap
+    (goal2/engine/original_match/screens.py), so neither event comes] A pair asked and neither
+    made nor requested is inferred refused:
+    with the kit's reason when it gave one, else, with no substitutions left, the original's
+    panel, whose words are [confirmed: F027 E544; E015-r0013 state 790], else the fallback
+    [designed: T102] 'not made by the original'.
     [confirmed: the kit's Match._decide reads the counter at DS:9B3A + side (screens.SUBS_LEFT)]
     The counter is the engine's, read and never written."""
     from goal2.engine.original_match import screens
@@ -282,6 +300,6 @@ def _report(match, report):
         if (off, on) in done:
             continue
         reason = report['reasons'].get((off, on))
-        refused.append([off, on, reason or (NO_MORE_SUBSTITUTES if left == 0 else 'not made by the original')])
+        refused.append([off, on, reason or (NO_MORE_SUBSTITUTES if left == 0 else NOT_MADE)])
     return {'context': report['context'], 'asked': report['asked'], 'made': report['made'],
             'requested': report['requested'], 'refused': refused, 'substitutions_left': left}
