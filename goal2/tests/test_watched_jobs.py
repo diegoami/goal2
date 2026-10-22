@@ -12,6 +12,7 @@ import json
 import struct
 import sys
 import time
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -165,6 +166,28 @@ class WatchedJobsTests(unittest.TestCase):
                 self.assertEqual(self.owner.state, self.before)
                 self.jobs.close();self.jobs = None
 
+    def test_cancel_and_reap_and_close_outlast_a_slow_input_encoding(self):
+        """[designed: #311; #254] One cancel during the input encoding times out and keeps the job
+        (#254). cancel_and_reap and close, which must end it, retry until the encoding is done and
+        the job is reaped, as on the loaded Windows runner (encoding slower than 0.5 s)."""
+        from goal2.game import watched_jobs
+        real = watched_jobs.encode
+        def slow(*args, **kwargs):
+            time.sleep(1.5);return real(*args, **kwargs)
+        for end in ('cancel_and_reap', 'close'):
+            with self.subTest(end=end), patch.object(watched_jobs, 'encode', slow):
+                token = self.bridge('blocked')
+                with self.assertRaises(subprocess.TimeoutExpired):
+                    self.jobs.cancel(token)
+                self.assertTrue(self.jobs.busy, 'a single cancel keeps the job owned (#254)')
+                if end == 'cancel_and_reap':
+                    self.jobs.cancel_and_reap(token)
+                else:
+                    self.jobs.close()
+                self.assertFalse(self.jobs.busy);self.assertIsNone(self.jobs._folder)
+                self.assertEqual(self.owner.state, self.before)
+                self.jobs.close();self.jobs = None
+
     def test_killed_worker_and_bounded_shutdown(self):
         token = self.bridge('blocked')
         self.until(token,lambda events:bool(events))
@@ -196,7 +219,7 @@ class WatchedJobsTests(unittest.TestCase):
             self.jobs.poll(old)
         self.assertTrue(self.jobs.busy)
         self.assertEqual(self.jobs.publication._pending[0],new)
-        self.jobs.cancel(new)
+        self.jobs.cancel_and_reap(new)
         self.assertEqual(self.owner.state,replacement)
 
     def test_partial_oversized_wrong_identity_and_order_ipc(self):

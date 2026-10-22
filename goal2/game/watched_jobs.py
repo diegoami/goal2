@@ -26,6 +26,8 @@ from goal2.game.watched_pitch import (MAX_FRAME_BYTES, MAX_FRAME_PACKET, FRAME_R
                                       FRAME_POLL_BUDGET, validate)
 
 MAX_MEMORY = 32 * 1024 * 1024
+# [designed: #311] How long a caller that must end a job keeps cancelling it (cancel_and_reap).
+REAP_DEADLINE = 30
 MAX_PACKET = 8 * 1024 * 1024
 READ_BUDGET = 65536
 
@@ -426,9 +428,22 @@ class WatchedJobs:
                 raise subprocess.TimeoutExpired('watched completion preparation', 1.0)
         self._release()
 
+    def cancel_and_reap(self, token, deadline=REAP_DEADLINE):
+        """[designed: #311; #254] Cancel until the job is reaped. One cancel during the input
+        encoding times out and keeps the job owned (#254); a caller that must end the job retries
+        it until the encoding is done, as on a loaded machine, and raises only past `deadline`."""
+        end = time.monotonic() + deadline
+        while True:
+            try:
+                return self.cancel(token)
+            except subprocess.TimeoutExpired:
+                if time.monotonic() >= end:
+                    raise
+                time.sleep(0.05)
+
     def close(self):
         if self.busy:
-            self.cancel(self.token)
+            self.cancel_and_reap(self.token)
         self.closed = True
         if getattr(self.owner, '_watched_jobs', None) is self:
             del self.owner._watched_jobs

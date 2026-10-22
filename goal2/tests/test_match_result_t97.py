@@ -90,7 +90,9 @@ class Window(unittest.TestCase):
         self.assertFalse(w.result_box.isVisibleTo(w), 'no result before a match finishes')
         w.match_finished();self.app.processEvents()
         self.assertEqual(w.page_stack.currentIndex(), 3);self.assertTrue(w.result_box.isVisible())
-        self.assertIs(self.app.focusWidget(), w.result_continue)
+        # [designed: #311] The window's own focus: with other GUI test windows on the Windows runner,
+        # this one may not be the active window, and then the application has no focus widget.
+        self.assertIs(w.focusWidget(), w.result_continue)
         a, b = [self.model.goaldat.country_names[t] for t in self.model.state.last_match['teams']];s = self.model.state.last_match['score']
         self.assertEqual(w.result_title.text(), f'FULL TIME / {a.upper()} {s[0]} - {s[1]} {b.upper()}')
         self.assertIn('Corners', w.result_panels[1][1].text());self.assertIn('MAN OF THE MATCH: ', w.result_motm.text())
@@ -98,7 +100,7 @@ class Window(unittest.TestCase):
             w.result_round.click();standings.assert_called_once()
         w.result_continue.click();self.app.processEvents()
         self.assertEqual(w.page_stack.currentIndex(), 0);self.assertFalse(w.result_box.isVisibleTo(w))
-        self.assertIs(self.app.focusWidget(), w.desk_routes[0], 'Prepare match is next')
+        self.assertIs(w.focusWidget(), w.desk_routes[0], 'Prepare match is next')
         self.assertEqual(encode(self.model.state, self.model.template_bytes), before, 'reading a result changes nothing')
 
     def test_every_completion_opens_the_result(self):

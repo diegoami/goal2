@@ -45,6 +45,12 @@ class Shell(unittest.TestCase):
         self.assertGreaterEqual(self.window.width(), ManagementWindow.NARROW_SHELL, 'the screen is too small for these tests')
         self.addCleanup(lambda: (self.window.close(), self.window.deleteLater(), self.app.processEvents()))
 
+    def shortcut(self, key, modifier=Qt.KeyboardModifier.NoModifier):
+        """[designed: #311] A window shortcut fires only in the active window, and another GUI test
+        window on the Windows runner can take activation mid-test: activate this one first."""
+        self.window.activateWindow();QTest.qWaitForWindowActive(self.window)
+        QTest.keyClick(self.window, key, modifier);self.app.processEvents()
+
     def purity(self):
         w = self.window
         return (encode(self.model.state, self.model.template_bytes), w.draft(), w.page_stack.currentIndex())
@@ -70,7 +76,7 @@ class Shell(unittest.TestCase):
         self.assertEqual([b.accessibleName() for b in w.navigation], ['Country', 'Team', 'Pool', 'Fixtures & match', 'Save'])
         before = encode(self.model.state, self.model.template_bytes)
         for index in range(5):
-            QTest.keyClick(w, Qt.Key.Key_1 + index, Qt.KeyboardModifier.ControlModifier);self.app.processEvents()
+            self.shortcut(Qt.Key.Key_1 + index, Qt.KeyboardModifier.ControlModifier)
             self.assertEqual(w.page_stack.currentIndex(), index);self.assertTrue(w.navigation[index].isChecked())
         self.assertEqual(encode(self.model.state, self.model.template_bytes), before)
 
@@ -86,11 +92,11 @@ class Shell(unittest.TestCase):
         self.assertFalse(w.top_bar.isVisible());self.assertTrue(w.show_top.isVisible())
         w.show_side.click();self.app.processEvents()
         self.assertTrue(w.side_bar.isVisible());self.assertIs(w.focusWidget(), w.navigation[1], 'focus returns on restore')
-        QTest.keyClick(w, Qt.Key.Key_F11);self.app.processEvents()
+        self.shortcut(Qt.Key.Key_F11)
         self.assertTrue(w.top_bar.isVisible() and w.side_bar.isVisible(), 'F11 restores both when one is hidden')
-        QTest.keyClick(w, Qt.Key.Key_F11);self.app.processEvents()
+        self.shortcut(Qt.Key.Key_F11)
         self.assertFalse(w.top_bar.isVisible() or w.side_bar.isVisible())
-        QTest.keyClick(w, Qt.Key.Key_F11);self.app.processEvents()
+        self.shortcut(Qt.Key.Key_F11)
         self.assertEqual(self.purity(), before)
         self.assertEqual((w.table.currentRow(), w.pages[1].verticalScrollBar().value()), (row, scroll))
 
