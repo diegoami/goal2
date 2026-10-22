@@ -70,10 +70,12 @@ def build(self,model,TACTICS):
     self.pool_cards_route.clicked.connect(lambda:pool_view(self,1));bar.addWidget(self.pool_cards_route)
     self.exchange=QPushButton('Exchange selected squad player and reserve');self.exchange.setObjectName('exchange');bar.addWidget(self.exchange)
     page.set_footer(footer)
-    from PySide6.QtGui import QKeySequence,QShortcut
-    self.pool_escape=QShortcut(QKeySequence('Escape'),page)
-    self.pool_escape.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
-    self.pool_escape.activated.connect(lambda:self.pool_views.currentIndex()!=0 and pool_view(self,0))
+    def escape():
+        if self.pool_views.currentIndex()!=0:
+            pool_view(self,0);return True
+        return False
+    page.escape=escape
+
     self.pool_outgoing.currentIndexChanged.connect(lambda *args:outgoing_changed(self))
     self.table.currentCellChanged.connect(lambda *args:table_changed(self))
     self.reserves.currentCellChanged.connect(lambda *args:selection(self))

@@ -49,10 +49,12 @@ def build(self,model,TACTICS):
     self.fixture_list_back.clicked.connect(lambda:fixtures_view(self,0))
     for button in (self.standings,self.fixture_list_back):routes.addWidget(button)
     routes.addStretch(1);list_box.addStretch(1)
-    from PySide6.QtGui import QKeySequence,QShortcut
-    self.fixtures_escape=QShortcut(QKeySequence('Escape'),page)
-    self.fixtures_escape.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
-    self.fixtures_escape.activated.connect(lambda:self.fixture_views.currentIndex()==3 and fixtures_view(self,0))
+    def escape():
+        if self.fixture_views.currentIndex()==3:
+            fixtures_view(self,0);return True
+        return False
+    page.escape=escape
+
 
 
 def fixtures_view(self,index):

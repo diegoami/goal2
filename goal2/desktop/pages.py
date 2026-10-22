@@ -26,7 +26,7 @@ class ShellPage(QWidget):
         self.heading.setFocusPolicy(Qt.FocusPolicy.StrongFocus);self.heading.setAccessibleName(name)
         self.content.addWidget(self.heading)
         # [designed: T101] The page's views (a QStackedWidget) and the function that shows one.
-        self.views=None
+        self.views=None;self.escape=None
 
     def add_views(self,name,names):
         """[designed: T101] The page's views: a stack holding one widget per name, each with a
@@ -39,6 +39,13 @@ class ShellPage(QWidget):
             box.setContentsMargins(0,0,0,0);box.setSpacing(8);stack.addWidget(widget);boxes.append(box)
         self.views=stack
         return stack,boxes
+
+    def keyPressEvent(self,event):
+        """[designed: T101] Esc, not taken by a control, leaves a view for the page's first one.
+        A key event (not a window shortcut) never takes Esc from a dialog or a drop-down."""
+        if event.key()==Qt.Key.Key_Escape and self.escape is not None and self.escape():
+            event.accept();return
+        super().keyPressEvent(event)
 
     def widget(self):
         """The content panel (the former scroll region's widget)."""

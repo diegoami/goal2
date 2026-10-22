@@ -11,10 +11,8 @@ def reveal(widget):
             window.activateWindow();QApplication.processEvents()
             QTest.keyClick(window,Qt.Key.Key_1+index,Qt.KeyboardModifier.ControlModifier)
             assert window.page_stack.currentIndex()==index,'retained proof could not reveal page'
-            # [designed: T99] A Team-page control lives in one of the page's views; show that view.
-            views=getattr(window,'team_views',None)
-            if views is not None and views.isAncestorOf(widget):
-                window.team_view(next(i for i in range(views.count()) if views.widget(i).isAncestorOf(widget)))
-                assert views.widget(views.currentIndex()).isAncestorOf(widget),'retained proof could not reveal Team view'
-            page.ensureWidgetVisible(widget);QApplication.processEvents()
+            # [designed: T99/T101] A control may live in one of the page's views (a route of the
+            # fixed page); the window shows that view. Nothing scrolls: the control is then visible.
+            window.reveal(widget);QApplication.processEvents()
+            assert widget.isVisible(),'retained proof could not reveal the view holding '+(widget.objectName() or type(widget).__name__)
             return

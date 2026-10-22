@@ -102,10 +102,12 @@ def build(self,model,TACTICS):
     games_box.addWidget(self.new);games_box.addWidget(self.friendly)
     games_back=QPushButton('< Desk (Esc)');games_back.setObjectName('gamesBack');games_back.setAccessibleName('Back to the desk')
     games_back.clicked.connect(lambda:country_view(self,0));games_box.addWidget(games_back);games_box.addStretch(1)
-    from PySide6.QtGui import QKeySequence,QShortcut
-    self.country_escape=QShortcut(QKeySequence('Escape'),page)
-    self.country_escape.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
-    self.country_escape.activated.connect(lambda:self.country_views.currentIndex()!=0 and country_view(self,0))
+    def escape():
+        if self.country_views.currentIndex()!=0:
+            country_view(self,0);return True
+        return False
+    page.escape=escape
+
 
 
 def country_view(self,index):

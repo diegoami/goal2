@@ -94,7 +94,18 @@ def child():
                                      'area': [frame.width(), frame.height()],
                                      'page': list(page.geometry().getRect()),
                                      'scale': getattr(frame, 'scale', None)})
-    # A click and a key at 900x640, through the window: the platform finds the widget at the point.
+    try:
+        report['input'] = given(w, settle)
+    except Exception as exc:  # reported, so the screens' results still arrive
+        report['input'] = {'error': f'{type(exc).__name__}: {exc}'}
+    launch.close();w.close();app.processEvents()
+    print('REPORT ' + json.dumps(report))
+
+
+def given(w, settle):
+    """A click and a key at 900x640, through the window: the platform finds the widget at the point."""
+    from PySide6.QtCore import QPoint, Qt
+    from PySide6.QtTest import QTest
     w.set_bars(top=True, side=True);w.resize(900, 640);w.navigate(1);w.team_view(0)
     w.activateWindow();QTest.qWaitForWindowActive(w);settle()
     strip = w.team_roster;row = 5
@@ -117,10 +128,8 @@ def child():
     popup = combo.view().window().geometry();box = combo.rect().translated(combo.mapToGlobal(QPoint(0, 0)))
     dropped = {'visible': combo.view().isVisible(), 'popup': list(popup.getRect()), 'combo': list(box.getRect())}
     combo.hidePopup();settle()
-    report['input'] = {'scale': w.centralWidget().scale, 'click': clicked, 'key': keyed, 'route': routed,
-                       'space': toggled, 'dropdown': dropped}
-    launch.close();w.close();app.processEvents()
-    print('REPORT ' + json.dumps(report))
+    return {'scale': w.centralWidget().scale, 'click': clicked, 'key': keyed, 'route': routed,
+            'space': toggled, 'dropdown': dropped}
 
 
 def run_child(scale):
@@ -138,7 +147,10 @@ class FixedPage(unittest.TestCase):
 
     @classmethod
     def report(cls, scale):
-        if scale not in cls.reports:cls.reports[scale] = run_child(scale)
+        if scale not in cls.reports:
+            try:cls.reports[scale] = run_child(scale)
+            except AssertionError as exc:cls.reports[scale] = exc
+        if isinstance(cls.reports[scale], AssertionError):raise cls.reports[scale]
         return cls.reports[scale]
 
     def no_scroll(self, scale, screen):
@@ -172,6 +184,7 @@ class FixedPage(unittest.TestCase):
         for scale in SCALES:
             with self.subTest(scale=scale):
                 given = self.report(scale)['input']
+                self.assertNotIn('error', given)
                 self.assertLess(given['scale'], 0.7)
                 click = given['click'];key = given['key']
                 self.assertEqual(click['target'], 'roster', 'the point is not on the strip')

@@ -18,8 +18,10 @@ from PySide6.QtTest import QTest  # noqa: E402
 from PySide6.QtWidgets import QApplication  # noqa: E402
 from goal2.desktop.launch import LaunchWindow  # noqa: E402
 from goal2.desktop.model import DesktopModel  # noqa: E402
+from goal2.desktop.fixed_page import problems  # noqa: E402
 
-SIZES = ((1440, 900), (900, 640))
+# [designed: T101] The fixed page's sizes, the wide one included.
+SIZES = ((1440, 900), (900, 640), (2560, 1600))
 
 
 def main():
@@ -51,10 +53,15 @@ def main():
                 missing = [c.objectName() for c in controls if c not in seen]
                 assert not missing, f'{page} {width}×{height}: not reachable by Tab: {missing}'
                 client = QRect(0, 0, w.width(), w.height())
+                # [designed: T101] The window shows one fixed page, scaled: a control's height is
+                # measured in page pixels (24 at scale 1), and the no-scroll check holds on the page.
+                scale = w.centralWidget().scale
                 for c in controls:
                     box = QRect(c.mapTo(w, c.rect().topLeft()), c.size())
                     assert client.contains(box), f'{page} {width}×{height}: {c.objectName()} {box} outside {client}'
-                    assert c.height() >= 24, f'{page} {width}×{height}: {c.objectName()} squeezed to {c.height()} px'
+                    assert c.height() >= round(24 * scale), f'{page} {width}×{height}: {c.objectName()} squeezed to {c.height()} px'
+                found = problems(w)
+                assert not found, f'{page} {width}×{height}: fixed page check: {found}'
                 return len(controls)
 
             counts = [reachable('launch')]
@@ -73,9 +80,12 @@ def main():
             # [designed: T89] The country card follows the choice, fills its pane, never clipped.
             w.preview();app.processEvents()
             assert w.country_card.card['name'] == 'Denmark' and w.country_card.card['formation'] == '5-4-1'
-            pane = w.country_card.parentWidget().parentWidget()
-            assert pane.horizontalScrollBar().maximum() == 0 and w.country_card.width() == pane.viewport().width(), 'country card wider than its pane'
-            assert w.country_card.narrow == (pane.viewport().width() < 740)
+            # [designed: T101] Superseding the pane's scroll checks: the card has its whole
+            # composition, inside the fixed page, painted to its bottom, at every window size.
+            card = w.country_card;card.grab()
+            assert card.width() >= card.sizeHint().width() and card.height() >= card.sizeHint().height() and not card.narrow, f'country card squeezed: {card.size()} for {card.sizeHint()}'
+            assert card.bottom <= 640, f'country card painted below its composition: {card.bottom}'
+            assert not problems(w), f'browse {width}×{height}: fixed page check: {problems(w)}'
             w.country_list.setFocus();key(Qt.Key.Key_Return)
             assert w.pages.currentIndex() == 2 and w.review_fields['country'].text() == 'Denmark'
             counts.append(reachable('review'))
@@ -84,15 +94,16 @@ def main():
             w.country_list.setFocus();key(Qt.Key.Key_Space)
             assert w.pages.currentIndex() == 3 and w.focusWidget() is w.player_list
             counts.append(reachable('players'))
-            pane = w.player_card.parentWidget().parentWidget()
             seen_cards = []
             for _ in range(20):
                 app.processEvents();card = w.player_card.card;seen_cards.append(card['id'])
                 assert 'ability' not in card and all(v is not None for _, v in card['skills']), card['full_name']
-                assert pane.horizontalScrollBar().maximum() == 0, f'{width}×{height}: card scrolls sideways'
-                viewport = pane.viewport()
-                assert w.player_card.width() == viewport.width(), 'card wider than its pane'
-                assert w.player_card.height() <= viewport.height() or pane.verticalScrollBar().maximum() > 0, 'card clipped'
+                # [designed: T101] The whole card, inside the fixed page, painted to its bottom.
+                from goal2.desktop.player_card import HEIGHT as CARD_HEIGHT
+                w.player_card.grab()
+                assert w.player_card.width() >= w.player_card.sizeHint().width() and w.player_card.height() >= w.player_card.sizeHint().height() and not w.player_card.narrow, 'card squeezed'
+                assert w.player_card.bottom <= CARD_HEIGHT, f'card painted below its composition: {w.player_card.bottom}'
+                assert not problems(w), f'{width}×{height}: fixed page check: {problems(w)}'
                 key(Qt.Key.Key_Down)
             assert len(set(seen_cards)) == 20, f'browsed {len(set(seen_cards))} of 20 players'
             key(Qt.Key.Key_Escape);assert w.pages.currentIndex() == 1 and save.read_bytes() == saved
