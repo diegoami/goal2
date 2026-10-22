@@ -20,6 +20,9 @@ from goal2.tests import requires
 
 TEMPLATE = "e006-r0001-main.sav"
 NEEDS = {"modules": ("unicorn",), "files": (TEMPLATE,), "archaeology": True}
+# [designed: #316] The classes that run the original past its first screen are slow tests (GOAL2_SLOW=1; the
+# gate runs them whenever goal2/core/ changes, tools/check_premerge.py SLOW_PATHS); Start stays in the default
+# run as its one real case.
 F10 = 0x44 + 0x64     # [confirmed: seg_214B_02.asm 0917-0941] 08DD: an extended key's scan code + 0x64 (F10 0x44)
 # [confirmed: the listing] the sites, each the return address of a call far 214B:08DD:
 SITE_TEAM_INFO = "1771:28F5"   # 1771:28F0, in the country browser 1771:26B9 that main_menu_loop calls at 000E:767D
@@ -98,7 +101,7 @@ class Start(unittest.TestCase):
         self.assertEqual(wait.polls, ())
 
 
-@requires.need(**NEEDS)
+@requires.need(**NEEDS, slow=True)
 class DocumentedKeys(unittest.TestCase):
     def test_escape_then_f10_y_n_quits_as_the_play_guide_records(self):
         from goal2.core import Core, CoreError, InterruptError
@@ -124,7 +127,7 @@ class DocumentedKeys(unittest.TestCase):
             core.press(ENTER)
 
 
-@requires.need(**NEEDS)
+@requires.need(**NEEDS, slow=True)
 class SaveAndLoad(unittest.TestCase):
     # Esc to the menu, Down x5 to "play next game", Enter: the match menu (the round's set-up draws the RNG);
     # Down x4 to "match stats", Enter: the board; Enter back to the match menu.
@@ -159,7 +162,7 @@ class SaveAndLoad(unittest.TestCase):
         self.assertEqual(loaded.memory_sha256(), straight_sha)
 
 
-@requires.need(**NEEDS)
+@requires.need(**NEEDS, slow=True)
 class TimedPromptAndBudget(unittest.TestCase):
     # ... the match menu, Down x5 to "play", Enter: the captain prompt, a timed prompt (10 s, F030).
     TO_PLAY = [ESC] + [DOWN] * 5 + [ENTER] + [DOWN] * 5

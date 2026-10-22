@@ -256,6 +256,10 @@ class WatchedJobs:
               bench=False):
         if type(frames) is not bool or type(bench) is not bool:
             raise ValueError('frames and bench must be boolean')
+        if bench and not frames:
+            # [designed: #316] The original takes the player's Enter in play at a pitch sample
+            # (_drive_match asks pause_now there), so without them a pause could never be placed.
+            raise ValueError('the bench needs the pitch samples (frames=True)')
         if self.closed or self.busy:
             raise ValueError('watched bridge is closed or a match is already running')
         if frames and getattr(self.owner, 'match_pending', False):
@@ -282,6 +286,7 @@ class WatchedJobs:
         self.waiting = None
         self._decisions = 0
         self._pause_pending = False
+        self.dropped_pauses = 0
         self.reports = []
         self._command_sequence = 0
         try:
@@ -357,6 +362,11 @@ class WatchedJobs:
                             self._pause_pending = False
                 elif kind == 'answered' and self._bench and isinstance(value, dict) and len(self.reports) < self._decisions:
                     self.reports.append(_report(value))
+                elif kind == 'pause_dropped' and self._bench and self._pause_pending and type(value) is int:
+                    # [designed: #316] The original could not take the Enter (the match is over,
+                    # or the shoot-out): the next Enter is sent again.
+                    self._pause_pending = False
+                    self.dropped_pauses += 1
                 elif kind == 'complete':
                     value = WatchedOutcome(value['result'], _memory(value['memory']),
                         tuple(_event(event) for event in value['events']), tuple(value['seeds']), value['engine_year'])
@@ -511,8 +521,9 @@ class WatchedJobs:
 
     def pause(self, token):
         """[designed: T102] The player's Enter in play: the original takes it at its next key poll
-        and asks a `pause` decision. One request at a time; none while a decision waits. Returns
-        whether it was sent."""
+        and asks a `pause` decision. One request at a time; none while a decision waits. A request
+        the original could not take is reported back (`dropped_pauses`) and frees the next one
+        [designed: #316]. Returns whether it was sent."""
         self._check_token(token)
         if not self._bench:
             raise ValueError('the bench was not enabled')

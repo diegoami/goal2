@@ -239,3 +239,4 @@ operational status.
 | [T101](T101.md) | Screens fit without scrolling: one fixed page, scaled | [#312](https://github.com/diegoami/goal2/issues/312) | Medium |
 | [T102](T102.md) | The bench in a watched match: half time, and Enter mid-play | [#305](https://github.com/diegoami/goal2/issues/305) | High |
 | [T103](T103.md) | G9: the screen catalogue of the core | [#315](https://github.com/diegoami/goal2/issues/315) | Medium |
+| [T104](T104.md) | T102 review follow-ups, and the core tests as slow tests | [#316](https://github.com/diegoami/goal2/issues/316) | Small |

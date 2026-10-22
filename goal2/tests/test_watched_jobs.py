@@ -35,7 +35,7 @@ from goal2.game import watched_worker
 mode=sys.argv.pop(1)
 if mode=='ignore':signal.signal(signal.SIGTERM,signal.SIG_IGN)
 class Guest:
- def __init__(self,*args,**kwargs):self.answers=0;self.image=args[0]
+ def __init__(self,*args,**kwargs):self.answers=0;self.image=args[0];self.opts={}
  def events(self):
   if mode=='missing':raise ModuleNotFoundError('pip install unicorn')
   yield Event('minute',1,(0,0))
@@ -269,7 +269,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         self.jobs.command=[sys.executable,'-c',CONTROLLED,'blocked']
         token=self.jobs.start(Fixture(7,19,21))
         self.assertTrue(self.jobs.busy)
-        self.jobs.cancel(token)
+        self.jobs.cancel_and_reap(token)
 
     def test_memory_decoder_bounds_truncation_and_trailing_payloads(self):
         def encoded(raw):return base64.b64encode(raw).decode('ascii')

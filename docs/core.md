@@ -142,5 +142,8 @@ same waits and the same memory, byte for byte. `core.memory_component()` is the 
 '.[watched]'`) and says so when it is missing. Menu keys take milliseconds; pressing **play** runs the captain
 prompt and a whole first half at the image's own delay calibration, about 110 s under the instruction count.
 `python3 -m unittest goal2.tests.test_core_runner_t100 -v` checks all of this on E006-r0001, and
-`python3 -m unittest goal2.tests.test_core_screens_t103 -v` the screen table (it plays a whole watched match, about
-seven minutes); both need `.cache/` and the goal2-archaeology checkout, and skip without them.
+`python3 -m unittest goal2.tests.test_core_screens_t103 -v` the screen table; both need `.cache/` and the
+goal2-archaeology checkout, and skip without them. [designed: #316] The tests that run the original past its first
+screen are slow tests: they run with `GOAL2_SLOW=1` (the screen tours play a whole watched match, about eight to
+eleven minutes; the captain prompt's two cases about three), and the pre-merge gate runs them whenever `goal2/core/`
+or either module changes (`SLOW_PATHS`, docs/process.md). The default run keeps one real case of each module.
