@@ -197,6 +197,13 @@
    (`goal2/desktop/fixed_page.py` `problems`; the way, a scale applied to the whole page, is in
    [desktop-management.md](../desktop-management.md)). A part that does not fit becomes a view of
    its page reached by a route, as the original's separate screens.
+7. **The desktop drives the core with the original's own keys** (owner, 2026-10-22, #308, #321). goal2's
+   accepted pages (Country, Team, Pool, Fixtures & match, Save) stay, on the fixed page, and read
+   everything from the original's memory. The player's actions become the original's own key presses,
+   sent by a driver through the screen catalogue (T103). The desktop stops the player only where the
+   original needs the manager (match day, prompts, bulletins), and the bot uses the same driver. The
+   alternatives, one goal2 screen per original screen in the original's order and the original's text
+   page drawn in the GOAL2 style, were not chosen.
 
 ## Scope gaps and their owners
 
