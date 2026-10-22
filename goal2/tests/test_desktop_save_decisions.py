@@ -167,6 +167,8 @@ class Decisions(unittest.TestCase):
         self.assertTrue(self.save.is_file());self.assertFalse(self.model.unsaved)
         self.draft()
         with self.answer('cancel'):
+            # [designed: #311] A shortcut fires only in the active window; re-activate before it.
+            self.window.activateWindow();QTest.qWaitForWindowActive(self.window)
             QTest.keyClick(self.window, Qt.Key.Key_Q, Qt.KeyboardModifier.ControlModifier);self.app.processEvents()
         self.assertEqual(self.asked[0][0], 'Quit');self.assertTrue(self.window.isVisible())
 

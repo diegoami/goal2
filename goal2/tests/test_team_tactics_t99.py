@@ -177,11 +177,15 @@ class TeamTactics(unittest.TestCase):
         for widget in (w.captain, w.confirm_plan, w.discard_plan, w.team_roster, *(r for _, r in w.tactics)):
             self.assertTrue(widget.isVisible(), widget.objectName())
         self.assertFalse(w.team_card.isVisible())
-        QTest.keyClick(QApplication.focusWidget(), Qt.Key.Key_Escape);self.app.processEvents()
+        # [designed: #311] The Escape shortcut fires only in the active window, and focus is read
+        # from the window: another GUI test window on the Windows runner can be the active one.
+        w.activateWindow();QTest.qWaitForWindowActive(w)
+        QTest.keyClick(w.focusWidget(), Qt.Key.Key_Escape);self.app.processEvents()
         self.assertEqual(w.team_views.currentIndex(), 0)
-        self.assertIs(QApplication.focusWidget(), w.team_roster, 'Escape returns with the roster focused')
+        self.assertIs(w.focusWidget(), w.team_roster, 'Escape returns with the roster focused')
         # Escape from the page heading works too.
-        w.team_view(1);w.pages[1].heading.setFocus();QTest.keyClick(w.pages[1].heading, Qt.Key.Key_Escape)
+        w.team_view(1);w.pages[1].heading.setFocus();w.activateWindow();QTest.qWaitForWindowActive(w)
+        QTest.keyClick(w.pages[1].heading, Qt.Key.Key_Escape)
         self.assertEqual(w.team_views.currentIndex(), 0)
         w.team_pool.click();self.assertEqual(w.page_stack.currentIndex(), 2)
         self.assertEqual(self.state(), before)
