@@ -27,12 +27,14 @@ initial, role code, age, caps, goals, height, foot, readiness, national and club
 performance (raw; its meaning is not decoded), the twelve skill bars with their values, the five
 characteristics with bar, value and the original's word, and the tactics and mark line. Every
 value equals what the original's own player screen prints [confirmed: F008, E007]. No attribute
-total is shown. Narrow windows stack the card and scroll it. [designed: T89] The browse page shows
+total is shown. [designed: T89] The browse page shows
 the selected country's card in the original's structure: manager; ranking now; formation with
 the eleven's role codes; first fixture; the three team tactics and the five player defaults.
 Status, skill, top ranking, strips, team skill and performance bars and the characteristics
-aggregates read "not decoded yet (G05)" until archaeology decodes them. The window keeps its text size at 900×640 and
-scrolls the preview instead ([original start, load and save](original-game/startup-save-replay.md)).
+aggregates read "not decoded yet (G05)" until archaeology decodes them. [designed: T101] The
+window is one fixed page, scaled (below): at 900×640 it shows the same page smaller, and the long
+country and player lists are windows of rows that follow the selection, as the original's are
+([original start, load and save](original-game/startup-save-replay.md)).
 `--resume <save>`, or `--country <n>` with `--template`, still opens management directly for
 scripts. Check it with `python3 tools/desktop-ui/launch.py --template … --data …`, offscreen and
 under `QT_QPA_PLATFORM=xcb xvfb-run -a -s "-screen 0 3200x2000x24"` with `QT_SCALE_FACTOR` 1 and 2.
@@ -56,17 +58,44 @@ and **Save** (Ctrl+5).
 style: black screens, DejaVu Sans Mono, cyan frames, a yellow country, gold labels, green values,
 magenta hints and a yellow focus. A **top bar** shows GOAL2, the country, the career line
 (manager / year / stage), the context and the next fixture; **[Top ^]** retracts it. A **side
-bar** holds the five destinations; **[< Hide]** retracts it, and a window narrower than 1100 px
-starts with it retracted. A retracted bar leaves its handle (**[v Top]**, **[Menu >]**) in one
-short row above the page. **F11** hides both bars, or restores both when either is hidden.
-Retracting moves focus out of the bar; restoring returns it. Page, drafts, scroll and selection
-are untouched. The browse-another-country selector is on the Country page. Role codes use the
+bar** holds the five destinations; **[< Hide]** retracts it. [designed: T101] A small window
+no longer retracts it (superseding T90's collapse below 1100 px): the page is scaled instead. A
+retracted bar leaves its handle (**[v Top]**, **[Menu >]**) in one short row above the page.
+**F11** hides both bars, or restores both when either is hidden. Retracting moves focus out of the
+bar; restoring returns it. Page, view, drafts and selection are untouched. The browse-another-country selector is on the Country page. Role codes use the
 original's line colours [confirmed: F008 `DS:699A`].
+
+[designed: owner, 2026-10-22, #312; T101] **One fixed page, scaled.** Every screen of the
+management window and of the launch window is composed once for a page of 1440×900 logical
+pixels, as every original screen is one 80×25 text page [confirmed: `docs/original-game/images/*`].
+The window scales the whole page uniformly to fit (scale = min(width/1440, height/900)), keeps its
+aspect and fills the margin black; the page is never cut and never scrolled, and a small window
+shows everything smaller, as the pitch window does (T94). The way is a scale applied to the whole
+page (`goal2/desktop/fixed_page.py`): the page stays ordinary native Qt widgets, and every length
+it is composed with is multiplied by the scale — the style sheet's pixel sizes (type, borders,
+padding, minimum heights), the layouts' margins and spacings, the explicit widget sizes and table
+rows — while the painted views (the strip, the player and country cards) draw in page pixels
+through a scaled painter. It was chosen over a `QGraphicsView` holding the page, which scales
+exactly but makes the view the window's focus widget, gives assistive technology the off-screen
+proxy's geometry and turns drop-downs into scene items; with native widgets, keyboard, mouse,
+focus, drop-downs (they open at the scaled place), dialogs and accessible names behave as at 1:1.
+The menu bar and dialogs keep their 1:1 size. A part that does not fit the page becomes a **view**
+of its page, reached by a route, never dropped: Country has the desk, **Country card >** and
+**Other games >** (browse another country, start year, new campaign or friendly, return to the
+active game); Team has the card and Team tactics; Pool has the browser and **Cards >**; Fixtures &
+match has the preparation, the full-time result, **Half time >** (opened by itself when a pause
+begins) and **Fixture list >** (next fixture, last result and resolution, goals and details, the
+Play/Watch routes, standings snapshot, continental qualifying and **Competition table**). Esc
+returns from a view to the page's first one. A drop-down is as wide as the page gives it; a long
+entry is shown whole in its list. The shared check `fixed_page.problems(window)` (no scroll bar
+visible, every visible widget inside the page and its parent, none squeezed below the size its
+content needs) is what every screen task runs: `python3 -m unittest goal2.tests.test_fixed_page_t101 -v`
+runs it on every page and view at 1440×900, 1050×780, 900×640 and 2560×1600, at Qt scale 1 and 2.
 
 [designed: T91; accepted vision #266 screens 02/03/04] **Country** is the desk: *Your country*
 (manager, world and continental rank), *Next opponent* (its ranks and the fixture), *Your
-campaign* and *Last result*; the routes **Select squad**, **Pool**, **Fixture list** and
-**Country card** (the T89 card); the readiness line (`<n> ready / XI <k>`) and the captain; and
+campaign* and *Last result*; the routes **Prepare match**, **Select squad**, **Pool**, **Fixture
+list**, **Country card >** (the T89 card), **Manager name** and **Other games >**; the readiness line (`<n> ready / XI <k>`) and the captain; and
 the twenty: `+` in the XI, `-` on the bench, the initial and name in the role's line colour, the
 code and `C` for the captain. Enter on a player opens him on Team; the desk never changes the XI.
 **Team** follows the original's squad screen [designed: T99; owner, 2026-10-21; confirmed:
@@ -79,8 +108,11 @@ cannot start; a preview or a running match cannot change). Left of the strip is 
 player's complete card (T88), whose tactic words follow the draft; as in the original its twelve
 skills are bars with no numbers and each characteristic is a bar with its word inside. Below the
 card are **Pool / Compare >**, **Team tactics >** and **Rename (F2)**; the draft bar stays at the
-foot of the page. There is no table view: the XI checks' table is a hidden model. **Pool** pins the complete
-cards of the outgoing (OUT) and incoming (IN) player above the browser. Ranks come from the
+foot of the page. There is no table view: the XI checks' table is a hidden model. [designed:
+T101] **Pool** opens on the browser (outgoing player, filters, the eighty reserves, the selected
+detail and the exchange); **Cards >** shows the complete cards of the outgoing (OUT) and incoming
+(IN) player, one at a time, as the original's pool screen toggles between squad and pool
+[confirmed: `docs/original-game/images/m244-pool.png`]; Esc returns. Ranks come from the
 country records [confirmed: F007 via `goal2.game.country_card`].
 
 [designed: T99; accepted vision #266 screen 16; owner playtest 2026-10-21, #304] **Team tactics**
@@ -158,8 +190,8 @@ squad selector synchronized with the current squad row; it changes selection onl
 Choose a visible reserve and read both full identities before exchanging.
 Save/Resume and the editable save path live in Save / resume; Ctrl+S invokes the
 same guarded Save. Status and Cancel match remain visible across destinations.
-At small sizes, scroll the current page to reach its remaining actions; tables
-retain their native row/column navigation, and Tab moves to the next control.
+[designed: T101] Nothing scrolls: a part of a page that does not fit is a view reached by a
+route (below); tables retain their native row/column navigation, and Tab moves to the next control.
 
 [designed: owner, 2026-10-21; #283, #286] Squad and pool tables and details show each player's
 role as the original's one-letter code (G S C b B D Ç m M F w W ¢ $; club role in details),
@@ -178,8 +210,8 @@ pool. Preview results belong to that fresh team; the active game's result is
 shown again on return. **New campaign** or **New standalone friendly** explicitly
 makes the selected country active; browsing never replaces the active game or
 writes its save. Management, play, Save, exchanges and the competition table are
-unavailable in a preview. [designed: #241] Both player tables remain scrollable
-with the wheel, scrollbar and keyboard; selecting a row shows its full-ID detail.
+unavailable in a preview. [designed: #241; T101] The reserves table is a window of rows that
+follows the keyboard and the wheel (no scroll bar); selecting a row shows its full-ID detail.
 Preview XI checkboxes, captain and tactics remain read-only. Return to the active
 country to recover its unconfirmed
 XI/captain/tactics draft, or use Resume to load a saved game. Country selection
@@ -420,7 +452,7 @@ QT_QPA_PLATFORM=xcb xvfb-run -a python3 tools/desktop-ui/competitive_play.py
 Select a player on the strip to read his card: role, positions, readiness and cards, energy and
 morale (the confidence byte). The strip's grouped XI and bench reflect the private draft, with the
 captain marked; grouping does not assign a formation. The fixed
-Confirm management / Discard draft bar stays visible while the page scrolls.
+Confirm management / Discard draft bar stays at the foot of the page in both Team views.
 Space toggles the XI and the tactic rows; Enter switches a tactic row or activates a focused draft action.
 Draft edits survive navigation and country preview/return; Save writes confirmed
 state, and match play still requires confirmed management.

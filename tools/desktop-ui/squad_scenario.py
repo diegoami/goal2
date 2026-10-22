@@ -16,7 +16,7 @@ ROOT=Path(__file__).resolve().parents[2]
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 def scenario(args):
-    from PySide6.QtCore import Qt,QCoreApplication,QEvent,qVersion,QPoint
+    from PySide6.QtCore import Qt,QCoreApplication,QEvent,qVersion,QPoint,QRect
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication,QLabel,QStyle,QStyleOptionButton
     from goal2.desktop.model import DesktopModel
@@ -64,7 +64,8 @@ def scenario(args):
             def pick(row):
                 # [designed: T99] A real click on the strip's row selects that player.
                 reveal(w.team_roster);strip=w.team_roster;rect=strip.row_rect(row)
-                w.pages[1].ensureVisible(0,strip.mapTo(w.pages[1].widget(),rect.center()).y(),0,rect.height());app.processEvents()
+                # [designed: T101] Nothing scrolls: the row is wholly inside the strip and visible.
+                assert strip.rect().contains(rect) and strip.visibleRegion().contains(rect),'strip row not visible on the fixed page'
                 QTest.mouseClick(strip,Qt.MouseButton.LeftButton,pos=rect.center());app.processEvents()
                 assert strip.current==row and w.table.currentRow()==row,'strip click did not select the row'
             def toggle(row):
@@ -93,7 +94,7 @@ def scenario(args):
             def capture(name):
                 app.processEvents();path=out/(name+'.png');assert w.grab().save(str(path))
                 report['captures'].append({'path':path.name,'sha256':digest(path),'size':[w.width(),w.height()],
-                                           'scroll':w.pages[1].verticalScrollBar().value(),'focus':app.focusWidget().objectName() if app.focusWidget() else None})
+                                           'view':w.team_views.currentIndex(),'focus':app.focusWidget().objectName() if app.focusWidget() else None})
             def detail(row):
                 # [designed: T99] The selected player's detail is his card: the same fields, painted.
                 pick(row);p=model.view()['players'][row];c=w.team_card.card;w.team_card.grab();drawn=' | '.join(w.team_card.drawn)
@@ -168,7 +169,7 @@ def scenario(args):
             toggle(1);assert len(w.selected_ids())==11 and 242 in w.selected_ids()
             action(w.confirm);assert 260 not in model.state.starting_eleven and 242 in model.state.starting_eleven
             report['steps'].append('Full IDs250–260, captain260, all8bits; private events/save; Confirm/Discard; invalid10/12/captain; unavailable starter/removal/reserve; navigation/preview return')
-            sizes=[(900,640)] if report['ratio']>1 else [(1440,900),(1050,780),(900,700)]
+            sizes=[(900,640)] if report['ratio']>1 else [(1440,900),(1050,780),(900,700),(2560,1600)]
             original_names=model.goaldat.player_names
             # [designed] Generated long names exercise wrapping; original names are restored before workers run.
             names=list(original_names)
@@ -179,16 +180,21 @@ def scenario(args):
             for width,height in sizes:
                 w.resize(width,height);w.navigate(1);app.processEvents();page=w.pages[1]
                 # [designed: T99] The roster and the detail are view 0 (strip and card), the tactics view 1.
-                def top(widget):return widget.mapTo(page.widget(),QPoint(0,0)).y()
-                for fraction,label,view in ((0,'roster',0),(2,'detail',0),(1,'tactics',1)):
+                # [designed: owner, 2026-10-22, #312; T101] The scroll contract moves to the fixed
+                # page: each view passes the no-scroll check and the draft bar lies inside the page,
+                # below the content, its actions inside it, with no scroll bar anywhere.
+                from goal2.desktop.fixed_page import problems
+                frame=w.centralWidget().page
+                def inside(widget,rect=None):
+                    rect=widget.rect() if rect is None else rect
+                    return frame.rect().contains(QRect(widget.mapTo(frame,rect.topLeft()),rect.size())) and widget.visibleRegion().contains(rect)
+                for label,view in (('roster',0),('detail',0),('tactics',1)):
                     w.team_view(view);app.processEvents()
-                    scroll=page.verticalScrollBar().maximum()//fraction if fraction else 0
-                    page.verticalScrollBar().setValue(scroll);app.processEvents()
+                    assert not problems(w),f'Team view {view} needs scrolling or clips: {problems(w)}'
                     footer=page.footer
-                    assert footer.isVisible() and footer.geometry().bottom()<page.height(),'draft bar is outside page'
-                    assert not page.viewport().geometry().intersects(footer.geometry()),'draft bar covers scroll content'
+                    assert footer.isVisible() and inside(footer),'draft bar is outside page'
+                    assert not page.widget().geometry().intersects(footer.geometry()),'draft bar covers page content'
                     assert w.confirm.geometry().right()<footer.width(),'draft action clipped by footer'
-                    assert footer.geometry().right()<page.verticalScrollBar().mapTo(page,QPoint(0,0)).x() or not page.verticalScrollBar().isVisible(),'scrollbar overlaps draft action bar'
                     for control in (w.cancel,w.confirm):
                         footer_caption(control,False);footer_caption(control,True)
                         assert control.visibleRegion().boundingRect().height()>0 and control.accessibleName()
@@ -200,10 +206,8 @@ def scenario(args):
                 # complete name is painted on the card, never elided, with its raw fields.
                 w.team_view(0);app.processEvents();strip=w.team_roster
                 for row in range(20):
-                    rect=strip.row_rect(row);y=strip.mapTo(page.widget(),rect.topLeft()).y()
-                    page.ensureVisible(0,y+rect.height()//2,0,rect.height());app.processEvents()
-                    origin=strip.mapTo(page.viewport(),rect.topLeft())
-                    if origin.y()>=0 and origin.y()+rect.height()<=page.viewport().height():
+                    rect=strip.row_rect(row)
+                    if inside(strip,rect):
                         detail(row);app.processEvents()
                         name=w.team_card.card['full_name'].upper()
                         if name in w.team_card.drawn:name_rows.add(row)
@@ -215,19 +219,17 @@ def scenario(args):
                 # [designed] Read every table column through its native contained horizontal scroll.
                 for row in range(20):
                     for col in range(7):w.table.scrollToItem(w.table.item(row,col));app.processEvents();assert w.table.item(row,col).text() or col==0
-                for widget,name,view in ((w.team_card_area,'selected-detail',0),(w.team_roster,'grouped-xi-bench',0)):
+                for widget,name,view in ((w.team_card,'selected-detail',0),(w.team_roster,'grouped-xi-bench',0)):
                     w.team_view(view);app.processEvents()
-                    # [designed] Overlap viewport segments so long wrapped values are readable in full across captures.
-                    intervals=[];step=max(40,page.viewport().height()-100)
-                    for offset in range(0,widget.height(),step):
-                        page.verticalScrollBar().setValue(top(widget)-16+offset);app.processEvents()
-                        first=page.verticalScrollBar().value()-top(widget);bottom=first+page.viewport().height()
-                        intervals.append([max(0,first),min(widget.height(),bottom)])
-                        capture(f'long-{width}x{height}-{name}-segment-{offset}')
-                        if bottom>=widget.height():break
-                    assert intervals[0][0]==0 and max(end for start,end in intervals)>=widget.height(),'scroll captures missed a reading area'
-                    assert all(first[1]>=second[0]+40 for first,second in zip(intervals,intervals[1:])),'reading captures lack wrapped-line overlap'
-                    report.setdefault('reading_coverage',[]).append({'size':[width,height],'widget':name,'height':widget.height(),'intervals':intervals,'text_sha256':hashlib.sha256((w.team_card if widget is w.team_card_area else widget).accessibleName().encode()).hexdigest()})
+                    # [designed: T101] One capture reads the whole widget: it lies wholly inside the
+                    # fixed page, unclipped, and the card paints nothing below its composition.
+                    assert inside(widget),'reading area outside the page or clipped: '+name
+                    if widget is w.team_card:
+                        from goal2.desktop.player_card import HEIGHT as CARD_HEIGHT
+                        widget.grab();assert widget.bottom<=CARD_HEIGHT,f'card painted below its composition: {widget.bottom}'
+                    intervals=[[0,widget.height()]];capture(f'long-{width}x{height}-{name}')
+                    assert intervals[0][0]==0 and max(end for start,end in intervals)>=widget.height(),'captures missed a reading area'
+                    report.setdefault('reading_coverage',[]).append({'size':[width,height],'widget':name,'height':widget.height(),'intervals':intervals,'text_sha256':hashlib.sha256(widget.accessibleName().encode()).hexdigest()})
             model.goaldat=replace(model.goaldat,player_names=original_names)
             model.new_campaign(4);model.exchange(80,2561);model.confirm(list(model.state.starting_eleven),61,165);w.refresh()
             # [derived: T47] Real private first-half worker, substitution and cancellation preserve confirmed management.

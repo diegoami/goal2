@@ -128,6 +128,11 @@ def compose(self,model,TACTICS):
     self.country.setAccessibleName('Country');self.search.setAccessibleName('Search reserve name')
     self.position.setAccessibleName('Reserve position');self.half_out.setAccessibleName('Halftime outgoing player')
     self.half_in.setAccessibleName('Halftime incoming player')
+    # [designed: T101] A drop-down's width is the page's, never its longest entry's: a long name
+    # cannot widen the fixed page (it is elided in the box and whole in the list).
+    for combo in root.findChildren(QComboBox):
+        combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+        combo.setMinimumContentsLength(max(combo.minimumContentsLength(),12))
     order=[*self.navigation]
     for page in self.pages:
         order.append(page.heading)

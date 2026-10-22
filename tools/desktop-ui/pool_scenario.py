@@ -102,11 +102,14 @@ def scenario(args):
             focus(w.exchange if w.exchange.isEnabled() else w.pages[2].heading);option=QStyleOptionComboBox();w.pool_outgoing.initStyleOption(option)
             combo=w.pool_outgoing.style().subControlRect(QStyle.ComplexControl.CC_ComboBox,option,QStyle.SubControl.SC_ComboBoxEditField,w.pool_outgoing)
             if w.pool_outgoing.currentIndex()>=0:assert w.pool_outgoing.fontMetrics().horizontalAdvance(w.pool_outgoing.currentText())<=combo.width(),'outgoing identity clipped'
-            assert w.pages[2].footer.geometry().top()>=w.pages[2].viewport().geometry().bottom(),'pool footer overlaps scrolling content'
+            # [designed: T101] The fixed page: the action bar is below the content, nothing scrolls or clips.
+            from goal2.desktop.fixed_page import problems
+            assert w.pages[2].footer.geometry().top()>=w.pages[2].widget().geometry().bottom(),'pool footer overlaps page content'
+            assert not problems(w),f'pool page needs scrolling or clips: {problems(w)}'
             assert w.exchange.visibleRegion().boundingRect().height()>=w.exchange.height(),'focused action clipped'
             button=QStyleOptionButton();w.exchange.initStyleOption(button);content=w.exchange.style().subElementRect(QStyle.SubElement.SE_PushButtonContents,button,w.exchange)
             assert w.exchange.fontMetrics().horizontalAdvance(w.exchange.text())<=content.width() and w.exchange.fontMetrics().height()<=content.height(),'exchange caption clipped'
-            w.pages[2].ensureWidgetVisible(w.exchange_summary);app.processEvents()
+            w.reveal(w.exchange_summary);app.processEvents()
             for text in (w.pool_detail,w.exchange_summary,w.pool_policy):assert text.visibleRegion().boundingRect().height()>=text.height(),'selected detail/summary/reason not fully visible together'
             filename=name+'.png';w.grab().save(str(out/filename));report['captures'].append({'file':filename,'sha256':digest(out/filename),'size':[w.width(),w.height()],'ratio':w.devicePixelRatioF(),'reading':bounds,'focused_action':w.exchange.hasFocus(),'outgoing_text_width':w.pool_outgoing.fontMetrics().horizontalAdvance(w.pool_outgoing.currentText()),'outgoing_reading_width':combo.width()})
         w.navigate(2);app.processEvents();rows();before=copy.deepcopy(m.state);draft=copy.deepcopy(w.draft())
@@ -115,7 +118,7 @@ def scenario(args):
         key(w.pool_outgoing,Qt.Key.Key_Down);assert w.table.item(w.table.currentRow(),0).data(Qt.ItemDataRole.UserRole)==w.pool_outgoing.currentData()
         # [designed: T99] The squad selection is made on the Team page's roster strip (the table is its hidden model).
         focus(w.team_roster);strip=w.team_roster;rect=strip.row_rect(m.state.managed_squad.index(261))
-        w.pages[1].ensureVisible(0,strip.mapTo(w.pages[1].widget(),rect.center()).y(),0,rect.height());app.processEvents()
+        assert strip.visibleRegion().contains(rect),'strip row not visible on the fixed page'
         QTest.mouseClick(strip,Qt.MouseButton.LeftButton,pos=rect.center());app.processEvents();assert w.pool_outgoing.currentData()==261,'table-to-outgoing synchronization failed';stable(before,'outgoing selection',draft)
         reserve(2561);assert 'ID 261' in w.exchange_summary.text() and 'ID 2561' in w.exchange_summary.text()
         target=next(x for x in campaign_pool.view(m.state,m.goaldat)['reserves'] if x['id']==2561)
@@ -134,37 +137,37 @@ def scenario(args):
         assert all(str(target[k]) in w.pool_detail.text() for k in ('id','name','role','energy','confidence','position_group')),'selected detail missing raw field'
         # [designed: T77/M1] Reading coverage belongs to each supported size, not initial geometry.
         report['table_reading_by_size']=[]
-        sizes=((1440,900),(1050,780),(900,700)) if report['ratio']==1 else ((900,640),)
+        sizes=((1440,900),(1050,780),(900,700),(2560,1600)) if report['ratio']==1 else ((900,640),)
         for width,height in sizes:
             w.resize(width,height);app.processEvents()
             assert (w.width(),w.height())==(width,height),'required reading size did not settle'
             before=copy.deepcopy(m.state);draft=copy.deepcopy(w.draft());rows()
             cells=[];coverage=[];viewport=w.reserves.viewport();page=w.pages[2]
             focus(w.reserves)
-            # [designed] Reveal the table through the outer scroll before its contained cell scrolling.
-            page.ensureWidgetVisible(w.reserves);app.processEvents()
+            # [designed: T101] The table is on the fixed page; its rows are a window that follows the
+            # selection (contained scrolling without a scroll bar, as the original's pool list).
+            w.reveal(w.reserves);app.processEvents();frame=w.centralWidget().page
             for row in range(w.reserves.rowCount()):
                 for col in range(w.reserves.columnCount()):
                     item=w.reserves.item(row,col);w.reserves.scrollToItem(item);app.processEvents()
                     rect=w.reserves.visualItemRect(item)
                     assert viewport.rect().intersects(rect),'reserve cell cannot be reached'
-                    option=QStyleOptionViewItem();w.reserves.itemDelegate().initStyleOption(option,w.reserves.indexFromItem(item));option.rect=rect
+                    # [designed: T101] Measured in the font the table draws (its scaled style), not the
+                    # application's default font, which a scaled page no longer matches.
+                    option=QStyleOptionViewItem();option.initFrom(w.reserves);w.reserves.itemDelegate().initStyleOption(option,w.reserves.indexFromItem(item));option.rect=rect
                     text_rect=w.reserves.style().subElementRect(QStyle.SubElement.SE_ItemViewItemText,option,w.reserves)
                     metrics=option.fontMetrics;advance=metrics.horizontalAdvance(item.text());height_px=metrics.height()
                     assert advance<=text_rect.width() and height_px<=text_rect.height(),f'reserve cell text clipped row={row} col={col}'
                     glyph=QRect(text_rect.x(),text_rect.y()+(text_rect.height()-height_px)//2,advance,height_px)
                     assert rect.contains(glyph) and text_rect.contains(glyph),'reserve glyph exceeds cell/text contents'
-                    # [designed] Outer scrolling exposes this reading target even when the whole table exceeds the page.
-                    target_point=viewport.mapTo(page.widget(),glyph.center())
-                    page.ensureVisible(target_point.x(),target_point.y(),glyph.width()//2+2,glyph.height()//2+2);app.processEvents()
                     # [designed] The complete text must be in the actual visible region, including ancestor clipping.
                     assert viewport.visibleRegion().contains(glyph),f'reserve text not fully visible row={row} col={col}'
-                    outer=QRect(viewport.mapTo(page.viewport(),glyph.topLeft()),glyph.size())
-                    assert page.viewport().rect().contains(outer),'reserve text outside outer scrolling viewport'
+                    outer=QRect(viewport.mapTo(frame,glyph.topLeft()),glyph.size())
+                    assert frame.rect().contains(outer),'reserve text outside the fixed page'
                     cells.append({'id':int(w.reserves.item(row,0).text()),'column':col,'text':item.text(),
                                   'cell':rect.getRect(),'text_contents':text_rect.getRect(),'glyph':glyph.getRect(),
                                   'outer_glyph':outer.getRect(),'table_viewport':viewport.rect().getRect(),
-                                  'visible_bounds':viewport.visibleRegion().boundingRect().getRect(),'outer_viewport':page.viewport().rect().getRect(),
+                                  'visible_bounds':viewport.visibleRegion().boundingRect().getRect(),'page':frame.rect().getRect(),
                                   'font_height':height_px,'font_advance':advance})
                 coverage.append(int(w.reserves.item(row,0).text()))
             assert len(cells)==560 and len(coverage)==80 and len(set(coverage))==80,'per-size reading coverage incomplete'

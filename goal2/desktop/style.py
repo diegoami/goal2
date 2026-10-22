@@ -27,7 +27,8 @@ def load_fonts():
 def apply_style(window):
     """Style the window (its menu bar and dialogs at 1:1) and return the sheet, which the fixed
     page applies again at its scale [designed: T101]."""
-    load_fonts();sheet=stylesheet();window.setStyleSheet(sheet)
+    from goal2.desktop.fixed_page import scale_sheet
+    load_fonts();sheet=stylesheet();window.setStyleSheet(scale_sheet(sheet,1))
     return sheet
 
 
@@ -56,9 +57,9 @@ def stylesheet():
     QPushButton:focus,QComboBox:focus,QLineEdit:focus,QCheckBox:focus,QTableWidget:focus,QLabel#pageHeading:focus {{border:3px solid {c['focus']};}}
     /* [designed: T101] The focus border is 1px wider: a 1px margin gives it room, so a focused
        control keeps its size and its caption is never squeezed (fixed_page.problems checks it). */
-    QPushButton,QComboBox,QLineEdit {{margin:1px;}}
+    QPushButton,QComboBox,QLineEdit {{margin:@focus-margin;}}
     QPushButton:focus,QComboBox:focus,QLineEdit:focus {{margin:0px;}}
-    QWidget#draftBar QPushButton {{margin:0px;}}
+    QWidget#draftBar > QPushButton {{margin:0px;}}
     QComboBox QAbstractItemView {{background:{c['background']};color:{c['text']};selection-background-color:{c['accent']};selection-color:{c['ink']};border:1px solid {c['cyan']};}}
     QLineEdit {{selection-background-color:{c['accent']};selection-color:{c['ink']};}}
     QCheckBox {{color:{c['text']};}}

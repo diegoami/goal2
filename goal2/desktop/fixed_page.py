@@ -43,9 +43,15 @@ def px(value, scale):
     return 0 if not value else max(1, round(value * scale))
 
 
+# The margin that gives a 3px focus border the room of a 2px border plus this margin: computed from
+# the two rounded widths, so a focused control keeps its size at every scale.
+FOCUS_MARGIN = '@focus-margin'
+
+
 def scale_sheet(sheet, scale):
     """The style sheet with every pixel length multiplied by `scale`."""
-    return _PX.sub(lambda m: f'{px(float(m.group(1)), scale)}px', sheet)
+    sheet = _PX.sub(lambda m: f'{px(float(m.group(1)), scale)}px', sheet)
+    return sheet.replace(FOCUS_MARGIN, f'{px(3, scale) - px(2, scale)}px')
 
 
 def _own(widget):
@@ -98,6 +104,9 @@ def apply(root, scale, sheet):
         if getattr(widget, 'page_painted', False):widget.update()
     for layout in [root.layout(), *root.findChildren(QLayout)]:
         if layout is not None:layout.invalidate()
+    # A table's columns sized to their contents follow the new type.
+    for table in root.findChildren(QTableView):
+        table.resizeColumnsToContents()
 
 
 class FixedPage(QWidget):

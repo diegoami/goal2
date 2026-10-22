@@ -40,7 +40,7 @@ QPushButton:focus {{background:#aaaaaa;color:#000000;border:3px solid {COLORS['f
 QPushButton:disabled {{color:#777777;border-color:#555555;}}
 QComboBox, QLineEdit {{background:{COLORS['background']};color:{COLORS['list']};border:2px solid {COLORS['title']};padding:4px;min-height:36px;}}
 QComboBox:focus, QLineEdit:focus, QListWidget:focus {{border:3px solid {COLORS['focus']};}}
-QPushButton, QComboBox, QLineEdit {{margin:1px;}}
+QPushButton, QComboBox, QLineEdit {{margin:@focus-margin;}}
 QPushButton:focus, QComboBox:focus, QLineEdit:focus {{margin:0px;}}
 """
 HINT = 'Arrows: choose / Enter: accept / Esc: back / Existing saves stay yours'
@@ -81,7 +81,8 @@ class LaunchWindow(QMainWindow):
         self._build_launch();self._build_browse();self._build_review();self._build_players()
         from goal2.desktop.style import load_fonts
         from goal2.desktop.fixed_page import FixedPage
-        load_fonts();self.setStyleSheet(STYLE);self.setCentralWidget(FixedPage(root, STYLE, self))
+        from goal2.desktop.fixed_page import scale_sheet
+        load_fonts();self.setStyleSheet(scale_sheet(STYLE, 1));self.setCentralWidget(FixedPage(root, STYLE, self))
         QShortcut(QKeySequence(Qt.Key.Key_Escape), self, activated=self.back)
         self.preview_timer = QTimer(self);self.preview_timer.setSingleShot(True);self.preview_timer.setInterval(120)
         self.preview_timer.timeout.connect(self.preview)
