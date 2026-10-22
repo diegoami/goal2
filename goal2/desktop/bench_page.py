@@ -20,6 +20,9 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 
 VIEW = 4
 TITLES = {'half_time': 'HALF TIME', 'pause': 'PAUSE', 'substitution': 'SUBSTITUTION OPPORTUNITY'}
+# [confirmed: the kit's Match._on_notice] At the stoppage after a pause an empty answer makes what was
+# asked for; Esc there cannot cancel the request, and the bench says so (#316).
+ESC_KEEPS_REQUESTED = 'Esc: the requested substitutions are still made'
 
 
 def sheet():
@@ -166,6 +169,8 @@ class Bench:
         self.message = data.get('refused') or ''
         if data.get('context') == 'pause':
             self.message = self.message or 'Substitutions chosen now are made at the next stoppage.'
+        if self.requested():
+            self.message = (self.message + ' ' if self.message else '') + ESC_KEEPS_REQUESTED
         self.roster.current = 0
         self.refresh();self.show()
         w = self.window;w.raise_();w.activateWindow()
@@ -184,14 +189,20 @@ class Bench:
             self.mark = word
         self.refresh()
 
+    def requested(self):
+        """The pairs the original still makes on an empty answer: those requested at a pause, at
+        the stoppage that offers them."""
+        return self.data.get('requested') or [] if self.data.get('context') == 'substitution' else []
+
     def play_on(self):
-        """Play: pass the chosen pairs to the original (none plays on)."""
+        """Play: pass the chosen pairs to the original (none plays on, or at a stoppage with
+        requested pairs makes those)."""
         if self.decision is None:
             self.close();return
         pairs = list(self.chosen)
         self.window.watched.answer(pairs)
         self.decision = None;self.chosen = [];self.mark = None
-        if pairs:
+        if pairs or self.requested():
             # The original's report decides what the view says next.
             self.expected = len(self.window.watched.reports) + 1
             self.message = 'Waiting for the original…';self.refresh()
@@ -199,7 +210,8 @@ class Bench:
             self.close()
 
     def escape(self):
-        """Esc: drop the choice; with nothing chosen, play on; after a report, back to the match."""
+        """Esc: drop the choice; with nothing chosen, play on (at a stoppage with requested pairs
+        the original still makes them); after a report, back to the match."""
         if self.decision is None:
             self.close();return True
         if self.chosen or self.mark is not None:

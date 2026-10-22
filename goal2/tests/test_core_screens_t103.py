@@ -18,6 +18,8 @@ from goal2.tests import requires
 
 TEMPLATE, HALFTIME = "e006-r0001-main.sav", "e010-r0001-halftime.sav"
 NEEDS = {"modules": ("unicorn",), "files": (TEMPLATE, HALFTIME, "GOAL.DAT"), "archaeology": True}
+# [designed: #316] The tests that run the original are slow tests (GOAL2_SLOW=1; the gate runs them whenever
+# goal2/core/ changes, tools/check_premerge.py SLOW_PATHS), but Unknown, its one real case in the default run.
 
 # [confirmed: seg_214B_02.asm 08DD-0941] the code 08DD returns: the character, or an extended key's scan code
 # (Left -1, Right -2, End..PgDn -3) + 0x64. Written out here, apart from goal2/core/screens.py, as the oracle.
@@ -129,7 +131,7 @@ WATCHED = [ENTER, ENTER, ENTER, ENTER, ENTER, ENTER]
 HALF_TIME = [ENTER, LEFT, ENTER, ESC, DOWN, ENTER, ESC, DOWN, ENTER, ENTER]
 
 
-@requires.need(**NEEDS)
+@requires.need(**NEEDS, slow=True)
 class Tours(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -265,6 +267,7 @@ class Keys(unittest.TestCase):
             self.assertIn(name, rules())
             self.assertEqual(set(kind.keys), catalogue_keys(name), name)
 
+    @requires.need(slow=True)
     def test_a_key_the_kind_does_not_accept_is_refused(self):
         from goal2.core import Core
         core = Core.start(savestate(TEMPLATE)).core

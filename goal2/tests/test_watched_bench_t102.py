@@ -221,6 +221,13 @@ class EngineCases(unittest.TestCase):
         self.assertGreater(stoppage.minute, pause.minute)
         self.assertEqual(job.jobs.reports[0]['requested'], pair)
         self.assertEqual(self.managed(job, outcome), pair)
+        # Esc at the stoppage (an empty answer): the original still makes what was asked, and the
+        # bench is told of the swaps as of any answered one (#316 R1).
+        self.assertEqual(choose('pause', stoppage.data), [])
+        self.assertEqual(len(job.jobs.reports), 2)
+        report = job.jobs.reports[1]
+        self.assertEqual((report['context'], report['asked'], report['made'], report['refused']),
+                         ('substitution', pair, pair, []))
         made = next(e for e in outcome.events if e.kind == 'substitution' and [e.data['off'], e.data['on']] == pair[0])
         self.assertEqual(made.minute, stoppage.minute)
 
@@ -277,7 +284,7 @@ class CancelWhileWaiting(unittest.TestCase):
         before = copy.deepcopy(owner.state)
         jobs = WatchedJobs(owner, command=[sys.executable, '-c', CONTROLLED, 'blocked'])
         try:
-            token = jobs.start(Fixture(7, 19, 21), bench=True)
+            token = jobs.start(Fixture(7, 19, 21), frames=True, bench=True)
             deadline = time.monotonic() + 60
             while jobs.waiting is None:
                 self.assertLess(time.monotonic(), deadline, 'the bench decision never arrived')
@@ -288,6 +295,79 @@ class CancelWhileWaiting(unittest.TestCase):
             self.assertLess(time.monotonic() - started, 2)
             self.assertIsNotNone(process.poll());self.assertFalse(jobs.busy)
             self.assertEqual(owner.state, before)
+        finally:
+            jobs.close()
+
+
+# [designed: #316 R3] A controlled guest under the real worker and driver: it plays pitch samples;
+# its first pause is refused as the kit refuses one after full time, the second is taken and the
+# original asks the `pause` decision.
+DROPPING = r'''
+import sys,time
+from unittest.mock import patch
+from goal2.engine.original_match.match import Event, MatchError
+from goal2.game import watched_worker
+class Guest:
+ def __init__(self,*args,**kwargs):self.image=args[0];self.opts={};self.pauses=0;self.paused=False
+ def pause(self):
+  self.pauses+=1
+  if self.pauses==1:raise MatchError('the match is over')
+  self.paused=True
+ def events(self):
+  for n in range(60):
+   if self.paused:break
+   yield Event('tick',1,(0,0))
+   time.sleep(.2)
+  if self.paused:yield Event('decision',1,(0,0),{'context':'pause','refused':None})
+  time.sleep(60)
+ def answer(self,**kwargs):pass
+with patch('goal2.game.watched_pitch.snapshot',lambda match,ev,sequence,watermark:{'sequence':sequence}):
+ with patch('goal2.game.watched_match.Match',Guest):sys.exit(watched_worker.main())
+'''
+
+
+@requires.need(**requires.WATCHED)
+class DroppedPause(unittest.TestCase):
+    def setUp(self):
+        from goal2.tests import test_watched_adapter as adapter
+        from goal2.tests.test_watched_publication import Owner
+        adapter.WatchedAdapter.setUpClass();self.raw = adapter.WatchedAdapter.raw
+        self.owner = Owner(adapter.WatchedAdapter.state(self), self.raw)
+        self.before = copy.deepcopy(self.owner.state)
+
+    def test_a_dropped_pause_lets_the_next_enter_pause(self):
+        """[designed: #316 R3] A pause the original cannot take is reported, and the next Enter is sent."""
+        import sys
+        from goal2.engine.original_match import Fixture
+        from goal2.game.watched_jobs import WatchedJobs
+        jobs = WatchedJobs(self.owner, command=[sys.executable, '-c', DROPPING])
+        try:
+            token = jobs.start(Fixture(7, 19, 21), frames=True, bench=True)
+            sent, deadline = 0, time.monotonic() + 60
+            while jobs.waiting is None:
+                self.assertLess(time.monotonic(), deadline, f'no pause decision after {sent} sent pause(s)')
+                jobs.poll(token)
+                if jobs.waiting is None and jobs.pause(token):
+                    sent += 1
+                time.sleep(.01)
+            self.assertEqual(sent, 2, 'one dropped pause, then the one the original took')
+            self.assertEqual(jobs.waiting.data['context'], 'pause')
+            jobs.cancel_and_reap(token)
+            self.assertEqual(self.owner.state, self.before)
+        finally:
+            jobs.close()
+
+    def test_the_bench_without_pitch_samples_is_refused(self):
+        """[designed: #316 R3] Enter in play is taken only at a pitch sample: no bench without them."""
+        from goal2.engine.original_match import Fixture
+        from goal2.game.watched_jobs import WatchedJobs
+        jobs = WatchedJobs(self.owner)
+        try:
+            with self.assertRaisesRegex(ValueError, 'bench needs the pitch samples'):
+                jobs.start(Fixture(7, 19, 21), bench=True)
+            self.assertFalse(jobs.busy)
+            self.assertIsNone(jobs.publication._pending)
+            self.assertEqual(self.owner.state, self.before)
         finally:
             jobs.close()
 
@@ -445,6 +525,31 @@ class BenchView(unittest.TestCase):
         self.assertEqual(self.window.fixture_views.currentIndex(), 4)
         self.assertEqual(bench.counter.text(), NO_MORE_SUBSTITUTES)
         self.assertIn(NO_MORE_SUBSTITUTES, bench.message_label.text())
+
+    def test_escape_at_a_requested_stoppage_says_the_swaps_are_still_made(self):
+        """[confirmed: the kit's Match._on_notice] At the stoppage after a pause an empty answer
+        makes what was asked: the bench says so, and the engine's report of the swaps reaches it."""
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        line = 'Esc: the requested substitutions are still made'
+        bench = self.window.bench
+        pair = [self.eleven[4], self.bench[0]]
+        self.stub.decision = type(self.decision)('decision', 30, (0, 0), dict(
+            self.decision.data, context='substitution', requested=[pair]))
+        bench.poll();self.app.processEvents()
+        self.assertEqual(bench.chosen, [pair])
+        self.assertIn(line, bench.message_label.text())
+        QTest.keyClick(bench.roster, Qt.Key.Key_Escape)
+        self.assertEqual(bench.chosen, [])
+        self.assertIn(line, bench.message_label.text())
+        QTest.keyClick(bench.roster, Qt.Key.Key_Escape)
+        self.assertEqual(self.stub.answers, [[]])
+        self.assertEqual(bench.expected, 1, 'the bench waits for the report of the swaps made')
+        self.stub.reports.append({'context': 'substitution', 'asked': [pair], 'made': [pair], 'requested': [],
+                                  'refused': [], 'substitutions_left': 4})
+        bench.poll()
+        self.assertIsNone(bench.expected)
+        self.assertNotEqual(self.window.fixture_views.currentIndex(), 4)
 
     def test_pause_says_the_swap_waits_for_the_stoppage(self):
         bench = self.window.bench

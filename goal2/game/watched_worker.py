@@ -45,6 +45,10 @@ class BenchPolicy:
             return True
         return False
 
+    def pause_dropped(self, sequence):
+        # [designed: #316] The parent clears its pending pause, so the player's next Enter is sent.
+        self.send('pause_dropped', sequence)
+
     def answered(self, report):
         self.send('answered', report)
 

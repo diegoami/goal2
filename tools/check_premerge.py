@@ -8,7 +8,7 @@ goal2/tests, in parallel, on PY (default: this interpreter). [designed: #275] A 
 optional dependency, original-game file or goal2-archaeology checkout is absent skips with its
 reason (goal2/tests/requires.py), so the gate runs anywhere; the skips are counted in the output.
 Slow tests run when it counts: [designed: owner, 2026-10-20] automatically when the commit changes
-a file the slow tests guard since origin/main (SLOW_PATHS: the engine, the watched and competitive
+a file the slow tests guard since origin/main (SLOW_PATHS: the engine, the core, the watched and competitive
 match, saves, the match view, the dependencies), always with --slow (every milestone candidate),
 never with --fast. Task-specific Done-when lines stay separate.
 """
@@ -55,9 +55,11 @@ def check_originals() -> None:
 
 # [designed: owner, 2026-10-20] The files whose change makes the slow tests count: what they exercise
 # (the vendored engine under the emulator, watched and competitive matches, saves and timing).
-SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/game/(watched|competitive|session_save|campaign_competitive)"
+# [designed: #316] goal2/core/ and its two test modules: the core runs the original's whole game.
+SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|competitive|session_save|campaign_competitive)"
                         r"|goal2/desktop/(watched|competitive|match_view|save)|goal2/tests/(requires\.py$"
-                        r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view))"
+                        r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view"
+                        r"|core_runner_t100|core_screens_t103))"
                         r"|pyproject\.toml$|tools/check_premerge\.py$)")
 
 
