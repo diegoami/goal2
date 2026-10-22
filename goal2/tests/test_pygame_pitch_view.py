@@ -240,7 +240,7 @@ class PitchController(unittest.TestCase):
                     c.poll();ack.assert_not_called()
                     self.assertEqual(len(c.display.frames),1,'queued frame must remain pending')
                     self.assertTrue(c.busy and m.match_pending)
-                    valid=dict(token=c.token,kind='ready',sequence=c.display.sequence,digest=c.display.digest(),frame_sequence=0,frame_digest=viewer.frame_digest(frame))
+                    valid=dict(token=c.token,kind='ready',sequence=c.display.sequence,digest=c.display.digest(),frame_sequence=0,frame_digest=viewer.frame_digest(frame),requests=0)
                     (c.directory/'status').write_text(json.dumps(valid));c.poll()
                     ack.assert_called_once_with(c.engine_token,0)
                     c.poll();ack.assert_called_once()
@@ -252,7 +252,7 @@ class PitchController(unittest.TestCase):
                     c=WatchedController(m,engine_command=[sys.executable,'-c','import time;time.sleep(60)'],viewer_command=[sys.executable,'-c','import time;time.sleep(60)'])
                     try:
                         c.start();child=c.process;engine=c.engine.process
-                        status=dict(token=c.token,kind='ready',sequence=c.display.sequence,digest=c.display.digest(),frame_sequence=bad,frame_digest=None)
+                        status=dict(token=c.token,kind='ready',sequence=c.display.sequence,digest=c.display.digest(),frame_sequence=bad,frame_digest=None,requests=0)
                         (c.directory/'status').write_text(json.dumps(status))
                         with self.assertRaises(ValueError):c.poll()
                         self.assertFalse(c.busy or m.match_pending)

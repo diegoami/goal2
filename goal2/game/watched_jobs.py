@@ -504,6 +504,11 @@ class WatchedJobs:
             self.cancel(token)
             raise ValueError(f'Invalid watched command: {exc}') from exc
 
+    def frames_drained(self):
+        """[designed: T102] Every pitch sample the child has written so far has been read."""
+        return (not self._frame_buffer and
+                self._frames.tell() == Path(self._frames.name).stat().st_size)
+
     def pause(self, token):
         """[designed: T102] The player's Enter in play: the original takes it at its next key poll
         and asks a `pause` decision. One request at a time; none while a decision waits. Returns
