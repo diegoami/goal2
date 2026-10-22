@@ -524,7 +524,7 @@ class ManagementWindow(QMainWindow):
             from goal2.desktop.fixtures_page import fixtures_view
             if preview is not None:fixtures_view(self,2)
             elif self.fixture_views.currentIndex()==2:self.fixture_views.setCurrentIndex(0)
-        self.half_out.clear();self.half_in.clear()
+        self.half_out.clear();self.half_in.clear();self.half_title.setText('HALF TIME')
         if preview is None:return
         for word in preview['eleven']:self.half_out.addItem(self.model.goaldat.player_names[word],word)
         for word in preview['bench']:
@@ -532,6 +532,7 @@ class ManagementWindow(QMainWindow):
                 self.half_in.addItem(self.model.goaldat.player_names[word],word)
         a,b=preview['teams'];x,y=preview['score']
         self.result.setText(f"Halftime: {self.model.goaldat.country_names[a]} {x} — {y} {self.model.goaldat.country_names[b]}")
+        self.half_title.setText(f"HALF TIME / {self.model.goaldat.country_names[a].upper()} {x} - {y} {self.model.goaldat.country_names[b].upper()}")
         self.status.setText(f"Halftime: {len(preview['changes'])} substitutions selected. No re-entry. Saving is unavailable until full time; cancel preserves the previous game.")
 
     def substitute_halftime(self):

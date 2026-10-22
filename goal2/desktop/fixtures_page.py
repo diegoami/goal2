@@ -28,7 +28,6 @@ def build(self,model,TACTICS):
     half_bar.setColumnStretch(1,1)
     for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(False)
     half_box.addLayout(half_bar);self.half_preview=None
-    self.result=card(half_box,'Goals and result details','resultDetails')
     half_box.addStretch(1)
     # View 3: the fixture list, in two columns.
     title=QLabel('FIXTURE LIST');title.setObjectName('prepTitle');list_box.addWidget(title)
@@ -39,6 +38,7 @@ def build(self,model,TACTICS):
     self.scoreboard=card(left,'Last completed result','scoreboard')
     self.scoreboard.setStyleSheet('font-size: 22px; font-weight: 600;')
     self.result_stages=card(left,'Match resolution','resultStages')
+    self.result=card(left,'Goals and result details','resultDetails')
     self.fixture_routes=QLabel();self.fixture_routes.setObjectName('fixtureRoutes');self.fixture_routes.setWordWrap(True);self.fixture_routes.setTextFormat(Qt.TextFormat.PlainText);left.addWidget(self.fixture_routes)
     left.addStretch(1)
     self.fixture_table=card(right,'Standings snapshot','fixtureTable')

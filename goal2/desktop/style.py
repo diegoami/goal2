@@ -54,6 +54,11 @@ def stylesheet():
     QPushButton:checked:focus {{border:3px solid {c['focus']};}}
     QPushButton:disabled,QComboBox:disabled,QLineEdit:disabled,QCheckBox:disabled {{color:#777777;border-color:#555555;}}
     QPushButton:focus,QComboBox:focus,QLineEdit:focus,QCheckBox:focus,QTableWidget:focus,QLabel#pageHeading:focus {{border:3px solid {c['focus']};}}
+    /* [designed: T101] The focus border is 1px wider: a 1px margin gives it room, so a focused
+       control keeps its size and its caption is never squeezed (fixed_page.problems checks it). */
+    QPushButton,QComboBox,QLineEdit {{margin:1px;}}
+    QPushButton:focus,QComboBox:focus,QLineEdit:focus {{margin:0px;}}
+    QWidget#draftBar QPushButton {{margin:0px;}}
     QComboBox QAbstractItemView {{background:{c['background']};color:{c['text']};selection-background-color:{c['accent']};selection-color:{c['ink']};border:1px solid {c['cyan']};}}
     QLineEdit {{selection-background-color:{c['accent']};selection-color:{c['ink']};}}
     QCheckBox {{color:{c['text']};}}
@@ -84,10 +89,10 @@ def stylesheet():
     QLabel#prepSpeedHeading {{font-size:20px;color:{c['yellow']};font-weight:700;}}
     QLabel#prepNote {{font-size:14px;color:{c['magenta']};}}
     QPushButton#speedSlow:checked, QPushButton#speedNormal:checked, QPushButton#speedFast:checked {{background:{c['accent']};color:{c['ink']};}}
-    QPushButton#deskPrepare {{font-size:20px;text-align:left;padding:8px 12px;}}
+    QPushButton#deskPrepare {{font-size:18px;text-align:left;padding:6px 10px;}}
     QLabel#poolCardCaption {{font-size:20px;color:{c['yellow']};font-weight:700;}}
     QLabel#deskCaptain {{font-size:20px;color:{c['yellow']};}}
-    QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager {{font-size:20px;text-align:left;padding:8px 12px;}}
+    QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager, QPushButton#deskGames {{font-size:18px;text-align:left;padding:6px 10px;}}
     QLabel#overviewCountry {{font-size:24px;font-weight:700;color:{c['yellow']};}}
     QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;color:{c['green']};}}
     QLabel#tacticsTitle {{font-size:26px;font-weight:700;color:{c['red']};}}

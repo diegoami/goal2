@@ -1,6 +1,6 @@
 """[designed: T75] Displayed-country overview; the window owns every action."""
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame,QVBoxLayout,QLabel,QPushButton,QWidget
+from PySide6.QtWidgets import QFrame,QVBoxLayout,QGridLayout,QLabel,QPushButton,QWidget
 
 
 def card(layout,title,name):
@@ -35,8 +35,13 @@ def build(self,model,TACTICS):
     self.country_views.show_view=lambda index:country_view(self,index)
     # [designed: T91; accepted vision #266 screen 02] Your country, next opponent and campaign;
     # the direct routes with the last result; the twenty. Three columns.
+    # [designed: T101] Your country, opponent and campaign on the left; readiness, captain and the
+    # last result beside them; the routes in a grid below both; the twenty on the right.
     desk=QHBoxLayout();desk.setSpacing(16);desk_box.addLayout(desk,1)
-    left=QVBoxLayout();left.setSpacing(10);holder=QWidget();holder.setLayout(left);desk.addWidget(holder,3)
+    work=QVBoxLayout();work.setSpacing(8);desk.addLayout(work,1)
+    columns=QHBoxLayout();columns.setSpacing(16);work.addLayout(columns,1)
+    routes=QGridLayout();routes.setSpacing(8);work.addLayout(routes)
+    left=QVBoxLayout();left.setSpacing(10);holder=QWidget();holder.setLayout(left);columns.addWidget(holder,3)
     own,own_body,self.desk_own=panel('YOUR COUNTRY','deskOwn')
     self.overview_country_identity=QLabel();self.overview_country_identity.setObjectName('overviewCountry')
     self.overview_country_identity.setTextFormat(Qt.TextFormat.PlainText);self.overview_country_identity.setWordWrap(True)
@@ -46,26 +51,27 @@ def build(self,model,TACTICS):
     self.overview_fixture.setTextFormat(Qt.TextFormat.PlainText);opponent_body.addWidget(self.overview_fixture);left.addWidget(opponent)
     campaign,_,self.desk_campaign=panel('YOUR CAMPAIGN','deskCampaign');left.addWidget(campaign)
     left.addStretch(1)
-    middle=QVBoxLayout();middle.setSpacing(8);holder=QWidget();holder.setLayout(middle);desk.addWidget(holder,2)
+    middle=QVBoxLayout();middle.setSpacing(8);holder=QWidget();holder.setLayout(middle);columns.addWidget(holder,2)
     self.desk_routes=[]
     for text,name,index in (('Prepare match','deskPrepare',3),('Select squad','deskTeam',1),('Pool','deskPool',2),('Fixture list','deskFixtures',3)):
         button=QPushButton(text);button.setObjectName(name);button.setAccessibleName(text)
-        button.clicked.connect(lambda checked=False,i=index:self.navigate(i));middle.addWidget(button);self.desk_routes.append(button)
+        button.clicked.connect(lambda checked=False,i=index:self.navigate(i));self.desk_routes.append(button)
     self.desk_routes[0].clicked.connect(lambda:self.fixtures_view(0))
     self.desk_routes[3].clicked.connect(lambda:self.fixtures_view(3))
     self.desk_card=QPushButton('Country card >');self.desk_card.setObjectName('deskCard')
-    self.desk_card.setAccessibleName('Show the country card');middle.addWidget(self.desk_card)
+    self.desk_card.setAccessibleName('Show the country card')
     self.desk_card.clicked.connect(lambda:country_view(self,1))
     self.desk_manager=QPushButton('Manager name');self.desk_manager.setObjectName('deskManager')
     self.desk_manager.setAccessibleName('Change the manager name');self.desk_manager.clicked.connect(self.rename_manager)
-    middle.addWidget(self.desk_manager)
     self.desk_games=QPushButton('Other games >');self.desk_games.setObjectName('deskGames')
-    self.desk_games.setAccessibleName('Browse another country or start another game');middle.addWidget(self.desk_games)
+    self.desk_games.setAccessibleName('Browse another country or start another game')
     self.desk_games.clicked.connect(lambda:country_view(self,2))
     self.desk_readiness=QLabel();self.desk_readiness.setObjectName('deskReadiness');self.desk_readiness.setWordWrap(True);middle.addWidget(self.desk_readiness)
     self.desk_captain=QLabel();self.desk_captain.setObjectName('deskCaptain');self.desk_captain.setWordWrap(True);middle.addWidget(self.desk_captain)
     result,_,self.overview_result=panel('LAST RESULT','overviewResult');middle.addWidget(result)
     middle.addStretch(1)
+    for number,button in enumerate((*self.desk_routes,self.desk_card,self.desk_manager,self.desk_games)):
+        routes.addWidget(button,number//4,number%4)
     self.country_roster=RosterView('SQUAD',toggles=False);self.country_roster.setFixedWidth(320);self.country_roster.setAccessibleDescription('Enter: open this player on Team')
     desk.addWidget(self.country_roster,0,Qt.AlignmentFlag.AlignTop)
     # Enter on a player opens the Team page on him; the desk never changes the XI.

@@ -40,6 +40,8 @@ QPushButton:focus {{background:#aaaaaa;color:#000000;border:3px solid {COLORS['f
 QPushButton:disabled {{color:#777777;border-color:#555555;}}
 QComboBox, QLineEdit {{background:{COLORS['background']};color:{COLORS['list']};border:2px solid {COLORS['title']};padding:4px;min-height:36px;}}
 QComboBox:focus, QLineEdit:focus, QListWidget:focus {{border:3px solid {COLORS['focus']};}}
+QPushButton, QComboBox, QLineEdit {{margin:1px;}}
+QPushButton:focus, QComboBox:focus, QLineEdit:focus {{margin:0px;}}
 """
 HINT = 'Arrows: choose / Enter: accept / Esc: back / Existing saves stay yours'
 # [designed: T89] Each page names only its own keys, so the line never wraps.

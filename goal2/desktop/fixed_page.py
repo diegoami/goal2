@@ -92,9 +92,12 @@ def apply(root, scale, sheet):
         row = widget.property('pageRow')
         if row is not None:widget.verticalHeader().setDefaultSectionSize(px(row, scale))
     root.setStyleSheet(scale_sheet(sheet, scale))
+    # Every size hint follows the new type and lengths, hidden views included.
     for widget in root.findChildren(QWidget):
-        if getattr(widget, 'page_painted', False):
-            widget.updateGeometry();widget.update()
+        widget.updateGeometry()
+        if getattr(widget, 'page_painted', False):widget.update()
+    for layout in [root.layout(), *root.findChildren(QLayout)]:
+        if layout is not None:layout.invalidate()
 
 
 class FixedPage(QWidget):
@@ -151,13 +154,16 @@ def problems(window):
     found = []
     frame = host(window)
     if frame is None:
-        return ['the window has no fixed page']
-    page = frame.page
-    scale = frame.scale
-    if not frame.rect().contains(page.geometry()):
-        found.append(f'page {page.geometry().getRect()} outside the window area {frame.rect().getRect()}')
-    if abs(page.width() - WIDTH * scale) > 1 or abs(page.height() - HEIGHT * scale) > 1:
-        found.append(f'page {page.width()}x{page.height()} is not 1440x900 at scale {scale:.4f}')
+        # A window without the fixed page is checked as it is, its central widget as the page.
+        found.append('the window has no fixed page')
+        page = window.centralWidget()
+    else:
+        page = frame.page
+        scale = frame.scale
+        if not frame.rect().contains(page.geometry()):
+            found.append(f'page {page.geometry().getRect()} outside the window area {frame.rect().getRect()}')
+        if abs(page.width() - WIDTH * scale) > 1 or abs(page.height() - HEIGHT * scale) > 1:
+            found.append(f'page {page.width()}x{page.height()} is not 1440x900 at scale {scale:.4f}')
     bounds = page.rect()
     for widget in page.findChildren(QWidget):
         if widget.isWindow() or not widget.isVisible():continue
