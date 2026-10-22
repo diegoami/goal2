@@ -47,6 +47,15 @@ def completed_candidate(state,fixture,outcome,template,*,competitive=False):
     candidate.players=image.players();candidate.countries=image.countries()
     candidate.managed_squad=image.squad(state.managed_country)
     # [designed] Selection and captain are manager choices; returned squad/tactics are engine fields.
+    # [confirmed: F029; A-WATCH-8; E015-r0007 state 215] The original keeps a substitute in the
+    # eleven: its squad words hold the swap into the next match. [designed: T102, as T47's quick
+    # halftime] The managed side's substitutions, in the order made, replace the player taken off
+    # in the selection, and a substituted captain by the incoming player; no swap, no change.
+    side=int(state.managed_country==fixture.second)
+    for swap in result.get('substitutions',()):
+        if swap.get('team')==side and swap['off'] in candidate.starting_eleven:
+            candidate.starting_eleven[candidate.starting_eleven.index(swap['off'])]=swap['on']
+            if candidate.captain==swap['off']:candidate.captain=swap['on']
     candidate.country_tactics=candidate.countries[state.managed_country][0x2D]
     candidate.rng_seed_7b62,candidate.rng_seed_8336=outcome.seeds
     candidate.match_count+=1
