@@ -23,6 +23,7 @@ class TacticRow(QPushButton):
     the word is read from isChecked() and never kept apart from it. Space, Enter or a click
     switches it; Up/Down move between rows. `alternatives` is the TACTICS label (unchecked word /
     checked word)."""
+    page_painted=True
 
     def __init__(self,element,alternatives):
         super().__init__();self.element=element;self.category=CATEGORIES[element]
@@ -55,22 +56,29 @@ class TacticRow(QPushButton):
         from goal2.desktop.style import COLORS as c
         painter=QPainter(self);rect=self.rect()
         painter.fillRect(rect,QColor(c['raised'] if self.underMouse() and self.isEnabled() else c['background']))
+        from goal2.desktop.fixed_page import scale_of,px
+        s=scale_of(self)
         if self.hasFocus():
-            painter.setPen(QPen(QColor(c['focus']),3));painter.drawRect(rect.adjusted(1,1,-2,-2))
+            painter.setPen(QPen(QColor(c['focus']),px(3,s)));painter.drawRect(rect.adjusted(1,1,-2,-2))
         painter.setFont(self.font());metrics=self.fontMetrics()
         flags=Qt.AlignmentFlag.AlignVCenter|Qt.AlignmentFlag.AlignLeft
-        column=12+metrics.horizontalAdvance('Defence system')+metrics.horizontalAdvance('    ')
+        column=px(12,s)+metrics.horizontalAdvance('Defence system')+metrics.horizontalAdvance('    ')
         disabled=QColor('#777777')
         painter.setPen(QColor(c['gold']) if self.isEnabled() else disabled)
-        painter.drawText(rect.adjusted(12,0,0,0),flags,self.category)
+        painter.drawText(rect.adjusted(px(12,s),0,0,0),flags,self.category)
         painter.setPen(QColor(c['green']) if self.isEnabled() else disabled)
-        painter.drawText(rect.adjusted(column,0,-8,0),flags,self.value())
+        painter.drawText(rect.adjusted(column,0,-px(8,s),0),flags,self.value())
         painter.end()
 
     def sizeHint(self):
+        # [designed: T101] Its type comes from the scaled style sheet; its fixed lengths scale too.
         from PySide6.QtCore import QSize
-        metrics=self.fontMetrics()
-        return QSize(32+metrics.horizontalAdvance('Defence system    Sag back to box'),max(44,metrics.height()+20))
+        from goal2.desktop.fixed_page import scale_of,px
+        metrics=self.fontMetrics();s=scale_of(self)
+        return QSize(px(32,s)+metrics.horizontalAdvance('Defence system    Sag back to box'),max(px(44,s),metrics.height()+px(20,s)))
+
+    def minimumSizeHint(self):
+        return self.sizeHint()
 
 
 def build(self,model,TACTICS):
@@ -80,28 +88,22 @@ def build(self,model,TACTICS):
     # roster is a strip on the right of every Team view; the views on its left are 0 the player's
     # card with the routes and 1 Team tactics. window.team_view(i) switches them; Escape returns
     # to the card. There is no table view: window.table stays the hidden model of the XI checks.
-    from goal2.desktop.roster import Columns,RosterView
+    from goal2.desktop.roster import RosterView
     from goal2.desktop.player_card import PlayerCardView
-    from PySide6.QtWidgets import QScrollArea
-    team=Columns(1096);team.setObjectName('teamDesk');layout.addWidget(team)
-    self.team_views=QStackedWidget();self.team_views.setObjectName('teamViews');team.box.addWidget(self.team_views,1)
+    # [designed: T101] On the fixed page the views and the strip sit side by side at every size.
+    team=QHBoxLayout();team.setSpacing(16);layout.addLayout(team,1)
+    self.team_views=QStackedWidget();self.team_views.setObjectName('teamViews');team.addWidget(self.team_views,1)
+    self.team_views.show_view=lambda index:self.team_view(index);page.views=self.team_views
     self.team_roster=RosterView('SQUAD',grouped=True,marks=False);self.team_roster.setFixedWidth(320)
     self.team_roster.setAccessibleDescription('Up/Down: select; Space: between the XI and the bench')
-    team.box.addWidget(self.team_roster,0,Qt.AlignmentFlag.AlignTop)
+    team.addWidget(self.team_roster,0,Qt.AlignmentFlag.AlignTop)
     def view(name):
         widget=QWidget();widget.setObjectName(name);box=QVBoxLayout(widget)
-        box.setContentsMargins(0,0,0,0);box.setSpacing(12);self.team_views.addWidget(widget)
+        box.setContentsMargins(0,0,0,0);box.setSpacing(8);self.team_views.addWidget(widget)
         return box
     card_box,tactics_box=view('teamCardView'),view('teamTacticsView')
-    self.team_views.currentChanged.connect(lambda index:fit_views(self))
-    # A view re-arranged while the page was hidden (Columns, T91) settles when the page shows.
-    self.page_stack.currentChanged.connect(lambda index:index==1 and fit_views(self))
     # [designed: T91/T99] View 0: the selected player's complete card (T88), then the routes.
-    self.team_card=PlayerCardView();card_area=QScrollArea();card_area.setObjectName('teamCard')
-    card_area.setWidgetResizable(True);card_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-    card_area.setFrameShape(QScrollArea.Shape.NoFrame)
-    card_area.setWidget(self.team_card);card_area.setMinimumHeight(644);card_box.addWidget(card_area)
-    self.team_card_area=card_area
+    self.team_card=PlayerCardView();card_box.addWidget(self.team_card)
     from PySide6.QtGui import QKeySequence,QShortcut
     actions=QGridLayout();actions.setSpacing(8);card_box.addLayout(actions)
     self.team_pool=QPushButton('Pool / Compare >');self.team_pool.setObjectName('teamPool');self.team_pool.setAccessibleName('Pool / Compare')
@@ -112,6 +114,7 @@ def build(self,model,TACTICS):
     self.rename.clicked.connect(self.rename_selected)
     self.team_routes=(self.team_pool,self.team_tactics_route,self.rename)
     for column,button in enumerate(self.team_routes):actions.addWidget(button,0,column)
+    card_box.addStretch(1)
     # [confirmed: E031 C30] F2 renames the player on the card; here, on the Team page.
     self.rename_shortcut=QShortcut(QKeySequence('F2'),self)
     self.rename_shortcut.activated.connect(lambda:self.page_stack.currentIndex()==1 and self.rename_selected())
@@ -125,7 +128,7 @@ def build(self,model,TACTICS):
     # (the counted formation, the manager, the captain; the strip lists the players), the eight
     # tactics on the right. Team skills are not shown: no aggregate is verified (G05).
     title=QLabel('TEAM TACTICS');title.setObjectName('tacticsTitle');tactics_box.addWidget(title)
-    cards=Columns(760);cards.setObjectName('tacticsCards');tactics_box.addWidget(cards)
+    cards=QWidget();cards.setObjectName('tacticsCards');cards.box=QHBoxLayout(cards);cards.box.setContentsMargins(0,0,0,0);cards.box.setSpacing(16);tactics_box.addWidget(cards)
     left=QFrame();left.setObjectName('tacticsTeam');left_box=QVBoxLayout(left);left_box.setContentsMargins(16,12,16,16);left_box.setSpacing(10)
     self.tactics_heading=QLabel();self.tactics_heading.setObjectName('tacticsHeading');self.tactics_heading.setWordWrap(True);left_box.addWidget(self.tactics_heading)
     self.tactics_manager=QLabel();self.tactics_manager.setObjectName('tacticsManager');self.tactics_manager.setWordWrap(True);left_box.addWidget(self.tactics_manager)
@@ -157,17 +160,6 @@ def build(self,model,TACTICS):
     self.cancel=QPushButton('Discard draft');self.cancel.setObjectName('discard')
     for action in (self.cancel,self.confirm):action.setAutoDefault(True);bar.addWidget(action)
     page.set_footer(footer)
-    fit_views(self)
-
-
-def fit_views(self):
-    """[designed: T99] The page scrolls over the shown view only: a hidden view takes no size."""
-    from PySide6.QtWidgets import QSizePolicy
-    current=self.team_views.currentIndex()
-    for index in range(self.team_views.count()):
-        policy=QSizePolicy.Policy.Preferred if index==current else QSizePolicy.Policy.Ignored
-        self.team_views.widget(index).setSizePolicy(policy,policy)
-    self.team_views.currentWidget().layout().invalidate();self.team_views.updateGeometry()
 
 
 def show_view(self,index):
@@ -176,7 +168,7 @@ def show_view(self,index):
     self.team_views.setCurrentIndex(index)
     from PySide6.QtCore import QCoreApplication,QEvent
     for _ in range(3):QCoreApplication.sendPostedEvents(None,QEvent.Type.LayoutRequest)
-    page=self.pages[1];page.verticalScrollBar().setValue(0)
+    page=self.pages[1]
     if self.page_stack.currentIndex()!=1:return
     target={0:self.team_roster,1:self.tactics[0][1]}[index]
     if not target.isEnabled():target=page.heading

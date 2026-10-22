@@ -236,3 +236,4 @@ operational status.
 | [T98](T98.md) | A Windows GitHub Actions workflow on every PR | [#278](https://github.com/diegoami/goal2/issues/278) | Medium |
 | [T99](T99.md) | Team tactics and the attribute table in the GOAL style | [#304](https://github.com/diegoami/goal2/issues/304) | Medium |
 | [T100](T100.md) | G8: the core runner | [#310](https://github.com/diegoami/goal2/issues/310) | Medium |
+| [T101](T101.md) | Screens fit without scrolling: one fixed page, scaled | [#312](https://github.com/diegoami/goal2/issues/312) | Medium |

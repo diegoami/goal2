@@ -22,8 +22,8 @@
 | --- | --- | --- |
 | Black, large, strongly colored original-style screens; attribute bars | [03](../vision-266/screens/03-team.png), [04](../vision-266/screens/04-pool.png), [07](../vision-266/screens/07-half-time.png) | [#242](https://github.com/diegoami/goal2/issues/242) cards/bars, [#261](https://github.com/diegoami/goal2/issues/261) shell, Team and pool |
 | Maximum-size pitch; default-hidden commentary with the latest two lines | [06](../vision-266/screens/06-watched.png) default, [15](../vision-266/screens/15-watched-drawers.png) opened | [#198](https://github.com/diegoami/goal2/issues/198), [#262](https://github.com/diegoami/goal2/issues/262) |
-| Independently retractable top and side bars, restore without losing selection, draft, scroll or focus | [14](../vision-266/screens/14-team-focus.png), [02](../vision-266/screens/02-country-desk.png) handles | [#261](https://github.com/diegoami/goal2/issues/261), [#262](https://github.com/diegoami/goal2/issues/262), [#263](https://github.com/diegoami/goal2/issues/263) acceptance |
-| Small-window panes instead of shrunken text | [11](../vision-266/screens/11-small-window.png), [17](../vision-266/screens/17-small-roster.png) | [#259](https://github.com/diegoami/goal2/issues/259) geometry proof, [#261](https://github.com/diegoami/goal2/issues/261) |
+| Independently retractable top and side bars, restore without losing selection, draft, view or focus | [14](../vision-266/screens/14-team-focus.png), [02](../vision-266/screens/02-country-desk.png) handles | [#261](https://github.com/diegoami/goal2/issues/261), [#262](https://github.com/diegoami/goal2/issues/262), [#263](https://github.com/diegoami/goal2/issues/263) acceptance |
+| ~~Small-window panes instead of shrunken text~~ superseded (owner, 2026-10-22, #312, decision 6): one fixed 1440×900 page scaled to the window | [11](../vision-266/screens/11-small-window.png), [17](../vision-266/screens/17-small-roster.png) | [#312](https://github.com/diegoami/goal2/issues/312) (T101) |
 | Plain refusals and recoverable errors | [12](../vision-266/screens/12-unavailable-errors.png) | [#260](https://github.com/diegoami/goal2/issues/260), [#262](https://github.com/diegoami/goal2/issues/262) |
 | Longer career and later squad | [10](../vision-266/screens/10-career.png), [18](../vision-266/screens/18-later-squad.png), [19](../vision-266/screens/19-campaign.png) | career stream (lane 4) and G03/G05 |
 
@@ -188,6 +188,15 @@
    - the card shows skills as bars without numbers, and each characteristic as a bar with its word
      inside;
    - there is no attribute table.
+
+6. **Screens fit without scrolling** (owner, 2026-10-22, #312): "Goal2 managed to make everything fit
+   on the screen without scrolling". Every screen is composed once for a fixed 1440×900 page, and the
+   whole page scales to the window, as the pitch view does. This supersedes the small-window layouts
+   of accepted screens 11 and 17 (collapse, reflow, scroll areas). It applies now to the current
+   pages (T101), and every later screen must pass the same no-scroll check
+   (`goal2/desktop/fixed_page.py` `problems`; the way, a scale applied to the whole page, is in
+   [desktop-management.md](../desktop-management.md)). A part that does not fit becomes a view of
+   its page reached by a route, as the original's separate screens.
 
 ## Scope gaps and their owners
 

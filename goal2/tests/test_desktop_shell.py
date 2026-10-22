@@ -40,9 +40,8 @@ class Shell(unittest.TestCase):
                                        ROOT / '.cache/never-written.g2save', country=8)
         self.window = ManagementWindow(self.model);self.window.show()
         self.window.activateWindow();QTest.qWaitForWindowActive(self.window)
-        # A screen smaller than the 1440x900 window clamps it below NARROW_SHELL and collapses the
-        # side bar (the 1024x768 default of a hosted Windows runner, #278).
-        self.assertGreaterEqual(self.window.width(), ManagementWindow.NARROW_SHELL, 'the screen is too small for these tests')
+        # [designed: T101] The page is fixed and scaled, so a screen smaller than 1440x900 (the
+        # 1024x768 of a hosted Windows runner, #278) no longer changes the shell: nothing collapses.
         self.addCleanup(lambda: (self.window.close(), self.window.deleteLater(), self.app.processEvents()))
 
     def shortcut(self, key, modifier=Qt.KeyboardModifier.NoModifier):
@@ -82,8 +81,10 @@ class Shell(unittest.TestCase):
 
     def test_bars_retract_and_restore_independently_keeping_everything(self):
         w = self.window
-        w.navigate(1);w.tactics[0][1].toggle();w.table.setCurrentCell(4, 1);w.pages[1].verticalScrollBar().setValue(60)
-        before = self.purity();scroll = w.pages[1].verticalScrollBar().value();row = w.table.currentRow()
+        # [designed: T101] The page scrolls no more; the shown Team view takes the scroll
+        # position's place as the presentation state the bars must keep.
+        w.navigate(1);w.tactics[0][1].toggle();w.table.setCurrentCell(4, 1);w.team_view(1)
+        before = self.purity();view = w.team_views.currentIndex();row = w.table.currentRow()
         w.navigation[1].setFocus()
         w.hide_side.click();self.app.processEvents()
         self.assertFalse(w.side_bar.isVisible());self.assertTrue(w.show_side.isVisible());self.assertTrue(w.top_bar.isVisible())
@@ -98,16 +99,21 @@ class Shell(unittest.TestCase):
         self.assertFalse(w.top_bar.isVisible() or w.side_bar.isVisible())
         self.shortcut(Qt.Key.Key_F11)
         self.assertEqual(self.purity(), before)
-        self.assertEqual((w.table.currentRow(), w.pages[1].verticalScrollBar().value()), (row, scroll))
+        self.assertEqual((w.table.currentRow(), w.team_views.currentIndex()), (row, view))
+        self.assertEqual(view, 1)
 
-    def test_a_small_window_collapses_the_side_bar_to_its_handle(self):
+    def test_a_small_window_keeps_the_bars_and_shows_the_same_page_smaller(self):
+        # [designed: owner, 2026-10-22, #312; T101] Superseding T90's collapse below 1100 px: a
+        # small window keeps the bars as the player left them and scales the whole page.
         w = self.window
         w.resize(900, 640);self.app.processEvents()
-        self.assertFalse(w.side_bar.isVisible());self.assertTrue(w.show_side.isVisible())
+        self.assertTrue(w.side_bar.isVisible());self.assertFalse(w.show_side.isVisible())
+        self.assertLess(w.centralWidget().scale, 0.7)
+        # A retracted bar leaves its handle, which takes no page width or height: in the top bar,
+        # or in the handle row beside [v Top] when the top bar is retracted too.
+        w.set_bars(side=False);self.app.processEvents()
         self.assertEqual(w.show_side.text(), '[Menu >]')
-        # The handle takes no page width or height: it sits in the top bar, or in the handle row
-        # beside [v Top] when the top bar is retracted too.
-        self.assertTrue(w.top_bar.isAncestorOf(w.show_side))
+        self.assertTrue(w.top_bar.isAncestorOf(w.show_side) and w.show_side.isVisible())
         w.set_bars(top=False);self.app.processEvents()
         self.assertFalse(w.top_bar.isAncestorOf(w.show_side));self.assertTrue(w.show_side.isVisible() and w.show_top.isVisible())
         w.set_bars(top=True);self.app.processEvents();self.assertTrue(w.top_bar.isAncestorOf(w.show_side))

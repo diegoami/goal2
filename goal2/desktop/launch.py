@@ -12,14 +12,14 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QShortcut, QKeySequence
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
                                QPushButton, QListWidget, QListWidgetItem, QComboBox, QLineEdit,
-                               QStackedWidget, QFrame, QAbstractButton, QScrollArea)
+                               QStackedWidget, QFrame, QAbstractButton)
 from goal2.desktop.model import DesktopModel, START_YEARS, CONTINENTS
 
 # [designed: accepted vision #266] Black screens, large type, strong functional colours.
 COLORS = dict(background='#000000', title='#4ef2f2', saved='#ff5555', country='#ffff55',
               text='#e8e8e8', list='#55ff55', hint='#ff55ff', button='#4ef2f2', focus='#ffff55')
 STYLE = f"""
-QMainWindow, QWidget#launchRoot, QStackedWidget, QStackedWidget > QWidget {{background:{COLORS['background']};}}
+QMainWindow, QWidget#fixedPage, QWidget#launchRoot, QStackedWidget, QStackedWidget > QWidget {{background:{COLORS['background']};}}
 QWidget {{font-family:'DejaVu Sans Mono','Consolas','Courier New',monospace;font-size:20px;color:{COLORS['text']};}}
 QLabel#launchTitle {{font-size:34px;font-weight:700;color:{COLORS['title']};}}
 QLabel#launchSubtitle {{font-size:28px;font-weight:700;color:{COLORS['saved']};}}
@@ -32,8 +32,6 @@ QLabel#chooseHeading {{font-size:24px;font-weight:700;color:{COLORS['country']};
 QLabel#fieldName {{color:{COLORS['text']};}}
 QLabel#launchHint, QLabel#launchNote {{color:{COLORS['hint']};}}
 QLabel#launchError {{color:{COLORS['saved']};font-weight:700;}}
-QScrollArea#previewPane, QScrollArea#previewPane > QWidget > QWidget {{background:{COLORS['background']};border:0;}}
-QScrollArea#cardPane, QScrollArea#cardPane > QWidget > QWidget {{background:{COLORS['background']};border:0;}}
 QListWidget {{background:{COLORS['background']};color:{COLORS['list']};border:1px solid {COLORS['title']};}}
 QListWidget::item:selected {{background:{COLORS['list']};color:{COLORS['background']};}}
 QPushButton {{background:{COLORS['background']};color:{COLORS['button']};border:2px solid {COLORS['button']};
@@ -42,6 +40,8 @@ QPushButton:focus {{background:#aaaaaa;color:#000000;border:3px solid {COLORS['f
 QPushButton:disabled {{color:#777777;border-color:#555555;}}
 QComboBox, QLineEdit {{background:{COLORS['background']};color:{COLORS['list']};border:2px solid {COLORS['title']};padding:4px;min-height:36px;}}
 QComboBox:focus, QLineEdit:focus, QListWidget:focus {{border:3px solid {COLORS['focus']};}}
+QPushButton, QComboBox, QLineEdit {{margin:@focus-margin;}}
+QPushButton:focus, QComboBox:focus, QLineEdit:focus {{margin:0px;}}
 """
 HINT = 'Arrows: choose / Enter: accept / Esc: back / Existing saves stay yours'
 # [designed: T89] Each page names only its own keys, so the line never wraps.
@@ -72,14 +72,17 @@ class LaunchWindow(QMainWindow):
         self.browser = None  # a private DesktopModel for previews; never published until Start
         self.candidate = None
         self.setWindowTitle('goal2 — Start or resume');self.resize(1440, 900)
-        root = QWidget();root.setObjectName('launchRoot');self.setCentralWidget(root)
+        # [designed: T101] One fixed page of 1440x900, scaled to the window (fixed_page.py).
+        root = QWidget();root.setObjectName('launchRoot')
         outer = QVBoxLayout(root);outer.setContentsMargins(20, 16, 20, 16);outer.setSpacing(14)
         title = QLabel('GOAL2 / START OR RESUME');title.setObjectName('launchTitle');outer.addWidget(title)
         self.pages = QStackedWidget();outer.addWidget(self.pages, 1)
         self.hint = QLabel(HINT);self.hint.setObjectName('launchHint');self.hint.setWordWrap(True);outer.addWidget(self.hint)
         self._build_launch();self._build_browse();self._build_review();self._build_players()
         from goal2.desktop.style import load_fonts
-        load_fonts();self.setStyleSheet(STYLE)
+        from goal2.desktop.fixed_page import FixedPage
+        from goal2.desktop.fixed_page import scale_sheet
+        load_fonts();self.setStyleSheet(scale_sheet(STYLE, 1));self.setCentralWidget(FixedPage(root, STYLE, self))
         QShortcut(QKeySequence(Qt.Key.Key_Escape), self, activated=self.back)
         self.preview_timer = QTimer(self);self.preview_timer.setSingleShot(True);self.preview_timer.setInterval(120)
         self.preview_timer.timeout.connect(self.preview)
@@ -164,6 +167,11 @@ class LaunchWindow(QMainWindow):
         columns = QLabel(f"{'COUNTRY':<13}{'WORLD':>5}  CONTINENT");columns.setObjectName('fieldName');body.addWidget(columns)
         self.country_list = QListWidget();self.country_list.setObjectName('countryList')
         self.country_list.setAccessibleName('Countries with world rank and continent rank')
+        # [designed: T101; confirmed: `docs/original-game/images/country-select.png`] As the
+        # original's country list, the 128 countries are a window of rows that follows the
+        # selection (arrows, Page Up/Down, the wheel); the fixed page shows no scroll bar.
+        for policy in (self.country_list.setVerticalScrollBarPolicy, self.country_list.setHorizontalScrollBarPolicy):
+            policy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         body.addWidget(self.country_list, 1)
         year = QHBoxLayout();year.addWidget(QLabel('Start year'))
         self.start_year = QComboBox();self.start_year.setObjectName('launchStartYear');self.start_year.setAccessibleName('Start year')
@@ -179,14 +187,11 @@ class LaunchWindow(QMainWindow):
         self.to_players.clicked.connect(self.show_players);body.addWidget(self.to_players)
         self.country_list.installEventFilter(self)
         layout.addWidget(left, 2)
-        # [designed: T89; accepted vision #266 screen 11] The original's country card; a small
-        # window stacks and scrolls it rather than shrinking or clipping its text.
+        # [designed: T89] The original's country card. [designed: T101] The fixed page gives it its
+        # whole composition at every window size (superseding screen 11's stacking and scrolling).
         from goal2.desktop.country_card import CountryCardView
         self.country_card = CountryCardView()
-        scroll = QScrollArea();scroll.setObjectName('previewPane');scroll.setWidgetResizable(True)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);scroll.setWidget(self.country_card)
-        scroll.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        layout.addWidget(scroll, 3)
+        layout.addWidget(self.country_card, 3, Qt.AlignmentFlag.AlignTop)
         self.pages.addWidget(page)
         self.country_list.currentRowChanged.connect(lambda _: self.preview_timer.start())
         self.start_year.currentIndexChanged.connect(lambda _: self.preview_timer.start())
@@ -226,13 +231,12 @@ class LaunchWindow(QMainWindow):
         self.players_heading = QLabel();self.players_heading.setObjectName('chooseHeading');body.addWidget(self.players_heading)
         self.player_list = QListWidget();self.player_list.setObjectName('playerList')
         self.player_list.setAccessibleName('Players with role codes');self.player_list.setMinimumWidth(240)
+        for policy in (self.player_list.setVerticalScrollBarPolicy, self.player_list.setHorizontalScrollBarPolicy):
+            policy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         body.addWidget(self.player_list, 1)
         layout.addWidget(left, 1)
         self.player_card = PlayerCardView()
-        scroll = QScrollArea();scroll.setObjectName('cardPane');scroll.setWidget(self.player_card)
-        scroll.setWidgetResizable(True);scroll.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        layout.addWidget(scroll, 3)
+        layout.addWidget(self.player_card, 3, Qt.AlignmentFlag.AlignTop)
         self.pages.addWidget(page)
         self.player_list.currentRowChanged.connect(self.show_card)
 

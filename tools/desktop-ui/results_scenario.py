@@ -116,14 +116,14 @@ def results(args):
                     for row in backend['rows']:
                         assert f"{row['rank']}. {row['name']}   P {row['played']}   GF {row['goals_for']}   GA {row['goals_against']}   GD {row['goal_difference']}   Pts {row['points']}" in w.fixture_table.text(),'standings snapshot differs'
                 # [designed] Reach enabled Play and standings by Tab, and reverse with Shift-Tab.
-                w.pages[3].ensureWidgetVisible(w.standings);app.processEvents();active(w.standings)
+                w.reveal(w.standings);app.processEvents();active(w.standings)
                 filename=name+'-focused-standings.png';assert w.grab().save(str(out/filename))
                 report['captures'].append({'file':filename,'sha256':digest(out/filename),'focus':w.standings.objectName(),'window_active':w.isActiveWindow()})
                 QTest.keyClick(w.standings,Qt.Key.Key_Tab);app.processEvents()
                 expected=w.play if w.play.isEnabled() else w.substitute if w.substitute.isEnabled() else None
                 if w.play.isEnabled():
                     assert app.focusWidget() is w.play,'Tab did not reach Play'
-                    w.pages[3].ensureWidgetVisible(w.play);app.processEvents()
+                    w.reveal(w.play);app.processEvents()
                     filename=name+'-focused-play.png';assert w.grab().save(str(out/filename))
                     report['captures'].append({'file':filename,'sha256':digest(out/filename),'focus':'Play','window_active':w.isActiveWindow()})
                     QTest.keyClick(w.play,Qt.Key.Key_Backtab);assert app.focusWidget() is w.standings,'Shift-Tab did not return to standings'
@@ -143,15 +143,16 @@ def results(args):
                 assert w.preview is not None and w.scoreboard.text()=='No match played','active result leaked into preview'
                 assert w.fixture_next.text()==w.display_model.view()['fixture'].rsplit(' (',1)[0],'preview fixture differs'
                 w.country.setCurrentIndex(w.country.findData(model.state.managed_country));app.processEvents();w.navigate(3)
-                # [designed] Capture full wrapped panels after scrolling, at each required viewport.
+                # [designed: T101] Capture full wrapped panels on the fixed page (the fixture list view), at each size.
                 sizes=[(1440,900),(1050,780),(900,700)] if report['scale']=='1' else [(900,640)]
                 for width,height in sizes:
                     w.resize(width,height);app.processEvents()
                     for label in (w.fixture_next,w.scoreboard,w.result_stages,w.result,w.fixture_table):
-                        panel=label.parentWidget();page=w.pages[3];page.ensureWidgetVisible(panel,0,0);app.processEvents()
-                        origin=panel.mapTo(page.viewport(),QPoint(0,0))
-                        assert origin.x()>=0 and origin.x()+panel.width()<=page.viewport().width(),'panel clipped horizontally'
-                        assert origin.y()>=0 and origin.y()+panel.height()<=page.viewport().height(),'panel not completely reachable'
+                        panel=label.parentWidget();w.reveal(panel);app.processEvents();frame=w.centralWidget().page
+                        origin=panel.mapTo(frame,QPoint(0,0))
+                        assert origin.x()>=0 and origin.x()+panel.width()<=frame.width(),'panel clipped horizontally'
+                        assert origin.y()>=0 and origin.y()+panel.height()<=frame.height(),'panel not completely reachable'
+                        assert panel.visibleRegion().contains(panel.rect()),'panel clipped'
                         assert label.height()>=label.heightForWidth(label.width()),'wrapped result line clipped'
                         filename=f'{name}-{width}x{height}-{label.objectName()}.png';assert w.grab().save(str(out/filename))
                         report['captures'].append({'file':filename,'sha256':digest(out/filename),'panel':label.objectName(),'geometry':[origin.x(),origin.y(),panel.width(),panel.height()]})
@@ -161,10 +162,10 @@ def results(args):
                 assert snapshot(bad)['error'] and snapshot(bad)['score']=='Result unavailable','malformed result was not refused'
                 if name=='empty':
                     damaged=snapshot(bad);w.scoreboard.setText(damaged['score']);w.result_stages.setText(damaged['stages']);w.result.setText(damaged['detail'])
-                    page=w.pages[3]
+                    frame=w.centralWidget().page
                     for label in (w.scoreboard,w.result_stages,w.result):
-                        panel=label.parentWidget();page.ensureWidgetVisible(panel,0,0);app.processEvents();origin=panel.mapTo(page.viewport(),QPoint(0,0))
-                        assert origin.y()>=0 and origin.y()+panel.height()<=page.viewport().height(),'error panel not completely reachable'
+                        panel=label.parentWidget();w.reveal(panel);app.processEvents();origin=panel.mapTo(frame,QPoint(0,0))
+                        assert origin.y()>=0 and origin.y()+panel.height()<=frame.height(),'error panel not completely reachable'
                         assert label.height()>=label.heightForWidth(label.width()),'wrapped error line clipped'
                         filename='malformed-copied-'+label.objectName()+'.png';assert w.grab().save(str(out/filename))
                         report['captures'].append({'file':filename,'sha256':digest(out/filename),'geometry':[origin.x(),origin.y(),panel.width(),panel.height()],'context':'malformed pure copied input; save loading remains strict'})

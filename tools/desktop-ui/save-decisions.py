@@ -75,6 +75,9 @@ def main():
             w = ManagementWindow(model);w.resize(width, height);w.show();QTest.qWaitForWindowExposed(w)
             w.activateWindow();QTest.qWaitForWindowActive(w);w.table.setFocus()
             assert (w.width(), w.height()) == (width, height), w.size()
+            # [designed: T101] The window shows its one fixed page, scaled: nothing scrolls or clips.
+            from goal2.desktop.fixed_page import problems
+            assert not problems(w), problems(w)
             # Clean game: Ctrl+S saves without a question.
             shortcut(w, Qt.Key.Key_S);assert save.is_file() and not model.unsaved and not seen
             # Unsaved progress: Ctrl+Q asks; Esc cancels and nothing changes.

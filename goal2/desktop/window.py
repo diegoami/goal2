@@ -69,31 +69,15 @@ class ManagementWindow(QMainWindow):
         for bar,handle,show in ((self.top_bar,self.show_top,top),(self.side_bar,self.show_side,side)):
             if show is None:continue
             bar.setVisible(show);handle.setVisible(not show)
-        (self.handles if self.top_bar.isHidden() else self.top_layout).insertWidget(0,self.show_side,0,Qt.AlignmentFlag.AlignTop)
-        self.fit_columns()
+        (self.handles if self.top_bar.isHidden() else self.top_layout).insertWidget(0,self.show_side,0,Qt.AlignmentFlag.AlignVCenter)
         restore=getattr(self,'_bar_focus',None)
         if restore is not None and restore.isVisible():
             restore.setFocus();self._bar_focus=None
 
-    # [designed: T90; accepted vision #266 screen 11] Below this width the side bar collapses to
-    # its [Menu >] handle; crossing back restores it. The player can open or close it any time.
-    NARROW_SHELL=1100
-
-    def resizeEvent(self,event):
-        super().resizeEvent(event)
-        narrow=self.width()<self.NARROW_SHELL
-        if narrow!=getattr(self,'_narrow_shell',None):
-            self._narrow_shell=narrow;self.set_bars(side=not narrow)
-        self.fit_columns()
-
-    # [designed: T91] The pages' fixed frame around their content: window and page margins, the
-    # page scroll bar, and the side bar with its spacing when it shows.
-    PAGE_FRAME=78
-
-    def fit_columns(self):
-        from goal2.desktop.roster import Columns
-        side=0 if self.side_bar.isHidden() else self.side_bar.sizeHint().width()+8
-        for columns in self.findChildren(Columns):columns.arrange(self.width()-self.PAGE_FRAME-side)
+    # [designed: owner, 2026-10-22, #312; T101] The window shows one fixed page of 1440x900,
+    # scaled to fit (goal2/desktop/fixed_page.py). This supersedes T90's narrow-window collapse of
+    # the side bar (accepted screen 11) and T91's Columns reflow and page scrolling: at every size
+    # the side bar stays as the player left it, and the page is the same, smaller.
 
     def refresh_header(self,display,view):
         """[designed: T90] The top bar: country, career line, next fixture."""
@@ -116,8 +100,28 @@ class ManagementWindow(QMainWindow):
         from PySide6.QtCore import QCoreApplication,QEvent
         for _ in range(3):QCoreApplication.sendPostedEvents(None,QEvent.Type.LayoutRequest)
         for number,button in enumerate(self.navigation):button.setChecked(number==index)
-        self.pages[index].verticalScrollBar().setValue(0)
         self.pages[index].heading.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+    def reveal(self,widget):
+        """[designed: T101] Show the page, and every view of it, that holds `widget`: a part of a
+        page that does not fit the fixed page is a view reached by a route. Presentation only."""
+        for index,page in enumerate(self.pages):
+            if not page.isAncestorOf(widget):continue
+            if self.page_stack.currentIndex()!=index:self.navigate(index)
+            from PySide6.QtWidgets import QStackedWidget
+            stacks=[];parent=widget.parentWidget()
+            while parent is not None and parent is not page:
+                if isinstance(parent,QStackedWidget):stacks.append(parent)
+                parent=parent.parentWidget()
+            for stack in reversed(stacks):
+                child=next(i for i in range(stack.count()) if stack.widget(i) is widget or stack.widget(i).isAncestorOf(widget))
+                if stack.currentIndex()!=child:
+                    show=getattr(stack,'show_view',None)
+                    show(child) if show is not None else stack.setCurrentIndex(child)
+            from PySide6.QtCore import QCoreApplication,QEvent
+            for _ in range(3):QCoreApplication.sendPostedEvents(None,QEvent.Type.LayoutRequest)
+            return True
+        return False
 
     def team_view(self,index):
         """[designed: T99] The Team page's views: 0 roster and card, 1 Team tactics, 2 the
@@ -513,9 +517,14 @@ class ManagementWindow(QMainWindow):
 
     def show_halftime(self):
         # [designed: T47] Widgets show private worker state; committed game stays unchanged.
-        self.half_preview=self.jobs.halftime;preview=self.half_preview
+        before=self.half_preview;self.half_preview=self.jobs.halftime;preview=self.half_preview
         for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(preview is not None)
-        self.half_out.clear();self.half_in.clear()
+        # [designed: T101] The half-time view opens when the pause begins and closes when it ends.
+        if (before is None)!=(preview is None):
+            from goal2.desktop.fixtures_page import fixtures_view
+            if preview is not None:fixtures_view(self,2)
+            elif self.fixture_views.currentIndex()==2:self.fixture_views.setCurrentIndex(0)
+        self.half_out.clear();self.half_in.clear();self.half_title.setText('HALF TIME')
         if preview is None:return
         for word in preview['eleven']:self.half_out.addItem(self.model.goaldat.player_names[word],word)
         for word in preview['bench']:
@@ -523,6 +532,7 @@ class ManagementWindow(QMainWindow):
                 self.half_in.addItem(self.model.goaldat.player_names[word],word)
         a,b=preview['teams'];x,y=preview['score']
         self.result.setText(f"Halftime: {self.model.goaldat.country_names[a]} {x} — {y} {self.model.goaldat.country_names[b]}")
+        self.half_title.setText(f"HALF TIME / {self.model.goaldat.country_names[a].upper()} {x} - {y} {self.model.goaldat.country_names[b].upper()}")
         self.status.setText(f"Halftime: {len(preview['changes'])} substitutions selected. No re-entry. Saving is unavailable until full time; cancel preserves the previous game.")
 
     def substitute_halftime(self):

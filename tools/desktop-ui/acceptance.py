@@ -41,7 +41,8 @@ def management(template,data,screenshot=None):
             window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Home)
             for _ in range(number-1):QTest.keyClick(window.country,Qt.Key.Key_Down)
         def toggle(row):
-            reveal(window.table);window.table.setCurrentCell(row,0);window.table.setFocus();QTest.keyClick(window.table,Qt.Key.Key_Space);app.processEvents()
+            # [designed: T99/T101] The XI is drafted on the roster strip (the table is its hidden model).
+            strip=window.team_roster;reveal(strip);strip.set_current(row);strip.setFocus();QTest.keyClick(strip,Qt.Key.Key_Space);app.processEvents()
         original=copy.deepcopy(model.state)
         country(13)
         assert model.state==original,'country draft mutated active game'
@@ -195,6 +196,11 @@ def pool(template,data,screenshot=None):
         window=ManagementWindow(model);window.resize(1500,900);window.show();QTest.qWait(80)
         def click(widget):reveal(widget);QTest.mouseClick(widget,Qt.MouseButton.LeftButton);app.processEvents()
         def select(table,row,col=1):
+            if table is window.table:
+                # [designed: T99/T101] A squad player is selected by a real click on his strip row.
+                strip=window.team_roster;reveal(strip);rect=strip.row_rect(row)
+                QTest.mouseClick(strip,Qt.MouseButton.LeftButton,pos=rect.center());app.processEvents()
+                assert window.table.currentRow()==row,'strip click did not select the squad row';return
             item=table.item(row,col);table.scrollToItem(item);app.processEvents()
             reveal(table);QTest.mouseClick(table.viewport(),Qt.MouseButton.LeftButton,pos=table.visualItemRect(item).center());app.processEvents()
         def search(text):

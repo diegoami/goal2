@@ -27,7 +27,7 @@ def contrast(a,b):
 
 def shell(args):
     # [designed] Import Qt only after the native caller has selected scaling.
-    from PySide6.QtCore import Qt,qVersion,QPoint
+    from PySide6.QtCore import Qt,qVersion,QPoint,QRect
     from PySide6.QtGui import QPalette
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication,QAbstractButton,QComboBox,QLineEdit,QLabel
@@ -83,7 +83,7 @@ def shell(args):
                 def describe(value):return hashlib.sha256(value).hexdigest() if isinstance(value,bytes) else repr(value)
                 return [{'field':name,'before':describe(a),'after':describe(b)} for name,a,b in zip(labels,before,after) if a!=b]
             def native_input(target):
-                app.processEvents()
+                window.reveal(target);app.processEvents()
                 if not window.isActiveWindow():window.raise_();window.activateWindow()
                 assert QTest.qWaitForWindowActive(window,2000),'owned shell window is not active before synthetic input'
                 target.setFocus();app.processEvents();QTest.qWait(150)
@@ -177,7 +177,7 @@ def shell(args):
             assert snapshot()==before,'surface inspection changed state/draft/preview/save/job ownership: '+json.dumps(report['surface_snapshot_delta'])
             assert not failed,'native surface contrast failed: '+', '.join(failed)
             # [designed] Dirty active controls are deliberately different from confirmed state.
-            window.navigate(1);window.team_view(1);window.pages[1].ensureWidgetVisible(window.tactics[0][1]);app.processEvents()
+            window.navigate(1);window.team_view(1);app.processEvents()
             QTest.mouseClick(window.tactics[0][1],Qt.MouseButton.LeftButton,pos=QPoint(10,window.tactics[0][1].height()//2));app.processEvents()
             dirty=copy.deepcopy(window.draft())
             assert dirty[2]!=model.state.country_tactics,'test did not establish dirty tactics'
@@ -191,12 +191,12 @@ def shell(args):
             assert any(rendered.pixelColor(x,y).name()==COLORS['ink'] for x in range(4,rendered.width()-4) for y in range(4,rendered.height()-4)),'selected hover text lost readable ink'
             report['selected_hover_background']=pixel
             # [designed] Country selector uses native keyboard events; preview navigation retains its saved draft.
-            window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Down);app.processEvents()
+            window.reveal(window.country);window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Down);app.processEvents()
             assert window.preview is not None and window.active_draft==dirty,'country preview lost active draft'
             preview_country=window.country.currentData();tour()
             before=snapshot();QTest.keyClick(window,Qt.Key.Key_S,Qt.KeyboardModifier.ControlModifier);app.processEvents()
             assert snapshot()==before,'Save shortcut mutated a country preview'
-            window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Up);app.processEvents()
+            window.reveal(window.country);window.country.setFocus();QTest.keyClick(window.country,Qt.Key.Key_Up);app.processEvents()
             assert window.preview is None and window.draft()==dirty,'country return did not restore dirty draft'
             report['preview_country']=preview_country
             # [designed] Pending ownership probe runs no child and keeps global cancel reachable.
@@ -213,48 +213,41 @@ def shell(args):
                      *(box for _,box in window.tactics),window.search,window.position,window.reserves,window.exchange,
                      window.standings,window.play,window.watch,window.half_out,window.half_in,
                      window.substitute,window.continue_match,window.path,window.save,window.resume)
-            sizes=((1440,900),(1050,780),(900,700)) if window.devicePixelRatioF()<1.5 else ((900,640),)
+            # [designed: owner, 2026-10-22, #312; T101] The scroll contract moves to the fixed page:
+            # at every size each action is shown by its page and view (a route), lies wholly inside
+            # the page and unclipped, is named and is reached by Tab; every view of every page
+            # passes the no-scroll check (goal2.desktop.fixed_page.problems).
+            from goal2.desktop.fixed_page import problems
+            sizes=((1440,900),(1050,780),(900,700),(2560,1600)) if window.devicePixelRatioF()<1.5 else ((900,640),)
             for width,height in sizes:
                 window.resize(width,height);QTest.qWait(80)
                 assert window.width()==width and window.height()==height,'shell minimum size exceeds target'
+                frame=window.centralWidget().page
+                def inside(widget,rect=None):
+                    rect=widget.rect() if rect is None else rect
+                    origin=widget.mapTo(frame,rect.topLeft())
+                    return frame.rect().contains(QRect(origin,rect.size())) and widget.visibleRegion().contains(rect)
                 for index,page in enumerate(window.pages):
                     navigate(index,'shortcut');app.processEvents()
-                    assert page.horizontalScrollBar().maximum()==0,'shell needs horizontal scrolling'
+                    stack=page.views
+                    for view in range(stack.count() if stack is not None else 1):
+                        if stack is not None:stack.show_view(view);app.processEvents()
+                        found=problems(window)
+                        assert not found,f'shell needs scrolling or clips at {width}x{height} page {index+1} view {view}: {found}'
                     page_actions=[w for w in actions if page.isAncestorOf(w)]
                     for widget in page_actions:
-                        # [designed: T99] A Team-page control lives in one of the page's views; show it first.
-                        views=getattr(window,'team_views',None)
-                        if views is not None and views.isAncestorOf(widget):
-                            window.team_view(next(i for i in range(views.count()) if views.widget(i).isAncestorOf(widget)));app.processEvents()
+                        window.reveal(widget);app.processEvents()
                         if widget is getattr(window,'team_roster',None):
-                            # [designed: T99] The strip is taller than a small viewport: every row
-                            # must scroll fully into view, inside the page's width.
+                            # [designed: T99/T101] Every strip row lies inside the strip and the page.
                             for row in range(len(widget.rows)):
-                                rect=widget.row_rect(row);inside=widget.mapTo(page.widget(),rect.topLeft())
-                                page.ensureVisible(inside.x(),inside.y()+rect.height()//2,0,rect.height());app.processEvents()
-                                origin=widget.mapTo(page.viewport(),rect.topLeft())
-                                assert origin.x()>=0 and origin.x()+rect.width()<=page.viewport().width(),f'action clipped horizontally: strip row {row}'
-                                assert origin.y()>=0 and origin.y()+rect.height()<=page.viewport().height(),f'action unreachable vertically: strip row {row}'
+                                rect=widget.row_rect(row)
+                                assert widget.rect().contains(rect),f'action clipped: strip row {row}'
+                                assert inside(widget,rect),f'action unreachable: strip row {row}'
                             assert widget.isVisible() and widget.accessibleName(),'strip hidden or unnamed'
                             report['reachable'].append({'size':[width,height],'page':names[index],'action':'roster strip (20 rows)','enabled':widget.isEnabled()})
                             continue
-                        footer=getattr(page,'footer',None)
-                        surface=footer if footer is not None and footer.isAncestorOf(widget) else page.viewport()
-                        if surface is footer:
-                            assert page.rect().contains(footer.geometry()),'footer extends outside page'
-                            assert not footer.geometry().intersects(page.viewport().geometry()),'footer overlaps scroll viewport'
-                        else:page.ensureWidgetVisible(widget,0,0)
-                        app.processEvents()
-                        origin=widget.mapTo(surface,QPoint(0,0))
-                        # [designed] Qt may reveal a table's focused cell only; use real scroll keys to expose its full control.
-                        for _ in range(100):
-                            if origin.y()>=0 and origin.y()+widget.height()<=surface.height():break
-                            key=Qt.Key.Key_Up if origin.y()<0 else Qt.Key.Key_Down
-                            QTest.keyClick(page.verticalScrollBar(),key);app.processEvents()
-                            origin=widget.mapTo(surface,QPoint(0,0))
-                        assert origin.x()>=0 and origin.x()+widget.width()<=surface.width(),f'action clipped horizontally: {widget.objectName() or type(widget).__name__}'
-                        assert origin.y()>=0 and origin.y()+widget.height()<=surface.height(),f'action unreachable vertically: {widget.objectName() or widget.accessibleName()} y={origin.y()} height={widget.height()} viewport={surface.height()}'
                         assert widget.isVisible(),'action hidden'
+                        assert inside(widget),f'action outside the page or clipped: {widget.objectName() or widget.accessibleName()}'
                         assert widget.accessibleName(),'action has no accessible name'
                         if widget.isEnabled() and isinstance(widget,(QAbstractButton,QComboBox,QLineEdit)):
                             # Native Tab traversal from heading must reach each interactive action.
@@ -266,7 +259,7 @@ def shell(args):
                         report['reachable'].append({'size':[width,height],'page':names[index],
                                                     'action':widget.objectName() or widget.accessibleName() or type(widget).__name__,
                                                     'enabled':widget.isEnabled()})
-                    navigate(index,'shortcut');page.verticalScrollBar().setValue(0);app.processEvents()
+                    navigate(index,'shortcut');app.processEvents()
                     filename=f'shell-{width}x{height}-page{index+1}.png'
                     assert window.grab().save(str(evidence/filename)),'screenshot save failed'
                     report['captures'].append(filename)
@@ -368,12 +361,12 @@ def overview(args):
                     r.setdefault('focus_trace',[]).append(info)
                     assert actual is target,'native input focus ownership differs: '+str(info)
             def click(button,page=0):
-                w.navigate(page);w.pages[page].ensureWidgetVisible(button);app.processEvents();active(button)
+                w.navigate(page);w.reveal(button);app.processEvents();active(button)
                 QTest.mouseClick(button,Qt.MouseButton.LeftButton);app.processEvents()
             assert hasattr(w,'overview_country_identity'),'country identity and overview hierarchy are absent'
             def select(number):
                 # [designed: T90] The country selector lives on the Country page.
-                w.navigate(0);app.processEvents()
+                w.navigate(0);w.reveal(w.country);app.processEvents()
                 active(w.country);QTest.keyClick(w.country,Qt.Key.Key_Down,Qt.KeyboardModifier.AltModifier,80);app.processEvents();QTest.qWait(100)
                 view=w.country.view();assert view.isVisible(),'country popup did not open'
                 assert view.hasFocus() and app.activePopupWidget() is view.window(),'country popup does not own native input'
@@ -385,7 +378,7 @@ def overview(args):
             # Deliberately invalid private draft; keep it across country previews.
             # [designed: T99] The XI is drafted on the roster strip; the table is its hidden model.
             w.navigate(1);w.team_view(0);row=next(i for i in range(20)if w.table.item(i,0).checkState()==Qt.CheckState.Checked)
-            w.team_roster.set_current(row);w.pages[1].ensureWidgetVisible(w.team_roster);app.processEvents();active(w.team_roster)
+            w.team_roster.set_current(row);w.reveal(w.team_roster);app.processEvents();active(w.team_roster)
             QTest.keyClick(w.team_roster,Qt.Key.Key_Space);app.processEvents();dirty=copy.deepcopy(w.draft());assert len(dirty[0])==10,'invalid draft not established'
             longest=max(range(1,129),key=lambda n:len(m.goaldat.country_names[n]));countries=list(dict.fromkeys([5,13,longest]))
             for number in countries:
@@ -414,19 +407,27 @@ def overview(args):
                 for width,height in sizes:
                     w.resize(width,height);QTest.qWait(80);page=w.pages[0]
                     assert (w.width(),w.height())==(width,height),'shell minimum size exceeds target'
-                    assert page.horizontalScrollBar().maximum()==0,'overview needs horizontal scrolling'
+                    # [designed: T101] The scroll contract moves to the fixed page: no page or view
+                    # scrolls or clips, and each value and action, shown by its view, lies inside the page.
+                    from goal2.desktop.fixed_page import problems
+                    frame=w.centralWidget().page
+                    for view in range(page.views.count()):
+                        page.views.show_view(view);app.processEvents()
+                        assert not problems(w),f'overview needs scrolling or clips: {problems(w)}'
+                    page.views.show_view(0);app.processEvents()
                     for label in (w.title,w.context):
                         assert label.height()>=label.heightForWidth(label.width()),'country identity/context clips wrapped text'
                     for widget in (w.overview_country_identity,w.overview_fixture,w.overview_result,w.overview_return,w.new,w.friendly):
-                        page.ensureWidgetVisible(widget,0,0);app.processEvents()
-                        origin=widget.mapTo(page.viewport(),QPoint(0,0))
-                        assert origin.x()>=0 and origin.x()+widget.width()<=page.viewport().width(),'overview clipped horizontally: '+widget.objectName()
-                        assert origin.y()>=0 and origin.y()+widget.height()<=page.viewport().height(),'overview action/value unreachable: '+widget.objectName()
+                        w.reveal(widget);app.processEvents()
+                        origin=widget.mapTo(frame,QPoint(0,0))
+                        assert origin.x()>=0 and origin.x()+widget.width()<=frame.width(),'overview clipped horizontally: '+widget.objectName()
+                        assert origin.y()>=0 and origin.y()+widget.height()<=frame.height(),'overview action/value unreachable: '+widget.objectName()
+                        assert widget.visibleRegion().contains(widget.rect()),'overview action/value clipped: '+widget.objectName()
                         if isinstance(widget,QLabel):
                             assert widget.height()>=widget.heightForWidth(widget.width()),'overview label clips wrapped text: '+widget.objectName()
                     actions_name=f'preview-{number}-{width}x{height}-actions.png'
                     assert w.grab().save(str(out/actions_name));r['captures'].append({'path':actions_name,'sha256':digest(out/actions_name),'size':[width,height],'country':number,'context':'reachable preview replacement and Return actions'})
-                    page.verticalScrollBar().setValue(0);app.processEvents()
+                    page.views.show_view(0);app.processEvents()
                     name=f'preview-{number}-{width}x{height}.png'
                     assert w.grab().save(str(out/name));r['captures'].append({'path':name,'sha256':digest(out/name),'size':[width,height],'country':number})
                 r['steps'].append({'country':number,'name':v['country_name'],'all20_names':True,'all20_records':True,'pool80':True,'fixture_result':'independent model match','active_and_save_unchanged':True})
@@ -456,13 +457,14 @@ def overview(args):
             assert w.title.text()==m.view()['country_name'] and w.selected_ids()==m.state.starting_eleven
             w.navigate(0);app.processEvents();page=w.pages[0]
             result_panel=w.overview_result.parentWidget()
-            page.ensureWidgetVisible(result_panel,0,0);app.processEvents()
-            origin=result_panel.mapTo(page.viewport(),QPoint(0,0))
-            assert origin.x()>=0 and origin.x()+result_panel.width()<=page.viewport().width(),'completed result clipped horizontally'
-            assert origin.y()>=0 and origin.y()+result_panel.height()<=page.viewport().height(),'completed result card is not fully reachable'
+            w.reveal(result_panel);app.processEvents();frame=w.centralWidget().page
+            origin=result_panel.mapTo(frame,QPoint(0,0))
+            assert origin.x()>=0 and origin.x()+result_panel.width()<=frame.width(),'completed result clipped horizontally'
+            assert origin.y()>=0 and origin.y()+result_panel.height()<=frame.height(),'completed result card is not fully reachable'
+            assert result_panel.visibleRegion().contains(result_panel.rect()),'completed result card is clipped'
             assert w.overview_result.height()>=w.overview_result.heightForWidth(w.overview_result.width()),'completed result clips wrapped text'
             r['completed_result_geometry']={'origin':[origin.x(),origin.y()],'size':[result_panel.width(),result_panel.height()],
-                                             'viewport':[page.viewport().width(),page.viewport().height()]}
+                                             'page':[frame.width(),frame.height()]}
             assert w.grab().save(str(out/'completed-result.png'))
             r['captures'].append({'path':'completed-result.png','sha256':digest(out/'completed-result.png'),'context':'completed result restored'})
             r['result']='PASS';r['invalid_draft_return']=True;r['explicit_campaign_friendly_resume']=True;r['completed_result_restored']=True

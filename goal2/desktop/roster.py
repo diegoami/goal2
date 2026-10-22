@@ -9,8 +9,10 @@ from PySide6.QtGui import QColor, QFont, QFontMetrics, QPainter
 from PySide6.QtWidgets import QWidget
 from goal2.desktop.player_card import BLACK, GREY, CYAN, LINE
 
-ROW, TOP = 30, 46
-WIDTH = 360
+# [designed: T101] Rows of 26 page pixels: the twenty and the rule fit the fixed page beside the
+# card, as in the original's squad screen [confirmed: `docs/original-game/images/m244-squad.png`].
+ROW, TOP = 26, 46
+WIDTH = 320
 # [designed: T99] The gap holding the rule between the eleven and the bench.
 RULE = 16
 
@@ -35,13 +37,25 @@ class RosterView(QWidget):
         self.setObjectName('roster');self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         # [designed: T95] A line-up holds eleven rows and needs no XI marks.
         self.capacity = capacity;self.marks = marks
-        self.setMinimumSize(300, self.full_height())
+
+    # [designed: T101] The strip is painted in page pixels through a scaled painter; its sizes and
+    # its rows' rectangles are the page's, times the page scale (goal2/desktop/fixed_page.py).
+    page_painted = True
+
+    def scale(self):
+        from goal2.desktop.fixed_page import scale_of
+        return scale_of(self)
 
     def full_height(self):
         return TOP + self.capacity * ROW + 12 + (RULE if self.grouped else 0)
 
     def sizeHint(self):
-        return QSize(WIDTH, self.full_height())
+        s = self.scale()
+        return QSize(round(WIDTH * s), round(self.full_height() * s))
+
+    def minimumSizeHint(self):
+        s = self.scale()
+        return QSize(round(300 * s), round(self.full_height() * s))
 
     def set_rows(self, rows, current=None, order=None, unavailable=()):
         self.rows = list(rows)
@@ -68,13 +82,13 @@ class RosterView(QWidget):
 
     def baseline(self, position):
         """The text baseline of display position `position`."""
-        return TOP + 20 + position * ROW + (RULE if self.grouped and position >= self.eleven() else 0)
+        return TOP + 18 + position * ROW + (RULE if self.grouped and position >= self.eleven() else 0)
 
     def row_rect(self, row):
-        """[designed: T99] The rectangle row index `row` is painted in."""
+        """[designed: T99] The rectangle row index `row` is painted in, in widget pixels."""
         from PySide6.QtCore import QRect
-        y = self.baseline(self.order.index(row))
-        return QRect(10, y - 22, self.width() - 20, ROW - 2)
+        s = self.scale();y = self.baseline(self.order.index(row))
+        return QRect(round(10 * s), round((y - 20) * s), self.width() - round(20 * s), round((ROW - 2) * s))
 
     def set_current(self, row, notify=True):
         if not self.rows or row == self.current or not 0 <= row < len(self.rows):return
@@ -96,8 +110,9 @@ class RosterView(QWidget):
             super().keyPressEvent(event)
 
     def row_at(self, y):
+        y = y / self.scale()
         for position, row in enumerate(self.order):
-            top = self.baseline(position) - 22
+            top = self.baseline(position) - 20
             if top <= y < top + ROW:return row
         return -1
 
@@ -115,23 +130,24 @@ class RosterView(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self);painter.fillRect(self.rect(), QColor(BLACK))
+        s = self.scale();painter.scale(s, s);width = self.width() / s;height = self.height() / s
         painter.setPen(QColor('#ffff55' if self.hasFocus() else CYAN))
-        painter.drawRect(1, 1, self.width() - 3, self.height() - 3)
+        painter.drawRect(1, 1, round(width) - 3, round(height) - 3)
         font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
         font.setPixelSize(20);font.setBold(True);painter.setFont(font);metrics = QFontMetrics(font)
         xi = sum(1 for r in self.rows if r[4])
         painter.setPen(QColor(CYAN));title = QFont(font);title.setPixelSize(17);painter.setFont(title)
         painter.drawText(14, 30, self.caption or f'{self.title} {len(self.rows)} / XI {xi} / BENCH {len(self.rows) - xi}')
-        painter.setFont(font);code_x = self.width() - 64
+        painter.setFont(font);code_x = round(width) - 64
         if self.grouped:
-            rule = self.baseline(self.eleven()) - 22 - RULE // 2
-            painter.setPen(QColor(CYAN));painter.drawLine(10, rule, self.width() - 10, rule)
+            rule = self.baseline(self.eleven()) - 20 - RULE // 2
+            painter.setPen(QColor(CYAN));painter.drawLine(10, rule, round(width) - 10, rule)
         for position, i in enumerate(self.order):
             _, name, code, line, in_xi, captain = self.rows[i]
             y = self.baseline(position)
             colour = QColor(LINE.get(line, GREY))
             if i == self.current:
-                painter.fillRect(10, y - 22, self.width() - 20, ROW - 2, QColor(GREY));colour = QColor(BLACK)
+                painter.fillRect(10, y - 20, round(width) - 20, ROW - 2, QColor(GREY));colour = QColor(BLACK)
             painter.setPen(QColor(BLACK) if i == self.current else QColor(LINE['goalkeeper'] if in_xi else LINE['defence']))
             if self.marks:
                 painter.drawText(14, y, '+' if in_xi else '-')
@@ -142,34 +158,3 @@ class RosterView(QWidget):
             painter.drawText(40, y, metrics.elidedText(name, Qt.TextElideMode.ElideRight, code_x - 48))
             painter.drawText(code_x, y, code + (' C' if captain else ''))
         painter.end()
-
-
-class Columns(QWidget):
-    """[designed: T91; accepted vision #266 screen 11] Side by side when wide, stacked when not."""
-
-    def __init__(self, breakpoint, parent=None):
-        super().__init__(parent)
-        from PySide6.QtWidgets import QBoxLayout
-        self.breakpoint = breakpoint
-        self.box = QBoxLayout(QBoxLayout.Direction.LeftToRight, self)
-        self.box.setContentsMargins(0, 0, 0, 0);self.box.setSpacing(16)
-
-    def arrange(self, width):
-        """Choose the arrangement for this width. The window calls it as soon as it is resized,
-        so a page laid out while hidden does not change height after it is shown."""
-        from PySide6.QtWidgets import QBoxLayout
-        direction = QBoxLayout.Direction.LeftToRight if width >= self.breakpoint else QBoxLayout.Direction.TopToBottom
-        if self.box.direction() != direction:self.box.setDirection(direction)
-
-    def resizeEvent(self, event):
-        self.arrange(self.width())
-        super().resizeEvent(event)
-
-    def minimumSizeHint(self):
-        # Stacked, the columns need only the widest one's width.
-        from PySide6.QtWidgets import QBoxLayout
-        hint = super().minimumSizeHint()
-        if self.box.direction() == QBoxLayout.Direction.LeftToRight:
-            widths = [self.box.itemAt(i).minimumSize().width() for i in range(self.box.count())]
-            hint.setWidth(max(widths or [0]))
-        return hint

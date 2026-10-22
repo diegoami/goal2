@@ -25,28 +25,41 @@ def load_fonts():
 
 
 def apply_style(window):
-    load_fonts();c=COLORS
-    window.setStyleSheet(f"""
-    QMainWindow, QDialog, QScrollArea, QScrollArea > QWidget > QWidget, QWidget#shellRoot, QStackedWidget {{background:{c['background']};color:{c['text']};}}
+    """Style the window (its menu bar and dialogs at 1:1) and return the sheet, which the fixed
+    page applies again at its scale [designed: T101]."""
+    from goal2.desktop.fixed_page import scale_sheet
+    load_fonts();sheet=stylesheet();window.setStyleSheet(scale_sheet(sheet,1))
+    return sheet
+
+
+def stylesheet():
+    c=COLORS
+    return (f"""
+    QMainWindow, QDialog, QWidget#fixedPage, QWidget#shellRoot, QWidget#launchRoot, QStackedWidget, QStackedWidget > QWidget {{background:{c['background']};color:{c['text']};}}
     QWidget {{font-family:{FONT};font-size:16px;color:{c['text']};}}
     QFrame#topBar, QFrame#sideBar {{border:2px solid {c['cyan']};background:{c['background']};}}
-    QLabel#brand {{font-size:34px;font-weight:700;color:{c['cyan']};}}
-    QLabel#countryTitle {{font-size:34px;font-weight:700;color:{c['yellow']};}}
-    QLabel#careerLine, QLabel#countryContext {{font-size:20px;color:{c['text']};}}
-    QLabel#nextLine {{font-size:26px;font-weight:700;color:{c['cyan']};}}
-    QLabel#nextDetail {{font-size:20px;color:{c['text']};}}
+    QLabel#brand {{font-size:30px;font-weight:700;color:{c['cyan']};}}
+    QLabel#countryTitle {{font-size:30px;font-weight:700;color:{c['yellow']};}}
+    QLabel#careerLine, QLabel#countryContext {{font-size:16px;color:{c['text']};}}
+    QLabel#nextLine {{font-size:22px;font-weight:700;color:{c['cyan']};}}
+    QLabel#nextDetail {{font-size:16px;color:{c['text']};}}
     QLabel#sideHint {{color:{c['magenta']};font-size:16px;}}
     QLabel#pageHeading {{font-size:26px;font-weight:700;color:{c['red']};padding:4px;}}
     QPushButton,QComboBox,QLineEdit,QCheckBox {{font-size:14px;min-height:40px;}}
     QPushButton {{background:{c['background']};color:{c['cyan']};border:2px solid {c['cyan']};padding:0px 12px;font-weight:700;text-align:left;}}
     QComboBox,QLineEdit {{background:{c['background']};color:{c['green']};border:2px solid {c['cyan']};padding:0px 8px;}}
-    QFrame#sideBar QPushButton {{border:0;font-size:22px;}}
+    QFrame#sideBar QPushButton {{border:0;font-size:20px;}}
     QPushButton:checked {{background:{c['accent']};color:{c['ink']};}}
     QPushButton:hover {{background:{c['raised']};}}
     QPushButton:checked:hover {{background:{c['accent']};color:{c['ink']};}}
     QPushButton:checked:focus {{border:3px solid {c['focus']};}}
     QPushButton:disabled,QComboBox:disabled,QLineEdit:disabled,QCheckBox:disabled {{color:#777777;border-color:#555555;}}
     QPushButton:focus,QComboBox:focus,QLineEdit:focus,QCheckBox:focus,QTableWidget:focus,QLabel#pageHeading:focus {{border:3px solid {c['focus']};}}
+    /* [designed: T101] The focus border is 1px wider: a 1px margin gives it room, so a focused
+       control keeps its size and its caption is never squeezed (fixed_page.problems checks it). */
+    QPushButton,QComboBox,QLineEdit {{margin:@focus-margin;}}
+    QPushButton:focus,QComboBox:focus,QLineEdit:focus {{margin:0px;}}
+    QWidget#draftBar > QPushButton {{margin:0px;}}
     QComboBox QAbstractItemView {{background:{c['background']};color:{c['text']};selection-background-color:{c['accent']};selection-color:{c['ink']};border:1px solid {c['cyan']};}}
     QLineEdit {{selection-background-color:{c['accent']};selection-color:{c['ink']};}}
     QCheckBox {{color:{c['text']};}}
@@ -77,10 +90,10 @@ def apply_style(window):
     QLabel#prepSpeedHeading {{font-size:20px;color:{c['yellow']};font-weight:700;}}
     QLabel#prepNote {{font-size:14px;color:{c['magenta']};}}
     QPushButton#speedSlow:checked, QPushButton#speedNormal:checked, QPushButton#speedFast:checked {{background:{c['accent']};color:{c['ink']};}}
-    QPushButton#deskPrepare {{font-size:20px;text-align:left;padding:8px 12px;}}
+    QPushButton#deskPrepare {{font-size:18px;text-align:left;padding:2px 10px;}}
     QLabel#poolCardCaption {{font-size:20px;color:{c['yellow']};font-weight:700;}}
     QLabel#deskCaptain {{font-size:20px;color:{c['yellow']};}}
-    QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager {{font-size:20px;text-align:left;padding:8px 12px;}}
+    QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager, QPushButton#deskGames {{font-size:18px;text-align:left;padding:2px 10px;}}
     QLabel#overviewCountry {{font-size:24px;font-weight:700;color:{c['yellow']};}}
     QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;color:{c['green']};}}
     QLabel#tacticsTitle {{font-size:26px;font-weight:700;color:{c['red']};}}
@@ -98,7 +111,6 @@ def apply_style(window):
     QWidget#draftBar QPushButton {{border:3px solid {c['cyan']};}}
     QWidget#draftBar QPushButton:focus {{border:3px solid {c['focus']};}}
     QLabel#status {{color:{c['magenta']};}}
-    QScrollArea {{border:0;}}
     QScrollBar:vertical {{background:{c['background']};width:14px;border:1px solid {c['cyan']};}}
     QScrollBar:horizontal {{background:{c['background']};height:14px;border:1px solid {c['cyan']};}}
     QScrollBar::handle {{background:{c['accent']};min-width:24px;min-height:24px;}}
