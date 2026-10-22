@@ -69,26 +69,30 @@ campaign* and *Last result*; the routes **Select squad**, **Pool**, **Fixture li
 **Country card** (the T89 card); the readiness line (`<n> ready / XI <k>`) and the captain; and
 the twenty: `+` in the XI, `-` on the bench, the initial and name in the role's line colour, the
 code and `C` for the captain. Enter on a player opens him on Team; the desk never changes the XI.
-**Team** shows the same twenty beside the selected player's complete card (T88), whose tactic
-words follow the draft. Up/Down select, Space puts the player in or out of the XI under the
-table's rules (an unavailable player cannot start; a preview cannot change). Below them are the
-routes **Pool / Compare >**, **Attribute table >**, **Team tactics >** and **Rename (F2)**; the
-draft bar stays at the foot of the page in every view. **Pool** pins the complete
+**Team** follows the original's squad screen [designed: T99; owner, 2026-10-21; confirmed:
+`docs/original-game/images/m244-squad.png`]. The roster is a strip on the right of every Team view,
+captioned with the country: the eleven in the draft's order, a rule, then the bench; each row is
+the initial and name in the role's line colour with the role letter on the right, `C` for the
+captain and `!` for an unavailable player. Up/Down select (across the rule), Space moves the
+selected player between the XI and the bench under the existing rules (an unavailable player
+cannot start; a preview or a running match cannot change). Left of the strip is the selected
+player's complete card (T88), whose tactic words follow the draft; as in the original its twelve
+skills are bars with no numbers and each characteristic is a bar with its word inside. Below the
+card are **Pool / Compare >**, **Team tactics >** and **Rename (F2)**; the draft bar stays at the
+foot of the page. There is no table view: the XI checks' table is a hidden model. **Pool** pins the complete
 cards of the outgoing (OUT) and incoming (IN) player above the browser. Ranks come from the
 country records [confirmed: F007 via `goal2.game.country_card`].
 
 [designed: T99; accepted vision #266 screen 16; owner playtest 2026-10-21, #304] **Team tactics**
 holds, on the left, the team headed `<COUNTRY> / XI n / d-m-a` (the formation counted from the
-drafted eleven's lines, never stored [derived: `goal2/game/country_card.py`]), the manager, the
-captain and the grouped XI and bench; on the right, **TEAM DEFAULTS**, eight rows in the order
+drafted eleven's lines, never stored [derived: `goal2/game/country_card.py`]), the manager and the
+captain (the strip lists the players); on the right, **TEAM DEFAULTS**, eight rows in the order
 Defence system, Protection, Offside, Positioning, Possession, Passing, Tackling, Marking, each with
 its current word. A row is element k's bit `1<<(k-1)`; its word is the first alternative when the
 bit is clear and the second when it is set [confirmed: `docs/original-game/images/m244-team-tactics.png`; F010].
 Space, Enter or a click switches the selected row; Up/Down move between rows. **Confirm plan** is
 Confirm management; **Discard / Team** is Discard draft, then back to the roster. Team skills are
-not shown: no aggregate is verified (G05). The **Attribute table** holds the squad summary, the
-seven-column table (the XI column's indicators green in the XI, red outlined on the bench) and the
-selected player's detail, with **< Team**. Escape on either view returns to the roster.
+not shown: no aggregate is verified (G05). Escape returns to the card with the strip focused.
 
 [designed: T92; owner, 2026-10-21; confirmed: E031 C15/C30] **Rename (F2)** on Team renames the
 selected player (surname, at most 12 characters; the initial stays), and **Manager name** on the
@@ -413,9 +417,9 @@ QT_QPA_PLATFORM=xcb xvfb-run -a python3 tools/desktop-ui/competitive_play.py
 ```
 
 [designed: T76] **Team** (formerly Squad & tactics) retains the twenty-player source-order roster.
-In the attribute table, select a row to read its full ID, position group, raw energy/confidence
-and availability. The grouped starting XI and bench on Team tactics reflect the private draft,
-with explicit Captain text; grouping does not assign a formation. The fixed
+Select a player on the strip to read his card: role, positions, readiness and cards, energy and
+morale (the confidence byte). The strip's grouped XI and bench reflect the private draft, with the
+captain marked; grouping does not assign a formation. The fixed
 Confirm management / Discard draft bar stays visible while the page scrolls.
 Space toggles the XI and the tactic rows; Enter switches a tactic row or activates a focused draft action.
 Draft edits survive navigation and country preview/return; Save writes confirmed

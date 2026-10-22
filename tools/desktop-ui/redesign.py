@@ -207,7 +207,8 @@ def shell(args):
             assert snapshot()==before,'Save shortcut mutated pending ownership'
             model.match_pending=False;window.set_busy(False)
             # [designed: T99] The Team page's routes and its two views' actions are actions too.
-            actions=(window.new,window.friendly,*window.team_routes,window.table,window.table_back,window.captain,
+            # The XI control is the roster strip (T99), each of whose rows must be reachable.
+            actions=(window.new,window.friendly,*window.team_routes,window.team_roster,window.captain,
                      window.confirm_plan,window.discard_plan,window.confirm,window.cancel,
                      *(box for _,box in window.tactics),window.search,window.position,window.reserves,window.exchange,
                      window.standings,window.play,window.watch,window.half_out,window.half_in,
@@ -225,6 +226,18 @@ def shell(args):
                         views=getattr(window,'team_views',None)
                         if views is not None and views.isAncestorOf(widget):
                             window.team_view(next(i for i in range(views.count()) if views.widget(i).isAncestorOf(widget)));app.processEvents()
+                        if widget is getattr(window,'team_roster',None):
+                            # [designed: T99] The strip is taller than a small viewport: every row
+                            # must scroll fully into view, inside the page's width.
+                            for row in range(len(widget.rows)):
+                                rect=widget.row_rect(row);inside=widget.mapTo(page.widget(),rect.topLeft())
+                                page.ensureVisible(inside.x(),inside.y()+rect.height()//2,0,rect.height());app.processEvents()
+                                origin=widget.mapTo(page.viewport(),rect.topLeft())
+                                assert origin.x()>=0 and origin.x()+rect.width()<=page.viewport().width(),f'action clipped horizontally: strip row {row}'
+                                assert origin.y()>=0 and origin.y()+rect.height()<=page.viewport().height(),f'action unreachable vertically: strip row {row}'
+                            assert widget.isVisible() and widget.accessibleName(),'strip hidden or unnamed'
+                            report['reachable'].append({'size':[width,height],'page':names[index],'action':'roster strip (20 rows)','enabled':widget.isEnabled()})
+                            continue
                         footer=getattr(page,'footer',None)
                         surface=footer if footer is not None and footer.isAncestorOf(widget) else page.viewport()
                         if surface is footer:
@@ -370,9 +383,10 @@ def overview(args):
                 QTest.keyClick(view,Qt.Key.Key_Return);app.processEvents();QTest.qWait(60)
                 assert not view.isVisible()and w.country.currentData()==number,'native country browse selected wrong country'
             # Deliberately invalid private draft; keep it across country previews.
-            w.navigate(1);w.team_view(2);row=next(i for i in range(20)if w.table.item(i,0).checkState()==Qt.CheckState.Checked)
-            w.table.setCurrentCell(row,0);w.pages[1].ensureWidgetVisible(w.table);app.processEvents();active(w.table)
-            QTest.keyClick(w.table,Qt.Key.Key_Space);app.processEvents();dirty=copy.deepcopy(w.draft());assert len(dirty[0])==10,'invalid draft not established'
+            # [designed: T99] The XI is drafted on the roster strip; the table is its hidden model.
+            w.navigate(1);w.team_view(0);row=next(i for i in range(20)if w.table.item(i,0).checkState()==Qt.CheckState.Checked)
+            w.team_roster.set_current(row);w.pages[1].ensureWidgetVisible(w.team_roster);app.processEvents();active(w.team_roster)
+            QTest.keyClick(w.team_roster,Qt.Key.Key_Space);app.processEvents();dirty=copy.deepcopy(w.draft());assert len(dirty[0])==10,'invalid draft not established'
             longest=max(range(1,129),key=lambda n:len(m.goaldat.country_names[n]));countries=list(dict.fromkeys([5,13,longest]))
             for number in countries:
                 select(number);expected=DesktopModel.open(args.template,args.data,save,country=number);v=expected.view()

@@ -194,6 +194,10 @@ def toggle(self,row):
     window's existing rules decide; an unavailable or preview row says why it cannot."""
     item=self.table.item(row,0)
     if item is None:return
+    # [designed: T99] The table is never shown now, so its disabled state (a running match) is
+    # enforced here: the strip is the only way to change the XI.
+    if not self.table.isEnabled():
+        self.status.setText('Finish or cancel the match first');return
     if not item.flags() & Qt.ItemFlag.ItemIsUserCheckable:
         if self.preview is not None:self.require_active()
         else:self.status.setText('Unavailable players cannot start')

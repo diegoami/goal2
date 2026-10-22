@@ -48,7 +48,8 @@ def scenario(args):
             model.confirm(list(model.state.starting_eleven),model.state.starting_eleven[0],model.state.country_tactics);model.save(save)
             saved=save.read_bytes();window=ManagementWindow(model);w=window;w.show();w.activateWindow();QTest.qWait(120)
             report['ratio']=w.devicePixelRatioF()
-            assert all(w.findChild(QLabel,name) is not None for name in ('lineupBoard','benchBoard','playerDetail','draftState')),'grouped XI/bench and draft hierarchy absent'
+            # [designed: T99] The grouped XI/bench is the roster strip; the player's detail is his card.
+            assert getattr(getattr(w,'team_roster',None),'grouped',False) and hasattr(w,'team_card') and w.findChild(QLabel,'draftState') is not None,'grouped XI/bench and draft hierarchy absent'
             assert hasattr(w.pages[1],'footer'),'persistent draft footer absent'
             w.navigate(1);app.processEvents()
             def state():return encode(model.state,model.template_bytes)
@@ -60,9 +61,15 @@ def scenario(args):
                 assert QTest.qWaitForWindowActive(w,2000),'owned squad window did not become active'
                 widget.setFocus();app.processEvents()
                 assert app.focusWidget() is widget,'native focus not acquired: '+widget.objectName()
+            def pick(row):
+                # [designed: T99] A real click on the strip's row selects that player.
+                reveal(w.team_roster);strip=w.team_roster;rect=strip.row_rect(row)
+                w.pages[1].ensureVisible(0,strip.mapTo(w.pages[1].widget(),rect.center()).y(),0,rect.height());app.processEvents()
+                QTest.mouseClick(strip,Qt.MouseButton.LeftButton,pos=rect.center());app.processEvents()
+                assert strip.current==row and w.table.currentRow()==row,'strip click did not select the row'
             def toggle(row):
-                before=state();reveal(w.table);w.table.setCurrentCell(row,0);w.table.scrollToItem(w.table.item(row,0));focus(w.table)
-                QTest.keyClick(w.table,Qt.Key.Key_Space);app.processEvents();unchanged(before,'XI checkbox')
+                before=state();pick(row);focus(w.team_roster)
+                QTest.keyClick(w.team_roster,Qt.Key.Key_Space);app.processEvents();unchanged(before,'XI checkbox')
             def key(widget,key):
                 before=state();reveal(widget);focus(widget);QTest.keyClick(widget,key);app.processEvents();unchanged(before,'draft control')
             def action(widget):
@@ -88,11 +95,19 @@ def scenario(args):
                 report['captures'].append({'path':path.name,'sha256':digest(path),'size':[w.width(),w.height()],
                                            'scroll':w.pages[1].verticalScrollBar().value(),'focus':app.focusWidget().objectName() if app.focusWidget() else None})
             def detail(row):
-                w.table.setCurrentCell(row,1);app.processEvents();p=model.view()['players'][row];text=w.player_detail.text()
-                for value in (p['name'],str(p['id']),p['position'],f"Role {p['role']}",f"Energy {p['energy']}",f"Confidence {p['confidence']}"):
-                    assert value in text,'selected player raw detail missing '+value
-                for reason in p['availability']['reasons']:assert reason in text,'selected detail omitted availability'
-                if p['availability']['carried_bookings']:assert 'carried booking' in text
+                # [designed: T99] The selected player's detail is his card: the same fields, painted.
+                pick(row);p=model.view()['players'][row];c=w.team_card.card;w.team_card.grab();drawn=' | '.join(w.team_card.drawn)
+                raw={name:value for name,_,_,value in c['characteristics']}
+                assert c['id']==p['id'] and c['full_name'].endswith(p['name']) and c['full_name'].upper() in drawn,'selected player raw detail missing '+p['name']
+                assert c['role']==p['role'] and c['role'] in drawn,'selected player raw detail missing role'
+                assert raw['energy']==p['energy'] and raw['morale']==p['confidence'],'selected player raw detail missing energy/confidence'
+                assert str(p['id']) in w.team_card.accessibleName() or c['id']==p['id']
+                assert (c['readiness']=='ready to play')==p['availability']['available'] and c['readiness'].upper() in drawn,'selected detail omitted availability'
+                for reason in p['availability']['reasons']:
+                    shown={'Injured':raw['energy']==0,'Unavailable energy':raw['energy']>=128,'Suspended':c['readiness']=='suspended' or 'suspended' in drawn.lower(),
+                           'Sent off':'sent off' in drawn.lower(),'Substituted off':c['readiness']=='substituted'}[reason]
+                    assert shown,'selected detail omitted availability'
+                if p['availability']['carried_bookings']:assert 'carried booking' in drawn
             capture('initial')
             wanted=list(range(250,261))
             for row in range(20):
@@ -109,11 +124,16 @@ def scenario(args):
                 if not box.isChecked():key(box,Qt.Key.Key_Space)
             assert w.draft()==(wanted,260,255)
             assert 'Unconfirmed draft' in w.draft_state.text()
-            assert 'Starting XI · 11' in w.lineup_board.text() and 'Bench · 9' in w.bench_board.text()
-            assert 'Captain' in w.lineup_board.text()
+            # [designed: T99] The strip: the eleven in the draft's order, a rule, the bench; C marks the captain.
+            strip=w.team_roster;shown=[strip.rows[i] for i in strip.order]
+            assert strip.eleven()==11 and len(shown)==20 and 'XI 11, bench 9' in strip.accessibleName()
+            assert [r[0] for r in shown[:11]]==w.drafted_eleven()
+            assert [r[0] for r in shown if r[5]]==[260] and ' C' in strip.accessibleName()
             for p in model.view()['players']:
-                assert p['name'] in (w.lineup_board.text() if p['id'] in wanted else w.bench_board.text())
-                if p['id'] in wanted:assert p['position'] in w.lineup_board.text()
+                row=next(r for r in shown if r[0]==p['id'])
+                assert row[1].endswith(p['name']) and p['name'] in strip.accessibleName()
+                assert (shown.index(row)<11)==(p['id'] in wanted)
+                if p['id'] in wanted:assert row[2]==p['role'] and row[3]==p['line']
             for row in range(20):detail(row)
             capture('dirty-full-id-detail')
             before=state();draft=copy.deepcopy(w.draft())
@@ -158,9 +178,9 @@ def scenario(args):
             w.refresh()
             for width,height in sizes:
                 w.resize(width,height);w.navigate(1);app.processEvents();page=w.pages[1]
-                # [designed: T99] The roster, the detail and the tactics are the Team page's views 0, 2 and 1.
+                # [designed: T99] The roster and the detail are view 0 (strip and card), the tactics view 1.
                 def top(widget):return widget.mapTo(page.widget(),QPoint(0,0)).y()
-                for fraction,label,view in ((0,'roster',0),(2,'detail',2),(1,'tactics',1)):
+                for fraction,label,view in ((0,'roster',0),(2,'detail',0),(1,'tactics',1)):
                     w.team_view(view);app.processEvents()
                     scroll=page.verticalScrollBar().maximum()//fraction if fraction else 0
                     page.verticalScrollBar().setValue(scroll);app.processEvents()
@@ -176,24 +196,26 @@ def scenario(args):
                         assert app.focusWidget() is control,'Tab/Shift-Tab did not return to draft action'
                     capture(f'long-{width}x{height}-{label}-focused-confirm')
                 name_rows=set();value_rows=set()
-                def visible_rows(column):
-                    viewport=w.table.viewport().rect()
-                    return {row for row in range(20) if viewport.contains(w.table.visualItemRect(w.table.item(row,column)))}
-                w.team_view(2);app.processEvents()
-                for row in (0,4,8,12,16,19):
-                    page.verticalScrollBar().setValue(top(w.table)-8);w.table.scrollToItem(w.table.item(row,1));app.processEvents()
-                    name_rows.update(visible_rows(1))
-                    capture(f'long-{width}x{height}-roster-row-{row+1}-names')
-                    w.table.scrollToItem(w.table.item(row,6));app.processEvents()
-                    value_rows.update(set.intersection(*(visible_rows(column) for column in range(2,7))))
-                    capture(f'long-{width}x{height}-roster-row-{row+1}-values')
+                # [designed: T99] Every strip row is brought into the page viewport and selected; its
+                # complete name is painted on the card, never elided, with its raw fields.
+                w.team_view(0);app.processEvents();strip=w.team_roster
+                for row in range(20):
+                    rect=strip.row_rect(row);y=strip.mapTo(page.widget(),rect.topLeft()).y()
+                    page.ensureVisible(0,y+rect.height()//2,0,rect.height());app.processEvents()
+                    origin=strip.mapTo(page.viewport(),rect.topLeft())
+                    if origin.y()>=0 and origin.y()+rect.height()<=page.viewport().height():
+                        detail(row);app.processEvents()
+                        name=w.team_card.card['full_name'].upper()
+                        if name in w.team_card.drawn:name_rows.add(row)
+                        value_rows.add(row)
+                    capture(f'long-{width}x{height}-roster-row-{row+1}')
                 assert name_rows==set(range(20)),'long-name captures missed complete roster names'
                 assert value_rows==set(range(20)),'roster captures missed complete raw fields/availability'
                 report.setdefault('roster_coverage',[]).append({'size':[width,height],'name_rows':sorted(name_rows),'value_rows':sorted(value_rows)})
                 # [designed] Read every table column through its native contained horizontal scroll.
                 for row in range(20):
                     for col in range(7):w.table.scrollToItem(w.table.item(row,col));app.processEvents();assert w.table.item(row,col).text() or col==0
-                for widget,name,view in ((w.player_detail,'selected-detail',2),(w.lineup_board,'grouped-xi',1),(w.bench_board,'bench',1)):
+                for widget,name,view in ((w.team_card_area,'selected-detail',0),(w.team_roster,'grouped-xi-bench',0)):
                     w.team_view(view);app.processEvents()
                     # [designed] Overlap viewport segments so long wrapped values are readable in full across captures.
                     intervals=[];step=max(40,page.viewport().height()-100)
@@ -205,7 +227,7 @@ def scenario(args):
                         if bottom>=widget.height():break
                     assert intervals[0][0]==0 and max(end for start,end in intervals)>=widget.height(),'scroll captures missed a reading area'
                     assert all(first[1]>=second[0]+40 for first,second in zip(intervals,intervals[1:])),'reading captures lack wrapped-line overlap'
-                    report.setdefault('reading_coverage',[]).append({'size':[width,height],'widget':name,'height':widget.height(),'intervals':intervals,'text_sha256':hashlib.sha256(widget.text().encode()).hexdigest()})
+                    report.setdefault('reading_coverage',[]).append({'size':[width,height],'widget':name,'height':widget.height(),'intervals':intervals,'text_sha256':hashlib.sha256((w.team_card if widget is w.team_card_area else widget).accessibleName().encode()).hexdigest()})
             model.goaldat=replace(model.goaldat,player_names=original_names)
             model.new_campaign(4);model.exchange(80,2561);model.confirm(list(model.state.starting_eleven),61,165);w.refresh()
             # [derived: T47] Real private first-half worker, substitution and cancellation preserve confirmed management.

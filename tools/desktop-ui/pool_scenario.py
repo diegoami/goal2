@@ -113,7 +113,10 @@ def scenario(args):
         # [designed] Full-ID selector changes current row only, never the XI draft.
         key(w.pool_outgoing,Qt.Key.Key_Home);assert w.pool_outgoing.currentData()==261 and w.table.currentRow()==0
         key(w.pool_outgoing,Qt.Key.Key_Down);assert w.table.item(w.table.currentRow(),0).data(Qt.ItemDataRole.UserRole)==w.pool_outgoing.currentData()
-        focus(w.table);QTest.keyClick(w.table,Qt.Key.Key_Home,Qt.KeyboardModifier.ControlModifier);app.processEvents();assert w.pool_outgoing.currentData()==261,'table-to-outgoing synchronization failed';stable(before,'outgoing selection',draft)
+        # [designed: T99] The squad selection is made on the Team page's roster strip (the table is its hidden model).
+        focus(w.team_roster);strip=w.team_roster;rect=strip.row_rect(m.state.managed_squad.index(261))
+        w.pages[1].ensureVisible(0,strip.mapTo(w.pages[1].widget(),rect.center()).y(),0,rect.height());app.processEvents()
+        QTest.mouseClick(strip,Qt.MouseButton.LeftButton,pos=rect.center());app.processEvents();assert w.pool_outgoing.currentData()==261,'table-to-outgoing synchronization failed';stable(before,'outgoing selection',draft)
         reserve(2561);assert 'ID 261' in w.exchange_summary.text() and 'ID 2561' in w.exchange_summary.text()
         target=next(x for x in campaign_pool.view(m.state,m.goaldat)['reserves'] if x['id']==2561)
         outgoing=next(x for x in campaign_pool.view(m.state,m.goaldat)['squad'] if x['id']==261)
