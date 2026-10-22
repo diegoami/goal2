@@ -67,6 +67,24 @@ the task that brings them: **Team** and **Pool**, **team info** and **select squ
 docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu, with the same views and
 the same memory. `--template` and every other route are unchanged.
 
+[designed: owner, 2026-10-22; T106, #308's G10] **A new career on the core route.** `--core-boot` opens Launch
+over the original's own new game, booted from the state at the program's DOS date call (`e039-r0005-date-call.sav`,
+docs/core.md "Booting at the DOS date call"); GOAL.DAT is read at run time from `--data`:
+
+```sh
+python3 -m goal2.desktop --core-boot .cache/e039-r0005-date-call.sav --data .cache/GOAL.DAT --save .cache/desktop.g2core
+```
+
+**New career** offers the start year as the Python route does (1990 or 1992). The core answers the DOS date
+`start − 1`/10/04, which the original turns into that start year [confirmed: NG-9], and presses N while the title's
+tune plays (`Core.boot`'s `title_key`), then Enter on the player count (one manager). The country list is the
+original's browser in its own order and the card is read from the core's memory (`views.country_select`,
+`views.country_card`); the players page (Space) waits for the player card over the core (G12) and is hidden. The
+review page takes the manager's name (14 characters at most, initial and surname, as the original's name entry
+keeps it) and names the start year and stage the original set. **Start career** plays the original's keys to its
+first manager menu (`Driver.new_game`); its bulletins are shown as goal2 pages, the original's three stories read
+from its page buffer (`views.bulletin`), Enter for the next, and the last opens the main window above.
+
 [designed] Supply verified local game resources using the existing runtime-cache
 instructions. No original resources or screenshots enter git. Without Qt the
 entry prints the installation instruction and exits2; headless imports and quick

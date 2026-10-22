@@ -69,7 +69,8 @@ BACK = {"fixture-list": MENU, "fixtures-watch": MENU, "fixtures-auto": MENU, "to
 
 
 class Driver:
-    """Presses keys into a Core (`core.wait` is where it is). `log` lists (kind, key) of every key it pressed."""
+    """Presses keys into a Core (`core.wait` is where it is). `log` lists (kind, key) of every key it pressed and every
+    queued key the original read, in the order the original read them."""
 
     def __init__(self, core):
         self.core = core
@@ -91,6 +92,8 @@ class Driver:
             raise RefusedKey(wait.kind, key)
         self.log.append((wait.kind, key))
         new = self.core.press(key)
+        # [designed: T106] keys the original read from the queue on the way (a polled screen's), in its order
+        self.log.extend((p.kind, k) for p in new.passed for k in p.keys)
         if expect is not None and new.kind not in expect:
             raise UnexpectedScreen(expect, new)
         return new
@@ -167,13 +170,13 @@ class Driver:
         raise DriverError("the new game's bulletins did not end")
 
     def queue(self, kind, key):
-        """Queue `key` for the next poll of the polled screen `kind` (Core.queue), logged as a key the driver sent."""
+        """Queue `key` for the next poll of the polled screen `kind` (Core.queue); `log` lists it when the original
+        reads it (press)."""
         key = ord(key) if isinstance(key, str) else int(key)
         k = _screens.KINDS.get(kind)
         if k is None or not k.accepts(key):
             raise RefusedKey(kind, key)
         self.core.queue(kind, key)
-        self.log.append((kind, key))
 
     def _browse(self, country):
         """Move the country browser to `country` by its arrows [confirmed: named/seg_1771_02.c 26B9]: Left and Right
