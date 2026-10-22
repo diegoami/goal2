@@ -11,10 +11,12 @@ from goal2.core import Core
 wait = Core.start(open(".cache/e006-r0001-main.sav", "rb").read())   # E006-r0001, Drive (docs/artifacts.md)
 wait.site                    # '1771:28F5': the return address of the 214B:08DD call that reads the key
 wait.text                    # the 80x25 text page, CP437, trailing blanks trimmed (E006-r0001's record, exactly)
+wait.kind, wait.view         # 'team-info', {'country': 7, 'row': 1}: the screen kind and its cursor (T103, below)
 wait.state.managed, wait.state.year()   # (7,), 0: read through the kit's Image (players(), countries(), ...)
 core = wait.core
 wait = core.press(0x1B)      # Esc: the main menu, site '000E:75D1'
-blob = core.save()           # the memory, the CPU, the seeds and the key log
+core.queue("match-live", "r")   # a key for the next poll of a polled screen (below); refused if it does not list it
+blob = core.save()           # the memory, the CPU, the seeds, the key log and the queued keys
 core = Core.load(blob)       # at the same wait: core.wait
 ```
 
@@ -31,13 +33,69 @@ core = Core.load(blob)       # at the same wait: core.wait
   `DS:A977` := the key, AL := the key, `retf`. The key is the code 08DD stores (kit `screens.py`): the character,
   or an extended key's scan code adjusted (Left -1, Right -2, End..PgDn -3) plus 0x64; F10 is 0xA8. F5 (0xA3) is
   refused: 08DD prints the screen and reads another key (0957-0964).
-- [designed] **A poll answers "no key".** The core gives a key only at a read, so 0723 always answers no key
-  (AL 0). [confirmed: F030] A timed prompt is a count of polls with the calibrated delay `214B:1E09` between them,
-  so it advances by itself on the original's own clock (the image's `DS:A9FF`, never rewritten): the captain
-  prompt passes after its 1000 polls (`KeyWait.polls` counts them per poll site, `0791:CC54` for
-  `wait_or_key`). Type-ahead (a key a poll would see: Y at a replay question, R in play) is not served yet.
+- [designed] **A poll answers "no key"** unless a key is queued for its screen (T103, below). [confirmed: F030] A
+  timed prompt is a count of polls with the calibrated delay `214B:1E09` between them, so it advances by itself on
+  the original's own clock (the image's `DS:A9FF`, never rewritten): the captain prompt passes after its 1000 polls
+  (`KeyWait.polls` counts them per poll site, `0791:CC54` for `wait_or_key`).
 - A read with the pushed-back flag `DS:79AE` set is not a wait: 08DD returns without reading (08E3-08EF), so the
   guest's own code runs.
+
+## Screens: the kind at each read and each poll (T103)
+
+[designed: owner, 2026-10-22, #308; estimate 99, G9] `goal2/core/screens.py` maps each **read site** (the return
+address of a 214B:08DD call) and each **poll site** (the return address of a 214B:0723 call) to a screen kind, read
+from the original's stack and memory. The text page is never read to identify a screen; the tests check the table
+against it (`goal2/tests/test_core_screens_t103.py`: kinds.tsv's text rules, and the quotes below).
+
+- **Kinds** are named as in goal2-archaeology `static/screens/kinds.tsv`; each lists the keys the screen accepts,
+  the `screen` rows of `catalogue.tsv`, as 08DD's codes. `KeyWait.kind` is the wait's kind, `KeyWait.view` its
+  cursor or selection (the menu item, the country browsed, the fixture highlighted, the tactics row, the squad
+  slot and its player).
+- **Shared sites** are told apart by the caller frames the original pushed: the Y/N reader `214B:09C4` by the
+  caller of `214B:0566` (`1771:091C` quit-confirm, `1771:0932` save-game-prompt); the menu reader `214B:157C` by
+  its caller (`0791:EE9F` the match menu, whose own caller F20A, 9AE3 or F331 says before, at half time or after
+  the match; `1771:1A24` the tactics screen; `1771:9022` the tournament view); `wait_or_key 0791:CC54` by its
+  near caller (CC7B the captain prompt with role 1, 0B7C the timed questions, C50C the substitution notice).
+- **Where frames are not enough, a cited field decides** [confirmed: the listings named]: the tactics screen edits
+  only a managed country (`1771:0B77`, +0x2E > 0x80) with `DS:0C20` clear, else it is the view
+  (`named/seg_1771_02.c` 1771:1981, the country its argument `[bp+6]`); the fixture list's hint comes from the
+  highlighted fixture (`[bp-6] + [bp-8] - 1`, `fixtures` `DS:A92B`): neither country managed and the first byte
+  0xFF "watch match", 0xFE "auto result", else none (`named/seg_000E_01.c` 000E:0000); the board `0791:041A` is the
+  summary when it draws the man of the match (`DS:9A3F` clear and `DS:7C3A` set, `named/seg_0791_01.c` 0106);
+  SELECT TEAM `0791:E61F` offers "take off this player" with substitutions open and the cursor `DS:0C1B` below 12
+  (`0791:E44F`, `E2A0`); the team-info browser is `1771:26B9`'s mode 1 (`[bp+6]`) with its players view closed.
+- **Polled screens** read a key only after "key pressed?" says one waits: the captain prompt (polls `0791:CC54`,
+  `0791:CEDE`, reads at CEE8), play (`0791:93C2`, reads at 93CE), the timed questions (`0791:0BE1`) and notices
+  (`0791:C5C8`). Each wait lists those passed since the last (`KeyWait.passed`: kind, polls, the text at its first
+  poll, the queued keys read there). `core.queue(kind, key)` answers the next poll of that kind "a key waits"; the
+  original's next read takes the key, as `press` gives it. Polls of other kinds answer "no key" meanwhile. A key
+  the kind does not list is refused. The queue and a key a poll announced are saved and loaded with the core.
+- **An unknown site stops**: a read or a poll whose site has no entry, or whose entry knows no kind for what the
+  frames and memory show, raises `UnknownScreen(site, text)` and the core runs no further.
+
+[designed] goal2 kinds, for screens no kinds.tsv rule names; their keys are the hints they print. The text quoted
+is what the tests check the screen holds (the tours of `test_core_screens_t103.py`, E006-r0001 and E010-r0001):
+
+| kind | site | record | quoted text |
+| --- | --- | --- | --- |
+| `team-info` | `1771:28F5` (1771:26B9 mode 1, from main_menu_loop 000E:7682) | E006-r0001's first wait | "Use ←→↑↓ to select" "Hit ◄┘ for fixtures" "spacebar-players T-tactics" |
+| `fixture-list` | `000E:016C` (000E:0000), the own match highlighted | E006-r0001, Esc Down Enter | "and results" "Use ↑↓ to scroll" "Esc-exit" |
+| `match-board` | `0791:041A` (0791:0106) without the man of the match: half time, match stats, a quick result | E010-r0001's first wait | "Scorers" "hit any key" "Esc,◄┘-bench" |
+| `team-tactics-view` | `214B:157C` from `1771:1A24`, another country | E006-r0001, the match menu's right team tactics | "team─tactics" "hit any key" |
+| `tournament` | `214B:157C` from `1771:9022` | E010-r0001, the match menu's tournament | "Use ↓↑ to select group" "Use ←→ to select display" "Esc-exit" |
+| `action-replay-prompt` | poll `0791:CC54` / `0791:0BE1` (0B7C from 0C65 at 0C87) | E006-r0001, a watched second half | "Do you want an action replay? (Y/N)" |
+| `substitution-notice` | poll `0791:CC54` / `0791:C5C8` (0791:C50C) | E006-r0001, a watched second half | "SUBSTITUTION" "press any key" |
+
+**Not reached yet**, so not in the table:
+- `country-select` and the new-game screens (`title-load-prompt`, `title-player-count`,
+  `country-select-name-entry`): no kept savestate stops there at an INT 16h read (E006-r0001 starts at the team-info
+  browser, E011-r0001 and the title checkpoints are refused by `Core.start`), and leaving the menu calls INT 10h.
+  G10 needs a new-game savestate from goal2-archaeology.
+- The other kinds.tsv screens no tour met (`round-playing`, `round-results`, `match-watch-prompt`,
+  `match-commentary`, the other substitution screens, `save-game-name-entry`, `file-not-found-prompt`) and the
+  other cases of the shared sites (the taker prompts, the pause and extra-time menus, SELECT TEAM outside a match)
+  stop with `UnknownScreen` until a screen task maps them (G10-G14).
+- Interrupts other than the key reads stay unserved (T100).
 
 ## Where the run starts (R1)
 
@@ -83,5 +141,6 @@ same waits and the same memory, byte for byte. `core.memory_component()` is the 
 `import goal2.core` needs the standard library only; `Core.start` needs `unicorn` (`pip install -e
 '.[watched]'`) and says so when it is missing. Menu keys take milliseconds; pressing **play** runs the captain
 prompt and a whole first half at the image's own delay calibration, about 110 s under the instruction count.
-`python3 -m unittest goal2.tests.test_core_runner_t100 -v` checks all of this on E006-r0001 (it needs `.cache/`
-and the goal2-archaeology checkout, and skips without them).
+`python3 -m unittest goal2.tests.test_core_runner_t100 -v` checks all of this on E006-r0001, and
+`python3 -m unittest goal2.tests.test_core_screens_t103 -v` the screen table (it plays a whole watched match, about
+seven minutes); both need `.cache/` and the goal2-archaeology checkout, and skip without them.

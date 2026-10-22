@@ -42,6 +42,7 @@ import zipfile
 import zlib
 from dataclasses import dataclass, field
 
+from goal2.core import screens as _screens
 from goal2.engine.original_match import machine as _machine
 from goal2.engine.original_match.image import Image, MEM_BASE
 from goal2.engine.original_match.machine import Machine, MEM_SIZE, REGS
@@ -144,6 +145,26 @@ def read_entry(memory, load, regs):
     return {"ss": ss, "sp": (bp + 2) & 0xFFFF, "bp": word(bp), "site": (word(bp + 4), word(bp + 2))}
 
 
+class UnknownScreen(CoreError):
+    """The original reads or polls a key at a site the screen table (goal2/core/screens.py) does not know, or knows
+    for other screens than the one the original's frames and memory show: the core stops rather than guess."""
+
+    def __init__(self, site, text, poll=False):
+        self.site, self.text, self.poll = site, text, poll
+        what = "polls for a key" if poll else "reads a key"
+        super().__init__(f"the original {what} at {site}, a screen the table does not know\n{text}")
+
+
+@dataclass(frozen=True)
+class PassedScreen:
+    """A polled screen passed between two waits: its `kind`, the `polls` it answered, the `text` page at its first
+    poll, and the queued `keys` the original read there."""
+    kind: str
+    polls: int
+    text: str = field(repr=False)
+    keys: tuple = ()
+
+
 class StateView:
     """A read-only view of the original's memory at a wait, through the kit's `Image` (its record readers)."""
 
@@ -177,13 +198,18 @@ class StateView:
 class KeyWait:
     """The original waits for a key: `site` the return address of its 214B:08DD call ('SSSS:OOOO' as the listing
     writes it), `text` the text page (25 lines, CP437, trailing blanks trimmed), `screen` its 4000 raw bytes, `state`
-    the memory through the kit's Image, `polls` the "key pressed?" polls answered since the last wait, per site."""
+    the memory through the kit's Image, `polls` the "key pressed?" polls answered since the last wait, per site;
+    `kind` the screen kind (goal2/core/screens.py), `view` its cursor or selection read from memory, `passed` the
+    polled screens passed since the last wait (PassedScreen, in order)."""
     site: str
     text: str
     screen: bytes = field(repr=False)
     state: StateView = field(repr=False, compare=False)
     polls: tuple = ()
     core: "Core" = field(default=None, repr=False, compare=False)
+    kind: str = None
+    view: dict = field(default_factory=dict, hash=False)
+    passed: tuple = ()
 
 
 class Core:
@@ -195,6 +221,9 @@ class Core:
         self.budget, self.keys, self.template_sha256 = budget, keys, template_sha256
         self.stopped = None           # why the core can run no further (an error it raised)
         self._polls = {}
+        self._passed = []             # [kind, polls, text, [keys]] since the last wait
+        self.queued = []              # [(kind, key)]: keys for the next polls of their kinds (queue())
+        self.pending = None           # (kind, key): a poll said it waits; the original's next read takes it
         self.wait = None
         self._hooks()
 
@@ -230,7 +259,9 @@ class Core:
         snap = self.m.snapshot()
         state = {"version": VERSION, "load": snap["load"], "regs": snap["regs"], "header": self.header.hex(),
                  "seeds": {f"{a:04X}": self.m.rd(a) for a in SEEDS}, "keys": list(self.keys),
-                 "budget": self.budget, "template_sha256": self.template_sha256, "polls": self.wait.polls}
+                 "budget": self.budget, "template_sha256": self.template_sha256, "polls": self.wait.polls,
+                 "passed": [[p.kind, p.polls, p.text, list(p.keys)] for p in self.wait.passed],
+                 "queued": [list(q) for q in self.queued], "pending": None if self.pending is None else list(self.pending)}
         blob = json.dumps(state).encode()
         return MAGIC + len(blob).to_bytes(4, "little") + blob + zlib.compress(snap["memory"] + self.tail, 6)
 
@@ -252,7 +283,10 @@ class Core:
         for off, value in state["seeds"].items():
             if m.rd(int(off, 16)) != value:
                 raise ValueError(f"the saved seed DS:{off} does not match the saved memory")
-        core.wait = core._make_wait(tuple(tuple(p) for p in state["polls"]))
+        core.queued = [tuple(q) for q in state.get("queued", [])]
+        core.pending = None if state.get("pending") is None else tuple(state["pending"])
+        passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in state.get("passed", []))
+        core.wait = core._make_wait(tuple(tuple(p) for p in state["polls"]), passed)
         return core
 
     # -- playing ---------------------------------------------------------------------------------------------
@@ -265,13 +299,22 @@ class Core:
             raise ValueError(f"a key code is 1..255, not {key}")
         if key == F5_PRINT:
             raise ValueError("F5 (0xA3) prints the screen and makes 08DD read another key: not served by the core")
-        m = self.m
-        m.wr(KEY, key | (key << 8))                        # 0947 A976, 097C A977
-        m.set_reg("eax", (m.reg("eax") & ~0xFF) | key)    # 0979: AL
-        m.return_from(True, 0)                             # 0982 retf
+        self._answer(key)
         self.keys.append(key)
         self._run()
         return self.wait
+
+    def queue(self, kind, key):
+        """Answer the next poll of the polled screen `kind` with `key` (a code as for press()): that poll says a key
+        waits and the original's next read takes it. A key the kind does not accept is refused (ValueError)."""
+        self._check_waiting()
+        key = ord(key) if isinstance(key, str) else int(key)
+        k = _screens.KINDS.get(kind)
+        if k is None or not k.polled:
+            raise ValueError(f"{kind!r} is not a polled screen kind of the table")
+        if not k.accepts(key):
+            raise ValueError(f"{kind} does not accept the key {key:#04x}")
+        self.queued.append((kind, key))
 
     def memory(self):
         """The guest memory now (1 MiB and the HMA)."""
@@ -302,13 +345,43 @@ class Core:
         m = self.m
         site = m.where(m.stack_word(2), m.stack_word(0))
         self._polls[site] = self._polls.get(site, 0) + 1
-        m.set_reg("ax", m.reg("ax") & 0xFF00)
+        kind = _screens.identify(site, self._frame())
+        if kind is None:
+            raise UnknownScreen(site, self._text(), poll=True)
+        if not self._passed or self._passed[-1][0] != kind:
+            self._passed.append([kind, 0, self._text(), []])
+        self._passed[-1][1] += 1
+        has = 0
+        if self.pending is not None:
+            has = int(self.pending[0] == kind)     # the key still waits for the read of the screen that saw it
+        else:
+            for i, (k, key) in enumerate(self.queued):
+                if k == kind:
+                    self.pending, has = self.queued.pop(i), 1
+                    break
+        m.set_reg("ax", (m.reg("ax") & 0xFF00) | has)
         m.return_from(True, 0)
 
     def _on_readkey(self, replay):
         if self.m.rd(PUSHED_BACK, 1):
             return                    # 08E3: a pushed-back key is read without waiting: the guest's code runs
+        if self.pending is not None:  # a poll said a queued key waits: the read takes it, as press() answers
+            kind, key = self.pending
+            self.pending = None
+            self._answer(key)
+            self._passed[-1][3].append(key)
+            return
         self.m.stop("read")
+
+    def _answer(self, key):
+        m = self.m
+        m.wr(KEY, key | (key << 8))                        # 0947 A976, 097C A977
+        m.set_reg("eax", (m.reg("eax") & ~0xFF) | key)    # 0979: AL
+        m.return_from(True, 0)                             # 0982 retf
+
+    def _frame(self):
+        m = self.m
+        return _screens.Frame(m.read, m.load, m.DS, m.reg("ss"), m.reg("bp"))
 
     def _on_interrupt(self, uc, number, data):
         m = self.m
@@ -329,7 +402,7 @@ class Core:
 
     def _run(self):
         m = self.m
-        self.wait, self._polls = None, {}
+        self.wait, self._polls, self._passed = None, {}, []
         m.stop_reason, m.error = None, None
         m._resume_lin = None          # the kit's replay marker: the core never resumes at a hooked instruction
         try:
@@ -345,15 +418,20 @@ class Core:
         if m.stop_reason != "read":
             self.stopped = BudgetExceeded(self.budget, self._pc(m.reg("cs"), m.reg("ip")), self._text())
             raise self.stopped
-        self.wait = self._make_wait(tuple(sorted(self._polls.items())))
+        passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in self._passed)
+        self.wait = self._make_wait(tuple(sorted(self._polls.items())), passed)
 
-    def _make_wait(self, polls):
+    def _make_wait(self, polls, passed=()):
         m = self.m
         site = m.where(m.stack_word(2), m.stack_word(0))
         screen = self._screen()
+        frame = self._frame()
+        kind = _screens.identify(site, frame)
+        if kind is None:
+            self.stopped = UnknownScreen(site, decode_text(screen))
+            raise self.stopped
         return KeyWait(site=site, text=decode_text(screen), screen=screen, state=StateView(self.memory_component()),
-                       polls=polls,
-                       core=self)
+                       polls=polls, core=self, kind=kind, view=_screens.view(site, frame), passed=passed)
 
 
 def _need_unicorn():
