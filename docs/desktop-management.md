@@ -188,7 +188,8 @@ poll, pairs chosen there are requests the original makes at the next stoppage, a
 substitution opportunity that follows offers them again. After the match the substitute stays in
 the eleven, as the original's squad words keep it [confirmed: F029]; a substituted captain is
 replaced by the incoming player [designed, as T47]. Closing the pitch view while the bench is open
-cancels the match, as at any other moment.
+cancels the match, as at any other moment. The text-only presentation (`frames=False`, kept for
+compatibility checks) has no bench and plays on as before.
 
 [designed: T102] **Pacing.** The engine runs ahead of the pitch view, so it is paced: the worker
 writes pitch sample k only after the view has acknowledged sample k − 64, and is never more than
@@ -443,6 +444,8 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/animated-pitch.py
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m unittest goal2.tests.test_pygame_match_view -v
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/watched.py
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m unittest goal2.tests.test_watched_bench_t102 -v
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/watched_bench.py
 ```
 
 [designed] For validation, set TMPDIR to the checkout's physical `.cache/tmp` and
