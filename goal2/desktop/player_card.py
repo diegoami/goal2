@@ -17,9 +17,14 @@ RED, CYAN, YELLOW, GREEN, MAGENTA, GOLD = '#ff5555', '#55ffff', '#ffff55', '#55f
 EMPTY = '#9b009b'
 # [confirmed: F008 DS:699A; m244-squad] a role's line colour.
 LINE = {'goalkeeper': GREEN, 'defence': RED, 'midfield': CYAN, 'attack': YELLOW, 'unknown': GREY}
-WIDTH, HEIGHT = 760, 640
+# [designed: T101] The card is composed for the fixed page: the name, four header lines, then the
+# twelve skills on the left and the tactics above the five characteristics on the right, as the
+# original's squad screen [confirmed: `docs/original-game/images/m244-squad.png`]. It is painted in
+# page pixels through a scaled painter (goal2/desktop/fixed_page.py).
+WIDTH, HEIGHT = 760, 530
 # [designed: accepted vision #266 screen 11] Narrower than WIDTH, the card stacks its columns
-# (skills, characteristics, tactics) and scrolls vertically: same type size, never clipped.
+# (skills, characteristics, tactics). [designed: T101] The fixed page always gives the card its
+# full width; the stacked form remains for a card shown alone in a narrow widget.
 NARROW_WIDTH, NARROW_HEIGHT = 400, 1110
 
 
@@ -28,33 +33,32 @@ def bar_text(value):
 
 
 class PlayerCardView(QWidget):
-    """One complete card; set_card(card or None). Put it in a resizable QScrollArea."""
+    """One complete card; set_card(card or None)."""
+    page_painted = True
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.card = None;self.drawn = []
-        self.setObjectName('playerCard');self.setMinimumSize(NARROW_WIDTH, HEIGHT)
+        self.card = None;self.drawn = [];self.bottom = 0
+        self.setObjectName('playerCard')
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
+    def scale(self):
+        from goal2.desktop.fixed_page import scale_of
+        return scale_of(self)
+
+    def logical_width(self):
+        return self.width() / self.scale()
 
     @property
     def narrow(self):
-        return self.width() < WIDTH
+        return self.logical_width() < WIDTH - 0.5
 
     def sizeHint(self):
-        return QSize(WIDTH, HEIGHT)
+        s = self.scale()
+        return QSize(round(WIDTH * s), round(HEIGHT * s))
 
-    # [designed: T91] The height follows the width at layout time (not after a resize event, which
-    # a hidden page delays), so a page never grows under the player after it is shown.
-    def hasHeightForWidth(self):
-        return True
-
-    def heightForWidth(self, width):
-        return NARROW_HEIGHT if width < WIDTH else HEIGHT
-
-    def resizeEvent(self, event):
-        height = self.heightForWidth(self.width())
-        if self.minimumHeight() != height:self.setMinimumHeight(height)
-        super().resizeEvent(event)
+    def minimumSizeHint(self):
+        return self.sizeHint()
 
     def set_card(self, card):
         self.card = card
@@ -69,6 +73,8 @@ class PlayerCardView(QWidget):
         font.setPixelSize(size);font.setBold(bold);painter.setFont(font)
         painter.setPen(QColor(color));painter.drawText(int(x), int(y), str(value))
         self.drawn.append(str(value))
+        # [designed: T101] The lowest painted line, for the check that nothing falls below the card.
+        self.bottom = max(self.bottom, int(y) + painter.fontMetrics().descent())
 
     def fitted(self, value, width, size, bold=True):
         """The largest pixel size up to `size` at which `value` fits `width` (never elided)."""
@@ -89,16 +95,17 @@ class PlayerCardView(QWidget):
 
     def paintEvent(self, event):
         # Every string painted, for the checks that no number stands beside a bar.
-        self.drawn = []
+        self.drawn = [];self.bottom = 0
         painter = QPainter(self);painter.fillRect(self.rect(), QColor(BLACK))
-        painter.setPen(QColor(RED));painter.drawRect(1, 1, self.width() - 3, self.height() - 3)
+        s = self.scale();painter.scale(s, s);width = round(self.width() / s)
+        painter.setPen(QColor(RED));painter.drawRect(1, 1, width - 3, round(self.height() / s) - 3)
         c = self.card
         if c is None:
             self.text(painter, 20, 40, 'Choose a player', GREY);painter.end();return
         colour = LINE[c['line']]
         name = c['full_name'].upper()
-        self.text(painter, 16, 38, name, colour, self.fitted(name, self.width() - 100, 28), True)
-        self.text(painter, self.width() - 60, 38, c['role'], colour, 30, True)
+        self.text(painter, 16, 38, name, colour, self.fitted(name, width - 100, 28), True)
+        self.text(painter, width - 60, 38, c['role'], colour, 30, True)
         cards = ', '.join(c['cards']) or 'none'
         performance = 'not recorded' if c['performance'] is None else f"raw {c['performance']} (meaning not decoded)"
         header = [(f"Age {c['age']} / Caps {c['caps']} / Goals {c['goals']}", WHITE, 20)]
@@ -111,32 +118,33 @@ class PlayerCardView(QWidget):
             header += [(f"{c['height']} / {c['foot']} / {c['readiness'].upper()}", GREEN, 20),
                        (f"National {c['position']} ({c['role']}) / Club {c['club_position']} ({c['club_role']})", WHITE, 18),
                        (f'Cards: {cards} / Performance: {performance}', WHITE, 18)]
-        y = 70
+        y = 66
         for line, tone, size in header:
-            self.text(painter, 16, y, line, tone, size);y += 26
-        top = y + 12
+            self.text(painter, 16, y, line, tone, size);y += 24
+        top = y + 10
         # Twelve skills: label and 25-cell bar, no number.
-        skill_width = (self.width() - 160) if self.narrow else 250
+        skill_width = (width - 160) if self.narrow else 250
         for i, (name, value) in enumerate(c['skills']):
             row = top + i * 30
             self.text(painter, 16, row, name.capitalize(), GOLD, 20, True)
             self.bar(painter, 140, row, skill_width, value, 25)
-        # Five characteristics: label and 14-cell bar with the original's word inside it.
+        # The tactics and the mark, then five characteristics: label and 14-cell bar with the
+        # original's word inside it.
         x, top = (16, top + 12 * 30 + 20) if self.narrow else (410, top)
-        bar_x = x + 150;bar_width = min(200, self.width() - bar_x - 16)
-        for i, (name, word, bar, raw) in enumerate(c['characteristics']):
-            row = top + i * 36
-            self.text(painter, x, row, name.capitalize(), GOLD, 20, True)
-            self.bar(painter, bar_x, row, bar_width, bar, 14)
-            font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace);font.setPixelSize(16)
-            from PySide6.QtGui import QFontMetrics
-            painter.fillRect(QRectF(bar_x + 1, row - 15, QFontMetrics(font).horizontalAdvance(word) + 6, 18), QColor(GREY))
-            self.text(painter, bar_x + 4, row, word, BLACK, 16)
-        top += 5 * 36 + 16
+        bar_x = x + 150;bar_width = min(200, width - bar_x - 16)
         self.text(painter, x, top, 'TACTICS / P = PERSONAL', RED, 20, True)
         rows = [(name, word + (' P' if personal else '')) for name, word, personal in c['tactics']]
         for i, (name, word) in enumerate(rows + [('mark', c['mark'] or '—')]):
             row = top + 28 + i * 28
             self.text(painter, x, row, name.capitalize(), GOLD, 20)
             self.text(painter, bar_x, row, word, GREEN, 18)
+        top += 28 * (len(rows) + 2) + 14
+        for i, (name, word, bar, raw) in enumerate(c['characteristics']):
+            row = top + i * 32
+            self.text(painter, x, row, name.capitalize(), GOLD, 20, True)
+            self.bar(painter, bar_x, row, bar_width, bar, 14)
+            font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace);font.setPixelSize(16)
+            from PySide6.QtGui import QFontMetrics
+            painter.fillRect(QRectF(bar_x + 1, row - 15, QFontMetrics(font).horizontalAdvance(word) + 6, 18), QColor(GREY))
+            self.text(painter, bar_x + 4, row, word, BLACK, 16)
         painter.end()

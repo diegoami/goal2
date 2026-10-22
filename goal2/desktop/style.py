@@ -25,22 +25,29 @@ def load_fonts():
 
 
 def apply_style(window):
-    load_fonts();c=COLORS
-    window.setStyleSheet(f"""
-    QMainWindow, QDialog, QScrollArea, QScrollArea > QWidget > QWidget, QWidget#shellRoot, QStackedWidget {{background:{c['background']};color:{c['text']};}}
+    """Style the window (its menu bar and dialogs at 1:1) and return the sheet, which the fixed
+    page applies again at its scale [designed: T101]."""
+    load_fonts();sheet=stylesheet();window.setStyleSheet(sheet)
+    return sheet
+
+
+def stylesheet():
+    c=COLORS
+    return (f"""
+    QMainWindow, QDialog, QWidget#fixedPage, QWidget#shellRoot, QWidget#launchRoot, QStackedWidget, QStackedWidget > QWidget {{background:{c['background']};color:{c['text']};}}
     QWidget {{font-family:{FONT};font-size:16px;color:{c['text']};}}
     QFrame#topBar, QFrame#sideBar {{border:2px solid {c['cyan']};background:{c['background']};}}
-    QLabel#brand {{font-size:34px;font-weight:700;color:{c['cyan']};}}
-    QLabel#countryTitle {{font-size:34px;font-weight:700;color:{c['yellow']};}}
-    QLabel#careerLine, QLabel#countryContext {{font-size:20px;color:{c['text']};}}
-    QLabel#nextLine {{font-size:26px;font-weight:700;color:{c['cyan']};}}
-    QLabel#nextDetail {{font-size:20px;color:{c['text']};}}
+    QLabel#brand {{font-size:30px;font-weight:700;color:{c['cyan']};}}
+    QLabel#countryTitle {{font-size:30px;font-weight:700;color:{c['yellow']};}}
+    QLabel#careerLine, QLabel#countryContext {{font-size:16px;color:{c['text']};}}
+    QLabel#nextLine {{font-size:22px;font-weight:700;color:{c['cyan']};}}
+    QLabel#nextDetail {{font-size:16px;color:{c['text']};}}
     QLabel#sideHint {{color:{c['magenta']};font-size:16px;}}
     QLabel#pageHeading {{font-size:26px;font-weight:700;color:{c['red']};padding:4px;}}
     QPushButton,QComboBox,QLineEdit,QCheckBox {{font-size:14px;min-height:40px;}}
     QPushButton {{background:{c['background']};color:{c['cyan']};border:2px solid {c['cyan']};padding:0px 12px;font-weight:700;text-align:left;}}
     QComboBox,QLineEdit {{background:{c['background']};color:{c['green']};border:2px solid {c['cyan']};padding:0px 8px;}}
-    QFrame#sideBar QPushButton {{border:0;font-size:22px;}}
+    QFrame#sideBar QPushButton {{border:0;font-size:20px;}}
     QPushButton:checked {{background:{c['accent']};color:{c['ink']};}}
     QPushButton:hover {{background:{c['raised']};}}
     QPushButton:checked:hover {{background:{c['accent']};color:{c['ink']};}}
@@ -98,7 +105,6 @@ def apply_style(window):
     QWidget#draftBar QPushButton {{border:3px solid {c['cyan']};}}
     QWidget#draftBar QPushButton:focus {{border:3px solid {c['focus']};}}
     QLabel#status {{color:{c['magenta']};}}
-    QScrollArea {{border:0;}}
     QScrollBar:vertical {{background:{c['background']};width:14px;border:1px solid {c['cyan']};}}
     QScrollBar:horizontal {{background:{c['background']};height:14px;border:1px solid {c['cyan']};}}
     QScrollBar::handle {{background:{c['accent']};min-width:24px;min-height:24px;}}

@@ -12,21 +12,22 @@ def label(name,accessible):
 
 
 def build(self,model,TACTICS):
-    page=self.pages[2];layout=page.content
-    # [designed: T91; accepted vision #266 screen 04] Both complete cards stay pinned above the
-    # pool browser: the outgoing squad player and the incoming reserve.
-    from goal2.desktop.roster import Columns
+    page=self.pages[2]
+    # [designed: T101] The Pool page has two views on the fixed page: 0 the pool browser (the
+    # outgoing player, the filters, the reserves, the selected detail and the exchange), 1 the two
+    # complete cards (Cards: OUT, the squad player, and IN, the pool reserve, one at a time as the
+    # original's pool screen toggles between squad and pool [confirmed:
+    # `docs/original-game/images/m244-pool.png`]). The exchange bar stays below both; Esc returns.
+    self.pool_views,(browser,cards_box)=page.add_views('poolViews',('poolBrowser','poolCardsView'))
+    self.pool_views.show_view=lambda index:pool_view(self,index)
     from goal2.desktop.player_card import PlayerCardView
-    cards=Columns(816);cards.setObjectName('poolCards');layout.addWidget(cards)
-    self.pool_out_card=PlayerCardView();self.pool_in_card=PlayerCardView()
-    for view,caption,name in ((self.pool_out_card,'OUT · squad player','Outgoing player card'),(self.pool_in_card,'IN · pool reserve','Incoming player card')):
-        column=QWidget();body=QVBoxLayout(column);body.setContentsMargins(0,0,0,0);body.setSpacing(4)
-        heading=QLabel(caption);heading.setObjectName('poolCardCaption');body.addWidget(heading)
-        view.setAccessibleDescription(name);body.addWidget(view,1);cards.box.addWidget(column,1)
-    pool_panel=QWidget();pool_layout=QVBoxLayout(pool_panel);self.pool_panel=pool_panel
+    from PySide6.QtWidgets import QStackedWidget,QButtonGroup
+    pool_panel=QWidget();pool_layout=QVBoxLayout(pool_panel);pool_layout.setContentsMargins(0,0,0,0);pool_layout.setSpacing(8);self.pool_panel=pool_panel
     self.pool_summary=label('poolSummary','National pool membership');pool_layout.addWidget(self.pool_summary)
-    outgoing=QLabel('Outgoing squad player · selection only, confirmed XI stays unchanged');outgoing.setWordWrap(True);pool_layout.addWidget(outgoing)
-    self.pool_outgoing=QComboBox();self.pool_outgoing.setObjectName('poolOutgoing');self.pool_outgoing.setAccessibleName('Outgoing squad player');pool_layout.addWidget(self.pool_outgoing)
+    outgoing_bar=QHBoxLayout();outgoing=QLabel('Outgoing squad player · selection only, confirmed XI stays unchanged');outgoing.setWordWrap(True)
+    outgoing_bar.addWidget(outgoing,1)
+    self.pool_outgoing=QComboBox();self.pool_outgoing.setObjectName('poolOutgoing');self.pool_outgoing.setAccessibleName('Outgoing squad player');outgoing_bar.addWidget(self.pool_outgoing,1)
+    pool_layout.addLayout(outgoing_bar)
     filter_bar=QHBoxLayout();self.search=QLineEdit();self.search.setPlaceholderText('Search reserve name')
     self.position=QComboBox();self.position.addItem('All position codes',None)
     # [confirmed: F002 DS:69A8/69B6] The original's codes and position names.
@@ -38,18 +39,53 @@ def build(self,model,TACTICS):
     self.reserves.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows);self.reserves.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
     self.reserves.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
     self.reserves.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeMode.ResizeToContents)
-    self.reserves.verticalHeader().setDefaultSectionSize(40)
+    self.reserves.horizontalHeader().setStretchLastSection(True)
+    self.reserves.verticalHeader().setDefaultSectionSize(30);self.reserves.verticalHeader().hide()
+    # [designed: T101; confirmed: `docs/original-game/images/m244-pool.png`] As the original's pool
+    # list, the eighty reserves are a window of rows that follows the selection (arrows, Page
+    # Up/Down, the wheel); the fixed page shows no scroll bar.
+    for policy in (self.reserves.setVerticalScrollBarPolicy,self.reserves.setHorizontalScrollBarPolicy):policy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
     pool_layout.addWidget(self.reserves,1)
-    self.pool_detail=label('poolDetail','Selected reserve detail');pool_layout.addWidget(self.pool_detail)
-    self.exchange_summary=label('exchangeSummary','Selected exchange identities');pool_layout.addWidget(self.exchange_summary)
-    self.reserves.setTabKeyNavigation(False);self.reserves.setMinimumHeight(220);layout.addWidget(pool_panel)
-    footer=QWidget();footer.setObjectName('poolActionBar');bar=QVBoxLayout(footer);bar.setContentsMargins(8,8,8,8)
-    self.pool_policy=label('poolPolicy','Exchange policy and context');bar.addWidget(self.pool_policy)
+    details=QHBoxLayout();details.setSpacing(16);pool_layout.addLayout(details)
+    self.pool_detail=label('poolDetail','Selected reserve detail');details.addWidget(self.pool_detail,1)
+    self.exchange_summary=label('exchangeSummary','Selected exchange identities');details.addWidget(self.exchange_summary,1)
+    self.reserves.setTabKeyNavigation(False);self.reserves.setMinimumHeight(220);browser.addWidget(pool_panel,1)
+    # View 1: the two complete cards, OUT and IN, one at a time.
+    toggle=QHBoxLayout();cards_box.addLayout(toggle)
+    self.pool_cards=QStackedWidget();self.pool_cards.setObjectName('poolCards')
+    self.pool_out_card=PlayerCardView();self.pool_in_card=PlayerCardView();self.pool_card_buttons=QButtonGroup(cards_box.parentWidget())
+    for number,(view,caption,name) in enumerate(((self.pool_out_card,'OUT · squad player','Outgoing player card'),(self.pool_in_card,'IN · pool reserve','Incoming player card'))):
+        button=QPushButton(caption);button.setObjectName('poolCardOut' if number==0 else 'poolCardIn');button.setCheckable(True)
+        button.setAccessibleName('Show the '+name.lower());self.pool_card_buttons.addButton(button,number);toggle.addWidget(button)
+        button.clicked.connect(lambda checked=False,i=number:self.pool_cards.setCurrentIndex(i))
+        view.setAccessibleDescription(name);self.pool_cards.addWidget(view)
+    self.pool_card_buttons.button(0).setChecked(True);self.pool_cards.currentChanged.connect(lambda i:self.pool_card_buttons.button(i).setChecked(True))
+    toggle.addStretch(1)
+    self.pool_cards_back=QPushButton('< Pool (Esc)');self.pool_cards_back.setObjectName('poolCardsBack');self.pool_cards_back.setAccessibleName('Back to the pool')
+    self.pool_cards_back.clicked.connect(lambda:pool_view(self,0));toggle.addWidget(self.pool_cards_back)
+    cards_box.addWidget(self.pool_cards,0,Qt.AlignmentFlag.AlignLeft);cards_box.addStretch(1)
+    footer=QWidget();footer.setObjectName('poolActionBar');bar=QHBoxLayout(footer);bar.setContentsMargins(8,8,8,8);bar.setSpacing(8)
+    self.pool_policy=label('poolPolicy','Exchange policy and context');bar.addWidget(self.pool_policy,1)
+    self.pool_cards_route=QPushButton('Cards >');self.pool_cards_route.setObjectName('poolCardsRoute');self.pool_cards_route.setAccessibleName('Show the outgoing and incoming cards')
+    self.pool_cards_route.clicked.connect(lambda:pool_view(self,1));bar.addWidget(self.pool_cards_route)
     self.exchange=QPushButton('Exchange selected squad player and reserve');self.exchange.setObjectName('exchange');bar.addWidget(self.exchange)
     page.set_footer(footer)
+    from PySide6.QtGui import QKeySequence,QShortcut
+    self.pool_escape=QShortcut(QKeySequence('Escape'),page)
+    self.pool_escape.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+    self.pool_escape.activated.connect(lambda:self.pool_views.currentIndex()!=0 and pool_view(self,0))
     self.pool_outgoing.currentIndexChanged.connect(lambda *args:outgoing_changed(self))
     self.table.currentCellChanged.connect(lambda *args:table_changed(self))
     self.reserves.currentCellChanged.connect(lambda *args:selection(self))
+
+
+def pool_view(self,index):
+    """[designed: T101] Show Pool view `index` (0 the browser, 1 the cards); presentation only."""
+    self.pool_views.setCurrentIndex(index)
+    if self.page_stack.currentIndex()!=2:return
+    target={0:self.pool_outgoing,1:self.pool_card_buttons.button(self.pool_cards.currentIndex())}[index]
+    if not target.isEnabled():target=self.pages[2].heading
+    target.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
 
 def outgoing_changed(self):

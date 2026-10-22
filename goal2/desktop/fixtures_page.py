@@ -5,29 +5,64 @@ from PySide6.QtWidgets import (QWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QLabe
 
 def build(self,model,TACTICS):
     self.standings_dialog=None
-    layout=self.pages[3].content
-    self.fixture_next=card(layout,'Next fixture','fixtureNext')
-    self.scoreboard=card(layout,'Last completed result','scoreboard')
-    self.scoreboard.setStyleSheet('font-size: 22px; font-weight: 600;')
-    self.result_stages=card(layout,'Match resolution','resultStages')
-    self.standings=QPushButton('Competition table');self.standings.setObjectName('showStandings')
-    self.pages[3].content.addWidget(self.standings)
-    layout=self.pages[3].content
+    page=self.pages[3]
+    # [designed: T101] The Fixtures & match page has four views on the fixed page: 0 the match
+    # preparation, 1 the full-time result, 2 half time (the substitution), 3 the fixture list (the
+    # next fixture, the last result, the standings and the qualifying). A finished match opens the
+    # result; a half-time pause opens half time; Fixture list and Esc are the routes.
+    self.fixture_views,(prep_box,result_box,half_box,list_box)=page.add_views('fixtureViews',
+        ('matchPreparationView','matchResultView','halfTimeView','fixtureListView'))
+    self.fixture_views.show_view=lambda index:fixtures_view(self,index)
+    self.fixtures_view=lambda index:fixtures_view(self,index)
     self.play=QPushButton('Play quick friendly');self.stop=QPushButton('Cancel match');self.stop.setEnabled(False)
     self.watch=QPushButton('Watch original friendly');self.watch.setObjectName('watchOriginal')
-    preparation(self,self.pages[3].content)
-    result_section(self,self.pages[3].content)
+    self.standings=QPushButton('Competition table');self.standings.setObjectName('showStandings')
+    preparation(self,prep_box)
+    result_section(self,result_box)
+    # View 2: half time.
+    self.half_title=QLabel('HALF TIME');self.half_title.setObjectName('prepTitle');half_box.addWidget(self.half_title)
     half_bar=QGridLayout();self.half_out=QComboBox();self.half_in=QComboBox()
     self.substitute=QPushButton('Substitute');self.continue_match=QPushButton('Continue second half')
     half_bar.addWidget(QLabel('Off'),0,0);half_bar.addWidget(self.half_out,0,1);half_bar.addWidget(self.substitute,0,2)
     half_bar.addWidget(QLabel('On'),1,0);half_bar.addWidget(self.half_in,1,1);half_bar.addWidget(self.continue_match,1,2)
     half_bar.setColumnStretch(1,1)
     for widget in (self.half_out,self.half_in,self.substitute,self.continue_match):widget.setEnabled(False)
-    layout.addLayout(half_bar);self.half_preview=None
-    self.result=card(layout,'Goals and result details','resultDetails')
-    self.fixture_routes=QLabel();self.fixture_routes.setWordWrap(True);self.fixture_routes.setTextFormat(Qt.TextFormat.PlainText);layout.addWidget(self.fixture_routes)
-    self.fixture_table=card(layout,'Standings snapshot','fixtureTable')
-    self.qualifying=card(layout,'Continental qualifying','continentalQualifying')
+    half_box.addLayout(half_bar);self.half_preview=None
+    self.result=card(half_box,'Goals and result details','resultDetails')
+    half_box.addStretch(1)
+    # View 3: the fixture list, in two columns.
+    title=QLabel('FIXTURE LIST');title.setObjectName('prepTitle');list_box.addWidget(title)
+    columns=QHBoxLayout();columns.setSpacing(16);list_box.addLayout(columns)
+    left=QVBoxLayout();left.setSpacing(8);columns.addLayout(left,1)
+    right=QVBoxLayout();right.setSpacing(8);columns.addLayout(right,1)
+    self.fixture_next=card(left,'Next fixture','fixtureNext')
+    self.scoreboard=card(left,'Last completed result','scoreboard')
+    self.scoreboard.setStyleSheet('font-size: 22px; font-weight: 600;')
+    self.result_stages=card(left,'Match resolution','resultStages')
+    self.fixture_routes=QLabel();self.fixture_routes.setObjectName('fixtureRoutes');self.fixture_routes.setWordWrap(True);self.fixture_routes.setTextFormat(Qt.TextFormat.PlainText);left.addWidget(self.fixture_routes)
+    left.addStretch(1)
+    self.fixture_table=card(right,'Standings snapshot','fixtureTable')
+    self.qualifying=card(right,'Continental qualifying','continentalQualifying')
+    right.addStretch(1)
+    routes=QHBoxLayout();list_box.addLayout(routes)
+    self.fixture_list_back=QPushButton('< Match (Esc)');self.fixture_list_back.setObjectName('fixtureListBack');self.fixture_list_back.setAccessibleName('Back to the match preparation')
+    self.fixture_list_back.clicked.connect(lambda:fixtures_view(self,0))
+    for button in (self.standings,self.fixture_list_back):routes.addWidget(button)
+    routes.addStretch(1);list_box.addStretch(1)
+    from PySide6.QtGui import QKeySequence,QShortcut
+    self.fixtures_escape=QShortcut(QKeySequence('Escape'),page)
+    self.fixtures_escape.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+    self.fixtures_escape.activated.connect(lambda:self.fixture_views.currentIndex()==3 and fixtures_view(self,0))
+
+
+def fixtures_view(self,index):
+    """[designed: T101] Show Fixtures view `index` (0 preparation, 1 result, 2 half time, 3 the
+    fixture list) with its first control focused; presentation only."""
+    self.fixture_views.setCurrentIndex(index)
+    if self.page_stack.currentIndex()!=3:return
+    target={0:self.play,1:self.result_continue,2:self.half_out,3:self.fixture_list_back}[index]
+    if not target.isEnabled():target=self.pages[3].heading
+    target.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
 
 from goal2.desktop.match_view import SPEEDS
@@ -37,10 +72,11 @@ def preparation(self,layout):
     """[designed: T95; accepted vision #266 screen 05] Both elevens with their formations beside
     the Play panel: Quick and Watch explained next to their existing buttons, and the speed."""
     from PySide6.QtWidgets import QFrame,QButtonGroup
-    from goal2.desktop.roster import Columns,RosterView
+    from goal2.desktop.roster import RosterView
     self.prep_title=QLabel();self.prep_title.setObjectName('prepTitle');self.prep_title.setWordWrap(True)
-    layout.insertWidget(1,self.prep_title)
-    columns=Columns(1000);columns.setObjectName('matchPreparation');layout.insertWidget(2,columns)
+    layout.addWidget(self.prep_title)
+    columns=QWidget();columns.setObjectName('matchPreparation');columns.box=QHBoxLayout(columns)
+    columns.box.setContentsMargins(0,0,0,0);columns.box.setSpacing(16);layout.addWidget(columns)
     self.lineup_own=RosterView('XI',toggles=False,capacity=11,marks=False)
     self.lineup_other=RosterView('XI',toggles=False,capacity=11,marks=False)
     for view in (self.lineup_own,self.lineup_other):
@@ -64,19 +100,26 @@ def preparation(self,layout):
         self.speed_buttons.append(button)
     self.speed_group.button(60).setChecked(True)
     self.prep_note=text('','prepNote')
+    routes=QHBoxLayout();body.addLayout(routes)
+    self.fixture_list_route=QPushButton('Fixture list >');self.fixture_list_route.setObjectName('fixtureListRoute')
+    self.fixture_list_route.setAccessibleName('Show the fixture list and standings')
+    self.fixture_list_route.clicked.connect(lambda:fixtures_view(self,3));routes.addWidget(self.fixture_list_route)
+    self.half_route=QPushButton('Half time >');self.half_route.setObjectName('halfTimeRoute');self.half_route.setAccessibleName('Show half time')
+    self.half_route.clicked.connect(lambda:fixtures_view(self,2));routes.addWidget(self.half_route)
+    layout.addStretch(1)
 
 
 def result_section(self,layout):
     """[designed: T97; accepted vision #266 screen 08] Full time: score, half-time, each side's
     scorers, the original's statistics and man of the match; Continue and Round results."""
     from PySide6.QtWidgets import QFrame
-    from goal2.desktop.roster import Columns
     self.result_open=False
     self.result_box=QWidget();self.result_box.setObjectName('resultSection');box=QVBoxLayout(self.result_box)
-    box.setContentsMargins(0,0,0,0);box.setSpacing(10);layout.insertWidget(1,self.result_box)
+    box.setContentsMargins(0,0,0,0);box.setSpacing(10);layout.addWidget(self.result_box);layout.addStretch(1)
     self.result_title=QLabel();self.result_title.setObjectName('resultTitle');self.result_title.setWordWrap(True);box.addWidget(self.result_title)
     self.result_subtitle=QLabel();self.result_subtitle.setObjectName('resultSubtitle');self.result_subtitle.setWordWrap(True);box.addWidget(self.result_subtitle)
-    columns=Columns(1000);box.addWidget(columns);self.result_panels=[]
+    columns=QWidget();columns.box=QHBoxLayout(columns);columns.box.setContentsMargins(0,0,0,0);columns.box.setSpacing(16)
+    box.addWidget(columns);self.result_panels=[]
     for name in ('resultScorersA','resultStatistics','resultScorersB'):
         panel=QFrame();panel.setObjectName('resultPanel');body=QVBoxLayout(panel)
         heading=QLabel();heading.setObjectName('resultHeading');body.addWidget(heading)
@@ -97,13 +140,13 @@ def result_section(self,layout):
 
 def open_result(self):
     """[designed: T97] A match has just finished: show its result first, Continue focused."""
-    self.result_open=True;refresh_result(self);self.navigate(3)
-    self.pages[3].verticalScrollBar().setValue(0);self.result_continue.setFocus()
+    self.result_open=True;refresh_result(self);self.navigate(3);fixtures_view(self,1)
+    self.result_continue.setFocus()
 
 
 def continue_after_result(self):
     """[designed: T97; accepted screen 09] Continue: back to the Country desk and the next fixture."""
-    self.result_open=False;refresh_result(self);self.navigate(0)
+    self.result_open=False;refresh_result(self);self.fixture_views.setCurrentIndex(0);self.navigate(0)
     self.desk_routes[0].setFocus()
 
 

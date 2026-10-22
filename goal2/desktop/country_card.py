@@ -18,23 +18,30 @@ CODE_LINE = {'G': 'goalkeeper', 'S': 'defence', 'C': 'defence', 'b': 'defence', 
 
 
 class CountryCardView(QWidget):
+    # [designed: T101] Painted in page pixels through a scaled painter (goal2/desktop/fixed_page.py);
+    # the fixed page always gives it WIDTH x HEIGHT, the stacked form remains for a narrow widget.
+    page_painted = True
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.card = None;self.first = ''
-        self.setObjectName('countryCard');self.setMinimumSize(NARROW_WIDTH, HEIGHT)
+        self.card = None;self.first = '';self.bottom = 0
+        self.setObjectName('countryCard')
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
+    def scale(self):
+        from goal2.desktop.fixed_page import scale_of
+        return scale_of(self)
 
     @property
     def narrow(self):
-        return self.width() < WIDTH
+        return self.width() / self.scale() < WIDTH - 0.5
 
     def sizeHint(self):
-        return QSize(WIDTH, HEIGHT)
+        s = self.scale()
+        return QSize(round(WIDTH * s), round(HEIGHT * s))
 
-    def resizeEvent(self, event):
-        height = NARROW_HEIGHT if self.narrow else HEIGHT
-        if self.minimumHeight() != height:self.setMinimumHeight(height)
-        super().resizeEvent(event)
+    def minimumSizeHint(self):
+        return self.sizeHint()
 
     def set_card(self, card, first=''):
         self.card = card;self.first = first
@@ -48,6 +55,7 @@ class CountryCardView(QWidget):
         font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
         font.setPixelSize(size);font.setBold(bold);painter.setFont(font)
         painter.setPen(QColor(color));painter.drawText(int(x), int(y), str(value))
+        self.bottom = max(self.bottom, int(y) + painter.fontMetrics().descent())
 
     def rows(self, painter, x, y, title, rows, label_width=190):
         """A titled group of name/value rows; narrow cards put long values on their own line."""
@@ -63,8 +71,9 @@ class CountryCardView(QWidget):
         return y + 10
 
     def paintEvent(self, event):
-        painter = QPainter(self);painter.fillRect(self.rect(), QColor(BLACK))
-        painter.setPen(QColor(CYAN));painter.drawRect(1, 1, self.width() - 3, self.height() - 3)
+        painter = QPainter(self);painter.fillRect(self.rect(), QColor(BLACK));self.bottom = 0
+        s = self.scale();painter.scale(s, s)
+        painter.setPen(QColor(CYAN));painter.drawRect(1, 1, round(self.width() / s) - 3, round(self.height() / s) - 3)
         c = self.card
         if c is None:
             self.text(painter, 20, 40, 'Choose a country', GREY);painter.end();return
