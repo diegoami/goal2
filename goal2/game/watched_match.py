@@ -170,9 +170,30 @@ def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
                         record_draws=record_draws)
 
 
+# [confirmed: vendored kit goal2/engine/original_match/match.py MENU_CONTEXT/DECIDED_AT_MENU] The
+# decisions where the original offers the managed side its bench: the half-time menu (0791:9AE3),
+# Enter in play (0791:945B) and the stoppage notice (0791:8103).
+BENCH_CONTEXTS = ('half_time', 'pause', 'substitution')
+# [confirmed: goal2-archaeology F027 C-DISC-24 (E544), E015-r0013 state 790] With no substitutions
+# left the original's players screen shows this panel and makes no swap.
+NO_MORE_SUBSTITUTES = 'no more substitutes'
+# [confirmed: the kit's Match._close_plan and _flush] The events one menu visit ends with; the first
+# other event (a tick, a decision, commentary) means the original plays on.
+MENU_OUTCOMES = ('substitution', 'refused', 'substitution_requested', 'tactics', 'position', 'player_tactics')
+
+
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
-                 substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None):
-    """[designed: T51] Shared completed-original driver; no publication or Python tail."""
+                 substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None,policy=None):
+    """[designed: T51] Shared completed-original driver; no publication or Python tail.
+
+    [designed: T102] `policy` answers the bench decisions (BENCH_CONTEXTS) for a watching player;
+    without one every decision keeps the play-on default. It has three methods:
+    `decide(event)` returns the (off, on) pairs to answer (empty plays on); `pause_now(sequence)`,
+    asked after each observed pitch sample, returns True for the original's Enter in play
+    (Match.pause); `answered(report)` receives what the engine made of each answer with pairs
+    (`made`, `refused` with the reason, `requested` at a pause, and the engine's
+    `substitutions_left`) once the original plays on. Answering is the only way it touches the match.
+    """
     if reference_seed is not None:
         _integer(reference_seed,0,65535,'reference seed')
     if delay_byte is not None:
@@ -184,19 +205,43 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     frame_sequence = 0
     events = []
     previous_decision = None
+    report = None
     for ev in match.events():
+        if report is not None and ev.kind not in MENU_OUTCOMES:
+            policy.answered(_report(match, report))
+            report = None
         if _observe_pitch is not None and ev.kind == 'tick':
             from goal2.game.watched_pitch import snapshot
             _observe_pitch(snapshot(match, ev, frame_sequence, len(events)))
             frame_sequence += 1
+            if policy is not None and policy.pause_now(frame_sequence - 1):
+                _pause(match)
             continue
         events.append(copy.deepcopy(ev))
         if _observe is not None:
             _observe(copy.deepcopy(ev))
+        if report is not None:
+            if ev.kind == 'substitution' and ev.data.get('team') == match.side:
+                report['made'].append([ev.data['off'], ev.data['on']])
+            elif ev.kind == 'refused' and ev.data.get('job') == 'sub':
+                report['reasons'][(ev.data['player'], ev.data['target'])] = ev.data.get('reason')
+            elif ev.kind == 'substitution_requested':
+                report['requested'] = [list(pair) for pair in ev.data['pending']]
         if ev.kind == 'decision':
             # [designed: T65] Unknown contexts cannot be silently defaulted.
             if ev.data.get('context') not in ('half_time','substitution','pause','extra_time','shootout_order'):
                 raise RuntimeError('unsupported original decision under default play-on policy')
+            if policy is not None and ev.data['context'] in BENCH_CONTEXTS:
+                # [designed: T102] The watching player answers; a refused eleven is offered again.
+                pairs = [[int(off), int(on)] for off, on in policy.decide(copy.deepcopy(ev))]
+                if pairs:
+                    match.answer(substitutions=pairs)
+                    report = {'context': ev.data['context'], 'asked': pairs, 'made': [], 'reasons': {},
+                              'requested': []}
+                else:
+                    match.answer()
+                previous_decision = None
+                continue
             identity = (ev.minute,ev.data)
             if ev.data.get('refused') or identity == previous_decision:
                 raise RuntimeError('original decision refused or made no progress under default play-on policy')
@@ -204,8 +249,39 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
             match.answer(quick=True) if quick_at_half_time and ev.data.get('context')=='half_time' else match.answer()
         elif ev.kind != 'refused':
             previous_decision = None
+    if report is not None:
+        policy.answered(_report(match, report))
     # [confirmed: E033] result() requires completion after the B7FA player-update tail.
     result = copy.deepcopy(match.result())
     memory = match.memory_component()
     after = Image(memory)
     return WatchedOutcome(result,memory,tuple(events),(after.rd(0x7B62),after.rd(0x8336)),image.year())
+
+
+def _pause(match):
+    """[designed: T102] The original's Enter in play; asked when the match has no poll left (the
+    final whistle, a waiting decision) it is dropped, as a key pressed then would be."""
+    from goal2.engine.original_match.match import MatchError
+    try:
+        match.pause()
+    except MatchError:
+        pass
+
+
+def _report(match, report):
+    """[designed: T102] What the engine made of one answer. A pair asked and neither made nor
+    requested is refused: with the kit's reason when it gave one, else, with no substitutions
+    left, the original's panel [confirmed: F027 E544; E015-r0013 state 790].
+    [confirmed: the kit's Match._decide reads the counter at DS:9B3A + side (screens.SUBS_LEFT)]
+    The counter is the engine's, read and never written."""
+    from goal2.engine.original_match import screens
+    left = match.m.rd(screens.SUBS_LEFT + match.side, 1)
+    done = [tuple(pair) for pair in report['made']] + [tuple(pair) for pair in report['requested']]
+    refused = []
+    for off, on in report['asked']:
+        if (off, on) in done:
+            continue
+        reason = report['reasons'].get((off, on))
+        refused.append([off, on, reason or (NO_MORE_SUBSTITUTES if left == 0 else 'not made by the original')])
+    return {'context': report['context'], 'asked': report['asked'], 'made': report['made'],
+            'requested': report['requested'], 'refused': refused, 'substitutions_left': left}

@@ -78,6 +78,10 @@ def flip():
    pygame.image.save(pygame.display.get_surface(),str(out/(name+'.png')))
   if close_after and state['rendered']>=close_after:pygame.event.post(pygame.event.Event(pygame.QUIT))
   if slow:time.sleep(slow)
+  # [designed: T102] The engine is paced to 64 samples ahead of the view, and its post-match tail
+  # (about a second) outlasts them at Fastest: the view plays its last samples slowly once the
+  # final whistle is in, so the completed engine still waits for visible playback.
+  if display.result is None and any(e['kind']=='full_time' for e in display.events):time.sleep(.05)
  if display is not None and display.result is not None and not state['complete']:
   state['complete']=True
   pygame.image.save(pygame.display.get_surface(),str(out/'full-time.png'))
@@ -171,6 +175,8 @@ def main():
                 deadline = time.monotonic() + 600
                 while w.watched.busy and time.monotonic() < deadline:
                     app.processEvents()
+                    # [designed: T102] The bench opens at each decision; Esc with nothing chosen plays on.
+                    if w.bench.decision is not None:w.bench.escape()
                     if w.watched.busy:
                         locked()
                         assert m.state == before and save.read_bytes() == saved
@@ -227,7 +233,12 @@ def main():
                 click_watch();viewer=w.watched.process;engine=w.watched.engine.process
                 if failure=='slow-close':
                     locked()
-                    pump(lambda:w.watched.engine.engine_complete, app=app, timeout=300)
+                    def completed():
+                        # [designed: T102] Esc on the bench plays on; the engine is paced to the slow
+                        # view (64 samples ahead), so the whole match plays at its speed first.
+                        if w.bench.decision is not None:w.bench.escape()
+                        return w.watched.engine.engine_complete
+                    pump(completed, app=app, timeout=600)
                     locked()
                     assert w.watched.engine.outcome is None and m.state==before
                     (target/'close-request').write_text('owned SDL QUIT request\n')

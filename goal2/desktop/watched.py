@@ -114,7 +114,10 @@ class WatchedController:
 
     def start(self, *, frames=True, playback_rate=PLAYBACK_RATE, **options):
         # [designed] No wall-clock delay; record the accepted original RNG transcript.
-        options = {'delay_byte':0, 'record_draws':True, **options}
+        # [designed: T102] On the pitch the watching player has the bench: decisions wait for the
+        # answer and the engine is paced to the view. The text-only presentation (frames=False,
+        # kept for compatibility checks) plays on as before.
+        options = {'delay_byte':0, 'record_draws':True, 'bench':frames, **options}
         if type(frames) is not bool:
             raise ValueError('frames must be boolean')
         if getattr(self.model, 'match_pending', False):
@@ -140,6 +143,7 @@ class WatchedController:
             self._status_read_deadline = None
             self.frame_ack = -1
             self.frame_receipts = {}
+            self.requests = 0
             # [designed: T94] Only the pitch draws codes and colours; text-only watching keeps
             # the two-country start.
             self.send('start', pitch_identity(self.model, pending) if frames else
@@ -207,7 +211,7 @@ class WatchedController:
                 # [designed] Initial startup may precede the child parsing pitch configuration.
                 pitch_status = self.frames_enabled and 'frame_sequence' in value
                 if pitch_status:
-                    keys |= {'frame_sequence','frame_digest'}
+                    keys |= {'frame_sequence','frame_digest','requests'}
                 if (set(value) != keys or type(value['sequence']) is not int
                         or not 0 <= value['sequence'] <= self.display.sequence
                         or value['digest'] != self.digests[value['sequence']]):
@@ -225,6 +229,13 @@ class WatchedController:
                             or (consumed >= 0 and (receipt is None or value['frame_digest'] != receipt[0]
                                                   or value['sequence'] < receipt[1]))):
                         raise ValueError('invalid rendered pitch acknowledgement')
+                    # [designed: T102] Each Enter in play asks the original for its team menu.
+                    if type(value['requests']) is not int or value['requests'] < self.requests:
+                        raise ValueError('invalid viewer bench request')
+                    if value['requests'] > self.requests:
+                        self.requests = value['requests']
+                        if self.engine.busy and getattr(self.engine, '_bench', False):
+                            self.engine.pause(self.engine_token)
                     if consumed > self.frame_ack:
                         self.engine.ack_frames(self.engine_token, consumed)
                         self.frame_ack = consumed
@@ -259,6 +270,27 @@ class WatchedController:
         except Exception:
             self.cancel()
             raise
+
+    @property
+    def decision(self):
+        """[designed: T102] The bench decision to answer, once the player has seen the match reach
+        it: every sample before it shown and acknowledged (or at once without the pitch)."""
+        waiting = self.engine.waiting if self.engine.busy else None
+        if waiting is None or self.process is None:
+            return None
+        if self.frames_enabled and (not self.engine.frames_drained() or self.display.frames
+                                    or self.frame_ack != self.display.frame_sequence):
+            return None
+        return waiting
+
+    def answer(self, substitutions=()):
+        """[designed: T102] Pass the chosen (off, on) pairs to the original; it decides each."""
+        self.engine.answer(self.engine_token, substitutions)
+
+    @property
+    def reports(self):
+        """[designed: T102] What the original made of each answer with pairs."""
+        return getattr(self.engine, 'reports', [])
 
     def close_viewer(self):
         if self.process is not None:

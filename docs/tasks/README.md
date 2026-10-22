@@ -237,3 +237,4 @@ operational status.
 | [T99](T99.md) | Team tactics and the attribute table in the GOAL style | [#304](https://github.com/diegoami/goal2/issues/304) | Medium |
 | [T100](T100.md) | G8: the core runner | [#310](https://github.com/diegoami/goal2/issues/310) | Medium |
 | [T101](T101.md) | Screens fit without scrolling: one fixed page, scaled | [#312](https://github.com/diegoami/goal2/issues/312) | Medium |
+| [T102](T102.md) | The bench in a watched match: half time, and Enter mid-play | [#305](https://github.com/diegoami/goal2/issues/305) | High |

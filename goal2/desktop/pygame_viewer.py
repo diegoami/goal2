@@ -261,7 +261,8 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
             for ox, oy in spots:
                 label = marker.render('☺', True, MAGENTA)
                 screen.blit(label, label.get_rect(center=at(ox, oy)))
-    hint = small.render('[←→] Speed  [↑↓] Marks  [Space] Commentary  [Esc] Close', True, MAGENTA)
+    # [designed: T102; confirmed: E031 C39] Enter in play asks for the bench, as in the original.
+    hint = small.render('[←→] Speed  [↑↓] Marks  [Enter] Bench  [Space] Commentary  [Esc] Close', True, MAGENTA)
     screen.blit(hint, (width - hint.get_width() - 18, height - FOOTER + 8))
     lines = visible.commentary()
     footer = mono(22 if wide else 18)
@@ -272,6 +273,16 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
         while footer.size(line)[0] > limit and len(line) > 1:
             line = line[:-2] + '…'
         screen.blit(footer.render(line, True, YELLOW if n == 0 and len(lines) > 1 else CYAN), (18, height - FOOTER + 6 + n * 28))
+    board = display.board()
+    if board is not None and not commentary:
+        # [designed: T102] The view freezes on the decision and shows the original's board text;
+        # the bench is in the goal2 window.
+        panel = pygame.Rect(left + w * 0.2, top + h * 0.3, w * 0.6, h * 0.4)
+        pygame.draw.rect(screen, BLACK, panel);pygame.draw.rect(screen, CYAN, panel, 2)
+        title = mono(48 if wide else 32, True).render(board, True, YELLOW)
+        screen.blit(title, title.get_rect(center=(panel.centerx, panel.y + panel.height * 0.35)))
+        note = small.render('The bench is open in the goal2 window', True, WHITE)
+        screen.blit(note, note.get_rect(center=(panel.centerx, panel.y + panel.height * 0.7)))
     if commentary or display.result is not None:
         # The full commentary, or the board at full time, over the right part of the pitch.
         rows = visible.lines()[3:] if display.result is not None else lines
@@ -301,6 +312,8 @@ def main():
         finished = False
         commentary = False
         marks = DEFAULT_MARKS
+        # [designed: T102] Enter presses in play, reported in the status for the parent's pause.
+        requests = 0
         buffer = b''
         with (folder / 'display').open('rb') as source:
             running = True
@@ -308,6 +321,10 @@ def main():
                 for event in pygame.event.get():
                     # [confirmed: E031 C08/C39c, E015 r0013] Space opens the commentary
                     # ("spacebar-commentary"); in it, Esc returns to play ("Esc-play").
+                    if (event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_KP_ENTER)
+                            and display.pitch_rate and display.result is None and display.decision() is None):
+                        requests += 1
+                        continue
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                         commentary = not commentary
                         continue
@@ -353,7 +370,7 @@ def main():
                 value = {'token': token, 'kind': 'ready' if running else 'closed',
                          'sequence': display.sequence, 'digest': display.digest()}
                 if display.pitch_rate:
-                    value.update(frame_sequence=display.consumed,
+                    value.update(frame_sequence=display.consumed, requests=requests,
                                  frame_digest=frame_digest(display.frame) if display.frame else None)
                 status(target, value)
                 clock.tick(240 if display.pitch_rate else 30)

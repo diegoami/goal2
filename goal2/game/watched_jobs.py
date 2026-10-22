@@ -20,7 +20,7 @@ import threading
 import time
 
 from goal2.engine.original_match.match import Event
-from goal2.game.watched_match import WatchedOutcome
+from goal2.game.watched_match import WatchedOutcome, BENCH_CONTEXTS
 from goal2.game.watched_publication import WatchedPublication
 from goal2.game.watched_pitch import (MAX_FRAME_BYTES, MAX_FRAME_PACKET, FRAME_READ_BUDGET,
                                       FRAME_POLL_BUDGET, validate)
@@ -30,6 +30,18 @@ MAX_MEMORY = 32 * 1024 * 1024
 REAP_DEADLINE = 30
 MAX_PACKET = 8 * 1024 * 1024
 READ_BUDGET = 65536
+# [designed: T102] Pacing: the child writes pitch sample k only once the parent has acknowledged
+# sample k - LEAD as shown, so it is never more than LEAD samples ahead of the player's view. 64 is
+# the viewer's own bounded queue (match_view.MAX_BACKLOG): the child never runs ahead of what the
+# view can hold, and an Enter in play reaches the original within 64 samples of what the player
+# sees (about a second at Normal, 60 per second; 6.4 s at Slowest, 10). It is large enough for the
+# parent's 30 ms polls and the viewer's acknowledgements to keep Fastest (240) fed.
+LEAD = 64
+# [designed: T102] The command journal's bounds: one ack per pitch sample (at most
+# watched_pitch.MAX_FRAMES), a pause and an answer per decision, each packet small.
+MAX_COMMAND_PACKET = 4096
+MAX_COMMANDS = 2 * 1024 * 1024
+MAX_PAIRS = 20
 
 
 def _write(stream, token, sequence, kind, value):
@@ -47,6 +59,63 @@ def _write(stream, token, sequence, kind, value):
     stream.flush()
 
 
+def _pairs(value):
+    """[designed: T102] The shape of an answer: at most MAX_PAIRS (off, on) player words. Whether a
+    pair is legal is the original's to decide, never this check's."""
+    if (not isinstance(value, (list, tuple)) or len(value) > MAX_PAIRS
+            or any(not isinstance(pair, (list, tuple)) or len(pair) != 2
+                   or any(type(word) is not int or not 1 <= word <= 3060 for word in pair) for pair in value)):
+        raise ValueError('invalid substitution pairs')
+    return [[off, on] for off, on in value]
+
+
+class CommandReader:
+    """[designed: T102] The child's side of the command journal: the latest acknowledged sample,
+    the Enter presses and the answers, read in bounded batches."""
+    def __init__(self, path, token):
+        self.stream = open(path, 'rb')
+        self.token = token
+        self.sequence = 0
+        self.buffer = bytearray()
+        self.ack = -1
+        self.pauses = 0
+        self.answers = []
+
+    def read(self):
+        self.buffer.extend(self.stream.read(READ_BUDGET))
+        if self.stream.tell() > MAX_COMMANDS:
+            raise ValueError('watched command journal exceeds limit')
+        while len(self.buffer) >= 4:
+            size = struct.unpack('!I', self.buffer[:4])[0]
+            if size > MAX_COMMAND_PACKET:
+                raise ValueError('watched command packet exceeds limit')
+            if len(self.buffer) < size + 4:
+                break
+            packet = bytes(self.buffer[4:4 + size])
+            del self.buffer[:4 + size]
+            identity, number, kind, value = json.loads(packet)
+            if identity != self.token or type(number) is not int or number != self.sequence:
+                raise ValueError('watched command identity/order differs from the job')
+            self.sequence += 1
+            if kind == 'ack' and type(value) is int and value >= self.ack:
+                self.ack = value
+            elif kind == 'pause' and value is None:
+                self.pauses += 1
+            elif (kind == 'answer' and isinstance(value, dict) and set(value) == {'decision', 'substitutions'}
+                    and type(value['decision']) is int):
+                self.answers.append((value['decision'], _pairs(value['substitutions'])))
+            else:
+                raise ValueError('invalid watched command')
+
+    def wait(self, ready, pause=0.002):
+        """Read until `ready()`; the parent's cancel terminates a child waiting here (#254)."""
+        while True:
+            self.read()
+            if ready():
+                return
+            time.sleep(pause)
+
+
 def _event(value):
     event = Event(**value)
     if (not isinstance(event.kind, str) or type(event.minute) is not int
@@ -55,6 +124,19 @@ def _event(value):
             or not isinstance(event.data, dict)):
         raise ValueError('invalid watched event shape')
     return event
+
+
+def _report(value):
+    """[designed: T102] The shape of an `answered` record (goal2.game.watched_match._report)."""
+    if (set(value) != {'context', 'asked', 'made', 'requested', 'refused', 'substitutions_left'}
+            or value['context'] not in BENCH_CONTEXTS or type(value['substitutions_left']) is not int
+            or not isinstance(value['refused'], list)
+            or any(not isinstance(r, list) or len(r) != 3 or not isinstance(r[2], str) for r in value['refused'])):
+        raise ValueError('invalid watched answer report')
+    for name in ('asked', 'made', 'requested'):
+        _pairs(value[name])
+    _pairs([r[:2] for r in value['refused']])
+    return copy.deepcopy(value)
 
 
 def _memory(value):
@@ -170,9 +252,10 @@ class WatchedJobs:
     def busy(self):
         return self.process is not None
 
-    def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False):
-        if type(frames) is not bool:
-            raise ValueError('frames must be boolean')
+    def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False,
+              bench=False):
+        if type(frames) is not bool or type(bench) is not bool:
+            raise ValueError('frames and bench must be boolean')
         if self.closed or self.busy:
             raise ValueError('watched bridge is closed or a match is already running')
         if frames and getattr(self.owner, 'match_pending', False):
@@ -193,6 +276,14 @@ class WatchedJobs:
         self._completion_work = None
         self._sequence = 0
         self._buffer = bytearray()
+        # [designed: T102] The bench: the decision waiting for the player's answer, the decisions
+        # asked so far, the engine's reports and the command journal's position.
+        self._bench = bench
+        self.waiting = None
+        self._decisions = 0
+        self._pause_pending = False
+        self.reports = []
+        self._command_sequence = 0
         try:
             self._start(job, reference_seed, delay_byte, record_draws)
             if frames:
@@ -212,11 +303,12 @@ class WatchedJobs:
         folder = Path(self._folder.name)
         source = folder / 'input'
         (folder / 'request.json').write_text(json.dumps({'token':job.token, 'fixture':asdict(job.fixture),
-            'frames':self._frames_enabled,
+            'frames':self._frames_enabled, 'bench':self._bench,
             'options':dict(reference_seed=reference_seed, delay_byte=delay_byte, record_draws=record_draws)}))
         self._journal = (folder / 'events').open('w+b')
         self._errors = (folder / 'errors').open('w+b')
         self._frames = (folder / 'frames').open('w+b')
+        self._commands = (folder / 'commands').open('wb')
         command = [sys.executable, '-m', 'goal2.game.watched_worker'] if self.command is None else list(self.command)
         self.process = _PreparingProcess(job.state, self._template, source,
             command + [str(source), str(folder / 'events')],
@@ -257,6 +349,14 @@ class WatchedJobs:
                     value = _event(value)
                     self.events.append(value)
                     new.append(copy.deepcopy(value))
+                    if self._bench and value.kind == 'decision' and value.data.get('context') in BENCH_CONTEXTS:
+                        if self.waiting is not None:
+                            raise ValueError('bench decision before the previous was answered')
+                        self.waiting = copy.deepcopy(value)
+                        if value.data['context'] == 'pause':
+                            self._pause_pending = False
+                elif kind == 'answered' and self._bench and isinstance(value, dict) and len(self.reports) < self._decisions:
+                    self.reports.append(_report(value))
                 elif kind == 'complete':
                     value = WatchedOutcome(value['result'], _memory(value['memory']),
                         tuple(_event(event) for event in value['events']), tuple(value['seeds']), value['engine_year'])
@@ -386,12 +486,58 @@ class WatchedJobs:
                 or not self._frame_ack < sequence < self._frame_sequence):
             raise ValueError('stale or invalid pitch frame acknowledgement')
         self._frame_ack = sequence
+        if self._bench:
+            # [designed: T102] The pacing: the child may run LEAD samples past this one.
+            self._command(token, 'ack', sequence)
+
+    def _command(self, token, kind, value):
+        """[designed: T102] One record of the command journal, written by the parent alone."""
+        try:
+            packet = json.dumps([token, self._command_sequence, kind, value], allow_nan=False,
+                                separators=(',', ':')).encode('utf8')
+            if len(packet) > MAX_COMMAND_PACKET or self._commands.tell() + len(packet) + 4 > MAX_COMMANDS:
+                raise ValueError('watched command journal exceeds limit')
+            self._commands.write(struct.pack('!I', len(packet)) + packet)
+            self._commands.flush()
+            self._command_sequence += 1
+        except Exception as exc:
+            self.cancel(token)
+            raise ValueError(f'Invalid watched command: {exc}') from exc
+
+    def frames_drained(self):
+        """[designed: T102] Every pitch sample the child has written so far has been read."""
+        return (not self._frame_buffer and
+                self._frames.tell() == Path(self._frames.name).stat().st_size)
+
+    def pause(self, token):
+        """[designed: T102] The player's Enter in play: the original takes it at its next key poll
+        and asks a `pause` decision. One request at a time; none while a decision waits. Returns
+        whether it was sent."""
+        self._check_token(token)
+        if not self._bench:
+            raise ValueError('the bench was not enabled')
+        if self.waiting is not None or self._pause_pending or self._engine_done:
+            return False
+        self._command(token, 'pause', None)
+        self._pause_pending = True
+        return True
+
+    def answer(self, token, substitutions=()):
+        """[designed: T102] Answer the waiting bench decision with (off, on) pairs; none plays on.
+        The original makes, requests or refuses each pair; `reports` says which."""
+        self._check_token(token)
+        if self.waiting is None:
+            raise ValueError('no bench decision is waiting')
+        pairs = _pairs(list(substitutions))
+        self._command(token, 'answer', {'decision': self._decisions, 'substitutions': pairs})
+        self._decisions += 1
+        self.waiting = None
         # [designed] Publication occurs on the next canonical poll, whose returned
         # events must reach the caller rather than disappear inside acknowledgement.
 
 
     def _release(self):
-        for name in ('_journal', '_errors', '_frames'):
+        for name in ('_journal', '_errors', '_frames', '_commands'):
             stream = getattr(self, name, None)
             if stream is not None:
                 stream.close()

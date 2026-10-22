@@ -250,7 +250,7 @@ class SharingTests(unittest.TestCase):
 
     def test_deferred_read_preserves_malformed_stale_digest_and_frame_ack_oracles(self):
         for changes in ({'token':'stale'}, {'kind':'invented'}, {'sequence':True},
-                        {'digest':'bad'}, {'extra':1}, {'frame_sequence':0,'frame_digest':'bad'}):
+                        {'digest':'bad'}, {'extra':1}, {'frame_sequence':0,'frame_digest':'bad','requests':0}):
             with self.subTest(changes=changes), tempfile.TemporaryDirectory() as folder:
                 c = self.controller(folder); c.frames_enabled = 'frame_sequence' in changes
                 path = c.directory/'status'; path.write_text(json.dumps(self.value(c, **changes)))

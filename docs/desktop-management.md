@@ -170,6 +170,35 @@ line, are light-magenta ☺. Each mark fills one grid cell, so neighbours never 
 cell the last drawn in the original's order shows, and the ball hides under a player. With the
 full commentary open, Up/Down scroll it.
 
+[designed: T102, #305; confirmed: goal2-archaeology E031 C39–C41k, 53d7ef5; F027 E544] **The bench**
+in a watched friendly. At half time, and at a stoppage the original offers (a substitution
+opportunity), the pitch view freezes on the decision and shows the original's board (HALF TIME,
+SUBSTITUTION OPPORTUNITY), and the goal2 window raises the bench in front: a view of **Fixtures &
+match** that copies the original's in-match players screen. The eleven and the bench are in the
+strip on the right (an injured player marked !), the selected player's card on the left, the
+**substitutions left** counter from the original's decision (no more substitutes at 0), and the
+prompt "take off this player" on a starter or "put on this player" on a bench player. Enter on a
+player and Enter on one of the other group make a pair (v off, ^ on); **Play** (Tab, Enter) passes
+the pairs to the original, and Esc drops the choice, or with nothing chosen plays on. The window
+never decides whether a pair is legal: the original makes it or refuses it, and the bench then
+shows the original's reason and its counter (a sixth substitution in a friendly: no more
+substitutes). **Enter** on the pitch asks for the bench mid-play, as the original's Enter does
+(the hint says `[Enter] Bench`; Space stays the commentary): the original pauses at its next key
+poll, pairs chosen there are requests the original makes at the next stoppage, and the
+substitution opportunity that follows offers them again. After the match the substitute stays in
+the eleven, as the original's squad words keep it [confirmed: F029]; a substituted captain is
+replaced by the incoming player [designed, as T47]. Closing the pitch view while the bench is open
+cancels the match, as at any other moment. The text-only presentation (`frames=False`, kept for
+compatibility checks) has no bench and plays on as before.
+
+[designed: T102] **Pacing.** The engine runs ahead of the pitch view, so it is paced: the worker
+writes pitch sample k only after the view has acknowledged sample k − 64, and is never more than
+64 samples ahead of what the player sees. 64 is the view's own bounded queue: the engine never
+runs further ahead than the view can hold, and an Enter in play reaches the original within 64
+samples of the frame on screen (about a second at Normal, 6.4 s at Slowest, a quarter of a second
+at Fastest). Answers and acknowledgements reach the worker through a second private journal
+written only by the parent, with the events journal's rules (`docs/watched-jobs.md`).
+
 [designed: T97; accepted vision #266 screen 08] When a match ends, **Fixtures & match** opens its
 result: FULL TIME and the score, the kind, half time and engine, each side's scorers, the
 original's statistics (with regulation, extra time and penalties for a competitive match), the raw
@@ -362,8 +391,8 @@ the window close button closes it. Closing while the match is running cancels th
 match and preserves the last committed state/save. Closing a completed viewer
 keeps the published result. Save/Resume remain Qt actions; saving during a match
 is unavailable. A second match requires an explicit new Play/Watch action.
-Pending qualifiers, standalone watching, in-play changes, mid-match saves and
-competitive watching are unsupported. Quick management/play remains available without
+Pending qualifiers, standalone watching, in-play tactics changes, mid-match saves and
+competitive watching are unsupported; substitutions are made on the bench (above). Quick management/play remains available without
 pygame-ce, Unicorn or watched resources; Watch reports the missing dependency.
 
 [designed: T83] The field is a modern schematic. Team colors identify the fixture
@@ -415,6 +444,8 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/animated-pitch.py
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m unittest goal2.tests.test_pygame_match_view -v
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/watched.py
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 -m unittest goal2.tests.test_watched_bench_t102 -v
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy QT_QPA_PLATFORM=offscreen python3 tools/desktop-ui/watched_bench.py
 ```
 
 [designed] For validation, set TMPDIR to the checkout's physical `.cache/tmp` and

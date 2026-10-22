@@ -160,8 +160,30 @@ class Display:
         if self.frame is not None:
             self.consumed = self.frame['sequence']
 
+    def decision(self):
+        """[designed: T102] The original's decision the match stops on, once every sample before it
+        has been shown: the last event is a decision and no later sample has arrived. None in play."""
+        if (self.result is not None or not self.events or self.events[-1]['kind'] != 'decision'
+                or self.frame_watermark >= len(self.events)):
+            return None
+        if self.pitch_rate is not None and self.frames:
+            return None
+        return self.events[-1]
+
+    def board(self):
+        """[designed: T102] The board the view freezes on at a decision: the original's words for
+        the half-time menu and the stoppage notice [confirmed: E031 C40-C41, C44-C46b;
+        docs/original-game/match-and-results.md], and PAUSE for the Enter in play [designed]."""
+        decision = self.decision()
+        if decision is None:
+            return None
+        context = decision['data'].get('context')
+        return {'half_time': 'HALF TIME', 'substitution': 'SUBSTITUTION OPPORTUNITY',
+                'pause': 'PAUSE'}.get(context, context.replace('_', ' ').upper() if context else 'DECISION')
+
     def visible(self):
-        """[designed: T83] Terminal tail is released only after final-frame consumption/publication."""
+        """[designed: T83] Terminal tail is released only after final-frame consumption/publication.
+        [designed: T102] A decision does not release it either: the frozen view shows its board."""
         value = copy.copy(self)
         if self.pitch_rate is not None and self.result is None:
             value.events = self.events[:self.frame['watermark']] if self.frame else []

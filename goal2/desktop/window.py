@@ -35,6 +35,10 @@ class ManagementWindow(QMainWindow):
         self.jobs=QuickJobs(model);self.timer=QTimer(self);self.timer.setInterval(30);self.timer.timeout.connect(self.poll_match)
         from goal2.desktop.pages import compose
         compose(self,model,TACTICS)
+        # [designed: T102] The bench of a watched match: a view of Fixtures & match, raised when
+        # the original stops on a bench decision (goal2/desktop/bench_page.py).
+        from goal2.desktop.bench_page import Bench
+        self.bench=Bench(self)
         self.standings.clicked.connect(self.show_standings)
         self.watch.clicked.connect(self.start_watched)
         self.substitute.clicked.connect(self.substitute_halftime);self.continue_match.clicked.connect(self.continue_halftime)
@@ -326,7 +330,9 @@ class ManagementWindow(QMainWindow):
 
     def poll_watched(self):
         try:
-            if self.watched.poll():
+            done=self.watched.poll()
+            self.bench.poll()
+            if done:
                 self.set_busy(False);self.refresh('Original friendly complete; result can be saved.');self.match_finished()
             elif self.watched.busy and self.watched.display.events:
                 event=self.watched.display.events[-1]
@@ -334,7 +340,7 @@ class ManagementWindow(QMainWindow):
             if self.watched.process is None:
                 self.watch_timer.stop();self.set_busy(False)
         except (OSError,ValueError,IndexError,KeyError) as exc:
-            self.watch_timer.stop();self.set_busy(False);self.status.setText(str(exc))
+            self.bench.close();self.watch_timer.stop();self.set_busy(False);self.status.setText(str(exc))
 
     def poll_competitive(self):
         """[designed: T80] Poll bounded IPC on Qt; publish only the validated full continuation."""
@@ -363,7 +369,7 @@ class ManagementWindow(QMainWindow):
         open_result(self)
 
     def cancel_match(self):
-        self.timer.stop();self.watched.cancel();self.watch_timer.stop();self.jobs.cancel()
+        self.timer.stop();self.watched.cancel();self.watch_timer.stop();self.jobs.cancel();self.bench.close()
         self.competitive_timer.stop()
         if self.competitive.busy:self.competitive.cancel(self.competitive.token)
         self.set_busy(False);self.show_halftime();self.refresh('Match cancelled; game unchanged')
