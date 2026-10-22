@@ -82,6 +82,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `fixture-list` | `000E:016C` (000E:0000), the own match highlighted | E006-r0001, Esc Down Enter | "and results" "Use ↑↓ to scroll" "Esc-exit" |
 | `match-board` | `0791:041A` (0791:0106) without the man of the match: half time, match stats, a quick result | E010-r0001's first wait | "Scorers" "hit any key" "Esc,◄┘-bench" |
 | `team-tactics-view` | `214B:157C` from `1771:1A24`, another country | E006-r0001, the match menu's right team tactics | "team─tactics" "hit any key" |
+| `history` | `1771:25E4` (1771:1D5C, a country's history) | E006-r0001, the manager menu's history (T105) | "STATISTICS" "SUCCESSES" "TOP─SCORERS" "Esc-exit" |
+| `history-browse` | `1771:28F5` (1771:26B9 mode 3, from main_menu_loop's item 4) | E006-r0001, Esc from the history (T105) | "Hit ◄┘ for team history" "Esc to exit" |
 | `tournament` | `214B:157C` from `1771:9022` | E010-r0001, the match menu's tournament | "Use ↓↑ to select group" "Use ←→ to select display" "Esc-exit" |
 | `action-replay-prompt` | poll `0791:CC54` / `0791:0BE1` (0B7C from 0C65 at 0C87) | E006-r0001, a watched second half | "Do you want an action replay? (Y/N)" |
 | `substitution-notice` | poll `0791:CC54` / `0791:C5C8` (0791:C50C) | E006-r0001, a watched second half | "SUBSTITUTION" "press any key" |
