@@ -56,10 +56,11 @@ def check_originals() -> None:
 # [designed: owner, 2026-10-20] The files whose change makes the slow tests count: what they exercise
 # (the vendored engine under the emulator, watched and competitive matches, saves and timing).
 # [designed: #316] goal2/core/ and its two test modules: the core runs the original's whole game.
+# [designed: T105] the desktop over the core (goal2/desktop/core_*) and its test module run it too.
 SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|competitive|session_save|campaign_competitive)"
-                        r"|goal2/desktop/(watched|competitive|match_view|save)|goal2/tests/(requires\.py$"
+                        r"|goal2/desktop/(watched|competitive|match_view|save|core_)|goal2/tests/(requires\.py$"
                         r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view"
-                        r"|core_runner_t100|core_screens_t103))"
+                        r"|core_runner_t100|core_screens_t103|core_desktop_t105))"
                         r"|pyproject\.toml$|tools/check_premerge\.py$)")
 
 
