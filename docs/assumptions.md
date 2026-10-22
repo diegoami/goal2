@@ -29,6 +29,8 @@ decision are distinct evidence; a measured stand-in is not a run of an original 
 | NG-4 | The 12 skills are derived, not stored: skill = table[profile, position, i] · (ability + 1) div 256; "kicking" and "goal kicking" are one | finding F008 | — (P1) | — |
 | NG-5 | Peak age at creation: 25–29 outfield, 28–32 keepers | finding F016 | — (P1) | — |
 | NG-6 | The start year seeds the RNG and selects the opening campaign stage: stage 2 when the start year is divisible by 4, stage 5 when it is 2 mod 4. F025's probes found 1992/1996/2000 at stage 2 and 1990/1994/1998/2002 at stage 5. | findings F023 §9 and F025 §2 (proposed listing reading; F025 also probed original bytes in Unicorn but did not run a new game) | — (P5) | a recorded new game and fixture list (Q030) |
+| NG-7 | From the title's key read to the first manager menu (a new game, one manager, no saved game), the original makes no interrupt except: INT 21h AH=3Dh, 10× AH=3Fh and AH=3Eh on `GOAL.DAT` (via `MsDos`/`Intr` 235C:0000/000B, which enter the BIOS by a far return, not an `int`), and INT 21h AH=2Ch at 23E4:11D9; no INT 10h. Serving exactly these replays the new game byte for byte. | finding F032 (proposed; E038-r0001 and an Unicorn trace from its title state, goal2-archaeology #368) | — (stage 3, G10) | other new-game paths (load, several managers) |
+| NG-8 | A new game's seed is the DOS hour·256+minute read after the key that leaves the first bulletin ("APPOINT A NEW MANAGER"), not at the title; the name entry is a polled screen (poll 214B:0DB9, read 214B:112B) | finding F032 (proposed) | — (stage 3, G10) | — |
 
 ## Squad and team
 
