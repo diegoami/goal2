@@ -24,6 +24,11 @@ BOARD_FONT, LINE_HEIGHT = 15, 19
 
 
 def board_font(size=BOARD_FONT, bold=False):
+    """The bundled DejaVu Sans Mono (goal2/desktop/fonts): registered first, so that a board measured before the
+    window's style is applied is measured in it, not in a platform fallback ([designed: T105], found by the Windows
+    workflow, #278: Windows has no DejaVu, and a fallback's wider advance made the boards wider than the page)."""
+    from goal2.desktop.style import load_fonts
+    load_fonts()
     font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
     font.setPixelSize(size);font.setBold(bold)
     return font
@@ -109,7 +114,8 @@ class CoreWindow(QMainWindow):
         self.page_stack = QStackedWidget();self.page_stack.setObjectName('pageStack')
         self.pages = [ShellPage(name, i) for i, name in enumerate(DESTINATIONS)]
         self.navigation = [];self.navigation_shortcuts = []
-        # [designed: T105] Team and Pool wait for G11: their routes are disabled and name the task.
+        # [designed: T105] Team and Pool wait for G12 (#308's numbering, core_model.DISABLED): their routes are
+        # disabled and name the task.
         unavailable = {1: 'team', 2: 'pool'}
         for i, name in enumerate(DESTINATIONS):
             label = name if i not in unavailable else f'{name} · {DISABLED[unavailable[i]]}'

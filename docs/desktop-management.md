@@ -62,8 +62,8 @@ in the original's boxes (statistics, successes, results, top scorers, top caps, 
 the original's fixture list (sixteen rows at a time, Up/Down/PgUp/PgDn scroll, √ on the managed fixtures) and the
 tournament (the managed country's group table and its fixtures; Up/Down change the group). These scrolls are
 presentation only: no key reaches the original. The routes the core cannot serve yet are shown disabled and name
-the task that brings them: **Team** and **Pool**, **team info** and **select squad** (G11), **play next game**
-(G13); they never fall back to the Python route. **Save** (F7 in the original) writes the core save (`G2C1`,
+the task that brings them: **Team** and **Pool**, **team info** and **select squad** (G12), **play next game**
+(G14), in #308's numbering; they never fall back to the Python route. **Save** (F7 in the original) writes the core save (`G2C1`,
 docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu, with the same views and
 the same memory. `--template` and every other route are unchanged.
 

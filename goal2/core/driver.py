@@ -1,4 +1,4 @@
-"""The driver: the player's actions as the original's own key presses, through the screen catalogue (T105, G10).
+"""The driver: the player's actions as the original's own key presses, through the screen catalogue (T105, #308's G11).
 
 [designed: owner, 2026-10-22, #308, #321; docs/redesign-253/vision-reconciliation.md decision 7] The desktop (and
 later the bot) moves the original from one screen to another only by pressing the keys the original reads. The

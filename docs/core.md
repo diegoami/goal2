@@ -96,10 +96,10 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 - The other kinds.tsv screens no tour met (`round-playing`, `round-results`, `match-watch-prompt`,
   `match-commentary`, the other substitution screens, `save-game-name-entry`, `file-not-found-prompt`) and the
   other cases of the shared sites (the taker prompts, the pause and extra-time menus, SELECT TEAM outside a match)
-  stop with `UnknownScreen` until a screen task maps them (G11-G14).
+  stop with `UnknownScreen` until a screen task maps them (G10, G12-G14).
 - Interrupts other than the key reads stay unserved (T100).
 
-## The driver and the views (T105, G10)
+## The driver and the views (T105, #308's G11)
 
 [designed: owner, 2026-10-22, #308, #321; decision 7 of docs/redesign-253/vision-reconciliation.md] The desktop
 and, later, the bot move the original only by its own keys, through one path, `goal2/core/driver.py`:

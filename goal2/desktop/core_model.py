@@ -7,7 +7,7 @@ a byte into the core's memory and never reads the text page. It shares nothing w
 `DesktopModel` and its GameState (decision 7, docs/redesign-253/vision-reconciliation.md).
 
 [designed] Routes the core cannot serve yet are named with the G task that brings them (#308's order after this
-one, G10): `DISABLED`.
+one, G11): `DISABLED`.
 """
 import os
 from pathlib import Path
@@ -15,16 +15,17 @@ from pathlib import Path
 from goal2.core import views
 
 # [designed: T105, #308] The routes of the manager menu and of goal2's pages the core cannot serve yet, and the G
-# task that brings each (#308's scope, in its order: G11 squad, pool, select team, tactics; G13 the match flow).
+# task that brings each, in #308's numbering: G10 the new game, G11 this task (menus, fixtures, tables, history),
+# G12 squad, pool, select team and tactics, G13 bulletins, news and the year change, G14 the match flow.
 DISABLED = {
-    'team': 'G11',          # team info's edits, select squad, tactics: the Team page
-    'pool': 'G11',          # the national pool: the Pool page
-    'play': 'G13',          # play next game: the match flow under the core
+    'team': 'G12',          # team info's edits, select squad, tactics: the Team page
+    'pool': 'G12',          # the national pool: the Pool page
+    'play': 'G14',          # play next game: the match flow under the core
 }
 DISABLED_TEXT = {
-    'team': 'Team edits arrive with G11 (squad, select team and tactics under the core)',
-    'pool': 'The pool arrives with G11 (squad, pool, select team and tactics under the core)',
-    'play': 'Play next game arrives with G13 (the match flow under the core)',
+    'team': 'Team edits arrive with G12 (squad, select team and tactics under the core)',
+    'pool': 'The pool arrives with G12 (squad, pool, select team and tactics under the core)',
+    'play': 'Play next game arrives with G14 (the match flow under the core)',
 }
 
 

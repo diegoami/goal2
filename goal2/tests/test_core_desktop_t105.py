@@ -1,4 +1,4 @@
-"""T105 (G10, #321): the desktop over the core: the driver, the views and the core route of the desktop.
+"""T105 (#308's G11, #321): the desktop over the core: the driver, the views and the core route of the desktop.
 
 The text page is the oracle: each view (goal2/core/views.py, read from memory only) must equal what the original
 prints on its own screen at the same state, the driver taking the original there by its own keys. The states:
@@ -318,6 +318,21 @@ class Desktop(unittest.TestCase):
                     if views_ is not None:views_.show_view(index)
                     app.processEvents()
                     found += [f"{size} page {page} view {index}: {p}" for p in problems(window)]
+                    # [designed: T105, #278] The fit holds with margin: the shown page asks for at most 90 % of
+                    # the room the fixed page gives it, so wider platform metrics do not tip it over.
+                    shown = window.pages[page];need = shown.minimumSizeHint()
+                    if need.width() > 0.9 * shown.width() or need.height() > 0.9 * shown.height():
+                        found.append(f"{size} page {page} view {index}: needs {need.width()}x{need.height()} of "
+                                     f"{shown.width()}x{shown.height()}, more than 90 %")
+            # The boards are measured in the bundled font, whatever the platform has installed (the Windows
+            # workflow found boards measured in a wider fallback before the style loaded the font).
+            from PySide6.QtGui import QFont, QFontDatabase, QFontMetricsF
+            from goal2.desktop.style import load_fonts
+            family = QFontDatabase.applicationFontFamilies(load_fonts()[0])[0]
+            for board in (window.core_managers, window.core_statistics, window.core_fixture_board):
+                font = QFont(family);font.setPixelSize(board.font_size)
+                if abs(board.char - QFontMetricsF(font).horizontalAdvance("M")) > 0.01:
+                    found.append(f"{board.objectName()} measured {board.char} px a column, not the bundled font's")
             return found
         self.assertEqual(self.run_main(["--core", str(requires.CACHE / TEMPLATE), "--data",
                                         str(requires.CACHE / "GOAL.DAT"), "--save", str(save)], check), [])
@@ -360,8 +375,8 @@ class Desktop(unittest.TestCase):
             return out
         out = self.run_main(["--core", str(requires.CACHE / TEMPLATE), "--data", str(requires.CACHE / "GOAL.DAT"),
                              "--save", str(Path(self.tmp.name) / "routes.g2core")], check)
-        for name, task in (("nav2", "G11"), ("nav3", "G11"), ("team info", "G11"), ("select squad", "G11"),
-                           ("play next game", "G13")):
+        for name, task in (("nav2", "G12"), ("nav3", "G12"), ("team info", "G12"), ("select squad", "G12"),
+                           ("play next game", "G14")):
             enabled, text, tip = out[name]
             self.assertFalse(enabled, name)
             self.assertIn(task, text, name)

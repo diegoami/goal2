@@ -1,4 +1,4 @@
-"""Pure readers of the core's memory: the manager's desk, the fixture list, the tournament and the history (T105, G10).
+"""Pure readers of the core's memory: the manager's desk, the fixture list, the tournament and the history (T105, #308's G11).
 
 [designed: owner, 2026-10-22, #308, #321] goal2's pages read everything from the original's memory. Each function
 here takes the memory at a wait (a `KeyWait.state`, or the kit's `Image`) and returns plain data; it never reads the
