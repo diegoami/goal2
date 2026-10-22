@@ -63,6 +63,21 @@ def _memory(value):
     return memory
 
 
+def _remove_folder(folder, attempts=40, pause=0.05):
+    """[designed: #309] Remove a job's private folder. Windows can refuse to delete a file for a
+    moment after the process that held it ended (WinError 32, seen on the Windows runner during
+    a cancel at startup), so a refusal is retried for about two seconds. One that persists is
+    raised, keeping the job owned and retryable as #254 requires."""
+    for attempt in range(attempts):
+        try:
+            folder.cleanup()
+            return
+        except PermissionError:
+            if attempt + 1 == attempts:
+                raise
+            time.sleep(pause)
+
+
 class _PreparingProcess:
     """[designed: #254] Own private input preparation until an owner-thread launch.
 
@@ -380,7 +395,7 @@ class WatchedJobs:
                 stream.close()
         folder = getattr(self, '_folder', None)
         if folder is not None:
-            folder.cleanup()
+            _remove_folder(folder)
             self._folder = None
         if getattr(self, '_pitch_owns_pending', False):
             self.owner.match_pending = False

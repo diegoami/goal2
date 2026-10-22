@@ -83,7 +83,16 @@ def apply_style(window):
     QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager {{font-size:20px;text-align:left;padding:8px 12px;}}
     QLabel#overviewCountry {{font-size:24px;font-weight:700;color:{c['yellow']};}}
     QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;color:{c['green']};}}
-    QLabel#lineupBoard,QLabel#benchBoard,QLabel#playerDetail {{background:{c['background']};border:2px solid {c['cyan']};padding:16px;}}
+    QLabel#tacticsTitle {{font-size:26px;font-weight:700;color:{c['red']};}}
+    QFrame#tacticsTeam {{background:{c['background']};border:2px solid {c['gold']};}}
+    QFrame#tacticsDefaults {{background:{c['background']};border:2px solid {c['red']};}}
+    QLabel#tacticsHeading {{font-size:20px;font-weight:700;color:{c['gold']};}}
+    QLabel#tacticsDefaultsHeading {{font-size:20px;font-weight:700;color:{c['red']};}}
+    QLabel#tacticsManager, QLabel#captainLabel {{font-size:20px;color:{c['yellow']};}}
+    QComboBox#captain {{font-size:20px;color:{c['yellow']};}}
+    QPushButton[tacticRow="true"] {{font-size:20px;min-height:44px;border:0;}}
+    QLabel#tacticsHint {{color:{c['magenta']};font-size:16px;}}
+    QPushButton#teamPool, QPushButton#teamTacticsRoute, QPushButton#renamePlayer, QPushButton#confirmPlan, QPushButton#discardPlan {{font-size:20px;padding:4px 12px;}}
     QWidget#draftBar {{background:{c['background']};border-top:2px solid {c['cyan']};}}
     QLabel#draftState {{color:{c['warning']};font-size:14px;font-weight:700;}}
     QWidget#draftBar QPushButton {{border:3px solid {c['cyan']};}}
