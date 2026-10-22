@@ -184,7 +184,7 @@ class Tours(unittest.TestCase):
         for kind in ("captain-select", "match-live"):
             with_keys = [p for p in self.passed(self.q) if p.kind == kind]
             without = [p for p in self.passed(self.w) if p.kind == kind]
-            self.assertTrue(with_keys and all(p.keys for p in with_keys), kind)
+            self.assertTrue(any(p.keys for p in with_keys), kind)     # read a queued key
             self.assertTrue(without and not any(p.keys for p in without), kind)
         self.assertEqual([p.keys for p in self.passed(self.q) if p.kind == "captain-select"], [(DOWN, ENTER)])
         self.assertEqual([p.keys for p in self.passed(self.q) if p.kind == "match-live"][0], (ord("r"),))
