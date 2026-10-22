@@ -79,10 +79,11 @@ def build(self,model,TACTICS):
     self.summary=QLabel();self.summary.setObjectName('deskSummary');self.summary.setWordWrap(True);desk_box.addWidget(self.summary)
     # View 1: the T89 country card of the displayed country.
     from goal2.desktop.country_card import CountryCardView
-    self.country_card_view=CountryCardView();card_box.addWidget(self.country_card_view,0,Qt.AlignmentFlag.AlignLeft)
+    card_row=QHBoxLayout();card_row.setSpacing(16);card_box.addLayout(card_row)
+    self.country_card_view=CountryCardView();card_row.addWidget(self.country_card_view,0,Qt.AlignmentFlag.AlignTop)
     self.country_card_back=QPushButton('< Desk (Esc)');self.country_card_back.setObjectName('countryCardBack')
     self.country_card_back.setAccessibleName('Back to the desk');self.country_card_back.clicked.connect(lambda:country_view(self,0))
-    card_box.addWidget(self.country_card_back,0,Qt.AlignmentFlag.AlignLeft);card_box.addStretch(1)
+    card_row.addWidget(self.country_card_back,0,Qt.AlignmentFlag.AlignTop);card_row.addStretch(1);card_box.addStretch(1)
     # View 2: other games. [designed: T90] The browse selector is a Country-page control.
     title=QLabel('OTHER GAMES');title.setObjectName('deskHeading');games_box.addWidget(title)
     country_bar=QHBoxLayout();self.country=QComboBox();self.country.setObjectName('country')

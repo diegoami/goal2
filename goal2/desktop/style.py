@@ -89,10 +89,10 @@ def stylesheet():
     QLabel#prepSpeedHeading {{font-size:20px;color:{c['yellow']};font-weight:700;}}
     QLabel#prepNote {{font-size:14px;color:{c['magenta']};}}
     QPushButton#speedSlow:checked, QPushButton#speedNormal:checked, QPushButton#speedFast:checked {{background:{c['accent']};color:{c['ink']};}}
-    QPushButton#deskPrepare {{font-size:18px;text-align:left;padding:6px 10px;}}
+    QPushButton#deskPrepare {{font-size:18px;text-align:left;padding:2px 10px;}}
     QLabel#poolCardCaption {{font-size:20px;color:{c['yellow']};font-weight:700;}}
     QLabel#deskCaptain {{font-size:20px;color:{c['yellow']};}}
-    QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager, QPushButton#deskGames {{font-size:18px;text-align:left;padding:6px 10px;}}
+    QPushButton#deskTeam, QPushButton#deskPool, QPushButton#deskFixtures, QPushButton#deskCard, QPushButton#deskManager, QPushButton#deskGames {{font-size:18px;text-align:left;padding:2px 10px;}}
     QLabel#overviewCountry {{font-size:24px;font-weight:700;color:{c['yellow']};}}
     QLabel#overviewFixture,QLabel#overviewResult {{font-size:20px;font-weight:600;color:{c['green']};}}
     QLabel#tacticsTitle {{font-size:26px;font-weight:700;color:{c['red']};}}

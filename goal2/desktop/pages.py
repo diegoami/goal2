@@ -121,7 +121,7 @@ def compose(self,model,TACTICS):
     for page in self.pages:page.content.addStretch()
     self.save_shortcut=QShortcut(QKeySequence('Ctrl+S'),self)
     self.save_shortcut.activated.connect(self.save.click)
-    for widget in self.findChildren(QWidget):
+    for widget in [*self.findChildren(QWidget),*root.findChildren(QWidget)]:
         if isinstance(widget,(QPushButton,QComboBox,QLineEdit,QCheckBox)):
             if not widget.accessibleName():widget.setAccessibleName(widget.text() if hasattr(widget,'text') else widget.objectName())
     self.table.setAccessibleName('Squad');self.reserves.setAccessibleName('National pool reserves')
