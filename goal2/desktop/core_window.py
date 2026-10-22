@@ -1,0 +1,183 @@
+"""[designed: owner, 2026-10-22, #308, #321; T105] The main window over the core.
+
+The same shell as the Python route's window (goal2/desktop/pages.py: the top bar, the side bar with the five
+destinations, one fixed page of 1440x900 scaled to the window, T101), over a `CoreModel`
+(goal2/desktop/core_model.py) instead of the Python route's `DesktopModel`. The Country page shows the manager's
+desk and the history, the Fixtures & match page the fixture list and the tournament (their builders are in
+overview_page.py and fixtures_page.py); Team, Pool and play are shown disabled with the G task that brings them, and
+never fall back to the Python route; the Save page writes the core save.
+
+`TextBoard` paints a board of coloured text in the original's own structure (its 80-column boards: the fixture
+list's rows, a group table, the history's boxes), in page pixels through the page's scale, as the roster and the
+cards are painted (T101).
+"""
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QColor, QFont, QFontMetricsF, QKeySequence, QPainter, QShortcut
+from PySide6.QtWidgets import (QFrame, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QVBoxLayout,
+                               QWidget)
+
+from goal2.desktop.player_card import BLACK, CYAN, GREY, RED
+
+# [designed: T105] The board's type: the original's text page is 80 columns; a board of 80 columns at 15 px
+# DejaVu Sans Mono is about 725 page pixels wide.
+BOARD_FONT, LINE_HEIGHT = 15, 19
+
+
+def board_font(size=BOARD_FONT, bold=False):
+    font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
+    font.setPixelSize(size);font.setBold(bold)
+    return font
+
+
+class TextBoard(QWidget):
+    """A framed board of `rows` lines of `columns` characters; `set_lines([[(text, colour), ...], ...])`.
+    `title` is drawn in red on the frame. The accessible name holds the board's plain text."""
+    page_painted = True
+
+    def __init__(self, title, columns, rows, name, size=BOARD_FONT):
+        super().__init__()
+        self.title, self.columns, self.rows_, self.font_size = title, columns, rows, size
+        self.lines = [];self.setObjectName(name);self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.char = QFontMetricsF(board_font(size)).horizontalAdvance('M')
+
+    def scale(self):
+        from goal2.desktop.fixed_page import scale_of
+        return scale_of(self)
+
+    def page_size(self):
+        return QSize(round(self.columns * self.char) + 24, (self.rows_ + 1) * LINE_HEIGHT + 22)
+
+    def sizeHint(self):
+        s = self.scale();size = self.page_size()
+        return QSize(round(size.width() * s), round(size.height() * s))
+
+    def minimumSizeHint(self):
+        return self.sizeHint()
+
+    def text(self):
+        return '\n'.join(''.join(t for t, _ in line) for line in self.lines)
+
+    def set_lines(self, lines):
+        self.lines = [list(line) for line in lines][:self.rows_]
+        self.setAccessibleName(f'{self.title}\n{self.text()}')
+        self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter(self);painter.fillRect(self.rect(), QColor(BLACK))
+        s = self.scale();painter.scale(s, s)
+        width, height = self.width() / s, self.height() / s
+        painter.setPen(QColor(CYAN));painter.drawRect(1, 8, round(width) - 3, round(height) - 10)
+        title = board_font(self.font_size + 1, True);painter.setFont(title)
+        painter.fillRect(10, 0, round(QFontMetricsF(title).horizontalAdvance(self.title)) + 8, 18, QColor(BLACK))
+        painter.setPen(QColor(RED));painter.drawText(14, 14, self.title)
+        painter.setFont(board_font(self.font_size))
+        for row, line in enumerate(self.lines):
+            x, y = 12.0, 18 + (row + 1) * LINE_HEIGHT
+            for text, colour in line:
+                painter.setPen(QColor(colour));painter.drawText(round(x), y, text)
+                x += len(text) * self.char
+        painter.end()
+
+
+class CoreWindow(QMainWindow):
+    """[designed: T105] The management window over a CoreModel."""
+
+    def __init__(self, model):
+        super().__init__();self.model = model
+        from goal2.desktop.pages import DESTINATIONS, ShellPage
+        from goal2.desktop.style import apply_style
+        from goal2.desktop.core_model import DISABLED, DISABLED_TEXT
+        self.setWindowTitle('goal2 — the original');self.resize(1440, 900)
+        root = QWidget();root.setObjectName('shellRoot');layout = QVBoxLayout(root)
+        layout.setContentsMargins(8, 8, 8, 8);layout.setSpacing(8)
+        # The top bar: GOAL2, the country, the manager and the year, the next fixture.
+        self.top_bar = QFrame();self.top_bar.setObjectName('topBar');top = QHBoxLayout(self.top_bar)
+        top.setContentsMargins(14, 6, 14, 6);top.setSpacing(20)
+        brand = QLabel('GOAL2');brand.setObjectName('brand');top.addWidget(brand, 0, Qt.AlignmentFlag.AlignVCenter)
+        self.title = QLabel();self.title.setObjectName('countryTitle');top.addWidget(self.title, 2)
+        self.career_line = QLabel();self.career_line.setObjectName('careerLine');self.career_line.setWordWrap(True)
+        top.addWidget(self.career_line, 3)
+        right = QVBoxLayout();right.setSpacing(2);top.addLayout(right, 3)
+        self.next_line = QLabel();self.next_line.setObjectName('nextLine');self.next_line.setWordWrap(True)
+        self.next_detail = QLabel();self.next_detail.setObjectName('nextDetail');self.next_detail.setWordWrap(True)
+        right.addWidget(self.next_line);right.addWidget(self.next_detail)
+        layout.addWidget(self.top_bar)
+        body = QHBoxLayout();body.setSpacing(8);layout.addLayout(body, 1)
+        self.side_bar = QFrame();self.side_bar.setObjectName('sideBar');side = QVBoxLayout(self.side_bar)
+        side.setContentsMargins(8, 8, 8, 8);side.setSpacing(10)
+        from PySide6.QtWidgets import QStackedWidget
+        self.page_stack = QStackedWidget();self.page_stack.setObjectName('pageStack')
+        self.pages = [ShellPage(name, i) for i, name in enumerate(DESTINATIONS)]
+        self.navigation = [];self.navigation_shortcuts = []
+        # [designed: T105] Team and Pool wait for G11: their routes are disabled and name the task.
+        unavailable = {1: 'team', 2: 'pool'}
+        for i, name in enumerate(DESTINATIONS):
+            label = name if i not in unavailable else f'{name} · {DISABLED[unavailable[i]]}'
+            button = QPushButton(label.replace('&', '&&'));button.setObjectName(f'nav{i + 1}')
+            button.setAccessibleName(label);button.setCheckable(True)
+            button.clicked.connect(lambda checked=False, index=i: self.navigate(index))
+            if i in unavailable:
+                button.setEnabled(False);button.setToolTip(DISABLED_TEXT[unavailable[i]])
+                button.setAccessibleDescription(DISABLED_TEXT[unavailable[i]])
+            side.addWidget(button);self.navigation.append(button);self.page_stack.addWidget(self.pages[i])
+            shortcut = QShortcut(QKeySequence(f'Ctrl+{i + 1}'), self)
+            shortcut.activated.connect(lambda index=i: self.navigate(index));self.navigation_shortcuts.append(shortcut)
+        side.addStretch(1)
+        body.addWidget(self.side_bar)
+        main = QVBoxLayout();main.setSpacing(8);body.addLayout(main, 1)
+        main.addWidget(self.page_stack, 1)
+        self.status = QLabel('The original game runs as the core; its screens are read from its memory.')
+        self.status.setObjectName('status');self.status.setWordWrap(True);main.addWidget(self.status)
+        from goal2.desktop import overview_page, fixtures_page
+        overview_page.build_core(self, model)
+        fixtures_page.build_core(self, model)
+        for index, key in unavailable.items():
+            note = QLabel(DISABLED_TEXT[key]);note.setObjectName('deskCampaign');note.setWordWrap(True)
+            self.pages[index].content.addWidget(note)
+        self._build_save()
+        for page in self.pages:page.content.addStretch()
+        self.save_shortcut = QShortcut(QKeySequence('Ctrl+S'), self);self.save_shortcut.activated.connect(self.save.click)
+        from goal2.desktop.fixed_page import FixedPage
+        sheet = apply_style(self);self.setCentralWidget(FixedPage(root, sheet, self))
+        self.refresh();self.navigate(0)
+
+    def _build_save(self):
+        """[designed: T105] The Save page: the core save (F7 in the original), resumed with --resume."""
+        page = self.pages[4]
+        bar = QHBoxLayout();bar.addWidget(QLabel('Core save'))
+        self.path = QLineEdit(str(self.model.save_path));self.path.setObjectName('savePath')
+        self.path.setAccessibleName('Core save file');bar.addWidget(self.path, 1)
+        self.save = QPushButton('Save (F7)');self.save.setObjectName('save');self.save.setAccessibleName('Save the core')
+        self.save.clicked.connect(self.save_core);bar.addWidget(self.save)
+        page.content.addLayout(bar)
+        note = QLabel('Resume it with: python3 -m goal2.desktop --resume <core save> --data <GOAL.DAT>')
+        note.setObjectName('deskCampaign');note.setWordWrap(True);page.content.addWidget(note)
+
+    def save_core(self):
+        try:
+            target = self.model.save(self.path.text().strip() or None)
+        except ValueError as exc:
+            self.status.setText(str(exc));return False
+        self.path.setText(str(target));self.status.setText(f'Core saved to {target}')
+        return True
+
+    def navigate(self, index):
+        if not self.navigation[index].isEnabled():return
+        self.page_stack.setCurrentIndex(index)
+        from PySide6.QtCore import QCoreApplication, QEvent
+        for _ in range(3):QCoreApplication.sendPostedEvents(None, QEvent.Type.LayoutRequest)
+        for number, button in enumerate(self.navigation):button.setChecked(number == index)
+        self.pages[index].heading.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+    def refresh(self):
+        """Read the views from the core's memory and show them."""
+        desk = self.model.desk()
+        self.title.setText(desk['team']['name'])
+        self.career_line.setText(f"{desk['manager']} / {desk['year']} {desk['stage_word'].lower()}")
+        if desk['opponent'] is None:
+            self.next_line.setText('Next: no fixture');self.next_detail.setText('')
+        else:
+            self.next_line.setText(f"Next: {desk['opponent']['name']}");self.next_detail.setText(desk['fixture_kind'])
+        from goal2.desktop import overview_page, fixtures_page
+        overview_page.refresh_core(self, self.model, desk)
+        fixtures_page.refresh_core(self, self.model)

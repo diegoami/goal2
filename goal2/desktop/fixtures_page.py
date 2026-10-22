@@ -314,3 +314,127 @@ def enabled(self,active):
     self.fixture_routes.setText(('Play: '+('quick friendly' if quick else 'original competitive') if quick or competitive else
         'Play unavailable: this stage is complete; the next stage is not available yet' if finished else 'Play unavailable: unsupported pending fixture')+
         '\n'+('Watch: original friendly' if watch else 'Watch unavailable: scheduled friendlies only'))
+
+
+# -- the core route (T105) ------------------------------------------------------------------------------------
+# [designed: owner, 2026-10-22, #321; T105] Over the core the Fixtures & match page shows the original's fixture
+# list (000E:0000: the fixtures from the current one on, sixteen rows at a time, the managed fixtures ticked) and
+# its tournament (1771:958D: the group table and the group's fixtures) [confirmed: the screens' text in
+# goal2/tests/test_core_desktop_t105.py], read through the CoreModel only. Up and Down scroll the list or change the
+# group: presentation only, no key reaches the original.
+FIXTURE_ROWS = 16
+
+
+class _ScrollBoard:
+    """Mixin for a TextBoard whose lines are a window over `items`, moved by Up/Down/PgUp/PgDn/Home/End."""
+
+    def keyPressEvent(self, event):
+        steps = {Qt.Key.Key_Down: 1, Qt.Key.Key_Up: -1, Qt.Key.Key_PageDown: self.page_step,
+                 Qt.Key.Key_PageUp: -self.page_step, Qt.Key.Key_Home: -10 ** 6, Qt.Key.Key_End: 10 ** 6}
+        if event.key() in steps:
+            self.move(steps[event.key()]);event.accept();return
+        super().keyPressEvent(event)
+
+
+def _fixture_line(row, managed):
+    from goal2.desktop.player_card import CYAN, GOLD, GREEN, MAGENTA, WHITE
+    score = f"{row['score'][0]:>2}v{row['score'][1]:<2}" if row['played'] else '  v  '
+    def colour(country):
+        return WHITE if country in managed else CYAN
+    return [(f"{row['first_name']:>15} ", colour(row['first'])), (score, GOLD),
+            (f" {row['second_name']:<15}  ", colour(row['second'])),
+            (f"{row['kind_name']:<12}", GREEN if row['kind'] == 1 else GOLD), (' √' if row['mark'] else '  ', MAGENTA)]
+
+
+def build_core(self, model):
+    from goal2.desktop.core_window import TextBoard
+    page = self.pages[3]
+    routes = QHBoxLayout();routes.setSpacing(8);page.content.addLayout(routes)
+    self.core_fixture_route = QPushButton('fixture list');self.core_fixture_route.setObjectName('coreFixtureRoute')
+    self.core_tournament_route = QPushButton('tournament');self.core_tournament_route.setObjectName('coreTournamentRoute')
+    for button in (self.core_fixture_route, self.core_tournament_route):routes.addWidget(button)
+    routes.addStretch(1)
+    self.fixture_views, (list_box, tournament_box) = page.add_views('fixtureViews', ('coreFixtureListView', 'coreTournamentView'))
+    self.fixture_views.show_view = lambda index: core_fixtures_view(self, index)
+    self.fixtures_view = lambda index: core_fixtures_view(self, index)
+    self.core_fixture_route.clicked.connect(lambda: core_fixtures_view(self, 0))
+    self.core_tournament_route.clicked.connect(lambda: core_fixtures_view(self, 1))
+
+    class FixtureBoard(_ScrollBoard, TextBoard):
+        page_step = FIXTURE_ROWS
+
+        def move(board, step):
+            board.offset = max(0, min(max(0, len(board.items) - FIXTURE_ROWS), board.offset + step))
+            board.show_window()
+
+        def show_window(board):
+            board.set_lines([_fixture_line(r, board.managed) for r in board.items[board.offset:board.offset + FIXTURE_ROWS]])
+    self.core_fixture_board = FixtureBoard('FIXTURES AND RESULTS', 54, FIXTURE_ROWS, 'coreFixtureBoard', 17)
+    self.core_fixture_board.items = [];self.core_fixture_board.offset = 0;self.core_fixture_board.managed = ()
+    self.core_fixture_board.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+    list_box.addWidget(self.core_fixture_board, 0, Qt.AlignmentFlag.AlignLeft)
+    self.core_fixture_hint = QLabel();self.core_fixture_hint.setObjectName('prepNote');self.core_fixture_hint.setWordWrap(True)
+    list_box.addWidget(self.core_fixture_hint);list_box.addStretch(1)
+
+    class GroupBoard(_ScrollBoard, TextBoard):
+        page_step = 1
+
+        def move(board, step):
+            if board.groups:
+                board.offset = max(0, min(len(board.groups) - 1, board.offset + step))
+            board.show_window()
+
+        def show_window(board):
+            from goal2.desktop.player_card import GOLD, GREEN, WHITE, CYAN
+            if not board.groups:
+                board.set_lines([[(board.empty, CYAN)]]);return
+            g = board.groups[board.offset]
+            lines = [[(f"Group {g['group']:<9}", GOLD), ('  P  W  D  L   F   A   T', GOLD)]]
+            for r in g['rows']:
+                lines.append([(f"{r['name']:<15}", WHITE if r['country'] in board.managed else CYAN),
+                              (f"{r['played']:>3}{r['won']:>3}{r['drawn']:>3}{r['lost']:>3}"
+                               f"{r['for']:>4}{r['against']:>4}{r['points']:>4}", GREEN)])
+            lines.append([])
+            lines += [_fixture_line(f, board.managed) for f in g['fixtures']]
+            board.set_lines(lines)
+    self.core_group_board = GroupBoard('TOURNAMENT', 54, 18, 'coreGroupBoard', 17)
+    self.core_group_board.groups = [];self.core_group_board.offset = 0;self.core_group_board.managed = ()
+    self.core_group_board.empty = ''
+    self.core_group_board.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+    self.core_tournament_title = QLabel();self.core_tournament_title.setObjectName('prepTitle')
+    tournament_box.addWidget(self.core_tournament_title)
+    tournament_box.addWidget(self.core_group_board, 0, Qt.AlignmentFlag.AlignLeft)
+    hint = QLabel('Up/Down: group');hint.setObjectName('prepNote');tournament_box.addWidget(hint);tournament_box.addStretch(1)
+
+    def escape():
+        if self.fixture_views.currentIndex() != 0:
+            core_fixtures_view(self, 0);return True
+        return False
+    page.escape = escape
+
+
+def core_fixtures_view(self, index):
+    """[designed: T105] Show Fixtures view `index` (0 the fixture list, 1 the tournament); presentation only."""
+    self.fixture_views.setCurrentIndex(index)
+    if self.page_stack.currentIndex() == 3:
+        (self.core_fixture_board if index == 0 else self.core_group_board).setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+
+def refresh_core(self, model):
+    desk = model.desk()
+    managed = tuple(m['country'] for m in desk['managers'])
+    listing = model.fixture_list()
+    board = self.core_fixture_board
+    board.items, board.managed = listing['rows'], managed
+    board.offset = 0;board.show_window()
+    self.core_fixture_hint.setText(f"{len(listing['rows'])} fixtures from number {listing['first']}; "
+                                   'Up/Down/PgUp/PgDn scroll; √ marks your fixtures')
+    view = model.tournament()
+    self.core_tournament_title.setText(f"{view['continent'].upper()} / {view['display'].upper()}")
+    group = self.core_group_board
+    group.managed = managed;group.groups = view['groups'] or []
+    group.empty = ('' if view['groups'] is not None else
+                   f"The {view['display']} display is not read over the core yet (stage {view['stage']}).")
+    own = [i for i, g in enumerate(group.groups) if any(r['country'] == desk['team']['country'] for r in g['rows'])]
+    group.offset = own[0] if own else 0
+    group.show_window()

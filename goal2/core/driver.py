@@ -21,7 +21,7 @@ driver is that one path:
   so the same calls give the same keys (`log`).
 
 [confirmed: named/seg_000E_05.c main_menu_loop 000E:7439] The manager menu's item is DS:00B0 (1..6), moved by
-u214b_menu_move_word_wrap(6, 0xB0) on Up and Down; Enter on item 2 calls the fixture list 000E:0000, on item 3
+u214b_menu_move_word_wrap(6, 0xB0) on Up and Down; Enter on item 1 calls country_list_screen(1) (team info), on item 2 calls the fixture list 000E:0000, on item 3
 the tournament 1771:958D(country, ..., 1), on item 4 country_list_screen(3), whose first screen is the managed
 country's history (1771:1D5C) and whose Esc returns to the menu.
 """
@@ -58,6 +58,7 @@ MENU = "manager-menu"
 # its item, the kinds Enter may show (the fixture list's kind depends on its highlighted fixture, 000E:0000), and the
 # kinds Esc passes on the way back to the menu.
 ROUTES = {
+    "team-info": (1, ("team-info",)),
     "fixture-list": (2, ("fixture-list", "fixtures-watch", "fixtures-auto")),
     "tournament": (3, ("tournament",)),
     "history": (4, ("history",)),

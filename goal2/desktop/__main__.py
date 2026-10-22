@@ -9,7 +9,14 @@ def main(argv=None):
     parser.add_argument('--template',type=Path);parser.add_argument('--data',required=True,type=Path)
     parser.add_argument('--save',type=Path,default=Path('.cache/desktop.g2save'))
     parser.add_argument('--resume',type=Path);parser.add_argument('--country',type=int)
+    # [designed: owner, 2026-10-22, #321; T105] --core opens the original's own game (goal2/core) from a savestate
+    # in its key read; --resume with a core save (G2C1, docs/core.md) resumes it. The --template route is unchanged.
+    parser.add_argument('--core',type=Path)
     args=parser.parse_args(argv)
+    if args.core is not None and (args.template or args.country is not None):parser.error('--core excludes --template and --country')
+    if args.core is not None and args.resume is not None:parser.error('--core excludes --resume')
+    if args.core is not None or (args.resume is not None and _core_save(args.resume)):
+        return _core(args)
     # [designed: T86] Without --resume or --country the Launch window chooses; those two
     # flags keep opening management directly for scripts.
     direct=args.resume is not None or args.country is not None
@@ -42,6 +49,38 @@ def main(argv=None):
         # [designed: T69] Destroy widgets before QApplication/X11 plugin teardown.
         from PySide6.QtCore import QCoreApplication,QEvent
         for window in windows:window.close();window.deleteLater()
+        QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
+        app.shutdown()
+
+def _core_save(path):
+    """[designed: T105] A core save starts with G2C1 (goal2/core/runner.py MAGIC)."""
+    try:
+        with open(path,'rb') as f:return f.read(4)==b'G2C1'
+    except OSError:
+        return False
+
+
+def _core(args):
+    """[designed: T105] The core route: the main window over a CoreModel (goal2/desktop/core_model.py)."""
+    try:
+        from PySide6.QtWidgets import QApplication
+    except ImportError:
+        print('Desktop needs PySide6. Install the desktop extra: python3 -m pip install ".[desktop]"',file=sys.stderr)
+        return 2
+    from goal2.desktop.core_model import CoreModel
+    from goal2.desktop.window import window_for
+    save=args.save if args.save!=Path('.cache/desktop.g2save') else Path('.cache/desktop.g2core')
+    try:
+        model=CoreModel.from_save(args.resume,args.data) if args.resume else CoreModel.open(args.core,args.data,save)
+    except ValueError as exc:
+        print(str(exc),file=sys.stderr);return 2
+    app=QApplication.instance() or QApplication(sys.argv[:1])
+    window=window_for(model);window.show()
+    try:
+        return app.exec()
+    finally:
+        from PySide6.QtCore import QCoreApplication,QEvent
+        window.close();window.deleteLater()
         QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
         app.shutdown()
 

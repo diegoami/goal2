@@ -551,3 +551,12 @@ class ManagementWindow(QMainWindow):
             if not self.jobs.busy:
                 self.timer.stop();self.set_busy(False);self.show_halftime();self.refresh(str(exc))
             else:self.status.setText(str(exc))
+
+
+def window_for(model):
+    """[designed: T105] The main window for a model: the core route's (goal2/desktop/core_window.py) over a
+    CoreModel, else this module's ManagementWindow over the Python route's DesktopModel."""
+    if getattr(model,'core_route',False):
+        from goal2.desktop.core_window import CoreWindow
+        return CoreWindow(model)
+    return ManagementWindow(model)

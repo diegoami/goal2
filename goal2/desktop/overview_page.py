@@ -165,3 +165,128 @@ def refresh(self,display,view):
     self.desk_campaign.setText('\n'.join(lines))
     if self.country_views.currentIndex()==1:refresh_card(self)
     self.identity_art.setAccessibleName('Generic shirt and neutral decorative stripe for '+view['country_name'])
+
+
+# -- the core route (T105) ------------------------------------------------------------------------------------
+# [designed: owner, 2026-10-22, #321; T105] Over the core the Country page is the original's manager menu
+# [confirmed: `docs/original-game/images/manager-menu.png`]: the name and rating, the team with its world and
+# continent rankings, the next opponents with theirs and the fixture's kind, the managers 1-6, the menu's routes and
+# the squad strip; its second view is the history (1771:1D5C) in the original's boxes. Everything is read through
+# the CoreModel (goal2/core/views.py); nothing here touches the Python route's state.
+CORE_ROUTES = (('team info', 'coreTeamInfo', 'team'), ('fixture list', 'coreFixtureList', None),
+               ('tournament', 'coreTournament', None), ('history', 'coreHistory', None),
+               ('select squad', 'coreSelectSquad', 'team'), ('play next game', 'corePlay', 'play'))
+
+
+def build_core(self, model):
+    from PySide6.QtWidgets import QHBoxLayout
+    from goal2.desktop.roster import RosterView
+    from goal2.desktop.core_window import TextBoard
+    from goal2.desktop.core_model import DISABLED, DISABLED_TEXT
+    page = self.pages[0]
+    self.country_views, (desk_box, history_box) = page.add_views('countryViews', ('coreDesk', 'coreHistoryView'))
+    self.country_views.show_view = lambda index: core_country_view(self, index)
+    desk = QHBoxLayout();desk.setSpacing(16);desk_box.addLayout(desk)
+    left = QVBoxLayout();left.setSpacing(10);desk.addLayout(left, 3)
+    frame, _, self.core_name = panel('NAME / RATING', 'coreName');left.addWidget(frame)
+    frame, body, self.core_team = panel('TEAM', 'deskOwn')
+    self.core_team_name = QLabel();self.core_team_name.setObjectName('overviewCountry');body.insertWidget(1, self.core_team_name)
+    left.addWidget(frame)
+    frame, body, self.core_opponent = panel('NEXT OPPONENTS', 'deskOpponent')
+    self.core_opponent_name = QLabel();self.core_opponent_name.setObjectName('overviewCountry')
+    body.insertWidget(1, self.core_opponent_name)
+    self.core_fixture_kind = QLabel();self.core_fixture_kind.setObjectName('deskCampaign');body.addWidget(self.core_fixture_kind)
+    left.addWidget(frame);left.addStretch(1)
+    middle = QVBoxLayout();middle.setSpacing(8);desk.addLayout(middle, 2)
+    self.core_managers = TextBoard('MANAGERS', 18, 6, 'coreManagers', 17);middle.addWidget(self.core_managers)
+    self.core_routes = {}
+    for text, name, waits in CORE_ROUTES:
+        label = text if waits is None else f'{text} · {DISABLED[waits]}'
+        button = QPushButton(label);button.setObjectName(name);button.setAccessibleName(label)
+        if waits is not None:
+            button.setEnabled(False);button.setToolTip(DISABLED_TEXT[waits]);button.setAccessibleDescription(DISABLED_TEXT[waits])
+        middle.addWidget(button);self.core_routes[text] = button
+    self.core_routes['fixture list'].clicked.connect(lambda: (self.navigate(3), self.fixtures_view(0)))
+    self.core_routes['tournament'].clicked.connect(lambda: (self.navigate(3), self.fixtures_view(1)))
+    self.core_routes['history'].clicked.connect(lambda: core_country_view(self, 1))
+    middle.addStretch(1)
+    self.country_roster = RosterView('SQUAD', toggles=False, grouped=True, marks=False)
+    self.country_roster.setFixedWidth(320);desk.addWidget(self.country_roster, 0, Qt.AlignmentFlag.AlignTop)
+    # View 1: the history, in the original's boxes.
+    top = QHBoxLayout();top.setSpacing(12);history_box.addLayout(top)
+    self.core_statistics = TextBoard('STATISTICS', 46, 6, 'coreStatistics');top.addWidget(self.core_statistics)
+    self.core_successes = TextBoard('SUCCESSES', 20, 3, 'coreSuccesses');top.addWidget(self.core_successes)
+    top.addStretch(1)
+    middle_row = QHBoxLayout();middle_row.setSpacing(12);history_box.addLayout(middle_row)
+    self.core_results = TextBoard('RESULTS', 38, 10, 'coreResults');middle_row.addWidget(self.core_results)
+    self.core_scorers = TextBoard('TOP SCORERS', 20, 10, 'coreTopScorers');middle_row.addWidget(self.core_scorers)
+    self.core_caps = TextBoard('TOP CAPS', 20, 10, 'coreTopCaps');middle_row.addWidget(self.core_caps)
+    middle_row.addStretch(1)
+    bottom = QHBoxLayout();bottom.setSpacing(12);history_box.addLayout(bottom)
+    self.core_records = TextBoard('RECORDS', 58, 3, 'coreRecords');bottom.addWidget(self.core_records)
+    self.core_history_back = QPushButton('< Desk (Esc)');self.core_history_back.setObjectName('coreHistoryBack')
+    self.core_history_back.clicked.connect(lambda: core_country_view(self, 0))
+    bottom.addWidget(self.core_history_back, 0, Qt.AlignmentFlag.AlignTop);bottom.addStretch(1)
+    history_box.addStretch(1)
+
+    def escape():
+        if self.country_views.currentIndex() != 0:
+            core_country_view(self, 0);return True
+        return False
+    page.escape = escape
+
+
+def core_country_view(self, index):
+    """[designed: T105] Show Country view `index` (0 the desk, 1 the history); presentation only."""
+    if self.page_stack.currentIndex() != 0:self.navigate(0)
+    self.country_views.setCurrentIndex(index)
+    (self.core_routes['fixture list'] if index == 0 else self.core_history_back).setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+
+def refresh_core(self, model, desk=None):
+    from goal2.desktop.player_card import CYAN, GOLD, GREEN, WHITE, YELLOW
+    from goal2.game.roles import LEFT
+    desk = model.desk() if desk is None else desk
+    self.core_name.setText(f"{desk['manager']}\nrating  {desk['rating']}")
+    team = desk['team']
+    self.core_team_name.setText(team['name'])
+    self.core_team.setText(f"World  : {team['world_rank']:>3}\n{team['continent']:<7}: {team['continent_rank']:>3}")
+    opponent = desk['opponent']
+    if opponent is None:
+        self.core_opponent_name.setText('—');self.core_opponent.setText('No fixture');self.core_fixture_kind.setText('')
+    else:
+        self.core_opponent_name.setText(opponent['name'])
+        self.core_opponent.setText(f"World  : {opponent['world_rank']:>3}\n"
+                                   f"{opponent['continent']:<7}: {opponent['continent_rank']:>3}")
+        self.core_fixture_kind.setText(desk['fixture_kind'])
+    names = {m['number']: m['name'] for m in desk['managers']}
+    self.core_managers.set_lines([[(f'{n} ', GOLD), (names.get(n, ''), WHITE if n == desk['manager_number'] else CYAN)]
+                                  for n in range(1, 7)])
+    # [designed: owner, 2026-10-21, #283; goal2/game/roles.py] the left-hand positions in lower case.
+    rows = [(p['player'], p['name'], p['code'].lower() if p['position'] in LEFT else p['code'], p['line'], i < 11, False)
+            for i, p in enumerate(desk['squad'])]
+    self.country_roster.set_rows(rows);self.country_roster.caption = team['name'].upper()
+    history = model.history()
+    stats = history['statistics']
+    head = [('                     home    away    all', GOLD)]
+    sub = [('                     now top now top now top', GOLD)]
+    self.core_statistics.set_lines([head, sub] + [[(f'{name:<20}', GOLD), (' '.join(f'{v:>3}' for v in values), GREEN)]
+                                                  for name, values in stats.items()])
+    s = history['successes']
+    self.core_successes.set_lines([[('    1st 2nd 3rd 4th', GOLD)],
+                                   [('WC  ', GOLD), (' '.join(f'{v:>3}' for v in s['world_cup']), GREEN)],
+                                   [('CH  ', GOLD), (' '.join(f'{v:>3}' for v in s['championship']), GREEN)]])
+    self.core_results.set_lines([[(r['season'] + ' ', YELLOW), (f"{r['competition']:<3}", CYAN),
+                                  (f"{r['won']:>3}{r['drawn']:>3}{r['lost']:>3}{r['for']:>3}{r['against']:>3} ", GREEN),
+                                  (r['best'], WHITE)] for r in history['results']] or [[('no results yet', CYAN)]])
+    for board, rows in ((self.core_scorers, history['top_scorers']), (self.core_caps, history['top_caps'])):
+        board.set_lines([[(f"{r['name']:<15}", YELLOW), (f"{r['count']:>4}", GREEN)] for r in rows] or [[('none yet', CYAN)]])
+    lines = []
+    for where in ('home', 'away', 'neutral'):
+        line = [(f'{where:<8}', GOLD)]
+        for what in ('wins', 'defeats'):
+            r = history['records'][what][where]
+            text = '—' if r is None else ((f"{r['score'][0]}v{r['score'][1]} " if r['score'] else '') + ', '.join(r['opponents']))
+            line.append((f'{what[:-1] if what == "wins" else "defeat"}: {text:<16} ', GREEN if what == 'wins' else YELLOW))
+        lines.append(line)
+    self.core_records.set_lines(lines)
