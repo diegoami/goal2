@@ -38,7 +38,7 @@ def child():
     """Run in a fresh process; prints one JSON report."""
     from PySide6.QtCore import QPoint, Qt
     from PySide6.QtTest import QTest
-    from PySide6.QtWidgets import QApplication
+    from PySide6.QtWidgets import QApplication, QWidget
     from goal2.desktop.model import DesktopModel
     from goal2.desktop.window import ManagementWindow
     from goal2.desktop.launch import LaunchWindow
@@ -83,6 +83,16 @@ def child():
             try:
                 window = show(name, page, views, view);settle()
                 found = fixed_page.problems(window)
+                # Accessible names work at every scale: every visible control on the page has one.
+                from PySide6.QtWidgets import QAbstractButton, QComboBox, QLineEdit, QAbstractItemView, QHeaderView
+                from PySide6.QtGui import QAccessible
+                page_root = window.centralWidget().page if hasattr(window.centralWidget(), 'page') else window.centralWidget()
+                def spoken(c):
+                    face = QAccessible.queryAccessibleInterface(c)
+                    return face.text(QAccessible.Text.Name) if face is not None else ''
+                found += [f'{type(c).__name__} {c.objectName()} has no accessible name' for c in page_root.findChildren(QWidget)
+                          if isinstance(c, (QAbstractButton, QComboBox, QLineEdit, QAbstractItemView)) and c.isVisible()
+                          and not isinstance(c, QHeaderView) and not c.objectName().startswith('qt_') and not spoken(c)]
                 if (window.width(), window.height()) != (width, height):
                     found.append(f'window is {window.width()}x{window.height()}, not {width}x{height}')
             except Exception as exc:  # an absent page or view is a failure of the check, not of the run
