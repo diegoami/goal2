@@ -179,7 +179,11 @@ strip on the right (an injured player marked !), the selected player's card on t
 **substitutions left** counter from the original's decision (no more substitutes at 0), and the
 prompt "take off this player" on a starter or "put on this player" on a bench player. Enter on a
 player and Enter on one of the other group make a pair (v off, ^ on); **Play** (Tab, Enter) passes
-the pairs to the original, and Esc drops the choice, or with nothing chosen plays on. The window
+the pairs to the original, and Esc drops the choice, or with nothing chosen plays on. At the
+substitution opportunity that offers the pairs requested at a pause, Esc cannot cancel them: the
+original's default answer there is what was asked for, so they are still made, the bench says so
+("Esc: the requested substitutions are still made") and reports them as any answered swap
+[confirmed: the vendored kit's `Match._on_notice`; #316]. The window
 never decides whether a pair is legal: the original makes it or refuses it, and the bench then
 shows the original's reason and its counter (a sixth substitution in a friendly: no more
 substitutes). **Enter** on the pitch asks for the bench mid-play, as the original's Enter does
@@ -189,7 +193,10 @@ substitution opportunity that follows offers them again. After the match the sub
 the eleven, as the original's squad words keep it [confirmed: F029]; a substituted captain is
 replaced by the incoming player [designed, as T47]. Closing the pitch view while the bench is open
 cancels the match, as at any other moment. The text-only presentation (`frames=False`, kept for
-compatibility checks) has no bench and plays on as before.
+compatibility checks) has no bench and plays on as before; the engine bridge refuses the bench
+without the pitch samples, where the original takes the Enter [designed: #316]. An Enter the
+original cannot take (after the final whistle, in the shoot-out) is dropped, and the next Enter
+asks again [designed: #316].
 
 [designed: T102] **Pacing.** The engine runs ahead of the pitch view, so it is paced: the worker
 writes pitch sample k only after the view has acknowledged sample k − 64, and is never more than
