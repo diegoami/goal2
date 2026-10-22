@@ -288,21 +288,25 @@ def _top(mem, country, goals):
 def history(state, country=None):
     """A country's history (1771:1D5C), the managed country's by default, as main_menu_loop's item 4 opens it.
 
-    [confirmed: named/seg_1771_02.c 1771:1D5C, 1C85; seg_1771_05.c 76FA] The successes: the world cup and the
-    championship rows, places 1..4, the bytes +0x33.. and +0x37.. The results: entries k = 1..10 of 6 bytes at
+    [confirmed: named/seg_1771_02.c 1771:1D5C, 1C85; seg_1771_05.c 76FA] The successes: two rows of places 1..4,
+    the bytes +0x33.. and +0x37.. The results: entries k = 1..10 of 6 bytes at
     +0x35 + 6 k, present up to the last whose +0 is not 0, shown newest first: the season ending in the year
     +0x3A + 2 (+0x38 - k + 1) (1C85), the competition (the string 1771:1D55 in a world cup year, year mod 4 = 2,
     else the letter DS:0DB2 [continent is 1] and the string 1771:1D58), W, D, L, F, A, and the best place (1771:580B
     of +0). The records: wins and defeats at home, away and neutral, 8-byte fixtures at +0x77 + 8 k + 0x18 f, shown
     when their +6 is not 0: the score as 76FA draws it and the opponent(s). The statistics: consecutive wins,
     defeats, games without a win and without defeat, the bytes +0xA7, +0xAD, +0xB3, +0xB9 [k + 3 f], in the
-    screen's column order (DS:0DAF[k] - DS:0DAD[f]). The top scorers and top caps: `_top`."""
+    screen's column order (DS:0DAF[k] - DS:0DAD[f]). Successes and records are placed by their tables likewise (below).
+    The top scorers and top caps: `_top`."""
     mem = Memory(state)
     if country is None:
         country = mem.manager_country(0x80 + mem.game(1))
     continent = mem.country(country, 0x2C)
-    successes = {"world_cup": [mem.country(country, 0x33 + i) for i in range(4)],
-                 "championship": [mem.country(country, 0x37 + i) for i in range(4)]}
+    # The two rows are drawn at the rows DS:0DA2[f]; the template's upper row is the world cup's (WC), the lower the
+    # championship's (CH) [derived: the screen's labels, checked by goal2/tests/test_core_desktop_t105.py].
+    upper, lower = sorted(range(2), key=lambda f: mem.ds_byte(0x0DA2 + f))
+    successes = {"world_cup": [mem.country(country, 0x33 + 4 * upper + i) for i in range(4)],
+                 "championship": [mem.country(country, 0x33 + 4 * lower + i) for i in range(4)]}
     last = max([k for k in range(1, 11) if mem.country(country, 0x35 + 6 * k)] or [0])
     results = []
     for k in range(last, 0, -1):
@@ -313,9 +317,13 @@ def history(state, country=None):
                        else chr(mem.ds_byte(0x0DB2 + (continent == 1))) + mem.code_str(0x1771, 0x1D58))
         results.append({"season": season, "competition": competition, "won": r[1], "drawn": r[2], "lost": r[3],
                         "for": r[4], "against": r[5], "best": mem.kind_name(r[0])})
+    # A record f, k is drawn at the column DS:0DA8[f] and the row DS:0DAA[k]; the template's columns are wins then
+    # defeats, its rows home, away, neutral [derived: the screen's labels, checked as above].
     records = {"wins": {}, "defeats": {}}
-    for f, what in enumerate(("wins", "defeats")):
-        for k, where in enumerate(("home", "away", "neutral")):
+    columns_f = sorted(range(2), key=lambda f: mem.ds_byte(0x0DA8 + f))
+    rows_k = sorted(range(3), key=lambda k: mem.ds_byte(0x0DAA + k))
+    for f, what in zip(columns_f, ("wins", "defeats")):
+        for k, where in zip(rows_k, ("home", "away", "neutral")):
             off = 0x77 + 8 * k + 0x18 * f
             a = mem.far(COUNTRIES) + COUNTRY_SIZE * country + off
             raw = bytes(mem.mem[a:a + 8])
@@ -327,6 +335,7 @@ def history(state, country=None):
                          "opponents": [mem.country_name(s) for s in sides if s != country]}
             records[what][where] = entry
     columns = sorted(((mem.ds_byte(0x0DAF + k) - mem.ds_byte(0x0DAD + f), k, f) for k in range(3) for f in range(2)))
+    # [derived] the template's columns, left to right: home, away, all, each now then top.
     statistics = {}
     for name, off in (("consecutive wins", 0xA7), ("consecutive defeats", 0xAD), ("games without a win", 0xB3),
                       ("games without defeat", 0xB9)):
