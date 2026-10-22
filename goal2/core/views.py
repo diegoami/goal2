@@ -428,3 +428,201 @@ def bulletin(state):
         lines = [cells(r, a, b) for r in range(first, last + 1)]
         out[name] = {"masthead": cells(head, a, b), "lines": [t for t in lines if t and not set(t) <= FILLER]}
     return out
+
+
+# -- the Team and Pool pages (T107) ---------------------------------------------------------------------------------
+# [confirmed: annotations/fields.tsv (F007, F008)] the player record (20 bytes at [DS:A91B] + 20 n): +0 country, +1 age,
+# +2 peak age, +3 rating, +4 ability, +5 skill profile, +6 position, +7 club position, +8 caps, +0xA goals, +0xC
+# morale, +0xD fitness, +0xE energy, +0xF own tactics (a set: elements 1..4 the values, 5..8 "his own"), +0x10
+# status (a set), +0x12 performance. A set's element k is bit k - 1 (214B:0C57 u214b_set_test_bit).
+SKILL_NAMES = ("keeping", "kicking", "tackling", "heading", "marking", "passing", "crossing", "feinting", "control",
+               "dribbling", "shooting", "penalties")          # [confirmed: F008] the screen's twelve, in its order
+TACTIC_NAMES = ("position", "possession", "passing", "tackling")   # [confirmed: F008] the tactics panel's rows
+POSITION_NAMES = 0x69B6       # [confirmed: 1771:42BC] the position's name: DS:69B6 + 19 * code (DS:69B5 + 1)
+MATCH_SET_UP = 0x0C1E         # [confirmed: F031] set while a match is set up (match_set_up)
+IN_MATCH_MENU = 0x0C1F        # [confirmed: F031] in_match_menu_used
+# [confirmed: named/seg_1771_02.c 1771:1981; screens.py TACTICS_ROW] the team tactics screen's row r shows element
+# DS:6BBF[r]; the rows' names are the screen's (T99's categories, docs/original-game/images/m244-team-tactics.png).
+ELEMENT_OF_ROW = 0x6BBF
+TACTIC_LABELS = {5: "defence system", 6: "protection", 7: "offside", 1: "positioning", 2: "possession",
+                 3: "passing", 4: "tackling", 8: "marking"}
+
+
+def _bit(value, element):
+    """214B:0C57: element k of a set is bit k - 1."""
+    return value >> (element - 1) & 1
+
+
+def _player(mem, w):
+    a = mem.far(PLAYERS) + PLAYER_SIZE * w
+    return bytes(mem.mem[a:a + PLAYER_SIZE])
+
+
+def _word(mem, table, index):
+    """A characteristic's word: DS:6EB4 + 16 * DS:table[index] (1771:42BC); the index is the guest's 16-bit sum."""
+    return mem.pstr(mem.ds * 16 + 0x6EB4 + 16 * mem.ds_byte((table + index) & 0xFFFF))
+
+
+def _signed(b):
+    return b - 256 if b > 127 else b
+
+
+def tactic_word(mem, element, bit, keeper=False):
+    """The word of tactic element 1..8 (DS:6AA0 + 32 e + 16 bit, the team tactics screen and 1771:3BD3); for a
+    goalkeeper 1771:3BD3 shows elements 1 and 3 from DS:0EA6 and DS:0EC6 instead (it swaps them into DS:6AC0 and
+    DS:6B00 while it draws)."""
+    if keeper and element in (1, 3):
+        return mem.pstr(mem.ds * 16 + (0x0EA6 if element == 1 else 0x0EC6) + 16 * bit)
+    return mem.pstr(mem.ds * 16 + TACTIC_WORDS + 32 * element + 16 * bit)
+
+
+def player_card(state, w):
+    """Player `w`'s card as the player screen 1771:42BC draws it (SELECT YOUR TEAM's left side).
+
+    [confirmed: named/seg_1771_03.c 42BC, 3827, 3947, 3BD3, 3B3F, 3AE2; seg_1771_02.c 2E93, 2E20, 2FAD, 2FFB, 3041,
+    3088, 30D9; F008] The name (1771:2E93), age +1, caps +8, goals +0xA, height DS:0E46[+7] + DS:0E54[w mod 12] inches,
+    the foot ("two footed" 1771:425D when +5 + +2 = 30, else DS:0F2C + 6 * DS:0E60[14 DS:0E7C[w mod 3] + +7]), the
+    position +6 and club position +7 by name (DS:69B6 + 19 code); the cards: status elements 4 and 5 a yellow card and
+    6 a red one (the glyph 1771:4268); the status word (1771:426A.. by elements 8, energy 0, 5, 6, 3, else, for a squad
+    player, 1771:4298 or, with a match set up, 1771:42A6 for slots 1..11 and 1771:42AF); the performance as 1771:3827
+    buckets it (None for 0x7FFF, else 1..9, the length of DS:0E86's stars); the twelve skill bars of 1771:3947
+    (DS:6DCD[12 (+5) + DS:6D25[12 (+7) + i]] * (+4 + 1) div 256 cells of 26); the characteristics' words and bars
+    (hardness +5 - (+3 and 1) by DS:78C4, 14 h div 16 cells; fitness by DS:78D5 (energy's index when +0xE is 0, no
+    bar then), 14 f div 32; energy by DS:78F6, 14 e div 32; morale by DS:78A3[min(32, m)], 14 m div 32 when below 32;
+    leadership ((+3 - +5) mod 8, halved when +1 < 0x15) by DS:7917, 14 l div 7); the four tactics (own +0xF elements 5..8
+    say "his own", then the value is +0xF's, with " P" (1771:3BCE); else the country's +0x2D); and the mark (blank
+    for positions 0 and 1; status element 7: 1771:3B30; else DS:0E90 + 11 * element 8 of the country's +0x2D)."""
+    mem = Memory(state)
+    r = _player(mem, w)
+    country, position, club = r[0], r[6], r[7]
+    team_tactics = mem.country(country, 0x2D)
+    status = r[0x10]
+    inches = mem.ds_byte(0x0E46 + club) + mem.ds_byte(0x0E54 + w % 12)
+    if r[5] + r[2] == 30:
+        foot = mem.code_str(0x1771, 0x425D)
+    else:
+        foot = mem.pstr(mem.ds * 16 + 0x0F2C + 6 * mem.ds_byte(0x0E60 + 14 * mem.ds_byte(0x0E7C + w % 3) + club))
+    cards = [colour for element, colour in ((4, "yellow"), (5, "yellow"), (6, "red")) if _bit(status, element)]
+    set_up = mem.ds_byte(MATCH_SET_UP)
+    slot = next((s + 1 for s in range(20) if mem.country(country, 2 * s, 2) == w), 0)
+    if _bit(status, 8):
+        readiness = mem.code_str(0x1771, 0x426A)
+    elif r[0x0E] == 0:
+        readiness = mem.code_str(0x1771, 0x4274)
+    elif _bit(status, 5):
+        readiness = mem.code_str(0x1771, 0x427C)
+    elif _bit(status, 6):
+        readiness = mem.code_str(0x1771, 0x4283)
+    elif _bit(status, 3):
+        readiness = mem.code_str(0x1771, 0x428C)
+    elif slot:
+        readiness = mem.code_str(0x1771, 0x4298 if not set_up else (0x42A6 if slot < 12 else 0x42AF))
+    else:
+        readiness = ""
+    performance = r[0x12] | r[0x13] << 8
+    if performance == 0x7FFF:
+        bucket = None
+    else:
+        p = performance - 10000 if _signed16(performance) > 5000 else performance
+        d = _signed16(p & 0xFFFF) - 0x37
+        bucket = 1 + sum(d >= edge for edge in (-0x32, 0, 0x32, 100, 0x96, 200, 300, 400))
+    skills = []
+    for i in range(1, 13):
+        cls = mem.ds_byte(0x6D25 + 12 * club + i)
+        skills.append((SKILL_NAMES[i - 1], mem.ds_byte(0x6DCD + 12 * r[5] + cls) * (r[4] + 1) // 256))
+    hardness = (r[5] - (r[3] & 1)) & 0xFF
+    morale = _signed(r[0x0C])
+    difference = r[3] - r[5]
+    lead = (difference - int(difference / 8) * 8) & 0xFFFF   # 30D9: Pascal's mod (the dividend's sign), a word
+    if r[1] < 0x15:
+        lead //= 2
+    fitness, energy = _signed(r[0x0D]), _signed(r[0x0E])
+    characteristics = [
+        ("hardness", _word(mem, 0x78C4, hardness), hardness * 14 // 16),
+        ("fitness", _word(mem, 0x78D5, energy if energy == 0 else fitness), _div(fitness * 14, 32) if energy else 0),
+        ("energy", _word(mem, 0x78F6, energy), _div(energy * 14, 32)),
+        ("morale", _word(mem, 0x78A3, min(32, morale)), _div(morale * 14, 32) if morale < 32 else 0),
+        ("leadership", _word(mem, 0x7917, lead), (lead * 14 & 0xFFFF) // 7),
+    ]
+    tactics = []
+    for e, name in enumerate(TACTIC_NAMES, 1):
+        own = bool(_bit(r[0x0F], e + 4))
+        bit = _bit(r[0x0F] if own else team_tactics, e)
+        tactics.append((name, tactic_word(mem, e, bit, keeper=position == 0), own))
+    if position < 2:
+        mark = ""
+    elif _bit(status, 7):
+        mark = mem.code_str(0x1771, 0x3B30)
+    else:
+        element = _bit(team_tactics, 8)
+        mark = (mem.pstr(mem.ds * 16 + MARKING_WORDS + 11 * element) if not set_up or not element
+                else mem.code_str(0x1771, 0x3AD5))
+    code = bytes([mem.ds_byte(CODE_TABLE + position)]).decode("cp437") if position < 14 else "?"
+    return {"player": w, "name": mem.player_name(w), "country": country, "age": r[1],
+            "caps": r[8] | r[9] << 8, "goals": r[0xA] | r[0xB] << 8, "height": (inches // 12, inches % 12),
+            "foot": foot, "position": position, "code": code,
+            "line": LINES[mem.ds_byte(LINE_TABLE + position)] if position < 14 else "unknown",
+            "position_name": mem.pstr(mem.ds * 16 + POSITION_NAMES + 19 * position) if position < 14 else "",
+            "club_position": club,
+            "club_position_name": mem.pstr(mem.ds * 16 + POSITION_NAMES + 19 * club) if club < 14 else "",
+            "club_code": bytes([mem.ds_byte(CODE_TABLE + club)]).decode("cp437") if club < 14 else "?",
+            "cards": cards, "readiness": readiness, "performance": bucket, "skills": skills,
+            "characteristics": characteristics, "tactics": tactics, "mark": mark,
+            "own_tactics": r[0x0F], "status": status, "slot": slot}
+
+
+def _div(a, b):
+    """The guest's signed division: the quotient truncated toward zero."""
+    return int(a / b)
+
+
+def _signed16(v):
+    return v - 0x10000 if v > 0x7FFF else v
+
+
+def team(state):
+    """The managed country's squad as SELECT YOUR TEAM lists it: the twenty words +0..+0x27 in order, the first
+    eleven the team and the rest the bench (draw_squad_screen 1771:4E22, the rule after the eleventh), each with its
+    name and role code (1771:2F37: DS:69A8[+6], the line DS:0D5C) [confirmed: F008, F029]."""
+    mem = Memory(state)
+    country = mem.manager_country(0x80 + mem.game(1))
+    rows = squad(mem, country)
+    for i, row in enumerate(rows):
+        row["slot"] = i + 1
+        row["eleven"] = i < 11
+    return {"country": country, "name": mem.country_name(country), "squad": rows}
+
+
+def team_tactics(state, country=None):
+    """The team tactics (1771:1981) of the managed country by default: the byte +0x2D and, in the screen's row order
+    (DS:6BBF[1..8]), each element's name, bit and value word (DS:6AA0 + 32 e + 16 bit; F010: element k is bit k - 1)."""
+    mem = Memory(state)
+    if country is None:
+        country = mem.manager_country(0x80 + mem.game(1))
+    byte = mem.country(country, 0x2D)
+    rows = []
+    for row in range(1, 9):
+        e = mem.ds_byte(ELEMENT_OF_ROW + row)
+        bit = _bit(byte, e)
+        rows.append({"row": row, "element": e, "name": TACTIC_LABELS[e], "on": bool(bit),
+                     "word": tactic_word(mem, e, bit), "words": (tactic_word(mem, e, 0), tactic_word(mem, e, 1))})
+    return {"country": country, "name": mem.country_name(country), "byte": byte, "rows": rows}
+
+
+def pool(state):
+    """The current manager's pool (F011): the eighty A927 words from DS:6D18[m] on, in the order the pool list draws
+    them (0791:E2E6: item k is [DS:A927][DS:6D18[m] + k - 1], the name and code by 1771:2F37), and the list's top and
+    highlighted row (the game record's words +0x52 + 2m and +0x5E + 2m)."""
+    mem = Memory(state)
+    m = mem.game(1)
+    first = mem.ds_word(POOL_BASE + 2 * m)
+    players = mem.far(PLAYERS)
+    rows = []
+    for k in range(1, 0x51):
+        w = mem.word(mem.far(POOL_INDICES) + 2 * (first + k - 1))
+        p = mem.byte(players + PLAYER_SIZE * w + 6)
+        rows.append({"item": k, "player": w, "name": mem.player_name(w) if w else "", "position": p,
+                     "code": bytes([mem.ds_byte(CODE_TABLE + p)]).decode("cp437") if p < 14 else "?",
+                     "line": LINES[mem.ds_byte(LINE_TABLE + p)] if p < 14 else "unknown"})
+    return {"manager": m, "first": first, "top": mem.game(0x52 + 2 * m, 2), "row": mem.game(0x5E + 2 * m, 2),
+            "rows": rows}
