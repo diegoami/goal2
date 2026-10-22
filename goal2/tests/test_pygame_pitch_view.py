@@ -261,6 +261,38 @@ class PitchController(unittest.TestCase):
 
 
 @requires.need(modules=("pygame",))
+class ControllerClose(unittest.TestCase):
+    def test_close_outlasts_a_cancel_that_times_out_while_the_job_prepares(self):
+        """[designed: #311; #254] One cancel is bounded and may time out while the job still
+        encodes its input (seen on the Windows runner). close() is final: it cancels again until
+        the job is reaped, within CLOSE_DEADLINE, and raises only past it."""
+        from goal2.desktop import watched
+        from goal2.tests.test_pygame_match_view import model
+        with tempfile.TemporaryDirectory() as folder:
+            m = model(Path(folder) / 'save')
+            for timeouts, deadline, closes in ((2, 30, True), (10**6, 0.2, False)):
+                with self.subTest(timeouts=timeouts):
+                    c = watched.WatchedController(m, engine_command=[sys.executable, '-c', 'import time;time.sleep(60)'],
+                                                  viewer_command=[sys.executable, '-c', 'import time;time.sleep(60)'])
+                    c.start();real = c.engine.cancel;calls = [0]
+                    def cancel(token):
+                        calls[0] += 1
+                        if calls[0] <= timeouts:
+                            raise subprocess.TimeoutExpired('watched input preparation', 0.5)
+                        return real(token)
+                    with patch.object(c.engine, 'cancel', cancel), patch.object(watched, 'CLOSE_DEADLINE', deadline):
+                        if closes:
+                            c.close()
+                        else:
+                            with self.assertRaises(subprocess.TimeoutExpired):
+                                c.close()
+                    if not closes:
+                        c.close()
+                    self.assertFalse(c.engine.busy or m.match_pending)
+                    if closes:
+                        self.assertEqual(calls[0], 3)
+
+
 class SavedByteControls(unittest.TestCase):
     def test_saved_byte_projection_visibility_and_consumption_controls(self):
         import time

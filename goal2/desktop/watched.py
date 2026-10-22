@@ -82,6 +82,10 @@ def pitch_identity(model, fixture):
             'kind': 'Friendly' if fixture.kind == 1 else 'Qualifier'}
 
 
+# [designed: #311] How long close() keeps cancelling a job that is still preparing.
+CLOSE_DEADLINE = 30
+
+
 class WatchedController:
     def __init__(self, model, *, engine_command=None, viewer_command=None):
         self.model = model
@@ -299,5 +303,15 @@ class WatchedController:
             self._pending_owned = False
 
     def close(self):
-        self.cancel()
+        # [designed: #311; #254] One cancel is bounded and may time out while the job still
+        # encodes its input (seen on the Windows runner); close is final, so it cancels again
+        # until the job is reaped, and raises only past CLOSE_DEADLINE.
+        deadline = time.monotonic() + CLOSE_DEADLINE
+        while True:
+            try:
+                self.cancel()
+                break
+            except subprocess.TimeoutExpired:
+                if time.monotonic() >= deadline:
+                    raise
         self.engine.close()
