@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -291,6 +292,28 @@ class ControllerClose(unittest.TestCase):
                     self.assertFalse(c.engine.busy or m.match_pending)
                     if closes:
                         self.assertEqual(calls[0], 3)
+
+
+class ControllerCancel(unittest.TestCase):
+    def test_cancel_ends_a_match_whose_input_is_still_encoding(self):
+        """[designed: #311] On the loaded Windows runner the input encoding outlasted one engine
+        cancel (0.5 s, #254), so a protocol error raised TimeoutExpired instead of its own error.
+        The controller's cancel reaps the job: here the encoding is slowed to 1.5 s."""
+        from goal2.desktop.watched import WatchedController
+        from goal2.game import watched_jobs
+        from goal2.tests.test_pygame_match_view import model
+        real = watched_jobs.encode
+        def slow(*args, **kwargs):
+            time.sleep(1.5);return real(*args, **kwargs)
+        with tempfile.TemporaryDirectory() as folder, patch.object(watched_jobs, 'encode', slow):
+            m = model(Path(folder) / 'save')
+            c = WatchedController(m, engine_command=[sys.executable, '-c', 'import time;time.sleep(60)'],
+                                  viewer_command=[sys.executable, '-c', 'import time;time.sleep(60)'])
+            try:
+                c.start();c.cancel()
+                self.assertFalse(c.engine.busy or m.match_pending)
+            finally:
+                c.close()
 
 
 class SavedByteControls(unittest.TestCase):

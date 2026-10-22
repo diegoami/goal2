@@ -291,7 +291,10 @@ class WatchedController:
     def cancel(self):
         try:
             if self.engine.busy:
-                self.engine.cancel(self.engine_token)
+                # [designed: #311] The controller's cancel ends the match (Cancel, a protocol
+                # error, close): it reaps the job even while its input is still being encoded,
+                # where one engine cancel times out by design (#254).
+                self.engine.cancel_and_reap(self.engine_token)
             self.close_viewer()
         except Exception:
             # [designed: #236] Engine cancellation may release its lock before viewer deletion.
