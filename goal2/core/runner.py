@@ -56,7 +56,7 @@ INTR_RETURN = ("214B", 0x0904)   # 08DD's call far 235C:000B (Intr) at 08FF retu
 READKEY_LOCALS, INTR_ARGS, INT16 = 0x14, 6, 0x16
 STACK_SEARCH = 0x200          # bytes above SS:SP searched for Intr's return
 END = 1 << 21                 # an address no 16-bit CS:IP reaches: runs stop only at a read, the budget or an error
-DEFAULT_BUDGET = 10_000_000_000   # [designed] instructions between two reads (a watched half needs about 4e9, T100)
+DEFAULT_BUDGET = 10_000_000_000   # [designed] instructions between two reads (a watched first half: 3e9..4e9, T100)
 # The CPU component (E021 notes section 1)
 CPU_GPR, CPU_EIP, CPU_FLAGS, CPU_SEGS, CPU_SEG_STRIDE = 0x00, 0x20, 0x28, 0xEB, 8
 GPR_NAMES = ("EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI")
