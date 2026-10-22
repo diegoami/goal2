@@ -189,6 +189,12 @@
      inside;
    - there is no attribute table.
 
+6. **Screens fit without scrolling** (owner, 2026-10-22, #312): "Goal2 managed to make everything fit
+   on the screen without scrolling". Every screen is composed once for a fixed 1440×900 page, and the
+   whole page scales to the window, as the pitch view does. This supersedes the small-window layouts
+   of accepted screens 11 and 17 (collapse, reflow, scroll areas). It applies now to the current
+   pages (T101), and every later screen must pass the same no-scroll check.
+
 ## Scope gaps and their owners
 
 [designed: owner amendment] These are planning obligations of #253, not capabilities silently assigned to page-composition issues. Each row names a bounded owner or states plainly that it is unowned and needs a bounded contract before any full-parity claim. No fabricated action and no blanket parity exception is approved. The [gap register](capability-gaps.json) keeps the field membership; [decisions.md](decisions.md#unowned-capability-decisions) keeps the owner choices.
