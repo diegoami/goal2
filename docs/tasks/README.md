@@ -238,3 +238,4 @@ operational status.
 | [T100](T100.md) | G8: the core runner | [#310](https://github.com/diegoami/goal2/issues/310) | Medium |
 | [T101](T101.md) | Screens fit without scrolling: one fixed page, scaled | [#312](https://github.com/diegoami/goal2/issues/312) | Medium |
 | [T102](T102.md) | The bench in a watched match: half time, and Enter mid-play | [#305](https://github.com/diegoami/goal2/issues/305) | High |
+| [T103](T103.md) | G9: the screen catalogue of the core | [#315](https://github.com/diegoami/goal2/issues/315) | Medium |

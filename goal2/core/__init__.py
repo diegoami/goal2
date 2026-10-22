@@ -5,10 +5,12 @@
 
     from goal2.core import Core
     wait = Core.start(open(".cache/e006-r0001-main.sav", "rb").read())
-    wait.site, wait.text, wait.state.managed, wait.state.year()
+    wait.site, wait.kind, wait.view, wait.text, wait.state.managed, wait.state.year()
     wait = wait.core.press(0x1B)              # Esc: the key code 214B:08DD stores at DS:A976
     blob = wait.core.save(); core = Core.load(blob)
 """
-from .runner import BudgetExceeded, Core, CoreError, InterruptError, KeyWait, StateView, DEFAULT_BUDGET
+from .runner import (BudgetExceeded, Core, CoreError, InterruptError, KeyWait, PassedScreen, StateView, UnknownScreen,
+                     DEFAULT_BUDGET)
 
-__all__ = ["Core", "KeyWait", "StateView", "CoreError", "BudgetExceeded", "InterruptError", "DEFAULT_BUDGET"]
+__all__ = ["Core", "KeyWait", "PassedScreen", "StateView", "CoreError", "BudgetExceeded", "InterruptError",
+           "UnknownScreen", "DEFAULT_BUDGET"]
