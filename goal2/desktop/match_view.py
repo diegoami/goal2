@@ -183,9 +183,9 @@ class Display:
 
     def visible(self):
         """[designed: T83] Terminal tail is released only after final-frame consumption/publication.
-        [designed: T102] At a decision every event up to it is shown (the half-time board)."""
+        [designed: T102] A decision does not release it either: the frozen view shows its board."""
         value = copy.copy(self)
-        if self.pitch_rate is not None and self.result is None and self.decision() is None:
+        if self.pitch_rate is not None and self.result is None:
             value.events = self.events[:self.frame['watermark']] if self.frame else []
         return value
 

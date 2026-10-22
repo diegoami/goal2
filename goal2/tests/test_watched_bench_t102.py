@@ -289,6 +289,53 @@ class CancelWhileWaiting(unittest.TestCase):
             jobs.close()
 
 
+class PitchFreeze(unittest.TestCase):
+    def test_the_view_freezes_on_a_decision_once_its_samples_are_shown(self):
+        from goal2.desktop.match_view import Display
+        from goal2.tests.test_pygame_pitch_view import sample
+        d = Display('owned');d.accept(['owned', 0, 'start', ['Bulgaria', 'Albania']])
+        d.accept(['owned', 1, 'pitch', {'rate': 60}])
+        d.accept(['owned', 2, 'event', {'kind': 'commentary', 'minute': 45, 'score': [0, 0], 'data': {'text': 'x'}}])
+        d.accept(['owned', 3, 'frame', sample(0, 1)])
+        d.accept(['owned', 4, 'event', {'kind': 'half_time', 'minute': 46, 'score': [0, 0], 'data': {}}])
+        d.accept(['owned', 5, 'event', {'kind': 'decision', 'minute': 46, 'score': [0, 0], 'data': {'context': 'half_time'}}])
+        self.assertIsNone(d.board(), 'a sample before the decision is still to be shown')
+        d.advance(0.0)
+        self.assertEqual(d.board(), 'HALF TIME')
+        # The causal watermark still holds: the board is drawn over the frozen sample.
+        self.assertEqual(len(d.visible().events), 1)
+        d.accept(['owned', 6, 'frame', sample(1, 3)])
+        self.assertIsNone(d.board(), 'the answer resumes play')
+
+
+@requires.need(modules=('pygame', 'PySide6'), files=('GOAL.DAT', 'e010-r0008-halftime.sav'))
+class EnterInPlay(unittest.TestCase):
+    def test_each_enter_in_the_status_asks_the_original_once(self):
+        """The viewer's Enter count reaches the parent, which asks the engine to pause when it grows."""
+        import json, sys
+        from unittest.mock import patch
+        from goal2.desktop.watched import WatchedController
+        sleep = [sys.executable, '-c', 'import time;time.sleep(60)']
+        with tempfile.TemporaryDirectory() as folder:
+            m = model(Path(folder) / 'save')
+            c = WatchedController(m, engine_command=sleep, viewer_command=sleep)
+            try:
+                c.start()
+                self.assertTrue(c.engine._bench, 'the pitch route has the bench')
+                status = lambda n: json.dumps({'token': c.token, 'kind': 'ready', 'sequence': c.display.sequence,
+                                              'digest': c.display.digest(), 'frame_sequence': -1,
+                                              'frame_digest': None, 'requests': n})
+                with patch.object(c.engine, 'poll', return_value=[]), patch.object(c.engine, 'poll_frames', return_value=[]), \
+                        patch.object(c.engine, 'pause') as pause:
+                    for n in (0, 1, 1, 3):
+                        (c.directory / 'status').write_text(status(n));c.poll()
+                    self.assertEqual(pause.call_count, 2)
+                    (c.directory / 'status').write_text(status(2))
+                    with self.assertRaisesRegex(ValueError, 'bench request'):c.poll()
+            finally:
+                c.close()
+
+
 class StubWatched:
     """The window's watched controller, reduced to the bench's channel."""
     def __init__(self, decision):
