@@ -12,7 +12,14 @@ def main(argv=None):
     # [designed: owner, 2026-10-22, #321; T105] --core opens the original's own game (goal2/core) from a savestate
     # in its key read; --resume with a core save (G2C1, docs/core.md) resumes it. The --template route is unchanged.
     parser.add_argument('--core',type=Path)
+    # [designed: owner, 2026-10-22; T106] --core-boot opens Launch over the original's own new game, booted from the
+    # state at its DOS date call (e039-r0005-date-call.sav, docs/core.md); GOAL.DAT is read from --data.
+    parser.add_argument('--core-boot',type=Path)
     args=parser.parse_args(argv)
+    if args.core_boot is not None and (args.core or args.template or args.country is not None or args.resume):
+        parser.error('--core-boot excludes --core, --template, --country and --resume')
+    if args.core_boot is not None:
+        return _core(args)
     if args.core is not None and (args.template or args.country is not None):parser.error('--core excludes --template and --country')
     if args.core is not None and args.resume is not None:parser.error('--core excludes --resume')
     if args.core is not None or (args.resume is not None and _core_save(args.resume)):
@@ -70,6 +77,8 @@ def _core(args):
     from goal2.desktop.core_model import CoreModel
     from goal2.desktop.window import window_for
     save=args.save if args.save!=Path('.cache/desktop.g2save') else Path('.cache/desktop.g2core')
+    if args.core_boot is not None:
+        return _core_launch(args,save)
     try:
         model=CoreModel.from_save(args.resume,args.data) if args.resume else CoreModel.open(args.core,args.data,save)
     except ValueError as exc:
@@ -81,6 +90,24 @@ def _core(args):
     finally:
         from PySide6.QtCore import QCoreApplication,QEvent
         window.close();window.deleteLater()
+        QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
+        app.shutdown()
+
+def _core_launch(args,save):
+    """[designed: T106] Launch on the core route: New career runs the original's new game, then the main window."""
+    from PySide6.QtWidgets import QApplication
+    from goal2.desktop.launch import LaunchWindow
+    from goal2.desktop.window import window_for
+    app=QApplication.instance() or QApplication(sys.argv[:1])
+    windows=[]
+    def opened(model):
+        window=window_for(model);window.show();windows.append(window)
+    windows.append(LaunchWindow(args.data,None,save,opened,core_boot=args.core_boot));windows[-1].show()
+    try:
+        return app.exec()
+    finally:
+        from PySide6.QtCore import QCoreApplication,QEvent
+        for window in windows:window.close();window.deleteLater()
         QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
         app.shutdown()
 

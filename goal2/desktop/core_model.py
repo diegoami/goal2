@@ -8,6 +8,11 @@ a byte into the core's memory and never reads the text page. It shares nothing w
 
 [designed] Routes the core cannot serve yet are named with the G task that brings them (#308's order after this
 one, G11): `DISABLED`.
+
+[designed: owner, 2026-10-22; T106, #308's G10] A new career on the core route is the original's own new game
+(`CoreNewGame`): the core boots at the program's DOS date call answering the date that gives the chosen start year,
+the browser's countries and card are read from its memory, and the driver plays the original's keys to the first
+manager menu, through its bulletins.
 """
 import os
 from pathlib import Path
@@ -55,7 +60,7 @@ class CoreModel:
     def from_save(cls, path, data_path):
         from goal2.core import Core, CoreError
         try:
-            return cls(Core.load(Path(path).read_bytes()), data_path, path)
+            return cls(Core.load(Path(path).read_bytes(), goal_dat=data_path), data_path, path)
         except (OSError, ValueError, KeyError, CoreError) as exc:
             raise ValueError(f'Cannot resume the core: {exc}') from exc
 
@@ -94,3 +99,75 @@ class CoreModel:
             raise ValueError(f'Cannot save the core: {exc}') from exc
         self.save_path = target
         return target
+
+
+# [designed: T106] The DOS date's month and day the core answers (E039's, 10/04); the year is the start year - 1.
+BOOT_MONTH_DAY = (10, 4)
+
+
+def dos_year(start_year):
+    """[confirmed: NG-9] A new game's start year is the DOS year + 1, rounded up to even: the DOS year that gives the
+    even start year S is S - 1 (1990 -> 1989, 1992 -> 1991)."""
+    if start_year % 2:
+        raise ValueError(f"the original's start years are even, not {start_year}")
+    return start_year - 1
+
+
+class CoreNewGame:
+    """[designed: T106] The original's new game for Launch's New career on the core route.
+
+    `browse(start_year)` boots the core from the date-call state (e039-r0005-date-call.sav) with the DOS date of
+    that start year, presses N while the title's tune plays (`Core.boot`'s title_key) and Enter on the player count
+    (one manager), and keeps the core at the country browser, one per start year. `countries`, `card` and `campaign`
+    read that core's memory (goal2/core/views.py). `start` plays the rest of the new game by the driver and returns
+    the CoreModel at the first manager menu with the bulletins the original showed on the way."""
+
+    def __init__(self, boot_path, data_path, save_path):
+        self.boot_path, self.data_path, self.save_path = Path(boot_path), Path(data_path), Path(save_path)
+        self._drivers = {}
+
+    def browse(self, start_year):
+        from goal2.core import Core, CoreError
+        from goal2.core.driver import Driver
+        from goal2.core.screens import RETURN
+        if start_year not in self._drivers:
+            try:
+                state = self.boot_path.read_bytes()
+                wait = Core.boot(state, (dos_year(start_year),) + BOOT_MONTH_DAY, goal_dat=self.data_path,
+                                 title_key='n')
+                driver = Driver(wait.core)
+                if wait.kind == 'title-player-count':
+                    driver.press(RETURN, expect=('country-select',))
+                if driver.wait.kind != 'country-select':
+                    raise CoreError(f'the new game shows {driver.wait.kind}, not the country browser')
+            except (OSError, ValueError, CoreError) as exc:
+                raise ValueError(f'Cannot start the original\'s new game: {exc}') from exc
+            self._drivers[start_year] = driver
+        return self._drivers[start_year]
+
+    def countries(self, start_year):
+        """The browser's countries in its order: number, name, world rank, continent name, rank within it."""
+        return [(c['country'], c['name'], c['world_rank'], c['continent'], c['continent_rank'])
+                for c in views.country_select(self.browse(start_year).wait.state)['countries']]
+
+    def card(self, start_year, country):
+        return views.country_card(self.browse(start_year).wait.state, country)
+
+    def campaign(self, start_year):
+        """The start year and stage the original set at the title's N (1771:9B85, NG-9), and the stage's words."""
+        from goal2.desktop.model import STAGES
+        view = views.country_select(self.browse(start_year).wait.state)
+        return {'start_year': view['start_year'], 'stage': view['stage'], 'words': STAGES.get(view['stage'], '')}
+
+    def start(self, start_year, country, manager_name):
+        """Play the new game to the first manager menu; returns (CoreModel, [bulletin views])."""
+        from goal2.core import CoreError
+        driver = self.browse(start_year)
+        bulletins = []
+        try:
+            driver.new_game(country, manager_name, on_bulletin=lambda wait: bulletins.append(views.bulletin(wait.state)))
+        except CoreError as exc:
+            self._drivers.pop(start_year, None)
+            raise ValueError(f'The new game stopped: {exc}') from exc
+        self._drivers.pop(start_year, None)            # this core is the career now
+        return CoreModel(driver.core, self.data_path, self.save_path), bulletins

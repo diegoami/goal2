@@ -87,17 +87,23 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `tournament` | `214B:157C` from `1771:9022` | E010-r0001, the match menu's tournament | "Use ↓↑ to select group" "Use ←→ to select display" "Esc-exit" |
 | `action-replay-prompt` | poll `0791:CC54` / `0791:0BE1` (0B7C from 0C65 at 0C87) | E006-r0001, a watched second half | "Do you want an action replay? (Y/N)" |
 | `substitution-notice` | poll `0791:CC54` / `0791:C5C8` (0791:C50C) | E006-r0001, a watched second half | "SUBSTITUTION" "press any key" |
+| `title-tune` | polls `1771:0723`, `1771:0782` (1771:06F3, the title's tune) | E039's traces (T106) | "THE international soccer management game" "Do you want to load a saved game? (Y/N)" |
+
+The new game's kinds.tsv kinds (T106) [confirmed: F032, E038-r0001's savestates and trace; catalogue.tsv's keys]:
+`title-load-prompt` (read `1771:085F`, 1771:080C from the main program), `title-player-count` (read `1771:0081`,
+manager_count_menu 1771:0021; its view is the count DS:0C4E), `country-select` (read `1771:28F5`, 1771:26B9 mode 2
+from set_managed_countries 1771:2D15; its view adds the column DS:0DB4, the index and the manager choosing),
+`country-select-name-entry` (polled: the cursor wait 214B:0D90 polls at `214B:0DB9` for the line editor 214B:1086,
+which reads at `214B:112B`; called by 1771:09A0 from 1771:2D15) and the two `bulletin`s at `000E:0629` (000E:05F6
+near-called by welcome_new_manager 000E:68A4 and announce_stage_to_manager 000E:60CB). A key pressed during the
+title's tune ends it (06F3 returns at a key) and the title's read takes it; `Core.boot`'s `title_key` queues one so.
 
 **Not reached yet**, so not in the table:
-- `country-select` and the new-game screens (`title-load-prompt`, `title-player-count`,
-  `country-select-name-entry`): no kept savestate stops there at an INT 16h read (E006-r0001 starts at the team-info
-  browser, E011-r0001 and the title checkpoints are refused by `Core.start`), and leaving the menu calls INT 10h.
-  The new game needs F032's savestates (#319, #320), in its own task.
 - The other kinds.tsv screens no tour met (`round-playing`, `round-results`, `match-watch-prompt`,
   `match-commentary`, the other substitution screens, `save-game-name-entry`, `file-not-found-prompt`) and the
   other cases of the shared sites (the taker prompts, the pause and extra-time menus, SELECT TEAM outside a match)
   stop with `UnknownScreen` until a screen task maps them (G10, G12-G14).
-- Interrupts other than the key reads stay unserved (T100).
+- Interrupts other than the new game's (below) stay unserved.
 
 ## The driver and the views (T105, #308's G11)
 
@@ -160,16 +166,79 @@ screen to the byte (its record's digest `18190236…`).
   10,000,000,000; a watched first half needs between 3e9 and 4e9, measured T100) without a key read raises
   `BudgetExceeded`, naming the PC (listing address and CS:IP) and the text page. It never presses a key for the
   original.
-- [designed] **Interrupts**: the core serves none. The first INT the guest calls stops the run with
+- [designed] **Interrupts**: the core serves only the new game's (T106, "The new game" below). Any other INT the
+  guest calls, or any other request through `Intr`/`MsDos`, stops the run with
   `InterruptError` (its number, AX, the PC and the text page). The menus, the match menu and a whole watched
   first half called none; quitting (F10, Y, N) calls INT 10h and then DOS, and stops there.
 - After either error the core runs no further (`core.stopped`); start again or load a save.
 - The kit's build guard runs at `start`: an image of another GOAL.EXE is refused (`ValueError`).
 
+## The new game (T106, #308's G10)
+
+[designed: owner, 2026-10-22, #308; T106] A new game runs the original's own code from before its title, so the
+start year is the original's and the seed its own:
+
+```python
+from goal2.core import Core
+from goal2.core.driver import Driver
+wait = Core.boot(open(".cache/e039-r0005-date-call.sav", "rb").read(), (1990, 10, 4),
+                 dos_time=(10, 0, 20, 95), goal_dat=".cache/GOAL.DAT")   # the title's read, 1771:085F
+driver = Driver(wait.core)
+driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arrows, the name, Enter on each bulletin
+```
+
+- **Booting at the DOS date call** [confirmed: F033, E039, NG-9, NG-10]: `Core.boot(state, date)` is the core's
+  second entry kind, resume at a DOS call. It checks that the state's CPU is at the `int 21h` of GetDate
+  `235C:0071` with AH 2Ah, answers it as DOS does (CX year, DH month, DL day, AL weekday, 0 Sunday), continues at
+  `235C:0073` and runs to the first key read, the title's. The program keeps the year at DS:A9FD; at a new game
+  1771:9B85 sets the start year (+0x3A) to year + 1 rounded up to even and the stage (+0x3C) to 2 when it is
+  divisible by 4, else 5 (DOS 1990 → 1992 stage 2, 1992 → 1994 stage 5). [designed: owner, 2026-10-22] The player
+  chooses the start year by the date the core answers, as a player setting the PC clock would; the date is an
+  input to the interrupt, never written into memory, and kept in the core save. DOS answers 1980–2099 only.
+  Between the date call and the title's read the original makes no other interrupt: 333 polls of the title's tune
+  (`title-tune`, answered "no key", about a minute under Unicorn) and speaker port I/O, which Unicorn drops (an OUT) or
+  reads as 0 (an IN), as E039's trace answered them.
+- **The interrupts served** [confirmed: F032, E038-r0001, NG-7, NG-8]: from the title's read to the first manager
+  menu, GOAL.DAT's open, ten reads and close (INT 21h 3Dh/3Fh/3Eh) through Turbo Pascal's `MsDos` 235C:0000 and
+  `Intr` 235C:000B, and INT 21h AH=2Ch at 23E4:11D9. `Intr` enters the vector by a far return with no `int`
+  instruction, so a Unicorn interrupt hook never sees it: the core hooks `Intr` at its entry (MsDos falls through
+  into it), reads the register record (AX BX CX DX BP SI DI DS ES Flags) and the vector from the stack, serves the
+  request, writes the record back and returns `retf 6`. GOAL.DAT is read at run time from the path the player gives
+  (`goal_dat`, the desktop's `--data`), checked against the released file's SHA-256, never from the repository;
+  only the name GOAL.DAT is opened. An `int` instruction is served only for INT 21h AH=2Ch.
+- **The DOS time is an input** [designed: T106]: AH=2Ch answers `dos_time=(hours, minutes, seconds, hundredths)`
+  given to `Core.start` or `Core.boot`; the default is 10:00:00.00, the hour E038 and E039 set. The original stores
+  CX at DS:7B62 (hour·256 + minute, the seed) and DX at DS:7B64 (F004), after the key that leaves the first bulletin
+  (NG-8). The time is kept in the core save, so a game replays exactly.
+- **Refusals**: any other request through `Intr` or `MsDos`, any other `int`, a file other than GOAL.DAT, or
+  GOAL.DAT with no path given stops the core with `InterruptError`, naming the vector (`number`), the function
+  (`ah`), the route (`via`: int, Intr or MsDos), the site and the text page. Loading a saved game at the title
+  (DOS's current drive, AH=19h through MsDos) and quitting (INT 10h AH=02h) stop so.
+- **Byte for byte**: from `e038-r0001-title-keywait.sav` with E038-r0001's keys and DOS time (10:00:20.95), the core
+  reaches `e038-r0001-manager-menu.sav`'s screen, DS:7B62/7B64 and player and country arrays exactly, and the rest
+  of conventional memory differs only where E038's own trace differed from DOSBox-X (the BIOS keyboard buffer and
+  tick, DOS's 0815E, the stack below SS:SP). Each wait's kind, site and screen are E038's at that step.
+- [designed: T106; derived: measured by the test] **A key in the tune**: `Core.boot(..., title_key="n")` answers the
+  tune's first poll with N, so the title's read takes it and boot returns at the player count, under a second. The
+  new game then differs from one after the whole tune only in the tune's counters DS:7966 and DS:7968; the desktop
+  boots so.
+- **The driver**: `Driver.new_game(country, manager_name, managers=1, on_bulletin=None)` plays N at the load
+  question, the player count by Left/Right and Enter, the country by the browser's arrows (Left/Right move the column
+  of 16, Up/Down the row, 1771:26B9), the name's letters and Enter queued for the polled name entry, and Enter on
+  each bulletin; it starts from wherever the core is on that way. One manager only: other new-game paths are not
+  traced (NG-7). The line editor keeps the first character, upper-cased, as the initial and the rest after one
+  blank (or one other character) as the surname: "bob" becomes "B Ob". `log` lists queued keys where the original
+  read them.
+- **The views**: `views.country_select` (the browser's 128 countries in its order, the browsed one, the start year
+  and stage), `views.country_card` (a country as the browser's panel shows it, in the desktop card's shape) and
+  `views.bulletin` (each story's masthead and lines, read from the page buffer [DS:A96E] that 000E:070B, 062F and
+  075F compose and 000E:05F6 moves to the screen; the template's filler rows of ≡ and ░ are left out).
+
 ## Saving
 
 [derived: F029, a savestate's memory is the master] `core.save()` is `G2C1`, a JSON header (the registers, the
-load segment, the Memory component's header, the seeds `DS:7B62` and `DS:7B64` (F004), the key log since the
+load segment, the Memory component's header, the DOS time and the date it was booted with (version 2; a version 1
+save loads with the default time), the seeds `DS:7B62` and `DS:7B64` (F004), the key log since the
 template, the budget, the template's SHA-256, the wait's polls) and the zlib-compressed memory (1 MiB, the HMA
 and the rest of the Memory component). `Core.load` rebuilds the machine and the wait; the same keys then give the
 same waits and the same memory, byte for byte. `core.memory_component()` is the memory in the form the kit's
@@ -186,5 +255,7 @@ goal2-archaeology checkout, and skip without them. [designed: #316] The tests th
 screen are slow tests: they run with `GOAL2_SLOW=1` (the screen tours play a whole watched match, about eight to
 eleven minutes; the captain prompt's two cases about three), and the pre-merge gate runs them whenever `goal2/core/`
 or either module changes (`SLOW_PATHS`, docs/process.md). The default run keeps one real case of each module.
-`goal2.tests.test_core_desktop_t105` (T105) is guarded the same way, with `goal2/desktop/core_*`; its default run
+`goal2.tests.test_core_new_game_t106` (T106) keeps E038's byte-for-byte new game (about a second) in the default
+run; its slow cases boot E039's two dates through the whole title tune (about a minute each) and drive Launch's new
+career to the main window. `goal2.tests.test_core_desktop_t105` (T105) is guarded the same way, with `goal2/desktop/core_*`; its default run
 keeps the E006 text oracle, and its slow cases play E010-r0001's second half (about 20 s) and open the window.

@@ -6,6 +6,12 @@ load or new; a failed load offers to try again; a new game browses countries wit
 rankings. Nothing here writes a save or replaces a game: the validating loader
 (`DesktopModel.from_save`) and `DesktopModel.new_campaign` stay authoritative, and only the
 `opened(model)` callback receives a validated game.
+
+[designed: owner, 2026-10-22; T106] On the core route (`core_boot`, the date-call state) New
+career is the original's own new game (goal2/desktop/core_model.py `CoreNewGame`): the country
+list and card are read from the core's memory for the chosen start year, the review takes the
+manager's name and names the start year and stage the original set, and Start plays the
+original's keys to its first manager menu, showing its bulletins as goal2 pages on the way.
 """
 from pathlib import Path
 from PySide6.QtCore import Qt, QTimer
@@ -46,7 +52,18 @@ QPushButton:focus, QComboBox:focus, QLineEdit:focus {{margin:0px;}}
 HINT = 'Arrows: choose / Enter: accept / Esc: back / Existing saves stay yours'
 # [designed: T89] Each page names only its own keys, so the line never wraps.
 HINTS = {0: HINT, 1: 'Arrows: country / Enter: review / Space: players / Esc: back',
-         2: 'Enter: start / Esc: back to countries', 3: 'Arrows: player / Esc: back to countries'}
+         2: 'Enter: start / Esc: back to countries', 3: 'Arrows: player / Esc: back to countries',
+         4: 'Enter: next page'}
+# [designed: T106] The core route's hints: its browser has no players page yet, its review takes the name.
+CORE_HINTS = {1: 'Arrows: country / Enter: review / Esc: back',
+              2: 'Type the name / Enter: start / Esc: back to countries'}
+# [designed: T106] The bulletin page: the accepted style's black page, the original's three stories in their boxes.
+BULLETIN_STYLE = f"""
+QFrame#bulletinPanel {{border:2px solid {COLORS['title']};}}
+QLabel#bulletinMasthead {{font-size:24px;font-weight:700;color:{COLORS['country']};}}
+QLabel#bulletinStory {{font-size:26px;font-weight:700;color:{COLORS['text']};}}
+QLabel#bulletinCount {{color:{COLORS['hint']};}}
+"""
 
 
 def fields(layout, rows):
@@ -65,10 +82,14 @@ def fields(layout, rows):
 class LaunchWindow(QMainWindow):
     """[designed: T86] Pages: 0 launch, 1 country browsing, 2 review. Owns no game until opened."""
 
-    def __init__(self, data_path, template_path, save_path, opened):
+    def __init__(self, data_path, template_path, save_path, opened, core_boot=None):
         super().__init__()
         self.data_path = Path(data_path);self.template_path = None if template_path is None else Path(template_path)
         self.save_path = Path(save_path);self.opened = opened
+        self.core_new = None
+        if core_boot is not None:
+            from goal2.desktop.core_model import CoreNewGame
+            self.core_new = CoreNewGame(core_boot, data_path, save_path)
         self.browser = None  # a private DesktopModel for previews; never published until Start
         self.candidate = None
         self.setWindowTitle('goal2 — Start or resume');self.resize(1440, 900)
@@ -78,11 +99,12 @@ class LaunchWindow(QMainWindow):
         title = QLabel('GOAL2 / START OR RESUME');title.setObjectName('launchTitle');outer.addWidget(title)
         self.pages = QStackedWidget();outer.addWidget(self.pages, 1)
         self.hint = QLabel(HINT);self.hint.setObjectName('launchHint');self.hint.setWordWrap(True);outer.addWidget(self.hint)
-        self._build_launch();self._build_browse();self._build_review();self._build_players()
+        self._build_launch();self._build_browse();self._build_review();self._build_players();self._build_bulletin()
         from goal2.desktop.style import load_fonts
         from goal2.desktop.fixed_page import FixedPage
         from goal2.desktop.fixed_page import scale_sheet
-        load_fonts();self.setStyleSheet(scale_sheet(STYLE, 1));self.setCentralWidget(FixedPage(root, STYLE, self))
+        sheet = STYLE + BULLETIN_STYLE
+        load_fonts();self.setStyleSheet(scale_sheet(sheet, 1));self.setCentralWidget(FixedPage(root, sheet, self))
         QShortcut(QKeySequence(Qt.Key.Key_Escape), self, activated=self.back)
         self.preview_timer = QTimer(self);self.preview_timer.setSingleShot(True);self.preview_timer.setInterval(120)
         self.preview_timer.timeout.connect(self.preview)
@@ -110,7 +132,7 @@ class LaunchWindow(QMainWindow):
         heading = QLabel('NEW GAME');heading.setObjectName('newHeading');side.addWidget(heading)
         self.new_career = QPushButton('New career >');self.new_career.setObjectName('launchNew')
         self.new_career.clicked.connect(lambda: self.show_page(1));side.addWidget(self.new_career)
-        if self.template_path is None:
+        if self.template_path is None and self.core_new is None:
             self.new_career.setEnabled(False)
             reason = QLabel('New career needs the local engine template (--template).');reason.setObjectName('launchNote')
             reason.setWordWrap(True);side.addWidget(reason)
@@ -185,6 +207,8 @@ class LaunchWindow(QMainWindow):
         # [designed: owner, 2026-10-21] As the original's country selection: Space shows the players.
         self.to_players = QPushButton('Players (Space) >');self.to_players.setObjectName('launchPlayers')
         self.to_players.clicked.connect(self.show_players);body.addWidget(self.to_players)
+        # [designed: T106] The core route's players page arrives with the player card over the core (G12).
+        self.to_players.setVisible(self.core_new is None)
         self.country_list.installEventFilter(self)
         layout.addWidget(left, 2)
         # [designed: T89] The original's country card. [designed: T101] The fixed page gives it its
@@ -194,17 +218,36 @@ class LaunchWindow(QMainWindow):
         layout.addWidget(self.country_card, 3, Qt.AlignmentFlag.AlignTop)
         self.pages.addWidget(page)
         self.country_list.currentRowChanged.connect(lambda _: self.preview_timer.start())
-        self.start_year.currentIndexChanged.connect(lambda _: self.preview_timer.start())
+        self.start_year.currentIndexChanged.connect(self.year_changed)
         # Enter is handled by keyPressEvent: itemActivated would let the same key event go on to click Start.
         self.country_list.itemDoubleClicked.connect(lambda _: self.review())
 
     def fill_countries(self):
         if self.country_list.count():return
-        self.browser = DesktopModel.open(self.template_path, self.data_path, self.save_path, country=1)
-        for number, name, world, continent, within in self.browser.countries():
-            item = QListWidgetItem(f'{name:<13}{world:>4}   {CONTINENTS[continent][:2].upper()}{within:>3}')
+        if self.core_new is not None:
+            # [designed: T106] The original's browser order, read from the core booted for this start year.
+            rows = [(number, name, world, continent[:2].upper(), within)
+                    for number, name, world, continent, within in self.core_new.countries(self.start_year.currentData())]
+        else:
+            self.browser = DesktopModel.open(self.template_path, self.data_path, self.save_path, country=1)
+            rows = [(number, name, world, CONTINENTS[continent][:2].upper(), within)
+                    for number, name, world, continent, within in self.browser.countries()]
+        for number, name, world, continent, within in rows:
+            item = QListWidgetItem(f'{name:<13}{world:>4}   {continent}{within:>3}')
             item.setData(Qt.ItemDataRole.UserRole, number);self.country_list.addItem(item)
         self.country_list.setCurrentRow(0)
+
+    def year_changed(self, _):
+        if self.core_new is not None and self.country_list.count():
+            # [designed: T106] Each start year is its own boot of the original: its browser's list is read again,
+            # keeping the chosen country.
+            country, _year = self.selection()
+            self.country_list.blockSignals(True);self.country_list.clear();self.fill_countries()
+            for row in range(self.country_list.count()):
+                if self.country_list.item(row).data(Qt.ItemDataRole.UserRole) == country:
+                    self.country_list.setCurrentRow(row)
+            self.country_list.blockSignals(False)
+        self.preview_timer.start()
 
     def selection(self):
         item = self.country_list.currentItem()
@@ -214,6 +257,10 @@ class LaunchWindow(QMainWindow):
         """[designed] A private candidate per choice; the published game and save are untouched."""
         country, year = self.selection()
         if country is None:return
+        if self.core_new is not None:
+            self.country_card.set_card(self.core_new.card(year, country))
+            self.previewed = (country, year)
+            return
         self.browser.new_campaign(country, year)
         # Every value below reads the private candidate only.
         from goal2.game.country_card import card
@@ -265,7 +312,8 @@ class LaunchWindow(QMainWindow):
 
     def eventFilter(self, watched, event):
         from PySide6.QtCore import QEvent
-        if watched is self.country_list and event.type() == QEvent.Type.KeyPress and event.key() == Qt.Key.Key_Space:
+        if watched is self.country_list and event.type() == QEvent.Type.KeyPress and event.key() == Qt.Key.Key_Space \
+                and self.core_new is None:
             self.show_players();return True
         return super().eventFilter(watched, event)
 
@@ -276,6 +324,15 @@ class LaunchWindow(QMainWindow):
         heading = QLabel('REVIEW BEFORE STARTING');heading.setObjectName('chooseHeading');body.addWidget(heading)
         self.review_fields = fields(body, (('country', 'COUNTRY'), ('manager', 'MANAGER'), ('campaign', 'CAMPAIGN'),
                                            ('next', 'FIRST'), ('then', 'THEN'), ('save', 'SAVE')))
+        # [designed: T106] The core route's manager name, typed into the original's own name entry at Start
+        # (1771:09A0: 14 characters at most; the first is the initial, the rest after a blank the surname).
+        self.manager_name = QLineEdit();self.manager_name.setObjectName('launchManagerName')
+        self.manager_name.setMaxLength(14);self.manager_name.setAccessibleName('Manager name, initial and surname')
+        self.manager_name.setPlaceholderText('J Smith');self.manager_name.setVisible(self.core_new is not None)
+        self.manager_name.returnPressed.connect(self.do_start)
+        body.addWidget(self.manager_name)
+        self.review_error = QLabel();self.review_error.setObjectName('launchError');self.review_error.setWordWrap(True)
+        self.review_error.setVisible(self.core_new is not None);body.addWidget(self.review_error)
         body.addStretch(1)
         self.start = QPushButton('Start career');self.start.setObjectName('launchStart');self.start.clicked.connect(self.do_start)
         self.back_to_browse = QPushButton('< Back to countries');self.back_to_browse.setObjectName('launchBack')
@@ -288,6 +345,18 @@ class LaunchWindow(QMainWindow):
         country, year = self.selection()
         if country is None:return
         if getattr(self, 'previewed', None) != (country, year):self.preview()
+        if self.core_new is not None:
+            card, campaign = self.core_new.card(year, country), self.core_new.campaign(year)
+            values = {'country': card['name'], 'manager': 'Your name below: initial and surname, 14 characters at most',
+                      'campaign': f"{campaign['start_year']}, stage {campaign['stage']}: {campaign['words']}, as the "
+                                  f"original set it",
+                      'next': 'The original draws the fixtures as it starts',
+                      'then': 'Its bulletins, then the manager menu',
+                      'save': f'Nothing is saved until you save; {self.save_path.name} is not touched by starting'}
+            for key, label in self.review_fields.items():label.setText(values[key])
+            self.review_error.setText('')
+            self.show_page(2)
+            return
         summary = self.browser.summary()
         values = dict(summary, save=f'Nothing is saved until you save; {self.save_path.name} is not touched by starting')
         for key, label in self.review_fields.items():label.setText(values[key])
@@ -295,21 +364,67 @@ class LaunchWindow(QMainWindow):
 
     def do_start(self):
         country, year = self.selection()
+        if self.core_new is not None:
+            name = self.manager_name.text().strip()
+            try:
+                model, self.bulletins = self.core_new.start(year, country, name)
+            except ValueError as exc:
+                self.review_error.setText(str(exc));self.manager_name.setFocus();return
+            self.started = model
+            self.show_bulletin(0)
+            return
         model = DesktopModel(self.browser.goaldat, self.browser.template_bytes, self.save_path)
         model.new_campaign(country, year)
         self.finish(model)
+
+    # Bulletins (the core route) ---------------------------------------------------------
+    def _build_bulletin(self):
+        """[designed: T106] THE SOCCER BULLETIN as a goal2 page: the original's three stories, read from its page
+        buffer (goal2/core/views.py `bulletin`), each in its box under its masthead."""
+        page = QWidget();layout = QVBoxLayout(page);layout.setSpacing(14)
+        self.bulletin_count = QLabel();self.bulletin_count.setObjectName('bulletinCount');layout.addWidget(self.bulletin_count)
+        row = QHBoxLayout();row.setSpacing(20);layout.addLayout(row, 1)
+        self.bulletin_panels = {}
+        for name, stretch in (('left', 2), ('middle', 3), ('right', 2)):
+            panel = QFrame();panel.setObjectName('bulletinPanel');body = QVBoxLayout(panel);body.setSpacing(12)
+            masthead = QLabel();masthead.setObjectName('bulletinMasthead');masthead.setWordWrap(True)
+            masthead.setAlignment(Qt.AlignmentFlag.AlignHCenter);body.addWidget(masthead)
+            story = QLabel();story.setObjectName('bulletinStory');story.setWordWrap(True)
+            story.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+            story.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+            body.addWidget(story, 1);row.addWidget(panel, stretch)
+            self.bulletin_panels[name] = (masthead, story)
+        self.bulletin_next = QPushButton('Next >');self.bulletin_next.setObjectName('bulletinNext')
+        self.bulletin_next.clicked.connect(lambda: self.show_bulletin(self.bulletin_index + 1))
+        layout.addWidget(self.bulletin_next)
+        self.pages.addWidget(page)
+
+    def show_bulletin(self, index):
+        """Bulletin `index` of those the new game showed; past the last, the manager menu's window."""
+        if index >= len(self.bulletins):
+            self.finish(self.started);return
+        self.bulletin_index = index
+        for name, (masthead, story) in self.bulletin_panels.items():
+            masthead.setText(self.bulletins[index][name]['masthead'])
+            story.setText('\n'.join(self.bulletins[index][name]['lines']))
+        self.bulletin_count.setText(f'BULLETIN {index + 1} OF {len(self.bulletins)}')
+        self.bulletin_next.setText('Next >' if index + 1 < len(self.bulletins) else 'To the manager menu >')
+        self.show_page(4)
 
     # Navigation ------------------------------------------------------------------------
     def show_page(self, index):
         if index == 1:
             self.fill_countries()
-        self.pages.setCurrentIndex(index);self.hint.setText(HINTS[index])
+        self.pages.setCurrentIndex(index)
+        self.hint.setText(CORE_HINTS.get(index, HINTS[index]) if self.core_new is not None else HINTS[index])
         first = {0: self.resume if self.resume.isEnabled() else self.new_career if self.new_career.isEnabled() else self.other_path,
-                 1: self.country_list, 2: self.start, 3: self.player_list}[index]
+                 1: self.country_list, 2: self.manager_name if self.core_new is not None else self.start,
+                 3: self.player_list, 4: self.bulletin_next}[index]
         first.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def back(self):
         index = self.pages.currentIndex()
+        if index == 4:return              # the original's new game has begun: its bulletins go forward only
         if index:self.show_page(1 if index == 3 else index - 1)
 
     def focusables(self):

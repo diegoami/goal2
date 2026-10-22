@@ -29,7 +29,7 @@ from __future__ import annotations
 
 from goal2.core.runner import CoreError
 from goal2.core import screens as _screens
-from goal2.core.screens import DOWN, ESCAPE, RETURN, UP
+from goal2.core.screens import DOWN, ESCAPE, LEFT, RETURN, RIGHT, UP
 
 
 class DriverError(CoreError):
@@ -69,7 +69,8 @@ BACK = {"fixture-list": MENU, "fixtures-watch": MENU, "fixtures-auto": MENU, "to
 
 
 class Driver:
-    """Presses keys into a Core (`core.wait` is where it is). `log` lists (kind, key) of every key it pressed."""
+    """Presses keys into a Core (`core.wait` is where it is). `log` lists (kind, key) of every key it pressed and every
+    queued key the original read, in the order the original read them."""
 
     def __init__(self, core):
         self.core = core
@@ -91,6 +92,8 @@ class Driver:
             raise RefusedKey(wait.kind, key)
         self.log.append((wait.kind, key))
         new = self.core.press(key)
+        # [designed: T106] keys the original read from the queue on the way (a polled screen's), in its order
+        self.log.extend((p.kind, k) for p in new.passed for k in p.keys)
         if expect is not None and new.kind not in expect:
             raise UnexpectedScreen(expect, new)
         return new
@@ -126,3 +129,69 @@ class Driver:
         item, shows = ROUTES[kind]
         self.select(item)
         return self.press(RETURN, expect=shows)
+
+    # -- the new game (T106) -----------------------------------------------------------------------------------------
+    def new_game(self, country, manager_name, managers=1, on_bulletin=None):
+        """Play the original's new game by its own keys, from wherever the core is on its way (the title's load
+        question, the player count, the country browser) to the first manager menu; returns that wait.
+
+        [confirmed: F032, E038-r0001's keys `n Enter Enter b o b Enter Enter Enter`; catalogue.tsv's screen rows]
+        N at the load question; the player count by Left and Right (manager_count_menu 1771:0021 turns them into Up
+        and Down over DS:0C4E), Enter; the country by the browser's arrows (`_browse`), Enter; the name's letters and
+        Enter queued for the polled name entry, which reads each after its poll says a key waits (F032); Enter on
+        each bulletin, after `on_bulletin(wait)` when given. [designed: NG-7 traced one manager] Only one manager:
+        a new game of several managers is a path the archaeology has not traced, refused here.
+        `manager_name`: what the player types (1..14 characters, ASCII 32..126); the line editor 1771:09A0 keeps
+        the first as the initial, upper-cased, and the rest after one blank or one other character as the surname."""
+        if managers != 1:
+            raise DriverError("the new game is traced for one manager only (NG-7); several managers are not served")
+        if not isinstance(manager_name, str) or not 1 <= len(manager_name) <= 14 or \
+                any(not 0x20 <= ord(ch) < 0x7F for ch in manager_name):
+            raise DriverError(f"a manager's name is 1..14 characters of ASCII 32..126, not {manager_name!r}")
+        wait = self.core.wait
+        if wait.kind == "title-load-prompt":
+            wait = self.press("n", expect=("title-player-count",))
+        if wait.kind == "title-player-count":
+            while wait.view["managers"] != managers:
+                wait = self.press(LEFT if wait.view["managers"] > managers else RIGHT, expect=("title-player-count",))
+            wait = self.press(RETURN, expect=("country-select",))
+        if wait.kind != "country-select":
+            raise UnexpectedScreen(("title-load-prompt", "title-player-count", "country-select"), wait)
+        self._browse(country)
+        for ch in manager_name + "\r":
+            self.queue("country-select-name-entry", ord(ch))
+        wait = self.press(RETURN, expect=("bulletin",))
+        for _ in range(8):                      # [designed] a bound: one manager's new game shows two (F032)
+            if wait.kind != "bulletin":
+                return wait
+            if on_bulletin is not None:
+                on_bulletin(wait)
+            wait = self.press(RETURN, expect=("bulletin", MENU))
+        raise DriverError("the new game's bulletins did not end")
+
+    def queue(self, kind, key):
+        """Queue `key` for the next poll of the polled screen `kind` (Core.queue); `log` lists it when the original
+        reads it (press)."""
+        key = ord(key) if isinstance(key, str) else int(key)
+        k = _screens.KINDS.get(kind)
+        if k is None or not k.accepts(key):
+            raise RefusedKey(kind, key)
+        self.core.queue(kind, key)
+
+    def _browse(self, country):
+        """Move the country browser to `country` by its arrows [confirmed: named/seg_1771_02.c 26B9]: Left and Right
+        move the column DS:0DB4 by 16 keeping the row; Up and Down move the row DS:0DB6 within the column."""
+        from goal2.core import views
+        wait = self.core.wait
+        order = [c["country"] for c in views.country_select(wait.state)["countries"]]
+        if country not in order:
+            raise DriverError(f"the browser lists no country {country}")
+        target = order.index(country) + 1
+        top, row = (target - 1) // 16 * 16 + 1, (target - 1) % 16 + 1
+        while wait.view["top"] != top:
+            wait = self.press(RIGHT if wait.view["top"] < top else LEFT, expect=("country-select",))
+        while wait.view["row"] != row:
+            wait = self.press(DOWN if wait.view["row"] < row else UP, expect=("country-select",))
+        if wait.view["country"] != country:
+            raise DriverError(f"the browser shows country {wait.view['country']}, not {country}")
+        return wait
