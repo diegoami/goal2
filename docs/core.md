@@ -82,6 +82,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `fixture-list` | `000E:016C` (000E:0000), the own match highlighted | E006-r0001, Esc Down Enter | "and results" "Use ↑↓ to scroll" "Esc-exit" |
 | `match-board` | `0791:041A` (0791:0106) without the man of the match: half time, match stats, a quick result | E010-r0001's first wait | "Scorers" "hit any key" "Esc,◄┘-bench" |
 | `team-tactics-view` | `214B:157C` from `1771:1A24`, another country | E006-r0001, the match menu's right team tactics | "team─tactics" "hit any key" |
+| `history` | `1771:25E4` (1771:1D5C, a country's history) | E006-r0001, the manager menu's history (T105) | "STATISTICS" "SUCCESSES" "TOP─SCORERS" "Esc-exit" |
+| `history-browse` | `1771:28F5` (1771:26B9 mode 3, from main_menu_loop's item 4) | E006-r0001, Esc from the history (T105) | "Hit ◄┘ for team history" "Esc to exit" |
 | `tournament` | `214B:157C` from `1771:9022` | E010-r0001, the match menu's tournament | "Use ↓↑ to select group" "Use ←→ to select display" "Esc-exit" |
 | `action-replay-prompt` | poll `0791:CC54` / `0791:0BE1` (0B7C from 0C65 at 0C87) | E006-r0001, a watched second half | "Do you want an action replay? (Y/N)" |
 | `substitution-notice` | poll `0791:CC54` / `0791:C5C8` (0791:C50C) | E006-r0001, a watched second half | "SUBSTITUTION" "press any key" |
@@ -90,12 +92,49 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 - `country-select` and the new-game screens (`title-load-prompt`, `title-player-count`,
   `country-select-name-entry`): no kept savestate stops there at an INT 16h read (E006-r0001 starts at the team-info
   browser, E011-r0001 and the title checkpoints are refused by `Core.start`), and leaving the menu calls INT 10h.
-  G10 needs a new-game savestate from goal2-archaeology.
+  The new game needs F032's savestates (#319, #320), in its own task.
 - The other kinds.tsv screens no tour met (`round-playing`, `round-results`, `match-watch-prompt`,
   `match-commentary`, the other substitution screens, `save-game-name-entry`, `file-not-found-prompt`) and the
   other cases of the shared sites (the taker prompts, the pause and extra-time menus, SELECT TEAM outside a match)
-  stop with `UnknownScreen` until a screen task maps them (G10-G14).
+  stop with `UnknownScreen` until a screen task maps them (G10, G12-G14).
 - Interrupts other than the key reads stay unserved (T100).
+
+## The driver and the views (T105, #308's G11)
+
+[designed: owner, 2026-10-22, #308, #321; decision 7 of docs/redesign-253/vision-reconciliation.md] The desktop
+and, later, the bot move the original only by its own keys, through one path, `goal2/core/driver.py`:
+
+```python
+from goal2.core.driver import Driver
+from goal2.core import views
+driver = Driver(Core.start(savestate).core)
+driver.to_menu()                      # Esc from the team-info browser: the manager menu
+views.desk(driver.wait.state)         # the manager's desk, read from memory
+wait = driver.goto("history")         # Down x3, Enter: the routes are team-info, fixture-list, tournament, history
+driver.back()                         # Esc, Esc (the history's country browser, then the menu)
+```
+
+- `press(key, expect=...)` sends a key only when the wait's kind lists it (`KINDS`), else `RefusedKey` and nothing
+  reaches the original; a next screen outside `expect` raises `UnexpectedScreen` (kind, site, text); an unmapped
+  site stops the core itself (`UnknownScreen`). It reads only the wait's kind and view, so the same calls give the
+  same keys (`driver.log`) and the same memory. [confirmed: `named/seg_000E_05.c` main_menu_loop] The menu's item is
+  DS:00B0, moved by Up and Down; Enter opens team info (1), the fixture list (2), the tournament (3) or the history
+  (4, `country_list_screen(3)`, which first shows the managed country's history `1771:1D5C`).
+- `goal2/core/views.py` reads, through the kit's `Image`, never the text page: `desk` (the manager menu: name,
+  rating, team and rankings, next opponent, its rankings and the fixture's kind, the managers, the year and stage
+  word, the squad strip), `fixture_list` (000E:0000's rows from the fixture index on: kind, sides, mark, played
+  flag and score), `tournament` (the qualifying display's group tables and group fixtures of the managed country's
+  continent; the finals, bracket and play-off displays are not read yet, no kept state reaches them) and `history`
+  (1771:1D5C: successes, results by season, statistics, records, top scorers and caps). Each field cites the
+  routine and the address it reads in the function's docstring.
+- [confirmed: `named/seg_1771_02.c` 1D5C, 1B2E] The top scorers and top caps are computed only on display: 1D5C
+  fills the tables at [DS:A93B] and [DS:A937] from the squad (and a manager's pool) and puts the kept ones back
+  before its key read, so no copy is in memory at the wait, and visiting the screen would not give them without
+  parsing its text. `views._top` runs 1B2E's insertion over the same player records instead; the text oracle checks
+  it against the screen.
+- `python3 -m unittest goal2.tests.test_core_desktop_t105 -v` checks every view against the original's own screen
+  (E006-r0001 and E010-r0001's half time played on to the next manager menu), the driver, and the desktop over
+  the core (docs/desktop-management.md, "The core route").
 
 ## Where the run starts (R1)
 
@@ -147,3 +186,5 @@ goal2-archaeology checkout, and skip without them. [designed: #316] The tests th
 screen are slow tests: they run with `GOAL2_SLOW=1` (the screen tours play a whole watched match, about eight to
 eleven minutes; the captain prompt's two cases about three), and the pre-merge gate runs them whenever `goal2/core/`
 or either module changes (`SLOW_PATHS`, docs/process.md). The default run keeps one real case of each module.
+`goal2.tests.test_core_desktop_t105` (T105) is guarded the same way, with `goal2/desktop/core_*`; its default run
+keeps the E006 text oracle, and its slow cases play E010-r0001's second half (about 20 s) and open the window.

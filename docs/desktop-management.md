@@ -43,6 +43,30 @@ under `QT_QPA_PLATFORM=xcb xvfb-run -a -s "-screen 0 3200x2000x24"` with `QT_SCA
 python3 -m goal2.desktop --resume .cache/desktop.g2save --data .cache/GOAL.DAT
 ```
 
+[designed: owner, 2026-10-22, #308, #321; T105] **The core route.** `--core` opens the same main window over the
+original's own game, run as goal2's core (docs/core.md), instead of the Python route's game:
+
+```sh
+python3 -m goal2.desktop --core .cache/e006-r0001-main.sav --data .cache/GOAL.DAT --save .cache/desktop.g2core
+python3 -m goal2.desktop --resume .cache/desktop.g2core --data .cache/GOAL.DAT
+```
+
+The window's model is a `CoreModel` (`goal2/desktop/core_model.py`; `window.window_for` picks the window by the
+model). It keeps the original at its manager menu, moves it only by the original's own keys through the driver
+(`goal2/core/driver.py`), and reads every value from the original's memory (`goal2/core/views.py`); it never
+writes a byte into it, never reads the text page and shares nothing with the Python route's `DesktopModel`.
+**Country** is the original's manager menu [confirmed: `docs/original-game/images/manager-menu.png`]: *Name /
+rating*, *Team* with its world and continent rankings, *Next opponents* with theirs and the fixture's kind (as
+`friendly home`), the *Managers* board 1–6, the menu's routes and the squad strip; **history** is its second view,
+in the original's boxes (statistics, successes, results, top scorers, top caps, records). **Fixtures & match** has
+the original's fixture list (sixteen rows at a time, Up/Down/PgUp/PgDn scroll, √ on the managed fixtures) and the
+tournament (the managed country's group table and its fixtures; Up/Down change the group). These scrolls are
+presentation only: no key reaches the original. The routes the core cannot serve yet are shown disabled and name
+the task that brings them: **Team** and **Pool**, **team info** and **select squad** (G12), **play next game**
+(G14), in #308's numbering; they never fall back to the Python route. **Save** (F7 in the original) writes the core save (`G2C1`,
+docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu, with the same views and
+the same memory. `--template` and every other route are unchanged.
+
 [designed] Supply verified local game resources using the existing runtime-cache
 instructions. No original resources or screenshots enter git. Without Qt the
 entry prints the installation instruction and exits2; headless imports and quick

@@ -94,6 +94,12 @@ KINDS = {k.name: k for k in (
          evidence="[designed] the match board without the man of the match: 'hit any key', 'Esc,◄┘-bench'"),
     Kind("team-tactics-view", keys(("any key", "(any)")), designed=True,
          evidence="[designed] another country's team tactics, view only: 'hit any key'"),
+    Kind("history", keys(("Esc", "Escape")), designed=True,
+         evidence="[designed] a country's history (1771:1D5C, from the manager menu's history): 'Esc-exit'"),
+    Kind("history-browse", keys(("←→↑↓", "Left Right Up Down"), ("◄┘", "Return"), ("Esc", "Escape"),
+                                ("INS", "Insert"), ("spacebar", "space")), designed=True,
+         evidence="[designed] the country browser of the history (1771:26B9 mode 3): 'Use ←→↑↓ to select', "
+                  "'Hit ◄┘ for team history', 'Esc to exit', 'use INS to swap', 'spacebar-players'"),
     Kind("tournament", keys(("↓↑", "Up Down"), ("spacebar", "space"), ("←→", "Left Right"), ("Esc", "Escape")),
          designed=True, evidence="[designed] the tournament view: 'Use ↓↑ to select group', 'Hit spacebar to select "
                                  "continent', 'Use ←→ to select display', 'Esc-exit'"),
@@ -186,11 +192,13 @@ class Site:
 
 def _team_info(f):
     # 1771:26B9 country_list_screen(mode) [bp+6]; local_3 [bp-1] set: the players view (seg_1771_04.asm 26CB).
-    # Mode 1 is the main menu's team info (000E:767D); mode 2, the new game's PLEASE SELECT YOUR COUNTRY (DS:14F4),
-    # is not reached by the core (docs/core.md) and has no entry.
-    if f.byte(f.bp, 6) == 1 and f.byte(f.bp, -1) == 0:
-        return "team-info"
-    return None
+    # Mode 1 is the main menu's team info (000E:767D); mode 3 the history's browser (main_menu_loop item 4,
+    # named/seg_000E_05.c `country_list_screen(3)`; it first shows the manager's country's history, 1771:1D5C);
+    # mode 2, the new game's PLEASE SELECT YOUR COUNTRY (DS:14F4), is not reached by the core (docs/core.md) and has
+    # no entry.
+    if f.byte(f.bp, -1) != 0:
+        return None
+    return {1: "team-info", 3: "history-browse"}.get(f.byte(f.bp, 6))
 
 
 def _team_info_view(f):
@@ -321,6 +329,10 @@ SITES = {s.site: s for s in (
     # -- reads (the return address of a call of 214B:08DD) ----------------------------------------------------------
     Site("1771:28F5", False, "1771:26B9 country_list_screen", "E006-r0001's first wait (T100)", _team_info,
          _team_info_view),
+    # [confirmed: named/seg_1771_02.c f_1771_1D5C] the history of a country ends in u214b_read_key; its return
+    # address 1771:25E4 lies in 1D5C (the next routine is 1771:25EA). E006-r0001, the manager menu's item 4.
+    Site("1771:25E4", False, "1771:1D5C (a country's history)", "T105; E006-r0001, the manager menu's history",
+         lambda f: "history", lambda f: {"country": f.word(f.bp, 4)}),
     Site("000E:75D1", False, "000E:7439 main_menu_loop", "T100; " + _ROUTES, lambda f: "manager-menu",
          lambda f: {"item": f.ds_word(MENU_ITEM), "label": MANAGER_NAMES[f.ds_word(MENU_ITEM) - 1]}),
     Site("000E:016C", False, "000E:0000 (the fixture list)", _ROUTES, _fixture_list, _fixture_view),
