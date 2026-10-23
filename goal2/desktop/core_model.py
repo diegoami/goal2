@@ -25,10 +25,9 @@ from goal2.core import views
 # [T107, G12] Team and Pool are served now: the Team page is select squad and the team tactics, the Pool page the
 # pool list of SELECT YOUR TEAM.
 # [T108, G14a] Play next game is served now: the round by the original's keys, the own match as its quick result. The
-# watched match's pitch view under the core is G14b.
+# watched match is served by T109 (G14b), with one complete pose acknowledged before the next.
 DISABLED = {}
 DISABLED_TEXT = {}
-PITCH_LATER = "The pitch view over the core arrives with G14b: the own match is the original's quick result"
 
 # [designed: T107] The driver's team actions the pages may run (goal2/core/driver.py), each from the manager menu
 # and back to it.
@@ -144,6 +143,8 @@ class CoreModel:
         if name == 'round_start':
             self.driver.pages = []
             self.commentary_cursor = 0
+        if name == 'kick_off':
+            self.commentary_cursor = 0       # the original clears its ring for this match
         try:
             result = getattr(self.driver, name)(*args)
             # [confirmed: code/seg_0791_15.asm 9571-9708] Only the last player poll holds a complete pose.

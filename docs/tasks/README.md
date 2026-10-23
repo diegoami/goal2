@@ -244,3 +244,4 @@ operational status.
 | [T106](T106.md) | G10: a new game over the core — start year, title, country choice, name | [#325](https://github.com/diegoami/goal2/issues/325) | Large |
 | [T107](T107.md) | G12: the Team and Pool pages over the core | [#328](https://github.com/diegoami/goal2/issues/328) | Large |
 | [T108](T108.md) | G14a: play the next game over the core — a round, captain, bench, results | [#331](https://github.com/diegoami/goal2/issues/331) | Large |
+| [T109](T109.md) | G14b: watched match over the core — pitch, commentary and bench | [#333](https://github.com/diegoami/goal2/issues/333) | Large |

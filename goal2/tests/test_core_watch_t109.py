@@ -30,6 +30,8 @@ class Poll(unittest.TestCase):
         self.assertTrue(d.wait.poll)
         first = views.pitch(d.wait.state, 0, 0)
         self.assertEqual(len(first['players']), 22)
+        _, lines = views.commentary(d.wait.state)
+        self.assertIn(lines[-1]['text'], ' '.join(d.wait.text.split()))
         saved = d.core.save()
         d.live_step()
         self.assertEqual(d.wait.kind, 'match-live')
@@ -68,6 +70,7 @@ class Match(unittest.TestCase):
             self.assertEqual(state['pitch'], other['pitch'])
             self.assertEqual(model.memory_sha256(), copy.memory_sha256())
             poses = 0
+            removed = None
             half = notice = summary = False
             commentary = []
             for _ in range(12000):
@@ -93,6 +96,12 @@ class Match(unittest.TestCase):
                     half |= stop == 'half-time'
                     bench = state['bench']
                     line = {r['player']: r['line'] for r in bench['squad']}
+                    if stop == 'half-time' and removed in bench['bench']:
+                        off = next(a for a in bench['eleven'] if line[a] == line[removed])
+                        refusal = model.round_step('substitute', off, removed)['substitution']
+                        self.assertFalse(refusal['made'])
+                        self.assertIn('cannot play', refusal['refused'])
+                        self.assertEqual(refusal['left'], bench['left'])
                     off, on = next((a, b) for a in bench['eleven'] for b in bench['bench']
                                    if line[a] == line[b] and line[a] != 'goalkeeper'
                                    and views.player_card(model.state,b)['readiness'] == views.Memory(model.state).code_str(0x1771,0x42AF))
@@ -100,6 +109,7 @@ class Match(unittest.TestCase):
                     state = model.round_step('substitute', off, on)
                     self.assertTrue(state['substitution']['made'])
                     self.assertEqual(state['substitution']['left'], before - 1)
+                    removed = off
                     state = model.round_step('play_on')
                 elif stop == 'full-time':
                     state = model.round_step('finish')
@@ -165,12 +175,74 @@ class Desktop(unittest.TestCase):
             for width, height in ((1440,900),(1050,780),(900,640),(2560,1600)):
                 window.resize(round(.9*width), round(.9*height));app.processEvents();app.processEvents()
                 self.assertEqual(problems(window), [], (width, height, problems(window)))
+            # Compose the summary view with the same original board reader; this is presentation only,
+            # with no change to the paused guest. The complete-match test reaches the actual summary prompt.
+            from goal2.desktop.fixtures_page import _board_lines
+            from goal2.core import views
+            r.summary_board.set_lines(_board_lines(views.board(model.state), 'FULL TIME'))
+            r.show(5)
+            for width, height in ((1440,900),(1050,780),(900,640),(2560,1600)):
+                window.resize(round(.9*width), round(.9*height));app.processEvents();app.processEvents()
+                self.assertEqual(problems(window), [], (width, height, problems(window)))
             # Closing the viewer never presses through the pause or runs a hidden match.
             before = model.memory_sha256()
             r.stop_viewer('Closed for test')
             app.processEvents()
             self.assertEqual(model.memory_sha256(), before)
             self.assertIsNone(r.viewer)
+            window.close();app.processEvents()
+
+    def test_viewer_failure_and_close_hold_a_resumable_live_wait(self):
+        os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+        os.environ.setdefault('SDL_VIDEODRIVER', 'dummy')
+        os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        from goal2.desktop.core_viewer import CoreViewer
+        app = QApplication.instance() or QApplication([])
+        d = live()
+        with tempfile.TemporaryDirectory() as folder:
+            model = CoreModel(d.core, requires.CACHE / 'GOAL.DAT', Path(folder) / 'live.g2core')
+            window = CoreWindow(model);r = window.core_round;r.watch_suspended = True
+            window.show();app.processEvents()
+            state = model.round_step('live_step')
+            for command in ([sys.executable, '-c', 'raise SystemExit(1)'],
+                            [sys.executable, '-c',
+                             "import pygame,sys;from goal2.desktop import pygame_viewer as v;"
+                             "original=v.status;"
+                             "exec(\"def write(p,x):\\n original(p,x)\\n if x.get('frame_sequence',-1)>=0:"
+                             "\\n  pygame.event.post(pygame.event.Event(pygame.QUIT))\");"
+                             "v.status=write;sys.exit(v.main())"]):
+                r.state = state
+                r.viewer = CoreViewer(state['identity'], command=command)
+                process = r.viewer.process
+                r.watch_suspended = False
+                r.finished('resume', ('done', state))
+                end = time.monotonic() + 10
+                while r.viewer is not None and time.monotonic() < end:
+                    app.processEvents();time.sleep(.005)
+                self.assertIsNone(r.viewer)
+                self.assertIsNotNone(process.poll())
+                if window.core_jobs.busy:window.finish_core(60)
+                self.assertEqual(model.core.wait.kind, 'match-live')
+                before = model.memory_sha256()
+                for _ in range(5):app.processEvents();time.sleep(.01)
+                self.assertEqual(before, model.memory_sha256())
+                model.save()
+                resumed = CoreModel.from_save(model.save_path, requires.CACHE / 'GOAL.DAT')
+                self.assertEqual(resumed.memory_sha256(), before)
+                state = model.round_state()
+            # Actual restart after a viewer loss, with no new match or kick-off.
+            r.state = state
+            r.resume_viewer()
+            process = r.viewer.process
+            end = time.monotonic() + 10
+            while not r.viewer.drained and time.monotonic() < end:
+                r.viewer.poll();time.sleep(.01)
+            self.assertTrue(r.viewer.drained)
+            r.stop_viewer('Finished')
+            self.assertIsNotNone(process.poll())
             window.close();app.processEvents()
 
 

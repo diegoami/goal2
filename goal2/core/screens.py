@@ -377,7 +377,7 @@ def _menu_reader(f):
     caller, up = f.far_caller(f.bp), f.up(f.bp)
     if caller == "0791:EE9F":
         # in_match_menu 0791:ED8A, near-called by run_match F207 (pre-match), F32E (post-match), 9A32 at 9AE0
-        # (half time) (kit match.py MENU_CONTEXT); its other callers (substitution, pause, extra time) have no entry.
+        # (half time), 8100 (substitution) and 9458 (pause); its extra-time callers have no entry.
         return MATCH_MENUS.get(f.near_caller(up))
     if caller == "1771:1A24":
         # edit_team_tactics 1771:1981(country) [bp+6]: it edits only a managed country with DS:0C20 clear, else
@@ -454,7 +454,7 @@ def _select_team(f):
         return None
     # [T108; confirmed: named/seg_0791_11.c E44F] in a match: no substitution left (DS:9B3A + local_5 [bp-3]) draws
     # DS:2538; with substitutions now (DS:9B41) E2A0 draws "take off" below slot 12, else "put on"; DS:9B41 clear (a
-    # pause's request, DS:4760 or 4812) has no entry yet.
+    # pause's request, DS:4760 or 4812) shows request/cancel substitution (T109).
     if not f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(f.bp, -3)):
         return "substitutions-used"
     if not f.ds_byte(SUBS_ALLOWED):
@@ -582,7 +582,7 @@ def _refusal_chain(f):
 # [T108; confirmed: code/seg_0791_22.asm E05D, E0C6; seg_0791_23.asm EB7D; strings.tsv] 1765's other callers met by
 # a round: 0791:E022's "Illegal substitution" (DS-less pstr 0791:DFF7, return E0CB) and 0791:EA09's "<country> has an
 # ineligible player in the first team" (0791:E9A2, return EB82) and "<country> has too many goalkeepers" (0791:E9CE,
-# return EBD7). E022's other messages (E062, E167, E19F) and EA09's (EC22, EC60, ECEB) have no entry: no tour reaches
+# return EBD7). E022's other messages (E062, E19F) and EA09's (EC22, EC60, ECEB) have no entry: no tour reaches
 # them (docs/core.md).
 REFUSALS = {"0791:DC3D": "squad-change-refused", "0791:DC68": "squad-change-refused",
             "0791:E0CB": "squad-substitution-illegal", "0791:E167": "substitution-refused",

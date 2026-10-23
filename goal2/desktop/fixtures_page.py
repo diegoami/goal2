@@ -595,6 +595,8 @@ class CoreRound:
         summary = QWidget();sbox = QVBoxLayout(summary)
         self.summary_note = QLabel('Save the match summary?');self.summary_note.setObjectName('prepTitle')
         sbox.addWidget(self.summary_note)
+        self.summary_board = TextBoard('MATCH SUMMARY', 56, RESULT_ROWS, 'coreSummaryBoard', 17)
+        sbox.addWidget(self.summary_board, 0, Qt.AlignmentFlag.AlignLeft)
         self.export_summary = QPushButton('Save summary…');self.export_summary.clicked.connect(self.save_summary)
         sbox.addWidget(self.export_summary)
         self.skip_summary = QPushButton('Continue without saving (N)')
@@ -623,6 +625,11 @@ class CoreRound:
 
     def start(self):
         """Play next game: the round's start, as a job."""
+        self.viewer_timer.stop()
+        if self.viewer is not None:
+            self.viewer.close();self.viewer = None
+        self.watch_suspended = False
+        self.bench_pending = False
         self.window.run_core('round_start')
         self.show(2);self.page_count.setText('The original plays the round…');self.page_board.set_lines([])
 
@@ -670,6 +677,7 @@ class CoreRound:
             except (OSError, ValueError) as exc:
                 self.stop_viewer(str(exc))
         elif stop == 'summary-save':
+            self.summary_board.set_lines(_board_lines(state['board'], 'FULL TIME'))
             self.show(5)
         else:
             self.queue = list(state['pages'][self.first_page:]);self.after = 'menu';self.next_page()
@@ -711,6 +719,7 @@ class CoreRound:
 
     def start_kick_off(self, captain):
         if self.window.core_jobs.busy:return
+        self.watch_suspended = False
         if self.window.run_core('kick_off', captain, self.watch.isChecked()):
             self.show(2);self.page_count.setText('The original plays the first half…');self.page_board.set_lines([])
 

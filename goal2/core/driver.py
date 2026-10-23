@@ -496,7 +496,8 @@ class Driver:
             if wait.kind in until or self.stoppage():
                 return wait
             if wait.kind == "match-watch-prompt":
-                self.press("y" if self.watching else "n", expect=self.ROUND_KINDS)
+                # [designed: T109] Watch is the own match's presentation; other-country watch flags are G13.
+                self.press("n", expect=self.ROUND_KINDS)
                 continue
             if wait.kind not in self.PASSING:
                 raise UnexpectedScreen(until, wait)
@@ -775,10 +776,20 @@ class Driver:
             raise DriverError("the original kept refusing the eleven")
         half_time_done = False
         stops = 0
+        live_polls = 0
         while True:
             wait = self.core.wait
             if wait.kind == MENU:
                 break
+            if wait.kind == 'match-live':
+                live_polls += 1
+                if live_polls > 400000:
+                    raise DriverError('The watched match exceeded 400000 live polls')
+                self.live_step()
+                continue
+            if wait.kind == 'match-summary-save-prompt':
+                self.summary_done()
+                continue
             if wait.kind == "substitution-notice":
                 # [confirmed: code/seg_0791_13.asm 8062-80A9] the original offers the notice at each stoppage while a
                 # substitution is asked for (DS:9B40, which Esc does not clear): let pass, it comes again. [designed]
