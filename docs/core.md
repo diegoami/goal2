@@ -102,8 +102,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `action-replay-prompt` | poll `0791:CC54` / `0791:0BE1` (0B7C from 0C65 at 0C87) | E006-r0001, a watched second half | "Do you want an action replay? (Y/N)" |
 | `substitution-notice` | poll `0791:CC54` / `0791:C5C8` (0791:C50C) | E006-r0001, a watched second half | "SUBSTITUTION" "press any key" |
 | `title-tune` | polls `1771:0723`, `1771:0782` (1771:06F3, the title's tune) | E039's traces (T106) | "THE international soccer management game" "Do you want to load a saved game? (Y/N)" |
-| `select-squad` | `0791:E61F` (0791:E44F from main_menu_loop 000E:771A or 7620, DS:0C1F clear, `[bp-5]` 1) | E006-r0001, the manager menu's select squad (T107) | "SELECT YOUR TEAM" "Hit Ins for assistant's recommended 20" "◄┘-move player" |
-| `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" "◄┘-move player" |
+| `select-squad` | `0791:E61F` (0791:E44F from main_menu_loop 000E:771A or 7620, or from E949 before a match's kick-off, DS:0C1F clear, `[bp-5]` 1) | E006-r0001, the manager menu's select squad (T107); the match menu's players before the kick-off (T108) | "SELECT YOUR TEAM" "Hit Ins for assistant's recommended 20" |
+| `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" |
 | `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107) | "↓↑←→-select" "◄┘-alter tactic" |
 | `player-name-entry` | polled `214B:0DB9`, read `214B:112B` (the editor 214B:1086 from 1771:4859, return 1771:48A0, from E44F's F2, return 0791:E700) | E006-r0001, F2 on select squad (T107) | "Type in characters (maximum 12)" "◄┘-accept Esc-abort" |
 | `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | not visited: no kept state is in a finals or tour window (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
@@ -111,6 +111,9 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `tournament-table` | `214B:157C` from `1771:9022` (8E9A under 1771:958D with its mode byte `[bp+10]` 0, from 0791:E929 after a fixture) | E006-r0001's round 2, after the own qualifier (T108) | "P W D L" "hit any key" |
 | `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "Esc-exit" |
 | `eleven-refused` | `214B:098A` (the box 214B:04F8 under 214B:1765, from 0791:EA09 at EB7D or EBD2: return EB82 or EBD7) | E006-r0001's round 10, play on the match menu (T108); round 1 at half time after a goalkeeper came on | "location:" "PRESS ANY KEY" |
+
+[T108] SELECT YOUR TEAM's hint line reads "◄┘-move player" until a player is marked and "◄┘-put here" after, so its
+two kinds quote neither (E006-r0001's round 9, the pre-match swap, showed the second).
 
 [designed: owner, 2026-10-22, T107's amendment] **Keys the screen prints.** A kinds.tsv kind accepts its catalogue
 `screen` and `owner` rows and also a key its own screen's hint prints at a kept state (`screens.PRINTED`), quoted here
@@ -148,8 +151,9 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
   notice (0791:7FCF, read at 8050) and the menu it opens (ED8A from 8100), SELECT TEAM in a match with `DS:9B41`
   clear (a pause's request), the other players' screen of E949 (another country's, 1771:50F1), E022's other
   messages ("There is no player here" E062, "... cannot play" E167, "Nice try" E19F) and EA09's (EC22, EC60,
-  ECEB), the space bar's pause box of the round (214B:04F8 from 000E:6BD0) and a watched match of the round (Y at
-  the watch prompt, G14b). The summary with the man of the match and its save prompt are mapped (T103) but a round
+  ECEB), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
+  the watch prompt, G14b) and the finals' displays: a round in the finals shows the bracket (1771:9509, reading at
+  1771:9567, "hit any key"), met at the 24th round of a T108 exploration from E006-r0001. The summary with the man of the match and its save prompt are mapped (T103) but a round
   over the core plays the own match as the quick result, which shows neither (F030).
 - **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
   " during finals" from DC38, return DC3D, or " whilst on tour" from DC63, return DC68, in the box 214B:04F8, F031). No

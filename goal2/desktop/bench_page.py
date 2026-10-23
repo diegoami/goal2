@@ -300,12 +300,12 @@ class CoreBench:
         return (list(bench['eleven']), list(bench['bench'])) if bench else ([], [])
 
     def offer(self, state, mode):
-        """Show the bench of the round's `state` (CoreModel.round_state): mode 'half_time' or 'pre_match'."""
+        """Show the bench of the round's `state` (CoreModel.round_state): mode 'half_time', 'stoppage' or
+        'pre_match'."""
         self.state, self.mode, self.mark = state, mode, None
         self.refresh()
 
     def refresh(self):
-        from goal2.desktop.player_card import core_card
         eleven, bench = self.words()
         data = self.state['bench'] if self.state else None
         rows = []

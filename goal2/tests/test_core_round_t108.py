@@ -341,7 +341,8 @@ class HalfTime(Oracle, unittest.TestCase):
 @requires.need(**NEEDS, slow=True)
 class SeveralRounds(Oracle, unittest.TestCase):
     """E006-r0001's rounds until the original refuses the eleven (an ineligible player, round 9 of this run): the test
-    fixes it through the pre-match SELECT YOUR TEAM (prematch_swap, Enter on each), and the round completes."""
+    fixes it through the pre-match SELECT YOUR TEAM (prematch_swap, Enter on each), and the round completes; then the
+    rounds to the managed side's substitution notice (an injury), and the next, whose results list no friendly."""
 
     def test_rounds_through_a_refused_eleven(self):
         from goal2.core import views
@@ -357,10 +358,14 @@ class SeveralRounds(Oracle, unittest.TestCase):
             selected = views.Memory(state).code_str(0x1771, 0x42A6)
             benched = views.Memory(state).code_str(0x1771, 0x42AF)
             out = next(r for r in team if r["eleven"] and cards[r["player"]]["readiness"] != selected)
-            on = next(r for r in team if not r["eleven"] and r["line"] == out["line"]
+            # the last bench player of his line who is ready (the test's own choice; the original then decides)
+            on = next(r for r in reversed(team) if not r["eleven"] and r["line"] == out["line"]
                       and cards[r["player"]]["readiness"] == benched)
             fixes.append((out["player"], on["player"]))
-            d.prematch_swap(out["player"], on["player"])
+            if d.wait.kind == "match-menu":
+                d.prematch_swap(out["player"], on["player"])
+            else:                            # refused at a later menu: a substitution, the original's keys
+                d.substitute(out["player"], on["player"])
         rounds = 0
         while not refusals and rounds < 12:
             driver.play_round(fix_eleven=fix)
@@ -402,11 +407,16 @@ class SeveralRounds(Oracle, unittest.TestCase):
         self.assertTrue(stoppage)
         self.assertTrue(made and made[0]["made"], made)
         self.assertEqual(driver.wait.kind, "manager-menu")
+        # and the next round: the friendlies of the calendar are played, its results list qualifiers only
+        driver.play_round(fix_eleven=fix, on_notice=lambda d, w: True, on_stoppage=at_stoppage)
+        self.assertEqual(driver.wait.kind, "manager-menu")
         self.check_results(driver.trail)
         gaps = self.check_oracle(driver.trail)
+        self.assertTrue(gaps, "no round of the tour listed qualifiers only")
         for wait in gaps:                    # only the documented case: a list of qualifiers, no friendly
             self.assertEqual(wait.kind, "round-results")
             self.assertNotIn("friendly", wait.text)
+            self.assertIn("qualifying", wait.text)
 
 
 # -- the desktop ----------------------------------------------------------------------------------------------------
