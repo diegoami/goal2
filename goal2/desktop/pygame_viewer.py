@@ -21,14 +21,14 @@ TEAM_COLORS = (GOLD, WHITE)
 GRID = (8, 37)
 # [designed: T94] Grid units of room around the field for out-of-field positions.
 MARGIN = (1.5, 2.5)
-HEADER, FOOTER = 52, 64
+HEADER_ROWS, FOOTER_ROWS, SCREEN_ROWS = 5, 1, 25
 
 
 def layout(width, height):
-    """[designed: T94] The pitch takes the whole window between a one-line score header and the
-    two-line commentary footer; returns the pitch rectangle and the grid's pixel scale."""
-    left, top = 8, HEADER
-    w, h = max(1, width - 16), max(1, height - HEADER - FOOTER)
+    """[derived: T117, E015-r0007 state31] Five original header rows, nineteen pitch rows, one control row."""
+    left, top = 8, round(height * HEADER_ROWS / SCREEN_ROWS)
+    footer = round(height * FOOTER_ROWS / SCREEN_ROWS)
+    w, h = max(1, width - 16), max(1, height - top - footer)
     scale = (w / (2 * (GRID[1] + MARGIN[1])), h / (2 * (GRID[0] + MARGIN[0])))
     return (left, top, w, h), scale
 
@@ -197,8 +197,8 @@ def marker_size(sx, sy):
 
 
 def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAULT_MARKS):
-    """[designed: T94; accepted vision #266 screen 06] Score header, maximum pitch with each
-    player's one-letter role code, the last two commentary lines; Space shows the full commentary."""
+    """[designed: owner/T117; confirmed: E015-r0007 state31] Original header with three recent commentary
+    rows above the pitch, and a chevron speed meter in the bottom controls. Space shows the full commentary."""
     import pygame
     width, height = screen.get_size()
     (left, top, w, h), (sx, sy) = layout(width, height)
@@ -208,16 +208,32 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
     colours = TEAM_COLORS if display.managed != 1 else TEAM_COLORS[::-1]
     frame = display.frame
     score = frame['score'] if frame is not None else (visible.events[-1]['score'] if visible.events else [0, 0])
-    # Narrow windows get smaller header and footer type, so nothing overlaps.
+    # [designed: T117] Scale the original 80x25 composition, using the bundled monospaced type.
     wide = width >= 1200
-    big, small = mono(30 if wide else 24, True), mono(22 if wide else 17)
-    x = 18
-    for part, colour in ((names[0].upper(), colours[0]), (f'  {score[0]} - {score[1]}  ', CYAN), (names[1].upper(), colours[1])):
-        label = big.render(part, True, colour);screen.blit(label, (x, 10));x += label.get_width()
+    cell, row = width / 80, height / SCREEN_ROWS
+    size = max(10,min(round(row),int(cell/.6)))
+    big, small = mono(size, True), mono(size)
+    score_right, commentary_left = round(cell*30), round(cell*32)
+    divider = round(score_right-cell*4)
+    pygame.draw.rect(screen,CYAN,(18,4,score_right-18,top-12),1)
+    pygame.draw.line(screen,CYAN,(divider,4),(divider,top-8),1)
+    for n in (0,1):
+        name = names[n].upper()
+        while big.size(name)[0]>divider-42 and len(name)>1:name=name[:-2]+'…'
+        y=round(row*(1+2*n))
+        screen.blit(big.render(name,True,colours[n]),(26,y))
+        screen.blit(big.render(str(score[n]),True,CYAN),(divider+round(cell/2),y))
+    screen.blit(small.render('versus',True,GREY),(26,round(row*2)))
     minute = frame['minute'] if frame is not None else (visible.events[-1]['minute'] if visible.events else 0)
-    screen.blit(big.render(f'   {minute}′ / {display.kind.upper()}', True, CYAN), (x, 10))
-    speed = small.render(f'SPEED {display.speed_name().upper()}', True, YELLOW)
-    screen.blit(speed, (width - speed.get_width() - 18, 16))
+    screen.blit(small.render(display.kind.upper(),True,CYAN),(commentary_left,0))
+    clock = small.render(f'{minute}′',True,CYAN)
+    screen.blit(clock,(width-clock.get_width()-18,0))
+    # [confirmed: E015-r0007 state31; designed: T117] Three rows, newest at the bottom. The history keeps
+    # its minute prefixes; this original-style strip shows only the released event text.
+    recent=[e['data'].get('text','') for e in visible.events if e['kind']=='commentary'][-3:]
+    for n,line in enumerate(['']*(3-len(recent))+recent,1):
+        while small.size(line)[0]>width-commentary_left-18 and len(line)>1:line=line[:-2]+'…'
+        screen.blit(small.render(line,True,WHITE),(commentary_left,round(row*n)))
     # The field: border, playing grid, halfway line, centre circle, goal mouths and boxes.
     pygame.draw.rect(screen, BORDER, (left, top, w, h), 6)
     cx, cy = left + w / 2, top + h / 2
@@ -265,18 +281,14 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
             for ox, oy in spots:
                 label = marker.render('☺', True, MAGENTA)
                 screen.blit(label, label.get_rect(center=at(ox, oy)))
-    # [designed: T102; confirmed: E031 C39] Enter in play asks for the bench, as in the original.
-    hint = small.render('[←→] Speed  [↑↓] Marks  [Enter] Bench  [Space] Commentary  [Esc] Close', True, MAGENTA)
-    screen.blit(hint, (width - hint.get_width() - 18, height - FOOTER + 8))
+    # [confirmed: 0791:9372–93BB, E031 C39] Original speed cells: six at delay0, one at delay5.
+    # [designed: T117] Show only implemented controls; the original's R/F9 hints are not advertised here.
+    x=18;y=height-round(height*FOOTER_ROWS/SCREEN_ROWS)
+    for text,colour in [('↓↑-display ←→-speed',MAGENTA),(display.speed_markers().ljust(6),YELLOW),
+                        ('  Enter-bench  spacebar-commentary  Esc-close',MAGENTA)]:
+        label=small.render(text,True,colour);screen.blit(label,(x,y));x+=label.get_width()
     lines = visible.commentary()
-    footer = mono(22 if wide else 18)
-    room = width - 36 - hint.get_width() - 24
-    for n, line in enumerate(lines[-2:]):
-        # The first footer line shares its row with the key hint; long lines end in an ellipsis.
-        limit = room if n == 0 else width - 36
-        while footer.size(line)[0] > limit and len(line) > 1:
-            line = line[:-2] + '…'
-        screen.blit(footer.render(line, True, YELLOW if n == 0 and len(lines) > 1 else CYAN), (18, height - FOOTER + 6 + n * 28))
+    footer = mono(22 if wide else 18)  # Full-history/board panel retains its readable scroll type.
     board = display.board()
     if board is not None and not commentary:
         # [designed: T102] The view freezes on the decision and shows the original's board text;

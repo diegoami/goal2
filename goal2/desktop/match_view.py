@@ -150,6 +150,13 @@ class Display:
         if self.core_speed is not None:return SPEEDS[5-self.core_speed][0]
         return next((name for name, rate in SPEEDS if rate == self.pitch_rate), f'{self.pitch_rate}/s')
 
+    def speed_markers(self):
+        """[confirmed: 0791:9372–93BB; T117] Six original chevrons at delay0, one at delay5.
+        [designed] Python playback's six local rates use the same increasing visual scale."""
+        if self.core_speed is not None:return '»'*(6-self.core_speed)
+        n=min(range(len(SPEEDS)),key=lambda i:abs(SPEEDS[i][1]-(self.pitch_rate or 1)))
+        return '»'*(n+1)
+
     def advance(self, now):
         """[designed: T83] Select one due discrete pose; no elapsed-time catch-up or interpolation."""
         if not self.frames or now < self.next_frame:

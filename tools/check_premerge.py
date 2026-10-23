@@ -58,7 +58,7 @@ def check_originals() -> None:
 # [designed: #316] goal2/core/ and its two test modules: the core runs the original's whole game.
 # [designed: T105] the desktop over the core (goal2/desktop/core_*) and its test module run it too.
 SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|competitive|session_save|campaign_competitive)"
-                        r"|goal2/desktop/(watched|competitive|match_view|save|core_"
+                        r"|goal2/desktop/(watched|competitive|match_view|pygame_viewer|save|core_"
                         r"|squad_page|pool_page|player_card|roster|overview_page"      # [T107] the core pages' builders
                         r"|fixtures_page|bench_page|bulletin_page|bracket_page)"         # [T108/T110/T111] pages
                         r"|goal2/tests/(requires\.py$"

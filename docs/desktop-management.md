@@ -92,7 +92,7 @@ saved at), with the same views and the same memory. `--template` and every other
 **Watch this match** is selected by default (owner demo feedback). Choose the captain and kick off;
 turn Watch off explicitly for the quick result. The same pygame pitch window reads the original's
 memory at its live polls, showing complete signed player/ball/official poses, role codes, score, minute and the
-latest two commentary lines. Space opens the full commentary; Esc closes it, or closes the pitch window when
+latest three commentary lines above the pitch. Space opens the full commentary; Esc closes it, or closes the pitch window when
 commentary is hidden. Left/Right send the original's slower/faster keys, Up/Down change the marks. Each pose must be displayed and
 acknowledged before the desktop advances the original. No unseen backlog plays on after the viewer closes:
 **Resume watching** restarts the pitch at the core's current wait; Save can preserve that wait for `--resume`.
@@ -107,7 +107,7 @@ that summary. The Python route keeps its existing watched match controller and b
 or a manager decision. Live frames update the pitch instead of rebuilding the hidden desk, Team and Pool pages;
 decisions refresh those pages. Kept snapshots are immutable, with read-only image readers sharing their bytes.
 New watched matches use the original's fastest setting (delay 0), selected by queued Right keys before the first
-complete pose; the on-pitch speed label reads that original setting. Save/resume keeps the saved speed.
+complete pose; its bottom speed strip shows six chevrons at delay 0 down to one at delay 5. Save/resume keeps the saved speed.
 The core pitch transports Enter/Left/Right in order with bounded, checked input history. The Python route keeps
 its existing presentation-rate controls. No calibration, speed or substitution byte is patched directly.
 
@@ -264,9 +264,9 @@ window step it during play, as in the original. It changes presentation only, ne
 **Prepare match**, leads here.
 
 [designed: T94; accepted vision #266 screen 06] **Watching** opens the pitch window in the
-original style: countries, score, minute and fixture kind on one line, the pitch filling the
+original style: grouped side/score rows beside the fixture/minute and three-row commentary header, the pitch filling the
 resizable window, each player shown by his one-letter role code (the managed side gold, the other
-white), and the latest two commentary lines. **Space** opens the full commentary, which also holds
+white), and the latest three commentary lines above the pitch. **Space** opens the full commentary, which also holds
 the full-time board; wheel or arrows scroll it, End follows live, and Esc returns to play
 [confirmed: goal2-archaeology E031 C08/C39c, E015 r0013, 53d7ef5; #306]. Esc on the pitch closes
 the window. Sides
@@ -625,3 +625,5 @@ in a private validation directory. Host bootstrap and missing-runtime failures
 are preserved alongside the final passing proof in T78 evidence (`evidence/T78/README.md`, removed 2026-10-20; on branch `local`).
 Those setup corrections leave product code and the existing Windows environment
 unchanged; dependency provenance is recorded without committing package bytes.
+
+[designed: owner demo feedback, 2026-10-23; T117] The live pitch follows the original composition: three recent event lines above the field (oldest above newest), without history timestamps in that strip, and the » speed meter with the bottom control hints. Full commentary retains its timestamps and opens with Space. The header has the grouped side/score block plus the supplied fixture/minute; no named speed label remains above the pitch. E015-r0007 state 31 and the original 9372 speed loop establish the structure and six-step meter.

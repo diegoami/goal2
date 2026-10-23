@@ -1,0 +1,30 @@
+{
+  "evidence": "designed rebuild render using synthetic presentation records; no original asset bytes",
+  "reference": "E015-r0007 state31 / E031 C39, archaeology53d7ef5; owner2026-10-23",
+  "captures": [
+    {
+      "file": "pitch-1440x900.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "fd5b590e08fda736442609c137d214da389386dcf18a819c0608dd7a74d5f5eb"
+    },
+    {
+      "file": "pitch-1050x780.png",
+      "width": 1050,
+      "height": 780,
+      "sha256": "cc511c0b92e3674d02afb13916fe53b6a4b125d1db6d40630079bd010aa95067"
+    },
+    {
+      "file": "pitch-900x640.png",
+      "width": 900,
+      "height": 640,
+      "sha256": "7e8cecb666f3fc377729ff3f763e5b5d061db8524e691fefe36cb5e43c51b668"
+    },
+    {
+      "file": "pitch-2560x1600.png",
+      "width": 2560,
+      "height": 1600,
+      "sha256": "24ac2258725c9fdfeb22d294763ff5aa7ba890fe6e6de873535783db6e5c4ef9"
+    }
+  ]
+}
