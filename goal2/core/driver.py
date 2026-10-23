@@ -669,6 +669,34 @@ class Driver:
             wait = self.press(DOWN if wait.view["slot"] < slot else UP, expect=SUBSTITUTION)
         raise DriverError(f"the cursor did not reach slot {slot}")
 
+    def round_position(self, player, key):
+        """[confirmed: F030/F031; E44F/4925/4952 at 53d7ef5; T114 captures] R cycles position and C restores
+        club position before kick-off, at half time or a stoppage. The original updates/reorders the squad;
+        these keys never ask the substitution routine to exchange personnel."""
+        from goal2.core import views
+        if key not in ('r', 'c'):
+            raise DriverError('Position keys are R or C')
+        wait = self.wait
+        if wait.kind != 'match-menu-halftime' and not (wait.kind == 'match-menu' and
+                wait.view.get('context') in ('before', 'stoppage')):
+            raise DriverError('Positions are offered before kick-off, at half time or a stoppage')
+        home = wait.kind
+        squad = self._team()
+        if player not in squad:
+            raise DriverError(f'Player {player} is not in the managed squad')
+        wait = self._open_bench()
+        if wait.kind == 'substitutions-used':
+            message = views.bench(wait.state)['message']
+            self.press(ESCAPE, expect=(home,))
+            return {'refused': message}
+        if wait.kind == SQUAD:
+            self._to_player(player)
+        else:
+            self._to_slot(squad.index(player)+1)
+        self.press(key, expect=(SQUAD,)+SUBSTITUTION)
+        self.press(ESCAPE, expect=(home,))
+        return views.player_card(self.wait.state, player)
+
     def substitute(self, off, on):
         """At the half-time match menu, or a stoppage's: the bench (the managed side's players, E949 -> E44F), Enter
         on `off`, Enter on `on`, Esc back; the two in either order, as the original takes them (E022 marks the first and

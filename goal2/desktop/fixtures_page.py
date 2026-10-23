@@ -638,7 +638,8 @@ class CoreRound:
         self.pending_stop = None
         self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(10);self.viewer_timer.timeout.connect(self.poll_viewer)
         self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
-                        self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch]
+                        self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch,
+                        self.bench.position_next,self.bench.position_club,self.bench.roster]
 
     # -- the steps --------------------------------------------------------------------------------------------
     def show(self, index):
@@ -679,6 +680,14 @@ class CoreRound:
                 self.pending_stop = (name, ('done', dict(state, commentary=[])))
                 return
             self.viewer.decision('half_time' if state['stop'] == 'half-time' else state['stop'])
+        if name == 'round_position':
+            self.bench.message = (f"The original refused: {state['refused']}" if state['refused']
+                                  else 'Position changed by the original')
+            mode=self.bench.mode
+            self.bench.offer(state,mode)
+            words=sum((list(x) for x in self.bench.words()),[])
+            if state['position_player'] in words:self.bench.roster.set_current(words.index(state['position_player']))
+            self.show(1);return
         if name == 'substitute':
             made = state['substitution']
             self.bench.message = ('Made by the original' if made['made'] else

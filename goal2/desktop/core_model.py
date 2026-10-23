@@ -34,7 +34,7 @@ DISABLED_TEXT = {}
 ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 'rename', 'set_tactic')
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
-                 'live_step', 'summary_done', 'request_substitution')
+                 'live_step', 'summary_done', 'request_substitution', 'round_position')
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
                'match-live', 'match-summary-save-prompt')
@@ -162,6 +162,8 @@ class CoreModel:
         state = self.round_state()
         if name == 'substitute':
             state['substitution'] = result
+        if name == 'round_position':
+            state['position_player'] = args[0]
         return state
 
     def round_state(self):
