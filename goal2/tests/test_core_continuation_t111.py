@@ -50,6 +50,7 @@ def check_groups(case, wait, view):
 
 
 def check_bracket(case, wait, view):
+    case.assertIn(str(view['year']), wait.text)
     for match in view['matches']:
         for name in (match['first_name'],match['second_name']):
             if name:case.assertIn(name,wait.text)
@@ -139,8 +140,7 @@ class Continuation(unittest.TestCase):
         self.assertTrue(brackets)
         for wait in brackets:check_bracket(self,wait,views.bracket(wait.state,wait.view['country']))
         self.assertEqual(len(views.bracket(brackets[-1].state,brackets[-1].view['country'])['places']),3)
-        self.assertTrue(any(k=='championship-bracket' for k,_ in d.pages)
-                        or any(k=='bulletin' for k,_ in d.pages))
+        self.assertTrue(any(k=='championship-bracket' for k,_ in d.pages))
         from goal2.core import Core
         from goal2.core.driver import Driver
         replay=Driver(Core.load(saved,goal_dat=requires.CACHE/'GOAL.DAT'))

@@ -305,7 +305,9 @@ def bracket(state, country=None):
         t = mem.fixture(third)
         countries = [winner, loser, t['a'] if t['result'] == 1 else t['b']]
         places = [dict(place=i+1, country=c, name=mem.country_name(c)) for i,c in enumerate(countries)]
-    year = mem.game(0x3A, 2) + 2 * mem.game(0x38, 2) - 2 * (mem.game(0x3C) > 4)
+    # [confirmed: named/seg_1771_04.c 5AC4 at 53d7ef5] The title subtracts two when +40 differs from the
+    # displayed competition (continental = 0, passed by 9509), including browsing the previous competition.
+    year = mem.game(0x3A, 2) + 2 * mem.game(0x38, 2) - 2 * (mem.game(0x40) != 0)
     return dict(country=country, continent=mem.pstr(mem.ds * 16 + 0x6E92 + 8 * region), year=year,
                 matches=matches, slots=slots, top_scorers=top, places=places,
                 winner_mark=mem.code_str(0x1771,0x8CCD))
