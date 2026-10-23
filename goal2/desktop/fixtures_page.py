@@ -407,14 +407,18 @@ def build_core(self, model):
     hint = QLabel('Up/Down: group');hint.setObjectName('prepNote');tournament_box.addWidget(hint);tournament_box.addStretch(1)
 
     def escape():
+        if self.fixture_views.currentIndex() == ROUND_VIEW:
+            return self.core_round.escape()
         if self.fixture_views.currentIndex() != 0:
             core_fixtures_view(self, 0);return True
         return False
     page.escape = escape
+    self.core_round = CoreRound(self)
 
 
 def core_fixtures_view(self, index):
     """[designed: T105] Show Fixtures view `index` (0 the fixture list, 1 the tournament); presentation only."""
+    for button in (self.core_fixture_route, self.core_tournament_route):button.setVisible(True)
     self.fixture_views.setCurrentIndex(index)
     if self.page_stack.currentIndex() == 3:
         (self.core_fixture_board if index == 0 else self.core_group_board).setFocus(Qt.FocusReason.ShortcutFocusReason)
@@ -438,3 +442,216 @@ def refresh_core(self, model):
     own = [i for i, g in enumerate(group.groups) if any(r['country'] == desk['team']['country'] for r in g['rows'])]
     group.offset = own[0] if own else 0
     group.show_window()
+
+
+# -- the round over the core (T108) -----------------------------------------------------------------------------
+# [designed: owner, 2026-10-22, #308, #331; decision 7] Play next game on the core route is the original's round, run
+# as background jobs (CoreJobs), each step by the original's own keys (goal2/core/driver.py): the round's other
+# fixtures and their results, the captain, the first half as the original's quick result, the half-time board and
+# bench, the second half, the full-time board, the table and the bulletins, back to the manager menu. The page stops
+# the player only where the original asks the manager: the captain, the half-time menu (play on, or the bench), and an
+# eleven the original refuses before the kick-off (its message, and SELECT YOUR TEAM to fix it). The screens the
+# original only shows ("hit any key") come as goal2 pages, one at a time, Next or Enter for the next. The pitch view
+# over the core is G14b; the page says so.
+ROUND_VIEW = 2
+RESULT_ROWS = 18
+
+
+def _board_lines(view, title):
+    from goal2.desktop.player_card import CYAN, GOLD, GREEN, WHITE
+    lines = [[(title, GOLD)], [(f"{view['names'][0]:>15} ", WHITE), (f"{view['score'][0]:>2} - {view['score'][1]:<2}", GOLD),
+                               (f" {view['names'][1]:<15}", WHITE)], []]
+    for side in (0, 1):
+        for s in view['scorers'][side]:
+            mark = f" {s['mark']}" if s['mark'] else ''
+            lines.append([(f"{view['names'][side][:15]:<15} ", CYAN), (f"{s['name']:<14}", WHITE),
+                          (f"{s['minute']:>3}'{mark}", GREEN)])
+    if not any(view['scorers']):
+        lines.append([('No goals', CYAN)])
+    if view.get('man_of_the_match'):
+        lines += [[], [('MAN OF THE MATCH  ', GOLD), (view['man_of_the_match'], WHITE)]]
+    return lines
+
+
+def _page_lines(kind, view, managed):
+    """A page the round passed, as lines of a TextBoard, in the original's structure."""
+    from goal2.desktop.player_card import CYAN, GOLD, WHITE
+    if kind == 'round-results':
+        return [[('THE ROUND\'S RESULTS', GOLD)]] + [_fixture_line(r, managed) for r in view['rows']][-RESULT_ROWS + 1:]
+    if kind == 'fixture-result':
+        return [[('RESULT', GOLD)], _fixture_line(view, managed)]
+    if kind in ('match-board', 'match-summary'):
+        return _board_lines(view, 'FULL TIME')
+    if kind == 'tournament-table':
+        country = next((m for m in managed), None)
+        groups = [g for g in (view['groups'] or []) if any(r['country'] == country for r in g['rows'])]
+        lines = []
+        for g in groups[:1]:
+            lines.append([(f"Group {g['group']:<9}", GOLD), ('  P  W  D  L   F   A   T', GOLD)])
+            for r in g['rows']:
+                lines.append([(f"{r['name']:<15}", WHITE if r['country'] in managed else CYAN),
+                              (f"{r['played']:>3}{r['won']:>3}{r['drawn']:>3}{r['lost']:>3}"
+                               f"{r['for']:>4}{r['against']:>4}{r['points']:>4}", WHITE)])
+        return lines or [[('The table', GOLD)]]
+    if kind == 'bulletin':
+        lines = []
+        for name in ('left', 'middle', 'right'):
+            lines.append([(view[name]['masthead'], GOLD)])
+            lines += [[(t, WHITE)] for t in view[name]['lines']]
+            lines.append([])
+        return lines
+    return []
+
+
+PAGE_TITLES = {'round-results': "THE ROUND'S RESULTS", 'fixture-result': 'RESULT', 'match-board': 'RESULT AND SUMMARY',
+               'match-summary': 'RESULT AND SUMMARY', 'tournament-table': 'THE TABLE', 'bulletin': 'THE SOCCER BULLETIN'}
+
+
+class CoreRound:
+    """[designed: T108] The round's views on the Fixtures & match page over the core: 0 the captain, 1 the bench
+    (bench_page.CoreBench), 2 a page the round passed."""
+
+    def __init__(self, window):
+        from PySide6.QtWidgets import QStackedWidget
+        from goal2.desktop.core_window import TextBoard
+        from goal2.desktop.roster import RosterView
+        from goal2.desktop.bench_page import CoreBench
+        from goal2.desktop.core_model import PITCH_LATER
+        self.window = window;self.state = None;self.queue = [];self.after = None;self.first_page = 0
+        stack = window.fixture_views
+        holder = QWidget();holder.setObjectName('coreRoundView');box = QVBoxLayout(holder)
+        box.setContentsMargins(0, 0, 0, 0);box.setSpacing(8);stack.addWidget(holder)
+        assert stack.indexOf(holder) == ROUND_VIEW
+        self.pitch_note = QLabel(PITCH_LATER);self.pitch_note.setObjectName('prepNote');self.pitch_note.setWordWrap(True)
+        box.addWidget(self.pitch_note)
+        self.views = QStackedWidget();self.views.setObjectName('coreRoundViews');box.addWidget(self.views, 1)
+        # 0: the captain (CC7B's list: the eleven), with the original's own choice
+        captain = QWidget();captain.setObjectName('coreCaptainView');row = QHBoxLayout(captain);row.setSpacing(16)
+        left = QVBoxLayout();left.setSpacing(10);row.addLayout(left, 1)
+        self.captain_title = QLabel('CAPTAIN');self.captain_title.setObjectName('prepTitle');left.addWidget(self.captain_title)
+        self.captain_note = QLabel();self.captain_note.setObjectName('prepNote');self.captain_note.setWordWrap(True)
+        left.addWidget(self.captain_note)
+        self.refusal = QLabel();self.refusal.setObjectName('benchMessage');self.refusal.setWordWrap(True)
+        left.addWidget(self.refusal)
+        self.kick_off = QPushButton('Kick off: the selected player captains (Enter)');self.kick_off.setObjectName('coreKickOff')
+        self.kick_off.clicked.connect(self.kick_off_selected);left.addWidget(self.kick_off)
+        self.computer = QPushButton("Kick off: the original's own captain (C)");self.computer.setObjectName('coreCaptainC')
+        self.computer.clicked.connect(lambda: self.start_kick_off(None));left.addWidget(self.computer)
+        self.players = QPushButton('Players: select your team >');self.players.setObjectName('corePreMatchPlayers')
+        self.players.clicked.connect(self.show_pre_match);left.addWidget(self.players)
+        left.addStretch(1)
+        self.captain_roster = RosterView('CAPTAIN', toggles=False, grouped=False, marks=False, capacity=11)
+        self.captain_roster.setObjectName('coreCaptainRoster');self.captain_roster.setFixedWidth(320)
+        self.captain_roster.activated.connect(lambda r: self.kick_off_selected())
+        row.addWidget(self.captain_roster, 0, Qt.AlignmentFlag.AlignTop)
+        self.views.addWidget(captain)
+        # 1: the bench
+        self.bench = CoreBench(window, self.views)
+        # 2: a page the round passed
+        page = QWidget();page.setObjectName('coreRoundPage');pbox = QVBoxLayout(page);pbox.setSpacing(8)
+        self.page_count = QLabel();self.page_count.setObjectName('prepNote');pbox.addWidget(self.page_count)
+        self.page_board = TextBoard('RESULT', 56, RESULT_ROWS, 'coreRoundBoard', 17)
+        pbox.addWidget(self.page_board, 0, Qt.AlignmentFlag.AlignLeft)
+        self.page_next = QPushButton('Next > (Enter)');self.page_next.setObjectName('coreRoundNext')
+        self.page_next.clicked.connect(self.next_page);pbox.addWidget(self.page_next);pbox.addStretch(1)
+        self.views.addWidget(page)
+        self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play]
+
+    # -- the steps --------------------------------------------------------------------------------------------
+    def show(self, index):
+        w = self.window
+        if w.page_stack.currentIndex() != 3:w.navigate(3)
+        # [designed: T108] the fixture list's routes wait while the round is shown; the bench needs the page's height
+        for button in (w.core_fixture_route, w.core_tournament_route):button.setVisible(False)
+        self.pitch_note.setVisible(index != 1)
+        w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index)
+        focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next}[index]
+        focus.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+    def start(self):
+        """Play next game: the round's start, as a job."""
+        self.window.run_core('round_start')
+        self.show(2);self.page_count.setText('The original plays the round…');self.page_board.set_lines([])
+
+    def finished(self, name, answer):
+        """A round step's job ended: show what the original holds now."""
+        kind, value = answer
+        if kind != 'done':
+            self.bench.message = value;self.bench.refresh();return
+        state = self.state = value
+        if name == 'round_start':
+            self.queue = list(state['pages']);self.after = 'captain' if state['at'] == 'match-menu' else 'menu'
+            self.next_page()
+        elif name == 'kick_off':
+            if state['at'] == 'match-menu':
+                self.show_captain()
+            else:
+                self.bench.message = '';self.bench.offer(state, 'half_time');self.show(1)
+        elif name == 'substitute':
+            made = state['substitution']
+            self.bench.message = ('Made by the original' if made['made'] else
+                                  f"The original refused: {made['refused']}" if made['refused'] else 'Not made')
+            self.bench.offer(state, 'half_time');self.show(1)
+        elif name == 'prematch_swap':
+            self.bench.message = 'Moved by the original';self.bench.offer(state, 'pre_match');self.show(1)
+        elif name == 'play_on':
+            if state['at'] == 'match-menu-halftime':
+                self.bench.message = f"The original refused: {state['refused']}";self.bench.offer(state, 'half_time')
+                self.show(1)
+            else:
+                self.queue = list(state['pages'][self.first_page:])
+                self.after = 'menu';self.next_page()
+
+    def show_captain(self):
+        state = self.window.model.round_state();self.state = state
+        choice = state['captain']
+        rows = [(r['player'], r['name'], r['code'], r['line'], True, r['player'] == choice['captain'])
+                for r in choice['eleven']]
+        self.captain_roster.caption = choice['name'].upper()
+        current = next((i for i, r in enumerate(rows) if r[5]), 0)
+        self.captain_roster.set_rows(rows, current)
+        self.captain_title.setText(f"CAPTAIN / {choice['name'].upper()}")
+        self.captain_note.setText('Up/Down: the player who captains; Enter: kick off with him. C: the original '
+                                  'picks its own (its best leader). Then the first half is the original\'s quick '
+                                  'result, to half time.')
+        self.refusal.setText(f"The original refused the eleven: {state['refused']}" if state['refused'] else '')
+        self.show(0)
+
+    def show_pre_match(self):
+        state = self.window.model.round_state()
+        self.bench.message = '';self.bench.offer(state, 'pre_match');self.show(1)
+
+    def kick_off_selected(self):
+        rows = self.captain_roster.rows
+        if rows and 0 <= self.captain_roster.current < len(rows):
+            self.start_kick_off(rows[self.captain_roster.current][0])
+
+    def start_kick_off(self, captain):
+        if self.window.core_jobs.busy:return
+        if self.window.run_core('kick_off', captain):
+            self.show(2);self.page_count.setText('The original plays the first half…');self.page_board.set_lines([])
+
+    def start_play_on(self):
+        """Play on at half time: the second half and the round's last screens, as a job."""
+        if self.window.core_jobs.busy:return
+        self.first_page = len(self.window.model.driver.pages)
+        if self.window.run_core('play_on'):
+            self.show(2);self.page_count.setText('The original plays the second half…');self.page_board.set_lines([])
+
+    def next_page(self):
+        managed = tuple(m['country'] for m in self.window.model.desk()['managers'])
+        if self.queue:
+            kind, view = self.queue.pop(0)
+            self.page_board.title = PAGE_TITLES.get(kind, kind.upper())
+            self.page_board.set_lines(_page_lines(kind, view, managed))
+            self.page_count.setText(f"{PAGE_TITLES.get(kind, kind)}: {len(self.queue)} more")
+            self.shown = (kind, view);self.show(2);return
+        if self.after == 'captain':
+            self.after = None;self.show_captain()
+        else:
+            self.after = None;core_fixtures_view(self.window, 0);self.window.navigate(0)
+
+    def escape(self):
+        if self.views.currentIndex() == 1:
+            return self.bench.escape()
+        return False

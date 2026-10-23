@@ -93,6 +93,10 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107) | "↓↑←→-select" "◄┘-alter tactic" |
 | `player-name-entry` | polled `214B:0DB9`, read `214B:112B` (the editor 214B:1086 from 1771:4859, return 1771:48A0, from E44F's F2, return 0791:E700) | E006-r0001, F2 on select squad (T107) | "Type in characters (maximum 12)" "◄┘-accept Esc-abort" |
 | `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | not visited: no kept state is in a finals or tour window (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
+| `fixture-result` | `000E:6A89` (simulate_fixture 000E:6970, a fixture marked to watch and declined: its first byte 0xFE) | E006-r0001's round 3, N at the watch prompt (T108) | "location:" "hit any key" |
+| `tournament-table` | `214B:157C` from `1771:9022` (8E9A under 1771:958D with its mode byte `[bp+10]` 0, from 0791:E929 after a fixture) | E006-r0001's round 2, after the own qualifier (T108) | "P W D L" "hit any key" |
+| `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "Esc-exit" |
+| `eleven-refused` | `214B:098A` (the box 214B:04F8 under 214B:1765, from 0791:EA09 at EB7D or EBD2: return EB82 or EBD7) | E006-r0001's round 10, play on the match menu (T108); round 1 at half time after a goalkeeper came on | "location:" "PRESS ANY KEY" |
 
 [designed: owner, 2026-10-22, T107's amendment] **Keys the screen prints.** A kinds.tsv kind accepts its catalogue
 `screen` and `owner` rows and also a key its own screen's hint prints at a kept state (`screens.PRINTED`), quoted here
@@ -103,6 +107,16 @@ quote on the screen.
 | kind | keys | state | row | quoted text |
 | --- | --- | --- | --- | --- |
 | `team-tactics` | ↑↓ | E006-r0001, team info's T on the managed country (1771:1981 moves DS:0D8E; burst "team-tactics Up", E015-r0007 state 119) | row 2 | "Use ↑↓ to move" |
+
+[designed: owner, 2026-10-23, T108's amendment] **Keys the original's code reads.** A kinds.tsv kind also accepts a
+key that its screen's routine reads and acts on, cited in the named listing, when a recorded run read it on that
+screen (a catalogue `burst` row) (`screens.CODE_READ`). `test_core_screens_t103.py` checks the union, the citation and
+the burst row:
+
+| kind | keys | routine | recorded run |
+| --- | --- | --- | --- |
+| `squad-substitution-take-off` | ↑↓ | named/seg_0791_11.c select_team_screen 0791:E44F: with the squad list up any other key goes to `u214b_menu_move_word_wrap(0x14, 0xC1B)`, the cursor; in a match E44F draws no hint for it (template 0x1B42 only with in_match_menu_used clear) | burst rows of catalogue.tsv: Down at E015-r0007 state 76, Up at E015-r0007 state 79 |
+| `squad-substitution-put-on` | ↑↓ | named/seg_0791_11.c select_team_screen 0791:E44F, the same branch | burst rows of catalogue.tsv: Down at E015-r0007 state 82, Up at E015-r0007 state 131 |
 
 The new game's kinds.tsv kinds (T106) [confirmed: F032, E038-r0001's savestates and trace; catalogue.tsv's keys]:
 `title-load-prompt` (read `1771:085F`, 1771:080C from the main program), `title-player-count` (read `1771:0081`,

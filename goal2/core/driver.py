@@ -74,6 +74,7 @@ BACK = {"fixture-list": (MENU,), "fixtures-watch": (MENU,), "fixtures-auto": (ME
         "select-squad": (MENU, "select-squad"), "select-squad-pool": ("select-squad", "select-squad-pool"),
         "own-tactics": ("select-squad", "select-squad-pool"), "team-tactics": ("team-info",)}
 SQUAD, POOL_LIST = "select-squad", "select-squad-pool"
+SUBSTITUTION = ("squad-substitution-take-off", "squad-substitution-put-on")   # [T108] SELECT TEAM at half time
 MAX_MOVES = 100              # [designed] cursor moves allowed for one target: the longest list is the pool's 80
 
 
@@ -84,6 +85,8 @@ class Driver:
     def __init__(self, core):
         self.core = core
         self.log = []
+        self.pages = []               # [T108] the round's screens passed: (kind, view)
+        self.trail = None             # [T108] a list to keep every wait reached (the tests' text oracle), or None
 
     @property
     def wait(self):
@@ -103,6 +106,8 @@ class Driver:
         new = self.core.press(key)
         # [designed: T106] keys the original read from the queue on the way (a polled screen's), in its order
         self.log.extend((p.kind, k) for p in new.passed for k in p.keys)
+        if self.trail is not None:
+            self.trail.append(new)
         if expect is not None and new.kind not in expect:
             raise UnexpectedScreen(expect, new)
         return new
@@ -413,3 +418,261 @@ class Driver:
                     raise DriverError(f"the browser shows country {wait.view['country']}, not {country}")
                 return wait
         raise DriverError(f"the browser did not reach country {country}")
+
+    # -- the round (T108) ----------------------------------------------------------------------------------------
+    # [designed: owner, 2026-10-22, #308, #331; decision 7] Play next game plays the original's round by its own keys,
+    # from the manager menu to the next one. The driver stops only where the original asks the manager (the captain,
+    # the half-time menu and its bench, an eleven the original refuses before the kick-off) and answers the rest as a
+    # manager who only plays: Enter on each "hit any key" screen, N at the watch prompt (the watched match is G14b), R
+    # at the first poll of play (the original's quick result, which still stops at half time). Each screen it passes
+    # is kept in `pages` as (kind, view), read from memory at that screen.
+    # [confirmed: named/seg_000E_05.c play_round 000E:70B9, route_fixture 6CA7, simulate_fixture 6970,
+    # maybe_ask_watch_match 6C21; seg_0791_12.c in_match_menu ED8A, run_match F1F6, first_team_valid EA09;
+    # seg_0791_10.c choose_captain_or_taker CC7B; seg_0791_11.c select_team_screen E44F, E022]
+    MATCH_MENU_KINDS = ("match-menu", "match-menu-halftime", "match-menu-fulltime")
+    # the screens of a round the driver passes with Enter (each prints "hit any key"), and the kinds a key may lead to
+    PASSING = ("round-results", "fixture-result", "tournament-table", "bulletin", "match-board", "match-summary")
+    ROUND_KINDS = PASSING + MATCH_MENU_KINDS + ("match-watch-prompt", MENU)
+
+    def _page(self, wait):
+        from goal2.core import views
+        kind = wait.kind
+        if kind == "round-results":
+            view = views.round_results(wait.state, wait.view["first"], wait.view["last"])
+        elif kind == "fixture-result":
+            view = views.fixture_result(wait.state)
+        elif kind == "tournament-table":
+            view = views.tournament(wait.state)
+        elif kind == "bulletin":
+            view = views.bulletin(wait.state)
+        elif kind in ("match-board", "match-summary"):
+            view = views.board(wait.state)
+        else:
+            return
+        self.pages.append((kind, view))
+
+    def _side_items(self, wait):
+        """The managed side's items of the match menu (ED8A: 1..5 are DS:9B36's side, 6..10 DS:9B34's)."""
+        from goal2.core import views
+        managed = views.match_sides(wait.state)["managed_side"]
+        return 1 if managed == 1 else 6
+
+    def _menu_item(self, label):
+        """Move the match menu's highlight to the managed side's `label` (MATCH_MENU_ITEMS; play is 'exit' after
+        the match) by Up and Down; returns the wait."""
+        wait = self.core.wait
+        if wait.kind not in self.MATCH_MENU_KINDS:
+            raise UnexpectedScreen(self.MATCH_MENU_KINDS, wait)
+        names = list(_screens.MATCH_MENU_ITEMS)
+        target = self._side_items(wait) + names.index("play" if label == "exit" else label)
+        for _ in range(MAX_MOVES):
+            if wait.view["item"] == target:
+                return wait
+            wait = self.press(DOWN if wait.view["item"] < target else UP, expect=(wait.kind,))
+        raise DriverError(f"the match menu's highlight did not reach {label}")
+
+    def _pass(self, until, watch=False):
+        """Enter on each screen of PASSING (keeping its page), N at the watch prompt, until a kind of `until`."""
+        for _ in range(500):            # [designed] a bound: a round passes a few dozen screens
+            wait = self.core.wait
+            if wait.kind in until:
+                return wait
+            if wait.kind == "match-watch-prompt":
+                if watch:
+                    raise DriverError("a watched match under the core is G14b: play_round(watch=False)")
+                self.press("n", expect=self.ROUND_KINDS)
+                continue
+            if wait.kind not in self.PASSING:
+                raise UnexpectedScreen(until, wait)
+            self._page(wait)
+            self.press(RETURN, expect=self.ROUND_KINDS + ("eleven-refused",))
+        raise DriverError("the round did not reach " + " or ".join(until))
+
+    def round_start(self, watch=False):
+        """From the manager menu, play next game (its item 6, Enter): the original plays the round's other fixtures
+        and shows their results; the driver passes them to the own match's menu before the kick-off and returns that
+        wait (or the manager menu when the round has no own match). `pages` starts empty here."""
+        if watch:
+            raise DriverError("a watched match under the core is G14b: play_round(watch=False)")
+        self._menu_first()
+        self.pages = []
+        self.select(len(_screens.MANAGER_NAMES))
+        self.press(RETURN, expect=self.ROUND_KINDS)
+        return self._pass(("match-menu", MENU))
+
+    def kick_off(self, captain=None):
+        """At the match menu before the kick-off: play, then the captain prompt (CC7B), then the first half as the
+        quick result (R at the first poll of play) to the half-time match menu; returns its wait.
+
+        `captain`: a player of the managed eleven, highlighted by the prompt's own Up and Down (its slot local_7, read
+        at each of its polls: Core.stop_at) and taken by Enter; None takes the original's own choice by C
+        (best_leader_available 0791:1F3C). [confirmed: F030] The prompt passes by itself after 1000 polls; the
+        driver always answers it. When the original refuses the eleven (0791:EA09's message box) the driver closes
+        the box (any key) and returns {"refused": the original's message} at the match menu, nothing else pressed."""
+        wait = self._menu_item("play")
+        if wait.kind != "match-menu":
+            raise UnexpectedScreen(("match-menu",), wait)
+        core = self.core
+        core.stop_at("captain-select")
+        core.queue("match-live", ord("r"))
+        try:
+            wait = self.press(RETURN, expect=("captain-select", "eleven-refused"))
+            if wait.kind == "eleven-refused":
+                message = wait.view["message"].strip()
+                core.unqueue("match-live")
+                self.press(RETURN, expect=("match-menu",))
+                return {"refused": message}
+            for _ in range(MAX_MOVES):
+                wait = self.core.wait
+                if wait.kind != "captain-select":
+                    break
+                if captain is None:
+                    self._press_poll("c")
+                    continue
+                from goal2.core import views
+                eleven = views.match_sides(wait.state)["eleven"]
+                if captain not in eleven:
+                    raise DriverError(f"player {captain} is not in the managed eleven {eleven}")
+                slot = eleven.index(captain) + 1
+                self._press_poll(RETURN if wait.view["slot"] == slot else DOWN if wait.view["slot"] < slot else UP)
+            else:
+                raise DriverError("the captain prompt's highlight did not reach the captain")
+        finally:
+            core.stop_at()
+        return self._pass(("match-menu-halftime",))
+
+    def _press_poll(self, key):
+        """A key at a poll wait (Core.stop_at): the original's next read takes it."""
+        wait = self.core.wait
+        key = ord(key) if isinstance(key, str) else int(key)
+        kind = _screens.KINDS.get(wait.kind)
+        if not wait.poll or kind is None or not kind.accepts(key):
+            raise RefusedKey(wait.kind, key)
+        self.log.append((wait.kind, key))
+        new = self.core.press(key)
+        self.log.extend((p.kind, k) for p in new.passed for k in p.keys)
+        if self.trail is not None:
+            self.trail.append(new)
+        return new
+
+    def _open_bench(self):
+        wait = self._menu_item("players")
+        return self.press(RETURN, expect=("squad-substitution-take-off", "squad-substitution-put-on",
+                                          "substitutions-used", SQUAD))
+
+    def _to_slot(self, slot):
+        wait = self.core.wait
+        for _ in range(MAX_MOVES):
+            if wait.view["slot"] == slot:
+                return wait
+            wait = self.press(DOWN if wait.view["slot"] < slot else UP, expect=SUBSTITUTION)
+        raise DriverError(f"the cursor did not reach slot {slot}")
+
+    def substitute(self, off, on):
+        """At the half-time match menu: the bench (the managed side's players, E949 -> E44F), Enter on `off`, Enter
+        on `on`, Esc back. The pair goes to the original as it is: 0791:E022 makes it (the two squad words swap and
+        the counter DS:9B3A + side counts down) or refuses it with its message ("Illegal substitution" for two of the
+        same block), which a key closes. With no substitution left E44F offers none (DS:2538): the driver presses
+        nothing there but Esc. Returns {"made", "refused" (the original's message or None), "left", "eleven",
+        "bench"}, read from memory after the original's keys."""
+        from goal2.core import views
+        if self.core.wait.kind != "match-menu-halftime":
+            raise UnexpectedScreen(("match-menu-halftime",), self.core.wait)
+        wait = self._open_bench()
+        refused = None
+        if wait.kind == "substitutions-used":
+            refused = views.bench(wait.state)["message"]
+        else:
+            squad = [r["player"] for r in views.team(wait.state)["squad"]]
+            if off not in squad or on not in squad:
+                self.press(ESCAPE, expect=self.MATCH_MENU_KINDS)
+                raise DriverError(f"players {off} and {on} are not both in the managed squad")
+            self._to_slot(squad.index(off) + 1)
+            wait = self.press(RETURN, expect=SUBSTITUTION + ("squad-substitution-illegal",))
+            if wait.kind in SUBSTITUTION:
+                self._to_slot(squad.index(on) + 1)
+                wait = self.press(RETURN, expect=SUBSTITUTION + ("squad-substitution-illegal", "substitutions-used"))
+            if wait.kind == "squad-substitution-illegal":
+                refused = wait.view["message"].strip()
+                self.press(RETURN, expect=SUBSTITUTION)
+        for _ in range(4):
+            wait = self.core.wait
+            if wait.kind in self.MATCH_MENU_KINDS:
+                break
+            self.press(ESCAPE, expect=SUBSTITUTION + ("substitutions-used",) + self.MATCH_MENU_KINDS)
+        else:
+            raise DriverError("Esc did not leave the bench")
+        bench = views.bench(self.core.wait.state)
+        eleven = bench["eleven"]
+        return {"made": on in eleven and off not in eleven and refused is None, "refused": refused,
+                "left": bench["left"], "eleven": eleven, "bench": bench["bench"]}
+
+    def play_on(self):
+        """At the half-time match menu: play, the second half (the quick result goes on), the full-time board, the
+        menu's exit, the round's last screens (the table, the bulletins) to the manager menu; returns its wait. When
+        the original refuses the eleven (EA09, e.g. "has too many goalkeepers" after a substitution) the driver closes
+        its box and returns {"refused": the original's message} at the half-time menu."""
+        wait = self._menu_item("play")
+        wait = self.press(RETURN, expect=self.ROUND_KINDS + ("eleven-refused",))
+        if wait.kind == "eleven-refused":
+            message = wait.view["message"].strip()
+            self.press(RETURN, expect=("match-menu-halftime",))
+            return {"refused": message}
+        wait = self._pass(("match-menu-fulltime",))
+        self._menu_item("exit")
+        self.press(RETURN, expect=self.ROUND_KINDS)
+        return self._pass((MENU,))
+
+    def prematch_swap(self, a, b):
+        """At the match menu before the kick-off: the managed side's players (E949 -> E44F, SELECT YOUR TEAM before
+        the match, DS:0C1F clear), Enter on `a`, Enter on `b` (0791:DEA6 swaps them, then resort_pitch_and_bench),
+        Esc back to the match menu; returns the squad. The fix for an eleven the original refused (EA09)."""
+        if self.core.wait.kind != "match-menu":
+            raise UnexpectedScreen(("match-menu",), self.core.wait)
+        squad = self._team()
+        if a == b or a not in squad or b not in squad:
+            raise DriverError(f"a swap needs two different players of the managed squad, not {a} and {b}")
+        self._open_bench()
+        self._to_player(a)
+        wait = self.press(RETURN, expect=(SQUAD,))
+        if wait.view["marked"] is None:
+            raise DriverError(f"the original did not mark player {a}")
+        self._to_player(b)
+        self.press(RETURN, expect=(SQUAD,))
+        self.press(ESCAPE, expect=("match-menu",))
+        return self._team()
+
+    def play_round(self, watch=False, captain=None, substitutions=(), fix_eleven=None):
+        """The whole round from the manager menu to the next: round_start, kick_off (the captain), at half time each
+        (off, on) of `substitutions` (substitute), play_on. `fix_eleven(driver, message)` answers a refused eleven
+        before the kick-off (e.g. by prematch_swap); without it a refusal raises DriverError with the original's
+        message. Returns {"pages", "substitutions", "refused"}."""
+        wait = self.round_start(watch)
+        out = {"substitutions": [], "refused": []}
+        if wait.kind == MENU:
+            out["pages"] = self.pages
+            return out
+        for _ in range(4):
+            result = self.kick_off(captain)
+            if not isinstance(result, dict):
+                break
+            out["refused"].append(result["refused"])
+            if fix_eleven is None:
+                raise DriverError(f"the original refuses the eleven: {result['refused']}")
+            fix_eleven(self, result["refused"])
+        else:
+            raise DriverError("the original kept refusing the eleven")
+        for off, on in substitutions:
+            out["substitutions"].append(self.substitute(off, on))
+        for _ in range(4):
+            result = self.play_on()
+            if not isinstance(result, dict):
+                break
+            out["refused"].append(result["refused"])
+            if fix_eleven is None:
+                raise DriverError(f"the original refuses the eleven: {result['refused']}")
+            fix_eleven(self, result["refused"])
+        else:
+            raise DriverError("the original kept refusing the eleven")
+        out["pages"] = self.pages
+        return out

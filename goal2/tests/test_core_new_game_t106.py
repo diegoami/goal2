@@ -132,7 +132,16 @@ class ByteForByte(unittest.TestCase):
         # The rest of conventional memory differs where E038's own trace differed from DOSBox-X: the BIOS keyboard
         # buffer and tick, DOS's 0815E and the stack below SS:SP (trace-r0001.json, compare.conventional_differs).
         trace = json.loads(archaeology("experiments/E038-new-game-keywait/out/trace-r0001.json"))
-        self.assertEqual(ranges(mine[:0xA0000], theirs[:0xA0000]), trace["compare"]["conventional_differs"])
+        # [derived: #327, T108] but one: Intr's record now holds the CPU's flags with the carry clear, as 235C:0045
+        # stores them, where E038's trace kept the request's flags; that word (on the stack, 3C565) is DOSBox-X's now.
+        expected = [r for r in trace["compare"]["conventional_differs"] if r != INTR_FLAGS]
+        self.assertEqual(len(expected), len(trace["compare"]["conventional_differs"]) - 1)
+        self.assertEqual(ranges(mine[:0xA0000], theirs[:0xA0000]), expected)
+        start, end = (int(x, 16) for x in INTR_FLAGS.split("-"))
+        self.assertEqual(mine[start:end], theirs[start:end])
+
+
+INTR_FLAGS = "3C565-3C567"     # [T108] the range of E038's trace where the record's flags word lies
 
 
 @requires.need(**NEEDS, slow=True)

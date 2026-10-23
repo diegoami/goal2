@@ -62,7 +62,8 @@ from goal2.engine.original_match.image import Image, MEM_BASE
 from goal2.engine.original_match.machine import Machine, MEM_SIZE, REGS
 from goal2.engine.original_match.match import KEYPRESSED, READKEY, PUSHED_BACK, KEY, SCREEN_PTR, SEED
 
-VERSION = 2                   # 2 (T106): the DOS time and date; a version 1 save loads with the default time
+VERSION = 3                   # 2 (T106): the DOS time and date; 3 (T108): a wait at a poll and the polls that stop
+#                               (a version 1 or 2 save loads with the defaults)
 MAGIC = b"G2C1"
 KEY_AHEAD = 0xA977            # 08DD 097C: the last key read
 SEEDS = (SEED, 0x7B64)        # F004: DS:7B62 (CX of INT 21h AH=2Ch, the main RNG word), DS:7B64 (DX)
@@ -241,6 +242,7 @@ class KeyWait:
     kind: str = None
     view: dict = field(default_factory=dict, hash=False)
     passed: tuple = ()
+    poll: bool = False          # [T108] the original is at a poll of a kind the core stops at (Core.stop_at)
 
 
 class Core:
@@ -261,6 +263,8 @@ class Core:
         self._passed = []             # [kind, polls, text, [keys]] since the last wait
         self.queued = []              # [(kind, key)]: keys for the next polls of their kinds (queue())
         self.pending = None           # (kind, key): a poll said it waits; the original's next read takes it
+        self.stops = set()            # [T108] polled kinds whose polls are waits (stop_at)
+        self._passed_at_poll = None   # [T108] a key pressed at a poll wait, until the original's read takes it
         self.wait = None
         self._hooks()
 
@@ -310,7 +314,6 @@ class Core:
         year, month, day = (int(x) for x in date)
         if not DOS_YEARS[0] <= year <= DOS_YEARS[1]:
             raise ValueError(f"DOS answers the years {DOS_YEARS[0]}..{DOS_YEARS[1]}, not {year} (NG-9)")
-        weekday = datetime.date(year, month, day).isoweekday() % 7
         seg = (image.load + int(DATE_CALL[0], 16)) & 0xFFFF
         at = seg * 16 + DATE_CALL[1]
         if (regs["CS"], regs["EIP"] & 0xFFFF) != (seg, DATE_CALL[1]) or bytes(image.memory[at:at + 2]) != b"\xcd\x21" \
@@ -323,9 +326,8 @@ class Core:
         for name in REGS:
             if name in regs:
                 m.set_reg(name, regs[name])
-        m.set_reg("ecx", year)
-        m.set_reg("edx", (regs["EDX"] & ~0xFFFF) | (month << 8) | day)
-        m.set_reg("eax", (regs["EAX"] & ~0xFF) | weekday)
+        for name, value in date_registers(regs, (year, month, day)).items():
+            m.set_reg(name, value)
         m.set_reg("eip", DATE_RETURN)
         core = cls(m, image.header, bytes(image.memory[MEM_SIZE:]), budget, [], hashlib.sha256(state).hexdigest(),
                    dos_time=dos_time, date=(year, month, day), data=goal_dat)
@@ -345,7 +347,8 @@ class Core:
                  "seeds": {f"{a:04X}": self.m.rd(a) for a in SEEDS}, "keys": list(self.keys),
                  "budget": self.budget, "template_sha256": self.template_sha256, "polls": self.wait.polls,
                  "passed": [[p.kind, p.polls, p.text, list(p.keys)] for p in self.wait.passed],
-                 "queued": [list(q) for q in self.queued], "pending": None if self.pending is None else list(self.pending)}
+                 "queued": [list(q) for q in self.queued], "pending": None if self.pending is None else list(self.pending),
+                 "at_poll": self.wait.poll, "stops": sorted(self.stops)}
         blob = json.dumps(state).encode()
         return MAGIC + len(blob).to_bytes(4, "little") + blob + zlib.compress(snap["memory"] + self.tail, 6)
 
@@ -358,7 +361,7 @@ class Core:
             raise ValueError("not a saved core")
         n = int.from_bytes(data[4:8], "little")
         state = json.loads(data[8:8 + n])
-        if state["version"] not in (1, VERSION):
+        if state["version"] not in (1, 2, VERSION):
             raise ValueError(f"a saved core of version {state['version']}, this is {VERSION}")
         memory = zlib.decompress(data[8 + n:])
         m = Machine(memory, state["load"])
@@ -371,8 +374,9 @@ class Core:
                 raise ValueError(f"the saved seed DS:{off} does not match the saved memory")
         core.queued = [tuple(q) for q in state.get("queued", [])]
         core.pending = None if state.get("pending") is None else tuple(state["pending"])
+        core.stops = set(state.get("stops", ()))
         passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in state.get("passed", []))
-        core.wait = core._make_wait(tuple(tuple(p) for p in state["polls"]), passed)
+        core.wait = core._make_wait(tuple(tuple(p) for p in state["polls"]), passed, poll=state.get("at_poll", False))
         return core
 
     # -- playing ---------------------------------------------------------------------------------------------
@@ -385,6 +389,17 @@ class Core:
             raise ValueError(f"a key code is 1..255, not {key}")
         if key == F5_PRINT:
             raise ValueError("F5 (0xA3) prints the screen and makes 08DD read another key: not served by the core")
+        if self.wait.poll:
+            # [T108] at a poll: 0723 says a key waits, and the original's next read takes it (as queue() gives it)
+            if not _screens.KINDS[self.wait.kind].accepts(key):
+                raise ValueError(f"{self.wait.kind} does not accept the key {key:#04x}")
+            self.pending = (self.wait.kind, key)
+            self._passed_at_poll = [self.wait.kind, 0, self.wait.text, []]
+            self.m.set_reg("ax", (self.m.reg("ax") & 0xFF00) | 1)
+            self.m.return_from(True, 0)
+            self.keys.append(key)
+            self._run()
+            return self.wait
         self._answer(key)
         self.keys.append(key)
         self._run()
@@ -402,6 +417,23 @@ class Core:
         if not k.accepts(key):
             raise ValueError(f"{kind} does not accept the key {key:#04x}")
         self.queued.append((kind, key))
+
+    def stop_at(self, *kinds):
+        """[designed: T108] Make each poll of the polled `kinds` a wait (KeyWait.poll), so that a caller can read the
+        screen's state before each key (the captain prompt's highlight): press() then answers that poll "a key
+        waits" and the original's next read takes the key. A poll while a queued or announced key is in flight is
+        not a wait. `stop_at()` with no kinds stops at none. Kept in the core save."""
+        for kind in kinds:
+            k = _screens.KINDS.get(kind)
+            if k is None or not k.polled:
+                raise ValueError(f"{kind!r} is not a polled screen kind of the table")
+        self.stops = set(kinds)
+
+    def unqueue(self, kind):
+        """[designed: T108] Drop the keys queued for `kind` that no poll has taken; returns them."""
+        dropped = [key for k, key in self.queued if k == kind]
+        self.queued = [(k, key) for k, key in self.queued if k != kind]
+        return dropped
 
     def memory(self):
         """The guest memory now (1 MiB and the HMA)."""
@@ -439,6 +471,10 @@ class Core:
         kind = _screens.identify(site, self._frame())
         if kind is None:
             raise UnknownScreen(site, self._text(), poll=True)
+        if (kind in self.stops and self.pending is None
+                and not any(k == kind for k, _ in self.queued)):
+            m.stop("poll")           # [T108] a wait at the poll: press() answers it
+            return
         if not self._passed or self._passed[-1][0] != kind:
             self._passed.append([kind, 0, self._text(), []])
         self._passed[-1][1] += 1
@@ -460,7 +496,10 @@ class Core:
             kind, key = self.pending
             self.pending = None
             self._answer(key)
-            self._passed[-1][3].append(key)
+            if self._passed_at_poll is not None:
+                self._passed_at_poll = None      # [T108] pressed at a poll wait: logged by press, not passed
+            else:
+                self._passed[-1][3].append(key)
             return
         self.m.stop("read")
 
@@ -511,7 +550,8 @@ class Core:
 
     def _serve_dos(self, number, regs, pc, via):
         """INT 21h AH=3Dh (open GOAL.DAT), 3Fh (read) and 3Eh (close), as DOS answers them [confirmed: F032, NG-7,
-        E038's trace: the handle 5, AX the count read, the carry clear]; anything else raises InterruptError."""
+        E038's trace: the handle 5, AX the count read, the carry clear]; anything else raises InterruptError. The
+        record's Flags are the CPU's flags with the carry clear, as Intr's 235C:0045 stores them (#327)."""
         ah, out = regs["AX"] >> 8, dict(regs)
 
         def refuse(reason=""):
@@ -537,7 +577,9 @@ class Core:
             out["AX"] = len(chunk)
         else:
             del self.files[regs["BX"]]
-        out["FLAGS"] = regs["FLAGS"] & ~CARRY
+        # [confirmed: seg_235C_01.asm 0045, #327] Intr's return path stores the CPU's flags (pushf) into the record:
+        # the flags now, with the carry DOS clears on success.
+        out["FLAGS"] = self.m.reg("eflags") & 0xFFFF & ~CARRY
         return out
 
     def _pc(self, cs, ip):
@@ -564,13 +606,13 @@ class Core:
             err, m.error = m.error, None
             self.stopped = err
             raise err
-        if m.stop_reason != "read":
+        if m.stop_reason not in ("read", "poll"):
             self.stopped = BudgetExceeded(self.budget, self._pc(m.reg("cs"), m.reg("ip")), self._text())
             raise self.stopped
         passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in self._passed)
-        self.wait = self._make_wait(tuple(sorted(self._polls.items())), passed)
+        self.wait = self._make_wait(tuple(sorted(self._polls.items())), passed, poll=m.stop_reason == "poll")
 
-    def _make_wait(self, polls, passed=()):
+    def _make_wait(self, polls, passed=(), poll=False):
         m = self.m
         site = m.where(m.stack_word(2), m.stack_word(0))
         screen = self._screen()
@@ -580,7 +622,7 @@ class Core:
             self.stopped = UnknownScreen(site, decode_text(screen))
             raise self.stopped
         return KeyWait(site=site, text=decode_text(screen), screen=screen, state=StateView(self.memory_component()),
-                       polls=polls, core=self, kind=kind, view=_screens.view(site, frame), passed=passed)
+                       polls=polls, core=self, kind=kind, view=_screens.view(site, frame), passed=passed, poll=poll)
 
 
 def _image(savestate):
@@ -591,6 +633,16 @@ def _image(savestate):
         raise ValueError("the image does not hold the GOAL.EXE the kit was made on; it differs in: "
                          + "; ".join(problems))
     return image
+
+
+def date_registers(regs, date):
+    """The registers DOS's INT 21h AH=2Ah sets for `date` (year, month, day), from the state's `regs`: CX the year,
+    DH the month, DL the day, AL the weekday (0 Sunday) [confirmed: F033, NG-9]; the upper halves of ECX, EDX and EAX
+    and AH are kept, as DOS writes the 16- and 8-bit registers only (#327). F033: the program drops the weekday."""
+    year, month, day = date
+    weekday = datetime.date(year, month, day).isoweekday() % 7
+    return {"ecx": (regs["ECX"] & ~0xFFFF) | year, "edx": (regs["EDX"] & ~0xFFFF) | (month << 8) | day,
+            "eax": (regs["EAX"] & ~0xFF) | weekday}
 
 
 def _dos_time(t):

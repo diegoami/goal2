@@ -173,10 +173,11 @@ def refresh(self,display,view):
 # continent rankings, the next opponents with theirs and the fixture's kind, the managers 1-6, the menu's routes and
 # the squad strip; its second view is the history (1771:1D5C) in the original's boxes. Everything is read through
 # the CoreModel (goal2/core/views.py); nothing here touches the Python route's state.
-# [T107] team info and select squad open the Team page (its team tactics and its squad); play waits for G14.
+# [T107] team info and select squad open the Team page (its team tactics and its squad). [T108] play next game runs
+# the original's round (fixtures_page.CoreRound).
 CORE_ROUTES = (('team info', 'coreTeamInfo', None), ('fixture list', 'coreFixtureList', None),
                ('tournament', 'coreTournament', None), ('history', 'coreHistory', None),
-               ('select squad', 'coreSelectSquad', None), ('play next game', 'corePlay', 'play'))
+               ('select squad', 'coreSelectSquad', None), ('play next game', 'corePlay', None))
 
 
 def build_core(self, model):
@@ -212,6 +213,7 @@ def build_core(self, model):
     self.core_routes['history'].clicked.connect(lambda: core_country_view(self, 1))
     self.core_routes['team info'].clicked.connect(lambda: (self.navigate(1), self.team_views.show_view(1)))
     self.core_routes['select squad'].clicked.connect(lambda: (self.navigate(1), self.team_views.show_view(0)))
+    self.core_routes['play next game'].clicked.connect(lambda: self.core_round.start())
     middle.addStretch(1)
     self.country_roster = RosterView('SQUAD', toggles=False, grouped=True, marks=False)
     self.country_roster.setFixedWidth(320);desk.addWidget(self.country_roster, 0, Qt.AlignmentFlag.AlignTop)

@@ -69,6 +69,17 @@ def printed_keys():
     return out
 
 
+def code_read_keys():
+    """docs/core.md's table "Keys the original's code reads" [T108's amendment]: {kind: [(keys, routine, burst)]}."""
+    out = {}
+    for line in (requires.ROOT / "docs/core.md").read_text().splitlines():
+        cells = [c.strip() for c in line.split("|")]
+        if (len(cells) > 5 and cells[1].startswith("`") and cells[1].endswith("`") and "named/" in cells[3]
+                and cells[4].startswith("burst")):
+            out.setdefault(cells[1].strip("`"), []).append((cells[2], cells[3], cells[4]))
+    return out
+
+
 def designed_quotes():
     """docs/core.md's table of goal2 kinds: {kind: [quoted text, ...]}."""
     out = {}
@@ -270,7 +281,7 @@ class Tours(unittest.TestCase):
 @requires.need(**NEEDS)
 class Keys(unittest.TestCase):
     def test_each_kind_accepts_the_catalogues_keys(self):
-        from goal2.core.screens import KEYSYMS, KINDS, PRINTED
+        from goal2.core.screens import CODE_READ, KEYSYMS, KINDS, PRINTED
         KEYSYMS_OF = {v: k for k, v in KEYSYMS.items()}
         for name, kind in KINDS.items():
             if kind.designed:
@@ -281,7 +292,22 @@ class Keys(unittest.TestCase):
             # [T107's amendment] the catalogue's screen and owner rows, and the keys the screen's own hint prints
             # (screens.PRINTED), each quoted in docs/core.md with its state and row and backed by a burst row.
             printed = set(PRINTED.get(name, ()))
-            self.assertEqual(set(kind.keys), catalogue_keys(name) | printed, name)
+            # [T108's amendment] and the keys the screen's routine reads, each with its listing and a burst row
+            code_read = set(CODE_READ.get(name, ()))
+            self.assertEqual(set(kind.keys), catalogue_keys(name) | printed | code_read, name)
+            cited = code_read_keys().get(name, [])
+            for label, codes in code_read:
+                rows = [c for c in cited if c[0] == label]
+                self.assertTrue(rows, f"docs/core.md does not cite {name}'s code-read key {label}")
+                self.assertTrue(all("named/" in c[1] and "0791:" in c[1] for c in rows), (name, rows))
+                runs = {(r["key"], r["source"]) for r in tsv("static/screens/catalogue.tsv")
+                        if r["kind"] == name and r["source"].startswith("run:")}
+                for code in codes:
+                    sym = KEYSYMS_OF.get(code)
+                    hits = [src for key, src in runs if key == sym]
+                    self.assertTrue(hits, f"no catalogue burst row reads {sym} on {name}")
+                    self.assertTrue(any(src.split(":", 1)[1] in c[2] for c in rows for src in hits),
+                                    f"docs/core.md cites no burst row of {sym} on {name}: {rows}")
             quoted = printed_keys().get(name, [])
             bursts = {r["key"] for r in tsv("static/screens/catalogue.tsv")
                       if r["kind"] == name and r["source"].startswith("run:")}

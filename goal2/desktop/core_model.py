@@ -24,15 +24,19 @@ from goal2.core import views
 # G12 squad, pool, select team and tactics, G13 bulletins, news and the year change, G14 the match flow.
 # [T107, G12] Team and Pool are served now: the Team page is select squad and the team tactics, the Pool page the
 # pool list of SELECT YOUR TEAM.
-DISABLED = {
-    'play': 'G14',          # play next game: the match flow under the core
-}
-DISABLED_TEXT = {
-    'play': 'Play next game arrives with G14 (the match flow under the core)',
-}
+# [T108, G14a] Play next game is served now: the round by the original's keys, the own match as its quick result. The
+# watched match's pitch view under the core is G14b.
+DISABLED = {}
+DISABLED_TEXT = {}
+PITCH_LATER = "The pitch view over the core arrives with G14b: the own match is the original's quick result"
+
 # [designed: T107] The driver's team actions the pages may run (goal2/core/driver.py), each from the manager menu
 # and back to it.
 ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 'rename', 'set_tactic')
+# [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
+ROUND_ACTIONS = ('round_start', 'kick_off', 'substitute', 'play_on', 'prematch_swap')
+# the kinds a round waits at between its steps
+ROUND_WAITS = ('match-menu', 'match-menu-halftime')
 
 
 class CoreModel:
@@ -46,7 +50,9 @@ class CoreModel:
         self.driver = Driver(core)
         self.data_path = None if data_path is None else Path(data_path)
         self.save_path = Path(save_path)
-        self.driver.to_menu()
+        self.refused = None           # [T108] the original's last refusal of the eleven, while the round waits on it
+        if core.wait.kind not in ROUND_WAITS:   # [T108] a core saved in a round resumes there
+            self.driver.to_menu()
 
     @classmethod
     def open(cls, savestate_path, data_path, save_path):
@@ -103,8 +109,12 @@ class CoreModel:
         back. A refusal comes back as ValueError with the original's reason: the message box's text for a pool
         exchange the original refuses (0791:DBFA), the driver's statement for a screen that does not offer it."""
         from goal2.core import CoreError
+        if name in ROUND_ACTIONS:
+            return self.round_step(name, *args)
         if name not in ACTIONS:
             raise ValueError(f'No team action {name!r}')
+        if self.in_round:
+            raise ValueError('The round is under way: its team changes are on the bench')
         try:
             result = getattr(self.driver, name)(*args)
         except CoreError as exc:
@@ -116,6 +126,46 @@ class CoreModel:
             raise ValueError(result['refused'])
         return result
 
+
+    # -- the round (T108) -------------------------------------------------------------------------------------------
+    @property
+    def in_round(self):
+        return self.core.wait.kind in ROUND_WAITS
+
+    def round_step(self, name, *args):
+        """[designed: T108] Run the round's step `name` (ROUND_ACTIONS) by the original's keys; returns round_state().
+        A refusal of the eleven (EA09) comes back in the state's `refused`; a pair the original refuses in the
+        substitution's `refused` (its own message). Nothing is decided here: the driver passes what it is given."""
+        from goal2.core import CoreError
+        if name == 'round_start':
+            self.driver.pages = []
+        try:
+            result = getattr(self.driver, name)(*args)
+        except CoreError as exc:
+            if self.core.stopped is not None:
+                raise
+            raise ValueError(str(exc).split('\n')[0]) from exc
+        self.refused = result['refused'] if isinstance(result, dict) and set(result) == {'refused'} else None
+        state = self.round_state()
+        if name == 'substitute':
+            state['substitution'] = result
+        return state
+
+    def round_state(self):
+        """Where the round is, read from memory: `at` the wait's kind; at the match menu before the kick-off the
+        captain prompt's list (`captain`) and the bench, at half time the board and the bench; `pages` the screens
+        passed since the round began (the round's results, the boards, the table, the bulletins), as the driver read
+        them; `refused` the original's message when it refused the eleven."""
+        wait = self.core.wait
+        out = {'at': wait.kind, 'pages': list(self.driver.pages), 'refused': self.refused, 'captain': None,
+               'bench': None, 'board': None}
+        if wait.kind == 'match-menu':
+            out['captain'] = views.captain_choice(self.state)
+            out['bench'] = views.bench(self.state)
+        elif wait.kind == 'match-menu-halftime':
+            out['board'] = views.board(self.state)
+            out['bench'] = views.bench(self.state)
+        return out
 
     # -- saving ----------------------------------------------------------------------------------------------
     def save(self, path=None):
