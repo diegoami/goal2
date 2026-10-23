@@ -536,7 +536,7 @@ class Driver:
             return message
         return None
 
-    def kick_off(self, captain=None, watch=None):
+    def kick_off(self, captain=None, watch=None, speed=None):
         """At the match menu before the kick-off: play, then the captain prompt (CC7B), then the first half as the
         quick result (R at the first poll of play) to its first stop: the half-time menu, or the managed side's
         substitution notice at a stoppage; returns that wait.
@@ -545,7 +545,12 @@ class Driver:
         at each of its polls: Core.stop_at) and taken by Enter; None takes the original's own choice by C
         (best_leader_available 0791:1F3C). [confirmed: F030] The prompt passes by itself after 1000 polls; the
         driver always answers it. When the original refuses the eleven (0791:EA09's message box) the driver closes
-        the box (any key) and returns {"refused": the original's message} at the match menu, nothing else pressed."""
+        the box (any key) and returns {"refused": the original's message} at the match menu, nothing else pressed.
+        Optional `speed` selects 0..5 through original Left/Right keys before the first complete pose."""
+        # [designed: owner, T116; confirmed: F030, 0791:9372] A requested speed is original Left/Right input,
+        # queued before the first complete pose. Raw callers retain the original speed by default.
+        if speed is not None and (type(speed) is not int or not 0 <= speed <= 5):
+            raise ValueError('Original match speed is 0..5')
         if watch is not None:
             self.core.stop_at(*(("match-live", "match-summary-save-prompt", "substitution-notice") if watch
                                 else ("substitution-notice",)))
@@ -561,6 +566,11 @@ class Driver:
             if refused is not None:
                 core.unqueue("match-live")
                 return {"refused": refused}
+            if speed is not None:
+                from goal2.core import views
+                now = views.match_speed(self.wait.state)
+                for _ in range(abs(now-speed)):
+                    core.queue('match-live', RIGHT if speed < now else LEFT)
             for _ in range(MAX_MOVES):
                 wait = self.core.wait
                 if wait.kind != "captain-select":

@@ -194,6 +194,8 @@ class CoreWindow(QMainWindow):
         self.save.setEnabled(False)
         for widget in self.core_actions:widget.setEnabled(False)
         self.status.setText('The original is pressing its own keys…')
+        # [designed: T116] A pitch frame is short work: do not impose the management job's 30 ms collection delay.
+        self.core_timer.setInterval(1 if name == 'live_step' else 30)
         self.core_timer.start()
         return True
 
@@ -215,7 +217,10 @@ class CoreWindow(QMainWindow):
             for widget in self.core_actions:widget.setEnabled(False)
             self.save.setEnabled(False)
             return answer
-        self.refresh()
+        # [designed: T116] Hidden management records do not need rebuilding for each pitch frame. Decisions
+        # and all other actions still refresh, so the next management page reflects the original's current state.
+        live = kind == 'done' and self.core_jobs.name == 'live_step' and value.get('stop') == 'live'
+        if not live:self.refresh()
         from goal2.desktop.core_model import ROUND_ACTIONS
         if self.core_jobs.name in ROUND_ACTIONS:      # [T108] a round step: the round's page shows what came of it
             self.core_round.finished(self.core_jobs.name, answer)

@@ -581,6 +581,7 @@ class CoreRound:
         self.players = QPushButton('Players: select your team >');self.players.setObjectName('corePreMatchPlayers')
         self.players.clicked.connect(self.show_pre_match);left.addWidget(self.players)
         self.watch = QPushButton('Watch this match');self.watch.setObjectName('coreWatch');self.watch.setCheckable(True)
+        self.watch.setChecked(True)  # [designed: owner demo feedback, 2026-10-23, T116]
         left.addWidget(self.watch)
         left.addStretch(1)
         self.captain_roster = RosterView('CAPTAIN', toggles=False, grouped=False, marks=False, capacity=11)
@@ -634,9 +635,9 @@ class CoreRound:
         from PySide6.QtCore import QTimer
         self.viewer = None
         self.watch_suspended = False
-        self.bench_pending = False
+        self.pending_inputs = []
         self.pending_stop = None
-        self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(10);self.viewer_timer.timeout.connect(self.poll_viewer)
+        self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(2);self.viewer_timer.timeout.connect(self.poll_viewer)
         self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
                         self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch,
                         self.bench.position_next,self.bench.position_club,self.bench.roster]
@@ -662,7 +663,7 @@ class CoreRound:
         if self.viewer is not None:
             self.viewer.close();self.viewer = None
         self.watch_suspended = False
-        self.bench_pending = False
+        self.pending_inputs = []
         self.window.run_core('round_start')
         self.show_waiting('The original plays the round…')
 
@@ -718,7 +719,8 @@ class CoreRound:
         elif stop == 'full-time':              # [T108 review, R1] the round's end goes on, as on a resume
             self.window.run_core('finish')
         elif stop == 'live':
-            self.show(4)
+            # [designed: T116] An existing live page needs a new pose, not another geometry/focus transition.
+            if self.views.currentIndex()!=4:self.show(4)
             try:
                 if not self.watch_suspended:self.resume_viewer()
             except (OSError, ValueError) as exc:
@@ -783,7 +785,7 @@ class CoreRound:
         if self.viewer is None:
             self.viewer = CoreViewer(self.state['identity'])
         self.watch_suspended = False
-        self.viewer.pose(self.state['pitch'], self.state['commentary'])
+        self.viewer.pose(self.state['pitch'], self.state['commentary'], self.state.get('speed'))
         self.resume_watch.hide()
         self.live_note.setText('The match is in the pitch window. Enter there opens the bench.')
         self.viewer_timer.start()
@@ -802,9 +804,15 @@ class CoreRound:
 
     def poll_viewer(self):
         if self.viewer is None:return
+        # [designed: T116] The current bounded worker step already owns the core. SDL retains ordered input;
+        # re-reading/hashing its unchanged status while that step runs only competes with emulation.
+        if self.window.core_jobs.busy:return
         try:
             request = self.viewer.poll()
-            if request == 'bench':self.bench_pending = True
+            if request in ('bench','left','right'):
+                from goal2.core.screens import RETURN, LEFT, RIGHT
+                if len(self.pending_inputs)>=64:raise ValueError('Core input queue overflow')
+                self.pending_inputs.append({'bench':RETURN,'left':LEFT,'right':RIGHT}[request])
             if self.viewer.closed:
                 self.stop_viewer('The pitch window was closed');return
             if self.pending_stop is not None and self.viewer.drained:
@@ -813,8 +821,9 @@ class CoreRound:
                 return
             if (self.state and self.state['stop'] == 'live' and self.viewer.drained
                     and not self.window.core_jobs.busy):
-                if self.window.run_core('live_step', 13 if self.bench_pending else None):
-                    self.bench_pending = False
+                key = self.pending_inputs[0] if self.pending_inputs else None
+                if self.window.run_core('live_step', key) and self.pending_inputs:
+                    self.pending_inputs.pop(0)
         except (OSError, ValueError) as exc:
             self.stop_viewer(str(exc))
 

@@ -760,6 +760,12 @@ def bench(state):
 NO_SUBSTITUTES = 0x2538
 
 
+def match_speed(state):
+    """[confirmed: F030, 0791:9372 / 93E8–944D] Original delay 0..5, changed by Right/Left; 0 has no delay."""
+    mem = Memory(state)
+    return mem.byte(mem.far(GAME) + 0x3F)
+
+
 def pitch(state, sequence, watermark):
     """[derived: T109; F013/F028, watched_pitch.snapshot] The same signed pitch records as the Python viewer,
     read at 0791:93C2's live poll. Slot identity is checked against the current original squad, substitutions included.

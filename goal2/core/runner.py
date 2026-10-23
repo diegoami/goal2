@@ -53,12 +53,13 @@ import json
 import struct
 import zipfile
 import zlib
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from goal2.core import screens as _screens
 from goal2.engine.original_match import machine as _machine
-from goal2.engine.original_match.image import Image, MEM_BASE
+from goal2.engine.original_match.image import Image, MEM_BASE, GOAL_DS_PARAGRAPH
 from goal2.engine.original_match.machine import Machine, MEM_SIZE, REGS
 from goal2.engine.original_match.match import KEYPRESSED, READKEY, PUSHED_BACK, KEY, SCREEN_PTR, SEED
 
@@ -197,20 +198,35 @@ class PassedScreen:
     keys: tuple = ()
 
 
+class _WaitImage(Image):
+    """[designed: T116] The kit's readers over an immutable kept snapshot, with the already known load segment.
+
+    Core validated the image when it started. Reads need neither another 16 MiB copy nor a DOS MCB scan per pose.
+    The full component, including high memory, remains available to the inherited memory/hash readers.
+    """
+    def __init__(self, component, load):
+        self.header = component[:MEM_BASE]
+        self.memory = memoryview(component)[MEM_BASE:]
+        self.load = load
+        self.DS = load + GOAL_DS_PARAGRAPH
+
+
 class StateView:
     """A read-only view of the original's memory at a wait, through the kit's `Image` (its record readers)."""
 
     _READERS = ("rd", "far", "rd_far", "players", "countries", "squad", "managed_countries", "fixture_index",
                 "year", "name", "sha256", "memory_component")
 
-    def __init__(self, memory_component):
+    def __init__(self, memory_component, load=None):
         self._component = memory_component      # immutable bytes: the memory at the wait
+        self._load = load
         self._cached = None
 
     @property
     def _image(self):
         if self._cached is None:
-            self._cached = Image.from_memory_component(self._component)
+            self._cached = (Image.from_memory_component(self._component) if self._load is None
+                            else _WaitImage(self._component, self._load))
         return self._cached
 
     def __getattr__(self, name):
@@ -267,6 +283,7 @@ class Core:
         self._passed_at_poll = None   # [T108] a key pressed at a poll wait, until the original's read takes it
         self.released = None          # [T108] the polled kind let pass (release) until a poll of another kind
         self.wait = None
+        self._live_frames = False     # [T116] temporary presentation batching; never a guest or save setting
         self._hooks()
 
     # -- starting and resuming -----------------------------------------------------------------------------
@@ -454,6 +471,19 @@ class Core:
         self._run()
         return self.wait
 
+    @contextmanager
+    def live_frames(self):
+        """[designed: T116; confirmed: 0791:9571–9708] Keep complete live poses, not each intermediate player poll.
+
+        Every poll still executes and queued keys/read waits/other decisions still stop normally. The regular
+        stop_at/advance API keeps its single-poll behavior outside this bounded desktop operation.
+        """
+        previous, self._live_frames = self._live_frames, True
+        try:
+            yield
+        finally:
+            self._live_frames = previous
+
     def unqueue(self, kind):
         """[designed: T108] Drop the keys queued for `kind` that no poll has taken; returns them."""
         dropped = [key for k, key in self.queued if k == kind]
@@ -498,7 +528,9 @@ class Core:
             raise UnknownScreen(site, self._text(), poll=True)
         if self.released is not None and kind != self.released:
             self.released = None
-        if (kind in self.stops and self.pending is None and kind != self.released
+        complete = (not self._live_frames or kind != 'match-live'
+                    or _screens.view(site, self._frame()).get('slot') in (22, None))
+        if (complete and kind in self.stops and self.pending is None and kind != self.released
                 and not any(k == kind for k, _ in self.queued)):
             m.stop("poll")           # [T108] a wait at the poll: press() answers it
             return
@@ -649,7 +681,7 @@ class Core:
         if kind is None:
             self.stopped = UnknownScreen(site, decode_text(screen))
             raise self.stopped
-        return KeyWait(site=site, text=decode_text(screen), screen=screen, state=StateView(self.memory_component()),
+        return KeyWait(site=site, text=decode_text(screen), screen=screen, state=StateView(self.memory_component(), m.load),
                        polls=polls, core=self, kind=kind, view=_screens.view(site, frame), passed=passed, poll=poll)
 
 

@@ -1,5 +1,9 @@
-"""[designed: T66] SDL child, display only. Scroll with wheel/arrows; End follows live; Escape closes."""
+"""[designed: T66/T116] SDL renderer and optional core-key return; it owns no game simulation.
+
+Scroll with wheel/arrows; End follows live; Escape closes. With --core-keys, Enter/Left/Right return to the core.
+"""
 from functools import cache
+from collections import deque
 import json
 import os
 from pathlib import Path
@@ -297,6 +301,7 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
 
 def main():
     folder, token = Path(sys.argv[1]), sys.argv[2]
+    core_keys = '--core-keys' in sys.argv[3:]  # [designed: T116] Python-route pacing stays local
     target = folder / 'status'
     try:
         import pygame
@@ -314,6 +319,8 @@ def main():
         marks = DEFAULT_MARKS
         # [designed: T102] Enter presses in play, reported in the status for the parent's pause.
         requests = 0
+        controls = deque(maxlen=64)
+        control_sequence = 0
         buffer = b''
         with (folder / 'display').open('rb') as source:
             running = True
@@ -323,7 +330,9 @@ def main():
                     # ("spacebar-commentary"); in it, Esc returns to play ("Esc-play").
                     if (event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_KP_ENTER)
                             and display.pitch_rate and display.result is None and display.decision() is None):
-                        requests += 1
+                        if core_keys:
+                            control_sequence += 1;controls.append([control_sequence,'bench'])
+                        else:requests += 1
                         continue
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                         commentary = not commentary
@@ -333,7 +342,11 @@ def main():
                         continue
                     # [confirmed: E031 C39] Left slows the match by one step; Right speeds it up.
                     if event.type == pygame.KEYDOWN and event.key in (pygame.K_LEFT, pygame.K_RIGHT):
-                        display.step_rate(-1 if event.key == pygame.K_LEFT else 1)
+                        if core_keys:
+                            if display.pitch_rate and display.result is None and display.decision() is None:
+                                control_sequence += 1
+                                controls.append([control_sequence,'left' if event.key==pygame.K_LEFT else 'right'])
+                        else:display.step_rate(-1 if event.key == pygame.K_LEFT else 1)
                     # [confirmed: 0791:9372] Up/Down step the marks on the pitch; with the
                     # commentary open, or with no pitch (text-only watching), they scroll.
                     if (event.type == pygame.KEYDOWN and event.key in (pygame.K_UP, pygame.K_DOWN)
@@ -372,6 +385,7 @@ def main():
                 if display.pitch_rate:
                     value.update(frame_sequence=display.consumed, requests=requests,
                                  frame_digest=frame_digest(display.frame) if display.frame else None)
+                if core_keys:value['controls'] = list(controls)
                 status(target, value)
                 clock.tick(240 if display.pitch_rate else 30)
         pygame.quit()

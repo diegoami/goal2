@@ -52,6 +52,7 @@ class Display:
         self.events = []
         self.result = None
         self.pitch_rate = None
+        self.core_speed = None       # [T116] original 0..5 delay; Python playback keeps its existing rate
         self.frames = deque()
         self.frame_sequence = -1
         self.frame_watermark = 0
@@ -77,6 +78,10 @@ class Display:
                     or not 1 <= value['rate'] <= 240 or not math.isfinite(value['rate'])):
                 raise ValueError('invalid pitch playback rate')
             self.pitch_rate = value['rate']
+        elif kind == 'core-speed' and self.pitch_rate is not None and self.result is None:
+            if type(value) is not int or not 0 <= value <= 5:
+                raise ValueError('invalid original match speed')
+            self.core_speed = value
         elif kind == 'frame' and self.pitch_rate is not None and self.result is None:
             from goal2.game.watched_pitch import validate
             validate(value, self.frame_sequence + 1, self.frame_watermark)
@@ -142,6 +147,7 @@ class Display:
         return self.pitch_rate
 
     def speed_name(self):
+        if self.core_speed is not None:return SPEEDS[5-self.core_speed][0]
         return next((name for name, rate in SPEEDS if rate == self.pitch_rate), f'{self.pitch_rate}/s')
 
     def advance(self, now):
