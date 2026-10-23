@@ -130,7 +130,13 @@ The tournament page shows the two finals groups with their fixtures and top scor
 with its semi-finals, third-place fixture, final and places. The bracket's countries, scores and winner markers
 come from the original's stored fixtures. Post-fixture bracket pages and the year's bulletins follow in the
 round's normal Next sequence. The original advances the phase and ages the squad and pool; the desktop reads the
-new state afterwards. World Cup finals and the remaining match prompts retain their later G13 scope.
+new state afterwards.
+
+[designed: T113, #308's G13c; confirmed: F023 and original 9028/937C/9509] **World Cup finals.** The same pages
+show all eight World groups and their fixtures, then the sixteen-slot knockout tree. Countries, scores, winners
+and final places come from the original's stored fixtures. Top scorers switch to final places when the original
+does. The queued round pages continue into the next continental campaign; save/resume keeps the core checkpoint.
+Remaining match/decision prompts retain their following G13 scope (archaeology #390).
 
 [designed] Supply verified local game resources using the existing runtime-cache
 instructions. No original resources or screenshots enter git. Without Qt the
