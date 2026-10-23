@@ -17,7 +17,10 @@
     "profiled_30_poses_before_seconds": 30.073,
     "profiled_30_poses_after_seconds": 3.408,
     "qt_6_poses_before_seconds": 2.463,
-    "qt_6_poses_after_seconds": 0.818
+    "qt_6_poses_after_seconds": 0.818,
+    "original_delay_1_core_fps": 9.0195,
+    "original_delay_0_core_fps": 31.6591,
+    "original_delay_0_qt_sdl_fps": 25.971
   },
-  "limits": "Local short-run measurements, no CI wall-clock threshold; Qt includes worker/timer/pages, excludes SDL renderer. No guest-memory editing."
+  "limits": "Local short-run measurements, not a portable FPS guarantee or CI wall-clock threshold. Qt/SDL result uses real QApplication.exec and SDL rendering/acknowledgements with offscreen/dummy drivers; core speed 0 selected only through original Right. No guest-memory patch or instruction-budget bypass."
 }

@@ -93,7 +93,7 @@ saved at), with the same views and the same memory. `--template` and every other
 turn Watch off explicitly for the quick result. The same pygame pitch window reads the original's
 memory at its live polls, showing complete signed player/ball/official poses, role codes, score, minute and the
 latest two commentary lines. Space opens the full commentary; Esc closes it, or closes the pitch window when
-commentary is hidden. Left/Right change presentation speed, Up/Down the marks. Each pose must be displayed and
+commentary is hidden. Left/Right send the original's slower/faster keys, Up/Down change the marks. Each pose must be displayed and
 acknowledged before the desktop advances the original. No unseen backlog plays on after the viewer closes:
 **Resume watching** restarts the pitch at the core's current wait; Save can preserve that wait for `--resume`.
 Enter in the pitch sends the original's Enter to open its pause menu and shows the bench in the desktop. At a
@@ -106,7 +106,10 @@ that summary. The Python route keeps its existing watched match controller and b
 [designed: T116] Watched steps execute all original player polls but retain a snapshot only at a complete pose
 or a manager decision. Live frames update the pitch instead of rebuilding the hidden desk, Team and Pool pages;
 decisions refresh those pages. Kept snapshots are immutable, with read-only image readers sharing their bytes.
-This changes desktop overhead, not the original's simulation, match speed byte or substitution rules.
+New watched matches use the original's fastest setting (delay 0), selected by queued Right keys before the first
+complete pose; the on-pitch speed label reads that original setting. Save/resume keeps the saved speed.
+The core pitch transports Enter/Left/Right in order with bounded, checked input history. The Python route keeps
+its existing presentation-rate controls. No calibration, speed or substitution byte is patched directly.
 
 [designed: owner, 2026-10-22; T106, #308's G10] **A new career on the core route.** `--core-boot` opens Launch
 over the original's own new game, booted from the state at the program's DOS date call (`e039-r0005-date-call.sav`,

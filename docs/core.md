@@ -196,6 +196,14 @@ copying the full memory and decoding the DOS page at each of 22 polls. A kept `S
 component through read-only kit readers, using the core's known load segment; it does not rescan/copy the entire
 image per pose. High memory is retained for the same memory-component/hash/save behavior.
 
+[designed: owner demo feedback, T116; confirmed: F030, 0791:9372 / 93E8–944D] The desktop starts a new watched
+match at the original's speed 0 (no DOS delay), using queued Right keys before the first complete pose. Raw
+`Driver.kick_off` keeps the original speed unless its optional `speed=0..5` requests Left/Right keys. The speed
+reader uses game+0x3F; the core pitch's Left/Right keys reach those original polls in order, and its label reflects
+that value. Resume preserves it rather than choosing the default again. Neither the calibration dword nor a
+speed byte is rewritten by the client. Direct presses remain in `Core.keys`; queued keys read by the original
+are recorded in `PassedScreen.keys`, as before.
+
 [designed: owner, 2026-10-22, #308, #321; decision 7 of docs/redesign-253/vision-reconciliation.md] The desktop
 and, later, the bot move the original only by its own keys, through one path, `goal2/core/driver.py`:
 

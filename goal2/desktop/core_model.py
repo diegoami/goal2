@@ -149,7 +149,11 @@ class CoreModel:
             # [designed: T116; confirmed: 0791:9571–9708] All original polls execute; only complete poses need
             # a kept snapshot/text page. Reads and manager decisions retain their immediate stops.
             with self.core.live_frames():
-                result = getattr(self.driver, name)(*args)
+                watch = (args[1] if len(args)>1 and args[1] is not None else self.driver.watching)
+                if name=='kick_off' and watch:
+                    result = self.driver.kick_off(*args,speed=0)
+                else:
+                    result = getattr(self.driver, name)(*args)
         except CoreError as exc:
             if self.core.stopped is not None:
                 raise
@@ -192,6 +196,7 @@ class CoreModel:
         elif wait.kind == 'match-live':
             self.commentary_cursor, lines = views.commentary(self.state, self.commentary_cursor)
             out.update(stop='live', pitch=views.pitch(self.state, self.pitch_sequence, 0), commentary=lines,
+                       speed=views.match_speed(self.state),
                        identity=views.pitch_identity(self.state))
             self.pitch_sequence += 1
         elif wait.kind == 'match-summary-save-prompt':

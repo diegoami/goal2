@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections import deque
 
 from goal2.desktop.match_view import Display
 from goal2.desktop.pygame_viewer import frame_digest
@@ -36,6 +37,9 @@ class CoreViewer:
         self.last_status = None
         self.closed = False
         self.bench_requested = False
+        self.controls = deque()
+        self.control_sequence = 0
+        self.speed = None
         try:
             self.folder = tempfile.TemporaryDirectory(prefix='goal2-core-pitch-')
             self.directory = Path(self.folder.name)
@@ -44,7 +48,7 @@ class CoreViewer:
             self.send('start', identity)
             self.send('pitch', {'rate': 60})
             self.process = subprocess.Popen(list(command or [sys.executable, '-m', 'goal2.desktop.pygame_viewer'])
-                + [str(self.directory), self.token], cwd=Path(__file__).resolve().parents[2],
+                + [str(self.directory), self.token, '--core-keys'], cwd=Path(__file__).resolve().parents[2],
                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=self.errors)
         except Exception:
             self.close()
@@ -54,11 +58,13 @@ class CoreViewer:
     def drained(self):
         return self.last_status is not None and self.frame_ack == self.display.frame_sequence
 
-    def pose(self, frame, lines):
+    def pose(self, frame, lines, speed=None):
         if not self.drained and self.display.frame_sequence >= 0:
             raise ValueError('The previous core pose has not been displayed')
         for line in lines:
             self.send('event', dict(kind='commentary', minute=frame['minute'], score=frame['score'], data=line))
+        if speed is not None and speed != self.speed:
+            self.send('core-speed',speed);self.speed = speed
         frame = dict(frame, sequence=self.display.frame_sequence + 1, watermark=len(self.display.events))
         self.send('frame', frame)
         self.deadline = time.monotonic() + 10
@@ -69,7 +75,7 @@ class CoreViewer:
                   score=frame['score'] if frame else [0, 0], data={'context': state}))
 
     def poll(self):
-        """Return an Enter request once, after the displayed pose is acknowledged. None while pending; closed
+        """Return one ordered Enter/Left/Right request after the pose is acknowledged. None while pending; closed
         and failed viewers never advance the core. Transient Windows replacement denial defers to the next timer."""
         path = self.directory / 'status'
         try:
@@ -107,6 +113,21 @@ class CoreViewer:
                 raise ValueError('Invalid core bench request')
             self.bench_requested |= requests > self.requests
             self.requests = requests
+            # [designed: T116] Bounded ordered original-key input. Repeated status reads are idempotent;
+            # missing history is an explicit error instead of silently dropping/reordering an input.
+            controls = value.get('controls',[])
+            if not isinstance(controls,list) or len(controls)>64:
+                raise ValueError('Invalid core input history')
+            previous = None
+            for row in controls:
+                if (not isinstance(row,list) or len(row)!=2 or type(row[0]) is not int or row[0]<1
+                        or row[1] not in ('bench','left','right') or (previous is not None and row[0]!=previous+1)):
+                    raise ValueError('Invalid core input history')
+                previous = row[0]
+                if row[0]>self.control_sequence:
+                    if row[0]!=self.control_sequence+1 or len(self.controls)>=64:
+                        raise ValueError('Core input history overflow')
+                    self.controls.append(row[1]);self.control_sequence=row[0]
             self.frame_ack = ack
             self.last_status = value
             if value['kind'] == 'closed':
@@ -114,6 +135,7 @@ class CoreViewer:
                 return None
             if self.drained:
                 self.deadline = None
+                if self.controls:return self.controls.popleft()
                 if self.bench_requested:
                     self.bench_requested = False
                     return 'bench'
