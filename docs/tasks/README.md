@@ -3,9 +3,6 @@
 One file per task, `T<nn>.md`, from [`TEMPLATE.md`](TEMPLATE.md). The issue's `status:*` label is the
 status; this index carries none.
 
-Save-format interchange has its own contract: [T112, original `.GL` and core `.g2core`](T112.md)
-([#341](https://github.com/diegoami/goal2/issues/341)).
-
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
 | T01 | The walking skeleton: the package, the quick-engine seam, one fixture end to end | — | — |
@@ -250,3 +247,5 @@ operational status.
 | [T109](T109.md) | G14b: watched match over the core — pitch, commentary and bench | [#333](https://github.com/diegoami/goal2/issues/333) | Large |
 | [T110](T110.md) | G13a: complete three-column bulletins over the core | [#337](https://github.com/diegoami/goal2/issues/337) | Medium |
 | [T111](T111.md) | G13b: continental finals and yearly continuation | [#339](https://github.com/diegoami/goal2/issues/339) | Medium |
+| [T112](T112.md) | Convert original .GL and core .g2core saved games | [#341](https://github.com/diegoami/goal2/issues/341) | T100, T106 |
+| [T113](T113.md) | G13c: World Cup finals and yearly continuation | [#342](https://github.com/diegoami/goal2/issues/342) | T111 |
