@@ -378,14 +378,12 @@ class Desktop(unittest.TestCase):
             return out
         out = self.run_main(["--core", str(requires.CACHE / TEMPLATE), "--data", str(requires.CACHE / "GOAL.DAT"),
                              "--save", str(Path(self.tmp.name) / "routes.g2core")], check)
-        # [T107] Team, Pool, team info and select squad are served by the core now (G12); play waits for G14.
-        for name in ("nav2", "nav3", "team info", "select squad"):
+        # [T107] Team, Pool, team info and select squad are served by the core now (G12); [T108] and play next game
+        # (G14a): no route of the core waits for a G task any more (the pitch view's G14b is said on the round's page).
+        for name in ("nav2", "nav3", "team info", "select squad", "play next game"):
             self.assertTrue(out[name][0], name)
-            self.assertNotIn("G12", out[name][1], name)
-        enabled, text, tip = out["play next game"]
-        self.assertFalse(enabled)
-        self.assertIn("G14", text)
-        self.assertIn("G14", tip)
+            self.assertNotIn("G1", out[name][1], name)
+            self.assertNotIn("G1", out[name][2], name)
         self.assertFalse(out["stays"])                  # the Team page opens
 
 

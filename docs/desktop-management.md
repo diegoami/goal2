@@ -72,10 +72,21 @@ eighty, 21 rows at a time, on the right (Left/Right switch them, Up/Down/PgUp/Pg
 player of the other list exchanges them. Each edit is the driver's action (docs/core.md, "The Team and Pool route"),
 run as a background job: the controls wait while the original presses its own keys, then the pages read the
 original again. There is no draft, no Confirm and no captain: the original holds none outside a match. A refusal
-shows the original's reason in the status line. The route the core cannot serve yet is shown disabled and names the
-task that brings it: **play next game** (G14), in #308's numbering; it never falls back to the Python route. **Save** (F7 in the original) writes the core save (`G2C1`,
-docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu, with the same views and
-the same memory. `--template` and every other route are unchanged.
+shows the original's reason in the status line. [designed: owner, 2026-10-22, #331; T108, G14a] **Play next game**
+plays the original's round (docs/core.md, "The round"), each step a background job: the round's other fixtures,
+then their results as a goal2 page; the **captain** (the eleven in the roster strip: Enter kicks off with the selected
+player as captain, the original moving its own highlight to him; C takes the original's own choice); the first half
+as the original's quick result; at **half time** T102's bench, filled from the original (the eleven, the bench, the
+original's substitutions-left counter, or its own "no more substitutes"; the half-time score): Enter on one and Enter
+on one of the other group passes the pair to the original, which makes or refuses it with its message, and **Play
+on** plays the second half; at a stoppage, the managed side's **substitution opportunity** (the bench, or let it pass
+as with no key) and the same bench; then the result and summary, the table and each bulletin, one page at a time,
+Next for the next, back to the Country page. An eleven the original refuses before the kick-off (EA09, "... has an
+ineligible player in the first team") shows its message on the captain page, and **Players** opens SELECT YOUR TEAM
+before the match, where Enter, Enter swaps two players by the original's keys. The pitch view over the core is G14b;
+the round's page says so, and it never falls back to the Python route. **Save** (F7 in the original) writes the core save (`G2C1`,
+docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu (or at the round's stop it was
+saved at), with the same views and the same memory. `--template` and every other route are unchanged.
 
 [designed: owner, 2026-10-22; T106, #308's G10] **A new career on the core route.** `--core-boot` opens Launch
 over the original's own new game, booted from the state at the program's DOS date call (`e039-r0005-date-call.sav`,

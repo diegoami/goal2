@@ -5,8 +5,9 @@ destinations, one fixed page of 1440x900 scaled to the window, T101), over a `Co
 (goal2/desktop/core_model.py) instead of the Python route's `DesktopModel`. The Country page shows the manager's
 desk and the history, the Fixtures & match page the fixture list and the tournament (their builders are in
 overview_page.py and fixtures_page.py), the Team page the squad, the card and the tactics and the Pool page the pool
-(squad_page.py and pool_page.py, T107: each edit a driver action run as a background job); play is shown disabled
-with the G task that brings it, and never falls back to the Python route; the Save page writes the core save.
+(squad_page.py and pool_page.py, T107: each edit a driver action run as a background job); play next game runs the
+original's round (T108: fixtures_page.CoreRound, bench_page.CoreBench) and never falls back to the Python route; the
+Save page writes the core save.
 
 `TextBoard` paints a board of coloured text in the original's own structure (its 80-column boards: the fixture
 list's rows, a group table, the history's boxes), in page pixels through the page's scale, as the roster and the
@@ -147,8 +148,12 @@ class CoreWindow(QMainWindow):
         self.core_timer = QTimer(self);self.core_timer.setInterval(30);self.core_timer.timeout.connect(self.poll_core)
         self.core_actions = [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move,
                                                                             self.pool_switch] + \
-            [row for _, row in self.tactics] + self.own_tactics + [self.own_marking]
+            [row for _, row in self.tactics] + self.own_tactics + [self.own_marking] + self.core_round.buttons + \
+            [self.core_routes['play next game']]
         for page in self.pages:page.content.addStretch()
+        if self.model.in_round:                         # [T108] a core saved in a round resumes on its page
+            from PySide6.QtCore import QTimer as _T
+            _T.singleShot(0, self.resume_round)
         self.save_shortcut = QShortcut(QKeySequence('Ctrl+S'), self);self.save_shortcut.activated.connect(self.save.click)
         from goal2.desktop.fixed_page import FixedPage
         sheet = apply_style(self);self.setCentralWidget(FixedPage(root, sheet, self))
@@ -198,12 +203,34 @@ class CoreWindow(QMainWindow):
                             else f'The original refused: {value}' if kind == 'refused' else f'The core stopped: {value}')
         self.last_core = answer
         self.refresh()
+        from goal2.desktop.core_model import ROUND_ACTIONS
+        if self.core_jobs.name in ROUND_ACTIONS:      # [T108] a round step: the round's page shows what came of it
+            self.core_round.finished(self.core_jobs.name, answer)
+        self.refresh_round_controls()
         return answer
+
+    def refresh_round_controls(self):
+        """[T108] While a round waits (the match menu, half time) the manager menu's routes and the team edits wait."""
+        busy = self.core_jobs.busy
+        in_round = self.model.in_round
+        for widget in self.core_actions:
+            widget.setEnabled(not busy)
+        if in_round:
+            for widget in [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move, self.pool_switch] + \
+                    [row for _, row in self.tactics] + self.own_tactics + [self.own_marking, self.core_routes['play next game']]:
+                widget.setEnabled(False)
 
     def finish_core(self, timeout=60):
         """Wait for the running action and show its result (tests; closing the window)."""
         self.core_jobs.wait(timeout)
         return self.poll_core()
+
+    def resume_round(self):
+        state = self.model.round_state()
+        if state['stop'] == 'full-time':          # a core saved at the full-time menu: the round's end goes on
+            self.run_core('finish');return
+        self.core_round.finished('resume', ('done', state))
+        self.refresh_round_controls()
 
     def navigate(self, index):
         if not self.navigation[index].isEnabled():return

@@ -245,3 +245,142 @@ class Bench:
         if was:
             self.window.fixture_views.setCurrentIndex(0)
         if note:self.window.status.setText(note)
+
+
+# -- the core route (T108) ------------------------------------------------------------------------------------
+# [designed: owner, 2026-10-22, #308, #331; decision 4] Over the core the bench is the original's SELECT TEAM at half
+# time (0791:E44F in a match) with T102's look: the strip of the eleven and the bench, the selected player's card, the
+# original's counter (DS:9B3A + side) or, with none left, its own line ("no more substitutes", DS:2538), and the
+# prompt E2A0 draws on the selected player. Enter on one and Enter on one of the other group passes the pair to the
+# original as a background job (the driver's `substitute`, its own keys); the strip and the counter are then read
+# from the original again, and a refusal shows the original's message. Before the kick-off, when the original
+# refused the eleven (0791:EA09), the same view is SELECT YOUR TEAM before the match: Enter, Enter swaps two players
+# (`prematch_swap`). The view never decides whether a pair is legal.
+class CoreBench:
+    """[designed: T108] The bench view over the core; the window's CoreRound owns the round."""
+
+    def __init__(self, window, stack):
+        from goal2.desktop.roster import RosterView
+        from goal2.desktop.player_card import PlayerCardView
+        self.window = window;self.state = None;self.mark = None;self.mode = 'half_time';self.message = ''
+        # [designed: T108] T102's parts, the head in the left column so that the strip of twenty takes the height
+        view = QWidget();view.setObjectName('benchView');body = QHBoxLayout(view)
+        body.setContentsMargins(0, 0, 0, 0);body.setSpacing(12)
+        left = QVBoxLayout();left.setSpacing(6);body.addLayout(left, 1)
+        head = QHBoxLayout();head.setSpacing(16);left.addLayout(head)
+        self.title = label('benchTitle', 'PLAYERS / HALF TIME');self.title.setWordWrap(False)
+        head.addWidget(self.title, 0, Qt.AlignmentFlag.AlignVCenter)
+        self.context = label('benchContext');head.addWidget(self.context, 1, Qt.AlignmentFlag.AlignVCenter)
+        self.counter = label('benchCounter');self.counter.setWordWrap(False)
+        head.addWidget(self.counter, 0, Qt.AlignmentFlag.AlignVCenter)
+        self.card = PlayerCardView(compact=True);left.addWidget(self.card)
+        lines = QHBoxLayout();lines.setSpacing(12);left.addLayout(lines)
+        self.prompt = label('benchPrompt');self.prompt.setWordWrap(False);lines.addWidget(self.prompt, 0, Qt.AlignmentFlag.AlignVCenter)
+        self.chosen_label = label('benchChosen');self.chosen_label.setWordWrap(False);lines.addWidget(self.chosen_label, 1)
+        self.play = QPushButton('Play on');self.play.setObjectName('benchPlay');self.play.setAutoDefault(True)
+        self.play.setAccessibleName('Play on: the second half')
+        self.play.clicked.connect(self.play_on);lines.addWidget(self.play)
+        self.message_label = label('benchMessage');self.message_label.setWordWrap(False);left.addWidget(self.message_label)
+        self.hint = self.message_label     # the hint goes to the strip's description (no room for a line of its own)
+        left.addStretch(1)
+        self.roster = RosterView('BENCH', toggles=False, grouped=True, marks=False)
+        self.roster.setObjectName('benchRoster');self.roster.setFixedWidth(300)
+        self.roster.setAccessibleDescription('Up/Down: select; Enter: take off or put on this player')
+        body.addWidget(self.roster, 0, Qt.AlignmentFlag.AlignTop)
+        self.roster.current_changed.connect(lambda row: self.show_card())
+        self.roster.activated.connect(self.enter)
+        self.view = view;stack.addWidget(view)
+        from goal2.desktop.fixed_page import host, record
+        frame = host(window)
+        if frame is not None:
+            record(frame.page);frame.restyle(frame.sheet + sheet())
+
+    def words(self):
+        bench = self.state['bench'] if self.state else None
+        return (list(bench['eleven']), list(bench['bench'])) if bench else ([], [])
+
+    def offer(self, state, mode):
+        """Show the bench of the round's `state` (CoreModel.round_state): mode 'half_time', 'stoppage' or
+        'pre_match'."""
+        self.state, self.mode, self.mark = state, mode, None
+        self.refresh()
+
+    def refresh(self):
+        eleven, bench = self.words()
+        data = self.state['bench'] if self.state else None
+        rows = []
+        if data:
+            by_word = {r['player']: r for r in data['squad']}
+            for word in eleven + bench:
+                r = by_word.get(word, {'name': '?', 'code': '?', 'line': 'unknown'})
+                rows.append((word, r['name'] + (' *' if word == self.mark else ''), r['code'], r['line'], word in eleven, False))
+            self.roster.caption = data['name'].upper()
+        current = self.roster.current if 0 <= self.roster.current < len(rows) else 0
+        self.roster.set_rows(rows, current)
+        self.roster.marked = {self.mark} if self.mark else set();self.roster.update()
+        if self.mode in ('half_time', 'stoppage') and data:
+            # [confirmed: named/seg_0791_11.c E44F] the original's counter, or its own line when none is left
+            self.counter.setText(data['message'] if data['left'] == 0 and data['message']
+                                 else f"substitutions left {data['left']}")
+            board = self.state.get('board') or {}
+            names = board.get('names', ['', '']);score = board.get('score', [0, 0])
+            self.title.setText('PLAYERS / HALF TIME' if self.mode == 'half_time' else 'PLAYERS / SUBSTITUTION')
+            self.context.setText(f'{names[0].upper()} {score[0]} - {score[1]} {names[1].upper()}')
+            self.play.setText('Play on');self.play.setAccessibleName('Play on: the second half')
+            self.roster.setAccessibleDescription('Up/Down select; Enter take off / put on; Play on: the second half')
+        else:
+            self.counter.setText('before the kick-off')
+            self.title.setText('PLAYERS / SELECT YOUR TEAM')
+            self.context.setText(self.state.get('refused') or '' if self.state else '')
+            self.play.setText('< Captain and kick-off');self.play.setAccessibleName('Back to the captain and the kick-off')
+            self.roster.setAccessibleDescription('Up/Down select; Enter, Enter swaps two players (the original\'s keys)')
+        self.counter.setAccessibleName(self.counter.text())
+        self.message_label.setText(self.message)
+        self.show_card()
+
+    def show_card(self):
+        from goal2.desktop.player_card import core_card
+        eleven, bench = self.words();rows = eleven + bench
+        row = self.roster.current
+        if not 0 <= row < len(rows):
+            self.card.set_card(None);self.prompt.setText('');return
+        word = rows[row]
+        try:self.card.set_card(core_card(self.window.model.card(word)))
+        except (ValueError, IndexError, KeyError):self.card.set_card(None)
+        if self.mode in ('half_time', 'stoppage'):
+            # [confirmed: named/seg_0791_11.c E2A0; images/squad-substitution-take-off.png, -put-on.png]
+            self.prompt.setText('Enter - take off this player' if word in eleven else 'Enter - put on this player')
+        else:
+            self.prompt.setText('Enter - move player')
+        self.chosen_label.setText(f'Marked: {self.window.model.card(self.mark)["name"]}' if self.mark else 'Marked: none')
+
+    def enter(self, row):
+        """Enter on a player: mark him; Enter on another passes the pair to the original."""
+        eleven, bench = self.words();rows = eleven + bench
+        if not 0 <= row < len(rows) or self.window.core_jobs.busy:return
+        word = rows[row]
+        if self.mark is None or self.mark == word:
+            self.mark = None if self.mark == word else word;self.refresh();return
+        first, self.mark = self.mark, None
+        if self.mode in ('half_time', 'stoppage'):
+            # the two Enters in the order the player pressed them; the original takes either (E031 C41e-C41i)
+            self.message = 'The original is making it…'
+            self.window.run_core('substitute', first, word)
+        else:
+            self.message = 'The original is moving them…'
+            self.window.run_core('prematch_swap', first, word)
+        self.refresh()
+
+    def play_on(self):
+        if self.window.core_jobs.busy:return
+        if self.mode in ('half_time', 'stoppage'):
+            self.window.core_round.start_play_on()
+        else:
+            self.window.core_round.show_captain()
+
+    def escape(self):
+        if self.mark is not None:
+            self.mark = None;self.refresh();return True
+        if self.mode == 'pre_match':
+            self.window.core_round.show_captain();return True
+        return False

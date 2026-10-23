@@ -626,3 +626,135 @@ def pool(state):
                      "line": LINES[mem.ds_byte(LINE_TABLE + p)] if p < 14 else "unknown"})
     return {"manager": m, "first": first, "top": mem.game(0x52 + 2 * m, 2), "row": mem.game(0x5E + 2 * m, 2),
             "rows": rows}
+
+
+# -- the round (T108) -----------------------------------------------------------------------------------------------
+# [confirmed: kit match.py, F029; named/seg_0791_12.c ED8A, seg_0791_10.c CC7B, seg_0791_11.c E44F] A match's two
+# sides: team 0 DS:9B34, team 1 DS:9B36 (the host of a friendly); the captain's word DS:9978 + 10 t; the
+# substitutions left DS:9B3A + t (A4A1 sets 5 a side for a friendly, kind 1, and 2 for every other kind, F027); DS:9B41
+# set: substitutions are made now; DS:9B40: one is asked for at the next stoppage.
+TEAM_WORDS, CAPTAIN, SUBS_LEFT, SUBS_NOW, SUBS_REQUEST = 0x9B34, 0x9978, 0x9B3A, 0x9B41, 0x9B40
+SCORE, SCORERS, SCORER_SIDE, MAN_OF_THE_MATCH, QUICK, STATS = 0x9B3C, 0x7BD1, 0x21, 0x7C3A, 0x9A3F, 0x7B7E
+# [confirmed: named/seg_0791_01.c 0106] the nine statistics per side, in the board's row order (kit match.py)
+STAT_NAMES = ("corners", "free kicks", "penalties", "shots", "on target", "saves", "fouls", "bookings", "red cards")
+
+
+def match_sides(state):
+    """The match's sides (DS:9B34, DS:9B36), which is the managed one, its eleven and bench (its squad words, slots
+    1..11 and 12..20) and its captain (DS:9978 + 10 t)."""
+    mem = Memory(state)
+    teams = [mem.ds_word(TEAM_WORDS), mem.ds_word(TEAM_WORDS + 2)]
+    side = next((t for t in (0, 1) if mem.country(teams[t], 0x2E) > 0x80), None)
+    out = {"teams": teams, "names": [mem.country_name(c) for c in teams], "managed_side": side,
+           "eleven": [], "bench": [], "captain": None}
+    if side is not None:
+        words = [mem.country(teams[side], 2 * s, 2) for s in range(20)]
+        out.update(eleven=words[:11], bench=[w for w in words[11:] if w], captain=mem.ds_word(CAPTAIN + 10 * side))
+    return out
+
+
+def captain_choice(state):
+    """The captain prompt's list (0791:CC7B draws the eleven, slots 1..11, by 1771:2F37's names and codes) and the
+    captain the original holds now (DS:9978 + 10 t)."""
+    sides = match_sides(state)
+    rows = [r for r in team(state)["squad"] if r["player"] in sides["eleven"]]
+    return {"eleven": rows, "captain": sides["captain"], "country": sides["teams"][sides["managed_side"]],
+            "name": sides["names"][sides["managed_side"]]}
+
+
+def bench(state):
+    """The bench in a match as SELECT TEAM shows it (0791:E44F with DS:0C1F set): the eleven and the bench of the
+    managed side (draw_squad_screen 1771:4E22), the substitutions left (the counter E44F draws, DS:9B3A + t), whether
+    they are made now (DS:9B41) or asked for (DS:9B40), and with none left E44F's own line, the template DS:2538 as
+    214B:0329 unpacks it into the page buffer ([DS:A96E], `message`)."""
+    mem = Memory(state)
+    sides = match_sides(state)
+    t = sides["managed_side"]
+    left = mem.ds_byte(SUBS_LEFT + t)
+    rows = team(state)["squad"]
+    out = {"side": t, "country": sides["teams"][t], "name": sides["names"][t], "left": left,
+           "now": bool(mem.ds_byte(SUBS_NOW)), "requested": bool(mem.ds_byte(SUBS_REQUEST)),
+           "eleven": sides["eleven"], "bench": sides["bench"], "squad": rows, "message": None}
+    if left == 0:
+        out["message"] = template_text(mem, NO_SUBSTITUTES)
+    return out
+
+
+NO_SUBSTITUTES = 0x2538
+BOX = {ord(c): " " for c in "─│┌┐└┘├┤┬┴┼═║╔╗╚╝╠╣╦╩╬╒╓╕╖╘╙╛╜╞╟╡╢╤╥╧╨╪╫"}   # a template's frame, not its words        # [confirmed: named/seg_0791_11.c E44F] drawn when DS:9B3A + t is 0
+
+
+def template_text(mem, offset):
+    """The text a screen template DS:offset writes, row by row, runs of blanks as one space: 214B:0147
+    (u214b_unpack_screen_rle, under 214B:0329) reads a word (the first cell, 1-based), a byte (the rows) and a byte (the
+    width), then per cell a character, or 0xFF and an attribute byte (the attribute of the cells that follow), or 0
+    and a count (the last cell repeated) [confirmed: named/seg_214B_01.c 0147]. Read from the program's own data,
+    never written into goal2."""
+    a = mem.ds * 16 + offset
+    rows, width = mem.byte(a + 2), mem.byte(a + 3)
+    a += 4
+    cells, last = [], 0x20
+    while len(cells) < rows * width:
+        c = mem.byte(a)
+        if c == 0xFF:
+            a += 2
+            continue
+        if c == 0:
+            cells += [last] * mem.byte(a + 1)
+            a += 2
+            continue
+        cells.append(c)
+        last = c
+        a += 1
+    lines = []
+    for r in range(rows):
+        text = "".join(" " if c < 32 else bytes([c]).decode("cp437") for c in cells[r * width:(r + 1) * width])
+        lines.append(" ".join(text.translate(BOX).split()))
+    return " ".join(t for t in lines if t)
+
+
+def board(state):
+    """The match board 0791:0106 draws (half time, full time, a quick result's and the summary): the two sides and
+    their names, the score DS:9B3C (team 0, team 1), each side's scorers (0x7BD1 + 0x21 t + 3 k, k = 1..11: the player
+    word and the minute, a minute >= 0x81 drawn as minute - 0x80 with the mark 1771:0101 or, for a scorer outside the
+    side's squad, 1771:0103), and when not a quick result (DS:9A3F clear) the man of the match DS:7C3A and the nine
+    statistics per side (DS:7B7E + 10 t) [confirmed: named/seg_0791_01.c 0106]."""
+    mem = Memory(state)
+    sides = match_sides(state)
+    scorers = [[], []]
+    for t in (0, 1):
+        squad_words = [mem.country(sides["teams"][t], 2 * s, 2) for s in range(20)]
+        for k in range(1, 12):
+            a = mem.ds * 16 + SCORERS + SCORER_SIDE * t + 3 * k
+            w, minute = mem.word(a), mem.byte(a + 2)
+            if not w:
+                continue
+            mark = ""
+            if minute >= 0x81:
+                minute -= 0x80
+                mark = mem.code_str(0x1771, 0x0101 if w in squad_words else 0x0103)
+            scorers[t].append({"player": w, "name": mem.player_name(w), "minute": minute, "mark": mark})
+    quick = bool(mem.ds_byte(QUICK))
+    out = {"teams": sides["teams"], "names": sides["names"], "managed_side": sides["managed_side"],
+           "score": [mem.ds_byte(SCORE), mem.ds_byte(SCORE + 1)], "scorers": scorers, "quick": quick,
+           "man_of_the_match": None, "statistics": None}
+    if not quick:
+        motm = mem.ds_word(MAN_OF_THE_MATCH)
+        out["man_of_the_match"] = mem.player_name(motm) if motm else None
+        out["statistics"] = {n: [mem.ds_byte(STATS + k), mem.ds_byte(STATS + 10 + k)] for k, n in enumerate(STAT_NAMES)}
+    return out
+
+
+def round_results(state, first, last):
+    """The round's results as simulate_fixture 000E:6970 lists them (1771:7812 for each fixture from `first` to `last`,
+    the window the original drew: max(last - 15, the round's first fixture) [confirmed: named/seg_000E_05.c 6970];
+    the bounds come from the wait's view, screens.py), each row as `fixture_list` reads it."""
+    mem = Memory(state)
+    return {"first": first, "last": last, "rows": [_row(mem, mem.fixture(n)) for n in range(first, last + 1)]}
+
+
+def fixture_result(state):
+    """The result of a fixture marked to watch and declined (simulate_fixture with first byte 0xFE: draw_score and the
+    template DS:25CC over the match screen): the fixture +0x26 as `fixture_list` reads it."""
+    mem = Memory(state)
+    return _row(mem, mem.fixture(mem.game(0x26, 2)))

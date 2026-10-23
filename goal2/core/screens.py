@@ -67,6 +67,17 @@ PRINTED = {
     # "team-tactics Up" (E015-r0007 state 119); 1771:1981 moves its row DS:0D8E with them (u214b_menu_read_key_and_move)
     "team-tactics": keys(("↑↓", "Up Down")),
 }
+# [designed: owner, 2026-10-23, T108's amendment] A kinds.tsv kind also accepts a key its screen's routine reads and acts
+# on (cited in the named listing) when a recorded run read it on that screen (the catalogue's burst rows). Each is
+# listed in docs/core.md ("Keys the original's code reads") with both citations.
+CODE_READ = {
+    # [confirmed: named/seg_0791_11.c select_team_screen 0791:E44F, its last branch: with the squad list up
+    # (local_7 == 1) any other key goes to u214b_menu_move_word_wrap(0x14, 0xC1B), the cursor's Up and Down; in a match
+    # E44F draws no hint for them (template 0x1B42 only when in_match_menu_used is 0)]. Burst rows: catalogue.tsv
+    # "squad-substitution-take-off Down/Up" (E015-r0007 states 76, 79) and "squad-substitution-put-on Down/Up" (82, 131).
+    "squad-substitution-take-off": keys(("↑↓", "Up Down")),
+    "squad-substitution-put-on": keys(("↑↓", "Up Down")),
+}
 _YES_NO = keys(("Y N", "y n"))
 _MATCH_MENU = keys(("INS", "Insert"), ("↑↓←→", "Up Down Left Right"), ("◄┘", "Return"))
 _BENCH_ANY = keys(("Esc ◄┘", "Escape Return"), ("any key", "(any)"))
@@ -86,7 +97,17 @@ KINDS = {k.name: k for k in (
     Kind("team-tactics", keys(("Esc", "Escape"), ("◄┘", "Return")) + PRINTED["team-tactics"],
          evidence=_CAT + "; ↑↓ printed on the screen (PRINTED)"),
     Kind("squad-substitution-take-off", keys(("Esc", "Escape"), ("F2", "F2"), ("R,C", "r c"), ("T", "t"),
-                                             ("◄┘", "Return")), evidence=_CAT),
+                                             ("◄┘", "Return")) + CODE_READ["squad-substitution-take-off"],
+         evidence=_CAT + "; ↑↓ read by E44F (CODE_READ)"),
+    Kind("squad-substitution-put-on", keys(("Esc", "Escape"), ("F2", "F2"), ("R,C", "r c"), ("T", "t"),
+                                          ("◄┘", "Return")) + CODE_READ["squad-substitution-put-on"],
+         evidence=_CAT + "; ↑↓ read by E44F (CODE_READ)"),
+    Kind("squad-substitution-illegal", keys(("any key", "(any)")), evidence=_CAT),
+    # the round (T108)
+    Kind("round-playing", keys(("spacebar", "space"), ("←→", "Left Right")), polled=True,
+         evidence=_CAT + "; polled: simulate_fixture 000E:6970 (polls 6B84 and 6BF2, reads at 6B8D)"),
+    Kind("round-results", keys(("any key", "(any)")), evidence=_CAT),
+    Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
@@ -146,6 +167,20 @@ KINDS = {k.name: k for k in (
     Kind("squad-change-refused", keys(("any key", "(any)")), designed=True,
          evidence="[designed] 0791:DBFA's refusal of a pool exchange (F031): 'cannot alter squad', 'PRESS ANY KEY' "
                   "(214B:04F8)"),
+    # the round (T108)
+    Kind("fixture-result", keys(("any key", "(any)")), designed=True,
+         evidence="[designed] the result of a fixture marked to watch and then declined (simulate_fixture 000E:6970 "
+                  "with first byte 0xFE: the score, the template DS:25CC and DS:14A6): 'location:', 'hit any key'"),
+    Kind("tournament-table", keys(("any key", "(any)")), designed=True,
+         evidence="[designed] one pass of the group table after a fixture (1771:958D with its mode byte 0, from "
+                  "0791:E929): 'P W D L', 'hit any key'"),
+    Kind("substitutions-used", keys(("F2", "F2"), ("R,C", "r c"), ("T", "t"), ("Esc", "Escape")), designed=True,
+         evidence="[designed] SELECT TEAM in a match with no substitution left (0791:E44F draws DS:2538): 'no more "
+                  "substitutes', 'F2-new name R,C-reposition T-tactics', 'Esc-exit'"),
+    Kind("eleven-refused", keys(("any key", "(any)")), designed=True,
+         evidence="[designed] 0791:EA09's refusal of the managed eleven at the match menu's play (the box 214B:04F8 "
+                  "under 214B:1765): '<country> has an ineligible player in the first team' or '... has too many "
+                  "goalkeepers', 'PRESS ANY KEY' over the match menu ('location:')"),
 )}
 DESIGNED = tuple(k for k, v in KINDS.items() if v.designed)
 
@@ -321,7 +356,12 @@ def _yes_no(f):
     return {"1771:091C": "quit-confirm", "1771:0932": "save-game-prompt"}.get(f.far_caller(f.up(f.bp)))
 
 
-MATCH_MENUS = {0xF20A: "match-menu", 0x9AE3: "match-menu-halftime", 0xF331: "match-menu-fulltime"}
+MATCH_MENUS = {0xF20A: "match-menu", 0x9AE3: "match-menu-halftime", 0xF331: "match-menu-fulltime",
+               # [T108; confirmed: code/seg_0791_13.asm 80F0-8100] 0791:8062 calls ED8A at 8100 after the managed
+               # side's notice (a key other than Esc, or the keeper unavailable): the same menu, its text kinds.tsv's
+               # match-menu (neither HALF TIME nor FULL TIME); its view's context says "stoppage".
+               0x8103: "match-menu"}
+MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage"}
 
 
 def _menu_reader(f):
@@ -337,7 +377,18 @@ def _menu_reader(f):
         country = f.word(up, 6)
         return "team-tactics" if is_managed(f, country) and not f.ds_byte(VIEW_ONLY) else "team-tactics-view"
     if caller == "1771:9022":
-        return "tournament"         # 1771:8E9A's read (9022 lies in it; 9028 is the next routine)
+        # 1771:8E9A's read (9022 lies in it; 9028 is the next routine), near-called by 1771:958D at 9632 (return
+        # 9635). [T108; confirmed: code/seg_1771_13.asm 958D, code/seg_0791_23.asm E929-E946] 958D(country, DS:9976,
+        # mode) takes its mode byte at [bp+10]: 1 from the manager menu and the match menu's tournament (the view one
+        # browses), 0 from 0791:E929 after a fixture (run_match F364, simulate_fixture 000E:6A98): one pass.
+        table = f.up(up)
+        if f.near_caller(up) != 0x9635:
+            return None
+        return "tournament" if f.byte(table, 10) else "tournament-table"
+    if caller == "0791:E86E":
+        # [T108; confirmed: named/seg_0791_12.c ask_watch_match 0791:E80D, code/seg_0791_23.asm E869] its key read
+        # u214b_menu_read_key_and_move(2, 0xABE), far-called at E869 (return E86E): "Do you want to watch this match ?"
+        return "match-watch-prompt"
     if caller == "1771:4C0A":
         return _own_tactics(f)
     return None
@@ -352,7 +403,10 @@ def _menu_view(f):
         label = MATCH_MENU_ITEMS[(item - 1) % 5]
         if label == "play" and MATCH_MENUS.get(f.near_caller(up)) == "match-menu-fulltime":
             label = "exit"          # after the match the leave item reads "exit" (E006-r0001's tours)
-        return {"item": item, "label": label}
+        # [T108; confirmed: named/seg_0791_12.c ED8A] local_4 = local_9 < 6: items 1..5 are DS:9B36's side (team 1),
+        # 6..10 DS:9B34's (team 0); local_7 = DS:9B34[local_4] is the side's country.
+        return {"item": item, "label": label, "side_country": f.ds_word(TEAMS + 2 * (item < 6)),
+                "context": MENU_CONTEXTS.get(f.near_caller(up))}
     if caller == "1771:1A24":
         return {"country": f.word(up, 6), "row": f.ds_word(TACTICS_ROW)}
     return {}
@@ -369,6 +423,7 @@ def _board(f):
 # [confirmed: code/seg_000E_09.asm 7620, 771A] main_menu_loop far-calls select_team_screen at 7620 (Space, Left or
 # Right on the menu) and at 771A (Enter on its item 5, select squad): the return addresses its frame holds.
 SELECT_FROM_MENU = ("000E:7625", "000E:771F")
+SELECT_FROM_MATCH = "0791:E99C"      # [T108] E949's near call of E44F (push cs; call at E999)
 POOL_TOP, POOL_CURSOR = 0x52, 0x5E   # the game record's words +0x52 + 2m and +0x5E + 2m: the pool list's top and row
 
 
@@ -380,14 +435,23 @@ def _select_team(f):
     # [T107; confirmed: named/seg_0791_12.c E44F] Called by the manager menu (SELECT_FROM_MENU) with DS:0C1F clear
     # (outside a match, F031), it is SELECT YOUR TEAM: local_7 [bp-5] 1 shows the squad list, 2 the pool list (Left
     # and Right toggle it); E44F clears DS:0C20 itself when no match is set up. Its other states have no entry yet.
+    # [T108; confirmed: named/seg_0791_12.c ED8A, E949; code/seg_0791_23.asm E999] Before a match's kick-off the match
+    # menu's players (or Space) calls E949, which calls E44F (push cs; call, returning to E99C) for a managed side with
+    # DS:0C1F still clear (ED8A sets it on leaving): the same SELECT YOUR TEAM, its swaps then resort_pitch_and_bench.
     if (not f.ds_byte(MATCH_MENU_USED) and not f.ds_byte(SUMMARY_FILE) and not f.ds_byte(VIEW_ONLY)
-            and f.far_caller(f.bp) in SELECT_FROM_MENU):
+            and f.far_caller(f.bp) in SELECT_FROM_MENU + (SELECT_FROM_MATCH,)):
         return {1: "select-squad", 2: "select-squad-pool"}.get(f.word(f.bp, -5))
     if (f.ds_byte(SUMMARY_FILE) or f.ds_byte(VIEW_ONLY) or not f.ds_byte(MATCH_MENU_USED)
-            or not f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(f.bp, -3)) or not f.ds_byte(SUBS_ALLOWED)
-            or f.word(f.bp, -5) != 1):
+            or f.word(f.bp, -5) != 1 or f.far_caller(f.bp) != SELECT_FROM_MATCH):
         return None
-    return "squad-substitution-take-off" if f.ds_word(SELECT_CURSOR) < 12 else None
+    # [T108; confirmed: named/seg_0791_11.c E44F] in a match: no substitution left (DS:9B3A + local_5 [bp-3]) draws
+    # DS:2538; with substitutions now (DS:9B41) E2A0 draws "take off" below slot 12, else "put on"; DS:9B41 clear (a
+    # pause's request, DS:4760 or 4812) has no entry yet.
+    if not f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(f.bp, -3)):
+        return "substitutions-used"
+    if not f.ds_byte(SUBS_ALLOWED):
+        return None
+    return "squad-substitution-take-off" if f.ds_word(SELECT_CURSOR) < 12 else "squad-substitution-put-on"
 
 
 def pool_item(f):
@@ -407,7 +471,13 @@ POOL_BASE, POOL_INDICES = 0x6D18, 0xA927     # F011: manager m's first pool inde
 def _select_view(f):
     slot, country = f.ds_word(SELECT_CURSOR), f.word(f.bp, 6)
     out = {"slot": slot, "player": f.far_word(COUNTRIES, COUNTRY_SIZE * country + 2 * (slot - 1))}
-    if not f.ds_byte(MATCH_MENU_USED):
+    if f.ds_byte(MATCH_MENU_USED):
+        # [T108; confirmed: named/seg_0791_11.c E022] local_3 [bp-1] set: the first Enter marked the slot [bp-9];
+        # local_5 [bp-3] the side (DS:9B36 is the country), its substitutions left DS:9B3A + side.
+        side = f.byte(f.bp, -3)
+        out.update(country=country, side=side, marked=f.word(f.bp, -9) if f.byte(f.bp, -1) else None,
+                   left=f.ds_byte(SUBSTITUTIONS_LEFT + side), now=bool(f.ds_byte(SUBS_ALLOWED)))
+    else:
         # [confirmed: named/seg_0791_12.c DEA6] local_3 [bp-1] set: a player is marked by the first Enter; local_9
         # [bp-7] is his list (1 the squad, 2 the pool) and local_b [bp-9] his slot or pool index (DE27).
         out.update(country=country, side=f.word(f.bp, -5),
@@ -447,6 +517,20 @@ def _ask(near_return):
     return {0xF340: "match-summary-save-prompt", 0x0C8A: "action-replay-prompt"}.get(near_return)
 
 
+TEAMS = 0x9B34                # [confirmed: kit match.py; F029] team 0's country DS:9B34, team 1's DS:9B36
+
+
+def _captain_view(f, bp):
+    """[T108; confirmed: named/seg_0791_10.c CC7B; kit screens.py PROMPT_SLOT_BP] the highlighted slot local_7 [bp-5]
+    (1..11, moved by u214b_menu_move_word_wrap(0xB)), the side [bp+6] and the captain's word DS:9978 + 10 side."""
+    side = f.byte(bp, 6)
+    return {"slot": f.word(bp, -5), "side": side, "country": f.ds_word(TEAMS + 2 * side),
+            "captain": f.ds_word(CAPTAIN + 10 * side)}
+
+
+CAPTAIN = 0x9978
+
+
 def _captain(f, bp):
     # choose_captain_or_taker 0791:CC7B(role [bp+4], side): role 1 the captain (CF0B; routines.tsv); the takers
     # (roles 2..5) have no entry yet.
@@ -463,7 +547,21 @@ def _wait_or_key(f):
         return _ask(f.near_caller(up))
     if near == 0xC5C3:
         return "substitution-notice"
+    if near == 0x8042:
+        # [T108; confirmed: code/seg_0791_13.asm 7FCF-805F] the managed side's notice timed_notice(side, keeper)
+        # near-calls wait_or_key at 803F (DS:087C[keeper] polls), then polls at 8042 and reads at 804B; no key is Esc
+        # (8052): "SUBSTITUTION OPPORTUNITY", "press any key" (template DS:5B30; DS:5B66 and the country's name when
+        # the keeper is unavailable).
+        return "substitution-notice"
     return None
+
+
+def _notice_view(f, frame):
+    """[T108] whose notice: the managed side's (0791:7FCF, `frame` its BP: the side [bp+4], the keeper flag [bp+6]) or,
+    with no frame, the other side's (0791:C50C)."""
+    if frame is None:
+        return {"managed": False}
+    return {"managed": True, "side": f.byte(frame, 4), "keeper": bool(f.byte(frame, 6))}
 
 
 def _refusal_chain(f):
@@ -473,9 +571,18 @@ def _refusal_chain(f):
     return f.up(up)
 
 
+# [T108; confirmed: code/seg_0791_22.asm E05D, E0C6; seg_0791_23.asm EB7D; strings.tsv] 1765's other callers met by
+# a round: 0791:E022's "Illegal substitution" (DS-less pstr 0791:DFF7, return E0CB) and 0791:EA09's "<country> has an
+# ineligible player in the first team" (0791:E9A2, return EB82) and "<country> has too many goalkeepers" (0791:E9CE,
+# return EBD7). E022's other messages (E062, E167, E19F) and EA09's (EC22, EC60, ECEB) have no entry: no tour reaches
+# them (docs/core.md).
+REFUSALS = {"0791:DC3D": "squad-change-refused", "0791:DC68": "squad-change-refused",
+            "0791:E0CB": "squad-substitution-illegal", "0791:EB82": "eleven-refused", "0791:EBD7": "eleven-refused"}
+
+
 def _refusal(f):
     box = _refusal_chain(f)
-    return "squad-change-refused" if box is not None and f.far_caller(box) in ("0791:DC3D", "0791:DC68") else None
+    return None if box is None else REFUSALS.get(f.far_caller(box))
 
 
 def _refusal_view(f):
@@ -483,7 +590,17 @@ def _refusal_view(f):
     up = f.up(f.bp)
     n = min(f.byte(up, -0x51), 80)
     text = bytes(f.read(f.ss * 16 + ((up - 0x50) & 0xFFFF), n)).decode("cp437")
-    return {"message": text, "why": {"0791:DC3D": "finals", "0791:DC68": "tour"}[f.far_caller(_refusal_chain(f))]}
+    why = {"0791:DC3D": "finals", "0791:DC68": "tour"}.get(f.far_caller(_refusal_chain(f)))
+    return {"message": text, "why": why} if why else {"message": text}
+
+
+def _results_view(f):
+    """[T108; confirmed: named/seg_000E_05.c 6970, 6C21, 6CA7] the window of results the last simulate_fixture drew:
+    from max(last - 15, route_fixture's first index, local_8 at [its bp - 6]) to last, the fixture before +0x26
+    (6970 counted it). 6C21 reads route_fixture's frame pointer, its param_1, at [bp+4] (code/seg_000E_09.asm 6C31)."""
+    route = f.word(f.bp, 4)
+    last = f.far_word(GAME, 0x26) - 1
+    return {"first": max(last - 15, f.word(route, -6)), "last": last}
 
 
 _ROUTES = "the tours of goal2/tests/test_core_screens_t103.py"
@@ -502,6 +619,14 @@ SITES = {s.site: s for s in (
     Site("214B:157C", False, "214B:1560 menu reader", "T100; " + _ROUTES, _menu_reader, _menu_view),
     Site("0791:041A", False, "0791:0106 draw_match_summary", "T100; " + _ROUTES, _board),
     Site("0791:E61F", False, "0791:E44F select_team_screen", _ROUTES, _select_team, _select_view),
+    # -- the round's reads (T108) [confirmed: code/seg_000E_08.asm 6A84, seg_000E_09.asm 6C4A; named/seg_000E_05.c] -----
+    # simulate_fixture 000E:6970 reads at 6A84 (return 6A89) after drawing the result of a fixture marked to watch and
+    # declined (its first byte 0xFE); maybe_ask_watch_match 000E:6C21 reads at 6C4A (return 6C4F) after showing
+    # DS:14A6 ("hit any key") over the round's results when a fixture was simulated before it ([param_1 - 2]).
+    Site("000E:6A89", False, "000E:6970 simulate_fixture (a declined fixture's result)", "T108; E006-r0001 round 3",
+         lambda f: "fixture-result"),
+    Site("000E:6C4F", False, "000E:6C21 maybe_ask_watch_match (the round's results)", "T108; E006-r0001 round 2",
+         lambda f: "round-results", _results_view),
     Site("000E:0629", False, "000E:05F6, the news pages' key wait", _ROUTES + "; E038-r0001's after-name states",
          _bulletin),
     # [T107; confirmed: code/seg_214B_02.asm 0983-098A, seg_214B_01.asm 054B, seg_214B_03.asm 1790, seg_0791_22.asm
@@ -521,13 +646,25 @@ SITES = {s.site: s for s in (
          "F032; E038-r0001's trace", lambda f: _name_entry(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
     Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live"),
-    Site("0791:CC54", True, "0791:CC2E wait_or_key", "T100 (F030); " + _ROUTES, _wait_or_key),
+    Site("0791:CC54", True, "0791:CC2E wait_or_key", "T100 (F030); " + _ROUTES, _wait_or_key,
+         lambda f: _captain_view(f, f.up(f.bp)) if _wait_or_key(f) == "captain-select"
+         else _notice_view(f, f.up(f.bp) if f.near_caller(f.bp) == 0x8042 else None)
+         if _wait_or_key(f) == "substitution-notice" else {}),
+    Site("0791:8047", True, "0791:7FCF timed_notice, the managed side's (8042; reads at 804B)",
+         "T108; E006-r0001's round 10 (an injury in the quick result)", lambda f: "substitution-notice",
+         lambda f: _notice_view(f, f.bp)),
     Site("0791:CEDE", True, "0791:CC7B choose_captain_or_taker (CED9; reads at CEE8)", _ROUTES,
-         lambda f: _captain(f, f.bp)),
+         lambda f: _captain(f, f.bp), lambda f: _captain_view(f, f.bp)),
     Site("0791:0BE1", True, "0791:0B7C ask_do_you_want (0BDC; reads at 0BE7)", _ROUTES,
          lambda f: _ask(f.near_caller(f.bp))),
     Site("0791:C5C8", True, "0791:C50C show_computer_substitution_notice (C5C3; reads at C5CC)", _ROUTES,
-         lambda f: "substitution-notice"),
+         lambda f: "substitution-notice", lambda f: _notice_view(f, None)),
+    # simulate_fixture 000E:6970 polls at 6B84 (return 6B89; reads at 6B8D if a key waits) and, in its delay loop
+    # (DS:A923 +0x3E times 214B:1E09(50)), at 6BF2 (return 6BF7, no read) [T108; confirmed: code/seg_000E_08.asm].
+    Site("000E:6B89", True, "000E:6970 simulate_fixture (the round being played)", "T108; E006-r0001 round 2",
+         lambda f: "round-playing"),
+    Site("000E:6BF7", True, "000E:6970 simulate_fixture (its delay loop)", "T108; E006-r0001 round 2",
+         lambda f: "round-playing"),
     Site("1771:0723", True, "1771:06F3, the title's tune (before each note)", "E039's traces (NG-10)", _title_tune),
     Site("1771:0782", True, "1771:06F3, the title's tune (the second run of notes)", "E039's traces (NG-10)",
          _title_tune),

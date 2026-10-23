@@ -54,22 +54,36 @@ against it (`goal2/tests/test_core_screens_t103.py`: kinds.tsv's text rules, and
 - **Shared sites** are told apart by the caller frames the original pushed: the Y/N reader `214B:09C4` by the
   caller of `214B:0566` (`1771:091C` quit-confirm, `1771:0932` save-game-prompt); the menu reader `214B:157C` by
   its caller (`0791:EE9F` the match menu, whose own caller F20A, 9AE3 or F331 says before, at half time or after
-  the match; `1771:1A24` the tactics screen; `1771:9022` the tournament view); `wait_or_key 0791:CC54` by its
-  near caller (CC7B the captain prompt with role 1, 0B7C the timed questions, C50C the substitution notice).
+  the match; `1771:1A24` the tactics screen; `1771:9022` the tournament view, the interactive `tournament` or,
+  with 1771:958D's mode byte `[bp+10]` 0 (from 0791:E929 after a fixture), the one pass `tournament-table`;
+  `0791:E86E` the watch prompt of 0791:E80D, T108); `wait_or_key 0791:CC54` by its near caller (CC7B the captain
+  prompt with role 1, 0B7C the timed questions, C50C the substitution notice); SELECT TEAM `0791:E61F` by its
+  caller (the manager menu's 000E:7625 or 771F, or E949's `0791:E99C` from a match's menu, T108); the message box
+  read `214B:098A` by the routine that called 214B:1765 (0791:DBFA's DC3D and DC68; 0791:E022's `E0CB`, "Illegal
+  substitution", `squad-substitution-illegal`; 0791:EA09's `EB82`, "... has an ineligible player in the first
+  team", and `EBD7`, "... has too many goalkeepers", `eleven-refused`).
 - **Where frames are not enough, a cited field decides** [confirmed: the listings named]: the tactics screen edits
   only a managed country (`1771:0B77`, +0x2E > 0x80) with `DS:0C20` clear, else it is the view
   (`named/seg_1771_02.c` 1771:1981, the country its argument `[bp+6]`); the fixture list's hint comes from the
   highlighted fixture (`[bp-6] + [bp-8] - 1`, `fixtures` `DS:A92B`): neither country managed and the first byte
   0xFF "watch match", 0xFE "auto result", else none (`named/seg_000E_01.c` 000E:0000); the board `0791:041A` is the
   summary when it draws the man of the match (`DS:9A3F` clear and `DS:7C3A` set, `named/seg_0791_01.c` 0106);
-  SELECT TEAM `0791:E61F` offers "take off this player" with substitutions open and the cursor `DS:0C1B` below 12
-  (`0791:E44F`, `E2A0`); the team-info browser is `1771:26B9`'s mode 1 (`[bp+6]`) with its players view closed.
+  SELECT TEAM `0791:E61F` from E949 is SELECT YOUR TEAM before the kick-off (`DS:0C1F` clear: `select-squad`, its
+  swaps then `resort_pitch_and_bench`), and in a match offers "take off this player" with substitutions open and the
+  cursor `DS:0C1B` below 12, "put on this player" from 12 (`0791:E44F`, `E2A0`), and "no more substitutes" with
+  `DS:9B3A` + side 0 (DS:2538, `substitutions-used`); the round's results (`000E:6C4F`) show the fixtures from
+  max(last - 15, route_fixture's first, `[its bp - 6]`) to the one before `+0x26` (T108); the team-info browser is `1771:26B9`'s mode 1 (`[bp+6]`) with its players view closed.
 - **Polled screens** read a key only after "key pressed?" says one waits: the captain prompt (polls `0791:CC54`,
   `0791:CEDE`, reads at CEE8), play (`0791:93C2`, reads at 93CE), the timed questions (`0791:0BE1`) and notices
-  (`0791:C5C8`). Each wait lists those passed since the last (`KeyWait.passed`: kind, polls, the text at its first
+  (`0791:C5C8`), and the round's other fixtures (`round-playing`, polls `000E:6B89` and, in its delay loop,
+  `000E:6BF7`, T108). Each wait lists those passed since the last (`KeyWait.passed`: kind, polls, the text at its first
   poll, the queued keys read there). `core.queue(kind, key)` answers the next poll of that kind "a key waits"; the
   original's next read takes the key, as `press` gives it. Polls of other kinds answer "no key" meanwhile. A key
   the kind does not list is refused. The queue and a key a poll announced are saved and loaded with the core.
+  [designed: T108] `core.stop_at(kind, ...)` makes each poll of those polled kinds a wait (`KeyWait.poll`), so that
+  the driver reads the screen before each key (the captain prompt's highlight, CC7B's `[bp-5]`): `press` then
+  answers that poll "a key waits" and the original's next read takes the key. A poll while a key is in flight is not
+  a wait; `stop_at()` stops at none; `core.unqueue(kind)` drops the keys queued for a kind no poll took.
 - **An unknown site stops**: a read or a poll whose site has no entry, or whose entry knows no kind for what the
   frames and memory show, raises `UnknownScreen(site, text)` and the core runs no further.
 
@@ -88,11 +102,18 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `action-replay-prompt` | poll `0791:CC54` / `0791:0BE1` (0B7C from 0C65 at 0C87) | E006-r0001, a watched second half | "Do you want an action replay? (Y/N)" |
 | `substitution-notice` | poll `0791:CC54` / `0791:C5C8` (0791:C50C) | E006-r0001, a watched second half | "SUBSTITUTION" "press any key" |
 | `title-tune` | polls `1771:0723`, `1771:0782` (1771:06F3, the title's tune) | E039's traces (T106) | "THE international soccer management game" "Do you want to load a saved game? (Y/N)" |
-| `select-squad` | `0791:E61F` (0791:E44F from main_menu_loop 000E:771A or 7620, DS:0C1F clear, `[bp-5]` 1) | E006-r0001, the manager menu's select squad (T107) | "SELECT YOUR TEAM" "Hit Ins for assistant's recommended 20" "◄┘-move player" |
-| `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" "◄┘-move player" |
+| `select-squad` | `0791:E61F` (0791:E44F from main_menu_loop 000E:771A or 7620, or from E949 before a match's kick-off, DS:0C1F clear, `[bp-5]` 1) | E006-r0001, the manager menu's select squad (T107); the match menu's players before the kick-off (T108) | "SELECT YOUR TEAM" "Hit Ins for assistant's recommended 20" |
+| `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" |
 | `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107) | "↓↑←→-select" "◄┘-alter tactic" |
 | `player-name-entry` | polled `214B:0DB9`, read `214B:112B` (the editor 214B:1086 from 1771:4859, return 1771:48A0, from E44F's F2, return 0791:E700) | E006-r0001, F2 on select squad (T107) | "Type in characters (maximum 12)" "◄┘-accept Esc-abort" |
 | `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | not visited: no kept state is in a finals or tour window (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
+| `fixture-result` | `000E:6A89` (simulate_fixture 000E:6970, a fixture marked to watch and declined: its first byte 0xFE) | E006-r0001's round 3, N at the watch prompt (T108) | "location:" "hit any key" |
+| `tournament-table` | `214B:157C` from `1771:9022` (8E9A under 1771:958D with its mode byte `[bp+10]` 0, from 0791:E929 after a fixture) | E006-r0001's round 2, after the own qualifier (T108) | "P W D L" "hit any key" |
+| `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "Esc-exit" |
+| `eleven-refused` | `214B:098A` (the box 214B:04F8 under 214B:1765, from 0791:EA09 at EB7D or EBD2: return EB82 or EBD7) | E006-r0001's round 10, play on the match menu (T108); round 1 at half time after a goalkeeper came on | "location:" "PRESS ANY KEY" |
+
+[T108] SELECT YOUR TEAM's hint line reads "◄┘-move player" until a player is marked and "◄┘-put here" after, so its
+two kinds quote neither (E006-r0001's round 9, the pre-match swap, showed the second).
 
 [designed: owner, 2026-10-22, T107's amendment] **Keys the screen prints.** A kinds.tsv kind accepts its catalogue
 `screen` and `owner` rows and also a key its own screen's hint prints at a kept state (`screens.PRINTED`), quoted here
@@ -104,6 +125,16 @@ quote on the screen.
 | --- | --- | --- | --- | --- |
 | `team-tactics` | ↑↓ | E006-r0001, team info's T on the managed country (1771:1981 moves DS:0D8E; burst "team-tactics Up", E015-r0007 state 119) | row 2 | "Use ↑↓ to move" |
 
+[designed: owner, 2026-10-23, T108's amendment] **Keys the original's code reads.** A kinds.tsv kind also accepts a
+key that its screen's routine reads and acts on, cited in the named listing, when a recorded run read it on that
+screen (a catalogue `burst` row) (`screens.CODE_READ`). `test_core_screens_t103.py` checks the union, the citation and
+the burst row:
+
+| kind | keys | routine | recorded run |
+| --- | --- | --- | --- |
+| `squad-substitution-take-off` | ↑↓ | named/seg_0791_11.c select_team_screen 0791:E44F: with the squad list up any other key goes to `u214b_menu_move_word_wrap(0x14, 0xC1B)`, the cursor; in a match E44F draws no hint for it (template 0x1B42 only with in_match_menu_used clear) | burst rows of catalogue.tsv: Down at E015-r0007 state 76, Up at E015-r0007 state 79 |
+| `squad-substitution-put-on` | ↑↓ | named/seg_0791_11.c select_team_screen 0791:E44F, the same branch | burst rows of catalogue.tsv: Down at E015-r0007 state 82, Up at E015-r0007 state 131 |
+
 The new game's kinds.tsv kinds (T106) [confirmed: F032, E038-r0001's savestates and trace; catalogue.tsv's keys]:
 `title-load-prompt` (read `1771:085F`, 1771:080C from the main program), `title-player-count` (read `1771:0081`,
 manager_count_menu 1771:0021; its view is the count DS:0C4E), `country-select` (read `1771:28F5`, 1771:26B9 mode 2
@@ -114,15 +145,30 @@ near-called by welcome_new_manager 000E:68A4 and announce_stage_to_manager 000E:
 title's tune ends it (06F3 returns at a key) and the title's read takes it; `Core.boot`'s `title_key` queues one so.
 
 **Not reached yet**, so not in the table:
-- The other kinds.tsv screens no tour met (`round-playing`, `round-results`, `match-watch-prompt`,
-  `match-commentary`, the other substitution screens, `save-game-name-entry`, `file-not-found-prompt`) and the
-  other cases of the shared sites (the taker prompts, the pause and extra-time menus, the pre-match SELECT TEAM from
-  0791:E949) stop with `UnknownScreen` until a screen task maps them (G13, G14).
+- The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
+  `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
+  until a screen task maps them: the taker prompts, the pause and extra-time menus, SELECT TEAM in a match with
+  `DS:9B41` clear (a pause's request), the other players' screen of E949 (another country's, 1771:50F1), E022's other
+  messages ("There is no player here" E062, "... cannot play" E167, "Nice try" E19F) and EA09's (EC22, EC60,
+  ECEB), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
+  the watch prompt, G14b) and the finals' displays: a round in the finals shows the bracket (1771:9509, reading at
+  1771:9567, "hit any key"), met at the 24th round of a T108 exploration from E006-r0001. The summary with the man of the match and its save prompt are mapped (T103) but a round
+  over the core plays the own match as the quick result, which shows neither (F030).
 - **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
   " during finals" from DC38, return DC3D, or " whilst on tour" from DC63, return DC68, in the box 214B:04F8, F031). No
   kept state is in a finals or tour window (every one is at stage 2 with the finals flag `[A923]+0x13+m` clear), and
   no test writes guest memory to reach one; the driver's `exchange` answers it with a key and returns the message.
 - Interrupts other than the new game's (below) stay unserved.
+
+[designed: owner, 2026-10-23, T108's amendment] **A text rule narrower than its screen.** When a site is clearly a
+kinds.tsv kind (its routine and frames say so) but the kind's text rule misses a case, the kind stays and the gap is
+recorded here; the oracle's exception covers only this case. `round-results`: kinds.tsv's rule asks for
+`friendly`, which the round's results print only when a friendly is among them; a round of qualifiers alone shows
+`hit any key` over rows like `----------Nepal  1v2  Singapore------   qualifying` and no `friendly`. The site
+(`000E:6C4F`, 000E:6C21 after simulate_fixture) is the same. The rule fix proposed to goal2-archaeology:
+`+hit any key ;; -THE SOCCER BULLETIN ;; -MAN OF THE MATCH ;; -location: ;; -P W D L ;; -Scorers`, the round's
+results with any fixture kinds, which the round's other "hit any key" screens (the boards, the fixture result, the
+table) each fail.
 
 ## The driver and the views (T105, #308's G11)
 
@@ -192,6 +238,52 @@ driver.set_tactic(element, on)        # team info, the managed country, T, ↑�
   the refusal, the keys, save and resume, and the desktop's Team and Pool pages (docs/desktop-management.md).
 - Each action takes 120-570 ms under Unicorn, so the desktop runs it as a background job (`CoreJobs`).
 
+## The round (T108, #308's G14a)
+
+[designed: owner, 2026-10-22, #308, #331; decision 7] Play next game plays the original's round by its own keys, from
+the manager menu to the next one. The driver stops only where the original asks the manager and answers the rest as a
+manager who only plays: Enter on each "hit any key" screen, N at the watch prompt (a watched match under the core is
+G14b), and R at the first poll of play, the original's quick result, which still stops at half time.
+
+```python
+driver.round_start()                   # play next game: the round's other fixtures, their results, to the match menu
+driver.kick_off(captain=player)        # play, the captain prompt (None: C, the original's own), the first half
+driver.substitute(off, on)             # at half time: players, Enter on each, Esc: the original makes or refuses it
+driver.play_on()                       # the second half, the full-time board, exit, the table, the bulletins
+driver.prematch_swap(a, b)             # an eleven the original refused before the kick-off, fixed on SELECT YOUR TEAM
+driver.play_round(captain=None, substitutions=(), fix_eleven=None)   # all of it
+driver.pages                           # the screens passed: (kind, view), read from memory at each
+```
+
+- [confirmed: named/seg_000E_05.c play_round 000E:70B9, route_fixture 6CA7, simulate_fixture 6970, 6C21] item 6
+  plays the fixtures from `+0x26` through route_fixture until one of a managed country is played: each other fixture
+  is simulated (`round-playing`, its polls answered "no key") and, before the own fixture, the round's results wait
+  for a key (`round-results`). A fixture marked to watch, or of a kind the original offers (a group of the managed
+  continent), asks `match-watch-prompt`; N writes 0xFE and simulates it with its result (`fixture-result`) and the
+  table (`tournament-table`, after a non-friendly). The own match is run_match 0791:F1F6: the match menu, the
+  captain prompt, play, the half-time board and menu, the full-time board and menu, the table after a non-friendly,
+  then the bulletin (000E:4E0E).
+- [confirmed: named/seg_0791_10.c CC7B] The captain prompt highlights the stored captain's slot (local_7) and
+  moves it by Up and Down (`u214b_menu_move_word_wrap(0xB)`); Enter takes the highlighted player, C the original's
+  best leader. The driver reads the highlight at each poll (`stop_at`) and presses Up or Down to the chosen slot.
+- [confirmed: named/seg_0791_11.c E44F, E022; seg_0791_12.c ED8A, EA09] At half time the match menu's **players**
+  (item 2 or 7 of the managed side, ED8A: 1..5 are DS:9B36's) opens SELECT TEAM in the match: Enter on one of the
+  eleven marks him, Enter on a bench player swaps them (E022) and counts DS:9B3A + side down; a pair of the same
+  block is refused ("Illegal substitution"); with none left E44F shows "no more substitutes" and offers no take-off.
+  `play` asks EA09 first: it refuses an ineligible eleven ("<country> has an ineligible player in the first team")
+  or too many goalkeepers, in a box any key closes; the menu waits again. Before the kick-off the same menu's
+  players is SELECT YOUR TEAM, where Enter, Enter swaps two players (0791:DEA6).
+- The views (`goal2/core/views.py`): `match_sides` (DS:9B34, DS:9B36, the managed side, its eleven and bench, the
+  captain DS:9978 + 10 t), `captain_choice`, `bench` (the counter, the original's own line DS:2538 when none is left,
+  read from its template by 214B:0147's format), `board` (0791:0106: the score DS:9B3C, the scorers 0x7BD1 + 0x21 t +
+  3 k, the man of the match and the statistics when not a quick result), `round_results` (1771:7812's rows) and
+  `fixture_result`. `python3 -m unittest goal2.tests.test_core_round_t108 -v` checks them against the original's
+  printed screens, every wait's kind against its text rule, a substitution against the same keys pressed on the core
+  directly, the counter, the original's refusals, the captain, rounds through a refused eleven, save and resume at
+  half time, and the desktop's round (docs/desktop-management.md).
+- A round takes 35 to 60 s under Unicorn (each half of the quick result about 17 s, the other fixtures up to 14 s), so
+  the desktop runs each step as a background job (`CoreJobs`).
+
 ## Where the run starts (R1)
 
 [confirmed: E021 `notes.md` section 1 (e2a46a4)] The savestate's `CPU` component holds the registers (layout
@@ -260,6 +352,8 @@ driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arro
   given to `Core.start` or `Core.boot`; the default is 10:00:00.00, the hour E038 and E039 set. The original stores
   CX at DS:7B62 (hour·256 + minute, the seed) and DX at DS:7B64 (F004), after the key that leaves the first bulletin
   (NG-8). The time is kept in the core save, so a game replays exactly.
+- [confirmed: seg_235C_01.asm 0045; #327] The record's Flags are the CPU's flags with the carry clear, as Intr's
+  return path stores them (pushf); the date call sets CX, DX and AL only (`runner.date_registers`).
 - **Refusals**: any other request through `Intr` or `MsDos`, any other `int`, a file other than GOAL.DAT, or
   GOAL.DAT with no path given stops the core with `InterruptError`, naming the vector (`number`), the function
   (`ah`), the route (`via`: int, Intr or MsDos), the site and the text page. Loading a saved game at the title
@@ -288,7 +382,8 @@ driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arro
 
 [derived: F029, a savestate's memory is the master] `core.save()` is `G2C1`, a JSON header (the registers, the
 load segment, the Memory component's header, the DOS time and the date it was booted with (version 2; a version 1
-save loads with the default time), the seeds `DS:7B62` and `DS:7B64` (F004), the key log since the
+save loads with the default time), whether the wait is at a poll and the polled kinds that stop (version 3, T108),
+the seeds `DS:7B62` and `DS:7B64` (F004), the key log since the
 template, the budget, the template's SHA-256, the wait's polls) and the zlib-compressed memory (1 MiB, the HMA
 and the rest of the Memory component). `Core.load` rebuilds the machine and the wait; the same keys then give the
 same waits and the same memory, byte for byte. `core.memory_component()` is the memory in the form the kit's
@@ -310,3 +405,6 @@ run; its slow cases boot E039's two dates through the whole title tune (about a 
 career to the main window. `goal2.tests.test_core_desktop_t105` (T105) is guarded the same way, with `goal2/desktop/core_*`; its default run
 keeps the E006 text oracle, and its slow cases play E010-r0001's second half (about 20 s) and open the window. `goal2.tests.test_core_team_t107` (T107) likewise keeps its E006 text oracle (about a second) in the default run;
 its slow cases (about 20 s) run the actions, the new game's oracle and the Team and Pool pages.
+`goal2.tests.test_core_round_t108` (T108) keeps #327's runner checks in the default run; its slow cases play E006's
+first two rounds (about two minutes), the half-time bench, rounds through a refused eleven (about eight minutes) and
+the desktop's round, guarded with `goal2/desktop/fixtures_page.py` and `bench_page.py`.
