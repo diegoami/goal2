@@ -452,7 +452,7 @@ class Driver:
             view = views.tournament(wait.state, **{k:wait.view[k] for k in ('country','world','display')})
             view['selected_group'] = wait.view['group']
         elif kind == "championship-bracket":
-            view = views.bracket(wait.state, wait.view['country'])
+            view = views.bracket(wait.state, wait.view['country'], world=wait.view['world'])
         elif kind == "bulletin":
             view = views.bulletin(wait.state)
         elif kind in ("match-board", "match-summary"):

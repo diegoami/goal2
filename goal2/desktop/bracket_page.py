@@ -1,4 +1,4 @@
-"""[designed: T111; derived: F023, original 91CE/8CCF] Continental bracket from structured memory views.
+"""[designed: T111/T113; derived: F023, original 91CE/937C/8CCF] Brackets from structured memory views.
 
 This draws our own labels/connections and the stored country/score data at the original's slot coordinates;
 it never reads or paints the guest text page.
@@ -14,7 +14,8 @@ class BracketBoard(TextBoard):
 
     def set_view(self, view, managed=()):
         self.view = view
-        self.title = f"{view['continent'].upper()} / {view['year']}"
+        world = view.get('world', False)
+        self.title = f"{'WORLD CUP' if world else view['continent'].upper()} / {view['year']}"
         cells = [[(' ', WHITE) for _ in range(80)] for _ in range(20)]
 
         def put(x, y, text, colour=WHITE):
@@ -27,16 +28,26 @@ class BracketBoard(TextBoard):
         def vertical(x, a, b):
             for y in range(min(a,b), max(a,b)+1):put(x,y,'│',CYAN)
 
-        slots = {s['slot']: s for s in view['slots']}
-        # [derived: F023/91CE] Slots 7/8 feed final 10; slot 9 is the third-place fixture.
-        for source,target_y in ((7,slots[10]['y']),(8,slots[10]['y']+1)):
+        # [designed: T113] Remove two masthead rows from World fixture coordinates to fit the same board.
+        # The countries/score coordinates remain original in the structured view and its text oracle.
+        slots = {s['slot']: dict(s, y=s['y']-2*world, score_y=s['score_y']-2*world) for s in view['slots']}
+        # [derived: F023/91CE/937C] Stored fixtures occupy this tree; the third-place fixture is separate.
+        edges = ([(k,9+(k-1)//2,(k-1)%2) for k in range(1,9)] +
+                 [(k,13+(k-9)//2,(k-9)%2) for k in range(9,13)] + [(13,16,0),(14,16,1)]
+                 if world else [(7,10,0),(8,10,1)])
+        for source,target,index in edges:
+            target_y = slots[target]['y']+index
             s=slots[source];join=s['x']+17
             horizontal(s['x']+15,join,s['y']);horizontal(s['x']+15,join,s['y']+1)
             vertical(join,min(s['y'],target_y),max(s['y']+1,target_y))
-            horizontal(join,slots[10]['x']-1,target_y)
-        put(slots[7]['x'],slots[7]['y']-2,'SEMI-FINALS',GOLD)
-        put(slots[10]['x'],slots[10]['y']-1,'FINAL',GOLD)
-        put(slots[9]['x']+4,slots[9]['y']-1,'THIRD PLACE',GOLD)
+            horizontal(join,slots[target]['x']-1,target_y)
+        if world:
+            put(4,1,'LAST 16',GOLD);put(24,1,'QUARTERS',GOLD);put(44,1,'SEMIS',GOLD)
+        else:put(slots[7]['x'],slots[7]['y']-2,'SEMI-FINALS',GOLD)
+        final,third = (16,15) if world else (10,9)
+        put(slots[final]['x'],slots[final]['y']-1,'FINAL',GOLD)
+        # [designed: T113 review R1] Leave the semi-final score's entire byte-score width clear on this row.
+        put(slots[third]['x']+(6 if world else 4),slots[third]['y']-1,'THIRD PLACE',GOLD)
         matches={m['slot']:m for m in view['matches']}
         for number,s in slots.items():
             match=matches.get(number)
@@ -47,12 +58,15 @@ class BracketBoard(TextBoard):
                 if match and match['winner']==match[country_key]:put(s['x']+15,s['y']+index,view['winner_mark'],GOLD)
             if match and match['score'] is not None:
                 put(s['score_x'],s['score_y'],f"{match['score'][0]}v{match['score'][1]}",GOLD)
-        put(59,1,'TOP SCORERS',GOLD)
-        for i,row in enumerate(view['top_scorers']):
-            put(59,i+2,f"{i+1}) {row['name']:<13} {row['goals']:>3}",WHITE)
-        for i,label in enumerate(('winner','second','third')):
-            put(54,10+2*i,f'{label:<7}',GOLD)
-            if i<len(view['places']):put(62,10+2*i,view['places'][i]['name'],WHITE)
+        if not (world and view['places']):
+            put(59,1,'TOP SCORERS',GOLD)
+            for i,row in enumerate(view['top_scorers']):
+                put(59,i+2,f"{i+1}) {row['name']:<13} {row['goals']:>3}",WHITE)
+        if not world or view['places']:
+            for i,label in enumerate(('winner','second','third')):
+                y=(1 if world else 10)+2*i
+                put(54,y,f'{label:<7}',GOLD)
+                if i<len(view['places']):put(62,y,view['places'][i]['name'],WHITE)
         lines=[]
         for row in cells:
             parts=[]

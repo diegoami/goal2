@@ -1,0 +1,9 @@
+{
+  "evidence": "[derived: original-key continuation from T111's verified E006 checkpoints at goal2 4e478046; F023 at archaeology 53d7ef5]",
+  "storage": "Owner private Drive via tools/artifacts.py; no original bytes in Git",
+  "provenance": "T111 continental-bracket checkpoint, original keys through phase 5 retirement, then a 26-action Play next game continuation with ready same-line replacements for refused elevens; these checkpoints were captured before actions 23 and 26. No guest-memory edits. Core checkpoints retain full original-key history. Frame/trace handover: goal2-archaeology #390 comment 6366526877; private supporting index goal2-keep/G13-world-preflight-20261023/index.json.",
+  "artifacts": [
+    {"name":"g13-16dc77de414aff2b-world-finals.g2core","sha256":"16dc77de414aff2b2a71ac36c82b2dfdf490209a8ecf5baaf8ee5bf4588a9126","year":1,"stage":7,"fixture":2236},
+    {"name":"g13-7d9bbeefe3ff5f04-world-knockout.g2core","sha256":"7d9bbeefe3ff5f04d29b59345e2d07febd6e735704b2feb0da30df38bd60f57c","year":1,"stage":8,"fixture":2385}
+  ]
+}

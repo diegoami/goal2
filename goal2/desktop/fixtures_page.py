@@ -447,7 +447,8 @@ def refresh_core(self, model):
     self.core_fixture_hint.setText(f"{len(listing['rows'])} fixtures from number {listing['first']}; "
                                    'Up/Down/PgUp/PgDn scroll; √ marks your fixtures')
     view = model.tournament()
-    self.core_tournament_title.setText(f"{view['continent'].upper()} / {view['display'].upper()}")
+    competition = 'WORLD CUP' if view['class'] and view['display'] != 'qualifying' else view['continent'].upper()
+    self.core_tournament_title.setText(f"{competition} / {view['display'].upper()}")
     group = self.core_group_board
     group.managed = managed;group.groups = view['groups'] or []
     group.top_scorers = view.get('top_scorers', [])

@@ -120,9 +120,9 @@ KINDS = {k.name: k for k in (
     Kind("substitution-refused", keys(("any key", "(any)")), designed=True,
          evidence="[confirmed: named/seg_0791_12.c E022, return E167] incoming player cannot play"),
     Kind("championship-bracket", keys(("any key", "(any)")), designed=True,
-         evidence="[confirmed: named/seg_1771_07.c 9509; real E006 stage 4, T111] 'hit any key'"),
+         evidence="[confirmed: named/seg_1771_07.c 9509; real E006 stages 4/8, T111/T113] 'hit any key'"),
     Kind("championship-browse", keys(("spacebar", "space"), ("←→", "Left Right"), ("Esc", "Escape")), designed=True,
-         evidence="[confirmed: 9509/958D, T111 real bracket] continent/display selection and Esc"),
+         evidence="[confirmed: 9509/958D, T111/T113 real brackets] continent/display selection and Esc"),
     # the new game (T106): [confirmed: catalogue.tsv's screen rows, E015-r0001 state 2, E015-r0004 state 2,
     # E015-r0007 states 3 and 10]
     Kind("title-load-prompt", _YES_NO, evidence=_CAT),
@@ -398,10 +398,7 @@ def _menu_reader(f):
         table = f.word(up, 4)
         if f.near_caller(up) != (0x9635 if caller == "1771:9022" else 0x9640):
             return None
-        # [confirmed: named/seg_1771_06.c 9028, read at 91B9; T111's real finals wait]
-        # This slice covers the continental final groups; World Cup evidence is requested in #390.
-        if caller == "1771:91BE" and f.byte(table, -9):
-            return None
+        # [confirmed: 9028/91B9 at 53d7ef5; T111/T113 original-key captures] The same frame serves both finals.
         return "tournament" if f.byte(table, 10) else "tournament-table"
     if caller == "0791:E86E":
         # [T108; confirmed: named/seg_0791_12.c ask_watch_match 0791:E80D, code/seg_0791_23.asm E869] its key read
@@ -443,7 +440,7 @@ def _bracket_parent(f):
     if f.near_caller(f.bp) != 0x964B:
         return None
     parent = f.word(f.bp, 4)
-    return parent if parent == f.up(f.bp) and not f.byte(parent, -9) else None
+    return parent if parent == f.up(f.bp) else None
 
 
 def _bracket_kind(f):
@@ -652,7 +649,7 @@ SITES = {s.site: s for s in (
     # address 1771:25E4 lies in 1D5C (the next routine is 1771:25EA). E006-r0001, the manager menu's item 4.
     Site("1771:25E4", False, "1771:1D5C (a country's history)", "T105; E006-r0001, the manager menu's history",
          lambda f: "history", lambda f: {"country": f.word(f.bp, 4)}),
-    Site("1771:9567", False, "1771:9509 continental bracket, passed frame of 958D", "T111; E006 real stage 4",
+    Site("1771:9567", False, "1771:9509 bracket, passed frame of 958D", "T111/T113; E006 real stages 4/8",
          _bracket_kind, lambda f: _tournament_view(f, _bracket_parent(f), 'championship')),
     Site("000E:75D1", False, "000E:7439 main_menu_loop", "T100; " + _ROUTES, lambda f: "manager-menu",
          lambda f: {"item": f.ds_word(MENU_ITEM), "label": MANAGER_NAMES[f.ds_word(MENU_ITEM) - 1]}),

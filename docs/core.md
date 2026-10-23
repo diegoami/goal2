@@ -155,8 +155,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
   until a screen task maps them: the taker prompts and extra-time menus, the other players' screen of E949 (another country's, 1771:50F1), E022's other
   messages ("There is no player here" E062, "Nice try" E19F) and EA09's (EC22, EC60,
   ECEB), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
-  the watch prompt) and World Cup finals/bracket cases. Continental finals and the bracket at 1771:9567 are
-  mapped and visited by T111 (below). The summary with the man of the match and its save prompt are mapped (T103)
+  the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
 - **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
   " during finals" from DC38, return DC3D, or " whilst on tour" from DC63, return DC68, in the box 214B:04F8, F031). No
@@ -331,8 +330,37 @@ and places, through `desktop/bracket_page.py`, without reading the guest text pa
 and 6863 (winner's news) use the same 05F6 page/read as the already mapped bulletins. T111's private checkpoints,
 hashes and original-key provenance are in [the manifest](evidence/T111/artifacts.json); the original bytes live on
 the owner's Drive. Its tests follow 2→3 and 4→5 through the original, checking F016 for the managed twenty plus
-eighty pool players and the bracket against the original's displayed text. World Cup finals/bracket and remaining
-decision prompts are following slices; archaeology #390 requests their existing evidence.
+eighty pool players and the bracket against the original's displayed text. Remaining decision prompts and
+independent lifecycle evidence are requested in archaeology #390; World Cup coverage follows below.
+
+## World Cup continuation (T113, #308's G13c)
+
+[confirmed: goal2-archaeology at 53d7ef5, named/seg_1771_06.c 9028/883F; seg_1771_07.c 937C/9509/958D;
+T113's original-key continuations] The same finals read `214B:157C` from `1771:91BE` and bracket read
+`1771:9567` serve the World Cup. The passed frame's competition byte selects World/continental; its mode selects
+the existing browsing/one-pass kinds. World finals temporarily force country 1's shared table, use eight groups
+(DS:1137), and read top-scorer region 5. The raw country/competition in each wait is retained when the driver
+captures its page. Space on the World bracket was read in the new tour (country 1→33); the display stays World.
+
+[confirmed: 937C, 8CCF, 5AC4; code/seg_1771_13.asm 935C–9503] World slot k (1..16) reads fixture
+`game +2A + k − 1`, guarded by the original's class/count and stage tests. Name x/y are DS:1159+k/1149+k;
+score x/y are DS:1179+k/1169+k. Initially eight first-round fixtures exist. The original generates the quarters,
+semis, third-place fixture and final; goal2 reads their stored winner selectors, including tied scores.
+After the final, the original replaces top scorers with winner/second/third from slots 16/15. The title uses
+5AC4's year formula for the explicit displayed competition. No tournament is simulated in these views.
+
+[designed: decision 7] The desktop reuses the group/round pages and bracket board, preserving the tree and data.
+World fixture rows are displayed two lines above their guest coordinates to leave the masthead outside the fixed
+80×20 body. This is a structured view, never a guest text-page rendering. Its four sizes, at a 90% margin after
+fonts load, include the initial bracket and the final-places page. The World's literal kept hints are
+"TOP SCORERS", "Use ←→ to select display", "Esc-exit" in browsing, "TOP SCORERS"/"hit any key" during
+knockout play, and "winner"/"second"/"third"/"hit any key" after the final.
+
+[derived: the original-key run] The World knockout rounds lead to year word 2, continental stage 2 and fixture 1.
+Tests compare all eight completed groups' table fields and fixtures, the bracket and places against the original,
+and replay the whole transition from a core save to identical memory. Private input names, hashes and provenance
+are in [the manifest](evidence/T113/artifacts.json). The original bytes stay on owner Drive. The remaining
+set-piece/extra-time/shootout and other decision prompts still require their kept evidence (archaeology #390).
 
 ## Where the run starts (R1)
 
