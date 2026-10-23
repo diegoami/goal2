@@ -92,6 +92,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 
 | kind | site | record | quoted text |
 | --- | --- | --- | --- |
+| `championship-bracket` | `1771:9567` (9509 from 958D, continental mode 0) | T111's real E006 continuation, after fixture 1345 | "TOP SCORERS" "winner" "hit any key" |
+| `championship-browse` | `1771:9567` (the same, mode 1) | T111's private continental checkpoint, manager menu's tournament | "winner" "Use ←→ to select display" "Esc-exit" |
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
 | `substitution-requested` | `0791:E61F` (E44F, DS:9B41 clear, DS:9B40 set) | E006-r0001, Enter on substitution-request (T109) | "cancel substitution request" "Esc-exit" |
 | `substitution-refused` | `214B:098A` (E022's box, return E167) | E006-r0001, T109's watched half-time bench, attempting to put a substituted player back on | "cannot play" "PRESS ANY KEY" |
@@ -153,11 +155,13 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
   until a screen task maps them: the taker prompts and extra-time menus, the other players' screen of E949 (another country's, 1771:50F1), E022's other
   messages ("There is no player here" E062, "Nice try" E19F) and EA09's (EC22, EC60,
   ECEB), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
-  the watch prompt, G14b) and the finals' displays: a round in the finals shows the bracket (1771:9509, reading at
-  1771:9567, "hit any key"), met at the 24th round of a T108 exploration from E006-r0001. The summary with the man of the match and its save prompt are mapped (T103) and reached by the watched route (T109); the quick result shows neither (F030).
+  the watch prompt) and World Cup finals/bracket cases. Continental finals and the bracket at 1771:9567 are
+  mapped and visited by T111 (below). The summary with the man of the match and its save prompt are mapped (T103)
+  and reached by the watched route (T109); the quick result shows neither (F030).
 - **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
   " during finals" from DC38, return DC3D, or " whilst on tour" from DC63, return DC68, in the box 214B:04F8, F031). No
-  kept state is in a finals or tour window (every one is at stage 2 with the finals flag `[A923]+0x13+m` clear), and
+  kept state has the managed country in a restricted finals or tour window (T111's continental checkpoints have
+  an unqualified manager; the managed finals flag `[A923]+0x13+m` is clear), and
   no test writes guest memory to reach one; the driver's `exchange` answers it with a key and returns the message.
 - Interrupts other than the new game's (below) stay unserved.
 
@@ -306,6 +310,29 @@ line returned by `views.bulletin`, in order, as literal plain text. The round no
 into an eighteen-row board. Next keeps the existing page sequence; the component has no driver or game state.
 It fits the same fixed page and four-size bounds as the other core pages. This presentation slice changes no
 screen kind or year-transition logic; the not-reached catalogue cases above remain the later G13 slices.
+
+## Continental continuation (T111, #308's G13b)
+
+[confirmed: goal2-archaeology at 53d7ef5, named/seg_1771_06.c 9028, 8A87, 883F, 8CCF;
+seg_1771_07.c 91CE/9509/958D; real E006 continuation] The finals menu read is `214B:157C` from `1771:91BE`,
+with the passed 958D frame: country -8, competition flag -9, group -4, mode +10. Continental mode 1 is `tournament`,
+mode 0 `tournament-table`. The bracket read is `1771:9567`, near return 964B, with the same passed frame;
+mode 1 is `championship-browse`, mode 0 `championship-bracket`. Its printed browse keys are Space, Left/Right and
+Esc; the post-fixture page says "hit any key". The driver keeps the post-fixture page and presses Enter.
+
+[derived: the cited writers] `views.tournament` reads continental finals table 1 (two groups, six fixtures each)
+and the copied top-scorer records at A93F. `views.bracket` reads fixture indices 7..10 at A933 + continent·1C0 +
+55E + 2·index, the draw coordinates at 1137/113D/1142/1148, and stored winner selector +3 (5C94/5CCB). Initially
+only the semi-finals exist; the original later creates the third-place fixture and final. Goal2 interprets these
+stored fields and never decides a winner. The desktop draws a structured bracket with these fields, top scorers
+and places, through `desktop/bracket_page.py`, without reading the guest text page.
+
+[confirmed: named/seg_000E_04/05.c; code/seg_000E_07/08.asm] Bulletin returns 57DF (retirement), 5CCE (5AC5's news)
+and 6863 (winner's news) use the same 05F6 page/read as the already mapped bulletins. T111's private checkpoints,
+hashes and original-key provenance are in [the manifest](evidence/T111/artifacts.json); the original bytes live on
+the owner's Drive. Its tests follow 2→3 and 4→5 through the original, checking F016 for the managed twenty plus
+eighty pool players and the bracket against the original's displayed text. World Cup finals/bracket and remaining
+decision prompts are following slices; archaeology #390 requests their existing evidence.
 
 ## Where the run starts (R1)
 

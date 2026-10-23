@@ -235,10 +235,16 @@ class DriverTests(unittest.TestCase):
         driver.select(5)                               # [T107] select squad is mapped now: SELECT YOUR TEAM
         self.assertEqual(driver.press(ENTER).kind, "select-squad")
         driver.to_menu()
-        driver.goto("tournament")                      # the tournament's championship display is not mapped
+        driver.goto("tournament")
+        self.assertEqual(driver.press(LEFT).kind, "championship-browse")
+        driver.to_menu()
+        self.assertEqual(driver.press(0xA8).kind, "quit-confirm")  # F10, then the original's save question
+        self.assertEqual(driver.press(ord("y")).kind, "save-game-prompt")
         with self.assertRaises(UnknownScreen) as caught:
-            driver.core.press(LEFT)
-        self.assertNotIn(caught.exception.site, ("0791:E61F", "214B:157C"))
+            driver.core.press(ord("y"))                # save-game filename's caller is still unmapped
+        self.assertEqual(caught.exception.site, "214B:0DB9")
+        self.assertTrue(caught.exception.poll)
+        self.assertIn("Please enter name of saved game", caught.exception.text)
 
     def test_the_same_calls_give_the_same_keys_and_memory(self):
         runs = []

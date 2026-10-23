@@ -262,6 +262,11 @@ class Tours(unittest.TestCase):
             elif w.kind == "squad-substitution-take-off":
                 surname = w.state.name(v["player"])
                 self.assertTrue(any(c == 64 and surname[:9] in t for _, c, t in runs), (v, surname, runs))
+            elif w.kind == "tournament":
+                self.assertEqual(set(v), {"country", "world", "display", "group", "mode"})
+                self.assertEqual(v["country"], w.state.managed[0])
+                self.assertEqual((v["world"], v["display"], v["mode"]), (False, "qualifying", 1))
+                self.assertIn(f"Group {chr(64 + v['group'])}", w.text)
             else:
                 self.assertEqual(v, {}, w.kind)
                 continue
@@ -334,26 +339,26 @@ class Keys(unittest.TestCase):
 
 @requires.need(**NEEDS)
 class Unknown(unittest.TestCase):
-    def test_an_unmapped_site_stops_with_the_site_and_the_text(self):
+    def test_an_unmapped_caller_stops_with_the_site_and_the_text(self):
         from goal2.core import Core, CoreError, UnknownScreen
         from goal2.core.screens import SITES
         core = Core.start(savestate(TEMPLATE)).core
         core.press(ESC)
-        for _ in range(2):
-            core.press(DOWN)                                 # the menu's "tournament"
-        self.assertEqual(core.press(ENTER).kind, "tournament")
-        # [T105] the history is mapped now; the tournament's championship display (Left, 1771:9509, reading at
-        # 1771:9567) is not.
+        self.assertEqual(core.press(F10).kind, "quit-confirm")
+        self.assertEqual(core.press(ord("y")).kind, "save-game-prompt")
+        # [T111] The championship is mapped now. This real save-name caller of the shared editor is not.
         with self.assertRaises(UnknownScreen) as caught:
-            core.press(LEFT)
+            core.press(ord("y"))
         e = caught.exception
         self.assertRegex(e.site, r"^[0-9A-F]{4}:[0-9A-F]{4}$")
-        self.assertNotIn(e.site, SITES)
+        self.assertEqual(e.site, "214B:0DB9")
+        self.assertIn(e.site, SITES)                       # mapped for other callers, never guessed here
+        self.assertTrue(e.poll)
         self.assertEqual(e.text, e.text.rstrip())
         self.assertIn(e.site, str(e))
         self.assertIn(e.text, str(e))
         self.assertTrue(e.text.strip())
-        self.assertIsNone(text_kind(e.text))
+        self.assertEqual(text_kind(e.text), "save-game-name-entry")
         with self.assertRaises(CoreError):
             core.press(ESC)
 

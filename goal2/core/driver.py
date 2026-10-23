@@ -60,7 +60,7 @@ MENU = "manager-menu"
 ROUTES = {
     "team-info": (1, ("team-info",)),
     "fixture-list": (2, ("fixture-list", "fixtures-watch", "fixtures-auto")),
-    "tournament": (3, ("tournament",)),
+    "tournament": (3, ("tournament", "championship-browse")),
     "history": (4, ("history",)),
     "select-squad": (5, ("select-squad",)),     # [T107] main_menu_loop item 5: select_team_screen (000E:771A)
 }
@@ -70,6 +70,7 @@ ROUTES = {
 # tactics for the list he was chosen from, and the team tactics for the browser that opened them. [confirmed:
 # code/seg_0791_22.asm E641-E657] Esc while a player is marked only unmarks him (the list stays).
 BACK = {"fixture-list": (MENU,), "fixtures-watch": (MENU,), "fixtures-auto": (MENU,), "tournament": (MENU,),
+        "championship-browse": (MENU,),
         "history": ("history-browse",), "history-browse": (MENU,), "team-info": (MENU,),
         "select-squad": (MENU, "select-squad"), "select-squad-pool": ("select-squad", "select-squad-pool"),
         "own-tactics": ("select-squad", "select-squad-pool"), "team-tactics": ("team-info",)}
@@ -434,7 +435,7 @@ class Driver:
     # 7FCF, 8062 (the managed side's notice and the menu it opens)]
     MATCH_MENU_KINDS = ("match-menu", "match-menu-halftime", "match-menu-fulltime")
     # the screens of a round the driver passes with Enter (each prints "hit any key"), and the kinds a key may lead to
-    PASSING = ("round-results", "fixture-result", "tournament-table", "bulletin", "match-board", "match-summary")
+    PASSING = ("round-results", "fixture-result", "tournament-table", "championship-bracket", "bulletin", "match-board", "match-summary")
     ROUND_KINDS = PASSING + MATCH_MENU_KINDS + ("match-watch-prompt", "eleven-refused", "substitution-notice",
                                                 "captain-select", "match-live", "match-summary-save-prompt", MENU)
     # the stops of a match the steps return at: the half-time menu, the menu of a stoppage, the managed side's notice
@@ -448,7 +449,10 @@ class Driver:
         elif kind == "fixture-result":
             view = views.fixture_result(wait.state)
         elif kind == "tournament-table":
-            view = views.tournament(wait.state)
+            view = views.tournament(wait.state, **{k:wait.view[k] for k in ('country','world','display')})
+            view['selected_group'] = wait.view['group']
+        elif kind == "championship-bracket":
+            view = views.bracket(wait.state, wait.view['country'])
         elif kind == "bulletin":
             view = views.bulletin(wait.state)
         elif kind in ("match-board", "match-summary"):

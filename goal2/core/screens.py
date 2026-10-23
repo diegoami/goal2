@@ -119,6 +119,10 @@ KINDS = {k.name: k for k in (
          evidence="[confirmed: named/seg_0791_12.c E44F, DS:4812] Enter cancels DS:9B40's request"),
     Kind("substitution-refused", keys(("any key", "(any)")), designed=True,
          evidence="[confirmed: named/seg_0791_12.c E022, return E167] incoming player cannot play"),
+    Kind("championship-bracket", keys(("any key", "(any)")), designed=True,
+         evidence="[confirmed: named/seg_1771_07.c 9509; real E006 stage 4, T111] 'hit any key'"),
+    Kind("championship-browse", keys(("spacebar", "space"), ("←→", "Left Right"), ("Esc", "Escape")), designed=True,
+         evidence="[confirmed: 9509/958D, T111 real bracket] continent/display selection and Esc"),
     # the new game (T106): [confirmed: catalogue.tsv's screen rows, E015-r0001 state 2, E015-r0004 state 2,
     # E015-r0007 states 3 and 10]
     Kind("title-load-prompt", _YES_NO, evidence=_CAT),
@@ -324,7 +328,9 @@ def _bulletin(f):
     # 000E:05F6, the news pages' key wait, near-called by: post_match_news_and_sack 4E0E at 4F6F; welcome_new_manager
     # 000E:68A4 at 6961 ("APPOINT A NEW MANAGER", F032's first bulletin); announce_stage_to_manager 000E:60CB at 6622
     # ("GROUPS ARE ANNOUNCED", the second) [confirmed: named/seg_000E_04.c, seg_000E_05.c; E038-r0001's trace].
-    return "bulletin" if f.near_caller(f.bp) in (0x4F72, 0x6964, 0x6625) else None
+    # [confirmed: named/seg_000E_04/05.c; code/seg_000E_07/08.asm] replace_retiree 57DC,
+    # 5AC5's news 5CCB and the championship winner's news 6860 use the same composed page/read.
+    return "bulletin" if f.near_caller(f.bp) in (0x4F72, 0x6964, 0x6625, 0x57DF, 0x5CCE, 0x6863) else None
 
 
 def _fixture(f):
@@ -384,13 +390,17 @@ def _menu_reader(f):
         # it shows DS:14A6 and returns at the first key (named/seg_1771_02.c lines 163-176).
         country = f.word(up, 6)
         return "team-tactics" if is_managed(f, country) and not f.ds_byte(VIEW_ONLY) else "team-tactics-view"
-    if caller == "1771:9022":
+    if caller in ("1771:9022", "1771:91BE"):
         # 1771:8E9A's read (9022 lies in it; 9028 is the next routine), near-called by 1771:958D at 9632 (return
         # 9635). [T108; confirmed: code/seg_1771_13.asm 958D, code/seg_0791_23.asm E929-E946] 958D(country, DS:9976,
         # mode) takes its mode byte at [bp+10]: 1 from the manager menu and the match menu's tournament (the view one
         # browses), 0 from 0791:E929 after a fixture (run_match F364, simulate_fixture 000E:6A98): one pass.
-        table = f.up(up)
-        if f.near_caller(up) != 0x9635:
+        table = f.word(up, 4)
+        if f.near_caller(up) != (0x9635 if caller == "1771:9022" else 0x9640):
+            return None
+        # [confirmed: named/seg_1771_06.c 9028, read at 91B9; T111's real finals wait]
+        # This slice covers the continental final groups; World Cup evidence is requested in #390.
+        if caller == "1771:91BE" and f.byte(table, -9):
             return None
         return "tournament" if f.byte(table, 10) else "tournament-table"
     if caller == "0791:E86E":
@@ -404,6 +414,8 @@ def _menu_reader(f):
 
 def _menu_view(f):
     caller, up = f.far_caller(f.bp), f.up(f.bp)
+    if caller in ("1771:9022", "1771:91BE"):
+        return _tournament_view(f, f.word(up, 4), 'qualifying' if caller == "1771:9022" else 'finals')
     if caller == "1771:4C0A":
         return _own_view(f)
     if caller == "0791:EE9F":
@@ -418,6 +430,25 @@ def _menu_view(f):
     if caller == "1771:1A24":
         return {"country": f.word(up, 6), "row": f.ds_word(TACTICS_ROW)}
     return {}
+
+
+def _tournament_view(f, parent, display):
+    """[confirmed: code/seg_1771_13.asm 958D; T111 captures] The passed 958D frame owns these locals/arguments."""
+    return dict(country=f.word(parent, -8), world=bool(f.byte(parent, -9)), display=display,
+                group=f.word(parent, -4), mode=f.byte(parent, 10))
+
+
+def _bracket_parent(f):
+    # [confirmed: code/seg_1771_13.asm 9647-964B, 9509; real read 9567] 958D pushes its BP for 9509.
+    if f.near_caller(f.bp) != 0x964B:
+        return None
+    parent = f.word(f.bp, 4)
+    return parent if parent == f.up(f.bp) and not f.byte(parent, -9) else None
+
+
+def _bracket_kind(f):
+    parent = _bracket_parent(f)
+    return None if parent is None else 'championship-browse' if f.byte(parent, 10) else 'championship-bracket'
 
 
 def _board(f):
@@ -621,6 +652,8 @@ SITES = {s.site: s for s in (
     # address 1771:25E4 lies in 1D5C (the next routine is 1771:25EA). E006-r0001, the manager menu's item 4.
     Site("1771:25E4", False, "1771:1D5C (a country's history)", "T105; E006-r0001, the manager menu's history",
          lambda f: "history", lambda f: {"country": f.word(f.bp, 4)}),
+    Site("1771:9567", False, "1771:9509 continental bracket, passed frame of 958D", "T111; E006 real stage 4",
+         _bracket_kind, lambda f: _tournament_view(f, _bracket_parent(f), 'championship')),
     Site("000E:75D1", False, "000E:7439 main_menu_loop", "T100; " + _ROUTES, lambda f: "manager-menu",
          lambda f: {"item": f.ds_word(MENU_ITEM), "label": MANAGER_NAMES[f.ds_word(MENU_ITEM) - 1]}),
     Site("000E:016C", False, "000E:0000 (the fixture list)", _ROUTES, _fixture_list, _fixture_view),

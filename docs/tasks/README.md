@@ -249,3 +249,4 @@ operational status.
 | [T108](T108.md) | G14a: play the next game over the core — a round, captain, bench, results | [#331](https://github.com/diegoami/goal2/issues/331) | Large |
 | [T109](T109.md) | G14b: watched match over the core — pitch, commentary and bench | [#333](https://github.com/diegoami/goal2/issues/333) | Large |
 | [T110](T110.md) | G13a: complete three-column bulletins over the core | [#337](https://github.com/diegoami/goal2/issues/337) | Medium |
+| [T111](T111.md) | G13b: continental finals and yearly continuation | [#339](https://github.com/diegoami/goal2/issues/339) | Medium |
