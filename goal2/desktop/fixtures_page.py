@@ -1,5 +1,5 @@
 """[designed: T74] Fixtures container for existing window-owned controls."""
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (QWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QLabel,
  QPushButton,QComboBox,QTableWidget,QHeaderView,QLineEdit,QCheckBox)
 
@@ -420,6 +420,7 @@ def core_fixtures_view(self, index):
     """[designed: T105] Show Fixtures view `index` (0 the fixture list, 1 the tournament); presentation only."""
     for button in (self.core_fixture_route, self.core_tournament_route):button.setVisible(True)
     self.fixture_views.setCurrentIndex(index)
+    if hasattr(self, 'core_round'):self.core_round.holder.updateGeometry()
     if self.page_stack.currentIndex() == 3:
         (self.core_fixture_board if index == 0 else self.core_group_board).setFocus(Qt.FocusReason.ShortcutFocusReason)
 
@@ -507,6 +508,23 @@ PAGE_TITLES = {'round-results': "THE ROUND'S RESULTS", 'fixture-result': 'RESULT
                'match-summary': 'RESULT AND SUMMARY', 'tournament-table': 'THE TABLE', 'bulletin': 'THE SOCCER BULLETIN'}
 
 
+class _RoundHolder(QWidget):
+    """[designed: T108] The round's view counts towards the page's size only while it is shown: a stacked view's
+    minimum is otherwise the largest of its views, and the fixture list and tournament would need the bench's room."""
+
+    def __init__(self, stack):
+        super().__init__();self.stack = stack
+
+    def _shown(self):
+        return self.stack.currentWidget() is self
+
+    def sizeHint(self):
+        return super().sizeHint() if self._shown() else QSize(0, 0)
+
+    def minimumSizeHint(self):
+        return super().minimumSizeHint() if self._shown() else QSize(0, 0)
+
+
 class CoreRound:
     """[designed: T108] The round's views on the Fixtures & match page over the core: 0 the captain, 1 the bench
     (bench_page.CoreBench), 2 a page the round passed."""
@@ -519,9 +537,10 @@ class CoreRound:
         from goal2.desktop.core_model import PITCH_LATER
         self.window = window;self.state = None;self.queue = [];self.after = None;self.first_page = 0
         stack = window.fixture_views
-        holder = QWidget();holder.setObjectName('coreRoundView');box = QVBoxLayout(holder)
+        holder = _RoundHolder(stack);holder.setObjectName('coreRoundView');box = QVBoxLayout(holder)
         box.setContentsMargins(0, 0, 0, 0);box.setSpacing(8);stack.addWidget(holder)
         assert stack.indexOf(holder) == ROUND_VIEW
+        self.holder = holder
         self.pitch_note = QLabel(PITCH_LATER);self.pitch_note.setObjectName('prepNote');self.pitch_note.setWordWrap(True)
         box.addWidget(self.pitch_note)
         self.views = QStackedWidget();self.views.setObjectName('coreRoundViews');box.addWidget(self.views, 1)
@@ -575,7 +594,7 @@ class CoreRound:
         # [designed: T108] the fixture list's routes wait while the round is shown; the bench needs the page's height
         for button in (w.core_fixture_route, w.core_tournament_route):button.setVisible(False)
         self.pitch_note.setVisible(index != 1)
-        w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index)
+        w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index);self.holder.updateGeometry()
         focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench}[index]
         focus.setFocus(Qt.FocusReason.ShortcutFocusReason)
 

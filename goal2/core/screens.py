@@ -405,7 +405,7 @@ def _menu_view(f):
             label = "exit"          # after the match the leave item reads "exit" (E006-r0001's tours)
         # [T108; confirmed: named/seg_0791_12.c ED8A] local_4 = local_9 < 6: items 1..5 are DS:9B36's side (team 1),
         # 6..10 DS:9B34's (team 0); local_7 = DS:9B34[local_4] is the side's country.
-        return {"item": item, "label": label, "country": f.ds_word(TEAMS + 2 * (item < 6)),
+        return {"item": item, "label": label, "side_country": f.ds_word(TEAMS + 2 * (item < 6)),
                 "context": MENU_CONTEXTS.get(f.near_caller(up))}
     if caller == "1771:1A24":
         return {"country": f.word(up, 6), "row": f.ds_word(TACTICS_ROW)}
