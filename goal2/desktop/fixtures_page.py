@@ -396,15 +396,27 @@ def build_core(self, model):
                                f"{r['for']:>4}{r['against']:>4}{r['points']:>4}", GREEN)])
             lines.append([])
             lines += [_fixture_line(f, board.managed) for f in g['fixtures']]
+            if board.top_scorers:
+                lines += [[], [('TOP SCORERS', GOLD)]]
+                lines += [[(f"{i+1}) {r['name']:<14} {r['goals']:>3}", WHITE)]
+                          for i,r in enumerate(board.top_scorers)]
             board.set_lines(lines)
     self.core_group_board = GroupBoard('TOURNAMENT', 54, 18, 'coreGroupBoard', 17)
     self.core_group_board.groups = [];self.core_group_board.offset = 0;self.core_group_board.managed = ()
     self.core_group_board.empty = ''
+    self.core_group_board.top_scorers = []
     self.core_group_board.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
     self.core_tournament_title = QLabel();self.core_tournament_title.setObjectName('prepTitle')
     tournament_box.addWidget(self.core_tournament_title)
-    tournament_box.addWidget(self.core_group_board, 0, Qt.AlignmentFlag.AlignLeft)
-    hint = QLabel('Up/Down: group');hint.setObjectName('prepNote');tournament_box.addWidget(hint);tournament_box.addStretch(1)
+    from PySide6.QtWidgets import QStackedWidget
+    from goal2.desktop.bracket_page import BracketBoard
+    self.core_tournament_content = QStackedWidget()
+    self.core_tournament_content.addWidget(self.core_group_board)
+    self.core_bracket_board = BracketBoard('coreBracketBoard');self.core_bracket_board.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+    self.core_tournament_content.addWidget(self.core_bracket_board)
+    tournament_box.addWidget(self.core_tournament_content, 1)
+    self.core_tournament_hint = QLabel('Up/Down: group');self.core_tournament_hint.setObjectName('prepNote')
+    tournament_box.addWidget(self.core_tournament_hint)
 
     def escape():
         if self.fixture_views.currentIndex() == ROUND_VIEW:
@@ -422,7 +434,7 @@ def core_fixtures_view(self, index):
     self.fixture_views.setCurrentIndex(index)
     if hasattr(self, 'core_round'):self.core_round.holder.updateGeometry()
     if self.page_stack.currentIndex() == 3:
-        (self.core_fixture_board if index == 0 else self.core_group_board).setFocus(Qt.FocusReason.ShortcutFocusReason)
+        (self.core_fixture_board if index == 0 else self.core_tournament_content.currentWidget()).setFocus(Qt.FocusReason.ShortcutFocusReason)
 
 
 def refresh_core(self, model):
@@ -438,11 +450,17 @@ def refresh_core(self, model):
     self.core_tournament_title.setText(f"{view['continent'].upper()} / {view['display'].upper()}")
     group = self.core_group_board
     group.managed = managed;group.groups = view['groups'] or []
+    group.top_scorers = view.get('top_scorers', [])
     group.empty = ('' if view['groups'] is not None else
                    f"The {view['display']} display is not read over the core yet (stage {view['stage']}).")
     own = [i for i, g in enumerate(group.groups) if any(r['country'] == desk['team']['country'] for r in g['rows'])]
     group.offset = own[0] if own else 0
     group.show_window()
+    if view.get('bracket') is not None:
+        self.core_bracket_board.set_view(view['bracket'], managed)
+        self.core_tournament_content.setCurrentIndex(1);self.core_tournament_hint.hide()
+    else:
+        self.core_tournament_content.setCurrentIndex(0);self.core_tournament_hint.show()
 
 
 # -- the round over the core (T108) -----------------------------------------------------------------------------
@@ -485,7 +503,10 @@ def _page_lines(kind, view, managed):
         return _board_lines(view, 'FULL TIME')
     if kind == 'tournament-table':
         country = next((m for m in managed), None)
-        groups = [g for g in (view['groups'] or []) if any(r['country'] == country for r in g['rows'])]
+        groups = [g for g in (view['groups'] or []) if g['number']==view.get('selected_group')]
+        if not groups:
+            groups = [g for g in (view['groups'] or []) if any(r['country'] == country for r in g['rows'])]
+        if not groups:groups = (view['groups'] or [])[:1]
         lines = []
         for g in groups[:1]:
             lines.append([(f"Group {g['group']:<9}", GOLD), ('  P  W  D  L   F   A   T', GOLD)])
@@ -493,12 +514,19 @@ def _page_lines(kind, view, managed):
                 lines.append([(f"{r['name']:<15}", WHITE if r['country'] in managed else CYAN),
                               (f"{r['played']:>3}{r['won']:>3}{r['drawn']:>3}{r['lost']:>3}"
                                f"{r['for']:>4}{r['against']:>4}{r['points']:>4}", WHITE)])
+            if view['display']=='finals':
+                lines.append([]);lines += [_fixture_line(f,managed) for f in g['fixtures']]
+        if view.get('top_scorers'):
+            lines += [[], [('TOP SCORERS', GOLD)]]
+            lines += [[(f"{i+1}) {r['name']:<14} {r['goals']:>3}", WHITE)]
+                      for i,r in enumerate(view['top_scorers'])]
         return lines or [[('The table', GOLD)]]
     return []
 
 
 PAGE_TITLES = {'round-results': "THE ROUND'S RESULTS", 'fixture-result': 'RESULT', 'match-board': 'RESULT AND SUMMARY',
-               'match-summary': 'RESULT AND SUMMARY', 'tournament-table': 'THE TABLE', 'bulletin': 'THE SOCCER BULLETIN'}
+               'match-summary': 'RESULT AND SUMMARY', 'tournament-table': 'THE TABLE', 'bulletin': 'THE SOCCER BULLETIN',
+               'championship-bracket': 'CHAMPIONSHIP'}
 
 
 class _RoundHolder(QWidget):
@@ -571,6 +599,8 @@ class CoreRound:
         board_box.addWidget(self.page_board, 0, Qt.AlignmentFlag.AlignLeft);board_box.addStretch(1)
         self.page_content.addWidget(board_holder)
         self.bulletin_columns = BulletinColumns('THE SOCCER BULLETIN');self.page_content.addWidget(self.bulletin_columns)
+        from goal2.desktop.bracket_page import BracketBoard
+        self.round_bracket_board = BracketBoard('coreRoundBracket');self.page_content.addWidget(self.round_bracket_board)
         self.page_next = QPushButton('Next > (Enter)');self.page_next.setObjectName('coreRoundNext')
         self.page_next.clicked.connect(self.next_page);pbox.addWidget(self.page_next)
         self.views.addWidget(page)
@@ -792,6 +822,9 @@ class CoreRound:
             # [designed: T110] A bulletin keeps its three original columns; it is never flattened or sliced.
             if kind == 'bulletin':
                 self.bulletin_columns.set_content(view);self.page_content.setCurrentIndex(1)
+                self.page_board.set_lines([])
+            elif kind == 'championship-bracket':
+                self.round_bracket_board.set_view(view, managed);self.page_content.setCurrentIndex(2)
                 self.page_board.set_lines([])
             else:
                 self.page_board.set_lines(_page_lines(kind, view, managed));self.page_content.setCurrentIndex(0)

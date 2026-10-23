@@ -125,6 +125,13 @@ three-column view: each paper has its masthead and all its story lines, as liter
 eighteen-line truncation. Next/Enter keeps the page sequence. The round's type fits alongside the sidebar; the
 whole fixed page scales as usual.
 
+[designed: T111, #308's G13b; confirmed: F023 and the original 9028/91CE/9509 routines] **Continental finals.**
+The tournament page shows the two finals groups with their fixtures and top scorers, then the continental bracket
+with its semi-finals, third-place fixture, final and places. The bracket's countries, scores and winner markers
+come from the original's stored fixtures. Post-fixture bracket pages and the year's bulletins follow in the
+round's normal Next sequence. The original advances the phase and ages the squad and pool; the desktop reads the
+new state afterwards. World Cup finals and the remaining match prompts retain their later G13 scope.
+
 [designed] Supply verified local game resources using the existing runtime-cache
 instructions. No original resources or screenshots enter git. Without Qt the
 entry prints the installation instruction and exits2; headless imports and quick

@@ -213,32 +213,41 @@ def fixture_list(state):
     return {"first": start, "rows": [_row(mem, mem.fixture(n)) for n in range(start, last + 1)]}
 
 
-def tournament(state):
+def tournament(state, country=None, world=None, display=None):
     """The tournament (1771:958D from the manager menu, the managed country's): which display it opens and, for the
-    qualifying display, the group tables of the country's continent.
+    qualifying or continental finals display, the group tables of the country's continent.
 
     [confirmed: named/seg_1771_07.c 1771:958D; seg_1771_06.c 1771:8E9A, 8A87, 8CA2] The display is 1 (qualifying)
     + 1 when the stage is in the finals tables (3, 4, 7, 8) + 1 when it is a knockout stage (4, 8); the class is
     +0x40. Group g's slot s (1..4) is 8 bytes at [DS:A933] + 8 s + 0x38 g + 0x1C0 continent + 0x700 table
     + 0xE00 class - 0x200: the country word, W, D, L, F, A, T (P = W + D + L); its fixtures are the twelve words
-    at [DS:A933] + 2 k + 0x38 g + 0x1C0 continent + 0xE00 class - 0x1DA. [designed] Only the qualifying display is
-    read here (every kept state is in a qualifying stage); the finals groups (1771:9028), the bracket (1771:91CE)
-    and the play-off view (group 9, 1771:8D84) are left to the task that first reaches them, and `groups` is then
-    None."""
+    at [DS:A933] + 2 k + 0x38 g + 0x1C0 continent + 0xE00 class - 0x1DA. [confirmed: 9028, 8A87; T111]
+    Continental finals add 0x700 and use six fixtures; 1136 gives the two groups. [designed] World Cup finals
+    and the play-off view (group 9, 1771:8D84) await their evidence; `groups` is then None. Continental knockout
+    data is returned separately as `bracket`."""
     mem = Memory(state)
     m = mem.game(1)
-    country = mem.manager_country(0x80 + m)
-    stage, klass = mem.game(0x3C), mem.game(0x40)
-    display = 1 + (stage in FINALS_STAGES) + (stage in KNOCKOUT_STAGES)
+    country = mem.manager_country(0x80 + m) if country is None else country
+    stage = mem.game(0x3C)
+    klass = mem.game(0x40) if world is None else int(world)
+    display = (1 + (stage in FINALS_STAGES) + (stage in KNOCKOUT_STAGES) if display is None
+               else ("qualifying", "finals", "championship").index(display) + 1)
     continent = mem.country(country, 0x2C)
     out = {"display": ("qualifying", "finals", "championship")[display - 1], "stage": stage, "class": klass,
            "continent": mem.pstr(mem.ds * 16 + 0x6E92 + 8 * continent), "country": country, "groups": None}
-    if display != 1 or stage == 6:
+    if display == 3:
+        if not klass:out['bracket'] = bracket(state, country)
         return out
+    if stage == 6 or (display == 2 and klass):
+        return out
+    # [confirmed: named/seg_1771_06.c 9028, 8A87] Continental finals use table 1 and six fixtures per group.
+    table = int(display == 2)
+    if table:out['top_scorers'] = competition_scorers(mem, continent)
+    last_group = mem.ds_byte(0x1136) if table else 8
     tables = mem.far(GROUP_TABLES)
     groups = []
-    for g in range(1, 9):
-        base = tables + 0x38 * g + 0x1C0 * continent + 0xE00 * klass - 0x200
+    for g in range(1, last_group + 1):
+        base = tables + 0x38 * g + 0x1C0 * continent + 0xE00 * klass + 0x700 * table - 0x200
         rows = []
         for s in range(1, 5):
             r = bytes(mem.mem[base + 8 * s:base + 8 * s + 8])
@@ -247,12 +256,59 @@ def tournament(state):
                          "drawn": r[3], "lost": r[4], "for": r[5], "against": r[6], "points": r[7]})
         if not any(r["country"] for r in rows):
             continue
-        fixtures = [mem.word(tables + 2 * k + 0x38 * g + 0x1C0 * continent + 0xE00 * klass - 0x1DA)
-                    for k in range(1, 13)]
+        fixtures = [mem.word(tables + 2 * k + 0x38 * g + 0x1C0 * continent + 0xE00 * klass + 0x700 * table - 0x1DA)
+                    for k in range(1, 7 if table else 13)]
         groups.append({"group": chr(0x40 + g), "number": g, "rows": rows,
                        "fixtures": [_row(mem, mem.fixture(n)) for n in fixtures if n]})
     out["groups"] = groups
     return out
+
+
+def competition_scorers(mem, region):
+    """[confirmed: named/seg_1771_06.c 883F at 53d7ef5] Three copied initial/surname/goals/player records."""
+    top = []
+    for k in range(3):
+        a = mem.far(0xA93F) + (region - 1) * 0x60 + 16 * k
+        if mem.word(a + 14):
+            top.append(dict(player=mem.word(a + 14), name=chr(mem.byte(a)) + ' ' + mem.pstr(a + 1, 10),
+                            goals=mem.word(a + 12)))
+    return top
+
+
+def bracket(state, country=None):
+    """[confirmed: named/seg_1771_07.c 91CE, 9509; seg_1771_06.c 8CCF, 883F; F023 at 53d7ef5]
+    Continental knockout fixtures 7..10 of the continent's table, their stored winner selectors and original
+    draw coordinates. Top scorers are copied records at A93F, not inferred from current player names.
+    No match is simulated here. World Cup projection awaits #390's kept state."""
+    mem = Memory(state)
+    if country is None:country = mem.manager_country(0x80 + mem.game(1))
+    region = mem.country(country, 0x2C)
+    base = mem.far(GROUP_TABLES) + 0x1C0 * region
+    matches = []
+    slots = [dict(slot=k, x=mem.ds_byte(0x1142 + (k > 8)), y=mem.ds_byte(0x1137 + k),
+                  score_x=mem.ds_byte(0x1148 + (k > 8)), score_y=mem.ds_byte(0x113D + k))
+             for k in range(7, 11)]
+    if mem.game(0x3C) > 3:
+        for k in range(7, 11):
+            number = mem.word(base + 0x55E + 2 * k)
+            if not number:continue
+            raw = mem.fixture(number)
+            row = _row(mem, raw)
+            row.update(**slots[k-7], winner=(raw['a'] if raw['result'] == 1 else raw['b']) if row['played'] else None)
+            matches.append(row)
+    top = competition_scorers(mem, region)
+    places = []
+    final, third = mem.word(base + 0x572), mem.word(base + 0x570)
+    if mem.game(0x3C)>3 and final and mem.fixture(final)['mark'] < 0xFE:
+        f = mem.fixture(final)
+        winner, loser = (f['a'], f['b']) if f['result'] == 1 else (f['b'], f['a'])
+        t = mem.fixture(third)
+        countries = [winner, loser, t['a'] if t['result'] == 1 else t['b']]
+        places = [dict(place=i+1, country=c, name=mem.country_name(c)) for i,c in enumerate(countries)]
+    year = mem.game(0x3A, 2) + 2 * mem.game(0x38, 2) - 2 * (mem.game(0x3C) > 4)
+    return dict(country=country, continent=mem.pstr(mem.ds * 16 + 0x6E92 + 8 * region), year=year,
+                matches=matches, slots=slots, top_scorers=top, places=places,
+                winner_mark=mem.code_str(0x1771,0x8CCD))
 
 
 def _top(mem, country, goals):

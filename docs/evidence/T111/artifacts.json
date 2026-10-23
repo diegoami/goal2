@@ -1,0 +1,11 @@
+{
+  "evidence": "[derived: real E006 continuation through original keys; Core version 3 at goal2 3ae6679; F016/F017/F023 at archaeology 53d7ef5]",
+  "storage": "The owner's private Drive through tools/artifacts.py; never Git or a public release",
+  "template": "e006-r0001-main.sav",
+  "provenance": "The first managed substitution notice is SeveralRounds.notice_fixture in test_core_round_t108.py. Six independently generated notice checkpoints had identical guest memory and 133 keys. From that notice, the original was driven with C for captain, R for the quick result, ready same-line replacements for an ineligible XI, and a ready same-line substitution for an injured player. No guest-memory field was edited. Each artifact is the original at a manager-menu wait, before the next Play next game.",
+  "artifacts": [
+    {"name":"t111-de47ba6cf7541688-qualifying-end.g2core","sha256":"de47ba6cf754168878d143864531c5ab5f7278a98b434a1bed6a9283cf039f69","stage":2,"year":0,"fixture":706},
+    {"name":"t111-9ccc3afce77e4c93-continental-groups.g2core","sha256":"9ccc3afce77e4c935b0b52ec5f032342b833a15357318a5e94f38683e945c58f","stage":3,"year":0,"fixture":769},
+    {"name":"t111-74e921f211b23e71-continental-bracket.g2core","sha256":"74e921f211b23e716370c320279acce9dd9f94e5a784306e6fbfa87bc260780e","stage":4,"year":0,"fixture":1345}
+  ]
+}
