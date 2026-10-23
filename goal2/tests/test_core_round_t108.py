@@ -594,9 +594,9 @@ class Desktop(unittest.TestCase):
         self.assertTrue(w.core_jobs.busy);self.assertFalse(play.isEnabled())
         self.assertEqual(w.finish_core(300)[0], "done")
         r = w.core_round
-        # [T109] The original quick route remains the default; Watch is now offered on the captain page.
+        # [designed: owner, T116] Watch defaults on; explicitly select Quick for this retained quick-round case.
         self.assertIn("Watch", r.watch.text())
-        self.assertFalse(r.watch.isChecked())
+        self.assertTrue(r.watch.isChecked());r.watch.click();self.assertFalse(r.watch.isChecked())
         self.assertTrue(r.watch.isEnabled())
         seen = []
         # round 1 has no other fixture: the captain page comes first

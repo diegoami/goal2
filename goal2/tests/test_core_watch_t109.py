@@ -179,8 +179,7 @@ class Desktop(unittest.TestCase):
                 self.assertEqual(window.finish_core(60)[0], 'done')
                 r = window.core_round
                 self.assertEqual(r.views.currentIndex(), 0)
-                self.assertFalse(r.watch.isChecked())
-                r.watch.click()
+                # [designed: owner, T116] Watch is selected without an extra click.
                 self.assertTrue(r.watch.isChecked())
                 r.computer.click()
                 self.assertFalse(window.save.isEnabled())

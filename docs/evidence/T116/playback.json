@@ -1,0 +1,23 @@
+{
+  "source": "e006-r0001-main.sav, original-key watched kickoff (T109 live helper)",
+  "benchmark_checkpoint_sha256": "dcdb6f59f05169eb44e688595bf87f94f03a1cb76d6c28244fe4cca650cae557",
+  "memory_sha256": "bab5cd9706f6d04bb85c36cac0e21b0d79545351aca50af5657b81fa9069f754",
+  "keys": [
+    27,
+    177,
+    177,
+    177,
+    177,
+    177,
+    13,
+    13,
+    99
+  ],
+  "measurements": {
+    "profiled_30_poses_before_seconds": 30.073,
+    "profiled_30_poses_after_seconds": 3.408,
+    "qt_6_poses_before_seconds": 2.463,
+    "qt_6_poses_after_seconds": 0.818
+  },
+  "limits": "Local short-run measurements, no CI wall-clock threshold; Qt includes worker/timer/pages, excludes SDL renderer. No guest-memory editing."
+}

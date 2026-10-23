@@ -146,14 +146,10 @@ class CoreModel:
         if name == 'kick_off':
             self.commentary_cursor = 0       # the original clears its ring for this match
         try:
-            result = getattr(self.driver, name)(*args)
-            # [confirmed: code/seg_0791_15.asm 9571-9708] Only the last player poll holds a complete pose.
-            # At most 22 live polls to it; manager decisions return immediately.
-            if self.driver.watching:
-                for _ in range(22):
-                    if self.core.wait.kind != 'match-live' or self.core.wait.view.get('slot') in (22, None):
-                        break
-                    self.driver.live_step()
+            # [designed: T116; confirmed: 0791:9571–9708] All original polls execute; only complete poses need
+            # a kept snapshot/text page. Reads and manager decisions retain their immediate stops.
+            with self.core.live_frames():
+                result = getattr(self.driver, name)(*args)
         except CoreError as exc:
             if self.core.stopped is not None:
                 raise

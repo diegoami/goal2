@@ -581,6 +581,7 @@ class CoreRound:
         self.players = QPushButton('Players: select your team >');self.players.setObjectName('corePreMatchPlayers')
         self.players.clicked.connect(self.show_pre_match);left.addWidget(self.players)
         self.watch = QPushButton('Watch this match');self.watch.setObjectName('coreWatch');self.watch.setCheckable(True)
+        self.watch.setChecked(True)  # [designed: owner demo feedback, 2026-10-23, T116]
         left.addWidget(self.watch)
         left.addStretch(1)
         self.captain_roster = RosterView('CAPTAIN', toggles=False, grouped=False, marks=False, capacity=11)
@@ -718,7 +719,8 @@ class CoreRound:
         elif stop == 'full-time':              # [T108 review, R1] the round's end goes on, as on a resume
             self.window.run_core('finish')
         elif stop == 'live':
-            self.show(4)
+            # [designed: T116] An existing live page needs a new pose, not another geometry/focus transition.
+            if self.views.currentIndex()!=4:self.show(4)
             try:
                 if not self.watch_suspended:self.resume_viewer()
             except (OSError, ValueError) as exc:

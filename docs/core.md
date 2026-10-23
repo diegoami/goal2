@@ -188,6 +188,14 @@ bench that makes the pair. Goal2's `substitution-request` kind names this screen
 Enter and Esc. `Core.advance()` answers one poll with no key, keeping the next poll as a wait; `release()` retains
 its T108 meaning of passing the screen. These are manager inputs, with no guest-memory patch.
 
+[designed: T116; confirmed: the same 9571–9708 poll loop] `with core.live_frames():` batches intermediate
+player polls inside one emulator run and keeps the next complete pose at slot 22. All original instructions and
+poll/key handling still execute; other read waits, manager decisions and unknown screens stop normally. Outside
+the bounded operation `advance()` retains its single-poll behavior. The desktop uses this operation rather than
+copying the full memory and decoding the DOS page at each of 22 polls. A kept `StateView` shares its immutable
+component through read-only kit readers, using the core's known load segment; it does not rescan/copy the entire
+image per pose. High memory is retained for the same memory-component/hash/save behavior.
+
 [designed: owner, 2026-10-22, #308, #321; decision 7 of docs/redesign-253/vision-reconciliation.md] The desktop
 and, later, the bot move the original only by its own keys, through one path, `goal2/core/driver.py`:
 

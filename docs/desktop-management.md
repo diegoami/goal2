@@ -88,8 +88,9 @@ the round's page says so, and it never falls back to the Python route. **Save** 
 docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu (or at the round's stop it was
 saved at), with the same views and the same memory. `--template` and every other route are unchanged.
 
-[designed: owner, 2026-10-23; T109, #333] **Watch over the core.** On Play next game's captain page, enable
-**Watch this match**, then choose the captain and kick off. The same pygame pitch window reads the original's
+[designed: owner, 2026-10-23; T109/T116] **Watch over the core.** On Play next game's captain page,
+**Watch this match** is selected by default (owner demo feedback). Choose the captain and kick off;
+turn Watch off explicitly for the quick result. The same pygame pitch window reads the original's
 memory at its live polls, showing complete signed player/ball/official poses, role codes, score, minute and the
 latest two commentary lines. Space opens the full commentary; Esc closes it, or closes the pitch window when
 commentary is hidden. Left/Right change presentation speed, Up/Down the marks. Each pose must be displayed and
@@ -101,6 +102,11 @@ opportunity. Half time offers the ordinary bench directly. The original makes or
 summary-save question offers **Save summary…** (a readable UTF-8 text file) or **Continue without saving**.
 [designed: owner choice, 2026-10-23] Both continue with N to the original's DOS writer; only the desktop exports
 that summary. The Python route keeps its existing watched match controller and bench.
+
+[designed: T116] Watched steps execute all original player polls but retain a snapshot only at a complete pose
+or a manager decision. Live frames update the pitch instead of rebuilding the hidden desk, Team and Pool pages;
+decisions refresh those pages. Kept snapshots are immutable, with read-only image readers sharing their bytes.
+This changes desktop overhead, not the original's simulation, match speed byte or substitution rules.
 
 [designed: owner, 2026-10-22; T106, #308's G10] **A new career on the core route.** `--core-boot` opens Launch
 over the original's own new game, booted from the state at the program's DOS date call (`e039-r0005-date-call.sav`,
