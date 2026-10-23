@@ -204,6 +204,12 @@ that value. Resume preserves it rather than choosing the default again. Neither 
 speed byte is rewritten by the client. Direct presses remain in `Core.keys`; queued keys read by the original
 are recorded in `PassedScreen.keys`, as before.
 
+[designed: T116] `tools/benchmark_core_watch.py --delay 0 --frames 60 --output .cache/watch-throughput.json`
+measures actual displayed acknowledgements after five warm-up poses, using the Qt event loop and SDL renderer.
+Run the identical script/state/drivers on both heads (copy the script into ignored cache when measuring an older
+head). It records script/input/initial-memory hashes and the original speed so the workloads can be compared.
+`--state` defaults to the private E006 manager state; speed selection uses original keys, never guest patches.
+
 [designed: owner, 2026-10-22, #308, #321; decision 7 of docs/redesign-253/vision-reconciliation.md] The desktop
 and, later, the bot move the original only by its own keys, through one path, `goal2/core/driver.py`:
 

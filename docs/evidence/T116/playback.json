@@ -22,5 +22,33 @@
     "original_delay_0_core_fps": 31.6591,
     "original_delay_0_qt_sdl_fps": 25.971
   },
-  "limits": "Local short-run measurements, not a portable FPS guarantee or CI wall-clock threshold. Qt/SDL result uses real QApplication.exec and SDL rendering/acknowledgements with offscreen/dummy drivers; core speed 0 selected only through original Right. No guest-memory patch or instruction-budget bypass."
+  "limits": "Local short-run measurements, not a portable FPS guarantee or CI wall-clock threshold. Qt/SDL result uses real QApplication.exec and SDL rendering/acknowledgements with offscreen/dummy drivers; core speed 0 selected only through original Right. No guest-memory patch or instruction-budget bypass.",
+  "same_speed_qt_sdl": {
+    "command": "QT_QPA_PLATFORM=offscreen SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .cache/venv/bin/python tools/benchmark_core_watch.py --frames 60 --delay 0 --output .cache/watch-throughput.json",
+    "before": {
+      "head": "87610bd1d0d4533777b9f93f930c2e25b294d327",
+      "script_sha256": "2259056dd6fbe8457a910fe96d490e9a7e1815a93cb88f897f35bccf84f94ea6",
+      "state_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+      "initial_memory_sha256": "61b01cdc22bf2adea84c64da804426b8088e1b0099927567b96e1c2e55e57ff5",
+      "original_delay": 0,
+      "python": "3.14.4",
+      "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+      "frames": 60,
+      "seconds": 6.355403370000204,
+      "fps": 9.440785502808781
+    },
+    "after": {
+      "head": "39cb9f45d13b0fa43de8dcd790625b5af4d0790d",
+      "script_sha256": "2259056dd6fbe8457a910fe96d490e9a7e1815a93cb88f897f35bccf84f94ea6",
+      "state_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+      "initial_memory_sha256": "61b01cdc22bf2adea84c64da804426b8088e1b0099927567b96e1c2e55e57ff5",
+      "original_delay": 0,
+      "python": "3.14.4",
+      "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+      "frames": 60,
+      "seconds": 1.0006823750009062,
+      "fps": 59.95908541903285
+    },
+    "throughput_ratio": 6.351069558904191
+  }
 }
