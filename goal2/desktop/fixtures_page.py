@@ -494,13 +494,6 @@ def _page_lines(kind, view, managed):
                               (f"{r['played']:>3}{r['won']:>3}{r['drawn']:>3}{r['lost']:>3}"
                                f"{r['for']:>4}{r['against']:>4}{r['points']:>4}", WHITE)])
         return lines or [[('The table', GOLD)]]
-    if kind == 'bulletin':
-        lines = []
-        for name in ('left', 'middle', 'right'):
-            lines.append([(view[name]['masthead'], GOLD)])
-            lines += [[(t, WHITE)] for t in view[name]['lines']]
-            lines.append([])
-        return lines
     return []
 
 
@@ -571,10 +564,15 @@ class CoreRound:
         # 2: a page the round passed
         page = QWidget();page.setObjectName('coreRoundPage');pbox = QVBoxLayout(page);pbox.setSpacing(8)
         self.page_count = QLabel();self.page_count.setObjectName('prepNote');pbox.addWidget(self.page_count)
+        from goal2.desktop.bulletin_page import BulletinColumns
+        self.page_content = QStackedWidget();pbox.addWidget(self.page_content, 1)
+        board_holder = QWidget();board_box = QVBoxLayout(board_holder);board_box.setContentsMargins(0, 0, 0, 0)
         self.page_board = TextBoard('RESULT', 56, RESULT_ROWS, 'coreRoundBoard', 17)
-        pbox.addWidget(self.page_board, 0, Qt.AlignmentFlag.AlignLeft)
+        board_box.addWidget(self.page_board, 0, Qt.AlignmentFlag.AlignLeft);board_box.addStretch(1)
+        self.page_content.addWidget(board_holder)
+        self.bulletin_columns = BulletinColumns('THE SOCCER BULLETIN');self.page_content.addWidget(self.bulletin_columns)
         self.page_next = QPushButton('Next > (Enter)');self.page_next.setObjectName('coreRoundNext')
-        self.page_next.clicked.connect(self.next_page);pbox.addWidget(self.page_next);pbox.addStretch(1)
+        self.page_next.clicked.connect(self.next_page);pbox.addWidget(self.page_next)
         self.views.addWidget(page)
         # 3: the managed side's substitution notice at a stoppage
         notice = QWidget();notice.setObjectName('coreNoticeView');nbox = QVBoxLayout(notice);nbox.setSpacing(10)
@@ -631,7 +629,12 @@ class CoreRound:
         self.watch_suspended = False
         self.bench_pending = False
         self.window.run_core('round_start')
-        self.show(2);self.page_count.setText('The original plays the round…');self.page_board.set_lines([])
+        self.show_waiting('The original plays the round…')
+
+    def show_waiting(self, text):
+        """[designed: T110] A new step shows its progress board, including after a bulletin."""
+        self.page_content.setCurrentIndex(0)
+        self.page_count.setText(text);self.page_board.set_lines([]);self.show(2)
 
     def finished(self, name, answer):
         """A round step's job ended: show the stop the original is at (CoreModel.round_state's `stop`)."""
@@ -721,14 +724,14 @@ class CoreRound:
         if self.window.core_jobs.busy:return
         self.watch_suspended = False
         if self.window.run_core('kick_off', captain, self.watch.isChecked()):
-            self.show(2);self.page_count.setText('The original plays the first half…');self.page_board.set_lines([])
+            self.show_waiting('The original plays the first half…')
 
     def start_play_on(self):
         """Play on at half time: the second half and the round's last screens, as a job."""
         if self.window.core_jobs.busy:return
         self.first_page = len(self.window.model.driver.pages)
         if self.window.run_core('play_on'):
-            self.show(2);self.page_count.setText('The original plays the second half…');self.page_board.set_lines([])
+            self.show_waiting('The original plays the second half…')
 
     def resume_viewer(self):
         from goal2.desktop.core_viewer import CoreViewer
@@ -786,7 +789,12 @@ class CoreRound:
         if self.queue:
             kind, view = self.queue.pop(0)
             self.page_board.title = PAGE_TITLES.get(kind, kind.upper())
-            self.page_board.set_lines(_page_lines(kind, view, managed))
+            # [designed: T110] A bulletin keeps its three original columns; it is never flattened or sliced.
+            if kind == 'bulletin':
+                self.bulletin_columns.set_content(view);self.page_content.setCurrentIndex(1)
+                self.page_board.set_lines([])
+            else:
+                self.page_board.set_lines(_page_lines(kind, view, managed));self.page_content.setCurrentIndex(0)
             self.page_count.setText(f"{PAGE_TITLES.get(kind, kind)}: {len(self.queue)} more")
             self.shown = (kind, view);self.show(2);return
         if self.after == 'captain':

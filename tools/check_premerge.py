@@ -60,11 +60,11 @@ def check_originals() -> None:
 SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|competitive|session_save|campaign_competitive)"
                         r"|goal2/desktop/(watched|competitive|match_view|save|core_"
                         r"|squad_page|pool_page|player_card|roster|overview_page"      # [T107] the core pages' builders
-                        r"|fixtures_page|bench_page)"                                   # [T108] the round's pages
+                        r"|fixtures_page|bench_page|bulletin_page)"                     # [T108/T110] round pages
                         r"|goal2/tests/(requires\.py$"
                         r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view"
                         r"|core_runner_t100|core_screens_t103|core_desktop_t105|core_new_game_t106|core_team_t107"
-                        r"|core_round_t108|core_watch_t109))"
+                        r"|core_round_t108|core_watch_t109|core_bulletin_t110))"
                         r"|pyproject\.toml$|tools/check_premerge\.py$)")
 
 
