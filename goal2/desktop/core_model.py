@@ -25,18 +25,19 @@ from goal2.core import views
 # [T107, G12] Team and Pool are served now: the Team page is select squad and the team tactics, the Pool page the
 # pool list of SELECT YOUR TEAM.
 # [T108, G14a] Play next game is served now: the round by the original's keys, the own match as its quick result. The
-# watched match's pitch view under the core is G14b.
+# watched match is served by T109 (G14b), with one complete pose acknowledged before the next.
 DISABLED = {}
 DISABLED_TEXT = {}
-PITCH_LATER = "The pitch view over the core arrives with G14b: the own match is the original's quick result"
 
 # [designed: T107] The driver's team actions the pages may run (goal2/core/driver.py), each from the manager menu
 # and back to it.
 ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 'rename', 'set_tactic')
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
-ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish')
+ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
+                 'live_step', 'summary_done', 'request_substitution')
 # the kinds a round waits at between its steps
-ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime')
+ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
+               'match-live', 'match-summary-save-prompt')
 
 
 class CoreModel:
@@ -51,6 +52,8 @@ class CoreModel:
         self.data_path = None if data_path is None else Path(data_path)
         self.save_path = Path(save_path)
         self.refused = None           # [T108] the original's last refusal of the eleven, while the round waits on it
+        self.commentary_cursor = 0
+        self.pitch_sequence = 0
         if core.wait.kind not in ROUND_WAITS:   # [T108] a core saved in a round resumes there
             self.driver.to_menu()
 
@@ -139,8 +142,18 @@ class CoreModel:
         from goal2.core import CoreError
         if name == 'round_start':
             self.driver.pages = []
+            self.commentary_cursor = 0
+        if name == 'kick_off':
+            self.commentary_cursor = 0       # the original clears its ring for this match
         try:
             result = getattr(self.driver, name)(*args)
+            # [confirmed: code/seg_0791_15.asm 9571-9708] Only the last player poll holds a complete pose.
+            # At most 22 live polls to it; manager decisions return immediately.
+            if self.driver.watching:
+                for _ in range(22):
+                    if self.core.wait.kind != 'match-live' or self.core.wait.view.get('slot') in (22, None):
+                        break
+                    self.driver.live_step()
         except CoreError as exc:
             if self.core.stopped is not None:
                 raise
@@ -160,7 +173,8 @@ class CoreModel:
         out = {'at': wait.kind, 'stop': 'menu', 'pages': list(self.driver.pages), 'refused': self.refused,
                'captain': None, 'bench': None, 'board': None, 'notice': None}
         if wait.kind == 'match-menu' and self.driver.stoppage():
-            out.update(stop='stoppage', board=views.board(self.state), bench=views.bench(self.state))
+            out.update(stop='pause' if wait.view.get('context') == 'pause' else 'stoppage',
+                       board=views.board(self.state), bench=views.bench(self.state))
         elif wait.kind == 'match-menu':
             out.update(stop='captain', captain=views.captain_choice(self.state), bench=views.bench(self.state))
         elif wait.kind == 'match-menu-halftime':
@@ -174,6 +188,15 @@ class CoreModel:
                             for c in players if c['readiness'] != selected]})
         elif wait.kind == 'match-menu-fulltime':
             out.update(stop='full-time')
+        elif wait.kind == 'match-live':
+            self.commentary_cursor, lines = views.commentary(self.state, self.commentary_cursor)
+            out.update(stop='live', pitch=views.pitch(self.state, self.pitch_sequence, 0), commentary=lines,
+                       identity=views.pitch_identity(self.state))
+            self.pitch_sequence += 1
+        elif wait.kind == 'match-summary-save-prompt':
+            out.update(stop='summary-save', board=views.board(self.state))
+        if wait.kind in ROUND_WAITS and wait.kind != 'match-live' and self.driver.watching:
+            self.commentary_cursor, out['commentary'] = views.commentary(self.state, self.commentary_cursor)
         return out
 
     # -- saving ----------------------------------------------------------------------------------------------
@@ -191,6 +214,21 @@ class CoreModel:
             raise ValueError(f'Cannot save the core: {exc}') from exc
         self.save_path = target
         return target
+
+    def export_summary(self, path):
+        """[designed: owner, 2026-10-23, T109] At the original's save-summary question, export a readable desktop
+        summary. Answer its DOS question N afterwards; no original disk-writing routine or guest patch is used."""
+        if self.core.wait.kind != 'match-summary-save-prompt':
+            raise ValueError('The original is not asking to save a match summary')
+        board = views.board(self.state)
+        lines = [f"{board['names'][0]} {board['score'][0]} - {board['score'][1]} {board['names'][1]}", '']
+        for side in (0, 1):
+            lines.extend(f"{board['names'][side]}: {r['name']} {r['minute']}' {r['mark']}".rstrip()
+                         for r in board['scorers'][side])
+        if board.get('man_of_the_match'):
+            lines.extend(['', f"Man of the match: {board['man_of_the_match']}"])
+        Path(path).write_text('\n'.join(lines) + '\n', encoding='utf-8')
+        return Path(path)
 
 
 

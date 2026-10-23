@@ -88,6 +88,20 @@ the round's page says so, and it never falls back to the Python route. **Save** 
 docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu (or at the round's stop it was
 saved at), with the same views and the same memory. `--template` and every other route are unchanged.
 
+[designed: owner, 2026-10-23; T109, #333] **Watch over the core.** On Play next game's captain page, enable
+**Watch this match**, then choose the captain and kick off. The same pygame pitch window reads the original's
+memory at its live polls, showing complete signed player/ball/official poses, role codes, score, minute and the
+latest two commentary lines. Space opens the full commentary; Esc closes it, or closes the pitch window when
+commentary is hidden. Left/Right change presentation speed, Up/Down the marks. Each pose must be displayed and
+acknowledged before the desktop advances the original. No unseen backlog plays on after the viewer closes:
+**Resume watching** restarts the pitch at the core's current wait; Save can preserve that wait for `--resume`.
+Enter in the pitch sends the original's Enter to open its pause menu and shows the bench in the desktop. At a
+pause, Enter requests or cancels a substitution; the pair is chosen at the original's next substitution
+opportunity. Half time offers the ordinary bench directly. The original makes or refuses every pair. The original's
+summary-save question offers **Save summary…** (a readable UTF-8 text file) or **Continue without saving**.
+[designed: owner choice, 2026-10-23] Both continue with N to the original's DOS writer; only the desktop exports
+that summary. The Python route keeps its existing watched match controller and bench.
+
 [designed: owner, 2026-10-22; T106, #308's G10] **A new career on the core route.** `--core-boot` opens Launch
 over the original's own new game, booted from the state at the program's DOS date call (`e039-r0005-date-call.sav`,
 docs/core.md "Booting at the DOS date call"); GOAL.DAT is read at run time from `--data`:

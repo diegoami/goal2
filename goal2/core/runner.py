@@ -443,6 +443,17 @@ class Core:
         self._run()
         return self.wait
 
+    def advance(self):
+        """[designed: T109] Answer this one poll with no key and run to the next wait, including another poll
+        of the same kind. Unlike release(), this keeps every live poll available to the watching manager."""
+        self._check_waiting()
+        if not self.wait.poll:
+            raise CoreError("advance() answers a poll wait; the original is reading a key")
+        self.m.set_reg("ax", self.m.reg("ax") & 0xFF00)
+        self.m.return_from(True, 0)
+        self._run()
+        return self.wait
+
     def unqueue(self, kind):
         """[designed: T108] Drop the keys queued for `kind` that no poll has taken; returns them."""
         dropped = [key for k, key in self.queued if k == kind]

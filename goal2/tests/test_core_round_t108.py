@@ -395,6 +395,39 @@ class SeveralRounds(Oracle, unittest.TestCase):
     fixes it through the pre-match SELECT YOUR TEAM (prematch_swap, Enter on each), and the round completes; then the
     rounds to the managed side's substitution notice (an injury), and the next, whose results list no friendly."""
 
+    @classmethod
+    def notice_fixture(cls):
+        """[T109] Build the notice by actual play when this regression is selected alone. Cache only avoids
+        repeating the same tour when its other test already reached it; test order is never a prerequisite."""
+        if cls.notice_blob is not None:
+            return cls.notice_blob
+        from goal2.core import views
+        driver = start()
+
+        class FoundNotice(Exception):
+            pass
+
+        def fix(d, message):
+            state = d.wait.state
+            rows = views.team(state)['squad']
+            cards = {r['player']: views.player_card(state, r['player']) for r in rows}
+            mem = views.Memory(state)
+            off = next(r for r in rows if r['eleven'] and cards[r['player']]['readiness'] != mem.code_str(0x1771, 0x42A6))
+            on = next(r for r in reversed(rows) if not r['eleven'] and r['line'] == off['line']
+                      and cards[r['player']]['readiness'] == mem.code_str(0x1771, 0x42AF))
+            (d.prematch_swap if not d.stoppage() and d.wait.kind == 'match-menu' else d.substitute)(off['player'], on['player'])
+
+        def found(d, wait):
+            cls.notice_blob = d.core.save()
+            raise FoundNotice()
+
+        try:
+            for _ in range(15):
+                driver.play_round(fix_eleven=fix, on_notice=found)
+        except FoundNotice:
+            return cls.notice_blob
+        raise AssertionError('The fixture tour did not reach a managed substitution notice')
+
     def test_rounds_through_a_refused_eleven(self):
         from goal2.core import views
         driver = start()
@@ -485,9 +518,8 @@ class SeveralRounds(Oracle, unittest.TestCase):
         from goal2.desktop.core_model import CoreModel
         from goal2.desktop.core_window import CoreWindow
         app = QApplication.instance() or QApplication([])
-        self.assertIsNotNone(SeveralRounds.notice_blob, "run with test_rounds_through_a_refused_eleven, which keeps it")
         path = Path(tempfile.mkdtemp()) / "notice.g2core"
-        path.write_bytes(SeveralRounds.notice_blob)
+        path.write_bytes(self.notice_fixture())
         model = CoreModel.from_save(path, requires.CACHE / "GOAL.DAT")
         w = CoreWindow(model);w.show();app.processEvents();app.processEvents()
         r = w.core_round
@@ -562,7 +594,10 @@ class Desktop(unittest.TestCase):
         self.assertTrue(w.core_jobs.busy);self.assertFalse(play.isEnabled())
         self.assertEqual(w.finish_core(300)[0], "done")
         r = w.core_round
-        self.assertIn("G14b", r.pitch_note.text())
+        # [T109] The original quick route remains the default; Watch is now offered on the captain page.
+        self.assertIn("Watch", r.watch.text())
+        self.assertFalse(r.watch.isChecked())
+        self.assertTrue(r.watch.isEnabled())
         seen = []
         # round 1 has no other fixture: the captain page comes first
         self.assertEqual(r.views.currentIndex(), 0);seen.append("captain")

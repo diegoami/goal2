@@ -113,6 +113,12 @@ KINDS = {k.name: k for k in (
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
     Kind("match-summary-save-prompt", _YES_NO, polled=True, evidence=_CAT),
+    Kind("substitution-request", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+         evidence="[confirmed: named/seg_0791_12.c E44F; DS:4760/4812, E006 live Enter] request or cancel substitution"),
+    Kind("substitution-requested", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+         evidence="[confirmed: named/seg_0791_12.c E44F, DS:4812] Enter cancels DS:9B40's request"),
+    Kind("substitution-refused", keys(("any key", "(any)")), designed=True,
+         evidence="[confirmed: named/seg_0791_12.c E022, return E167] incoming player cannot play"),
     # the new game (T106): [confirmed: catalogue.tsv's screen rows, E015-r0001 state 2, E015-r0004 state 2,
     # E015-r0007 states 3 and 10]
     Kind("title-load-prompt", _YES_NO, evidence=_CAT),
@@ -360,8 +366,10 @@ MATCH_MENUS = {0xF20A: "match-menu", 0x9AE3: "match-menu-halftime", 0xF331: "mat
                # [T108; confirmed: code/seg_0791_13.asm 80F0-8100] 0791:8062 calls ED8A at 8100 after the managed
                # side's notice (a key other than Esc, or the keeper unavailable): the same menu, its text kinds.tsv's
                # match-menu (neither HALF TIME nor FULL TIME); its view's context says "stoppage".
-               0x8103: "match-menu"}
-MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage"}
+               0x8103: "match-menu",
+               # [confirmed: code/seg_0791_15.asm 944D-945B] Enter/Esc in play calls ED8A at 9458.
+               0x945B: "match-menu"}
+MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage", 0x945B: "pause"}
 
 
 def _menu_reader(f):
@@ -369,7 +377,7 @@ def _menu_reader(f):
     caller, up = f.far_caller(f.bp), f.up(f.bp)
     if caller == "0791:EE9F":
         # in_match_menu 0791:ED8A, near-called by run_match F207 (pre-match), F32E (post-match), 9A32 at 9AE0
-        # (half time) (kit match.py MENU_CONTEXT); its other callers (substitution, pause, extra time) have no entry.
+        # (half time), 8100 (substitution) and 9458 (pause); its extra-time callers have no entry.
         return MATCH_MENUS.get(f.near_caller(up))
     if caller == "1771:1A24":
         # edit_team_tactics 1771:1981(country) [bp+6]: it edits only a managed country with DS:0C20 clear, else
@@ -446,11 +454,11 @@ def _select_team(f):
         return None
     # [T108; confirmed: named/seg_0791_11.c E44F] in a match: no substitution left (DS:9B3A + local_5 [bp-3]) draws
     # DS:2538; with substitutions now (DS:9B41) E2A0 draws "take off" below slot 12, else "put on"; DS:9B41 clear (a
-    # pause's request, DS:4760 or 4812) has no entry yet.
+    # pause's request, DS:4760 or 4812) shows request/cancel substitution (T109).
     if not f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(f.bp, -3)):
         return "substitutions-used"
     if not f.ds_byte(SUBS_ALLOWED):
-        return None
+        return "substitution-requested" if f.ds_byte(0x9B40) else "substitution-request"
     return "squad-substitution-take-off" if f.ds_word(SELECT_CURSOR) < 12 else "squad-substitution-put-on"
 
 
@@ -574,10 +582,11 @@ def _refusal_chain(f):
 # [T108; confirmed: code/seg_0791_22.asm E05D, E0C6; seg_0791_23.asm EB7D; strings.tsv] 1765's other callers met by
 # a round: 0791:E022's "Illegal substitution" (DS-less pstr 0791:DFF7, return E0CB) and 0791:EA09's "<country> has an
 # ineligible player in the first team" (0791:E9A2, return EB82) and "<country> has too many goalkeepers" (0791:E9CE,
-# return EBD7). E022's other messages (E062, E167, E19F) and EA09's (EC22, EC60, ECEB) have no entry: no tour reaches
+# return EBD7). E022's other messages (E062, E19F) and EA09's (EC22, EC60, ECEB) have no entry: no tour reaches
 # them (docs/core.md).
 REFUSALS = {"0791:DC3D": "squad-change-refused", "0791:DC68": "squad-change-refused",
-            "0791:E0CB": "squad-substitution-illegal", "0791:EB82": "eleven-refused", "0791:EBD7": "eleven-refused"}
+            "0791:E0CB": "squad-substitution-illegal", "0791:E167": "substitution-refused",
+            "0791:EB82": "eleven-refused", "0791:EBD7": "eleven-refused"}
 
 
 def _refusal(f):
@@ -645,7 +654,10 @@ SITES = {s.site: s for s in (
     Site("214B:112B", False, "214B:1086 the line editor (reads after its cursor wait's poll says a key waits)",
          "F032; E038-r0001's trace", lambda f: _name_entry(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
-    Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live"),
+    Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live",
+         # [confirmed: code/seg_0791_15.asm 9571-9708] 954E's loop calls 9372 after each of 22 slots; its
+         # local [bp-2] is the slot. The last poll is a complete pose, before the clock at 970C.
+         lambda f: {"slot": f.word(f.up(f.bp), -2) if f.near_caller(f.bp) == 0x96EA else None}),
     Site("0791:CC54", True, "0791:CC2E wait_or_key", "T100 (F030); " + _ROUTES, _wait_or_key,
          lambda f: _captain_view(f, f.up(f.bp)) if _wait_or_key(f) == "captain-select"
          else _notice_view(f, f.up(f.bp) if f.near_caller(f.bp) == 0x8042 else None)
