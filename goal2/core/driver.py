@@ -74,6 +74,7 @@ BACK = {"fixture-list": (MENU,), "fixtures-watch": (MENU,), "fixtures-auto": (ME
         "select-squad": (MENU, "select-squad"), "select-squad-pool": ("select-squad", "select-squad-pool"),
         "own-tactics": ("select-squad", "select-squad-pool"), "team-tactics": ("team-info",)}
 SQUAD, POOL_LIST = "select-squad", "select-squad-pool"
+MAX_NOTICES = 1000           # [designed] a bound on the managed side's notices in one match (53 measured, T108)
 SUBSTITUTION = ("squad-substitution-take-off", "squad-substitution-put-on")   # [T108] SELECT TEAM at half time
 MAX_MOVES = 100              # [designed] cursor moves allowed for one target: the longest list is the pool's 80
 
@@ -576,8 +577,8 @@ class Driver:
         """At the managed side's substitution notice (0791:7FCF, "SUBSTITUTION OPPORTUNITY press any key"): `bench`
         True presses a key and the original opens its match menu (ED8A from 8062, substitutions now), where
         substitute() and play_on() go on; False lets it pass as with no key (7FCF then takes it as Esc: no menu,
-        unless the goalkeeper is unavailable, 80F0) to the next stop (or the full-time menu: finish()). Returns the
-        wait."""
+        unless the goalkeeper is unavailable, 80F0) to the next stop; past the full-time menu, as play_on, to the
+        manager menu (finish). Returns the wait."""
         wait = self.core.wait
         if wait.kind != "substitution-notice" or not wait.view.get("managed"):
             raise UnexpectedScreen(("substitution-notice",), wait)
@@ -586,7 +587,8 @@ class Driver:
             self._press_poll(RETURN)
         else:
             self._release()
-        return self._pass(self.STOPS + ("match-menu-fulltime",))
+        wait = self._pass(self.STOPS + ("match-menu-fulltime",))
+        return self.finish() if wait.kind == "match-menu-fulltime" else wait
 
     def _press_poll(self, key):
         """A key at a poll wait (Core.stop_at): the original's next read takes it."""
@@ -617,7 +619,8 @@ class Driver:
 
     def substitute(self, off, on):
         """At the half-time match menu, or a stoppage's: the bench (the managed side's players, E949 -> E44F), Enter
-        on `off`, Enter on `on`, Esc back. The pair goes to the original as it is: 0791:E022 makes it (the two squad
+        on `off`, Enter on `on`, Esc back; the two in either order, as the original takes them (E022 marks the first and
+        swaps on the second, E031 C41e-C41i). The pair goes to the original as it is: 0791:E022 makes it (the two squad
         words swap and the counter DS:9B3A + side counts down) or refuses it with its message ("Illegal substitution"
         for two of the same block), which a key closes. With no substitution left E44F offers none (DS:2538): the
         driver presses nothing there but Esc. Returns {"made", "refused" (the original's message or None), "left",
@@ -626,6 +629,7 @@ class Driver:
         if self.core.wait.kind != "match-menu-halftime" and not self.stoppage():
             raise UnexpectedScreen(("match-menu-halftime", "match-menu"), self.core.wait)
         home = self.core.wait.kind
+        before = views.bench(self.core.wait.state)["eleven"]
         wait = self._open_bench()
         refused = None
         if wait.kind == "substitutions-used":
@@ -651,7 +655,8 @@ class Driver:
             raise DriverError("Esc did not leave the bench")
         bench = views.bench(self.core.wait.state)
         eleven = bench["eleven"]
-        return {"made": on in eleven and off not in eleven and refused is None, "refused": refused,
+        swapped = (off in before) != (off in eleven) and (on in before) != (on in eleven)
+        return {"made": swapped and refused is None, "refused": refused,
                 "left": bench["left"], "eleven": eleven, "bench": bench["bench"]}
 
     def play_on(self):
@@ -724,14 +729,23 @@ class Driver:
         else:
             raise DriverError("the original kept refusing the eleven")
         half_time_done = False
-        for _ in range(64):             # [designed] a bound: a match has a few stops
+        stops = 0
+        while True:
             wait = self.core.wait
             if wait.kind == MENU:
                 break
             if wait.kind == "substitution-notice":
+                # [confirmed: code/seg_0791_13.asm 8062-80A9] the original offers the notice at each stoppage while a
+                # substitution is asked for (DS:9B40, which Esc does not clear): let pass, it comes again. [designed]
+                # Its own bound: one notice per stoppage, at most MAX_NOTICES in a match.
                 out["notices"] += 1
+                if out["notices"] > MAX_NOTICES:
+                    raise DriverError(f"the managed side's notice came more than {MAX_NOTICES} times")
                 self.notice(bool(on_notice(self, wait)) if on_notice else False)
                 continue
+            stops += 1
+            if stops > 16:              # [designed] the other stops: half time, the stoppages' menus, refusals
+                raise DriverError("the match did not end")
             if wait.kind == "match-menu-fulltime":
                 self.finish()
                 continue
@@ -747,7 +761,5 @@ class Driver:
                 if fix_eleven is None:
                     raise DriverError(f"the original refuses the eleven: {result['refused']}")
                 fix_eleven(self, result["refused"])
-        else:
-            raise DriverError("the match did not end")
         out["pages"] = self.pages
         return out

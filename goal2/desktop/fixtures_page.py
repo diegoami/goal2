@@ -632,6 +632,8 @@ class CoreRound:
             self.bench.offer(state, 'half_time' if stop == 'half-time' else 'stoppage');self.show(1)
         elif stop == 'notice':
             self.first_page = len(state['pages']);self.show_notice(state)
+        elif stop == 'full-time':              # [T108 review, R1] the round's end goes on, as on a resume
+            self.window.run_core('finish')
         else:
             self.queue = list(state['pages'][self.first_page:]);self.after = 'menu';self.next_page()
 
@@ -639,8 +641,11 @@ class CoreRound:
         """[confirmed: code/seg_0791_13.asm 7FCF] the managed side's notice: a key opens the match menu (the bench),
         none (or Esc) lets it pass; the players the original marks are read from its status words (1771:42BC)."""
         notice = state['notice']
+        # [confirmed: code/seg_0791_13.asm 8062-80A9] it is offered at each stoppage while a substitution is asked for
+        # (DS:9B40); letting it pass does not clear that
         self.notice_note.setText('The original offers a substitution: ' + (', '.join(
-            f"{p['name']} {p['readiness']}" for p in notice['players']) or 'press any key for the bench'))
+            f"{p['name']} {p['readiness']}" for p in notice['players']) or 'press any key for the bench')
+            + '. Let it pass and the original asks again at each stoppage, until a substitution is made.')
         self.show(3)
 
     def show_captain(self):

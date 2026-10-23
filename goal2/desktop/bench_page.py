@@ -363,9 +363,9 @@ class CoreBench:
             self.mark = None if self.mark == word else word;self.refresh();return
         first, self.mark = self.mark, None
         if self.mode in ('half_time', 'stoppage'):
-            off, on = (first, word) if first in eleven else (word, first)
+            # the two Enters in the order the player pressed them; the original takes either (E031 C41e-C41i)
             self.message = 'The original is making it…'
-            self.window.run_core('substitute', off, on)
+            self.window.run_core('substitute', first, word)
         else:
             self.message = 'The original is moving them…'
             self.window.run_core('prematch_swap', first, word)

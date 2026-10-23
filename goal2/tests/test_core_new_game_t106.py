@@ -133,7 +133,9 @@ class ByteForByte(unittest.TestCase):
         # buffer and tick, DOS's 0815E and the stack below SS:SP (trace-r0001.json, compare.conventional_differs).
         trace = json.loads(archaeology("experiments/E038-new-game-keywait/out/trace-r0001.json"))
         # [derived: #327, T108] but one: Intr's record now holds the CPU's flags with the carry clear, as 235C:0045
-        # stores them, where E038's trace kept the request's flags; that word (on the stack, 3C565) is DOSBox-X's now.
+        # stores them, where E038's trace kept the request's flags; that word is DOSBox-X's now. [derived: measured in
+        # T108's review fix] 3C565 is the Flags word (+0x12, RECORD's tenth) of the register record of the Intr calls
+        # that return to 214B:1AC3, the record's far pointer read from Intr's stack as runner.Core._on_intr reads it.
         expected = [r for r in trace["compare"]["conventional_differs"] if r != INTR_FLAGS]
         self.assertEqual(len(expected), len(trace["compare"]["conventional_differs"]) - 1)
         self.assertEqual(ranges(mine[:0xA0000], theirs[:0xA0000]), expected)

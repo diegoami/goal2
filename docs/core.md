@@ -147,9 +147,8 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 **Not reached yet**, so not in the table:
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
   `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
-  until a screen task maps them: the taker prompts, the pause and extra-time menus, the managed side's stoppage
-  notice (0791:7FCF, read at 8050) and the menu it opens (ED8A from 8100), SELECT TEAM in a match with `DS:9B41`
-  clear (a pause's request), the other players' screen of E949 (another country's, 1771:50F1), E022's other
+  until a screen task maps them: the taker prompts, the pause and extra-time menus, SELECT TEAM in a match with
+  `DS:9B41` clear (a pause's request), the other players' screen of E949 (another country's, 1771:50F1), E022's other
   messages ("There is no player here" E062, "... cannot play" E167, "Nice try" E19F) and EA09's (EC22, EC60,
   ECEB), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
   the watch prompt, G14b) and the finals' displays: a round in the finals shows the bracket (1771:9509, reading at

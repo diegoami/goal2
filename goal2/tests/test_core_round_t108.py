@@ -211,7 +211,7 @@ class Round(Oracle, unittest.TestCase):
         cls.captain = cls.sides["eleven"][3]
         wait = driver.kick_off(cls.captain)
         cls.half_time = driver.core.save()
-        cls.captain_at_kick_off = views.match_sides(wait.state)["captain"]
+        cls.captain_at_half_time = views.match_sides(wait.state)["captain"]
         cls.pair = same_line_pairs(views.bench(wait.state), 1)[0]
         cls.sub = driver.substitute(*cls.pair)
         driver.play_on()
@@ -257,16 +257,12 @@ class Round(Oracle, unittest.TestCase):
         passed = {p.kind for w in self.first_trail + self.second_trail for p in w.passed}
         self.assertLessEqual({"round-playing", "match-live"}, passed)
 
-    def test_the_captain_chosen_and_the_originals_own(self):
-        self.assertEqual(self.captain_at_kick_off, self.captain)
-        self.assertNotEqual(self.captain, self.sides["captain"])     # moved off the original's pick by Up and Down
+    def test_the_captain_chosen_and_the_originals_own_in_the_round(self):
+        """The round's own path (kick_off): the chosen captain holds at half time; C was pressed in round 2. The
+        captain at kick-off and the original's own pick are the Captain class's."""
+        self.assertEqual(self.captain_at_half_time, self.captain)
         log = [(k, key) for k, key in self.driver.log if k == "captain-select"]
         self.assertIn(("captain-select", C_KEY), log)
-        from goal2.core import views
-        boards = [w for w in self.second_trail if w.kind == "match-board"]
-        sides = views.match_sides(boards[0].state)
-        self.assertIn(sides["captain"], sides["eleven"])
-        self.assertEqual(boards[0].state.rd(CAPTAIN + 10 * sides["managed_side"], 2), sides["captain"])
 
     def test_the_substitution_at_half_time(self):
         off, on = self.pair
@@ -282,6 +278,60 @@ class Round(Oracle, unittest.TestCase):
         self.assertEqual(loaded.wait.kind, "match-menu-halftime")
         loaded.substitute(*self.pair);loaded.play_on()
         self.assertEqual(loaded.core.memory_sha256(), self.first_sha)
+
+
+@requires.need(**NEEDS, slow=True)
+class Captain(unittest.TestCase):
+    """[T108 review, R4] The captain at kick-off, read at the first poll of play (Core.stop_at, after CC7B returned
+    and before a minute is played), and the original's own pick checked against what the original printed: the
+    prompt's highlighted row at its first poll, which CC7B puts on the stored captain or, with none in the eleven, on
+    best_leader_available's pick (named/seg_0791_10.c CC7B), the routine C calls."""
+
+    def kick_off(self, keys):
+        """E006-r0001's first round to the captain prompt; `keys(wait)` the key at each of its polls; returns the
+        prompt's first wait, the wait at kick-off and the managed side."""
+        from goal2.core import views
+        driver = start()
+        self.before = views.match_sides(driver.round_start().state)["captain"]
+        driver._menu_item("play")
+        core = driver.core
+        core.stop_at("captain-select", "match-live")
+        wait = driver.press(ENTER, expect=("captain-select",))
+        first = wait
+        while wait.kind == "captain-select":
+            wait = driver._press_poll(keys(wait))
+        self.assertEqual(wait.kind, "match-live")
+        self.assertTrue(wait.poll)
+        return first, wait, views.match_sides(wait.state)
+
+    def highlighted_name(self, wait):
+        # CC7B's strip of the eleven at column 0x41 (the frame's), the highlighted row by 214B:13C5 (13 cells)
+        rows = [t for r, c, t in t103().highlighted(wait) if 6 <= r <= 18 and c == 64]
+        self.assertEqual(len(rows), 1, rows)
+        return rows[0].strip("│ ")
+
+    def test_a_chosen_captain_is_the_captain_at_kick_off(self):
+        from goal2.core import views
+        chosen = {}
+
+        def keys(wait):
+            eleven = views.match_sides(wait.state)["eleven"]
+            chosen.setdefault("player", eleven[5])
+            slot = eleven.index(chosen["player"]) + 1
+            return ENTER if wait.view["slot"] == slot else 0xB1 if wait.view["slot"] < slot else 0xAC
+        first, at_kick_off, sides = self.kick_off(keys)
+        self.assertEqual(at_kick_off.state.rd(CAPTAIN + 10 * sides["managed_side"], 2), chosen["player"])
+        self.assertNotEqual(self.highlighted_name(first), views.Memory(first.state).player_name(chosen["player"])[:12])
+
+    def test_c_is_the_originals_own_pick(self):
+        from goal2.core import views
+        first, at_kick_off, sides = self.kick_off(lambda wait: C_KEY)
+        captain = at_kick_off.state.rd(CAPTAIN + 10 * sides["managed_side"], 2)
+        self.assertIn(captain, sides["eleven"])
+        # what the original printed before any key: its own pick highlighted; the stored captain is in no eleven at
+        # E006-r0001's match menu, so CC7B took best_leader_available's pick, the routine C calls
+        self.assertNotIn(self.before, sides["eleven"])
+        self.assertEqual(self.highlighted_name(first), views.Memory(at_kick_off.state).player_name(captain)[:12])
 
 
 @requires.need(**NEEDS, slow=True)
@@ -340,6 +390,7 @@ class HalfTime(Oracle, unittest.TestCase):
 
 @requires.need(**NEEDS, slow=True)
 class SeveralRounds(Oracle, unittest.TestCase):
+    notice_blob = None
     """E006-r0001's rounds until the original refuses the eleven (an ineligible player, round 9 of this run): the test
     fixes it through the pre-match SELECT YOUR TEAM (prematch_swap, Enter on each), and the round completes; then the
     rounds to the managed side's substitution notice (an injury), and the next, whose results list no friendly."""
@@ -395,8 +446,13 @@ class SeveralRounds(Oracle, unittest.TestCase):
             if pairs and bench["left"]:
                 made.append(d.substitute(*pairs[0]))
         notices = 0
+
+        def bench_at_notice(d, wait):
+            if SeveralRounds.notice_blob is None:     # kept for the desktop's case below: the core at that notice
+                SeveralRounds.notice_blob = d.core.save()
+            return True
         for _ in range(3):
-            out = driver.play_round(fix_eleven=fix, on_notice=lambda d, w: True, on_stoppage=at_stoppage)
+            out = driver.play_round(fix_eleven=fix, on_notice=bench_at_notice, on_stoppage=at_stoppage)
             notices += out["notices"]
             if notices:
                 break
@@ -417,6 +473,46 @@ class SeveralRounds(Oracle, unittest.TestCase):
             self.assertEqual(wait.kind, "round-results")
             self.assertNotIn("friendly", wait.text)
             self.assertIn("qualifying", wait.text)
+
+    @requires.need(modules=("PySide6",))
+    def test_the_desktop_lets_the_notices_pass_to_the_rounds_end(self):
+        """[T108 review, R1] From the first managed notice of the tour above, the desktop lets every notice pass (the
+        original asks again at each stoppage, F030's "again and again"): through the half-time bench and the last
+        notice, which can leave the original at the full-time menu, the round completes, its pages are shown, the
+        manager menu returns and Play next game is enabled again."""
+        os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        app = QApplication.instance() or QApplication([])
+        self.assertIsNotNone(SeveralRounds.notice_blob, "run with test_rounds_through_a_refused_eleven, which keeps it")
+        path = Path(tempfile.mkdtemp()) / "notice.g2core"
+        path.write_bytes(SeveralRounds.notice_blob)
+        model = CoreModel.from_save(path, requires.CACHE / "GOAL.DAT")
+        w = CoreWindow(model);w.show();app.processEvents();app.processEvents()
+        r = w.core_round
+        self.assertEqual(r.views.currentIndex(), 3)                 # the notice page
+        self.assertIn("asks again", r.notice_note.text())
+        passed = 0
+        for _ in range(400):
+            app.processEvents()
+            if w.core_jobs.busy:
+                w.finish_core(300);continue
+            if model.core.wait.kind == "manager-menu" and w.fixture_views.currentIndex() != 2:
+                break
+            index = r.views.currentIndex() if w.fixture_views.currentIndex() == 2 else None
+            if index == 3:
+                r.notice_pass.click();passed += 1
+            elif index == 1:
+                r.bench.play.click()
+            elif index == 2:
+                r.page_next.click()
+            else:
+                self.fail(f"the round strands at {model.core.wait.kind} (view {index})")
+        self.assertGreater(passed, 1)
+        self.assertEqual(model.core.wait.kind, "manager-menu")
+        self.assertFalse(model.in_round)
+        self.assertTrue(w.core_routes["play next game"].isEnabled())
 
 
 # -- the desktop ----------------------------------------------------------------------------------------------------
