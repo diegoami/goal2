@@ -117,6 +117,24 @@ class CoreModel:
         return result
 
 
+    # -- saving ----------------------------------------------------------------------------------------------
+    def save(self, path=None):
+        """[designed] The Save page (F7 in the original): the core save (docs/core.md, "Saving"), written whole to a
+        temporary file and then moved over `path`."""
+        target = Path(self.save_path if path is None else path)
+        try:
+            data = self.core.save()
+            target.parent.mkdir(parents=True, exist_ok=True)
+            temporary = target.with_name(target.name + '.tmp')
+            temporary.write_bytes(data)
+            os.replace(temporary, target)
+        except OSError as exc:
+            raise ValueError(f'Cannot save the core: {exc}') from exc
+        self.save_path = target
+        return target
+
+
+
 class CoreJobs:
     """[designed: T107, T65's pattern] One team action at a time, run off the window's thread: `start(name, *args)`
     hands it to a worker thread, `busy` holds while it runs, and `poll()` (the window's timer) returns None while it
@@ -150,26 +168,9 @@ class CoreJobs:
             return ('refused', str(exc))
 
     def wait(self, timeout=60):
-        """Block until the running action ends (tests and closing the window); returns poll()'s answer."""
+        """Block until the running action ends (tests and closing the window); poll() then collects it."""
         if self.future is not None:
             self.future.exception(timeout)
-        return self.poll()
-
-    # -- saving ----------------------------------------------------------------------------------------------
-    def save(self, path=None):
-        """[designed] The Save page (F7 in the original): the core save (docs/core.md, "Saving"), written whole to a
-        temporary file and then moved over `path`."""
-        target = Path(self.save_path if path is None else path)
-        try:
-            data = self.core.save()
-            target.parent.mkdir(parents=True, exist_ok=True)
-            temporary = target.with_name(target.name + '.tmp')
-            temporary.write_bytes(data)
-            os.replace(temporary, target)
-        except OSError as exc:
-            raise ValueError(f'Cannot save the core: {exc}') from exc
-        self.save_path = target
-        return target
 
 
 # [designed: T106] The DOS date's month and day the core answers (E039's, 10/04); the year is the start year - 1.

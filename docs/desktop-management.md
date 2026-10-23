@@ -61,9 +61,19 @@ rating*, *Team* with its world and continent rankings, *Next opponents* with the
 in the original's boxes (statistics, successes, results, top scorers, top caps, records). **Fixtures & match** has
 the original's fixture list (sixteen rows at a time, Up/Down/PgUp/PgDn scroll, √ on the managed fixtures) and the
 tournament (the managed country's group table and its fixtures; Up/Down change the group). These scrolls are
-presentation only: no key reaches the original. The routes the core cannot serve yet are shown disabled and name
-the task that brings them: **Team** and **Pool**, **team info** and **select squad** (G12), **play next game**
-(G14), in #308's numbering; they never fall back to the Python route. **Save** (F7 in the original) writes the core save (`G2C1`,
+presentation only: no key reaches the original. [designed: T107, G12] **Team** is the original's SELECT YOUR TEAM
+and team tactics [confirmed: `docs/original-game/images/m244-squad.png`, `m244-team-tactics.png`]: the roster strip
+on the right (the eleven, a rule, the bench; Enter marks a player, Enter on another swaps them), the compact card of
+the selected player with its bars (no number where a bar fits), the routes **Team tactics**, **Own tactics (T)**,
+**Reposition (R)**, **Club position (C)** and **Rename (F2)**; the team tactics view's eight rows and the own tactics
+view's four rows (and the marking row, which the original refuses outside a match) change by Enter. **Pool** is the
+pool side of SELECT YOUR TEAM [confirmed: `m244-pool.png`]: the card on the left, a strip of the squad or of the pool's
+eighty, 21 rows at a time, on the right (Left/Right switch them, Up/Down/PgUp/PgDn scroll); Enter marks, Enter on a
+player of the other list exchanges them. Each edit is the driver's action (docs/core.md, "The Team and Pool route"),
+run as a background job: the controls wait while the original presses its own keys, then the pages read the
+original again. There is no draft, no Confirm and no captain: the original holds none outside a match. A refusal
+shows the original's reason in the status line. The route the core cannot serve yet is shown disabled and names the
+task that brings it: **play next game** (G14), in #308's numbering; it never falls back to the Python route. **Save** (F7 in the original) writes the core save (`G2C1`,
 docs/core.md "Saving"); `--resume` with a core save reopens it at the same manager menu, with the same views and
 the same memory. `--template` and every other route are unchanged.
 
