@@ -531,7 +531,7 @@ class Driver:
             return message
         return None
 
-    def kick_off(self, captain=None):
+    def kick_off(self, captain=None, watch=None):
         """At the match menu before the kick-off: play, then the captain prompt (CC7B), then the first half as the
         quick result (R at the first poll of play) to its first stop: the half-time menu, or the managed side's
         substitution notice at a stoppage; returns that wait.
@@ -541,6 +541,9 @@ class Driver:
         (best_leader_available 0791:1F3C). [confirmed: F030] The prompt passes by itself after 1000 polls; the
         driver always answers it. When the original refuses the eleven (0791:EA09's message box) the driver closes
         the box (any key) and returns {"refused": the original's message} at the match menu, nothing else pressed."""
+        if watch is not None:
+            self.core.stop_at(*(("match-live", "match-summary-save-prompt", "substitution-notice") if watch
+                                else ("substitution-notice",)))
         self._menu_item("play")
         if self.core.wait.kind != "match-menu" or self.stoppage():
             raise UnexpectedScreen(("match-menu",), self.core.wait)
@@ -636,7 +639,18 @@ class Driver:
     def _open_bench(self):
         self._menu_item("players")
         return self.press(RETURN, expect=("squad-substitution-take-off", "squad-substitution-put-on",
-                                          "substitutions-used", SQUAD))
+                                          "substitutions-used", "substitution-request", "substitution-requested", SQUAD))
+
+    def request_substitution(self):
+        """[confirmed: named/seg_0791_12.c E44F, DS:4760/4812] At the pause, Enter on its players screen
+        toggles DS:9B40. No pair is chosen until the original offers its next substitution opportunity."""
+        if self.wait.kind != 'match-menu' or self.wait.view.get('context') != 'pause':
+            raise UnexpectedScreen(('match-menu (pause)',), self.wait)
+        self._open_bench()
+        self.press(RETURN, expect=('substitution-request', 'substitution-requested'))
+        self.press(ESCAPE, expect=('match-menu',))
+        from goal2.core import views
+        return views.bench(self.wait.state)['requested']
 
     def _to_slot(self, slot):
         wait = self.core.wait
@@ -655,6 +669,8 @@ class Driver:
         driver presses nothing there but Esc. Returns {"made", "refused" (the original's message or None), "left",
         "eleven", "bench"}, read from memory after the original's keys."""
         from goal2.core import views
+        if self.wait.view.get('context') == 'pause':
+            raise DriverError('At a pause request a substitution; choose the pair at the next opportunity')
         if self.core.wait.kind != "match-menu-halftime" and not self.stoppage():
             raise UnexpectedScreen(("match-menu-halftime", "match-menu"), self.core.wait)
         home = self.core.wait.kind
@@ -669,11 +685,11 @@ class Driver:
                 self.press(ESCAPE, expect=(home,))
                 raise DriverError(f"players {off} and {on} are not both in the managed squad")
             self._to_slot(squad.index(off) + 1)
-            wait = self.press(RETURN, expect=SUBSTITUTION + ("squad-substitution-illegal",))
+            wait = self.press(RETURN, expect=SUBSTITUTION + ("squad-substitution-illegal", "substitution-refused"))
             if wait.kind in SUBSTITUTION:
                 self._to_slot(squad.index(on) + 1)
-                wait = self.press(RETURN, expect=SUBSTITUTION + ("squad-substitution-illegal", "substitutions-used"))
-            if wait.kind == "squad-substitution-illegal":
+                wait = self.press(RETURN, expect=SUBSTITUTION + ("squad-substitution-illegal", "substitution-refused", "substitutions-used"))
+            if wait.kind in ("squad-substitution-illegal", "substitution-refused"):
                 refused = wait.view["message"].strip()
                 self.press(RETURN, expect=SUBSTITUTION)
         for _ in range(4):

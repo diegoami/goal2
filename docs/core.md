@@ -92,6 +92,9 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 
 | kind | site | record | quoted text |
 | --- | --- | --- | --- |
+| `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
+| `substitution-requested` | `0791:E61F` (E44F, DS:9B41 clear, DS:9B40 set) | E006-r0001, Enter on substitution-request (T109) | "cancel substitution request" "Esc-exit" |
+| `substitution-refused` | `214B:098A` (E022's box, return E167) | E006-r0001, T109's watched half-time bench, attempting to put a substituted player back on | "cannot play" "PRESS ANY KEY" |
 | `team-info` | `1771:28F5` (1771:26B9 mode 1, from main_menu_loop 000E:7682) | E006-r0001's first wait | "Use ←→↑↓ to select" "Hit ◄┘ for fixtures" "spacebar-players T-tactics" |
 | `fixture-list` | `000E:016C` (000E:0000), the own match highlighted | E006-r0001, Esc Down Enter | "and results" "Use ↑↓ to scroll" "Esc-exit" |
 | `match-board` | `0791:041A` (0791:0106) without the man of the match: half time, match stats, a quick result | E010-r0001's first wait | "Scorers" "hit any key" "Esc,◄┘-bench" |
@@ -171,6 +174,19 @@ results with any fixture kinds, which the round's other "hit any key" screens (t
 table) each fail.
 
 ## The driver and the views (T105, #308's G11)
+
+[designed: owner, 2026-10-23; T109] At the original's match-summary save question, the desktop offers a readable
+summary export. Saving writes the desktop's UTF-8 text file; skipping writes nothing. Both then send N to the
+original, bypassing its DOS summary writer without changing guest code. This is the owner's selected presentation
+of that prompt.
+
+[confirmed: code/seg_0791_15.asm 9571-9708, 944D-945B; named/seg_0791_12.c E44F] Live play polls after each of
+22 player updates. The watched desktop reads the complete pose at the last poll, before advancing, and Enter
+opens the pause menu. Its Players screen, with DS:9B41 clear, accepts Enter to request a substitution (DS:9B40),
+or cancel the request; it does not select a pair. At the next substitution opportunity the original offers the
+bench that makes the pair. Goal2's `substitution-request` kind names this screen, and accepts only its printed
+Enter and Esc. `Core.advance()` answers one poll with no key, keeping the next poll as a wait; `release()` retains
+its T108 meaning of passing the screen. These are manager inputs, with no guest-memory patch.
 
 [designed: owner, 2026-10-22, #308, #321; decision 7 of docs/redesign-253/vision-reconciliation.md] The desktop
 and, later, the bot move the original only by its own keys, through one path, `goal2/core/driver.py`:

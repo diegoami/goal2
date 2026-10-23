@@ -113,6 +113,12 @@ KINDS = {k.name: k for k in (
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
     Kind("match-summary-save-prompt", _YES_NO, polled=True, evidence=_CAT),
+    Kind("substitution-request", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+         evidence="[confirmed: named/seg_0791_12.c E44F; DS:4760/4812, E006 live Enter] request or cancel substitution"),
+    Kind("substitution-requested", keys(("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+         evidence="[confirmed: named/seg_0791_12.c E44F, DS:4812] Enter cancels DS:9B40's request"),
+    Kind("substitution-refused", keys(("any key", "(any)")), designed=True,
+         evidence="[confirmed: named/seg_0791_12.c E022, return E167] incoming player cannot play"),
     # the new game (T106): [confirmed: catalogue.tsv's screen rows, E015-r0001 state 2, E015-r0004 state 2,
     # E015-r0007 states 3 and 10]
     Kind("title-load-prompt", _YES_NO, evidence=_CAT),
@@ -452,7 +458,7 @@ def _select_team(f):
     if not f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(f.bp, -3)):
         return "substitutions-used"
     if not f.ds_byte(SUBS_ALLOWED):
-        return None
+        return "substitution-requested" if f.ds_byte(0x9B40) else "substitution-request"
     return "squad-substitution-take-off" if f.ds_word(SELECT_CURSOR) < 12 else "squad-substitution-put-on"
 
 
@@ -579,7 +585,8 @@ def _refusal_chain(f):
 # return EBD7). E022's other messages (E062, E167, E19F) and EA09's (EC22, EC60, ECEB) have no entry: no tour reaches
 # them (docs/core.md).
 REFUSALS = {"0791:DC3D": "squad-change-refused", "0791:DC68": "squad-change-refused",
-            "0791:E0CB": "squad-substitution-illegal", "0791:EB82": "eleven-refused", "0791:EBD7": "eleven-refused"}
+            "0791:E0CB": "squad-substitution-illegal", "0791:E167": "substitution-refused",
+            "0791:EB82": "eleven-refused", "0791:EBD7": "eleven-refused"}
 
 
 def _refusal(f):

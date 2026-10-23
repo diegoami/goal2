@@ -534,14 +534,14 @@ class CoreRound:
         from goal2.desktop.core_window import TextBoard
         from goal2.desktop.roster import RosterView
         from goal2.desktop.bench_page import CoreBench
-        from goal2.desktop.core_model import PITCH_LATER
         self.window = window;self.state = None;self.queue = [];self.after = None;self.first_page = 0
         stack = window.fixture_views
         holder = _RoundHolder(stack);holder.setObjectName('coreRoundView');box = QVBoxLayout(holder)
         box.setContentsMargins(0, 0, 0, 0);box.setSpacing(8);stack.addWidget(holder)
         assert stack.indexOf(holder) == ROUND_VIEW
         self.holder = holder
-        self.pitch_note = QLabel(PITCH_LATER);self.pitch_note.setObjectName('prepNote');self.pitch_note.setWordWrap(True)
+        self.pitch_note = QLabel('Watch the match in the pitch window, or take the original\'s quick result.')
+        self.pitch_note.setObjectName('prepNote');self.pitch_note.setWordWrap(True)
         box.addWidget(self.pitch_note)
         self.views = QStackedWidget();self.views.setObjectName('coreRoundViews');box.addWidget(self.views, 1)
         # 0: the captain (CC7B's list: the eleven), with the original's own choice
@@ -558,6 +558,8 @@ class CoreRound:
         self.computer.clicked.connect(lambda: self.start_kick_off(None));left.addWidget(self.computer)
         self.players = QPushButton('Players: select your team >');self.players.setObjectName('corePreMatchPlayers')
         self.players.clicked.connect(self.show_pre_match);left.addWidget(self.players)
+        self.watch = QPushButton('Watch this match');self.watch.setObjectName('coreWatch');self.watch.setCheckable(True)
+        left.addWidget(self.watch)
         left.addStretch(1)
         self.captain_roster = RosterView('CAPTAIN', toggles=False, grouped=False, marks=False, capacity=11)
         self.captain_roster.setObjectName('coreCaptainRoster');self.captain_roster.setFixedWidth(320)
@@ -584,8 +586,28 @@ class CoreRound:
         self.notice_pass = QPushButton('Play on: let it pass (no key)');self.notice_pass.setObjectName('coreNoticePass')
         self.notice_pass.clicked.connect(lambda: self.window.run_core('notice', False));nbox.addWidget(self.notice_pass)
         nbox.addStretch(1);self.views.addWidget(notice)
+        # [designed: T109] The existing pygame pitch owns the live picture; Qt keeps a resumable wait on close.
+        live = QWidget();lbox = QVBoxLayout(live)
+        self.live_note = QLabel('The match is in the pitch window. Enter there opens the bench.')
+        self.live_note.setObjectName('prepNote');self.live_note.setWordWrap(True);lbox.addWidget(self.live_note)
+        self.resume_watch = QPushButton('Resume watching');self.resume_watch.clicked.connect(self.resume_viewer)
+        lbox.addWidget(self.resume_watch);lbox.addStretch(1);self.views.addWidget(live)
+        summary = QWidget();sbox = QVBoxLayout(summary)
+        self.summary_note = QLabel('Save the match summary?');self.summary_note.setObjectName('prepTitle')
+        sbox.addWidget(self.summary_note)
+        self.export_summary = QPushButton('Save summary…');self.export_summary.clicked.connect(self.save_summary)
+        sbox.addWidget(self.export_summary)
+        self.skip_summary = QPushButton('Continue without saving (N)')
+        self.skip_summary.clicked.connect(lambda: self.window.run_core('summary_done'));sbox.addWidget(self.skip_summary)
+        sbox.addStretch(1);self.views.addWidget(summary)
+        from PySide6.QtCore import QTimer
+        self.viewer = None
+        self.watch_suspended = False
+        self.bench_pending = False
+        self.pending_stop = None
+        self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(10);self.viewer_timer.timeout.connect(self.poll_viewer)
         self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
-                        self.notice_pass]
+                        self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch]
 
     # -- the steps --------------------------------------------------------------------------------------------
     def show(self, index):
@@ -595,7 +617,8 @@ class CoreRound:
         for button in (w.core_fixture_route, w.core_tournament_route):button.setVisible(False)
         self.pitch_note.setVisible(index != 1)
         w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index);self.holder.updateGeometry()
-        focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench}[index]
+        focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench,
+                 4: self.resume_watch, 5: self.export_summary}[index]
         focus.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
     def start(self):
@@ -609,6 +632,12 @@ class CoreRound:
         if kind != 'done':
             self.bench.message = value;self.bench.refresh();return
         state = self.state = value
+        if state['stop'] != 'live' and self.viewer is not None:
+            if state.get('commentary') and self.viewer.display.frame is not None:
+                self.viewer.pose(self.viewer.display.frame, state['commentary'])
+                self.pending_stop = (name, ('done', dict(state, commentary=[])))
+                return
+            self.viewer.decision('half_time' if state['stop'] == 'half-time' else state['stop'])
         if name == 'substitute':
             made = state['substitution']
             self.bench.message = ('Made by the original' if made['made'] else
@@ -627,13 +656,21 @@ class CoreRound:
                 self.next_page()
             else:
                 self.show_captain()
-        elif stop in ('half-time', 'stoppage'):
+        elif stop in ('half-time', 'stoppage', 'pause'):
             self.first_page = len(state['pages'])
-            self.bench.offer(state, 'half_time' if stop == 'half-time' else 'stoppage');self.show(1)
+            self.bench.offer(state, 'half_time' if stop == 'half-time' else stop);self.show(1)
         elif stop == 'notice':
             self.first_page = len(state['pages']);self.show_notice(state)
         elif stop == 'full-time':              # [T108 review, R1] the round's end goes on, as on a resume
             self.window.run_core('finish')
+        elif stop == 'live':
+            self.show(4)
+            try:
+                if not self.watch_suspended:self.resume_viewer()
+            except (OSError, ValueError) as exc:
+                self.stop_viewer(str(exc))
+        elif stop == 'summary-save':
+            self.show(5)
         else:
             self.queue = list(state['pages'][self.first_page:]);self.after = 'menu';self.next_page()
 
@@ -658,8 +695,8 @@ class CoreRound:
         self.captain_roster.set_rows(rows, current)
         self.captain_title.setText(f"CAPTAIN / {choice['name'].upper()}")
         self.captain_note.setText('Up/Down: the player who captains; Enter: kick off with him. C: the original '
-                                  'picks its own (its best leader). Then the first half is the original\'s quick '
-                                  'result, to half time.')
+                                  'picks its own (its best leader). Choose Watch for the pitch, '
+                                  'or leave it off for the original\'s quick result.')
         self.refusal.setText(f"The original refused the eleven: {state['refused']}" if state['refused'] else '')
         self.show(0)
 
@@ -674,7 +711,7 @@ class CoreRound:
 
     def start_kick_off(self, captain):
         if self.window.core_jobs.busy:return
-        if self.window.run_core('kick_off', captain):
+        if self.window.run_core('kick_off', captain, self.watch.isChecked()):
             self.show(2);self.page_count.setText('The original plays the first half…');self.page_board.set_lines([])
 
     def start_play_on(self):
@@ -683,6 +720,57 @@ class CoreRound:
         self.first_page = len(self.window.model.driver.pages)
         if self.window.run_core('play_on'):
             self.show(2);self.page_count.setText('The original plays the second half…');self.page_board.set_lines([])
+
+    def resume_viewer(self):
+        from goal2.desktop.core_viewer import CoreViewer
+        if self.state is None or self.state['stop'] != 'live' or self.window.core_jobs.busy:return
+        if self.viewer is None:
+            self.viewer = CoreViewer(self.state['identity'])
+        self.watch_suspended = False
+        self.viewer.pose(self.state['pitch'], self.state['commentary'])
+        self.resume_watch.hide()
+        self.live_note.setText('The match is in the pitch window. Enter there opens the bench.')
+        self.viewer_timer.start()
+
+    def stop_viewer(self, message):
+        self.viewer_timer.stop()
+        self.watch_suspended = True
+        if self.viewer is not None:
+            self.viewer.close();self.viewer = None
+        self.live_note.setText(message + '. The original waits here; resume watching or save the core.')
+        self.resume_watch.setEnabled(True)
+        self.resume_watch.show()
+        if self.pending_stop is not None:
+            pending, self.pending_stop = self.pending_stop, None
+            self.finished(*pending)
+
+    def poll_viewer(self):
+        if self.viewer is None:return
+        try:
+            request = self.viewer.poll()
+            if request == 'bench':self.bench_pending = True
+            if self.viewer.closed:
+                self.stop_viewer('The pitch window was closed');return
+            if self.pending_stop is not None and self.viewer.drained:
+                pending, self.pending_stop = self.pending_stop, None
+                self.finished(*pending)
+                return
+            if (self.state and self.state['stop'] == 'live' and self.viewer.drained
+                    and not self.window.core_jobs.busy):
+                if self.window.run_core('live_step', 13 if self.bench_pending else None):
+                    self.bench_pending = False
+        except (OSError, ValueError) as exc:
+            self.stop_viewer(str(exc))
+
+    def save_summary(self):
+        from PySide6.QtWidgets import QFileDialog
+        path, _ = QFileDialog.getSaveFileName(self.window, 'Save match summary', 'match-summary.txt', 'Text (*.txt)')
+        if not path:return
+        try:
+            self.window.model.export_summary(path)
+        except (OSError, ValueError) as exc:
+            self.window.status.setText(str(exc));return
+        self.window.run_core('summary_done')
 
     def next_page(self):
         managed = tuple(m['country'] for m in self.window.model.desk()['managers'])

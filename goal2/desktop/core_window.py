@@ -172,6 +172,8 @@ class CoreWindow(QMainWindow):
         note.setObjectName('deskCampaign');note.setWordWrap(True);page.content.addWidget(note)
 
     def save_core(self):
+        if self.core_jobs.busy:
+            self.status.setText('Wait for the current core action before saving');return False
         try:
             target = self.model.save(self.path.text().strip() or None)
         except ValueError as exc:
@@ -185,6 +187,7 @@ class CoreWindow(QMainWindow):
         if self.core_jobs.busy:
             self.status.setText('The original is still busy with the last action');return False
         self.core_jobs.start(name, *args)
+        self.save.setEnabled(False)
         for widget in self.core_actions:widget.setEnabled(False)
         self.status.setText('The original is pressing its own keys…')
         self.core_timer.start()
@@ -197,11 +200,17 @@ class CoreWindow(QMainWindow):
             answer = ('stopped', str(exc).split('\n')[0])
         if answer is None:return None
         self.core_timer.stop()
+        self.save.setEnabled(True)
         for widget in self.core_actions:widget.setEnabled(True)
         kind, value = answer
         self.status.setText('Done: the pages show what the original holds' if kind == 'done'
                             else f'The original refused: {value}' if kind == 'refused' else f'The core stopped: {value}')
         self.last_core = answer
+        if self.model.core.stopped is not None:
+            self.core_round.viewer_timer.stop()
+            for widget in self.core_actions:widget.setEnabled(False)
+            self.save.setEnabled(False)
+            return answer
         self.refresh()
         from goal2.desktop.core_model import ROUND_ACTIONS
         if self.core_jobs.name in ROUND_ACTIONS:      # [T108] a round step: the round's page shows what came of it
@@ -219,6 +228,18 @@ class CoreWindow(QMainWindow):
             for widget in [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move, self.pool_switch] + \
                     [row for _, row in self.tactics] + self.own_tactics + [self.own_marking, self.core_routes['play next game']]:
                 widget.setEnabled(False)
+
+    def closeEvent(self, event):
+        """[designed: T109] Stop scheduling polls, finish the bounded owned step, then reap the pitch viewer."""
+        self.core_round.viewer_timer.stop()
+        try:
+            self.core_jobs.wait(60)
+            if self.core_round.viewer is not None:
+                self.core_round.viewer.close()
+            self.core_jobs.pool.shutdown(wait=True)
+        except Exception as exc:
+            self.status.setText(f'Cannot close yet: {exc}');event.ignore();return
+        event.accept()
 
     def finish_core(self, timeout=60):
         """Wait for the running action and show its result (tests; closing the window)."""

@@ -708,7 +708,8 @@ def pitch_identity(state):
         for i in range(20):
             w = mem.country(c, 2 * i, 2)
             if w:
-                roles[str(w)] = player_card(state, w)['code']
+                position = mem.byte(mem.far(PLAYERS) + PLAYER_SIZE * w + 6)
+                roles[str(w)] = bytes([mem.ds_byte(CODE_TABLE + position)]).decode('cp437') if position < 14 else '?'
     return dict(countries=sides['names'], managed=sides['managed_side'], roles=roles, kind='Match')
 
 
