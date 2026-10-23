@@ -46,7 +46,8 @@ class BracketBoard(TextBoard):
         else:put(slots[7]['x'],slots[7]['y']-2,'SEMI-FINALS',GOLD)
         final,third = (16,15) if world else (10,9)
         put(slots[final]['x'],slots[final]['y']-1,'FINAL',GOLD)
-        put(slots[third]['x']+(0 if world else 4),slots[third]['y']-1,'THIRD PLACE',GOLD)
+        # [designed: T113 review R1] Leave the semi-final score's entire byte-score width clear on this row.
+        put(slots[third]['x']+(6 if world else 4),slots[third]['y']-1,'THIRD PLACE',GOLD)
         matches={m['slot']:m for m in view['matches']}
         for number,s in slots.items():
             match=matches.get(number)

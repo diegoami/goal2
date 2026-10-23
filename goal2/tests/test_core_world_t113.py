@@ -169,6 +169,10 @@ class Desktop(unittest.TestCase):
                         if final:
                             self.assertNotIn('TOP SCORERS',r.round_bracket_board.text())
                             for row in final['places']:self.assertIn(row['name'],r.round_bracket_board.text())
+                            semi=next(m for m in final['matches'] if m['slot']==14)
+                            line=r.round_bracket_board.text().splitlines()[semi['score_y']-3]
+                            self.assertIn(f"{semi['score'][0]}v{semi['score'][1]}",line)
+                            self.assertIn('THIRD PLACE',line)
                     for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
                         w.resize(round(.9*width),round(.9*height));self.app.processEvents();self.app.processEvents()
                         self.assertEqual(problems(w),[],(index,width,height,problems(w)))
