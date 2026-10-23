@@ -31,7 +31,8 @@ class BracketBoard(TextBoard):
         # [derived: F023/91CE] Slots 7/8 feed final 10; slot 9 is the third-place fixture.
         for source,target_y in ((7,slots[10]['y']),(8,slots[10]['y']+1)):
             s=slots[source];join=s['x']+17
-            horizontal(s['x']+15,join,s['y']);vertical(join,s['y'],target_y)
+            horizontal(s['x']+15,join,s['y']);horizontal(s['x']+15,join,s['y']+1)
+            vertical(join,min(s['y'],target_y),max(s['y']+1,target_y))
             horizontal(join,slots[10]['x']-1,target_y)
         put(slots[7]['x'],slots[7]['y']-2,'SEMI-FINALS',GOLD)
         put(slots[10]['x'],slots[10]['y']-1,'FINAL',GOLD)

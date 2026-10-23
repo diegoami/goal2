@@ -129,6 +129,7 @@ class Continuation(unittest.TestCase):
         d.press(LEFT,expect=('tournament',))
         check_groups(self,d.wait,views.tournament(d.wait.state,**{k:d.wait.view[k] for k in ('country','world','display')}))
         d.back()
+        saved=d.core.save()
         d.trail=[]
         for _ in range(8):
             d.play_round(fix_eleven=fix_eleven)
@@ -140,6 +141,29 @@ class Continuation(unittest.TestCase):
         self.assertEqual(len(views.bracket(brackets[-1].state,brackets[-1].view['country'])['places']),3)
         self.assertTrue(any(k=='championship-bracket' for k,_ in d.pages)
                         or any(k=='bulletin' for k,_ in d.pages))
+        from goal2.core import Core
+        from goal2.core.driver import Driver
+        replay=Driver(Core.load(saved,goal_dat=requires.CACHE/'GOAL.DAT'))
+        for _ in range(8):
+            replay.play_round(fix_eleven=fix_eleven)
+            if views.Memory(replay.wait.state).game(0x3C)==5:break
+        self.assertEqual(replay.core.memory_sha256(),d.core.memory_sha256())
+        # [confirmed: F017 57E5/56F3; this real continuation] The next Play announces one managed replacement
+        # and returns to the menu without consuming a fixture.
+        before=d.wait.state;m=views.Memory(before)
+        old={r['player'] for r in views.team(before)['squad']}|{r['player'] for r in views.pool(before)['rows']}
+        fixture=m.game(0x26,2)
+        d.play_round(fix_eleven=fix_eleven)
+        after=d.wait.state;n=views.Memory(after)
+        new={r['player'] for r in views.team(after)['squad']}|{r['player'] for r in views.pool(after)['rows']}
+        self.assertEqual(len(old-new),1);self.assertEqual(len(new-old),1)
+        self.assertEqual(n.game(0x26,2),fixture)
+        retired=next(iter(old-new));replacement=next(iter(new-old))
+        a=n.far(views.PLAYERS)+20*retired
+        self.assertEqual(bytes(n.mem[a:a+20]),bytes(20))
+        self.assertEqual(n.byte(n.far(views.PLAYERS)+20*replacement),views.team(after)['country'])
+        papers=[p for kind,p in d.pages if kind=='bulletin']
+        self.assertTrue(any('IS TO RETIRE' in p['middle']['lines'] for p in papers))
 
 
 @requires.need(**(NEEDS | {'modules':('unicorn','PySide6')}),slow=True)
