@@ -88,6 +88,21 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `action-replay-prompt` | poll `0791:CC54` / `0791:0BE1` (0B7C from 0C65 at 0C87) | E006-r0001, a watched second half | "Do you want an action replay? (Y/N)" |
 | `substitution-notice` | poll `0791:CC54` / `0791:C5C8` (0791:C50C) | E006-r0001, a watched second half | "SUBSTITUTION" "press any key" |
 | `title-tune` | polls `1771:0723`, `1771:0782` (1771:06F3, the title's tune) | E039's traces (T106) | "THE international soccer management game" "Do you want to load a saved game? (Y/N)" |
+| `select-squad` | `0791:E61F` (0791:E44F from main_menu_loop 000E:771A or 7620, DS:0C1F clear, `[bp-5]` 1) | E006-r0001, the manager menu's select squad (T107) | "SELECT YOUR TEAM" "Hit Ins for assistant's recommended 20" "◄┘-move player" |
+| `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" "◄┘-move player" |
+| `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107) | "↓↑←→-select" "◄┘-alter tactic" |
+| `player-name-entry` | polled `214B:0DB9`, read `214B:112B` (the editor 214B:1086 from 1771:4859, return 1771:48A0, from E44F's F2, return 0791:E700) | E006-r0001, F2 on select squad (T107) | "Type in characters (maximum 12)" "◄┘-accept Esc-abort" |
+| `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | not visited: no kept state is in a finals or tour window (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
+
+[designed: owner, 2026-10-22, T107's amendment] **Keys the screen prints.** A kinds.tsv kind accepts its catalogue
+`screen` and `owner` rows and also a key its own screen's hint prints at a kept state (`screens.PRINTED`), quoted here
+with the state and the text row (0-based) it is printed on; a catalogue `burst` row (a key a recorded run read on that
+screen) backs each. `test_core_screens_t103.py` checks the union and the quotes; `test_core_team_t107.py` checks the
+quote on the screen.
+
+| kind | keys | state | row | quoted text |
+| --- | --- | --- | --- | --- |
+| `team-tactics` | ↑↓ | E006-r0001, team info's T on the managed country (1771:1981 moves DS:0D8E; burst "team-tactics Up", E015-r0007 state 119) | row 2 | "Use ↑↓ to move" |
 
 The new game's kinds.tsv kinds (T106) [confirmed: F032, E038-r0001's savestates and trace; catalogue.tsv's keys]:
 `title-load-prompt` (read `1771:085F`, 1771:080C from the main program), `title-player-count` (read `1771:0081`,
@@ -101,8 +116,12 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 **Not reached yet**, so not in the table:
 - The other kinds.tsv screens no tour met (`round-playing`, `round-results`, `match-watch-prompt`,
   `match-commentary`, the other substitution screens, `save-game-name-entry`, `file-not-found-prompt`) and the
-  other cases of the shared sites (the taker prompts, the pause and extra-time menus, SELECT TEAM outside a match)
-  stop with `UnknownScreen` until a screen task maps them (G10, G12-G14).
+  other cases of the shared sites (the taker prompts, the pause and extra-time menus, the pre-match SELECT TEAM from
+  0791:E949) stop with `UnknownScreen` until a screen task maps them (G13, G14).
+- **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
+  " during finals" from DC38, return DC3D, or " whilst on tour" from DC63, return DC68, in the box 214B:04F8, F031). No
+  kept state is in a finals or tour window (every one is at stage 2 with the finals flag `[A923]+0x13+m` clear), and
+  no test writes guest memory to reach one; the driver's `exchange` answers it with a key and returns the message.
 - Interrupts other than the new game's (below) stay unserved.
 
 ## The driver and the views (T105, #308's G11)
@@ -141,6 +160,37 @@ driver.back()                         # Esc, Esc (the history's country browser,
 - `python3 -m unittest goal2.tests.test_core_desktop_t105 -v` checks every view against the original's own screen
   (E006-r0001 and E010-r0001's half time played on to the next manager menu), the driver, and the desktop over
   the core (docs/desktop-management.md, "The core route").
+
+## The Team and Pool route (T107, #308's G12)
+
+[designed: owner, 2026-10-22, #308, #328; decisions 5 and 7] The manager menu's select squad (item 5) opens SELECT
+YOUR TEAM (0791:E44F), team info's T on the managed country the team tactics (1771:1981). The driver's team actions
+each start at the manager menu, press the original's keys closed-loop (the vendored kit's method, never its match
+plans) and return to it; each reads the screen's state before each key:
+
+```python
+driver.swap(a, b)                     # Enter on a, Enter on b: the squad words swap, then E44F sorts the squad
+driver.exchange(squad_player, pool_player)   # Enter, Left, Enter: 0791:DBFA may refuse (F031); returns the message
+driver.set_position(player, code)     # C (his club position, 1771:4952) or R (+1, wrapping 0..13, 1771:4925)
+driver.set_own_tactic(player, e, v)   # T, the row e, Enter cycles: the team's, his own clear, his own set (4B61)
+driver.set_marking(player, opponent)  # refused: 4B61 offers row 5 only with a match set up (4 rows here)
+driver.rename(player, "mo salah")     # F2: the editor's keys queued; 1771:4859 keeps "M O Salah"
+driver.set_tactic(element, on)        # team info, the managed country, T, ↑↓ to DS:6BBF's row, Enter, Esc, Esc
+```
+
+- [confirmed: named/seg_0791_12.c E44F, DEA6; code/seg_0791_22.asm E641-E657] On SELECT YOUR TEAM Enter marks a player
+  ([bp-1], his list [bp-7], his slot or pool index [bp-9]) and Enter on another swaps their words; Left and Right
+  toggle the squad list and the pool list ([bp-5]); Esc unmarks a marked player, turns into Left on the pool list and
+  leaves on the squad list; on leaving, E44F sorts the pool (sort_pool_by_position). Entering sorts the squad by
+  position: visiting the screen changes memory as the original does.
+- The views (`goal2/core/views.py`): `team` (the squad in its order, the eleven then the bench, with the codes),
+  `player_card` (every field of 1771:42BC: the words, the 26-cell skill bars of 1771:3947, the characteristics'
+  words and 14-cell bars, the four tactics with " P", the mark, the status word, the performance stars of 1771:3827),
+  `team_tactics` (the byte +0x2D, its rows in DS:6BBF's order with their words) and `pool` (F011: the eighty words
+  from DS:6D18[m], the list's top and row). `python3 -m unittest goal2.tests.test_core_team_t107 -v` checks them
+  against the screens (E006-r0001 and a new game), each action against the same keys pressed on the core directly,
+  the refusal, the keys, save and resume, and the desktop's Team and Pool pages (docs/desktop-management.md).
+- Each action takes 120-570 ms under Unicorn, so the desktop runs it as a background job (`CoreJobs`).
 
 ## Where the run starts (R1)
 
@@ -258,4 +308,5 @@ or either module changes (`SLOW_PATHS`, docs/process.md). The default run keeps 
 `goal2.tests.test_core_new_game_t106` (T106) keeps E038's byte-for-byte new game (about a second) in the default
 run; its slow cases boot E039's two dates through the whole title tune (about a minute each) and drive Launch's new
 career to the main window. `goal2.tests.test_core_desktop_t105` (T105) is guarded the same way, with `goal2/desktop/core_*`; its default run
-keeps the E006 text oracle, and its slow cases play E010-r0001's second half (about 20 s) and open the window.
+keeps the E006 text oracle, and its slow cases play E010-r0001's second half (about 20 s) and open the window. `goal2.tests.test_core_team_t107` (T107) likewise keeps its E006 text oracle (about a second) in the default run;
+its slow cases (about 20 s) run the actions, the new game's oracle and the Team and Pool pages.

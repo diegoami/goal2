@@ -232,3 +232,210 @@ def refresh(self,*unused):
     if hasattr(self,'lineup_own'):
         from goal2.desktop.fixtures_page import refresh_preparation
         refresh_preparation(self)
+
+
+# -- the core route (T107) -------------------------------------------------------------------------------------------
+# [designed: owner, 2026-10-22, decisions 5 and 7; T107] Over the core the Team page is T99's page filled from the
+# original's memory: the roster strip (SELECT YOUR TEAM's squad, the eleven, a rule, the bench), the player card
+# (1771:42BC) and the tactic rows (1771:1981). Every edit is a driver action run as a background job (CoreJobs); the
+# page reads the original again when the job ends. There is no draft, no Confirm and no captain: the original
+# holds none outside a match.
+class CoreTacticRow(TacticRow):
+    """A tactic row whose word is the original's (set by refresh), never a checked state of its own."""
+
+    def __init__(self, element, name):
+        self.word = '';self.label = name
+        super().__init__(element, 'x / x')
+        self.setCheckable(False);self.category = name
+
+    def value(self):
+        return self.word[:1].upper() + self.word[1:]
+
+    def set_word(self, word):
+        self.word = word;self.follow()
+
+
+def core_roster_rows(team):
+    return [(r['player'], r['name'], r['code'], r['line'], r['eleven'], False) for r in team['squad']]
+
+
+def build_core(self, model):
+    from PySide6.QtWidgets import QLineEdit
+    from goal2.desktop.roster import RosterView
+    from goal2.desktop.player_card import PlayerCardView
+    page = self.pages[1]
+    team = QHBoxLayout();team.setSpacing(16);page.content.addLayout(team, 1)
+    self.team_views = QStackedWidget();self.team_views.setObjectName('teamViews');team.addWidget(self.team_views, 1)
+    self.team_views.show_view = lambda index: core_team_view(self, index);page.views = self.team_views
+    self.team_roster = RosterView('SQUAD', toggles=False, grouped=True, marks=False);self.team_roster.setFixedWidth(300)
+    self.team_roster.setAccessibleDescription('Up/Down: select; Enter: mark, then Enter on another to swap')
+    team.addWidget(self.team_roster, 0, Qt.AlignmentFlag.AlignTop)
+
+    def view(name):
+        widget = QWidget();widget.setObjectName(name);box = QVBoxLayout(widget)
+        box.setContentsMargins(0, 0, 0, 0);box.setSpacing(8);self.team_views.addWidget(widget)
+        return box
+    card_box, tactics_box, own_box = view('teamCardView'), view('teamTacticsView'), view('teamOwnView')
+    self.team_card = PlayerCardView(compact=True);card_box.addWidget(self.team_card)
+    actions = QGridLayout();actions.setSpacing(8);card_box.addLayout(actions)
+    buttons = (('Team tactics >', 'teamTacticsRoute', lambda: core_team_view(self, 1)),
+               ('Own tactics (T) >', 'teamOwnRoute', lambda: core_team_view(self, 2)),
+               ('Reposition (R)', 'reposition', lambda: core_reposition(self, False)),
+               ('Club position (C)', 'clubPosition', lambda: core_reposition(self, True)))
+    self.core_team_buttons = {}
+    for i, (text, name, action) in enumerate(buttons):
+        button = QPushButton(text);button.setObjectName(name);button.setAccessibleName(text.rstrip(' >'))
+        button.clicked.connect(action);self.core_team_buttons[name] = button
+        if i < 3:actions.addWidget(button, 0, i)
+    rename = QHBoxLayout();card_box.addLayout(rename);rename.addWidget(self.core_team_buttons['clubPosition'])
+    self.rename_text = QLineEdit();self.rename_text.setObjectName('renameText');self.rename_text.setMaxLength(12)
+    self.rename_text.setAccessibleName('New name, 12 characters at most')
+    self.rename_text.setPlaceholderText('New name (12 characters)')
+    self.rename = QPushButton('Rename (F2)');self.rename.setObjectName('renamePlayer')
+    self.rename.setAccessibleName('Rename the selected player');self.rename.clicked.connect(lambda: core_rename(self))
+    self.rename_text.returnPressed.connect(self.rename.click)
+    rename.addWidget(self.rename_text, 1);rename.addWidget(self.rename);card_box.addStretch(1)
+    from PySide6.QtGui import QKeySequence, QShortcut
+    for key, action in (('F2', lambda: self.rename_text.setFocus(Qt.FocusReason.ShortcutFocusReason)),
+                        ('R', lambda: core_reposition(self, False)), ('C', lambda: core_reposition(self, True)),
+                        ('T', lambda: core_team_view(self, 2))):
+        shortcut = QShortcut(QKeySequence(key), page);shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+        shortcut.activated.connect(lambda a=action: self.rename_text.hasFocus() or a())
+    # View 1: the team tactics, as 1771:1981 lists them (DS:6BBF's row order).
+    title = QLabel('TEAM TACTICS');title.setObjectName('tacticsTitle');tactics_box.addWidget(title)
+    cards = QHBoxLayout();cards.setSpacing(16);tactics_box.addLayout(cards)
+    left = QFrame();left.setObjectName('tacticsTeam');left_box = QVBoxLayout(left);left_box.setContentsMargins(16, 12, 16, 16)
+    self.tactics_heading = QLabel();self.tactics_heading.setObjectName('tacticsHeading');self.tactics_heading.setWordWrap(True)
+    self.tactics_manager = QLabel();self.tactics_manager.setObjectName('tacticsManager');self.tactics_manager.setWordWrap(True)
+    left_box.addWidget(self.tactics_heading);left_box.addWidget(self.tactics_manager);left_box.addStretch(1)
+    cards.addWidget(left, 1)
+    right = QFrame();right.setObjectName('tacticsDefaults');right_box = QVBoxLayout(right)
+    right_box.setContentsMargins(16, 12, 16, 16);right_box.setSpacing(4)
+    heading = QLabel('TEAM TACTICS / PLAYER DEFAULTS');heading.setObjectName('tacticsDefaultsHeading');right_box.addWidget(heading)
+    self.tactics = []
+    for element in (5, 6, 7, 1, 2, 3, 4, 8):
+        row = CoreTacticRow(element, CATEGORIES[element]);self.tactics.append((element, row));right_box.addWidget(row)
+        row.clicked.connect(lambda checked=False, e=element: core_toggle_tactic(self, e))
+    for _, row in self.tactics:row.rows = [r for _, r in self.tactics]
+    right_box.addStretch(1);cards.addWidget(right, 1)
+    hint = QLabel('Enter or Space: change the selected tactic (the original toggles it) / Esc: the card')
+    hint.setObjectName('tacticsHint');hint.setWordWrap(True);tactics_box.addWidget(hint);tactics_box.addStretch(1)
+    # View 2: the selected player's own tactics (1771:4B61): each row cycles the team's, his own off, his own on.
+    own_title = QLabel();own_title.setObjectName('ownTacticsTitle');own_box.addWidget(own_title);self.own_title = own_title
+    self.own_tactics = []
+    for element, name in enumerate(('Positioning', 'Possession', 'Passing', 'Tackling'), 1):
+        row = CoreTacticRow(element, name);row.setObjectName(f'ownTactic{element}');self.own_tactics.append(row)
+        row.clicked.connect(lambda checked=False, e=element: core_own_tactic(self, e));own_box.addWidget(row)
+    self.own_marking = CoreTacticRow(8, 'Marking');self.own_marking.setObjectName('ownMarking')
+    self.own_marking.clicked.connect(lambda: core_marking(self));own_box.addWidget(self.own_marking)
+    for row in self.own_tactics + [self.own_marking]:row.rows = self.own_tactics + [self.own_marking]
+    own_hint = QLabel('Enter: the team\'s tactic, his own (P) one way, his own the other way / Esc: the card')
+    own_hint.setObjectName('ownTacticsHint');own_hint.setWordWrap(True);own_box.addWidget(own_hint);own_box.addStretch(1)
+    self.team_roster.current_changed.connect(lambda row: core_refresh_card(self))
+    self.team_roster.activated.connect(lambda row: core_mark(self, self.team_roster, row, 'squad'))
+
+    def escape():
+        if self.team_views.currentIndex() != 0:
+            core_team_view(self, 0);return True
+        if self.team_roster.marked:
+            self.team_roster.marked = set();self.core_marked = None;self.team_roster.update();return True
+        return False
+    page.escape = escape
+    self.core_marked = None
+
+
+def core_team_view(self, index):
+    self.team_views.setCurrentIndex(index)
+    from PySide6.QtCore import QCoreApplication, QEvent
+    for _ in range(3):QCoreApplication.sendPostedEvents(None, QEvent.Type.LayoutRequest)
+    if self.page_stack.currentIndex() != 1:return
+    target = {0: self.team_roster, 1: self.tactics[0][1], 2: self.own_tactics[0]}[index]
+    target.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+
+def selected_player(self):
+    rows = self.team_roster.rows
+    return rows[self.team_roster.current][0] if rows and 0 <= self.team_roster.current < len(rows) else None
+
+
+def core_mark(self, strip, row, side):
+    """[designed: T107; confirmed: 0791:DEA6] Enter marks a player, Enter on another moves him: two squad players
+    swap, a squad and a pool player exchange (the original's own Enter, Enter)."""
+    player = strip.rows[row][0]
+    marked = self.core_marked
+    if marked is None or marked[1] == player:
+        self.core_marked = None if marked else (side, player)
+    else:
+        sides = {marked[0]: marked[1], side: player}
+        self.core_marked = None
+        if len(sides) == 1:
+            if side == 'squad':
+                self.run_core('swap', marked[1], player)
+            else:
+                self.status.setText('Mark a squad player, then a pool player, to move them')
+        else:
+            self.run_core('exchange', sides['squad'], sides['pool'])
+    for s in (self.team_roster, getattr(self, 'pool_strip', None)):
+        if s is not None:
+            s.marked = {self.core_marked[1]} if self.core_marked else set();s.update()
+
+
+def core_reposition(self, club):
+    player = selected_player(self) if self.page_stack.currentIndex() == 1 else self.pool_selected()
+    if player is None:return
+    card = self.model.card(player)
+    self.run_core('set_position', player, card['club_position'] if club else (card['position'] + 1) % 14)
+
+
+def core_rename(self):
+    player = selected_player(self)
+    text = self.rename_text.text()
+    if player is None or not text.strip():
+        self.status.setText('Type the new name (12 characters at most), then Rename');return
+    self.run_core('rename', player, text)
+
+
+def core_toggle_tactic(self, element):
+    self.run_core('set_tactic', element, not self.model.team_tactics()['byte'] >> (element - 1) & 1)
+
+
+def core_own_tactic(self, element):
+    player = selected_player(self)
+    if player is None:return
+    r = self.model.card(player)['own_tactics']
+    state = None if not r >> (element + 3) & 1 else bool(r >> (element - 1) & 1)
+    following = {None: False, False: True, True: None}[state]         # 1771:4B61's cycle
+    self.run_core('set_own_tactic', player, element, following)
+
+
+def core_marking(self):
+    player = selected_player(self)
+    if player is not None:self.run_core('set_marking', player, 0)
+
+
+def core_refresh_card(self):
+    from goal2.desktop.player_card import core_card
+    player = selected_player(self)
+    card = self.model.card(player) if player is not None else None
+    self.team_card.set_card(core_card(card) if card else None)
+    if card:
+        self.own_title.setText(f"{card['name'].upper()} / OWN TACTICS (P = his own)")
+        for row, (_, word, own) in zip(self.own_tactics, card['tactics']):row.set_word(word + (' P' if own else ''))
+        self.own_marking.set_word(card['mark'] or '—')
+
+
+def refresh_core(self):
+    team = self.model.team()
+    tactics = self.model.team_tactics()
+    rows = core_roster_rows(team)
+    self.team_roster.caption = team['name'].upper()
+    current = self.team_roster.current if 0 <= self.team_roster.current < len(rows) else 0
+    self.team_roster.set_rows(rows, current)
+    words = {r['element']: r['word'] for r in tactics['rows']}
+    for element, row in self.tactics:row.set_word(words[element])
+    eleven = [r for r in team['squad'] if r['eleven']]
+    # [derived: goal2/game/country_card.py] the formation is counted from the eleven's lines; nothing is stored.
+    formation = '-'.join(str(sum(1 for r in eleven if r['line'] == line)) for line in ('defence', 'midfield', 'attack'))
+    self.tactics_heading.setText(f"{team['name'].upper()} / {formation}")
+    self.tactics_manager.setText('Manager: ' + self.model.desk()['manager'])
+    core_refresh_card(self)

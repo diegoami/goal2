@@ -57,6 +57,18 @@ def catalogue_keys(kind):
     return {(r["key"], tuple(code(s) for s in r["keysyms"].split())) for r in rows}
 
 
+def printed_keys():
+    """docs/core.md's table "Keys the screen prints" [T107]: {kind: [(keys, state, row, quote)]}."""
+    out = {}
+    for line in (requires.ROOT / "docs/core.md").read_text().splitlines():
+        cells = [c.strip() for c in line.split("|")]
+        if (len(cells) > 6 and cells[1].startswith("`") and cells[1].endswith("`") and cells[4].startswith("row ")
+                and '"' in cells[5]):
+            out.setdefault(cells[1].strip("`"), []).append((cells[2], cells[3], cells[4],
+                                                            re.findall(r'"([^"]+)"', cells[5])))
+    return out
+
+
 def designed_quotes():
     """docs/core.md's table of goal2 kinds: {kind: [quoted text, ...]}."""
     out = {}
@@ -258,14 +270,27 @@ class Tours(unittest.TestCase):
 @requires.need(**NEEDS)
 class Keys(unittest.TestCase):
     def test_each_kind_accepts_the_catalogues_keys(self):
-        from goal2.core.screens import KINDS
+        from goal2.core.screens import KEYSYMS, KINDS, PRINTED
+        KEYSYMS_OF = {v: k for k, v in KEYSYMS.items()}
         for name, kind in KINDS.items():
             if kind.designed:
                 self.assertNotIn(name, rules(), f"{name} is a kinds.tsv kind")
                 self.assertIn(name, designed_quotes(), f"docs/core.md does not quote {name}")
                 continue
             self.assertIn(name, rules())
-            self.assertEqual(set(kind.keys), catalogue_keys(name), name)
+            # [T107's amendment] the catalogue's screen and owner rows, and the keys the screen's own hint prints
+            # (screens.PRINTED), each quoted in docs/core.md with its state and row and backed by a burst row.
+            printed = set(PRINTED.get(name, ()))
+            self.assertEqual(set(kind.keys), catalogue_keys(name) | printed, name)
+            quoted = printed_keys().get(name, [])
+            bursts = {r["key"] for r in tsv("static/screens/catalogue.tsv")
+                      if r["kind"] == name and r["source"].startswith("run:")}
+            for label, codes in printed:
+                rows = [q for q in quoted if q[0] == label]
+                self.assertTrue(rows, f"docs/core.md does not quote {name}'s printed key {label}")
+                self.assertTrue(all(q[1] and q[3] and label in " ".join(q[3]) for q in rows), (name, rows))
+                self.assertTrue(any(KEYSYMS_OF.get(c) in bursts for c in codes),
+                                f"no catalogue burst row reads {label} on {name}")
 
     @requires.need(slow=True)
     def test_a_key_the_kind_does_not_accept_is_refused(self):

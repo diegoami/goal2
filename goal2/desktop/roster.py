@@ -32,6 +32,8 @@ class RosterView(QWidget):
         # is the original's strip: the eleven in the draft's order, a rule, then the bench; an
         # unavailable player is marked. `order` lists row indices in display order.
         self.grouped = grouped;self.order = [];self.unavailable = set()
+        # [designed: T107] The player marked by a first Enter (SELECT YOUR TEAM's move), drawn with '>'.
+        self.marked = set()
         # [designed: T95] A fixed caption (e.g. "GREECE / 4-4-2") instead of the squad counts.
         self.caption = None
         self.setObjectName('roster');self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
@@ -149,7 +151,10 @@ class RosterView(QWidget):
             if i == self.current:
                 painter.fillRect(10, y - 20, round(width) - 20, ROW - 2, QColor(GREY));colour = QColor(BLACK)
             painter.setPen(QColor(BLACK) if i == self.current else QColor(LINE['goalkeeper'] if in_xi else LINE['defence']))
-            if self.marks:
+            if self.rows[i][0] in self.marked:
+                painter.setPen(QColor(BLACK) if i == self.current else QColor('#ff55ff'))
+                painter.drawText(14, y, '>')
+            elif self.marks:
                 painter.drawText(14, y, '+' if in_xi else '-')
             elif self.rows[i][0] in self.unavailable:
                 painter.setPen(QColor(BLACK) if i == self.current else QColor('#ff55ff'))

@@ -59,6 +59,14 @@ class Kind:
 
 
 _CAT = "[confirmed: catalogue.tsv, the kind's screen rows, E015-r0007]"
+# [designed: owner, 2026-10-22, T107's amendment] A kinds.tsv kind also accepts a key its own screen's hint prints
+# at a kept state; each is quoted in docs/core.md ("Keys the screen prints") with the state and the row, and backed
+# by the catalogue's burst rows (the keys a recorded run read there).
+PRINTED = {
+    # E006-r0001, team info's T on the managed country, text row 3: "Use ↑↓ to move"; catalogue.tsv's burst row
+    # "team-tactics Up" (E015-r0007 state 119); 1771:1981 moves its row DS:0D8E with them (u214b_menu_read_key_and_move)
+    "team-tactics": keys(("↑↓", "Up Down")),
+}
 _YES_NO = keys(("Y N", "y n"))
 _MATCH_MENU = keys(("INS", "Insert"), ("↑↓←→", "Up Down Left Right"), ("◄┘", "Return"))
 _BENCH_ANY = keys(("Esc ◄┘", "Escape Return"), ("any key", "(any)"))
@@ -75,7 +83,8 @@ KINDS = {k.name: k for k in (
     Kind("match-menu-halftime", _MATCH_MENU, evidence=_CAT),
     Kind("match-menu-fulltime", _MATCH_MENU, evidence=_CAT),
     Kind("match-summary", _BENCH_ANY, evidence=_CAT),
-    Kind("team-tactics", keys(("Esc", "Escape"), ("◄┘", "Return")), evidence=_CAT),
+    Kind("team-tactics", keys(("Esc", "Escape"), ("◄┘", "Return")) + PRINTED["team-tactics"],
+         evidence=_CAT + "; ↑↓ printed on the screen (PRINTED)"),
     Kind("squad-substitution-take-off", keys(("Esc", "Escape"), ("F2", "F2"), ("R,C", "r c"), ("T", "t"),
                                              ("◄┘", "Return")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
@@ -118,6 +127,25 @@ KINDS = {k.name: k for k in (
     Kind("title-tune", _YES_NO, designed=True, polled=True,
          evidence="[designed] the title's tune under the load question (1771:06F3): it ends at a key, which the "
                   "title's read then takes; its keys are the question's"),
+    # the Team and Pool route (T107): SELECT YOUR TEAM outside a match and the screens it opens
+    Kind("select-squad", keys(("←→", "Left Right"), ("↑↓", "Up Down"), ("◄┘", "Return"), ("Ins", "Insert"),
+                              ("F2", "F2"), ("R,C", "r c"), ("T", "t"), ("Esc", "Escape")), designed=True,
+         evidence="[designed] SELECT YOUR TEAM, the squad list (0791:E44F from the manager menu): 'Use ←→ to toggle', "
+                  "'Use ↑↓ to find player, ◄┘ to select', 'Hit Ins for assistant's recommended 20', 'F2-new name', "
+                  "'R,C-reposition', 'T-tactics', '◄┘-move player', 'Esc-exit'"),
+    Kind("select-squad-pool", keys(("←→", "Left Right"), ("↑↓", "Up Down"), ("◄┘", "Return"), ("F2", "F2"),
+                                   ("R,C", "r c"), ("T", "t"), ("Esc", "Escape")), designed=True,
+         evidence="[designed] SELECT YOUR TEAM, the pool list (0791:E2E6): 'Use ←→ to toggle', 'Use ↑↓ to find "
+                  "player, ◄┘ to select', 'F2-new name', 'R,C-reposition', 'T-tactics', '◄┘-move player', 'Esc-exit'"),
+    Kind("own-tactics", keys(("↓↑←→", "Up Down Left Right"), ("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+         evidence="[designed] a player's own tactics outside a match (1771:4B61 from SELECT YOUR TEAM's T): "
+                  "'↓↑←→-select', '◄┘-alter tactic', 'Esc-exit'"),
+    Kind("player-name-entry", keys(("Esc", "Escape"), ("characters", "(typed)"), ("◄┘", "Return")), designed=True,
+         polled=True, evidence="[designed] F2's new name (1771:4859 from SELECT YOUR TEAM): the line editor "
+                               "214B:1086, polled as the new game's name entry (F032): 'Type in characters'"),
+    Kind("squad-change-refused", keys(("any key", "(any)")), designed=True,
+         evidence="[designed] 0791:DBFA's refusal of a pool exchange (F031): 'cannot alter squad', 'PRESS ANY KEY' "
+                  "(214B:04F8)"),
 )}
 DESIGNED = tuple(k for k, v in KINDS.items() if v.designed)
 
@@ -242,8 +270,13 @@ def _name_entry(f, bp):
     # far-called by 1771:09A0 at 0A1D, which set_managed_countries 1771:2D15 calls after the country is chosen
     # (push cs; call, returning to 1771:2E05). The editor near-calls its cursor wait 214B:0D90 at 1124, which polls
     # (return 0DB9), and reads at 1128 (return 112B). `bp` is the editor's frame.
-    return ("country-select-name-entry" if f.far_caller(bp) == "1771:0A22" and f.far_caller(f.up(bp)) == "1771:2E05"
-            else None)
+    if f.far_caller(bp) == "1771:0A22" and f.far_caller(f.up(bp)) == "1771:2E05":
+        return "country-select-name-entry"
+    # [T107; confirmed: named/seg_1771_03.c 1771:4859, named/seg_0791_12.c E44F] F2 on SELECT YOUR TEAM calls
+    # 1771:4859(2, 8, player) at 0791:E6FB (return E700), which far-calls the editor at 1771:489B (return 48A0).
+    if f.far_caller(bp) == "1771:48A0" and f.far_caller(f.up(bp)) == "0791:E700" and not f.ds_byte(MATCH_MENU_USED):
+        return "player-name-entry"
+    return None
 
 
 def _bulletin(f):
@@ -305,11 +338,15 @@ def _menu_reader(f):
         return "team-tactics" if is_managed(f, country) and not f.ds_byte(VIEW_ONLY) else "team-tactics-view"
     if caller == "1771:9022":
         return "tournament"         # 1771:8E9A's read (9022 lies in it; 9028 is the next routine)
+    if caller == "1771:4C0A":
+        return _own_tactics(f)
     return None
 
 
 def _menu_view(f):
     caller, up = f.far_caller(f.bp), f.up(f.bp)
+    if caller == "1771:4C0A":
+        return _own_view(f)
     if caller == "0791:EE9F":
         item = f.word(up, -7)       # ED8A local_9 [bp-7] (seg_0791_22.asm EDE4; kit screens.py MENU_ITEM_BP)
         label = MATCH_MENU_ITEMS[(item - 1) % 5]
@@ -329,11 +366,23 @@ def _board(f):
     return "match-board"
 
 
+# [confirmed: code/seg_000E_09.asm 7620, 771A] main_menu_loop far-calls select_team_screen at 7620 (Space, Left or
+# Right on the menu) and at 771A (Enter on its item 5, select squad): the return addresses its frame holds.
+SELECT_FROM_MENU = ("000E:7625", "000E:771F")
+POOL_TOP, POOL_CURSOR = 0x52, 0x5E   # the game record's words +0x52 + 2m and +0x5E + 2m: the pool list's top and row
+
+
 def _select_team(f):
     # select_team_screen 0791:E44F(country): with DS:066D, DS:0C20 clear, DS:0C1F set (a match's menu), a
     # substitution left (DS:9B3A + local_5 [bp-3]) and DS:9B41 set, E2A0 draws "make substitutions now" (DS:4840) and,
     # with the cursor DS:0C1B below 12, "take off this player" (DS:4720) (named/seg_0791_11.c E44F, E2A0); the squad
-    # view is local_7 [bp-5] = 1 (seg_0791_22.asm E495). Its other states have no entry yet.
+    # view is local_7 [bp-5] = 1 (seg_0791_22.asm E495).
+    # [T107; confirmed: named/seg_0791_12.c E44F] Called by the manager menu (SELECT_FROM_MENU) with DS:0C1F clear
+    # (outside a match, F031), it is SELECT YOUR TEAM: local_7 [bp-5] 1 shows the squad list, 2 the pool list (Left
+    # and Right toggle it); E44F clears DS:0C20 itself when no match is set up. Its other states have no entry yet.
+    if (not f.ds_byte(MATCH_MENU_USED) and not f.ds_byte(SUMMARY_FILE) and not f.ds_byte(VIEW_ONLY)
+            and f.far_caller(f.bp) in SELECT_FROM_MENU):
+        return {1: "select-squad", 2: "select-squad-pool"}.get(f.word(f.bp, -5))
     if (f.ds_byte(SUMMARY_FILE) or f.ds_byte(VIEW_ONLY) or not f.ds_byte(MATCH_MENU_USED)
             or not f.ds_byte(SUBSTITUTIONS_LEFT + f.byte(f.bp, -3)) or not f.ds_byte(SUBS_ALLOWED)
             or f.word(f.bp, -5) != 1):
@@ -341,9 +390,55 @@ def _select_team(f):
     return "squad-substitution-take-off" if f.ds_word(SELECT_CURSOR) < 12 else None
 
 
+def pool_item(f):
+    """The pool list's highlighted item 1..80 and its A927 index [confirmed: named/seg_0791_12.c 0791:DDCB
+    pool_selection_index, 214B:15B1]: item = top + row - 1, index = DS:6D18[m] + item - 1 (F011)."""
+    game = f.far(GAME)
+    m = f.read(game + 1, 1)[0]
+    top = int.from_bytes(f.read(game + POOL_TOP + 2 * m, 2), "little")
+    row = int.from_bytes(f.read(game + POOL_CURSOR + 2 * m, 2), "little")
+    item = top + row - 1
+    return item, top, row, f.ds_word(POOL_BASE + 2 * m) + item - 1
+
+
+POOL_BASE, POOL_INDICES = 0x6D18, 0xA927     # F011: manager m's first pool index DS:6D18[m]; the indices [DS:A927]
+
+
 def _select_view(f):
     slot, country = f.ds_word(SELECT_CURSOR), f.word(f.bp, 6)
-    return {"slot": slot, "player": f.far_word(COUNTRIES, COUNTRY_SIZE * country + 2 * (slot - 1))}
+    out = {"slot": slot, "player": f.far_word(COUNTRIES, COUNTRY_SIZE * country + 2 * (slot - 1))}
+    if not f.ds_byte(MATCH_MENU_USED):
+        # [confirmed: named/seg_0791_12.c DEA6] local_3 [bp-1] set: a player is marked by the first Enter; local_9
+        # [bp-7] is his list (1 the squad, 2 the pool) and local_b [bp-9] his slot or pool index (DE27).
+        out.update(country=country, side=f.word(f.bp, -5),
+                   marked=(f.word(f.bp, -7), f.word(f.bp, -9)) if f.byte(f.bp, -1) else None)
+        if out["side"] == 2:
+            item, top, row, index = pool_item(f)
+            out.update(item=item, top=top, row=row, index=index,
+                       player=f.far_word(POOL_INDICES, 2 * index))
+    return out
+
+
+def _own_tactics(f):
+    # [confirmed: named/seg_1771_04.c 1771:4B61 edit_own_tactics] its key read is u214b_menu_read_key_and_move, far-
+    # called at 1771:4C05 (return 4C0A); 4B61's own caller is SELECT YOUR TEAM's T (0791:E758, return E75D). Outside a
+    # match (DS:0C1F clear) it is own-tactics; in a match it is kinds.tsv's squad-substitution-tactic (no entry yet).
+    up = f.up(f.bp)
+    if f.far_caller(up) != "0791:E75D" or f.ds_byte(MATCH_MENU_USED):
+        return None
+    return "own-tactics"
+
+
+def _own_view(f):
+    # [confirmed: code/seg_0791_22.asm E748-E758, seg_1771_07.asm 4BF7-4C05] E44F pushes the player, then the flag
+    # "the squad list is up", so 4B61 finds the player at [bp+8] and the flag at [bp+6]; 4B61 pushes DS:0F38's far
+    # pointer, then the row count cVar1 + 4, so the reader 1560 finds the count at its [bp+6]. The row DS:0F38: 1..4
+    # the elements 1..4, 5 the man-marking, offered (a count of 5) only with a match set up.
+    up = f.up(f.bp)
+    return {"row": f.ds_word(OWN_ROW), "player": f.word(up, 8), "squad": bool(f.byte(up, 6)), "rows": f.word(f.bp, 6)}
+
+
+OWN_ROW = 0x0F38           # 1771:4B61: the row (word), u214b_menu_read_key_and_move(cVar1 + 4, 0xF38)
 
 
 def _ask(near_return):
@@ -371,6 +466,26 @@ def _wait_or_key(f):
     return None
 
 
+def _refusal_chain(f):
+    up = f.up(f.bp)
+    if f.far_caller(f.bp) != "214B:054E" or f.far_caller(up) != "214B:1793":
+        return None
+    return f.up(up)
+
+
+def _refusal(f):
+    box = _refusal_chain(f)
+    return "squad-change-refused" if box is not None and f.far_caller(box) in ("0791:DC3D", "0791:DC68") else None
+
+
+def _refusal_view(f):
+    # [confirmed: named/seg_214B_01.c 04F8] the box's message is its local_53, a Pascal string of 80 at [bp - 0x51].
+    up = f.up(f.bp)
+    n = min(f.byte(up, -0x51), 80)
+    text = bytes(f.read(f.ss * 16 + ((up - 0x50) & 0xFFFF), n)).decode("cp437")
+    return {"message": text, "why": {"0791:DC3D": "finals", "0791:DC68": "tour"}[f.far_caller(_refusal_chain(f))]}
+
+
 _ROUTES = "the tours of goal2/tests/test_core_screens_t103.py"
 SITES = {s.site: s for s in (
     # -- reads (the return address of a call of 214B:08DD) ----------------------------------------------------------
@@ -389,6 +504,12 @@ SITES = {s.site: s for s in (
     Site("0791:E61F", False, "0791:E44F select_team_screen", _ROUTES, _select_team, _select_view),
     Site("000E:0629", False, "000E:05F6, the news pages' key wait", _ROUTES + "; E038-r0001's after-name states",
          _bulletin),
+    # [T107; confirmed: code/seg_214B_02.asm 0983-098A, seg_214B_01.asm 054B, seg_214B_03.asm 1790, seg_0791_22.asm
+    # DC38, DC63] 214B:0983 reads a key (push cs; call 08DD, return 098A) for the message box 214B:04F8 (near-called at
+    # 054B, return 054E), which 214B:1765 calls at 1790 (return 1793); 0791:DBFA calls 1765 at DC38 ("during finals",
+    # return DC3D) and DC63 ("whilst on tour", return DC68): F031's refusals of a pool exchange.
+    Site("214B:098A", False, "214B:0983 under 214B:04F8 (the message box), from 0791:DBFA", "T107 (F031)",
+         _refusal, _refusal_view),
     # -- the new game's reads (T106) [confirmed: F032, E038-r0001: each state's 08DD frame and callers] ----------------
     Site("1771:085F", False, "1771:080C (the title), far-called by the main program at 0000:0024",
          "E038-r0001's title-keywait state; E039's records", lambda f: "title-load-prompt"

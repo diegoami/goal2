@@ -22,7 +22,7 @@ TEMPLATE, HALFTIME = "e006-r0001-main.sav", "e010-r0001-halftime.sav"
 NEEDS = {"modules": ("unicorn",), "files": (TEMPLATE, HALFTIME, "GOAL.DAT")}
 DESKTOP = {"modules": ("unicorn", "PySide6"), "files": (TEMPLATE, "GOAL.DAT")}
 # [confirmed: seg_214B_02.asm 08DD-0941] the codes 08DD returns, written out here apart from goal2/core as the oracle
-ESC, ENTER, UP, DOWN = 0x1B, 0x0D, 0x48 + 0x64, 0x50 - 3 + 0x64
+ESC, ENTER, UP, DOWN, LEFT = 0x1B, 0x0D, 0x48 + 0x64, 0x50 - 3 + 0x64, 0x4B - 1 + 0x64
 SIZES = ((1440, 900), (1050, 780), (900, 640), (2560, 1600))
 
 
@@ -231,11 +231,14 @@ class DriverTests(unittest.TestCase):
         self.assertEqual((caught.exception.kind, caught.exception.site), ("manager-menu", "000E:75D1"))
         self.assertIn("find option", caught.exception.text)
         with self.assertRaises(DriverError):
-            driver.goto("select squad")                # no route: stated, nothing pressed
-        driver.select(5)                               # select squad: SELECT TEAM outside a match is not mapped
+            driver.goto("select squad")                # no route by that name: stated, nothing pressed
+        driver.select(5)                               # [T107] select squad is mapped now: SELECT YOUR TEAM
+        self.assertEqual(driver.press(ENTER).kind, "select-squad")
+        driver.to_menu()
+        driver.goto("tournament")                      # the tournament's championship display is not mapped
         with self.assertRaises(UnknownScreen) as caught:
-            driver.press(ENTER)
-        self.assertEqual(caught.exception.site, "0791:E61F")
+            driver.core.press(LEFT)
+        self.assertNotIn(caught.exception.site, ("0791:E61F", "214B:157C"))
 
     def test_the_same_calls_give_the_same_keys_and_memory(self):
         runs = []
@@ -360,7 +363,7 @@ class Desktop(unittest.TestCase):
         self.assertEqual(Core.load(save.read_bytes()).memory_sha256(), saved[4])
         self.assertEqual(hashlib.sha256(Core.load(save.read_bytes()).memory()).hexdigest(), saved[4])
 
-    def test_the_disabled_routes_name_their_g_task(self):
+    def test_the_disabled_route_names_its_g_task(self):
         def check(window):
             out = {}
             for name in ("nav2", "nav3"):
@@ -375,13 +378,15 @@ class Desktop(unittest.TestCase):
             return out
         out = self.run_main(["--core", str(requires.CACHE / TEMPLATE), "--data", str(requires.CACHE / "GOAL.DAT"),
                              "--save", str(Path(self.tmp.name) / "routes.g2core")], check)
-        for name, task in (("nav2", "G12"), ("nav3", "G12"), ("team info", "G12"), ("select squad", "G12"),
-                           ("play next game", "G14")):
-            enabled, text, tip = out[name]
-            self.assertFalse(enabled, name)
-            self.assertIn(task, text, name)
-            self.assertIn(task, tip, name)
-        self.assertTrue(out["stays"])
+        # [T107] Team, Pool, team info and select squad are served by the core now (G12); play waits for G14.
+        for name in ("nav2", "nav3", "team info", "select squad"):
+            self.assertTrue(out[name][0], name)
+            self.assertNotIn("G12", out[name][1], name)
+        enabled, text, tip = out["play next game"]
+        self.assertFalse(enabled)
+        self.assertIn("G14", text)
+        self.assertIn("G14", tip)
+        self.assertFalse(out["stays"])                  # the Team page opens
 
 
 if __name__ == "__main__":

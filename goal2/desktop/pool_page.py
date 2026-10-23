@@ -151,3 +151,117 @@ def context(self,busy=False):
     else:reason=self.model.pool_view()['window']['reason']
     self.pool_policy.setText(reason)
     self.exchange.setEnabled(not busy and self.preview is None and not getattr(self.model,'match_pending',False) and not self.jobs.busy and not self.competitive.busy and not self.watched.busy and self.model.state.campaign is not None and self.model.pool_view()['window']['allowed'])
+
+
+# -- the core route (T107) -------------------------------------------------------------------------------------------
+# [designed: owner, 2026-10-22, decisions 5 and 7; T107; confirmed: `docs/original-game/images/m244-pool.png`,
+# 0791:E44F/E2E6] Over the core the Pool page copies SELECT YOUR TEAM's pool side: the card of the highlighted player
+# on the left and a strip on the right that shows the squad or the pool of eighty (21 rows at a time, as the
+# original's list), Left/Right toggling the two as the original's ←→ does. Enter marks a player and Enter on another
+# moves him (0791:DEA6): a squad and a pool player exchange, as a driver job; the original's refusal is shown.
+POOL_ROWS = 21                     # [confirmed: 0791:E2E6] the pool list shows rows top..top+20
+
+
+def _strip_class():
+    from PySide6.QtCore import Signal
+    from goal2.desktop.roster import RosterView
+
+    class ListStrip(RosterView):
+        """A RosterView over a window of a longer list: Up/Down past an end, PgUp/PgDn, Home/End scroll it
+        (`scrolled(delta)`), Left/Right switch the list (`switched()`)."""
+        scrolled = Signal(int)
+        switched = Signal()
+
+        def keyPressEvent(self, event):
+            key = event.key();position = self.order.index(self.current) if self.current in self.order else 0
+            if key in (Qt.Key.Key_Left, Qt.Key.Key_Right):
+                self.switched.emit()
+            elif key == Qt.Key.Key_Down and position == len(self.order) - 1:
+                self.scrolled.emit(1)
+            elif key == Qt.Key.Key_Up and position == 0:
+                self.scrolled.emit(-1)
+            elif key in (Qt.Key.Key_PageDown, Qt.Key.Key_PageUp):
+                self.scrolled.emit(POOL_ROWS if key == Qt.Key.Key_PageDown else -POOL_ROWS)
+            else:
+                super().keyPressEvent(event)
+    return ListStrip
+
+
+def build_core(self, model):
+    from goal2.desktop.player_card import PlayerCardView
+    page = self.pages[2]
+    body = QHBoxLayout();body.setSpacing(16);page.content.addLayout(body, 1)
+    left = QVBoxLayout();left.setSpacing(8);body.addLayout(left, 1)
+    self.pool_card = PlayerCardView(compact=True);self.pool_card.setObjectName('poolCard');left.addWidget(self.pool_card)
+    self.pool_marked_line = label('poolMarked', 'The marked player')
+    left.addWidget(self.pool_marked_line)
+    bar = QHBoxLayout();left.addLayout(bar)
+    self.pool_switch = QPushButton('Squad / pool (←→)');self.pool_switch.setObjectName('poolSwitch')
+    self.pool_switch.setAccessibleName('Switch between the squad and the pool')
+    self.pool_switch.clicked.connect(lambda: core_switch(self))
+    self.pool_move = QPushButton('Move player (Enter)');self.pool_move.setObjectName('poolMove')
+    self.pool_move.setAccessibleName('Mark the highlighted player, or move the marked one to him')
+    self.pool_move.clicked.connect(lambda: core_pool_enter(self))
+    bar.addWidget(self.pool_switch);bar.addWidget(self.pool_move);bar.addStretch(1);left.addStretch(1)
+    self.pool_strip = _strip_class()('POOL', toggles=False, capacity=POOL_ROWS, marks=False)
+    self.pool_strip.setObjectName('poolStrip');self.pool_strip.setFixedWidth(300)
+    self.pool_strip.setAccessibleDescription('Up/Down: select; Left/Right: squad or pool; Enter: mark, then move')
+    body.addWidget(self.pool_strip, 0, Qt.AlignmentFlag.AlignTop)
+    self.pool_side, self.pool_top = 'pool', 0
+    self.pool_strip.current_changed.connect(lambda row: core_pool_card(self))
+    self.pool_strip.activated.connect(lambda row: core_pool_enter(self))
+    self.pool_strip.switched.connect(lambda: core_switch(self))
+    self.pool_strip.scrolled.connect(lambda delta: core_scroll(self, delta))
+    self.pool_selected = lambda: (self.pool_strip.rows[self.pool_strip.current][0]
+                                  if 0 <= self.pool_strip.current < len(self.pool_strip.rows) else None)
+
+
+def core_switch(self):
+    self.pool_side = 'squad' if self.pool_side == 'pool' else 'pool'
+    self.pool_strip.current = 0;refresh_core(self)
+
+
+def core_scroll(self, delta):
+    total = len(self.model.pool()['rows'])
+    top = max(0, min(total - POOL_ROWS, self.pool_top + delta))
+    if top != self.pool_top:
+        current = self.pool_strip.current
+        self.pool_top = top;refresh_core(self)
+        self.pool_strip.set_current(current, notify=True);core_pool_card(self)
+
+
+def core_pool_enter(self):
+    from goal2.desktop.squad_page import core_mark
+    if self.pool_strip.current >= 0 and self.pool_strip.rows:
+        core_mark(self, self.pool_strip, self.pool_strip.current, self.pool_side)
+        core_marked_line(self)
+
+
+def core_marked_line(self):
+    marked = self.core_marked
+    if marked is None:
+        self.pool_marked_line.setText('Enter marks a player; Enter on another moves him (squad ⇄ pool)')
+    else:
+        self.pool_marked_line.setText(f"Marked: {self.model.card(marked[1])['name']} ({marked[0]}); Enter on a "
+                                      f"{'pool' if marked[0] == 'squad' else 'squad'} player to move him")
+
+
+def core_pool_card(self):
+    from goal2.desktop.player_card import core_card
+    player = self.pool_selected()
+    self.pool_card.set_card(core_card(self.model.card(player)) if player else None)
+
+
+def refresh_core(self):
+    if self.pool_side == 'squad':
+        rows = [(r['player'], r['name'], r['code'], r['line'], r['eleven'], False) for r in self.model.team()['squad']]
+        self.pool_strip.capacity = 20;self.pool_strip.caption = 'YOUR SQUAD'
+    else:
+        pool = self.model.pool()['rows']
+        rows = [(r['player'], r['name'], r['code'], r['line'], False, False)
+                for r in pool[self.pool_top:self.pool_top + POOL_ROWS]]
+        self.pool_strip.capacity = POOL_ROWS
+        self.pool_strip.caption = f'POOL OF PLAYERS {self.pool_top + 1}-{self.pool_top + len(rows)}/{len(pool)}'
+    current = self.pool_strip.current if 0 <= self.pool_strip.current < len(rows) else 0
+    self.pool_strip.set_rows(rows, current)
+    core_pool_card(self);core_marked_line(self)

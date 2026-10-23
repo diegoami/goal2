@@ -22,16 +22,17 @@ from goal2.core import views
 # [designed: T105, #308] The routes of the manager menu and of goal2's pages the core cannot serve yet, and the G
 # task that brings each, in #308's numbering: G10 the new game, G11 this task (menus, fixtures, tables, history),
 # G12 squad, pool, select team and tactics, G13 bulletins, news and the year change, G14 the match flow.
+# [T107, G12] Team and Pool are served now: the Team page is select squad and the team tactics, the Pool page the
+# pool list of SELECT YOUR TEAM.
 DISABLED = {
-    'team': 'G12',          # team info's edits, select squad, tactics: the Team page
-    'pool': 'G12',          # the national pool: the Pool page
     'play': 'G14',          # play next game: the match flow under the core
 }
 DISABLED_TEXT = {
-    'team': 'Team edits arrive with G12 (squad, select team and tactics under the core)',
-    'pool': 'The pool arrives with G12 (squad, pool, select team and tactics under the core)',
     'play': 'Play next game arrives with G14 (the match flow under the core)',
 }
+# [designed: T107] The driver's team actions the pages may run (goal2/core/driver.py), each from the manager menu
+# and back to it.
+ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 'rename', 'set_tactic')
 
 
 class CoreModel:
@@ -84,6 +85,38 @@ class CoreModel:
     def memory_sha256(self):
         return self.core.memory_sha256()
 
+    # -- the Team and Pool pages (T107) -------------------------------------------------------------------------
+    def team(self):
+        return views.team(self.state)
+
+    def card(self, player):
+        return views.player_card(self.state, player)
+
+    def team_tactics(self):
+        return views.team_tactics(self.state)
+
+    def pool(self):
+        return views.pool(self.state)
+
+    def act(self, name, *args):
+        """Run the driver's team action `name` (ACTIONS) with the original's own keys, from the manager menu and
+        back. A refusal comes back as ValueError with the original's reason: the message box's text for a pool
+        exchange the original refuses (0791:DBFA), the driver's statement for a screen that does not offer it."""
+        from goal2.core import CoreError
+        if name not in ACTIONS:
+            raise ValueError(f'No team action {name!r}')
+        try:
+            result = getattr(self.driver, name)(*args)
+        except CoreError as exc:
+            if self.core.stopped is not None:
+                raise
+            self.driver.to_menu()
+            raise ValueError(str(exc).split('\n')[0]) from exc
+        if isinstance(result, dict) and result.get('refused'):
+            raise ValueError(result['refused'])
+        return result
+
+
     # -- saving ----------------------------------------------------------------------------------------------
     def save(self, path=None):
         """[designed] The Save page (F7 in the original): the core save (docs/core.md, "Saving"), written whole to a
@@ -99,6 +132,45 @@ class CoreModel:
             raise ValueError(f'Cannot save the core: {exc}') from exc
         self.save_path = target
         return target
+
+
+
+class CoreJobs:
+    """[designed: T107, T65's pattern] One team action at a time, run off the window's thread: `start(name, *args)`
+    hands it to a worker thread, `busy` holds while it runs, and `poll()` (the window's timer) returns None while it
+    runs, then once ('done', result) or ('refused', message). The page reads the original's state only after poll
+    says it ended, so it never shows a state the action is still changing."""
+
+    def __init__(self, model):
+        from concurrent.futures import ThreadPoolExecutor
+        self.model = model
+        self.pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='goal2-core')
+        self.future = None
+        self.name = None
+
+    @property
+    def busy(self):
+        return self.future is not None
+
+    def start(self, name, *args):
+        if self.busy:
+            raise ValueError('The original is busy with another action')
+        self.name = name
+        self.future = self.pool.submit(self.model.act, name, *args)
+
+    def poll(self):
+        if self.future is None or not self.future.done():
+            return None
+        future, self.future = self.future, None
+        try:
+            return ('done', future.result())
+        except ValueError as exc:
+            return ('refused', str(exc))
+
+    def wait(self, timeout=60):
+        """Block until the running action ends (tests and closing the window); poll() then collects it."""
+        if self.future is not None:
+            self.future.exception(timeout)
 
 
 # [designed: T106] The DOS date's month and day the core answers (E039's, 10/04); the year is the start year - 1.
