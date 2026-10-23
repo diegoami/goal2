@@ -648,6 +648,9 @@ class CoreRound:
         # [designed: T108] the fixture list's routes wait while the round is shown; the bench needs the page's height
         for button in (w.core_fixture_route, w.core_tournament_route):button.setVisible(False)
         self.pitch_note.setVisible(index != 1)
+        # [designed: T114 review R1] QStackedWidget includes hidden children's hints: only the player page
+        # needs this row, so it must not enlarge the captain/progress pages before or after an offer.
+        self.bench.position_row.setVisible(index==1 and self.bench.positions_offered())
         w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index);self.holder.updateGeometry()
         focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench,
                  4: self.resume_watch, 5: self.export_summary}[index]
@@ -681,8 +684,9 @@ class CoreRound:
                 return
             self.viewer.decision('half_time' if state['stop'] == 'half-time' else state['stop'])
         if name == 'round_position':
-            self.bench.message = (f"The original refused: {state['refused']}" if state['refused']
-                                  else 'Position changed by the original')
+            self.bench.message = (f"The original refused: {state['position_refused']}" if state['position_refused']
+                                  else f"Last refusal: {state['refused']}. Play checks again." if state['refused']
+                                  else 'Position set by the original. Play checks the eleven.')
             mode=self.bench.mode
             self.bench.offer(state,mode)
             words=sum((list(x) for x in self.bench.words()),[])
@@ -748,7 +752,7 @@ class CoreRound:
         self.captain_note.setText('Up/Down: the player who captains; Enter: kick off with him. C: the original '
                                   'picks its own (its best leader). Choose Watch for the pitch, '
                                   'or leave it off for the original\'s quick result.')
-        self.refusal.setText(f"The original refused the eleven: {state['refused']}" if state['refused'] else '')
+        self.refusal.setText(f"Last original refusal: {state['refused']}. Play checks again." if state['refused'] else '')
         self.show(0)
 
     def show_pre_match(self):

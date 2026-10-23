@@ -15,7 +15,7 @@ requested for the next stoppage (at a pause) and what it refused, with the reaso
 substitutions left the original shows "no more substitutes" [confirmed: F027 E544; E015-r0013
 state 790].
 """
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 
 VIEW = 4
@@ -264,7 +264,16 @@ class CoreBench:
         from goal2.desktop.player_card import PlayerCardView
         self.window = window;self.state = None;self.mark = None;self.mode = 'half_time';self.message = ''
         # [designed: T108] T102's parts, the head in the left column so that the strip of twenty takes the height
-        view = QWidget();view.setObjectName('benchView');body = QHBoxLayout(view)
+        class PlayerPage(QWidget):
+            # [designed: T114 review R1] As with CoreRound's outer holder, only the shown page contributes
+            # its minimum. Hidden player controls must not determine the captain/result page's height.
+            def sizeHint(page):
+                return super().sizeHint() if stack.currentWidget() is page else QSize(0,0)
+
+            def minimumSizeHint(page):
+                return super().minimumSizeHint() if stack.currentWidget() is page else QSize(0,0)
+
+        view = PlayerPage();view.setObjectName('benchView');body = QHBoxLayout(view)
         body.setContentsMargins(0, 0, 0, 0);body.setSpacing(12)
         left = QVBoxLayout();left.setSpacing(6);body.addLayout(left, 1)
         head = QHBoxLayout();head.setSpacing(16);left.addLayout(head)
@@ -282,7 +291,7 @@ class CoreBench:
         self.position_next.clicked.connect(lambda:self.reposition('r'))
         self.position_club.clicked.connect(lambda:self.reposition('c'))
         positions.addWidget(self.position_next);positions.addWidget(self.position_club);positions.addStretch(1)
-        left.addWidget(self.position_row)
+        left.addWidget(self.position_row);self.position_row.hide()
         lines = QHBoxLayout();lines.setSpacing(12);left.addLayout(lines)
         self.prompt = label('benchPrompt');self.prompt.setWordWrap(False);lines.addWidget(self.prompt, 0, Qt.AlignmentFlag.AlignVCenter)
         self.chosen_label = label('benchChosen');self.chosen_label.setWordWrap(False);lines.addWidget(self.chosen_label, 1)
@@ -381,8 +390,7 @@ class CoreBench:
         self.chosen_label.setText(f'Marked: {self.window.model.card(self.mark)["name"]}' if self.mark else 'Marked: none')
 
     def positions_offered(self):
-        return bool(self.state and self.mode in ('pre_match','half_time','stoppage') and
-                    (self.mode=='pre_match' or self.state['bench']['left']>0))
+        return bool(self.state and self.mode in ('pre_match','half_time','stoppage'))
 
     def reposition(self,key):
         if self.window.core_jobs.busy or not self.positions_offered():return

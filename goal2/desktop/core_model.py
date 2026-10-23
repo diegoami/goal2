@@ -158,12 +158,15 @@ class CoreModel:
             if self.core.stopped is not None:
                 raise
             raise ValueError(str(exc).split('\n')[0]) from exc
-        self.refused = result['refused'] if isinstance(result, dict) and set(result) == {'refused'} else None
+        position_refused = result['refused'] if isinstance(result, dict) and set(result)=={'refused'} else None
+        if position_refused is not None:self.refused=position_refused
+        elif name!='round_position':self.refused=None
         state = self.round_state()
         if name == 'substitute':
             state['substitution'] = result
         if name == 'round_position':
             state['position_player'] = args[0]
+            state['position_refused'] = position_refused
         return state
 
     def round_state(self):

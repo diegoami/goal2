@@ -142,8 +142,8 @@ Remaining match/decision prompts retain their following G13 scope (archaeology #
 When the original refuses an eleven with no goalkeeper or too many players in one position, its full message is
 shown and the round remains open. On Players, **R - next position** and **C - club position** (also keyboard R/C)
 let the original change the selected player before kick-off, at half time or a substitution stoppage. The selected
-player stays selected after reordering. Repositioning spends no substitution; Play asks the original to validate
-again. The controls wait while a job runs, and the pause's substitution request/cancel flow is unchanged.
+player stays selected through position changes. Repositioning spends no substitution; during position edits the last refusal remains labelled as historical, and Play asks the original
+to validate again. At zero substitutions R/C shows the original's refusal. The controls wait while a job runs, and the pause's substitution request/cancel flow is unchanged.
 
 [designed] Supply verified local game resources using the existing runtime-cache
 instructions. No original resources or screenshots enter git. Without Qt the

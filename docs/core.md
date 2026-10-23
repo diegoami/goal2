@@ -376,9 +376,9 @@ at a substitution stoppage, not on the pause's request/cancel screen. The origin
 is respected. Recorded half-time/stoppage changes kept the counters at 4 and 2 respectively.
 
 [designed: decision 7] The core bench offers mouse buttons and R/C shortcuts for those same operations. A result
-keeps the selected player by ID after the original reorders the squad. A worker disables the roster/actions;
-the last card stays visible until the result is collected. The whole refusal has a wrapping line below the card,
-clear of the header. The four sizes at 90% include the warning and the repaired states. Input hashes/key provenance
+keeps the selected player by ID through position changes. A worker disables the roster/actions;
+the last card stays visible until the result is collected. During position edits, the last refusal stays in a wrapping line below the card, clear of the header; Play asks the original
+to check again. At zero substitutions the buttons still send the key through the original and show its refusal. The four sizes at 90% include the warning and the repaired states. Input hashes/key provenance
 are in [the private-input manifest](evidence/T114/artifacts.json); original bytes remain on owner Drive.
 
 ## Where the run starts (R1)

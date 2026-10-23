@@ -50,6 +50,19 @@ class Recovery(unittest.TestCase):
 
 @requires.need(**NEEDS,slow=True)
 class RoundPositions(unittest.TestCase):
+    def test_position_feedback_remains_historical_until_original_play_checks_it(self):
+        from goal2.desktop.core_model import CoreModel
+        d=loaded(0)
+        with tempfile.TemporaryDirectory() as folder:
+            model=CoreModel(d.core,requires.CACHE/'GOAL.DAT',Path(folder)/'game.g2core')
+            model.round_step('round_start',True);model.round_step('kick_off',None,True)
+            self.assertIn('no goalkeeper',model.refused)
+            word=repair_target(d,0);model.round_step('round_position',word,'r')
+            self.assertIn('no goalkeeper',model.refused)
+            model.round_step('round_position',word,'c');self.assertIn('no goalkeeper',model.refused)
+            self.assertEqual(model.round_step('kick_off',None,True)['stop'],'live')
+            self.assertIsNone(model.refused)
+
     def test_half_time_and_stoppage_positions_use_r_c_without_spending_a_substitution(self):
         from goal2.core import Core,views
         from goal2.core.driver import Driver
@@ -122,12 +135,22 @@ class Desktop(unittest.TestCase):
         from goal2.desktop.fixed_page import problems
         for case in (0,1,2,3):
             d=loaded(case)
-            if case in (0,1):d.round_start()
             with tempfile.TemporaryDirectory() as folder:
                 model=CoreModel(d.core,requires.CACHE/'GOAL.DAT',Path(folder)/'game.g2core');w=CoreWindow(model)
                 w.show();w.activateWindow();self.app.processEvents();w.finish_core()
                 try:
                     r=w.core_round
+                    def bounds():
+                        for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
+                            w.resize(width,height);self.app.processEvents();self.app.processEvents()
+                            self.assertEqual(problems(w),[],(case,width,height,problems(w)))
+                            page=w.pages[3];need=page.minimumSizeHint()
+                            self.assertLessEqual(need.width(),.9*page.width(),(case,width,height,'width',need.toTuple()))
+                            self.assertLessEqual(need.height(),.9*page.height(),(case,width,height,'height',need.toTuple()))
+                        w.resize(1440,900);self.app.processEvents()
+                    if case in (0,1):
+                        w.core_routes['play next game'].click();w.finish_core();self.app.processEvents()
+                        self.assertEqual(r.views.currentIndex(),0);bounds()
                     quote='too many sweepers' if case==1 else 'no goalkeeper'
                     if case in (0,1,2):
                         w.run_core('kick_off' if case in (0,1) else 'play_on');w.finish_core();self.app.processEvents()
@@ -135,10 +158,6 @@ class Desktop(unittest.TestCase):
                     if case in (0,1):r.show_pre_match()
                     b=r.bench;self.assertTrue(b.position_next.isVisible());self.assertTrue(b.position_club.isVisible())
                     if case in (0,1,2):self.assertIn(quote,b.message_label.text())
-                    def bounds():
-                        for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
-                            w.resize(round(.9*width),round(.9*height));self.app.processEvents();self.app.processEvents()
-                            self.assertEqual(problems(w),[],(case,width,height,problems(w)))
                     bounds()
                     word=repair_target(d,case) if case in (0,1) else next(x for x in b.words()[0]
                          if views.player_card(d.wait.state,x)['position']!=0)
@@ -149,10 +168,14 @@ class Desktop(unittest.TestCase):
                     self.assertEqual(sum((list(x) for x in b.words()),[])[b.roster.current],word)
                     self.assertEqual(views.player_card(d.wait.state,word)['position'],
                                      views.player_card(d.wait.state,word)['club_position'])
+                    if case in (0,1,2):
+                        self.assertIn(quote,model.refused)
+                        self.assertIn('Last refusal:',b.message_label.text())
                     old=views.player_card(d.wait.state,word)['position']
                     b.roster.setFocus();QTest.keyClick(b.roster,Qt.Key.Key_R);w.finish_core();self.app.processEvents()
                     self.assertEqual(sum((list(x) for x in b.words()),[])[b.roster.current],word)
                     self.assertNotEqual(views.player_card(d.wait.state,word)['position'],old)
+                    if case in (0,1,2):self.assertIn(quote,b.message_label.text())
                     if case==0:
                         from unittest.mock import patch
                         b.position_next.click();future=w.core_jobs.future
@@ -177,7 +200,43 @@ class Desktop(unittest.TestCase):
                         else:self.fail('Keyboard R never reached goalkeeper')
                         self.assertEqual(views.bench(d.wait.state)['left'],before)
                     bounds()
+                    if case in (0,1):
+                        self.assertTrue(b.escape());self.assertEqual(r.views.currentIndex(),0);bounds()
+                        r.show_pre_match();self.assertTrue(b.position_row.isVisible());bounds()
+                    else:
+                        # A real board projection from this half-time/stoppage must also fit after editing.
+                        r.queue=[('match-board',r.state['board'])];r.after='menu';r.next_page()
+                        self.assertEqual(r.views.currentIndex(),2);bounds()
                 finally:w.close();self.app.processEvents()
+
+    def test_zero_budget_buttons_report_the_original_refusal(self):
+        from goal2.core import views
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        from goal2.desktop.fixed_page import problems
+        d=loaded(2)
+        for _ in range(4):
+            b=views.bench(d.wait.state);m=views.Memory(d.wait.state)
+            on=next(x for x in b['bench'] if views.player_card(d.wait.state,x)['readiness']==m.code_str(0x1771,0x42AF))
+            off=next(x for x in b['eleven'] if views.player_card(d.wait.state,x)['position']!=0)
+            self.assertTrue(d.substitute(off,on)['made'])
+        with tempfile.TemporaryDirectory() as folder:
+            model=CoreModel(d.core,requires.CACHE/'GOAL.DAT',Path(folder)/'game.g2core');w=CoreWindow(model)
+            w.show();self.app.processEvents();w.finish_core()
+            try:
+                b=w.core_round.bench;self.assertTrue(b.position_row.isVisible());self.assertTrue(b.position_next.isEnabled())
+                word=sum((list(x) for x in b.words()),[])[b.roster.current]
+                old=views.player_card(d.wait.state,word)['position'];b.position_next.click();w.finish_core()
+                self.assertIn('no more substitutes',b.message_label.text().lower())
+                self.assertEqual(views.player_card(d.wait.state,word)['position'],old)
+                self.assertEqual(views.bench(d.wait.state)['left'],0);self.assertTrue(model.in_round)
+                for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
+                    w.resize(width,height);self.app.processEvents();self.app.processEvents()
+                    self.assertEqual(problems(w),[])
+                    p=w.pages[3];need=p.minimumSizeHint()
+                    self.assertLessEqual(need.width(),.9*p.width())
+                    self.assertLessEqual(need.height(),.9*p.height())
+            finally:w.close();self.app.processEvents()
 
 
 if __name__=='__main__':unittest.main()

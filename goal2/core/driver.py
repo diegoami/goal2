@@ -671,7 +671,7 @@ class Driver:
 
     def round_position(self, player, key):
         """[confirmed: F030/F031; E44F/4925/4952 at 53d7ef5; T114 captures] R cycles position and C restores
-        club position before kick-off, at half time or a stoppage. The original updates/reorders the squad;
+        club position before kick-off, at half time or a stoppage. The original updates the player's position;
         these keys never ask the substitution routine to exchange personnel."""
         from goal2.core import views
         if key not in ('r', 'c'):
