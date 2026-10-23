@@ -250,3 +250,4 @@ operational status.
 | [T112](T112.md) | Convert original .GL and core .g2core saved games | [#341](https://github.com/diegoami/goal2/issues/341) | T100, T106 |
 | [T113](T113.md) | G13c: World Cup finals and yearly continuation | [#342](https://github.com/diegoami/goal2/issues/342) | T111 |
 | [T114](T114.md) | G13d: recover lineup refusals and repair positions | [#345](https://github.com/diegoami/goal2/issues/345) | T113 |
+| [T115](T115.md) | G13e: resume the original round pause | [#349](https://github.com/diegoami/goal2/issues/349) | T114 |
