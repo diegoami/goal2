@@ -92,7 +92,17 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `select-squad-pool` | `0791:E61F` (the same, `[bp-5]` 2: the pool list, 0791:E2E6) | E006-r0001, Left on select squad (T107) | "SELECT YOUR TEAM" "pool of players" "◄┘-move player" |
 | `own-tactics` | `214B:157C` from `1771:4C0A` (1771:4B61 from E44F's T, return 0791:E75D, DS:0C1F clear) | E006-r0001, T on select squad (T107) | "↓↑←→-select" "◄┘-alter tactic" |
 | `player-name-entry` | polled `214B:0DB9`, read `214B:112B` (the editor 214B:1086 from 1771:4859, return 1771:48A0, from E44F's F2, return 0791:E700) | E006-r0001, F2 on select squad (T107) | "Type in characters (maximum 12)" "◄┘-accept Esc-abort" |
-| `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | E006-r0001 with the finals flag set in the test's core (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
+| `squad-change-refused` | `214B:098A` (214B:0983 under the box 214B:04F8, return 054E, under 214B:1765, return 1793, from 0791:DBFA at DC3D or DC68) | not visited: no kept state is in a finals or tour window (T107; F031) | "cannot alter squad" "PRESS ANY KEY" |
+
+[designed: owner, 2026-10-22, T107's amendment] **Keys the screen prints.** A kinds.tsv kind accepts its catalogue
+`screen` and `owner` rows and also a key its own screen's hint prints at a kept state (`screens.PRINTED`), quoted here
+with the state and the text row (0-based) it is printed on; a catalogue `burst` row (a key a recorded run read on that
+screen) backs each. `test_core_screens_t103.py` checks the union and the quotes; `test_core_team_t107.py` checks the
+quote on the screen.
+
+| kind | keys | state | row | quoted text |
+| --- | --- | --- | --- | --- |
+| `team-tactics` | ↑↓ | E006-r0001, team info's T on the managed country (1771:1981 moves DS:0D8E; burst "team-tactics Up", E015-r0007 state 119) | row 2 | "Use ↑↓ to move" |
 
 The new game's kinds.tsv kinds (T106) [confirmed: F032, E038-r0001's savestates and trace; catalogue.tsv's keys]:
 `title-load-prompt` (read `1771:085F`, 1771:080C from the main program), `title-player-count` (read `1771:0081`,

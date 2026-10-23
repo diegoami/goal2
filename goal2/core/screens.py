@@ -59,6 +59,14 @@ class Kind:
 
 
 _CAT = "[confirmed: catalogue.tsv, the kind's screen rows, E015-r0007]"
+# [designed: owner, 2026-10-22, T107's amendment] A kinds.tsv kind also accepts a key its own screen's hint prints
+# at a kept state; each is quoted in docs/core.md ("Keys the screen prints") with the state and the row, and backed
+# by the catalogue's burst rows (the keys a recorded run read there).
+PRINTED = {
+    # E006-r0001, team info's T on the managed country, text row 3: "Use ↑↓ to move"; catalogue.tsv's burst row
+    # "team-tactics Up" (E015-r0007 state 119); 1771:1981 moves its row DS:0D8E with them (u214b_menu_read_key_and_move)
+    "team-tactics": keys(("↑↓", "Up Down")),
+}
 _YES_NO = keys(("Y N", "y n"))
 _MATCH_MENU = keys(("INS", "Insert"), ("↑↓←→", "Up Down Left Right"), ("◄┘", "Return"))
 _BENCH_ANY = keys(("Esc ◄┘", "Escape Return"), ("any key", "(any)"))
@@ -75,7 +83,8 @@ KINDS = {k.name: k for k in (
     Kind("match-menu-halftime", _MATCH_MENU, evidence=_CAT),
     Kind("match-menu-fulltime", _MATCH_MENU, evidence=_CAT),
     Kind("match-summary", _BENCH_ANY, evidence=_CAT),
-    Kind("team-tactics", keys(("Esc", "Escape"), ("◄┘", "Return")), evidence=_CAT),
+    Kind("team-tactics", keys(("Esc", "Escape"), ("◄┘", "Return")) + PRINTED["team-tactics"],
+         evidence=_CAT + "; ↑↓ printed on the screen (PRINTED)"),
     Kind("squad-substitution-take-off", keys(("Esc", "Escape"), ("F2", "F2"), ("R,C", "r c"), ("T", "t"),
                                              ("◄┘", "Return")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
