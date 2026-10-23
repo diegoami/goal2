@@ -1,4 +1,7 @@
-"""[designed: T66] SDL child, display only. Scroll with wheel/arrows; End follows live; Escape closes."""
+"""[designed: T66/T116] SDL renderer and optional core-key return; it owns no game simulation.
+
+Scroll with wheel/arrows; End follows live; Escape closes. With --core-keys, Enter/Left/Right return to the core.
+"""
 from functools import cache
 from collections import deque
 import json
