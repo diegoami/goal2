@@ -681,6 +681,59 @@ def bench(state):
 
 
 NO_SUBSTITUTES = 0x2538
+
+
+def pitch(state, sequence, watermark):
+    """[derived: T109; F013/F028, watched_pitch.snapshot] The same signed pitch records as the Python viewer,
+    read at 0791:93C2's live poll. Slot identity is checked against the current original squad, substitutions included.
+    [confirmed: original_match/match.py] DS:831F is the minute; DS:9B3C holds the two score bytes."""
+    from types import SimpleNamespace
+    from goal2.game.watched_pitch import snapshot
+    mem = Memory(state)
+    teams = [mem.ds_word(TEAM_WORDS), mem.ds_word(TEAM_WORDS + 2)]
+    reader = SimpleNamespace(DS=mem.ds, rd=mem.image.rd,
+                             read=lambda a, n: bytes(mem.mem[a:a + n]))
+    match = SimpleNamespace(m=reader, opts=dict(first=teams[0], second=teams[1]),
+                            _squad=lambda c: [mem.country(c, 2 * s, 2) for s in range(20)])
+    event = SimpleNamespace(minute=mem.ds_word(0x831F), score=[mem.ds_byte(0x9B3C + t) for t in (0, 1)])
+    return snapshot(match, event, sequence, watermark)
+
+
+def pitch_identity(state):
+    """[derived: T109; F002/F028] Countries and current squad role codes for the existing pitch renderer."""
+    mem = Memory(state)
+    sides = match_sides(state)
+    roles = {}
+    for c in sides['teams']:
+        for i in range(20):
+            w = mem.country(c, 2 * i, 2)
+            if w:
+                roles[str(w)] = player_card(state, w)['code']
+    return dict(countries=sides['names'], managed=sides['managed_side'], roles=roles, kind='Match')
+
+
+def commentary(state, previous=0):
+    """[confirmed: 0791:1D4A, code/seg_0791_03.asm; original_match/match.py _flush] The ring's new rows in
+    order. DS:80EE is its newest index, wrapping 1..200; each 6-byte row at DS:7C38 holds template, two player
+    words and team. Text is decoded from the original's own templates, never its drawn screen."""
+    from goal2.engine.original_match.image import names_and_templates
+    mem = Memory(state)
+    newest = mem.ds_word(0x80EE)
+    if newest == previous:
+        return newest, []
+    name, templates = names_and_templates(lambda a, n: bytes(mem.mem[a:a + n]), mem.ds, mem.image.far)
+    rows = []
+    index = previous
+    for _ in range(200):
+        index = index % 200 + 1
+        a = mem.ds * 16 + 0x7C38 + 6 * index
+        template, p1, p2, side = mem.byte(a), mem.word(a + 1), mem.word(a + 3), mem.byte(a + 5)
+        text = ' '.join(templates[template].replace('\x01', f' {name(p1)} ')
+                        .replace('\x02', f' {name(p2)} ').split())
+        rows.append(dict(template=template, players=[p1, p2], team=side, text=text))
+        if index == newest:
+            return newest, rows
+    raise ValueError('commentary ring index is outside 1..200')
 BOX = {ord(c): " " for c in "─│┌┐└┘├┤┬┴┼═║╔╗╚╝╠╣╦╩╬╒╓╕╖╘╙╛╜╞╟╡╢╤╥╧╨╪╫"}   # a template's frame, not its words        # [confirmed: named/seg_0791_11.c E44F] drawn when DS:9B3A + t is 0
 
 

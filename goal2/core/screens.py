@@ -360,8 +360,10 @@ MATCH_MENUS = {0xF20A: "match-menu", 0x9AE3: "match-menu-halftime", 0xF331: "mat
                # [T108; confirmed: code/seg_0791_13.asm 80F0-8100] 0791:8062 calls ED8A at 8100 after the managed
                # side's notice (a key other than Esc, or the keeper unavailable): the same menu, its text kinds.tsv's
                # match-menu (neither HALF TIME nor FULL TIME); its view's context says "stoppage".
-               0x8103: "match-menu"}
-MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage"}
+               0x8103: "match-menu",
+               # [confirmed: code/seg_0791_15.asm 944D-945B] Enter/Esc in play calls ED8A at 9458.
+               0x945B: "match-menu"}
+MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage", 0x945B: "pause"}
 
 
 def _menu_reader(f):
@@ -645,7 +647,10 @@ SITES = {s.site: s for s in (
     Site("214B:112B", False, "214B:1086 the line editor (reads after its cursor wait's poll says a key waits)",
          "F032; E038-r0001's trace", lambda f: _name_entry(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
-    Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live"),
+    Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live",
+         # [confirmed: code/seg_0791_15.asm 9571-9708] 954E's loop calls 9372 after each of 22 slots; its
+         # local [bp-2] is the slot. The last poll is a complete pose, before the clock at 970C.
+         lambda f: {"slot": f.word(f.up(f.bp), -2) if f.near_caller(f.bp) == 0x96EA else None}),
     Site("0791:CC54", True, "0791:CC2E wait_or_key", "T100 (F030); " + _ROUTES, _wait_or_key,
          lambda f: _captain_view(f, f.up(f.bp)) if _wait_or_key(f) == "captain-select"
          else _notice_view(f, f.up(f.bp) if f.near_caller(f.bp) == 0x8042 else None)
