@@ -15,7 +15,7 @@ requested for the next stoppage (at a pause) and what it refused, with the reaso
 substitutions left the original shows "no more substitutes" [confirmed: F027 E544; E015-r0013
 state 790].
 """
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 
 VIEW = 4
@@ -264,7 +264,16 @@ class CoreBench:
         from goal2.desktop.player_card import PlayerCardView
         self.window = window;self.state = None;self.mark = None;self.mode = 'half_time';self.message = ''
         # [designed: T108] T102's parts, the head in the left column so that the strip of twenty takes the height
-        view = QWidget();view.setObjectName('benchView');body = QHBoxLayout(view)
+        class PlayerPage(QWidget):
+            # [designed: T114 review R1] As with CoreRound's outer holder, only the shown page contributes
+            # its minimum. Hidden player controls must not determine the captain/result page's height.
+            def sizeHint(page):
+                return super().sizeHint() if stack.currentWidget() is page else QSize(0,0)
+
+            def minimumSizeHint(page):
+                return super().minimumSizeHint() if stack.currentWidget() is page else QSize(0,0)
+
+        view = PlayerPage();view.setObjectName('benchView');body = QHBoxLayout(view)
         body.setContentsMargins(0, 0, 0, 0);body.setSpacing(12)
         left = QVBoxLayout();left.setSpacing(6);body.addLayout(left, 1)
         head = QHBoxLayout();head.setSpacing(16);left.addLayout(head)
@@ -274,13 +283,22 @@ class CoreBench:
         self.counter = label('benchCounter');self.counter.setWordWrap(False)
         head.addWidget(self.counter, 0, Qt.AlignmentFlag.AlignVCenter)
         self.card = PlayerCardView(compact=True);left.addWidget(self.card)
+        # [designed: T114; confirmed: F030/F031] The same R/C position keys as the original's player screen.
+        self.position_row = QWidget();positions = QHBoxLayout(self.position_row)
+        positions.setContentsMargins(0,0,0,0);positions.setSpacing(8)
+        self.position_next = QPushButton('R - next position');self.position_next.setObjectName('benchPositionNext')
+        self.position_club = QPushButton('C - club position');self.position_club.setObjectName('benchPositionClub')
+        self.position_next.clicked.connect(lambda:self.reposition('r'))
+        self.position_club.clicked.connect(lambda:self.reposition('c'))
+        positions.addWidget(self.position_next);positions.addWidget(self.position_club);positions.addStretch(1)
+        left.addWidget(self.position_row);self.position_row.hide()
         lines = QHBoxLayout();lines.setSpacing(12);left.addLayout(lines)
         self.prompt = label('benchPrompt');self.prompt.setWordWrap(False);lines.addWidget(self.prompt, 0, Qt.AlignmentFlag.AlignVCenter)
         self.chosen_label = label('benchChosen');self.chosen_label.setWordWrap(False);lines.addWidget(self.chosen_label, 1)
         self.play = QPushButton('Play on');self.play.setObjectName('benchPlay');self.play.setAutoDefault(True)
         self.play.setAccessibleName('Play on: the second half')
         self.play.clicked.connect(self.play_on);lines.addWidget(self.play)
-        self.message_label = label('benchMessage');self.message_label.setWordWrap(False);left.addWidget(self.message_label)
+        self.message_label = label('benchMessage');self.message_label.setWordWrap(True);left.addWidget(self.message_label)
         self.hint = self.message_label     # the hint goes to the strip's description (no room for a line of its own)
         left.addStretch(1)
         self.roster = RosterView('BENCH', toggles=False, grouped=True, marks=False)
@@ -290,6 +308,13 @@ class CoreBench:
         self.roster.current_changed.connect(lambda row: self.show_card())
         self.roster.activated.connect(self.enter)
         self.view = view;stack.addWidget(view)
+        from PySide6.QtGui import QShortcut,QKeySequence
+        self.position_shortcuts=[]
+        for key in ('r','c'):
+            shortcut=QShortcut(QKeySequence(key.upper()),view)
+            shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+            shortcut.activated.connect(lambda key=key:self.reposition(key))
+            shortcut.setEnabled(False);self.position_shortcuts.append(shortcut)
         from goal2.desktop.fixed_page import host, record
         frame = host(window)
         if frame is not None:
@@ -332,14 +357,20 @@ class CoreBench:
         else:
             self.counter.setText('before the kick-off')
             self.title.setText('PLAYERS / SELECT YOUR TEAM')
-            self.context.setText(self.state.get('refused') or '' if self.state else '')
+            self.context.setText('')  # T114: the full refusal has the width below the card, not a narrow header cell
             self.play.setText('< Captain and kick-off');self.play.setAccessibleName('Back to the captain and the kick-off')
             self.roster.setAccessibleDescription('Up/Down select; Enter, Enter swaps two players (the original\'s keys)')
         self.counter.setAccessibleName(self.counter.text())
-        self.message_label.setText(self.message)
+        self.message_label.setText(self.message or (self.state.get('refused') or '' if self.state else ''))
+        offered=self.positions_offered()
+        self.position_row.setVisible(offered)
+        for shortcut in self.position_shortcuts:shortcut.setEnabled(offered)
         self.show_card()
 
     def show_card(self):
+        # [designed: T114] A worker may be between waits. Keep the last card until its result is collected.
+        jobs=getattr(self.window,'core_jobs',None)
+        if jobs is not None and jobs.busy:return
         from goal2.desktop.player_card import core_card
         eleven, bench = self.words();rows = eleven + bench
         row = self.roster.current
@@ -357,6 +388,18 @@ class CoreBench:
         else:
             self.prompt.setText('Enter - move player')
         self.chosen_label.setText(f'Marked: {self.window.model.card(self.mark)["name"]}' if self.mark else 'Marked: none')
+
+    def positions_offered(self):
+        return bool(self.state and self.mode in ('pre_match','half_time','stoppage'))
+
+    def reposition(self,key):
+        if self.window.core_jobs.busy or not self.positions_offered():return
+        words=sum((list(x) for x in self.words()),[])
+        if not 0<=self.roster.current<len(words):return
+        word=words[self.roster.current]
+        self.mark=None;self.chosen_label.setText('Marked: none')
+        self.message='The original is changing the position…';self.message_label.setText(self.message)
+        self.window.run_core('round_position',word,key)
 
     def enter(self, row):
         """Enter on a player: mark him; Enter on another passes the pair to the original."""
@@ -385,6 +428,7 @@ class CoreBench:
             self.window.core_round.show_captain()
 
     def escape(self):
+        if self.window.core_jobs.busy:return True
         if self.mark is not None:
             self.mark = None;self.refresh();return True
         if self.mode == 'pre_match':

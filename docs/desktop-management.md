@@ -138,6 +138,13 @@ and final places come from the original's stored fixtures. Top scorers switch to
 does. The queued round pages continue into the next continental campaign; save/resume keeps the core checkpoint.
 Remaining match/decision prompts retain their following G13 scope (archaeology #390).
 
+[designed: T114, #308's G13d; confirmed: F030/F031 and the original EA09/E44F routines] **Repair the eleven.**
+When the original refuses an eleven with no goalkeeper or too many players in one position, its full message is
+shown and the round remains open. On Players, **R - next position** and **C - club position** (also keyboard R/C)
+let the original change the selected player before kick-off, at half time or a substitution stoppage. The selected
+player stays selected through position changes. Repositioning spends no substitution; during position edits the last refusal remains labelled as historical, and Play asks the original
+to validate again. At zero substitutions R/C shows the original's refusal. The controls wait while a job runs, and the pause's substitution request/cancel flow is unchanged.
+
 [designed] Supply verified local game resources using the existing runtime-cache
 instructions. No original resources or screenshots enter git. Without Qt the
 entry prints the installation instruction and exits2; headless imports and quick

@@ -115,7 +115,7 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `fixture-result` | `000E:6A89` (simulate_fixture 000E:6970, a fixture marked to watch and declined: its first byte 0xFE) | E006-r0001's round 3, N at the watch prompt (T108) | "location:" "hit any key" |
 | `tournament-table` | `214B:157C` from `1771:9022` (8E9A under 1771:958D with its mode byte `[bp+10]` 0, from 0791:E929 after a fixture) | E006-r0001's round 2, after the own qualifier (T108) | "P W D L" "hit any key" |
 | `substitutions-used` | `0791:E61F` (0791:E44F from E949 in a match, DS:9B3A + side 0: DS:2538) | E006-r0001's round 1, the bench at half time after five substitutions (T108) | "no more substitutes" "Esc-exit" |
-| `eleven-refused` | `214B:098A` (the box 214B:04F8 under 214B:1765, from 0791:EA09 at EB7D or EBD2: return EB82 or EBD7) | E006-r0001's round 10, play on the match menu (T108); round 1 at half time after a goalkeeper came on | "location:" "PRESS ANY KEY" |
+| `eleven-refused` | `214B:098A` (the box 214B:04F8 under 214B:1765, from 0791:EA09 at EB7D or EBD2: return EB82/EBD7, or EC22/ECEB) | E006-r0001's round 10 and half-time keeper case (T108); T114's real no-keeper and excessive-position inputs | "location:" "PRESS ANY KEY" |
 
 [T108] SELECT YOUR TEAM's hint line reads "◄┘-move player" until a player is marked and "◄┘-put here" after, so its
 two kinds quote neither (E006-r0001's round 9, the pre-match swap, showed the second).
@@ -153,8 +153,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
   `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
   until a screen task maps them: the taker prompts and extra-time menus, the other players' screen of E949 (another country's, 1771:50F1), E022's other
-  messages ("There is no player here" E062, "Nice try" E19F) and EA09's (EC22, EC60,
-  ECEB), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
+  messages ("There is no player here" E062, "Nice try" E19F) and EA09's vacancy (EC60), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
 - **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
@@ -361,6 +360,26 @@ Tests compare all eight completed groups' table fields and fixtures, the bracket
 and replay the whole transition from a core save to identical memory. Private input names, hashes and provenance
 are in [the manifest](evidence/T113/artifacts.json). The original bytes stay on owner Drive. The remaining
 set-piece/extra-time/shootout and other decision prompts still require their kept evidence (archaeology #390).
+
+## Lineup refusal and position repair (T114, #308's G13d)
+
+[confirmed: goal2-archaeology F030/F031 at 53d7ef5, named/seg_0791_12.c EA09, code/seg_0791_23.asm EC22/ECEB;
+T114 original-key inputs] No goalkeeper and too many players in one position use the same `214B:098A` box as
+ineligible players and excessive goalkeepers: frame returns 214B:054E → 214B:1793 → EC22 or ECEB. They are
+`eleven-refused`, with the actual Pascal message read from the box's frame. Enter closes the original box and
+returns to its match menu; it keeps the round under way. The client never decides whether the eleven is valid.
+
+[confirmed: E44F/4925/4952, existing catalogue/T107 keys; the four inputs] `Driver.round_position(player, key)`
+opens the managed players screen, selects the full player ID, presses R or C, and Esc returns to the same menu.
+R cycles the current position; C restores club position. They are available before kick-off, at half time and
+at a substitution stoppage, not on the pause's request/cancel screen. The original's no-more-substitutes screen
+is respected. Recorded half-time/stoppage changes kept the counters at 4 and 2 respectively.
+
+[designed: decision 7] The core bench offers mouse buttons and R/C shortcuts for those same operations. A result
+keeps the selected player by ID through position changes. A worker disables the roster/actions;
+the last card stays visible until the result is collected. During position edits, the last refusal stays in a wrapping line below the card, clear of the header; Play asks the original
+to check again. At zero substitutions the buttons still send the key through the original and show its refusal. The four sizes at 90% include the warning and the repaired states. Input hashes/key provenance
+are in [the private-input manifest](evidence/T114/artifacts.json); original bytes remain on owner Drive.
 
 ## Where the run starts (R1)
 

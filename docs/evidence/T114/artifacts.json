@@ -1,0 +1,11 @@
+{
+  "evidence":"[derived: original-key probes at be991542; F030/F031 at archaeology 53d7ef5]",
+  "storage":"Owner private Drive through tools/artifacts.py; never original bytes in Git",
+  "provenance":"E006 manager-menu position R/C edits produce no-keeper and excessive-position cases. E010-r0008 through Enter and a legal keeper/outfielder substitution produces the half-time no-keeper case. T108 notice_fixture through original Enter produces the stoppage case. No guest-memory edits. Key/frame records are in goal2-keep/G13-eleven-preflight-20261023/index.json and #345.",
+  "artifacts":[
+    {"name":"g13-cb6443bbe76d3a5a-no-keeper.g2core","sha256":"cb6443bbe76d3a5a507392c470d48308280304eaa5dbc922562f9c6a7a74d38d"},
+    {"name":"g13-5e303b5839883b2c-too-many-defenders.g2core","sha256":"5e303b5839883b2cdacfc825c21793459a4e1d0b136e9ce0c72d24d95dbc472f"},
+    {"name":"g13-09cbbfc771120535-halftime-no-keeper.g2core","sha256":"09cbbfc7711205354127cd3f737c7ab8393def11224411fc34009c0894fdb17e"},
+    {"name":"g13-fc5b0f392a66334c-stoppage-positions.g2core","sha256":"fc5b0f392a66334c3395605d0113d56f67788c7b4a7b4b176364fb028ce119e2"}
+  ]
+}
