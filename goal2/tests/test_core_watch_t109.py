@@ -44,6 +44,32 @@ class Poll(unittest.TestCase):
 
 @requires.need(**NEEDS, slow=True)
 class Match(unittest.TestCase):
+    @requires.need(files=('e010-r0001-halftime.sav',))
+    def test_no_substitutions_left_returns_from_the_pause_screen(self):
+        """Use the kept quick half-time state to reach the same original pause routine cheaply; all five
+        substitutions are the original's keys, then Enter in play. No memory counter is written by this test."""
+        from goal2.core import Core, views
+        from goal2.core.driver import Driver
+        from goal2.desktop.core_model import CoreModel
+        from goal2.tests.test_core_round_t108 import same_line_pairs
+        d = Driver(Core.start((requires.CACHE / 'e010-r0001-halftime.sav').read_bytes()).core)
+        d.press(13, expect=('match-menu-halftime',))
+        pairs = same_line_pairs(views.bench(d.wait.state), 5)
+        self.assertEqual(len(pairs), 5)
+        for pair in pairs:
+            self.assertTrue(d.substitute(*pair)['made'])
+        self.assertEqual(views.bench(d.wait.state)['left'], 0)
+        d.core.stop_at('match-live', 'substitution-notice', 'match-summary-save-prompt')
+        d.play_on()
+        self.assertEqual(d.wait.kind, 'match-live')
+        d.live_step(13)
+        self.assertEqual(d.wait.view['context'], 'pause')
+        result = d.request_substitution()
+        self.assertIn('no more substitutes', result['refused'])
+        self.assertEqual(d.wait.kind, 'match-menu')
+        self.assertEqual(d.wait.view['context'], 'pause')
+        self.assertTrue(CoreModel(d.core, requires.CACHE / 'GOAL.DAT', '/tmp/zero.g2core').in_round)
+
     def test_watched_round_request_bench_and_summary(self):
         from goal2.core import Core, views
         from goal2.desktop.core_model import CoreModel

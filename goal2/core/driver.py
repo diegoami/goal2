@@ -647,10 +647,14 @@ class Driver:
         toggles DS:9B40. No pair is chosen until the original offers its next substitution opportunity."""
         if self.wait.kind != 'match-menu' or self.wait.view.get('context') != 'pause':
             raise UnexpectedScreen(('match-menu (pause)',), self.wait)
-        self._open_bench()
+        from goal2.core import views
+        wait = self._open_bench()
+        if wait.kind == 'substitutions-used':
+            message = views.bench(wait.state)['message']
+            self.press(ESCAPE, expect=('match-menu',))
+            return {'refused': message}
         self.press(RETURN, expect=('substitution-request', 'substitution-requested'))
         self.press(ESCAPE, expect=('match-menu',))
-        from goal2.core import views
         return views.bench(self.wait.state)['requested']
 
     def _to_slot(self, slot):
