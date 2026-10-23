@@ -318,13 +318,13 @@ class CoreBench:
         current = self.roster.current if 0 <= self.roster.current < len(rows) else 0
         self.roster.set_rows(rows, current)
         self.roster.marked = {self.mark} if self.mark else set();self.roster.update()
-        if self.mode == 'half_time' and data:
+        if self.mode in ('half_time', 'stoppage') and data:
             # [confirmed: named/seg_0791_11.c E44F] the original's counter, or its own line when none is left
             self.counter.setText(data['message'] if data['left'] == 0 and data['message']
                                  else f"substitutions left {data['left']}")
             board = self.state.get('board') or {}
             names = board.get('names', ['', '']);score = board.get('score', [0, 0])
-            self.title.setText('PLAYERS / HALF TIME')
+            self.title.setText('PLAYERS / HALF TIME' if self.mode == 'half_time' else 'PLAYERS / SUBSTITUTION')
             self.context.setText(f'{names[0].upper()} {score[0]} - {score[1]} {names[1].upper()}')
             self.play.setText('Play on');self.play.setAccessibleName('Play on: the second half')
             self.roster.setAccessibleDescription('Up/Down select; Enter take off / put on; Play on: the second half')
@@ -347,7 +347,7 @@ class CoreBench:
         word = rows[row]
         try:self.card.set_card(core_card(self.window.model.card(word)))
         except (ValueError, IndexError, KeyError):self.card.set_card(None)
-        if self.mode == 'half_time':
+        if self.mode in ('half_time', 'stoppage'):
             # [confirmed: named/seg_0791_11.c E2A0; images/squad-substitution-take-off.png, -put-on.png]
             self.prompt.setText('Enter - take off this player' if word in eleven else 'Enter - put on this player')
         else:
@@ -362,7 +362,7 @@ class CoreBench:
         if self.mark is None or self.mark == word:
             self.mark = None if self.mark == word else word;self.refresh();return
         first, self.mark = self.mark, None
-        if self.mode == 'half_time':
+        if self.mode in ('half_time', 'stoppage'):
             off, on = (first, word) if first in eleven else (word, first)
             self.message = 'The original is making it…'
             self.window.run_core('substitute', off, on)
@@ -373,7 +373,7 @@ class CoreBench:
 
     def play_on(self):
         if self.window.core_jobs.busy:return
-        if self.mode == 'half_time':
+        if self.mode in ('half_time', 'stoppage'):
             self.window.core_round.start_play_on()
         else:
             self.window.core_round.show_captain()

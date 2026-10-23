@@ -555,7 +555,18 @@ class CoreRound:
         self.page_next = QPushButton('Next > (Enter)');self.page_next.setObjectName('coreRoundNext')
         self.page_next.clicked.connect(self.next_page);pbox.addWidget(self.page_next);pbox.addStretch(1)
         self.views.addWidget(page)
-        self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play]
+        # 3: the managed side's substitution notice at a stoppage
+        notice = QWidget();notice.setObjectName('coreNoticeView');nbox = QVBoxLayout(notice);nbox.setSpacing(10)
+        title = QLabel('SUBSTITUTION OPPORTUNITY');title.setObjectName('prepTitle');nbox.addWidget(title)
+        self.notice_note = QLabel();self.notice_note.setObjectName('prepNote');self.notice_note.setWordWrap(True)
+        nbox.addWidget(self.notice_note)
+        self.notice_bench = QPushButton('Players: the bench (any key) >');self.notice_bench.setObjectName('coreNoticeBench')
+        self.notice_bench.clicked.connect(lambda: self.window.run_core('notice', True));nbox.addWidget(self.notice_bench)
+        self.notice_pass = QPushButton('Play on: let it pass (no key)');self.notice_pass.setObjectName('coreNoticePass')
+        self.notice_pass.clicked.connect(lambda: self.window.run_core('notice', False));nbox.addWidget(self.notice_pass)
+        nbox.addStretch(1);self.views.addWidget(notice)
+        self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
+                        self.notice_pass]
 
     # -- the steps --------------------------------------------------------------------------------------------
     def show(self, index):
@@ -565,7 +576,7 @@ class CoreRound:
         for button in (w.core_fixture_route, w.core_tournament_route):button.setVisible(False)
         self.pitch_note.setVisible(index != 1)
         w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index)
-        focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next}[index]
+        focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench}[index]
         focus.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
     def start(self):
@@ -574,33 +585,44 @@ class CoreRound:
         self.show(2);self.page_count.setText('The original plays the round…');self.page_board.set_lines([])
 
     def finished(self, name, answer):
-        """A round step's job ended: show what the original holds now."""
+        """A round step's job ended: show the stop the original is at (CoreModel.round_state's `stop`)."""
         kind, value = answer
         if kind != 'done':
             self.bench.message = value;self.bench.refresh();return
         state = self.state = value
-        if name == 'round_start':
-            self.queue = list(state['pages']);self.after = 'captain' if state['at'] == 'match-menu' else 'menu'
-            self.next_page()
-        elif name == 'kick_off':
-            if state['at'] == 'match-menu':
-                self.show_captain()
-            else:
-                self.bench.message = '';self.bench.offer(state, 'half_time');self.show(1)
-        elif name == 'substitute':
+        if name == 'substitute':
             made = state['substitution']
             self.bench.message = ('Made by the original' if made['made'] else
                                   f"The original refused: {made['refused']}" if made['refused'] else 'Not made')
-            self.bench.offer(state, 'half_time');self.show(1)
         elif name == 'prematch_swap':
-            self.bench.message = 'Moved by the original';self.bench.offer(state, 'pre_match');self.show(1)
-        elif name == 'play_on':
-            if state['at'] == 'match-menu-halftime':
-                self.bench.message = f"The original refused: {state['refused']}";self.bench.offer(state, 'half_time')
-                self.show(1)
+            self.bench.message = 'Moved by the original'
+            self.bench.offer(state, 'pre_match');self.show(1);return
+        elif state['refused']:
+            self.bench.message = f"The original refused: {state['refused']}"
+        else:
+            self.bench.message = ''
+        stop = state['stop']
+        if stop == 'captain':
+            if name == 'round_start':
+                self.queue = list(state['pages']);self.after = 'captain';self.first_page = len(state['pages'])
+                self.next_page()
             else:
-                self.queue = list(state['pages'][self.first_page:])
-                self.after = 'menu';self.next_page()
+                self.show_captain()
+        elif stop in ('half-time', 'stoppage'):
+            self.first_page = len(state['pages'])
+            self.bench.offer(state, 'half_time' if stop == 'half-time' else 'stoppage');self.show(1)
+        elif stop == 'notice':
+            self.first_page = len(state['pages']);self.show_notice(state)
+        else:
+            self.queue = list(state['pages'][self.first_page:]);self.after = 'menu';self.next_page()
+
+    def show_notice(self, state):
+        """[confirmed: code/seg_0791_13.asm 7FCF] the managed side's notice: a key opens the match menu (the bench),
+        none (or Esc) lets it pass; the players the original marks are read from its status words (1771:42BC)."""
+        notice = state['notice']
+        self.notice_note.setText('The original offers a substitution: ' + (', '.join(
+            f"{p['name']} {p['readiness']}" for p in notice['players']) or 'press any key for the bench'))
+        self.show(3)
 
     def show_captain(self):
         state = self.window.model.round_state();self.state = state

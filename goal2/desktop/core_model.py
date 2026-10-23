@@ -34,9 +34,9 @@ PITCH_LATER = "The pitch view over the core arrives with G14b: the own match is 
 # and back to it.
 ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 'rename', 'set_tactic')
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
-ROUND_ACTIONS = ('round_start', 'kick_off', 'substitute', 'play_on', 'prematch_swap')
+ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish')
 # the kinds a round waits at between its steps
-ROUND_WAITS = ('match-menu', 'match-menu-halftime')
+ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime')
 
 
 class CoreModel:
@@ -157,14 +157,23 @@ class CoreModel:
         passed since the round began (the round's results, the boards, the table, the bulletins), as the driver read
         them; `refused` the original's message when it refused the eleven."""
         wait = self.core.wait
-        out = {'at': wait.kind, 'pages': list(self.driver.pages), 'refused': self.refused, 'captain': None,
-               'bench': None, 'board': None}
-        if wait.kind == 'match-menu':
-            out['captain'] = views.captain_choice(self.state)
-            out['bench'] = views.bench(self.state)
+        out = {'at': wait.kind, 'stop': 'menu', 'pages': list(self.driver.pages), 'refused': self.refused,
+               'captain': None, 'bench': None, 'board': None, 'notice': None}
+        if wait.kind == 'match-menu' and self.driver.stoppage():
+            out.update(stop='stoppage', board=views.board(self.state), bench=views.bench(self.state))
+        elif wait.kind == 'match-menu':
+            out.update(stop='captain', captain=views.captain_choice(self.state), bench=views.bench(self.state))
         elif wait.kind == 'match-menu-halftime':
-            out['board'] = views.board(self.state)
-            out['bench'] = views.bench(self.state)
+            out.update(stop='half-time', board=views.board(self.state), bench=views.bench(self.state))
+        elif wait.kind == 'substitution-notice':
+            # the eleven's players whose status word is not the selected one's (1771:42BC: injured, sent off, ...)
+            selected = views.Memory(self.state).code_str(0x1771, 0x42A6)
+            players = [views.player_card(self.state, w) for w in views.match_sides(self.state)['eleven']]
+            out.update(stop='notice', board=views.board(self.state), notice={
+                'players': [{'player': c['player'], 'name': c['name'], 'readiness': c['readiness']}
+                            for c in players if c['readiness'] != selected]})
+        elif wait.kind == 'match-menu-fulltime':
+            out.update(stop='full-time')
         return out
 
     # -- saving ----------------------------------------------------------------------------------------------

@@ -265,6 +265,7 @@ class Core:
         self.pending = None           # (kind, key): a poll said it waits; the original's next read takes it
         self.stops = set()            # [T108] polled kinds whose polls are waits (stop_at)
         self._passed_at_poll = None   # [T108] a key pressed at a poll wait, until the original's read takes it
+        self.released = None          # [T108] the polled kind let pass (release) until a poll of another kind
         self.wait = None
         self._hooks()
 
@@ -348,7 +349,7 @@ class Core:
                  "budget": self.budget, "template_sha256": self.template_sha256, "polls": self.wait.polls,
                  "passed": [[p.kind, p.polls, p.text, list(p.keys)] for p in self.wait.passed],
                  "queued": [list(q) for q in self.queued], "pending": None if self.pending is None else list(self.pending),
-                 "at_poll": self.wait.poll, "stops": sorted(self.stops)}
+                 "at_poll": self.wait.poll, "stops": sorted(self.stops), "released": self.released}
         blob = json.dumps(state).encode()
         return MAGIC + len(blob).to_bytes(4, "little") + blob + zlib.compress(snap["memory"] + self.tail, 6)
 
@@ -375,6 +376,7 @@ class Core:
         core.queued = [tuple(q) for q in state.get("queued", [])]
         core.pending = None if state.get("pending") is None else tuple(state["pending"])
         core.stops = set(state.get("stops", ()))
+        core.released = state.get("released")
         passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in state.get("passed", []))
         core.wait = core._make_wait(tuple(tuple(p) for p in state["polls"]), passed, poll=state.get("at_poll", False))
         return core
@@ -429,6 +431,18 @@ class Core:
                 raise ValueError(f"{kind!r} is not a polled screen kind of the table")
         self.stops = set(kinds)
 
+    def release(self):
+        """[designed: T108] At a poll wait (stop_at): answer "no key", as 0723 does with no key waiting, and let the
+        screen pass: its next polls are not waits until a poll of another kind or a read. Returns the next wait."""
+        self._check_waiting()
+        if not self.wait.poll:
+            raise CoreError("release() answers a poll wait (stop_at); the original is reading a key")
+        self.released = self.wait.kind
+        self.m.set_reg("ax", self.m.reg("ax") & 0xFF00)
+        self.m.return_from(True, 0)
+        self._run()
+        return self.wait
+
     def unqueue(self, kind):
         """[designed: T108] Drop the keys queued for `kind` that no poll has taken; returns them."""
         dropped = [key for k, key in self.queued if k == kind]
@@ -471,7 +485,9 @@ class Core:
         kind = _screens.identify(site, self._frame())
         if kind is None:
             raise UnknownScreen(site, self._text(), poll=True)
-        if (kind in self.stops and self.pending is None
+        if self.released is not None and kind != self.released:
+            self.released = None
+        if (kind in self.stops and self.pending is None and kind != self.released
                 and not any(k == kind for k, _ in self.queued)):
             m.stop("poll")           # [T108] a wait at the poll: press() answers it
             return
@@ -492,6 +508,7 @@ class Core:
     def _on_readkey(self, replay):
         if self.m.rd(PUSHED_BACK, 1):
             return                    # 08E3: a pushed-back key is read without waiting: the guest's code runs
+        self.released = None
         if self.pending is not None:  # a poll said a queued key waits: the read takes it, as press() answers
             kind, key = self.pending
             self.pending = None

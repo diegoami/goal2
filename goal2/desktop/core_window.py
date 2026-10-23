@@ -227,10 +227,9 @@ class CoreWindow(QMainWindow):
 
     def resume_round(self):
         state = self.model.round_state()
-        if state['at'] == 'match-menu':
-            self.core_round.show_captain()
-        else:
-            self.core_round.bench.offer(state, 'half_time');self.core_round.show(1)
+        if state['stop'] == 'full-time':          # a core saved at the full-time menu: the round's end goes on
+            self.run_core('finish');return
+        self.core_round.finished('resume', ('done', state))
         self.refresh_round_controls()
 
     def navigate(self, index):

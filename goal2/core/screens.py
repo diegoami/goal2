@@ -356,7 +356,12 @@ def _yes_no(f):
     return {"1771:091C": "quit-confirm", "1771:0932": "save-game-prompt"}.get(f.far_caller(f.up(f.bp)))
 
 
-MATCH_MENUS = {0xF20A: "match-menu", 0x9AE3: "match-menu-halftime", 0xF331: "match-menu-fulltime"}
+MATCH_MENUS = {0xF20A: "match-menu", 0x9AE3: "match-menu-halftime", 0xF331: "match-menu-fulltime",
+               # [T108; confirmed: code/seg_0791_13.asm 80F0-8100] 0791:8062 calls ED8A at 8100 after the managed
+               # side's notice (a key other than Esc, or the keeper unavailable): the same menu, its text kinds.tsv's
+               # match-menu (neither HALF TIME nor FULL TIME); its view's context says "stoppage".
+               0x8103: "match-menu"}
+MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage"}
 
 
 def _menu_reader(f):
@@ -400,7 +405,8 @@ def _menu_view(f):
             label = "exit"          # after the match the leave item reads "exit" (E006-r0001's tours)
         # [T108; confirmed: named/seg_0791_12.c ED8A] local_4 = local_9 < 6: items 1..5 are DS:9B36's side (team 1),
         # 6..10 DS:9B34's (team 0); local_7 = DS:9B34[local_4] is the side's country.
-        return {"item": item, "label": label, "country": f.ds_word(TEAMS + 2 * (item < 6))}
+        return {"item": item, "label": label, "country": f.ds_word(TEAMS + 2 * (item < 6)),
+                "context": MENU_CONTEXTS.get(f.near_caller(up))}
     if caller == "1771:1A24":
         return {"country": f.word(up, 6), "row": f.ds_word(TACTICS_ROW)}
     return {}
@@ -541,7 +547,21 @@ def _wait_or_key(f):
         return _ask(f.near_caller(up))
     if near == 0xC5C3:
         return "substitution-notice"
+    if near == 0x8042:
+        # [T108; confirmed: code/seg_0791_13.asm 7FCF-805F] the managed side's notice timed_notice(side, keeper)
+        # near-calls wait_or_key at 803F (DS:087C[keeper] polls), then polls at 8042 and reads at 804B; no key is Esc
+        # (8052): "SUBSTITUTION OPPORTUNITY", "press any key" (template DS:5B30; DS:5B66 and the country's name when
+        # the keeper is unavailable).
+        return "substitution-notice"
     return None
+
+
+def _notice_view(f, frame):
+    """[T108] whose notice: the managed side's (0791:7FCF, `frame` its BP: the side [bp+4], the keeper flag [bp+6]) or,
+    with no frame, the other side's (0791:C50C)."""
+    if frame is None:
+        return {"managed": False}
+    return {"managed": True, "side": f.byte(frame, 4), "keeper": bool(f.byte(frame, 6))}
 
 
 def _refusal_chain(f):
@@ -577,8 +597,8 @@ def _refusal_view(f):
 def _results_view(f):
     """[T108; confirmed: named/seg_000E_05.c 6970, 6C21, 6CA7] the window of results the last simulate_fixture drew:
     from max(last - 15, route_fixture's first index, local_8 at [its bp - 6]) to last, the fixture before +0x26
-    (6970 counted it). 6C21's frame holds route_fixture's frame pointer, its param_1, at [bp+6]."""
-    route = f.word(f.bp, 6)
+    (6970 counted it). 6C21 reads route_fixture's frame pointer, its param_1, at [bp+4] (code/seg_000E_09.asm 6C31)."""
+    route = f.word(f.bp, 4)
     last = f.far_word(GAME, 0x26) - 1
     return {"first": max(last - 15, f.word(route, -6)), "last": last}
 
@@ -627,13 +647,18 @@ SITES = {s.site: s for s in (
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
     Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live"),
     Site("0791:CC54", True, "0791:CC2E wait_or_key", "T100 (F030); " + _ROUTES, _wait_or_key,
-         lambda f: _captain_view(f, f.up(f.bp)) if _wait_or_key(f) == "captain-select" else {}),
+         lambda f: _captain_view(f, f.up(f.bp)) if _wait_or_key(f) == "captain-select"
+         else _notice_view(f, f.up(f.bp) if f.near_caller(f.bp) == 0x8042 else None)
+         if _wait_or_key(f) == "substitution-notice" else {}),
+    Site("0791:8047", True, "0791:7FCF timed_notice, the managed side's (8042; reads at 804B)",
+         "T108; E006-r0001's round 10 (an injury in the quick result)", lambda f: "substitution-notice",
+         lambda f: _notice_view(f, f.bp)),
     Site("0791:CEDE", True, "0791:CC7B choose_captain_or_taker (CED9; reads at CEE8)", _ROUTES,
          lambda f: _captain(f, f.bp), lambda f: _captain_view(f, f.bp)),
     Site("0791:0BE1", True, "0791:0B7C ask_do_you_want (0BDC; reads at 0BE7)", _ROUTES,
          lambda f: _ask(f.near_caller(f.bp))),
     Site("0791:C5C8", True, "0791:C50C show_computer_substitution_notice (C5C3; reads at C5CC)", _ROUTES,
-         lambda f: "substitution-notice"),
+         lambda f: "substitution-notice", lambda f: _notice_view(f, None)),
     # simulate_fixture 000E:6970 polls at 6B84 (return 6B89; reads at 6B8D if a key waits) and, in its delay loop
     # (DS:A923 +0x3E times 214B:1E09(50)), at 6BF2 (return 6BF7, no read) [T108; confirmed: code/seg_000E_08.asm].
     Site("000E:6B89", True, "000E:6970 simulate_fixture (the round being played)", "T108; E006-r0001 round 2",
