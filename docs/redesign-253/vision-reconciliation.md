@@ -1,5 +1,7 @@
 # Reconciliation with the accepted vision (#266) and the approved queue
 
+[designed: owner demo feedback, 2026-10-23; T117/#354] **Current match-screen amendment:** three recent commentary rows belong above the pitch, with the speed shown as chevrons below it, following the original. Screens should look as close to the original as possible. This supersedes the earlier two-line footer/thin-header composition; the pinned illustrations and planning evidence below retain their historical wording.
+
 [designed: owner ‘Ok do as proposed’, 2026-10-20] This is the operative record of how the #253 candidate plan (PR #258) was reconciled to the accepted destination and the owner-approved queue. Sources: [accepted vision #266 / merged PR #267](https://github.com/diegoami/goal2/issues/266#issuecomment-6287825622), the [approved issue audit and dependency order](https://github.com/diegoami/goal2/issues/253#issuecomment-6287891360), the [applied queue](https://github.com/diegoami/goal2/issues/253#issuecomment-6288245660), the [triage record](https://github.com/diegoami/goal2/issues/253#issuecomment-6288421712) and the [rework steer on PR #258](https://github.com/diegoami/goal2/pull/258#issuecomment-6288226799). This reconciliation records a plan. It does not file, edit, close or relabel an issue, authorize any implementation or merge the candidate unchanged.
 
 ## What was replaced and what was kept
