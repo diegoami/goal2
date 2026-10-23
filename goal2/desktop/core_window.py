@@ -4,8 +4,9 @@ The same shell as the Python route's window (goal2/desktop/pages.py: the top bar
 destinations, one fixed page of 1440x900 scaled to the window, T101), over a `CoreModel`
 (goal2/desktop/core_model.py) instead of the Python route's `DesktopModel`. The Country page shows the manager's
 desk and the history, the Fixtures & match page the fixture list and the tournament (their builders are in
-overview_page.py and fixtures_page.py); Team, Pool and play are shown disabled with the G task that brings them, and
-never fall back to the Python route; the Save page writes the core save.
+overview_page.py and fixtures_page.py), the Team page the squad, the card and the tactics and the Pool page the pool
+(squad_page.py and pool_page.py, T107: each edit a driver action run as a background job); play is shown disabled
+with the G task that brings it, and never falls back to the Python route; the Save page writes the core save.
 
 `TextBoard` paints a board of coloured text in the original's own structure (its 80-column boards: the fixture
 list's rows, a group table, the history's boxes), in page pixels through the page's scale, as the roster and the
@@ -114,9 +115,8 @@ class CoreWindow(QMainWindow):
         self.page_stack = QStackedWidget();self.page_stack.setObjectName('pageStack')
         self.pages = [ShellPage(name, i) for i, name in enumerate(DESTINATIONS)]
         self.navigation = [];self.navigation_shortcuts = []
-        # [designed: T105] Team and Pool wait for G12 (#308's numbering, core_model.DISABLED): their routes are
-        # disabled and name the task.
-        unavailable = {1: 'team', 2: 'pool'}
+        # [designed: T107] Team and Pool are served by the core (G12); only play next game waits (G14).
+        unavailable = {}
         for i, name in enumerate(DESTINATIONS):
             label = name if i not in unavailable else f'{name} · {DISABLED[unavailable[i]]}'
             button = QPushButton(label.replace('&', '&&'));button.setObjectName(f'nav{i + 1}')
@@ -134,13 +134,20 @@ class CoreWindow(QMainWindow):
         main.addWidget(self.page_stack, 1)
         self.status = QLabel('The original game runs as the core; its screens are read from its memory.')
         self.status.setObjectName('status');self.status.setWordWrap(True);main.addWidget(self.status)
-        from goal2.desktop import overview_page, fixtures_page
+        from goal2.desktop import overview_page, fixtures_page, squad_page, pool_page
+        from goal2.desktop.core_model import CoreJobs
         overview_page.build_core(self, model)
+        squad_page.build_core(self, model)
+        pool_page.build_core(self, model)
         fixtures_page.build_core(self, model)
-        for index, key in unavailable.items():
-            note = QLabel(DISABLED_TEXT[key]);note.setObjectName('deskCampaign');note.setWordWrap(True)
-            self.pages[index].content.addWidget(note)
         self._build_save()
+        # [designed: T107, T65's pattern] Team actions run off the window's thread; a timer collects the result.
+        from PySide6.QtCore import QTimer
+        self.core_jobs = CoreJobs(model)
+        self.core_timer = QTimer(self);self.core_timer.setInterval(30);self.core_timer.timeout.connect(self.poll_core)
+        self.core_actions = [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move,
+                                                                            self.pool_switch] + \
+            [row for _, row in self.tactics] + self.own_tactics + [self.own_marking]
         for page in self.pages:page.content.addStretch()
         self.save_shortcut = QShortcut(QKeySequence('Ctrl+S'), self);self.save_shortcut.activated.connect(self.save.click)
         from goal2.desktop.fixed_page import FixedPage
@@ -167,6 +174,37 @@ class CoreWindow(QMainWindow):
         self.path.setText(str(target));self.status.setText(f'Core saved to {target}')
         return True
 
+    def run_core(self, name, *args):
+        """[designed: T107] Start the driver's team action `name` as a background job; the page shows the original
+        again when it ends (poll_core)."""
+        if self.core_jobs.busy:
+            self.status.setText('The original is still busy with the last action');return False
+        self.core_jobs.start(name, *args)
+        for widget in self.core_actions:widget.setEnabled(False)
+        self.status.setText('The original is pressing its own keys…')
+        self.core_timer.start()
+        return True
+
+    def poll_core(self):
+        try:
+            answer = self.core_jobs.poll()
+        except Exception as exc:              # the core stopped: say so, never guess
+            answer = ('stopped', str(exc).split('\n')[0])
+        if answer is None:return None
+        self.core_timer.stop()
+        for widget in self.core_actions:widget.setEnabled(True)
+        kind, value = answer
+        self.status.setText('Done: the pages show what the original holds' if kind == 'done'
+                            else f'The original refused: {value}' if kind == 'refused' else f'The core stopped: {value}')
+        self.last_core = answer
+        self.refresh()
+        return answer
+
+    def finish_core(self, timeout=60):
+        """Wait for the running action and show its result (tests; closing the window)."""
+        self.core_jobs.wait(timeout)
+        return self.poll_core()
+
     def navigate(self, index):
         if not self.navigation[index].isEnabled():return
         self.page_stack.setCurrentIndex(index)
@@ -184,6 +222,8 @@ class CoreWindow(QMainWindow):
             self.next_line.setText('Next: no fixture');self.next_detail.setText('')
         else:
             self.next_line.setText(f"Next: {desk['opponent']['name']}");self.next_detail.setText(desk['fixture_kind'])
-        from goal2.desktop import overview_page, fixtures_page
+        from goal2.desktop import overview_page, fixtures_page, squad_page, pool_page
         overview_page.refresh_core(self, self.model, desk)
+        squad_page.refresh_core(self)
+        pool_page.refresh_core(self)
         fixtures_page.refresh_core(self, self.model)

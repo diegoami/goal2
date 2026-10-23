@@ -22,6 +22,9 @@ LINE = {'goalkeeper': GREEN, 'defence': RED, 'midfield': CYAN, 'attack': YELLOW,
 # original's squad screen [confirmed: `docs/original-game/images/m244-squad.png`]. It is painted in
 # page pixels through a scaled painter (goal2/desktop/fixed_page.py).
 WIDTH, HEIGHT = 760, 530
+# [designed: T107] The core route's compact card: the same parts in 680 x 490 page pixels (rows of 26, a skill bar
+# of 26 cells of 8), so the card, the strip and the routes fit the fixed page with T105's margin.
+COMPACT_WIDTH, COMPACT_HEIGHT = 680, 490
 # [designed: accepted vision #266 screen 11] Narrower than WIDTH, the card stacks its columns
 # (skills, characteristics, tactics). [designed: T101] The fixed page always gives the card its
 # full width; the stacked form remains for a card shown alone in a narrow widget.
@@ -36,8 +39,9 @@ class PlayerCardView(QWidget):
     """One complete card; set_card(card or None)."""
     page_painted = True
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, compact=False):
         super().__init__(parent)
+        self.compact = compact
         self.card = None;self.drawn = [];self.bottom = 0
         self.setObjectName('playerCard')
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
@@ -51,10 +55,12 @@ class PlayerCardView(QWidget):
 
     @property
     def narrow(self):
-        return self.logical_width() < WIDTH - 0.5
+        return self.logical_width() < (COMPACT_WIDTH if self.compact else WIDTH) - 0.5
 
     def sizeHint(self):
         s = self.scale()
+        if self.compact:
+            return QSize(round(COMPACT_WIDTH * s), round(COMPACT_HEIGHT * s))
         return QSize(round(WIDTH * s), round(HEIGHT * s))
 
     def minimumSizeHint(self):
@@ -108,6 +114,12 @@ class PlayerCardView(QWidget):
         self.text(painter, width - 60, 38, c['role'], colour, 30, True)
         cards = ', '.join(c['cards']) or 'none'
         performance = 'not recorded' if c['performance'] is None else f"raw {c['performance']} (meaning not decoded)"
+        # [designed: T107] Over the core the performance is the original's star bar (1771:3827: 1..9 of 9), drawn
+        # as a bar, never a number.
+        stars = c.get('performance_bar')
+        if stars is not None:
+            performance = ''
+        skill_cells = c.get('skill_cells', 25)
         header = [(f"Age {c['age']} / Caps {c['caps']} / Goals {c['goals']}", WHITE, 20)]
         if self.narrow:
             header += [(f"{c['height']} / {c['foot']}", GREEN, 20), (c['readiness'].upper(), GREEN, 20),
@@ -118,29 +130,39 @@ class PlayerCardView(QWidget):
             header += [(f"{c['height']} / {c['foot']} / {c['readiness'].upper()}", GREEN, 20),
                        (f"National {c['position']} ({c['role']}) / Club {c['club_position']} ({c['club_role']})", WHITE, 18),
                        (f'Cards: {cards} / Performance: {performance}', WHITE, 18)]
+        if stars is not None:
+            header = [(line.replace(' / Performance: ', ' / Performance').replace('Performance: ', 'Performance'),
+                       tone, size) for line, tone, size in header]
         y = 66
         for line, tone, size in header:
-            self.text(painter, 16, y, line, tone, size);y += 24
+            self.text(painter, 16, y, line, tone, size)
+            if stars is not None and line.endswith('Performance'):
+                font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace);font.setPixelSize(size)
+                from PySide6.QtGui import QFontMetrics
+                x = 16 + QFontMetrics(font).horizontalAdvance(line) + 12
+                self.bar(painter, x, y, min(180, width - x - 16), stars, 9)
+            y += 24
         top = y + 10
         # Twelve skills: label and 25-cell bar, no number.
-        skill_width = (width - 160) if self.narrow else 250
+        skill_width = (width - 160) if self.narrow else 208 if self.compact else 250
+        step, gap = (26, 24) if self.compact else (30, 28)
         for i, (name, value) in enumerate(c['skills']):
-            row = top + i * 30
+            row = top + i * step
             self.text(painter, 16, row, name.capitalize(), GOLD, 20, True)
-            self.bar(painter, 140, row, skill_width, value, 25)
+            self.bar(painter, 140, row, skill_width, value, skill_cells)
         # The tactics and the mark, then five characteristics: label and 14-cell bar with the
         # original's word inside it.
-        x, top = (16, top + 12 * 30 + 20) if self.narrow else (410, top)
-        bar_x = x + 150;bar_width = min(200, width - bar_x - 16)
+        x, top = (16, top + 12 * step + 20) if self.narrow else (360 if self.compact else 410, top)
+        bar_x = x + (130 if self.compact else 150);bar_width = min(200, width - bar_x - 16)
         self.text(painter, x, top, 'TACTICS / P = PERSONAL', RED, 20, True)
         rows = [(name, word + (' P' if personal else '')) for name, word, personal in c['tactics']]
         for i, (name, word) in enumerate(rows + [('mark', c['mark'] or '—')]):
-            row = top + 28 + i * 28
+            row = top + gap + i * gap
             self.text(painter, x, row, name.capitalize(), GOLD, 20)
             self.text(painter, bar_x, row, word, GREEN, 18)
-        top += 28 * (len(rows) + 2) + 14
+        top += gap * (len(rows) + 2) + 14
         for i, (name, word, bar, raw) in enumerate(c['characteristics']):
-            row = top + i * 32
+            row = top + i * (28 if self.compact else 32)
             self.text(painter, x, row, name.capitalize(), GOLD, 20, True)
             self.bar(painter, bar_x, row, bar_width, bar, 14)
             font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace);font.setPixelSize(16)
@@ -148,3 +170,19 @@ class PlayerCardView(QWidget):
             painter.fillRect(QRectF(bar_x + 1, row - 15, QFontMetrics(font).horizontalAdvance(word) + 6, 18), QColor(GREY))
             self.text(painter, bar_x + 4, row, word, BLACK, 16)
         painter.end()
+
+
+def core_card(card):
+    """[designed: T107] goal2/core/views.player_card's card in this view's shape: the original's words, its bars
+    (26 skill cells, 1771:3947's template; 14 per characteristic; 9 performance stars, 1771:3827) and no number
+    where a bar fits; a pool player has no status word, as the original shows none."""
+    feet, inches = card['height']
+    foot = card['foot'] if ' ' in card['foot'] else card['foot'] + ' foot'
+    return {'full_name': card['name'], 'role': card['code'], 'line': card['line'], 'age': card['age'],
+            'caps': card['caps'], 'goals': card['goals'], 'height': f"{feet}'{inches:2}\"", 'foot': foot,
+            'readiness': card['readiness'] or 'in the pool', 'position': card['position_name'],
+            'club_position': card['club_position_name'], 'club_role': card['club_code'],
+            'cards': card['cards'], 'performance': None, 'performance_bar': card['performance'] or 0,
+            'skills': card['skills'], 'skill_cells': 26,
+            'characteristics': [(n, w, b, None) for n, w, b in card['characteristics']],
+            'tactics': card['tactics'], 'mark': card['mark']}
