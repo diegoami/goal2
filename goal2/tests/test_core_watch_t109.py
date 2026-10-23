@@ -162,6 +162,36 @@ class Match(unittest.TestCase):
 
 @requires.need(**(NEEDS | {'modules': ('unicorn', 'pygame', 'PySide6')}), slow=True)
 class Desktop(unittest.TestCase):
+    def test_watch_button_starts_the_pitch_from_the_captain_page(self):
+        os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+        os.environ.setdefault('SDL_VIDEODRIVER', 'dummy')
+        os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        app = QApplication.instance() or QApplication([])
+        with tempfile.TemporaryDirectory() as folder:
+            model = CoreModel.open(requires.CACHE / 'e006-r0001-main.sav', requires.CACHE / 'GOAL.DAT',
+                                   Path(folder) / 'game.g2core')
+            window = CoreWindow(model);window.show();app.processEvents()
+            try:
+                window.core_routes['play next game'].click()
+                self.assertEqual(window.finish_core(60)[0], 'done')
+                r = window.core_round
+                self.assertEqual(r.views.currentIndex(), 0)
+                self.assertFalse(r.watch.isChecked())
+                r.watch.click()
+                self.assertTrue(r.watch.isChecked())
+                r.computer.click()
+                self.assertFalse(window.save.isEnabled())
+                self.assertEqual(window.finish_core(60)[0], 'done')
+                self.assertEqual(model.core.wait.kind, 'match-live')
+                self.assertEqual(r.views.currentIndex(), 4)
+                self.assertIsNotNone(r.viewer)
+                self.assertNotIn(('match-live', ord('r')), model.driver.log)
+            finally:
+                window.close();app.processEvents()
+
     def test_pitch_enter_close_resume_and_fixed_pages(self):
         os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
         os.environ.setdefault('SDL_VIDEODRIVER', 'dummy')

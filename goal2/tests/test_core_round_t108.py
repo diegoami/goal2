@@ -594,7 +594,10 @@ class Desktop(unittest.TestCase):
         self.assertTrue(w.core_jobs.busy);self.assertFalse(play.isEnabled())
         self.assertEqual(w.finish_core(300)[0], "done")
         r = w.core_round
-        self.assertIn("G14b", r.pitch_note.text())
+        # [T109] The original quick route remains the default; Watch is now offered on the captain page.
+        self.assertIn("Watch", r.watch.text())
+        self.assertFalse(r.watch.isChecked())
+        self.assertTrue(r.watch.isEnabled())
         seen = []
         # round 1 has no other fixture: the captain page comes first
         self.assertEqual(r.views.currentIndex(), 0);seen.append("captain")
