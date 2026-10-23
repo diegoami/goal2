@@ -412,6 +412,11 @@ and the rest of the Memory component). `Core.load` rebuilds the machine and the 
 same waits and the same memory, byte for byte. `core.memory_component()` is the memory in the form the kit's
 `Image` reads.
 
+[designed: owner, 2026-10-23] G13 keeps the desktop's existing `.g2core` save/resume flow for the
+original save-game/name prompt. Conversion between original `.GL` files and core checkpoints is a separate
+[task, T112](tasks/T112.md) ([#341](https://github.com/diegoami/goal2/issues/341)); it must identify supported save
+boundaries and any state the original format cannot represent before claiming round-trip fidelity.
+
 ## Requirements and cost
 
 `import goal2.core` needs the standard library only; `Core.start` needs `unicorn` (`pip install -e

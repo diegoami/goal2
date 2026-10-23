@@ -3,6 +3,9 @@
 One file per task, `T<nn>.md`, from [`TEMPLATE.md`](TEMPLATE.md). The issue's `status:*` label is the
 status; this index carries none.
 
+Save-format interchange has its own contract: [T112, original `.GL` and core `.g2core`](T112.md)
+([#341](https://github.com/diegoami/goal2/issues/341)).
+
 | Task | Title | Issue | Merge after |
 | --- | --- | --- | --- |
 | T01 | The walking skeleton: the package, the quick-engine seam, one fixture end to end | — | — |
