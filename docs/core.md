@@ -298,6 +298,15 @@ driver.pages                           # the screens passed: (kind, view), read 
 - A round takes 35 to 60 s under Unicorn (each half of the quick result about 17 s, the other fixtures up to 14 s), so
   the desktop runs each step as a background job (`CoreJobs`).
 
+## Bulletin presentation (T110, #308's G13a)
+
+[designed: T110; confirmed: F032/E038, named/seg_000E_01.c 038E, 05F6, 062F, 070B, 075F] Launch and the round
+share `goal2/desktop/bulletin_page.py`: the left, middle and right papers each retain their masthead and every
+line returned by `views.bulletin`, in order, as literal plain text. The round no longer flattens the three stories
+into an eighteen-row board. Next keeps the existing page sequence; the component has no driver or game state.
+It fits the same fixed page and four-size bounds as the other core pages. This presentation slice changes no
+screen kind or year-transition logic; the not-reached catalogue cases above remain the later G13 slices.
+
 ## Where the run starts (R1)
 
 [confirmed: E021 `notes.md` section 1 (e2a46a4)] The savestate's `CPU` component holds the registers (layout

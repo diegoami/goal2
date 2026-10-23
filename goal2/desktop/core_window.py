@@ -156,7 +156,11 @@ class CoreWindow(QMainWindow):
             _T.singleShot(0, self.resume_round)
         self.save_shortcut = QShortcut(QKeySequence('Ctrl+S'), self);self.save_shortcut.activated.connect(self.save.click)
         from goal2.desktop.fixed_page import FixedPage
-        sheet = apply_style(self);self.setCentralWidget(FixedPage(root, sheet, self))
+        from goal2.desktop.bulletin_page import sheet as bulletin_sheet
+        from goal2.desktop.style import COLORS
+        sheet = apply_style(self) + bulletin_sheet(frame=COLORS['cyan'], masthead=COLORS['yellow'],
+            text=COLORS['text'], hint=COLORS['magenta'], story_size=22, masthead_size=22)
+        self.setStyleSheet(sheet);self.setCentralWidget(FixedPage(root, sheet, self))
         self.refresh();self.navigate(0)
 
     def _build_save(self):

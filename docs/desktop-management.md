@@ -120,6 +120,11 @@ keeps it) and names the start year and stage the original set. **Start career** 
 first manager menu (`Driver.new_game`); its bulletins are shown as goal2 pages, the original's three stories read
 from its page buffer (`views.bulletin`), Enter for the next, and the last opens the main window above.
 
+[designed: T110, #308's G13a] **Bulletins keep all three papers.** The new-career and round pages share the
+three-column view: each paper has its masthead and all its story lines, as literal text, with no scrolling or
+eighteen-line truncation. Next/Enter keeps the page sequence. The round's type fits alongside the sidebar; the
+whole fixed page scales as usual.
+
 [designed] Supply verified local game resources using the existing runtime-cache
 instructions. No original resources or screenshots enter git. Without Qt the
 entry prints the installation instruction and exits2; headless imports and quick

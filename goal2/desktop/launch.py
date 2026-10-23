@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, Q
                                QPushButton, QListWidget, QListWidgetItem, QComboBox, QLineEdit,
                                QStackedWidget, QFrame, QAbstractButton)
 from goal2.desktop.model import DesktopModel, START_YEARS, CONTINENTS
+from goal2.desktop.bulletin_page import BulletinColumns, sheet as bulletin_sheet
 
 # [designed: accepted vision #266] Black screens, large type, strong functional colours.
 COLORS = dict(background='#000000', title='#4ef2f2', saved='#ff5555', country='#ffff55',
@@ -58,12 +59,7 @@ HINTS = {0: HINT, 1: 'Arrows: country / Enter: review / Space: players / Esc: ba
 CORE_HINTS = {1: 'Arrows: country / Enter: review / Esc: back',
               2: 'Type the name / Enter: start / Esc: back to countries'}
 # [designed: T106] The bulletin page: the accepted style's black page, the original's three stories in their boxes.
-BULLETIN_STYLE = f"""
-QFrame#bulletinPanel {{border:2px solid {COLORS['title']};}}
-QLabel#bulletinMasthead {{font-size:24px;font-weight:700;color:{COLORS['country']};}}
-QLabel#bulletinStory {{font-size:26px;font-weight:700;color:{COLORS['text']};}}
-QLabel#bulletinCount {{color:{COLORS['hint']};}}
-"""
+BULLETIN_STYLE = bulletin_sheet(frame=COLORS['title'], masthead=COLORS['country'], text=COLORS['text'], hint=COLORS['hint'])
 
 
 def fields(layout, rows):
@@ -383,17 +379,8 @@ class LaunchWindow(QMainWindow):
         buffer (goal2/core/views.py `bulletin`), each in its box under its masthead."""
         page = QWidget();layout = QVBoxLayout(page);layout.setSpacing(14)
         self.bulletin_count = QLabel();self.bulletin_count.setObjectName('bulletinCount');layout.addWidget(self.bulletin_count)
-        row = QHBoxLayout();row.setSpacing(20);layout.addLayout(row, 1)
-        self.bulletin_panels = {}
-        for name, stretch in (('left', 2), ('middle', 3), ('right', 2)):
-            panel = QFrame();panel.setObjectName('bulletinPanel');body = QVBoxLayout(panel);body.setSpacing(12)
-            masthead = QLabel();masthead.setObjectName('bulletinMasthead');masthead.setWordWrap(True)
-            masthead.setAlignment(Qt.AlignmentFlag.AlignHCenter);body.addWidget(masthead)
-            story = QLabel();story.setObjectName('bulletinStory');story.setWordWrap(True)
-            story.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
-            story.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
-            body.addWidget(story, 1);row.addWidget(panel, stretch)
-            self.bulletin_panels[name] = (masthead, story)
+        self.bulletin_columns = BulletinColumns();layout.addWidget(self.bulletin_columns, 1)
+        self.bulletin_panels = self.bulletin_columns.panels
         self.bulletin_next = QPushButton('Next >');self.bulletin_next.setObjectName('bulletinNext')
         self.bulletin_next.clicked.connect(lambda: self.show_bulletin(self.bulletin_index + 1))
         layout.addWidget(self.bulletin_next)
@@ -404,9 +391,7 @@ class LaunchWindow(QMainWindow):
         if index >= len(self.bulletins):
             self.finish(self.started);return
         self.bulletin_index = index
-        for name, (masthead, story) in self.bulletin_panels.items():
-            masthead.setText(self.bulletins[index][name]['masthead'])
-            story.setText('\n'.join(self.bulletins[index][name]['lines']))
+        self.bulletin_columns.set_content(self.bulletins[index])
         self.bulletin_count.setText(f'BULLETIN {index + 1} OF {len(self.bulletins)}')
         self.bulletin_next.setText('Next >' if index + 1 < len(self.bulletins) else 'To the manager menu >')
         self.show_page(4)
