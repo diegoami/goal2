@@ -50,12 +50,19 @@ class Pause(unittest.TestCase):
 
 @requires.need(**NEEDS,slow=True)
 class Replay(unittest.TestCase):
-    def test_a_second_original_space_keeps_both_current_results(self):
+    def test_repeated_original_space_preserves_the_current_fixture_and_sliding_window(self):
+        from goal2.core import views
+        from goal2.tests.test_core_round_t108 import results_text
         d = loaded();d.round_start()
-        d.core.queue('round-playing',32)
-        wait = d.round_continue()
-        self.assertEqual(wait.kind,'round-paused')
-        self.assertEqual((wait.view['first'],wait.view['last']),(706,707))
+        for current in range(707,724):
+            d.core.queue('round-playing',32)
+            wait = d.round_continue()
+            self.assertEqual(wait.kind,'round-paused')
+            first = max(706,current-15)
+            self.assertEqual((wait.view['first'],wait.view['last']),(first,current))
+            rows = views.round_results(wait.state,first,current)['rows']
+            self.assertEqual([r['number'] for r in rows],list(range(first,current+1)))
+            self.assertEqual(results_text(wait.text),[(r['first_name'],*r['score'],r['second_name'],r['kind_name']) for r in rows])
 
     def test_continue_uses_enter_and_preserves_exact_saved_replay_and_earlier_pages(self):
         from goal2.core import Core
