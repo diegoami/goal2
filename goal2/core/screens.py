@@ -109,6 +109,10 @@ KINDS = {k.name: k for k in (
     Kind("round-results", keys(("any key", "(any)")), evidence=_CAT),
     Kind("round-paused", keys(("any key", "(any)")), designed=True,
          evidence="[designed: T115; confirmed: F030 at 53d7ef5, 000E:6BD0] Space in simulate_fixture: PAUSE, PRESS ANY KEY"),
+    Kind("shootout-announcement", keys(("any key", "(any)")), designed=True,
+         evidence="[designed: T118; confirmed: F015/F030, E031 g1 checkpoint3874] A132 message: penalty shoot out"),
+    Kind("shootout-order", keys(("↑↓", "Up Down"), ("◄┘", "Return"), ("Esc", "Escape")), designed=True,
+         evidence="[designed: T118; confirmed: F015/F030 at 53d7ef5, 0791:9B93] all available XI in original order"),
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
@@ -383,6 +387,8 @@ MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103:
 def _menu_reader(f):
     # 214B:1560 (u214b_menu_read_key_and_move), far-called; its caller says which menu (kit match.py SITE_MENU).
     caller, up = f.far_caller(f.bp), f.up(f.bp)
+    if caller == "0791:9D67" and f.near_caller(up) == 0xA183:
+        return "shootout-order"
     if caller == "0791:EE9F":
         # in_match_menu 0791:ED8A, near-called by run_match F207 (pre-match), F32E (post-match), 9A32 at 9AE0
         # (half time), 8100 (substitution) and 9458 (pause); its extra-time callers have no entry.
@@ -413,6 +419,16 @@ def _menu_reader(f):
 
 def _menu_view(f):
     caller, up = f.far_caller(f.bp), f.up(f.bp)
+    if caller == "0791:9D67" and f.near_caller(up) == 0xA183:
+        # [confirmed: F015/F030, 0791:9B93; T118 actual E031 continuation] A10A's frame is the
+        # static-link argument at +4; its Pascal order stores global pitch slots, not player words.
+        parent = f.word(up, 4)
+        side = f.byte(parent, -0x1F)
+        order = (parent - 0x1A + 12 * side) & 0xFFFF
+        count = f.byte(order, 0)
+        picks = list(f.read(f.ss * 16 + order + 1, min(count, 11)))
+        return {"side": side, "country": f.ds_word(TEAMS + 2 * side), "slot": f.word(up, -6),
+                "needed": f.word(up, -4), "picks": [p - f.ds_byte(0x0668 + side) for p in picks]}
     if caller in ("1771:9022", "1771:91BE"):
         return _tournament_view(f, f.word(up, 4), 'qualifying' if caller == "1771:9022" else 'finals')
     if caller == "1771:4C0A":
@@ -625,6 +641,8 @@ REFUSALS = {"0791:DC3D": "squad-change-refused", "0791:DC68": "squad-change-refu
 def _refusal(f):
     if _round_pause(f):
         return "round-paused"
+    if _shootout_announcement(f):
+        return "shootout-announcement"
     box = _refusal_chain(f)
     return None if box is None else REFUSALS.get(f.far_caller(box))
 
@@ -635,11 +653,18 @@ def _round_pause(f):
     return f.far_caller(f.bp) == "214B:054E" and f.far_caller(f.up(f.bp)) == "000E:6BD5"
 
 
+def _shootout_announcement(f):
+    # [confirmed: E031 checkpoint3874, T84/#392 frame audit; 0791:A132 calls 214B:04F8 directly]
+    return f.far_caller(f.bp) == "214B:054E" and f.far_caller(f.up(f.bp)) == "0791:A137"
+
+
 def _refusal_view(f):
     # [confirmed: named/seg_214B_01.c 04F8] the box's message is its local_53, a Pascal string of 80 at [bp - 0x51].
     up = f.up(f.bp)
     n = min(f.byte(up, -0x51), 80)
     text = bytes(f.read(f.ss * 16 + ((up - 0x50) & 0xFFFF), n)).decode("cp437")
+    if _shootout_announcement(f):
+        return {"message": text}
     if _round_pause(f):
         # [confirmed: named/seg_000E_05.c simulate_fixture 6970 at 53d7ef5] Space pauses before +0x26
         # increments. simulate_fixture's [bp+4] is route_fixture's frame; its -6 is the round's first.

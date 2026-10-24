@@ -882,6 +882,25 @@ def board(state):
     return out
 
 
+def _shootout_available(player):
+    """[confirmed: 1771:3216 at 53d7ef5] Positive signed energy; status elements 8/6/3 clear.
+    Element5 (next-match suspension) is deliberately not this current-match test."""
+    return _signed(player[0x0E])>0 and not any(_bit(player[0x10],e) for e in (8,6,3))
+
+
+def shootout_order(state, selection):
+    """[confirmed: F015/F030 at 53d7ef5, 0791:9B93 / 1771:3216; T118 E031 original continuation]
+    The XI, their original availability and the Pascal-string pick order read from the active frame."""
+    mem = Memory(state)
+    rows = squad(mem, selection['country'])[:11]
+    for slot,row in enumerate(rows,1):
+        player = _player(mem,row['player'])
+        row.update(slot=slot, available=_shootout_available(player),
+                   rank=selection['picks'].index(slot)+1 if slot in selection['picks'] else None)
+    return dict(selection, name=mem.country_name(selection['country']), players=rows,
+                selected_player=rows[selection['slot']-1]['player'])
+
+
 def round_results(state, first, last):
     """The round's results as simulate_fixture 000E:6970 lists them (1771:7812 for each fixture from `first` to `last`,
     the window the original drew: max(last - 15, the round's first fixture) [confirmed: named/seg_000E_05.c 6970];

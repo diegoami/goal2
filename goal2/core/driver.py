@@ -437,7 +437,8 @@ class Driver:
     # the screens of a round the driver passes with Enter (each prints "hit any key"), and the kinds a key may lead to
     PASSING = ("round-results", "fixture-result", "tournament-table", "championship-bracket", "bulletin", "match-board", "match-summary")
     ROUND_KINDS = PASSING + MATCH_MENU_KINDS + ("match-watch-prompt", "eleven-refused", "substitution-notice",
-                                                "captain-select", "match-live", "match-summary-save-prompt", "round-paused", MENU)
+                                                "captain-select", "match-live", "match-summary-save-prompt", "round-paused",
+                                                "shootout-announcement", "shootout-order", MENU)
     # the stops of a match the steps return at: the half-time menu, the menu of a stoppage, the managed side's notice
     STOPS = ("match-menu-halftime", "substitution-notice")
 
@@ -497,7 +498,7 @@ class Driver:
                 continue
             if self.watching and wait.kind in ("match-live", "match-summary-save-prompt"):
                 return wait
-            if wait.kind in until or wait.kind == "round-paused" or self.stoppage():
+            if wait.kind in until or wait.kind in ("round-paused", "shootout-announcement", "shootout-order") or self.stoppage():
                 return wait
             if wait.kind == "match-watch-prompt":
                 # [designed: T109] Watch is the own match's presentation; other-country watch flags are G13.
@@ -533,6 +534,37 @@ class Driver:
             raise UnexpectedScreen(("round-paused",), self.wait)
         self.press(RETURN, expect=self.ROUND_KINDS)
         return self._pass(("match-menu", MENU))
+
+    def shootout_start(self):
+        """[designed: T118; confirmed: A132/A180 at 53d7ef5] Original Enter closes the announcement.
+        Keep every managed order decision; watch the original's kicks once its order is complete."""
+        if self.wait.kind != "shootout-announcement":
+            raise UnexpectedScreen(("shootout-announcement",),self.wait)
+        self.core.stop_at('match-live','substitution-notice','match-summary-save-prompt')
+        return self.press(RETURN,expect=self.ROUND_KINDS)
+
+    def shootout_pick(self, player):
+        """[designed: T118; confirmed: 9B93 at 53d7ef5] Navigate to an available unchosen XI player,
+        then original Enter appends his pitch slot. The guest consumes its own pushed-back Down."""
+        from goal2.core import views
+        if self.wait.kind != 'shootout-order':
+            raise UnexpectedScreen(('shootout-order',),self.wait)
+        order=views.shootout_order(self.wait.state,self.wait.view)
+        target=next((p for p in order['players'] if p['player']==player),None)
+        if target is None or not target['available'] or target['rank'] is not None:
+            raise DriverError('Choose an available XI player who is not already in the shootout order')
+        for _ in range(MAX_MOVES):
+            current=self.wait.view['slot']
+            if current==target['slot']:
+                return self.press(RETURN,expect=self.ROUND_KINDS)
+            self.press(DOWN if current<target['slot'] else UP,expect=('shootout-order',))
+        raise DriverError('The original shootout cursor did not reach the chosen player')
+
+    def shootout_undo(self):
+        """[designed: T118; confirmed: 9E65 at 53d7ef5] Original Esc removes the last pick."""
+        if self.wait.kind != 'shootout-order':
+            raise UnexpectedScreen(('shootout-order',),self.wait)
+        return self.press(ESCAPE,expect=('shootout-order',))
 
     def _play(self):
         """Enter on the menu's play: EA09 may refuse the eleven in a box, which a key closes; returns the original's

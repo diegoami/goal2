@@ -8,6 +8,9 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = "424d5998076da1e4efc399c2715689ddb44d3e1a"
+# [designed: T118; confirmed: merged archaeology T85/#396] Only generated build metadata
+# has a newer source. All behavioural/reference sources remain pinned to the accepted kit.
+SOURCE_OVERRIDES = {"runtime/original_match/build.py": "a1067ba0df7ba9c7644f36e648d897b76c7697f8"}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
@@ -21,13 +24,16 @@ def archaeology():
 
 
 def source_bytes(path):
-    return subprocess.check_output(["git", "show", f"{SOURCE}:{path}"], cwd=archaeology())
+    commit = SOURCE_OVERRIDES.get(path,SOURCE)
+    return subprocess.check_output(["git", "show", f"{commit}:{path}"], cwd=archaeology())
 
 
 def verify_vendor():
     manifest = json.loads((ROOT / "tools/watched-kit-hashes.json").read_text())
     if manifest["source"] != SOURCE:
         raise ValueError("kit manifest source pin differs")
+    if manifest.get("source_overrides",{}) != SOURCE_OVERRIDES:
+        raise ValueError("kit manifest source overrides differ")
     actual = {p.relative_to(ROOT).as_posix() for p in (ROOT / "goal2/engine/original_match").rglob("*")
               if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"}
     if actual != set(manifest["files"]):
@@ -42,9 +48,11 @@ def verify_vendor():
 def stage(cache=None):
     """[designed] Export exact upstream verification sources to ignored cache, never alter upstream."""
     verify_vendor()
-    subprocess.run(["git", "merge-base", "--is-ancestor", SOURCE, "origin/main"], cwd=archaeology(), check=True)
+    for source in {SOURCE,*SOURCE_OVERRIDES.values()}:
+        subprocess.run(["git", "merge-base", "--is-ancestor", source, "origin/main"], cwd=archaeology(), check=True)
     cache = Path(cache or ROOT / ".cache")
-    folder = cache / ("watched-evidence-" + SOURCE[:12])
+    override_key = hashlib.sha256(json.dumps(SOURCE_OVERRIDES,sort_keys=True).encode()).hexdigest()[:12]
+    folder = cache / ("watched-evidence-" + SOURCE[:12] + "-" + override_key)
     paths = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", SOURCE], cwd=archaeology(), text=True).splitlines()
     exact = {"tests/test_original_match.py", "tests/mutations_original_match.py",
              "experiments/E032-match-engine-inventory/compare.py", "experiments/E032-match-engine-inventory/record_schema.py",

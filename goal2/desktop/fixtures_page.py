@@ -642,6 +642,25 @@ class CoreRound:
         self.skip_summary = QPushButton('Continue without saving (N)')
         self.skip_summary.clicked.connect(lambda: self.window.run_core('summary_done'));sbox.addWidget(self.skip_summary)
         sbox.addStretch(1);self.views.addWidget(summary)
+        # [designed: T118; confirmed: 0791:9B93] The original orders every available XI player.
+        order = QWidget();obox = QVBoxLayout(order);obox.setSpacing(8)
+        self.shootout_title = QLabel();self.shootout_title.setObjectName('prepTitle');obox.addWidget(self.shootout_title)
+        self.shootout_hint = QLabel('Choose each available player in order. Esc undoes the last pick.')
+        self.shootout_hint.setObjectName('prepNote');self.shootout_hint.setWordWrap(True);obox.addWidget(self.shootout_hint)
+        columns = QHBoxLayout();columns.setSpacing(8);obox.addLayout(columns)
+        left = QVBoxLayout();columns.addLayout(left)
+        self.shootout_roster = RosterView('SHOOTOUT XI',toggles=False,grouped=False,marks=False,capacity=11)
+        self.shootout_roster.setFixedWidth(300);left.addWidget(self.shootout_roster)
+        self.shootout_pick = _RoundNext('Select player (Enter)');left.addWidget(self.shootout_pick)
+        self.shootout_undo = QPushButton('Undo last pick (Esc)');left.addWidget(self.shootout_undo)
+        left.addStretch(1)
+        from goal2.desktop.player_card import PlayerCardView
+        self.shootout_card = PlayerCardView(compact=True);columns.addWidget(self.shootout_card)
+        obox.addStretch(1);self.views.addWidget(order)
+        self.shootout_pick.clicked.connect(self.pick_shootout)
+        self.shootout_undo.clicked.connect(lambda: self.window.run_core('shootout_undo'))
+        self.shootout_roster.activated.connect(lambda r: self.pick_shootout())
+        self.shootout_roster.current_changed.connect(lambda r: self.refresh_shootout_card())
         from PySide6.QtCore import QTimer
         self.viewer = None
         self.watch_suspended = False
@@ -651,6 +670,7 @@ class CoreRound:
         self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
                         self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch,
                         self.bench.position_next,self.bench.position_club,self.bench.roster]
+        self.buttons += [self.shootout_pick,self.shootout_undo,self.shootout_roster]
 
     # -- the steps --------------------------------------------------------------------------------------------
     def show(self, index):
@@ -658,13 +678,13 @@ class CoreRound:
         if w.page_stack.currentIndex() != 3:w.navigate(3)
         # [designed: T108] the fixture list's routes wait while the round is shown; the bench needs the page's height
         for button in (w.core_fixture_route, w.core_tournament_route):button.setVisible(False)
-        self.pitch_note.setVisible(index != 1)
+        self.pitch_note.setVisible(index not in (1,6))
         # [designed: T114 review R1] QStackedWidget includes hidden children's hints: only the player page
         # needs this row, so it must not enlarge the captain/progress pages before or after an offer.
         self.bench.position_row.setVisible(index==1 and self.bench.positions_offered())
         w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index);self.holder.updateGeometry()
         focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench,
-                 4: self.resume_watch, 5: self.export_summary}[index]
+                 4: self.resume_watch, 5: self.export_summary, 6: self.shootout_roster}[index]
         focus.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
     def start(self):
@@ -716,7 +736,12 @@ class CoreRound:
         else:
             self.bench.message = ''
         stop = state['stop']
-        if stop == 'round-paused':
+        if stop == 'shootout-announcement':
+            self.queue = list(state['pages'][self.first_page:]);self.after = 'shootout-announcement'
+            self.first_page = len(state['pages']);self.next_page()
+        elif stop == 'shootout-order':
+            self.show_shootout_order(state)
+        elif stop == 'round-paused':
             self.queue = list(state['pages'][self.first_page:]);self.after = 'round-paused'
             self.first_page = len(state['pages']);self.next_page()
         elif stop == 'captain':
@@ -755,6 +780,37 @@ class CoreRound:
             f"{p['name']} {p['readiness']}" for p in notice['players']) or 'press any key for the bench')
             + '. Let it pass and the original asks again at each stoppage, until a substitution is made.')
         self.show(3)
+
+    def show_shootout_order(self, state):
+        order=state['order'];self.state=state
+        self.shootout_roster.unavailable={i for i,p in enumerate(order['players']) if not p['available']}
+        self.shootout_title.setText(f"SHOOTOUT ORDER / {order['name'].upper()} / {len(order['picks'])} OF {order['needed']}")
+        self.shootout_roster.set_rows([(p['player'],
+            (f"{p['rank']:2}. " if p['rank'] else '    ')+p['name'],p['code'],p['line'],True,False)
+            for p in order['players']],order['slot']-1)
+        self.show(6);self.refresh_shootout_card()
+
+    def refresh_shootout_card(self):
+        if self.window.core_jobs.busy or self.state is None or self.state['stop']!='shootout-order':return
+        from goal2.desktop.player_card import core_card
+        row=self.shootout_roster.current
+        players=self.state['order']['players']
+        if 0<=row<len(players):
+            self.shootout_card.set_card(core_card(self.window.model.card(players[row]['player'])))
+        self.refresh_shootout_controls()
+
+    def refresh_shootout_controls(self):
+        active=self.state is not None and self.state['stop']=='shootout-order' and not self.window.core_jobs.busy
+        players=self.state['order']['players'] if active else []
+        row=self.shootout_roster.current
+        choice=players[row] if 0<=row<len(players) else None
+        self.shootout_pick.setEnabled(bool(choice and choice['available'] and choice['rank'] is None))
+        self.shootout_undo.setEnabled(bool(active and self.state['order']['picks']))
+
+    def pick_shootout(self):
+        if not self.shootout_pick.isEnabled() or self.window.core_jobs.busy:return
+        player=self.state['order']['players'][self.shootout_roster.current]['player']
+        self.window.run_core('shootout_pick',player)
 
     def show_captain(self):
         state = self.window.model.round_state();self.state = state
@@ -854,8 +910,9 @@ class CoreRound:
     def next_page(self):
         if self.window.core_jobs.busy:return
         managed = tuple(m['country'] for m in self.window.model.desk()['managers'])
-        if self.after == 'round-continue' and not self.queue:
-            if self.window.run_core('round_continue'):
+        if self.after in ('round-continue','shootout-begin') and not self.queue:
+            action='round_continue' if self.after=='round-continue' else 'shootout_start'
+            if self.window.run_core(action):
                 self.after = None;self.show_waiting('The original continues the round…')
             return
         self.page_next.setText('Next > (Enter)')
@@ -873,7 +930,14 @@ class CoreRound:
                 self.page_board.set_lines(_page_lines(kind, view, managed));self.page_content.setCurrentIndex(0)
             self.page_count.setText(f"{PAGE_TITLES.get(kind, kind)}: {len(self.queue)} more")
             self.shown = (kind, view);self.show(2);return
-        if self.after == 'round-paused':
+        if self.after == 'shootout-announcement':
+            self.page_board.title='PENALTY SHOOTOUT'
+            # [designed: T118] Report the current guest score without assuming its preceding phase.
+            self.page_board.set_lines(_board_lines(self.state['board'],'MATCH SCORE'))
+            self.page_content.setCurrentIndex(0);self.page_count.setText(self.state['message'])
+            self.page_next.setText('Choose shootout order (Enter)')
+            self.after='shootout-begin';self.show(2)
+        elif self.after == 'round-paused':
             self.page_board.title = "THE ROUND'S RESULTS"
             self.page_board.set_lines(_page_lines('round-results',self.state['results'],managed))
             self.page_content.setCurrentIndex(0)
@@ -886,6 +950,9 @@ class CoreRound:
             self.after = None;core_fixtures_view(self.window, 0);self.window.navigate(0)
 
     def escape(self):
+        if self.views.currentIndex()==6:
+            if self.shootout_undo.isEnabled():self.shootout_undo.click()
+            return True
         if self.views.currentIndex() == 1:
             return self.bench.escape()
         return False

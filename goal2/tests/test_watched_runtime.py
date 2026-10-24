@@ -42,15 +42,35 @@ class RuntimeTests(unittest.TestCase):
                             ignore=shutil.ignore_patterns("__pycache__"))
             with patch.object(watched_evidence,"ROOT",root):
                 self.assertEqual(verify_vendor(),10)
-                readme = root / "goal2/engine/original_match/README.md"
-                original = readme.read_bytes()
-                readme.write_bytes(original+b"changed")
-                with self.assertRaisesRegex(ValueError,"differs from accepted source"):
+                for name in ('README.md','build.py'):
+                    source = root / "goal2/engine/original_match" / name
+                    original = source.read_bytes()
+                    source.write_bytes(original+b"changed")
+                    with self.assertRaisesRegex(ValueError,"differs from accepted source"):
+                        verify_vendor()
+                    source.write_bytes(original)
+                manifest_path = root / 'tools/watched-kit-hashes.json'
+                original = manifest_path.read_bytes();manifest = json.loads(original)
+                manifest['source_overrides'] = {}
+                manifest_path.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError,'source overrides differ'):
                     verify_vendor()
-                readme.write_bytes(original)
-                (readme.parent / "extra.py").write_text("pass")
+                manifest_path.write_bytes(original)
+                (source.parent / "extra.py").write_text("pass")
                 with self.assertRaisesRegex(ValueError,"file set differs"):
                     verify_vendor()
+
+    @requires.need(archaeology=True,files=tuple(IMAGES))
+    def test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned(self):
+        with tempfile.TemporaryDirectory() as folder:
+            for name in IMAGES:shutil.copyfile(ROOT/'.cache'/name,Path(folder)/name)
+            staged=watched_evidence.stage(folder)
+            for name in ('build.py','match.py'):
+                relative='runtime/original_match/'+name
+                self.assertEqual((staged/relative).read_bytes(),watched_evidence.source_bytes(relative))
+            manifest=json.loads((ROOT/'tools/watched-kit-hashes.json').read_text())
+            self.assertEqual(hashlib.sha256((staged/'runtime/original_match/build.py').read_bytes()).hexdigest(),
+                             manifest['files']['goal2/engine/original_match/build.py'])
 
     def test_entry_probe_false_or_incomplete_evidence_is_rejected(self):
         from check_watched_upstream import validate_entry
