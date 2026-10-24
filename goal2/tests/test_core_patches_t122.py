@@ -20,6 +20,12 @@ def manager(index=0):
     assert c.wait.kind=='manager-menu'
     return c
 
+def legacy_half():
+    from goal2.core import Core
+    data=(requires.CACHE/HALF).read_bytes()
+    assert hashlib.sha256(data).hexdigest()=='66a92624ff602447c0cc29d8ee4291bceab145c3df2d9cb9545ba13b16f0c6d0'
+    return Core.start(data).core
+
 def table(c):return tuple(c.m.rd(a,1) for a in (0x66b,0x66c))
 
 def header(data,**changes):
@@ -55,7 +61,7 @@ class Registry(unittest.TestCase):
 
     def test_legacy_half_cannot_be_activated_or_refilled(self):
         from goal2.core import Core
-        c=Core.start((requires.CACHE/HALF).read_bytes()).core;snap=c.m.snapshot()
+        c=legacy_half();snap=c.m.snapshot()
         from goal2.core.views import match_sides
         side=match_sides(c.wait.state)['managed_side']
         self.assertEqual(c.m.rd(0x9b3a+side,1),5)
@@ -199,7 +205,7 @@ class Desktop(unittest.TestCase):
         from goal2.desktop.core_model import CoreModel
         from goal2.desktop.core_window import CoreWindow
         cases=[(Core.load(self.halves[0]),'Unlimited'),(Core.load(self.halves[1]),'5'),
-               (Core.start((requires.CACHE/HALF).read_bytes()).core,'5')]
+               (legacy_half(),'5')]
         for c,label in cases:
             with self.subTest(label=label,patches=c.patches),tempfile.TemporaryDirectory() as tmp:
                 target=Path(tmp)/'round.g2core';model=CoreModel(c,None,target);w=CoreWindow(model)
