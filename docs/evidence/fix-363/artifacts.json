@@ -1,0 +1,8 @@
+{
+  "evidence":"[confirmed: real G4C original-key watch continuation at goal2 90fa5b621e98cea3d78f2952f64f4c44dec2863f; F006/F027 at archaeology53d7ef5]",
+  "source":"Native original G4C.GL load, archaeology T86/PR403 and goal2#361; manager input SHA256 b2497a51f41fa52a733fe880e3b144b43db05d5de11f4da6e45c51dc76a715a0",
+  "provenance":"Original round_start/watch, captain C, original Right keys to speed0, then no input. Periodic saves retain the last complete pose before Koeman injury hits unmapped walk_player_off poll78F9. No guest-memory edit, CPU rewind or fixture construction.",
+  "producer_script_sha256":"a56c7a72b23ebefaf242482e8da82fe78400ad02df5364bc01979a2bf14358de",
+  "storage":"Private owner Drive through tools/artifacts.py; upload/readback SHA256 verified; no original bytes in Git",
+  "artifacts":[{"name":"g13-ecc7c9f3df3f5092-g4c-before-injury.g2core","sha256":"ecc7c9f3df3f5092254e4583864f3a345ecbe600f2af30601d8dc5f79f80b79c"}]
+}

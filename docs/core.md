@@ -95,6 +95,7 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `round-paused` | `214B:098A` (box 214B:04F8, 054E from 000E:6BD5) | T115 genuine queued-Space checkpoint, fixture 706 | "PAUSE" "PRESS ANY KEY" |
 | `shootout-announcement` | `214B:098A` (054E from 0791:A137) | T118, unchanged E031 g1 checkpoint3874 | "penalty shoot out" "PRESS ANY KEY" |
 | `shootout-order` | `214B:157C` (9D67 from A183) | T118, original Enter after E031 checkpoint3874 | "to select the order" "Hit Esc to undo" |
+| `match-walkoff` | `0791:78F9` (7881 poll; flush read7902) | #363, genuine G4C Koeman injury | "R-result" "spacebar-commentary" |
 | `championship-bracket` | `1771:9567` (9509 from 958D, continental mode 0) | T111's real E006 continuation, after fixture 1345 | "TOP SCORERS" "winner" "hit any key" |
 | `championship-browse` | `1771:9567` (the same, mode 1) | T111's private continental checkpoint, manager menu's tournament | "winner" "Use ←→ to select display" "Esc-exit" |
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
@@ -341,6 +342,15 @@ The desktop can reach or resume this wait, shows its message and structured resu
 and keeps the round's team-edit/busy guards. Saving here and continuing a loaded copy replays the same
 original keys and memory. This slice adds recovery of the pause; it adds no live round-control UI.
 The genuine queued-Space input and its hash are recorded in [the private-input manifest](evidence/T115/artifacts.json).
+
+[confirmed: F006/F027 at archaeology 53d7ef5; 0791:7881 and code/seg_0791_13.asm]
+An injury walk-off polls at `0791:78F9`; any queued key is read and discarded at `0791:7902`.
+The original stops its clock and substitution flag during the animation, draws all22 pictures,
+then restores those flags at 795A–7963 and returns at 7987. [designed: #363] `match-walkoff`
+is a serviced animation, outside the default stop set: normal watching answers no key and
+keeps executing the original until its next complete live pose or manager decision. It adds
+no host pause and publishes no partial animation as a completed game tick. Save/replay and
+explicit queued-key controls use the same original poll/read protocol.
 
 ## Original shootout decisions (T118, #308's G13f)
 
