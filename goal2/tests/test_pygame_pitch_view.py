@@ -45,10 +45,11 @@ IDENTITY={'countries':['First','Second'],'roles':{'101':'B','122':'w'},'managed'
 
 
 def geometry(size):
-    """[derived: F013 IN_PLAY |x|<=8, |y|<=37; designed: T94 52 px header, 64 px footer, 8 px
+    """[derived: F013 IN_PLAY |x|<=8, |y|<=37; designed: owner/T117 five header rows and one footer row of 25, 8 px
     sides, 1.5/2.5 grid units of margin] Restated independently of pygame_viewer.layout."""
-    w,h=size[0]-16,size[1]-52-64
-    return 8+w/2,52+h/2,w/79,h/19
+    top,footer=round(size[1]*5/25),round(size[1]/25)
+    w,h=size[0]-16,size[1]-top-footer
+    return 8+w/2,top+h/2,w/79,h/19
 
 
 @requires.need(modules=("pygame",))
@@ -129,29 +130,28 @@ class PitchPixels(unittest.TestCase):
         self.assertGreater(self.count(GOLD,self.point(11,1)),0,'non-sentinel out-of-field/unknown state must draw')
         self.assertGreater(self.count(YELLOW,self.point(10,2),8),0,'non-sentinel ball must draw')
 
-    def test_two_latest_commentary_lines_full_panel_watermark_and_bounded_queue(self):
+    def test_three_header_commentary_lines_full_panel_watermark_and_bounded_queue(self):
         import pygame
         d=pitch(IDENTITY)
-        for minute,text in [(0,'Kickoff'),(3,'Corner'),(5,'Shot'),(90,'FULL TIME')]:
+        for minute,text in [(0,'Oldest'),(1,'Kickoff'),(3,'Corner'),(5,'Shot'),(90,'FULL TIME')]:
             send(d,'event',dict(kind='commentary',minute=minute,score=[0,0],data={'text':text}))
         send(d,'event',dict(kind='end',minute=90,score=[1,0],data={}))
-        f=sample(watermark=3);send(d,'frame',f)
+        f=sample(watermark=4);send(d,'frame',f)
         self.assertEqual(d.visible().events,[],'ingress must not leak before first pose')
         d.advance(0)
         visible=d.visible().commentary()
-        self.assertEqual(visible,['0′ Kickoff','3′ Corner','5′ Shot'])
+        self.assertEqual(visible,['0′ Oldest','1′ Kickoff','3′ Corner','5′ Shot'])
         self.assertNotIn('90′ FULL TIME',visible,'future commentary leaked before watermark')
         viewer.render_pitch(self.screen,self.font,d)
         self.assertEqual(d.consumed,-1,'selection/queueing must not acknowledge an unseen frame')
-        footer=viewer.mono(22)
-        def drawn(line,colour,y):
-            label=footer.render(line,True,colour);expected=pygame.Surface(label.get_size());expected.fill((0,0,0));expected.blit(label,(0,0))
-            return pygame.image.tobytes(self.screen.subsurface((18,y,*label.get_size())),'RGB')==pygame.image.tobytes(expected,'RGB')
-        bottom=self.SIZE[1]-64+6
-        self.assertTrue(drawn('3′ Corner',YELLOW,bottom) and drawn('5′ Shot',CYAN,bottom+28),'the latest two lines are shown')
-        self.assertFalse(drawn('0′ Kickoff',YELLOW,bottom),'older commentary is hidden by default')
-        header=viewer.mono(30,True).render('   7′ / FRIENDLY',True,CYAN)
-        self.assertGreater(sum(self.pixel(x,24)==CYAN for x in range(18,900)),0,'minute/score header')
+        text=viewer.mono(30)
+        def drawn(line,y):
+            label=text.render(line,True,WHITE);expected=pygame.Surface(label.get_size());expected.fill((0,0,0));expected.blit(label,(0,0))
+            return pygame.image.tobytes(self.screen.subsurface((576,y,*label.get_size())),'RGB')==pygame.image.tobytes(expected,'RGB')
+        self.assertTrue(all(drawn(line,y) for line,y in [('Kickoff',36),('Corner',72),('Shot',108)]),
+                        'exactly the latest three lines belong in the original header rows')
+        self.assertFalse(drawn('Oldest',36),'older commentary is hidden by default')
+        self.assertGreater(sum(self.pixel(x,y)==CYAN for x in range(576,1300) for y in range(0,35)),0,'fixture/minute header')
         before=pygame.image.tobytes(self.screen,'RGB')
         viewer.render_pitch(self.screen,self.font,d,0,True)
         self.assertNotEqual(pygame.image.tobytes(self.screen,'RGB'),before,'C opens the full commentary')
@@ -162,6 +162,27 @@ class PitchPixels(unittest.TestCase):
         for n in range(64):send(other,'frame',sample(n))
         with self.assertRaisesRegex(ValueError,'backlog'):send(other,'frame',sample(64))
         self.assertEqual(len(other.frames),64)
+
+    def test_original_speed_chevrons_are_below_the_pitch_at_all_six_speeds(self):
+        import pygame
+        d=pitch(IDENTITY);send(d,'frame',sample());d.advance(0)
+        prefix='↓↑-display ←→-speed'
+        font=viewer.mono(30)
+        x=18+font.size(prefix)[0]
+        for delay in range(6):
+            send(d,'core-speed',delay);viewer.render_pitch(self.screen,self.font,d)
+            expected=pygame.Surface(font.size('»'*6));expected.fill((0,0,0))
+            expected.blit(font.render('»'*(6-delay),True,YELLOW),(0,0))
+            actual=self.screen.subsurface((x,864,*expected.get_size()))
+            self.assertEqual(pygame.image.tobytes(actual,'RGB'),pygame.image.tobytes(expected,'RGB'),delay)
+            self.assertFalse(any(self.pixel(px,py)==YELLOW for px in range(800,1440) for py in range(180)),
+                             'speed must not remain in the header')
+        # The Python route's six presentation rates use the same visual scale, retaining local pacing.
+        from goal2.desktop.match_view import SPEEDS
+        d=pitch(IDENTITY);send(d,'frame',sample());d.advance(0)
+        for n,(_,rate) in enumerate(SPEEDS,1):
+            d.pitch_rate=rate
+            self.assertEqual(d.speed_markers(),'»'*n)
 
     def test_accumulated_target_cadence_and_managed_side_colours(self):
         d=pitch(dict(IDENTITY,managed=1))
@@ -177,7 +198,7 @@ class PitchPixels(unittest.TestCase):
         # Managed side 1: team 1 gold, team 0 white; the header names carry the same colours.
         self.assertEqual(*self.glyph('B',GOLD,self.point(-4,-20)),'country names must identify marker colors')
         self.assertEqual(*self.glyph('w',WHITE,self.point(4,20)),'country names must identify marker colors')
-        self.assertGreater(sum(self.pixel(x,y)==WHITE for x in range(18,200) for y in range(14,40)),0,'first country in its colour')
+        self.assertGreater(sum(self.pixel(x,y)==WHITE for x in range(18,200) for y in range(36,72)),0,'first country in its colour')
 
     def test_the_pitch_fills_the_window_at_every_size(self):
         for size in ((900,640),(1440,900),(2880,1800)):
