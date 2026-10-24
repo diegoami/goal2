@@ -257,3 +257,5 @@ operational status.
 
 | T119 | G13g: recover both original extra-time intervals | [#365](https://github.com/diegoami/goal2/issues/365) | T118, fix #363 |
 | [T120](T120.md) | G13h: recover original corner and goal-kick decisions | [#374](https://github.com/diegoami/goal2/issues/374) | T119, fix #371, docs #373 |
+
+| [T121](T121.md) | G13i: bridge original save-name waits to core saves | [#380](https://github.com/diegoami/goal2/issues/380) | T120 |
