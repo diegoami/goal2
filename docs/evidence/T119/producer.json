@@ -53,7 +53,6 @@
         13,
         99,
         13,
-        13,
         13
       ]
     },
@@ -108,5 +107,7 @@
     }
   ],
   "collector": "Original guest-key continuation using explicitly recorded host-only wait-label aliases; no guest memory/CPU changes",
-  "script_location": "goal2-keep/G13-inputs-20261024/g13-extra-menu-collect.py"
+  "script_location": "goal2-keep/G13-inputs-20261024/g13-extra-menu-collect.py",
+  "correction": "ReviewR1: the collector retained a mutable reference to core.keys, so its raw first record inherited the later final list. This published copy now takes each immutable key list directly from that checkpoint header. Original raw record and collector are retained unchanged in goal2-keep/G13-inputs-20261024.",
+  "raw_record_sha256": "a9ac2328a3dc30378538657cd64e2562fb6c323987ec533391a8aa5e4a8b9d30"
 }
