@@ -253,3 +253,4 @@ operational status.
 | [T115](T115.md) | G13e: resume the original round pause | [#349](https://github.com/diegoami/goal2/issues/349) | T114 |
 | [T116](T116.md) | Watch by default and remove redundant live-frame work | [#350](https://github.com/diegoami/goal2/issues/350) | T114 |
 | [T117](T117.md) | Restore original live-match commentary and speed composition | [#354](https://github.com/diegoami/goal2/issues/354) | T116 |
+| T118 | G13f: original shootout announcement, managed order and continuation | [#357](https://github.com/diegoami/goal2/issues/357) | T115, archaeology T85 |
