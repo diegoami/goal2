@@ -259,3 +259,4 @@ operational status.
 | [T120](T120.md) | G13h: recover original corner and goal-kick decisions | [#374](https://github.com/diegoami/goal2/issues/374) | T119, fix #371, docs #373 |
 
 | [T121](T121.md) | G13i: bridge original save-name waits to core saves | [#380](https://github.com/diegoami/goal2/issues/380) | T120 |
+| [T122](T122.md) | G15: declare the owner substitution-budget patch | [#386](https://github.com/diegoami/goal2/issues/386) | T121 |
