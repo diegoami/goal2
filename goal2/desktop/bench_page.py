@@ -354,6 +354,14 @@ class CoreBench:
             self.context.setText(f'{names[0].upper()} {score[0]} - {score[1]} {names[1].upper()}')
             self.play.setText('Play on');self.play.setAccessibleName('Play on: the second half')
             self.roster.setAccessibleDescription('Up/Down select; Enter take off / put on; Play on: the second half')
+            # [designed: T119; confirmed: original ED8A callers9B42/9B70] Same original controls,
+            # with the phase supplied by its caller, independently of stale commentary on the page.
+            if self.mode=='half_time' and self.state.get('interval_label'):
+                self.title.setText('PLAYERS / '+self.state['interval_label'])
+                first=self.state['stop']=='extra-time-start'
+                self.play.setText('Play extra time' if first else 'Continue extra time')
+                self.play.setAccessibleName('Play the first extra half' if first else 'Play the second extra half')
+                self.roster.setAccessibleDescription('Up/Down select; Enter take off / put on; '+self.play.accessibleName())
         else:
             self.counter.setText('before the kick-off')
             self.title.setText('PLAYERS / SELECT YOUR TEAM')
