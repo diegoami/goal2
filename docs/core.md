@@ -92,6 +92,7 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 
 | kind | site | record | quoted text |
 | --- | --- | --- | --- |
+| `round-paused` | `214B:098A` (box 214B:04F8, 054E from 000E:6BD5) | T115 genuine queued-Space checkpoint, fixture 706 | "PAUSE" "PRESS ANY KEY" |
 | `championship-bracket` | `1771:9567` (9509 from 958D, continental mode 0) | T111's real E006 continuation, after fixture 1345 | "TOP SCORERS" "winner" "hit any key" |
 | `championship-browse` | `1771:9567` (the same, mode 1) | T111's private continental checkpoint, manager menu's tournament | "winner" "Use ←→ to select display" "Esc-exit" |
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
@@ -153,7 +154,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
   `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
   until a screen task maps them: the taker prompts and extra-time menus, the other players' screen of E949 (another country's, 1771:50F1), E022's other
-  messages ("There is no player here" E062, "Nice try" E19F) and EA09's vacancy (EC60), the space bar's pause box of the round (214B:04F8 from 000E:6BD0), a watched match of the round (Y at
+  messages ("There is no player here" E062, "Nice try" E19F) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
 - **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
@@ -321,6 +322,23 @@ driver.pages                           # the screens passed: (kind, view), read 
   half time, and the desktop's round (docs/desktop-management.md).
 - A round takes 35 to 60 s under Unicorn (each half of the quick result about 17 s, the other fixtures up to 14 s), so
   the desktop runs each step as a background job (`CoreJobs`).
+
+## Original round pause (T115, #308's G13e)
+
+[confirmed: F030 at archaeology 53d7ef5; named/seg_000E_05.c simulate_fixture 6970,
+code/seg_000E_09.asm 6BD0] Space at a `round-playing` poll opens the original PAUSE message box.
+The shared read `214B:098A` is `round-paused` only with caller chain `214B:054E` / `000E:6BD5`.
+Its message is read from the box's Pascal string. The displayed results run through the current fixture
+at game `+0x26`, inclusive: this pause precedes that index's increment. Their first row is
+max(current - 15, route_fixture's first), obtained through simulate_fixture's frame argument.
+The later `round-results` wait still ends at index minus one.
+
+[designed: T115, decision 7] The driver stops at this manager decision. `driver.round_continue()` sends
+Enter, then retains subsequent results/table/bulletin pages until the next manager decision or menu.
+The desktop can reach or resume this wait, shows its message and structured results with Continue,
+and keeps the round's team-edit/busy guards. Saving here and continuing a loaded copy replays the same
+original keys and memory. This slice adds recovery of the pause; it adds no live round-control UI.
+The genuine queued-Space input and its hash are recorded in [the private-input manifest](evidence/T115/artifacts.json).
 
 ## Bulletin presentation (T110, #308's G13a)
 

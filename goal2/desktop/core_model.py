@@ -34,10 +34,10 @@ DISABLED_TEXT = {}
 ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 'rename', 'set_tactic')
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
-                 'live_step', 'summary_done', 'request_substitution', 'round_position')
+                 'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue')
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
-               'match-live', 'match-summary-save-prompt')
+               'match-live', 'match-summary-save-prompt', 'round-paused')
 
 
 class CoreModel:
@@ -177,7 +177,10 @@ class CoreModel:
         wait = self.core.wait
         out = {'at': wait.kind, 'stop': 'menu', 'pages': list(self.driver.pages), 'refused': self.refused,
                'captain': None, 'bench': None, 'board': None, 'notice': None}
-        if wait.kind == 'match-menu' and self.driver.stoppage():
+        if wait.kind == 'round-paused':
+            out.update(stop='round-paused', message=wait.view['message'],
+                       results=views.round_results(self.state, wait.view['first'], wait.view['last']))
+        elif wait.kind == 'match-menu' and self.driver.stoppage():
             out.update(stop='pause' if wait.view.get('context') == 'pause' else 'stoppage',
                        board=views.board(self.state), bench=views.bench(self.state))
         elif wait.kind == 'match-menu':

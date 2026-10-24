@@ -129,6 +129,13 @@ keeps it) and names the start year and stage the original set. **Start career** 
 first manager menu (`Driver.new_game`); its bulletins are shown as goal2 pages, the original's three stories read
 from its page buffer (`views.bulletin`), Enter for the next, and the last opens the main window above.
 
+[designed: T115, #308's G13e; confirmed: F030 at archaeology 53d7ef5, 000E:6BD0] **Original round pause.**
+A core reaching or saved at the original round's PAUSE opens its structured results and full message.
+Continue/Enter sends the original key and keeps subsequent result pages before the captain or manager menu.
+The current fixture is included, because the original has not incremented its index yet. Team edits stay locked
+for the round, and controls/save wait during the background continuation. This adds pause recovery, with no new
+live round-control UI.
+
 [designed: T110, #308's G13a] **Bulletins keep all three papers.** The new-career and round pages share the
 three-column view: each paper has its masthead and all its story lines, as literal text, with no scrolling or
 eighteen-line truncation. Next/Enter keeps the page sequence. The round's type fits alongside the sidebar; the

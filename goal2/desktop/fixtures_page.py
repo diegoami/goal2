@@ -547,6 +547,16 @@ class _RoundHolder(QWidget):
         return super().minimumSizeHint() if self._shown() else QSize(0, 0)
 
 
+class _RoundNext(QPushButton):
+    """[designed: T115] The focused page action accepts the advertised Enter as well as Space."""
+
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            self.click();event.accept()
+        else:
+            super().keyPressEvent(event)
+
+
 class CoreRound:
     """[designed: T108] The round's views on the Fixtures & match page over the core: 0 the captain, 1 the bench
     (bench_page.CoreBench), 2 a page the round passed."""
@@ -603,7 +613,7 @@ class CoreRound:
         self.bulletin_columns = BulletinColumns('THE SOCCER BULLETIN');self.page_content.addWidget(self.bulletin_columns)
         from goal2.desktop.bracket_page import BracketBoard
         self.round_bracket_board = BracketBoard('coreRoundBracket');self.page_content.addWidget(self.round_bracket_board)
-        self.page_next = QPushButton('Next > (Enter)');self.page_next.setObjectName('coreRoundNext')
+        self.page_next = _RoundNext('Next > (Enter)');self.page_next.setObjectName('coreRoundNext')
         self.page_next.clicked.connect(self.next_page);pbox.addWidget(self.page_next)
         self.views.addWidget(page)
         # 3: the managed side's substitution notice at a stoppage
@@ -678,6 +688,7 @@ class CoreRound:
         if kind != 'done':
             self.bench.message = value;self.bench.refresh();return
         state = self.state = value
+        if name == 'round_start':self.first_page = 0
         if state['stop'] != 'live' and self.viewer is not None:
             if state.get('commentary') and self.viewer.display.frame is not None:
                 self.viewer.pose(self.viewer.display.frame, state['commentary'])
@@ -705,9 +716,12 @@ class CoreRound:
         else:
             self.bench.message = ''
         stop = state['stop']
-        if stop == 'captain':
-            if name == 'round_start':
-                self.queue = list(state['pages']);self.after = 'captain';self.first_page = len(state['pages'])
+        if stop == 'round-paused':
+            self.queue = list(state['pages'][self.first_page:]);self.after = 'round-paused'
+            self.first_page = len(state['pages']);self.next_page()
+        elif stop == 'captain':
+            if name in ('round_start', 'round_continue'):
+                self.queue = list(state['pages'][self.first_page:]);self.after = 'captain';self.first_page = len(state['pages'])
                 self.next_page()
             else:
                 self.show_captain()
@@ -838,7 +852,13 @@ class CoreRound:
         self.window.run_core('summary_done')
 
     def next_page(self):
+        if self.window.core_jobs.busy:return
         managed = tuple(m['country'] for m in self.window.model.desk()['managers'])
+        if self.after == 'round-continue' and not self.queue:
+            if self.window.run_core('round_continue'):
+                self.after = None;self.show_waiting('The original continues the round…')
+            return
+        self.page_next.setText('Next > (Enter)')
         if self.queue:
             kind, view = self.queue.pop(0)
             self.page_board.title = PAGE_TITLES.get(kind, kind.upper())
@@ -853,7 +873,14 @@ class CoreRound:
                 self.page_board.set_lines(_page_lines(kind, view, managed));self.page_content.setCurrentIndex(0)
             self.page_count.setText(f"{PAGE_TITLES.get(kind, kind)}: {len(self.queue)} more")
             self.shown = (kind, view);self.show(2);return
-        if self.after == 'captain':
+        if self.after == 'round-paused':
+            self.page_board.title = "THE ROUND'S RESULTS"
+            self.page_board.set_lines(_page_lines('round-results',self.state['results'],managed))
+            self.page_content.setCurrentIndex(0)
+            self.page_count.setText(self.state['message'])
+            self.page_next.setText('Continue (Enter)')
+            self.after = 'round-continue';self.show(2)
+        elif self.after == 'captain':
             self.after = None;self.show_captain()
         else:
             self.after = None;core_fixtures_view(self.window, 0);self.window.navigate(0)

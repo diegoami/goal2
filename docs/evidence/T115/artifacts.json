@@ -1,0 +1,32 @@
+{
+  "evidence": "[confirmed: F030 at archaeology 53d7ef5, simulate_fixture 000E:6970 / call 6BD0]",
+  "storage": "Owner private Drive through tools/artifacts.py; never original bytes in Git",
+  "provenance": "T111 qualifying-end manager-menu checkpoint, with accepted Space queued for round-playing. Original keys reach 214B:098A through 214B:054E / 000E:6BD5. No guest-memory edits. Frame/key records retained in goal2-keep/G13-pause-preflight-20261023/index.json.",
+  "artifacts": [
+    {
+      "name": "g13-78a03f2f42b4c68b-round-pause.g2core",
+      "sha256": "78a03f2f42b4c68bc7c5e3ca368271ec75365c29c0cc9d9e9c88c956213a66cd"
+    },
+    {
+      "name": "g13-ef463846c4653c80-round-pause-captain.g2core",
+      "sha256": "ef463846c4653c8053b6a7988cd004627f9692263557a01674f7644b12ca9ebf",
+      "provenance": "Original first round via Driver.play_round, then queue accepted round-playing Space at manager menu. No guest-memory edits.",
+      "keys_before_queue": [
+        27,
+        177,
+        177,
+        177,
+        177,
+        177,
+        13,
+        13,
+        99,
+        13,
+        13,
+        13,
+        13,
+        13
+      ]
+    }
+  ]
+}
