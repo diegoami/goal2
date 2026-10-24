@@ -224,6 +224,11 @@ class CoreModel:
             self.pitch_sequence += 1
         elif wait.kind == 'match-summary-save-prompt':
             out.update(stop='summary-save', board=views.board(self.state))
+        # [designed: owner#73, T122] Preserve raw original views; presentation names the declared deviation.
+        if out['bench'] is not None:
+            from goal2.core.patches import unlimited_friendly
+            if unlimited_friendly(self.core):
+                out['bench']['budget_label'] = 'Unlimited'
         if wait.kind in ROUND_WAITS and wait.kind != 'match-live' and self.driver.watching:
             self.commentary_cursor, out['commentary'] = views.commentary(self.state, self.commentary_cursor)
         return out
@@ -397,7 +402,10 @@ class CoreNewGame:
         bulletins = []
         try:
             driver.new_game(country, manager_name, on_bulletin=lambda wait: bulletins.append(views.bulletin(wait.state)))
-        except CoreError as exc:
+            # [designed: owner#73, T122] New desktop careers explicitly opt in; imports/resumes never migrate.
+            from goal2.core.patches import OWNER_SUBSTITUTIONS
+            driver.core.apply_patch(OWNER_SUBSTITUTIONS)
+        except (CoreError, ValueError) as exc:
             self._drivers.pop(start_year, None)
             raise ValueError(f'The new game stopped: {exc}') from exc
         self._drivers.pop(start_year, None)            # this core is the career now

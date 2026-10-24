@@ -662,3 +662,9 @@ core atomically. A resumed terminal quit-save decision offers Save and close / C
 saving, using the actual recorded pre-F10 origin rather than rewinding the quitting guest.
 An imported terminal decision without that origin cannot be converted into a playable save.
 Busy and round guards remain in force; ordinary host snapshots and old core saves remain supported.
+
+[designed: owner#73, T122] New core careers declare Unlimited substitutions in friendlies
+and five in competitive matches, shown before Start. The bench labels owner-policy friendlies
+Unlimited; ordinary remaining counters stay exact. Legacy/imported saves keep their recorded
+original policy, and loading never replenishes substitutions. The declaration survives regular,
+partial-round and terminal save-and-close checkpoints.

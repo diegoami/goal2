@@ -58,12 +58,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from goal2.core import screens as _screens
+from goal2.core import patches as _patches
 from goal2.engine.original_match import machine as _machine
 from goal2.engine.original_match.image import Image, MEM_BASE, GOAL_DS_PARAGRAPH
 from goal2.engine.original_match.machine import Machine, MEM_SIZE, REGS
 from goal2.engine.original_match.match import KEYPRESSED, READKEY, PUSHED_BACK, KEY, SCREEN_PTR, SEED
 
-VERSION = 4                   # T121: optional real playable origin for the terminal quit/save decision
+VERSION = 5                   # T122: explicit registered guest patches; versions1–4 remain readable
 #                               (a version 1 or 2 save loads with the defaults)
 MAGIC = b"G2C1"
 KEY_AHEAD = 0xA977            # 08DD 097C: the last key read
@@ -310,6 +311,7 @@ class Core:
         self.released = None          # [T108] the polled kind let pass (release) until a poll of another kind
         self.wait = None
         self.quit_origin = None      # [designed: T121] one exact playable snapshot before manager F10
+        self.patches = ()             # [designed: owner#73, T122] raw cores retain original policy
         self._live_frames = False     # [T116] temporary presentation batching; never a guest or save setting
         self._hooks()
 
@@ -395,6 +397,7 @@ class Core:
     def save(self):
         """Bytes holding the compressed image (the memory component now), the CPU, the seeds and the key log."""
         self._check_waiting()
+        _patches.validate(self)
         if self.files:
             raise CoreError("the original has GOAL.DAT open: a core is saved only between its file reads")
         snap = self.m.snapshot()
@@ -405,6 +408,8 @@ class Core:
                  "passed": [[p.kind, p.polls, p.text, list(p.keys)] for p in self.wait.passed],
                  "queued": [list(q) for q in self.queued], "pending": None if self.pending is None else list(self.pending),
                  "at_poll": self.wait.poll, "stops": sorted(self.stops), "released": self.released}
+        if self.patches:
+            state['patches'] = list(self.patches)
         if self.quit_origin is not None:
             state['quit_origin'] = self.quit_origin.hex()
         blob = json.dumps(state).encode()
@@ -419,7 +424,7 @@ class Core:
             raise ValueError("not a saved core")
         n = int.from_bytes(data[4:8], "little")
         state = json.loads(data[8:8 + n])
-        if state["version"] not in (1, 2, 3, VERSION):
+        if state["version"] not in (1, 2, 3, 4, VERSION):
             raise ValueError(f"a saved core of version {state['version']}, this is {VERSION}")
         memory = zlib.decompress(data[8 + n:])
         m = Machine(memory, state["load"])
@@ -434,6 +439,10 @@ class Core:
         core.pending = None if state.get("pending") is None else tuple(state["pending"])
         core.stops = set(state.get("stops", ()))
         core.released = state.get("released")
+        if state['version'] < 5 and state.get('patches'):
+            raise ValueError('this older save version cannot declare guest patches')
+        core.patches = _patches.declarations(state.get('patches', []))
+        _patches.validate(core)
         passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in state.get("passed", []))
         core.wait = core._make_wait(tuple(tuple(p) for p in state["polls"]), passed, poll=state.get("at_poll", False))
         if state.get('quit_origin') is not None:
@@ -445,10 +454,16 @@ class Core:
             playable = cls.load(origin, goal_dat=goal_dat)
             if playable.wait.kind != 'manager-menu':
                 raise ValueError('a quit origin must be an actual playable manager wait')
+            if playable.patches != core.patches:
+                raise ValueError('the quit origin has a different guest policy')
             core.quit_origin = origin
         return core
 
     # -- playing ---------------------------------------------------------------------------------------------
+    def apply_patch(self, name):
+        """[designed: owner#73, T122] Activate a registered deviation before original kickoff setup."""
+        _patches.apply(self, name)
+
     def press(self, key):
         """Answer the wait with `key`, the code 214B:08DD stores at DS:A976 (the character; an extended key's scan
         code adjusted, plus 0x64: kit screens.py), as 08DD returns it; run to the next wait and return it."""
