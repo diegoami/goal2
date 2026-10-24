@@ -1,0 +1,13 @@
+{
+  "evidence": "F030 at archaeology53d7ef5; original F7 and F10,Y,Y probes at d11d27dca5817c60403ff00bba4dc025d63ae2f4 and5fca4e2ad98e0b6cada7092a824a6629ee4c1311",
+  "method": "Original keys only; no guest memory, register, seed or file edits. Semantic desktop quit-save selects the actual pre-F10 host snapshot.",
+  "unmapped_control": {
+    "name": "g13-332b2152935f2015-file-not-found.sav",
+    "sha256": "332b2152935f201511ae0df602ecbc46722a6bad73540d023d90b927bb0f323d",
+    "source": "T86 original-loader aborted attempt2, unchanged private last-observation.sav",
+    "limitation": "Early collector version was not pinned; this accepted PR403 review R2 limitation is preserved. Actual saved machine proves only the remaining 214B:09C4 unknown read.",
+    "private": "goal2drive:g13-332b2152935f2015-file-not-found.sav; upload and full-hash readback verified"
+  },
+  "retained": "goal2-keep/G13-save-name-preflight-20261024; T121 final validation retained separately",
+  "formats": "version4 adds optional real quit origin; original versions1,2,3 remain supported; no .GL conversion"
+}

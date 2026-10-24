@@ -342,23 +342,19 @@ class Unknown(unittest.TestCase):
     def test_an_unmapped_caller_stops_with_the_site_and_the_text(self):
         from goal2.core import Core, CoreError, UnknownScreen
         from goal2.core.screens import SITES
-        core = Core.start(savestate(TEMPLATE)).core
-        core.press(ESC)
-        self.assertEqual(core.press(F10).kind, "quit-confirm")
-        self.assertEqual(core.press(ord("y")).kind, "save-game-prompt")
-        # [T111] The championship is mapped now. This real save-name caller of the shared editor is not.
-        with self.assertRaises(UnknownScreen) as caught:
-            core.press(ord("y"))
-        e = caught.exception
+        from goal2.tests.test_core_save_t121 import UNKNOWN_NAME, unmapped
+        requires.require(files=(UNKNOWN_NAME,))
+        core, e = unmapped()
         self.assertRegex(e.site, r"^[0-9A-F]{4}:[0-9A-F]{4}$")
-        self.assertEqual(e.site, "214B:0DB9")
+        self.assertEqual(e.site, "214B:09C4")
         self.assertIn(e.site, SITES)                       # mapped for other callers, never guessed here
-        self.assertTrue(e.poll)
+        self.assertFalse(e.poll)
         self.assertEqual(e.text, e.text.rstrip())
         self.assertIn(e.site, str(e))
         self.assertIn(e.text, str(e))
         self.assertTrue(e.text.strip())
-        self.assertEqual(text_kind(e.text), "save-game-name-entry")
+        self.assertEqual(text_kind(e.text), "file-not-found-prompt")
+        self.assertIs(core.stopped, e)
         with self.assertRaises(CoreError):
             core.press(ESC)
 

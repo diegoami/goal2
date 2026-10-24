@@ -160,7 +160,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 
 **Not reached yet**, so not in the table:
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
-  `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
+  `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
   until a screen task maps them: the unobserved penalty/free-kick taker roles3/4, the other players' screen of E949 (another country's, 1771:50F1), E022's other
   message ("There is no player here" E062) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
@@ -612,6 +612,7 @@ driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arro
 [derived: F029, a savestate's memory is the master] `core.save()` is `G2C1`, a JSON header (the registers, the
 load segment, the Memory component's header, the DOS time and the date it was booted with (version 2; a version 1
 save loads with the default time), whether the wait is at a poll and the polled kinds that stop (version 3, T108),
+and an optional real pre-quit playable origin (version 4, T121; versions 1–3 remain readable),
 the seeds `DS:7B62` and `DS:7B64` (F004), the key log since the
 template, the budget, the template's SHA-256, the wait's polls) and the zlib-compressed memory (1 MiB, the HMA
 and the rest of the Memory component). `Core.load` rebuilds the machine and the wait; the same keys then give the
@@ -622,6 +623,33 @@ same waits and the same memory, byte for byte. `core.memory_component()` is the 
 original save-game/name prompt. Conversion between original `.GL` files and core checkpoints is a separate
 [task, T112](tasks/T112.md) ([#341](https://github.com/diegoami/goal2/issues/341)); it must identify supported save
 boundaries and any state the original format cannot represent before claiming round-trip fidelity.
+
+[confirmed: F030 at archaeology53d7ef5; T121 original-key probes] The shared line editor's
+`save-game-name-entry` is qualified by editor caller1771:045C, prompt return0670,
+open/save return1771:08BF and mode0. The origin distinguishes manager F7 (000E:7810)
+from quit-save (1771:093A under000E:781B). Load mode and unrelated callers stay unmapped.
+Both the cursor poll214B:0DB9 and actual read214B:112B use that chain. The original
+catalogue exposes typed characters; the semantic save bridge additionally sends the observed
+original Esc, without adding generic driver editing keys or serving the original .GL writer.
+
+[designed: T121, owner .g2core decision] F7 in the desktop opens the original save decision
+on the Save page. Save sends original Esc back to management, then atomically writes that
+exact resulting core to the selected path; Cancel returns without writing. Existing host
+snapshots (Save button/Ctrl+S) remain available at supported waits. A failed atomic replacement
+preserves the previous destination; after F7's real cancellation, retry saves the same playable
+state. Busy jobs and round decisions prevent opening F7; team and round actions wait until
+the save decision is resolved.
+
+[confirmed: T121 probes] Esc in the terminal quit-save editor exits the original instead of
+returning to play. [designed: T121] Before normal manager F10, Core retains one actual
+playable snapshot. Cancelled quit clears it. Save-and-close writes that real origin and closes
+the host session; Close-without-saving writes nothing. Neither operation rewinds nor executes
+the quitting guest. An imported terminal state without the origin reports that absence rather
+than manufacturing a playable frame. Core.save itself remains an exact-current-wait snapshot,
+including the optional non-nested origin; Core.load validates the origin as a manager wait.
+The genuine file-not-found read214B:09C4 remains a strict unknown-caller regression, with its
+actual stopped machine, private hash and early-collector provenance limitation in
+[evidence metadata](evidence/T121/artifacts.json).
 
 ## Requirements and cost
 

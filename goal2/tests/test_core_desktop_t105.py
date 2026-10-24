@@ -238,13 +238,16 @@ class DriverTests(unittest.TestCase):
         driver.goto("tournament")
         self.assertEqual(driver.press(LEFT).kind, "championship-browse")
         driver.to_menu()
-        self.assertEqual(driver.press(0xA8).kind, "quit-confirm")  # F10, then the original's save question
-        self.assertEqual(driver.press(ord("y")).kind, "save-game-prompt")
-        with self.assertRaises(UnknownScreen) as caught:
-            driver.core.press(ord("y"))                # save-game filename's caller is still unmapped
-        self.assertEqual(caught.exception.site, "214B:0DB9")
-        self.assertTrue(caught.exception.poll)
-        self.assertIn("Please enter name of saved game", caught.exception.text)
+        from goal2.tests.test_core_save_t121 import UNKNOWN_NAME, unmapped
+        requires.require(files=(UNKNOWN_NAME,))
+        stopped, error = unmapped()
+        self.assertEqual(error.site, "214B:09C4")
+        self.assertFalse(error.poll)
+        self.assertIn("file not found", error.text)
+        self.assertIs(stopped.stopped, error)
+        with self.assertRaises(DriverError):
+            from goal2.core.driver import Driver
+            Driver(stopped).press(27)  # no wait after the unknown caller; no guessed continuation
 
     def test_the_same_calls_give_the_same_keys_and_memory(self):
         runs = []
