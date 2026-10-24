@@ -23,7 +23,7 @@ def loaded(name=INPUT, sha=SHA):
     return Driver(Core.load(raw, goal_dat=requires.CACHE / 'GOAL.DAT'))
 
 
-@requires.need(**NEEDS)
+@requires.need(**NEEDS,archaeology=True)
 class Pause(unittest.TestCase):
     def test_original_space_stops_at_the_exact_caller_with_the_current_fixture(self):
         from goal2.core import views
@@ -38,6 +38,8 @@ class Pause(unittest.TestCase):
         self.assertEqual((wait.view['first'],wait.view['last']),(706,706))
         self.assertEqual(wait.view['message'],'PAUSE')
         self.assertIn('PAUSE  PRESS ANY KEY',wait.text)
+        from goal2.tests.test_core_screens_t103 import text_kind
+        self.assertEqual(text_kind(wait.text),'round-paused')
         rows = views.round_results(wait.state,wait.view['first'],wait.view['last'])['rows']
         self.assertEqual(results_text(wait.text), [(r['first_name'],*r['score'],r['second_name'],r['kind_name']) for r in rows])
         self.assertEqual(len(rows),1)
@@ -99,6 +101,27 @@ class Desktop(unittest.TestCase):
         load_fonts()
 
     @requires.need(files=(CAPTAIN_INPUT['name'],))
+    def test_new_round_results_are_not_hidden_by_a_previous_round_page_cursor(self):
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        d = loaded(CAPTAIN_INPUT['name'],CAPTAIN_INPUT['sha256'])
+        d.core.unqueue('round-playing')
+        with tempfile.TemporaryDirectory() as folder:
+            model = CoreModel(d.core,requires.CACHE/'GOAL.DAT',Path(folder)/'game.g2core')
+            w = CoreWindow(model);w.show();self.app.processEvents()
+            try:
+                r = w.core_round;r.first_page = 999
+                r.start();self.assertEqual(w.finish_core()[0],'done')
+                self.assertEqual(model.round_state()['stop'],'captain')
+                self.assertTrue(model.driver.pages)
+                self.assertEqual(r.views.currentIndex(),2)
+                self.assertEqual(r.shown,model.driver.pages[0])
+                self.assertEqual(r.queue,model.driver.pages[1:])
+                while r.queue:r.next_page()
+                r.next_page();self.assertEqual(r.views.currentIndex(),0)
+            finally:w.close();self.app.processEvents()
+
+    @requires.need(files=(CAPTAIN_INPUT['name'],))
     def test_continue_keeps_the_results_before_the_later_captain(self):
         from goal2.desktop.core_model import CoreModel
         from goal2.desktop.core_window import CoreWindow
@@ -108,7 +131,7 @@ class Desktop(unittest.TestCase):
             w = CoreWindow(model);w.show();self.app.processEvents()
             try:
                 r = w.core_round
-                r.first_page = 999  # a previous round's pages must not hide this round's pages
+                r.first_page = 999
                 r.start();self.assertEqual(w.finish_core()[0],'done')
                 self.assertEqual(model.core.wait.kind,'round-paused')
                 self.assertEqual(r.first_page,0)
