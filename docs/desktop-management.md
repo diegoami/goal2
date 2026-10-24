@@ -136,6 +136,14 @@ The current fixture is included, because the original has not incremented its in
 for the round, and controls/save wait during the background continuation. This adds pause recovery, with no new
 live round-control UI.
 
+[designed: T118, #308's G13f; confirmed: F015/F030 at archaeology 53d7ef5, E031 checkpoint3874]
+**Shootout decisions.** Resuming the original announcement shows its message and match context.
+Choose shootout order opens the XI beside the selected player's complete card. Select an available,
+unchosen player with Enter; numbered names retain the order and Esc undoes the last pick. Every available
+XI player is required. Saving a partial order and reopening retains the actual original decision.
+Finishing the order opens the pitch for the original kicks, then its full-time summary-save question.
+Team edits remain locked for the round, and decision controls wait during a background action.
+
 [designed: T110, #308's G13a] **Bulletins keep all three papers.** The new-career and round pages share the
 three-column view: each paper has its masthead and all its story lines, as literal text, with no scrolling or
 eighteen-line truncation. Next/Enter keeps the page sequence. The round's type fits alongside the sidebar; the

@@ -93,6 +93,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | kind | site | record | quoted text |
 | --- | --- | --- | --- |
 | `round-paused` | `214B:098A` (box 214B:04F8, 054E from 000E:6BD5) | T115 genuine queued-Space checkpoint, fixture 706 | "PAUSE" "PRESS ANY KEY" |
+| `shootout-announcement` | `214B:098A` (054E from 0791:A137) | T118, unchanged E031 g1 checkpoint3874 | "penalty shoot out" "PRESS ANY KEY" |
+| `shootout-order` | `214B:157C` (9D67 from A183) | T118, original Enter after E031 checkpoint3874 | "to select the order" "Hit Esc to undo" |
 | `championship-bracket` | `1771:9567` (9509 from 958D, continental mode 0) | T111's real E006 continuation, after fixture 1345 | "TOP SCORERS" "winner" "hit any key" |
 | `championship-browse` | `1771:9567` (the same, mode 1) | T111's private continental checkpoint, manager menu's tournament | "winner" "Use ←→ to select display" "Esc-exit" |
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
@@ -340,6 +342,28 @@ and keeps the round's team-edit/busy guards. Saving here and continuing a loaded
 original keys and memory. This slice adds recovery of the pause; it adds no live round-control UI.
 The genuine queued-Space input and its hash are recorded in [the private-input manifest](evidence/T115/artifacts.json).
 
+## Original shootout decisions (T118, #308's G13f)
+
+[confirmed: F015/F030 at archaeology 53d7ef5; T84/#392 original E031 checkpoint3874]
+The message read `214B:098A` is `shootout-announcement` only through `214B:054E` / `0791:A137`.
+Original Enter reaches `shootout-order` at `214B:157C`, through `0791:9D67` and near caller A183.
+The passed A10A frame owns side byte -1F and the Pascal order at -1A+12*side; the 9B93 frame owns
+highlight -6 and required count -4. Its order contains global pitch slots. All available XI players
+must be ordered, including the keeper; completion is not five picks. Enter appends and the original
+pushes back Down itself; Esc undoes. There is no timeout/default for this blocking order reader.
+Availability is the original 1771:3216 predicate (positive signed energy, status elements8/6/3 clear),
+which does not exclude next-match suspension element5.
+
+[designed: T118] `Driver.shootout_start()`, `shootout_pick(player)` and `shootout_undo()` send only
+original keys. The desktop shows the message, complete selected-player card, ranked picks and Undo,
+retaining round/busy guards. A partial order saves and resumes exactly. Finishing the order watches
+the original kicks through the full-time summary/save question; it does not restart A10A at its entry.
+The unchanged announcement input and deliberate guard re-vendor are pinned in
+[evidence/T118/artifacts.json](evidence/T118/artifacts.json) and
+[the upstream handover](handover-2026-10-24-mutable-build-guard.md). Extra-time menus and taker prompts
+before that input remain separate G13 slices. Tests use an independent direct-key replay and the
+original's printed full-time score; a different order is not claimed to reproduce E031's recorded score.
+
 ## Bulletin presentation (T110, #308's G13a)
 
 [designed: T110; confirmed: F032/E038, named/seg_000E_01.c 038E, 05F6, 062F, 070B, 075F] Launch and the round
@@ -399,7 +423,7 @@ knockout play, and "winner"/"second"/"third"/"hit any key" after the final.
 Tests compare all eight completed groups' table fields and fixtures, the bracket and places against the original,
 and replay the whole transition from a core save to identical memory. Private input names, hashes and provenance
 are in [the manifest](evidence/T113/artifacts.json). The original bytes stay on owner Drive. The remaining
-set-piece/extra-time/shootout and other decision prompts still require their kept evidence (archaeology #390).
+set-piece/extra-time and other decision prompts still require their kept evidence (archaeology #400); the supplied shootout continuation is covered by T118.
 
 ## Lineup refusal and position repair (T114, #308's G13d)
 

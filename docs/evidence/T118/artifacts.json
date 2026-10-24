@@ -1,0 +1,8 @@
+{
+  "evidence":"[confirmed: T84/#392, E031 g1 checkpoint3874 at log commit c601ecc7219b165de09d955e45a6eece5f4ab2c0]",
+  "storage":"Existing private Drive delivery through tools/artifacts.py; no original bytes in Git",
+  "provenance":"Unchanged original shootout announcement, not A10A entry reconstruction. Original Enter reaches the managed order; subsequent checkpoints use original keys only.",
+  "guard_source":"a1067ba0df7ba9c7644f36e648d897b76c7697f8",
+  "guard_sha256":"e3b7c45b7442115361a6bfbded6f954749eea4e31e4f45714684bc2b071a6b41",
+  "artifacts":[{"name":"3ea57029282b849f-g1-03874-shootout-start.sav","sha256":"3ea57029282b849fd3114a995178f35e48c420c768f0702b9d3b7d48600dc1fc"}]
+}

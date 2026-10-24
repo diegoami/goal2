@@ -34,10 +34,11 @@ DISABLED_TEXT = {}
 ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 'rename', 'set_tactic')
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
-                 'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue')
+                 'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue',
+                 'shootout_start', 'shootout_pick', 'shootout_undo')
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
-               'match-live', 'match-summary-save-prompt', 'round-paused')
+               'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order')
 
 
 class CoreModel:
@@ -177,7 +178,11 @@ class CoreModel:
         wait = self.core.wait
         out = {'at': wait.kind, 'stop': 'menu', 'pages': list(self.driver.pages), 'refused': self.refused,
                'captain': None, 'bench': None, 'board': None, 'notice': None}
-        if wait.kind == 'round-paused':
+        if wait.kind == 'shootout-announcement':
+            out.update(stop='shootout-announcement',message=wait.view['message'],board=views.board(self.state))
+        elif wait.kind == 'shootout-order':
+            out.update(stop='shootout-order',order=views.shootout_order(self.state,wait.view))
+        elif wait.kind == 'round-paused':
             out.update(stop='round-paused', message=wait.view['message'],
                        results=views.round_results(self.state, wait.view['first'], wait.view['last']))
         elif wait.kind == 'match-menu' and self.driver.stoppage():
