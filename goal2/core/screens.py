@@ -20,6 +20,7 @@ from dataclasses import dataclass
 # [confirmed: seg_214B_02.asm 08DD-0941] the character, or for an extended key (AL 0) its scan code adjusted (Left
 # 0x4B - 1, Right 0x4D - 2, End..PgDn 0x4F..0x51 - 3) plus 0x64.
 RETURN, ESCAPE, SPACE = 0x0D, 0x1B, 0x20
+TAKER_SELECT, TAKER_PITCH = 'set-piece-select', 'set-piece-pitch'
 F1, F2, F3, F4, F5, F7, F9, F10 = 0x9F, 0xA0, 0xA1, 0xA2, 0xA3, 0xA5, 0xA7, 0xA8      # scan 0x3B.. + 0x64
 HOME, UP, PGUP, LEFT, RIGHT = 0xAB, 0xAC, 0xAD, 0xAE, 0xAF                          # 0x47, 0x48, 0x49, 0x4B-1, 0x4D-2
 END, DOWN, PGDN, INSERT = 0xB0, 0xB1, 0xB2, 0xB6                                    # 0x4F-3, 0x50-3, 0x51-3, 0x52
@@ -122,6 +123,12 @@ KINDS = {k.name: k for k in (
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
+    Kind(TAKER_SELECT, keys(("C-computer select", "c C"), ("↑↓", "Up Down"), ("◄┘-select", "Return"),
+                           ("keep", "Escape"), ("spacebar-pitch", "space"),
+                           ("read without moving", "Left Right")), polled=True, designed=True,
+         evidence="[derived: F030; confirmed: T88/T89 at archaeology9aa9f27c/922fd8d8] observed CC7B roles2/5"),
+    Kind(TAKER_PITCH, keys(("hit any key", "(any)")), designed=True,
+         evidence="[confirmed: T88/T89 original Space/Return] CC7B pitch read returning CF3A"),
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
     Kind("match-summary-save-prompt", _YES_NO, polled=True, evidence=_CAT),
@@ -595,8 +602,31 @@ CAPTAIN = 0x9978
 
 def _captain(f, bp):
     # choose_captain_or_taker 0791:CC7B(role [bp+4], side): role 1 the captain (CF0B; routines.tsv); the takers
-    # (roles 2..5) have no entry yet.
-    return "captain-select" if f.byte(bp, 4) == 1 else None
+    # T120 adds the observed roles2/5 below; roles3/4 still have no entry.
+    return "captain-select" if f.byte(bp, 4) == 1 else _taker(f, bp)
+
+
+def _taker(f, bp):
+    # [confirmed: T88/T89 live frames; F030 at53d7ef5] Noncaptain CC7B from choose_player's6D74.
+    # Only roles2/5 have genuine inputs; roles3/4 remain explicitly unobserved on archaeology#400.
+    if f.byte(bp, 4) not in (2, 5):
+        return None
+    if (f.near_caller(bp) != 0x6D74 or f.byte(bp, 6) not in (0, 1)
+            or not 1 <= f.word(bp, -5) <= 11):
+        return None
+    return TAKER_SELECT
+
+
+def _taker_view(f, bp):
+    # [confirmed: CC7B CD09/CF85; T88/T89] Byte arguments have scratch high bytes. The stored
+    # role word is9976+2*role+10*side; it is distinct from the highlighted slot and captain.
+    role, side = f.byte(bp, 4), f.byte(bp, 6)
+    return dict(role=role, side=side, country=f.ds_word(TEAMS + 2*side), slot=f.word(bp, -5),
+                stored=f.ds_word(0x9976 + 2*role + 10*side))
+
+
+def _choice_view(f, bp):
+    return _taker_view(f, bp) if _taker(f, bp) else _captain_view(f, bp)
 
 
 def _wait_or_key(f):
@@ -746,14 +776,16 @@ SITES = {s.site: s for s in (
          # local [bp-2] is the slot. The last poll is a complete pose, before the clock at 970C.
          lambda f: {"slot": f.word(f.up(f.bp), -2) if f.near_caller(f.bp) == 0x96EA else None}),
     Site("0791:CC54", True, "0791:CC2E wait_or_key", "T100 (F030); " + _ROUTES, _wait_or_key,
-         lambda f: _captain_view(f, f.up(f.bp)) if _wait_or_key(f) == "captain-select"
+         lambda f: _choice_view(f, f.up(f.bp)) if _wait_or_key(f) in ("captain-select", TAKER_SELECT)
          else _notice_view(f, f.up(f.bp) if f.near_caller(f.bp) == 0x8042 else None)
          if _wait_or_key(f) == "substitution-notice" else {}),
     Site("0791:8047", True, "0791:7FCF timed_notice, the managed side's (8042; reads at 804B)",
          "T108; E006-r0001's round 10 (an injury in the quick result)", lambda f: "substitution-notice",
          lambda f: _notice_view(f, f.bp)),
     Site("0791:CEDE", True, "0791:CC7B choose_captain_or_taker (CED9; reads at CEE8)", _ROUTES,
-         lambda f: _captain(f, f.bp), lambda f: _captain_view(f, f.bp)),
+         lambda f: _captain(f, f.bp), lambda f: _choice_view(f, f.bp)),
+    Site("0791:CF3A", False, "CC7B original pitch-view read", "T88/T89 at9aa9f27c/922fd8d8",
+         lambda f: TAKER_PITCH if _taker(f, f.bp) else None, lambda f: _taker_view(f, f.bp)),
     Site("0791:0BE1", True, "0791:0B7C ask_do_you_want (0BDC; reads at 0BE7)", _ROUTES,
          lambda f: _ask(f.near_caller(f.bp))),
     Site("0791:C5C8", True, "0791:C50C show_computer_substitution_notice (C5C3; reads at C5CC)", _ROUTES,

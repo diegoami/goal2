@@ -666,11 +666,14 @@ class CoreRound:
         self.watch_suspended = False
         self.pending_inputs = []
         self.pending_stop = None
+        from goal2.desktop.core_takers import TakerPages
+        self.takers=TakerPages(self)
         self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(2);self.viewer_timer.timeout.connect(self.poll_viewer)
         self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
                         self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch,
                         self.bench.position_next,self.bench.position_club,self.bench.roster]
         self.buttons += [self.shootout_pick,self.shootout_undo,self.shootout_roster]
+        self.buttons += self.takers.controls
 
     # -- the steps --------------------------------------------------------------------------------------------
     def show(self, index):
@@ -678,13 +681,14 @@ class CoreRound:
         if w.page_stack.currentIndex() != 3:w.navigate(3)
         # [designed: T108] the fixture list's routes wait while the round is shown; the bench needs the page's height
         for button in (w.core_fixture_route, w.core_tournament_route):button.setVisible(False)
-        self.pitch_note.setVisible(index not in (1,6))
+        self.pitch_note.setVisible(index not in (1,6,self.takers.choice_index,self.takers.preview_index))
         # [designed: T114 review R1] QStackedWidget includes hidden children's hints: only the player page
         # needs this row, so it must not enlarge the captain/progress pages before or after an offer.
         self.bench.position_row.setVisible(index==1 and self.bench.positions_offered())
         w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index);self.holder.updateGeometry()
         focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench,
-                 4: self.resume_watch, 5: self.export_summary, 6: self.shootout_roster}[index]
+                 4: self.resume_watch, 5: self.export_summary, 6: self.shootout_roster,
+                 self.takers.choice_index:self.takers.roster,self.takers.preview_index:self.takers.back}[index]
         focus.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
     def start(self):
@@ -741,6 +745,9 @@ class CoreRound:
             self.first_page = len(state['pages']);self.next_page()
         elif stop == 'shootout-order':
             self.show_shootout_order(state)
+        elif stop in ('taker','taker-pitch'):
+            self.first_page = len(state['pages'])
+            self.takers.offer(state)
         elif stop == 'round-paused':
             self.queue = list(state['pages'][self.first_page:]);self.after = 'round-paused'
             self.first_page = len(state['pages']);self.next_page()
@@ -868,6 +875,9 @@ class CoreRound:
         self.live_note.setText(message + '. The original waits here; resume watching or save the core.')
         self.resume_watch.setEnabled(True)
         self.resume_watch.show()
+        if self.state and self.state['stop']=='taker-pitch':
+            self.takers.preview_note.setText(message+'. The original still waits; return to choices or show the pitch again.')
+            self.takers.refresh_controls()
         if self.pending_stop is not None:
             pending, self.pending_stop = self.pending_stop, None
             self.finished(*pending)
@@ -889,6 +899,12 @@ class CoreRound:
                 pending, self.pending_stop = self.pending_stop, None
                 self.finished(*pending)
                 return
+            self.takers.refresh_controls()
+            if (self.state and self.state['stop'] in ('taker','taker-pitch') and self.viewer.drained
+                    and self.pending_inputs and not self.window.core_jobs.busy):
+                if self.window.run_core('taker_key',self.pending_inputs[0]):
+                    self.pending_inputs.pop(0)
+                return
             if (self.state and self.state['stop'] == 'live' and self.viewer.drained
                     and not self.window.core_jobs.busy):
                 key = self.pending_inputs[0] if self.pending_inputs else None
@@ -906,6 +922,24 @@ class CoreRound:
         except (OSError, ValueError) as exc:
             self.window.status.setText(str(exc));return
         self.window.run_core('summary_done')
+
+    def show_taker_pitch(self,state):
+        """[designed:T120] A frozen existing SDL renderer; no live_step while CF3A reads its dismissal key."""
+        from goal2.desktop.core_viewer import CoreViewer
+        if self.window.core_jobs.busy:
+            return
+        try:
+            if self.viewer is None:
+                self.viewer = CoreViewer(state['identity'])
+            if self.viewer.display.frame_sequence >= 0 and not self.viewer.drained:
+                self.takers.preview_note.setText('The pitch is being displayed…')
+                return
+            self.viewer.pose(state['pitch'],state.get('commentary',[]),state['speed'])
+            self.viewer_timer.start()  # the manager's blocking read freezes the core, not an invented match tick
+            self.takers.preview_note.setText('The original waits. Enter in the pitch window or Return here goes back to the selector.')
+        except (OSError,ValueError) as exc:
+            self.stop_viewer(str(exc))
+        self.takers.refresh_controls()
 
     def next_page(self):
         if self.window.core_jobs.busy:return
@@ -950,6 +984,9 @@ class CoreRound:
             self.after = None;core_fixtures_view(self.window, 0);self.window.navigate(0)
 
     def escape(self):
+        if self.views.currentIndex() in (self.takers.choice_index,self.takers.preview_index):
+            self.takers.key(27)
+            return True
         if self.views.currentIndex()==6:
             if self.shootout_undo.isEnabled():self.shootout_undo.click()
             return True

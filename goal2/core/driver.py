@@ -104,6 +104,7 @@ class Driver:
         kind = _screens.KINDS.get(wait.kind)
         if kind is None or kind.polled or not kind.accepts(key):
             raise RefusedKey(wait.kind, key)
+        self.core.stops.add(_screens.TAKER_SELECT)  # [designed: T120] never silently time out a manager's taker
         self.log.append((wait.kind, key))
         new = self.core.press(key)
         # [designed: T106] keys the original read from the queue on the way (a polled screen's), in its order
@@ -439,9 +440,10 @@ class Driver:
     PASSING = ("round-results", "fixture-result", "tournament-table", "championship-bracket", "bulletin", "match-board", "match-summary")
     ROUND_KINDS = PASSING + MATCH_MENU_KINDS + ("match-watch-prompt", "eleven-refused", "substitution-notice",
                                                 "captain-select", "match-live", "match-summary-save-prompt", "round-paused",
-                                                "shootout-announcement", "shootout-order", MENU)
+                                                "shootout-announcement", "shootout-order",
+                                                _screens.TAKER_SELECT, _screens.TAKER_PITCH, MENU)
     # the stops of a match the steps return at: the half-time menu, the menu of a stoppage, the managed side's notice
-    STOPS = INTERVAL_KINDS + ("substitution-notice",)
+    STOPS = INTERVAL_KINDS + ("substitution-notice", _screens.TAKER_SELECT, _screens.TAKER_PITCH)
 
     def _page(self, wait):
         from goal2.core import views
@@ -499,7 +501,8 @@ class Driver:
                 continue
             if self.watching and wait.kind in ("match-live", "match-summary-save-prompt"):
                 return wait
-            if wait.kind in until or wait.kind in ("round-paused", "shootout-announcement", "shootout-order") or self.stoppage():
+            if wait.kind in until or wait.kind in ("round-paused", "shootout-announcement", "shootout-order",
+                                                  _screens.TAKER_SELECT, _screens.TAKER_PITCH) or self.stoppage():
                 return wait
             if wait.kind == "match-watch-prompt":
                 # [designed: T109] Watch is the own match's presentation; other-country watch flags are G13.
@@ -512,6 +515,7 @@ class Driver:
         raise DriverError("the round did not reach " + " or ".join(until))
 
     def _release(self):
+        self.core.stops.add(_screens.TAKER_SELECT)
         wait = self.core.release()
         if self.trail is not None:
             self.trail.append(wait)
@@ -646,6 +650,7 @@ class Driver:
         if self.wait.kind != "match-live" or not self.wait.poll:
             raise UnexpectedScreen(("match-live",), self.wait)
         if key is None:
+            self.core.stops.add(_screens.TAKER_SELECT)
             wait = self.core.advance()
             if self.trail is not None:
                 self.trail.append(wait)
@@ -685,12 +690,48 @@ class Driver:
         kind = _screens.KINDS.get(wait.kind)
         if not wait.poll or kind is None or not kind.accepts(key):
             raise RefusedKey(wait.kind, key)
+        self.core.stops.add(_screens.TAKER_SELECT)
         self.log.append((wait.kind, key))
         new = self.core.press(key)
         self.log.extend((p.kind, k) for p in new.passed for k in p.keys)
         if self.trail is not None:
             self.trail.append(new)
         return new
+
+    def taker_key(self, key):
+        """[confirmed: T88/T89; CC7B at53d7ef5] Original choice key, or None for its remaining timeout.
+
+            Space reaches a real blocking pitch read; its Return reaches the same selector. No host player/budget
+            rule chooses a taker. A script must explicitly send C/Enter/Esc or let the original timer pass.
+            """
+        wait = self.wait
+        if wait.kind not in (_screens.TAKER_SELECT, _screens.TAKER_PITCH):
+            raise UnexpectedScreen((_screens.TAKER_SELECT, _screens.TAKER_PITCH), wait)
+        if key is None and (not wait.poll):
+            raise DriverError('The pitch view is a blocking read, not a timeout')
+        self._stop('substitution-notice', _screens.TAKER_SELECT)
+        if key is None:
+            self._release()
+        elif wait.poll:
+            self._press_poll(key)
+        else:
+            self.press(key, expect=self.ROUND_KINDS)
+        return self._pass(self.STOPS + ('match-menu-fulltime',))
+
+    def taker_highlight(self, player):
+        """[derived: T120] A mouse target is reached through the original Up/Down keys, never a cursor write."""
+        from goal2.core import views
+        if self.wait.kind != _screens.TAKER_SELECT:
+            raise UnexpectedScreen((_screens.TAKER_SELECT,), self.wait)
+        players = [r['player'] for r in views.taker_choice(self.wait.state, self.wait.view)['players']]
+        if player not in players:
+            raise DriverError('The taker must be in this original eleven')
+        target = players.index(player) + 1
+        for _ in range(11):
+            if self.wait.view['slot'] == target:
+                return self.wait
+            self.taker_key(DOWN if self.wait.view['slot'] < target else UP)
+        raise DriverError('The original taker highlight did not reach its target')
 
     def _open_bench(self):
         self._menu_item("players")
@@ -839,13 +880,15 @@ class Driver:
         return self._team()
 
     def play_round(self, watch=False, captain=None, substitutions=(), fix_eleven=None, on_notice=None,
-                   on_stoppage=None):
+                   on_stoppage=None, on_taker=None):
         """The whole round from the manager menu to the next: round_start, kick_off (the captain), at half time each
         (off, on) of `substitutions` (substitute), play_on. `fix_eleven(driver, message)` answers an eleven the
         original refuses (e.g. by prematch_swap before the kick-off, substitute at half time); without it a refusal
         raises DriverError with the original's message. `on_notice(driver, wait)` answers the managed side's notice:
         True for the bench (then `on_stoppage(driver)` at the stoppage's menu), False or None to let it pass, as a
-        manager who presses nothing. Returns {"pages", "substitutions", "refused", "notices"}."""
+        manager who presses nothing. T120's `on_taker(driver, wait)` returns an original key (or None for
+        its remaining timer); without that explicit answer the script stops at the decision with DriverError.
+        Returns {"pages", "substitutions", "refused", "notices"}."""
         wait = self.round_start(watch)
         out = {"substitutions": [], "refused": [], "notices": 0}
         if wait.kind == MENU:
@@ -864,10 +907,19 @@ class Driver:
         half_time_done = False
         stops = 0
         live_polls = 0
+        taker_keys = 0
         while True:
             wait = self.core.wait
             if wait.kind == MENU:
                 break
+            if wait.kind in (_screens.TAKER_SELECT,_screens.TAKER_PITCH):
+                if on_taker is None:
+                    raise DriverError('The original awaits a taker decision; supply on_taker')
+                taker_keys += 1
+                if taker_keys > 10000:
+                    raise DriverError('The taker callback exceeded 10000 keys')
+                self.taker_key(on_taker(self, wait))
+                continue
             if wait.kind == 'match-live':
                 live_polls += 1
                 if live_polls > 400000:

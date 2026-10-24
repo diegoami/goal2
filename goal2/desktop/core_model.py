@@ -35,11 +35,11 @@ ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
                  'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue',
-                 'shootout_start', 'shootout_pick', 'shootout_undo')
+                 'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight')
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
                'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order',
-               'match-menu-extra-time', 'match-menu-extra-halftime')
+               'match-menu-extra-time', 'match-menu-extra-halftime', 'set-piece-select', 'set-piece-pitch')
 
 
 class CoreModel:
@@ -183,6 +183,13 @@ class CoreModel:
             out.update(stop='shootout-announcement',message=wait.view['message'],board=views.board(self.state))
         elif wait.kind == 'shootout-order':
             out.update(stop='shootout-order',order=views.shootout_order(self.state,wait.view))
+        elif wait.kind in ('set-piece-select','set-piece-pitch'):
+            preview = wait.kind == 'set-piece-pitch'
+            out.update(stop='taker-pitch' if preview else 'taker', taker=views.taker_choice(self.state,wait.view))
+            if preview:
+                out.update(pitch=views.pitch(self.state,self.pitch_sequence,0),commentary=[],
+                           speed=views.match_speed(self.state),identity=views.pitch_identity(self.state))
+                self.pitch_sequence += 1
         elif wait.kind == 'round-paused':
             out.update(stop='round-paused', message=wait.view['message'],
                        results=views.round_results(self.state, wait.view['first'], wait.view['last']))
