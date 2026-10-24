@@ -358,6 +358,8 @@ which does not exclude next-match suspension element5.
 original keys. The desktop shows the message, complete selected-player card, ranked picks and Undo,
 retaining round/busy guards. A partial order saves and resumes exactly. Finishing the order watches
 the original kicks through the full-time summary/save question; it does not restart A10A at its entry.
+The legacy evidence verifier and staged reference also carry the explicit guard-file source override;
+all other behavioural/reference files retain the accepted kit pin. Corruption and file-set checks stay strict.
 The unchanged announcement input and deliberate guard re-vendor are pinned in
 [evidence/T118/artifacts.json](evidence/T118/artifacts.json) and
 [the upstream handover](handover-2026-10-24-mutable-build-guard.md). Extra-time menus and taker prompts

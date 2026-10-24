@@ -122,6 +122,15 @@ class Desktop(unittest.TestCase):
         from goal2.desktop.style import load_fonts
         cls.app=QApplication.instance() or QApplication([]);load_fonts()
 
+    def check_bounds(self,w):
+        from goal2.desktop.fixed_page import problems
+        for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
+            w.resize(width,height);self.app.processEvents();self.app.processEvents()
+            self.assertEqual(problems(w),[],(width,height,problems(w)))
+            page=w.pages[3];need=page.minimumSizeHint()
+            self.assertLessEqual(need.width(),.9*page.width())
+            self.assertLessEqual(need.height(),.9*page.height())
+
     def test_real_announcement_partial_save_cards_guards_and_four_size_bounds(self):
         from PySide6.QtCore import Qt
         from PySide6.QtTest import QTest
@@ -135,6 +144,7 @@ class Desktop(unittest.TestCase):
             try:
                 r=w.core_round;self.assertEqual(r.page_count.text(),'penalty shoot out')
                 self.assertTrue(model.in_round);self.assertFalse(w.core_routes['play next game'].isEnabled())
+                self.check_bounds(w)
                 r.page_next.click();self.assertEqual(w.finish_core()[0],'done')
                 self.assertEqual(r.views.currentIndex(),6);self.assertFalse(r.shootout_undo.isEnabled())
                 before=model.memory_sha256();r.shootout_roster.set_current(4);self.app.processEvents()
@@ -154,12 +164,7 @@ class Desktop(unittest.TestCase):
                 self.assertTrue(model.in_round);self.assertTrue(r.shootout_undo.isEnabled())
                 if os.environ.get('QT_SCALE_FACTOR'):
                     self.assertEqual(w.devicePixelRatioF(),float(os.environ['QT_SCALE_FACTOR']))
-                for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
-                    w.resize(width,height);self.app.processEvents();self.app.processEvents()
-                    self.assertEqual(problems(w),[],(width,height,problems(w)))
-                    page=w.pages[3];need=page.minimumSizeHint()
-                    self.assertLessEqual(need.width(),.9*page.width())
-                    self.assertLessEqual(need.height(),.9*page.height())
+                self.check_bounds(w)
                 before=model.memory_sha256()
                 with self.assertRaises(ValueError):model.act('swap',0,1)
                 self.assertEqual(model.memory_sha256(),before)

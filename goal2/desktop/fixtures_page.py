@@ -932,7 +932,8 @@ class CoreRound:
             self.shown = (kind, view);self.show(2);return
         if self.after == 'shootout-announcement':
             self.page_board.title='PENALTY SHOOTOUT'
-            self.page_board.set_lines(_board_lines(self.state['board'],'AFTER EXTRA TIME'))
+            # [designed: T118] Report the current guest score without assuming its preceding phase.
+            self.page_board.set_lines(_board_lines(self.state['board'],'MATCH SCORE'))
             self.page_content.setCurrentIndex(0);self.page_count.setText(self.state['message'])
             self.page_next.setText('Choose shootout order (Enter)')
             self.after='shootout-begin';self.show(2)

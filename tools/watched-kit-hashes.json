@@ -4,12 +4,15 @@
     "goal2/engine/original_match/README.md": "dbd20ff6d4fe1f1a38a5bb43abc59d8b4ad42e35cffb5cc1735d4c57b107daf1",
     "goal2/engine/original_match/__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
     "goal2/engine/original_match/assets.py": "a3dd00e87b213662c4188eecb9a4e2e88265ad6a8f2f6b84a70c3950895d43b7",
-    "goal2/engine/original_match/build.py": "3368801a8ef847cbb1b37f625bcb716fcd6b2aa1e08d94d9db8d3107f746e9e4",
+    "goal2/engine/original_match/build.py": "e3b7c45b7442115361a6bfbded6f954749eea4e31e4f45714684bc2b071a6b41",
     "goal2/engine/original_match/check.py": "ab6f41283784a5b78dba23d05b8d39b65343a22a660bb41f3b35b915fb64f3ae",
     "goal2/engine/original_match/example.py": "d17a104f8c08635fb8a3ff61f6113aa56a902b88aef5fcceaf32ab27790bbacf",
     "goal2/engine/original_match/image.py": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
     "goal2/engine/original_match/machine.py": "3951626402e0f5de690ca5400ad2c6d2fa7d7e26c4fb2143bf7abacac5631fa8",
     "goal2/engine/original_match/match.py": "635f2dc9f54515452bd3c262c61899b1e36829186266af4d88db54c9b659bb45",
     "goal2/engine/original_match/screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304"
+  },
+  "source_overrides": {
+    "runtime/original_match/build.py": "a1067ba0df7ba9c7644f36e648d897b76c7697f8"
   }
 }
