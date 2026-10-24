@@ -98,6 +98,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `match-walkoff` | `0791:78F9` (7881 poll; flush read7902) | #363, genuine G4C Koeman injury | "R-result" "spacebar-commentary" |
 | `match-menu-extra-time` | `214B:157C` (EE9F from9B42) | T119 original G4C continuation, counter89 | "EXTRA TIME" "location:" |
 | `match-menu-extra-halftime` | `214B:157C` (EE9F from9B70) | T119 original G4C continuation, counter105 | "EXTRA TIME" "HALF TIME" |
+| `set-piece-select` | `0791:CC54/CEDE`, qualified CC7B roles2/5 | T120, T88 corner/T89 goal kick native inputs | "CORNER" / "GOAL KICK" "spacebar-pitch" "C-computer select" |
+| `set-piece-pitch` | `0791:CF3A`, same live CC7B frame | T120, actual original Space/read/Return inputs for both roles | "hit any key" |
 | `championship-bracket` | `1771:9567` (9509 from 958D, continental mode 0) | T111's real E006 continuation, after fixture 1345 | "TOP SCORERS" "winner" "hit any key" |
 | `championship-browse` | `1771:9567` (the same, mode 1) | T111's private continental checkpoint, manager menu's tournament | "winner" "Use ←→ to select display" "Esc-exit" |
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
@@ -159,7 +161,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 **Not reached yet**, so not in the table:
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
   `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
-  until a screen task maps them: the taker prompts, the other players' screen of E949 (another country's, 1771:50F1), E022's other
+  until a screen task maps them: the unobserved penalty/free-kick taker roles3/4, the other players' screen of E949 (another country's, 1771:50F1), E022's other
   message ("There is no player here" E062) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
@@ -375,7 +377,7 @@ The legacy evidence verifier and staged reference also carry the explicit guard-
 all other behavioural/reference files retain the accepted kit pin. Corruption and file-set checks stay strict.
 The unchanged announcement input and deliberate guard re-vendor are pinned in
 [evidence/T118/artifacts.json](evidence/T118/artifacts.json) and
-[the upstream handover](handover-2026-10-24-mutable-build-guard.md). T119 covers the earlier extra-time menus; taker prompts remain a separate G13 slice. Tests use an independent direct-key replay and the
+[the upstream handover](handover-2026-10-24-mutable-build-guard.md). T119 covers the earlier extra-time menus; T120 covers observed corner/goal-kick decisions, while roles3/4 remain separate evidence gaps. Tests use an independent direct-key replay and the
 original's printed full-time score; a different order is not claimed to reproduce E031's recorded score.
 
 ## Extra-time intervals (T119, #308's G13g)
@@ -396,6 +398,36 @@ choose an order silently. The private inputs and explicit host-only collection a
 in [evidence/T119/artifacts.json](evidence/T119/artifacts.json) and
 [evidence/T119/producer.json](evidence/T119/producer.json), based on
 [the original-loader handover](handover-2026-10-24-original-g4c-input.md).
+
+## Corner and goal-kick decisions (T120, #308's G13h)
+
+[confirmed: T88/T89, archaeology9aa9f27c/922fd8d8; F030 remains proposed] The observed CC7B role2 corner and
+role5 goal-kick selectors stop at the qualified CC54/CEDE polls. Role and side are bytes; their argument words
+contain scratch high bytes. The highlighted slot is `[bp-5]`, and the stored role word is
+`DS:9976 + 2*role + 10*side`, separate from the captain. All eleven players and their full cards are shown;
+T89's actual goal-kick taker is a defender, not a goalkeeper-only choice.
+
+[designed: T120; confirmed: original CC7B controls] `Driver.taker_key` sends Up/Down, Enter, C, Esc or Space.
+A mouse target uses original arrows through `taker_highlight`, never a cursor write. Enter is judged by the
+original1771:3216; C uses its original recommendation. Esc keeps the pick. Space reaches the actual blocking
+read returning CF3A; Return goes back to the same selector. Left/Right read there without moving the selector
+and do not become deferred speed changes in later play. A scripted `play_round` needs an explicit `on_taker`
+answer; it never silently chooses for the manager.
+
+[derived:214B:1E09/0791:CC2E/CC7B; confirmed: supplied native inputs] These timed snapshots are inside the
+original delay, not a BIOS read. `Core.start` validates the live delay/CC2E/CC7B chain, role/side, instruction
+boundary and allocated frames, restores every actual register/local and executes the remaining original delay.
+It does not restart the timer or rewrite ES/DS/flags. The supplied first inputs retain977/982 CC54 polls.
+Ordinary BIOS read entry is retained for CF3A; unrelated program CPU contexts are not rewound through stale
+read frames. Native entry tests compare every register and memory byte at the first executed instruction,
+allowing only the standard saved-VGA text restoration.
+
+[designed: T120] The desktop holds the polled manager decision until an answer. Keep sends original Esc;
+`None` in the driver executes the remaining original timeout. The pitch window is frozen while CF3A reads its
+key. Closing it leaves that genuine wait available for save/resume or reopening; it never advances the match.
+Selector/pitch saves retain the actual CPU, original keys and stop configuration. Round, worker and save guards
+remain in force. Input hashes are in [the private-input manifest](evidence/T120/artifacts.json).
+Roles3/4 and E062/EC60 remain unobserved/unmapped on archaeology#400.
 
 ## Bulletin presentation (T110, #308's G13a)
 

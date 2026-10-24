@@ -1,0 +1,62 @@
+{
+  "evidence": "[confirmed: T88/T89 original inputs, archaeology9aa9f27c461cc0b71ae66ab3e181ec64dfe98df1 and922fd8d80fe8b3033a6d52b803961a314e888b91; F030 retains proposed status]",
+  "method": "Unchanged actual native timed CPU restored with live-frame validation; CF3A inputs use the verified original BIOS-read entry. No guest/local/clock/RNG/fixture edits. Standard VGA text restoration only.",
+  "storage": "Private owner Drive source folders400-remaining-inputs-20261024 and400-next-inputs-20261024, plus canonical root copies. Actual upload/download SHA256 verified; shared receipt in goal2-keep/G13-taker-inputs-20261024/readback.json.",
+  "unobserved": "Roles3/4, E062 and EC60 remain explicit archaeology#400 gaps; no natural coverage or new mapping claimed.",
+  "artifacts": [
+    {
+      "name": "t88-bda98a358d98a82f-corner-before-space.sav",
+      "sha256": "bda98a358d98a82f9243ec7025bb8f7f02e0f80a69b37c5bc763faf2aa6e741d",
+      "role": 2,
+      "side": 1,
+      "slot": 6,
+      "stored": 386,
+      "rng_main": 14477
+    },
+    {
+      "name": "t89-cd047f4a697e5244-goal-kick-before-space.sav",
+      "sha256": "cd047f4a697e5244ea11e1609138ca45d8d070754ce857ea89f6459f78eef482",
+      "role": 5,
+      "side": 0,
+      "slot": 4,
+      "stored": 383,
+      "rng_main": 31813
+    },
+    {
+      "name": "t88-72d72b0dc1b809fe-corner-pitch-read.sav",
+      "sha256": "72d72b0dc1b809fe10c9c29814ebf33610ae8e900aa2eadd50661849eec0dafe",
+      "role": 2,
+      "side": 1,
+      "slot": 6,
+      "stored": 386,
+      "rng_main": 14477
+    },
+    {
+      "name": "t89-21e794f7867309dc-goal-kick-CF3A.sav",
+      "sha256": "21e794f7867309dcacb2d6d034878a76fedef972619cf490e947b55dded96710",
+      "role": 5,
+      "side": 0,
+      "slot": 4,
+      "stored": 383,
+      "rng_main": 31813
+    },
+    {
+      "name": "t88-dc81d0bc8f325051-corner-after-pitch.sav",
+      "sha256": "dc81d0bc8f325051be943d11b90e94a4b1415d0ca76e466c04d2d3a4f114f91f",
+      "role": 2,
+      "side": 1,
+      "slot": 6,
+      "stored": 386,
+      "rng_main": 14477
+    },
+    {
+      "name": "t89-58c1d8107a1269ec-goal-kick-after-pitch.sav",
+      "sha256": "58c1d8107a1269ec90988104fa82473748b5eda4d25c5ba9a08b26bb498039bf",
+      "role": 5,
+      "side": 0,
+      "slot": 4,
+      "stored": 383,
+      "rng_main": 31813
+    }
+  ]
+}

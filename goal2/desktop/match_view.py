@@ -192,7 +192,8 @@ class Display:
             return None
         context = decision['data'].get('context')
         return {'half_time': 'HALF TIME', 'substitution': 'SUBSTITUTION OPPORTUNITY',
-                'pause': 'PAUSE'}.get(context, context.replace('_', ' ').upper() if context else 'DECISION')
+                'pause': 'PAUSE', 'taker': 'TAKER SELECTION', 'taker-pitch': 'VIEW THE PITCH'
+                }.get(context, context.replace('_', ' ').upper() if context else 'DECISION')
 
     def visible(self):
         """[designed: T83] Terminal tail is released only after final-frame consumption/publication.
