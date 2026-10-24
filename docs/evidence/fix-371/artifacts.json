@@ -1,0 +1,16 @@
+{
+  "evidence": "[confirmed: T88 original-key input, archaeology9aa9f27c461cc0b71ae66ab3e181ec64dfe98df1, docs/requests/400-nice-try.md]",
+  "method": "Original T114 stoppage input, then Space,Home,Downx10,Enter,Down; supplied checkpoint precedes second Enter. Actual original Nice try read214B098A via054E/1793/E19F. No guest/status/RNG/CPU edits.",
+  "storage": "Private owner Drive. Original delivery folder goal2drive:goal2-archaeology/400-remaining-inputs-20261024/; canonical root inputs used by clean CI have actual upload/readback SHA256 verification.",
+  "artifacts": [
+    {
+      "name": "t88-eeea2f27f96f4812-before-nice-try.g2core",
+      "sha256": "eeea2f27f96f481248f2fb2377990e7923f6b2fc7e80422ef8d6e5ddcfb20e8f"
+    },
+    {
+      "name": "g13-fc5b0f392a66334c-stoppage-positions.g2core",
+      "sha256": "fc5b0f392a66334c3395605d0113d56f67788c7b4a7b4b176364fb028ce119e2",
+      "provenance": "Existing T114 original-key source; docs/evidence/T114/artifacts.json"
+    }
+  ]
+}

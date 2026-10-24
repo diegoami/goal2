@@ -101,6 +101,7 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
 | `substitution-requested` | `0791:E61F` (E44F, DS:9B41 clear, DS:9B40 set) | E006-r0001, Enter on substitution-request (T109) | "cancel substitution request" "Esc-exit" |
 | `substitution-refused` | `214B:098A` (E022's box, return E167) | E006-r0001, T109's watched half-time bench, attempting to put a substituted player back on | "cannot play" "PRESS ANY KEY" |
+| `substitution-refused` | `214B:098A` (E022's box, return E19F) | #371; genuine T88 sent-off-player replacement, archaeology9aa9f27c | "Nice try" "PRESS ANY KEY" |
 | `team-info` | `1771:28F5` (1771:26B9 mode 1, from main_menu_loop 000E:7682) | E006-r0001's first wait | "Use ←→↑↓ to select" "Hit ◄┘ for fixtures" "spacebar-players T-tactics" |
 | `fixture-list` | `000E:016C` (000E:0000), the own match highlighted | E006-r0001, Esc Down Enter | "and results" "Use ↑↓ to scroll" "Esc-exit" |
 | `match-board` | `0791:041A` (0791:0106) without the man of the match: half time, match stats, a quick result | E010-r0001's first wait | "Scorers" "hit any key" "Esc,◄┘-bench" |
@@ -157,7 +158,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
   `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
   until a screen task maps them: the taker prompts and extra-time menus, the other players' screen of E949 (another country's, 1771:50F1), E022's other
-  messages ("There is no player here" E062, "Nice try" E19F) and EA09's vacancy (EC60), a watched match of the round (Y at
+  message ("There is no player here" E062) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
 - **Mapped, not visited**: `squad-change-refused`, 0791:DBFA's refusal of a pool exchange ("cannot alter squad" +
