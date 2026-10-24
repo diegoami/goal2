@@ -38,7 +38,8 @@ ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', '
                  'shootout_start', 'shootout_pick', 'shootout_undo')
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
-               'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order')
+               'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order',
+               'match-menu-extra-time', 'match-menu-extra-halftime')
 
 
 class CoreModel:
@@ -192,6 +193,11 @@ class CoreModel:
             out.update(stop='captain', captain=views.captain_choice(self.state), bench=views.bench(self.state))
         elif wait.kind == 'match-menu-halftime':
             out.update(stop='half-time', board=views.board(self.state), bench=views.bench(self.state))
+        elif wait.kind in ('match-menu-extra-time','match-menu-extra-halftime'):
+            first = wait.kind == 'match-menu-extra-time'
+            out.update(stop='extra-time-start' if first else 'extra-time-half',
+                       interval_label='EXTRA TIME' if first else 'EXTRA-TIME HALF TIME',
+                       board=views.board(self.state),bench=views.bench(self.state))
         elif wait.kind == 'substitution-notice':
             # the eleven's players whose status word is not the selected one's (1771:42BC: injured, sent off, ...)
             selected = views.Memory(self.state).code_str(0x1771, 0x42A6)

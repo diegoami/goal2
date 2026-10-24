@@ -96,6 +96,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `shootout-announcement` | `214B:098A` (054E from 0791:A137) | T118, unchanged E031 g1 checkpoint3874 | "penalty shoot out" "PRESS ANY KEY" |
 | `shootout-order` | `214B:157C` (9D67 from A183) | T118, original Enter after E031 checkpoint3874 | "to select the order" "Hit Esc to undo" |
 | `match-walkoff` | `0791:78F9` (7881 poll; flush read7902) | #363, genuine G4C Koeman injury | "R-result" "spacebar-commentary" |
+| `match-menu-extra-time` | `214B:157C` (EE9F from9B42) | T119 original G4C continuation, counter89 | "EXTRA TIME" "location:" |
+| `match-menu-extra-halftime` | `214B:157C` (EE9F from9B70) | T119 original G4C continuation, counter105 | "EXTRA TIME" "HALF TIME" |
 | `championship-bracket` | `1771:9567` (9509 from 958D, continental mode 0) | T111's real E006 continuation, after fixture 1345 | "TOP SCORERS" "winner" "hit any key" |
 | `championship-browse` | `1771:9567` (the same, mode 1) | T111's private continental checkpoint, manager menu's tournament | "winner" "Use ←→ to select display" "Esc-exit" |
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
@@ -156,7 +158,7 @@ title's tune ends it (06F3 returns at a key) and the title's read takes it; `Cor
 **Not reached yet**, so not in the table:
 - The other kinds.tsv screens no tour met (`match-commentary`, `squad-substitution-tactic`,
   `save-game-name-entry`, `file-not-found-prompt`) and the other cases of the shared sites stop with `UnknownScreen`
-  until a screen task maps them: the taker prompts and extra-time menus, the other players' screen of E949 (another country's, 1771:50F1), E022's other
+  until a screen task maps them: the taker prompts, the other players' screen of E949 (another country's, 1771:50F1), E022's other
   messages ("There is no player here" E062, "Nice try" E19F) and EA09's vacancy (EC60), a watched match of the round (Y at
   the watch prompt). Continental finals/bracket are mapped by T111 and World Cup finals/bracket by T113 (below). The summary with the man of the match and its save prompt are mapped (T103)
   and reached by the watched route (T109); the quick result shows neither (F030).
@@ -372,9 +374,27 @@ The legacy evidence verifier and staged reference also carry the explicit guard-
 all other behavioural/reference files retain the accepted kit pin. Corruption and file-set checks stay strict.
 The unchanged announcement input and deliberate guard re-vendor are pinned in
 [evidence/T118/artifacts.json](evidence/T118/artifacts.json) and
-[the upstream handover](handover-2026-10-24-mutable-build-guard.md). Extra-time menus and taker prompts
-before that input remain separate G13 slices. Tests use an independent direct-key replay and the
+[the upstream handover](handover-2026-10-24-mutable-build-guard.md). T119 covers the earlier extra-time menus; taker prompts remain a separate G13 slice. Tests use an independent direct-key replay and the
 original's printed full-time score; a different order is not claimed to reproduce E031's recorded score.
+
+## Extra-time intervals (T119, #308's G13g)
+
+[confirmed: F015/F030 at archaeology53d7ef5, 0791:9B0C/9B5B; genuine G4C original-key inputs]
+The shared menu read214B:157C through0791:EE9F is `match-menu-extra-time` from near return9B42,
+and `match-menu-extra-halftime` from9B70. The original sets the first internal minute counter to89,
+the half length to15, and reaches the second interval at105. Neither is a captain prompt or a timed
+default. Recent commentary can still say FULL TIME at the first menu and HALF TIME at the second:
+those broad kinds.tsv text rules do not disambiguate these phases; the actual callers do.
+
+[designed: T119] These are round waits with the existing bench controls. The desktop labels the
+interval from its caller, preserves the original counter, and allows original R/C and substitutions.
+`Driver.play_on()` selects the original menu's Play at either interval. Both kinds are included in
+the driver's interval/stopping sets, and partial save/replay preserves the actual memory and keys.
+A tied second extra half continues to T118's announcement and managed shootout order; it does not
+choose an order silently. The private inputs and explicit host-only collection aliases are recorded
+in [evidence/T119/artifacts.json](evidence/T119/artifacts.json) and
+[evidence/T119/producer.json](evidence/T119/producer.json), based on
+[the original-loader handover](handover-2026-10-24-original-g4c-input.md).
 
 ## Bulletin presentation (T110, #308's G13a)
 
@@ -435,7 +455,7 @@ knockout play, and "winner"/"second"/"third"/"hit any key" after the final.
 Tests compare all eight completed groups' table fields and fixtures, the bracket and places against the original,
 and replay the whole transition from a core save to identical memory. Private input names, hashes and provenance
 are in [the manifest](evidence/T113/artifacts.json). The original bytes stay on owner Drive. The remaining
-set-piece/extra-time and other decision prompts still require their kept evidence (archaeology #400); the supplied shootout continuation is covered by T118.
+set-piece and remaining refusal prompts still require their kept evidence (archaeology #400); the supplied shootout continuation is covered by T118.
 
 ## Lineup refusal and position repair (T114, #308's G13d)
 

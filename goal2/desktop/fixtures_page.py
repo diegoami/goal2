@@ -750,9 +750,9 @@ class CoreRound:
                 self.next_page()
             else:
                 self.show_captain()
-        elif stop in ('half-time', 'stoppage', 'pause'):
+        elif stop in ('half-time', 'extra-time-start', 'extra-time-half', 'stoppage', 'pause'):
             self.first_page = len(state['pages'])
-            self.bench.offer(state, 'half_time' if stop == 'half-time' else stop);self.show(1)
+            self.bench.offer(state, 'half_time' if stop in ('half-time','extra-time-start','extra-time-half') else stop);self.show(1)
         elif stop == 'notice':
             self.first_page = len(state['pages']);self.show_notice(state)
         elif stop == 'full-time':              # [T108 review, R1] the round's end goes on, as on a resume
