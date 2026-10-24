@@ -128,6 +128,19 @@ class Driver:
 
     back = to_menu
 
+    def cancel_save_name(self):
+        """[confirmed: T121 original F7/Esc] Cancel only the ordinary save editor back to play.
+
+        The terminal quit editor has no return-to-play route; the desktop closes its session instead.
+        """
+        if self.wait.kind != _screens.SAVE_NAME or self.wait.view['quit']:
+            raise DriverError('only the ordinary save editor returns to play')
+        self.log.append((self.wait.kind, ESCAPE))
+        wait = self.core.press(ESCAPE)
+        if wait.kind != MENU:
+            raise UnexpectedScreen((MENU,), wait)
+        return wait
+
     def select(self, item):
         """Move the manager menu's highlight to `item` (1..6) by Down or Up, the shorter way without wrapping."""
         wait = self.core.wait

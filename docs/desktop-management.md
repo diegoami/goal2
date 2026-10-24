@@ -655,3 +655,10 @@ Space opens the frozen pitch; Enter in that window or Return in management goes 
 These decision waits save/resume exactly and keep the round's team-edit and worker locks. The original
 remaining timer is preserved; the management screen holds the decision until the player answers.
 Only the supplied role2/5 cases are covered; the remaining evidence limits stay on archaeology#400.
+
+[designed: T121, owner .g2core decision] F7 opens the observed original save-name decision
+on the Save page. Save/Cancel return through original Esc; Save writes the resulting playable
+core atomically. A resumed terminal quit-save decision offers Save and close / Close without
+saving, using the actual recorded pre-F10 origin rather than rewinding the quitting guest.
+An imported terminal decision without that origin cannot be converted into a playable save.
+Busy and round guards remain in force; ordinary host snapshots and old core saves remain supported.

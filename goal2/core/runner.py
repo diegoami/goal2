@@ -63,7 +63,7 @@ from goal2.engine.original_match.image import Image, MEM_BASE, GOAL_DS_PARAGRAPH
 from goal2.engine.original_match.machine import Machine, MEM_SIZE, REGS
 from goal2.engine.original_match.match import KEYPRESSED, READKEY, PUSHED_BACK, KEY, SCREEN_PTR, SEED
 
-VERSION = 3                   # 2 (T106): the DOS time and date; 3 (T108): a wait at a poll and the polls that stop
+VERSION = 4                   # T121: optional real playable origin for the terminal quit/save decision
 #                               (a version 1 or 2 save loads with the defaults)
 MAGIC = b"G2C1"
 KEY_AHEAD = 0xA977            # 08DD 097C: the last key read
@@ -309,6 +309,7 @@ class Core:
         self._passed_at_poll = None   # [T108] a key pressed at a poll wait, until the original's read takes it
         self.released = None          # [T108] the polled kind let pass (release) until a poll of another kind
         self.wait = None
+        self.quit_origin = None      # [designed: T121] one exact playable snapshot before manager F10
         self._live_frames = False     # [T116] temporary presentation batching; never a guest or save setting
         self._hooks()
 
@@ -404,6 +405,8 @@ class Core:
                  "passed": [[p.kind, p.polls, p.text, list(p.keys)] for p in self.wait.passed],
                  "queued": [list(q) for q in self.queued], "pending": None if self.pending is None else list(self.pending),
                  "at_poll": self.wait.poll, "stops": sorted(self.stops), "released": self.released}
+        if self.quit_origin is not None:
+            state['quit_origin'] = self.quit_origin.hex()
         blob = json.dumps(state).encode()
         return MAGIC + len(blob).to_bytes(4, "little") + blob + zlib.compress(snap["memory"] + self.tail, 6)
 
@@ -416,7 +419,7 @@ class Core:
             raise ValueError("not a saved core")
         n = int.from_bytes(data[4:8], "little")
         state = json.loads(data[8:8 + n])
-        if state["version"] not in (1, 2, VERSION):
+        if state["version"] not in (1, 2, 3, VERSION):
             raise ValueError(f"a saved core of version {state['version']}, this is {VERSION}")
         memory = zlib.decompress(data[8 + n:])
         m = Machine(memory, state["load"])
@@ -433,6 +436,16 @@ class Core:
         core.released = state.get("released")
         passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in state.get("passed", []))
         core.wait = core._make_wait(tuple(tuple(p) for p in state["polls"]), passed, poll=state.get("at_poll", False))
+        if state.get('quit_origin') is not None:
+            origin = bytes.fromhex(state['quit_origin'])
+            n = int.from_bytes(origin[4:8], 'little')
+            origin_header = json.loads(origin[8:8+n])
+            if origin_header.get('quit_origin') is not None:
+                raise ValueError('a quit origin must not contain another origin')
+            playable = cls.load(origin, goal_dat=goal_dat)
+            if playable.wait.kind != 'manager-menu':
+                raise ValueError('a quit origin must be an actual playable manager wait')
+            core.quit_origin = origin
         return core
 
     # -- playing ---------------------------------------------------------------------------------------------
@@ -445,9 +458,15 @@ class Core:
             raise ValueError(f"a key code is 1..255, not {key}")
         if key == F5_PRINT:
             raise ValueError("F5 (0xA3) prints the screen and makes 08DD read another key: not served by the core")
+        if self.wait.kind == 'manager-menu' and key == _screens.F10:
+            self.quit_origin = None
+            self.quit_origin = self.save()
         if self.wait.poll:
             # [T108] at a poll: 0723 says a key waits, and the original's next read takes it (as queue() gives it)
-            if not _screens.KINDS[self.wait.kind].accepts(key):
+            # [designed: T121; confirmed: original F7/Esc probe] The semantic .g2core bridge cancels
+            # this qualified legacy editor with original Esc. It adds no generic driver editing keys.
+            save_cancel = self.wait.kind == _screens.SAVE_NAME and key == _screens.ESCAPE
+            if not _screens.KINDS[self.wait.kind].accepts(key) and not save_cancel:
                 raise ValueError(f"{self.wait.kind} does not accept the key {key:#04x}")
             self.pending = (self.wait.kind, key)
             self._passed_at_poll = [self.wait.kind, 0, self.wait.text, []]
@@ -567,7 +586,8 @@ class Core:
             self.released = None
         complete = (not self._live_frames or kind != 'match-live'
                     or _screens.view(site, self._frame()).get('slot') in (22, None))
-        if (complete and kind in self.stops and self.pending is None and kind != self.released
+        if (complete and (kind in self.stops or kind == _screens.SAVE_NAME)
+                and self.pending is None and kind != self.released
                 and not any(k == kind for k, _ in self.queued)):
             m.stop("poll")           # [T108] a wait at the poll: press() answers it
             return
@@ -708,6 +728,8 @@ class Core:
             raise self.stopped
         passed = tuple(PassedScreen(k, n, t, tuple(keys)) for k, n, t, keys in self._passed)
         self.wait = self._make_wait(tuple(sorted(self._polls.items())), passed, poll=m.stop_reason == "poll")
+        if self.wait.kind == 'manager-menu':
+            self.quit_origin = None
 
     def _make_wait(self, polls, passed=(), poll=False):
         m = self.m

@@ -21,6 +21,7 @@ from dataclasses import dataclass
 # 0x4B - 1, Right 0x4D - 2, End..PgDn 0x4F..0x51 - 3) plus 0x64.
 RETURN, ESCAPE, SPACE = 0x0D, 0x1B, 0x20
 TAKER_SELECT, TAKER_PITCH = 'set-piece-select', 'set-piece-pitch'
+SAVE_NAME = 'save-game-name-entry'
 F1, F2, F3, F4, F5, F7, F9, F10 = 0x9F, 0xA0, 0xA1, 0xA2, 0xA3, 0xA5, 0xA7, 0xA8      # scan 0x3B.. + 0x64
 HOME, UP, PGUP, LEFT, RIGHT = 0xAB, 0xAC, 0xAD, 0xAE, 0xAF                          # 0x47, 0x48, 0x49, 0x4B-1, 0x4D-2
 END, DOWN, PGDN, INSERT = 0xB0, 0xB1, 0xB2, 0xB6                                    # 0x4F-3, 0x50-3, 0x51-3, 0x52
@@ -89,6 +90,8 @@ KINDS = {k.name: k for k in (
                               ("F7", "F7"), ("↑↓", "Up Down"), ("◄┘", "Return")), evidence=_CAT),
     Kind("quit-confirm", _YES_NO, evidence=_CAT),
     Kind("save-game-prompt", _YES_NO, evidence=_CAT),
+    Kind(SAVE_NAME, keys(("characters", "(typed)")), polled=True,
+         evidence=_CAT + "; [confirmed: T121 original F7/quit probes, F030] qualified save mode only"),
     Kind("fixtures-watch", keys(("Esc", "Escape"), ("↑↓", "Up Down"), ("◄┘", "Return")), evidence=_CAT),
     Kind("fixtures-auto", keys(("Esc", "Escape"), ("↑↓", "Up Down"), ("◄┘", "Return")), evidence=_CAT),
     Kind("match-menu", _MATCH_MENU, evidence=_CAT),
@@ -328,6 +331,26 @@ def _title_tune(f):
     return "title-tune" if f.near_caller(f.bp) == 0x07BB and f.near_caller(f.up(f.bp)) == 0x085A else None
 
 
+def _save_context(f, bp):
+    """[confirmed: F030 at53d7ef5; T121 probes] The actual save caller, never Load-file mode."""
+    prompt = f.up(bp)
+    opened = f.up(prompt)
+    origin = f.up(opened)
+    if (f.far_caller(bp) != '1771:045C' or f.near_caller(prompt) != 0x0670
+            or f.far_caller(opened) != '1771:08BF' or f.word(opened, 6) != 0):
+        return None
+    if f.far_caller(origin) == '000E:7810':
+        return 'save'
+    if f.far_caller(origin) == '1771:093A' and f.far_caller(f.up(origin)) == '000E:781B':
+        return 'quit'
+    return None
+
+
+def _name_view(f, bp):
+    context = _save_context(f, bp)
+    return {'quit': context == 'quit'} if context else {}
+
+
 def _name_entry(f, bp):
     # [confirmed: F032 (E038-r0001's trace); seg_214B_02.asm 1086, 1124, 1128; named/seg_1771_01.c 09A0,
     # seg_1771_02.c 2D15] The manager's name is edited by the line editor 214B:1086 (u214b_edit_string_input),
@@ -340,6 +363,8 @@ def _name_entry(f, bp):
     # 1771:4859(2, 8, player) at 0791:E6FB (return E700), which far-calls the editor at 1771:489B (return 48A0).
     if f.far_caller(bp) == "1771:48A0" and f.far_caller(f.up(bp)) == "0791:E700" and not f.ds_byte(MATCH_MENU_USED):
         return "player-name-entry"
+    if _save_context(f, bp):
+        return SAVE_NAME
     return None
 
 
@@ -769,7 +794,7 @@ SITES = {s.site: s for s in (
          "E038-r0001's title-player-count state", lambda f: "title-player-count" if f.near_caller(f.bp) == 0x08A8
          else None, lambda f: {"managers": f.ds_byte(PLAYER_COUNT)}),
     Site("214B:112B", False, "214B:1086 the line editor (reads after its cursor wait's poll says a key waits)",
-         "F032; E038-r0001's trace", lambda f: _name_entry(f, f.bp)),
+         "F032; E038-r0001's trace; T121", lambda f: _name_entry(f, f.bp), lambda f: _name_view(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
     Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live",
          # [confirmed: code/seg_0791_15.asm 9571-9708] 954E's loop calls 9372 after each of 22 slots; its
@@ -809,7 +834,7 @@ SITES = {s.site: s for s in (
     # the cursor wait 214B:0D90, near-called by the editor at 1124, polls at 0DB9 (F032); the editor's frame is [bp].
     Site("214B:0DB9", True, "214B:0D90, the line editor 214B:1086's cursor wait (1124; reads at 112B)",
          "F032; E038-r0001's trace", lambda f: _name_entry(f, f.up(f.bp)) if f.near_caller(f.bp) == 0x1127
-         else None),
+         else None, lambda f: _name_view(f, f.up(f.bp))),
 )}
 
 
