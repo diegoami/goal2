@@ -256,3 +256,4 @@ operational status.
 | T118 | G13f: original shootout announcement, managed order and continuation | [#357](https://github.com/diegoami/goal2/issues/357) | T115, archaeology T85 |
 
 | T119 | G13g: recover both original extra-time intervals | [#365](https://github.com/diegoami/goal2/issues/365) | T118, fix #363 |
+| [T120](T120.md) | G13h: recover original corner and goal-kick decisions | [#374](https://github.com/diegoami/goal2/issues/374) | T119, fix #371, docs #373 |
