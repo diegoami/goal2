@@ -322,6 +322,23 @@ driver.pages                           # the screens passed: (kind, view), read 
 - A round takes 35 to 60 s under Unicorn (each half of the quick result about 17 s, the other fixtures up to 14 s), so
   the desktop runs each step as a background job (`CoreJobs`).
 
+## Original round pause (T115, #308's G13e)
+
+[confirmed: F030 at archaeology 53d7ef5; named/seg_000E_05.c simulate_fixture 6970,
+code/seg_000E_09.asm 6BD0] Space at a `round-playing` poll opens the original PAUSE message box.
+The shared read `214B:098A` is `round-paused` only with caller chain `214B:054E` / `000E:6BD5`.
+Its message is read from the box's Pascal string. The displayed results run through the current fixture
+at game `+0x26`, inclusive: this pause precedes that index's increment. Their first row is
+max(current - 15, route_fixture's first), obtained through simulate_fixture's frame argument.
+The later `round-results` wait still ends at index minus one.
+
+[designed: T115, decision 7] The driver stops at this manager decision. `driver.round_continue()` sends
+Enter, then retains subsequent results/table/bulletin pages until the next manager decision or menu.
+The desktop can reach or resume this wait, shows its message and structured results with Continue,
+and keeps the round's team-edit/busy guards. Saving here and continuing a loaded copy replays the same
+original keys and memory. This slice adds recovery of the pause; it adds no live round-control UI.
+The genuine queued-Space input and its hash are recorded in [the private-input manifest](evidence/T115/artifacts.json).
+
 ## Bulletin presentation (T110, #308's G13a)
 
 [designed: T110; confirmed: F032/E038, named/seg_000E_01.c 038E, 05F6, 062F, 070B, 075F] Launch and the round

@@ -107,6 +107,8 @@ KINDS = {k.name: k for k in (
     Kind("round-playing", keys(("spacebar", "space"), ("←→", "Left Right")), polled=True,
          evidence=_CAT + "; polled: simulate_fixture 000E:6970 (polls 6B84 and 6BF2, reads at 6B8D)"),
     Kind("round-results", keys(("any key", "(any)")), evidence=_CAT),
+    Kind("round-paused", keys(("any key", "(any)")), designed=True,
+         evidence="[designed: T115; confirmed: F030 at 53d7ef5, 000E:6BD0] Space in simulate_fixture: PAUSE, PRESS ANY KEY"),
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
@@ -621,8 +623,16 @@ REFUSALS = {"0791:DC3D": "squad-change-refused", "0791:DC68": "squad-change-refu
 
 
 def _refusal(f):
+    if _round_pause(f):
+        return "round-paused"
     box = _refusal_chain(f)
     return None if box is None else REFUSALS.get(f.far_caller(box))
+
+
+def _round_pause(f):
+    # [confirmed: F030 at 53d7ef5, code/seg_000E_09.asm 6BD0; T115 genuine queued-Space input]
+    # This caller invokes the message box directly, without 214B:1765's extra frame.
+    return f.far_caller(f.bp) == "214B:054E" and f.far_caller(f.up(f.bp)) == "000E:6BD5"
 
 
 def _refusal_view(f):
@@ -630,6 +640,13 @@ def _refusal_view(f):
     up = f.up(f.bp)
     n = min(f.byte(up, -0x51), 80)
     text = bytes(f.read(f.ss * 16 + ((up - 0x50) & 0xFFFF), n)).decode("cp437")
+    if _round_pause(f):
+        # [confirmed: named/seg_000E_05.c simulate_fixture 6970 at 53d7ef5] Space pauses before +0x26
+        # increments. simulate_fixture's [bp+4] is route_fixture's frame; its -6 is the round's first.
+        simulator = f.up(up)
+        route = f.word(simulator, 4)
+        last = f.far_word(GAME, 0x26)
+        return {"message": text, "first": max(last - 15, f.word(route, -6)), "last": last}
     why = {"0791:DC3D": "finals", "0791:DC68": "tour"}.get(f.far_caller(_refusal_chain(f)))
     return {"message": text, "why": why} if why else {"message": text}
 
@@ -675,7 +692,8 @@ SITES = {s.site: s for s in (
     # DC38, DC63] 214B:0983 reads a key (push cs; call 08DD, return 098A) for the message box 214B:04F8 (near-called at
     # 054B, return 054E), which 214B:1765 calls at 1790 (return 1793); 0791:DBFA calls 1765 at DC38 ("during finals",
     # return DC3D) and DC63 ("whilst on tour", return DC68): F031's refusals of a pool exchange.
-    Site("214B:098A", False, "214B:0983 under 214B:04F8 (the message box), from 0791:DBFA", "T107 (F031)",
+    Site("214B:098A", False, "214B:0983 under 214B:04F8 (the message box): qualified refusal or round pause",
+         "T107/T108/T114 (F031); T115, F030 at 53d7ef5, original-key round pause",
          _refusal, _refusal_view),
     # -- the new game's reads (T106) [confirmed: F032, E038-r0001: each state's 08DD frame and callers] ----------------
     Site("1771:085F", False, "1771:080C (the title), far-called by the main program at 0000:0024",

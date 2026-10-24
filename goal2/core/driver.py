@@ -437,7 +437,7 @@ class Driver:
     # the screens of a round the driver passes with Enter (each prints "hit any key"), and the kinds a key may lead to
     PASSING = ("round-results", "fixture-result", "tournament-table", "championship-bracket", "bulletin", "match-board", "match-summary")
     ROUND_KINDS = PASSING + MATCH_MENU_KINDS + ("match-watch-prompt", "eleven-refused", "substitution-notice",
-                                                "captain-select", "match-live", "match-summary-save-prompt", MENU)
+                                                "captain-select", "match-live", "match-summary-save-prompt", "round-paused", MENU)
     # the stops of a match the steps return at: the half-time menu, the menu of a stoppage, the managed side's notice
     STOPS = ("match-menu-halftime", "substitution-notice")
 
@@ -497,7 +497,7 @@ class Driver:
                 continue
             if self.watching and wait.kind in ("match-live", "match-summary-save-prompt"):
                 return wait
-            if wait.kind in until or self.stoppage():
+            if wait.kind in until or wait.kind == "round-paused" or self.stoppage():
                 return wait
             if wait.kind == "match-watch-prompt":
                 # [designed: T109] Watch is the own match's presentation; other-country watch flags are G13.
@@ -523,6 +523,14 @@ class Driver:
         self.core.stop_at(*(("match-live", "match-summary-save-prompt", "substitution-notice") if watch else ()))
         self.pages = []
         self.select(len(_screens.MANAGER_NAMES))
+        self.press(RETURN, expect=self.ROUND_KINDS)
+        return self._pass(("match-menu", MENU))
+
+    def round_continue(self):
+        """[designed: T115; confirmed: F030, 000E:6BD0 at 53d7ef5] Enter closes the original round's
+        PAUSE box; pass subsequent results to the next manager decision, retaining their pages."""
+        if self.wait.kind != "round-paused":
+            raise UnexpectedScreen(("round-paused",), self.wait)
         self.press(RETURN, expect=self.ROUND_KINDS)
         return self._pass(("match-menu", MENU))
 
