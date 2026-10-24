@@ -11,6 +11,11 @@
       "name": "g13-fc5b0f392a66334c-stoppage-positions.g2core",
       "sha256": "fc5b0f392a66334c3395605d0113d56f67788c7b4a7b4b176364fb028ce119e2",
       "provenance": "Existing T114 original-key source; docs/evidence/T114/artifacts.json"
+    },
+    {
+      "name": "t88-feb8fa6edbdbc5b6-nice-try-actual-read.ucstate",
+      "sha256": "feb8fa6edbdbc5b6663f49d88303421903216ae98a5e2f60d730864e0edad401",
+      "format": "Actual stopped Machine ZIP, memory.bin and registers.json; not a core save"
     }
   ]
 }

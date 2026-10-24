@@ -1,16 +1,20 @@
 """[confirmed: T88, archaeology9aa9f27c] Original sent-off substitution refusal, without guest edits."""
 import hashlib
+import json
 import os
 from pathlib import Path
 import tempfile
 import unittest
+import zipfile
 from goal2.tests import requires
 
 NAME='t88-eeea2f27f96f4812-before-nice-try.g2core'
 SHA='eeea2f27f96f481248f2fb2377990e7923f6b2fc7e80422ef8d6e5ddcfb20e8f'
 SOURCE='g13-fc5b0f392a66334c-stoppage-positions.g2core'
 SOURCE_SHA='fc5b0f392a66334c3395605d0113d56f67788c7b4a7b4b176364fb028ce119e2'
-NEEDS=dict(modules=('unicorn',),files=(NAME,SOURCE,'GOAL.DAT'))
+AFTER='t88-feb8fa6edbdbc5b6-nice-try-actual-read.ucstate'
+AFTER_SHA='feb8fa6edbdbc5b6663f49d88303421903216ae98a5e2f60d730864e0edad401'
+NEEDS=dict(modules=('unicorn',),files=(NAME,SOURCE,AFTER,'GOAL.DAT'))
 
 def loaded(name=NAME):
     from goal2.core import Core
@@ -42,6 +46,14 @@ class Recovery(unittest.TestCase):
         self.assertEqual(views.player_card(w.state,125)['status'],0x20)
         self.assertEqual(views.player_card(w.state,132)['status'],0)
         self.assertEqual(selection(c),before)
+        # The independent after-state is an actual stopped Machine, not a manufactured core save.
+        after=requires.CACHE/AFTER
+        self.assertEqual(hashlib.sha256(after.read_bytes()).hexdigest(),AFTER_SHA)
+        with zipfile.ZipFile(after) as z:
+            actual=json.loads(z.read('registers.json'));snap=c.m.snapshot()
+            self.assertTrue(snap['memory']==z.read('memory.bin'),'Warning memory differs from T88 actual machine')
+            self.assertEqual(snap['regs'],actual['regs'])
+            self.assertEqual(snap['load'],actual['load'])
         blob=c.save();other=Core.load(blob,goal_dat=requires.CACHE/'GOAL.DAT')
         for key,kind in ((13,'squad-substitution-put-on'),(27,'match-menu')):
             self.assertEqual(c.press(key).kind,kind)
