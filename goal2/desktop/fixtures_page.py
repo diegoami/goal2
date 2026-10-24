@@ -746,7 +746,8 @@ class CoreRound:
         elif stop == 'shootout-order':
             self.show_shootout_order(state)
         elif stop in ('taker','taker-pitch'):
-            self.first_page=len(state['pages']);self.takers.offer(state)
+            self.first_page = len(state['pages'])
+            self.takers.offer(state)
         elif stop == 'round-paused':
             self.queue = list(state['pages'][self.first_page:]);self.after = 'round-paused'
             self.first_page = len(state['pages']);self.next_page()
@@ -901,7 +902,8 @@ class CoreRound:
             self.takers.refresh_controls()
             if (self.state and self.state['stop'] in ('taker','taker-pitch') and self.viewer.drained
                     and self.pending_inputs and not self.window.core_jobs.busy):
-                if self.window.run_core('taker_key',self.pending_inputs[0]):self.pending_inputs.pop(0)
+                if self.window.run_core('taker_key',self.pending_inputs[0]):
+                    self.pending_inputs.pop(0)
                 return
             if (self.state and self.state['stop'] == 'live' and self.viewer.drained
                     and not self.window.core_jobs.busy):
@@ -924,15 +926,19 @@ class CoreRound:
     def show_taker_pitch(self,state):
         """[designed:T120] A frozen existing SDL renderer; no live_step while CF3A reads its dismissal key."""
         from goal2.desktop.core_viewer import CoreViewer
-        if self.window.core_jobs.busy:return
+        if self.window.core_jobs.busy:
+            return
         try:
-            if self.viewer is None:self.viewer=CoreViewer(state['identity'])
-            if self.viewer.display.frame_sequence>=0 and not self.viewer.drained:
-                self.takers.preview_note.setText('The pitch is being displayed…');return
+            if self.viewer is None:
+                self.viewer = CoreViewer(state['identity'])
+            if self.viewer.display.frame_sequence >= 0 and not self.viewer.drained:
+                self.takers.preview_note.setText('The pitch is being displayed…')
+                return
             self.viewer.pose(state['pitch'],state.get('commentary',[]),state['speed'])
             self.viewer_timer.start()  # the manager's blocking read freezes the core, not an invented match tick
             self.takers.preview_note.setText('The original waits. Enter in the pitch window or Return here goes back to the selector.')
-        except (OSError,ValueError) as exc:self.stop_viewer(str(exc))
+        except (OSError,ValueError) as exc:
+            self.stop_viewer(str(exc))
         self.takers.refresh_controls()
 
     def next_page(self):
@@ -979,7 +985,8 @@ class CoreRound:
 
     def escape(self):
         if self.views.currentIndex() in (self.takers.choice_index,self.takers.preview_index):
-            self.takers.key(27);return True
+            self.takers.key(27)
+            return True
         if self.views.currentIndex()==6:
             if self.shootout_undo.isEnabled():self.shootout_undo.click()
             return True

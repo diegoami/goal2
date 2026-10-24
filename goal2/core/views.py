@@ -889,16 +889,15 @@ def _shootout_available(player):
 
 
 def taker_choice(state, selection):
-    """[confirmed: T88/T89; CC7B/1771:3216] All eleven, with the original's current Enter availability.
+    """[confirmed: T88/T89; CC7B] The actual eleven and selected full card; the guest judges Enter.
 
     Goal-kick choices are not restricted to goalkeepers: T89's actual stored player383 has position2.
     """
-    mem=Memory(state);rows=squad(mem,selection['country'])[:11]
-    for slot,row in enumerate(rows,1):
-        row.update(slot=slot,available=_shootout_available(_player(mem,row['player'])))
-    selected=rows[selection['slot']-1]['player']
-    return dict(selection,name=mem.country_name(selection['country']),players=rows,
-                selected_player=selected,card=player_card(state,selected))
+    mem = Memory(state)
+    rows = squad(mem, selection['country'])[:11]
+    selected = rows[selection['slot']-1]['player']
+    return dict(selection, name=mem.country_name(selection['country']), players=rows,
+                selected_player=selected, card=player_card(state, selected))
 
 
 def shootout_order(state, selection):

@@ -123,11 +123,11 @@ KINDS = {k.name: k for k in (
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
-    Kind(TAKER_SELECT, keys(("C", "c C"), ("↑↓", "Up Down"), ("Enter", "Return"),
-                           ("keep", "Escape"), ("pitch", "space"),
+    Kind(TAKER_SELECT, keys(("C-computer select", "c C"), ("↑↓", "Up Down"), ("◄┘-select", "Return"),
+                           ("keep", "Escape"), ("spacebar-pitch", "space"),
                            ("read without moving", "Left Right")), polled=True, designed=True,
          evidence="[derived: F030; confirmed: T88/T89 at archaeology9aa9f27c/922fd8d8] observed CC7B roles2/5"),
-    Kind(TAKER_PITCH, keys(("return", "(any)")), designed=True,
+    Kind(TAKER_PITCH, keys(("hit any key", "(any)")), designed=True,
          evidence="[confirmed: T88/T89 original Space/Return] CC7B pitch read returning CF3A"),
     Kind("match-live", keys(("Esc ◄┘", "Escape Return"), ("F9", "F9"), ("R", "r"), ("spacebar", "space"),
                             ("←→", "Left Right"), ("↓↑", "Up Down")), polled=True, evidence=_CAT),
@@ -609,9 +609,11 @@ def _captain(f, bp):
 def _taker(f, bp):
     # [confirmed: T88/T89 live frames; F030 at53d7ef5] Noncaptain CC7B from choose_player's6D74.
     # Only roles2/5 have genuine inputs; roles3/4 remain explicitly unobserved on archaeology#400.
-    if f.byte(bp, 4) not in (2, 5):return None
+    if f.byte(bp, 4) not in (2, 5):
+        return None
     if (f.near_caller(bp) != 0x6D74 or f.byte(bp, 6) not in (0, 1)
-            or not 1 <= f.word(bp, -5) <= 11):return None
+            or not 1 <= f.word(bp, -5) <= 11):
+        return None
     return TAKER_SELECT
 
 
@@ -619,8 +621,8 @@ def _taker_view(f, bp):
     # [confirmed: CC7B CD09/CF85; T88/T89] Byte arguments have scratch high bytes. The stored
     # role word is9976+2*role+10*side; it is distinct from the highlighted slot and captain.
     role, side = f.byte(bp, 4), f.byte(bp, 6)
-    return dict(role=role, side=side, country=f.ds_word(TEAMS+2*side), slot=f.word(bp, -5),
-                stored=f.ds_word(0x9976+2*role+10*side))
+    return dict(role=role, side=side, country=f.ds_word(TEAMS + 2*side), slot=f.word(bp, -5),
+                stored=f.ds_word(0x9976 + 2*role + 10*side))
 
 
 def _choice_view(f, bp):

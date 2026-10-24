@@ -16,7 +16,7 @@ INPUTS=(
  ('t89-21e794f7867309dc-goal-kick-CF3A.sav','21e794f7867309dcacb2d6d034878a76fedef972619cf490e947b55dded96710',5,0,4,383,31813),
  ('t88-dc81d0bc8f325051-corner-after-pitch.sav','dc81d0bc8f325051be943d11b90e94a4b1415d0ca76e466c04d2d3a4f114f91f',2,1,6,386,14477),
  ('t89-58c1d8107a1269ec-goal-kick-after-pitch.sav','58c1d8107a1269ec90988104fa82473748b5eda4d25c5ba9a08b26bb498039bf',5,0,4,383,31813))
-NEEDS=dict(modules=('unicorn',),files=tuple(r[0] for r in INPUTS)+('GOAL.DAT','e039-r0005-date-call.sav'))
+NEEDS=dict(modules=('unicorn',),files=tuple(r[0] for r in INPUTS)+('GOAL.DAT','e039-r0005-date-call.sav','e010-r0001-halftime.sav'))
 SELECT,PITCH='set-piece-select','set-piece-pitch'
 
 def raw(index):
@@ -62,6 +62,26 @@ class Entry(unittest.TestCase):
 
 @requires.need(**NEEDS,slow=True)
 class Controls(unittest.TestCase):
+ def test_release_restores_the_taker_stop_for_a_legacy_stop_configuration(self):
+  from goal2.core import Core
+  d=loaded(0);d.core.stops.discard(SELECT)
+  d._release()
+  self.assertEqual(d.wait.kind,'match-live');self.assertIn(SELECT,d.core.stops)
+  resumed=Core.load(d.core.save(),goal_dat=requires.CACHE/'GOAL.DAT')
+  self.assertIn(SELECT,resumed.stops)
+
+ def test_invalid_live_delay_links_are_rejected_without_executing_a_guest(self):
+  from goal2.core import runner
+  data=raw(0);image=runner._image(data);regs=runner.cpu_state(data)
+  ss=regs['SS']*16;bp=regs['EBP']&65535
+  def word(memory,at):return int.from_bytes(memory[ss+at:ss+at+2],'little')
+  waiting=word(image.memory,bp)
+  self.assertTrue(runner.timed_taker_entry(image.memory,image.load,regs))
+  # Clearly synthetic corruption controls of the pure validator; never natural original inputs.
+  for at in (bp+2,bp+6,waiting+2,waiting+4):
+   memory=bytearray(image.memory);memory[ss+at]^=1
+   self.assertFalse(runner.timed_taker_entry(memory,image.load,regs),at)
+
  def test_space_and_each_actual_pitch_input_return_to_the_same_selector_and_replay(self):
   from goal2.core import Core
   from goal2.core.driver import Driver
@@ -126,6 +146,24 @@ class Controls(unittest.TestCase):
   p=loaded(2);before=p.core.memory_sha256()
   with self.assertRaisesRegex(DriverError,'blocking'):p.taker_key(None)
   self.assertEqual(p.core.memory_sha256(),before);self.assertEqual(p.wait.kind,PITCH)
+
+
+@requires.need(**(NEEDS|{'archaeology':True}))
+class TextOracle(unittest.TestCase):
+ def test_both_roles_and_pitch_have_unique_quotes_without_claiming_other_screens(self):
+  from goal2.tests.test_core_screens_t103 import text_kind
+  from goal2.core import Core,screens
+  for i in range(6):
+   w=loaded(i).wait;self.assertEqual(text_kind(w.text),w.kind,(i,w.kind))
+  c=Core.start((requires.CACHE/'e010-r0001-halftime.sav').read_bytes(),goal_dat=requires.CACHE/'GOAL.DAT').core
+  self.assertEqual(c.wait.kind,'match-board');self.assertEqual(text_kind(c.wait.text),'match-board')
+  c.press(13);managed=c.wait.state.managed[0]
+  for _ in range(12):
+   if c.wait.view.get('label')=='team tactics' and c.wait.view['side_country']!=managed:
+    c.press(13);break
+   c.press(screens.DOWN)
+  self.assertEqual(c.wait.kind,'team-tactics-view')
+  self.assertEqual(text_kind(c.wait.text),'team-tactics-view')
 
 
 @requires.need(**(NEEDS|{'modules':('unicorn','PySide6','pygame')}),slow=True)

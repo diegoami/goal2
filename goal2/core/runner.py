@@ -187,15 +187,21 @@ def timed_taker_entry(memory, load, regs):
     instructions = (0x1E0F,0x1E13,0x1E15,0x1E18,0x1E1B,0x1E1E,0x1E21,0x1E23,0x1E26,
                     0x1E28,0x1E2B,0x1E2D,0x1E30,0x1E33,0x1E37,0x1E3B,0x1E3E,0x1E40,
                     0x1E44,0x1E46,0x1E4A,0x1E4C,0x1E4F,0x1E52,0x1E54)
-    if regs['CS'] != ((load+0x214B)&0xFFFF) or (regs['EIP']&0xFFFF) not in instructions:return False
-    ds=(load+GOAL_DS_PARAGRAPH)&0xFFFF;bp=regs['EBP']&0xFFFF
-    if regs['DS'] != ds or (regs['ESP']&0xFFFF) != ((bp-8)&0xFFFF):return False
-    f=_screens.Frame(lambda a,n:bytes(memory[a:a+n]),load,ds,regs['SS'],bp)
-    if f.far_caller(bp)!='0791:CC65' or f.word(bp,6)!=10:return False
-    waiting=f.up(bp);selector=f.up(waiting)
-    if (waiting!=bp+12 or selector!=waiting+20 or selector+8>=0x10000
-            or f.near_caller(waiting)!=0xCED9 or f.word(waiting,4)!=1000):return False
-    return _screens._taker(f,selector)==_screens.TAKER_SELECT
+    if regs['CS'] != ((load + 0x214B) & 0xFFFF) or (regs['EIP'] & 0xFFFF) not in instructions:
+        return False
+    ds = (load + GOAL_DS_PARAGRAPH) & 0xFFFF
+    bp = regs['EBP'] & 0xFFFF
+    if regs['DS'] != ds or (regs['ESP'] & 0xFFFF) != ((bp - 8) & 0xFFFF):
+        return False
+    f = _screens.Frame(lambda a,n: bytes(memory[a:a+n]), load, ds, regs['SS'], bp)
+    if f.far_caller(bp) != '0791:CC65' or f.word(bp,6) != 10:
+        return False
+    waiting = f.up(bp)
+    selector = f.up(waiting)
+    if (waiting != bp + 12 or selector != waiting + 20 or selector + 8 >= 0x10000
+            or f.near_caller(waiting) != 0xCED9 or f.word(waiting,4) != 1000):
+        return False
+    return _screens._taker(f, selector) == _screens.TAKER_SELECT
 
 
 class UnknownScreen(CoreError):

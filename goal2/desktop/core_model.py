@@ -184,12 +184,12 @@ class CoreModel:
         elif wait.kind == 'shootout-order':
             out.update(stop='shootout-order',order=views.shootout_order(self.state,wait.view))
         elif wait.kind in ('set-piece-select','set-piece-pitch'):
-            preview=wait.kind=='set-piece-pitch'
-            out.update(stop='taker-pitch' if preview else 'taker',taker=views.taker_choice(self.state,wait.view))
+            preview = wait.kind == 'set-piece-pitch'
+            out.update(stop='taker-pitch' if preview else 'taker', taker=views.taker_choice(self.state,wait.view))
             if preview:
                 out.update(pitch=views.pitch(self.state,self.pitch_sequence,0),commentary=[],
                            speed=views.match_speed(self.state),identity=views.pitch_identity(self.state))
-                self.pitch_sequence+=1
+                self.pitch_sequence += 1
         elif wait.kind == 'round-paused':
             out.update(stop='round-paused', message=wait.view['message'],
                        results=views.round_results(self.state, wait.view['first'], wait.view['last']))

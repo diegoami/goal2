@@ -98,8 +98,8 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | `match-walkoff` | `0791:78F9` (7881 poll; flush read7902) | #363, genuine G4C Koeman injury | "R-result" "spacebar-commentary" |
 | `match-menu-extra-time` | `214B:157C` (EE9F from9B42) | T119 original G4C continuation, counter89 | "EXTRA TIME" "location:" |
 | `match-menu-extra-halftime` | `214B:157C` (EE9F from9B70) | T119 original G4C continuation, counter105 | "EXTRA TIME" "HALF TIME" |
-| `set-piece-select` | `0791:CC54/CEDE`, qualified CC7B roles2/5 | T120, T88 corner/T89 goal kick native inputs | "CORNER" / "GOAL KICK" "spacebar-pitch" "C-computer select" |
-| `set-piece-pitch` | `0791:CF3A`, same live CC7B frame | T120, actual original Space/read/Return inputs for both roles | "hit any key" |
+| `set-piece-select` | `0791:CC54/CEDE`, qualified CC7B roles2/5 | T120, T88 corner/T89 goal kick native inputs | "spacebar-pitch" "C-computer select" |
+| `set-piece-pitch` | `0791:CF3A`, same live CC7B frame | T120, actual original Space/read/Return inputs for both roles | "hit any key" "versus" "░░" |
 | `championship-bracket` | `1771:9567` (9509 from 958D, continental mode 0) | T111's real E006 continuation, after fixture 1345 | "TOP SCORERS" "winner" "hit any key" |
 | `championship-browse` | `1771:9567` (the same, mode 1) | T111's private continental checkpoint, manager menu's tournament | "winner" "Use ←→ to select display" "Esc-exit" |
 | `substitution-request` | `0791:E61F` (E44F, DS:9B41 clear) | E006-r0001, watched play, Enter, Players (T109) | "tactics and" "substitutions" "request substitution" "Esc-exit" |
@@ -428,6 +428,9 @@ key. Closing it leaves that genuine wait available for save/resume or reopening;
 Selector/pitch saves retain the actual CPU, original keys and stop configuration. Round, worker and save guards
 remain in force. Input hashes are in [the private-input manifest](evidence/T120/artifacts.json).
 Roles3/4 and E062/EC60 remain unobserved/unmapped on archaeology#400.
+
+[confirmed: supplied text pages] The test oracle combines the pitch's shaded field, match header and dismissal
+hint; `hit any key` alone also appears on stats and tactics screens. Production identification uses frames only.
 
 ## Bulletin presentation (T110, #308's G13a)
 
