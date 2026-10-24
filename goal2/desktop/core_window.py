@@ -238,6 +238,7 @@ class CoreWindow(QMainWindow):
                     [row for _, row in self.tactics] + self.own_tactics + [self.own_marking, self.core_routes['play next game']]:
                 widget.setEnabled(False)
         self.core_round.refresh_shootout_controls()
+        self.core_round.takers.refresh_controls()
 
     def closeEvent(self, event):
         """[designed: T109] Stop scheduling polls, finish the bounded owned step, then reap the pitch viewer."""

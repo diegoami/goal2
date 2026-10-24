@@ -648,3 +648,10 @@ Those setup corrections leave product code and the existing Windows environment
 unchanged; dependency provenance is recorded without committing package bytes.
 
 [designed: owner demo feedback, 2026-10-23; T117] The live pitch follows the original composition: three recent event lines above the field (oldest above newest), without history timestamps in that strip, and the » speed meter with the bottom control hints. Full commentary retains its timestamps and opens with Space. The header has the grouped side/score block plus the supplied fixture/minute; no named speed label remains above the pitch. E015-r0007 state 31 and the original 9372 speed loop establish the structure and six-step meter.
+
+[designed: T120; confirmed: archaeology T88/T89] Core corner and goal-kick decisions show the original XI,
+selected full player card and stored-pick marker. Up/Down, Enter, C, Esc and Space go through original keys.
+Space opens the frozen pitch; Enter in that window or Return in management goes back to the same selector.
+These decision waits save/resume exactly and keep the round's team-edit and worker locks. The original
+remaining timer is preserved; the management screen holds the decision until the player answers.
+Only the supplied role2/5 cases are covered; the remaining evidence limits stay on archaeology#400.

@@ -178,6 +178,32 @@ def read_entry(memory, load, regs):
     return {"ss": ss, "sp": (bp + 2) & 0xFFFF, "bp": word(bp), "site": (word(bp + 4), word(bp + 2))}
 
 
+def timed_taker_entry(memory, load, regs):
+    """[derived:214B:1E09/CC2E/CC7B; confirmed:T88/T89] Validate a live delay, never search stale reads.
+
+    Only instructions with the delay's eight-byte local frame still allocated are accepted. Registers,
+    including scratch ES and branch flags, and every local/counter remain the saved native values.
+    """
+    instructions = (0x1E0F,0x1E13,0x1E15,0x1E18,0x1E1B,0x1E1E,0x1E21,0x1E23,0x1E26,
+                    0x1E28,0x1E2B,0x1E2D,0x1E30,0x1E33,0x1E37,0x1E3B,0x1E3E,0x1E40,
+                    0x1E44,0x1E46,0x1E4A,0x1E4C,0x1E4F,0x1E52,0x1E54)
+    if regs['CS'] != ((load + 0x214B) & 0xFFFF) or (regs['EIP'] & 0xFFFF) not in instructions:
+        return False
+    ds = (load + GOAL_DS_PARAGRAPH) & 0xFFFF
+    bp = regs['EBP'] & 0xFFFF
+    if regs['DS'] != ds or (regs['ESP'] & 0xFFFF) != ((bp - 8) & 0xFFFF):
+        return False
+    f = _screens.Frame(lambda a,n: bytes(memory[a:a+n]), load, ds, regs['SS'], bp)
+    if f.far_caller(bp) != '0791:CC65' or f.word(bp,6) != 10:
+        return False
+    waiting = f.up(bp)
+    selector = f.up(waiting)
+    if (waiting != bp + 12 or selector != waiting + 20 or selector + 8 >= 0x10000
+            or f.near_caller(waiting) != 0xCED9 or f.word(waiting,4) != 1000):
+        return False
+    return _screens._taker(f, selector) == _screens.TAKER_SELECT
+
+
 class UnknownScreen(CoreError):
     """The original reads or polls a key at a site the screen table (goal2/core/screens.py) does not know, or knows
     for other screens than the one the original's frames and memory show: the core stops rather than guess."""
@@ -292,22 +318,33 @@ class Core:
         """Run the original from a savestate stopped at one of its key reads (E006-r0001, the main screen of a new
         game; E038-r0001's title) to its first key read; returns that KeyWait. `dos_time` (hours, minutes, seconds,
         hundredths) is what INT 21h AH=2Ch answers; `goal_dat` the path of the player's GOAL.DAT, opened only when the
-        original opens it (a new game, F032)."""
+        original opens it (a new game, F032).
+
+        [confirmed:T88/T89; designed:T120] The observed CC7B role2/5 delay inputs are another validated entry:
+        restore their actual CPU and locals, run the remaining delay and stop at the selector poll. They are not
+        BIOS key reads and must never be normalized into08DD or restarted at CC7B.
+        """
         _need_unicorn()
         savestate = bytes(savestate)
         image = _image(savestate)
         regs = cpu_state(savestate)
-        entry = read_entry(image.memory, image.load, regs)
+        timed = timed_taker_entry(image.memory, image.load, regs)
+        entry = None if timed else read_entry(image.memory, image.load, regs)
+        if not timed and regs['CS'] != 0xF000:
+            raise CoreError("the savestate is not stopped in a current BIOS key read or supported CC7B delay")
         m = Machine(image.memory, image.load)
         m.write(TEXT_PAGE, text_page(savestate))
         for name in REGS:
             if name in regs:
                 m.set_reg(name, regs[name])
-        for name, value in (("ss", entry["ss"]), ("sp", entry["sp"]), ("bp", entry["bp"]), ("ds", m.DS),
-                            ("es", m.DS), ("cs", m.seg(0x214B)), ("eip", 0x08DD)):
-            m.set_reg(name, value)
+        if not timed:
+            for name, value in (("ss", entry["ss"]), ("sp", entry["sp"]), ("bp", entry["bp"]), ("ds", m.DS),
+                                ("es", m.DS), ("cs", m.seg(0x214B)), ("eip", 0x08DD)):
+                m.set_reg(name, value)
         core = cls(m, image.header, bytes(image.memory[MEM_SIZE:]), budget, [], hashlib.sha256(savestate).hexdigest(),
                    dos_time=dos_time, data=goal_dat)
+        if timed or (entry is not None and m.where(*entry['site'])=='0791:CF3A'):
+            core.stop_at(_screens.TAKER_SELECT)
         core._run()
         return core.wait
 
