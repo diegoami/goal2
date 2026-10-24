@@ -260,3 +260,4 @@ operational status.
 
 | [T121](T121.md) | G13i: bridge original save-name waits to core saves | [#380](https://github.com/diegoami/goal2/issues/380) | T120 |
 | [T122](T122.md) | G15: declare the owner substitution-budget patch | [#386](https://github.com/diegoami/goal2/issues/386) | T121 |
+| [T123](T123.md) | G16: prove an unattended four-year core cycle | [#390](https://github.com/diegoami/goal2/issues/390) | T122 |
