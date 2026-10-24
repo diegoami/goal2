@@ -113,6 +113,8 @@ KINDS = {k.name: k for k in (
          evidence="[designed: T118; confirmed: F015/F030, E031 g1 checkpoint3874] A132 message: penalty shoot out"),
     Kind("shootout-order", keys(("↑↓", "Up Down"), ("◄┘", "Return"), ("Esc", "Escape")), designed=True,
          evidence="[designed: T118; confirmed: F015/F030 at 53d7ef5, 0791:9B93] all available XI in original order"),
+    Kind("match-walkoff", keys(("any key", "(any)")), polled=True, designed=True,
+         evidence="[designed: #363; confirmed: F006/F027, 0791:7881 at 53d7ef5] animation poll, any key is flushed"),
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
@@ -747,6 +749,13 @@ SITES = {s.site: s for s in (
          lambda f: _ask(f.near_caller(f.bp))),
     Site("0791:C5C8", True, "0791:C50C show_computer_substitution_notice (C5C3; reads at C5CC)", _ROUTES,
          lambda f: "substitution-notice", lambda f: _notice_view(f, None)),
+    # [confirmed: code/seg_0791_13.asm 78F4–7902, 795A–7987; #363 genuine G4C injury]
+    # The walk-off has no manager decision: ordinary callers give no key and execute the original
+    # animation to its return. A deliberately queued key is consumed by the original flush read.
+    Site("0791:78F9", True, "0791:7881 walk_player_off animation poll", "#363; F006/F027 at 53d7ef5",
+         lambda f: "match-walkoff"),
+    Site("0791:7902", False, "0791:7881 walk_player_off flush read", "#363; F006/F027 at 53d7ef5",
+         lambda f: "match-walkoff"),
     # simulate_fixture 000E:6970 polls at 6B84 (return 6B89; reads at 6B8D if a key waits) and, in its delay loop
     # (DS:A923 +0x3E times 214B:1E09(50)), at 6BF2 (return 6BF7, no read) [T108; confirmed: code/seg_000E_08.asm].
     Site("000E:6B89", True, "000E:6970 simulate_fixture (the round being played)", "T108; E006-r0001 round 2",
