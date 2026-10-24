@@ -637,9 +637,12 @@ def _refusal_chain(f):
 # a round: 0791:E022's "Illegal substitution" (DS-less pstr 0791:DFF7, return E0CB) and 0791:EA09's "<country> has an
 # ineligible player in the first team" (0791:E9A2, return EB82) and "<country> has too many goalkeepers" (0791:E9CE,
 # return EBD7). T114 adds the observed no-goalkeeper and excessive-position callers below. E022's other messages
-# (E062, E19F) and EA09's vacancy (EC60) still have no entry: no tour reaches them (docs/core.md).
+# (E062) and EA09's vacancy (EC60) still have no entry: no tour reaches them (docs/core.md).
 REFUSALS = {"0791:DC3D": "squad-change-refused", "0791:DC68": "squad-change-refused",
             "0791:E0CB": "squad-substitution-illegal", "0791:E167": "substitution-refused",
+            # [confirmed: T88 original-key input, archaeology9aa9f27c, #371] E022 refuses a sent-off
+            # outgoing player with Nice try; the same live 054E/1793 chain and original dismissal apply.
+            "0791:E19F": "substitution-refused",
             "0791:EB82": "eleven-refused", "0791:EBD7": "eleven-refused",
             # [confirmed: EA09 at 53d7ef5, EC22/ECEB; T114 original-key probes] No goalkeeper / too many
             # players in one position use the same message/return-to-menu protocol.
