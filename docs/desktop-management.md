@@ -144,6 +144,12 @@ XI player is required. Saving a partial order and reopening retains the actual o
 Finishing the order opens the pitch for the original kicks, then its full-time summary-save question.
 Team edits remain locked for the round, and decision controls wait during a background action.
 
+[designed: T119, #308's G13g; confirmed: F015/F030, original callers9B42/9B70]
+**Extra time.** The original start-of-extra-time and extra-time-half-time menus open the bench
+with distinct phase labels. R/C, substitutions and Play go through the original menu, using its
+remaining counter; this adds no new substitution allowance. Both intervals save/resume exactly,
+keep round/busy guards, and continue through the original halves into the shootout decision when tied.
+
 [designed: T110, #308's G13a] **Bulletins keep all three papers.** The new-career and round pages share the
 three-column view: each paper has its masthead and all its story lines, as literal text, with no scrolling or
 eighteen-line truncation. Next/Enter keeps the page sequence. The round's type fits alongside the sidebar; the

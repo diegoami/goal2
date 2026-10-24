@@ -115,6 +115,10 @@ KINDS = {k.name: k for k in (
          evidence="[designed: T118; confirmed: F015/F030 at 53d7ef5, 0791:9B93] all available XI in original order"),
     Kind("match-walkoff", keys(("any key", "(any)")), polled=True, designed=True,
          evidence="[designed: #363; confirmed: F006/F027, 0791:7881 at 53d7ef5] animation poll, any key is flushed"),
+    Kind("match-menu-extra-time", _MATCH_MENU, designed=True,
+         evidence="[designed: T119; confirmed: F015/F030, 0791:9B0C at 53d7ef5] ED8A before extra time"),
+    Kind("match-menu-extra-halftime", _MATCH_MENU, designed=True,
+         evidence="[designed: T119; confirmed: F015/F030, 0791:9B5B at 53d7ef5] ED8A at the extra-time interval"),
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
@@ -383,7 +387,9 @@ MATCH_MENUS = {0xF20A: "match-menu", 0x9AE3: "match-menu-halftime", 0xF331: "mat
                0x8103: "match-menu",
                # [confirmed: code/seg_0791_15.asm 944D-945B] Enter/Esc in play calls ED8A at 9458.
                0x945B: "match-menu"}
-MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage", 0x945B: "pause"}
+MATCH_MENUS.update({0x9B42: "match-menu-extra-time", 0x9B70: "match-menu-extra-halftime"})
+MENU_CONTEXTS = {0xF20A: "before", 0x9AE3: "half-time", 0xF331: "after", 0x8103: "stoppage", 0x945B: "pause",
+                 0x9B42: "extra-time-start", 0x9B70: "extra-time-half"}
 
 
 def _menu_reader(f):
@@ -393,7 +399,7 @@ def _menu_reader(f):
         return "shootout-order"
     if caller == "0791:EE9F":
         # in_match_menu 0791:ED8A, near-called by run_match F207 (pre-match), F32E (post-match), 9A32 at 9AE0
-        # (half time), 8100 (substitution) and 9458 (pause); its extra-time callers have no entry.
+        # (half time), 8100 (substitution), 9458 (pause), and 9B42/9B70 (extra time, T119).
         return MATCH_MENUS.get(f.near_caller(up))
     if caller == "1771:1A24":
         # edit_team_tactics 1771:1981(country) [bp+6]: it edits only a managed country with DS:0C20 clear, else

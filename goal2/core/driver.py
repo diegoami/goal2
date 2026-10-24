@@ -433,14 +433,15 @@ class Driver:
     # maybe_ask_watch_match 6C21; seg_0791_12.c in_match_menu ED8A, run_match F1F6, first_team_valid EA09;
     # seg_0791_10.c choose_captain_or_taker CC7B; seg_0791_11.c select_team_screen E44F, E022; code/seg_0791_13.asm
     # 7FCF, 8062 (the managed side's notice and the menu it opens)]
-    MATCH_MENU_KINDS = ("match-menu", "match-menu-halftime", "match-menu-fulltime")
+    INTERVAL_KINDS = ("match-menu-halftime", "match-menu-extra-time", "match-menu-extra-halftime")
+    MATCH_MENU_KINDS = ("match-menu", "match-menu-fulltime") + INTERVAL_KINDS
     # the screens of a round the driver passes with Enter (each prints "hit any key"), and the kinds a key may lead to
     PASSING = ("round-results", "fixture-result", "tournament-table", "championship-bracket", "bulletin", "match-board", "match-summary")
     ROUND_KINDS = PASSING + MATCH_MENU_KINDS + ("match-watch-prompt", "eleven-refused", "substitution-notice",
                                                 "captain-select", "match-live", "match-summary-save-prompt", "round-paused",
                                                 "shootout-announcement", "shootout-order", MENU)
     # the stops of a match the steps return at: the half-time menu, the menu of a stoppage, the managed side's notice
-    STOPS = ("match-menu-halftime", "substitution-notice")
+    STOPS = INTERVAL_KINDS + ("substitution-notice",)
 
     def _page(self, wait):
         from goal2.core import views
@@ -727,9 +728,9 @@ class Driver:
         if key not in ('r', 'c'):
             raise DriverError('Position keys are R or C')
         wait = self.wait
-        if wait.kind != 'match-menu-halftime' and not (wait.kind == 'match-menu' and
+        if wait.kind not in self.INTERVAL_KINDS and not (wait.kind == 'match-menu' and
                 wait.view.get('context') in ('before', 'stoppage')):
-            raise DriverError('Positions are offered before kick-off, at half time or a stoppage')
+            raise DriverError('Positions are offered before kick-off, at an interval or a stoppage')
         home = wait.kind
         squad = self._team()
         if player not in squad:
@@ -758,8 +759,8 @@ class Driver:
         from goal2.core import views
         if self.wait.view.get('context') == 'pause':
             raise DriverError('At a pause request a substitution; choose the pair at the next opportunity')
-        if self.core.wait.kind != "match-menu-halftime" and not self.stoppage():
-            raise UnexpectedScreen(("match-menu-halftime", "match-menu"), self.core.wait)
+        if self.core.wait.kind not in self.INTERVAL_KINDS and not self.stoppage():
+            raise UnexpectedScreen(self.INTERVAL_KINDS+("match-menu",), self.core.wait)
         home = self.core.wait.kind
         before = views.bench(self.core.wait.state)["eleven"]
         wait = self._open_bench()
@@ -798,8 +799,8 @@ class Driver:
         the original refuses the eleven (EA09, e.g. "has too many goalkeepers" after a substitution) the driver closes
         its box and returns {"refused": the original's message} at the same menu."""
         self._menu_item("play")
-        if self.core.wait.kind != "match-menu-halftime" and not self.stoppage():
-            raise UnexpectedScreen(("match-menu-halftime", "match-menu"), self.core.wait)
+        if self.core.wait.kind not in self.INTERVAL_KINDS and not self.stoppage():
+            raise UnexpectedScreen(self.INTERVAL_KINDS+("match-menu",), self.core.wait)
         self._stop("substitution-notice")
         refused = self._play()
         if refused is not None:

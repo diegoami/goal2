@@ -1,0 +1,17 @@
+{
+  "evidence": "[confirmed: F015/F030 at archaeology53d7ef5, 9B0C/9B5B; original G4C input from T86/#403]",
+  "storage": "Owner private Drive through tools/artifacts.py; upload/readback hash verified",
+  "provenance": "Genuine native-original G4C.GL-loaded manager -> original quick-match keys -> both original extra menus. Host-only caller-label aliases allowed the collector to observe/save those original blocking reads; no guest-memory edits, CPU rewind or fixture construction.",
+  "artifacts": [
+    {
+      "name": "g13-2c927e5f3a564090-extra-time-start.g2core",
+      "sha256": "2c927e5f3a564090b5c565b55747da8d0f6b41836dd2978df5bd49d58a2545c6",
+      "caller": "0791:9B42"
+    },
+    {
+      "name": "g13-fcf77812110b99b4-extra-time-half.g2core",
+      "sha256": "fcf77812110b99b4fd76550fab04f6463dfaa57b81db89a5a34a1fe10cb20cd0",
+      "caller": "0791:9B70"
+    }
+  ]
+}
