@@ -694,3 +694,12 @@ names, roles, caps, skills and characteristics stay visible on the same scales. 
 or Esc returns to the list. Browsing a comparison changes no players. **Exchange these players**
 is a separate confirmation, checked by the original game; a player who has left either list
 cannot be exchanged again through a stale comparison.
+
+[designed: owner Windows playtest, #435/T135; confirmed: original INSERT/F031 selection]
+**Suggest** asks the original assistant to select a squad in an independent copy of the career.
+It proposes recruitment changes and checks each next exchange with the original rules, leaving
+the active career untouched. The comparison selector lists the proposals; its explanation names
+the assistant's chosen position and the comparison pairing. No overall ability or new ranking
+formula is shown. **Exchange these players** remains your explicit decision. After any career
+change, ask again rather than applying an old proposal. **Cancel suggestion** discards a pending
+query while its bounded copied step finishes; a query failure leaves the active game playable.
