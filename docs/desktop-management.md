@@ -713,3 +713,11 @@ bind the names, including after an exchange. Explicit original F2 renames take p
 The policy changes display text only: the original driver and raw-memory readers retain their
 original names, and no alias is written into a Core save. Old saves receive the same names when
 reopened. Custom country-name mismatches or unavailable canonical data keep their own text.
+
+[designed: #433/T136] Automatic player regeneration may pick a new initial and surname from
+the original shared name bank; those defaults also receive country-fitting display names.
+Explicit F2 renames made in the desktop retain priority even when they use an original-bank
+surname. Saves retain only optional rename-intent fingerprints, never generated aliases;
+the original memory and save version remain unchanged. An old save without intent metadata
+cannot distinguish a manually chosen bank name from an automatically generated one; re-entering
+that name with F2 in the desktop records the explicit choice.

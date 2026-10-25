@@ -22,8 +22,23 @@ class Policy(unittest.TestCase):
                     _,families,initials=table()[country]
                     self.assertEqual(names,tuple(f'{i} {f}' for i,f in zip(initials,families)))
                 else:
-                    families={data.player_names[w] for w in data.squad_20[country]}
+                    first=20*(country-1)+1
+                    families=set(data.player_names[first:first+20])
                     self.assertTrue(all(name.split(' ',1)[1] in families for name in names))
+                    current={f'{data.player_initials[w]} {data.player_names[w]}' for w in range(first,first+20)}
+                    self.assertFalse(set(names)&current)
+
+    def test_contrasting_fallback_nations_use_independently_known_family_names(self):
+        from goal2.data import load
+        from goal2.desktop.core_names import NamesPolicy
+        data=load((requires.CACHE/'GOAL.DAT').read_bytes());policy=NamesPolicy(data)
+        # Independent named-country facts from the canonical national records, not squad_20.
+        expected={'Malta':'Cluett','Poland':'Sidurczuk','Chile':'Toledo'}
+        actual={}
+        for country,family in expected.items():
+            actual[country]={name.split(' ',1)[1] for name in policy.names(data.country_names.index(country))}
+            self.assertIn(family,actual[country]);self.assertNotIn('Musta',actual[country])
+        self.assertFalse(actual['Poland']&actual['Chile'])
 
 
 @requires.need(modules=('unicorn',),files=('e039-r0005-date-call.sav','GOAL.DAT'))
@@ -116,6 +131,30 @@ class GenuineNames(unittest.TestCase):
         self.assertEqual(views.board(state),plain)
         self.assertEqual(core.save(),before)
 
+    @requires.need(files=('g16-proof-279904b6-private.zip',))
+    def test_original_year_rollovers_keep_country_names_without_migrating_the_guest(self):
+        import hashlib
+        from zipfile import ZipFile
+        from goal2.core import Core
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_names import resolver_for
+        from goal2.game.pool_names import table
+        bundle=requires.CACHE/'g16-proof-279904b6-private.zip'
+        self.assertEqual(hashlib.sha256(bundle.read_bytes()).hexdigest(),
+                         '2332459f7bf64be1afd2e92fc61d81f3b9489bf9d01208a3e6ad8edb469d4cd9')
+        with ZipFile(bundle) as z:
+            for year in (1,4):
+                with self.subTest(annual=year):
+                    raw=z.read(f'.cache/T123-proof-r2/annual-{year}.g2core')
+                    core=Core.load(raw,goal_dat=requires.CACHE/'GOAL.DAT')
+                    m=CoreModel(core,requires.CACHE/'GOAL.DAT',requires.CACHE/'unused-rollover.g2core')
+                    before=core.save();_,families,initials=table()[20]
+                    for p in m.pool()['rows']:
+                        if p['player']>=2561:
+                            offset=(p['player']-2561)%80
+                            self.assertEqual(p['name'],f'{initials[offset]} {families[offset]}')
+                    self.assertEqual(core.save(),before)
+
     def test_model_views_adopt_names_and_a_manual_rename_wins_after_exchange(self):
         from goal2.game.pool_names import table
         m=self.game();incoming=m.pool()['rows'][0]['player'];outgoing=m.team()['squad'][0]['player']
@@ -125,6 +164,24 @@ class GenuineNames(unittest.TestCase):
         self.assertIsNone(m.act('exchange',outgoing,incoming)['refused'])
         self.assertEqual(next(p['name'] for p in m.team()['squad'] if p['player']==incoming),expected)
         m.act('rename',incoming,'Z Fixture');self.assertEqual(m.card(incoming)['name'],'Z Fixture')
+
+    def test_explicit_original_bank_name_wins_and_intent_survives_save_reopen(self):
+        from goal2.data import load
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_names import NamesPolicy,explicit_from_save
+        m=self.game();word=m.pool()['rows'][0]['player']
+        policy=NamesPolicy(load((requires.CACHE/'GOAL.DAT').read_bytes()))
+        english=policy.original_name(2561 if word!=2561 else 2562)
+        m.act('rename',word,english)
+        self.assertEqual(m.card(word)['name'],english)
+        before=m.core.save()
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'renamed.g2core';m.save(path);saved=path.read_bytes()
+            self.assertIn(word,explicit_from_save(saved))
+            again=CoreModel.from_save(path,m.data_path)
+            self.assertEqual(again.card(word)['name'],english)
+            self.assertEqual(again.core.save(),before)
+        self.assertEqual(m.core.save(),before)
 
     def test_an_old_save_reopens_with_names_but_no_migration_or_guest_change(self):
         from goal2.desktop.core_model import CoreModel

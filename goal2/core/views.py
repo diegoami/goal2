@@ -20,10 +20,11 @@ named/seg_*.c; the vendored kit's `Image`, PROVENANCE.md). [confirmed] cites the
 """
 from __future__ import annotations
 
-from goal2.engine.original_match.image import Image
-from goal2.core.runner import CP437_LOW
 from contextvars import ContextVar
 from contextlib import contextmanager
+
+from goal2.engine.original_match.image import Image
+from goal2.core.runner import CP437_LOW
 
 # [designed: T136] Pure display calls may resolve identities; original driver/oracle reads default to raw names.
 _display_names = ContextVar('goal2_display_names', default=None)

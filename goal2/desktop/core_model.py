@@ -58,6 +58,7 @@ class CoreModel:
         self.driver = Driver(core)
         self.data_path = None if data_path is None else Path(data_path)
         self.save_path = Path(save_path)
+        self._explicit_player_names = {}
         self.refused = None           # [T108] the original's last refusal of the eleven, while the round waits on it
         self.commentary_cursor = 0
         self.pitch_sequence = 0
@@ -77,7 +78,11 @@ class CoreModel:
     def from_save(cls, path, data_path):
         from goal2.core import Core, CoreError
         try:
-            return cls(Core.load(Path(path).read_bytes(), goal_dat=data_path), data_path, path)
+            raw = Path(path).read_bytes()
+            model = cls(Core.load(raw, goal_dat=data_path), data_path, path)
+            from goal2.desktop.core_names import explicit_from_save
+            model._explicit_player_names = explicit_from_save(raw)
+            return model
         except (OSError, ValueError, KeyError, CoreError) as exc:
             raise ValueError(f'Cannot resume the core: {exc}') from exc
 
@@ -148,6 +153,9 @@ class CoreModel:
             raise ValueError(str(exc).split('\n')[0]) from exc
         if isinstance(result, dict) and result.get('refused'):
             raise ValueError(result['refused'])
+        if name == 'rename' and args[0] >= 2561:
+            from goal2.desktop.core_names import name_fingerprint
+            self._explicit_player_names[args[0]] = name_fingerprint(result)
         return result
 
 
@@ -295,6 +303,8 @@ class CoreModel:
         return self._write_save(self.core.save(), path)
 
     def _write_save(self, data, path=None):
+        from goal2.desktop.core_names import with_explicit_names
+        data = with_explicit_names(data, self._explicit_player_names)
         target = Path(self.save_path if path is None else path)
         try:
             target.parent.mkdir(parents=True, exist_ok=True)
