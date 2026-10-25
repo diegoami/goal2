@@ -736,3 +736,49 @@ consumed once at the 0624 read (return 0629). No-key `advance()` executes an ori
 retains the untimed 05EC wait. Release at that untimed wait cannot silently loop. The desktop's
 guarded Continue, partial saves and scripted `round_continue()` use the same original key path.
 The source/machine hashes and private input are in [the #409 manifest](evidence/409/artifacts.json).
+
+## Bounded four-year proof
+
+[designed: T123, #390; approved G16/#308] The separate acceptance commands are:
+
+```bash
+python3 tools/prove_core_cycle.py --output .cache/T123-proof
+python3 tools/verify_core_cycle.py .cache/T123-proof
+```
+
+The output directory must be new and private under `.cache`. Original boot/data hashes are
+checked before use. The program boots one fresh Holland career at start year 2028 with DOS
+date 2027-10-04 and time 10:00:00.00, and explicitly declares the G15 owner policy. It asks the
+original assistant for the squad outside finals, uses the original computer captain/taker choice,
+repairs refused elevens with original club-position or legal reserve keys, and orders every
+available shootout player. The guest retains legality, budgets, outcomes and RNG ownership.
+No seed sweep, fixture/player write or new rules engine is involved.
+
+[confirmed: E031 C52/b/d/e and C65b at archaeology 44cea4de; designed: T123]
+The annual checks use stage/season pairs `(3,0)`, `(5,1)`, `(7,1)`, `(2,2)`: the displayed title
+still reads 2028 after the first year. The target is the start of the next four-year cycle,
+stage 2/season 2 with title 2032. The source manifest pins the README, claims and g1 progress
+file byte-for-byte. Scores, qualification, match counts, retirements and timing are separate
+observations, not assertions of equality with the different-input g1 run.
+
+[designed: T123] Each annual private machine is saved and its next named policy decision is
+executed directly and from an independently loaded copy. Complete memory, CPU, explicit keys,
+save and destination hashes must match. The trace also observes actual queued title/name keys,
+which are distinct from explicit `Core.press` history. Verification checks the trace hash chain,
+committed runtime/source hashes, actual initial/final machines and repeats annual decisions.
+Metadata alone, empty/truncated/error receipts, missing years and incompatible source/policy
+cannot establish a proof. Bounds are 100000 policy steps, 300 rounds and 7200 seconds by default.
+Unknown or unsupported decisions, exhausted bounds and original refusals the policy cannot
+repair stop nonzero, retaining the actual stopped machine and preceding supported checkpoint.
+Failed outputs are preserved; use a new output name after investigating a failure.
+
+[derived: genuine first T123 annual2 at 9d0142cb; E031 C52c at 44cea4de] Original history
+may include the unplayed current qualifying season as a zero-stat row alongside completed
+seasons. The verifier preserves the full original history and requires the two completed
+2027/28 EC and 2029/30 WC labels; an optional current2031/32 EC row must be unplayed, not a
+third completed season. It is never accepted as a substitute for either completed record.
+The actual annual2 history regression is pinned in [the fixture manifest](evidence/T123/fixtures.json).
+
+Ordinary gates exercise bounded genuine boot, lineup, taker, shootout and save/replay cases plus
+receipt-corruption controls. They do not silently rerun the full campaign. Original-byte saves
+and traces stay private; only source/hash-based measurements belong in public evidence.
