@@ -387,6 +387,94 @@ class Desktop(unittest.TestCase):
         squad = [r["player"] for r in w.model.team()["squad"]]
         self.assertIn(incoming, squad);self.assertNotIn(out, squad)
 
+    def position_edit(self, w):
+        """[designed: owner #423] Genuine original keys must change sorting without moving the editing row."""
+        from goal2.desktop.squad_page import core_reposition
+        w.navigate(1);w.team_roster.set_current(10)
+        player = w.team_roster.rows[w.team_roster.current][0]
+        before = [r[0] for r in w.team_roster.rows]
+        displayed = [w.team_roster.rows[i][0] for i in w.team_roster.order]
+        row_y = w.team_roster.row_rect(w.team_roster.current).y()
+        for _ in range(14):
+            core_reposition(w, False)
+            self.assertEqual(w.finish_core()[0], 'done')
+            self.assertEqual([r[0] for r in w.team_roster.rows], before)
+            self.assertEqual([w.team_roster.rows[i][0] for i in w.team_roster.order], displayed)
+            self.assertEqual(w.team_roster.row_rect(w.team_roster.current).y(), row_y)
+            self.assertEqual(w.team_roster.rows[w.team_roster.current][0], player)
+            original = [r['player'] for r in w.model.team()['squad']]
+            if original != before:return player, before
+        self.fail('The genuine position cycle did not exercise a sort-changing edit')
+
+    def test_reposition_stays_in_place_until_enter_without_marking(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        from goal2.desktop.squad_page import core_reposition
+        w = self.window();self.addCleanup(w.close)
+        player, before = self.position_edit(w)
+        position = w.model.card(player)['position']
+        core_reposition(w, False);self.assertEqual(w.finish_core()[0], 'done')
+        self.assertEqual(w.model.card(player)['position'], (position + 1) % 14)
+        self.assertEqual([r[0] for r in w.team_roster.rows], before)
+        QTest.keyClick(w.team_roster, Qt.Key.Key_Return)
+        self.assertEqual([r[0] for r in w.team_roster.rows], [r['player'] for r in w.model.team()['squad']])
+        self.assertEqual(w.team_roster.rows[w.team_roster.current][0], player)
+        self.assertIsNone(w.core_marked)
+        QTest.keyClick(w.team_roster, Qt.Key.Key_Return)
+        self.assertEqual(w.core_marked, ('squad', player))
+
+    def test_leaving_repositioned_player_follows_full_id_and_releases_order(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        w = self.window();self.addCleanup(w.close)
+        player, before = self.position_edit(w)
+        intended = w.team_roster.rows[w.team_roster.current + 1][0]
+        QTest.keyClick(w.team_roster, Qt.Key.Key_Down)
+        self.assertEqual([r[0] for r in w.team_roster.rows], [r['player'] for r in w.model.team()['squad']])
+        self.assertEqual(w.team_roster.rows[w.team_roster.current][0], intended)
+        self.assertIsNone(w.core_marked)
+
+    def test_club_position_mouse_selection_and_leaving_page_release_order(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        from goal2.desktop.squad_page import core_reposition
+        w = self.window();self.addCleanup(w.close)
+        player, before = self.position_edit(w)
+        core_reposition(w, True);self.assertEqual(w.finish_core()[0], 'done')
+        self.assertEqual(w.model.card(player)['position'], w.model.card(player)['club_position'])
+        self.assertEqual([r[0] for r in w.team_roster.rows], before)
+        target = w.team_roster.current + 1;intended = w.team_roster.rows[target][0]
+        QTest.mouseClick(w.team_roster, Qt.MouseButton.LeftButton, pos=w.team_roster.row_rect(target).center())
+        self.assertEqual(w.team_roster.rows[w.team_roster.current][0], intended)
+        self.assertEqual([r[0] for r in w.team_roster.rows], [r['player'] for r in w.model.team()['squad']])
+
+    def test_shift_r_cycles_backwards_and_r_forwards_on_the_same_row(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        from goal2.desktop.squad_page import core_reposition
+        w = self.window();self.addCleanup(w.close)
+        w.navigate(1);w.raise_();w.activateWindow();w.team_roster.setFocus()
+        self.assertTrue(QTest.qWaitForWindowActive(w))
+        self.app.processEvents()
+        player = w.team_roster.rows[w.team_roster.current][0]
+        # Reach role0 with genuine forward edits, then exercise the reverse wrap via actual shortcut.
+        for _ in range((14 - w.model.card(player)['position']) % 14):
+            core_reposition(w, False);self.assertEqual(w.finish_core()[0], 'done')
+        before = [r[0] for r in w.team_roster.rows]
+        QTest.keyClick(w.team_roster, Qt.Key.Key_R, Qt.KeyboardModifier.ShiftModifier)
+        self.app.processEvents()
+        self.assertTrue(w.core_jobs.busy, 'Shift+R must start the backwards position action')
+        self.assertEqual(w.finish_core()[0], 'done')
+        self.assertEqual(w.model.card(player)['position'], 13)
+        self.assertEqual([r[0] for r in w.team_roster.rows], before)
+        QTest.keyClick(w.team_roster, Qt.Key.Key_R);self.app.processEvents()
+        self.assertEqual(w.finish_core()[0], 'done')
+        self.assertEqual(w.model.card(player)['position'], 0)
+        self.assertEqual(w.team_roster.rows[w.team_roster.current][0], player)
+        self.position_edit(w)
+        w.navigate(0)
+        self.assertEqual([r[0] for r in w.team_roster.rows], [r['player'] for r in w.model.team()['squad']])
+
 
 if __name__ == "__main__":
     unittest.main()

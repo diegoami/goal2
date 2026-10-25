@@ -309,6 +309,11 @@ class CoreWindow(QMainWindow):
 
     def navigate(self, index):
         if not self.navigation[index].isEnabled():return
+        # [designed: owner #423] Leaving the squad also leaves its position-edit selection.
+        if index != 1 and getattr(self, 'core_position_edit', None) is not None:
+            self.core_position_edit = None
+            from goal2.desktop import squad_page
+            squad_page.refresh_core(self)
         self.page_stack.setCurrentIndex(index)
         from PySide6.QtCore import QCoreApplication, QEvent
         for _ in range(3):QCoreApplication.sendPostedEvents(None, QEvent.Type.LayoutRequest)

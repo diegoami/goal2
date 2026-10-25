@@ -286,6 +286,9 @@ def build_core(self, model):
     for i, (text, name, action) in enumerate(buttons):
         button = QPushButton(text);button.setObjectName(name);button.setAccessibleName(text.rstrip(' >'))
         button.clicked.connect(action);self.core_team_buttons[name] = button
+        if name == 'reposition':
+            button.setToolTip('R: next position; Shift+R: previous position; Enter: confirm')
+            button.setAccessibleDescription(button.toolTip())
         if i < 3:actions.addWidget(button, 0, i)
     rename = QHBoxLayout();card_box.addLayout(rename);rename.addWidget(self.core_team_buttons['clubPosition'])
     self.rename_text = QLineEdit();self.rename_text.setObjectName('renameText');self.rename_text.setMaxLength(12)
@@ -298,6 +301,7 @@ def build_core(self, model):
     from PySide6.QtGui import QKeySequence, QShortcut
     for key, action in (('F2', lambda: self.rename_text.setFocus(Qt.FocusReason.ShortcutFocusReason)),
                         ('R', lambda: core_reposition(self, False)), ('C', lambda: core_reposition(self, True)),
+                        ('Shift+R', lambda: core_reposition(self, False, -1)),
                         ('T', lambda: core_team_view(self, 2))):
         shortcut = QShortcut(QKeySequence(key), page);shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         shortcut.activated.connect(lambda a=action: self.rename_text.hasFocus() or a())
@@ -331,7 +335,7 @@ def build_core(self, model):
     for row in self.own_tactics + [self.own_marking]:row.rows = self.own_tactics + [self.own_marking]
     own_hint = QLabel('Enter: the team\'s tactic, his own (P) one way, his own the other way / Esc: the card')
     own_hint.setObjectName('ownTacticsHint');own_hint.setWordWrap(True);own_box.addWidget(own_hint);own_box.addStretch(1)
-    self.team_roster.current_changed.connect(lambda row: core_refresh_card(self))
+    self.team_roster.current_changed.connect(lambda row: core_selection_changed(self))
     self.team_roster.activated.connect(lambda row: core_mark(self, self.team_roster, row, 'squad'))
 
     def escape():
@@ -358,9 +362,24 @@ def selected_player(self):
     return rows[self.team_roster.current][0] if rows and 0 <= self.team_roster.current < len(rows) else None
 
 
+def core_selection_changed(self):
+    """[designed: owner #423] Leaving the editing player releases visual order, following the new full ID."""
+    pending = getattr(self, 'core_position_edit', None)
+    if pending is not None and selected_player(self) != pending[0]:
+        self.core_position_edit = None
+        refresh_core(self)
+    else:
+        core_refresh_card(self)
+
+
 def core_mark(self, strip, row, side):
     """[designed: T107; confirmed: 0791:DEA6] Enter marks a player, Enter on another moves him: two squad players
     swap, a squad and a pool player exchange (the original's own Enter, Enter)."""
+    # [designed: owner #423] The first Enter confirms a position edit; it must not mark or swap anyone.
+    if strip is self.team_roster and getattr(self, 'core_position_edit', None) is not None:
+        self.core_position_edit = None
+        refresh_core(self)
+        return
     player = strip.rows[row][0]
     marked = self.core_marked
     if marked is None or marked[1] == player:
@@ -380,11 +399,15 @@ def core_mark(self, strip, row, side):
             s.marked = {self.core_marked[1]} if self.core_marked else set();s.update()
 
 
-def core_reposition(self, club):
+def core_reposition(self, club, direction=1):
     player = selected_player(self) if self.page_stack.currentIndex() == 1 else self.pool_selected()
     if player is None:return
     card = self.model.card(player)
-    self.run_core('set_position', player, card['club_position'] if club else (card['position'] + 1) % 14)
+    # [designed: owner #423] Guest edits remain immediate; only the displayed row order is held.
+    pending = (player, [r[0] for r in self.team_roster.rows]) if self.page_stack.currentIndex() == 1 else None
+    if self.run_core('set_position', player, card['club_position'] if club else (card['position'] + direction) % 14):
+        if pending is not None and getattr(self, 'core_position_edit', None) is None:
+            self.core_position_edit = pending
 
 
 def core_rename(self):
@@ -425,11 +448,19 @@ def core_refresh_card(self):
 
 
 def refresh_core(self):
+    selected = selected_player(self)
     team = self.model.team()
     tactics = self.model.team_tactics()
     rows = core_roster_rows(team)
+    pending = getattr(self, 'core_position_edit', None)
+    if pending is not None:
+        by_id = {r[0]: r for r in rows}
+        if set(by_id) == set(pending[1]):
+            rows = [by_id[player] for player in pending[1]]
+        else:
+            self.core_position_edit = None
     self.team_roster.caption = team['name'].upper()
-    current = self.team_roster.current if 0 <= self.team_roster.current < len(rows) else 0
+    current = next((i for i, r in enumerate(rows) if r[0] == selected), 0)
     self.team_roster.set_rows(rows, current)
     words = {r['element']: r['word'] for r in tactics['rows']}
     for element, row in self.tactics:row.set_word(words[element])

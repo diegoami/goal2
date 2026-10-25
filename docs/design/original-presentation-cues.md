@@ -21,3 +21,15 @@ space with invented information or compress away legibility.
 Schedule this work after the current play-through blockers/G16 proof, using the owner's initial
 Windows playtest feedback. Automated geometry checks support the pass; the owner's inspection
 establishes whether the result has the right GOAL2 appearance.
+
+[designed: owner Windows playtest, 2026-10-25; #423] Repositioning must keep the player's
+displayed roster row and full identity stable while positions are cycled. Original position
+changes take effect through the existing keys; defer visual reordering until Enter confirms
+or selection leaves that player. Confirmation must not also mark/swap the player.
+R cycles forwards, Shift+R backwards (including wrap at both ends); C restores club position.
+
+[designed: owner Windows playtest, 2026-10-25; #424] Apply the accepted one-letter role
+codes consistently to lineups, fixtures, matches and other player displays. Preserve the
+owner's left/right case distinction (`m` left midfield, `M` right midfield; likewise `b/B`
+and `w/W`), as specified in `docs/vision-266/role-codes/README.md`. This casing is an owner
+presentation choice, not a claim that the original code table distinguishes both sides.
