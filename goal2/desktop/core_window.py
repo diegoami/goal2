@@ -155,13 +155,16 @@ class CoreWindow(QMainWindow):
             from PySide6.QtCore import QTimer as _T
             _T.singleShot(0, self.resume_round)
         self.save_shortcut = QShortcut(QKeySequence('Ctrl+S'), self);self.save_shortcut.activated.connect(self.save.click)
+        self.original_save_shortcut = QShortcut(QKeySequence('F7'), self)
+        self.original_save_shortcut.activated.connect(self.begin_save_name)
         from goal2.desktop.fixed_page import FixedPage
         from goal2.desktop.bulletin_page import sheet as bulletin_sheet
         from goal2.desktop.style import COLORS
         sheet = apply_style(self) + bulletin_sheet(frame=COLORS['cyan'], masthead=COLORS['yellow'],
             text=COLORS['text'], hint=COLORS['magenta'], story_size=22, masthead_size=22)
         self.setStyleSheet(sheet);self.setCentralWidget(FixedPage(root, sheet, self))
-        self.refresh();self.navigate(0)
+        self.refresh();self.navigate(4 if self.model.in_save_name else 0)
+        self.refresh_save_controls()
 
     def _build_save(self):
         """[designed: T105] The Save page: the core save (F7 in the original), resumed with --resume."""
@@ -171,6 +174,8 @@ class CoreWindow(QMainWindow):
         self.path.setAccessibleName('Core save file');bar.addWidget(self.path, 1)
         self.save = QPushButton('Save (F7)');self.save.setObjectName('save');self.save.setAccessibleName('Save the core')
         self.save.clicked.connect(self.save_core);bar.addWidget(self.save)
+        self.cancel_save = QPushButton('Cancel');self.cancel_save.setObjectName('cancelOriginalSave')
+        self.cancel_save.clicked.connect(self.cancel_save_name);bar.addWidget(self.cancel_save)
         page.content.addLayout(bar)
         note = QLabel('Resume it with: python3 -m goal2.desktop --resume <core save> --data <GOAL.DAT>')
         note.setObjectName('deskCampaign');note.setWordWrap(True);page.content.addWidget(note)
@@ -179,11 +184,49 @@ class CoreWindow(QMainWindow):
         if self.core_jobs.busy:
             self.status.setText('Wait for the current core action before saving');return False
         try:
+            quitting = self.model.in_save_name and self.model.core.wait.view['quit']
             target = self.model.save(self.path.text().strip() or None)
         except ValueError as exc:
+            self.refresh_save_controls()
             self.status.setText(str(exc));return False
         self.path.setText(str(target));self.status.setText(f'Core saved to {target}')
+        if quitting:
+            self.close()
+        else:
+            self.refresh();self.refresh_save_controls()
         return True
+
+    def cancel_save_name(self):
+        """[designed: T121] Cancel writes nothing; terminal quit closes without executing teardown."""
+        if self.core_jobs.busy:
+            self.status.setText('Wait for the current core action before cancelling');return False
+        try:
+            quitting = self.model.in_save_name and self.model.core.wait.view['quit']
+            self.model.resolve_save_name(False)
+        except ValueError as exc:
+            self.status.setText(str(exc));return False
+        if quitting:
+            self.close()
+        else:
+            self.refresh();self.refresh_save_controls();self.navigate(0)
+        return True
+
+    def begin_save_name(self):
+        if self.core_jobs.busy:
+            self.status.setText('Wait for the current core action before opening Save');return False
+        try:
+            self.model.begin_save_name()
+        except ValueError as exc:
+            self.status.setText(str(exc));return False
+        self.navigate(4);self.refresh_save_controls()
+        return True
+
+    def refresh_save_controls(self):
+        pending = self.model.in_save_name
+        self.cancel_save.setVisible(pending)
+        self.cancel_save.setText('Close without saving' if pending and self.model.core.wait.view['quit'] else 'Cancel')
+        self.save.setText('Save and close' if pending and self.model.core.wait.view['quit'] else 'Save (F7)')
+        self.refresh_round_controls()
 
     def run_core(self, name, *args):
         """[designed: T107] Start the driver's team action `name` as a background job; the page shows the original
@@ -232,8 +275,8 @@ class CoreWindow(QMainWindow):
         busy = self.core_jobs.busy
         in_round = self.model.in_round
         for widget in self.core_actions:
-            widget.setEnabled(not busy)
-        if in_round:
+            widget.setEnabled(not busy and not self.model.in_save_name)
+        if in_round or self.model.in_save_name:
             for widget in [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move, self.pool_switch] + \
                     [row for _, row in self.tactics] + self.own_tactics + [self.own_marking, self.core_routes['play next game']]:
                 widget.setEnabled(False)

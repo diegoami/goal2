@@ -66,3 +66,5 @@ this checkpoint; no next task starts automatically.
 
 Consumer reconciliation: PR378 merged as `dc47e8cb5affb9c2549276bddc0178d0cb662e9a`.
 This intake retains that merged Live wording and changes only the evidence-limit cell.
+
+[derived: archaeology T92/PR425, e0cff951; consumer 2026-10-25] The negative T91 result above is historical. Later source-hashed synthetic fixtures supply controlled evidence for all four targets; see [the T92 handover](handover-2026-10-25-synthetic-fixtures.md). They do not close the natural-input requirement or promote F029/F030.

@@ -56,7 +56,7 @@ class CoreModel:
         self.refused = None           # [T108] the original's last refusal of the eleven, while the round waits on it
         self.commentary_cursor = 0
         self.pitch_sequence = 0
-        if core.wait.kind not in ROUND_WAITS:   # [T108] a core saved in a round resumes there
+        if core.wait.kind not in ROUND_WAITS + ('save-game-name-entry',):
             self.driver.to_menu()
 
     @classmethod
@@ -114,6 +114,8 @@ class CoreModel:
         back. A refusal comes back as ValueError with the original's reason: the message box's text for a pool
         exchange the original refuses (0791:DBFA), the driver's statement for a screen that does not offer it."""
         from goal2.core import CoreError
+        if self.in_save_name:
+            raise ValueError('Resolve the original save decision before another action')
         if name in ROUND_ACTIONS:
             return self.round_step(name, *args)
         if name not in ACTIONS:
@@ -222,17 +224,55 @@ class CoreModel:
             self.pitch_sequence += 1
         elif wait.kind == 'match-summary-save-prompt':
             out.update(stop='summary-save', board=views.board(self.state))
+        # [designed: owner#73, T122] Preserve raw original views; presentation names the declared deviation.
+        if out['bench'] is not None:
+            from goal2.core.patches import unlimited_friendly
+            if unlimited_friendly(self.core):
+                out['bench']['budget_label'] = 'Unlimited'
         if wait.kind in ROUND_WAITS and wait.kind != 'match-live' and self.driver.watching:
             self.commentary_cursor, out['commentary'] = views.commentary(self.state, self.commentary_cursor)
         return out
 
     # -- saving ----------------------------------------------------------------------------------------------
+    @property
+    def in_save_name(self):
+        return self.core.wait.kind == 'save-game-name-entry'
+
+    def begin_save_name(self):
+        """[confirmed: T121 original F7 probe] Enter the original save decision only from management."""
+        from goal2.core.screens import F7
+        if self.in_round or self.in_save_name:
+            raise ValueError('Finish the current decision before opening the original save prompt')
+        self.driver.to_menu()
+        self.driver.press(F7, expect=('save-game-name-entry',))
+
+    def resolve_save_name(self, write, path=None):
+        """[designed: T121, owner .g2core decision] Resolve the observed editor without a .GL writer.
+
+        F7 cancels through the original Esc and saves the resulting live core. Terminal quit-save
+        selects the one actual pre-F10 snapshot; it never rewinds or runs the quitting machine.
+        """
+        if not self.in_save_name:
+            raise ValueError('The original is not asking for a saved-game name')
+        if self.core.wait.view['quit']:
+            if not write:
+                return None
+            if self.core.quit_origin is None:
+                raise ValueError('This terminal save has no recorded playable origin')
+            return self._write_save(self.core.quit_origin, path)
+        self.driver.cancel_save_name()
+        return self.save(path) if write else None
+
     def save(self, path=None):
         """[designed] The Save page (F7 in the original): the core save (docs/core.md, "Saving"), written whole to a
         temporary file and then moved over `path`."""
+        if self.in_save_name:
+            return self.resolve_save_name(True, path)
+        return self._write_save(self.core.save(), path)
+
+    def _write_save(self, data, path=None):
         target = Path(self.save_path if path is None else path)
         try:
-            data = self.core.save()
             target.parent.mkdir(parents=True, exist_ok=True)
             temporary = target.with_name(target.name + '.tmp')
             temporary.write_bytes(data)
@@ -362,7 +402,10 @@ class CoreNewGame:
         bulletins = []
         try:
             driver.new_game(country, manager_name, on_bulletin=lambda wait: bulletins.append(views.bulletin(wait.state)))
-        except CoreError as exc:
+            # [designed: owner#73, T122] New desktop careers explicitly opt in; imports/resumes never migrate.
+            from goal2.core.patches import OWNER_SUBSTITUTIONS
+            driver.core.apply_patch(OWNER_SUBSTITUTIONS)
+        except (CoreError, ValueError) as exc:
             self._drivers.pop(start_year, None)
             raise ValueError(f'The new game stopped: {exc}') from exc
         self._drivers.pop(start_year, None)            # this core is the career now

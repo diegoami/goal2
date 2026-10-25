@@ -327,6 +327,11 @@ class LaunchWindow(QMainWindow):
         self.manager_name.setPlaceholderText('J Smith');self.manager_name.setVisible(self.core_new is not None)
         self.manager_name.returnPressed.connect(self.do_start)
         body.addWidget(self.manager_name)
+        # [designed: owner#73, T122] Show the new career's declared substitution rule before Start.
+        from goal2.core.patches import OWNER_RULE
+        self.substitution_rule = QLabel('Substitutions: ' + OWNER_RULE)
+        self.substitution_rule.setObjectName('coreSubstitutionRule');self.substitution_rule.setWordWrap(True)
+        self.substitution_rule.setVisible(self.core_new is not None);body.addWidget(self.substitution_rule)
         self.review_error = QLabel();self.review_error.setObjectName('launchError');self.review_error.setWordWrap(True)
         self.review_error.setVisible(self.core_new is not None);body.addWidget(self.review_error)
         body.addStretch(1)
