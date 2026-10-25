@@ -26,6 +26,7 @@ establishes whether the result has the right GOAL2 appearance.
 displayed roster row and full identity stable while positions are cycled. Original position
 changes take effect through the existing keys; defer visual reordering until Enter confirms
 or selection leaves that player. Confirmation must not also mark/swap the player.
+R cycles forwards, Shift+R backwards (including wrap at both ends); C restores club position.
 
 [designed: owner Windows playtest, 2026-10-25; #424] Apply the accepted one-letter role
 codes consistently to lineups, fixtures, matches and other player displays. Preserve the

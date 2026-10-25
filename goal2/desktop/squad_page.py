@@ -286,6 +286,9 @@ def build_core(self, model):
     for i, (text, name, action) in enumerate(buttons):
         button = QPushButton(text);button.setObjectName(name);button.setAccessibleName(text.rstrip(' >'))
         button.clicked.connect(action);self.core_team_buttons[name] = button
+        if name == 'reposition':
+            button.setToolTip('R: next position; Shift+R: previous position; Enter: confirm')
+            button.setAccessibleDescription(button.toolTip())
         if i < 3:actions.addWidget(button, 0, i)
     rename = QHBoxLayout();card_box.addLayout(rename);rename.addWidget(self.core_team_buttons['clubPosition'])
     self.rename_text = QLineEdit();self.rename_text.setObjectName('renameText');self.rename_text.setMaxLength(12)
@@ -298,6 +301,7 @@ def build_core(self, model):
     from PySide6.QtGui import QKeySequence, QShortcut
     for key, action in (('F2', lambda: self.rename_text.setFocus(Qt.FocusReason.ShortcutFocusReason)),
                         ('R', lambda: core_reposition(self, False)), ('C', lambda: core_reposition(self, True)),
+                        ('Shift+R', lambda: core_reposition(self, False, -1)),
                         ('T', lambda: core_team_view(self, 2))):
         shortcut = QShortcut(QKeySequence(key), page);shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         shortcut.activated.connect(lambda a=action: self.rename_text.hasFocus() or a())
@@ -395,13 +399,13 @@ def core_mark(self, strip, row, side):
             s.marked = {self.core_marked[1]} if self.core_marked else set();s.update()
 
 
-def core_reposition(self, club):
+def core_reposition(self, club, direction=1):
     player = selected_player(self) if self.page_stack.currentIndex() == 1 else self.pool_selected()
     if player is None:return
     card = self.model.card(player)
     # [designed: owner #423] Guest edits remain immediate; only the displayed row order is held.
     pending = (player, [r[0] for r in self.team_roster.rows]) if self.page_stack.currentIndex() == 1 else None
-    if self.run_core('set_position', player, card['club_position'] if club else (card['position'] + 1) % 14):
+    if self.run_core('set_position', player, card['club_position'] if club else (card['position'] + direction) % 14):
         if pending is not None and getattr(self, 'core_position_edit', None) is None:
             self.core_position_edit = pending
 
