@@ -751,6 +751,9 @@ class CoreRound:
         elif stop == 'round-paused':
             self.queue = list(state['pages'][self.first_page:]);self.after = 'round-paused'
             self.first_page = len(state['pages']);self.next_page()
+        elif stop == 'bulletin-achievement':
+            self.queue = list(state['pages'][self.first_page:]);self.after = 'bulletin-achievement'
+            self.first_page = len(state['pages']);self.next_page()
         elif stop == 'captain':
             if name in ('round_start', 'round_continue'):
                 self.queue = list(state['pages'][self.first_page:]);self.after = 'captain';self.first_page = len(state['pages'])
@@ -976,6 +979,12 @@ class CoreRound:
             self.page_board.set_lines(_page_lines('round-results',self.state['results'],managed))
             self.page_content.setCurrentIndex(0)
             self.page_count.setText(self.state['message'])
+            self.page_next.setText('Continue (Enter)')
+            self.after = 'round-continue';self.show(2)
+        elif self.after == 'bulletin-achievement':
+            # [designed: #395] Keep the guest frozen until the player's Continue.
+            self.bulletin_columns.set_content(self.state['bulletin']);self.page_content.setCurrentIndex(1)
+            self.page_board.set_lines([]);self.page_count.setText('')
             self.page_next.setText('Continue (Enter)')
             self.after = 'round-continue';self.show(2)
         elif self.after == 'captain':

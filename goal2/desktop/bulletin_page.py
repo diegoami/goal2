@@ -11,7 +11,7 @@ def sheet(*, frame, masthead, text, hint, story_size=26, masthead_size=24):
     """[designed: T110] T106's paper style; the core's sidebar leaves less room for its type."""
     return f"""
 QFrame#bulletinPanel {{border:2px solid {frame};}}
-QLabel#bulletinTitle {{font-size:30px;font-weight:700;color:{frame};}}
+QLabel#bulletinTitle, QLabel#bulletinAchievement {{font-size:30px;font-weight:700;color:{frame};}}
 QLabel#bulletinMasthead {{font-size:{masthead_size}px;font-weight:700;color:{masthead};}}
 QLabel#bulletinStory {{font-size:{story_size}px;font-weight:700;color:{text};}}
 QLabel#bulletinCount {{color:{hint};}}
@@ -28,6 +28,12 @@ class BulletinColumns(QWidget):
             heading = QLabel(title);heading.setObjectName('bulletinTitle')
             heading.setTextFormat(Qt.TextFormat.PlainText);heading.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             layout.addWidget(heading)
+        # [designed: #395] The original's qualified achievement accompanies its
+        # complete paper page; ordinary bulletins reserve no caption space.
+        self.achievement = QLabel();self.achievement.setObjectName('bulletinAchievement')
+        self.achievement.setTextFormat(Qt.TextFormat.PlainText);self.achievement.setWordWrap(True)
+        self.achievement.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.achievement.hide();layout.addWidget(self.achievement)
         row = QHBoxLayout();row.setSpacing(20);layout.addLayout(row, 1)
         self.panels = {}
         for name, stretch in (('left', 2), ('middle', 3), ('right', 2)):
@@ -43,6 +49,8 @@ class BulletinColumns(QWidget):
             self.panels[name] = (masthead, story)
 
     def set_content(self, view):
+        self.achievement.setText(view.get('achievement', ''))
+        self.achievement.setVisible(bool(view.get('achievement')))
         for name, (masthead, story) in self.panels.items():
             masthead.setText(view[name]['masthead'])
             story.setText('\n'.join(view[name]['lines']))

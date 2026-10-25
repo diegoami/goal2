@@ -507,6 +507,12 @@ def bulletin(state):
     return out
 
 
+def achievement_bulletin(state):
+    """[confirmed: #395; 000E:0584-05A6 at archaeology44cea4de] Qualified best-place
+    caption from original code plus the untouched three-column composed page."""
+    return dict(bulletin(state), achievement=Memory(state).code_str(0x000E, 0x055F))
+
+
 # -- the Team and Pool pages (T107) ---------------------------------------------------------------------------------
 # [confirmed: annotations/fields.tsv (F007, F008)] the player record (20 bytes at [DS:A91B] + 20 n): +0 country, +1 age,
 # +2 peak age, +3 rating, +4 ability, +5 skill profile, +6 position, +7 club position, +8 caps, +0xA goals, +0xC

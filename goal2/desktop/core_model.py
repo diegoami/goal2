@@ -39,7 +39,8 @@ ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', '
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
                'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order',
-               'match-menu-extra-time', 'match-menu-extra-halftime', 'set-piece-select', 'set-piece-pitch')
+               'match-menu-extra-time', 'match-menu-extra-halftime', 'set-piece-select', 'set-piece-pitch',
+               'bulletin-achievement')
 
 
 class CoreModel:
@@ -195,6 +196,9 @@ class CoreModel:
         elif wait.kind == 'round-paused':
             out.update(stop='round-paused', message=wait.view['message'],
                        results=views.round_results(self.state, wait.view['first'], wait.view['last']))
+        elif wait.kind == 'bulletin-achievement':
+            # [designed: #395] A current guest decision, preserved on partial save/resume.
+            out.update(stop='bulletin-achievement', bulletin=views.achievement_bulletin(self.state))
         elif wait.kind == 'match-menu' and self.driver.stoppage():
             out.update(stop='pause' if wait.view.get('context') == 'pause' else 'stoppage',
                        board=views.board(self.state), bench=views.bench(self.state))

@@ -601,8 +601,11 @@ class Core:
             self.released = None
         complete = (not self._live_frames or kind != 'match-live'
                     or _screens.view(site, self._frame()).get('slot') in (22, None))
-        if (complete and (kind in self.stops or kind == _screens.SAVE_NAME)
-                and self.pending is None and kind != self.released
+        # [designed: #395; confirmed: 0572's 05DF-05EE untimed loop] This
+        # achievement requires a key; even release() must retain the next poll wait.
+        achievement = kind == _screens.BULLETIN_ACHIEVEMENT
+        if (complete and (kind in self.stops or kind == _screens.SAVE_NAME or achievement)
+                and self.pending is None and (kind != self.released or achievement)
                 and not any(k == kind for k, _ in self.queued)):
             m.stop("poll")           # [T108] a wait at the poll: press() answers it
             return
