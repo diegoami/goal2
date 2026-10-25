@@ -513,6 +513,16 @@ def achievement_bulletin(state):
     return dict(bulletin(state), achievement=Memory(state).code_str(0x000E, 0x055F))
 
 
+def congratulations_bulletin(state):
+    """[confirmed: #409 genuine T123 capture; 0572's packed template DS:5B94 at source 44cea4de]
+    Its fixed caption is row 2, columns 31..48 of the original display buffer. This is
+    presentation readback only; caller/flag classification never reads this text."""
+    mem = Memory(state)
+    start = mem.far(0xA96A) + 160*2 + 2*31
+    caption = bytes(mem.mem[start:start+2*18:2]).decode('cp437').strip()
+    return dict(bulletin(state), achievement=caption)
+
+
 # -- the Team and Pool pages (T107) ---------------------------------------------------------------------------------
 # [confirmed: annotations/fields.tsv (F007, F008)] the player record (20 bytes at [DS:A91B] + 20 n): +0 country, +1 age,
 # +2 peak age, +3 rating, +4 ability, +5 skill profile, +6 position, +7 club position, +8 caps, +0xA goals, +0xC

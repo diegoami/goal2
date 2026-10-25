@@ -40,7 +40,7 @@ ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', '
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
                'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order',
                'match-menu-extra-time', 'match-menu-extra-halftime', 'set-piece-select', 'set-piece-pitch',
-               'bulletin-achievement')
+               'bulletin-achievement', 'bulletin-congratulations')
 
 
 class CoreModel:
@@ -199,6 +199,9 @@ class CoreModel:
         elif wait.kind == 'bulletin-achievement':
             # [designed: #395] A current guest decision, preserved on partial save/resume.
             out.update(stop='bulletin-achievement', bulletin=views.achievement_bulletin(self.state))
+        elif wait.kind == 'bulletin-congratulations':
+            # [designed: #409] The same guarded round page over an original poll.
+            out.update(stop='bulletin-congratulations', bulletin=views.congratulations_bulletin(self.state))
         elif wait.kind == 'match-menu' and self.driver.stoppage():
             out.update(stop='pause' if wait.view.get('context') == 'pause' else 'stoppage',
                        board=views.board(self.state), bench=views.bench(self.state))

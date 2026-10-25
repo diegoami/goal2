@@ -23,6 +23,7 @@ RETURN, ESCAPE, SPACE = 0x0D, 0x1B, 0x20
 TAKER_SELECT, TAKER_PITCH = 'set-piece-select', 'set-piece-pitch'
 SAVE_NAME = 'save-game-name-entry'
 BULLETIN_ACHIEVEMENT = 'bulletin-achievement'
+BULLETIN_CONGRATULATIONS = 'bulletin-congratulations'
 F1, F2, F3, F4, F5, F7, F9, F10 = 0x9F, 0xA0, 0xA1, 0xA2, 0xA3, 0xA5, 0xA7, 0xA8      # scan 0x3B.. + 0x64
 HOME, UP, PGUP, LEFT, RIGHT = 0xAB, 0xAC, 0xAD, 0xAE, 0xAF                          # 0x47, 0x48, 0x49, 0x4B-1, 0x4D-2
 END, DOWN, PGDN, INSERT = 0xB0, 0xB1, 0xB2, 0xB6                                    # 0x4F-3, 0x50-3, 0x51-3, 0x52
@@ -128,6 +129,8 @@ KINDS = {k.name: k for k in (
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind(BULLETIN_ACHIEVEMENT, keys(("any key", "(any)")), designed=True, polled=True,
          evidence="[designed: #395; confirmed: F030/source 44cea4de, 000E:0572/05F6; genuine G15-variant capture] best-place key wait"),
+    Kind(BULLETIN_CONGRATULATIONS, keys(("any key", "(any)")), designed=True, polled=True,
+         evidence="[designed: #409; confirmed: source 44cea4de 04F5/0572/05F6; genuine T123 G15-variant capture] qualification congratulations"),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
     Kind(TAKER_SELECT, keys(("C-computer select", "c C"), ("↑↓", "Up Down"), ("◄┘-select", "Return"),
                            ("keep", "Escape"), ("spacebar-pitch", "space"),
@@ -391,6 +394,31 @@ def _best_place(f):
             and f.byte(parent, 6)):
         return BULLETIN_ACHIEVEMENT
     return None
+
+
+def _congratulations_parent(f, bp):
+    # [confirmed: archaeology 44cea4de, 05F6/0572; T123 at goal2 9d0142cb]
+    # Admit the observed announce-stage (6625) flags, not the unvisited +4
+    # celebration branches or post-match callers. Every flag is a low byte.
+    parent = f.up(bp)
+    if (parent and parent != bp and f.near_caller(bp) == 0x0624
+            and f.word(bp, 4) == parent and f.near_caller(parent) == 0x6625
+            and not f.byte(parent, 4) and not f.byte(parent, 6) and f.byte(parent, 8)):
+        return parent
+    return None
+
+
+def _congratulations_finite(f):
+    # [confirmed: same pin, 04F5 at 05B2/return 05B5; genuine poll 0515]
+    parent = f.up(f.bp)
+    if (parent and f.near_caller(f.bp) == 0x05B5 and f.word(f.bp, 4) == parent
+            and not f.byte(f.bp, 6) and _congratulations_parent(f, parent) is not None):
+        return BULLETIN_CONGRATULATIONS
+    return None
+
+
+def _bulletin_animation(f):
+    return _best_place(f) or (BULLETIN_CONGRATULATIONS if _congratulations_parent(f, f.bp) is not None else None)
 
 
 def _fixture(f):
@@ -812,8 +840,10 @@ SITES = {s.site: s for s in (
     Site("214B:112B", False, "214B:1086 the line editor (reads after its cursor wait's poll says a key waits)",
          "F032; E038-r0001's trace; T121", lambda f: _name_entry(f, f.bp), lambda f: _name_view(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
-    Site("000E:05EC", True, "000E:0572 under 05F6, post-match news best-place wait",
-         "[confirmed: #395 genuine G15-variant input; source 44cea4de 05E7/0621/4F6F]", _best_place),
+    Site("000E:0515", True, "000E:04F5 under 0572/05F6, finite congratulations animation",
+         "[confirmed: #409 genuine T123 G15-variant input; source 44cea4de 0510-055C]", _congratulations_finite),
+    Site("000E:05EC", True, "000E:0572 under 05F6, qualified best-place or congratulations wait",
+         "[confirmed: #395/#409 genuine G15-variant inputs; source 44cea4de 05E7/0621/4F6F/6622]", _bulletin_animation),
     Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live",
          # [confirmed: code/seg_0791_15.asm 9571-9708] 954E's loop calls 9372 after each of 22 slots; its
          # local [bp-2] is the slot. The last poll is a complete pose, before the clock at 970C.
