@@ -44,6 +44,9 @@ class CountryCardView(QWidget):
         return self.sizeHint()
 
     def set_card(self, card, first=''):
+        if card is not None and 'squad' in card:
+            from goal2.desktop.core_roles import role_code
+            card = {**card, 'eleven': [role_code(p) for p in card['squad'][:11]]}
         self.card = card;self.first = first
         if card is not None:
             self.setAccessibleName(f"{card['name']}; manager {card['manager']}; world {card['world']}; "

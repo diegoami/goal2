@@ -256,7 +256,8 @@ class CoreTacticRow(TacticRow):
 
 
 def core_roster_rows(team):
-    return [(r['player'], r['name'], r['code'], r['line'], r['eleven'], False) for r in team['squad']]
+    from goal2.desktop.core_roles import role_code
+    return [(r['player'], r['name'], role_code(r), r['line'], r['eleven'], False) for r in team['squad']]
 
 
 def build_core(self, model):

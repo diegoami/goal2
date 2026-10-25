@@ -109,6 +109,7 @@ class Bench:
 
     def refresh(self):
         eleven, bench = self.words()
+        from goal2.desktop.core_roles import role_code
         data = self.data
         roles = {p['id']: p for p in self.window.model.view()['players']}
         off = {a for a, _ in self.chosen};on = {b for _, b in self.chosen}
@@ -338,7 +339,7 @@ class CoreBench:
             by_word = {r['player']: r for r in data['squad']}
             for word in eleven + bench:
                 r = by_word.get(word, {'name': '?', 'code': '?', 'line': 'unknown'})
-                rows.append((word, r['name'] + (' *' if word == self.mark else ''), r['code'], r['line'], word in eleven, False))
+                rows.append((word, r['name'] + (' *' if word == self.mark else ''), role_code(r), r['line'], word in eleven, False))
             self.roster.caption = data['name'].upper()
         current = self.roster.current if 0 <= self.roster.current < len(rows) else 0
         self.roster.set_rows(rows, current)

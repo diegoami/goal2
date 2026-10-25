@@ -85,7 +85,8 @@ class TakerPages:
             label = {2: 'CORNER TAKER', 5: 'GOAL KICK TAKER'}[choice['role']]
             self.title.setText(f"{label} / {choice['name'].upper()}")
             self.roster.marked = {choice['stored']}
-            self.roster.set_rows([(p['player'], p['name'], p['code'], p['line'], True, False) for p in choice['players']], choice['slot'] - 1)
+            from goal2.desktop.core_roles import role_code
+            self.roster.set_rows([(p['player'], p['name'], role_code(p), p['line'], True, False) for p in choice['players']], choice['slot'] - 1)
             self.card.set_card(core_card(choice['card']))
             self.round.show(self.choice_index)
             self.roster.setFocus()

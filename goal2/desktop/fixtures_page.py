@@ -792,11 +792,12 @@ class CoreRound:
         self.show(3)
 
     def show_shootout_order(self, state):
+        from goal2.desktop.core_roles import role_code
         order=state['order'];self.state=state
         self.shootout_roster.unavailable={i for i,p in enumerate(order['players']) if not p['available']}
         self.shootout_title.setText(f"SHOOTOUT ORDER / {order['name'].upper()} / {len(order['picks'])} OF {order['needed']}")
         self.shootout_roster.set_rows([(p['player'],
-            (f"{p['rank']:2}. " if p['rank'] else '    ')+p['name'],p['code'],p['line'],True,False)
+            (f"{p['rank']:2}. " if p['rank'] else '    ')+p['name'],role_code(p),p['line'],True,False)
             for p in order['players']],order['slot']-1)
         self.show(6);self.refresh_shootout_card()
 
@@ -823,9 +824,10 @@ class CoreRound:
         self.window.run_core('shootout_pick',player)
 
     def show_captain(self):
+        from goal2.desktop.core_roles import role_code
         state = self.window.model.round_state();self.state = state
         choice = state['captain']
-        rows = [(r['player'], r['name'], r['code'], r['line'], True, r['player'] == choice['captain'])
+        rows = [(r['player'], r['name'], role_code(r), r['line'], True, r['player'] == choice['captain'])
                 for r in choice['eleven']]
         self.captain_roster.caption = choice['name'].upper()
         current = next((i for i, r in enumerate(rows) if r[5]), 0)
@@ -861,9 +863,10 @@ class CoreRound:
 
     def resume_viewer(self):
         from goal2.desktop.core_viewer import CoreViewer
+        from goal2.desktop.core_roles import pitch_identity
         if self.state is None or self.state['stop'] != 'live' or self.window.core_jobs.busy:return
         if self.viewer is None:
-            self.viewer = CoreViewer(self.state['identity'])
+            self.viewer = CoreViewer(pitch_identity(self.window.model.state, self.state['identity']))
         self.watch_suspended = False
         self.viewer.pose(self.state['pitch'], self.state['commentary'], self.state.get('speed'))
         self.resume_watch.hide()
@@ -929,11 +932,12 @@ class CoreRound:
     def show_taker_pitch(self,state):
         """[designed:T120] A frozen existing SDL renderer; no live_step while CF3A reads its dismissal key."""
         from goal2.desktop.core_viewer import CoreViewer
+        from goal2.desktop.core_roles import pitch_identity
         if self.window.core_jobs.busy:
             return
         try:
             if self.viewer is None:
-                self.viewer = CoreViewer(state['identity'])
+                self.viewer = CoreViewer(pitch_identity(self.window.model.state, state['identity']))
             if self.viewer.display.frame_sequence >= 0 and not self.viewer.drained:
                 self.takers.preview_note.setText('The pitch is being displayed…')
                 return

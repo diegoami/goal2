@@ -176,12 +176,13 @@ def core_card(card):
     """[designed: T107] goal2/core/views.player_card's card in this view's shape: the original's words, its bars
     (26 skill cells, 1771:3947's template; 14 per characteristic; 9 performance stars, 1771:3827) and no number
     where a bar fits; a pool player has no status word, as the original shows none."""
+    from goal2.desktop.core_roles import role_code
     feet, inches = card['height']
     foot = card['foot'] if ' ' in card['foot'] else card['foot'] + ' foot'
-    return {'full_name': card['name'], 'role': card['code'], 'line': card['line'], 'age': card['age'],
+    return {'full_name': card['name'], 'role': role_code(card), 'line': card['line'], 'age': card['age'],
             'caps': card['caps'], 'goals': card['goals'], 'height': f"{feet}'{inches:2}\"", 'foot': foot,
             'readiness': card['readiness'] or 'in the pool', 'position': card['position_name'],
-            'club_position': card['club_position_name'], 'club_role': card['club_code'],
+            'club_position': card['club_position_name'], 'club_role': role_code(card, club=True),
             'cards': card['cards'], 'performance': None, 'performance_bar': card['performance'] or 0,
             'skills': card['skills'], 'skill_cells': 26,
             'characteristics': [(n, w, b, None) for n, w, b in card['characteristics']],

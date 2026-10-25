@@ -250,7 +250,7 @@ def core_country_view(self, index):
 
 def refresh_core(self, model, desk=None):
     from goal2.desktop.player_card import CYAN, GOLD, GREEN, WHITE, YELLOW
-    from goal2.game.roles import LEFT
+    from goal2.desktop.core_roles import role_code
     desk = model.desk() if desk is None else desk
     self.core_name.setText(f"{desk['manager']}\nrating  {desk['rating']}")
     team = desk['team']
@@ -268,7 +268,7 @@ def refresh_core(self, model, desk=None):
     self.core_managers.set_lines([[(f'{n} ', GOLD), (names.get(n, ''), WHITE if n == desk['manager_number'] else CYAN)]
                                   for n in range(1, 7)])
     # [designed: owner, 2026-10-21, #283; goal2/game/roles.py] the left-hand positions in lower case.
-    rows = [(p['player'], p['name'], p['code'].lower() if p['position'] in LEFT else p['code'], p['line'], i < 11, False)
+    rows = [(p['player'], p['name'], role_code(p), p['line'], i < 11, False)
             for i, p in enumerate(desk['squad'])]
     self.country_roster.set_rows(rows);self.country_roster.caption = team['name'].upper()
     history = model.history()
