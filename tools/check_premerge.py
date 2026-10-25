@@ -85,7 +85,10 @@ def run_module(module: str, python: str, slow: bool) -> tuple[str, int, float, s
     env = {**os.environ, "GOAL2_SLOW": "1" if slow else "0"}
     r = subprocess.run([python, "-m", "unittest", "discover", "-s", "goal2/tests", "-t", ".",
                         "-p", module + ".py"], cwd=ROOT, capture_output=True, text=True, env=env)
-    return module, r.returncode, time.monotonic() - start, (r.stdout + r.stderr)[-3000:]
+    output = r.stdout + r.stderr
+    # [designed: #377] Cleanup tracebacks can bury the originating test failure.
+    # Keep every failed module's output in the gate/CI log; abbreviate successes only.
+    return module, r.returncode, time.monotonic() - start, output if r.returncode else output[-3000:]
 
 
 # [designed: #275] Modules whose mutation controls rewrite a tracked source file for a moment
