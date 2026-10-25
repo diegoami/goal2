@@ -345,7 +345,8 @@ class CoreBench:
         self.roster.marked = {self.mark} if self.mark else set();self.roster.update()
         if self.mode in ('half_time', 'stoppage', 'pause') and data:
             # [confirmed: named/seg_0791_11.c E44F] the original's counter, or its own line when none is left
-            self.counter.setText(data['message'] if data['left'] == 0 and data['message']
+            self.counter.setText(f"substitutions left {data['budget_label']}" if data.get('budget_label')
+                                 else data['message'] if data['left'] == 0 and data['message']
                                  else f"substitutions left {data['left']}")
             board = self.state.get('board') or {}
             names = board.get('names', ['', '']);score = board.get('score', [0, 0])

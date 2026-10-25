@@ -1,0 +1,13 @@
+{
+  "rule": "Designed owner#73: unlimited friendlies/five otherwise; original F027 remains5/2",
+  "source": "F027 at archaeology53d7ef5/922fd8d8; read-only assembly audit44cea4de169e5c85043ad279235cda29e95e7e56 A5FB/A605/E544/8116/C89E/C5F6",
+  "inputs": [
+    {"name":"g13-aec219b9376383e7-g1a-original-manager.sav","sha256":"aec219b9376383e79acdfb2a5bcf4e6ca365502b4026c4dae4c8899faffd92b0","source":"T88 native-r4 step6; runtimeb5f769a6e847e12afbf9197021085c16d8f12353"},
+    {"name":"g13-b2497a51f41fa52a-g4c-loaded-manager.sav","sha256":"b2497a51f41fa52a733fe880e3b144b43db05d5de11f4da6e45c51dc76a715a0","source":"T86 original G4C loader delivery, PR403 merged810cf9136435750c7653afa9a3e83300703b0e8c"},
+    {"name":"g13-66a92624ff602447-g1a-original-halftime.sav","sha256":"66a92624ff602447c0cc29d8ee4291bceab145c3df2d9cb9545ba13b16f0c6d0","source":"T88 native-r4 step50; original-policy legacy counter control"}
+  ],
+  "method": "Hash-verified original managers; declared owner table edit before original kickoff only. All substitution operations and no-re-entry controls use original keys. The managed side is read from actual match state, not assumed side0.",
+  "synthetic_controls": "Clearly non-executed serializer/header corruption and wrong-table precondition controls; never original/natural evidence",
+  "private": "Canonical input names in owner private Drive; full-hash readbacks retained under goal2-keep/G15-preflight-20261024 and T122-20261024. No payload enters public Git/releases.",
+  "limits": "Owner-policy results are not unchanged-original evidence. Four archaeology400 natural-input gaps remain open. No new collection/campaign was performed for those gaps."
+}

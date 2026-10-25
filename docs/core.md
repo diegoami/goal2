@@ -651,6 +651,32 @@ The genuine file-not-found read214B:09C4 remains a strict unknown-caller regress
 actual stopped machine, private hash and early-collector provenance limitation in
 [evidence metadata](evidence/T121/artifacts.json).
 
+### Declared owner substitution policy
+
+[designed: owner#73, T122] `core.apply_patch('owner-substitutions-v1')` at a manager menu
+registers the owner rule: Unlimited friendly substitutions, five otherwise. Raw Core instances
+start with the original policy. New desktop careers explicitly activate the rule after reaching
+management; their review page names it before Start. Imported and resumed cores keep the policy
+and spent counter actually recorded, with no migration or refill.
+
+[confirmed: F027 at archaeology53d7ef5/922fd8d8, A5FB/A605/E544/C5F6; T88/T86 inputs]
+The original copies DS066B/C (5/2) into per-side DS9B3A using its0/1 selector DS9A3D.
+[designed: T122] The registered patch checks both original bytes, then changes only that table
+to255/5. It touches no CPU register, key, seed, fixture, player or current-match counter.
+[derived: F027, original C5F6 outgoing-status store and twenty-player squad] Original no-re-entry
+keeps255 from imposing an attainable substitution limit. The bench displays Unlimited for a
+recorded owner-policy friendly; other counters show their actual remaining value. Original
+eligibility, positioning and refusal rules remain authoritative.
+
+[designed: T122] Save version5 carries only known registered patch identifiers. Versions1–4
+remain readable with their original tables/counters. Loading/saving checks declarations against
+the two table bytes; unknown, duplicate or inconsistent declarations fail. Activating an already
+recorded rule is idempotent and never replenishes a spent budget. New activation during a match
+is refused. Quit-origin snapshots retain the same policy and exact pre-F10 state. There is no
+arbitrary-byte patch loader or edited vendor file; raw native inputs retain the original guard.
+The genuine before-kickoff inputs, source hashes and private readbacks are recorded in
+[evidence metadata](evidence/T122/artifacts.json).
+
 ## Requirements and cost
 
 `import goal2.core` needs the standard library only; `Core.start` needs `unicorn` (`pip install -e
