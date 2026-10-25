@@ -675,3 +675,9 @@ three-column bulletin. Continue (Enter) supplies the one key the original consum
 returning to management. The current achievement can be saved/resumed exactly; management
 actions and save-name editing remain guarded during the round. Ordinary bulletins reserve
 no achievement-caption space.
+
+[designed: #409; confirmed: first T123 G15-variant campaign and source 44cea4de, 04F5/0572/05F6]
+The original qualification congratulations also remains a guarded round page: its original
+caption and all three bulletin columns are visible, and Continue supplies one original key.
+An exact partial save resumes on that page. The original finite no-key animation and later
+untimed wait remain available through the Core API; unsupported flags/callers stay explicit errors.

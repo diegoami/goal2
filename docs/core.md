@@ -94,6 +94,7 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | --- | --- | --- | --- |
 | `round-paused` | `214B:098A` (box 214B:04F8, 054E from 000E:6BD5) | T115 genuine queued-Space checkpoint, fixture 706 | "PAUSE" "PRESS ANY KEY" |
 | `bulletin-achievement` | `000E:05EC` (0572 from 05F6 at 0621, parent from 4F6F) | #395 genuine G15-variant capture | "BEST PLACE YET" |
+| `bulletin-congratulations` | `000E:0515/05EC` (04F5 mode 0 under 0572/05F6, announce-stage 6625) | #409 first genuine T123 G15-variant campaign | "Congratulations !!" |
 | `shootout-announcement` | `214B:098A` (054E from 0791:A137) | T118, unchanged E031 g1 checkpoint3874 | "penalty shoot out" "PRESS ANY KEY" |
 | `shootout-order` | `214B:157C` (9D67 from A183) | T118, original Enter after E031 checkpoint3874 | "to select the order" "Hit Esc to undo" |
 | `match-walkoff` | `0791:78F9` (7881 poll; flush read7902) | #363, genuine G4C Koeman injury | "R-result" "spacebar-commentary" |
@@ -720,6 +721,22 @@ The source and stopped-machine hashes and private input identity are in
 [the #395 manifest](evidence/395/artifacts.json). Its tests compare the actual captured
 machine, saved replay, full original-key round and real desktop controls/bounds.
 
+[confirmed: first T123 original-key campaign at goal2 9d0142cb; archaeology 44cea4de,
+04F5/0572/05F6; designed: #409] The World Cup qualification congratulations stop has actual
+static links through 04F5 return 05B5, 0572 return 0624 and 05F6 caller 6625, mode byte 0 and low-byte
+flags `(0,0,nonzero)` at the 05F6 parent. Only that observed branch is admitted. Other callers,
++4 celebrations and modes 4/8 remain unknown. Its caption is read from the original packed
+template's fixed display-buffer cells, with the untouched composed three-column bulletin;
+neither caption nor text selects its kind.
+
+[designed: #409] `bulletin-congratulations` retains the actual first finite poll 0515. A key may
+interrupt the animation exactly as in the original, flow through the later 05EC poll, and be
+consumed once at the 0624 read (return 0629). No-key `advance()` executes an original iteration;
+`release()` lets the finite 16-poll animation finish, including its sound/crowd/RNG code, then
+retains the untimed 05EC wait. Release at that untimed wait cannot silently loop. The desktop's
+guarded Continue, partial saves and scripted `round_continue()` use the same original key path.
+The source/machine hashes and private input are in [the #409 manifest](evidence/409/artifacts.json).
+
 ## Bounded four-year proof
 
 [designed: T123, #390; approved G16/#308] The separate acceptance commands are:
@@ -754,6 +771,13 @@ cannot establish a proof. Bounds are 100000 policy steps, 300 rounds and 7200 se
 Unknown or unsupported decisions, exhausted bounds and original refusals the policy cannot
 repair stop nonzero, retaining the actual stopped machine and preceding supported checkpoint.
 Failed outputs are preserved; use a new output name after investigating a failure.
+
+[derived: genuine first T123 annual2 at 9d0142cb; E031 C52c at 44cea4de] Original history
+may include the unplayed current qualifying season as a zero-stat row alongside completed
+seasons. The verifier preserves the full original history and requires the two completed
+2027/28 EC and 2029/30 WC labels; an optional current2031/32 EC row must be unplayed, not a
+third completed season. It is never accepted as a substitute for either completed record.
+The actual annual2 history regression is pinned in [the fixture manifest](evidence/T123/fixtures.json).
 
 Ordinary gates exercise bounded genuine boot, lineup, taker, shootout and save/replay cases plus
 receipt-corruption controls. They do not silently rerun the full campaign. Original-byte saves

@@ -1,0 +1,15 @@
+{
+  "classification": "Genuine original-key first G16 campaign with declared G15 owner policy; not unchanged-original archaeology400 evidence",
+  "runtime": "9d0142cb814398f7a47a44fe3a46da1d60a374c6",
+  "keeper": "goal2-keep/T123-first-proof-20261025",
+  "artifacts": [
+    {
+      "name": "g16-567f481537b50d3f-annual-2.g2core",
+      "sha256": "567f481537b50d3fe956c288db23026b308b8cb78b41d41ac2a028c612e1a040",
+      "bytes": 207335,
+      "drive_file_id": "1U88Y3lnKZBwhwmPfmSdwiBOVQaXNRIE4",
+      "meaning": "Annual2 manager boundary: completed2027/28 EC record plus active2029/30 WC zero-stat record, both read through original state adapter"
+    }
+  ],
+  "limits": "This two-year snapshot validates history interpretation and exact replay. It is not a completed four-year proof. The first campaign stopped at genuine poll0515, recorded on409; all failure/source/trace/machine evidence remains preserved."
+}

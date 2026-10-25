@@ -21,7 +21,7 @@ from goal2.core.driver import Driver
 from goal2.core.patches import OWNER_SUBSTITUTIONS
 from goal2.core.cycle_player import Player, POLICY
 from goal2.core.cycle_evidence import (INPUTS, PHASES, Trace, check_sources, fingerprint,
-    git, progress, replay_step, runtime_manifest, sha, verify, write_json)
+    error_text, git, progress, replay_step, runtime_manifest, sha, verify, write_json)
 
 
 def run(output, *, cache=ROOT/'.cache', archaeology=None, max_steps=100000,
@@ -141,7 +141,7 @@ def run(output, *, cache=ROOT/'.cache', archaeology=None, max_steps=100000,
         if trace is not None:
             if trace.last_error is None:trace.capture_failure(error)
             trace.close();report['trace']=trace.summary();report['failure']=trace.last_error
-        report.update(status='failed',errors=[type(error).__name__+': '+str(error).splitlines()[0]],
+        report.update(status='failed',errors=[type(error).__name__+': '+error_text(error)],
                       elapsed_seconds=time.monotonic()-started)
         (output/'failure.txt').write_text(traceback.format_exc())
         write_json(output/'report.json',report)

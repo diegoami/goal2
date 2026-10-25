@@ -31,7 +31,8 @@ class ReceiptControls(unittest.TestCase):
                     steps=20,rounds=5,elapsed_seconds=1.0,bounds=dict(steps=1000,rounds=300,seconds=7200),
                     trace=dict(rows=30,operations=20,consumed=10,keys_sha256='9'*64,sha256='6'*64,last_chain='7'*64),
                     final_save='final.g2core',final_sha256='8'*64,
-                    history=[dict(season='2027/28'),dict(season='2029/30')],errors=[])
+                    history=[dict(season='2027/28',competition='EC',won=0,drawn=0,lost=0,**{'for':0,'against':0,'best':'qualifying'}),
+                             dict(season='2029/30',competition='WC',won=0,drawn=0,lost=0,**{'for':0,'against':0,'best':'qualifying'})],errors=[])
 
     def test_structural_controls_are_not_a_receipt_only_proof(self):
         from goal2.core.cycle_evidence import validate_report, verify
@@ -62,9 +63,31 @@ class ReceiptControls(unittest.TestCase):
         from goal2.core.cycle_evidence import check_sources, expected_sources
         self.assertEqual(check_sources(requires.archaeology()),expected_sources())
 
+    def test_current_zero_stat_history_is_not_a_third_completed_season(self):
+        from goal2.core.cycle_evidence import validate_report
+        good=self.example()
+        active=dict(season='2031/32',competition='EC',won=0,drawn=0,lost=0,**{'for':0,'against':0,'best':'qualifying'})
+        good['history'].append(active);validate_report(good)
+        for change in ({'won':1},{'season':'2033/34'},{'competition':'WC'},{'best':'winner'}):
+            bad=copy.deepcopy(good);bad['history'][-1].update(change)
+            with self.subTest(change=change),self.assertRaises(ValueError):validate_report(bad)
+        bad=copy.deepcopy(good);bad['history'].pop(0)
+        with self.assertRaises(ValueError):validate_report(bad)
+
 
 @requires.need(modules=('unicorn',),files=('GOAL.DAT','g13-d5ebee1ea6d80c4a-best-place-before.g2core'))
 class OriginalDecisions(unittest.TestCase):
+    @requires.need(files=('g16-bdf6c0842365fb09-congratulations-before.g2core',))
+    def test_actual_qualification_congratulations_uses_one_original_continue_and_exact_replay(self):
+        from goal2.tests.test_core_congratulations_409 import entered
+        from goal2.core.cycle_evidence import replay_step
+        c=entered()
+        with tempfile.TemporaryDirectory() as folder:
+            record=replay_step(c,requires.CACHE/'GOAL.DAT',Path(folder),'qualification')
+            self.assertEqual(record['action'],'round_continue')
+            self.assertEqual(record['direct'],record['resumed'])
+            self.assertEqual(c.wait.kind,'manager-menu')
+
     def test_actual_achievement_step_and_saved_replay_are_exact(self):
         from goal2.tests.test_core_best_place_395 import achievement
         from goal2.core.cycle_player import Player
@@ -99,6 +122,21 @@ class OriginalDecisions(unittest.TestCase):
             rows=[json.loads(line) for line in (root/'trace.jsonl').read_text().splitlines()]
             self.assertEqual(rows[-1]['error'],'UnknownScreen')
             self.assertEqual(rows[-1]['args'],[13])
+
+    def test_empty_interruption_message_still_preserves_failure_machine_and_save(self):
+        from unittest.mock import patch
+        from goal2.tests.test_core_best_place_395 import before
+        from goal2.core.cycle_evidence import Trace
+        with tempfile.TemporaryDirectory() as folder:
+            c=before();trace=Trace(c,Path(folder))
+            try:
+                with patch.object(c,'_run',side_effect=KeyboardInterrupt):
+                    with self.assertRaises(KeyboardInterrupt):c.press(13)
+            finally:trace.close()
+            self.assertTrue(Path(folder,'actual.ucstate').is_file())
+            self.assertTrue(Path(folder,'last-before.g2core').is_file())
+            self.assertEqual(trace.last_error['type'],'KeyboardInterrupt')
+            self.assertEqual(trace.last_error['message'],'KeyboardInterrupt')
 
 
 @requires.need(modules=('unicorn',),files=('GOAL.DAT','g13-cb6443bbe76d3a5a-no-keeper.g2core',
@@ -173,3 +211,16 @@ class BootTrace(unittest.TestCase):
                 self.assertEqual(a.keys,[], 'queued keys must be observed separately from explicit Core.press keys')
             finally:
                 if 'trace' in active:active['trace'].close()
+
+
+@requires.need(modules=('unicorn',),files=('GOAL.DAT','g16-567f481537b50d3f-annual-2.g2core'))
+class ActualHistory(unittest.TestCase):
+    def test_real_year_three_history_keeps_completed_and_active_rows_distinct(self):
+        from goal2.core import Core,views
+        from goal2.core.cycle_evidence import check_history,sha
+        raw=(requires.CACHE/'g16-567f481537b50d3f-annual-2.g2core').read_bytes()
+        self.assertEqual(sha(raw),'567f481537b50d3fe956c288db23026b308b8cb78b41d41ac2a028c612e1a040')
+        c=Core.load(raw);snap=c.m.snapshot();rows=views.history(c.wait.state,20)['results']
+        self.assertEqual([r['season'] for r in rows],['2027/28','2029/30'])
+        self.assertEqual(check_history(rows,completed=1),rows[:1])
+        self.assertEqual(c.m.snapshot(),snap)

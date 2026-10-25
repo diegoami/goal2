@@ -604,8 +604,13 @@ class Core:
         # [designed: #395; confirmed: 0572's 05DF-05EE untimed loop] This
         # achievement requires a key; even release() must retain the next poll wait.
         achievement = kind == _screens.BULLETIN_ACHIEVEMENT
-        if (complete and (kind in self.stops or kind == _screens.SAVE_NAME or achievement)
-                and self.pending is None and (kind != self.released or achievement)
+        # [designed: #409; confirmed: 04F5's 16 polls then 0572's untimed loop]
+        # Show the actual finite input too. release() runs its original no-key
+        # body, but the later untimed poll must still remain an explicit wait.
+        congratulations = kind == _screens.BULLETIN_CONGRATULATIONS
+        untimed = achievement or (congratulations and site == '000E:05EC')
+        if (complete and (kind in self.stops or kind == _screens.SAVE_NAME or achievement or congratulations)
+                and self.pending is None and (kind != self.released or untimed)
                 and not any(k == kind for k, _ in self.queued)):
             m.stop("poll")           # [T108] a wait at the poll: press() answers it
             return

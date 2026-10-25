@@ -94,7 +94,7 @@ class Player:
                 # no legal reserve is invented. Play/EA09 decides any repair.
                 result = d.notice(True)
                 action = 'notice'
-            elif kind in ('round-paused', 'bulletin-achievement'):
+            elif kind in ('round-paused', 'bulletin-achievement', 'bulletin-congratulations'):
                 result = d.round_continue()
                 action = 'round_continue'
             elif kind == 'shootout-announcement':

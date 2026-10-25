@@ -31,6 +31,32 @@ def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':')).encode()
 
 
+def error_text(error):
+    text=str(error)
+    return text.splitlines()[0] if text else type(error).__name__
+
+
+def check_history(history, completed=2):
+    """[derived: E031 C52c at44cea4de; actual G16 annual2 at9d0142cb]
+    Check completed season labels without mistaking an unplayed current row for
+    another completed season. Preserve the full actual history in the report.
+    """
+    if type(completed) is not int or completed not in (1,2) or not isinstance(history,list) or len(history) not in (completed,completed+1):
+        raise ValueError('Missing/incorrect original history seasons')
+    fields=('won','drawn','lost','for','against')
+    for index,row in enumerate(history):
+        year=2028+2*index
+        season=f'{year-1}/{year%100:02d}'
+        competition='WC' if year%4==2 else 'EC'
+        if (not isinstance(row,dict) or row.get('season') != season or row.get('competition') != competition
+                or not all(type(row.get(k)) is int and 0 <= row[k] <= 255 for k in fields)
+                or not isinstance(row.get('best'),str) or not row['best']):
+            raise ValueError('Original history label/record mismatch')
+        if index==completed and (any(row[k] for k in fields) or row['best']!='qualifying'):
+            raise ValueError('Additional history row is not the unplayed current qualifying season')
+    return history[:completed]
+
+
 def write_json(path, value):
     path = Path(path)
     tmp = path.with_name(path.name + '.tmp')
@@ -139,7 +165,7 @@ class Trace:
                     self._append(row)
                     return result
                 except BaseException as error:
-                    row.update(error=type(error).__name__,message=str(error).splitlines()[0])
+                    row.update(error=type(error).__name__,message=error_text(error))
                     self._append(row)
                     self.capture_failure(error)
                     raise
@@ -180,7 +206,7 @@ class Trace:
         with zipfile.ZipFile(self.root/'actual.ucstate', 'w', zipfile.ZIP_DEFLATED) as archive:
             archive.writestr('memory.bin', snap['memory'])
             archive.writestr('registers.json', json.dumps(dict(load=self.core.m.load, regs=snap['regs']), sort_keys=True))
-        self.last_error = dict(type=type(error).__name__,message=str(error).splitlines()[0],
+        self.last_error = dict(type=type(error).__name__,message=error_text(error),
                                machine='actual.ucstate',sha256=sha((self.root/'actual.ucstate').read_bytes()))
 
     def close(self):
@@ -270,7 +296,7 @@ def validate_report(report):
         try:cursor=observed.index(phase,cursor)+1
         except ValueError as error:raise ValueError('Observed progression is missing/reordered') from error
     require(isinstance(report.get('final_save'),str) and Path(report['final_save']).name == report['final_save'] and _digest(report.get('final_sha256')),'Missing final save')
-    require([r.get('season') for r in report.get('history',[])] == ['2027/28','2029/30'],'Missing/incorrect original history seasons')
+    check_history(report.get('history'))
     return report
 
 
