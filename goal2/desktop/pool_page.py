@@ -210,7 +210,11 @@ def build_core(self, model):
     self.pool_compare=QPushButton('Compare >');self.pool_compare.setObjectName('poolCompare')
     self.pool_compare.setAccessibleName('Compare a pool player directly with a squad player')
     self.pool_compare.clicked.connect(lambda:core_compare(self))
+    self.pool_suggest=QPushButton('Suggest');self.pool_suggest.setObjectName('poolSuggest')
+    self.pool_suggest.setAccessibleName('Ask the original assistant for pool recruitment suggestions')
+    self.pool_suggest.clicked.connect(lambda:core_suggest(self))
     bar.addWidget(self.pool_switch);bar.addWidget(self.pool_move);bar.addWidget(self.pool_compare)
+    bar.addWidget(self.pool_suggest)
     bar.addStretch(1);left.addStretch(1)
     self.pool_strip = _strip_class()('POOL', toggles=False, capacity=POOL_ROWS, marks=False)
     self.pool_strip.setObjectName('poolStrip');self.pool_strip.setFixedWidth(314)
@@ -226,7 +230,7 @@ def build_core(self, model):
     comparison=QWidget();self.core_pool_views.addWidget(comparison)
     box=QVBoxLayout(comparison);box.setContentsMargins(0,0,0,0);box.setSpacing(8)
     controls=QHBoxLayout();controls.setSpacing(8);box.addLayout(controls)
-    controls.addWidget(QLabel('TEAM PLAYER'))
+    self.pool_compare_heading=QLabel('TEAM PLAYER');controls.addWidget(self.pool_compare_heading)
     self.pool_compare_squad=QComboBox();self.pool_compare_squad.setObjectName('poolCompareSquad')
     self.pool_compare_squad.setAccessibleName('Squad player to compare');self.pool_compare_squad.setMinimumWidth(260)
     controls.addWidget(self.pool_compare_squad,1)
@@ -237,8 +241,9 @@ def build_core(self, model):
     self.pool_comparison=PlayerComparisonView();box.addWidget(self.pool_comparison,0,Qt.AlignmentFlag.AlignLeft)
     box.addStretch(1)
     self.core_compare_in=self.core_compare_out=None
+    self.core_suggestion_mode=False;self.core_pool_suggestions=None
     self.pool_compare_squad.currentIndexChanged.connect(lambda:core_compare_selected(self))
-    self.core_pool_compare_actions=[self.pool_compare,self.pool_compare_squad,self.pool_compare_exchange]
+    self.core_pool_compare_actions=[self.pool_compare,self.pool_compare_squad,self.pool_compare_exchange,self.pool_suggest]
     def escape():
         if self.core_pool_views.currentIndex()==1:core_compare_back(self);return True
         return False
@@ -306,6 +311,7 @@ def core_compare(self):
     if self.core_jobs.busy or self.model.in_round or self.model.in_save_name:return False
     if self.pool_side!='pool' or self.pool_selected() is None:
         self.status.setText('Choose a pool player to compare');return False
+    self.core_suggestion_mode=False;self.core_pool_suggestions=None
     self.core_compare_in=self.pool_selected();self.core_compare_out=selected_player(self)
     core_refresh_comparison(self);self.core_pool_views.setCurrentIndex(1)
     self.pool_compare_squad.setFocus(Qt.FocusReason.ShortcutFocusReason)
@@ -318,6 +324,9 @@ def core_compare_back(self):
 
 def core_compare_selected(self):
     self.core_compare_out=self.pool_compare_squad.currentData()
+    if self.core_suggestion_mode:
+        pair=next((p for p in self.core_pool_suggestions['proposals'] if p['outgoing']==self.core_compare_out),None)
+        self.core_compare_in=pair['incoming'] if pair else None
     core_refresh_comparison(self)
 
 
@@ -330,32 +339,50 @@ def core_comparison_controls(self):
     active=not self.core_jobs.busy and not self.model.in_round and not self.model.in_save_name
     if not active:
         for control in self.core_pool_compare_actions:control.setEnabled(False)
+        core_suggestion_controls(self)
         return
     squad,pool=core_compare_members(self)
     self.pool_compare.setEnabled(active and self.pool_side=='pool' and self.pool_selected() in pool)
     self.pool_compare_squad.setEnabled(active)
     self.pool_compare_exchange.setEnabled(active and self.core_compare_out in squad and self.core_compare_in in pool)
+    core_suggestion_controls(self)
 
 
 def core_refresh_comparison(self):
     from goal2.desktop.core_roles import role_code
     from goal2.desktop.player_card import core_card
+    if self.core_suggestion_mode and not core_suggestions_current(self):
+        core_drop_suggestions(self,'Suggestions are out of date; ask the assistant again')
     team=self.model.team()['squad'];squad,pool=core_compare_members(self)
     combo=self.pool_compare_squad;blocked=combo.blockSignals(True)
     try:
         combo.clear()
-        for p in team:combo.addItem(f"{p['name']} · {role_code(p)}",p['player'])
+        if self.core_suggestion_mode:
+            self.pool_compare_heading.setText('ASSISTANT')
+            for p in self.core_pool_suggestions['proposals']:
+                combo.addItem(f"{self.model.card(p['outgoing'])['name']} → {self.model.card(p['incoming'])['name']}",p['outgoing'])
+        else:
+            self.pool_compare_heading.setText('TEAM PLAYER')
+            for p in team:combo.addItem(f"{p['name']} · {role_code(p)}",p['player'])
         combo.setCurrentIndex(combo.findData(self.core_compare_out))
     finally:combo.blockSignals(blocked)
     left=core_card(self.model.card(self.core_compare_out)) if self.core_compare_out in squad else None
     right=core_card(self.model.card(self.core_compare_in)) if self.core_compare_in in pool else None
-    self.pool_comparison.set_cards(left,right)
+    explanation='Choose both players; Exchange confirms the change.'
+    if self.core_suggestion_mode:
+        pair=next((p for p in self.core_pool_suggestions['proposals'] if p['outgoing']==self.core_compare_out),None)
+        if pair and right:
+            explanation=f"Original assistant chose {right['full_name']} as {pair['suggested_role']}; pairing: {pair['pairing']}."
+    self.pool_comparison.set_cards(left,right,explanation)
     core_comparison_controls(self)
 
 
 def core_compare_exchange(self):
     """[designed: T134] Only explicit acceptance invokes the original exchange validation."""
     if self.core_jobs.busy or self.model.in_round or self.model.in_save_name:return False
+    if self.core_suggestion_mode and not core_suggestions_current(self):
+        core_drop_suggestions(self,'Suggestions are out of date; ask the assistant again')
+        core_refresh_comparison(self);return False
     squad,pool=core_compare_members(self)
     outgoing=self.pool_compare_squad.currentData();incoming=self.core_compare_in
     if outgoing not in squad or incoming not in pool:
@@ -363,4 +390,60 @@ def core_compare_exchange(self):
     if not self.run_core('exchange',outgoing,incoming):return False
     self.core_marked=None
     for strip in (self.team_roster,self.pool_strip):strip.marked=set();strip.update()
+    return True
+
+
+def core_suggestion_controls(self):
+    asking=self.core_jobs.busy and self.core_jobs.name=='suggest_pool'
+    active=not self.core_jobs.busy and not self.model.in_round and not self.model.in_save_name
+    self.pool_suggest.setText('Cancel suggestion' if asking else 'Suggest')
+    self.pool_suggest.setEnabled(asking or active)
+
+
+def core_suggest(self):
+    """[designed: T135] A copied original selection, never an implicit active squad change."""
+    if self.core_jobs.busy:
+        if self.core_jobs.cancel_suggestion():self.status.setText('Cancelling suggestion…');return True
+        return False
+    if self.model.in_round or self.model.in_save_name:return False
+    return self.run_core('suggest_pool')
+
+
+def core_suggestions_current(self):
+    from goal2.desktop.core_pool_suggest import state_key
+    return (not self.model.in_round and not self.model.in_save_name and self.core_pool_suggestions is not None
+            and self.core_pool_suggestions['input_sha256']==state_key(self.model.core))
+
+
+def core_drop_suggestions(self,message):
+    self.core_suggestion_mode=False;self.core_pool_suggestions=None
+    self.core_compare_in=self.core_compare_out=None
+    self.pool_comparison.set_cards(None,None,'Ask the assistant again after changing the squad.')
+    self.pool_compare_exchange.setEnabled(False)
+    self.status.setText(message)
+
+
+def core_show_suggestions(self,value):
+    from goal2.desktop.core_pool_suggest import state_key
+    if value.get('cancelled'):
+        self.status.setText('Suggestion cancelled');return False
+    if value.get('error'):
+        self.status.setText('Suggestion unavailable: '+value['error']);return False
+    if value.get('input_sha256')!=state_key(self.model.core):
+        core_drop_suggestions(self,'Suggestions are out of date; ask the assistant again');return False
+    if value.get('refusal'):
+        self.status.setText('Original assistant: '+value['refusal']);return False
+    pairs=value.get('proposals',[])
+    if not pairs:
+        reason=value['rejected'][0]['reason'] if value.get('rejected') else 'would keep the current squad'
+        core_drop_suggestions(self,'Original assistant: '+reason)
+        core_refresh_comparison(self);return False
+    squad,pool=core_compare_members(self)
+    if (len(pairs)>20 or len({p['outgoing'] for p in pairs})!=len(pairs)
+            or any(p['outgoing'] not in squad or p['incoming'] not in pool for p in pairs)):
+        core_drop_suggestions(self,'Suggestion unavailable: the player choices are no longer valid');return False
+    self.core_pool_suggestions=value;self.core_suggestion_mode=True
+    self.core_compare_out=pairs[0]['outgoing'];self.core_compare_in=pairs[0]['incoming']
+    core_refresh_comparison(self);self.core_pool_views.setCurrentIndex(1)
+    self.status.setText(f'Original assistant: {len(pairs)} recruitment suggestions. Compare, then choose whether to exchange.')
     return True
