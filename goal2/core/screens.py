@@ -22,6 +22,7 @@ from dataclasses import dataclass
 RETURN, ESCAPE, SPACE = 0x0D, 0x1B, 0x20
 TAKER_SELECT, TAKER_PITCH = 'set-piece-select', 'set-piece-pitch'
 SAVE_NAME = 'save-game-name-entry'
+BULLETIN_ACHIEVEMENT = 'bulletin-achievement'
 F1, F2, F3, F4, F5, F7, F9, F10 = 0x9F, 0xA0, 0xA1, 0xA2, 0xA3, 0xA5, 0xA7, 0xA8      # scan 0x3B.. + 0x64
 HOME, UP, PGUP, LEFT, RIGHT = 0xAB, 0xAC, 0xAD, 0xAE, 0xAF                          # 0x47, 0x48, 0x49, 0x4B-1, 0x4D-2
 END, DOWN, PGDN, INSERT = 0xB0, 0xB1, 0xB2, 0xB6                                    # 0x4F-3, 0x50-3, 0x51-3, 0x52
@@ -125,6 +126,8 @@ KINDS = {k.name: k for k in (
          evidence="[designed: T119; confirmed: F015/F030, 0791:9B5B at 53d7ef5] ED8A at the extra-time interval"),
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
+    Kind(BULLETIN_ACHIEVEMENT, keys(("any key", "(any)")), designed=True, polled=True,
+         evidence="[designed: #395; confirmed: F030/source 44cea4de, 000E:0572/05F6; genuine G15-variant capture] best-place key wait"),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
     Kind(TAKER_SELECT, keys(("C-computer select", "c C"), ("↑↓", "Up Down"), ("◄┘-select", "Return"),
                            ("keep", "Escape"), ("spacebar-pitch", "space"),
@@ -375,6 +378,19 @@ def _bulletin(f):
     # [confirmed: named/seg_000E_04/05.c; code/seg_000E_07/08.asm] replace_retiree 57DC,
     # 5AC5's news 5CCB and the championship winner's news 6860 use the same composed page/read.
     return "bulletin" if f.near_caller(f.bp) in (0x4F72, 0x6964, 0x6625, 0x57DF, 0x5CCE, 0x6863) else None
+
+
+def _best_place(f):
+    # [confirmed: archaeology 44cea4de169e5c85043ad279235cda29e95e7e56,
+    # seg_000E_01.asm 0584-05A6/0620-0629; #395 actual original-key G15-variant capture]
+    # 0572 is near-called by 05F6, with its real parent as static link. Only the
+    # parent's low byte +6 selects 055F's caption; +8's high byte contains scratch.
+    parent = f.up(f.bp)
+    if (parent and parent != f.bp and f.near_caller(f.bp) == 0x0624
+            and f.word(f.bp, 4) == parent and f.near_caller(parent) == 0x4F72
+            and f.byte(parent, 6)):
+        return BULLETIN_ACHIEVEMENT
+    return None
 
 
 def _fixture(f):
@@ -796,6 +812,8 @@ SITES = {s.site: s for s in (
     Site("214B:112B", False, "214B:1086 the line editor (reads after its cursor wait's poll says a key waits)",
          "F032; E038-r0001's trace; T121", lambda f: _name_entry(f, f.bp), lambda f: _name_view(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
+    Site("000E:05EC", True, "000E:0572 under 05F6, post-match news best-place wait",
+         "[confirmed: #395 genuine G15-variant input; source 44cea4de 05E7/0621/4F6F]", _best_place),
     Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live",
          # [confirmed: code/seg_0791_15.asm 9571-9708] 954E's loop calls 9372 after each of 22 slots; its
          # local [bp-2] is the slot. The last poll is a complete pose, before the clock at 970C.

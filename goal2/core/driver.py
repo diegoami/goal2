@@ -453,7 +453,7 @@ class Driver:
     PASSING = ("round-results", "fixture-result", "tournament-table", "championship-bracket", "bulletin", "match-board", "match-summary")
     ROUND_KINDS = PASSING + MATCH_MENU_KINDS + ("match-watch-prompt", "eleven-refused", "substitution-notice",
                                                 "captain-select", "match-live", "match-summary-save-prompt", "round-paused",
-                                                "shootout-announcement", "shootout-order",
+                                                "shootout-announcement", "shootout-order", _screens.BULLETIN_ACHIEVEMENT,
                                                 _screens.TAKER_SELECT, _screens.TAKER_PITCH, MENU)
     # the stops of a match the steps return at: the half-time menu, the menu of a stoppage, the managed side's notice
     STOPS = INTERVAL_KINDS + ("substitution-notice", _screens.TAKER_SELECT, _screens.TAKER_PITCH)
@@ -515,6 +515,7 @@ class Driver:
             if self.watching and wait.kind in ("match-live", "match-summary-save-prompt"):
                 return wait
             if wait.kind in until or wait.kind in ("round-paused", "shootout-announcement", "shootout-order",
+                                                  _screens.BULLETIN_ACHIEVEMENT,
                                                   _screens.TAKER_SELECT, _screens.TAKER_PITCH) or self.stoppage():
                 return wait
             if wait.kind == "match-watch-prompt":
@@ -547,10 +548,17 @@ class Driver:
 
     def round_continue(self):
         """[designed: T115; confirmed: F030, 000E:6BD0 at 53d7ef5] Enter closes the original round's
-        PAUSE box; pass subsequent results to the next manager decision, retaining their pages."""
-        if self.wait.kind != "round-paused":
-            raise UnexpectedScreen(("round-paused",), self.wait)
-        self.press(RETURN, expect=self.ROUND_KINDS)
+        PAUSE box; pass subsequent results to the next manager decision, retaining their pages.
+        [designed: #395; confirmed: 0572/05F6 at 44cea4de] Also answer the qualified achievement poll;
+        its parent consumes that one key at the 0624 call (return 0629)."""
+        if self.wait.kind == _screens.BULLETIN_ACHIEVEMENT:
+            # [confirmed: #395, 0572→05F6 at source 44cea4de] The poll announces
+            # the key; its parent reads it at 0624 (return 0629). No extra dismissal/read.
+            self._press_poll(RETURN)
+        elif self.wait.kind == "round-paused":
+            self.press(RETURN, expect=self.ROUND_KINDS)
+        else:
+            raise UnexpectedScreen(("round-paused", _screens.BULLETIN_ACHIEVEMENT), self.wait)
         return self._pass(("match-menu", MENU))
 
     def shootout_start(self):
@@ -901,9 +909,18 @@ class Driver:
         True for the bench (then `on_stoppage(driver)` at the stoppage's menu), False or None to let it pass, as a
         manager who presses nothing. T120's `on_taker(driver, wait)` returns an original key (or None for
         its remaining timer); without that explicit answer the script stops at the decision with DriverError.
+        [designed: #395] The script explicitly presses Enter at a qualified best-place achievement wait.
         Returns {"pages", "substitutions", "refused", "notices"}."""
         wait = self.round_start(watch)
         out = {"substitutions": [], "refused": [], "notices": 0}
+        # [designed: #395] The scripted player explicitly dismisses this key wait,
+        # including a round with no own match. The desktop retains its decision.
+        for _ in range(16):
+            if wait.kind != _screens.BULLETIN_ACHIEVEMENT:
+                break
+            wait = self.round_continue()
+        else:
+            raise DriverError("the round's achievement waits did not end")
         if wait.kind == MENU:
             out["pages"] = self.pages
             return out
@@ -925,6 +942,12 @@ class Driver:
             wait = self.core.wait
             if wait.kind == MENU:
                 break
+            if wait.kind == _screens.BULLETIN_ACHIEVEMENT:
+                stops += 1
+                if stops > 16:
+                    raise DriverError("the round's achievement waits did not end")
+                self.round_continue()
+                continue
             if wait.kind in (_screens.TAKER_SELECT,_screens.TAKER_PITCH):
                 if on_taker is None:
                     raise DriverError('The original awaits a taker decision; supply on_taker')
