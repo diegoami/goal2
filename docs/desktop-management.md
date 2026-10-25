@@ -681,3 +681,9 @@ The original qualification congratulations also remains a guarded round page: it
 caption and all three bulletin columns are visible, and Continue supplies one original key.
 An exact partial save resumes on that page. The original finite no-key animation and later
 untimed wait remain available through the Core API; unsupported flags/callers stay explicit errors.
+
+[designed: owner Windows playtest, #436; confirmed: F002/F008 player record +8/+9]
+The Core Pool roster shows **CAPS** beside each name and its case-sensitive role letter.
+This is the original unsigned international-appearance count, including zero. The column
+follows the full player ID when paging or switching between the pool and squad; reading it
+does not edit the player, run a match or change the save.
