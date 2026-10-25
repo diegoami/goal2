@@ -65,7 +65,7 @@ SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|compet
                         r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view"
                         r"|core_runner_t100|core_screens_t103|core_desktop_t105|core_new_game_t106|core_team_t107"
                         r"|core_round_t108|core_watch_t109|core_bulletin_t110|core_continuation_t111|core_world_t113"
-                        r"|core_lineup_t114|core_pause_t115|core_playback_t116|core_shootout_t118|core_walkoff_363|core_extra_t119|core_nice_try_371|core_takers_t120))"
+                        r"|core_lineup_t114|core_pause_t115|core_playback_t116|core_shootout_t118|core_walkoff_363|core_extra_t119|core_nice_try_371|core_takers_t120|core_save_t121|core_patches_t122))"
                         r"|pyproject\.toml$|tools/(check_premerge|watched_evidence)\.py$|tools/watched-kit-hashes\.json$)")
 
 
@@ -85,7 +85,10 @@ def run_module(module: str, python: str, slow: bool) -> tuple[str, int, float, s
     env = {**os.environ, "GOAL2_SLOW": "1" if slow else "0"}
     r = subprocess.run([python, "-m", "unittest", "discover", "-s", "goal2/tests", "-t", ".",
                         "-p", module + ".py"], cwd=ROOT, capture_output=True, text=True, env=env)
-    return module, r.returncode, time.monotonic() - start, (r.stdout + r.stderr)[-3000:]
+    output = r.stdout + r.stderr
+    # [designed: #377] Cleanup tracebacks can bury the originating test failure.
+    # Keep every failed module's output in the gate/CI log; abbreviate successes only.
+    return module, r.returncode, time.monotonic() - start, output if r.returncode else output[-3000:]
 
 
 # [designed: #275] Modules whose mutation controls rewrite a tracked source file for a moment

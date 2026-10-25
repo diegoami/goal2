@@ -1,0 +1,30 @@
+{
+  "source_repository": "diegoami/goal2-archaeology",
+  "commit": "44cea4de169e5c85043ad279235cda29e95e7e56",
+  "files": [
+    {
+      "path": "experiments/E031-play-the-game/README.md",
+      "sha256": "64a251d762fbaa3b24f48c48e3701c1ad5634207e7b79d253a50e44682271962",
+      "bytes": 6285
+    },
+    {
+      "path": "experiments/E031-play-the-game/claims.tsv",
+      "sha256": "f20c935f1bf5c7d2ba01e2747ad3c9fbb5004962406b5c129f4a6dd99856c7e2",
+      "bytes": 15257
+    },
+    {
+      "path": "experiments/E031-play-the-game/out/g1/progress.md",
+      "sha256": "458e03d3f0b5e4f4915a1055d4bb19f43aef59d5ae8eb0a059ea921ae0ea1c91",
+      "bytes": 4355
+    }
+  ],
+  "claim_ids": [
+    "C52",
+    "C52b",
+    "C52c",
+    "C52d",
+    "C52e",
+    "C65b"
+  ],
+  "scope": "Structural year/stage/season/history labels only; not seed-exact scores, qualification, match counts, retirement identities or timing. G15 variant stays separate from original evidence."
+}

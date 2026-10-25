@@ -38,16 +38,17 @@ class PitchTransportTests(unittest.TestCase):
         self.owner=Owner(adapter.WatchedAdapter.state(self),self.raw)
         self.before=copy.deepcopy(self.owner.state)
         self.jobs=WatchedJobs(self.owner,command=[sys.executable,'-c','import time;time.sleep(60)'])
+        # [designed: #377] setUp can fail before tearDown is eligible to run.
+        self.addCleanup(self.jobs.close)
         self.token=self.jobs.start(Fixture(7,19,21),frames=True)
         self.process=self.jobs.process
         # [designed] Synthetic file injection never impersonates an actual original run.
-        self.process.terminate();self.process.wait(timeout=2)
+        # [designed: #377, as #307] This joins input encoding, not match execution;
+        # use the existing setup bound so a loaded Windows runner can finish encoding.
+        self.process.terminate();self.process.wait(timeout=60)
         self.alive=patch.object(self.process,'poll',return_value=None)
+        self.addCleanup(self.alive.stop)
         self.alive.start()
-
-    def tearDown(self):
-        self.alive.stop()
-        self.jobs.close()
 
     def put(self, frames):
         with open(self.jobs._frames.name,'ab') as f:
@@ -210,6 +211,55 @@ class PitchTransportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'consumed'):self.jobs.ack_frames(self.token,0)
 
     def state(self):return adapter.WatchedAdapter.state(self)
+
+
+class PitchSetupCleanupTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        adapter.WatchedAdapter.setUpClass()
+
+    def test_setup_wait_failure_reaps_job_and_closes_all_files(self):
+        # [designed: #377] Inject the originating setup failure, not a cleanup error.
+        # unittest does not call tearDown when setUp raises; registered cleanups must run.
+        import subprocess
+        from goal2.game.watched_jobs import _PreparingProcess
+        original_wait = _PreparingProcess.wait
+        original_jobs = WatchedJobs
+        created = []
+        def capture(*args, **kwargs):
+            jobs = original_jobs(*args, **kwargs)
+            created.append(jobs)
+            return jobs
+        def fail_first_wait(process, timeout=None):
+            if not getattr(process, '_setup_failure_injected', False):
+                process._setup_failure_injected = True
+                raise subprocess.TimeoutExpired('injected setup wait', timeout)
+            return original_wait(process, timeout)
+        case = PitchTransportTests('test_token_rejection')
+        case.raw = adapter.WatchedAdapter.raw
+        result = unittest.TestResult()
+        try:
+            with patch(__name__ + '.WatchedJobs', side_effect=capture), patch.object(
+                    _PreparingProcess, 'wait', fail_first_wait):
+                case.run(result)
+            self.assertEqual(len(result.errors), 1, result.errors)
+            self.assertIn('injected setup wait', result.errors[0][1])
+            self.assertEqual(result.failures, [])
+            self.assertEqual(len(created), 1)
+            jobs = created[0]
+            self.assertTrue(jobs.closed, 'setup failure must close the owned job')
+            self.assertFalse(jobs.busy)
+            self.assertFalse(jobs.owner.match_pending)
+            self.assertIsNone(jobs.publication._pending)
+            self.assertFalse(hasattr(jobs.owner, '_watched_jobs'))
+            for name in ('_journal', '_errors', '_frames', '_commands'):
+                stream = getattr(jobs, name)
+                self.assertTrue(stream.closed, name)
+                self.assertFalse(Path(stream.name).parent.exists(), name)
+        finally:
+            # The fail-before probe must not itself leak the deliberately orphaned job.
+            for jobs in created:
+                jobs.close()
 
 
 class PitchObservationTests(unittest.TestCase):

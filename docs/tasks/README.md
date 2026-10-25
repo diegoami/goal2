@@ -260,4 +260,14 @@ operational status.
 
 | [T121](T121.md) | G13i: bridge original save-name waits to core saves | [#380](https://github.com/diegoami/goal2/issues/380) | T120 |
 | [T122](T122.md) | G15: declare the owner substitution-budget patch | [#386](https://github.com/diegoami/goal2/issues/386) | T121 |
-| [T123](T123.md) | G16: prove an unattended four-year core cycle | [#390](https://github.com/diegoami/goal2/issues/390) | T122 |
+| [T123](T123.md) | G16: prove an unattended four-year core cycle | [#390](https://github.com/diegoami/goal2/issues/390) | T122, fix #395 |
+| [T124](T124.md) | Accept and vendor the sealed match-engine delivery | [#397](https://github.com/diegoami/goal2/issues/397) | upstream T78/T79/T80 accepted delivery |
+| [T125](T125.md) | Adapt live Core inputs to sealed engine records | [#398](https://github.com/diegoami/goal2/issues/398) | T124 and accepted archaeology #427 input boundary |
+| [T126](T126.md) | Validate port results into a private Core candidate | [#399](https://github.com/diegoami/goal2/issues/399) | T125 and accepted archaeology #427 output/write-set contract |
+| [T127](T127.md) | Prove the natural Core match entry and return boundary | [#400](https://github.com/diegoami/goal2/issues/400) | T126 and accepted archaeology #427 continuation ABI |
+| [T128](T128.md) | Run sealed Core matches in an isolated worker | [#401](https://github.com/diegoami/goal2/issues/401) | T124 and T125 |
+| [T129](T129.md) | Save and resume backend-bound active Core matches | [#402](https://github.com/diegoami/goal2/issues/402) | T127 and T128 |
+| [T130](T130.md) | Commit experimental port matches to the original Core once | [#403](https://github.com/diegoami/goal2/issues/403) | T126, T127, T128 and T129 |
+| [T131](T131.md) | Present experimental Core port matches through public views | [#404](https://github.com/diegoami/goal2/issues/404) | T130 |
+| [T132](T132.md) | Prove application equivalence across original and port Core sessions | [#405](https://github.com/diegoami/goal2/issues/405) | T131 |
+| [T133](T133.md) | Prove native lifecycle and measure the Core port rollout candidate | [#406](https://github.com/diegoami/goal2/issues/406) | T132 |
