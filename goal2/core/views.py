@@ -22,6 +22,20 @@ from __future__ import annotations
 
 from goal2.engine.original_match.image import Image
 from goal2.core.runner import CP437_LOW
+from contextvars import ContextVar
+from contextlib import contextmanager
+
+# [designed: T136] Pure display calls may resolve identities; original driver/oracle reads default to raw names.
+_display_names = ContextVar('goal2_display_names', default=None)
+
+
+@contextmanager
+def display_player_names(resolver):
+    token = _display_names.set(resolver)
+    try:
+        yield
+    finally:
+        _display_names.reset(token)
 
 # [confirmed: globals.tsv; image.py] the far pointers
 COUNTRIES, COUNTRY_SIZE, MANAGERS, GAME, FIXTURES, FIXTURE_LISTS, GROUP_TABLES = (
@@ -83,7 +97,9 @@ class Memory:
     def player_name(self, w):
         """1771:2E93 player_name: the initial [DS:9B70] + w, a space, the surname [DS:9B6C] + 11 w."""
         surname = self.pstr(self.far(PLAYER_NAMES) + 11 * w, 10)
-        return f"{chr(self.byte(self.far(PLAYER_INITIALS) + w))} {surname}"
+        original = f"{chr(self.byte(self.far(PLAYER_INITIALS) + w))} {surname}"
+        resolver = _display_names.get()
+        return original if resolver is None else resolver(w, original)
 
     def game(self, off, size=1):
         a = self.far(GAME) + off
@@ -822,6 +838,10 @@ def commentary(state, previous=0):
     if newest == previous:
         return newest, []
     name, templates = names_and_templates(lambda a, n: bytes(mem.mem[a:a + n]), mem.ds, mem.image.far)
+    resolver = _display_names.get()
+    if resolver is not None:
+        raw_name = name
+        name = lambda word: resolver(word, raw_name(word))
     rows = []
     index = previous
     for _ in range(200):

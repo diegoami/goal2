@@ -703,3 +703,13 @@ the assistant's chosen position and the comparison pairing. No overall ability o
 formula is shown. **Exchange these players** remains your explicit decision. After any career
 change, ask again rather than applying an old proposal. **Cancel suggestion** discards a pending
 query while its bounded copied step finishes; a query failure leaves the active game playable.
+
+[designed: owner Windows playtest, #433/T136] Core pool identities now use country-fitting
+family names in the pool, cards, team after recruitment, comparisons, suggestions, scorers and
+commentary. The existing authored T93 lists cover33 countries. Other canonical countries use
+families from their own national squad with deterministic distinct initials; this fallback is
+country-based, not a surname-frequency ranking. Full player IDs and their assigned countries
+bind the names, including after an exchange. Explicit original F2 renames take precedence.
+The policy changes display text only: the original driver and raw-memory readers retain their
+original names, and no alias is written into a Core save. Old saves receive the same names when
+reopened. Custom country-name mismatches or unavailable canonical data keep their own text.
