@@ -1,0 +1,30 @@
+{
+  "classification": "Genuine first T123 original-key campaign with declared G15 owner policy; not unchanged-original archaeology400 evidence",
+  "runtime": "9d0142cb814398f7a47a44fe3a46da1d60a374c6",
+  "source": "goal2-archaeology 44cea4de169e5c85043ad279235cda29e95e7e56, seg_000E_01.asm 04F5/0572/05F6",
+  "fresh_inputs": {
+    "boot_sha256": "0d9c683023c7327f17bfc29900f2eff4e703641d21d3f353693f09654688494b",
+    "data_sha256": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "country": 20,
+    "start_year": 2028,
+    "dos_date": [2027, 10, 4],
+    "dos_time": [10, 0, 0, 0],
+    "patch": "owner-substitutions-v1"
+  },
+  "before": {
+    "name": "g16-bdf6c0842365fb09-congratulations-before.g2core",
+    "sha256": "bdf6c0842365fb09a2767f5710ce8f2ecbba3340a43b19bc7ad8aa14bac82901",
+    "bytes": 210136,
+    "drive_file_id": "1lNS6eGtrt-47Ndu4e0pwnZSx6e4HeNIl",
+    "site": "000E:75D1",
+    "next_operation": "Core.press(13)"
+  },
+  "actual": {
+    "site": "000E:0515",
+    "archive_sha256": "45322109331b70f120cbe5bf15307a9ef5bc6a27c81b9d517cc4302cf6dc22ed",
+    "memory_sha256": "bad191a2055b55d3e6572e60373e7eb525f85d9f1e6a35543d7aa18ff42e05bc",
+    "sorted_register_json_sha256": "86a2656d1da2fd6145d0c3c4d15848b1227bee39bd1bf6e278ec6b620f93be05"
+  },
+  "private_evidence": "goal2-keep/T123-first-proof-20261025; complete failed report/key trace/initial and two annual saves/last-before/actual machine/CLI failure",
+  "limits": "Only actual announce-stage caller6625, real static links,04F5 mode0 and low flags(0,0,nonzero+8). Modes4/8,+4 branches and other callers remain separate follow-up411. No new campaign to fish for cases, guest data/seed edits, fabricated scene or vendor change. Caption readback never classifies the screen."
+}
