@@ -253,12 +253,13 @@ def core_pool_card(self):
 
 
 def refresh_core(self):
+    from goal2.desktop.core_roles import role_code
     if self.pool_side == 'squad':
-        rows = [(r['player'], r['name'], r['code'], r['line'], r['eleven'], False) for r in self.model.team()['squad']]
+        rows = [(r['player'], r['name'], role_code(r), r['line'], r['eleven'], False) for r in self.model.team()['squad']]
         self.pool_strip.capacity = 20;self.pool_strip.caption = 'YOUR SQUAD'
     else:
         pool = self.model.pool()['rows']
-        rows = [(r['player'], r['name'], r['code'], r['line'], False, False)
+        rows = [(r['player'], r['name'], role_code(r), r['line'], False, False)
                 for r in pool[self.pool_top:self.pool_top + POOL_ROWS]]
         self.pool_strip.capacity = POOL_ROWS
         self.pool_strip.caption = f'POOL OF PLAYERS {self.pool_top + 1}-{self.pool_top + len(rows)}/{len(pool)}'
