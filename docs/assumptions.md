@@ -134,3 +134,9 @@ decision are distinct evidence; a measured stand-in is not a run of an original 
 | A-WATCH-7 | Owner observed one sending off in a watched match; whether that match was friendly or competitive was not recorded. | owner sitting E015-r0013 (no finding) | none (watched engine absent) | identify match kind and reconcile with the foul path |
 | A-WATCH-8 | Original substitution swaps persist in the country squad words into later setup. F029 reads a replay-snapshot exception for a substitution in the same tick-loop iteration as a pending goal, but that exception was not observed in a record or run. | finding F029 (proposed; listing read plus measurements: 8/8 substitutions in XI at full time and 3/3 next-match reads in one manager/two careers; replay exception unverified) | T47 managed halftime swaps persist in complete quick campaign continuations; captain replacement is designed | second-match record with another manager or country; replay-exception check |
 
+
+## Original TEAM card decoder contracts
+
+| Id | Rule | Source | Live | Replaced by |
+| --- | --- | --- | --- | --- |
+| CARD-MANAGER-1 | Original 1771:0947 formats the separate initial plus one space plus the declared Pascal surname from its 13-byte record, at most 14 payload bytes. TEAM 214B:026D writes each byte to a text cell; Germany manager 12 includes a trailing NUL displayed as blank. Project cell glyphs rather than expose U+0000 or terminate at NUL. Host rejects malformed record widths/lengths. | finding F034 (proposed; independently reviewed PR430; source edab133aace9827afa99c8a4efa04e3586f3c567) | — (decoder delivery; consumer adoption pending) | private screenshot codepoint attribution remains unverified |
