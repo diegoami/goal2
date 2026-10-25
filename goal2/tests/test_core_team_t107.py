@@ -453,7 +453,9 @@ class Desktop(unittest.TestCase):
         from PySide6.QtTest import QTest
         from goal2.desktop.squad_page import core_reposition
         w = self.window();self.addCleanup(w.close)
-        w.navigate(1);w.team_roster.setFocus();self.app.processEvents()
+        w.navigate(1);w.raise_();w.activateWindow();w.team_roster.setFocus()
+        self.assertTrue(QTest.qWaitForWindowActive(w))
+        self.app.processEvents()
         player = w.team_roster.rows[w.team_roster.current][0]
         # Reach role0 with genuine forward edits, then exercise the reverse wrap via actual shortcut.
         for _ in range((14 - w.model.card(player)['position']) % 14):
