@@ -719,3 +719,42 @@ with the existing round/busy/save guards. No guest event, RNG or outcome patch i
 The source and stopped-machine hashes and private input identity are in
 [the #395 manifest](evidence/395/artifacts.json). Its tests compare the actual captured
 machine, saved replay, full original-key round and real desktop controls/bounds.
+
+## Bounded four-year proof
+
+[designed: T123, #390; approved G16/#308] The separate acceptance commands are:
+
+```bash
+python3 tools/prove_core_cycle.py --output .cache/T123-proof
+python3 tools/verify_core_cycle.py .cache/T123-proof
+```
+
+The output directory must be new and private under `.cache`. Original boot/data hashes are
+checked before use. The program boots one fresh Holland career at start year 2028 with DOS
+date 2027-10-04 and time 10:00:00.00, and explicitly declares the G15 owner policy. It asks the
+original assistant for the squad outside finals, uses the original computer captain/taker choice,
+repairs refused elevens with original club-position or legal reserve keys, and orders every
+available shootout player. The guest retains legality, budgets, outcomes and RNG ownership.
+No seed sweep, fixture/player write or new rules engine is involved.
+
+[confirmed: E031 C52/b/d/e and C65b at archaeology 44cea4de; designed: T123]
+The annual checks use stage/season pairs `(3,0)`, `(5,1)`, `(7,1)`, `(2,2)`: the displayed title
+still reads 2028 after the first year. The target is the start of the next four-year cycle,
+stage 2/season 2 with title 2032. The source manifest pins the README, claims and g1 progress
+file byte-for-byte. Scores, qualification, match counts, retirements and timing are separate
+observations, not assertions of equality with the different-input g1 run.
+
+[designed: T123] Each annual private machine is saved and its next named policy decision is
+executed directly and from an independently loaded copy. Complete memory, CPU, explicit keys,
+save and destination hashes must match. The trace also observes actual queued title/name keys,
+which are distinct from explicit `Core.press` history. Verification checks the trace hash chain,
+committed runtime/source hashes, actual initial/final machines and repeats annual decisions.
+Metadata alone, empty/truncated/error receipts, missing years and incompatible source/policy
+cannot establish a proof. Bounds are 100000 policy steps, 300 rounds and 7200 seconds by default.
+Unknown or unsupported decisions, exhausted bounds and original refusals the policy cannot
+repair stop nonzero, retaining the actual stopped machine and preceding supported checkpoint.
+Failed outputs are preserved; use a new output name after investigating a failure.
+
+Ordinary gates exercise bounded genuine boot, lineup, taker, shootout and save/replay cases plus
+receipt-corruption controls. They do not silently rerun the full campaign. Original-byte saves
+and traces stay private; only source/hash-based measurements belong in public evidence.
