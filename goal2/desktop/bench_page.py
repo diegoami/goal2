@@ -109,7 +109,6 @@ class Bench:
 
     def refresh(self):
         eleven, bench = self.words()
-        from goal2.desktop.core_roles import role_code
         data = self.data
         roles = {p['id']: p for p in self.window.model.view()['players']}
         off = {a for a, _ in self.chosen};on = {b for _, b in self.chosen}
@@ -333,6 +332,7 @@ class CoreBench:
 
     def refresh(self):
         eleven, bench = self.words()
+        from goal2.desktop.core_roles import role_code
         data = self.state['bench'] if self.state else None
         rows = []
         if data:

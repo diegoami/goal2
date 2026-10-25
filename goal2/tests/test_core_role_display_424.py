@@ -64,3 +64,24 @@ class GenuinePresentation(unittest.TestCase):
         self.assertEqual(shown['roles'], {str(p['player']):CODES[p['position']] for p in rows})
         self.assertEqual(identity, before)
         self.assertEqual(m.core.save(), machine)
+
+    @requires.need(files=('g13-2c927e5f3a564090-extra-time-start.g2core',))
+    def test_genuine_resumed_bench_shows_role_case_and_keeps_the_actual_interval(self):
+        from PySide6.QtWidgets import QApplication
+        from goal2.tests.test_core_extra_t119 import loaded
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        app = QApplication.instance() or QApplication([])
+        d = loaded(0);m = CoreModel(d.core, requires.CACHE/'GOAL.DAT', requires.CACHE/'unused-424.g2core')
+        before = m.core.save();w = CoreWindow(m)
+        try:
+            w.show();app.processEvents()
+            bench = w.core_round.bench
+            self.assertEqual(w.core_round.views.currentIndex(), 1)
+            rows = {r['player']:r for r in m.round_state()['bench']['squad']}
+            self.assertTrue(any(r['position'] in (3,7,10) for r in rows.values()))
+            self.assertEqual([r[2] for r in bench.roster.rows],
+                             [CODES[rows[r[0]]['position']] for r in bench.roster.rows])
+            self.assertEqual(m.core.save(), before)
+        finally:
+            w.close();app.processEvents()
