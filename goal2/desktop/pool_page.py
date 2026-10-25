@@ -164,7 +164,7 @@ POOL_ROWS = 21                     # [confirmed: 0791:E2E6] the pool list shows 
 
 def _strip_class():
     from PySide6.QtCore import Signal
-    from goal2.desktop.roster import RosterView
+    from goal2.desktop.core_pool_roster import PoolRoster as RosterView
 
     class ListStrip(RosterView):
         """A RosterView over a window of a longer list: Up/Down past an end, PgUp/PgDn, Home/End scroll it
@@ -204,7 +204,7 @@ def build_core(self, model):
     self.pool_move.clicked.connect(lambda: core_pool_enter(self))
     bar.addWidget(self.pool_switch);bar.addWidget(self.pool_move);bar.addStretch(1);left.addStretch(1)
     self.pool_strip = _strip_class()('POOL', toggles=False, capacity=POOL_ROWS, marks=False)
-    self.pool_strip.setObjectName('poolStrip');self.pool_strip.setFixedWidth(300)
+    self.pool_strip.setObjectName('poolStrip');self.pool_strip.setFixedWidth(314)
     self.pool_strip.setAccessibleDescription('Up/Down: select; Left/Right: squad or pool; Enter: mark, then move')
     body.addWidget(self.pool_strip, 0, Qt.AlignmentFlag.AlignTop)
     self.pool_side, self.pool_top = 'pool', 0
@@ -254,6 +254,7 @@ def core_pool_card(self):
 
 def refresh_core(self):
     from goal2.desktop.core_roles import role_code
+    from goal2.desktop.core_pool_roster import caps_for
     if self.pool_side == 'squad':
         rows = [(r['player'], r['name'], role_code(r), r['line'], r['eleven'], False) for r in self.model.team()['squad']]
         self.pool_strip.capacity = 20;self.pool_strip.caption = 'YOUR SQUAD'
@@ -262,7 +263,8 @@ def refresh_core(self):
         rows = [(r['player'], r['name'], role_code(r), r['line'], False, False)
                 for r in pool[self.pool_top:self.pool_top + POOL_ROWS]]
         self.pool_strip.capacity = POOL_ROWS
-        self.pool_strip.caption = f'POOL OF PLAYERS {self.pool_top + 1}-{self.pool_top + len(rows)}/{len(pool)}'
+        self.pool_strip.caption = f'POOL {self.pool_top + 1}-{self.pool_top + len(rows)}/{len(pool)}'
     current = self.pool_strip.current if 0 <= self.pool_strip.current < len(rows) else 0
+    self.pool_strip.caps = caps_for(self.model.state, (r[0] for r in rows))
     self.pool_strip.set_rows(rows, current)
     core_pool_card(self);core_marked_line(self)
