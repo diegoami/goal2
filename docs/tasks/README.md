@@ -271,3 +271,7 @@ operational status.
 | [T131](T131.md) | Present experimental Core port matches through public views | [#404](https://github.com/diegoami/goal2/issues/404) | T130 |
 | [T132](T132.md) | Prove application equivalence across original and port Core sessions | [#405](https://github.com/diegoami/goal2/issues/405) | T131 |
 | [T133](T133.md) | Prove native lifecycle and measure the Core port rollout candidate | [#406](https://github.com/diegoami/goal2/issues/406) | T132 |
+
+| [T134](T134.md) | Core pool/team comparison | [#434](https://github.com/diegoami/goal2/issues/434) | fix #424 |
+| [T135](T135.md) | Original-assistant pool suggestions | [#435](https://github.com/diegoami/goal2/issues/435) | T134 |
+| [T136](T136.md) | Country-appropriate Core pool identities | [#433](https://github.com/diegoami/goal2/issues/433) | fix #424 |
