@@ -260,6 +260,7 @@ operational status.
 
 | [T121](T121.md) | G13i: bridge original save-name waits to core saves | [#380](https://github.com/diegoami/goal2/issues/380) | T120 |
 | [T122](T122.md) | G15: declare the owner substitution-budget patch | [#386](https://github.com/diegoami/goal2/issues/386) | T121 |
+| [T123](T123.md) | G16: prove an unattended four-year core cycle | [#390](https://github.com/diegoami/goal2/issues/390) | T122, fix #395 |
 | [T124](T124.md) | Accept and vendor the sealed match-engine delivery | [#397](https://github.com/diegoami/goal2/issues/397) | upstream T78/T79/T80 accepted delivery |
 | [T125](T125.md) | Adapt live Core inputs to sealed engine records | [#398](https://github.com/diegoami/goal2/issues/398) | T124 and accepted archaeology #427 input boundary |
 | [T126](T126.md) | Validate port results into a private Core candidate | [#399](https://github.com/diegoami/goal2/issues/399) | T125 and accepted archaeology #427 output/write-set contract |
