@@ -669,7 +669,7 @@ Unlimited; ordinary remaining counters stay exact. Legacy/imported saves keep th
 original policy, and loading never replenishes substitutions. The declaration survives regular,
 partial-round and terminal save-and-close checkpoints.
 
-[designed: #395; confirmed: source44cea4de, 000E:0572/05F6 and the genuine G15-variant capture]
+[designed: #395; confirmed: source 44cea4de, 000E:0572/05F6 and the genuine G15-variant capture]
 An original BEST PLACE YET achievement pauses the round with its caption and complete
 three-column bulletin. Continue (Enter) supplies the one key the original consumes before
 returning to management. The current achievement can be saved/resumed exactly; management

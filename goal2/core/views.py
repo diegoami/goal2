@@ -508,7 +508,7 @@ def bulletin(state):
 
 
 def achievement_bulletin(state):
-    """[confirmed: #395; 000E:0584-05A6 at archaeology44cea4de] Qualified best-place
+    """[confirmed: #395; 000E:0584-05A6 at archaeology 44cea4de] Qualified best-place
     caption from original code plus the untouched three-column composed page."""
     return dict(bulletin(state), achievement=Memory(state).code_str(0x000E, 0x055F))
 

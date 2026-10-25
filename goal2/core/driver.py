@@ -549,11 +549,11 @@ class Driver:
     def round_continue(self):
         """[designed: T115; confirmed: F030, 000E:6BD0 at 53d7ef5] Enter closes the original round's
         PAUSE box; pass subsequent results to the next manager decision, retaining their pages.
-        [designed: #395; confirmed: 0572/05F6 at44cea4de] Also answer the qualified achievement poll;
-        its parent consumes that one key at0629."""
+        [designed: #395; confirmed: 0572/05F6 at 44cea4de] Also answer the qualified achievement poll;
+        its parent consumes that one key at the 0624 call (return 0629)."""
         if self.wait.kind == _screens.BULLETIN_ACHIEVEMENT:
-            # [confirmed: #395, 0572→05F6 at source44cea4de] The poll announces
-            # the key; its parent consumes it at 0629. No extra dismissal/read.
+            # [confirmed: #395, 0572→05F6 at source 44cea4de] The poll announces
+            # the key; its parent reads it at 0624 (return 0629). No extra dismissal/read.
             self._press_poll(RETURN)
         elif self.wait.kind == "round-paused":
             self.press(RETURN, expect=self.ROUND_KINDS)

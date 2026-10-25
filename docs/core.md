@@ -93,6 +93,7 @@ is what the tests check the screen holds (the tours of `test_core_screens_t103.p
 | kind | site | record | quoted text |
 | --- | --- | --- | --- |
 | `round-paused` | `214B:098A` (box 214B:04F8, 054E from 000E:6BD5) | T115 genuine queued-Space checkpoint, fixture 706 | "PAUSE" "PRESS ANY KEY" |
+| `bulletin-achievement` | `000E:05EC` (0572 from 05F6 at 0621, parent from 4F6F) | #395 genuine G15-variant capture | "BEST PLACE YET" |
 | `shootout-announcement` | `214B:098A` (054E from 0791:A137) | T118, unchanged E031 g1 checkpoint3874 | "penalty shoot out" "PRESS ANY KEY" |
 | `shootout-order` | `214B:157C` (9D67 from A183) | T118, original Enter after E031 checkpoint3874 | "to select the order" "Hit Esc to undo" |
 | `match-walkoff` | `0791:78F9` (7881 poll; flush read7902) | #363, genuine G4C Koeman injury | "R-result" "spacebar-commentary" |
@@ -699,18 +700,18 @@ the desktop's round, guarded with `goal2/desktop/fixtures_page.py` and `bench_pa
 
 ## Best-place bulletin wait
 
-[confirmed: original listing at archaeology44cea4de169e5c85043ad279235cda29e95e7e56,
-000E:0572/05F6; #395 genuine original-key G15-variant capture] Poll000E:05EC is qualified only
-through the actual0572 near return0624, its passed parent frame, the post-match-news parent
-return4F72 and the parent's nonzero low-byte flag+6. That flag selects the original caption
-at000E:055F. High bytes are scratch, not flags. Other callers/flags/sites remain unknown;
+[confirmed: original listing at archaeology 44cea4de169e5c85043ad279235cda29e95e7e56,
+000E:0572/05F6; #395 genuine original-key G15-variant capture] Poll 000E:05EC is qualified only
+through the actual 0572 near return 0624, its passed parent frame, the post-match-news parent
+return 4F72 and the parent's nonzero low-byte flag +6. That flag selects the original caption
+at 000E:055F. High bytes are scratch, not flags. Other callers/flags/sites remain unknown;
 classification never reads displayed text. The observed input is an owner-policy variant,
 separate from archaeology#400's unchanged-original inputs.
 
 [designed: #395] `bulletin-achievement` always retains an explicit poll wait. No-key advance
 executes the original loop and returns to a wait; release cannot silently spin past it.
 The desktop shows the original caption with all three composed bulletin columns. Continue
-announces one key, which05F6 consumes at its existing0629 read, then the original returns
+announces one key, which 05F6 consumes at its read called at 0624 (return 0629), then the original returns
 to management. `Driver.round_continue()` supplies that Enter; `play_round()` explicitly
 does the same for scripted play. Partial saves retain actual memory/CPU/keys and G15 policy,
 with the existing round/busy/save guards. No guest event, RNG or outcome patch is used.

@@ -127,7 +127,7 @@ KINDS = {k.name: k for k in (
     Kind("match-watch-prompt", keys(("N", "n"), ("Y", "y")), evidence=_CAT),
     Kind("bulletin", keys(("any key", "(any)")), evidence=_CAT),
     Kind(BULLETIN_ACHIEVEMENT, keys(("any key", "(any)")), designed=True, polled=True,
-         evidence="[designed: #395; confirmed: F030/source44cea4de, 000E:0572/05F6; genuine G15-variant capture] best-place key wait"),
+         evidence="[designed: #395; confirmed: F030/source 44cea4de, 000E:0572/05F6; genuine G15-variant capture] best-place key wait"),
     Kind("captain-select", keys(("C", "c"), ("↑↓", "Up Down"), ("◄┘", "Return")), polled=True, evidence=_CAT),
     Kind(TAKER_SELECT, keys(("C-computer select", "c C"), ("↑↓", "Up Down"), ("◄┘-select", "Return"),
                            ("keep", "Escape"), ("spacebar-pitch", "space"),
@@ -381,7 +381,7 @@ def _bulletin(f):
 
 
 def _best_place(f):
-    # [confirmed: archaeology44cea4de169e5c85043ad279235cda29e95e7e56,
+    # [confirmed: archaeology 44cea4de169e5c85043ad279235cda29e95e7e56,
     # seg_000E_01.asm 0584-05A6/0620-0629; #395 actual original-key G15-variant capture]
     # 0572 is near-called by 05F6, with its real parent as static link. Only the
     # parent's low byte +6 selects 055F's caption; +8's high byte contains scratch.
@@ -813,7 +813,7 @@ SITES = {s.site: s for s in (
          "F032; E038-r0001's trace; T121", lambda f: _name_entry(f, f.bp), lambda f: _name_view(f, f.bp)),
     # -- polls (the return address of a call of 214B:0723) ------------------------------------------------------------
     Site("000E:05EC", True, "000E:0572 under 05F6, post-match news best-place wait",
-         "[confirmed: #395 genuine G15-variant input; source44cea4de 05E7/0621/4F6F]", _best_place),
+         "[confirmed: #395 genuine G15-variant input; source 44cea4de 05E7/0621/4F6F]", _best_place),
     Site("0791:93C2", True, "0791:9372 match_key_poll (93BD; reads at 93CE)", _ROUTES, lambda f: "match-live",
          # [confirmed: code/seg_0791_15.asm 9571-9708] 954E's loop calls 9372 after each of 22 slots; its
          # local [bp-2] is the slot. The last poll is a complete pose, before the clock at 970C.

@@ -1,7 +1,7 @@
 {
   "classification": "Genuine original-key consumer continuation with declared owner-substitutions-v1; not unchanged-original archaeology400 evidence",
   "source_runtime": "1699a8c668209f469f573dc3b8ccafe9d93e524b",
-  "source_listing": "goal2-archaeology44cea4de169e5c85043ad279235cda29e95e7e56, static/goal-exe/code/seg_000E_01.asm 0572/05F6",
+  "source_listing": "goal2-archaeology 44cea4de169e5c85043ad279235cda29e95e7e56, static/goal-exe/code/seg_000E_01.asm 0572/05F6",
   "original_manager": {
     "name": "g13-b2497a51f41fa52a-g4c-loaded-manager.sav",
     "sha256": "b2497a51f41fa52a733fe880e3b144b43db05d5de11f4da6e45c51dc76a715a0"
@@ -22,5 +22,5 @@
   "collector_sha256": "c5b3c3af93e7cead0f594ca44facadd39bfc048cd5906c687651c93452363737",
   "source_record_sha256": "202e31eb0010f24b69f70cfdc0edac7fdb30416de36ddd5138f7f8768da5336f",
   "private_receipts": "goal2-keep/G13-best-place-20261025/index.json; new before input uploaded to owner-only content storage and full-hash read back during consumer fix",
-  "limits": "No custom CPU/data/seed edits beyond the declared G15 budget policy; no vendor edit, event/RNG patch or new research campaign. Classifier controls use non-executed frame proxies. Natural archaeology400 gaps remain open."
+  "limits": "No custom CPU/data/seed edits beyond the declared G15 budget policy; no vendor edit, event/RNG patch or new research campaign. Classifier controls use non-executed frame proxies. Natural archaeology #400 gaps remain open."
 }
