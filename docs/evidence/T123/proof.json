@@ -1,0 +1,501 @@
+{
+  "schema": 1,
+  "status": "complete",
+  "variant": "g16-original-keys-owner-substitutions-v1",
+  "inputs": {
+    "boot": {
+      "name": "e039-r0005-date-call.sav",
+      "sha256": "0d9c683023c7327f17bfc29900f2eff4e703641d21d3f353693f09654688494b"
+    },
+    "data": {
+      "name": "GOAL.DAT",
+      "sha256": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+    }
+  },
+  "sources": {
+    "source_repository": "diegoami/goal2-archaeology",
+    "commit": "44cea4de169e5c85043ad279235cda29e95e7e56",
+    "files": [
+      {
+        "path": "experiments/E031-play-the-game/README.md",
+        "sha256": "64a251d762fbaa3b24f48c48e3701c1ad5634207e7b79d253a50e44682271962",
+        "bytes": 6285
+      },
+      {
+        "path": "experiments/E031-play-the-game/claims.tsv",
+        "sha256": "f20c935f1bf5c7d2ba01e2747ad3c9fbb5004962406b5c129f4a6dd99856c7e2",
+        "bytes": 15257
+      },
+      {
+        "path": "experiments/E031-play-the-game/out/g1/progress.md",
+        "sha256": "458e03d3f0b5e4f4915a1055d4bb19f43aef59d5ae8eb0a059ea921ae0ea1c91",
+        "bytes": 4355
+      }
+    ],
+    "claim_ids": [
+      "C52",
+      "C52b",
+      "C52c",
+      "C52d",
+      "C52e",
+      "C65b"
+    ],
+    "scope": "Structural year/stage/season/history labels only; not seed-exact scores, qualification, match counts, retirement identities or timing. G15 variant stays separate from original evidence."
+  },
+  "runtime": {
+    "head": "279904b6217b057198ffd779e347a3a7aba39556",
+    "files": {
+      "PROVENANCE.md": "e5ddb9b36f867bedb0292c71bfbb698ef1d045a04126a0c62987dbc51dca4e90",
+      "docs/evidence/T123/sources.json": "51c3d36e2068e55d73d621ea49f3ca835d92e1cbede44afe86857a80c344b616",
+      "docs/tasks/T123.md": "961c9b5f4310a6ff9c757b161831ae893202ca772d8acd1c3c5aa34a608e2a61",
+      "goal2/core/__init__.py": "a89702a4719522cdb9be9f66e4e0f873bf50c9313dfa034b490018309199be70",
+      "goal2/core/cycle_evidence.py": "6ae715ad70056f3cc5e63585cb2e579bbdea9c2d24f763f8e13dc70af6faf13d",
+      "goal2/core/cycle_player.py": "ca6e8b40bcf7a2ed66076cbbbe38cc7382f1418b6669e952cecf637a24fd63eb",
+      "goal2/core/driver.py": "538ffa6792a4b0683daf53496a37f8a81eb884c07323e6652995f2d6cf86821c",
+      "goal2/core/patches.py": "83653f0bd84d276a93efb9228fda5a5cd4d5eb0965a3e760a89a818e4dd212b0",
+      "goal2/core/runner.py": "ac59c4db0049826798720de43efc4f3d20a3d79313c2303c7baa7d10789b06eb",
+      "goal2/core/screens.py": "4e2a72d9ddb38e3dd531c5d095c6cbac45ad0509d7b27c4376c2d2d8e398c7e1",
+      "goal2/core/views.py": "4f5c5e1c83e066b4d3899b9e216302960d2f08750d712773376442f685b16da1",
+      "goal2/desktop/core_model.py": "479afb2ec8b54f36eb64ab272cbbb951fa02e47a0398897a8c6de657df000f89",
+      "goal2/engine/confidence.py": "f2578339f486818584243d810d24b4c886c456fdb1d2518d6e605e678ef16f32",
+      "goal2/engine/energy.py": "ec791e63878eee3b9cad202b07997cc29294783017bc6fb445cdf630578fd467",
+      "goal2/engine/morale.py": "1ed6ab346d153606fd3408b00fe004ce18efc885aa274136b9cb57c6b217ecb8",
+      "goal2/engine/original_match/__init__.py": "b1286fdd13e3862f5e21c91c9879a1de078199c6180328e78bcde28f5ac12d5c",
+      "goal2/engine/original_match/assets.py": "a3dd00e87b213662c4188eecb9a4e2e88265ad6a8f2f6b84a70c3950895d43b7",
+      "goal2/engine/original_match/build.py": "e3b7c45b7442115361a6bfbded6f954749eea4e31e4f45714684bc2b071a6b41",
+      "goal2/engine/original_match/check.py": "ab6f41283784a5b78dba23d05b8d39b65343a22a660bb41f3b35b915fb64f3ae",
+      "goal2/engine/original_match/example.py": "d17a104f8c08635fb8a3ff61f6113aa56a902b88aef5fcceaf32ab27790bbacf",
+      "goal2/engine/original_match/image.py": "0b6c8a98c0d4fabdfe63be52561dd2afc56a4f0a8238e8ccc06dfd33e78e35a9",
+      "goal2/engine/original_match/machine.py": "3951626402e0f5de690ca5400ad2c6d2fa7d7e26c4fb2143bf7abacac5631fa8",
+      "goal2/engine/original_match/match.py": "635f2dc9f54515452bd3c262c61899b1e36829186266af4d88db54c9b659bb45",
+      "goal2/engine/original_match/screens.py": "45c220305d3e9bbbb4680edbb29fee6d6526d6521fbeea67a969d7b8daf7b304",
+      "goal2/engine/players.py": "1e0d671ef4c2e107ac064b54b80c98117f73ef6f8562e8c122cefe487fc82c24",
+      "goal2/engine/quick_engine.py": "d79c6376f5c14f9055ad3d25dab64eafc18d9a2bef72c5e4f51ee04ccfcc2d7c",
+      "goal2/engine/savestate.py": "ed0e1ce0483b7c00ec10da4824f02395908c65c45b00cdf4c191af17b1cf86a8",
+      "pyproject.toml": "96a5d3f14263be4d930e62e6b1c28a6ea302744c11c36a5bb4c59aa06e6e4bd4",
+      "tools/prove_core_cycle.py": "5d364dda3772b773e4525f139aff09f7533fd19bd6bc39c7514e1d59df4e1cc9",
+      "tools/verify_core_cycle.py": "b1d06fd75b2f554c99b218051c80d1990dbf4768a043d3c90e24aacb0bef6739"
+    }
+  },
+  "start_year": 2028,
+  "initial_country": 20,
+  "initial": {
+    "stage": 2,
+    "season": 0,
+    "year": 2028,
+    "start_year": 2028,
+    "klass": 0,
+    "fixture": 1,
+    "fixtures": 769,
+    "country": 20,
+    "seeds": {
+      "7B62": 60994,
+      "7B64": 0,
+      "8336": 78
+    }
+  },
+  "final": {
+    "stage": 2,
+    "season": 2,
+    "year": 2032,
+    "start_year": 2028,
+    "klass": 0,
+    "fixture": 1,
+    "fixtures": 769,
+    "country": 20,
+    "seeds": {
+      "7B62": 50492,
+      "7B64": 0,
+      "8336": 31135
+    }
+  },
+  "annual": [
+    {
+      "number": 1,
+      "progress": {
+        "stage": 3,
+        "season": 0,
+        "year": 2028,
+        "start_year": 2028,
+        "klass": 0,
+        "fixture": 769,
+        "fixtures": 1345,
+        "country": 20,
+        "seeds": {
+          "7B62": 50129,
+          "7B64": 0,
+          "8336": 13457
+        }
+      },
+      "replay": {
+        "before": "annual-1.g2core",
+        "before_sha256": "f3edb478fb566c7a4437cba570b8719ab0510ec022f285fa056bdb7591173d48",
+        "action": "round_start",
+        "direct": {
+          "memory": "0fdf1a5c4baaf44a78f1d7d218833aa88545936685a796796178310a07cc81b6",
+          "cpu": "46d4000cbbdcb6c9d03ddedfffaf93acac6fbf715e0f62a5d3f80d5e642712b2",
+          "keys": "49d3e4c07210fdbf2745cb7119901252d9a71c9147ceb4e32edc7763f646b48e",
+          "key_count": 300,
+          "save": "5c5b3870976560094eda5dbb687ac8d31e3c3800d655ef717286086e16bd3ab5",
+          "kind": "match-menu",
+          "site": "214B:157C",
+          "poll": false
+        },
+        "resumed": {
+          "memory": "0fdf1a5c4baaf44a78f1d7d218833aa88545936685a796796178310a07cc81b6",
+          "cpu": "46d4000cbbdcb6c9d03ddedfffaf93acac6fbf715e0f62a5d3f80d5e642712b2",
+          "keys": "49d3e4c07210fdbf2745cb7119901252d9a71c9147ceb4e32edc7763f646b48e",
+          "key_count": 300,
+          "save": "5c5b3870976560094eda5dbb687ac8d31e3c3800d655ef717286086e16bd3ab5",
+          "kind": "match-menu",
+          "site": "214B:157C",
+          "poll": false
+        }
+      }
+    },
+    {
+      "number": 2,
+      "progress": {
+        "stage": 5,
+        "season": 1,
+        "year": 2030,
+        "start_year": 2028,
+        "klass": 1,
+        "fixture": 1361,
+        "fixtures": 2001,
+        "country": 20,
+        "seeds": {
+          "7B62": 1696,
+          "7B64": 0,
+          "8336": 18970
+        }
+      },
+      "replay": {
+        "before": "annual-2.g2core",
+        "before_sha256": "567f481537b50d3fe956c288db23026b308b8cb78b41d41ac2a028c612e1a040",
+        "action": "round_start",
+        "direct": {
+          "memory": "e0aa1b56ed8020c0973211f328e099a29262e8811ce7f4342a3578f6c49230cf",
+          "cpu": "46d4000cbbdcb6c9d03ddedfffaf93acac6fbf715e0f62a5d3f80d5e642712b2",
+          "keys": "d4b7366bc7122045331f08e45c6f5423bbb604e2bc49094c77eed28f00380b20",
+          "key_count": 425,
+          "save": "12cffdaf3d3c23a96bc5c916982e1bf548ae282068b5e739acdada8a78bcfea8",
+          "kind": "match-menu",
+          "site": "214B:157C",
+          "poll": false
+        },
+        "resumed": {
+          "memory": "e0aa1b56ed8020c0973211f328e099a29262e8811ce7f4342a3578f6c49230cf",
+          "cpu": "46d4000cbbdcb6c9d03ddedfffaf93acac6fbf715e0f62a5d3f80d5e642712b2",
+          "keys": "d4b7366bc7122045331f08e45c6f5423bbb604e2bc49094c77eed28f00380b20",
+          "key_count": 425,
+          "save": "12cffdaf3d3c23a96bc5c916982e1bf548ae282068b5e739acdada8a78bcfea8",
+          "kind": "match-menu",
+          "site": "214B:157C",
+          "poll": false
+        }
+      }
+    },
+    {
+      "number": 3,
+      "progress": {
+        "stage": 7,
+        "season": 1,
+        "year": 2030,
+        "start_year": 2028,
+        "klass": 1,
+        "fixture": 2017,
+        "fixtures": 2385,
+        "country": 20,
+        "seeds": {
+          "7B62": 44173,
+          "7B64": 0,
+          "8336": 35522
+        }
+      },
+      "replay": {
+        "before": "annual-3.g2core",
+        "before_sha256": "b7f97a0361fa5180cb85c9fb33b3522b3ea95cd900888d6d939dd63dc39b59a6",
+        "action": "round_start",
+        "direct": {
+          "memory": "7ba267ccc0ed024f89c853aef0c1a7307168be9961ef151d2afbcf985a633531",
+          "cpu": "422ed493544922fa76961eab123974fae4d008ef0dd194fded0707e11ece58d9",
+          "keys": "7d7f6d2dde80b4c539f59fe4402ac31fb116dacb3fc46b066e4649d8adca19ff",
+          "key_count": 610,
+          "save": "10be5b61ade37dad7d2d32860f93bfe26cca727e2d270eb4c133c327b4a911c4",
+          "kind": "manager-menu",
+          "site": "000E:75D1",
+          "poll": false
+        },
+        "resumed": {
+          "memory": "7ba267ccc0ed024f89c853aef0c1a7307168be9961ef151d2afbcf985a633531",
+          "cpu": "422ed493544922fa76961eab123974fae4d008ef0dd194fded0707e11ece58d9",
+          "keys": "7d7f6d2dde80b4c539f59fe4402ac31fb116dacb3fc46b066e4649d8adca19ff",
+          "key_count": 610,
+          "save": "10be5b61ade37dad7d2d32860f93bfe26cca727e2d270eb4c133c327b4a911c4",
+          "kind": "manager-menu",
+          "site": "000E:75D1",
+          "poll": false
+        }
+      }
+    },
+    {
+      "number": 4,
+      "progress": {
+        "stage": 2,
+        "season": 2,
+        "year": 2032,
+        "start_year": 2028,
+        "klass": 0,
+        "fixture": 1,
+        "fixtures": 769,
+        "country": 20,
+        "seeds": {
+          "7B62": 50492,
+          "7B64": 0,
+          "8336": 31135
+        }
+      },
+      "replay": {
+        "before": "annual-4.g2core",
+        "before_sha256": "e0dea28ae911dd6621d2f685b831ab18b09610992b60a1aa97126c1468aa0323",
+        "action": "round_start",
+        "direct": {
+          "memory": "05331ca186f5e8aeb1ff9c7e116d1d117937979c4055dc229065e9ad90a274e0",
+          "cpu": "46d4000cbbdcb6c9d03ddedfffaf93acac6fbf715e0f62a5d3f80d5e642712b2",
+          "keys": "3c12452928da04140118abd0e71c0c93f421a0d781dcd2d61c54bbbfe145ed6c",
+          "key_count": 949,
+          "save": "21cd0771f740b873a6e9ef06b74b99764c705d246ad1675b6ebdc3834838c182",
+          "kind": "match-menu",
+          "site": "214B:157C",
+          "poll": false
+        },
+        "resumed": {
+          "memory": "05331ca186f5e8aeb1ff9c7e116d1d117937979c4055dc229065e9ad90a274e0",
+          "cpu": "46d4000cbbdcb6c9d03ddedfffaf93acac6fbf715e0f62a5d3f80d5e642712b2",
+          "keys": "3c12452928da04140118abd0e71c0c93f421a0d781dcd2d61c54bbbfe145ed6c",
+          "key_count": 949,
+          "save": "21cd0771f740b873a6e9ef06b74b99764c705d246ad1675b6ebdc3834838c182",
+          "kind": "match-menu",
+          "site": "214B:157C",
+          "poll": false
+        }
+      }
+    }
+  ],
+  "steps": 845,
+  "rounds": 62,
+  "errors": [],
+  "bounds": {
+    "steps": 100000,
+    "rounds": 300,
+    "seconds": 7200
+  },
+  "environment": {
+    "python": "3.14.4",
+    "platform": "linux",
+    "unicorn": "2.1.4"
+  },
+  "initial_sha256": "42c3387516dd0e4a1afd29781bb558ea2bc6ccd23e96ea0b3f65a461a8b643c8",
+  "dos_date": [
+    2027,
+    10,
+    4
+  ],
+  "dos_time": [
+    10,
+    0,
+    0,
+    0
+  ],
+  "initial_keys": {
+    "memory": "9b8a0166e966c46629b9acec967f2fa07fff780bef6ed430d012986614583202",
+    "cpu": "a0a01c1971e240bc6e70f865ce84f91f6367b8577a086f8b739ba70daa71a8ce",
+    "keys": "05d4c082392b72e96358707b25bb866607bb676a2d47f7a52e623b83a9198630",
+    "key_count": 6,
+    "save": "42c3387516dd0e4a1afd29781bb558ea2bc6ccd23e96ea0b3f65a461a8b643c8",
+    "kind": "manager-menu",
+    "site": "000E:75D1",
+    "poll": false
+  },
+  "transitions": [
+    {
+      "stage": 2,
+      "season": 0,
+      "year": 2028,
+      "start_year": 2028,
+      "klass": 0,
+      "fixture": 1,
+      "fixtures": 769,
+      "country": 20,
+      "seeds": {
+        "7B62": 60994,
+        "7B64": 0,
+        "8336": 78
+      }
+    },
+    {
+      "stage": 3,
+      "season": 0,
+      "year": 2028,
+      "start_year": 2028,
+      "klass": 0,
+      "fixture": 769,
+      "fixtures": 1345,
+      "country": 20,
+      "seeds": {
+        "7B62": 50129,
+        "7B64": 0,
+        "8336": 13457
+      }
+    },
+    {
+      "stage": 4,
+      "season": 0,
+      "year": 2028,
+      "start_year": 2028,
+      "klass": 0,
+      "fixture": 1345,
+      "fixtures": 1353,
+      "country": 20,
+      "seeds": {
+        "7B62": 59933,
+        "7B64": 0,
+        "8336": 18970
+      }
+    },
+    {
+      "stage": 5,
+      "season": 1,
+      "year": 2030,
+      "start_year": 2028,
+      "klass": 1,
+      "fixture": 1361,
+      "fixtures": 2001,
+      "country": 20,
+      "seeds": {
+        "7B62": 1696,
+        "7B64": 0,
+        "8336": 18970
+      }
+    },
+    {
+      "stage": 6,
+      "season": 1,
+      "year": 2030,
+      "start_year": 2028,
+      "klass": 1,
+      "fixture": 2001,
+      "fixtures": 2017,
+      "country": 20,
+      "seeds": {
+        "7B62": 54464,
+        "7B64": 0,
+        "8336": 35522
+      }
+    },
+    {
+      "stage": 7,
+      "season": 1,
+      "year": 2030,
+      "start_year": 2028,
+      "klass": 1,
+      "fixture": 2017,
+      "fixtures": 2385,
+      "country": 20,
+      "seeds": {
+        "7B62": 12476,
+        "7B64": 0,
+        "8336": 35522
+      }
+    },
+    {
+      "stage": 8,
+      "season": 1,
+      "year": 2030,
+      "start_year": 2028,
+      "klass": 1,
+      "fixture": 2385,
+      "fixtures": 2393,
+      "country": 20,
+      "seeds": {
+        "7B62": 30963,
+        "7B64": 0,
+        "8336": 27743
+      }
+    },
+    {
+      "stage": 2,
+      "season": 2,
+      "year": 2032,
+      "start_year": 2028,
+      "klass": 0,
+      "fixture": 1,
+      "fixtures": 769,
+      "country": 20,
+      "seeds": {
+        "7B62": 50492,
+        "7B64": 0,
+        "8336": 31135
+      }
+    }
+  ],
+  "last_wait": {
+    "kind": "match-live",
+    "site": "0791:93C2"
+  },
+  "final_save": "final.g2core",
+  "final_sha256": "e0dea28ae911dd6621d2f685b831ab18b09610992b60a1aa97126c1468aa0323",
+  "history": [
+    {
+      "season": "2027/28",
+      "competition": "EC",
+      "won": 11,
+      "drawn": 5,
+      "lost": 5,
+      "for": 25,
+      "against": 16,
+      "best": "qualifying"
+    },
+    {
+      "season": "2029/30",
+      "competition": "WC",
+      "won": 11,
+      "drawn": 7,
+      "lost": 4,
+      "for": 31,
+      "against": 15,
+      "best": "runners-up"
+    },
+    {
+      "season": "2031/32",
+      "competition": "EC",
+      "won": 0,
+      "drawn": 0,
+      "lost": 0,
+      "for": 0,
+      "against": 0,
+      "best": "qualifying"
+    }
+  ],
+  "trace": {
+    "rows": 2442,
+    "operations": 1439,
+    "sha256": "f1591d2bdd36110550b581b56482eb14156710f27f92640b5b193710ead23e81",
+    "last_chain": "371a1f762a2a00cba0a1086984cd882dc1576dc452eca174c724eeca229f5410",
+    "consumed": 1003,
+    "keys_sha256": "aa0c06022efddd64f1e1a5406d331e1121240f1a9c2e83159f50091f85c3d9ab"
+  },
+  "elapsed_seconds": 1291.2453743270016,
+  "trace_end": {
+    "memory": "05331ca186f5e8aeb1ff9c7e116d1d117937979c4055dc229065e9ad90a274e0",
+    "cpu": "46d4000cbbdcb6c9d03ddedfffaf93acac6fbf715e0f62a5d3f80d5e642712b2",
+    "keys": "3c12452928da04140118abd0e71c0c93f421a0d781dcd2d61c54bbbfe145ed6c",
+    "key_count": 949,
+    "save": "21cd0771f740b873a6e9ef06b74b99764c705d246ad1675b6ebdc3834838c182",
+    "kind": "match-menu",
+    "site": "214B:157C",
+    "poll": false
+  },
+  "trace_end_sha256": "21cd0771f740b873a6e9ef06b74b99764c705d246ad1675b6ebdc3834838c182"
+}
