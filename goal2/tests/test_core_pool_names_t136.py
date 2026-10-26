@@ -1,8 +1,17 @@
 """[designed: owner #433/T136] Country-fitting display identities, never guest/save edits."""
 import tempfile
 import unittest
+import re
+import unicodedata
 from pathlib import Path
 from goal2.tests import requires
+
+
+def distinct_surname(name):
+    value=re.sub('[^a-z]','',unicodedata.normalize('NFKD',name.casefold()))
+    while len(value)>4 and value.startswith(('al','el')):
+        value=value[2:]
+    return value
 
 
 @requires.need(files=('GOAL.DAT',))
@@ -27,7 +36,7 @@ class Policy(unittest.TestCase):
                         self.assertEqual(names[0],'Aung Win')
                         self.assertTrue(all(len(name.split()[0])>1 for name in names))
                     else:
-                        self.assertGreaterEqual(len({name.split(' ',1)[1].casefold() for name in names}),60)
+                        self.assertGreaterEqual(len({distinct_surname(name.split(' ',1)[1]) for name in names}),60)
                     current={f'{data.player_initials[w]} {data.player_names[w]}' for w in range(first,first+20)}
                     self.assertFalse(set(names)&current)
 
@@ -42,6 +51,30 @@ class Policy(unittest.TestCase):
             actual[country]={name.split(' ',1)[1] for name in policy.names(data.country_names.index(country))}
             self.assertIn(family,actual[country]);self.assertNotIn('Musta',actual[country])
         self.assertFalse(actual['Poland']&actual['Chile'])
+
+    def test_extended_profiles_have_readable_male_forms_and_distinct_surname_groups(self):
+        from goal2.desktop.core_names import extended_profiles
+        particles=('de ','da ','del ','du ','van ','von ','al-','al ','el-','el ','bin ','ben ','ibn ')
+        for entry in extended_profiles().values():
+            if entry['kind']!='family':continue
+            with self.subTest(country=entry['country']):
+                families=entry['families']
+                self.assertGreaterEqual(len({distinct_surname(name) for name in families}),60)
+                for family in families:
+                    self.assertTrue(family[0].isupper() or family.startswith(particles),family)
+                if entry['country']=='India':self.assertNotIn('Devi',families)
+                if entry['country']=='Indonesia':self.assertNotIn('Irawati',families)
+
+    def test_country_curation_keeps_common_roots_without_korean_spelling_duplicates(self):
+        from goal2.desktop.core_names import extended_profiles
+        profiles={p['country']:p for p in extended_profiles().values()}
+        self.assertTrue({'Dlamini','Nkosi','Ndlovu','Mokoena'}<=set(profiles['South Africa']['families']))
+        self.assertTrue({'Kim','Ri','Pak','Choe'}<=set(profiles['North Korea']['families']))
+        self.assertFalse({'Lee','Park','Terakoshi'}&set(profiles['North Korea']['families']))
+        self.assertIn('Al-Kuwari',profiles['Qatar']['families'])
+        self.assertIn('al-Mohannadi',profiles['Qatar']['families'])
+        self.assertIn('Jónsson',profiles['Iceland']['families'])
+        self.assertTrue(all(name.casefold().endswith('son') for name in profiles['Iceland']['families']))
 
 
 @requires.need(modules=('PySide6',))

@@ -724,3 +724,8 @@ surname. Saves retain only optional rename-intent fingerprints, never generated 
 the original memory and save version remain unchanged. An old save without intent metadata
 cannot distinguish a manually chosen bank name from an automatically generated one; re-entering
 that name with F2 in the desktop records the explicit choice.
+
+[designed: #433/T136] Pool display names follow full-ID/country slots. An original replacement
+player retains the slot's display name in this version, even when the original raw name, age and
+attributes change. This deliberate naming difference does not change the original regeneration;
+F2 can assign a different name explicitly.

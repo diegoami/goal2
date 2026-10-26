@@ -6,6 +6,7 @@ Myanmar uses complete personal names by the owner's choice. Original records rem
 from functools import lru_cache, wraps
 import hashlib
 import json
+import unicodedata
 from pathlib import Path
 from goal2.game.pool_names import table, FIRST, COUNT
 
@@ -16,6 +17,15 @@ def extended_profiles():
     path = Path(__file__).resolve().parents[1] / 'data' / 'pool_names_extended.json'
     return {int(number): entry for number, entry in
             json.loads(path.read_text(encoding='utf-8'))['countries'].items()}
+
+
+def surname_key(family):
+    """[designed: owner #433] Count spelling groups, not accents or article variants."""
+    text = unicodedata.normalize('NFKD', family.casefold())
+    text = ''.join(letter for letter in text if 'a' <= letter <= 'z')
+    while len(text) > 4 and text.startswith(('al', 'el')):
+        text = text[2:]
+    return text
 
 
 class NamesPolicy:
@@ -46,7 +56,7 @@ class NamesPolicy:
                 self._names[country] = names
                 return names
             families = profile['families']
-            if len({family.casefold() for family in families}) < 60:
+            if len({surname_key(family) for family in families}) < 60:
                 raise ValueError('A country pool needs at least sixty distinct surnames')
             # [confirmed: F002 R003/F007; ui/country_select.py] National players occupy
             # consecutive20-name blocks. GOAL.DAT's squad_20 contains POSITION codes, not IDs.
@@ -98,6 +108,8 @@ class NamesPolicy:
                 return original
             if mem.country_name(country) != self.data.country_names[country]:
                 return original
+            # [designed: T136] The alias belongs to the full-ID/country slot. A replacement
+            # keeps that display identity; original regeneration still changes its raw data.
             return self.names(country)[(word - FIRST) % COUNT]
         return name
 
