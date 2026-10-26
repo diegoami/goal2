@@ -79,6 +79,9 @@ class OwnedViewer(unittest.TestCase):
 class Navigation(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # [designed: T138] Focus uses native video, not a runner audio device.
+        audio = patch.dict(os.environ, {'SDL_AUDIODRIVER': 'dummy'})
+        audio.start();cls.addClassCleanup(audio.stop)
         from PySide6.QtWidgets import QApplication
         cls.app=QApplication.instance() or QApplication([])
 
