@@ -59,6 +59,7 @@ class Display:
         self.frame = None
         self.consumed = -1
         self.next_frame = 0.0
+        self.focus_requests = 0  # [designed: T138] Presentation-only window requests.
         self._digest = hashlib.sha256(b'goal2 presentation v1').hexdigest()
 
     def accept(self, packet):
@@ -82,6 +83,10 @@ class Display:
             if type(value) is not int or not 0 <= value <= 5:
                 raise ValueError('invalid original match speed')
             self.core_speed = value
+        elif kind == 'focus' and self.pitch_rate is not None:
+            if type(value) is not int or value != self.focus_requests + 1:
+                raise ValueError('invalid viewer focus request')
+            self.focus_requests = value
         elif kind == 'frame' and self.pitch_rate is not None and self.result is None:
             from goal2.game.watched_pitch import validate
             validate(value, self.frame_sequence + 1, self.frame_watermark)
