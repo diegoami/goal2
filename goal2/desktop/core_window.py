@@ -149,7 +149,7 @@ class CoreWindow(QMainWindow):
         self.core_actions = [b for b in self.core_team_buttons.values()] + [self.rename, self.pool_move,
                                                                             self.pool_switch] + \
             [row for _, row in self.tactics] + self.own_tactics + [self.own_marking] + self.core_round.buttons + \
-            [self.core_routes['play next game']]
+            [self.core_routes['play next game']] + self.core_pool_compare_actions
         for page in self.pages:page.content.addStretch()
         if self.model.in_round:                         # [T108] a core saved in a round resumes on its page
             from PySide6.QtCore import QTimer as _T
@@ -282,6 +282,8 @@ class CoreWindow(QMainWindow):
                 widget.setEnabled(False)
         self.core_round.refresh_shootout_controls()
         self.core_round.takers.refresh_controls()
+        from goal2.desktop.pool_page import core_comparison_controls
+        core_comparison_controls(self)
 
     def closeEvent(self, event):
         """[designed: T109] Stop scheduling polls, finish the bounded owned step, then reap the pitch viewer."""

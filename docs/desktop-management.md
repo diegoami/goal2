@@ -687,3 +687,10 @@ The Core Pool roster shows **CAPS** beside each name and its case-sensitive role
 This is the original unsigned international-appearance count, including zero. The column
 follows the full player ID when paging or switching between the pool and squad; reading it
 does not edit the player, run a match or change the save.
+
+[designed: owner Windows playtest, #434/T134] **Compare >** on the Core Pool page shows the
+selected pool player beside a team player. Choose the team player in **TEAM PLAYER**; both
+names, roles, caps, skills and characteristics stay visible on the same scales. **< Pool**
+or Esc returns to the list. Browsing a comparison changes no players. **Exchange these players**
+is a separate confirmation, checked by the original game; a player who has left either list
+cannot be exchanged again through a stale comparison.

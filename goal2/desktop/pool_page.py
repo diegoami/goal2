@@ -189,8 +189,13 @@ def _strip_class():
 
 def build_core(self, model):
     from goal2.desktop.player_card import PlayerCardView
+    from goal2.desktop.core_pool_compare import PlayerComparisonView
+    from PySide6.QtWidgets import QStackedWidget
     page = self.pages[2]
-    body = QHBoxLayout();body.setSpacing(16);page.content.addLayout(body, 1)
+    self.core_pool_views = QStackedWidget();self.core_pool_views.setObjectName('corePoolViews')
+    page.content.addWidget(self.core_pool_views,1);page.views=self.core_pool_views
+    browser=QWidget();self.core_pool_views.addWidget(browser)
+    body = QHBoxLayout(browser);body.setContentsMargins(0,0,0,0);body.setSpacing(16)
     left = QVBoxLayout();left.setSpacing(8);body.addLayout(left, 1)
     self.pool_card = PlayerCardView(compact=True);self.pool_card.setObjectName('poolCard');left.addWidget(self.pool_card)
     self.pool_marked_line = label('poolMarked', 'The marked player')
@@ -202,7 +207,11 @@ def build_core(self, model):
     self.pool_move = QPushButton('Move player (Enter)');self.pool_move.setObjectName('poolMove')
     self.pool_move.setAccessibleName('Mark the highlighted player, or move the marked one to him')
     self.pool_move.clicked.connect(lambda: core_pool_enter(self))
-    bar.addWidget(self.pool_switch);bar.addWidget(self.pool_move);bar.addStretch(1);left.addStretch(1)
+    self.pool_compare=QPushButton('Compare >');self.pool_compare.setObjectName('poolCompare')
+    self.pool_compare.setAccessibleName('Compare a pool player directly with a squad player')
+    self.pool_compare.clicked.connect(lambda:core_compare(self))
+    bar.addWidget(self.pool_switch);bar.addWidget(self.pool_move);bar.addWidget(self.pool_compare)
+    bar.addStretch(1);left.addStretch(1)
     self.pool_strip = _strip_class()('POOL', toggles=False, capacity=POOL_ROWS, marks=False)
     self.pool_strip.setObjectName('poolStrip');self.pool_strip.setFixedWidth(314)
     self.pool_strip.setAccessibleDescription('Up/Down: select; Left/Right: squad or pool; Enter: mark, then move')
@@ -214,6 +223,26 @@ def build_core(self, model):
     self.pool_strip.scrolled.connect(lambda delta: core_scroll(self, delta))
     self.pool_selected = lambda: (self.pool_strip.rows[self.pool_strip.current][0]
                                   if 0 <= self.pool_strip.current < len(self.pool_strip.rows) else None)
+    comparison=QWidget();self.core_pool_views.addWidget(comparison)
+    box=QVBoxLayout(comparison);box.setContentsMargins(0,0,0,0);box.setSpacing(8)
+    controls=QHBoxLayout();controls.setSpacing(8);box.addLayout(controls)
+    controls.addWidget(QLabel('TEAM PLAYER'))
+    self.pool_compare_squad=QComboBox();self.pool_compare_squad.setObjectName('poolCompareSquad')
+    self.pool_compare_squad.setAccessibleName('Squad player to compare');self.pool_compare_squad.setMinimumWidth(260)
+    controls.addWidget(self.pool_compare_squad,1)
+    self.pool_compare_exchange=QPushButton('Exchange these players');self.pool_compare_exchange.setObjectName('poolCompareExchange')
+    self.pool_compare_exchange.clicked.connect(lambda:core_compare_exchange(self));controls.addWidget(self.pool_compare_exchange)
+    self.pool_compare_back=QPushButton('< Pool (Esc)');self.pool_compare_back.setObjectName('poolCompareBack')
+    self.pool_compare_back.clicked.connect(lambda:core_compare_back(self));controls.addWidget(self.pool_compare_back)
+    self.pool_comparison=PlayerComparisonView();box.addWidget(self.pool_comparison,0,Qt.AlignmentFlag.AlignLeft)
+    box.addStretch(1)
+    self.core_compare_in=self.core_compare_out=None
+    self.pool_compare_squad.currentIndexChanged.connect(lambda:core_compare_selected(self))
+    self.core_pool_compare_actions=[self.pool_compare,self.pool_compare_squad,self.pool_compare_exchange]
+    def escape():
+        if self.core_pool_views.currentIndex()==1:core_compare_back(self);return True
+        return False
+    page.escape=escape
 
 
 def core_switch(self):
@@ -268,3 +297,70 @@ def refresh_core(self):
     self.pool_strip.caps = caps_for(self.model.state, (r[0] for r in rows))
     self.pool_strip.set_rows(rows, current)
     core_pool_card(self);core_marked_line(self)
+    core_refresh_comparison(self)
+
+
+def core_compare(self):
+    """[designed: T134] Capture full IDs, never a roster index or an unconfirmed exchange."""
+    from goal2.desktop.squad_page import selected_player
+    if self.core_jobs.busy or self.model.in_round or self.model.in_save_name:return False
+    if self.pool_side!='pool' or self.pool_selected() is None:
+        self.status.setText('Choose a pool player to compare');return False
+    self.core_compare_in=self.pool_selected();self.core_compare_out=selected_player(self)
+    core_refresh_comparison(self);self.core_pool_views.setCurrentIndex(1)
+    self.pool_compare_squad.setFocus(Qt.FocusReason.ShortcutFocusReason)
+    return True
+
+
+def core_compare_back(self):
+    self.core_pool_views.setCurrentIndex(0);self.pool_strip.setFocus(Qt.FocusReason.ShortcutFocusReason)
+
+
+def core_compare_selected(self):
+    self.core_compare_out=self.pool_compare_squad.currentData()
+    core_refresh_comparison(self)
+
+
+def core_compare_members(self):
+    return ({p['player'] for p in self.model.team()['squad']},
+            {p['player'] for p in self.model.pool()['rows']})
+
+
+def core_comparison_controls(self):
+    active=not self.core_jobs.busy and not self.model.in_round and not self.model.in_save_name
+    if not active:
+        for control in self.core_pool_compare_actions:control.setEnabled(False)
+        return
+    squad,pool=core_compare_members(self)
+    self.pool_compare.setEnabled(active and self.pool_side=='pool' and self.pool_selected() in pool)
+    self.pool_compare_squad.setEnabled(active)
+    self.pool_compare_exchange.setEnabled(active and self.core_compare_out in squad and self.core_compare_in in pool)
+
+
+def core_refresh_comparison(self):
+    from goal2.desktop.core_roles import role_code
+    from goal2.desktop.player_card import core_card
+    team=self.model.team()['squad'];squad,pool=core_compare_members(self)
+    combo=self.pool_compare_squad;blocked=combo.blockSignals(True)
+    try:
+        combo.clear()
+        for p in team:combo.addItem(f"{p['name']} · {role_code(p)}",p['player'])
+        combo.setCurrentIndex(combo.findData(self.core_compare_out))
+    finally:combo.blockSignals(blocked)
+    left=core_card(self.model.card(self.core_compare_out)) if self.core_compare_out in squad else None
+    right=core_card(self.model.card(self.core_compare_in)) if self.core_compare_in in pool else None
+    self.pool_comparison.set_cards(left,right)
+    core_comparison_controls(self)
+
+
+def core_compare_exchange(self):
+    """[designed: T134] Only explicit acceptance invokes the original exchange validation."""
+    if self.core_jobs.busy or self.model.in_round or self.model.in_save_name:return False
+    squad,pool=core_compare_members(self)
+    outgoing=self.pool_compare_squad.currentData();incoming=self.core_compare_in
+    if outgoing not in squad or incoming not in pool:
+        self.status.setText('Choose a squad player and a player still in the pool');return False
+    if not self.run_core('exchange',outgoing,incoming):return False
+    self.core_marked=None
+    for strip in (self.team_roster,self.pool_strip):strip.marked=set();strip.update()
+    return True
