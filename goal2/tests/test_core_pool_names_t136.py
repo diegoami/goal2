@@ -67,6 +67,100 @@ class GenuineNames(unittest.TestCase):
         game=CoreNewGame(requires.CACHE/'e039-r0005-date-call.sav',requires.CACHE/'GOAL.DAT',requires.CACHE/'unused-names.g2core')
         return game.start(2028,country,'B Tester')[0]
 
+    def host_view_copy(self, model):
+        """Controlled read-only-view input, never an edited/rerun guest or gameplay receipt."""
+        from types import SimpleNamespace
+        from goal2.core import views
+        mem=views.Memory(model.state)
+        return SimpleNamespace(_image=SimpleNamespace(memory=bytearray(mem.mem),DS=mem.ds,
+                                                     load=mem.load,far=mem.image.far))
+
+    def test_real_resolver_formats_commentary_surnames_and_explicit_bank_renames(self):
+        from goal2.core import views
+        from goal2.desktop.core_names import resolver_for,NamesPolicy
+        from goal2.data import load
+        from goal2.engine.original_match.image import names_and_templates
+        for country in (12,18):
+            model=self.game(country);word=2561
+            policy=NamesPolicy(load((requires.CACHE/'GOAL.DAT').read_bytes()))
+            for renamed in (False,True):
+                with self.subTest(country=country,renamed=renamed):
+                    if renamed:model.act('rename',word,policy.original_name(2562))
+                    before=model.core.save();state=self.host_view_copy(model);mem=views.Memory(state)
+                    raw_name,templates=names_and_templates(lambda a,n:bytes(mem.mem[a:a+n]),mem.ds,mem.image.far)
+                    template=next(i for i,text in enumerate(templates) if '\x01' in text)
+                    # Host-only ring control: bind the genuine pool full ID to a real template.
+                    ring=mem.ds*16+0x7C38+6
+                    mem.mem[ring:ring+6]=bytes([template])+word.to_bytes(2,'little')+b'\0\0\0'
+                    mem.mem[mem.ds*16+0x80EE:mem.ds*16+0x80F0]=b'\1\0'
+                    plain=views.commentary(state,0)
+                    resolve=resolver_for(model.state,model.data_path,model._explicit_player_names)
+                    with views.display_player_names(resolve):
+                        named=views.commentary(state,0)
+                    expected=model.card(word)['name'].partition(' ')[2]
+                    self.assertIn(expected,named[1][0]['text'])
+                    if country==12 and not renamed:
+                        self.assertNotEqual(expected,raw_name(word))
+                        self.assertNotIn(raw_name(word),named[1][0]['text'])
+                    else:self.assertEqual(named,plain)
+                    self.assertEqual(views.commentary(state,0),plain)
+                    self.assertEqual(model.core.save(),before)
+
+    def test_real_resolver_reaches_copied_competition_names_and_current_history_records(self):
+        from goal2.core import views
+        from goal2.desktop.core_names import resolver_for
+        for country in (12,18):
+            with self.subTest(country=country):
+                model=self.game(country);before=model.core.save();word=2561
+                state=self.host_view_copy(model);mem=views.Memory(state)
+                # Host-only scorer-table controls, retaining original input names/full IDs.
+                copied=mem.far(0xA93F)
+                mem.mem[copied]=mem.byte(mem.far(views.PLAYER_INITIALS)+word)
+                source=mem.far(views.PLAYER_NAMES)+11*word
+                mem.mem[copied+1:copied+12]=mem.mem[source:source+11]
+                mem.mem[copied+12:copied+14]=(7).to_bytes(2,'little')
+                mem.mem[copied+14:copied+16]=word.to_bytes(2,'little')
+                player=mem.far(views.PLAYERS)+views.PLAYER_SIZE*word
+                mem.mem[player+8:player+12]=(600).to_bytes(2,'little')+(500).to_bytes(2,'little')
+                for pointer in (0xA937,0xA93B):
+                    kept=mem.far(pointer)
+                    mem.mem[kept:kept+14]=b'Q\x06Legacy'+b'\0'*4+(900).to_bytes(2,'little')
+                plain=views.competition_scorers(mem,1);history=views.history(state,country)
+                resolve=resolver_for(model.state,model.data_path,model._explicit_player_names)
+                with views.display_player_names(resolve):
+                    named=views.competition_scorers(mem,1);named_history=views.history(state,country)
+                expected=model.card(word)['name']
+                self.assertEqual(named[0]['name'],expected)
+                self.assertEqual([(r['player'],r['goals']) for r in named],[(r['player'],r['goals']) for r in plain])
+                sep=mem.code_str(0x1771,0x1D5A);expected_history=expected.replace(' ',sep,1)
+                for key,value in (('top_scorers',500),('top_caps',600)):
+                    self.assertIn({'name':expected_history,'count':value},named_history[key])
+                    self.assertIn({'name':'Q'+sep+'Legacy','count':900},named_history[key])
+                    self.assertEqual([r['count'] for r in named_history[key]],[r['count'] for r in history[key]])
+                if country==18:
+                    self.assertEqual(named,plain);self.assertEqual(named_history,history)
+                self.assertEqual(views.competition_scorers(mem,1),plain)
+                self.assertEqual(model.core.save(),before)
+
+    def test_stale_or_invalid_copied_scorer_ids_keep_their_original_copied_names(self):
+        from goal2.core import views
+        from goal2.desktop.core_names import resolver_for
+        model=self.game();before=model.core.save();state=self.host_view_copy(model)
+        mem=views.Memory(state);word=2561;other=2562
+        self.assertNotEqual(mem.player_name(word),mem.player_name(other))
+        for row,player in enumerate((word,65535)):
+            copied=mem.far(0xA93F)+16*row
+            mem.mem[copied]=mem.byte(mem.far(views.PLAYER_INITIALS)+other)
+            source=mem.far(views.PLAYER_NAMES)+11*other
+            mem.mem[copied+1:copied+12]=mem.mem[source:source+11]
+            mem.mem[copied+12:copied+14]=(7).to_bytes(2,'little')
+            mem.mem[copied+14:copied+16]=player.to_bytes(2,'little')
+        plain=views.competition_scorers(mem,1)
+        with views.display_player_names(resolver_for(model.state,model.data_path)):
+            named=views.competition_scorers(mem,1)
+        self.assertEqual(named,plain)
+        self.assertEqual(model.core.save(),before)
+
     def test_germany_display_names_match_the_existing_policy_and_preserve_every_guest_byte(self):
         from goal2.desktop.core_names import resolver_for
         from goal2.game.pool_names import table

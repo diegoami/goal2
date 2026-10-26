@@ -95,12 +95,34 @@ class Memory:
         """1771:0F58 draw_country_name: DS:9B68 + 16 n (blank for 0)."""
         return self.pstr(self.far(COUNTRY_NAMES) + 16 * n, 15) if n else ""
 
-    def player_name(self, w):
+    def raw_player_name(self, w):
         """1771:2E93 player_name: the initial [DS:9B70] + w, a space, the surname [DS:9B6C] + 11 w."""
         surname = self.pstr(self.far(PLAYER_NAMES) + 11 * w, 10)
-        original = f"{chr(self.byte(self.far(PLAYER_INITIALS) + w))} {surname}"
+        return f"{chr(self.byte(self.far(PLAYER_INITIALS) + w))} {surname}"
+
+    def display_player_name(self, w, original):
+        """[designed: T136] Resolve an identified full name; unidentified history copies stay raw."""
         resolver = _display_names.get()
-        return original if resolver is None else resolver(w, original)
+        return original if resolver is None or w is None else resolver(w, original)
+
+    def player_name(self, w):
+        return self.display_player_name(w, self.raw_player_name(w))
+
+    def copied_player_name(self, w, original):
+        """[designed: T136] A stale copied name must not acquire another player's alias."""
+        # [derived: F002/F007] 2560 national records and500 unassigned names end at3060.
+        if _display_names.get() is None or not 1 <= w <= 3060:
+            return original
+        return (self.display_player_name(w, original)
+                if original == self.raw_player_name(w) else original)
+
+    def player_surname(self, w, original):
+        """[designed: T136] Commentary keeps surname formatting, with full-name rename intent."""
+        if not w:
+            return original
+        raw = self.raw_player_name(w)
+        display = self.display_player_name(w, raw)
+        return original if display == raw else (display.partition(' ')[2] or display)
 
     def game(self, off, size=1):
         a = self.far(GAME) + off
@@ -290,7 +312,9 @@ def competition_scorers(mem, region):
     for k in range(3):
         a = mem.far(0xA93F) + (region - 1) * 0x60 + 16 * k
         if mem.word(a + 14):
-            top.append(dict(player=mem.word(a + 14), name=chr(mem.byte(a)) + ' ' + mem.pstr(a + 1, 10),
+            player = mem.word(a + 14)
+            original = chr(mem.byte(a)) + ' ' + mem.pstr(a + 1, 10)
+            top.append(dict(player=player, name=mem.copied_player_name(player, original),
                             goals=mem.word(a + 12)))
     return top
 
@@ -362,7 +386,9 @@ def _top(mem, country, goals):
     base = mem.far(0xA93B if goals else 0xA937) + 0x8C * (e - 1)
     for i in range(10):
         a = base + 0xE * i
-        table.append((chr(mem.byte(a)), mem.pstr(a + 1, 10), mem.word(a + 0xC)) if managed else ("\0", "", 0))
+        # Kept records have no full ID: preserve their copied names without guessing identity.
+        table.append((chr(mem.byte(a)), mem.pstr(a + 1, 10), mem.word(a + 0xC), None)
+                     if managed else ("\0", "", 0, None))
     words = [mem.country(country, 2 * s, 2) for s in range(20)]
     if managed:
         first = mem.ds_word(POOL_BASE + 2 * e)
@@ -374,10 +400,21 @@ def _top(mem, country, goals):
             if table[i][2] <= value:
                 table[i + 1:] = table[i:9]
                 table[i] = (chr(mem.byte(mem.far(PLAYER_INITIALS) + w)),
-                            mem.pstr(mem.far(PLAYER_NAMES) + 11 * w, 10), value)
+                            mem.pstr(mem.far(PLAYER_NAMES) + 11 * w, 10), value, w)
                 break
     sep = mem.code_str(0x1771, 0x1D5A)
-    return [{"name": initial + sep + name, "count": count} for initial, name, count in table if count]
+    out = []
+    for initial, surname, count, player in table:
+        if count:
+            original = initial + ' ' + surname
+            display = mem.display_player_name(player, original)
+            if display == original:
+                shown = initial + sep + surname
+            else:
+                first, space, family = display.partition(' ')
+                shown = first + sep + family if space else display
+            out.append({"name": shown, "count": count})
+    return out
 
 
 def history(state, country=None):
@@ -842,7 +879,7 @@ def commentary(state, previous=0):
     resolver = _display_names.get()
     if resolver is not None:
         raw_name = name
-        name = lambda word: resolver(word, raw_name(word))
+        name = lambda word: mem.player_surname(word, raw_name(word))
     rows = []
     index = previous
     for _ in range(200):

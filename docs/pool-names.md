@@ -18,6 +18,12 @@ cards, comparisons, suggestions, scorers and commentary. Browsing changes no gue
 CPU, original keys, RNG or Core payload. Original driver/oracle reads retain raw identities.
 A custom country-name mismatch or unavailable canonical GOAL.DAT also retains original text.
 
+Commentary retains the original surname-only format while resolving the full raw name, so
+explicit rename fingerprints still apply. Competition scorer copies receive aliases only when
+their full ID and copied name match the current record. Stale copies retain their original text.
+History's current-player goals/caps entries resolve by full ID; older kept entries without IDs
+retain their copied names rather than guessing identities. Counts and ordering stay unchanged.
+
 The authored names fit the existing pool name/caps/role layout. Full identities remain visible
 on cards and in comparisons, including accents. Existing case-sensitive role codes are preserved.
 
