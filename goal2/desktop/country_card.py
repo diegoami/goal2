@@ -51,6 +51,8 @@ class CountryCardView(QWidget):
         if card is not None:
             self.setAccessibleName(f"{card['name']}; manager {card['manager']}; world {card['world']}; "
                                    f"{card['continent']} {card['continental']}; formation {card['formation']}; "
+                                   f"status {card.get('status', NOT_DECODED)}; "
+                                   f"skill {card.get('skill', NOT_DECODED) or ''}; "
                                    + '; '.join(f'{n} {w}' for n, w in card['team_tactics'] + card['player_defaults']))
         self.update()
 
@@ -64,6 +66,9 @@ class CountryCardView(QWidget):
         """A titled group of name/value rows; narrow cards put long values on their own line."""
         self.text(painter, x, y, title, RED, 20, True);y += 30
         for name, value in rows:
+            # [designed: T137] Delivered manager0 draws a blank; an absent key
+            # still uses the legacy route's explicit undecoded placeholder.
+            value = '' if value is None else value
             missing = value == NOT_DECODED
             self.text(painter, x, y, name.capitalize(), GOLD, 19)
             if self.narrow and (missing or len(value) > 12):
@@ -82,7 +87,8 @@ class CountryCardView(QWidget):
             self.text(painter, 20, 40, 'Choose a country', GREY);painter.end();return
         narrow = self.narrow
         self.text(painter, 16, 52, c['name'].upper(), YELLOW, 40 if narrow else 44, True)
-        team = [('manager', c['manager']), ('status', NOT_DECODED), ('skill', NOT_DECODED)]
+        team = [('manager', c['manager']), ('status', c.get('status', NOT_DECODED)),
+                ('skill', c.get('skill', NOT_DECODED))]
         y = self.rows(painter, 16, 92, 'TEAM', team, 130)
         # Ranking now / top: the original's two columns; top is not decoded yet.
         self.text(painter, 16, y, 'RANKING', RED, 20, True)
