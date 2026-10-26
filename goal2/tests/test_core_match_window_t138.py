@@ -173,12 +173,12 @@ original=v.status
 minimized=False
 def write(path,value):
  global minimized
- if value.get('frame_sequence',-1)>=0 and not minimized:
+ original(path,value)
+ if path.with_name('minimize-request').exists() and not minimized:
   minimized=True
   if pygame.display.get_driver()!='dummy':pygame.Window.from_display_module().minimize()
  if minimized and (pygame.display.get_driver()=='dummy' or not pygame.display.get_active()):
   path.with_name('minimized').write_text('yes')
- original(path,value)
 v.status=write
 sys.exit(v.main())
 """
@@ -189,11 +189,21 @@ sys.exit(v.main())
         def pump(predicate):
             end=time.monotonic()+15
             while time.monotonic()<end:
-                self.app.processEvents();viewer.poll()
+                self.app.processEvents()
+                try:
+                    viewer.poll()
+                except ValueError as error:
+                    viewer.errors.flush()
+                    self.fail(f'{error}; child stderr: '+(viewer.directory/'errors').read_text(errors='replace'))
                 if predicate():return
                 time.sleep(.01)
-            self.fail(f'viewer timed out: {viewer.last_status}')
-        pump(lambda:viewer.drained and (viewer.directory/'minimized').exists())
+            self.fail(f'viewer timed out: {viewer.last_status}; child stderr: '+
+                      (viewer.directory/'errors').read_text(errors='replace'))
+        # Minimize an acknowledged, running viewer, as a user would. Publishing
+        # its first ready receipt must precede the native window transition.
+        pump(lambda:viewer.drained)
+        (viewer.directory/'minimize-request').write_text('yes')
+        pump(lambda:(viewer.directory/'minimized').exists())
         window.raise_();window.activateWindow();self.app.processEvents()
         window.refresh_round_controls();window.core_show_match.click()
         pump(lambda:viewer.focus_ack==1)
