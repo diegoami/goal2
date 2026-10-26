@@ -13,8 +13,6 @@ def caps_for(state, players):
 
 class PoolRoster(RosterView):
     detail_heading = 'CAPS'
-    # [designed: owner #433] Long names elide before the existing caps/role columns.
-    detail_width = 56
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

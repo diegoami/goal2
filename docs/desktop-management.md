@@ -704,28 +704,21 @@ formula is shown. **Exchange these players** remains your explicit decision. Aft
 change, ask again rather than applying an old proposal. **Cancel suggestion** discards a pending
 query while its bounded copied step finishes; a query failure leaves the active game playable.
 
-[designed: owner Windows playtest, #433/T136] Core pool identities now use country-fitting
-family names in the pool, cards, team after recruitment, comparisons, suggestions, scorers and
-commentary. The existing authored T93 lists preserve80 surnames each for33 countries. The other surname
-profiles supply at least60 distinct families and80 unique full names per pool. Myanmar instead
-uses80 complete Burmese personal names, without an invented initial/surname split. The new
-profiles use attributed CC0 country-name attestations, not a population-frequency ranking
-([sources and curation](pool-names.md)). Long names elide before the pool CAPS and role columns;
-the adjacent card shows the full name. Full player IDs and their assigned countries
-bind the names, including after an exchange. Explicit original F2 renames take precedence.
-The policy changes display text only: the original driver and raw-memory readers retain their
-original names, and no alias is written into a Core save. Old saves receive the same names when
-reopened. Custom country-name mismatches or unavailable canonical data keep their own text.
+[designed: owner Windows playtest, #433/T136; scope corrected2026-10-26] Core pool identities
+reuse the existing33 authored profiles: the canonical top32 countries plus Greece. Their80
+surnames/initials remain unchanged. Names agree across pool, cards, team after recruitment,
+comparisons, suggestions, scorers and commentary. Full player IDs and assigned country bind the
+names. Unlisted countries, custom country-name mismatches and unavailable canonical data retain
+the current original text. No extra-country list or fallback name generator is included
+([policy and saves](pool-names.md)).
 
-[designed: #433/T136] Automatic player regeneration may pick a new initial and surname from
-the original shared name bank; those defaults also receive country-fitting display names.
-Explicit F2 renames made in the desktop retain priority even when they use an original-bank
-surname. Saves retain only optional rename-intent fingerprints, never generated aliases;
-the original memory and save version remain unchanged. An old save without intent metadata
-cannot distinguish a manually chosen bank name from an automatically generated one; re-entering
-that name with F2 in the desktop records the explicit choice.
+[designed: #433/T136] Original regeneration can pick a new initial and surname from the shared
+bank. Covered full-ID/country slots retain their display aliases in this version, even when a
+replacement's raw name, age and attributes change. This deliberate naming difference leaves
+original regeneration untouched. Unlisted countries continue showing the current raw names.
 
-[designed: #433/T136] Pool display names follow full-ID/country slots. An original replacement
-player retains the slot's display name in this version, even when the original raw name, age and
-attributes change. This deliberate naming difference does not change the original regeneration;
-F2 can assign a different name explicitly.
+Explicit original F2 renames take precedence, including original-bank names. Desktop saves
+retain only optional rename-intent fingerprints, never generated aliases; guest memory/payload
+and Core save version remain unchanged. Old saves receive the same covered-country policy
+without migration. An old save without intent cannot distinguish a manually chosen bank name
+from an automatically generated one; re-entering it through F2 records the explicit choice.

@@ -1,31 +1,13 @@
 """[designed: owner #433/T136, continuing T93] Country-fitting presentation names only.
 
-Authored T93 names are preserved. Other countries use the separately attributed CC0 profiles.
-Myanmar uses complete personal names by the owner's choice. Original records remain untouched.
+The owner limited this policy to the existing33 authored T93 profiles (2026-10-26).
+Unlisted countries keep the current original names. Original records remain untouched.
 """
 from functools import lru_cache, wraps
 import hashlib
 import json
-import unicodedata
 from pathlib import Path
 from goal2.game.pool_names import table, FIRST, COUNT
-
-
-@lru_cache(maxsize=1)
-def extended_profiles():
-    """[designed: owner #433] Frozen country profiles, independent of guest player records."""
-    path = Path(__file__).resolve().parents[1] / 'data' / 'pool_names_extended.json'
-    return {int(number): entry for number, entry in
-            json.loads(path.read_text(encoding='utf-8'))['countries'].items()}
-
-
-def surname_key(family):
-    """[designed: owner #433] Count spelling groups, not accents or article variants."""
-    text = unicodedata.normalize('NFKD', family.casefold())
-    text = ''.join(letter for letter in text if 'a' <= letter <= 'z')
-    while len(text) > 4 and text.startswith(('al', 'el')):
-        text = text[2:]
-    return text
 
 
 class NamesPolicy:
@@ -40,40 +22,11 @@ class NamesPolicy:
         if country in self._names:
             return self._names[country]
         entry = table().get(country)
-        if entry is not None and entry[0] == self.data.country_names[country]:
-            _, families, initials = entry
-            names = tuple(f'{i} {f}' for i, f in zip(initials, families))
-        else:
-            profile = extended_profiles().get(country)
-            if profile is None or profile['country'] != self.data.country_names[country]:
-                raise ValueError('No matching country pool-name profile')
-            if profile['kind'] == 'personal':
-                # [designed: owner2026-10-26] Burmese personal names are complete units.
-                names = tuple(profile['names'])
-                if country != self.data.country_names.index('Myanmar'):
-                    raise ValueError('Unexpected complete-personal-name profile')
-                self._validate(names)
-                self._names[country] = names
-                return names
-            families = profile['families']
-            if len({surname_key(family) for family in families}) < 60:
-                raise ValueError('A country pool needs at least sixty distinct surnames')
-            # [confirmed: F002 R003/F007; ui/country_select.py] National players occupy
-            # consecutive20-name blocks. GOAL.DAT's squad_20 contains POSITION codes, not IDs.
-            first = 20 * (country - 1) + 1
-            reserved = {self.original_name(word) for word in range(first, first + 20)}
-            names = []
-            # Use every family before repeating one. A reserved full name must not cause
-            # a family to disappear from the eighty displayed identities.
-            for index in range(COUNT):
-                family = families[index % len(families)]
-                for rotation in range(26):
-                    initial = chr(65 + (index + rotation + country) % 26)
-                    name = f'{initial} {family}'
-                    if name not in reserved and name not in names:
-                        names.append(name)
-                        break
-            names = tuple(names)
+        if entry is None or entry[0] != self.data.country_names[country]:
+            self._names[country] = None
+            return None
+        _, families, initials = entry
+        names = tuple(f'{initial} {family}' for initial, family in zip(initials, families))
         self._validate(names)
         self._names[country] = names
         return names
@@ -110,7 +63,8 @@ class NamesPolicy:
                 return original
             # [designed: T136] The alias belongs to the full-ID/country slot. A replacement
             # keeps that display identity; original regeneration still changes its raw data.
-            return self.names(country)[(word - FIRST) % COUNT]
+            names = self.names(country)
+            return original if names is None else names[(word - FIRST) % COUNT]
         return name
 
 

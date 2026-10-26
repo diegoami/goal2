@@ -20,6 +20,6 @@ build-backend = "setuptools.build_meta"
 include = ["goal2*"]
 
 [tool.setuptools.package-data]
-"goal2.data" = ["pool_names.json", "pool_names_extended.json"]
+"goal2.data" = ["pool_names.json"]
 "goal2.web" = ["static/*.html", "static/*.mjs", "static/*.css"]
 "goal2.desktop" = ["fonts/*.ttf", "fonts/LICENSE"]
