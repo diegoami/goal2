@@ -609,6 +609,31 @@ driver.new_game(7, "bob")      # N, Enter (one manager), the country by its arro
   `views.bulletin` (each story's masthead and lines, read from the page buffer [DS:A96E] that 000E:070B, 062F and
   075F compose and 000E:05F6 moves to the screen; the template's filler rows of ≡ and ░ are left out).
 
+### TEAM card labels and manager text
+
+[derived: proposed F034/F035, archaeology edab133aace9827afa99c8a4efa04e3586f3c567 and
+aec8ddd1d896caef686aceda6f90b8f79ab0fbe6; T137] `Memory.manager_name` reads the current initial
+and exact13-byte Pascal surname record and calls the byte-identical delivered formatter. Its
+text-cell projection preserves declared length, leading/interior/trailing blanks and VGA glyphs;
+Germany's declared trailing NUL becomes a blank. Generic `pstr` keeps its existing contract.
+The attribution of the owner's screenshot to an exact Unicode codepoint remains unverified.
+
+`views.country_card` supplies **Status** from current country ranks and **Skill** from byte+1
+of the current selected manager record. Human slots129..134 are included. A fresh German human
+career therefore has the same giant Status and unknown Skill, while NPC manager12 has eclectic
+Skill. Manager0 draws a blank Skill (`None`); ability0 displays unknown. Full unsigned abilities
+1..255 use the original table lookup, including neighboring table entries above128. Confidence
+byte+2 and player/team skills do not enter these two fields. These are proposed/static-adjacent
+decoder contracts, not newly claimed independent behavioral corroboration.
+
+[designed: T137] Exact bounded current-memory/data-segment/code-image callbacks reject malformed
+host inputs; that validation is distinct from the original's unchecked reads. Reads leave the
+complete Core save unchanged. The shared desktop card displays the delivered fields, preserves
+a blank Skill, and uses its existing undecoded fallback when a Python-route card lacks the keys.
+Ranking top, strips, team skills, performance and characteristics retain their existing placeholders.
+Source hashes live in `PROVENANCE.md`; focused controls are
+`python3 -m unittest goal2.tests.test_core_team_card_t137 -v`.
+
 ## Saving
 
 [derived: F029, a savestate's memory is the master] `core.save()` is `G2C1`, a JSON header (the registers, the

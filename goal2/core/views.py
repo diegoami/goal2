@@ -86,6 +86,28 @@ class Memory:
         """A Pascal string the original keeps in its code segment `segment` (the listing's number)."""
         return self.pstr(((self.load + segment) & 0xFFFF) * 16 + off)
 
+    def read_bytes(self, address, size):
+        """[designed: T137] Exact bounded bytes for the delivered pure display decoders."""
+        if (type(address) is not int or type(size) is not int or not 1 <= size <= 65536
+                or address < 0 or address + size > len(self.mem)):
+            raise ValueError('display read is outside current memory')
+        return bytes(self.mem[address:address + size])
+
+    def read_ds(self, offset, size):
+        if (type(offset) is not int or type(size) is not int or size < 1
+                or offset < 0 or offset + size > 65536):
+            raise ValueError('display read is outside the data segment')
+        return self.read_bytes(self.ds * 16 + offset, size)
+
+    def read_code(self, segment, offset, size):
+        from goal2.engine.original_match.build import CODE_SIZE
+        if (type(segment) is not int or not 0 <= segment <= 65535
+                or type(offset) is not int or type(size) is not int or size < 1
+                or offset < 0 or offset + size > 65536
+                or segment * 16 + offset + size > CODE_SIZE):
+            raise ValueError('display read is outside the code image')
+        return self.read_bytes(self.load * 16 + segment * 16 + offset, size)
+
     # -- records ----------------------------------------------------------------------------------------
     def country(self, n, off, size=1):
         a = self.far(COUNTRIES) + COUNTRY_SIZE * n + off
@@ -139,11 +161,30 @@ class Memory:
         return self.code_str(0x1771, dict(KIND_NAMES).get(kind, KIND_OTHER))
 
     def manager_name(self, m):
-        """1771:0947(m): the initial [DS:9B78] + m, the string at 1771:0945, the surname [DS:9B74] + 13 m; 14 at
-        most."""
-        text = (chr(self.byte(self.far(MANAGER_INITIALS) + m)) + self.code_str(0x1771, 0x0945)
-                + self.pstr(self.far(MANAGER_NAMES) + 13 * m))
-        return text[:14]
+        """[derived: proposed F034, edab133a] Original manager text-cell projection.
+
+        The delivered formatter preserves declared Pascal length and blank cells;
+        host index/record validation is distinct from original unchecked reads.
+        """
+        from goal2.engine.team_card.manager import manager_text
+        if type(m) is not int or not 0 <= m <= 134:
+            raise ValueError('manager must be 0..134')
+        initial = self.read_bytes(self.far(MANAGER_INITIALS) + m, 1)[0]
+        record = self.read_bytes(self.far(MANAGER_NAMES) + 13 * m, 13)
+        return manager_text(initial, record)
+
+    def country_labels(self, country):
+        """[derived: proposed F035, aec8ddd1] TEAM Status and selected-manager Skill."""
+        from goal2.engine.team_card.country import team_labels
+        if type(country) is not int or not 1 <= country <= 128:
+            raise ValueError('country must be 1..128')
+        record = self.read_bytes(self.far(COUNTRIES) + COUNTRY_SIZE * country, COUNTRY_SIZE)
+        m = record[46]
+        if not 0 <= m <= 134:
+            raise ValueError('manager must be 0..134')
+        manager = self.read_bytes(self.far(MANAGERS) + 3 * m, 3) if m else None
+        labels = team_labels(record, manager, self.read_ds, self.read_code)
+        return {k: labels[k] for k in ('status', 'skill')}
 
     def manager_country(self, m):
         return self.byte(self.far(MANAGERS) + 3 * m)
@@ -507,8 +548,8 @@ def country_card(state, country):
     card (goal2/game/country_card.py) so the desktop's card paints it: the name, the manager (1771:0947 of the
     country's +0x2E, as the browser's F3 edits it), the world rank +0x2B, the continent's name (DS:6E92) and the rank
     within it +0x2A, the formation (the eleven's lines, DS:0D5C), the eleven's codes (DS:69A8) and the tactic words
-    of the country's tactics byte +0x2D. [designed] The fields no finding decodes stay as the Python route names
-    them (country_card.UNDECODED)."""
+    of the country's tactics byte +0x2D. [derived: proposed F034/F035, T137] TEAM labels use the delivered
+    current-country/selected-manager decoders. Remaining fields retain the Python route's gap names."""
     from goal2.game.country_card import UNDECODED
     mem = Memory(state)
     if not 1 <= country <= 128:
@@ -518,6 +559,7 @@ def country_card(state, country):
     eleven = team[:11]
     formation = "-".join(str(sum(1 for p in eleven if p["line"] == line)) for line in LINES[1:])
     tactics = mem.country(country, 0x2D)
+    labels = mem.country_labels(country)
 
     def word(element):
         bit = tactics >> (element - 1) & 1
@@ -525,11 +567,13 @@ def country_card(state, country):
             return mem.pstr(mem.ds * 16 + MARKING_WORDS + 11 * bit, 10)
         return mem.pstr(mem.ds * 16 + TACTIC_WORDS + 32 * element + 16 * bit, 15)
     return {"country": country, "name": rank["name"], "manager": mem.manager_name(mem.country(country, 0x2E)),
+            **labels,
             "world": rank["world_rank"], "continent": rank["continent"], "continental": rank["continent_rank"],
             "formation": formation, "eleven": [p["code"] for p in eleven],
             "team_tactics": [(n, word(e)) for n, e in TEAM_TACTICS],
             "player_defaults": [(n, word(e)) for n, e in PLAYER_DEFAULTS],
-            "players": [p["player"] for p in team], "squad": team, "not_decoded": UNDECODED}
+            "players": [p["player"] for p in team], "squad": team,
+            "not_decoded": tuple(n for n in UNDECODED if n not in labels)}
 
 
 # [confirmed: named/seg_000E_01.c 000E:070B, 062F, 075F, 05F6] A bulletin is composed in the page buffer [DS:A96E]
