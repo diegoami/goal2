@@ -353,13 +353,15 @@ def build_core(self, model):
     self.core_fixture_route = QPushButton('fixture list');self.core_fixture_route.setObjectName('coreFixtureRoute')
     self.core_tournament_route = QPushButton('tournament');self.core_tournament_route.setObjectName('coreTournamentRoute')
     for button in (self.core_fixture_route, self.core_tournament_route):routes.addWidget(button)
-    self.core_show_match = QPushButton('SHOW MATCH (F8)');self.core_show_match.setObjectName('coreShowMatch')
+    self.core_show_match = QPushButton('SHOW MATCH\n(F8)');self.core_show_match.setObjectName('coreShowMatch')
     self.core_show_match.setMinimumHeight(44);self.core_show_match.setShortcut('F8')
     self.core_show_match.setAccessibleName('Show the match window')
     self.core_show_match.setToolTip('No match window is available')
     self.core_show_match.setEnabled(False)
     self.core_show_match.clicked.connect(lambda:self.core_round.show_match())
-    routes.addWidget(self.core_show_match)
+    # [designed: T138] The sidebar uses existing space, preserving every round-page height budget.
+    side = self.side_bar.layout()
+    side.insertWidget(side.count()-1,self.core_show_match)
     routes.addStretch(1)
     self.fixture_views, (list_box, tournament_box) = page.add_views('fixtureViews', ('coreFixtureListView', 'coreTournamentView'))
     self.fixture_views.show_view = lambda index: core_fixtures_view(self, index)
@@ -890,7 +892,7 @@ class CoreRound:
         resumable = bool(self.state and self.state['stop'] in ('live','taker-pitch')
                          and not self.window.core_jobs.busy)
         button.setEnabled(existing or resumable)
-        button.setText('SHOW MATCH (F8)' if existing or not resumable else 'RESUME MATCH WINDOW (F8)')
+        button.setText('SHOW MATCH\n(F8)' if existing or not resumable else 'RESUME MATCH\n(F8)')
         button.setShortcut('F8')  # QAbstractButton.setText replaces its shortcut.
         button.setToolTip('Bring the existing match window forward' if existing else
                           'Resume watching from the current original stop' if resumable else

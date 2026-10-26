@@ -162,6 +162,7 @@ class CoreWindow(QMainWindow):
         from goal2.desktop.style import COLORS
         sheet = apply_style(self) + bulletin_sheet(frame=COLORS['cyan'], masthead=COLORS['yellow'],
             text=COLORS['text'], hint=COLORS['magenta'], story_size=22, masthead_size=22)
+        sheet += '\nQFrame#sideBar QPushButton#coreShowMatch { min-height:44px; font-weight:700; }'
         self.setStyleSheet(sheet);self.setCentralWidget(FixedPage(root, sheet, self))
         self.refresh();self.navigate(4 if self.model.in_save_name else 0)
         self.refresh_save_controls()

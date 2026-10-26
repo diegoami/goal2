@@ -107,6 +107,20 @@ class Navigation(unittest.TestCase):
         self.assertIn('RESUME',window.core_show_match.text())
         self.assertEqual(window.core_show_match.shortcut().toString(),'F8')
 
+    def test_captain_retains_the_existing_round_page_height_budget(self):
+        from goal2.desktop.fixed_page import problems
+        window=self.window()
+        state=window.model.round_step('round_start')
+        self.assertEqual(state['stop'],'captain')
+        window.core_round.finished('round_start',('done',state));window.refresh_round_controls()
+        for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
+            window.resize(width,height);self.app.processEvents()
+            page=window.pages[3];need=page.minimumSizeHint()
+            self.assertLessEqual(need.width(),.9*page.width())
+            self.assertLessEqual(need.height(),.9*page.height())
+            self.assertEqual(problems(window),[])
+            self.assertTrue(window.core_show_match.isVisible())
+
     def test_prominent_action_survives_all_fixture_views_and_busy_game_controls(self):
         from goal2.desktop.core_viewer import CoreViewer
         from goal2.desktop.fixed_page import scale_of
@@ -196,9 +210,10 @@ sys.exit(v.main())
         for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
             window.resize(round(.9*width),round(.9*height));self.app.processEvents()
             self.assertEqual(problems(window),[],(width,height,problems(window)))
-        Path('.cache/T138-window-native-'+str(window.devicePixelRatioF())+'.json').write_text(json.dumps(
-            {'native':native,'focused':viewer.focused,'focus_ack':viewer.focus_ack,
-             'same_pid':viewer.process.pid==pid,'guest_unchanged':window.model.core.save()==before}))
+        if native:
+            Path('.cache/T138-window-native-'+str(window.devicePixelRatioF())+'.json').write_text(json.dumps(
+                {'native':True,'focused':viewer.focused,'focus_ack':viewer.focus_ack,
+                 'same_pid':viewer.process.pid==pid,'guest_unchanged':window.model.core.save()==before}))
 
     def test_suspended_viewer_reopens_the_same_real_pose_without_kickoff_or_key(self):
         window=self.window(live=True);round_view=window.core_round
