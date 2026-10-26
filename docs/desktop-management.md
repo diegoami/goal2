@@ -703,3 +703,22 @@ the assistant's chosen position and the comparison pairing. No overall ability o
 formula is shown. **Exchange these players** remains your explicit decision. After any career
 change, ask again rather than applying an old proposal. **Cancel suggestion** discards a pending
 query while its bounded copied step finishes; a query failure leaves the active game playable.
+
+[designed: owner Windows playtest, #433/T136; scope corrected2026-10-26] Core pool identities
+reuse the existing33 authored profiles: the canonical top32 countries plus Greece. Their80
+surnames/initials remain unchanged. Names agree across pool, cards, team after recruitment,
+comparisons, suggestions, scorers and commentary. Full player IDs and assigned country bind the
+names. Unlisted countries, custom country-name mismatches and unavailable canonical data retain
+the current original text. No extra-country list or fallback name generator is included
+([policy and saves](pool-names.md)).
+
+[designed: #433/T136] Original regeneration can pick a new initial and surname from the shared
+bank. Covered full-ID/country slots retain their display aliases in this version, even when a
+replacement's raw name, age and attributes change. This deliberate naming difference leaves
+original regeneration untouched. Unlisted countries continue showing the current raw names.
+
+Explicit original F2 renames take precedence, including original-bank names. Desktop saves
+retain only optional rename-intent fingerprints, never generated aliases; guest memory/payload
+and Core save version remain unchanged. Old saves receive the same covered-country policy
+without migration. An old save without intent cannot distinguish a manually chosen bank name
+from an automatically generated one; re-entering it through F2 records the explicit choice.

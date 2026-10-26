@@ -6,6 +6,9 @@ original's screens is the original's own keys, pressed by the driver (goal2/core
 a byte into the core's memory and never reads the text page. It shares nothing with the Python route's
 `DesktopModel` and its GameState (decision 7, docs/redesign-253/vision-reconciliation.md).
 
+[designed: owner #433/T136] Pure model views resolve country-fitting pool display names. Original driver/oracle
+reads keep the guest's raw identities; no display name is written into guest memory or a Core save.
+
 [designed] Routes the core cannot serve yet are named with the G task that brings them (#308's order after this
 one, G11): `DISABLED`.
 
@@ -18,6 +21,7 @@ import os
 from pathlib import Path
 
 from goal2.core import views
+from goal2.desktop.core_names import presented
 
 # [designed: T105, #308] The routes of the manager menu and of goal2's pages the core cannot serve yet, and the G
 # task that brings each, in #308's numbering: G10 the new game, G11 this task (menus, fixtures, tables, history),
@@ -54,6 +58,7 @@ class CoreModel:
         self.driver = Driver(core)
         self.data_path = None if data_path is None else Path(data_path)
         self.save_path = Path(save_path)
+        self._explicit_player_names = {}
         self.refused = None           # [T108] the original's last refusal of the eleven, while the round waits on it
         self.commentary_cursor = 0
         self.pitch_sequence = 0
@@ -73,7 +78,11 @@ class CoreModel:
     def from_save(cls, path, data_path):
         from goal2.core import Core, CoreError
         try:
-            return cls(Core.load(Path(path).read_bytes(), goal_dat=data_path), data_path, path)
+            raw = Path(path).read_bytes()
+            model = cls(Core.load(raw, goal_dat=data_path), data_path, path)
+            from goal2.desktop.core_names import explicit_from_save
+            model._explicit_player_names = explicit_from_save(raw)
+            return model
         except (OSError, ValueError, KeyError, CoreError) as exc:
             raise ValueError(f'Cannot resume the core: {exc}') from exc
 
@@ -82,15 +91,19 @@ class CoreModel:
     def state(self):
         return self.core.wait.state
 
+    @presented
     def desk(self):
         return views.desk(self.state)
 
+    @presented
     def fixture_list(self):
         return views.fixture_list(self.state)
 
+    @presented
     def tournament(self):
         return views.tournament(self.state)
 
+    @presented
     def history(self):
         return views.history(self.state)
 
@@ -98,15 +111,19 @@ class CoreModel:
         return self.core.memory_sha256()
 
     # -- the Team and Pool pages (T107) -------------------------------------------------------------------------
+    @presented
     def team(self):
         return views.team(self.state)
 
+    @presented
     def card(self, player):
         return views.player_card(self.state, player)
 
+    @presented
     def team_tactics(self):
         return views.team_tactics(self.state)
 
+    @presented
     def pool(self):
         return views.pool(self.state)
 
@@ -136,6 +153,9 @@ class CoreModel:
             raise ValueError(str(exc).split('\n')[0]) from exc
         if isinstance(result, dict) and result.get('refused'):
             raise ValueError(result['refused'])
+        if name == 'rename' and args[0] >= 2561:
+            from goal2.desktop.core_names import name_fingerprint
+            self._explicit_player_names[args[0]] = name_fingerprint(result)
         return result
 
 
@@ -178,6 +198,7 @@ class CoreModel:
             state['position_refused'] = position_refused
         return state
 
+    @presented
     def round_state(self):
         """Where the round is, read from memory: `at` the wait's kind; at the match menu before the kick-off the
         captain prompt's list (`captain`) and the bench, at half time the board and the bench; `pages` the screens
@@ -282,6 +303,8 @@ class CoreModel:
         return self._write_save(self.core.save(), path)
 
     def _write_save(self, data, path=None):
+        from goal2.desktop.core_names import with_explicit_names
+        data = with_explicit_names(data, self._explicit_player_names)
         target = Path(self.save_path if path is None else path)
         try:
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -293,6 +316,7 @@ class CoreModel:
         self.save_path = target
         return target
 
+    @presented
     def export_summary(self, path):
         """[designed: owner, 2026-10-23, T109] At the original's save-summary question, export a readable desktop
         summary. Answer its DOS question N afterwards; no original disk-writing routine or guest patch is used."""
