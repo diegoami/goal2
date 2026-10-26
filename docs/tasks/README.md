@@ -276,3 +276,4 @@ operational status.
 | [T135](T135.md) | Original-assistant pool suggestions | [#435](https://github.com/diegoami/goal2/issues/435) | T134 |
 | [T136](T136.md) | Country-appropriate Core pool identities | [#433](https://github.com/diegoami/goal2/issues/433) | fix #424 |
 | [T137](T137.md) | Core TEAM labels and manager screen text | [#438](https://github.com/diegoami/goal2/issues/438) | #443, #445 |
+| [T138](T138.md) | Show the owned match window | [#430](https://github.com/diegoami/goal2/issues/430) | T109/T116 |
