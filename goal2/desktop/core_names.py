@@ -1,13 +1,21 @@
 """[designed: owner #433/T136, continuing T93] Country-fitting presentation names only.
 
-Authored T93 names are preferred. Other countries use families from their canonical squad,
-not a claimed frequency ranking. Original records, explicit renames and saves remain untouched.
+Authored T93 names are preserved. Other countries use the separately attributed CC0 profiles.
+Myanmar uses complete personal names by the owner's choice. Original records remain untouched.
 """
 from functools import lru_cache, wraps
 import hashlib
 import json
 from pathlib import Path
 from goal2.game.pool_names import table, FIRST, COUNT
+
+
+@lru_cache(maxsize=1)
+def extended_profiles():
+    """[designed: owner #433] Frozen country profiles, independent of guest player records."""
+    path = Path(__file__).resolve().parents[1] / 'data' / 'pool_names_extended.json'
+    return {int(number): entry for number, entry in
+            json.loads(path.read_text(encoding='utf-8'))['countries'].items()}
 
 
 class NamesPolicy:
@@ -26,32 +34,46 @@ class NamesPolicy:
             _, families, initials = entry
             names = tuple(f'{i} {f}' for i, f in zip(initials, families))
         else:
-            families = []
-            reserved = set()
+            profile = extended_profiles().get(country)
+            if profile is None or profile['country'] != self.data.country_names[country]:
+                raise ValueError('No matching country pool-name profile')
+            if profile['kind'] == 'personal':
+                # [designed: owner2026-10-26] Burmese personal names are complete units.
+                names = tuple(profile['names'])
+                if country != self.data.country_names.index('Myanmar'):
+                    raise ValueError('Unexpected complete-personal-name profile')
+                self._validate(names)
+                self._names[country] = names
+                return names
+            families = profile['families']
+            if len({family.casefold() for family in families}) < 60:
+                raise ValueError('A country pool needs at least sixty distinct surnames')
             # [confirmed: F002 R003/F007; ui/country_select.py] National players occupy
             # consecutive20-name blocks. GOAL.DAT's squad_20 contains POSITION codes, not IDs.
             first = 20 * (country - 1) + 1
-            for word in range(first, first + 20):
-                family = self.data.player_names[word]
-                reserved.add(self.original_name(word))
-                if family and not any(ord(c) < 32 or ord(c) == 127 for c in family) and family not in families:
-                    families.append(family)
+            reserved = {self.original_name(word) for word in range(first, first + 20)}
             names = []
-            for rotation in range(26):
-                for index, family in enumerate(families):
+            # Use every family before repeating one. A reserved full name must not cause
+            # a family to disappear from the eighty displayed identities.
+            for index in range(COUNT):
+                family = families[index % len(families)]
+                for rotation in range(26):
                     initial = chr(65 + (index + rotation + country) % 26)
                     name = f'{initial} {family}'
                     if name not in reserved and name not in names:
                         names.append(name)
-                    if len(names) == COUNT:
                         break
-                if len(names) == COUNT:
-                    break
             names = tuple(names)
-        if len(names) != COUNT or len(set(names)) != COUNT:
-            raise ValueError('The country does not provide eighty distinct pool display names')
+        self._validate(names)
         self._names[country] = names
         return names
+
+    @staticmethod
+    def _validate(names):
+        if len(names) != COUNT or len(set(names)) != COUNT:
+            raise ValueError('The country does not provide eighty distinct pool display names')
+        if any(not name or any(ord(c) < 32 or ord(c) == 127 for c in name) for name in names):
+            raise ValueError('Pool display names must contain printable text')
 
     def original_name(self, word):
         return f'{self.data.player_initials[word]} {self.data.player_names[word]}'

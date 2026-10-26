@@ -706,9 +706,12 @@ query while its bounded copied step finishes; a query failure leaves the active 
 
 [designed: owner Windows playtest, #433/T136] Core pool identities now use country-fitting
 family names in the pool, cards, team after recruitment, comparisons, suggestions, scorers and
-commentary. The existing authored T93 lists cover33 countries. Other canonical countries use
-families from their own national squad with deterministic distinct initials; this fallback is
-country-based, not a surname-frequency ranking. Full player IDs and their assigned countries
+commentary. The existing authored T93 lists preserve80 surnames each for33 countries. The other surname
+profiles supply at least60 distinct families and80 unique full names per pool. Myanmar instead
+uses80 complete Burmese personal names, without an invented initial/surname split. The new
+profiles use attributed CC0 country-name attestations, not a population-frequency ranking
+([sources and curation](pool-names.md)). Long names elide before the pool CAPS and role columns;
+the adjacent card shows the full name. Full player IDs and their assigned countries
 bind the names, including after an exchange. Explicit original F2 renames take precedence.
 The policy changes display text only: the original driver and raw-memory readers retain their
 original names, and no alias is written into a Core save. Old saves receive the same names when

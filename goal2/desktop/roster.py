@@ -24,6 +24,7 @@ class RosterView(QWidget):
     current_changed = Signal(int)
     toggled = Signal(int)
     activated = Signal(int)
+    detail_width = 0
 
     def __init__(self, title='SQUAD', parent=None, toggles=True, capacity=20, marks=True, grouped=False):
         super().__init__(parent)
@@ -160,6 +161,7 @@ class RosterView(QWidget):
                 painter.setPen(QColor(BLACK) if i == self.current else QColor('#ff55ff'))
                 painter.drawText(14, y, '!')
             painter.setPen(colour)
-            painter.drawText(40, y, metrics.elidedText(name, Qt.TextElideMode.ElideRight, code_x - 48))
+            painter.drawText(40, y, metrics.elidedText(name, Qt.TextElideMode.ElideRight,
+                                                      code_x - 48 - self.detail_width))
             painter.drawText(code_x, y, code + (' C' if captain else ''))
         painter.end()

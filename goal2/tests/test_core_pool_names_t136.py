@@ -16,15 +16,18 @@ class Policy(unittest.TestCase):
             with self.subTest(country=country):
                 names=p.names(country);self.assertEqual(len(names),80);self.assertEqual(len(set(names)),80)
                 for name in names:
-                    self.assertLessEqual(len(name),12);name.encode('cp437')
+                    self.assertLessEqual(len(name),34);name.encode('cp437')
                     self.assertFalse(any(ord(c)<32 or ord(c)==127 for c in name))
                 if country in table():
                     _,families,initials=table()[country]
                     self.assertEqual(names,tuple(f'{i} {f}' for i,f in zip(initials,families)))
                 else:
                     first=20*(country-1)+1
-                    families=set(data.player_names[first:first+20])
-                    self.assertTrue(all(name.split(' ',1)[1] in families for name in names))
+                    if data.country_names[country]=='Myanmar':
+                        self.assertEqual(names[0],'Aung Win')
+                        self.assertTrue(all(len(name.split()[0])>1 for name in names))
+                    else:
+                        self.assertGreaterEqual(len({name.split(' ',1)[1].casefold() for name in names}),60)
                     current={f'{data.player_initials[w]} {data.player_names[w]}' for w in range(first,first+20)}
                     self.assertFalse(set(names)&current)
 
@@ -32,13 +35,68 @@ class Policy(unittest.TestCase):
         from goal2.data import load
         from goal2.desktop.core_names import NamesPolicy
         data=load((requires.CACHE/'GOAL.DAT').read_bytes());policy=NamesPolicy(data)
-        # Independent named-country facts from the canonical national records, not squad_20.
-        expected={'Malta':'Cluett','Poland':'Sidurczuk','Chile':'Toledo'}
+        # Independent country facts, rather than reproducing the resolver's indexing or source parser.
+        expected={'Malta':'Vella','Poland':'Nowak','Chile':'González'}
         actual={}
         for country,family in expected.items():
             actual[country]={name.split(' ',1)[1] for name in policy.names(data.country_names.index(country))}
             self.assertIn(family,actual[country]);self.assertNotIn('Musta',actual[country])
         self.assertFalse(actual['Poland']&actual['Chile'])
+
+
+@requires.need(modules=('PySide6',))
+class NameLayout(unittest.TestCase):
+    def test_long_names_cannot_paint_over_caps_or_roles(self):
+        from PySide6.QtWidgets import QApplication
+        from PySide6.QtCore import QRect
+        from goal2.desktop.core_pool_roster import PoolRoster
+        from goal2.desktop.style import load_fonts
+        app=QApplication.instance() or QApplication([])
+        load_fonts()
+        strip=PoolRoster(capacity=1,marks=False)
+        self.addCleanup(strip.close)
+        strip.resize(314,100);strip.caps={2561:65535}
+        strip.set_rows([(2561,'A Randrianantenaina','m','midfield',False,False)],0)
+        strip.show();app.processEvents()
+        long_image=strip.grab().toImage()
+        self.assertIn('A Randrianantenaina',strip.accessibleName())
+        self.assertIn('CAPS 65535',strip.accessibleName())
+        strip.set_rows([(2561,'A A','m','midfield',False,False)],0)
+        app.processEvents();short_image=strip.grab().toImage()
+        dpr=long_image.devicePixelRatio()
+        # Independent painted-column requirement: changing only a name cannot change
+        # any pixel in the existing CAPS and role area, at either native pixel density.
+        area=QRect(round(188*dpr),round(32*dpr),round(110*dpr),round(26*dpr))
+        self.assertEqual(long_image.copy(area),short_image.copy(area))
+
+    @requires.need(modules=('unicorn',),files=('e039-r0005-date-call.sav','GOAL.DAT'))
+    def test_long_country_name_remains_complete_in_the_pool_card(self):
+        from PySide6.QtWidgets import QApplication
+        from goal2.desktop.core_model import CoreNewGame
+        from goal2.desktop.core_window import CoreWindow
+        from goal2.data import load
+        app=QApplication.instance() or QApplication([])
+        data=load((requires.CACHE/'GOAL.DAT').read_bytes())
+        game=CoreNewGame(requires.CACHE/'e039-r0005-date-call.sav',requires.CACHE/'GOAL.DAT',requires.CACHE/'unused-long-names.g2core')
+        model=game.start(2028,data.country_names.index('Madagascar'),'B Tester')[0]
+        before=model.core.save()
+        window=CoreWindow(model);self.addCleanup(window.close)
+        window.show();window.navigate(2);app.processEvents()
+        self.assertTrue(any(len(row[1])>12 for row in window.pool_strip.rows))
+        row=next(i for i,row in enumerate(window.pool_strip.rows) if 'Rakotomalala' in row[1])
+        window.pool_strip.set_current(row,notify=True);app.processEvents()
+        selected=window.pool_selected()
+        self.assertIsNotNone(selected)
+        name=model.card(selected)['name']
+        self.assertIn('Rakotomalala',name)
+        # The full identity is available in the actual card, even when the strip elides it.
+        self.assertIn(name,window.pool_card.accessibleName())
+        window.pool_card.repaint()
+        self.assertIn(name.upper(),window.pool_card.drawn)
+        window.pool_compare.click();app.processEvents();window.pool_comparison.repaint()
+        self.assertEqual(window.pool_comparison.cards[1]['full_name'],name)
+        self.assertIn(name,window.pool_comparison.drawn)
+        self.assertEqual(model.core.save(),before)
 
 
 @requires.need(modules=('unicorn',),files=('e039-r0005-date-call.sav','GOAL.DAT'))
@@ -57,6 +115,17 @@ class GenuineNames(unittest.TestCase):
             offset=(p['player']-2561)%80;expected=f'{initials[offset]} {families[offset]}'
             self.assertEqual(resolve(p['player'],p['name']),expected)
         self.assertEqual(m.core.save(),before)
+
+    def test_burmese_model_views_keep_complete_personal_names_without_initials(self):
+        from goal2.data import load
+        data=load((requires.CACHE/'GOAL.DAT').read_bytes())
+        model=self.game(data.country_names.index('Myanmar'));before=model.core.save()
+        rows=model.pool()['rows'];names={row['name'] for row in rows}
+        self.assertEqual(len(rows),80);self.assertEqual(len(names),80)
+        self.assertIn('Aung Win',names);self.assertIn('Kyaw Naing',names)
+        self.assertTrue(all(len(name.split()[0])>1 for name in names))
+        for row in rows:self.assertEqual(model.card(row['player'])['name'],row['name'])
+        self.assertEqual(model.core.save(),before)
 
     def test_explicit_name_and_custom_country_guards_preserve_saved_text(self):
         from goal2.desktop.core_names import NamesPolicy
