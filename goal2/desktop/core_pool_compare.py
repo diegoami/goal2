@@ -12,14 +12,16 @@ class PlayerComparisonView(PlayerCardView):
     def __init__(self,parent=None):
         super().__init__(parent)
         self.cards=[None,None]
+        self.explanation=''
         self.setObjectName('poolComparison')
 
     def sizeHint(self):
         s=self.scale()
         return QSize(round(1000*s),round(560*s))
 
-    def set_cards(self,team,pool):
+    def set_cards(self,team,pool,explanation=''):
         self.cards=copy.deepcopy([team,pool])
+        self.explanation=explanation
         summaries=[]
         for heading,card in zip(('TEAM','POOL'),self.cards):
             if card is None:
@@ -29,7 +31,7 @@ class PlayerComparisonView(PlayerCardView):
                                  f"caps {card['caps']}; goals {card['goals']}; age {card['age']}; "
                                  + '; '.join(f'{name} {value}' for name,value in card['skills'])
                                  + '; '+ '; '.join(f'{name} {word}' for name,word,_,_ in card['characteristics']))
-        self.setAccessibleName('; '.join(summaries));self.update()
+        self.setAccessibleName('; '.join(summaries+[explanation]));self.update()
 
     def paintEvent(self,event):
         self.drawn=[];self.bottom=0
@@ -37,7 +39,7 @@ class PlayerComparisonView(PlayerCardView):
         s=self.scale();painter.scale(s,s)
         for side,(heading,card) in enumerate(zip(('TEAM','POOL'),self.cards)):
             x=20+500*side
-            painter.setPen(QColor(CYAN));painter.drawRect(QRectF(x-12,4,488,546))
+            painter.setPen(QColor(CYAN));painter.drawRect(QRectF(x-12,4,488,516))
             self.text(painter,x,26,heading,GOLD,20,True)
             if card is None:
                 self.text(painter,x,70,'Choose a player to compare',GREY,18)
@@ -58,4 +60,5 @@ class PlayerComparisonView(PlayerCardView):
                 font=QFont('DejaVu Sans Mono');font.setPixelSize(16)
                 painter.fillRect(QRectF(x+241,y-15,QFontMetrics(font).horizontalAdvance(word)+6,18),QColor(GREY))
                 self.text(painter,x+244,y,word,BLACK,16)
+        if self.explanation:self.text(painter,20,545,self.explanation,CYAN,16)
         painter.end()

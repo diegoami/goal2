@@ -117,6 +117,10 @@ class CoreModel:
         from goal2.core import CoreError
         if self.in_save_name:
             raise ValueError('Resolve the original save decision before another action')
+        if name=='suggest_pool':
+            if self.in_round:raise ValueError('Finish the match before asking for pool suggestions')
+            from goal2.desktop.core_pool_suggest import propose
+            return propose(self.core,self.data_path,args[0] if args else None)
         if name in ROUND_ACTIONS:
             return self.round_step(name, *args)
         if name not in ACTIONS:
@@ -318,6 +322,7 @@ class CoreJobs:
         self.pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='goal2-core')
         self.future = None
         self.name = None
+        self.suggestion_cancel = None
 
     @property
     def busy(self):
@@ -327,16 +332,34 @@ class CoreJobs:
         if self.busy:
             raise ValueError('The original is busy with another action')
         self.name = name
+        if name=='suggest_pool':
+            from threading import Event
+            self.suggestion_cancel=Event()
+            args=(*args,self.suggestion_cancel)
+        else:self.suggestion_cancel=None
         self.future = self.pool.submit(self.model.act, name, *args)
+
+    def cancel_suggestion(self):
+        """[designed: T135] Cancel a copied query; keep owning its bounded step until it finishes."""
+        if not self.busy or self.name!='suggest_pool' or self.suggestion_cancel is None:return False
+        self.suggestion_cancel.set();return True
 
     def poll(self):
         if self.future is None or not self.future.done():
             return None
         future, self.future = self.future, None
+        cancel,self.suggestion_cancel=self.suggestion_cancel,None
         try:
-            return ('done', future.result())
-        except ValueError as exc:
-            return ('refused', str(exc))
+            value=future.result()
+            if self.name=='suggest_pool' and cancel is not None and cancel.is_set():
+                value={**value,'cancelled':True,'proposals':[]}
+            return ('done',value)
+        except Exception as exc:
+            if self.name=='suggest_pool':
+                return ('done',dict(cancelled=bool(cancel is not None and cancel.is_set()),
+                                    error=f'{type(exc).__name__}: {exc}',proposals=[]))
+            if isinstance(exc,ValueError):return ('refused',str(exc))
+            raise
 
     def wait(self, timeout=60):
         """Block until the running action ends (tests and closing the window); poll() then collects it."""
