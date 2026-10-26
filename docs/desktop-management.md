@@ -722,3 +722,17 @@ retain only optional rename-intent fingerprints, never generated aliases; guest 
 and Core save version remain unchanged. Old saves receive the same covered-country policy
 without migration. An old save without intent cannot distinguish a manually chosen bank name
 from an automatically generated one; re-entering it through F2 records the explicit choice.
+
+[designed: owner #430/T138] **SHOW MATCH (F8)** stays visible in the navigation sidebar,
+including while browsing fixture lists, tournaments and round views. It brings the existing owned pitch
+window forward; a minimized pitch is restored. This route remains available while the core is
+busy. It sends no original key or new pose and preserves pending bench/taker decisions.
+
+If a live viewer was closed, **RESUME MATCH WINDOW (F8)** reopens the current original pose
+through the existing watching path. A stopped taker-pitch preview can likewise reopen without
+dismissing its decision. With no available pitch/stop the action is disabled with an explanatory
+tooltip. Desktop focus can be denied by a compositor; such a denial leaves the game/viewer alive.
+Windows foreground permission is granted only to the owned child on this user-triggered action.
+
+The separate pitch remains the current presentation mode. [Embedded pitch #446](https://github.com/diegoami/goal2/issues/446)
+tracks integrating it into the main window; this navigation change does not implement embedding.

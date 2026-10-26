@@ -311,6 +311,19 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
     return scroll
 
 
+def focus_display(pygame):
+    """[designed: T138] Restore a minimized pitch and request focus without input events."""
+    try:
+        window = pygame.Window.from_display_module()
+        if not pygame.display.get_active():
+            window.restore()
+        window.focus()
+        return True
+    except pygame.error:
+        # A compositor/driver can deny activation. Keep the existing viewer/game alive.
+        return False
+
+
 def main():
     folder, token = Path(sys.argv[1]), sys.argv[2]
     core_keys = '--core-keys' in sys.argv[3:]  # [designed: T116] Python-route pacing stays local
@@ -333,6 +346,7 @@ def main():
         requests = 0
         controls = deque(maxlen=64)
         control_sequence = 0
+        focus_sequence = 0
         buffer = b''
         with (folder / 'display').open('rb') as source:
             running = True
@@ -380,6 +394,9 @@ def main():
                     display.accept(json.loads(row))
                 if len(buffer) > MAX_PACKET:
                     raise ValueError('viewer packet exceeds limit')
+                if display.focus_requests > focus_sequence:
+                    focus_display(pygame)
+                    focus_sequence = display.focus_requests
                 changed = display.advance(time.monotonic()) if display.pitch_rate else False
                 visible = display.visible()
                 scroll, follow, finished = position(visible, scroll, follow, finished,
@@ -397,7 +414,9 @@ def main():
                 if display.pitch_rate:
                     value.update(frame_sequence=display.consumed, requests=requests,
                                  frame_digest=frame_digest(display.frame) if display.frame else None)
-                if core_keys:value['controls'] = list(controls)
+                if core_keys:
+                    value['controls'] = list(controls)
+                    value.update(focus_sequence=focus_sequence, focused=bool(pygame.key.get_focused()))
                 status(target, value)
                 clock.tick(240 if display.pitch_rate else 30)
         pygame.quit()

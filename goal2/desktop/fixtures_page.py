@@ -353,6 +353,15 @@ def build_core(self, model):
     self.core_fixture_route = QPushButton('fixture list');self.core_fixture_route.setObjectName('coreFixtureRoute')
     self.core_tournament_route = QPushButton('tournament');self.core_tournament_route.setObjectName('coreTournamentRoute')
     for button in (self.core_fixture_route, self.core_tournament_route):routes.addWidget(button)
+    self.core_show_match = QPushButton('SHOW MATCH\n(F8)');self.core_show_match.setObjectName('coreShowMatch')
+    self.core_show_match.setMinimumHeight(44);self.core_show_match.setShortcut('F8')
+    self.core_show_match.setAccessibleName('Show the match window')
+    self.core_show_match.setToolTip('No match window is available')
+    self.core_show_match.setEnabled(False)
+    self.core_show_match.clicked.connect(lambda:self.core_round.show_match())
+    # [designed: T138] The sidebar uses existing space, preserving every round-page height budget.
+    side = self.side_bar.layout()
+    side.insertWidget(side.count()-1,self.core_show_match)
     routes.addStretch(1)
     self.fixture_views, (list_box, tournament_box) = page.add_views('fixtureViews', ('coreFixtureListView', 'coreTournamentView'))
     self.fixture_views.show_view = lambda index: core_fixtures_view(self, index)
@@ -712,6 +721,7 @@ class CoreRound:
         if kind != 'done':
             self.bench.message = value;self.bench.refresh();return
         state = self.state = value
+        self.refresh_match_button()
         if name == 'round_start':self.first_page = 0
         if state['stop'] != 'live' and self.viewer is not None:
             if state.get('commentary') and self.viewer.display.frame is not None:
@@ -872,6 +882,42 @@ class CoreRound:
         self.resume_watch.hide()
         self.live_note.setText('The match is in the pitch window. Enter there opens the bench.')
         self.viewer_timer.start()
+        self.refresh_match_button()
+
+    def refresh_match_button(self):
+        """[designed: T138] Navigation stays outside the disabled game-action list."""
+        button = self.window.core_show_match
+        existing = (self.viewer is not None and not self.viewer.closed
+                    and self.viewer.process is not None and self.viewer.process.poll() is None)
+        resumable = bool(self.state and self.state['stop'] in ('live','taker-pitch')
+                         and not self.window.core_jobs.busy)
+        button.setEnabled(existing or resumable)
+        button.setText('SHOW MATCH\n(F8)' if existing or not resumable else 'RESUME MATCH\n(F8)')
+        button.setShortcut('F8')  # QAbstractButton.setText replaces its shortcut.
+        button.setToolTip('Bring the existing match window forward' if existing else
+                          'Resume watching from the current original stop' if resumable else
+                          'No match window is available')
+
+    def show_match(self):
+        """[designed: owner #430] Focus the owned viewer, or explicitly resume its live stop."""
+        try:
+            if (self.viewer is not None and not self.viewer.closed
+                    and self.viewer.process is not None and self.viewer.process.poll() is None):
+                self.viewer.show_window()
+            elif self.state and self.state['stop'] in ('live','taker-pitch') and not self.window.core_jobs.busy:
+                if self.viewer is not None:
+                    self.viewer.close();self.viewer = None
+                if self.state['stop']=='taker-pitch':self.show_taker_pitch(self.state)
+                else:self.resume_viewer()
+                if self.viewer is None:return False
+                self.viewer.show_window()
+            else:
+                self.refresh_match_button();return False
+        except (OSError, ValueError) as exc:
+            self.window.status.setText(f'Cannot show match window: {exc}')
+            self.refresh_match_button();return False
+        self.window.status.setText('Match window requested; Enter in the pitch opens the bench.')
+        self.refresh_match_button();return True
 
     def stop_viewer(self, message):
         self.viewer_timer.stop()
@@ -887,6 +933,7 @@ class CoreRound:
         if self.pending_stop is not None:
             pending, self.pending_stop = self.pending_stop, None
             self.finished(*pending)
+        self.refresh_match_button()
 
     def poll_viewer(self):
         if self.viewer is None:return
@@ -947,6 +994,7 @@ class CoreRound:
         except (OSError,ValueError) as exc:
             self.stop_viewer(str(exc))
         self.takers.refresh_controls()
+        self.refresh_match_button()
 
     def next_page(self):
         if self.window.core_jobs.busy:return

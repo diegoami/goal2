@@ -93,8 +93,9 @@ def run_module(module: str, python: str, slow: bool) -> tuple[str, int, float, s
 
 # [designed: #275] Modules whose mutation controls rewrite a tracked source file for a moment
 # (tools/probe_watched_pitch.py, goal2/desktop/pygame_viewer.py): they run alone, after the parallel
-# batch, so no other module can import a mutated file.
-SERIAL = ("test_pitch_observation", "test_pygame_pitch_view")
+# batch, so no other module can import a mutated file. Native focus tests also
+# own shared desktop/foreground state and must not compete with other GUI modules.
+SERIAL = ("test_pitch_observation", "test_pygame_pitch_view", "test_core_match_window_t138")
 
 
 def check_tests(jobs: int, python: str, slow: bool) -> None:

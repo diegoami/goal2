@@ -18,6 +18,23 @@ from goal2.desktop.pygame_viewer import frame_digest
 from goal2.desktop.watched import WatchedController, _open_status
 
 
+def _allow_foreground(pid):
+    """[designed: T138] A user action in Qt may authorize its owned Windows viewer.
+
+    Microsoft AllowSetForegroundWindow requires a foreground-capable caller. A denied
+    request is not a game failure; SDL can still try activation and report actual focus.
+    """
+    if sys.platform != 'win32':
+        return True
+    import ctypes
+    from ctypes import wintypes
+    user32 = ctypes.WinDLL('user32', use_last_error=True)
+    allow = user32.AllowSetForegroundWindow
+    allow.argtypes = [wintypes.DWORD]
+    allow.restype = wintypes.BOOL
+    return bool(allow(pid))
+
+
 class CoreViewer:
     send = WatchedController.send
     close = WatchedController.close_viewer
@@ -40,6 +57,9 @@ class CoreViewer:
         self.controls = deque()
         self.control_sequence = 0
         self.speed = None
+        self.focus_ack = 0
+        self.focused = False
+        self.focus_receipts = {}
         try:
             self.folder = tempfile.TemporaryDirectory(prefix='goal2-core-pitch-')
             self.directory = Path(self.folder.name)
@@ -74,6 +94,14 @@ class CoreViewer:
         self.send('event', dict(kind='decision', minute=frame['minute'] if frame else 0,
                   score=frame['score'] if frame else [0, 0], data={'context': state}))
 
+    def show_window(self):
+        """[designed: owner #430/T138] Raise this viewer; no pose, key or core work."""
+        if self.closed or self.process is None or self.process.poll() is not None:
+            raise ValueError('The match window is closed')
+        _allow_foreground(self.process.pid)
+        self.send('focus', self.display.focus_requests + 1)
+        self.focus_receipts[self.display.focus_requests] = self.display.sequence
+
     def poll(self):
         """Return one ordered Enter/Left/Right request after the pose is acknowledged. None while pending; closed
         and failed viewers never advance the core. Transient Windows replacement denial defers to the next timer."""
@@ -97,10 +125,16 @@ class CoreViewer:
                 raise ValueError('Pitch viewer failed: ' + str(value.get('message')))
             if value.get('kind') not in ('ready', 'closed'):
                 raise ValueError('Invalid core viewer status')
+            focus_ack, focused = value.get('focus_sequence', 0), value.get('focused', False)
+            if (type(focus_ack) is not int or not self.focus_ack <= focus_ack <= self.display.focus_requests
+                    or type(focused) is not bool):
+                raise ValueError('Invalid core viewer focus acknowledgement')
             seq, ack = value.get('sequence'), value.get('frame_sequence', -1)
             if (type(seq) is not int or seq not in self.digests or value.get('digest') != self.digests[seq]
                     or type(ack) is not int or not self.frame_ack <= ack <= self.display.frame_sequence):
                 raise ValueError('Invalid core viewer acknowledgement')
+            if focus_ack and (focus_ack not in self.focus_receipts or seq < self.focus_receipts[focus_ack]):
+                raise ValueError('Unseen core viewer focus acknowledgement')
             if ack >= 0:
                 frame = next((f for f in self.display.frames if f['sequence'] == ack), self.display.frame)
                 if frame is None or ack != frame['sequence'] or value.get('frame_digest') != frame_digest(frame):
@@ -129,6 +163,8 @@ class CoreViewer:
                         raise ValueError('Core input history overflow')
                     self.controls.append(row[1]);self.control_sequence=row[0]
             self.frame_ack = ack
+            self.focus_ack, self.focused = focus_ack, focused
+            self.focus_receipts = {k:v for k,v in self.focus_receipts.items() if k >= focus_ack}
             self.last_status = value
             if value['kind'] == 'closed':
                 self.closed = True

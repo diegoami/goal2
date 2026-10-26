@@ -162,6 +162,7 @@ class CoreWindow(QMainWindow):
         from goal2.desktop.style import COLORS
         sheet = apply_style(self) + bulletin_sheet(frame=COLORS['cyan'], masthead=COLORS['yellow'],
             text=COLORS['text'], hint=COLORS['magenta'], story_size=22, masthead_size=22)
+        sheet += '\nQFrame#sideBar QPushButton#coreShowMatch { min-height:44px; font-weight:700; }'
         self.setStyleSheet(sheet);self.setCentralWidget(FixedPage(root, sheet, self))
         self.refresh();self.navigate(4 if self.model.in_save_name else 0)
         self.refresh_save_controls()
@@ -239,6 +240,7 @@ class CoreWindow(QMainWindow):
         self.status.setText('Asking the assistant…' if name=='suggest_pool' else 'The original is pressing its own keys…')
         from goal2.desktop.pool_page import core_suggestion_controls
         core_suggestion_controls(self)
+        self.core_round.refresh_match_button()
         # [designed: T116] A pitch frame is short work: do not impose the management job's 30 ms collection delay.
         self.core_timer.setInterval(1 if name == 'live_step' else 30)
         self.core_timer.start()
@@ -289,6 +291,7 @@ class CoreWindow(QMainWindow):
         self.core_round.takers.refresh_controls()
         from goal2.desktop.pool_page import core_comparison_controls
         core_comparison_controls(self)
+        self.core_round.refresh_match_button()
 
     def closeEvent(self, event):
         """[designed: T109] Stop scheduling polls, finish the bounded owned step, then reap the pitch viewer."""
