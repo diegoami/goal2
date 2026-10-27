@@ -44,6 +44,12 @@ class Genuine(unittest.TestCase):
                        Path(tempfile.gettempdir())/'unused-t142.g2core').start(2028,16,'A Test')
         cls.menu_saved=m.core.save()
         m.driver.round_start(watch=True);m.driver.kick_off(watch=True,speed=0)
+        from goal2.core import views
+        for _ in range(500):
+            frame=views.pitch(m.state,0,0)
+            if frame['subtick'] or frame['minute']:break
+            with m.core.live_frames():m.driver.live_step()
+        else:raise AssertionError('original fixture did not complete a tick')
         cls.saved=m.core.save()
 
     def core(self):

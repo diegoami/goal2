@@ -274,10 +274,10 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
         holder = frame.get('officials', {}).get('holder')
         for slot in DRAW_ORDER:
             _, team, number, word, px, py, state, hidden = players[slot]
+            # [confirmed: 0791:045D/0691] Keeper slots1/12 use each side's secondary colour.
             if not hidden:
-                # [confirmed: 0791:045D/0691] Keeper slots1/12 use each side's secondary colour.
-                colour = keeper_colours[team] if slot in (1, 12) else colours[team]
-                occupied[at(px, py)] = (glyph(marks, slot, display.code(word, number), frame['selector'], holder), colour)
+                occupied[at(px, py)] = (glyph(marks, slot, display.code(word, number), frame['selector'], holder),
+                                       keeper_colours[team] if slot in (1, 12) else colours[team])
         for point, (text, colour) in occupied.items():
             label = marker.render(text, True, colour)
             screen.blit(label, label.get_rect(center=point))
