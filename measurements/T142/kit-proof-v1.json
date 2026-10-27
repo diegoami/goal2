@@ -1,0 +1,146 @@
+{
+  "source_head": "8da025bb872ae1c35ee3ab31bedc216321636f68",
+  "source_sha256": {
+    "goal2/core/views.py": "c5d68efcfdd56966ab159a5ec765c21a8cee2e00f685719b3b9b64100c521633",
+    "goal2/desktop/match_view.py": "f8e3b1cd43b380a3c4e4d9a877800f591d405cecc761c583dfe0b5f3f0b1d959",
+    "goal2/desktop/pygame_viewer.py": "d6b6ee7df798737db57d11f78802fd219ec50ac5fe86b89f59aa7bd432433b0b",
+    "goal2/tests/test_core_kit_colours_t142.py": "e2962a6ee97991bec528a90e53f04eea25b43aa15bf93da55ae1444b6d3b145d"
+  },
+  "native": [
+    {
+      "platform": "linux",
+      "qt_platform": "xcb",
+      "qt_dpr": 1.0,
+      "sdl_driver": "x11",
+      "surface_size": [
+        900,
+        640
+      ],
+      "factor": 1,
+      "countries": [
+        "Romania",
+        "Italy"
+      ],
+      "italy_side": 1,
+      "colours": {
+        "primary": [
+          14,
+          9
+        ],
+        "keeper": [
+          12,
+          12
+        ]
+      },
+      "same_pixels_both_managed_sides": true,
+      "keeper_bitmaps_exact": true,
+      "frame_unchanged": true,
+      "cores_unchanged": true,
+      "head": "8da025bb872ae1c35ee3ab31bedc216321636f68"
+    },
+    {
+      "platform": "linux",
+      "qt_platform": "xcb",
+      "qt_dpr": 2.0,
+      "sdl_driver": "x11",
+      "surface_size": [
+        1800,
+        1280
+      ],
+      "factor": 2,
+      "countries": [
+        "Romania",
+        "Italy"
+      ],
+      "italy_side": 1,
+      "colours": {
+        "primary": [
+          14,
+          9
+        ],
+        "keeper": [
+          12,
+          12
+        ]
+      },
+      "same_pixels_both_managed_sides": true,
+      "keeper_bitmaps_exact": true,
+      "frame_unchanged": true,
+      "cores_unchanged": true,
+      "head": "8da025bb872ae1c35ee3ab31bedc216321636f68"
+    },
+    {
+      "platform": "win32",
+      "qt_platform": "windows",
+      "qt_dpr": 1.5,
+      "sdl_driver": "windows",
+      "surface_size": [
+        900,
+        640
+      ],
+      "factor": 1,
+      "countries": [
+        "Romania",
+        "Italy"
+      ],
+      "italy_side": 1,
+      "colours": {
+        "primary": [
+          14,
+          9
+        ],
+        "keeper": [
+          12,
+          12
+        ]
+      },
+      "same_pixels_both_managed_sides": true,
+      "keeper_bitmaps_exact": true,
+      "frame_unchanged": true,
+      "cores_unchanged": true,
+      "head": "8da025bb872ae1c35ee3ab31bedc216321636f68"
+    },
+    {
+      "platform": "win32",
+      "qt_platform": "windows",
+      "qt_dpr": 3.0,
+      "sdl_driver": "windows",
+      "surface_size": [
+        1800,
+        1280
+      ],
+      "factor": 2,
+      "countries": [
+        "Romania",
+        "Italy"
+      ],
+      "italy_side": 1,
+      "colours": {
+        "primary": [
+          14,
+          9
+        ],
+        "keeper": [
+          12,
+          12
+        ]
+      },
+      "same_pixels_both_managed_sides": true,
+      "keeper_bitmaps_exact": true,
+      "frame_unchanged": true,
+      "cores_unchanged": true,
+      "head": "8da025bb872ae1c35ee3ab31bedc216321636f68"
+    }
+  ],
+  "inputs_sha256": {
+    "e039-r0005-date-call.sav": "0d9c683023c7327f17bfc29900f2eff4e703641d21d3f353693f09654688494b",
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "before": "4 failures/errors before optional computed-colour support; genuine Italy original palette9.",
+  "oracle": "Original source indices, asymmetric authored pixels, exact antialiased keeper glyph RGB bitmaps over the real field background; no source memory or palette edit.",
+  "rejected": "Initial entry-pose overlap; small-glyph solid-colour heuristic; invalid authored hidden-position projection; stale visibility mutation target. Retained, not counted as native acceptance. Final visibility/ACK mutations still fail as intended.",
+  "support_index": "/home/diego/projects/goal2-keep/T142-kits-20261027/index.json",
+  "support_index_sha256": "826c48f186e800559330020b68422aa3aaa999ce2a8d1fbe4cd9bbaf3f89c372",
+  "support_files": 70,
+  "unique_objects": 45
+}
