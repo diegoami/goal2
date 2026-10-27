@@ -283,3 +283,5 @@ operational status.
 - [T141](T141.md): contextual Team Info Back/Esc (#452).
 
 - [T142](T142.md): original computed pitch kits, including blue Italy (#462).
+
+- [T143](T143.md): preselect the original best captain and preserve manual choice (#453).
