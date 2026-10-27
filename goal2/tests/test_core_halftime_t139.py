@@ -121,6 +121,9 @@ class HalfTime(unittest.TestCase):
         for width,height in ((1440,900),(1050,780),(900,640),(2560,1600)):
             w.resize(round(.9*width),round(.9*height));self.app.processEvents()
             self.assertEqual(problems(w),[],(width,height,problems(w)))
+            page=w.pages[3];need=page.minimumSizeHint()
+            self.assertLessEqual(need.width(),.9*page.width())
+            self.assertLessEqual(need.height(),.9*page.height())
         if os.environ.get('SDL_VIDEODRIVER')!='dummy' and os.environ.get('QT_QPA_PLATFORM') not in ('offscreen','minimal'):
             receipt=dict(platform=sys.platform,scale=w.devicePixelRatioF(),main_active=w.isActiveWindow(),
                          minimized=w.isMinimized(),same_viewer=viewer.process.pid==pid,

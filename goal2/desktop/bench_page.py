@@ -284,7 +284,7 @@ class CoreBench:
         head.addWidget(self.counter, 0, Qt.AlignmentFlag.AlignVCenter)
         # [designed: owner #456/T139] Persistent instruction, separate from edit/refusal messages.
         self.interval_notice = label('benchIntervalNotice', 'MAKE SUBSTITUTIONS NOW')
-        self.interval_notice.setWordWrap(True);left.addWidget(self.interval_notice);self.interval_notice.hide()
+        self.interval_notice.setWordWrap(True);self.interval_notice.hide()
         self.card = PlayerCardView(compact=True);left.addWidget(self.card)
         # [designed: T114; confirmed: F030/F031] The same R/C position keys as the original's player screen.
         self.position_row = QWidget();positions = QHBoxLayout(self.position_row)
@@ -293,7 +293,8 @@ class CoreBench:
         self.position_club = QPushButton('C - club position');self.position_club.setObjectName('benchPositionClub')
         self.position_next.clicked.connect(lambda:self.reposition('r'))
         self.position_club.clicked.connect(lambda:self.reposition('c'))
-        positions.addWidget(self.position_next);positions.addWidget(self.position_club);positions.addStretch(1)
+        positions.addWidget(self.position_next);positions.addWidget(self.position_club)
+        positions.addWidget(self.interval_notice);positions.addStretch(1)
         left.addWidget(self.position_row);self.position_row.hide()
         lines = QHBoxLayout();lines.setSpacing(12);left.addLayout(lines)
         self.prompt = label('benchPrompt');self.prompt.setWordWrap(False);lines.addWidget(self.prompt, 0, Qt.AlignmentFlag.AlignVCenter)
