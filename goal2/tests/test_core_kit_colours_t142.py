@@ -88,12 +88,14 @@ class Pixels(unittest.TestCase):
                 x0,y0=round(cx+point[1]*sx),round(cy+point[0]*sy)
                 return sum(tuple(screen.get_at((x,y)))[:3]==colour for x in range(x0-18,x0+18) for y in range(y0-18,y0+18))
             for managed in (0,1):
-                d=Display('pixels');d.accept(['pixels',0,'start',identity(managed)])
+                payload=identity(managed);payload['colours']['keeper']=[10,12]
+                d=Display('pixels');d.accept(['pixels',0,'start',payload])
                 d.accept(['pixels',1,'pitch',{'rate':60}]);d.accept(['pixels',2,'frame',frame]);d.advance(0)
                 viewer.render_pitch(screen,font,d)
                 self.assertGreater(count((85,85,255),( -4,-16)),5) # side1/Italy, slot2
                 self.assertGreater(count((255,255,85),(4,16)),5)   # side0/Romania, slot13
-                for point in ((-5,-28),(5,28)):self.assertGreater(count((255,85,85),point),5)
+                self.assertGreater(count((255,85,85),(-5,-28)),5)
+                self.assertGreater(count((85,255,85),(5,28)),5)
             self.assertEqual(frame,before)
         finally:pygame.quit()
 
@@ -136,6 +138,13 @@ def native():
             shown={**raw,'managed':managed} # presentation-order control; genuine Core bytes are unchanged
             d=Display('native');d.accept(['native',0,'start',shown]);d.accept(['native',1,'pitch',{'rate':60}])
             d.accept(['native',2,'frame',frame]);d.advance(0)
+            # Authored player-hidden projection supplies the real field background for an exact
+            # antialiased keeper-glyph oracle; it never edits original Core memory.
+            projection=copy.deepcopy(frame)
+            for player in projection['players']:player[7]=True
+            backdrop=Display('background');backdrop.accept(['background',0,'start',shown])
+            backdrop.accept(['background',1,'pitch',{'rate':60}]);backdrop.accept(['background',2,'frame',projection]);backdrop.advance(0)
+            viewer.render_pitch(screen,font,backdrop);background=screen.copy()
             viewer.render_pitch(screen,font,d);pygame.display.flip();app.processEvents()
             field_top=round(size[1]*5/25)
             counts={}
@@ -143,8 +152,19 @@ def native():
                 colour=viewer.DOS_PALETTE[index]
                 counts[str(index)]=sum(tuple(screen.get_at((x,y)))[:3]==colour
                     for x in range(size[0]) for y in range(field_top,size[1]-round(size[1]/25)))
-            assert counts['9']>10 and counts[str(raw['colours']['keeper'][italy])]>10
             target=folder/f'pitch-managed-{managed}.png';pygame.image.save(screen,str(target))
+            assert counts['9']>10
+            from goal2.tests.test_pygame_pitch_view import geometry
+            cx,cy,sx,sy=geometry(size)
+            marker=viewer.mono(max(10,min(round(sy),int(sx/0.6))),True)
+            for slot in (1,12):
+                player=frame['players'][slot-1];_,team,number,word,px,py,state,hidden=player
+                assert not hidden
+                point=(round(cx+py*sx),round(cy+px*sy))
+                glyph='☻' if frame.get('officials',{}).get('holder')==slot else '☺'
+                label=marker.render(glyph,True,viewer.DOS_PALETTE[raw['colours']['keeper'][team]])
+                rect=label.get_rect(center=point);expected=background.subsurface(rect).copy();expected.blit(label,(0,0))
+                assert pygame.image.tobytes(screen.subsurface(rect),'RGB')==pygame.image.tobytes(expected,'RGB'),f'keeper {slot} bitmap differs'
             images.append(hashlib.sha256(pygame.image.tobytes(screen,'RGB')).hexdigest());pixel_counts.append(counts)
         assert images[0]==images[1],'managed side changed original kits'
         assert frame==frames_before
@@ -155,7 +175,7 @@ def native():
         result=dict(platform=os.sys.platform,qt_platform=app.platformName(),qt_dpr=window.devicePixelRatioF(),
                     sdl_driver=pygame.display.get_driver(),surface_size=list(screen.get_size()),factor=args.factor,
                     countries=raw['countries'],italy_side=italy,colours=raw['colours'],pixel_counts=pixel_counts,
-                    same_pixels_both_managed_sides=True,frame_unchanged=True,cores_unchanged=True,
+                    same_pixels_both_managed_sides=True,keeper_bitmaps_exact=True,frame_unchanged=True,cores_unchanged=True,
                     head=subprocess.check_output(['git','-c',f'safe.directory={root.as_posix()}','rev-parse','HEAD'],cwd=root,text=True).strip(),
                     source_sha256={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in paths},
                     captures={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in folder.glob('*.png')},pass_=True)
