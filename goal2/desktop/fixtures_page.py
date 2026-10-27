@@ -678,12 +678,14 @@ class CoreRound:
         self.interval_attention = None
         from goal2.desktop.core_takers import TakerPages
         self.takers=TakerPages(self)
+        from goal2.desktop.core_replay import ReplayPage
+        self.replays=ReplayPage(self)
         self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(2);self.viewer_timer.timeout.connect(self.poll_viewer)
         self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
                         self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch,
                         self.bench.position_next,self.bench.position_club,self.bench.roster]
         self.buttons += [self.shootout_pick,self.shootout_undo,self.shootout_roster]
-        self.buttons += self.takers.controls
+        self.buttons += self.takers.controls + self.replays.controls
 
     # -- the steps --------------------------------------------------------------------------------------------
     def show(self, index):
@@ -698,7 +700,7 @@ class CoreRound:
         w.fixture_views.setCurrentIndex(ROUND_VIEW);self.views.setCurrentIndex(index);self.holder.updateGeometry()
         focus = {0: self.captain_roster, 1: self.bench.roster, 2: self.page_next, 3: self.notice_bench,
                  4: self.resume_watch, 5: self.export_summary, 6: self.shootout_roster,
-                 self.takers.choice_index:self.takers.roster,self.takers.preview_index:self.takers.back}[index]
+                 self.takers.choice_index:self.takers.roster,self.takers.preview_index:self.takers.back,self.replays.index:self.replays.watch}[index]
         focus.setFocus(Qt.FocusReason.ShortcutFocusReason)
 
     def start(self):
@@ -758,6 +760,9 @@ class CoreRound:
             self.first_page = len(state['pages']);self.next_page()
         elif stop == 'shootout-order':
             self.show_shootout_order(state)
+        elif stop in ('replay','replay-save'):
+            self.first_page = len(state['pages'])
+            self.replays.offer(state)
         elif stop in ('taker','taker-pitch'):
             self.first_page = len(state['pages'])
             self.takers.offer(state)
@@ -793,7 +798,9 @@ class CoreRound:
             # [designed: T116] An existing live page needs a new pose, not another geometry/focus transition.
             if self.views.currentIndex()!=4:self.show(4)
             try:
-                if not self.watch_suspended:self.resume_viewer()
+                if not self.watch_suspended:
+                    self.resume_viewer()
+                    if name=='replay':self.show_match()
             except (OSError, ValueError) as exc:
                 self.stop_viewer(str(exc))
         elif stop == 'summary-save':
@@ -890,9 +897,10 @@ class CoreRound:
         if self.viewer is None:
             self.viewer = CoreViewer(pitch_identity(self.window.model.state, self.state['identity']))
         self.watch_suspended = False
-        self.viewer.pose(self.state['pitch'], self.state['commentary'], self.state.get('speed'))
+        self.viewer.pose(self.state['pitch'], self.state['commentary'], self.state.get('speed'),
+                         replay=self.state.get('replay',False))
         self.resume_watch.hide()
-        self.live_note.setText('The match is in the pitch window. Enter there opens the bench.')
+        self.live_note.setText('The match is in the pitch window. Enter opens the bench. After a goal, choose Watch replay here.')
         self.viewer_timer.start()
         self.refresh_match_button()
 
@@ -1057,6 +1065,9 @@ class CoreRound:
             self.after = None;core_fixtures_view(self.window, 0);self.window.navigate(0)
 
     def escape(self):
+        if self.views.currentIndex()==self.replays.index:
+            self.replays.choose(self.replays.partial)
+            return True
         if self.views.currentIndex() in (self.takers.choice_index,self.takers.preview_index):
             self.takers.key(27)
             return True

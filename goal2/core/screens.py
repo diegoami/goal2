@@ -179,6 +179,8 @@ KINDS = {k.name: k for k in (
     Kind("tournament", keys(("↓↑", "Up Down"), ("spacebar", "space"), ("←→", "Left Right"), ("Esc", "Escape")),
          designed=True, evidence="[designed] the tournament view: 'Use ↓↑ to select group', 'Hit spacebar to select "
                                  "continent', 'Use ←→ to select display', 'Esc-exit'"),
+    Kind("save-goal-prompt", _YES_NO, designed=True, polled=True,
+         evidence="[confirmed: F030 at53d7ef5] 0791:0C65 calls 0B7C at0CA8; N continues replay without a file"),
     Kind("action-replay-prompt", _YES_NO, designed=True, polled=True,
          evidence="[designed] 'Do you want an action replay? (Y/N)' (0791:0B7C asked by 0C65 at 0C87)"),
     Kind("substitution-notice", keys(("any key", "(any)")), designed=True, polled=True,
@@ -651,8 +653,8 @@ OWN_ROW = 0x0F38           # 1771:4B61: the row (word), u214b_menu_read_key_and_
 
 def _ask(near_return):
     # ask_do_you_want 0791:0B7C, near-called: by run_match at F33D ("to save the match summary to disk", F1D4) and by
-    # action_replay 0C65 at 0C87 ("an action replay", 0C42); 0CA8 (save this goal) has no entry yet.
-    return {0xF340: "match-summary-save-prompt", 0x0C8A: "action-replay-prompt"}.get(near_return)
+    # action_replay 0C65 at 0C87 ("an action replay", 0C42); 0CA8 asks to save this goal (return0CAB).
+    return {0xF340: "match-summary-save-prompt", 0x0C8A: "action-replay-prompt", 0x0CAB: "save-goal-prompt"}.get(near_return)
 
 
 TEAMS = 0x9B34                # [confirmed: kit match.py; F029] team 0's country DS:9B34, team 1's DS:9B36
