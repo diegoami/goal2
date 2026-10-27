@@ -141,7 +141,9 @@ def native():
             # Authored player-hidden projection supplies the real field background for an exact
             # antialiased keeper-glyph oracle; it never edits original Core memory.
             projection=copy.deepcopy(frame)
-            for player in projection['players']:player[7]=True
+            from goal2.game.watched_pitch import signed
+            off=(signed(frame['sentinel']&255),signed(frame['sentinel']>>8))
+            for player in projection['players']:player[4:6]=off;player[7]=True
             backdrop=Display('background');backdrop.accept(['background',0,'start',shown])
             backdrop.accept(['background',1,'pitch',{'rate':60}]);backdrop.accept(['background',2,'frame',projection]);backdrop.advance(0)
             viewer.render_pitch(screen,font,backdrop);background=screen.copy()
