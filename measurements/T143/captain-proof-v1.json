@@ -1,0 +1,192 @@
+{
+  "source_head": "f2761377e29d3ca82090d439233d9c7ed5af0e6e",
+  "source_sha256": {
+    "goal2/core/views.py": "1886633b9988a7f3546277c5f07ddbbd0db740b4be1882afebb048690917c0a9",
+    "goal2/desktop/fixtures_page.py": "f232837da74329cf88a9c7b74728ab72da05b075458935993dc8edeb2408e5ed",
+    "goal2/tests/test_core_captain_t143.py": "9bd502b36c0302fbc7dc92a2589f365e09809399127bb7109a36ec9dacbb6ca0"
+  },
+  "unit_before": {
+    "tests": 6,
+    "errors": 6,
+    "reason": "missing recommendation/helper"
+  },
+  "regression": {
+    "tests": 21,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "rejected_setup": "regression-v1 named nonexistent test_core_roles; retained, corrected to existing role modules in v2",
+  "native": [
+    {
+      "head": "f2761377e29d3ca82090d439233d9c7ed5af0e6e",
+      "factor": 1,
+      "platform": "xcb",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "observations": [
+        {
+          "test": "__main__.Captain.test_changed_xi_reselects_and_all_unavailable_does_not_guess",
+          "dpr": 1.0,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_initial_recommendation_matches_original_c_without_preselection_mutation",
+          "dpr": 1.0,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_keyboard_mouse_override_survives_redraw_then_confirms_by_original_keys",
+          "dpr": 1.0,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        }
+      ]
+    },
+    {
+      "head": "f2761377e29d3ca82090d439233d9c7ed5af0e6e",
+      "factor": 2,
+      "platform": "xcb",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "observations": [
+        {
+          "test": "__main__.Captain.test_changed_xi_reselects_and_all_unavailable_does_not_guess",
+          "dpr": 2.0,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_initial_recommendation_matches_original_c_without_preselection_mutation",
+          "dpr": 2.0,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_keyboard_mouse_override_survives_redraw_then_confirms_by_original_keys",
+          "dpr": 2.0,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        }
+      ]
+    },
+    {
+      "head": "f2761377e29d3ca82090d439233d9c7ed5af0e6e",
+      "factor": 1,
+      "platform": "windows",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "observations": [
+        {
+          "test": "__main__.Captain.test_changed_xi_reselects_and_all_unavailable_does_not_guess",
+          "dpr": 1.5,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_initial_recommendation_matches_original_c_without_preselection_mutation",
+          "dpr": 1.5,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_keyboard_mouse_override_survives_redraw_then_confirms_by_original_keys",
+          "dpr": 1.5,
+          "size": [
+            900,
+            640
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        }
+      ]
+    },
+    {
+      "head": "f2761377e29d3ca82090d439233d9c7ed5af0e6e",
+      "factor": 2,
+      "platform": "windows",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "observations": [
+        {
+          "test": "__main__.Captain.test_changed_xi_reselects_and_all_unavailable_does_not_guess",
+          "dpr": 3.0,
+          "size": [
+            855,
+            523
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_initial_recommendation_matches_original_c_without_preselection_mutation",
+          "dpr": 3.0,
+          "size": [
+            855,
+            523
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        },
+        {
+          "test": "__main__.Captain.test_keyboard_mouse_override_survives_redraw_then_confirms_by_original_keys",
+          "dpr": 3.0,
+          "size": [
+            855,
+            523
+          ],
+          "recommended": 304,
+          "core_unchanged": true
+        }
+      ]
+    }
+  ],
+  "private_evidence": {
+    "path": "/home/diego/projects/goal2-keep/T143-captain-20261027/index.json",
+    "sha256": "3881c3c8f7747e793e2da00bf8bf5421ce3a6a0fbe2c8ca9f14c5eca4efe3972",
+    "paths": 28,
+    "objects": 20
+  }
+}
