@@ -675,6 +675,7 @@ class CoreRound:
         self.watch_suspended = False
         self.pending_inputs = []
         self.pending_stop = None
+        self.interval_attention = None
         from goal2.desktop.core_takers import TakerPages
         self.takers=TakerPages(self)
         self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(2);self.viewer_timer.timeout.connect(self.poll_viewer)
@@ -721,6 +722,8 @@ class CoreRound:
         if kind != 'done':
             self.bench.message = value;self.bench.refresh();return
         state = self.state = value
+        if state['stop'] not in ('half-time','extra-time-start','extra-time-half'):
+            self.interval_attention = None
         self.refresh_match_button()
         if name == 'round_start':self.first_page = 0
         if state['stop'] != 'live' and self.viewer is not None:
@@ -773,6 +776,15 @@ class CoreRound:
         elif stop in ('half-time', 'extra-time-start', 'extra-time-half', 'stoppage', 'pause'):
             self.first_page = len(state['pages'])
             self.bench.offer(state, 'half_time' if stop in ('half-time','extra-time-start','extra-time-half') else stop);self.show(1)
+            if stop in ('half-time','extra-time-start','extra-time-half') and self.interval_attention != stop:
+                # [designed: owner #456/T139] Request attention once per interval; never answer the guest.
+                self.interval_attention = stop
+                w = self.window
+                w.setWindowState(w.windowState() & ~Qt.WindowState.WindowMinimized)
+                w.raise_();w.activateWindow()
+                from PySide6.QtWidgets import QApplication
+                QApplication.alert(w)
+                w.status.setText(self.bench.title.text() + ' — MAKE SUBSTITUTIONS NOW. ' + self.bench.play.text() + ' when ready.')
         elif stop == 'notice':
             self.first_page = len(state['pages']);self.show_notice(state)
         elif stop == 'full-time':              # [T108 review, R1] the round's end goes on, as on a resume

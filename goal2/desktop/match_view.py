@@ -188,6 +188,13 @@ class Display:
             return None
         return self.events[-1]
 
+    def board_note(self):
+        """[designed: owner #456/T139] Keep the interval instruction visible if focus is denied."""
+        decision = self.decision()
+        if decision and decision['data'].get('context') in ('half_time','extra-time-start','extra-time-half'):
+            return 'MAKE SUBSTITUTIONS NOW\nBENCH IN GOAL2 WINDOW'
+        return 'The bench is open in the goal2 window'
+
     def board(self):
         """[designed: T102] The board the view freezes on at a decision: the original's words for
         the half-time menu and the stoppage notice [confirmed: E031 C40-C41, C44-C46b;

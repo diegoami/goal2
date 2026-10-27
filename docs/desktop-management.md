@@ -736,3 +736,10 @@ Windows foreground permission is granted only to the owned child on this user-tr
 
 The separate pitch remains the current presentation mode. [Embedded pitch #446](https://github.com/diegoami/goal2/issues/446)
 tracks integrating it into the main window; this navigation change does not implement embedding.
+
+[designed: owner #456/T139] At the original Core half-time stop, Fixtures & Match opens the bench
+with **HALF TIME — MAKE SUBSTITUTIONS NOW** and requests attention on the main window.
+Make changes, then choose **Start second half** explicitly. Opening the bench, waiting,
+redrawing or pressing Esc does not start the half. Extra-time intervals name their own phase.
+If the OS keeps the pitch in front, its frozen half-time board also says to make substitutions
+in the goal2 bench window; switch back to that window to manage the team.
