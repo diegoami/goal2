@@ -78,8 +78,8 @@ then their results as a goal2 page; the **captain** (the eleven in the roster st
 player as captain, the original moving its own highlight to him; C takes the original's own choice); the first half
 as the original's quick result; at **half time** T102's bench, filled from the original (the eleven, the bench, the
 original's substitutions-left counter, or its own "no more substitutes"; the half-time score): Enter on one and Enter
-on one of the other group passes the pair to the original, which makes or refuses it with its message, and **Play
-on** plays the second half; at a stoppage, the managed side's **substitution opportunity** (the bench, or let it pass
+on one of the other group passes the pair to the original, which makes or refuses it with its message, and **Start
+second half** plays the second half; at a stoppage, the managed side's **substitution opportunity** (the bench, or let it pass
 as with no key) and the same bench; then the result and summary, the table and each bulletin, one page at a time,
 Next for the next, back to the Country page. An eleven the original refuses before the kick-off (EA09, "... has an
 ineligible player in the first team") shows its message on the captain page, and **Players** opens SELECT YOUR TEAM
@@ -736,3 +736,10 @@ Windows foreground permission is granted only to the owned child on this user-tr
 
 The separate pitch remains the current presentation mode. [Embedded pitch #446](https://github.com/diegoami/goal2/issues/446)
 tracks integrating it into the main window; this navigation change does not implement embedding.
+
+[designed: owner #456/T139] At the original Core half-time stop, Fixtures & Match opens the bench
+with **HALF TIME — MAKE SUBSTITUTIONS NOW** and requests attention on the main window.
+Make changes, then choose **Start second half** explicitly. Opening the bench, waiting,
+redrawing or pressing Esc does not start the half. Extra-time intervals name their own phase.
+If the OS keeps the pitch in front, its frozen half-time board also says to make substitutions
+in the goal2 bench window; switch back to that window to manage the team.

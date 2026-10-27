@@ -282,6 +282,9 @@ class CoreBench:
         self.context = label('benchContext');head.addWidget(self.context, 1, Qt.AlignmentFlag.AlignVCenter)
         self.counter = label('benchCounter');self.counter.setWordWrap(False)
         head.addWidget(self.counter, 0, Qt.AlignmentFlag.AlignVCenter)
+        # [designed: owner #456/T139] Persistent instruction, separate from edit/refusal messages.
+        self.interval_notice = label('benchIntervalNotice', 'MAKE SUBSTITUTIONS NOW')
+        self.interval_notice.setWordWrap(True);self.interval_notice.hide()
         self.card = PlayerCardView(compact=True);left.addWidget(self.card)
         # [designed: T114; confirmed: F030/F031] The same R/C position keys as the original's player screen.
         self.position_row = QWidget();positions = QHBoxLayout(self.position_row)
@@ -290,7 +293,8 @@ class CoreBench:
         self.position_club = QPushButton('C - club position');self.position_club.setObjectName('benchPositionClub')
         self.position_next.clicked.connect(lambda:self.reposition('r'))
         self.position_club.clicked.connect(lambda:self.reposition('c'))
-        positions.addWidget(self.position_next);positions.addWidget(self.position_club);positions.addStretch(1)
+        positions.addWidget(self.position_next);positions.addWidget(self.position_club)
+        positions.addWidget(self.interval_notice);positions.addStretch(1)
         left.addWidget(self.position_row);self.position_row.hide()
         lines = QHBoxLayout();lines.setSpacing(12);left.addLayout(lines)
         self.prompt = label('benchPrompt');self.prompt.setWordWrap(False);lines.addWidget(self.prompt, 0, Qt.AlignmentFlag.AlignVCenter)
@@ -334,6 +338,7 @@ class CoreBench:
         eleven, bench = self.words()
         from goal2.desktop.core_roles import role_code
         data = self.state['bench'] if self.state else None
+        self.interval_notice.setVisible(self.mode == 'half_time' and data is not None)
         rows = []
         if data:
             by_word = {r['player']: r for r in data['squad']}
@@ -351,10 +356,11 @@ class CoreBench:
                                  else f"substitutions left {data['left']}")
             board = self.state.get('board') or {}
             names = board.get('names', ['', '']);score = board.get('score', [0, 0])
-            self.title.setText('PLAYERS / HALF TIME' if self.mode == 'half_time' else 'PLAYERS / SUBSTITUTION')
+            self.title.setText('HALF TIME' if self.mode == 'half_time' else 'PLAYERS / SUBSTITUTION')
             if self.mode == 'pause':self.title.setText('PLAYERS / PAUSE')
             self.context.setText(f'{names[0].upper()} {score[0]} - {score[1]} {names[1].upper()}')
-            self.play.setText('Play on');self.play.setAccessibleName('Play on: the second half')
+            self.play.setText('Start second half' if self.mode == 'half_time' else 'Play on')
+            self.play.setAccessibleName(self.play.text())
             self.roster.setAccessibleDescription('Up/Down select; Enter take off / put on; Play on: the second half')
             # [designed: T119; confirmed: original ED8A callers9B42/9B70] Same original controls,
             # with the phase supplied by its caller, independently of stale commentary on the page.
