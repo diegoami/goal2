@@ -211,7 +211,8 @@ def build_core(self, model):
     self.core_routes['fixture list'].clicked.connect(lambda: (self.navigate(3), self.fixtures_view(0)))
     self.core_routes['tournament'].clicked.connect(lambda: (self.navigate(3), self.fixtures_view(1)))
     self.core_routes['history'].clicked.connect(lambda: core_country_view(self, 1))
-    self.core_routes['team info'].clicked.connect(lambda: (self.navigate(1), self.team_views.show_view(1)))
+    from goal2.desktop.squad_page import core_open_team_info
+    self.core_routes['team info'].clicked.connect(lambda: core_open_team_info(self))
     self.core_routes['select squad'].clicked.connect(lambda: (self.navigate(1), self.team_views.show_view(0)))
     self.core_routes['play next game'].clicked.connect(lambda: self.core_round.start())
     middle.addStretch(1)

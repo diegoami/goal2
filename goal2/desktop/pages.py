@@ -41,7 +41,7 @@ class ShellPage(QWidget):
         return stack,boxes
 
     def keyPressEvent(self,event):
-        """[designed: T101] Esc, not taken by a control, leaves a view for the page's first one.
+        """[designed: T101] Esc, not taken by a control, uses the page's contextual return.
         A key event (not a window shortcut) never takes Esc from a dialog or a drop-down."""
         if event.key()==Qt.Key.Key_Escape and self.escape is not None and self.escape():
             event.accept();return
