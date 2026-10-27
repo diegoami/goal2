@@ -57,6 +57,7 @@ class CoreViewer:
         self.controls = deque()
         self.control_sequence = 0
         self.speed = None
+        self.replaying = False
         self.focus_ack = 0
         self.focused = False
         self.focus_receipts = {}
@@ -78,9 +79,13 @@ class CoreViewer:
     def drained(self):
         return self.last_status is not None and self.frame_ack == self.display.frame_sequence
 
-    def pose(self, frame, lines, speed=None):
+    def pose(self, frame, lines, speed=None, replay=False):
         if not self.drained and self.display.frame_sequence >= 0:
             raise ValueError('The previous core pose has not been displayed')
+        if type(replay) is not bool:raise ValueError('Invalid replay marker')
+        if replay != self.replaying:
+            self.send('event',dict(kind='replay',minute=frame['minute'],score=frame['score'],data=dict(active=replay)))
+            self.replaying = replay
         for line in lines:
             self.send('event', dict(kind='commentary', minute=frame['minute'], score=frame['score'], data=line))
         if speed is not None and speed != self.speed:

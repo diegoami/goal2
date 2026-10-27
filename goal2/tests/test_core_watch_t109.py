@@ -115,6 +115,9 @@ class Match(unittest.TestCase):
                     commentary.extend(state['commentary'])
                     poses += 1
                     state = model.round_step('live_step')
+                elif stop == 'replay':
+                    # [designed: T140] This match-flow regression explicitly declines replay.
+                    state = model.round_step('replay',False)
                 elif stop == 'notice':
                     notice = True
                     state = model.round_step('notice', True)

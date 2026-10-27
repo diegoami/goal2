@@ -102,6 +102,8 @@ class Display:
                     or any(type(v) is not int or v < 0 for v in value['score'])
                     or not isinstance(value['data'], dict)):
                 raise ValueError('invalid viewer event')
+            if value['kind']=='replay' and (set(value['data'])!={'active'} or type(value['data']['active']) is not bool):
+                raise ValueError('invalid replay event')
             self.events.append(copy.deepcopy(value))
         elif kind == 'complete' and self.events and self.events[-1]['kind'] == 'end' and self.result is None:
             if not isinstance(value, dict) or set(value) != {'board','ratings','man_of_the_match'}:
@@ -188,6 +190,11 @@ class Display:
             return None
         return self.events[-1]
 
+    @property
+    def replaying(self):
+        """[designed: T140] On visible(), only the displayed pose's released marker counts."""
+        return next((e['data']['active'] for e in reversed(self.events) if e['kind']=='replay'), False)
+
     def board_note(self):
         """[designed: owner #456/T139] Keep the interval instruction visible if focus is denied."""
         decision = self.decision()
@@ -204,6 +211,7 @@ class Display:
             return None
         context = decision['data'].get('context')
         return {'half_time': 'HALF TIME', 'substitution': 'SUBSTITUTION OPPORTUNITY',
+                'replay': 'ACTION REPLAY?', 'replay-save': 'WATCH REPLAY WITHOUT SAVING',
                 'pause': 'PAUSE', 'taker': 'TAKER SELECTION', 'taker-pitch': 'VIEW THE PITCH'
                 }.get(context, context.replace('_', ' ').upper() if context else 'DECISION')
 

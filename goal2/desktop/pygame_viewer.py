@@ -225,7 +225,7 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
         screen.blit(big.render(str(score[n]),True,CYAN),(divider+round(cell/2),y))
     screen.blit(small.render('versus',True,GREY),(26,round(row*2)))
     minute = frame['minute'] if frame is not None else (visible.events[-1]['minute'] if visible.events else 0)
-    screen.blit(small.render(display.kind.upper(),True,CYAN),(commentary_left,0))
+    screen.blit(small.render('ACTION REPLAY' if visible.replaying else display.kind.upper(),True,CYAN),(commentary_left,0))
     clock = small.render(f'{minute}′',True,CYAN)
     screen.blit(clock,(width-clock.get_width()-18,0))
     # [confirmed: E015-r0007 state31; designed: T117] Three rows, newest at the bottom. The history keeps

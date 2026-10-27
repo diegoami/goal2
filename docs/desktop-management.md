@@ -743,3 +743,11 @@ Make changes, then choose **Start second half** explicitly. Opening the bench, w
 redrawing or pressing Esc does not start the half. Extra-time intervals name their own phase.
 If the OS keeps the pitch in front, its frozen half-time board also says to make substitutions
 in the goal2 bench window; switch back to that window to manage the team.
+
+[designed: owner#429/T140; confirmed: original F029/F030 at archaeology53d7ef5] **Watching a goal replay:**
+after a goal, choose **Watch replay without saving (Y)** in the main window. The pitch comes
+forward and says **ACTION REPLAY**, then returns to live play. **Continue match (N)** skips
+the replay. The prompt waits for your choice; it does not disappear unseen. A resumed
+save-goal question can continue the replay without creating a highlight file. Highlight-file
+saving and a saved-replay library remain separate. Use **SHOW MATCH (F8)** if the OS keeps
+the main window in front. Replay uses the original simulation and does not add a host goal.

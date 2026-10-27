@@ -104,7 +104,9 @@ class Driver:
         kind = _screens.KINDS.get(wait.kind)
         if kind is None or kind.polled or not kind.accepts(key):
             raise RefusedKey(wait.kind, key)
-        self.core.stops.add(_screens.TAKER_SELECT)  # [designed: T120] never silently time out a manager's taker
+        self.core.stops.add(_screens.TAKER_SELECT)
+        # [designed: T140] Legacy watched stops retain new replay decisions too.
+        if self.watching:self.core.stops.update(self.REPLAY_KINDS)
         self.log.append((wait.kind, key))
         new = self.core.press(key)
         # [designed: T106] keys the original read from the queue on the way (a polled screen's), in its order
@@ -457,7 +459,9 @@ class Driver:
                                                 _screens.BULLETIN_CONGRATULATIONS,
                                                 _screens.TAKER_SELECT, _screens.TAKER_PITCH, MENU)
     # the stops of a match the steps return at: the half-time menu, the menu of a stoppage, the managed side's notice
-    STOPS = INTERVAL_KINDS + ("substitution-notice", _screens.TAKER_SELECT, _screens.TAKER_PITCH)
+    REPLAY_KINDS = ("action-replay-prompt", "save-goal-prompt")
+    ROUND_KINDS += REPLAY_KINDS
+    STOPS = INTERVAL_KINDS + ("substitution-notice", _screens.TAKER_SELECT, _screens.TAKER_PITCH) + REPLAY_KINDS
 
     def _page(self, wait):
         from goal2.core import views
@@ -532,6 +536,7 @@ class Driver:
 
     def _release(self):
         self.core.stops.add(_screens.TAKER_SELECT)
+        if self.watching:self.core.stops.update(self.REPLAY_KINDS)
         wait = self.core.release()
         if self.trail is not None:
             self.trail.append(wait)
@@ -666,7 +671,7 @@ class Driver:
         return "match-live" in self.core.stops
 
     def _stop(self, *kinds):
-        self.core.stop_at(*(tuple(kinds) + (("match-live", "match-summary-save-prompt") if self.watching else ())))
+        self.core.stop_at(*(tuple(kinds) + (("match-live", "match-summary-save-prompt") + self.REPLAY_KINDS if self.watching else ())))
 
     def live_step(self, key=None):
         """[designed: T109] One live poll: no key, or a catalogue key the manager pressed. Stop at the next live
@@ -675,12 +680,32 @@ class Driver:
             raise UnexpectedScreen(("match-live",), self.wait)
         if key is None:
             self.core.stops.add(_screens.TAKER_SELECT)
+            if self.watching:self.core.stops.update(self.REPLAY_KINDS)
             wait = self.core.advance()
             if self.trail is not None:
                 self.trail.append(wait)
         else:
             self._press_poll(key)
         return self._pass(self.STOPS + ("match-menu-fulltime",))
+
+    def replay(self, watch):
+        """[confirmed: F029/F030 at53d7ef5, 0791:0C65] Y,N watches without saving; N declines.
+
+        [designed: owner#429/T140] Never enter the original DOS highlight writer. A resumed
+        save-goal question can only continue the already-requested replay without a file.
+        """
+        if type(watch) is not bool:
+            raise ValueError('Replay choice must be boolean')
+        if self.wait.kind not in self.REPLAY_KINDS:
+            raise UnexpectedScreen(self.REPLAY_KINDS, self.wait)
+        if self.wait.kind == 'save-goal-prompt' and not watch:
+            raise DriverError('Replay already requested; continue without saving the goal')
+        self._stop("substitution-notice", _screens.TAKER_SELECT)
+        if self.wait.kind == 'action-replay-prompt':
+            self._press_poll('y' if watch else 'n')
+        if self.wait.kind == 'save-goal-prompt':
+            self._press_poll('n')
+        return self._pass(self.STOPS + ('match-menu-fulltime',))
 
     def summary_done(self):
         """[designed: T109] Decline the original's DOS summary file; the desktop owns exporting its summary.
@@ -715,6 +740,7 @@ class Driver:
         if not wait.poll or kind is None or not kind.accepts(key):
             raise RefusedKey(wait.kind, key)
         self.core.stops.add(_screens.TAKER_SELECT)
+        if self.watching:self.core.stops.update(self.REPLAY_KINDS)
         self.log.append((wait.kind, key))
         new = self.core.press(key)
         self.log.extend((p.kind, k) for p in new.passed for k in p.keys)
@@ -904,14 +930,15 @@ class Driver:
         return self._team()
 
     def play_round(self, watch=False, captain=None, substitutions=(), fix_eleven=None, on_notice=None,
-                   on_stoppage=None, on_taker=None):
+                   on_stoppage=None, on_taker=None, on_replay=None):
         """The whole round from the manager menu to the next: round_start, kick_off (the captain), at half time each
         (off, on) of `substitutions` (substitute), play_on. `fix_eleven(driver, message)` answers an eleven the
         original refuses (e.g. by prematch_swap before the kick-off, substitute at half time); without it a refusal
         raises DriverError with the original's message. `on_notice(driver, wait)` answers the managed side's notice:
         True for the bench (then `on_stoppage(driver)` at the stoppage's menu), False or None to let it pass, as a
         manager who presses nothing. T120's `on_taker(driver, wait)` returns an original key (or None for
-        its remaining timer); without that explicit answer the script stops at the decision with DriverError.
+        its remaining timer); without that explicit answer the script stops at the decision with DriverError. `on_replay(driver, wait)` similarly
+        supplies an explicit boolean for the original replay question.
         [designed: #395/#409] The script explicitly presses Enter at qualified bulletin animation waits.
         Returns {"pages", "substitutions", "refused", "notices"}."""
         wait = self.round_start(watch)
@@ -958,6 +985,11 @@ class Driver:
                 if taker_keys > 10000:
                     raise DriverError('The taker callback exceeded 10000 keys')
                 self.taker_key(on_taker(self, wait))
+                continue
+            if wait.kind in self.REPLAY_KINDS:
+                if on_replay is None:
+                    raise DriverError('The original awaits a replay decision; supply on_replay')
+                self.replay(on_replay(self, wait))
                 continue
             if wait.kind == 'match-live':
                 live_polls += 1

@@ -39,12 +39,12 @@ ACTIONS = ('swap', 'exchange', 'set_position', 'set_own_tactic', 'set_marking', 
 # [designed: T108] The round's steps (goal2/core/driver.py): each stops where the original asks the manager.
 ROUND_ACTIONS = ('round_start', 'kick_off', 'notice', 'substitute', 'play_on', 'prematch_swap', 'finish',
                  'live_step', 'summary_done', 'request_substitution', 'round_position', 'round_continue',
-                 'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight')
+                 'shootout_start', 'shootout_pick', 'shootout_undo', 'taker_key', 'taker_highlight', 'replay')
 # the kinds a round waits at between its steps
 ROUND_WAITS = ('match-menu', 'match-menu-halftime', 'substitution-notice', 'match-menu-fulltime',
                'match-live', 'match-summary-save-prompt', 'round-paused', 'shootout-announcement', 'shootout-order',
                'match-menu-extra-time', 'match-menu-extra-halftime', 'set-piece-select', 'set-piece-pitch',
-               'bulletin-achievement', 'bulletin-congratulations')
+               'bulletin-achievement', 'bulletin-congratulations', 'action-replay-prompt', 'save-goal-prompt')
 
 
 class CoreModel:
@@ -174,6 +174,10 @@ class CoreModel:
             self.commentary_cursor = 0
         if name == 'kick_off':
             self.commentary_cursor = 0       # the original clears its ring for this match
+        if name == 'replay' and args and args[0]:
+            # [confirmed: F029 at53d7ef5] 0C65 restores7FBbytes from8439 to7C3E,
+            # including the commentary index80EE. Resume from that snapshot's index.
+            self.commentary_cursor = views.Memory(self.state).ds_word(0x8439 + 0x80EE - 0x7C3E)
         try:
             # [designed: T116; confirmed: 0791:9571–9708] All original polls execute; only complete poses need
             # a kept snapshot/text page. Reads and manager decisions retain their immediate stops.
@@ -207,7 +211,10 @@ class CoreModel:
         wait = self.core.wait
         out = {'at': wait.kind, 'stop': 'menu', 'pages': list(self.driver.pages), 'refused': self.refused,
                'captain': None, 'bench': None, 'board': None, 'notice': None}
-        if wait.kind == 'shootout-announcement':
+        if wait.kind in ('action-replay-prompt','save-goal-prompt'):
+            out.update(stop='replay' if wait.kind == 'action-replay-prompt' else 'replay-save',
+                       board=views.board(self.state))
+        elif wait.kind == 'shootout-announcement':
             out.update(stop='shootout-announcement',message=wait.view['message'],board=views.board(self.state))
         elif wait.kind == 'shootout-order':
             out.update(stop='shootout-order',order=views.shootout_order(self.state,wait.view))
@@ -252,7 +259,8 @@ class CoreModel:
             self.commentary_cursor, lines = views.commentary(self.state, self.commentary_cursor)
             out.update(stop='live', pitch=views.pitch(self.state, self.pitch_sequence, 0), commentary=lines,
                        speed=views.match_speed(self.state),
-                       identity=views.pitch_identity(self.state))
+                       identity=views.pitch_identity(self.state),
+                       replay=bool(views.Memory(self.state).ds_byte(0x0C20)))
             self.pitch_sequence += 1
         elif wait.kind == 'match-summary-save-prompt':
             out.update(stop='summary-save', board=views.board(self.state))
