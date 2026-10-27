@@ -49,6 +49,7 @@ class Display:
         self.roles = {}
         self.managed = None
         self.kind = 'Friendly'
+        self.colours = None          # [designed: owner #462/T142] Optional computed DOS kit indices.
         self.events = []
         self.result = None
         self.pitch_rate = None
@@ -116,8 +117,10 @@ class Display:
 
     def _identity(self, value):
         """[designed: T94] {'countries': [a, b], 'roles': {word: code}, 'managed': 0|1|None,
-        'kind': label}; strict, so a malformed identity is refused like any other packet."""
-        if set(value) != {'countries', 'roles', 'managed', 'kind'}:
+        'kind': label, optional 'colours': {'primary': [a,b], 'keeper': [a,b]}}.
+        Malformed identities are refused atomically, including colour indices."""
+        required = {'countries', 'roles', 'managed', 'kind'}
+        if set(value) not in (required, required | {'colours'}):
             raise ValueError('invalid viewer identity')
         roles, managed, label = value['roles'], value['managed'], value['kind']
         if (not isinstance(roles, dict) or len(roles) > 64
@@ -131,8 +134,16 @@ class Display:
         countries = value['countries']
         if not isinstance(countries, list) or len(countries) != 2 or any(not isinstance(v, str) for v in countries):
             raise ValueError('invalid viewer countries')
+        colours = value.get('colours')
+        if 'colours' in value:
+            if (not isinstance(colours, dict) or set(colours) != {'primary', 'keeper'}
+                    or any(not isinstance(row, list) or len(row) != 2
+                           or any(type(c) is not int or not 0 <= c <= 15 for c in row)
+                           for row in colours.values())):
+                raise ValueError('invalid viewer kit colours')
         # Nothing is kept until the whole identity is valid.
         self.roles = {int(k): c for k, c in roles.items()};self.managed = managed;self.kind = label
+        self.colours = copy.deepcopy(colours)
         return countries
 
     def code(self, word, number):

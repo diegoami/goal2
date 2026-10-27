@@ -12,11 +12,23 @@ import time
 from goal2.desktop.match_view import Display, MAX_PACKET, MAX_JOURNAL
 
 # [designed: T94; accepted vision #266 screen 06] The accepted original style: black, large
-# type, the managed side gold and the other white (strips are not decoded, G05).
+# type; legacy journals without computed kit metadata keep managed gold/other white.
 BLACK, WHITE, GREY = (0, 0, 0), (238, 238, 238), (170, 170, 170)
 CYAN, YELLOW, GOLD, MAGENTA = (85, 255, 255), (255, 255, 85), (255, 187, 51), (255, 85, 255)
 BORDER = (0, 80, 0)
 TEAM_COLORS = (GOLD, WHITE)
+# [derived: T70/0791:1073,0691; designed: owner #462/T142] Standard source DOS palette.
+DOS_PALETTE = ((0,0,0),(0,0,170),(0,170,0),(0,170,170),(170,0,0),(170,0,170),(170,85,0),(170,170,170),
+               (85,85,85),(85,85,255),(85,255,85),(85,255,255),(255,85,85),(255,85,255),(255,255,85),(255,255,255))
+
+
+def kit_palette(display):
+    """[derived: T70] Detached source kits are fixture-side indexed, never managed-side indexed."""
+    if display.colours is not None:
+        return tuple(DOS_PALETTE[c] for c in display.colours['primary']), tuple(DOS_PALETTE[c] for c in display.colours['keeper'])
+    legacy = TEAM_COLORS if display.managed != 1 else TEAM_COLORS[::-1]
+    return legacy, legacy
+
 # [confirmed: F013, kit424d599 seg_0791_05.asm:535-598] The in-play grid: |x| <= 8, |y| <= 37.
 GRID = (8, 37)
 # [designed: T94] Grid units of room around the field for out-of-field positions.
@@ -205,7 +217,7 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
     screen.fill(BLACK)
     visible = display.visible()
     names = display.countries or ['Starting…', '']
-    colours = TEAM_COLORS if display.managed != 1 else TEAM_COLORS[::-1]
+    colours, keeper_colours = kit_palette(display)
     frame = display.frame
     score = frame['score'] if frame is not None else (visible.events[-1]['score'] if visible.events else [0, 0])
     # [designed: T117] Scale the original 80x25 composition, using the bundled monospaced type.
@@ -263,7 +275,9 @@ def render_pitch(screen, font, display, scroll=0, commentary=False, marks=DEFAUL
         for slot in DRAW_ORDER:
             _, team, number, word, px, py, state, hidden = players[slot]
             if not hidden:
-                occupied[at(px, py)] = (glyph(marks, slot, display.code(word, number), frame['selector'], holder), colours[team])
+                # [confirmed: 0791:045D/0691] Keeper slots1/12 use each side's secondary colour.
+                colour = keeper_colours[team] if slot in (1, 12) else colours[team]
+                occupied[at(px, py)] = (glyph(marks, slot, display.code(word, number), frame['selector'], holder), colour)
         for point, (text, colour) in occupied.items():
             label = marker.render(text, True, colour)
             screen.blit(label, label.get_rect(center=point))

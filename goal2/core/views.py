@@ -907,7 +907,11 @@ def pitch_identity(state):
             if w:
                 position = mem.byte(mem.far(PLAYERS) + PLAYER_SIZE * w + 6)
                 roles[str(w)] = bytes([mem.ds_byte(CODE_TABLE + position)]).decode('cp437') if position < 14 else '?'
-    return dict(countries=sides['names'], managed=sides['managed_side'], roles=roles, kind='Match')
+    # [derived: archaeology75181f5c T70, 0791:1073/0691] Use the original's computed
+    # fixture-side kits, including its clash/special-mode decisions; this is read-only.
+    colours = dict(primary=[mem.ds_byte(0x832E + t) for t in (0, 1)],
+                   keeper=[mem.ds_byte(0x8330 + t) for t in (0, 1)])
+    return dict(countries=sides['names'], managed=sides['managed_side'], roles=roles, kind='Match', colours=colours)
 
 
 def commentary(state, previous=0):
