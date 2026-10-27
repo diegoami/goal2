@@ -279,7 +279,7 @@ def build_core(self, model):
     card_box, tactics_box, own_box = view('teamCardView'), view('teamTacticsView'), view('teamOwnView')
     self.team_card = PlayerCardView(compact=True);card_box.addWidget(self.team_card)
     actions = QGridLayout();actions.setSpacing(8);card_box.addLayout(actions)
-    buttons = (('Team tactics >', 'teamTacticsRoute', lambda: core_team_view(self, 1)),
+    buttons = (('Team tactics >', 'teamTacticsRoute', lambda: core_open_team_info(self)),
                ('Own tactics (T) >', 'teamOwnRoute', lambda: core_team_view(self, 2)),
                ('Reposition (R)', 'reposition', lambda: core_reposition(self, False)),
                ('Club position (C)', 'clubPosition', lambda: core_reposition(self, True)))
@@ -323,8 +323,15 @@ def build_core(self, model):
         row.clicked.connect(lambda checked=False, e=element: core_toggle_tactic(self, e))
     for _, row in self.tactics:row.rows = [r for _, r in self.tactics]
     right_box.addStretch(1);cards.addWidget(right, 1)
-    hint = QLabel('Enter or Space: change the selected tactic (the original toggles it) / Esc: the card')
-    hint.setObjectName('tacticsHint');hint.setWordWrap(True);tactics_box.addWidget(hint);tactics_box.addStretch(1)
+    # [designed: owner #452/T141] A presentation-only return, beside the keyboard hint.
+    return_bar = QHBoxLayout();return_bar.setSpacing(12);tactics_box.addLayout(return_bar)
+    hint = QLabel('Enter or Space: change the selected tactic / Esc: back to team')
+    hint.setObjectName('tacticsHint');hint.setWordWrap(True);return_bar.addWidget(hint, 1)
+    self.core_team_info_back = QPushButton('< Back to team (Esc)')
+    self.core_team_info_back.setObjectName('coreTeamInfoBack');self.core_team_info_back.setAccessibleName('Back to team')
+    self.core_team_info_back.clicked.connect(lambda: core_return_team_info(self))
+    return_bar.addWidget(self.core_team_info_back);tactics_box.addStretch(1)
+    self.core_team_info_origin = None
     # View 2: the selected player's own tactics (1771:4B61): each row cycles the team's, his own off, his own on.
     own_title = QLabel();own_title.setObjectName('ownTacticsTitle');own_box.addWidget(own_title);self.own_title = own_title
     self.own_tactics = []
@@ -340,6 +347,8 @@ def build_core(self, model):
     self.team_roster.activated.connect(lambda row: core_mark(self, self.team_roster, row, 'squad'))
 
     def escape():
+        if self.team_views.currentIndex() == 1:
+            return core_return_team_info(self)
         if self.team_views.currentIndex() != 0:
             core_team_view(self, 0);return True
         if self.team_roster.marked:
@@ -349,7 +358,39 @@ def build_core(self, model):
     self.core_marked = None
 
 
-def core_team_view(self, index):
+def core_open_team_info(self):
+    """[designed: owner #452/T141] Keep the originating presentation; never drive the core."""
+    from PySide6.QtWidgets import QApplication
+    page = self.page_stack.currentIndex()
+    view = self.country_views.currentIndex() if page == 0 else self.team_views.currentIndex() if page == 1 else 0
+    origin = (page, view, QApplication.focusWidget())
+    self.navigate(1)
+    core_team_view(self, 1, origin=origin)
+
+
+def core_return_team_info(self):
+    """[designed: owner #452/T141] Button and page-local Esc share exactly one return."""
+    if self.team_views.currentIndex() != 1:return False
+    page, view, focus = self.core_team_info_origin or (1, 0, self.team_roster)
+    self.navigate(page)
+    if self.page_stack.currentIndex() != page:return False
+    if page == 0:self.country_views.setCurrentIndex(view)
+    elif page == 1:core_team_view(self, view)
+    self.core_team_info_origin = None
+    try:
+        usable = focus is not None and self.isAncestorOf(focus) and focus.isVisible() and focus.isEnabled()
+    except RuntimeError:             # an originating popup/control may have been destroyed
+        usable = False
+    (focus if usable else self.team_roster if page == 1 else self.pages[page].heading).setFocus(Qt.FocusReason.ShortcutFocusReason)
+    return True
+
+
+def core_team_view(self, index, origin=None):
+    if index == 1 and (origin is not None or self.team_views.currentIndex() != 1):
+        from PySide6.QtWidgets import QApplication
+        self.core_team_info_origin = origin or (1, self.team_views.currentIndex(), QApplication.focusWidget())
+    elif index != 1:
+        self.core_team_info_origin = None
     self.team_views.setCurrentIndex(index)
     from PySide6.QtCore import QCoreApplication, QEvent
     for _ in range(3):QCoreApplication.sendPostedEvents(None, QEvent.Type.LayoutRequest)
