@@ -1,0 +1,70 @@
+{
+  "source_head": "eded2909106f733e2f5419a4b12eaf77bcdf0571",
+  "source_sha256": {
+    "goal2/desktop/squad_page.py": "c94b23c9b0a255c157533c0321038894ff221317a0656311aec911d60da281cc",
+    "goal2/desktop/overview_page.py": "d104ee84a81e1b00261ccfa9c412e1c093e0d5a44d8e6b7cf5fa82a214ae0fba",
+    "goal2/desktop/pages.py": "a754353392491e0af929e1c2280a42f1625590cd155658462e07db5b1a692122",
+    "goal2/tests/test_core_team_back_t141.py": "c42a64788443a6c318cf09f55e9e0423327ffcd3983630bc01d5a1ca3644776a"
+  },
+  "native": [
+    {
+      "platform": "linux",
+      "qt_platform": "xcb",
+      "factor": 1,
+      "observed_dpr": [
+        1.0
+      ],
+      "tests": 4,
+      "skips": 0,
+      "pass_": true,
+      "head": "eded2909106f733e2f5419a4b12eaf77bcdf0571"
+    },
+    {
+      "platform": "linux",
+      "qt_platform": "xcb",
+      "factor": 2,
+      "observed_dpr": [
+        2.0
+      ],
+      "tests": 4,
+      "skips": 0,
+      "pass_": true,
+      "head": "eded2909106f733e2f5419a4b12eaf77bcdf0571"
+    },
+    {
+      "platform": "win32",
+      "qt_platform": "windows",
+      "factor": 1,
+      "observed_dpr": [
+        1.5
+      ],
+      "tests": 4,
+      "skips": 0,
+      "pass_": true,
+      "head": "eded2909106f733e2f5419a4b12eaf77bcdf0571"
+    },
+    {
+      "platform": "win32",
+      "qt_platform": "windows",
+      "factor": 2,
+      "observed_dpr": [
+        3.0
+      ],
+      "tests": 4,
+      "skips": 0,
+      "pass_": true,
+      "head": "eded2909106f733e2f5419a4b12eaf77bcdf0571"
+    }
+  ],
+  "before": "Four genuine Core/Qt failures at daba4476; missing Back and wrong Esc origin.",
+  "after": "Four Core/Qt controls pass; native four controls pass in all four runs, no skips.",
+  "rejected_setup": "Default/empty environments skipped; initial XCB runtime-path failures; bare Xvfb lacked modal focus restoration. Final Linux runs use cached XCB libraries plus installed xfwm4 in isolated D-Bus/XDG sessions. No assertion was relaxed.",
+  "inputs_sha256": {
+    "e006-r0001-main.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca"
+  },
+  "support_index": "/home/diego/projects/goal2-keep/T141-native-20261027/index.json",
+  "support_index_sha256": "d5dfaae923e0c37ca8f252cb935cd54bcea90fa61c0ba38fc9e813d7c8afd8cd",
+  "support_files": 71,
+  "unique_objects": 44
+}
