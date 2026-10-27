@@ -278,3 +278,4 @@ operational status.
 | [T137](T137.md) | Core TEAM labels and manager screen text | [#438](https://github.com/diegoami/goal2/issues/438) | #443, #445 |
 | [T138](T138.md) | Show the owned match window | [#430](https://github.com/diegoami/goal2/issues/430) | T109/T116 |
 | [T139](T139.md) | Prominent Core half-time prompt and bench attention | [#456](https://github.com/diegoami/goal2/issues/456) | T108/T119 |
+| [T140](T140.md) | Original goal replay controls and visible playback | [#429](https://github.com/diegoami/goal2/issues/429) | T139 |
