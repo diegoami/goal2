@@ -585,7 +585,7 @@ class CoreRound:
         self.pitch_note.setObjectName('prepNote');self.pitch_note.setWordWrap(True)
         box.addWidget(self.pitch_note)
         self.views = QStackedWidget();self.views.setObjectName('coreRoundViews');box.addWidget(self.views, 1)
-        # 0: the captain (CC7B's list: the eleven), with the original's own choice
+        # 0: CC7B's eleven, with the recommended leader highlighted (owner453/T143).
         captain = QWidget();captain.setObjectName('coreCaptainView');row = QHBoxLayout(captain);row.setSpacing(16)
         left = QVBoxLayout();left.setSpacing(10);row.addLayout(left, 1)
         self.captain_title = QLabel('CAPTAIN');self.captain_title.setObjectName('prepTitle');left.addWidget(self.captain_title)
@@ -710,6 +710,7 @@ class CoreRound:
             self.viewer.close();self.viewer = None
         self.watch_suspended = False
         self.pending_inputs = []
+        self._captain_context = None
         self.window.run_core('round_start')
         self.show_waiting('The original plays the round…')
 
@@ -755,6 +756,7 @@ class CoreRound:
         else:
             self.bench.message = ''
         stop = state['stop']
+        if stop != 'captain':self._captain_context = None
         if stop == 'shootout-announcement':
             self.queue = list(state['pages'][self.first_page:]);self.after = 'shootout-announcement'
             self.first_page = len(state['pages']);self.next_page()
@@ -859,11 +861,20 @@ class CoreRound:
         rows = [(r['player'], r['name'], role_code(r), r['line'], True, r['player'] == choice['captain'])
                 for r in choice['eleven']]
         self.captain_roster.caption = choice['name'].upper()
-        current = next((i for i, r in enumerate(rows) if r[5]), 0)
-        self.captain_roster.set_rows(rows, current)
+        # [designed: owner453/T143] New XI: suggest the original best leader.
+        # A redraw of the same XI keeps the manager's eligible selection.
+        context = (id(self.window.model), choice['country'], tuple(r[0] for r in rows))
+        old = self.captain_roster
+        selected = old.rows[old.current][0] if 0 <= old.current < len(old.rows) else None
+        if context != getattr(self, '_captain_context', None) or selected not in choice['eligible']:
+            selected = choice['recommended']
+        self._captain_context = context
+        current = next((i for i, r in enumerate(rows) if r[0] == selected), -1)
+        self.captain_roster.set_rows(rows, current, unavailable={r[0] for r in rows} - set(choice['eligible']))
         self.captain_title.setText(f"CAPTAIN / {choice['name'].upper()}")
-        self.captain_note.setText('Up/Down: the player who captains; Enter: kick off with him. C: the original '
-                                  'picks its own (its best leader). Choose Watch for the pitch, '
+        suggested = next((r[1] for r in rows if r[0] == choice['recommended']), 'no available player')
+        self.captain_note.setText(f'Suggested captain: {suggested}. Up/Down: choose your captain; Enter: kick off. '
+                                  'C: use the suggested captain. Choose Watch for the pitch, '
                                   'or leave it off for the original\'s quick result.')
         self.refusal.setText(f"Last original refusal: {state['refused']}. Play checks again." if state['refused'] else '')
         self.show(0)
@@ -875,7 +886,8 @@ class CoreRound:
     def kick_off_selected(self):
         rows = self.captain_roster.rows
         if rows and 0 <= self.captain_roster.current < len(rows):
-            self.start_kick_off(rows[self.captain_roster.current][0])
+            player = rows[self.captain_roster.current][0]
+            if player in self.state['captain']['eligible']:self.start_kick_off(player)
 
     def start_kick_off(self, captain):
         if self.window.core_jobs.busy:return
