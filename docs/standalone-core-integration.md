@@ -6,6 +6,14 @@ allocates consumer tasks; implementation requires the accepted upstream delivery
 whole-game Core remains the first-release architecture (#308). A match engine does not replace
 the campaign, menus, calendar or news. There is no automatic default switch.
 
+[designed: owner update2026-10-27; goal2#393] The owner now prioritizes actual
+engine replacement and accepts fresh careers. Old-career migration and further
+Unicorn performance optimization are out of this milestone. This supersedes the
+planning-only/long-term deferral and later owner-choice requirement for the desired
+replacement direction; accepted delivery, fidelity, lifecycle and review/playtest gates
+still apply. New matches must return results/effects so fixtures and tournaments
+advance once. The current original Core is the fallback until the replacement passes.
+
 ## Audited boundaries
 
 [derived: goal2 3f9f8cd7a8fec38c0c9e9276bf8d299b396bbfca; G15 merge

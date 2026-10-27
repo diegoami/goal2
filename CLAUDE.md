@@ -14,6 +14,15 @@ first supported session (`docs/redesign-253/vision-reconciliation.md`; O03/O04 r
 [designed: owner, 2026-10-22] It runs the original's whole game under Unicorn as goal2's core (stage 3,
 #308); the long-term goal stays an independent executable, fed by goal2-archaeology (label `long-term`).
 
+[designed: owner, 2026-10-27] **Standalone engine replacement is now top priority**,
+superseding the earlier long-term/planning-only deferral. Stop optimizing the Unicorn
+match path. Implement upstream T78–T80 and the required new-session tournament-result
+contract, then adopt the accepted engine in goal2. Fresh careers suffice; old-career
+migration is not required. The replacement must still pass fidelity, lifecycle and
+milestone review/playtest before publication. The remaining requested UI and portable
+Windows batch stays required. Build-only Nuitka4.1.1 and declared build dependencies
+are approved in an isolated environment/CI (goal2#432comment6440424797).
+
 ## Working rules
 1. The main session plans, triages, talks to the owner and merges. It implements itself or spawns
    a subagent (`.claude/agents/implementer.md`) on its own judgment; the owner names a model only

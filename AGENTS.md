@@ -4,9 +4,16 @@ Read [CLAUDE.md](CLAUDE.md): its rules apply to every client (Codex, Claude Code
 [docs/process.md](docs/process.md) for how a task runs. Claude Code's skills and agents under
 `.claude/` are Claude-specific; Codex follows the same steps with its own tools.
 
-## Resume after the owner checkpoint
+## Active engine-replacement work
 
-Read the current [owner checkpoint](https://github.com/diegoami/goal2/issues/308#issuecomment-6404115225) on #308 before taking work, then check live PR heads/checks and labels. The owner paused on 2026-10-26 (Berlin): continue only after explicit resume; existing automated checks may finish. Preserve the current checkout. Do not restart obsolete #253 planning or automatic merges.
+Read the current [engine checkpoint](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606)
+on #308, then check live heads/checks and labels. Owner explicitly resumed and prioritized
+engine replacement on2026-10-27. This session owns the persistent independent upstream
+clone `/home/diego/projects/goal2-archaeology-engine`; the other archaeology session owns
+`/home/diego/projects/goal2-archaeology` and continues analysis. Preserve that other checkout.
+Complete T78–T80/required tournament continuation and goal2 adoption; do not resume
+Unicorn performance optimization or old-career migration. Preserve accepted scoped UI
+work and complete the remaining milestone batch. No obsolete #253 automatic sequence.
 
 Durable task decisions/status live on the relevant GitHub issues/PRs; supporting evidence is in `/home/diego/projects/goal2-keep`. The owner's final naming scope (2026-10-26) is only the existing33 authored profiles: canonical top32 plus Greece,80 surnames each, unchanged. Drop the128-country expansion; unlisted countries retain original names. Do not restart extra-country surname research.
 
