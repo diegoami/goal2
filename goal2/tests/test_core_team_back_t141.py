@@ -25,8 +25,8 @@ class Navigation(unittest.TestCase):
         if not NATIVE:os.environ.setdefault('QT_QPA_PLATFORM','offscreen')
         from PySide6.QtWidgets import QApplication
         cls.app=QApplication.instance() or QApplication([])
-        if NATIVE and cls.app.platformName() not in ('windows','xcb','wayland','wayland-egl'):
-            raise AssertionError('Native proof requires a real windows/xcb/wayland Qt platform')
+        if NATIVE and cls.app.platformName() not in ('windows','xcb'):
+            raise AssertionError('Native proof requires a real windows/xcb Qt platform')
 
     def setUp(self):
         from goal2.tests.test_core_team_t107 import model
@@ -38,7 +38,15 @@ class Navigation(unittest.TestCase):
         self.app.processEvents()
         if NATIVE:
             self.assertTrue(QTest.qWaitForWindowActive(self.w,5000))
-            self.assertAlmostEqual(self.w.devicePixelRatioF(),FACTOR)
+            base=1.0
+            if sys.platform=='win32':
+                import ctypes
+                from ctypes import wintypes
+                dpi=ctypes.WinDLL('user32',use_last_error=True).GetDpiForWindow
+                dpi.argtypes=[wintypes.HWND];dpi.restype=wintypes.UINT
+                base=dpi(int(self.w.winId()))/96.0
+                self.assertGreater(base,0)
+            self.assertAlmostEqual(self.w.devicePixelRatioF(),FACTOR*base)
             OBSERVED.add(self.w.devicePixelRatioF())
         self.before=self.w.model.memory_sha256()
         self.save_before=hashlib.sha256(self.w.model.core.save()).hexdigest()
@@ -61,6 +69,7 @@ class Navigation(unittest.TestCase):
         self.assertTrue(button.isVisible() and button.isEnabled())
         self.assertTrue(button.visibleRegion().contains(button.rect().center()))
         if NATIVE:
+            self.assertTrue(self.w.isActiveWindow())
             self.assertTrue(self.w.screen().geometry().contains(button.mapToGlobal(button.rect().center())))
         QTest.mouseClick(button,Qt.MouseButton.LeftButton,pos=button.rect().center())
         self.app.processEvents()
@@ -68,6 +77,7 @@ class Navigation(unittest.TestCase):
     def escape(self,widget):
         from PySide6.QtCore import Qt
         from PySide6.QtTest import QTest
+        if NATIVE:self.assertTrue(widget.window().isActiveWindow())
         QTest.keyClick(widget,Qt.Key.Key_Escape);self.app.processEvents()
 
     def info_from_country(self):
@@ -121,6 +131,7 @@ class Navigation(unittest.TestCase):
         if NATIVE:self.assertTrue(QTest.qWaitForWindowActive(dialog,5000))
         self.escape(dialog)
         self.assertFalse(dialog.isVisible())
+        if NATIVE:self.assertTrue(QTest.qWaitForWindowActive(self.w,5000))
         self.assertEqual((self.w.page_stack.currentIndex(),self.w.team_views.currentIndex()),(1,1))
         self.escape(self.w.tactics[0][1])
         self.assertEqual(self.w.page_stack.currentIndex(),0)
@@ -134,6 +145,7 @@ class Navigation(unittest.TestCase):
             self.w.resize(width,height);self.app.processEvents()
             self.assertEqual(problems(self.w),[],(width,height))
             page=self.w.pages[1];need=page.minimumSizeHint()
+            self.assertGreater(need.width(),0);self.assertGreater(need.height(),0)
             self.assertLessEqual(need.width(),0.9*page.width())
             self.assertLessEqual(need.height(),0.9*page.height())
             self.assertTrue(button.visibleRegion().contains(button.rect().center()))
