@@ -281,3 +281,5 @@ operational status.
 | [T140](T140.md) | Original goal replay controls and visible playback | [#429](https://github.com/diegoami/goal2/issues/429) | T139 |
 
 - [T141](T141.md): contextual Team Info Back/Esc (#452).
+
+- [T142](T142.md): original computed pitch kits, including blue Italy (#462).
