@@ -285,3 +285,5 @@ operational status.
 - [T142](T142.md): original computed pitch kits, including blue Italy (#462).
 
 - [T143](T143.md): preselect the original best captain and preserve manual choice (#453).
+
+- [T144](T144.md): consume decoded TEAM skills, performance and characteristics (#458).
