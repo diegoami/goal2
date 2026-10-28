@@ -1,0 +1,16 @@
+test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 203, in test_actual_team_info_has_current_panels_and_preserves_contextual_back
+    self.assertLessEqual(pane.bottom, pane.height()/pane.scale())
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 841 not less than or equal to 600.0
+
+----------------------------------------------------------------------
+Ran 1 test in 0.435s
+
+FAILED (failures=1)

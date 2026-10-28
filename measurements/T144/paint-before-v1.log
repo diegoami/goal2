@@ -1,0 +1,133 @@
+test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card) ... ERROR
+test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) ... 
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=True) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=True) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=True) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=True) ... ERROR
+test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent) ... ERROR
+
+======================================================================
+ERROR: test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 176, in test_a_paint_reads_current_memory_again_without_set_card
+    widget.set_card(read(), reader=read);widget.grab();self.app.processEvents()
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+TypeError: CountryCardView.set_card() got an unexpected keyword argument 'reader'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 154, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 135, in test_original_descriptor_highlight_wraps_without_clamping_its_extent
+    from goal2.desktop.country_card import characteristic_view
+ImportError: cannot import name 'characteristic_view' from 'goal2.desktop.country_card' (/home/diego/projects/goal2/goal2/desktop/country_card.py)
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.273s
+
+FAILED (errors=14)

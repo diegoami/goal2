@@ -77,7 +77,7 @@ class CurrentMemory(unittest.TestCase):
                 card = views.country_card(self.core.wait.state, c)
                 self.assertEqual((card['name'], card['status'], card['skill']), (name, status, skill))
                 self.assertEqual(set(card['not_decoded']),
-                                 {'ranking top', 'strips', 'team skills', 'performance', 'characteristics'})
+                                 {'ranking top', 'strips'})  # T144 consumes the delivered three panels.
 
     def test_original_key_new_career_uses_its_current_human_manager(self):
         from goal2.core import Core, views

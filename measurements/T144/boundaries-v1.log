@@ -1,0 +1,33 @@
+test_manager_zero_and_human_read_ability_not_confidence (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_manager_zero_and_human_read_ability_not_confidence) ... ok
+test_performance_signed_hybrid_half_and_rating_threshold (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_performance_signed_hybrid_half_and_rating_threshold) ... ok
+test_unavailable_starters_keep_the_divisor_eleven (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_unavailable_starters_keep_the_divisor_eleven) ... ok
+test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct) ... ok
+test_wrapped_negative_fitness_preserves_full_bar_length (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_wrapped_negative_fitness_preserves_full_bar_length) ... ok
+test_zero_words_are_skipped_only_by_skills_not_the_other_panels (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_zero_words_are_skipped_only_by_skills_not_the_other_panels) ... ok
+test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data) ... ok
+test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records) ... ok
+test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads) ... ok
+test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen) ... ok
+test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen) ... ok
+test_original_key_human_manager_and_tactic_changes_are_read_fresh (goal2.tests.test_core_team_panels_t144.LiveProjection.test_original_key_human_manager_and_tactic_changes_are_read_fresh) ... ok
+test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure) ... ok
+test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card) ... ok
+test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back) ... This plugin does not support propagateSizeHints()
+FAIL
+test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) ... ok
+test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent) ... ok
+test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin) ... ok
+
+======================================================================
+FAIL: test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 315, in test_actual_team_info_has_current_panels_and_preserves_contextual_back
+    self.assertGreaterEqual(row.width(), row.sizeHint().width())
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 413 not greater than or equal to 429
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.663s
+
+FAILED (failures=1)

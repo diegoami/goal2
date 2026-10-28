@@ -1,0 +1,61 @@
+test_manager_zero_and_human_read_ability_not_confidence (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_manager_zero_and_human_read_ability_not_confidence) ... ok
+test_performance_signed_hybrid_half_and_rating_threshold (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_performance_signed_hybrid_half_and_rating_threshold) ... ok
+test_unavailable_starters_keep_the_divisor_eleven (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_unavailable_starters_keep_the_divisor_eleven) ... ok
+test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct) ... ok
+test_wrapped_negative_fitness_preserves_full_bar_length (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_wrapped_negative_fitness_preserves_full_bar_length) ... ok
+test_zero_words_are_skipped_only_by_skills_not_the_other_panels (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_zero_words_are_skipped_only_by_skills_not_the_other_panels) ... ok
+test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data) ... ok
+test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records) ... ok
+test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads) ... ok
+test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen) ... ok
+test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen) ... ok
+test_original_key_human_manager_and_tactic_changes_are_read_fresh (goal2.tests.test_core_team_panels_t144.LiveProjection.test_original_key_human_manager_and_tactic_changes_are_read_fresh) ... ok
+test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure) ... ok
+test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card) ... ok
+test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back) ... This plugin does not support propagateSizeHints()
+ok
+test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) ... ok
+test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent) ... ok
+test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin) ... ok
+test_all_label_band_endpoints_use_bounded_current_tables (goal2.tests.test_core_team_card_t137.CurrentMemory.test_all_label_band_endpoints_use_bounded_current_tables) ... ok
+test_germany_name_projects_the_declared_nul_as_a_blank (goal2.tests.test_core_team_card_t137.CurrentMemory.test_germany_name_projects_the_declared_nul_as_a_blank) ... ok
+test_host_contexts_use_selected_manager_ability_not_confidence (goal2.tests.test_core_team_card_t137.CurrentMemory.test_host_contexts_use_selected_manager_ability_not_confidence) ... ok
+test_independent_country_labels_and_remaining_placeholders (goal2.tests.test_core_team_card_t137.CurrentMemory.test_independent_country_labels_and_remaining_placeholders) ... ok
+test_malformed_records_and_out_of_bounds_callbacks_are_host_errors (goal2.tests.test_core_team_card_t137.CurrentMemory.test_malformed_records_and_out_of_bounds_callbacks_are_host_errors) ... ok
+test_original_key_new_career_uses_its_current_human_manager (goal2.tests.test_core_team_card_t137.CurrentMemory.test_original_key_new_career_uses_its_current_human_manager) ... ok
+test_card_paints_labels_blank_skill_and_legacy_fallback_with_roles (goal2.tests.test_core_team_card_t137.NativeCard.test_card_paints_labels_blank_skill_and_legacy_fallback_with_roles) ... ok
+test_real_painted_country_cards_retain_the_supported_bounds (goal2.tests.test_core_team_card_t137.NativeCard.test_real_painted_country_cards_retain_the_supported_bounds) ... ok
+test_manager_declared_cells_glyphs_width_and_malformed_records (goal2.tests.test_core_team_card_t137.PureContract.test_manager_declared_cells_glyphs_width_and_malformed_records) ... ok
+test_vendored_modules_are_the_exact_registered_sources (goal2.tests.test_core_team_card_t137.PureContract.test_vendored_modules_are_the_exact_registered_sources) ... ok
+test_denmark_prints_what_the_original_card_printed (goal2.tests.test_country_card.CountryCard.test_denmark_prints_what_the_original_card_printed) ... ok
+test_every_country_has_a_card_and_undecoded_fields_are_named (goal2.tests.test_country_card.CountryCard.test_every_country_has_a_card_and_undecoded_fields_are_named) ... ok
+test_the_card_draws_every_value_and_names_what_is_not_decoded (goal2.tests.test_country_card.CountryCard.test_the_card_draws_every_value_and_names_what_is_not_decoded) ... ok
+test_the_managed_countrys_live_tactics_are_shown (goal2.tests.test_country_card.CountryCard.test_the_managed_countrys_live_tactics_are_shown) ... ok
+test_e038s_new_game_reaches_dosbox_xs_manager_menu_byte_for_byte (goal2.tests.test_core_new_game_t106.ByteForByte.test_e038s_new_game_reaches_dosbox_xs_manager_menu_byte_for_byte) ... ok
+test_a_new_career_on_the_core_route_reaches_the_main_window (goal2.tests.test_core_new_game_t106.Desktop.test_a_new_career_on_the_core_route_reaches_the_main_window) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_the_dos_time_is_an_input_and_a_game_replays (goal2.tests.test_core_new_game_t106.Determinism.test_the_dos_time_is_an_input_and_a_game_replays) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_boot_refuses_a_state_not_at_the_date_call (goal2.tests.test_core_new_game_t106.Refusals.test_boot_refuses_a_state_not_at_the_date_call) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_other_requests_stop_naming_the_vector_and_ah (goal2.tests.test_core_new_game_t106.Refusals.test_other_requests_stop_naming_the_vector_and_ah) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_a_new_game_has_ng9s_start_year_and_stage (goal2.tests.test_core_new_game_t106.StartYear.test_a_new_game_has_ng9s_start_year_and_stage) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_launch_1990_is_dos_1989_and_a_key_in_the_tune_changes_only_its_counters (goal2.tests.test_core_new_game_t106.StartYear.test_launch_1990_is_dos_1989_and_a_key_in_the_tune_changes_only_its_counters) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_the_title_read_holds_e039s_year_and_screen (goal2.tests.test_core_new_game_t106.StartYear.test_the_title_read_holds_e039s_year_and_screen) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_each_wait_is_e038s_state_at_that_step_and_its_text (goal2.tests.test_core_new_game_t106.Steps.test_each_wait_is_e038s_state_at_that_step_and_its_text) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_the_views_read_the_browser_and_the_bulletins (goal2.tests.test_core_new_game_t106.Steps.test_the_views_read_the_browser_and_the_bulletins) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_a_refusal_shows_the_originals_reason_and_changes_nothing_else (goal2.tests.test_core_team_t107.Actions.test_a_refusal_shows_the_originals_reason_and_changes_nothing_else)
+Man-marking outside a match: 1771:4B61 offers four rows, no row 5 (a refusal E006 reaches). The finals and ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_each_action_is_the_originals_keys_and_shows_its_effect (goal2.tests.test_core_team_t107.Actions.test_each_action_is_the_originals_keys_and_shows_its_effect) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_an_edit_runs_as_a_job_and_the_page_shows_the_original_afterwards (goal2.tests.test_core_team_t107.Desktop.test_an_edit_runs_as_a_job_and_the_page_shows_the_original_afterwards) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_club_position_mouse_selection_and_leaving_page_release_order (goal2.tests.test_core_team_t107.Desktop.test_club_position_mouse_selection_and_leaving_page_release_order) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_leaving_repositioned_player_follows_full_id_and_releases_order (goal2.tests.test_core_team_t107.Desktop.test_leaving_repositioned_player_follows_full_id_and_releases_order) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_reposition_stays_in_place_until_enter_without_marking (goal2.tests.test_core_team_t107.Desktop.test_reposition_stays_in_place_until_enter_without_marking) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_shift_r_cycles_backwards_and_r_forwards_on_the_same_row (goal2.tests.test_core_team_t107.Desktop.test_shift_r_cycles_backwards_and_r_forwards_on_the_same_row) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_team_and_pool_fit_and_show_no_table_or_check_box (goal2.tests.test_core_team_t107.Desktop.test_team_and_pool_fit_and_show_no_table_or_check_box) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_save_and_resume_after_edits_give_the_same_views_and_memory (goal2.tests.test_core_team_t107.Determinism.test_save_and_resume_after_edits_give_the_same_views_and_memory) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_the_driver_refuses_an_unlisted_key_and_stops_at_an_unexpected_screen (goal2.tests.test_core_team_t107.Keys.test_the_driver_refuses_an_unlisted_key_and_stops_at_an_unexpected_screen) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_the_views_equal_select_squad_and_the_team_tactics_at_e006 (goal2.tests.test_core_team_t107.TextOracleE006.test_the_views_equal_select_squad_and_the_team_tactics_at_e006) ... ok
+test_the_views_equal_the_screens_of_a_new_game (goal2.tests.test_core_team_t107.TextOracleNewGame.test_the_views_equal_the_screens_of_a_new_game) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+
+----------------------------------------------------------------------
+Ran 54 tests in 5.192s
+
+OK (skipped=20)

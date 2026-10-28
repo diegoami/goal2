@@ -2,9 +2,9 @@
 
 Choosing a country shows its card and, with Space, its players (goal2.game.player_card), as the
 original's country selection does (screenshots `country-select`, `m244-team-info-2030`).
-Decoded fields carry their evidence. The fields with no finding yet (status, skill, top ranking,
-strips, team skill and performance bars, the characteristics aggregates) are named and marked
-NOT_DECODED (gap G05), never invented.
+Decoded fields carry their evidence. This legacy Python route names unavailable
+fields with NOT_DECODED (gap G05). The Core route separately consumes the delivered
+F034..F038 decoders; its display data is never invented from this route's placeholders.
 """
 from goal2.game import roles
 from goal2.game.player_card import _Memory

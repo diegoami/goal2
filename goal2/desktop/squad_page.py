@@ -261,7 +261,7 @@ def core_roster_rows(team):
 
 
 def build_core(self, model):
-    from PySide6.QtWidgets import QLineEdit
+    from PySide6.QtWidgets import QLineEdit, QSizePolicy
     from goal2.desktop.roster import RosterView
     from goal2.desktop.player_card import PlayerCardView
     page = self.pages[1]
@@ -310,10 +310,16 @@ def build_core(self, model):
     title = QLabel('TEAM TACTICS');title.setObjectName('tacticsTitle');tactics_box.addWidget(title)
     cards = QHBoxLayout();cards.setSpacing(16);tactics_box.addLayout(cards)
     left = QFrame();left.setObjectName('tacticsTeam');left_box = QVBoxLayout(left);left_box.setContentsMargins(16, 12, 16, 16)
-    self.tactics_heading = QLabel();self.tactics_heading.setObjectName('tacticsHeading');self.tactics_heading.setWordWrap(True)
-    self.tactics_manager = QLabel();self.tactics_manager.setObjectName('tacticsManager');self.tactics_manager.setWordWrap(True)
-    left_box.addWidget(self.tactics_heading);left_box.addWidget(self.tactics_manager);left_box.addStretch(1)
-    cards.addWidget(left, 1)
+    # [designed: owner458/T144] The original country/TEAM information belongs
+    # beside its existing interactive tactic controls, with current decoded bars.
+    # Keep the old label attributes for the refresh contract, without duplicate
+    # visible country/manager headings inside the same panel.
+    self.tactics_heading = QLabel(left);self.tactics_heading.setObjectName('tacticsHeading');self.tactics_heading.hide()
+    self.tactics_manager = QLabel(left);self.tactics_manager.setObjectName('tacticsManager');self.tactics_manager.hide()
+    from goal2.desktop.country_card import CountryCardView
+    self.core_team_panels = CountryCardView(team_info=True);self.core_team_panels.setObjectName('coreTeamPanels')
+    left_box.addWidget(self.core_team_panels, 0, Qt.AlignmentFlag.AlignTop);left_box.addStretch(1)
+    cards.addWidget(left, 0)
     right = QFrame();right.setObjectName('tacticsDefaults');right_box = QVBoxLayout(right)
     right_box.setContentsMargins(16, 12, 16, 16);right_box.setSpacing(4)
     heading = QLabel('TEAM TACTICS / PLAYER DEFAULTS');heading.setObjectName('tacticsDefaultsHeading');right_box.addWidget(heading)
@@ -322,6 +328,7 @@ def build_core(self, model):
         row = CoreTacticRow(element, CATEGORIES[element]);self.tactics.append((element, row));right_box.addWidget(row)
         row.clicked.connect(lambda checked=False, e=element: core_toggle_tactic(self, e))
     for _, row in self.tactics:row.rows = [r for _, r in self.tactics]
+    right.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
     right_box.addStretch(1);cards.addWidget(right, 1)
     # [designed: owner #452/T141] A presentation-only return, beside the keyboard hint.
     return_bar = QHBoxLayout();return_bar.setSpacing(12);tactics_box.addLayout(return_bar)
@@ -511,4 +518,5 @@ def refresh_core(self):
     formation = '-'.join(str(sum(1 for r in eleven if r['line'] == line)) for line in ('defence', 'midfield', 'attack'))
     self.tactics_heading.setText(f"{team['name'].upper()} / {formation}")
     self.tactics_manager.setText('Manager: ' + self.model.desk()['manager'])
+    self.core_team_panels.set_reader(self.model.country_card)
     core_refresh_card(self)

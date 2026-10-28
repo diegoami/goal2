@@ -254,7 +254,8 @@ class LaunchWindow(QMainWindow):
         country, year = self.selection()
         if country is None:return
         if self.core_new is not None:
-            self.country_card.set_card(self.core_new.card(year, country))
+            self.country_card.set_card(self.core_new.card(year, country),
+                                       reader=lambda y=year, c=country: self.core_new.card(y, c))
             self.previewed = (country, year)
             return
         self.browser.new_campaign(country, year)

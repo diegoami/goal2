@@ -1,0 +1,65 @@
+test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data) ... ERROR
+test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records) ... ERROR
+test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads) ... ok
+test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen) ... ERROR
+test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen) ... ERROR
+test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure) ... ERROR
+test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin) ... ERROR
+
+======================================================================
+ERROR: test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 121, in test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data
+    else:self.assertIsNone(card['performance'])
+                           ~~~~^^^^^^^^^^^^^^^
+KeyError: 'performance'
+
+======================================================================
+ERROR: test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 103, in test_callbacks_have_exact_widths_and_support_zero_and_human_records
+    for method, limit, width in ((mem.country_record, 128, 191),
+                                  ^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_record'
+
+======================================================================
+ERROR: test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 64, in test_genuine_friendly_matches_the_recorded_italy_screen
+    self.assertEqual(card['team_skills']['line_sums'], [227, 805, 823, 318])
+                     ~~~~^^^^^^^^^^^^^^^
+KeyError: 'team_skills'
+
+======================================================================
+ERROR: test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 49, in test_genuine_selection_matches_the_recorded_denmark_screen
+    self.assertEqual(card['team_skills']['line_sums'], [225, 1048, 1031, 395])
+                     ~~~~^^^^^^^^^^^^^^^
+KeyError: 'team_skills'
+
+======================================================================
+ERROR: test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 83, in test_year_one_nonzero_caps_and_all_country_reads_are_pure
+    values = card['characteristics']['aggregates']
+             ~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'characteristics'
+
+======================================================================
+ERROR: test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 37, in test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin
+    from goal2.engine.team_card import team_bars, team_skills, team_performance, team_characteristics
+ImportError: cannot import name 'team_bars' from 'goal2.engine.team_card' (unknown location)
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.268s
+
+FAILED (errors=6)

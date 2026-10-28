@@ -1,0 +1,12 @@
+test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data) ... ok
+test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records) ... ok
+test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads) ... ok
+test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen) ... ok
+test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen) ... ok
+test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure) ... ok
+test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.408s
+
+OK
