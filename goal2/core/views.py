@@ -844,12 +844,34 @@ def match_sides(state):
     return out
 
 
+def _captain_recommendation(mem, eleven):
+    """[derived: F029, archaeology2ec0fff4; 1F3C/30D9/3216] Read-only original best leader.
+
+    Preserve squad order, Pascal remainder, unsigned age halving and the signed
+    sentinel test. All-unavailable has no supported recommendation (the original
+    reads an uninitialised local there); it must not become a guessed UI choice.
+    """
+    selected, best, eligible = None, 0xFFFF, []
+    for word in eleven[:11]:
+        player = _player(mem, word)
+        if not _shootout_available(player):continue
+        eligible.append(word)
+        difference = player[3] - player[5]
+        leadership = (difference - _div(difference, 8) * 8) & 0xFFFF
+        if player[1] < 21:leadership //= 2
+        if _signed16(best) < 0 or best < leadership:
+            selected, best = word, leadership
+    return selected, eligible
+
+
 def captain_choice(state):
     """The captain prompt's list (0791:CC7B draws the eleven, slots 1..11, by 1771:2F37's names and codes) and the
-    captain the original holds now (DS:9978 + 10 t)."""
+    captain the original holds now (DS:9978 + 10 t), plus its best available leader recommendation."""
     sides = match_sides(state)
     rows = [r for r in team(state)["squad"] if r["player"] in sides["eleven"]]
-    return {"eleven": rows, "captain": sides["captain"], "country": sides["teams"][sides["managed_side"]],
+    recommended, eligible = _captain_recommendation(Memory(state), sides["eleven"])
+    return {"eleven": rows, "captain": sides["captain"], "recommended": recommended, "eligible": eligible,
+            "country": sides["teams"][sides["managed_side"]],
             "name": sides["names"][sides["managed_side"]]}
 
 
