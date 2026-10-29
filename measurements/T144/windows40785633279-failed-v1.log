@@ -1,0 +1,612 @@
+﻿2026-10-28T23:12:06.4255505Z Current runner version: '2.338.0'
+2026-10-28T23:12:06.4281584Z ##[group]Runner Image Provisioner
+2026-10-28T23:12:06.4282393Z Hosted Compute Agent
+2026-10-28T23:12:06.4282964Z Version: 20261021.618
+2026-10-28T23:12:06.4283577Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-28T23:12:06.4284275Z Build Date: 2026-10-21T00:45:21Z
+2026-10-28T23:12:06.4284912Z Worker ID: {87a12918-c995-4213-a0d7-b53b4f4d529d}
+2026-10-28T23:12:06.4285588Z Region: westus
+2026-10-28T23:12:06.4286110Z Cloud: Azure
+2026-10-28T23:12:06.4286629Z ##[endgroup]
+2026-10-28T23:12:06.4287944Z ##[group]Operating System
+2026-10-28T23:12:06.4288565Z Microsoft Windows Server 2025
+2026-10-28T23:12:06.4289148Z 10.0.26100
+2026-10-28T23:12:06.4289644Z Datacenter
+2026-10-28T23:12:06.4290154Z ##[endgroup]
+2026-10-28T23:12:06.4290666Z ##[group]Runner Image
+2026-10-28T23:12:06.4291222Z Image: windows-2025-vs2026
+2026-10-28T23:12:06.4291822Z Version: 20261021.278.1
+2026-10-28T23:12:06.4293330Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261021.278/images/windows/Windows2025-VS2026-Readme.md
+2026-10-28T23:12:06.4294929Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261021.278
+2026-10-28T23:12:06.4295874Z ##[endgroup]
+2026-10-28T23:12:06.4296934Z ##[group]GITHUB_TOKEN Permissions
+2026-10-28T23:12:06.4299347Z Contents: read
+2026-10-28T23:12:06.4299915Z Metadata: read
+2026-10-28T23:12:06.4300474Z ##[endgroup]
+2026-10-28T23:12:06.4302591Z Secret source: Actions
+2026-10-28T23:12:06.4303496Z Cache mode: write
+2026-10-28T23:12:06.4304191Z Prepare workflow directory
+2026-10-28T23:12:06.4982927Z Prepare all required actions
+2026-10-28T23:12:06.5032395Z Getting action download info
+2026-10-28T23:12:06.8640387Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-28T23:12:07.0021008Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-28T23:12:07.1715310Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-28T23:12:07.5327688Z Complete job name: windows
+2026-10-28T23:12:07.6976390Z ##[group]Run actions/checkout@v4
+2026-10-28T23:12:07.6977870Z with:
+2026-10-28T23:12:07.6978470Z   ref: 89be1f37a84ec7dd2843f4394fd834e9f31d3124
+2026-10-28T23:12:07.6979145Z   fetch-depth: 0
+2026-10-28T23:12:07.6979649Z   repository: diegoami/goal2
+2026-10-28T23:12:07.6985006Z   token: ***
+2026-10-28T23:12:07.6985495Z   ssh-strict: true
+2026-10-28T23:12:07.6986028Z   ssh-user: git
+2026-10-28T23:12:07.6986505Z   persist-credentials: true
+2026-10-28T23:12:07.6987033Z   clean: true
+2026-10-28T23:12:07.6987497Z   sparse-checkout-cone-mode: true
+2026-10-28T23:12:07.6988071Z   fetch-tags: false
+2026-10-28T23:12:07.6988547Z   show-progress: true
+2026-10-28T23:12:07.6989036Z   lfs: false
+2026-10-28T23:12:07.6989485Z   submodules: false
+2026-10-28T23:12:07.6989957Z   set-safe-directory: true
+2026-10-28T23:12:07.6991048Z   allow-unsafe-pr-checkout: false
+2026-10-28T23:12:07.6991954Z env:
+2026-10-28T23:12:07.6992377Z   PYTHONUTF8: 1
+2026-10-28T23:12:07.6992995Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-28T23:12:07.6993687Z ##[endgroup]
+2026-10-28T23:12:07.8506476Z Syncing repository: diegoami/goal2
+2026-10-28T23:12:07.8508377Z ##[group]Getting Git version info
+2026-10-28T23:12:07.8509039Z Working directory is 'D:\a\goal2\goal2'
+2026-10-28T23:12:07.9460364Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-28T23:12:08.3169223Z git version 2.56.0.windows.2
+2026-10-28T23:12:08.3216604Z ##[endgroup]
+2026-10-28T23:12:08.3236767Z Temporarily overriding HOME='D:\a\_temp\e38cba52-3d9e-46d3-b1b3-f3aec6cff611' before making global git config changes
+2026-10-28T23:12:08.3238726Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T23:12:08.3247465Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\goal2\goal2
+2026-10-28T23:12:08.3986098Z Deleting the contents of 'D:\a\goal2\goal2'
+2026-10-28T23:12:08.3994978Z ##[group]Initializing the repository
+2026-10-28T23:12:08.4004661Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\goal2\goal2
+2026-10-28T23:12:08.5038172Z Initialized empty Git repository in D:/a/goal2/goal2/.git/
+2026-10-28T23:12:08.5099693Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/diegoami/goal2
+2026-10-28T23:12:08.5845804Z ##[endgroup]
+2026-10-28T23:12:08.5848099Z ##[group]Disabling automatic garbage collection
+2026-10-28T23:12:08.5855130Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-28T23:12:08.6250669Z ##[endgroup]
+2026-10-28T23:12:08.6252531Z ##[group]Setting up auth
+2026-10-28T23:12:08.6264338Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T23:12:08.6667314Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-28T23:12:10.3152913Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T23:12:10.3570257Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-28T23:12:10.9574214Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T23:12:10.9977138Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-28T23:12:11.5830819Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-28T23:12:11.6333063Z ##[endgroup]
+2026-10-28T23:12:11.6333913Z ##[group]Fetching the repository
+2026-10-28T23:12:11.6350827Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-28T23:12:17.6849045Z From https://github.com/diegoami/goal2
+2026-10-28T23:12:17.6850031Z  * [new branch]      claude/T86-scenario-seam -> origin/claude/T86-scenario-seam
+2026-10-28T23:12:17.6852057Z  * [new branch]      claude/modest-feynman-qtdx9w -> origin/claude/modest-feynman-qtdx9w
+2026-10-28T23:12:17.6853709Z  * [new branch]      claude/new-session-iu225u -> origin/claude/new-session-iu225u
+2026-10-28T23:12:17.6855171Z  * [new branch]      claude/nice-edison-1narfi -> origin/claude/nice-edison-1narfi
+2026-10-28T23:12:17.6856615Z  * [new branch]      claude/process-proportionate-reviews -> origin/claude/process-proportionate-reviews
+2026-10-28T23:12:17.6857855Z  * [new branch]      docs/124-campaign-state-clarity -> origin/docs/124-campaign-state-clarity
+2026-10-28T23:12:17.6858829Z  * [new branch]      docs/156-desktop-guide-spacing -> origin/docs/156-desktop-guide-spacing
+2026-10-28T23:12:17.6859583Z  * [new branch]      docs/182-modern-football-gui-plan -> origin/docs/182-modern-football-gui-plan
+2026-10-28T23:12:17.6860327Z  * [new branch]      docs/184-draft-replacement -> origin/docs/184-draft-replacement
+2026-10-28T23:12:17.6860993Z  * [new branch]      docs/244-original-game-manual -> origin/docs/244-original-game-manual
+2026-10-28T23:12:17.6862075Z  * [new branch]      docs/253-whole-game-redesign -> origin/docs/253-whole-game-redesign
+2026-10-28T23:12:17.6863041Z  * [new branch]      docs/266-finished-game-vision -> origin/docs/266-finished-game-vision
+2026-10-28T23:12:17.6863687Z  * [new branch]      docs/GUI182-child-issues -> origin/docs/GUI182-child-issues
+2026-10-28T23:12:17.6864241Z  * [new branch]      docs/T118-core-shootout-contract -> origin/docs/T118-core-shootout-contract
+2026-10-28T23:12:17.6866101Z  * [new branch]      docs/T119-extra-time-contract -> origin/docs/T119-extra-time-contract
+2026-10-28T23:12:17.6866708Z  * [new branch]      docs/T67-interactive-kit-backlog -> origin/docs/T67-interactive-kit-backlog
+2026-10-28T23:12:17.6867285Z  * [new branch]      docs/T68-desktop-pivot  -> origin/docs/T68-desktop-pivot
+2026-10-28T23:12:17.6867821Z  * [new branch]      docs/T75-overview-contract -> origin/docs/T75-overview-contract
+2026-10-28T23:12:17.6868459Z  * [new branch]      docs/consume-team-card-438 -> origin/docs/consume-team-card-438
+2026-10-28T23:12:17.6869226Z  * [new branch]      docs/decision-engine-route -> origin/docs/decision-engine-route
+2026-10-28T23:12:17.6871550Z  * [new branch]      docs/estimate-98-close-enough-engine -> origin/docs/estimate-98-close-enough-engine
+2026-10-28T23:12:17.6873251Z  * [new branch]      docs/estimate-99-original-plugged-in -> origin/docs/estimate-99-original-plugged-in
+2026-10-28T23:12:17.6874430Z  * [new branch]      docs/process-asking-archaeology -> origin/docs/process-asking-archaeology
+2026-10-28T23:12:17.6875761Z  * [new branch]      docs/register-corner-and-nice-try-2026-10-24 -> origin/docs/register-corner-and-nice-try-2026-10-24
+2026-10-28T23:12:17.6877124Z  * [new branch]      docs/register-existing-states-2026-10-23 -> origin/docs/register-existing-states-2026-10-23
+2026-10-28T23:12:17.6878318Z  * [new branch]      docs/register-goal-kick-2026-10-24 -> origin/docs/register-goal-kick-2026-10-24
+2026-10-28T23:12:17.6879517Z  * [new branch]      docs/register-newgame-keywait-2026-10-22 -> origin/docs/register-newgame-keywait-2026-10-22
+2026-10-28T23:12:17.6880705Z  * [new branch]      docs/register-pass-one-findings -> origin/docs/register-pass-one-findings
+2026-10-28T23:12:17.6881763Z  * [new branch]      docs/register-sitting-20261015 -> origin/docs/register-sitting-20261015
+2026-10-28T23:12:17.6882852Z  * [new branch]      docs/register-start-year-2026-10-22 -> origin/docs/register-start-year-2026-10-22
+2026-10-28T23:12:17.6884122Z  * [new branch]      docs/register-synthetic-fixtures-2026-10-25 -> origin/docs/register-synthetic-fixtures-2026-10-25
+2026-10-28T23:12:17.6886511Z  * [new branch]      docs/register-taker-evidence-limits-2026-10-24 -> origin/docs/register-taker-evidence-limits-2026-10-24
+2026-10-28T23:12:17.6888037Z  * [new branch]      docs/register-taker-reassessment-2026-10-24 -> origin/docs/register-taker-reassessment-2026-10-24
+2026-10-28T23:12:17.6889336Z  * [new branch]      docs/register-team-card-2026-10-25 -> origin/docs/register-team-card-2026-10-25
+2026-10-28T23:12:17.6890321Z  * [new branch]      docs/t91-evidence-intake -> origin/docs/t91-evidence-intake
+2026-10-28T23:12:17.6891293Z  * [new branch]      fix/127-local-premerge-validation -> origin/fix/127-local-premerge-validation
+2026-10-28T23:12:17.6892597Z  * [new branch]      fix/164-tactics-labels  -> origin/fix/164-tactics-labels
+2026-10-28T23:12:17.6893419Z  * [new branch]      fix/165-review-header   -> origin/fix/165-review-header
+2026-10-28T23:12:17.6894251Z  * [new branch]      fix/181-country-selector -> origin/fix/181-country-selector
+2026-10-28T23:12:17.6895178Z  * [new branch]      fix/204-issue-brief-boundaries -> origin/fix/204-issue-brief-boundaries
+2026-10-28T23:12:17.6896074Z  * [new branch]      fix/209-minute-label    -> origin/fix/209-minute-label
+2026-10-28T23:12:17.6896983Z  * [new branch]      fix/214-unsupported-play-label -> origin/fix/214-unsupported-play-label
+2026-10-28T23:12:17.6897940Z  * [new branch]      fix/217-evidence-inventory -> origin/fix/217-evidence-inventory
+2026-10-28T23:12:17.6898985Z  * [new branch]      fix/219-descendant-fixture-readiness -> origin/fix/219-descendant-fixture-readiness
+2026-10-28T23:12:17.6900077Z  * [new branch]      fix/226-review-input-guidance -> origin/fix/226-review-input-guidance
+2026-10-28T23:12:17.6901065Z  * [new branch]      fix/236-windows-viewer-sharing -> origin/fix/236-windows-viewer-sharing
+2026-10-28T23:12:17.6902043Z  * [new branch]      fix/241-player-table-browsing -> origin/fix/241-player-table-browsing
+2026-10-28T23:12:17.6903233Z  * [new branch]      fix/254-native-status-sharing -> origin/fix/254-native-status-sharing
+2026-10-28T23:12:17.6904103Z  * [new branch]      fix/275-slow-tests      -> origin/fix/275-slow-tests
+2026-10-28T23:12:17.6904897Z  * [new branch]      fix/363-core-walkoff-poll -> origin/fix/363-core-walkoff-poll
+2026-10-28T23:12:17.6905677Z  * [new branch]      fix/371-nice-try        -> origin/fix/371-nice-try
+2026-10-28T23:12:17.6906489Z  * [new branch]      fix/377-pitch-setup-cleanup -> origin/fix/377-pitch-setup-cleanup
+2026-10-28T23:12:17.6907403Z  * [new branch]      fix/395-best-place-bulletin -> origin/fix/395-best-place-bulletin
+2026-10-28T23:12:17.6908263Z  * [new branch]      fix/409-congratulations -> origin/fix/409-congratulations
+2026-10-28T23:12:17.6909052Z  * [new branch]      fix/423-position-row    -> origin/fix/423-position-row
+2026-10-28T23:12:17.6909794Z  * [new branch]      fix/424-role-codes      -> origin/fix/424-role-codes
+2026-10-28T23:12:17.6910526Z  * [new branch]      fix/436-pool-caps       -> origin/fix/436-pool-caps
+2026-10-28T23:12:17.6911247Z  * [new branch]      fix/49-owns-paths       -> origin/fix/49-owns-paths
+2026-10-28T23:12:17.6912299Z  * [new branch]      fix/65-preserve-worktrees -> origin/fix/65-preserve-worktrees
+2026-10-28T23:12:17.6913247Z  * [new branch]      harness/port-from-archaeology -> origin/harness/port-from-archaeology
+2026-10-28T23:12:17.6914065Z  * [new branch]      local                   -> origin/local
+2026-10-28T23:12:17.6914642Z  * [new branch]      main                    -> origin/main
+2026-10-28T23:12:17.6915367Z  * [new branch]      plan/T00-plan-and-register -> origin/plan/T00-plan-and-register
+2026-10-28T23:12:17.6916238Z  * [new branch]      plan/T120-taker-decisions -> origin/plan/T120-taker-decisions
+2026-10-28T23:12:17.6917092Z  * [new branch]      plan/T121-core-save-name -> origin/plan/T121-core-save-name
+2026-10-28T23:12:17.6917913Z  * [new branch]      plan/T122-owner-budget  -> origin/plan/T122-owner-budget
+2026-10-28T23:12:17.6918882Z  * [new branch]      plan/T123-core-cycle    -> origin/plan/T123-core-cycle
+2026-10-28T23:12:17.6919713Z  * [new branch]      task/242-player-attributes -> origin/task/242-player-attributes
+2026-10-28T23:12:17.6920689Z  * [new branch]      task/T07-engine-on-adapted-state -> origin/task/T07-engine-on-adapted-state
+2026-10-28T23:12:17.6921608Z  * [new branch]      task/T08-both-halves    -> origin/task/T08-both-halves
+2026-10-28T23:12:17.6922506Z  * [new branch]      task/T09-friendly-vs-archaeology -> origin/task/T09-friendly-vs-archaeology
+2026-10-28T23:12:17.6923414Z  * [new branch]      task/T109-core-watch    -> origin/task/T109-core-watch
+2026-10-28T23:12:17.6924198Z  * [new branch]      task/T110-core-bulletins -> origin/task/T110-core-bulletins
+2026-10-28T23:12:17.6925061Z  * [new branch]      task/T111-core-continuation -> origin/task/T111-core-continuation
+2026-10-28T23:12:17.6925931Z  * [new branch]      task/T113-core-world-cup -> origin/task/T113-core-world-cup
+2026-10-28T23:12:17.6926824Z  * [new branch]      task/T114-core-lineup-repair -> origin/task/T114-core-lineup-repair
+2026-10-28T23:12:17.6927759Z  * [new branch]      task/T115-core-round-pause -> origin/task/T115-core-round-pause
+2026-10-28T23:12:17.6928673Z  * [new branch]      task/T116-watch-performance -> origin/task/T116-watch-performance
+2026-10-28T23:12:17.6929657Z  * [new branch]      task/T117-original-match-layout -> origin/task/T117-original-match-layout
+2026-10-28T23:12:17.6930585Z  * [new branch]      task/T118-core-shootout -> origin/task/T118-core-shootout
+2026-10-28T23:12:17.6931419Z  * [new branch]      task/T119-core-extra-time -> origin/task/T119-core-extra-time
+2026-10-28T23:12:17.6932565Z  * [new branch]      task/T120-core-takers   -> origin/task/T120-core-takers
+2026-10-28T23:12:17.6933386Z  * [new branch]      task/T121-core-save-name -> origin/task/T121-core-save-name
+2026-10-28T23:12:17.6934402Z  * [new branch]      task/T122-owner-budget  -> origin/task/T122-owner-budget
+2026-10-28T23:12:17.6935192Z  * [new branch]      task/T123-core-cycle    -> origin/task/T123-core-cycle
+2026-10-28T23:12:17.6936024Z  * [new branch]      task/T134-core-pool-compare -> origin/task/T134-core-pool-compare
+2026-10-28T23:12:17.6936929Z  * [new branch]      task/T135-core-pool-suggest -> origin/task/T135-core-pool-suggest
+2026-10-28T23:12:17.6937895Z  * [new branch]      task/T136-core-pool-names -> origin/task/T136-core-pool-names
+2026-10-28T23:12:17.6938738Z  * [new branch]      task/T137-core-team-card -> origin/task/T137-core-team-card
+2026-10-28T23:12:17.6939591Z  * [new branch]      task/T138-show-match-window -> origin/task/T138-show-match-window
+2026-10-28T23:12:17.6940468Z  * [new branch]      task/T139-halftime-prompt -> origin/task/T139-halftime-prompt
+2026-10-28T23:12:17.6941312Z  * [new branch]      task/T140-original-replay -> origin/task/T140-original-replay
+2026-10-28T23:12:17.6942148Z  * [new branch]      task/T141-team-info-back -> origin/task/T141-team-info-back
+2026-10-28T23:12:17.6943050Z  * [new branch]      task/T142-original-pitch-kits -> origin/task/T142-original-pitch-kits
+2026-10-28T23:12:17.6943939Z  * [new branch]      task/T143-best-captain  -> origin/task/T143-best-captain
+2026-10-28T23:12:17.6944714Z  * [new branch]      task/T144-team-panels   -> origin/task/T144-team-panels
+2026-10-28T23:12:17.6945612Z  * [new branch]      task/T21-engine-folder-cleanup -> origin/task/T21-engine-folder-cleanup
+2026-10-28T23:12:17.6946531Z  * [new branch]      task/T23-visible-screens -> origin/task/T23-visible-screens
+2026-10-28T23:12:17.6947413Z  * [new branch]      task/T24-codex-compatibility -> origin/task/T24-codex-compatibility
+2026-10-28T23:12:17.6948295Z  * [new branch]      task/T25-terminal-input -> origin/task/T25-terminal-input
+2026-10-28T23:12:17.6949152Z  * [new branch]      task/T27-visible-navigation -> origin/task/T27-visible-navigation
+2026-10-28T23:12:17.6950392Z  * [new branch]      task/T28-eleven-selection -> origin/task/T28-eleven-selection
+2026-10-28T23:12:17.6951428Z  * [new branch]      task/T29-match-preview  -> origin/task/T29-match-preview
+2026-10-28T23:12:17.6952478Z  * [new branch]      task/T30-clear-results  -> origin/task/T30-clear-results
+2026-10-28T23:12:17.6953329Z  * [new branch]      task/T31-terminal-display -> origin/task/T31-terminal-display
+2026-10-28T23:12:17.6954202Z  * [new branch]      task/T32-repeat-friendlies -> origin/task/T32-repeat-friendlies
+2026-10-28T23:12:17.6955027Z  * [new branch]      task/T33-save-resume    -> origin/task/T33-save-resume
+2026-10-28T23:12:17.6956102Z  * [new branch]      task/T34-browser-prototype -> origin/task/T34-browser-prototype
+2026-10-28T23:12:17.6956952Z  * [new branch]      task/T35-live-countries -> origin/task/T35-live-countries
+2026-10-28T23:12:17.6957888Z  * [new branch]      task/T36-browser-team-management -> origin/task/T36-browser-team-management
+2026-10-28T23:12:17.6958891Z  * [new branch]      task/T37-browser-friendlies -> origin/task/T37-browser-friendlies
+2026-10-28T23:12:17.6959824Z  * [new branch]      task/T38-browser-save-resume -> origin/task/T38-browser-save-resume
+2026-10-28T23:12:17.6960729Z  * [new branch]      task/T39-campaign-evidence -> origin/task/T39-campaign-evidence
+2026-10-28T23:12:17.6961959Z  * [new branch]      task/T40-campaign-state-calendar-and-fresh-start -> origin/task/T40-campaign-state-calendar-and-fresh-start
+2026-10-28T23:12:17.6963529Z  * [new branch]      task/T41-play-scheduled-friendlies-in-the-browser -> origin/task/T41-play-scheduled-friendlies-in-the-browser
+2026-10-28T23:12:17.6965023Z  * [new branch]      task/T41a-opening-campaign-fixture-metadata -> origin/task/T41a-opening-campaign-fixture-metadata
+2026-10-28T23:12:17.6966633Z  * [new branch]      task/T42-apply-match-energy-and-between-fixture-recovery -> origin/task/T42-apply-match-energy-and-between-fixture-recovery
+2026-10-28T23:12:17.6968359Z  * [new branch]      task/T43-update-confidence-and-display-team-morale -> origin/task/T43-update-confidence-and-display-team-morale
+2026-10-28T23:12:17.6970967Z  * [new branch]      task/T44-enforce-injuries-and-suspensions-at-selection -> origin/task/T44-enforce-injuries-and-suspensions-at-selection
+2026-10-28T23:12:17.6972794Z  * [new branch]      task/T45-manage-the-national-pool-and-twenty-player-squad -> origin/task/T45-manage-the-national-pool-and-twenty-player-squad
+2026-10-28T23:12:17.6974596Z  * [new branch]      task/T46-prepare-computer-teams-for-campaign-fixtures -> origin/task/T46-prepare-computer-teams-for-campaign-fixtures
+2026-10-28T23:12:17.6976755Z  * [new branch]      task/T47-allow-halftime-substitutions-in-campaign-matches -> origin/task/T47-allow-halftime-substitutions-in-campaign-matches
+2026-10-28T23:12:17.6978530Z  * [new branch]      task/T48-resolve-other-countries-scheduled-fixtures -> origin/task/T48-resolve-other-countries-scheduled-fixtures
+2026-10-28T23:12:17.6980314Z  * [new branch]      task/T49-build-competition-tables-and-code-based-tie-breaks -> origin/task/T49-build-competition-tables-and-code-based-tie-breaks
+2026-10-28T23:12:17.6982433Z  * [new branch]      task/T51-resolve-competitive-matches-extra-time-and-penalties -> origin/task/T51-resolve-competitive-matches-extra-time-and-penalties
+2026-10-28T23:12:17.6983867Z  * [new branch]      task/T51a-competitive-kit -> origin/task/T51a-competitive-kit
+2026-10-28T23:12:17.6984710Z  * [new branch]      task/T62-watched-engine -> origin/task/T62-watched-engine
+2026-10-28T23:12:17.6985563Z  * [new branch]      task/T63-watched-engine -> origin/task/T63-watched-engine
+2026-10-28T23:12:17.6986437Z  * [new branch]      task/T64-watched-engine -> origin/task/T64-watched-engine
+2026-10-28T23:12:17.6987236Z  * [new branch]      task/T65-watched-engine -> origin/task/T65-watched-engine
+2026-10-28T23:12:17.6988031Z  * [new branch]      task/T66-watched-engine -> origin/task/T66-watched-engine
+2026-10-28T23:12:17.6988825Z  * [new branch]      task/T69-desktop-shell  -> origin/task/T69-desktop-shell
+2026-10-28T23:12:17.6990481Z  * [new branch]      task/T70-desktop-friendlies -> origin/task/T70-desktop-friendlies
+2026-10-28T23:12:17.6991388Z  * [new branch]      task/T71-desktop-pool   -> origin/task/T71-desktop-pool
+2026-10-28T23:12:17.6992227Z  * [new branch]      task/T72-opencode2-harness -> origin/task/T72-opencode2-harness
+2026-10-28T23:12:17.6993147Z  * [new branch]      task/T72a-opencode2-protocol -> origin/task/T72a-opencode2-protocol
+2026-10-28T23:12:17.6994198Z  * [new branch]      task/T73-claude-cli-sonnet-review -> origin/task/T73-claude-cli-sonnet-review
+2026-10-28T23:12:17.6995127Z  * [new branch]      task/T74-football-ui    -> origin/task/T74-football-ui
+2026-10-28T23:12:17.6996197Z  * [new branch]      task/T75-football-ui    -> origin/task/T75-football-ui
+2026-10-28T23:12:17.6996947Z  * [new branch]      task/T76-football-ui    -> origin/task/T76-football-ui
+2026-10-28T23:12:17.6997699Z  * [new branch]      task/T77-football-ui    -> origin/task/T77-football-ui
+2026-10-28T23:12:17.6998469Z  * [new branch]      task/T78-football-ui    -> origin/task/T78-football-ui
+2026-10-28T23:12:17.6999219Z  * [new branch]      task/T79-football-ui    -> origin/task/T79-football-ui
+2026-10-28T23:12:17.7000144Z  * [new branch]      task/T80-competitive-desktop-play -> origin/task/T80-competitive-desktop-play
+2026-10-28T23:12:17.7001153Z  * [new branch]      task/T81-pitch-observation -> origin/task/T81-pitch-observation
+2026-10-28T23:12:17.7001989Z  * [new branch]      task/T82-pitch-frames   -> origin/task/T82-pitch-frames
+2026-10-28T23:12:17.7002789Z  * [new branch]      task/T83-animated-pitch -> origin/task/T83-animated-pitch
+2026-10-28T23:12:17.7003626Z  * [new branch]      task/T85-play-entry-speed -> origin/task/T85-play-entry-speed
+2026-10-28T23:12:17.7004390Z  * [new tag]         proof-t123-20261025     -> proof-t123-20261025
+2026-10-28T23:12:17.7005015Z  * [new tag]         proof-t137-20261026     -> proof-t137-20261026
+2026-10-28T23:12:17.7006951Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse --verify --quiet 89be1f37a84ec7dd2843f4394fd834e9f31d3124^{object}
+2026-10-28T23:12:17.7357576Z 89be1f37a84ec7dd2843f4394fd834e9f31d3124
+2026-10-28T23:12:17.7398638Z ##[endgroup]
+2026-10-28T23:12:17.7399152Z ##[group]Determining the checkout info
+2026-10-28T23:12:17.7399577Z ##[endgroup]
+2026-10-28T23:12:17.7409361Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-10-28T23:12:17.7932191Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-10-28T23:12:17.8324423Z ##[group]Checking out the ref
+2026-10-28T23:12:17.8333547Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force 89be1f37a84ec7dd2843f4394fd834e9f31d3124
+2026-10-28T23:12:18.3259663Z Note: switching to '89be1f37a84ec7dd2843f4394fd834e9f31d3124'.
+2026-10-28T23:12:18.3260757Z 
+2026-10-28T23:12:18.3261139Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-28T23:12:18.3262130Z changes and commit them, and you can discard any commits you make in this
+2026-10-28T23:12:18.3263040Z state without impacting any branches by switching back to a branch.
+2026-10-28T23:12:18.3263640Z 
+2026-10-28T23:12:18.3263963Z If you want to create a new branch to retain commits you create, you may
+2026-10-28T23:12:18.3264698Z do so (now or later) by using -c with the switch command. Example:
+2026-10-28T23:12:18.3265088Z 
+2026-10-28T23:12:18.3265597Z   git switch -c <new-branch-name>
+2026-10-28T23:12:18.3265862Z 
+2026-10-28T23:12:18.3266216Z Or undo this operation with:
+2026-10-28T23:12:18.3266492Z 
+2026-10-28T23:12:18.3266619Z   git switch -
+2026-10-28T23:12:18.3266818Z 
+2026-10-28T23:12:18.3267192Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-28T23:12:18.3267710Z 
+2026-10-28T23:12:18.3268332Z HEAD is now at 89be1f3 Implement live original TEAM panel decoding and shared country/Team Info presentation
+2026-10-28T23:12:18.3357454Z ##[endgroup]
+2026-10-28T23:12:18.3849298Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-28T23:12:18.4215340Z 89be1f37a84ec7dd2843f4394fd834e9f31d3124
+2026-10-28T23:12:18.4709588Z ##[group]Run actions/setup-python@v5
+2026-10-28T23:12:18.4710319Z with:
+2026-10-28T23:12:18.4710513Z   python-version: 3.12
+2026-10-28T23:12:18.4710972Z   check-latest: false
+2026-10-28T23:12:18.4713576Z   token: ***
+2026-10-28T23:12:18.4713779Z   update-environment: true
+2026-10-28T23:12:18.4714002Z   allow-prereleases: false
+2026-10-28T23:12:18.4714238Z   freethreaded: false
+2026-10-28T23:12:18.4714423Z env:
+2026-10-28T23:12:18.4714583Z   PYTHONUTF8: 1
+2026-10-28T23:12:18.4714820Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-28T23:12:18.4715120Z ##[endgroup]
+2026-10-28T23:12:18.6345934Z ##[group]Installed versions
+2026-10-28T23:12:18.6520557Z (node:4124) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-28T23:12:18.6521878Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-28T23:12:18.6522687Z Successfully set up CPython (3.12.10)
+2026-10-28T23:12:18.6523605Z ##[endgroup]
+2026-10-28T23:12:18.6840085Z ##[group]Run Set-DisplayResolution -Width 1920 -Height 1080 -Force
+2026-10-28T23:12:18.6840665Z [36;1mSet-DisplayResolution -Width 1920 -Height 1080 -Force[0m
+2026-10-28T23:12:18.7497195Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-28T23:12:18.7497601Z env:
+2026-10-28T23:12:18.7497802Z   PYTHONUTF8: 1
+2026-10-28T23:12:18.7498084Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-28T23:12:18.7498520Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:18.7499061Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-28T23:12:18.7499564Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:18.7500010Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:18.7500730Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:18.7501088Z ##[endgroup]
+2026-10-28T23:12:23.1724925Z s e t r e s   w i l l   n o w   a t t e m p t   t o   a p p l y   t h e   f o l l o w i n g   d i s p l a y   s e t t i n g s :   
+2026-10-28T23:12:23.1727732Z  
+2026-10-28T23:12:23.1729340Z  
+2026-10-28T23:12:23.1730885Z      W i d t h :                     1 9 2 0 
+2026-10-28T23:12:23.1732238Z  
+2026-10-28T23:12:23.1733727Z  
+2026-10-28T23:12:23.1735311Z      H e i g h t :                   1 0 8 0 
+2026-10-28T23:12:23.1736754Z  
+2026-10-28T23:12:23.1738206Z  
+2026-10-28T23:12:23.1739827Z  T h e   n e w   d i s p l a y   s e t t i n g s   h a v e   b e e n   s a v e d . 
+2026-10-28T23:12:23.1741268Z  
+2026-10-28T23:12:23.1742732Z  
+2026-10-28T23:12:23.1744144Z  
+2026-10-28T23:12:23.3298042Z ##[group]Run python -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'
+2026-10-28T23:12:23.3298975Z [36;1mpython -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'[0m
+2026-10-28T23:12:23.3317794Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-10-28T23:12:23.3318183Z env:
+2026-10-28T23:12:23.3318358Z   PYTHONUTF8: 1
+2026-10-28T23:12:23.3318610Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-28T23:12:23.3319010Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:23.3319455Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-28T23:12:23.3319915Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:23.3320324Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:23.3320754Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:23.3321062Z ##[endgroup]
+2026-10-28T23:12:54.5911541Z ##[group]Run if [ -z "$GOAL2_RCLONE_TOKEN" ]; then
+2026-10-28T23:12:54.5912129Z [36;1mif [ -z "$GOAL2_RCLONE_TOKEN" ]; then[0m
+2026-10-28T23:12:54.5912783Z [36;1m  echo "No GOAL2_RCLONE_TOKEN (a fork PR, or the secret is unset): tests needing the original files skip."[0m
+2026-10-28T23:12:54.5913253Z [36;1m  exit 0[0m
+2026-10-28T23:12:54.5913441Z [36;1mfi[0m
+2026-10-28T23:12:54.5913714Z [36;1mversion=v1.75.2;zip=rclone-$version-windows-amd64.zip[0m
+2026-10-28T23:12:54.5914240Z [36;1mcurl -sSfL "https://downloads.rclone.org/$version/$zip" -o "$RUNNER_TEMP/$zip"[0m
+2026-10-28T23:12:54.5914871Z [36;1mcurl -sSfL "https://downloads.rclone.org/$version/SHA256SUMS" -o "$RUNNER_TEMP/SHA256SUMS"[0m
+2026-10-28T23:12:54.5915422Z [36;1m(cd "$RUNNER_TEMP" && grep " $zip\$" SHA256SUMS | sha256sum -c -)[0m
+2026-10-28T23:12:54.5915835Z [36;1munzip -q "$RUNNER_TEMP/$zip" -d "$RUNNER_TEMP"[0m
+2026-10-28T23:12:54.5916313Z [36;1mecho "$RUNNER_TEMP/rclone-$version-windows-amd64" >> "$GITHUB_PATH"[0m
+2026-10-28T23:12:54.5916811Z [36;1mexport PATH="$RUNNER_TEMP/rclone-$version-windows-amd64:$PATH"[0m
+2026-10-28T23:12:54.5917499Z [36;1mfolder=$(python -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")[0m
+2026-10-28T23:12:54.5918436Z [36;1mrclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" --non-interactive > /dev/null[0m
+2026-10-28T23:12:54.5919054Z [36;1mpython tools/artifacts.py pull[0m
+2026-10-28T23:12:54.5919486Z [36;1mpython tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"[0m
+2026-10-28T23:12:54.5938010Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-10-28T23:12:54.5938419Z env:
+2026-10-28T23:12:54.5938604Z   PYTHONUTF8: 1
+2026-10-28T23:12:54.5938866Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-28T23:12:54.5939298Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:54.5939958Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-28T23:12:54.5940431Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:54.5940839Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:54.5941251Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:12:54.5943908Z   GOAL2_RCLONE_TOKEN: ***
+2026-10-28T23:12:54.5944133Z ##[endgroup]
+2026-10-28T23:12:56.0591309Z rclone-v1.75.2-windows-amd64.zip: OK
+2026-10-28T23:12:57.0813647Z 2026/10/28 23:12:57 NOTICE: Config file "C:\\Users\\runneradmin\\AppData\\Roaming\\rclone\\rclone.conf" not found - using defaults
+2026-10-28T23:12:57.3353767Z 2026/10/28 23:12:57 NOTICE: goal2drive: This remote uses rclone's shared Google Drive client_id, which is being retired and will stop working during 2026. Create your own client_id to avoid interruption: https://rclone.org/drive/#making-your-own-client-id
+2026-10-28T23:17:20.7863222Z GOAL.DAT verified
+2026-10-28T23:17:20.8084268Z ##[group]Run git clone -q https://github.com/diegoami/goal2-archaeology.git "$GOAL2_ARCHAEOLOGY"
+2026-10-28T23:17:20.8085153Z [36;1mgit clone -q https://github.com/diegoami/goal2-archaeology.git "$GOAL2_ARCHAEOLOGY"[0m
+2026-10-28T23:17:20.8105253Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-10-28T23:17:20.8105723Z env:
+2026-10-28T23:17:20.8105960Z   PYTHONUTF8: 1
+2026-10-28T23:17:20.8106295Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-28T23:17:20.8106794Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:20.8107329Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-28T23:17:20.8107874Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:20.8108390Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:20.8108896Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:20.8109363Z ##[endgroup]
+2026-10-28T23:17:30.1159616Z ##[group]Run slow=
+2026-10-28T23:17:30.1160042Z [36;1mslow=[0m
+2026-10-28T23:17:30.1160439Z [36;1m[ "pull_request" = workflow_dispatch ] && [ "" = true ] && slow=--slow[0m
+2026-10-28T23:17:30.1161163Z [36;1mpython tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee windows-premerge.log[0m
+2026-10-28T23:17:30.1181045Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-10-28T23:17:30.1181542Z env:
+2026-10-28T23:17:30.1181788Z   PYTHONUTF8: 1
+2026-10-28T23:17:30.1182115Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-28T23:17:30.1182586Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:30.1183139Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-28T23:17:30.1183654Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:30.1184216Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:30.1184695Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-28T23:17:30.1185092Z ##[endgroup]
+2026-10-28T23:17:30.6049148Z PASS original-asset exclusion
+2026-10-28T23:17:31.1272180Z links and JSON ok (1186 files)
+2026-10-28T23:17:31.2066816Z RUN slow tests (changed: goal2/core/views.py, goal2/desktop/core_model.py, goal2/desktop/squad_page.py, goal2/engine/team_card/team_bars.py, goal2/engine/team_card/team_characteristics.py ...)
+2026-10-29T00:11:48.0970152Z PASS goal2.tests.test_both_halves (2 s)
+2026-10-29T00:11:48.0970984Z PASS goal2.tests.test_bundled_font (9 s)
+2026-10-29T00:11:48.0971719Z PASS goal2.tests.test_campaign_competitive_match (564 s)
+2026-10-29T00:11:48.0972641Z PASS goal2.tests.test_campaign_competitive_publication (236 s)
+2026-10-29T00:11:48.0973459Z PASS goal2.tests.test_campaign_competitive_save (365 s)
+2026-10-29T00:11:48.0974165Z PASS goal2.tests.test_campaign_confidence (13 s)
+2026-10-29T00:11:48.0977896Z PASS goal2.tests.test_campaign_continental_qualifying (14 s)
+2026-10-29T00:11:48.0979600Z PASS goal2.tests.test_campaign_cpu (9 s)
+2026-10-29T00:11:48.0980609Z PASS goal2.tests.test_campaign_eligibility (17 s)
+2026-10-29T00:11:48.0981580Z PASS goal2.tests.test_campaign_energy (17 s)
+2026-10-29T00:11:48.0982240Z PASS goal2.tests.test_campaign_friendlies (23 s)
+2026-10-29T00:11:48.0982871Z PASS goal2.tests.test_campaign_pool (6 s)
+2026-10-29T00:11:48.0983543Z PASS goal2.tests.test_campaign_pool_flow (6 s)
+2026-10-29T00:11:48.0984154Z PASS goal2.tests.test_campaign_schedule (2 s)
+2026-10-29T00:11:48.0984778Z PASS goal2.tests.test_campaign_silent_results (27 s)
+2026-10-29T00:11:48.0985428Z PASS goal2.tests.test_campaign_standings (2 s)
+2026-10-29T00:11:48.0986058Z PASS goal2.tests.test_campaign_state (2 s)
+2026-10-29T00:11:48.0987824Z PASS goal2.tests.test_campaign_substitutions (26 s)
+2026-10-29T00:11:48.0988704Z PASS goal2.tests.test_clear_results (0 s)
+2026-10-29T00:11:48.0989371Z PASS goal2.tests.test_cli (0 s)
+2026-10-29T00:11:48.0990096Z PASS goal2.tests.test_core_best_place_395 (16 s)
+2026-10-29T00:11:48.0990784Z PASS goal2.tests.test_core_bulletin_t110 (4 s)
+2026-10-29T00:11:48.0991696Z PASS goal2.tests.test_core_captain_t143 (8 s)
+2026-10-29T00:11:48.0992170Z PASS goal2.tests.test_core_congratulations_409 (71 s)
+2026-10-29T00:11:48.0992597Z PASS goal2.tests.test_core_continuation_t111 (26 s)
+2026-10-29T00:11:48.0993166Z PASS goal2.tests.test_core_cycle_t123 (11 s)
+2026-10-29T00:11:48.0993793Z PASS goal2.tests.test_core_desktop_t105 (34 s)
+2026-10-29T00:11:48.0994168Z PASS goal2.tests.test_core_extra_t119 (13 s)
+2026-10-29T00:11:48.0994576Z PASS goal2.tests.test_core_kit_colours_t142 (15 s)
+2026-10-29T00:11:48.0994950Z PASS goal2.tests.test_core_lineup_t114 (23 s)
+2026-10-29T00:11:48.0995332Z PASS goal2.tests.test_core_new_game_t106 (247 s)
+2026-10-29T00:11:48.0996079Z PASS goal2.tests.test_core_nice_try_371 (2 s)
+2026-10-29T00:11:48.0996750Z PASS goal2.tests.test_core_patches_t122 (56 s)
+2026-10-29T00:11:48.0999456Z PASS goal2.tests.test_core_pause_t115 (55 s)
+2026-10-29T00:11:48.0999955Z PASS goal2.tests.test_core_playback_t116 (20 s)
+2026-10-29T00:11:48.1000373Z PASS goal2.tests.test_core_pool_compare_t134 (7 s)
+2026-10-29T00:11:48.1000788Z PASS goal2.tests.test_core_pool_names_t136 (18 s)
+2026-10-29T00:11:48.1001212Z PASS goal2.tests.test_core_pool_suggest_t135 (76 s)
+2026-10-29T00:11:48.1001597Z PASS goal2.tests.test_core_role_display_424 (3 s)
+2026-10-29T00:11:48.1001979Z PASS goal2.tests.test_core_round_t108 (1865 s)
+2026-10-29T00:11:48.1002343Z PASS goal2.tests.test_core_runner_t100 (301 s)
+2026-10-29T00:11:48.1002849Z PASS goal2.tests.test_core_save_t121 (12 s)
+2026-10-29T00:11:48.1003314Z PASS goal2.tests.test_core_screens_t103 (750 s)
+2026-10-29T00:11:48.1003683Z PASS goal2.tests.test_core_shootout_t118 (85 s)
+2026-10-29T00:11:48.1004049Z PASS goal2.tests.test_core_takers_t120 (37 s)
+2026-10-29T00:11:48.1004490Z FAIL goal2.tests.test_core_team_back_t141 (4 s)
+2026-10-29T00:11:48.1004839Z F...
+2026-10-29T00:11:48.1005132Z ======================================================================
+2026-10-29T00:11:48.1005931Z FAIL: test_back_control_keeps_existing_page_bounds_and_reserve (goal2.tests.test_core_team_back_t141.Navigation.test_back_control_keeps_existing_page_bounds_and_reserve)
+2026-10-29T00:11:48.1007182Z ----------------------------------------------------------------------
+2026-10-29T00:11:48.1007871Z Traceback (most recent call last):
+2026-10-29T00:11:48.1019150Z   File "D:\a\goal2\goal2\goal2\tests\test_core_team_back_t141.py", line 149, in test_back_control_keeps_existing_page_bounds_and_reserve
+2026-10-29T00:11:48.1020036Z     self.assertLessEqual(need.width(),0.9*page.width())
+2026-10-29T00:11:48.1020483Z AssertionError: 1172 not less than or equal to 1060.2
+2026-10-29T00:11:48.1020770Z 
+2026-10-29T00:11:48.1021107Z ----------------------------------------------------------------------
+2026-10-29T00:11:48.1021874Z Ran 4 tests in 3.747s
+2026-10-29T00:11:48.1022205Z 
+2026-10-29T00:11:48.1022372Z FAILED (failures=1)
+2026-10-29T00:11:48.1022582Z 
+2026-10-29T00:11:48.1022725Z PASS goal2.tests.test_core_team_card_t137 (7 s)
+2026-10-29T00:11:48.1023149Z PASS goal2.tests.test_core_team_panels_t144 (5 s)
+2026-10-29T00:11:48.1023517Z FAIL goal2.tests.test_core_team_t107 (21 s)
+2026-10-29T00:11:48.1023843Z .......F....
+2026-10-29T00:11:48.1024112Z ======================================================================
+2026-10-29T00:11:48.1024866Z FAIL: test_team_and_pool_fit_and_show_no_table_or_check_box (goal2.tests.test_core_team_t107.Desktop.test_team_and_pool_fit_and_show_no_table_or_check_box)
+2026-10-29T00:11:48.1025624Z ----------------------------------------------------------------------
+2026-10-29T00:11:48.1026018Z Traceback (most recent call last):
+2026-10-29T00:11:48.1027044Z   File "D:\a\goal2\goal2\goal2\tests\test_core_team_t107.py", line 346, in test_team_and_pool_fit_and_show_no_table_or_check_box
+2026-10-29T00:11:48.1027703Z     self.assertEqual(found, [])
+2026-10-29T00:11:48.1028167Z AssertionError: Lists differ: ['(1440, 900) page 1 view 0: needs 1172x78[3088 chars]0 %'] != []
+2026-10-29T00:11:48.1028559Z 
+2026-10-29T00:11:48.1028682Z First list contains 44 additional elements.
+2026-10-29T00:11:48.1029013Z First extra element 0:
+2026-10-29T00:11:48.1029381Z '(1440, 900) page 1 view 0: needs 1172x784 of 1178x787, more than 90 %'
+2026-10-29T00:11:48.1029651Z 
+2026-10-29T00:11:48.1029859Z Diff is 3278 characters long. Set self.maxDiff to None to see it.
+2026-10-29T00:11:48.1030136Z 
+2026-10-29T00:11:48.1030322Z ----------------------------------------------------------------------
+2026-10-29T00:11:48.1030702Z Ran 12 tests in 20.889s
+2026-10-29T00:11:48.1030878Z 
+2026-10-29T00:11:48.1031008Z FAILED (failures=1)
+2026-10-29T00:11:48.1031144Z 
+2026-10-29T00:11:48.1031342Z PASS goal2.tests.test_core_walkoff_363 (15 s)
+2026-10-29T00:11:48.1031709Z PASS goal2.tests.test_core_watch_t109 (694 s)
+2026-10-29T00:11:48.1032691Z PASS goal2.tests.test_core_world_t113 (8 s)
+2026-10-29T00:11:48.1033111Z PASS goal2.tests.test_country_card (10 s)
+2026-10-29T00:11:48.1033508Z PASS goal2.tests.test_country_select (0 s)
+2026-10-29T00:11:48.1033845Z PASS goal2.tests.test_cpu (0 s)
+2026-10-29T00:11:48.1034169Z PASS goal2.tests.test_cpu_tactics_change (0 s)
+2026-10-29T00:11:48.1034598Z PASS goal2.tests.test_desktop_competitive_jobs (236 s)
+2026-10-29T00:11:48.1035027Z PASS goal2.tests.test_desktop_entry (0 s)
+2026-10-29T00:11:48.1035370Z PASS goal2.tests.test_desktop_launch (32 s)
+2026-10-29T00:11:48.1035713Z PASS goal2.tests.test_desktop_model (7 s)
+2026-10-29T00:11:48.1036060Z PASS goal2.tests.test_desktop_pages_t91 (44 s)
+2026-10-29T00:11:48.1036414Z PASS goal2.tests.test_desktop_pool (9 s)
+2026-10-29T00:11:48.1036793Z PASS goal2.tests.test_desktop_quick_jobs (65 s)
+2026-10-29T00:11:48.1037162Z PASS goal2.tests.test_desktop_roles (5 s)
+2026-10-29T00:11:48.1037557Z PASS goal2.tests.test_desktop_save_decisions (64 s)
+2026-10-29T00:11:48.1037936Z PASS goal2.tests.test_desktop_shell (21 s)
+2026-10-29T00:11:48.1038305Z PASS goal2.tests.test_desktop_watched_sharing (0 s)
+2026-10-29T00:11:48.1038681Z PASS goal2.tests.test_eleven_selection (0 s)
+2026-10-29T00:11:48.1039051Z PASS goal2.tests.test_engine_on_adapted_state (7 s)
+2026-10-29T00:11:48.1039435Z PASS goal2.tests.test_fidelity (0 s)
+2026-10-29T00:11:48.1039763Z PASS goal2.tests.test_fixed_page_t101 (55 s)
+2026-10-29T00:11:48.1040128Z PASS goal2.tests.test_friendly_vs_archaeology (2 s)
+2026-10-29T00:11:48.1040485Z PASS goal2.tests.test_full_match (0 s)
+2026-10-29T00:11:48.1040802Z PASS goal2.tests.test_goaldat (0 s)
+2026-10-29T00:11:48.1041141Z PASS goal2.tests.test_grid (0 s)
+2026-10-29T00:11:48.1041450Z PASS goal2.tests.test_identities (44 s)
+2026-10-29T00:11:48.1041773Z PASS goal2.tests.test_imports (0 s)
+2026-10-29T00:11:48.1042084Z PASS goal2.tests.test_input (0 s)
+2026-10-29T00:11:48.1042431Z PASS goal2.tests.test_main_loop (0 s)
+2026-10-29T00:11:48.1042875Z PASS goal2.tests.test_match_pitch_t94 (22 s)
+2026-10-29T00:11:48.1043222Z PASS goal2.tests.test_match_prep_t95 (29 s)
+2026-10-29T00:11:48.1043569Z PASS goal2.tests.test_match_preview (0 s)
+2026-10-29T00:11:48.1043911Z PASS goal2.tests.test_match_result_t97 (67 s)
+2026-10-29T00:11:48.1044289Z PASS goal2.tests.test_new_game (1 s)
+2026-10-29T00:11:48.1044610Z PASS goal2.tests.test_p1_fidelity (1 s)
+2026-10-29T00:11:48.1044948Z PASS goal2.tests.test_pitch_marks_t96 (97 s)
+2026-10-29T00:11:48.1045295Z PASS goal2.tests.test_plain_renderer (0 s)
+2026-10-29T00:11:48.1045635Z PASS goal2.tests.test_player_card (11 s)
+2026-10-29T00:11:48.1045993Z PASS goal2.tests.test_pool_caps_436 (1 s)
+2026-10-29T00:11:48.1046320Z PASS goal2.tests.test_pool_names (4 s)
+2026-10-29T00:11:48.1047035Z PASS goal2.tests.test_provenance (1 s)
+2026-10-29T00:11:48.1047426Z PASS goal2.tests.test_pygame_match_view (353 s)
+2026-10-29T00:11:48.1047817Z PASS goal2.tests.test_reordered_squad_280 (12 s)
+2026-10-29T00:11:48.1048221Z PASS goal2.tests.test_repeat_friendlies (1 s)
+2026-10-29T00:11:48.1048567Z PASS goal2.tests.test_requires (0 s)
+2026-10-29T00:11:48.1048884Z PASS goal2.tests.test_result (1 s)
+2026-10-29T00:11:48.1049197Z PASS goal2.tests.test_savestate (0 s)
+2026-10-29T00:11:48.1049546Z PASS goal2.tests.test_screen_output (0 s)
+2026-10-29T00:11:48.1049878Z PASS goal2.tests.test_session_save (0 s)
+2026-10-29T00:11:48.1050239Z PASS goal2.tests.test_session_save_integration (2 s)
+2026-10-29T00:11:48.1050598Z PASS goal2.tests.test_skills (0 s)
+2026-10-29T00:11:48.1050909Z PASS goal2.tests.test_squad_select (0 s)
+2026-10-29T00:11:48.1051267Z PASS goal2.tests.test_state (6 s)
+2026-10-29T00:11:48.1051702Z PASS goal2.tests.test_tactics (0 s)
+2026-10-29T00:11:48.1052062Z PASS goal2.tests.test_team_tactics_t99 (73 s)
+2026-10-29T00:11:48.1052417Z PASS goal2.tests.test_terminal_display (0 s)
+2026-10-29T00:11:48.1052795Z PASS goal2.tests.test_terminal_input (0 s, 7 skipped)
+2026-10-29T00:11:48.1053181Z PASS goal2.tests.test_visible_navigation (0 s)
+2026-10-29T00:11:48.1053657Z PASS goal2.tests.test_watched_adapter (1445 s)
+2026-10-29T00:11:48.1054063Z PASS goal2.tests.test_watched_bench_t102 (265 s)
+2026-10-29T00:11:48.1054467Z PASS goal2.tests.test_watched_competitive_runtime (427 s)
+2026-10-29T00:11:48.1054866Z PASS goal2.tests.test_watched_completion (1 s)
+2026-10-29T00:11:48.1055222Z PASS goal2.tests.test_watched_jobs (306 s)
+2026-10-29T00:11:48.1055600Z PASS goal2.tests.test_watched_kit_identity (0 s)
+2026-10-29T00:11:48.1055998Z PASS goal2.tests.test_watched_legacy_compatibility (88 s)
+2026-10-29T00:11:48.1056394Z PASS goal2.tests.test_watched_pitch_jobs (426 s)
+2026-10-29T00:11:48.1056760Z PASS goal2.tests.test_watched_publication (792 s)
+2026-10-29T00:11:48.1057137Z PASS goal2.tests.test_watched_runtime (76 s)
+2026-10-29T00:11:48.1057515Z PASS goal2.tests.test_watched_save (333 s)
+2026-10-29T00:11:48.1057898Z PASS goal2.tests.test_watched_startup (4 s)
+2026-10-29T00:11:48.1058248Z PASS goal2.tests.test_web_countries (1 s)
+2026-10-29T00:11:48.1058580Z PASS goal2.tests.test_web_matches (3 s)
+2026-10-29T00:11:48.1058913Z PASS goal2.tests.test_web_session_save (7 s)
+2026-10-29T00:11:48.1059293Z PASS goal2.tests.test_web_team_management (1 s)
+2026-10-29T00:11:48.1059654Z PASS goal2.tests.test_pitch_observation (2 s)
+2026-10-29T00:11:48.1060009Z PASS goal2.tests.test_pygame_pitch_view (165 s)
+2026-10-29T00:11:48.1060379Z PASS goal2.tests.test_core_match_window_t138 (6 s)
+2026-10-29T00:11:48.1060824Z PASS goal2.tests.test_core_halftime_t139 (4 s)
+2026-10-29T00:11:48.1061221Z PASS goal2.tests.test_core_replay_t140 (54 s)
+2026-10-29T00:11:48.1061604Z game tests: 127/129 modules pass, 7 tests skipped
+2026-10-29T00:11:48.1062118Z FAIL pre-merge validation: failing test modules: test_core_team_back_t141, test_core_team_t107
+2026-10-29T00:11:48.1077607Z ##[error]Process completed with exit code 1.
+2026-10-29T00:11:48.1291339Z ##[group]Run mkdir -p upload
+2026-10-29T00:11:48.1291948Z [36;1mmkdir -p upload[0m
+2026-10-29T00:11:48.1292371Z [36;1mcp windows-premerge.log upload/ 2>/dev/null || true[0m
+2026-10-29T00:11:48.1292795Z [36;1mif [ -d windows-evidence ]; then[0m
+2026-10-29T00:11:48.1293526Z [36;1m  (cd windows-evidence && find . -type f \( -name '*.png' -o -name '*.log' -o -name '*.json' \) -print0 | xargs -0 -I{} cp --parents {} ../upload/)[0m
+2026-10-29T00:11:48.1294170Z [36;1mfi[0m
+2026-10-29T00:11:48.1294601Z [36;1m# [designed: #278] Refuse to upload anything with an original-game extension.[0m
+2026-10-29T00:11:48.1295231Z [36;1mif find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then[0m
+2026-10-29T00:11:48.1295818Z [36;1m  echo "an original-game file reached the upload; refusing" && exit 1[0m
+2026-10-29T00:11:48.1296245Z [36;1mfi[0m
+2026-10-29T00:11:48.1314475Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-10-29T00:11:48.1314973Z env:
+2026-10-29T00:11:48.1315213Z   PYTHONUTF8: 1
+2026-10-29T00:11:48.1315586Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-29T00:11:48.1316046Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.1316577Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-29T00:11:48.1317133Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.1317597Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.1318054Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.1318437Z ##[endgroup]
+2026-10-29T00:11:48.3253437Z ##[group]Run actions/upload-artifact@v4
+2026-10-29T00:11:48.3253895Z with:
+2026-10-29T00:11:48.3254189Z   name: windows-evidence
+2026-10-29T00:11:48.3254479Z   path: upload
+2026-10-29T00:11:48.3254748Z   if-no-files-found: ignore
+2026-10-29T00:11:48.3255053Z   compression-level: 6
+2026-10-29T00:11:48.3255321Z   overwrite: false
+2026-10-29T00:11:48.3255616Z   include-hidden-files: false
+2026-10-29T00:11:48.3255915Z env:
+2026-10-29T00:11:48.3256137Z   PYTHONUTF8: 1
+2026-10-29T00:11:48.3256449Z   GOAL2_ARCHAEOLOGY: D:\a\goal2\goal2/../goal2-archaeology
+2026-10-29T00:11:48.3256907Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.3257463Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-29T00:11:48.3258024Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.3258498Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.3259055Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-29T00:11:48.3259441Z ##[endgroup]
+2026-10-29T00:11:48.5229853Z (node:6300) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-29T00:11:48.5231240Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-29T00:11:48.5291688Z With the provided path, there will be 1 file uploaded
+2026-10-29T00:11:48.5297518Z Artifact name is valid!
+2026-10-29T00:11:48.5299607Z Root directory input is valid!
+2026-10-29T00:11:48.9100148Z Beginning upload of artifact content to blob storage
+2026-10-29T00:11:48.9318949Z (node:6300) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-29T00:11:49.2017816Z Uploaded bytes 2167
+2026-10-29T00:11:49.2783103Z Finished uploading artifact content to blob storage!
+2026-10-29T00:11:49.2784840Z SHA256 digest of uploaded artifact zip is 4cd606ed1bbbe60c2e0039d142431e50b3ed79fa8e8ac6173aca9232b3a4c778
+2026-10-29T00:11:49.2787356Z Finalizing artifact upload
+2026-10-29T00:11:49.7533926Z Artifact windows-evidence.zip successfully finalized. Artifact ID 12862710489
+2026-10-29T00:11:49.7535174Z Artifact windows-evidence has been successfully uploaded! Final size is 2167 bytes. Artifact ID is 12862710489
+2026-10-29T00:11:49.7546284Z Artifact download URL: https://github.com/diegoami/goal2/actions/runs/40785633279/artifacts/12862710489
+2026-10-29T00:11:49.7930130Z Post job cleanup.
+2026-10-29T00:11:50.0000850Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-29T00:11:50.0389481Z git version 2.56.0.windows.2
+2026-10-29T00:11:50.0459449Z Temporarily overriding HOME='D:\a\_temp\2156c15d-bb17-4acb-ab5a-014e8edee680' before making global git config changes
+2026-10-29T00:11:50.0460567Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-29T00:11:50.0471522Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\goal2\goal2
+2026-10-29T00:11:50.0860587Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-29T00:11:50.1260357Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-29T00:11:50.6979955Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-29T00:11:50.7310737Z http.https://github.com/.extraheader
+2026-10-29T00:11:50.7356303Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-10-29T00:11:50.7729900Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-29T00:11:51.3184386Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-29T00:11:51.3551738Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-29T00:11:51.9414461Z Cleaning up orphan processes
+2026-10-29T00:11:51.9910263Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
