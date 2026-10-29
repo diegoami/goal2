@@ -10,7 +10,9 @@ reason (goal2/tests/requires.py), so the gate runs anywhere; the skips are count
 Slow tests run when it counts: [designed: owner, 2026-10-20] automatically when the commit changes
 a file the slow tests guard since origin/main (SLOW_PATHS: the engine, the core, the watched and competitive
 match, saves, the match view, the dependencies), always with --slow (every milestone candidate),
-never with --fast. Task-specific Done-when lines stay separate.
+never with --fast. [designed: owner, 2026-10-29, T145] The cheap layout and page-reserve modules
+(LAYOUT_FIRST) run first, with their slow tests unless --fast, and a failure there ends the gate
+before the full batch. Task-specific Done-when lines stay separate.
 """
 from __future__ import annotations
 
@@ -98,14 +100,17 @@ def run_module(module: str, python: str, slow: bool) -> tuple[str, int, float, s
 SERIAL = ("test_pitch_observation", "test_pygame_pitch_view", "test_core_match_window_t138", "test_core_halftime_t139", "test_core_replay_t140")
 
 
-def check_tests(jobs: int, python: str, slow: bool) -> None:
-    modules = sorted(p.stem for p in (ROOT / "goal2" / "tests").glob("test_*.py"))
-    batches = [([m for m in modules if m not in SERIAL], jobs)] + [([m], 1) for m in SERIAL if m in modules]
-    failed, skipped = [], 0
-    results = []
-    for batch, workers in batches:
-        with ThreadPoolExecutor(max_workers=workers) as pool:
-            results += pool.map(lambda m: run_module(m, python, slow), batch)
+# [designed: owner, 2026-10-29, T145] Layout and page-reserve modules that are cheap with their slow
+# tests: they run first, slow tests on unless --fast, and a failure ends the gate before the full batch
+# (Windows run 40785633279 reported an 8 s reserve failure after about an hour). Chosen from the
+# modules that check page bounds or the 90 % reserve, by their measured slow-run time
+# (measurements/T145/); the SERIAL ones stay in their own stage.
+LAYOUT_FIRST: tuple[str, ...] = ()
+
+
+def report(results: list, failed: list[str]) -> int:
+    """Print each module's result, adding failures to `failed`; return the skipped-test count."""
+    skipped = 0
     for module, code, secs, tail in results:
         ran = re.search(r"Ran (\d+) tests?", tail)
         skips = re.search(r"skipped=(\d+)", tail.splitlines()[-1] if tail.strip() else "")
@@ -117,6 +122,24 @@ def check_tests(jobs: int, python: str, slow: bool) -> None:
         if code:
             failed.append(module)
             print(tail, flush=True)
+    return skipped
+
+
+def check_tests(jobs: int, python: str, slow: bool, runner=run_module, layout_slow: bool = True) -> None:
+    modules = sorted(p.stem for p in (ROOT / "goal2" / "tests").glob("test_*.py"))
+    layout = [m for m in LAYOUT_FIRST if m in modules]
+    failed: list[str] = []
+    with ThreadPoolExecutor(max_workers=jobs) as pool:
+        skipped = report(list(pool.map(lambda m: runner(m, python, layout_slow), layout)), failed)
+    if failed:
+        raise ValidationError("layout stage failed (the full batch did not run): " + ", ".join(failed))
+    rest = [m for m in modules if m not in layout]
+    batches = [([m for m in rest if m not in SERIAL], jobs)] + [([m], 1) for m in SERIAL if m in rest]
+    results = []
+    for batch, workers in batches:
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            results += pool.map(lambda m: runner(m, python, slow), batch)
+    skipped += report(results, failed)
     print(f"game tests: {len(modules) - len(failed)}/{len(modules)} modules pass, {skipped} tests skipped"
           + ("" if slow else " (slow tests not run)"), flush=True)
     if failed:
@@ -147,7 +170,7 @@ def main(argv: list[str] | None = None) -> int:
                        f"changed: {', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''}" if changed else
                        "no engine, watched, competitive, save or timing change since origin/main")
                 print(f"{'RUN' if slow else 'SKIP'} slow tests ({why})", flush=True)
-            check_tests(args.jobs, args.python, slow)
+            check_tests(args.jobs, args.python, slow, layout_slow=not args.fast)
         check_checkout(args.expected_head)  # a check that changed tracked files cannot certify it
     except (ValidationError, OSError, subprocess.CalledProcessError) as exc:
         print(f"FAIL pre-merge validation: {exc}", file=sys.stderr)
