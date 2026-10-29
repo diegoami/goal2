@@ -144,4 +144,10 @@ another session, model or computer.
 - **Resume**: read the latest checkpoint comment, run `python3 tools/checkpoint.py`, recheck live
   heads and checks, and continue from the next action. A vanished job is rerun, never assumed to have
   passed.
+- [designed: owner, 2026-10-29] **Every task is resumable and cut into milestones.** A milestone is a
+  durable point: its outputs committed and pushed (anything private, holding original bytes, to the
+  owner's Drive with `tools/artifacts.py`, never to git), and a checkpoint comment saying which
+  milestone is reached and the next. A long run writes append-only records and has a resume command
+  that skips what is recorded, so a crash or a stop loses at most the unit in progress; its records
+  are pushed while it runs, not only at the end.
 

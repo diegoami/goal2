@@ -28,8 +28,9 @@ are approved in an isolated environment/CI (goal2#432comment6440424797).
 [designed: owner handover, 2026-10-29] Continue in the owner's selected fresh Claude
 session, with the same task, fidelity and merge requirements. First read
 [AGENTS.md](AGENTS.md), [docs/process.md](docs/process.md) and the current
-[authoritative checkpoint on #308](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606),
-then recheck live PR heads, labels and checks. Status and pending runs belong on
+latest comment on the `checkpoint` issue #471 (the earlier handover is
+[#308's](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606)), then recheck live PR
+heads, labels and checks. Status and pending runs belong on
 those issues/PRs; never infer completion from an old handover or a percentage estimate.
 
 The independent delivery clone is `/home/diego/projects/goal2-archaeology-engine`;
