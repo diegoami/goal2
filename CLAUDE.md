@@ -72,7 +72,8 @@ Unicorn performance optimisation is authorised by a resume.
 10. Until the first playable build, schedule only bugs that break play; the rest are `post-playable`.
 11. Undo a scratch edit by writing back the file's saved contents, or commit first; never
     `git checkout`, `git restore` or `git reset` a file with uncommitted work.
-11a. Wait on a background job by its PID (`while kill -0 <pid>; do sleep 30; done`) or by the
+11a. Start a long job with `tools/jobs.py start` and checkpoint with `tools/checkpoint.py`
+    (process.md §10). Wait on a background job by its PID (`while kill -0 <pid>; do sleep 30; done`) or by the
     final line of its log, never with `pgrep -f`: it matches the waiting shell's own command line,
     so the wait never ends (L48 of the old harness; again in the first cloud session, 2026-10-20).
 
