@@ -1,0 +1,64 @@
+PASS goal2.tests.test_core_bulletin_t110 (4 s)
+FAIL goal2.tests.test_core_team_back_t141 (5 s)
+This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+FThis plugin does not support propagateSizeHints()
+This plugin does not support raise()
+.This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+.This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+.
+======================================================================
+FAIL: test_back_control_keeps_existing_page_bounds_and_reserve (goal2.tests.test_core_team_back_t141.Navigation.test_back_control_keeps_existing_page_bounds_and_reserve)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t145-89be/goal2/tests/test_core_team_back_t141.py", line 149, in test_back_control_keeps_existing_page_bounds_and_reserve
+    self.assertLessEqual(need.width(),0.9*page.width())
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1173 not less than or equal to 1059.3
+
+----------------------------------------------------------------------
+Ran 4 tests in 4.990s
+
+FAILED (failures=1)
+
+PASS goal2.tests.test_core_pool_compare_t134 (8 s)
+PASS goal2.tests.test_core_world_t113 (11 s)
+PASS goal2.tests.test_core_best_place_395 (15 s)
+PASS goal2.tests.test_core_extra_t119 (14 s)
+PASS goal2.tests.test_core_save_t121 (11 s)
+PASS goal2.tests.test_core_lineup_t114 (23 s)
+FAIL goal2.tests.test_core_team_t107 (18 s)
+..This plugin does not support propagateSizeHints()
+.This plugin does not support propagateSizeHints()
+.This plugin does not support propagateSizeHints()
+.This plugin does not support propagateSizeHints()
+.This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+.This plugin does not support propagateSizeHints()
+F....
+======================================================================
+FAIL: test_team_and_pool_fit_and_show_no_table_or_check_box (goal2.tests.test_core_team_t107.Desktop.test_team_and_pool_fit_and_show_no_table_or_check_box)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t145-89be/goal2/tests/test_core_team_t107.py", line 346, in test_team_and_pool_fit_and_show_no_table_or_check_box
+    self.assertEqual(found, [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: Lists differ: ['(1440, 900) page 1 view 0: needs 1173x78[3088 chars]0 %'] != []
+
+First list contains 44 additional elements.
+First extra element 0:
+'(1440, 900) page 1 view 0: needs 1173x786 of 1177x786, more than 90 %'
+
+Diff is 3278 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 12 tests in 17.926s
+
+FAILED (failures=1)
+
+PASS goal2.tests.test_core_continuation_t111 (23 s)
+PASS goal2.tests.test_core_desktop_t105 (32 s)
+PASS goal2.tests.test_core_takers_t120 (29 s, 1 skipped)
+FAIL after 40.7 s: layout stage failed (the full batch did not run): test_core_team_back_t141, test_core_team_t107
