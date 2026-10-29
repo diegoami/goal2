@@ -1,0 +1,307 @@
+test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data) ... ERROR
+test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records) ... ERROR
+test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads) ... FAIL
+test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen) ... ERROR
+test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen) ... ERROR
+test_original_key_human_manager_and_tactic_changes_are_read_fresh (goal2.tests.test_core_team_panels_t144.LiveProjection.test_original_key_human_manager_and_tactic_changes_are_read_fresh) ... ERROR
+test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure) ... ERROR
+test_manager_zero_and_human_read_ability_not_confidence (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_manager_zero_and_human_read_ability_not_confidence) ... ERROR
+test_performance_signed_hybrid_half_and_rating_threshold (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_performance_signed_hybrid_half_and_rating_threshold) ... ERROR
+test_unavailable_starters_keep_the_divisor_eleven (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_unavailable_starters_keep_the_divisor_eleven) ... ERROR
+test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct) ... ERROR
+test_wrapped_negative_fitness_preserves_full_bar_length (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_wrapped_negative_fitness_preserves_full_bar_length) ... ERROR
+test_zero_words_are_skipped_only_by_skills_not_the_other_panels (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_zero_words_are_skipped_only_by_skills_not_the_other_panels) ... ERROR
+test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card) ... ERROR
+test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back) ... ERROR
+test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) ... 
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=True) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=True) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=True) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=320, team_info=False) ... ERROR
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=True) ... ERROR
+test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent) ... ERROR
+test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141 ... ERROR
+
+======================================================================
+ERROR: test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 122, in test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data
+    else:self.assertIsNone(card['performance'])
+                           ~~~~^^^^^^^^^^^^^^^
+KeyError: 'performance'
+
+======================================================================
+ERROR: test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 104, in test_callbacks_have_exact_widths_and_support_zero_and_human_records
+    for method, limit, width in ((mem.country_record, 128, 191),
+                                  ^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_record'
+
+======================================================================
+ERROR: test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 64, in test_genuine_friendly_matches_the_recorded_italy_screen
+    self.assertEqual(card['team_skills']['line_sums'], [227, 805, 823, 318])
+                     ~~~~^^^^^^^^^^^^^^^
+KeyError: 'team_skills'
+
+======================================================================
+ERROR: test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 49, in test_genuine_selection_matches_the_recorded_denmark_screen
+    self.assertEqual(card['team_skills']['line_sums'], [225, 1048, 1031, 395])
+                     ~~~~^^^^^^^^^^^^^^^
+KeyError: 'team_skills'
+
+======================================================================
+ERROR: test_original_key_human_manager_and_tactic_changes_are_read_fresh (goal2.tests.test_core_team_panels_t144.LiveProjection.test_original_key_human_manager_and_tactic_changes_are_read_fresh)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 141, in test_original_key_human_manager_and_tactic_changes_are_read_fresh
+    a, b = first['team_skills']['line_sums'], second['team_skills']['line_sums']
+           ~~~~~^^^^^^^^^^^^^^^
+KeyError: 'team_skills'
+
+======================================================================
+ERROR: test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 83, in test_year_one_nonzero_caps_and_all_country_reads_are_pure
+    values = card['characteristics']['aggregates']
+             ~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'characteristics'
+
+======================================================================
+ERROR: test_manager_zero_and_human_read_ability_not_confidence (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_manager_zero_and_human_read_ability_not_confidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 185, in test_manager_zero_and_human_read_ability_not_confidence
+    results.append(self.panels()['team_skills'])
+                   ~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 169, in panels
+    before = self.state.memory_component();result = self.mem.country_panels(7)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_panels'. Did you mean: 'country_labels'?
+
+======================================================================
+ERROR: test_performance_signed_hybrid_half_and_rating_threshold (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_performance_signed_hybrid_half_and_rating_threshold)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 209, in test_performance_signed_hybrid_half_and_rating_threshold
+    self.assertEqual(self.panels()['performance']['role_sums'], [0, -75, -75, 0])
+                     ~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 169, in panels
+    before = self.state.memory_component();result = self.mem.country_panels(7)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_panels'. Did you mean: 'country_labels'?
+
+======================================================================
+ERROR: test_unavailable_starters_keep_the_divisor_eleven (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_unavailable_starters_keep_the_divisor_eleven)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 200, in test_unavailable_starters_keep_the_divisor_eleven
+    self.assertEqual(self.panels()['characteristics']['aggregates'],
+                     ~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 169, in panels
+    before = self.state.memory_component();result = self.mem.country_panels(7)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_panels'. Did you mean: 'country_labels'?
+
+======================================================================
+ERROR: test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 216, in test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct
+    d = self.panels()['characteristics']['descriptors'][0]
+        ~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 169, in panels
+    before = self.state.memory_component();result = self.mem.country_panels(7)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_panels'. Did you mean: 'country_labels'?
+
+======================================================================
+ERROR: test_wrapped_negative_fitness_preserves_full_bar_length (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_wrapped_negative_fitness_preserves_full_bar_length)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 226, in test_wrapped_negative_fitness_preserves_full_bar_length
+    result = self.panels()['characteristics']
+             ~~~~~~~~~~~^^
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 169, in panels
+    before = self.state.memory_component();result = self.mem.country_panels(7)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_panels'. Did you mean: 'country_labels'?
+
+======================================================================
+ERROR: test_zero_words_are_skipped_only_by_skills_not_the_other_panels (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_zero_words_are_skipped_only_by_skills_not_the_other_panels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 192, in test_zero_words_are_skipped_only_by_skills_not_the_other_panels
+    result = self.panels()
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 169, in panels
+    before = self.state.memory_component();result = self.mem.country_panels(7)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Memory' object has no attribute 'country_panels'. Did you mean: 'country_labels'?
+
+======================================================================
+ERROR: test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 325, in test_a_paint_reads_current_memory_again_without_set_card
+    widget.set_card(read(), reader=read);widget.grab();self.app.processEvents()
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+TypeError: CountryCardView.set_card() got an unexpected keyword argument 'reader'
+
+======================================================================
+ERROR: test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 344, in test_actual_team_info_has_current_panels_and_preserves_contextual_back
+    window = CoreWindow(model);self.addCleanup(window.close)
+  File "/home/diego/projects/goal2/goal2/desktop/core_window.py", line 141, in __init__
+    squad_page.build_core(self, model)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/diego/projects/goal2/goal2/desktop/squad_page.py", line 320, in build_core
+    self.core_team_panels = CountryCardView(team_info=True);self.core_team_panels.setObjectName('coreTeamPanels')
+                            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 261, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    widget = CountryCardView(team_info=team_info);self.addCleanup(widget.close)
+TypeError: CountryCardView.__init__() got an unexpected keyword argument 'team_info'
+
+======================================================================
+ERROR: test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 242, in test_original_descriptor_highlight_wraps_without_clamping_its_extent
+    from goal2.desktop.country_card import characteristic_view
+ImportError: cannot import name 'characteristic_view' from 'goal2.desktop.country_card' (/home/diego/projects/goal2/goal2/desktop/country_card.py)
+
+======================================================================
+ERROR: test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 292, in test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds
+    from goal2.desktop.country_card import CountryCardView, TEAM_INFO_SHRINK
+ImportError: cannot import name 'TEAM_INFO_SHRINK' from 'goal2.desktop.country_card' (/home/diego/projects/goal2/goal2/desktop/country_card.py)
+
+======================================================================
+FAIL: test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 98, in test_complete_live_core_save_is_unchanged_around_display_reads
+    self.assertTrue({'team_skills', 'performance', 'characteristics'} <= card.keys())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.892s
+
+FAILED (failures=1, errors=28)
+{"base": "af2f7419", "tests": 18, "expected_before_failures": true, "unchanged_tracked_source": true}

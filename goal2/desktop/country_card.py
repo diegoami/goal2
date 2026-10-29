@@ -16,7 +16,9 @@ NARROW_WIDTH, NARROW_HEIGHT = 300, 1320
 CODE_LINE = {'G': 'goalkeeper', 'S': 'defence', 'C': 'defence', 'b': 'defence', 'B': 'defence',
              'D': 'midfield', 'Ç': 'midfield', 'm': 'midfield', 'M': 'midfield', 'F': 'midfield',
              'w': 'midfield', 'W': 'midfield', '¢': 'attack', '$': 'attack'}
-TEAM_HIGHLIGHT, TEAM_EMPTY = '#aaaaaa', '#aa00aa'  # [derived: F036/F038] DOS attributes 0x70/0x05.
+# [designed: T144] goal2's colours for the original's black-on-grey highlight and its empty cells
+# (the glyph and the highlight are F036/F038's; these hex values are this rebuild's palette).
+TEAM_HIGHLIGHT, TEAM_EMPTY = '#aaaaaa', '#aa00aa'
 # [designed: T144] Team Info's natural page size, and the smallest share of it the
 # compact panels shrink to uniformly, so the tactics view keeps the page's 10 % reserve (T107/T141).
 TEAM_INFO_WIDTH, TEAM_INFO_HEIGHT, TEAM_INFO_SHRINK = 300, 600, 0.5

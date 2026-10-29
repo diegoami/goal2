@@ -2,7 +2,7 @@
 
 Choosing a country shows its card and, with Space, its players (goal2.game.player_card), as the
 original's country selection does (screenshots `country-select`, `m244-team-info-2030`).
-Decoded fields carry their evidence. This legacy Python route names unavailable
+Decoded fields carry their evidence. [designed: T144] This legacy Python route names unavailable
 fields with NOT_DECODED (gap G05). The Core route separately consumes the delivered
 F034..F038 decoders; its display data is never invented from this route's placeholders.
 """

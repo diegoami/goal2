@@ -18,5 +18,6 @@ class Result(unittest.TextTestResult):
  def __init__(self,*a,**k):super().__init__(*a,**k);self.successes=[]
  def addSuccess(self,test):self.successes.append(test.id());super().addSuccess(test)
 r=unittest.TextTestRunner(verbosity=2,resultclass=Result).run(suite)
-assert r.testsRun==17 and not r.skipped and not r.successes,(r.testsRun,r.skipped,r.successes)
+# Every behavioural test the three classes hold (18 since 7bfe7d2e), none skipped, none passing.
+assert r.testsRun==suite.countTestCases()>0 and not r.skipped and not r.successes,(r.testsRun,r.skipped,r.successes)
 print(json.dumps(dict(base=base,tests=r.testsRun,expected_before_failures=True,unchanged_tracked_source=True)))

@@ -254,6 +254,7 @@ class LaunchWindow(QMainWindow):
         country, year = self.selection()
         if country is None:return
         if self.core_new is not None:
+            # [designed: T144] the selection card repaints from current memory (F036..F038 decoders).
             self.country_card.set_card(self.core_new.card(year, country),
                                        reader=lambda y=year, c=country: self.core_new.card(y, c))
             self.previewed = (country, year)
