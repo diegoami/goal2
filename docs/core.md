@@ -817,3 +817,40 @@ saving. Scripted `play_round` callers supply `on_replay(driver, wait)` returning
 boolean; absent a callback the driver refuses rather than silently answering. Original replay
 restoration and goal/RNG evolution run unchanged. The desktop marks replay frames through
 causal viewer events, and the commentary cursor resumes from the restored snapshot's index.
+
+
+## Original TEAM panels (T144)
+
+[derived: proposed/static-adjacent F036/F037/F038, archaeology
+a42c2cbe91300c8ee261b82fa993e665ed3f3325] `Memory.country_panels` reads the
+current country, player and manager records through bounded immutable callbacks,
+including record0 and human manager slots129..134. Four byte-identical delivered
+decoders are pinned in PROVENANCE.md. Drawing does not call the guest or reproduce
+the original panel's temporary quick-engine writes.
+
+Team skills use the original XI/availability/form/energy/position/tactic/manager
+inputs and25-cell transform. Performance is None until both DS:0C1E and0C1F are
+nonzero; the25-cell template stays unhighlighted. Otherwise it uses side1 when
+the panel country equals DS:9B36, else side0, including a non-participant. The
+characteristics keep the seeded16-bit arithmetic/divisor11, original descriptors
+and unsigned caps/age. Valid off-table lookups and full bar lengths are retained;
+only the16-column descriptor viewport is drawn, using original80-column
+row-major highlight coordinates. Invalid Pascal slots/record bounds remain
+explicit host errors, not claims about original unchecked behaviour.
+
+[designed: owner458] Country selection and Team Info use the same projection.
+The current-memory reader runs on every actual paint; hidden Team Info is lazy.
+Team Info has a compact column beside the existing tactic controls, and keeps
+contextual Back/Esc. Role case follows the accepted b/B and m/M schema. The
+legacy Python route keeps its missing-field fallback; ranking-top/strips remain
+outside this delivery.
+
+Evidence is distinguished: E015-r0007 snapshots0003/0120 provide genuine
+selection/friendly examples; E014-r0006 is the genuine year-one/nonzero-caps
+state. Authored host-image boundary controls are synthetic, never guest
+campaigns. The upstream genuine pre-match-menu snapshot is absent; that gate
+case rests on static reading and synthetic controls. Four upstream stale screens
+are excluded from the genuine matching set. F037's untracked r1 producer remains
+historical; its tracked r2 comparison is operative. No later unpublished sitting
+is claimed. Original fixtures/captures remain private; only hashes and metadata
+are in measurements/T144.

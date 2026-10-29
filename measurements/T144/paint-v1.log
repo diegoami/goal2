@@ -1,0 +1,267 @@
+test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data) ... ok
+test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records) ... ok
+test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads) ... ok
+test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen) ... ok
+test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen) ... ok
+test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure) ... ok
+test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card) ... ok
+test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) ... 
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=320, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=True) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=320, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=True) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=320, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=True) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=320, team_info=False) ... FAIL
+  test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=True) ... FAIL
+test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent) ... ok
+test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin) ... ok
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 4:
+'b'
+'B'
+
+- ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$']
+?                      -----          -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                           +++++          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 4:
+'b'
+'B'
+
+- ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$']
+?                      -----          -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                           +++++          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=1, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 4:
+'b'
+'B'
+
+- ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$']
+?                      -----          -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                           +++++          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 4:
+'b'
+'B'
+
+- ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$']
+?                      -----          -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                           +++++          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 4:
+'b'
+'B'
+
+- ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$']
+?                      -----          -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                           +++++          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='selection', factor=2, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 4:
+'b'
+'B'
+
+- ['G', 'S', 'C', 'C', 'b', 'B', 'D', 'm', 'M', 'F', '$']
+?                      -----          -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                           +++++          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 7:
+'m'
+'M'
+
+- ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$']
+?                                     -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                                          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 7:
+'m'
+'M'
+
+- ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$']
+?                                     -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                                          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=1, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 7:
+'m'
+'M'
+
+- ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$']
+?                                     -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                                          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 7:
+'m'
+'M'
+
+- ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$']
+?                                     -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                                          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=320, team_info=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 7:
+'m'
+'M'
+
+- ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$']
+?                                     -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                                          +++++
+
+
+======================================================================
+FAIL: test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) (fixture='friendly', factor=2, width=740, team_info=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 165, in test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts
+    self.assertEqual(widget.card['eleven'], card['eleven'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$'] != ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+
+First differing element 7:
+'m'
+'M'
+
+- ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'm', 'M', 'F', '$']
+?                                     -----
+
++ ['G', 'S', 'C', 'C', 'B', 'B', 'D', 'M', 'M', 'F', '$']
+?                                          +++++
+
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.702s
+
+FAILED (failures=12)

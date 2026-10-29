@@ -116,6 +116,12 @@ class CoreModel:
         return views.team(self.state)
 
     @presented
+    def country_card(self, country=None):
+        """[derived: T144/F036..F038] Fresh detached TEAM projection, no driver action."""
+        if country is None:country = views.team(self.state)['country']
+        return views.country_card(self.state, country)
+
+    @presented
     def card(self, player):
         return views.player_card(self.state, player)
 

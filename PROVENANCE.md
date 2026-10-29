@@ -14,6 +14,10 @@ is deliberate: a new row (or an updated commit) records it, and the source commi
 | goal2/engine/morale.py | diegoami/goal2-archaeology | 0ef880e1f6ec9bc12b3f12c3aaecb4d747d9d5cb | F020 | 2026-10-16 |
 | goal2/engine/team_card/manager.py | diegoami/goal2-archaeology | edab133aace9827afa99c8a4efa04e3586f3c567 | F034 proposed/static-adjacent; SHA256 1d4340eb8ab57c65c7d4186390842d769eaaf954ed7f205ca9ad83a3f1bba5bf | 2026-10-26 |
 | goal2/engine/team_card/country.py | diegoami/goal2-archaeology | aec8ddd1d896caef686aceda6f90b8f79ab0fbe6 | F035 proposed/static-adjacent; SHA256 d2ab97927ecd7ae269f9351f7244dde9eee56af41ffa774a34f520428c4c7b3a | 2026-10-26 |
+| goal2/engine/team_card/team_bars.py | diegoami/goal2-archaeology | a42c2cbe91300c8ee261b82fa993e665ed3f3325 | F036/F037/F038 proposed/static-adjacent; SHA256 4631ccf2c135a151800d0cddd6a84819aaf7ef0ce7b1c646fc746a2bb94582cf | 2026-10-28 |
+| goal2/engine/team_card/team_skills.py | diegoami/goal2-archaeology | a42c2cbe91300c8ee261b82fa993e665ed3f3325 | F036/F037/F038 proposed/static-adjacent; SHA256 1f530c1f7a9bad85af350343f222f8b702f508244ab7c7abd776da0dac858c6a | 2026-10-28 |
+| goal2/engine/team_card/team_performance.py | diegoami/goal2-archaeology | a42c2cbe91300c8ee261b82fa993e665ed3f3325 | F036/F037/F038 proposed/static-adjacent; SHA256 cd65009941455e7a0c1bd98a7d920ad3e57782f47e4940ccfe949c1a3e17200a | 2026-10-28 |
+| goal2/engine/team_card/team_characteristics.py | diegoami/goal2-archaeology | a42c2cbe91300c8ee261b82fa993e665ed3f3325 | F036/F037/F038 proposed/static-adjacent; SHA256 29ce61b550537fa0e98c31144124b7e1cd07a1bd2767fc8ff3d9c5b1a465efe0 | 2026-10-28 |
 
 | goal2/engine/original_match/README.md | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |
 | goal2/engine/original_match/__init__.py | diegoami/goal2-archaeology | 424d5998076da1e4efc399c2715689ddb44d3e1a | F004, F010, F013, F014, F018, F020, F023, F026, F027, F028, F029, F030; #250, #252 | 2026-10-17 |

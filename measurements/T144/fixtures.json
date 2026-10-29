@@ -1,0 +1,62 @@
+{
+  "source_commit": "a42c2cbe91300c8ee261b82fa993e665ed3f3325",
+  "files": [
+    {
+      "run": "E015-r0007",
+      "tag": "E015",
+      "manifest": "evidence/E015/E015-r0007.manifest.json",
+      "name": "snap-0003-20261011T141009Z.sav",
+      "bytes": 214932,
+      "sha256": "4e5c2d51fcfb9140c37ef64046b2a1e62644d76b12242ef01321013a7a0dd55e",
+      "asset": "4e5c2d51fcfb9140-snap-0003-20261011T141009Z.sav",
+      "class": "save",
+      "local_name": "T144-E015-snap-0003.sav",
+      "private_drive": {
+        "id": "1AQxtrMVnjuYKa7IqatpxiaZ9gJyJFm8B",
+        "url": "https://drive.google.com/file/d/1AQxtrMVnjuYKa7IqatpxiaZ9gJyJFm8B/view?usp=drivesdk",
+        "size": 214932,
+        "owner_only_verified": true
+      }
+    },
+    {
+      "run": "E015-r0007",
+      "tag": "E015",
+      "manifest": "evidence/E015/E015-r0007.manifest.json",
+      "name": "snap-0120-20261011T141631Z.sav",
+      "bytes": 225559,
+      "sha256": "e0050208da61a394d690791da72c1201c42214f6ce2f15abd8b194750b191e34",
+      "asset": "e0050208da61a394-snap-0120-20261011T141631Z.sav",
+      "class": "save",
+      "local_name": "T144-E015-snap-0120.sav",
+      "private_drive": {
+        "id": "1ShfZKX-A8i8fMYDgyLscmFMcZir21zXo",
+        "url": "https://drive.google.com/file/d/1ShfZKX-A8i8fMYDgyLscmFMcZir21zXo/view?usp=drivesdk",
+        "size": 225559,
+        "owner_only_verified": true
+      }
+    },
+    {
+      "run": "E014-r0006",
+      "tag": "E014",
+      "manifest": "evidence/E014/E014-r0006.manifest.json",
+      "name": "e014-cal3-y1.sav",
+      "bytes": 239193,
+      "sha256": "291d0eb3b0dcec348c0e166703f8033f795e2b4f1bc0dd4cd67f0888b8622b99",
+      "asset": "291d0eb3b0dcec34-e014-cal3-y1.sav",
+      "class": "save",
+      "local_name": "T144-E014-year-one.sav",
+      "private_drive": {
+        "id": "1LyiP9Kd8SAEKD6FOXJ4KT0eLH0HYKEkC",
+        "url": "https://drive.google.com/file/d/1LyiP9Kd8SAEKD6FOXJ4KT0eLH0HYKEkC/view?usp=drivesdk",
+        "size": 239193,
+        "owner_only_verified": true
+      }
+    }
+  ],
+  "private_store": {
+    "folder_id": "12fgdrQUQB4pHdq0ibY-NP-aU8jgNaRzc",
+    "limited_access_verified": true,
+    "inherited_public_view": "metadata only",
+    "uploaded_files_owner_only": true
+  }
+}

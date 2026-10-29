@@ -186,6 +186,43 @@ class Memory:
         labels = team_labels(record, manager, self.read_ds, self.read_code)
         return {k: labels[k] for k in ('status', 'skill')}
 
+    def _display_record(self, pointer, width, count, index, name):
+        """[derived: F007/F011] Exact bounded immutable records for pure readers."""
+        if type(index) is not int or not 0 <= index < count:
+            raise ValueError(f'{name} must be 0..{count - 1}')
+        return self.read_bytes(self.far(pointer) + width * index, width)
+
+    def country_record(self, index):
+        return self._display_record(COUNTRIES, COUNTRY_SIZE, 129, index, 'country')
+
+    def player_record(self, index):
+        return self._display_record(PLAYERS, PLAYER_SIZE, 3061, index, 'player')
+
+    def manager_record(self, index):
+        return self._display_record(MANAGERS, 3, 135, index, 'manager')
+
+    def country_panels(self, country):
+        """[derived: proposed F036/F037/F038, archaeology a42c2cbe] Current TEAM bars.
+
+        Pure callbacks replace the original panel's temporary quick-word writes.
+        Performance None preserves its undrawn template; no zero-bar substitute.
+        Delivered descriptor/position host refusals and off-table data are intact.
+        """
+        from goal2.engine.team_card.team_skills import team_skills
+        from goal2.engine.team_card.team_performance import team_performance
+        from goal2.engine.team_card.team_characteristics import team_characteristics
+        if type(country) is not int or not 1 <= country <= 128:
+            raise ValueError('country must be 1..128')
+        record = self.country_record(country)
+        return {
+            'team_skills': team_skills(record, self.player_record, self.country_record,
+                                      self.manager_record, self.read_ds, self.read_code),
+            'performance': team_performance(country, self.ds_byte(0x0c1e), self.ds_byte(0x0c1f),
+                                            (self.ds_word(0x9b34), self.ds_word(0x9b36)),
+                                            self.country_record, self.player_record, self.read_ds),
+            'characteristics': team_characteristics(record, self.player_record, self.read_ds),
+        }
+
     def manager_country(self, m):
         return self.byte(self.far(MANAGERS) + 3 * m)
 
@@ -549,10 +586,11 @@ def country_card(state, country):
     country's +0x2E, as the browser's F3 edits it), the world rank +0x2B, the continent's name (DS:6E92) and the rank
     within it +0x2A, the formation (the eleven's lines, DS:0D5C), the eleven's codes (DS:69A8) and the tactic words
     of the country's tactics byte +0x2D. [derived: proposed F034/F035, T137] TEAM labels use the delivered
-    current-country/selected-manager decoders. Remaining fields retain the Python route's gap names."""
+    current-country/selected-manager decoders. [derived: proposed F036/F037/F038, a42c2cbe]
+    The three TEAM panels use current bounded records; ranking-top and strips remain gaps."""
     from goal2.game.country_card import UNDECODED
     mem = Memory(state)
-    if not 1 <= country <= 128:
+    if type(country) is not int or not 1 <= country <= 128:
         raise ValueError("country must be 1..128")
     rank = _rankings(mem, country)
     team = squad(mem, country)
@@ -560,6 +598,7 @@ def country_card(state, country):
     formation = "-".join(str(sum(1 for p in eleven if p["line"] == line)) for line in LINES[1:])
     tactics = mem.country(country, 0x2D)
     labels = mem.country_labels(country)
+    panels = mem.country_panels(country)
 
     def word(element):
         bit = tactics >> (element - 1) & 1
@@ -567,13 +606,14 @@ def country_card(state, country):
             return mem.pstr(mem.ds * 16 + MARKING_WORDS + 11 * bit, 10)
         return mem.pstr(mem.ds * 16 + TACTIC_WORDS + 32 * element + 16 * bit, 15)
     return {"country": country, "name": rank["name"], "manager": mem.manager_name(mem.country(country, 0x2E)),
-            **labels,
+            **labels, **panels,
             "world": rank["world_rank"], "continent": rank["continent"], "continental": rank["continent_rank"],
             "formation": formation, "eleven": [p["code"] for p in eleven],
             "team_tactics": [(n, word(e)) for n, e in TEAM_TACTICS],
             "player_defaults": [(n, word(e)) for n, e in PLAYER_DEFAULTS],
             "players": [p["player"] for p in team], "squad": team,
-            "not_decoded": tuple(n for n in UNDECODED if n not in labels)}
+            "not_decoded": tuple(n for n in UNDECODED
+                                 if n not in {*labels, 'team skills', 'performance', 'characteristics'})}
 
 
 # [confirmed: named/seg_000E_01.c 000E:070B, 062F, 075F, 05F6] A bulletin is composed in the page buffer [DS:A96E]

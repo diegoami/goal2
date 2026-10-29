@@ -1,0 +1,16 @@
+test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_panels_t144.py", line 198, in test_actual_team_info_has_current_panels_and_preserves_contextual_back
+    self.assertTrue(window.core_team_panels.isVisible())
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'CoreWindow' object has no attribute 'core_team_panels'. Did you mean: 'core_team_name'?
+
+----------------------------------------------------------------------
+Ran 1 test in 0.408s
+
+FAILED (errors=1)
