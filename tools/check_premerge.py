@@ -104,9 +104,10 @@ SERIAL = ("test_pitch_observation", "test_pygame_pitch_view", "test_core_match_w
 # tests: they run first, slow tests on unless --fast, and a failure ends the gate before the full batch
 # (Windows run 40785633279 reported an 8 s reserve failure after about an hour). Chosen from the
 # modules that check page bounds or the 90 % reserve, by their measured slow-run time
-# (measurements/T145/); the SERIAL ones stay in their own stage.
+# (measurements/T145/); the SERIAL ones stay in their own stage, and T121, whose F7 keyboard case
+# lost focus among them on native Windows (#475), stays in the full batch.
 LAYOUT_FIRST = ("test_core_bulletin_t110", "test_core_team_back_t141", "test_core_pool_compare_t134",
-                "test_core_world_t113", "test_core_best_place_395", "test_core_extra_t119", "test_core_save_t121",
+                "test_core_world_t113", "test_core_best_place_395", "test_core_extra_t119",
                 "test_core_lineup_t114", "test_core_team_t107", "test_core_continuation_t111",
                 "test_core_desktop_t105", "test_core_takers_t120")
 
