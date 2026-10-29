@@ -26,8 +26,10 @@ to the owner. Its location is in `artifacts.json`:
 ```
 
 - By hand: open the folder and save the files into `.cache/`.
-- With [rclone](https://rclone.org), once per machine (a browser login; the remote sees only this
-  folder):
+- With [rclone](https://rclone.org), once per machine (a browser login). [designed: owner,
+  2026-10-29] The login reaches the owner's whole Drive: `root_folder_id` only sets where rclone
+  starts, it is no security boundary. Keep that token on the owner's machine; for CI, a Google
+  service account that this folder alone is shared with is the safer secret.
   `rclone config create goal2drive drive scope=drive root_folder_id=12fgdrQUQB4pHdq0ibY-NP-aU8jgNaRzc`.
   Then `python3 tools/artifacts.py pull` copies the folder into `.cache/`, `pull GOAL.DAT` one
   file, `push .cache/<file>` uploads one, and `where` prints the location.
