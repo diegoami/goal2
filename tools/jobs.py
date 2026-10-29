@@ -171,14 +171,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
     sub = parser.add_subparsers(dest="action", required=True)
     p = sub.add_parser("start");p.add_argument("name");p.add_argument("--cwd", type=Path)
-    p.add_argument("command", nargs=argparse.REMAINDER)
     sub.add_parser("list")
     p = sub.add_parser("wait");p.add_argument("name");p.add_argument("--timeout", type=float)
     p = sub.add_parser("tail");p.add_argument("name");p.add_argument("-n", type=int, default=20)
-    args = parser.parse_args(argv)
+    # The command is everything after the first "--", split off before argparse sees it: a
+    # REMAINDER positional would also swallow the options given before it (--cwd).
+    command = argv[argv.index("--") + 1:] if "--" in argv else []
+    args = parser.parse_args(argv[:argv.index("--")] if "--" in argv else argv)
     try:
         if args.action == "start":
-            command = args.command[1:] if args.command[:1] == ["--"] else args.command
             print(describe({**start(args.root, args.name, command, args.cwd), "state": "running"}))
         elif args.action == "list":
             found = jobs(args.root)

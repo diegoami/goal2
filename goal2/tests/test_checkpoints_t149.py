@@ -111,6 +111,16 @@ class Jobs(unittest.TestCase):
         self.assertIn("finished exit 0", run("list").stdout)
         self.assertEqual(run("tail", "cli").stdout.strip(), "out")
         self.assertEqual(run("wait", "nothing").returncode, 2)
+        elsewhere = Path(tempfile.mkdtemp());self.addCleanup(subprocess.run, ["rm", "-rf", str(elsewhere)])
+        placed = run("start", "placed", "--cwd", str(elsewhere), "--", sys.executable, "-c",
+                     "import os;print(os.getcwd())")
+        self.addCleanup(self.stop, "placed")
+        self.assertEqual(placed.returncode, 0, placed.stderr)
+        self.assertEqual(run("wait", "placed", "--timeout", "20").returncode, 0)
+        job = self.jobs.read(self.root, "placed")
+        self.assertEqual(job["command"], [sys.executable, "-c", "import os;print(os.getcwd())"])
+        self.assertEqual(run("tail", "placed").stdout.strip(), str(elsewhere.resolve()))
+        self.assertEqual(run("start", "nocommand").returncode, 2)
 
 
 class Snapshot(unittest.TestCase):
