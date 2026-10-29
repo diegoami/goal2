@@ -23,6 +23,26 @@ milestone review/playtest before publication. The remaining requested UI and por
 Windows batch stays required. Build-only Nuitka4.1.1 and declared build dependencies
 are approved in an isolated environment/CI (goal2#432comment6440424797).
 
+## Resuming authorised work
+
+[designed: owner handover, 2026-10-29] Continue in the owner's selected fresh Claude
+session, with the same task, fidelity and merge requirements. First read
+[AGENTS.md](AGENTS.md), [docs/process.md](docs/process.md) and the current
+[authoritative checkpoint on #308](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606),
+then recheck live PR heads, labels and checks. Status and pending runs belong on
+those issues/PRs; never infer completion from an old handover or a percentage estimate.
+
+The independent delivery clone is `/home/diego/projects/goal2-archaeology-engine`;
+`/home/diego/projects/goal2-archaeology` belongs to the other analysis session and
+must be preserved. Cloud checkouts use their own persistent workspace paths and
+[docs/cloud.md](docs/cloud.md); fetch the recorded remote branches/evidence rather
+than assuming local caches/private captures are present. Record actual models used.
+
+Never read or alter the owner's untracked `.claude/settings.local.json.clother-20261020-181204.bak`,
+`1` or `error1.txt`. Preserve active/unresolved work and unique evidence. No obsolete
+#253 automatic sequence, extra-country surname research, old-career migration or
+Unicorn performance optimisation is authorised by a resume.
+
 ## Working rules
 1. The main session plans, triages, talks to the owner and merges. It implements itself or spawns
    a subagent (`.claude/agents/implementer.md`) on its own judgment; the owner names a model only
