@@ -1,0 +1,8 @@
+ERROR: test_originals_and_archaeology_come_before_the_gate 
+FAIL: test_a_missing_secret_fails_unless_the_pr_comes_from_a_fork 
+FAIL: test_a_pinned_image_and_a_measured_timeout_under_six_hours 
+FAIL: test_it_runs_on_every_pr_on_main_and_on_dispatch_with_a_slow_input 
+FAIL: test_logs_only_through_the_refusal_filter_and_no_cache 
+FAIL: test_offscreen_qt_and_dummy_sdl 
+Ran 6 tests in 0.003s
+FAILED (failures=5, errors=1)
