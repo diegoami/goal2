@@ -287,3 +287,13 @@ operational status.
 - [T143](T143.md): preselect the original best captain and preserve manual choice (#453).
 
 - [T144](T144.md): consume decoded TEAM skills, performance and characteristics (#458).
+
+- [T145](T145.md): layout and page-reserve checks first in the pre-merge gate (#466).
+
+- [T146](T146.md): provisioned Linux PR gate (#467).
+
+- [T147](T147.md): wheel verification and portable Windows ZIP artifact (#468).
+
+- [T148](T148.md): native UI scaling jobs on Linux and Windows CI (#469).
+
+- [T149](T149.md): checkpoints and resumable work (#470).
