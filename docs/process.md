@@ -42,7 +42,13 @@ one, `git pull` and take the next free number.
    candidate uses. `--fast` never runs them; `--no-tests` leaves the game tests out.
    [designed: owner, 2026-10-20, #278] The **Windows** workflow (`.github/workflows/windows.yml`)
    runs on every PR and on `main`. It runs the same gate on a native Windows runner, with real
-   Windows Qt and SDL, the `spawn` worker and Windows file replacement. With the original files
+   Windows Qt and SDL, the `spawn` worker and Windows file replacement.
+   [designed: owner, 2026-10-29, T146] The **Linux** workflow (`.github/workflows/ci.yml`) runs the
+   same gate on every PR and on `main`, provisioned like a prepared checkout: the extras, the original
+   files from the owner's Drive (a missing secret fails it, except on a fork PR), the
+   goal2-archaeology clone, offscreen Qt and dummy SDL; dispatch it with **slow** for a full run. A
+   PR merges with it green as well. Locally, run the gate after `source .cache/cloud.env`: without
+   it, Qt and SDL use the WSLg display and the focus tests fail (T121, T134, T102, T138). With the original files
    (the `GOAL2_RCLONE_TOKEN` secret) it also runs the worker, save, page and two-window scenarios.
    A PR merges with it green as well. Run it with **slow** from the Actions tab for a milestone
    candidate. It uploads screenshots and logs only.
