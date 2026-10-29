@@ -12,9 +12,8 @@ session included.
   machine's `~/.config/rclone/rclone.conf` (the original-game files, [artifacts.md](artifacts.md)).
   With the owner's own Google OAuth client (rclone's shared one is being retired during 2026), also
   `RCLONE_DRIVE_CLIENT_ID` and `RCLONE_DRIVE_CLIENT_SECRET`.
-- Optional, for reviews by other model families from the cloud: the API keys of the CLI that
-  `tools/review_pr.sh` or `tools/milestone_review.sh` calls. Without them, the owner runs those
-  reviews locally.
+- No keys are needed for reviews: no session starts one; the owner runs each review from the prompt
+  the main session gives (CLAUDE.md rule 4).
 
 ## What happens at session start
 

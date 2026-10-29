@@ -29,7 +29,9 @@ one, `git pull` and take the next free number.
    `main` (they must fail).
 2. **Implement** on the work branch (below), in the checkout at hand: the main session itself, or the `implementer` subagent with the brief below.
    Commit and push after each step; open the PR as a draft after the first push.
-3. **Review, when warranted**: `tools/review_pr.sh <pr> <cli> <model>` posts one review comment.
+3. **Review, when warranted**: the main session gives the owner the review prompt
+   (`tools/review_pr.sh <pr> <cli> <model> --print`); the owner runs it on a model of their choice and
+   the reviewer posts one review comment. No session starts a review itself (owner, 2026-10-29).
    Rework goes back to the same branch; non-blocking findings become one `T<nn> follow-up` issue.
 4. **Checks**: every Done-when line on the PR head, and
    `python3 tools/check_premerge.py --expected-head <sha>` in a clean checkout at that head
@@ -80,8 +82,9 @@ You implement <T<nn>>. The task file above is the contract.
 
 ## 5. Reviews
 
-[designed: owner, 2026-10-21] Opening a PR starts no review: the main session opens it and goes on
-to its checks. Reviews are optional per PR (`tools/review_pr.sh`), run when the owner asks; the big
+[designed: owner, 2026-10-21; 2026-10-29] Opening a PR starts no review: the main session opens it
+and goes on to its checks. No session runs a review: when one is warranted, the main session writes
+the prompt and the owner runs it on the model they choose. Reviews are optional per PR; the big
 independent one is at each milestone
 ([milestone-review.md](milestone-review.md)). A review proves its findings (a command, or a
 mutation a test fails on) or labels them unverified. Blocking means a real player or implementer
@@ -114,8 +117,8 @@ issues in order, writes their task files, implements, checks and merges them wit
 stops only for a design decision the documents do not settle (CLAUDE.md rule 7), a Done-when that
 would have to weaken, and each milestone: there it opens the milestone issue
 ([milestone-review.md](milestone-review.md)) and waits for the independent review and the owner's
-playtest. Between milestones it may ask for an independent review of a risky PR by naming it for
-`tools/review_pr.sh`.
+playtest. Between milestones it may ask the owner for an independent review of a risky PR, with the prompt
+for it (it never starts one itself).
 
 ## 10. Stop and resume
 

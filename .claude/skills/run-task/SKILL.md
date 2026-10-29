@@ -1,6 +1,6 @@
 ---
 name: run-task
-description: Run goal2 tasks or fixes end to end on the work branch in the checkout at hand - implement (the main session or the implementer subagent), optionally review with tools/review_pr.sh, run the checks, merge (squash locally, merge commit in a cloud session) and report. Main session only.
+description: Run goal2 tasks or fixes end to end on the work branch in the checkout at hand - implement (the main session or the implementer subagent), give the owner a review prompt when one is warranted (never start a review), run the checks, merge (squash locally, merge commit in a cloud session) and report. Main session only.
 ---
 
 # /run-task [T<nn> | #<issue> ...]
@@ -17,7 +17,8 @@ and the branch is `fix/<issue>-<slug>`.
    full and process §4's block (on rework, the review's URL). Label `status:in-progress`. Read the
    subagent's final report before acting.
 3. **Review, when warranted** (engine, fidelity, vendored model, saves, timing, or the owner asks):
-   `tools/review_pr.sh <pr> <opencode|claude|codex> <model>`, any model. Relay findings in full;
+   never start one. Give the owner the prompt (`tools/review_pr.sh <pr> <cli> <model> --print`) and
+   stop for that PR until the owner says the review is posted (owner, 2026-10-29). Relay findings in full;
    rework on the same branch; non-blocking findings become one `T<nn> follow-up` issue
    (`triage:needed`).
 4. **Checks**: re-run every Done-when line on the PR head and
