@@ -57,11 +57,13 @@ Unicorn performance optimisation is authorised by a resume.
    `gh pr merge <pr> --squash --match-head-commit <sha>`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <sha>` (never squash), then
    `git pull --ff-only origin main` on the session branch.
-4. [designed: owner, 2026-10-29] No session starts a review. When a PR's risk warrants one
-   (engine, fidelity, vendored model, saves, timing), and at each milestone, the main session
-   writes the review prompt and gives it to the owner, who runs it on a model of their choice
-   (`tools/review_pr.sh <pr> <cli> <model> --print` shows the prompt; the milestone one is
-   [docs/milestone-review.md](docs/milestone-review.md)). Relay review findings in full.
+4. [designed: owner, 2026-10-29, as in malpaco] Only milestones mandate a review. A PR merges
+   when its Done-when lines and checks pass, with no per-PR review. At each milestone the main
+   session opens the milestone issue and gives the owner the review prompt
+   ([docs/milestone-review.md](docs/milestone-review.md)); the owner runs it on a model of their
+   choice. A per-PR review happens only when the owner asks for one, from a prompt the main
+   session writes (`tools/review_pr.sh <pr> <cli> <model> --print`). No session starts a review.
+   Relay review findings in full.
 5. The Done-when is not negotiable by the implementer: it stops and reports, never weakens an
    assertion, skips a test or edits its task file. The main session amends a Done-when on `main`
    with the reason in the commit message.

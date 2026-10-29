@@ -2,9 +2,10 @@
 
 [designed: owner, 2026-10-20, after Geoclick2027's release reviews] A milestone review is one big,
 independent review of everything merged since the previous milestone. It is **not run by the
-harness**: the owner (or the main session, when the owner asks) starts a reviewer CLI directly with
-`tools/milestone_review.sh`, on whatever tool and model the owner picks. Per-PR reviews are optional
-(CLAUDE.md rule 4); the milestone review is where independent eyes look at the integrated result.
+harness** and no session starts it: the main session gives the owner the prompt and the owner starts
+a reviewer CLI with `tools/milestone_review.sh`, on whatever tool and model they pick (owner,
+2026-10-29). It is the only mandated review (CLAUDE.md rule 4): PRs merge on their checks between
+milestones, so the milestone issue lists the PRs merged since the last milestone without a review.
 
 ## When
 

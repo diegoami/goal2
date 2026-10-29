@@ -23,16 +23,16 @@ one, `git pull` and take the next free number.
 
 ## 3. The loop
 
-`ready → implement → (optional review) → checks → squash merge → follow-ups → report`
+`ready → implement → checks → squash merge → follow-ups → report` (a review only at milestones, or when the owner asks)
 
 1. **Check** the task is ready and its Merge-after tasks are merged; run its Done-when lines on
    `main` (they must fail).
 2. **Implement** on the work branch (below), in the checkout at hand: the main session itself, or the `implementer` subagent with the brief below.
    Commit and push after each step; open the PR as a draft after the first push.
-3. **Review, when warranted**: the main session gives the owner the review prompt
-   (`tools/review_pr.sh <pr> <cli> <model> --print`); the owner runs it on a model of their choice and
-   the reviewer posts one review comment. No session starts a review itself (owner, 2026-10-29).
-   Rework goes back to the same branch; non-blocking findings become one `T<nn> follow-up` issue.
+3. **No per-PR review** (owner, 2026-10-29): the PR goes on to its checks and merges. Only when the
+   owner asks for a review of it does the main session write the prompt
+   (`tools/review_pr.sh <pr> <cli> <model> --print`); the owner runs it and the reviewer posts one
+   comment. Rework goes back to the same branch; non-blocking findings become one `T<nn> follow-up` issue.
 4. **Checks**: every Done-when line on the PR head, and
    `python3 tools/check_premerge.py --expected-head <sha>` in a clean checkout at that head
    (it runs every game test module; a test whose optional dependency, original-game file or
@@ -88,11 +88,11 @@ You implement <T<nn>>. The task file above is the contract.
 
 ## 5. Reviews
 
-[designed: owner, 2026-10-21; 2026-10-29] Opening a PR starts no review: the main session opens it
-and goes on to its checks. No session runs a review: when one is warranted, the main session writes
-the prompt and the owner runs it on the model they choose. Reviews are optional per PR; the big
-independent one is at each milestone
-([milestone-review.md](milestone-review.md)). A review proves its findings (a command, or a
+[designed: owner, 2026-10-21; 2026-10-29, as in malpaco] Only milestones mandate a review. A PR
+merges on its Done-when lines and checks; a per-PR review runs only when the owner asks for one. No
+session starts a review: the main session writes the prompt and the owner runs it on the model they
+choose. The milestone review ([milestone-review.md](milestone-review.md)) looks at everything merged
+since the last milestone, and its issue lists the PRs merged without a review. A review proves its findings (a command, or a
 mutation a test fails on) or labels them unverified. Blocking means a real player or implementer
 would hit it through normal use; a theoretical bypass of helper tooling is a follow-up. Before
 merging an approval with non-blocking findings, read them: a proven way past what the task
@@ -123,8 +123,7 @@ issues in order, writes their task files, implements, checks and merges them wit
 stops only for a design decision the documents do not settle (CLAUDE.md rule 7), a Done-when that
 would have to weaken, and each milestone: there it opens the milestone issue
 ([milestone-review.md](milestone-review.md)) and waits for the independent review and the owner's
-playtest. Between milestones it may ask the owner for an independent review of a risky PR, with the prompt
-for it (it never starts one itself).
+playtest. Between milestones it merges on checks; a per-PR review only when the owner asks for one.
 
 ## 10. Stop and resume
 
