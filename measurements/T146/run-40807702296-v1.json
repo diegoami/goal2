@@ -1,0 +1,16 @@
+{
+  "run": 40807702296,
+  "url": "https://github.com/diegoami/goal2/actions/runs/40807702296",
+  "event": "workflow_dispatch",
+  "slow": true,
+  "head": "see the run; task/T146-linux-gate at its first push",
+  "runner": "ubuntu-24.04, GitHub-hosted",
+  "original_files": "pulled from the owner's Drive; GOAL.DAT verified",
+  "gate_started_utc": "2026-10-29T02:41:42Z",
+  "gate_completed_utc": "2026-10-29T03:07:12Z",
+  "gate_wall_s": 1530,
+  "job_wall_s": 1632,
+  "result": "129/130 modules pass, 0 tests skipped; the one failure is test_ci_workflows_t146's timeout test, which waits for this receipt",
+  "timeout_minutes_chosen": 90,
+  "why": "about 3.3 times the measured slow job, leaving room for slower runners and more tests, well under the six-hour job limit"
+}
