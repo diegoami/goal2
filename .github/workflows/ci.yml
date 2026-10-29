@@ -26,8 +26,8 @@ concurrency:
 jobs:
   linux:
     runs-on: ubuntu-24.04
-    # TIMEOUT: set from the measured slow run (measurements/T146/), under the six-hour job limit.
-    timeout-minutes: 240
+    # A slow run took 25.5 min of gate and 27.2 min in all (measurements/T146/run-40807702296-v1.json).
+    timeout-minutes: 90
     defaults:
       run:
         shell: bash
@@ -85,8 +85,11 @@ jobs:
           slow=
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
           start=$(date +%s)
-          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee linux-premerge.log
+          # The wall time is printed whether the gate passes or fails, then the gate's status is the step's.
+          status=0
+          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee linux-premerge.log || status=$?
           echo "gate wall time: $(( $(date +%s) - start )) s" | tee -a linux-premerge.log
+          exit $status
       - name: Keep only logs
         if: always()
         run: |
