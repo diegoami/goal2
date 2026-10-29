@@ -22,6 +22,11 @@ migration is not required. The replacement must still pass fidelity, lifecycle a
 milestone review/playtest before publication. The remaining requested UI and portable
 Windows batch stays required. Build-only Nuitka4.1.1 and declared build dependencies
 are approved in an isolated environment/CI (goal2#432comment6440424797).
+[designed: owner, 2026-10-29] The accepted plain port runs under **PyPy 3.11** as goal2's engine runtime:
+a PyPy match-engine process beside the CPython/PySide6 UI, a PyPy runtime shipped in the portable
+build. Same code, same results (E034-03's drive and F40 identical, T79's 700 matches identical on
+PyPy: goal2-archaeology #620, #290), about 4 times CPython's speed. A Rust engine is developed in
+parallel in diegoami/goal2rust; this repository stays on the Python port until that one is equal.
 
 ## Resuming authorised work
 
