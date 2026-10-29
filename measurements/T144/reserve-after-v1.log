@@ -1,0 +1,58 @@
+test_back_control_keeps_existing_page_bounds_and_reserve (goal2.tests.test_core_team_back_t141.Navigation.test_back_control_keeps_existing_page_bounds_and_reserve) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_escape_restores_country_then_local_team_origin (goal2.tests.test_core_team_back_t141.Navigation.test_escape_restores_country_then_local_team_origin) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_modal_escape_closes_only_the_dialog (goal2.tests.test_core_team_back_t141.Navigation.test_modal_escape_closes_only_the_dialog) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_mouse_back_restores_country_and_repeated_entry (goal2.tests.test_core_team_back_t141.Navigation.test_mouse_back_restores_country_and_repeated_entry) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_a_refusal_shows_the_originals_reason_and_changes_nothing_else (goal2.tests.test_core_team_t107.Actions.test_a_refusal_shows_the_originals_reason_and_changes_nothing_else)
+Man-marking outside a match: 1771:4B61 offers four rows, no row 5 (a refusal E006 reaches). The finals and ... ok
+test_each_action_is_the_originals_keys_and_shows_its_effect (goal2.tests.test_core_team_t107.Actions.test_each_action_is_the_originals_keys_and_shows_its_effect) ... ok
+test_an_edit_runs_as_a_job_and_the_page_shows_the_original_afterwards (goal2.tests.test_core_team_t107.Desktop.test_an_edit_runs_as_a_job_and_the_page_shows_the_original_afterwards) ... This plugin does not support propagateSizeHints()
+ok
+test_club_position_mouse_selection_and_leaving_page_release_order (goal2.tests.test_core_team_t107.Desktop.test_club_position_mouse_selection_and_leaving_page_release_order) ... This plugin does not support propagateSizeHints()
+ok
+test_leaving_repositioned_player_follows_full_id_and_releases_order (goal2.tests.test_core_team_t107.Desktop.test_leaving_repositioned_player_follows_full_id_and_releases_order) ... This plugin does not support propagateSizeHints()
+ok
+test_reposition_stays_in_place_until_enter_without_marking (goal2.tests.test_core_team_t107.Desktop.test_reposition_stays_in_place_until_enter_without_marking) ... This plugin does not support propagateSizeHints()
+ok
+test_shift_r_cycles_backwards_and_r_forwards_on_the_same_row (goal2.tests.test_core_team_t107.Desktop.test_shift_r_cycles_backwards_and_r_forwards_on_the_same_row) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_team_and_pool_fit_and_show_no_table_or_check_box (goal2.tests.test_core_team_t107.Desktop.test_team_and_pool_fit_and_show_no_table_or_check_box) ... This plugin does not support propagateSizeHints()
+ok
+test_save_and_resume_after_edits_give_the_same_views_and_memory (goal2.tests.test_core_team_t107.Determinism.test_save_and_resume_after_edits_give_the_same_views_and_memory) ... ok
+test_the_driver_refuses_an_unlisted_key_and_stops_at_an_unexpected_screen (goal2.tests.test_core_team_t107.Keys.test_the_driver_refuses_an_unlisted_key_and_stops_at_an_unexpected_screen) ... ok
+test_the_views_equal_select_squad_and_the_team_tactics_at_e006 (goal2.tests.test_core_team_t107.TextOracleE006.test_the_views_equal_select_squad_and_the_team_tactics_at_e006) ... ok
+test_the_views_equal_the_screens_of_a_new_game (goal2.tests.test_core_team_t107.TextOracleNewGame.test_the_views_equal_the_screens_of_a_new_game) ... ok
+test_manager_zero_and_human_read_ability_not_confidence (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_manager_zero_and_human_read_ability_not_confidence) ... ok
+test_performance_signed_hybrid_half_and_rating_threshold (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_performance_signed_hybrid_half_and_rating_threshold) ... ok
+test_unavailable_starters_keep_the_divisor_eleven (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_unavailable_starters_keep_the_divisor_eleven) ... ok
+test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_valid_off_table_descriptor_and_host_label_refusal_remain_distinct) ... ok
+test_wrapped_negative_fitness_preserves_full_bar_length (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_wrapped_negative_fitness_preserves_full_bar_length) ... ok
+test_zero_words_are_skipped_only_by_skills_not_the_other_panels (goal2.tests.test_core_team_panels_t144.AuthoredBoundaries.test_zero_words_are_skipped_only_by_skills_not_the_other_panels) ... ok
+test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data (goal2.tests.test_core_team_panels_t144.LiveProjection.test_authored_gate_inputs_do_not_turn_unavailable_into_zero_data) ... ok
+test_callbacks_have_exact_widths_and_support_zero_and_human_records (goal2.tests.test_core_team_panels_t144.LiveProjection.test_callbacks_have_exact_widths_and_support_zero_and_human_records) ... ok
+test_complete_live_core_save_is_unchanged_around_display_reads (goal2.tests.test_core_team_panels_t144.LiveProjection.test_complete_live_core_save_is_unchanged_around_display_reads) ... ok
+test_genuine_friendly_matches_the_recorded_italy_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_friendly_matches_the_recorded_italy_screen) ... ok
+test_genuine_selection_matches_the_recorded_denmark_screen (goal2.tests.test_core_team_panels_t144.LiveProjection.test_genuine_selection_matches_the_recorded_denmark_screen) ... ok
+test_original_key_human_manager_and_tactic_changes_are_read_fresh (goal2.tests.test_core_team_panels_t144.LiveProjection.test_original_key_human_manager_and_tactic_changes_are_read_fresh) ... ok
+test_year_one_nonzero_caps_and_all_country_reads_are_pure (goal2.tests.test_core_team_panels_t144.LiveProjection.test_year_one_nonzero_caps_and_all_country_reads_are_pure) ... ok
+test_a_paint_reads_current_memory_again_without_set_card (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_a_paint_reads_current_memory_again_without_set_card) ... ok
+test_actual_team_info_has_current_panels_and_preserves_contextual_back (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_actual_team_info_has_current_panels_and_preserves_contextual_back) ... This plugin does not support propagateSizeHints()
+ok
+test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_genuine_card_paints_all_panels_in_wide_narrow_and_team_info_layouts) ... ok
+test_original_descriptor_highlight_wraps_without_clamping_its_extent (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_original_descriptor_highlight_wraps_without_clamping_its_extent) ... ok
+test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141 ... ok
+test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin (goal2.tests.test_core_team_panels_t144.VendorContract.test_four_delivered_decoders_are_byte_identical_to_the_accepted_pin) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 8.060s
+
+OK

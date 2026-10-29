@@ -285,6 +285,36 @@ class PaintedPanels(unittest.TestCase):
                         self.assertNotIn('TEAM BARS', drawn)
             self.assertEqual(state.memory_component(), before)
 
+    def test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds(self):
+        """[designed: T144] The compact column's minimum is below its natural size (T107/T141
+        reserve); there the whole column shrinks uniformly: every bar and title, nothing clipped."""
+        from goal2.core import views
+        from goal2.desktop.country_card import CountryCardView, TEAM_INFO_SHRINK
+        state = image('friendly');card = views.country_card(state, 16)
+        for factor in (1, 2):
+            with self.subTest(factor=factor):
+                widget = CountryCardView(team_info=True);self.addCleanup(widget.close)
+                widget.setProperty('pageScale', factor)
+                need = widget.minimumSizeHint();natural = widget.sizeHint()
+                self.assertLess(need.width(), natural.width());self.assertLess(need.height(), natural.height())
+                widget.resize(need);widget.set_card(card);drawn = [];original = widget.text
+                def text(painter, x, y, value, *args, **kwargs):
+                    drawn.append(str(value));return original(painter, x, y, value, *args, **kwargs)
+                widget.text = text;shot = widget.grab();self.app.processEvents()
+                for title in ('TEAM SKILLS', 'PERFORMANCE', 'CHARACTERISTICS'):
+                    self.assertIn(title, drawn)
+                self.assertAlmostEqual(widget.factor, TEAM_INFO_SHRINK, places=2)
+                self.assertEqual([row[-1] for row in widget.painted_bars], [22, 19, 20, 7, 9, 12, 14, 4])
+                raster = shot.toImage();pixel_scale = factor*shot.devicePixelRatio()
+                for x, y, bar_width, count, filled in widget.painted_bars:
+                    for cell in range(count):
+                        at_x = round((x+(cell+0.5)*bar_width/count)*pixel_scale)
+                        at_y = round((y-15*widget.factor)*pixel_scale)
+                        color = '#aaaaaa' if cell < filled else '#000000'
+                        self.assertEqual(raster.pixelColor(at_x, at_y).name(), color, (x, y, cell))
+                self.assertLessEqual(widget.bottom, need.height()/factor)
+                self.assertLessEqual(widget.right, need.width()/factor)
+
     def test_a_paint_reads_current_memory_again_without_set_card(self):
         from goal2.core import views
         from goal2.desktop.country_card import CountryCardView

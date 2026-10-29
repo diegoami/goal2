@@ -29,3 +29,11 @@ on-screen geometry, real bar-prefix pixels, contextual Back/Esc and identical
 Core saves before game actions. Invoke in separate native Qt factor1/2 processes
 with an ignored/private `--out` directory. Its receipts bind the Git head and all
 involved source hashes; original images are never copied into this directory.
+
+Windows run 40785633279 failed the existing T107/T141 page-reserve gates: Team
+Info's minimum equalled its 300x600 natural size, lifting every Team view's
+minimum to 1173x786 of 1177x786 (`reserve-before-v1.log`). Its minimum is now half
+that size and the compact column shrinks uniformly below its natural size; page
+minimums return to the pre-T144 1036x675 and 757x492 (`reserve-after-v1.log`, 35
+tests, no skips). `reserve-minimum-before-v1.log` is the new minimum test against
+89be1f37's source (constant supplied), failing on the unchanged 300/600 minimum.

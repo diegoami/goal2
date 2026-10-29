@@ -1,0 +1,31 @@
+test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141 ... 
+  test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds) (factor=1)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141 ... FAIL
+  test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds) (factor=2)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141 ... FAIL
+
+======================================================================
+FAIL: test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds) (factor=1)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/b89/goal2/tests/test_core_team_panels_t144.py", line 299, in test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds
+    self.assertLess(need.width(), natural.width());self.assertLess(need.height(), natural.height())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 300 not less than 300
+
+======================================================================
+FAIL: test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds (goal2.tests.test_core_team_panels_t144.PaintedPanels.test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds) (factor=2)
+[designed: T144] The compact column's minimum is below its natural size (T107/T141
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/b89/goal2/tests/test_core_team_panels_t144.py", line 299, in test_team_info_at_its_minimum_shrinks_every_panel_inside_its_bounds
+    self.assertLess(need.width(), natural.width());self.assertLess(need.height(), natural.height())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 600 not less than 600
+
+----------------------------------------------------------------------
+Ran 1 test in 0.101s
+
+FAILED (failures=2)

@@ -17,6 +17,9 @@ CODE_LINE = {'G': 'goalkeeper', 'S': 'defence', 'C': 'defence', 'b': 'defence', 
              'D': 'midfield', 'Ç': 'midfield', 'm': 'midfield', 'M': 'midfield', 'F': 'midfield',
              'w': 'midfield', 'W': 'midfield', '¢': 'attack', '$': 'attack'}
 TEAM_HIGHLIGHT, TEAM_EMPTY = '#aaaaaa', '#aa00aa'  # [derived: F036/F038] DOS attributes 0x70/0x05.
+# [designed: T144] Team Info's natural page size, and the smallest share of it the
+# compact panels shrink to uniformly, so the tactics view keeps the page's 10 % reserve (T107/T141).
+TEAM_INFO_WIDTH, TEAM_INFO_HEIGHT, TEAM_INFO_SHRINK = 300, 600, 0.5
 
 
 def characteristic_view(descriptors):
@@ -50,7 +53,7 @@ class CountryCardView(QWidget):
         from goal2.desktop.style import load_fonts
         load_fonts()
         self.team_info = team_info;self.reader = None;self.painted_bars = []
-        self.card = None;self.first = '';self.bottom = 0
+        self.card = None;self.first = '';self.bottom = 0;self.factor = 1.0
         self.setObjectName('countryCard')
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
@@ -64,10 +67,13 @@ class CountryCardView(QWidget):
 
     def sizeHint(self):
         s = self.scale()
-        return QSize(round((300 if self.team_info else WIDTH) * s), round((600 if self.team_info else HEIGHT) * s))
+        return QSize(round((TEAM_INFO_WIDTH if self.team_info else WIDTH) * s),
+                     round((TEAM_INFO_HEIGHT if self.team_info else HEIGHT) * s))
 
     def minimumSizeHint(self):
-        return self.sizeHint()
+        if not self.team_info:return self.sizeHint()
+        s = self.scale() * TEAM_INFO_SHRINK
+        return QSize(round(TEAM_INFO_WIDTH * s), round(TEAM_INFO_HEIGHT * s))
 
     def set_card(self, card, first='', reader=None):
         self.first = first;self.reader = reader
@@ -104,8 +110,9 @@ class CountryCardView(QWidget):
         font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace)
         font.setPixelSize(size);font.setBold(bold);painter.setFont(font)
         painter.setPen(QColor(color));painter.drawText(int(x), int(y), str(value))
-        self.bottom = max(self.bottom, int(y) + painter.fontMetrics().descent())
-        self.right = max(self.right, float(x) + painter.fontMetrics().horizontalAdvance(str(value)))
+        # Bounds and bar records are in page units, after any compact shrink.
+        self.bottom = max(self.bottom, (int(y) + painter.fontMetrics().descent()) * self.factor)
+        self.right = max(self.right, (float(x) + painter.fontMetrics().horizontalAdvance(str(value))) * self.factor)
 
     def fitted(self, painter, value, width, preferred, bold=False):
         font = QFont('DejaVu Sans Mono');font.setStyleHint(QFont.StyleHint.Monospace);font.setBold(bold)
@@ -137,7 +144,7 @@ class CountryCardView(QWidget):
 
     def bar(self, painter, x, y, filled, width=150, count=25):
         """[derived: F036/F037] Unchanged template glyphs, highlighted prefix."""
-        self.painted_bars.append((x, y, width, count, filled))
+        f = self.factor;self.painted_bars.append((x*f, y*f, width*f, count, filled))
         step = width / count
         for i in range(count):
             active = filled is not None and i < filled
@@ -185,8 +192,15 @@ class CountryCardView(QWidget):
         return end
 
     def compact_team(self, painter, card):
-        """The existing Team Info column leaves the roster/tactic controls visible."""
-        width = self.width()/self.scale()-32
+        """The existing Team Info column leaves the roster/tactic controls visible.
+
+        Below its natural size the whole column shrinks uniformly, never clipping a panel.
+        """
+        shown_width, shown_height = self.width()/self.scale(), self.height()/self.scale()
+        self.factor = min(1.0, shown_width/TEAM_INFO_WIDTH, shown_height/TEAM_INFO_HEIGHT)
+        if self.factor < 1:
+            painter.scale(self.factor, self.factor);shown_width = TEAM_INFO_WIDTH
+        width = shown_width-32
         title = card['name'].upper()+' / '+card['formation']
         self.text(painter, 16, 38, title, YELLOW, self.fitted(painter, title, width, 26, True), True)
         for row, (name, value) in enumerate((('Manager', card['manager']), ('Status', card['status']),
@@ -194,14 +208,14 @@ class CountryCardView(QWidget):
             self.text(painter, 16, 72+24*row, name, GOLD, 15)
             value = '' if value is None else value
             self.text(painter, 110, 72+24*row, value, GREEN,
-                      self.fitted(painter, value, self.width()/self.scale()-126, 16))
+                      self.fitted(painter, value, shown_width-126, 16))
         self.panels(painter, card, 16, 148, 1, group_width=min(340, width), compact=True)
 
     def paintEvent(self, event):
         # [designed: T144] Re-exposure uses current pure memory data, not a
         # cached quick-engine sum or a guest call. No update() loop in painting.
         if self.reader is not None:self._card_data(self.reader())
-        self.painted_bars = []
+        self.painted_bars = [];self.factor = 1.0
         painter = QPainter(self);painter.fillRect(self.rect(), QColor(BLACK));self.bottom = 0;self.right = 0
         s = self.scale();painter.scale(s, s)
         painter.setPen(QColor(CYAN));painter.drawRect(1, 1, round(self.width() / s) - 3, round(self.height() / s) - 3)

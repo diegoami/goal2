@@ -1,0 +1,62 @@
+test_back_control_keeps_existing_page_bounds_and_reserve (goal2.tests.test_core_team_back_t141.Navigation.test_back_control_keeps_existing_page_bounds_and_reserve) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+FAIL
+test_escape_restores_country_then_local_team_origin (goal2.tests.test_core_team_back_t141.Navigation.test_escape_restores_country_then_local_team_origin) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_modal_escape_closes_only_the_dialog (goal2.tests.test_core_team_back_t141.Navigation.test_modal_escape_closes_only_the_dialog) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_mouse_back_restores_country_and_repeated_entry (goal2.tests.test_core_team_back_t141.Navigation.test_mouse_back_restores_country_and_repeated_entry) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_a_refusal_shows_the_originals_reason_and_changes_nothing_else (goal2.tests.test_core_team_t107.Actions.test_a_refusal_shows_the_originals_reason_and_changes_nothing_else)
+Man-marking outside a match: 1771:4B61 offers four rows, no row 5 (a refusal E006 reaches). The finals and ... ok
+test_each_action_is_the_originals_keys_and_shows_its_effect (goal2.tests.test_core_team_t107.Actions.test_each_action_is_the_originals_keys_and_shows_its_effect) ... ok
+test_an_edit_runs_as_a_job_and_the_page_shows_the_original_afterwards (goal2.tests.test_core_team_t107.Desktop.test_an_edit_runs_as_a_job_and_the_page_shows_the_original_afterwards) ... This plugin does not support propagateSizeHints()
+ok
+test_club_position_mouse_selection_and_leaving_page_release_order (goal2.tests.test_core_team_t107.Desktop.test_club_position_mouse_selection_and_leaving_page_release_order) ... This plugin does not support propagateSizeHints()
+ok
+test_leaving_repositioned_player_follows_full_id_and_releases_order (goal2.tests.test_core_team_t107.Desktop.test_leaving_repositioned_player_follows_full_id_and_releases_order) ... This plugin does not support propagateSizeHints()
+ok
+test_reposition_stays_in_place_until_enter_without_marking (goal2.tests.test_core_team_t107.Desktop.test_reposition_stays_in_place_until_enter_without_marking) ... This plugin does not support propagateSizeHints()
+ok
+test_shift_r_cycles_backwards_and_r_forwards_on_the_same_row (goal2.tests.test_core_team_t107.Desktop.test_shift_r_cycles_backwards_and_r_forwards_on_the_same_row) ... This plugin does not support propagateSizeHints()
+This plugin does not support raise()
+ok
+test_team_and_pool_fit_and_show_no_table_or_check_box (goal2.tests.test_core_team_t107.Desktop.test_team_and_pool_fit_and_show_no_table_or_check_box) ... This plugin does not support propagateSizeHints()
+FAIL
+test_save_and_resume_after_edits_give_the_same_views_and_memory (goal2.tests.test_core_team_t107.Determinism.test_save_and_resume_after_edits_give_the_same_views_and_memory) ... ok
+test_the_driver_refuses_an_unlisted_key_and_stops_at_an_unexpected_screen (goal2.tests.test_core_team_t107.Keys.test_the_driver_refuses_an_unlisted_key_and_stops_at_an_unexpected_screen) ... ok
+test_the_views_equal_select_squad_and_the_team_tactics_at_e006 (goal2.tests.test_core_team_t107.TextOracleE006.test_the_views_equal_select_squad_and_the_team_tactics_at_e006) ... ok
+test_the_views_equal_the_screens_of_a_new_game (goal2.tests.test_core_team_t107.TextOracleNewGame.test_the_views_equal_the_screens_of_a_new_game) ... ok
+
+======================================================================
+FAIL: test_back_control_keeps_existing_page_bounds_and_reserve (goal2.tests.test_core_team_back_t141.Navigation.test_back_control_keeps_existing_page_bounds_and_reserve)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_back_t141.py", line 149, in test_back_control_keeps_existing_page_bounds_and_reserve
+    self.assertLessEqual(need.width(),0.9*page.width())
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1173 not less than or equal to 1059.3
+
+======================================================================
+FAIL: test_team_and_pool_fit_and_show_no_table_or_check_box (goal2.tests.test_core_team_t107.Desktop.test_team_and_pool_fit_and_show_no_table_or_check_box)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/goal2/goal2/tests/test_core_team_t107.py", line 346, in test_team_and_pool_fit_and_show_no_table_or_check_box
+    self.assertEqual(found, [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: Lists differ: ['(1440, 900) page 1 view 0: needs 1173x78[3088 chars]0 %'] != []
+
+First list contains 44 additional elements.
+First extra element 0:
+'(1440, 900) page 1 view 0: needs 1173x786 of 1177x786, more than 90 %'
+
+Diff is 3278 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 16 tests in 7.758s
+
+FAILED (failures=2)
+EXIT 1
