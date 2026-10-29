@@ -116,3 +116,24 @@ would have to weaken, and each milestone: there it opens the milestone issue
 ([milestone-review.md](milestone-review.md)) and waits for the independent review and the owner's
 playtest. Between milestones it may ask for an independent review of a risky PR by naming it for
 `tools/review_pr.sh`.
+
+## 10. Stop and resume
+
+[designed: owner, 2026-10-29, T149] Work can stop at any point and resume from durable state, in
+another session, model or computer.
+- **Where work stands** is the latest comment on the one open issue labelled `checkpoint`.
+  `python3 tools/checkpoint.py --post "<next action>" [--notes FILE]` posts it: each checkout's
+  branch, head and dirty count, the open PRs with heads, labels and checks, and the registered long
+  jobs, with the next action and any notes. `python3 tools/checkpoint.py` alone prints the snapshot.
+  List other checkouts with `--checkout DIR` or `GOAL2_CHECKOUTS`.
+- **Checkpoint** before stopping, after a merge, when a long job starts or ends, and when a blocker
+  is found. A checkpoint records state, not decisions: those go into the documents (CLAUDE.md rule 8).
+- **Long jobs** (a gate, a slow study, a native probe) start with
+  `python3 tools/jobs.py start <name> -- <command>`. They outlive the session; `list` says whether
+  each is running, finished with its exit code, or vanished, and `wait <name>` waits by PID
+  (CLAUDE.md rule 11a). Work that takes hours goes to CI instead, in batches under the six-hour job
+  limit, each keeping its completed records so a rerun skips what is already verified.
+- **Resume**: read the latest checkpoint comment, run `python3 tools/checkpoint.py`, recheck live
+  heads and checks, and continue from the next action. A vanished job is rerun, never assumed to have
+  passed.
+

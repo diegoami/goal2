@@ -6,8 +6,9 @@ Read [CLAUDE.md](CLAUDE.md): its rules apply to every client (Codex, Claude Code
 
 ## Active engine-replacement work
 
-Read the current [engine checkpoint](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606)
-on #308, then check live heads/checks and labels. Owner explicitly resumed and prioritized
+Read the latest comment on the open issue labelled `checkpoint` (#471; process.md §10) and run
+`python3 tools/checkpoint.py`, then check live heads/checks and labels. The handover before it is the
+[engine checkpoint](https://github.com/diegoami/goal2/issues/308#issuecomment-6442836606) on #308. Owner explicitly resumed and prioritized
 engine replacement on2026-10-27. This session owns the persistent independent upstream
 clone `/home/diego/projects/goal2-archaeology-engine`; the other archaeology session owns
 `/home/diego/projects/goal2-archaeology` and continues analysis. Preserve that other checkout.
