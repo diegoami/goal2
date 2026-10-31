@@ -97,9 +97,10 @@ class CompetitiveAdapterTests(unittest.TestCase):
                     if event.kind=='decision':
                         original.answer(quick=True) if quick and event.data['context']=='half_time' else original.answer()
                 self.assertEqual(guest.expected(),probe.kit_stamps(events))
-                self.assertEqual(outcome.result,original.result());self.assertEqual(outcome.memory,original.memory_component())
-                self.assertEqual([asdict(e) for e in outcome.events],
-                    [dict(kind=k,minute=m,score=sc,data=d) for k,m,sc,d in events])
+                # [designed: T151] goal2's route plays the sealed port; `original` is the accepted export (port_parity)
+                from goal2.tests.port_parity import assert_same_match
+                assert_same_match(self,outcome.result,outcome.memory,outcome.events,original.result(),
+                    original.memory_component(),[dict(kind=k,minute=m,score=sc,data=d) for k,m,sc,d in events])
                 after=Image(outcome.memory)
                 self.assertEqual(outcome.seeds,(after.rd(0x7B62),after.rd(0x8336)))
                 self.assertEqual(outcome.result['substitution_budget'],[5,5]);self.assertEqual(s,before)

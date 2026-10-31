@@ -6,7 +6,9 @@ from goal2.engine.original_match import Fixture, Image, Match
 from goal2.engine.original_match.check import EXPECTED_FAMILY
 from goal2.game.campaign import CampaignState, Fixture as Scheduled
 from goal2.game.watched_match import run_watched_match
-from goal2.game.watched_publication import WatchedPublication, ENGINE_ID
+from goal2.game.watched_publication import WatchedPublication
+from goal2.game.watched_schema import PORT_ENGINE_ID
+from goal2.tests.port_parity import comparable_memory, comparable_result
 from goal2.tests import test_watched_adapter as adapter
 from goal2.tests import requires
 direct = adapter.direct
@@ -35,15 +37,18 @@ class WatchedPublicationTests(unittest.TestCase):
                 self.assertEqual(owner.state,before)
                 publication.complete(job.token,outcome)
                 current=copy.deepcopy(owner.state);image=Image(memory)
-                self.assertEqual(owner.state.mem,memory)
+                # [designed: T151] the route plays the sealed port; `direct` is the original (port_parity)
+                self.assertEqual(owner.state.mem,outcome.memory)
+                self.assertEqual(comparable_memory(owner.state.mem),comparable_memory(memory))
                 self.assertEqual(owner.state.players,image.players())
                 self.assertEqual(owner.state.countries,image.countries())
                 self.assertEqual(owner.state.managed_squad,image.squad(7))
                 self.assertEqual(owner.state.rng_seed_7b62,image.rd(0x7B62))
                 self.assertEqual(owner.state.rng_seed_8336,image.rd(0x8336))
                 self.assertEqual([expected['score'],expected['ticks'],expected['draws'],expected['draws_digest']],want)
-                self.assertEqual(owner.state.last_match['original'],expected)
-                self.assertEqual(owner.state.last_match['engine'],ENGINE_ID)
+                self.assertEqual(owner.state.last_match['original'],outcome.result)
+                self.assertEqual(comparable_result(outcome.result),comparable_result(expected))
+                self.assertEqual(owner.state.last_match['engine'],PORT_ENGINE_ID)
                 self.assertEqual(owner.state.match_count,1)
                 with self.assertRaises(ValueError):publication.complete(job.token,outcome)
                 self.assertEqual(owner.state,current)
@@ -93,7 +98,7 @@ class WatchedPublicationTests(unittest.TestCase):
         publication.complete(job.token,outcome)
         self.assertEqual(owner.state.campaign.completed_fixture_ids,['original:21'])
         self.assertEqual(len(owner.state.campaign.results),1)
-        self.assertEqual(owner.state.campaign.results[0]['engine'],ENGINE_ID)
+        self.assertEqual(owner.state.campaign.results[0]['engine'],PORT_ENGINE_ID)
         current=copy.deepcopy(owner.state)
         with self.assertRaises(ValueError):publication.complete(job.token,outcome)
         self.assertEqual(owner.state,current)

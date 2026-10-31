@@ -10,7 +10,7 @@ from goal2.game import session_save
 from goal2.game.eligibility import available_words
 from goal2.game.watched_match import run_watched_match
 from goal2.game.watched_publication import WatchedPublication
-from goal2.game.watched_schema import LEGACY_ENGINE_ID,ENGINE_ID
+from goal2.game.watched_schema import LEGACY_ENGINE_ID,ENGINE_ID,PORT_ENGINE_ID
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests.test_watched_adapter import direct
 from goal2.tests import requires
@@ -72,14 +72,15 @@ class LegacyCompatibilityTests(unittest.TestCase):
         job=pub.begin(fixture)
         expected,memory,events=direct(job.state,fixture)
         outcome=run_watched_match(job.state,template,fixture,record_draws=True)
-        self.assertEqual(outcome.result,expected);self.assertEqual(outcome.memory,memory)
-        self.assertEqual([asdict(event) for event in outcome.events],events)
+        # [designed: T151] the route plays the sealed port; `direct` is the original engine
+        from goal2.tests.port_parity import assert_same_match
+        assert_same_match(self,outcome.result,outcome.memory,outcome.events,expected,memory,events)
         pub.complete(job.token,outcome)
         self.assertEqual(owner.state.campaign.results[:-1],old_history)
-        self.assertEqual([row['engine'] for row in owner.state.campaign.results],[LEGACY_ENGINE_ID,ENGINE_ID])
+        self.assertEqual([row['engine'] for row in owner.state.campaign.results],[LEGACY_ENGINE_ID,PORT_ENGINE_ID])
         self.assertEqual(owner.state.last_match['original']['kit'],'4')   # [designed: T150] the current kit's label
-        self.assertEqual(owner.state.last_match['engine'],ENGINE_ID)
-        self.assertEqual(owner.state.mem,memory)
+        self.assertEqual(owner.state.last_match['engine'],PORT_ENGINE_ID)
+        self.assertEqual(owner.state.mem,outcome.memory)
         after=Image(memory)
         self.assertEqual(owner.state.rng_seed_7b62,owner.state.campaign.world.results[-1]['seed_after'])
         self.assertEqual(owner.state.rng_seed_8336,outcome.seeds[1])
