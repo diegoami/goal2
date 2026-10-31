@@ -14,6 +14,7 @@ words are its squad (slots 1..11 the eleven, F029), +0x2D its team tactics (bit 
 (1-based) is the 8 bytes at [DS:A92B] + 8n - 8: +0 the watch mark (0xFE) or a score, +2 the kind (1 a friendly),
 +4 and +6 the two countries (F023, F024, F030); the game record at DS:A923 holds the fixture index +0x26, the
 fixture count +0x28 and the year word +0x38 (route_fixture 000E:6CA7; 0791:2648)."""
+import base64
 import hashlib
 import io
 import zipfile
@@ -112,6 +113,47 @@ class Image:
         self.memory = bytearray(memory_component[MEM_BASE:])
         self.load = find_load_segment(self.memory)
         self.DS = self.load + GOAL_DS_PARAGRAPH
+        self.tables = None          # an image built from goal2's state and GOAL.EXE's tables (from_state) holds them
+
+    @classmethod
+    def from_state(cls, state, tables):
+        """The sealed engine's input (T80): goal2's state (`state_of`) and GOAL.EXE's constant tables
+        (port.tables.load, from a folder the caller gives), never an image of the original. The memory is the
+        state's, GOAL.EXE's load module (zero in the state) is the tables, and the initialised bytes the game
+        had changed are the state's again, as are the code-data bytes that differed from the tables (#638). Every
+        entry is checked before it is written: a byte value, inside its table (#639)."""
+        from .port.tables import MODULE_SIZE, DS_PARAGRAPH, DS_INIT, TablesError
+        if not isinstance(state, dict) or state.get("schema") != STATE_SCHEMA:
+            raise ValueError(f"not a state of schema {STATE_SCHEMA}")
+        if state["tables_sha256"] != tables.sha256:
+            raise TablesError("the state was made against other tables")
+        areas = {off + i for off, raw in tables.code_data for i in range(len(raw))}
+        for key, inside, where in (("initialised", lambda o: 0 <= o < DS_INIT, "DS:0000..7B6F"),
+                                   ("code_data", areas.__contains__, "GOAL.EXE's code-data areas")):
+            entries = state.get(key)
+            if not isinstance(entries, list):
+                raise ValueError(f"the state has no {key} list")
+            for entry in entries:
+                if not (isinstance(entry, list) and len(entry) == 2 and all(type(x) is int for x in entry)
+                        and inside(entry[0]) and 0 <= entry[1] <= 255):
+                    raise ValueError(f"the state's {key} entry {entry!r} is not a byte inside {where}")
+        load = state["load"]
+        memory = bytearray(zlib.decompress(base64.b64decode(state["memory"])))
+        if len(memory) < 0x110000:
+            raise ValueError("the state's memory is shorter than the guest's")
+        module = load * 16
+        if any(memory[module:module + MODULE_SIZE]):
+            raise ValueError("the state holds bytes of GOAL.EXE's load module: a state leaves them out")
+        tables.place(memory, load)
+        ds = module + DS_PARAGRAPH * 16
+        for off, value in state["code_data"]:
+            memory[module + off] = value
+        for off, value in state["initialised"]:
+            memory[ds + off] = value
+        self = cls.__new__(cls)
+        self.header, self.memory, self.load, self.DS, self.tables = bytes.fromhex(state["header"]), memory, load, \
+            load + GOAL_DS_PARAGRAPH, tables
+        return self
 
     @classmethod
     def from_savestate(cls, data):
@@ -175,8 +217,38 @@ class Image:
         return sha256(self.memory_component())
 
     def build_problems(self):
-        """Where this image differs from the GOAL.EXE the kit was made on ([] when it does not)."""
-        return build_problems(self.memory, self.load)
+        """Where this image differs from the GOAL.EXE the kit was made on ([] when it does not). An image from
+        goal2's state holds no code: its tables were checked against their manifest's digests when loaded."""
+        return [] if getattr(self, "tables", None) is not None else build_problems(self.memory, self.load)
+
+    def state(self, tables=None):
+        """goal2's state in this image (state_of), against this image's own tables unless others are given."""
+        return state_of(self, tables or self.tables)
+
+
+STATE_SCHEMA = "original_match.state/2"     # /2: the code-data bytes that differ from the tables (#638)
+
+
+def state_of(image, tables):
+    """goal2's state in an image of the original, as the sealed engine takes it (T80, Image.from_state): the
+    whole memory with GOAL.EXE's load module (its code and the initialised data DS:0000..7B6F) left out, and
+    the initialised bytes whose values differ from the tables (the game set them after start-up: 26 in the
+    admitted family's sources, the main RNG word DS:7B62 among them), and likewise the bytes of the code-data
+    areas that differ from the tables (#638: on the reference image E006-r0001, the DOS loader's relocation of the
+    set-DS stub's immediate at 2382:0132; the port reads no such byte, read map T80a). The rest of the memory (DS:7B70..FFFF,
+    the records, the heap, the screen) is the game's, not GOAL.EXE's. [derived: experiments/E036-match-port/
+    out/T80/b/inputs-v1.md, probe v5: 75 of 75 identical from tables plus this state]"""
+    from .port.tables import MODULE_SIZE, DS_PARAGRAPH
+    memory = bytearray(image.memory)
+    module = image.load * 16
+    ds = module + DS_PARAGRAPH * 16
+    changed = [[i, memory[ds + i]] for i, b in enumerate(tables.ds) if memory[ds + i] != b]
+    code = [[off + i, memory[module + off + i]] for off, raw in tables.code_data for i, b in enumerate(raw)
+            if memory[module + off + i] != b]
+    memory[module:module + MODULE_SIZE] = bytes(MODULE_SIZE)
+    return {"schema": STATE_SCHEMA, "load": image.load, "header": bytes(image.header).hex(),
+            "tables_sha256": dict(tables.sha256), "initialised": changed, "code_data": code,
+            "memory": base64.b64encode(zlib.compress(bytes(memory), 9)).decode("ascii")}
 
 
 def names_and_templates(read, ds, far):
