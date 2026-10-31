@@ -1,9 +1,56 @@
 # original_match: the original's watched match, played interactively on goal2's state
 
 For a goal2 session. You need nothing of goal2-archaeology but this folder and one image goal2 already fetches.
-The match is the original game's own code (`run_match` 0791:F1F6, then its post-match player update 0791:B7FA)
+By default the match is the original game's own code (`run_match` 0791:F1F6, then its post-match player update 0791:B7FA)
 run under Unicorn; this kit answers the original's key reads, at the original's own decision points, with the
 keys a manager would press. Nothing of the original is in this folder: its code and data come from the image.
+
+The explicit assembly mode `Match(image, fixture, engine="port")` instead runs all
+registered Python translations on plain memory, without a Unicorn object or
+original-instruction execution. The original backend remains the default and
+reference. With an image it reads the original's constant data from that image; sealed (below), from
+GOAL.EXE's tables and goal2's state alone; goal2's adoption is a separate delivery gate. Port `save()`/`load()` preserve the explicit backend, including pending Python
+frames reconstructed by deterministic action replay (see Saving below). Historical
+unmarked checkpoints keep the original engine; unknown, stale port or inconsistent
+outer/origin backend identities are refused before either machine is constructed.
+
+The family CLI accepts `--engine port --no-unicorn` to install positive import
+denial before kit loading, including pool workers. Optional record `engine`
+metadata identifies the backend without changing evidence fields; an existing
+output from another backend is refused. Port raw `--count`, `--find-ranges` and
+`--checkpoint` are refused explicitly. The runtime checker also accepts engine
+selection/import denial via same-process interpreter replacement; its checkpoint-dependent steps use the same backend-preserving save/load API.
+The family CLI checkpoint wrapper remains explicitly refused in port mode; its
+separate worker checkpoint envelope has not yet been admitted.
+
+## The sealed engine (T80): no image, no Unicorn
+
+The port needs no byte of GOAL.EXE at run time beyond its constant tables, which the game builds once from the
+player's own GOAL.EXE and never ships (`tools/static/port_tables.py extract --exe GOAL.EXE --out DIR` in
+goal2-archaeology; it refuses a GOAL.EXE that is not the registered one, and writes the folder `tables.load`
+reads: `manifest.json`, `ds.hex`, `code_data.hex`). Its input is goal2's state:
+
+```python
+from goal2.engine.original_match import Image, Match, Fixture
+from goal2.engine.original_match.port import tables
+
+t = tables.load(tables_dir)                 # manifest.json, ds.hex, code_data.hex; refused if not the manifest's
+state = Image.from_memory_component(state_mem).state(t)   # once, from a memory goal2 holds: goal2's state
+m = Match(Image.from_state(state, t), Fixture(first=7, second=19, index=40), managed=7, engine="port")
+for ev in m.events():
+    ...
+state = m.records_after()                   # goal2's state after the match and its post-match update
+```
+
+A state (`image.state_of`, JSON-able) is the whole memory with GOAL.EXE's load module left out (its code and
+the initialised data DS:0000..7B6F), plus the initialised bytes the game changed after start-up and the
+code-data bytes that differ from the tables (#638: DOS relocated one word there on the reference image);
+`Image.from_state` refuses one that holds module bytes, was made against other tables, or has an entry that is
+not a byte inside its table (#639). The schema is `original_match.state/2`. Every admitted
+match, and the kit's check, are the original's from a state and the tables
+(goal2-archaeology `experiments/E036-match-port/out/T80/`):
+
+    python3 -m goal2.engine.original_match.check --engine port --no-unicorn --state STATE.json --tables DIR --family
 
 ## Get it (once)
 
@@ -11,7 +58,7 @@ keys a manager would press. Nothing of the original is in this folder: its code 
    (source `diegoami/goal2-archaeology`, the commit you copied, findings F004 F010 F013 F014 F018 F020 F023 F026
    F027 F028 F029 F030, issues 250 and 252). Never edit it there; changes come upstream.
 2. **unicorn** (approved, goal2 #97): `pip install unicorn` (2.1.x; Debian/Ubuntu: `python3-unicorn`). The package
-   imports without it; only creating a `Match` needs it (a clear error otherwise), so goal2's quick path keeps
+   imports without it; only creating a default `Match(engine="original")` needs it (a clear error otherwise), so goal2's quick path keeps
    working without it.
 3. **The image** is goal2's own E006-r0001 (release E006, SHA-256 `e0afff67…657d`, the file
    `tools/measure_p1.py` fetches): `assets.reference_image(".cache")` fetches it with `gh` and checks its hash.
@@ -89,7 +136,7 @@ The calls: `Fixture(first, second, index=None, kind=1)` (team 0, team 1 = the ho
 image's own fixture number; `kind` the fixture's kind byte, one the original's builders write: 1 a friendly, 2, 3,
 5, 6, 7, 8, 101-103, 200-203; see Competitive fixtures); `Match(image, fixture, *, managed=None, captain=None,
 seed=None, players=None, countries=None, substitutions=None, ticks=False, record_draws=False, delay_byte=None,
-timeout_s=60)` (`managed` defaults to the image's human country, `captain` to the original's pick, `substitutions`
+timeout_s=60, set_piece=False)` (`managed` defaults to the image's human country, `captain` to the original's pick, `substitutions`
 to the original's budget; the last three are for the engine check); `m.events()`,
 `m.answer(...)`, `m.pause()`, `m.save()`, `Match.load(blob)`, `m.result()` (once `m.over`), `m.memory_component()`,
 `m.image()`, `m.pitch()`, `m.screen_text()`, and the read-only `m.over`, `m.score`, `m.minute`, `m.waiting` (the
@@ -158,13 +205,18 @@ knockout example, penalties watched and as quick results, one decided in extra t
 `sending_off`, `injury`, `substitution`, `half_time`, `full_time`, `decision`, `tactics`, `position`,
 `player_tactics`, `substitution_requested`, `refused`, `end`, `tick`, `extra_time`, `shootout` and `shootout_kick`
 (E034 `save_boundaries_competitive.py`: three competitive scenarios, every boundary, the extra-time decisions and the
-shoot-out order before and after their answers). A saved match of kit version 1 is refused by version 2. `save()` accepts all of them, a `decision`
+shoot-out order before and after their answers). Kit version 4 loads version 2 and 3 saves, and refuses version 1.
+Version 2 saves load without ports. `save()` accepts all of them, a `decision`
 before `answer()` included (the loaded match has `m.waiting` set: answer it, as the original is still asking; taking
 the next event unanswered plays on) and after it, and events queued but not yet taken are saved with it. Straight and
 resumed are the same match: the remaining events (kind, minute, score, data) and the result are equal. No boundary is
-refused on purpose. `save()` still raises `MatchError("save between events, not while the kit drives a screen")` if
+refused on purpose. [derived: `answer()` schema] Loading restores the sorted tactic,
+position and marking pairs as tuples, including nested own-tactic pairs, in both
+in-progress decision records and completed results. Substitution and shoot-out
+orders remain lists; JSON encoding itself is unchanged. `save()` still raises `MatchError("save between events, not while the kit drives a screen")` if
 called while the kit is inside one of the original's team screens, which goal2 cannot reach, as no event is taken
-from `events()` in the middle of a screen. The check (E033 `save_boundaries.py`) saves and resumes at the first
+from `events()` in the middle of a screen. A proved match is still refused. Live port frames are reconstructed
+by replay on load ("Ports" below). The check (E033 `save_boundaries.py`) saves and resumes at the first
 event of every kind a run yields, at every decision before and after its answer and at the last event, over seven
 scenarios (two fixtures, goal2 managing the other country, an injury run, a run with sendings off, a pause with
 every kind of answer and a refused eleven, a quick result with `tick` events).
@@ -178,10 +230,14 @@ every kind of answer and a refused eleven, a quick result with `tick` events).
 | `pause` | when you call `m.pause()` | asked for: the original offers them at its next stoppage | made now |
 | `extra_time` | before each extra-time half (`half` 1 or 2) of a decider level after 90 minutes | made now | as above |
 | `shootout_order` | the shoot-out, before the first kick (`available`: the eleven who can take one; `takers`: how many the original wants) | none | `shootout_order` only |
+| `set_piece` | with `set_piece=True`, the managed side's original taker prompt (`role`: 2 corner, 3 penalty, 4 free kick, 5 goal kick; `eleven`, `available`, `current`) | none | `taker` only |
 
 `answer(substitutions=[(off, on)], tactics={element: bool}, positions={player: code}, marking={player: opponent
 or 0}, own_tactics={player: {element 1..4: True/False/None}}, quick=True, speed=0..5, shootout_order=[player, ...])`; no
-argument plays on. `shootout_order` (at that decision only): distinct players of `available`, the first takers in
+argument plays on. At `set_piece`, `answer(taker=player)` selects an available eleven player through the original's
+arrow and Enter keys. No answer keeps the original pick. A `set_piece` event reports `role`, `team` and the
+accepted `player`, observed from the original routine's returned AX, after its validation. With the opt-in off,
+these prompts and events retain their previous behavior. `shootout_order` (at that decision only): distinct players of `available`, the first takers in
 order; the rest follow as the original's Enter gives them (the highlighted player, from the top of the eleven). No
 answer is the original's result for a manager who only presses Enter: the eleven in squad order, the keeper first.
 If the original refuses the result (its message, e.g. "Denmark has too many goalkeepers"), the same decision comes
@@ -240,11 +296,167 @@ What the kind changes, all the original's own code (E034 notes):
 - The post-match update runs (energy recovery, form and confidence from the result: F018, F019); the original's
   news pages after a fixture do not. Read the new player bytes from `memory_component()`.
 
+## Ports (the port mode; goal2-archaeology's route C, T58)
+
+**For goal2: nothing changes until it passes `ports`.** Without `ports` the kit runs only the original's code, as
+before; the folder `port/` comes along when you vendor the kit and does nothing unless named. What the port mode
+changed that goal2 sees anyway: `VERSION` is 4 (live port frames use replay on load; version 2 and 3 saves still load), and
+Machine's write hooks go through `Machine.on_write`.
+
+`Match(..., ports=["pilot"])` runs Python translations of the original's routines (goal2-archaeology's E036, route
+C of its match-engine plan) in place of the original's routines, from each routine's entry, returning as the
+listing's `ret n` / `retf n`; everything else stays the original's code. `"pilot.coin-swapped"` names one of a
+module's variants (falsifiers, each a one-line change that must change a match), `"all"` every module.
+`result()["ports"]` gives the names and each ported routine's calls; a saved match keeps its ports and
+`Match.load` puts them back. `python3 -m ...original_match.check --family --ports pilot` runs every step with the
+ports (each must PASS); with `--variant pilot.coin-swapped` the family step must FAIL (it prints each seed: the same,
+changed or stopped; a step a port stops FAILs and the next steps still run).
+
+- **One module per task**, `port/<name>.py`, standard library only, holding no byte of the original (addresses,
+  offsets and constants, each citing its listing line). It registers its own ports: `PORTS = Registry("<name>")`,
+  `@PORTS.port("0791:8889", ret="ret 2")`, `PORTS.variant(...)`, `PORTS.stub(address, ret, value, why)` (a
+  routine replaced by a declared return value). A port is `fn(mem, variant)`; an int it returns is AX (DX:AX with
+  `long=True`).
+- **The memory view** (`port/mem.py`): a port reads and writes only through `mem`. Each write names the original's
+  instruction (`mem.w8(linear, value, at="0791:8711")`) and reaches the kit's watches and the draw record as that
+  instruction's write would (Unicorn fires no write hook for a host write, so `Machine.write_as` calls them); a
+  write past the view would lose an event or a draw without an error. `mem.arg(i)`, `mem.frame(bp)` (a nested
+  procedure's parent frame is `mem.frame(mem.arg(0))`), `mem.enter(n, at)` (the listing's prologue, for site logic
+  that reads the routine's frame). `MachineMem` is the kit's machine, `PlainMem` plain memory (tests; later the
+  engine without Unicorn).
+- **The kit's sites inside a ported routine** fire at the listing's point: `mem.site("0791:F2E3")` runs the kit's
+  hooks there; `mem.read_key(site)` and `mem.keypressed(site)` answer as the kit's 214B:08DD and 0723 hooks do
+  from that return address. A stop such a hook makes for queued events takes effect at the port's return (the run
+  resumes there as a fresh start, not a replay); a decision there is refused (`PortError`: a port cannot be
+  suspended).
+- **The replay rule**: a port runs after every kit hook at its entry and only when none of them stopped, so a hook
+  replayed on resume (`replay=True`) never runs a port twice.
+- **Guest calls** (T59, `port/guest.py`): a port calls a routine that is still the original's as the listing does,
+  by yielding it: `ax = yield call("0791:8062", *args, ret_to="0791:6E23", far=False)` (the arguments pushed in the
+  order given, then the return address, the instruction after the listing's call; `far=True` for `call far` or
+  `push cs; call near`). The callee runs as guest code: the kit's hooks fire in it, its writes and draws reach the kit,
+  a ported callee runs as its port, and the port resumes, with the callee's AX, when the guest reaches `ret_to` with the
+  stack where the call left it. A decision the kit stops for inside the call stops the match as anywhere else
+  (`Match.port_frames()` names the waiting frames) and the match goes on exactly once it is answered.
+  Saving a live port frame includes an initial checkpoint and the sequence of public `answer()` and `pause()` calls
+  at their event boundaries. Loading replays from that checkpoint to reconstruct the suspended Python generators;
+  it repeats the match up to the save point, increasing load time and save size. It checks every memory byte,
+  register, kit state and pending call against the saved state, raising `MatchError` on divergence. This requires
+  deterministic ports and public inputs; private machine/state edits after play starts are unsupported.
+  A port that calls nothing is a plain function, as before.
+  With the frame module (`port/frame.py`, T69: play_match, the halves, the tick loop, the sweep, the clock) installed,
+  those ports' frames wait for the whole of play; replay permits saving at pauses and decisions in between.
+- **The stack** (T60, `port/runtime.py` `Regs`): the memory digests a family run takes (records.py: DS, 64 KiB from
+  the data segment) include the stack segment, so the bytes a routine's frame leaves below SP (the saved BP, the locals,
+  the arguments and return addresses it pushed for the routines it calls, and those routines' frames) are part of what
+  a ported match must equal at its end: S/quick-30 with the first geometry ports differed in 102 bytes of old string
+  residue the original's frames had overwritten and the ports' had not. The proof (below) leaves the dead frame out,
+  so it does not see this; the family comparison does. A port therefore writes its frame as the listing's code
+  does: `R.enter(n)` / `R.leave()`, `R.push(w)`, `R.local8(off, v)`, and `invoke(...)` for a call of another routine
+  written in Python (its pushes, the return address, the callee's frame). `experiments/E036-match-port/out/T60/fuzz.py`
+  compares a port against the original on random inputs, the dead frame included (the stack is pre-filled with random
+  bytes, so a missing or extra write shows).
+- **The proof** (T59, `port/prove.py`): `Match(..., ports=[...], prove=N)` runs every call of a ported routine from
+  the main RNG's N-th draw on side by side with the original's (E021's rule). The port runs first, live (it is the
+  match: its decisions are asked and answered once), recording its writes and every kit site it reaches; then it is
+  undone and the original runs muted from the same state, the kit's answers at those sites replayed to it in order.
+  An answer is replayed only to the inputs it was given: every byte, register (flags and segments included) and stack
+  word the kit's handlers read at a site, and those it read while the match stood stopped there (a decision's answer),
+  must be the original's when the original reaches the site, else `ProofError` names the site and what differs; each
+  site must also come after the same written bytes in both runs. The kit's write listeners (`on_write`, `watch`) are
+  proved the same way: each call in the port's run is paired with the original's same write, its inputs (`pc()`
+  included) compared and its answer applied. A ported routine called inside a proved call runs as its port, and its
+  returned registers are compared with the original's same call at its return. A stop made by a write listener or by
+  a site a port fires is refused under a proof (`PortError`).
+  The written bytes in order outside the routine's dead frame, the sites, and the returned registers (AX and DX
+  included, but where a routine's result is declared dead at one return address with the listing's evidence) must
+  be equal, else `ProofError` names the routine, the call, the site, byte or register; then the port's state is put
+  back. A proved match is about seven times slower and is not saved. `experiments/E036-match-port/locate.py` uses it.
+  **What the proof guarantees, and what it does not.** It catches accidental divergence by ports and by kit handlers
+  written in the ordinary way: every observation or callback route that goes through Machine's public API (its
+  methods, `Machine.uc`, the taps, the sites and the write listeners) is compared or refused. It does not catch
+  deliberate reflection, because in-process Python cannot be sandboxed against its own code: private attributes
+  (`Machine._uc`, `Machine.uc._engine`), `vars()`, `object.__getattribute__`, the `__self__` of a whitelisted bound
+  method, `gc`, `ctypes`, frame inspection. Four such routes are known and were accepted by the owner on 2026-10-18
+  (follow-up issue #333): `m._uc`, `m.uc._engine`, `vars(m.uc)["_engine"]` and `object.__getattribute__(m.uc,
+  "_engine")` reach the engine past the denial and past the pre-proof count (a raw `hook_add` made through
+  `m.uc._engine` before the `Prover` is built is accepted); and `m.uc.ctl_get_arch.__self__` is the engine, through
+  which a kit handler could `reg_read` unchecked. A port or a kit handler must never use any of them.
+
 ## Limits and costs
 
 A kind no builder writes (4 included) is refused with a `ValueError`. Not run, because route_fixture runs them
 around run_match and the kit calls run_match itself: "Do you want to watch this match?" (asked of fixtures goal2's
-manager does not play: kinds 8, 200, 201, 203; F030; the kit plays only a fixture with the managed side in it),
-the news pages and the manager's sack check (4E0E, F025: goal2 keeps its own career state). The set-piece taker
-prompts keep the original's pick (exposing them: about 1 h). One human side. A match costs 9-13 s, 13-18 s with extra time and a shoot-out (a quick result after `R`, about 4 s, 7 s with them; the write hooks behind the stamps are included); stepping by
+manager does not play: kinds 8, 200, 201, 203; F030),
+the news pages and the manager's sack check (4E0E, F025: goal2 keeps its own career state). Set-piece taker
+prompts keep the original's pick unless the client opts in with `set_piece=True`. At most one human participant. A match costs 9-13 s, 13-18 s with extra time and a shoot-out (a quick result after `R`, about 4 s, 7 s with them; the write hooks behind the stamps are included); stepping by
 minute or tick adds nothing measurable. `save()` is about 0.36 MB at minute 60 (much more with `record_draws`, which keeps every RNG write).
+
+A fixture may name a managed country outside its two participants, for example
+`Match(image, Fixture(1, 2, index=21), managed=7)`. Both participants keep their
+computer manager bytes, and no manager decisions are offered. Captain overrides
+and pauses require a participating managed side. For a computer-only fixture,
+the draw transcript and optional seed/delay inputs begin at `play_match` entry
+after setup, since there is no human captain prompt.
+
+With `--ports menus`, the Python translations own all 27 menu/key routines. The
+existing `MenuPlan` supplies compatibility keys to the Python menu bodies; cursor
+transitions and their frame/buffer effects remain exact. With `--ports menus,selection`,
+SELECT TEAM, substitution requests/swaps and first-eleven validation also run in
+Python, including the exit's pool sort. MenuPlan remains the compatibility key
+adapter; the selection bodies own the original squad-word, form and marking
+writes and retain their cross-row guest calls. The pre-match career pool-selection
+branches are outside the kit's supported decisions. T74's tactics,
+position, marking and own-tactic writes occur in their Python bodies at the
+original sites. A decision stops in the
+08DD entry hook before Python runs, then its successful key is consumed once by
+the port. Save/resume therefore keeps the existing parked guest-call mechanism.
+A refused eleven keeps the swap already made and returns the original warning
+with the next decision, so the manager can answer again. A zero budget prevents
+a request or swap; requesting a substitution before a stoppage retains the
+original request flag until the notice. The selection port uses the same live
+frames and save/resume mechanism.
+The DOS.MsDos wrapper 235C:0000 retains its original shifted return frame: literal
+shared `retf 6` at entry SP - 2 gives effective argument cleanup 4. Its IVT call uses
+the ordinary guest-call FLAGS/CS/IP frame and an actual IRET return.
+
+Known limit: direct side-by-side `Prover` runs of DOS.MsDos 235C:0000 do not yet
+account for its nonzero return-stack displacement. Both Prover return-SP
+predictions currently use entrySP+return-size+cleanup, without the displacement.
+This is a static prediction mismatch; an end-to-end Prover reproduction has not
+been run. Actual IVT/IRET runner tests pass separately, and ordinary ALL matches
+never reach this wrapper.
+The separate [T74 follow-up #394](https://github.com/diegoami/goal2-archaeology/issues/394)
+requires the actual MSDOS side-by-side proof, including original 0000-to-000B
+fallthrough sequencing versus the Python common helper; propagating the delta
+in both return predictions alone is not assumed sufficient.
+
+T78b1's `entrypoints` module also exposes the seven helpers previously available
+only as inline pilot logic: keeper slot, pitch side, attack direction, pitch bounds,
+Pascal set membership, bounded random draw and coin flip. Their callable adapters
+preserve partial registers, final arithmetic flags, dead stack frames and the RNG
+writer at 214B:069F. Synthetic inputs are compared with the unmodified original
+routines, including both direction-flag states; a separate import-denial control
+executes all seven on the plain-memory dispatcher. This does not establish complete
+standalone Match coverage or replace T78's strict corpus gate.
+
+T78b2 additionally registers the destination predicate0791:2CC5 and
+explicit-seed214B:0688; secondary-seed draws do not modify the main seed.
+The wrapper-aware residual inventory and its dynamic-call limits are documented
+in E036 notes/T78b2.md. Missing optional routes and enabled-speaker real arithmetic
+remain unsupported until separately proved; this registry count is not complete
+standalone Match acceptance.
+
+T78b3a's `real` module translates the reached six-byte Real add/multiply/divide
+and signed-long conversions (23E4:0C93/0CA5/0CAB/0CB9/0CC5). It uses the original
+integer algorithms and preserves register/flag and dead-frame effects. Checked
+runtime errors 200/205/207 are explicit PortError refusals; the kit does not run
+the original DOS runtime-error handler. Logarithm, exponential and their polynomial
+layer remain separate prerequisites; these five entries alone do not complete
+sound-enabled standalone Match execution.
+
+T78b3b adds source-exact logarithm/exponential entries23E4:0E67/0F10 and their
+shared polynomial evaluation. These reuse the integer Real operations and read
+the source coefficient tables from the input image. No host math approximation
+or native instruction fallback is used. Standalone inputs remain image-backed
+until T80's separate derived-table extraction and records-only delivery.

@@ -29,8 +29,9 @@ class RuntimeTests(unittest.TestCase):
         cls.image = Image.from_savestate(cls.raw)
 
     @requires.need(archaeology=True)
-    def test_all_ten_files_are_exact_accepted_source(self):
-        self.assertEqual(verify_vendor(), 10)
+    def test_all_files_are_exact_accepted_source(self):
+        # [designed: T150] the re-vendored kit: ten top-level files, fileopts.py and the port's 30
+        self.assertEqual(verify_vendor(), 41)
 
     @requires.need(archaeology=True)
     def test_changed_vendor_bytes_and_added_files_are_rejected(self):
@@ -41,7 +42,7 @@ class RuntimeTests(unittest.TestCase):
             shutil.copytree(ROOT / "goal2/engine/original_match",root / "goal2/engine/original_match",
                             ignore=shutil.ignore_patterns("__pycache__"))
             with patch.object(watched_evidence,"ROOT",root):
-                self.assertEqual(verify_vendor(),10)
+                self.assertEqual(verify_vendor(),41)
                 for name in ('README.md','build.py'):
                     source = root / "goal2/engine/original_match" / name
                     original = source.read_bytes()
@@ -51,7 +52,7 @@ class RuntimeTests(unittest.TestCase):
                     source.write_bytes(original)
                 manifest_path = root / 'tools/watched-kit-hashes.json'
                 original = manifest_path.read_bytes();manifest = json.loads(original)
-                manifest['source_overrides'] = {}
+                manifest['source_overrides'] = {'runtime/original_match/build.py': 'a1067ba0df7ba9c7644f36e648d897b76c7697f8'}
                 manifest_path.write_text(json.dumps(manifest))
                 with self.assertRaisesRegex(ValueError,'source overrides differ'):
                     verify_vendor()
@@ -199,7 +200,7 @@ print("quick-only PASS")
             # container identity. The historical kit1 digest remains an additional
             # friendly semantics control; no field/value is omitted from the full JSON.
             result = match.result()
-            self.assertEqual(result["kit"],"2")
+            self.assertEqual(result["kit"],"4")      # [designed: T150] the re-vendored kit's label
             legacy = {key:value for key,value in result.items() if key not in
                       {"kind","winner","score_90","extra_time","substitution_budget","shootout","players"}}
             legacy["kit"] = "1"

@@ -77,7 +77,7 @@ class LegacyCompatibilityTests(unittest.TestCase):
         pub.complete(job.token,outcome)
         self.assertEqual(owner.state.campaign.results[:-1],old_history)
         self.assertEqual([row['engine'] for row in owner.state.campaign.results],[LEGACY_ENGINE_ID,ENGINE_ID])
-        self.assertEqual(owner.state.last_match['original']['kit'],'2')
+        self.assertEqual(owner.state.last_match['original']['kit'],'4')   # [designed: T150] the current kit's label
         self.assertEqual(owner.state.last_match['engine'],ENGINE_ID)
         self.assertEqual(owner.state.mem,memory)
         after=Image(memory)

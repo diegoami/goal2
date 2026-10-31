@@ -6,6 +6,7 @@ private repository goal2-archaeology. It is the file goal2 already fetches for i
 (goal2 tools/measure_p1.py, E006_R0001_SHA), so goal2 needs no new asset. Its players and countries equal
 E011-r0001's start state (E033 notes, section 2), so E011-r0001's recorded match is the check's reference."""
 import hashlib
+import os
 import shutil
 import subprocess
 import tempfile
@@ -20,9 +21,22 @@ class AssetError(RuntimeError):
     pass
 
 
+def check_cache(cache_dir):
+    """The cache the way reference_image uses it, without the download (fileopts.PathError otherwise): the reference there
+    is a readable regular file, or it is missing and the cache folder can be created and written (the download writes
+    there). What this does not check, because it needs the run: the file's SHA-256, `gh` and the network."""
+    from . import fileopts
+    path = str(Path(cache_dir) / REFERENCE["asset"])
+    if os.path.lexists(path):
+        fileopts.check_input(path, "--cache")
+    else:
+        fileopts.check_log_output(path, "--cache")
+
+
 def reference_image(cache_dir=".cache"):
     """The reference savestate's bytes: from cache_dir if there, else downloaded with the GitHub CLI (`gh`,
     authenticated for the private repository); always checked against its SHA-256."""
+    check_cache(cache_dir)
     cache = Path(cache_dir)
     path = cache / REFERENCE["asset"]
     if not path.is_file():
