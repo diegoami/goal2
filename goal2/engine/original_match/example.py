@@ -4,8 +4,10 @@ to extra time and penalties: goal2's budget of 5 substitutions (the original's i
 extra time with a tactic, goal2's own shoot-out order, the match stopped at the order and resumed.
 
     python3 -m original_match.example [--image FILE.sav] [--cache .cache] [--quiet] [--competitive]
+    python3 -m original_match.example --state STATE.json --tables DIR [--quiet] [--competitive]   (sealed, T80)
 
-Without --image the reference image is fetched by hash (assets.py). Prints the match as it happens."""
+Without --image the reference image is fetched by hash (assets.py). With --state, the sealed engine plays it on
+the port from goal2's state and GOAL.EXE's tables (README, "The sealed engine"). Prints the match as it happens."""
 import argparse
 import time
 
@@ -155,9 +157,26 @@ def main():
     ap.add_argument("--cache", default=".cache")
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--competitive", action="store_true")
+    ap.add_argument("--state", help="goal2's state (Image.state_of, JSON): the sealed engine, with --tables")
+    ap.add_argument("--tables", help="with --state: the folder of GOAL.EXE's constant tables")
     a = ap.parse_args()
-    data = open(a.image, "rb").read() if a.image else reference_image(a.cache)
-    (play_knockout if a.competitive else play)(Image.from_bytes(data), quiet=a.quiet)
+    if (a.state is None) != (a.tables is None) or (a.state is not None and a.image is not None):
+        ap.error("--state and --tables go together, in place of --image")
+    if a.state is not None:
+        import json
+        from .port import tables
+        global Match
+
+        class Match(globals()["Match"]):           # the sealed engine runs on the port
+            def __init__(self, *args, **kw):
+                kw.setdefault("engine", "port")
+                super().__init__(*args, **kw)
+        with open(a.state) as f:
+            image = Image.from_state(json.load(f), tables.load(a.tables))
+    else:
+        data = open(a.image, "rb").read() if a.image else reference_image(a.cache)
+        image = Image.from_bytes(data)
+    (play_knockout if a.competitive else play)(image, quiet=a.quiet)
 
 
 if __name__ == "__main__":

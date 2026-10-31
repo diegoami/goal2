@@ -7,9 +7,10 @@
             m.answer(substitutions=[(off, on)], tactics={4: True})
     result = m.result()
 
-The match is the original's code (0791:F1F6 run_match, then route_fixture's 0791:B7FA update_fixture_player_state)
-under Unicorn; the kit only answers the original's key reads, at the original's own decision points, with the
-keys a manager would press (screens.py). Every constant cites the listing or a finding."""
+By default the match is the original's code (0791:F1F6 run_match, then route_fixture's 0791:B7FA update_fixture_player_state)
+under Unicorn. Explicit engine="port" runs the registered Python translations on plain memory instead. The kit
+answers the original's key reads at its decision points, with the keys a manager would press (screens.py).
+Every constant cites the listing or a finding."""
 import hashlib
 import json
 import zlib
@@ -20,7 +21,8 @@ from .image import (Image, COUNTRIES_PTR, COUNTRY_SIZE, PLAYERS_PTR, PLAYER_SIZE
 from .machine import Machine, GuestError, MEM_SIZE
 from . import screens as S
 
-VERSION = "2"
+VERSION = "4"                  # 4: live Python port frames are reconstructed by deterministic replay on load
+LOADS = ("2", "3", VERSION)
 
 # -- the calls (route_fixture's own, static/goal-exe/code/seg_000E_09.asm:308 and :396) -------------------------
 RUN_MATCH, RUN_MATCH_RETURN = "0791:F1F6", "000E:6F1D"
@@ -139,6 +141,51 @@ class Event:
         return f"[{self.minute:3d}' {self.score[0]}-{self.score[1]}] {self.kind} {extra}"
 
 
+class _PortKeys:
+    """The kit's key logic for a port's key reads (port/mem.py read_key, keypressed): what the hooks at 214B:08DD and
+    0723 answer from the same site, with 08DD's own writes (seg_214B_02.asm): the pushed-back flag cleared (08EA),
+    the key DS:A976 (0947) and the last key DS:A977 (097C)."""
+
+    def __init__(self, match):
+        self.match = match
+
+    def _unprovable(self, site):
+        """Under a proof (port/prove.py) the original's key read is the kit's site, replayed from the port's run; a
+        port that answers its key read itself leaves nothing to replay: refused, never proved blind."""
+        prover = getattr(self.match, "prover", None)
+        if prover is not None and prover.in_port_run():
+            from .port import PortError
+            raise PortError(f"a proved port answers a key read itself at {site}: such a port cannot be proved yet")
+
+    def keypressed(self, site):
+        self._unprovable(site)
+        return self.match._key_waiting(site)
+
+    def key(self, site):
+        self._unprovable(site)
+        k = self.match
+        m, mem = k.m, k.ports.mem
+        cached = getattr(k, "_ported_key", None)
+        if site == SITE_BOARD and cached is None:
+            k._on_board()
+        if m.rd(PUSHED_BACK, 1):
+            mem.wds8(PUSHED_BACK, 0, "214B:08EA")
+            key = m.rd(KEY, 1)
+        else:
+            if cached is not None:
+                if cached[0] != site:
+                    raise MatchError(f"cached menu key for {cached[0]}, read at {site}")
+                key = cached[1]
+                del k._ported_key
+            else:
+                key = k._key_for(site)
+            if key is None:
+                return None             # stopped for a decision: mem.read_key refuses it (PortError)
+            mem.wds8(KEY, key, "214B:0947")
+        mem.wds8(KEY + 1, key, "214B:097C")
+        return key
+
+
 def fresh_state(players_before):
     """The kit's state of a match before run_match starts (Match.__init__; E034 builds one at a shoot-out's
     start from a recorded state the same way)."""
@@ -156,7 +203,8 @@ def fresh_state(players_before):
 
 class Match:
     def __init__(self, image, fixture, *, managed=None, captain=None, seed=None, players=None, countries=None,
-                 substitutions=None, ticks=False, record_draws=False, delay_byte=None, timeout_s=60):
+                 substitutions=None, ticks=False, record_draws=False, delay_byte=None, timeout_s=60, ports=None,
+                 prove=None, set_piece=False, engine="original"):
         """image: an Image of the original (goal2's savestate bytes through Image.from_savestate, e.g. of
         to_savestate(state, template); or GameState.mem through Image.from_memory_component). On the fixture
         tried, the match depended on the image only through its two teams' records (E033 notes, section 2).
@@ -172,7 +220,18 @@ class Match:
         the set-up's (A4A1: 5 a side for a friendly, kind 1, and 2 for every other kind; F027 section 4) when
         play_match starts; None keeps the original's. The original counts it down (C5DC) and stops both the
         manager (E544 'no more substitutes') and the computer's rule (8062) at 0; a player taken off cannot come
-        back (element 3, 1771:3216), so 9 or more is no limit for a bench of 9."""
+        back (element 3, 1771:3216), so 9 or more is no limit for a bench of 9.
+        ports: the port mode (port/, README "Ports"): port modules ('pilot', 'pilot.coin-swapped' for a variant,
+        'all') whose Python routines run in place of the original's; None or empty: the original's code only.
+        prove: the proof mode (port/prove.py, T59): None, or N, every call of a ported routine from the main RNG's
+        N-th draw on (0: from the start; N > 0 needs record_draws) is run side by side with the original's, and the
+        first difference raises ProofError; `prover.summary()` counts the proved calls. A proved match cannot be
+        saved."""
+        if engine not in ("original", "port"):
+            raise ValueError("engine: original or port")
+        if engine == "port" and prove is not None:
+            raise ValueError("engine=port cannot run an inline original proof; compare backends externally")
+        self.engine = engine
         if fixture.kind not in KINDS:
             raise ValueError(f"fixture kind {fixture.kind} is none of the kinds the original's builders write {KINDS}")
         if fixture.first == fixture.second:
@@ -185,10 +244,16 @@ class Match:
             raise ValueError("the image does not hold the GOAL.EXE this kit was made on (the registered version, set "
                              "goal2-a949da2f); it differs in: " + "; ".join(problems))
         self.timeout_s = timeout_s
-        self.m = Machine(image.memory, image.load)
+        if engine == "port":
+            from .port.engine import PortMachine
+            self.m = PortMachine(image.memory, image.load)
+            ports = ["all"] + list(ports or ())
+        else:
+            self.m = Machine(image.memory, image.load)
         self.image_header = image.header
         self.image_tail = bytes(image.memory[MEM_SIZE:])    # guest memory above 1 MiB + HMA: the match never
         self.image_sha256 = image.sha256()                  # touches it; kept for memory_component()
+        self.tables = getattr(image, "tables", None)        # GOAL.EXE's tables when the image is goal2's state (T80)
         self.inputs = []
         self._write_state(players, countries)
         if managed is None:
@@ -196,8 +261,8 @@ class Match:
             if len(human) != 1:
                 raise ValueError("name the managed country: the image's human country is not in this fixture")
             managed = human[0]
-        if managed not in (fixture.first, fixture.second):
-            raise ValueError("the managed country must be one of the fixture's two countries")
+        if isinstance(managed, bool) or not isinstance(managed, int) or not 1 <= managed <= 128:
+            raise ValueError("the managed country must be 1..128")
         self._make_managed(managed, fixture)
         index = fixture.index if fixture.index is not None else self.m.rd_far(GAME_PTR, 0x26)
         if substitutions is not None:
@@ -208,8 +273,13 @@ class Match:
         self.opts = {"first": fixture.first, "second": fixture.second, "index": index, "managed": managed,
                      "captain": captain, "seed": seed, "ticks": ticks, "record_draws": record_draws,
                      "delay_byte": delay_byte, "kind": fixture.kind, "substitutions": substitutions}
-        self.side = 0 if managed == fixture.first else 1
-        if captain is not None and captain not in self._squad(managed)[:11]:
+        if engine == "port":self.opts["engine"] = "port"
+        if not isinstance(set_piece, bool):
+            raise ValueError("set_piece: a boolean opt-in")
+        if set_piece:
+            self.opts["set_piece"] = True
+        self.side = (0 if managed == fixture.first else 1) if managed in (fixture.first, fixture.second) else None
+        if captain is not None and (self.side is None or captain not in self._squad(managed)[:11]):
             raise ValueError(f"captain {captain} is not in the managed eleven")
         self._write_fixture(index, fixture)
         self._declare("delay calibration dword DS:A9FF", self.m.DS * 16 + DELAY_COUNT,
@@ -220,7 +290,39 @@ class Match:
         self._result = None
         self._names = None
         self._hooks()
+        self._install_ports(ports)
+        self._install_proof(prove)
         self._call(RUN_MATCH, RUN_MATCH_RETURN)
+
+    def _install_proof(self, prove):
+        """The proof mode (T59, port/prove.py): the ports' calls from the draw `prove` on, side by side."""
+        self.prover = None
+        if prove is None:
+            return
+        if not self.ports:
+            raise ValueError("prove: a proof needs ports")
+        if isinstance(prove, bool) or not isinstance(prove, int) or prove < 0:
+            raise ValueError("prove: the draw from which calls are proved, 0 or more")
+        if prove and not self.opts["record_draws"]:
+            raise ValueError("prove: from a draw > 0 needs record_draws")
+        from .port.prove import Prover
+        self.prover = Prover(self.m, self.ports, armed=lambda: len(self.st["draws"]) >= prove,
+                             where=lambda: f"minute {self.m.rd(MINUTE)}, after draw {len(self.st['draws'])}")
+
+    def port_frames(self):
+        """The port frames waiting on a call of the original's code now, outermost first (port/guest.py): a
+        decision reached inside such a call is answered with them live."""
+        return [f.describe() for f in self.m.frames]
+
+    def _install_ports(self, specs):
+        """The port mode (T58): ports run in place of their routines, after the kit's hooks (port/__init__.py)."""
+        self.ports = None
+        if specs:
+            from . import port
+            self.ports = port.install(self.m, specs, keys=_PortKeys(self))
+            self.opts["ports"] = self.ports.names
+            self.ports.calls.update(self.st.get("port_calls") or {})   # a loaded match goes on counting
+            self.st["port_calls"] = self.ports.calls
 
     # -- inputs ------------------------------------------------------------------------------------------
     def _declare(self, what, linear, raw):
@@ -278,8 +380,9 @@ class Match:
                               self._country(old) + MANAGER, [old])
             self._declare(f"manager 1's country := {managed}", mgr, [managed])
         self._declare(f"country {managed} managed by manager 1 (+0x2E := 0x81)", self._country(managed) + MANAGER, [0x81])
-        if self._manager_byte(other) > 0x80:
-            raise ValueError(f"country {other} is another human manager's: two managed sides are not supported")
+        for other in (fixture.first, fixture.second):
+            if other != managed and self._manager_byte(other) > 0x80:
+                raise ValueError(f"country {other} is another human manager's: two managed sides are not supported")
 
     def _write_fixture(self, index, fixture):
         count = self.m.rd_far(GAME_PTR, 0x28)
@@ -319,11 +422,13 @@ class Match:
     def events(self):
         """The match's events as they happen. A `decision` event means the original stopped and asks the
         manager: call answer() before taking the next event (taking it without an answer plays on)."""
+        self._replay_start()
         while True:
             if self._queue:
                 ev = self._queue.pop(0)
                 if ev.kind == "decision":
                     self.st["waiting"] = dict(ev.data)
+                self._replay_events = getattr(self, "_replay_events", 0) + 1
                 yield ev
                 continue
             if self.st["over"]:
@@ -333,7 +438,7 @@ class Match:
             self._advance()
 
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
-               speed=None, shootout_order=None):
+               speed=None, shootout_order=None, taker=None):
         """goal2's answer to the waiting decision; nothing given plays on.
         substitutions: (off, on) player words of the managed squad, made now at half time and at a substitution
           notice; at a pause the original only takes the request and offers it at the next stoppage (a
@@ -350,6 +455,18 @@ class Match:
           Enter (the highlighted player, from the top of the eleven)."""
         if self.st["waiting"] is None:
             raise MatchError("no decision is waiting")
+        if self.st["waiting"]["context"] == "set_piece":
+            if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None or shootout_order is not None:
+                raise ValueError("the set-piece prompt takes taker only")
+            if taker is not None and (isinstance(taker, bool) or not isinstance(taker, int) or taker not in self.st["waiting"]["available"]):
+                raise ValueError("taker: an available player of the managed eleven")
+            self._replay_action("answer", {"taker": taker})
+            self.st["answer"] = {"taker": taker}
+            self.st["decisions"].append({"context": "set_piece", "minute": self.st["minute"], "answer": {"taker": taker}})
+            self.st["waiting"] = None
+            return
+        if taker is not None:
+            raise ValueError("taker answers the set-piece prompt only")
         if self.st["waiting"]["context"] == "shootout_order":
             if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None:
                 raise ValueError("the shoot-out order takes shootout_order only")
@@ -357,6 +474,7 @@ class Match:
             avail = self.st["waiting"]["available"]
             if len(set(order)) != len(order) or any(w not in avail for w in order):
                 raise ValueError(f"shootout_order: distinct players of the available eleven {avail}")
+            self._replay_action("answer", {"shootout_order": order})
             self.st["answer"] = {"shootout_order": order}
             self.st["decisions"].append({"context": "shootout_order", "minute": self.st["minute"],
                                          "answer": {"shootout_order": order}})
@@ -386,6 +504,8 @@ class Match:
         own = {int(p): {int(e): (None if v is None else bool(v)) for e, v in d.items()} for p, d in (own_tactics or {}).items()}
         if any(p not in squad or any(not 1 <= e <= 4 for e in d) for p, d in own.items()):
             raise ValueError("own_tactics: {player of the managed squad: {element 1..4: True, False or None}}")
+        self._replay_action("answer", {"substitutions": subs, "tactics": tactics, "positions": positions,
+                                      "marking": marking, "own_tactics": own, "quick": bool(quick), "speed": speed})
         self.st["answer"] = {"substitutions": subs, "tactics": tactics, "positions": positions, "marking": marking,
                              "own": own, "quick": bool(quick), "speed": speed}
         self.st["decisions"].append({"context": self.st["waiting"]["context"], "minute": self.st["minute"],
@@ -402,12 +522,15 @@ class Match:
     def pause(self):
         """Ask the original for the team menu at its next key poll (as a manager pressing Enter in play): a
         `decision` event with context `pause` follows."""
+        if self.side is None:
+            raise MatchError("neither side is managed: there is no team menu to pause")
         if self.st["waiting"] is not None:
             raise MatchError("a decision is waiting: answer it")
         if self.st["over"] or self.st["full_time"]:
             raise MatchError("the match is over")
         if self.st.get("stage") == "shootout":
             raise MatchError("the kit takes no pause in the shoot-out (what the original's team menu does mid-kick is not checked)")
+        self._replay_action("pause", {})
         if S.ENTER not in self.st["poll_keys"]:        # asked already: one menu
             self.st["poll_keys"].append(S.ENTER)
 
@@ -439,6 +562,20 @@ class Match:
     def image(self):
         return Image(self.memory_component())
 
+    def records_after(self, tables=None):
+        """goal2's state now (T80, image.state_of): after the match and its post-match update, the same form the
+        sealed engine takes (Image.from_state), so the next match starts from it. `tables`: GOAL.EXE's tables
+        (port.tables.load), by default those the match was built from."""
+        from types import SimpleNamespace
+        from .image import state_of
+        tables = tables or getattr(self, "tables", None)
+        if tables is None:
+            raise MatchError("records_after needs GOAL.EXE's tables (port.tables.load): this match was not built "
+                             "from them")
+        now = SimpleNamespace(header=self.image_header, memory=self.m.read(0, MEM_SIZE) + self.image_tail,
+                              load=self.m.load)
+        return state_of(now, tables)
+
     # -- running -----------------------------------------------------------------------------------------
     def _advance(self):
         fresh, self.st["fresh"] = self.st["fresh"], False
@@ -468,6 +605,7 @@ class Match:
         m.at(NOTICE, self._on_notice)
         m.at(PROMPT, self._on_prompt)
         m.at(WAIT, self._on_wait)
+        m.at("0791:D010", self._on_taker_accepted)
         m.at(TICK, self._on_tick)
         m.at(PLAY_MATCH, self._on_play)
         m.at(MATCH_PLAYED, self._on_played)
@@ -487,10 +625,9 @@ class Match:
         m.watch(ds + MINUTE, 2, self._on_minute)
         m.watch(ds + S.SUBS_LEFT, 2, self._on_subs_left)
         if self.opts["record_draws"]:
-            from unicorn import UC_HOOK_MEM_WRITE
             lin = m.DS * 16 + SEED
 
-            def seed_write(uc, access, address, size, value, data):
+            def seed_write(address, size, value):     # a guest write or a port's (Machine.on_write)
                 if not self.st["recording"]:
                     return
                 old = m.word_at(lin)
@@ -499,7 +636,7 @@ class Match:
                     if 0 <= address + i - lin < 2:
                         raw[address + i - lin] = (value >> (8 * i)) & 0xFF
                 self.st["draws"].append([m.rd(MINUTE), m.rd(SUBTICK), old, int.from_bytes(raw, "little")])
-            m.uc.hook_add(UC_HOOK_MEM_WRITE, seed_write, begin=lin, end=lin + 1)
+            m.on_write(lin, lin + 1, seed_write)
 
     def _fail(self, message):
         raise GuestError(message + "\n" + self.screen_text())
@@ -517,9 +654,20 @@ class Match:
         if self._menu is not None:
             self._menu.last_message = text
 
+    def _menus_ported(self):
+        return self.ports is not None and any(n.split(".")[0] == "menus" for n in self.ports.names)
+
     def _on_keypressed(self, replay):
+        if self._menus_ported():
+            return                      # the port implements the same key service
         m = self.m
-        site = m.where(m.stack_word(2), m.stack_word(0))
+        has = self._key_waiting(m.where(m.stack_word(2), m.stack_word(0)))
+        m.set_reg("ax", (m.reg("ax") & 0xFF00) | (1 if has else 0))
+        m.return_from(True, 0)
+
+    def _key_waiting(self, site):
+        """214B:0723 called from `site`: whether the kit has a key for the original there."""
+        m = self.m
         if site == KP_POLL:
             has = bool(self.st["poll_keys"])
         elif site == KP_WAIT:          # inside 0791:CC2E (near-called within 0791): its caller says whose wait
@@ -530,8 +678,7 @@ class Match:
             has = self._prompt_key("notice") is not None
         else:
             has = False                # replays, save-goal and summary questions, walk-offs: no key (No)
-        m.set_reg("ax", (m.reg("ax") & 0xFF00) | (1 if has else 0))
-        m.return_from(True, 0)
+        return has
 
     def _prompt_key(self, kind):
         p = self.st["prompt"]
@@ -547,6 +694,9 @@ class Match:
         key = self._key_for(site)      # 9B93's last Down, 9E5B, passes the full-time board)
         if key is None:
             return                     # stopped for a decision
+        if self._menus_ported():
+            self._ported_key = (site, key)  # decision preflight precedes the Python port
+            return
         m.wr(KEY, key | (key << 8))    # DS:A976 the key, DS:A977 the last key
         m.return_from(True, 0)
 
@@ -625,7 +775,11 @@ class Match:
             plan = None
         if plan is None:
             context = st["menu_context"]
-            if context in DECIDED_AT_MENU or (context == "substitution" and st.get("refused")):
+            if self.side is None:
+                # run_match still visits its menu for two computer sides. Keep
+                # its sorting/validation and choose play, with no human answer.
+                self._menu = S.MenuPlan(1)
+            elif context in DECIDED_AT_MENU or (context == "substitution" and st.get("refused")):
                 if st["answer"] is None:
                     self._decide(context, substitutions_now=bool(self.m.rd(S.SUBS_ALLOWED, 1)),
                                  refused=st.get("refused"))
@@ -719,11 +873,23 @@ class Match:
         role, side = self.m.stack_word(2) & 0xFF, self.m.stack_word(4) & 0xFF
         if role == 1 and side == self.side:
             self.st["prompt"] = {"kind": "prompt", "key": S.ENTER, "role": 1, "waited": False}
+        elif self.opts.get("set_piece") and side == self.side and role in (2, 3, 4, 5):
+            self.st["prompt"] = {"kind": "prompt", "key": None, "role": role, "waited": False}
 
     def _on_wait(self, replay):
         """0791:CC2E, the prompts' wait: at the captain prompt's (where E011's watchstart was taken) the optional
         seed and speed byte are written and the draw record starts."""
         p = self.st["prompt"]
+        if p is not None and p.get("role") in (2, 3, 4, 5) and not p["waited"] and self.m.stack_word(0) == 0xCED9:
+            if self.st["answer"] is None:
+                bp = self.m.reg("bp")
+                squad = self._squad(self.opts["managed"])[:11]
+                self._decide("set_piece", role=p["role"], current=self.m.frame_word(bp, -7),
+                             available=[w for w in squad if w and self._available(w)])
+                return
+            answer, self.st["answer"] = self.st["answer"], None
+            p.update(waited=True, target=answer["taker"], key=S.ENTER if answer["taker"] is not None else None)
+            return
         if replay or p is None or p.get("role") != 1 or p["waited"] or self.m.stack_word(0) != 0xCED9:
             return
         p["waited"] = True
@@ -738,9 +904,9 @@ class Match:
 
     def _captain_key(self):
         p = self.st["prompt"]
-        if p is None or p.get("role") != 1:
+        if p is None:
             self._fail("a key read at the captain prompt the kit did not ask for")
-        want = self.opts["captain"]
+        want = self.opts["captain"] if p.get("role") == 1 else p.get("target")
         if want is not None:
             slot = self._squad(self.opts["managed"]).index(want) + 1
             here = self.m.frame_word(self.m.reg("bp"), S.PROMPT_SLOT_BP)
@@ -749,8 +915,17 @@ class Match:
                 if p["moves"] > S.MAX_MOVES:
                     raise S.ScreenError(f"the captain prompt's highlight does not reach slot {slot} (it reads {here})")
                 return S.step_toward(here, slot)
-        self.st["prompt"] = None
+        if p.get("role") == 1:
+            self.st["prompt"] = None
         return S.ENTER
+
+    def _on_taker_accepted(self, replay):
+        """D010 follows the original's D00D load of its accepted result into AX."""
+        p = self.st["prompt"]
+        if not replay and p is not None and p.get("role") in (2, 3, 4, 5):
+            self._flush()
+            self._emit("set_piece", role=p["role"], player=self.m.reg("ax"), team=self.side)
+            self.st["prompt"] = None
 
     # -- events --------------------------------------------------------------------------------------------
     def _emit(self, kind, minute=None, score=None, **data):
@@ -783,6 +958,17 @@ class Match:
         substitutions left; from here their writes are the match's events."""
         if not replay:
             self.st["live"] = True
+            if self.side is None:
+                # No human captain prompt exists. Start the optional inputs and
+                # draw transcript at play_match entry, after the original setup.
+                if self.opts["seed"] is not None:
+                    self._declare("main seed DS:7B62 at computer fixture kickoff",
+                                  self.m.DS * 16 + SEED, int(self.opts["seed"]).to_bytes(2, "little"))
+                if self.opts["delay_byte"] is not None:
+                    self._declare("delay byte [A923]+0x3F at computer fixture kickoff",
+                                  self.m.far(GAME_PTR) + 0x3F, [self.opts["delay_byte"]])
+                self.st["kickoff_seed"] = self.m.rd(SEED)
+                self.st["recording"] = True
             if self.opts.get("substitutions") is not None:
                 self._declare("substitution budget DS:9B3A (team 0, team 1) after the set-up's (A605)",
                               self.m.DS * 16 + S.SUBS_LEFT, self.opts["substitutions"])
@@ -1113,6 +1299,8 @@ class Match:
                              str(self.opts["second"]): self._squad(self.opts["second"])},
         }
         self._result.update(self._competitive(board))
+        if self.ports:                 # the port mode: which ports ran in place of the original, and how often
+            self._result["ports"] = {"names": list(self.ports.names), "calls": dict(self.ports.calls)}
         st["over"] = True
         self._emit("end", score=self._result["score"])
 
@@ -1126,32 +1314,133 @@ class Match:
                          for r in range(25))
 
     # -- stop and resume ---------------------------------------------------------------------------------
+    def _replay_start(self):
+        # Capture after construction/fixture edits but before the first public operation. The origin is an
+        # ordinary frame-free checkpoint, so loading never needs to locate the original external image.
+        if (self.ports and getattr(self, "prover", None) is None
+                and getattr(self, "_replay_origin", None) is None and not self.m.frames):
+            self._replay_origin = self._encode_save(*self._save_state())
+            self._replay_events = 0
+            self._replay_actions = []
+
+    def _replay_action(self, kind, args):
+        self._replay_start()
+        if getattr(self, "_replay_origin", None) is not None and not getattr(self, "_replaying", False):
+            # Freeze caller-owned dictionaries and normalize keys as the save format will do.
+            self._replay_actions.append(json.loads(json.dumps([self._replay_events, kind, args])))
+
+    def _frame_state(self):
+        return [{"entry": f.entry.address, "variant": f.variant, "ss": f.ss, "sp": f.sp, "bp": f.bp,
+                 "ret_lin": f.ret_lin, "expect_sp": f.expect_sp, "after_sp": f.after_sp,
+                 "call": None if f.waiting is None else
+                 {k: getattr(f.waiting, k) for k in ("target", "args", "ret_to", "far", "caller_pops")}}
+                for f in self.m.frames]
+
     def save(self):
         """The whole match now (guest memory, registers, the kit's state) as bytes; Match.load() resumes it.
         Call it between events."""
         if self._menu is not None and not self.st["over"]:
             raise MatchError("save between events, not while the kit drives a screen")
+        if self.m.frames and getattr(self, "_replay_origin", None) is None:
+            raise MatchError("a port's frame is live (" + "; ".join(self.port_frames()) + "): save at a later event, "
+                             "once the call has returned")      # is not in the guest's memory
+        if getattr(self, "prover", None) is not None:
+            raise MatchError("a proved match (prove=) is not saved: its proof state is not in the guest's memory")
+        state, memory = self._save_state()
+        if self.m.frames:
+            state["replay"] = {"origin": self._replay_origin.hex(), "events": self._replay_events,
+                               "actions": self._replay_actions, "frames": self._frame_state()}
+        return self._encode_save(state, memory)
+
+    def _save_state(self):
         snap = self.m.snapshot()
         state = {"st": self.st, "opts": self.opts, "inputs": self.inputs, "side": self.side,
                  "image_sha256": self.image_sha256, "end_lin": self.end_lin, "fixture_ptr": list(self.fixture_ptr),
                  "timeout_s": self.timeout_s, "regs": snap["regs"], "load": snap["load"],
                  "queue": [asdict(e) for e in self._queue], "result": self._result, "version": VERSION,
                  "header": self.image_header.hex()}
+        if self.ports:                 # opts["ports"] names them; a stop a port made resumes at its return as new
+            state["no_replay_at"] = self.m.no_replay_at
+        if getattr(self, "tables", None) is not None:      # a sealed match keeps records_after() across load (#632)
+            from .port import tables
+            state["tables"] = tables.to_record(self.tables)
+        return state, snap["memory"] + self.image_tail
+
+    @staticmethod
+    def _encode_save(state, memory):
         blob = json.dumps(state).encode()
-        memory = zlib.compress(snap["memory"] + self.image_tail, 6)
+        memory = zlib.compress(memory, 6)
         return b"OMK1" + len(blob).to_bytes(4, "little") + blob + memory
+
+    @staticmethod
+    def _checkpoint_state(data):
+        """[designed: T78c] Validate backend identity before allocating either machine.
+
+        Historical unmarked versions retain their original backend. Port checkpoints
+        require the current kit schema and the complete explicit port registry.
+        """
+        if len(data) < 8 or bytes(data[:4]) != b"OMK1":
+            raise ValueError("not a saved match of this kit")
+        n = int.from_bytes(data[4:8], "little")
+        if n > len(data) - 8:
+            raise ValueError("truncated checkpoint header")
+        try:
+            state = json.loads(data[8:8 + n])
+            version, opts = state["version"], state["opts"]
+            engine = opts.get("engine", "original")
+        except (ValueError, TypeError, KeyError, AttributeError) as exc:
+            raise ValueError("invalid checkpoint header") from exc
+        if version not in LOADS:
+            raise ValueError(f"saved by kit version {version}, this is {VERSION} (it loads {', '.join(LOADS)})")
+        if engine not in ("original", "port"):
+            raise ValueError("unknown checkpoint engine")
+        if engine == "port":
+            from . import port
+            specs = opts.get("ports")
+            if (version != VERSION or not isinstance(specs, list)
+                    or any(not isinstance(spec, str) for spec in specs)
+                    or {reg.name for reg, variant in port.load(specs)} != set(port.available())):
+                raise ValueError("stale or incomplete port checkpoint")
+        return n, state, engine
+
+    @staticmethod
+    def _restore_decision_pairs(decisions):
+        # [derived: answer()'s schema] JSON erases tuple identity. Restore only
+        # declared sorted mapping pairs, retaining substitutions/order as lists
+        # and the existing live result API (including nested own-tactic pairs).
+        for decision in decisions:
+            answer = decision["answer"]
+            for key in ("tactics", "positions", "marking"):
+                if key in answer:
+                    answer[key] = [tuple(pair) for pair in answer[key]]
+            if "own_tactics" in answer:
+                answer["own_tactics"] = [(player, [tuple(pair) for pair in tactics])
+                                         for player, tactics in answer["own_tactics"]]
 
     @classmethod
     def load(cls, data):
-        if bytes(data[:4]) != b"OMK1":
-            raise ValueError("not a saved match of this kit")
-        n = int.from_bytes(data[4:8], "little")
-        state = json.loads(data[8:8 + n])
-        if state["version"] != VERSION:
-            raise ValueError(f"saved by kit version {state['version']}, this is {VERSION}")
+        n, state, engine = cls._checkpoint_state(data)
+        # Validate a replay origin before replay can allocate or execute a backend.
+        if "replay" in state:
+            try:
+                origin = bytes.fromhex(state["replay"]["origin"])
+                _, origin_state, origin_engine = cls._checkpoint_state(origin)
+                if "replay" in origin_state:
+                    raise ValueError("replay origin is not a plain checkpoint")
+                if origin_engine != engine:
+                    raise ValueError("replay origin backend differs from checkpoint")
+            except (ValueError, TypeError, KeyError) as exc:
+                raise MatchError(f"port replay failed: {exc}") from exc
         memory = zlib.decompress(data[8 + n:])
+        if "replay" in state:
+            return cls._load_replay(state, memory)
         self = cls.__new__(cls)
-        self.m = Machine(memory, state["load"])
+        self.engine = engine
+        if engine == "port":
+            from .port.engine import PortMachine
+            self.m = PortMachine(memory, state["load"])
+        else:
+            self.m = Machine(memory, state["load"])
         self.m.restore({"memory": memory[:MEM_SIZE], "regs": state["regs"]})
         self.image_header = bytes.fromhex(state["header"])
         self.image_tail = memory[MEM_SIZE:]
@@ -1162,6 +1451,61 @@ class Match:
         self._queue = [Event(e["kind"], e["minute"], tuple(e["score"]), e["data"]) for e in state["queue"]]
         self._menu = None
         self._result = state["result"]
+        self._restore_decision_pairs(self.st["decisions"])
+        if self._result is not None:
+            self._restore_decision_pairs(self._result["decisions"])
         self._names = None
         self._hooks()
+        self._install_ports(self.opts.get("ports"))
+        self.prover = None
+        self.m.no_replay_at = state.get("no_replay_at")
+        self.tables = None
+        if "tables" in state:
+            from .port import tables
+            try:
+                self.tables = tables.from_record(state["tables"])
+            except tables.TablesError as e:
+                raise ValueError(str(e)) from None
         return self
+
+    @classmethod
+    def _load_replay(cls, state, memory):
+        replay = state.pop("replay")
+        try:
+            origin = bytes.fromhex(replay["origin"])
+            # Origins are ordinary checkpoints; reject recursive replay envelopes.
+            n = int.from_bytes(origin[4:8], "little")
+            if "replay" in json.loads(origin[8:8 + n]):
+                raise ValueError("replay origin is not a plain checkpoint")
+            self = cls.load(origin)
+            self._replay_origin, self._replay_events = origin, 0
+            self._replay_actions, self._replaying = [], True
+            events = self.events()
+            actions = iter(replay["actions"])
+            action = next(actions, None)
+            count = replay["events"]
+            if type(count) is not int or count < 0:
+                raise ValueError("invalid event count")
+            for boundary in range(count + 1):
+                while action is not None and action[0] == boundary:
+                    _, kind, args = action
+                    if kind not in ("answer", "pause"):
+                        raise ValueError("unknown replay action")
+                    getattr(self, kind)(**args)
+                    action = next(actions, None)
+                if boundary < count:
+                    next(events)
+            if action is not None:
+                raise ValueError("replay actions are out of order or beyond the checkpoint")
+            actual, actual_memory = self._save_state()
+            canonical = lambda x: json.dumps(x, sort_keys=True)
+            # JSON round trip normalizes integer dictionary keys and tuples before sorting.
+            actual = json.loads(json.dumps(actual))
+            if (actual_memory != memory or canonical(actual) != canonical(state)
+                    or canonical(json.loads(json.dumps(self._frame_state()))) != canonical(replay["frames"])):
+                raise ValueError("reconstructed state differs from checkpoint")
+            self._replaying = False
+            self._replay_actions = replay["actions"]
+            return self
+        except (ValueError, KeyError, TypeError, StopIteration, MatchError) as exc:
+            raise MatchError(f"port replay failed: {exc}") from exc

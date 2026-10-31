@@ -1,6 +1,7 @@
 """The check a goal2 session runs: is this the original's engine, run right, on this machine?
 
     python3 -m original_match.check [--image FILE.sav] [--cache .cache] [--family] [--json REPORT.json]
+    python3 -m original_match.check --engine port --state STATE.json --tables DIR [--no-unicorn] ...   (sealed, T80)
 
 1. engine: E011-r0001's fixture (Denmark v country 19, calendar number 21, no input but the speed byte 0 at the
    captain prompt, as E011's starting keys left it) from the reference image must be the match E021 recorded
@@ -22,15 +23,21 @@
    competitive_digest: the result with its stages, shoot-out, winner and players' consequences); goal_problems
    holds over its events (the shoot-out's kicks count in the score bytes the board shows, not in the result's
    score), its shoot-out's score is its scored kicks, and the winner is the side ahead on penalties.
-The expected values are digests and counts, no original bytes. Exit 0 when every check passes."""
+The expected values are digests and counts, no original bytes. Exit 0 when every check passes.
+
+The port mode (T58; README "Ports"): `--ports M,...|all` runs every step with those port modules in place of the
+original's routines, `--variant M.NAME` with one of a module's variants (a falsifier: it must make a step FAIL); the
+family step then prints each seed (the same, changed, or stopped) and the ports' calls."""
 import argparse
 import hashlib
 import json
 import sys
 import time
+from pathlib import Path
 
 from . import Image, Match, Fixture, VERSION
-from .assets import reference_image, REFERENCE
+from . import fileopts
+from .assets import reference_image, check_cache, REFERENCE
 from . import example
 
 EXPECTED_ENGINE = {"score": [1, 1], "ticks": 4149, "draws": 182188, "seed_at_board": 46625, "man_of_the_match": 127,
@@ -54,14 +61,37 @@ EXPECTED_FAMILY = {   # seed: [score, ticks, draws, draws digest] (E032)
 # not independent evidence; a machine that gives another digest plays another match from the same inputs.
 EXPECTED_INTERACTIVE = "0078fad9859d4b4083a88707785e2cf0a49e1b6cddfa48bfec5aa765590e592f"
 EXPECTED_KNOCKOUT = "7de611c6dec2508bf8504a83a2c680fd253c1ff798ad2c9e1e6db79592034049"
+# [designed: T78d, the parent T78's "their digests without the screen"] The same two digests with the
+# board's screen left out, as the original engine gives them (`--no-screen` on the original: the
+# original is the arbiter; experiments/E036-match-port/out/T78/check-original-noscreen-v1.json).
+EXPECTED_INTERACTIVE_NO_SCREEN = "8de3af19448095441a67f5776c13ec4fb47330d747fc16d71c9f77c01ed15d1b"
+EXPECTED_KNOCKOUT_NO_SCREEN = "f5d846d69d1e507bab11ca6e43b0016934e05cca89d4c6ddbb2134d812f20869"
+# Whether the digests take the board's screen: the port compares without it (its board screen is not
+# the original's bytes; T78's records and compare.py --no-screen likewise), or --no-screen.
+SCREEN = True
 REFERENCE_FIXTURE = Fixture(first=7, second=19, index=21)
+MATCH = Match                  # the port mode: a Match with the ports given (ported()), here and in example.py
+
+
+def _first_line(e):
+    return f"{type(e).__name__}: {(str(e).splitlines() or [''])[0][:200]}"
+
+
+def ported(specs, engine="original"):
+    """Match with `specs` as its ports by default (Match.load keeps a saved match's own)."""
+    class Ported(Match):
+        def __init__(self, *args, **kw):
+            kw.setdefault("ports", specs)
+            kw.setdefault("engine", engine)
+            super().__init__(*args, **kw)
+    return Ported
 
 
 def result_digest(r):
     """A digest of what a match produced: score, events, the board, the commentary, the squads and the seed."""
     keep = {k: r[k] for k in ("score", "half_time_score", "goals", "bookings", "sendings_off", "injuries",
                               "substitutions", "man_of_the_match", "ticks", "seed_after", "squads_after")}
-    keep["board"] = {k: r["board"][k] for k in ("statistics", "bars", "screen_sha256")}
+    keep["board"] = {k: r["board"][k] for k in ("statistics", "bars") + (("screen_sha256",) if SCREEN else ())}
     keep["commentary"] = [c["text"] for c in r["commentary"]]
     return hashlib.sha256(json.dumps(keep, sort_keys=True).encode()).hexdigest()
 
@@ -74,7 +104,7 @@ def competitive_digest(r):
 
 
 def engine(image):
-    m = Match(image, REFERENCE_FIXTURE, managed=7, record_draws=True, delay_byte=0)
+    m = MATCH(image, REFERENCE_FIXTURE, managed=7, record_draws=True, delay_byte=0)
     for _ in m.events():
         pass
     r = m.result()
@@ -83,27 +113,47 @@ def engine(image):
            "man_of_the_match": r["man_of_the_match"], "draws_digest": r["draws_digest"],
            "board_screen_sha256": r["board"]["screen_sha256"],
            "commentary_last199_sha256": hashlib.sha256(lines.encode()).hexdigest()}
-    return got == EXPECTED_ENGINE, {k: (got[k], EXPECTED_ENGINE[k]) for k in got if got[k] != EXPECTED_ENGINE[k]}
+    want = dict(EXPECTED_ENGINE)
+    if not SCREEN:
+        del got["board_screen_sha256"], want["board_screen_sha256"]
+    return got == want, {k: (got[k], want[k]) for k in got if got[k] != want[k]}
 
 
 def family(image):
     bad = {}
     for seed, want in EXPECTED_FAMILY.items():
-        m = Match(image, REFERENCE_FIXTURE, managed=7, record_draws=True, delay_byte=0, seed=seed)
-        for _ in m.events():
-            pass
+        m = MATCH(image, REFERENCE_FIXTURE, managed=7, record_draws=True, delay_byte=0, seed=seed)
+        if MATCH is not Match:         # the port mode: a port may stop a match; say so per seed, then go on
+            try:
+                for _ in m.events():
+                    pass
+            except Exception as e:
+                bad[f"0x{seed:04X}"] = {"stopped": _first_line(e),
+                                        "port_calls": dict(m.ports.calls) if m.ports else None}
+                print(f"  seed 0x{seed:04X} stopped   {bad[f'0x{seed:04X}']['stopped']}", flush=True)
+                print(f"  seed 0x{seed:04X} port calls {bad[f'0x{seed:04X}']['port_calls']}", flush=True)   # long (#633)
+                continue
+        else:
+            for _ in m.events():
+                pass
         r = m.result()
         got = [r["score"], r["ticks"], r["draws"], r["draws_digest"]]
         if got != want:
             bad[f"0x{seed:04X}"] = {"got": got[:3], "want": want[:3], "digest_equal": got[3] == want[3]}
+        if MATCH is not Match:
+            calls = r.get("ports", {}).get("calls")
+            print(f"  seed 0x{seed:04X} {'same   ' if got == want else 'changed'}   score {got[0]} ticks {got[1]} "
+                  f"draws {got[2]}{'' if got == want else f' (want {want[:3]}, digest equal {got[3] == want[3]})'}  "
+                  f"port calls {calls}", flush=True)
     return not bad, bad
 
 
 def interactive(image):
     straight = result_digest(example.play(image, quiet=True, resume_at=None))
     resumed = result_digest(example.play(image, quiet=True, resume_at=60))
-    ok = straight == resumed and (EXPECTED_INTERACTIVE is None or straight == EXPECTED_INTERACTIVE)
-    return ok, {"straight": straight, "resumed": resumed, "expected": EXPECTED_INTERACTIVE}
+    expected = EXPECTED_INTERACTIVE if SCREEN else EXPECTED_INTERACTIVE_NO_SCREEN
+    ok = straight == resumed and (expected is None or straight == expected)
+    return ok, {"straight": straight, "resumed": resumed, "expected": expected, "screen": SCREEN}
 
 
 def goal_problems(events, result):
@@ -145,7 +195,7 @@ def goal_problems(events, result):
 def play_events(image, seed=None, pauses=(), answer=None):
     """The reference fixture with pauses at the given minutes; answer(m, decision data) answers each decision (play
     on by default). Returns the events and the result."""
-    m = Match(image, REFERENCE_FIXTURE, managed=7, seed=seed)
+    m = MATCH(image, REFERENCE_FIXTURE, managed=7, seed=seed)
     events, paused = [], set()
     for ev in m.events():
         events.append(ev)
@@ -198,35 +248,170 @@ def knockout(image):
         problems.append(f"not decided on penalties: extra time {r['extra_time']}, shoot-out {so}")
     elif r["winner"] != (0 if so["score"][0] > so["score"][1] else 1):
         problems.append(f"winner {r['winner']} is not the side ahead on penalties {so['score']}")
-    ok = len(set(digests.values())) == 1 and not problems and (
-        EXPECTED_KNOCKOUT is None or digests["straight"] == EXPECTED_KNOCKOUT)
-    return ok, {"digests": digests, "expected": EXPECTED_KNOCKOUT, "problems": problems,
+    expected = EXPECTED_KNOCKOUT if SCREEN else EXPECTED_KNOCKOUT_NO_SCREEN
+    ok = len(set(digests.values())) == 1 and not problems and (expected is None or digests["straight"] == expected)
+    return ok, {"digests": digests, "expected": expected, "screen": SCREEN, "problems": problems,
                 "score": r["score"], "score_90": r["score_90"], "shootout": so and so["score"], "winner": r["winner"]}
 
 
-def main(argv=None):
+def parser():
+    """The command line's one definition: main() parses with it, and so does the heavy-job slot (heavy_slot.parsed)."""
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--image", help="a savestate or Memory component (default: the reference, fetched by hash)")
+    ap.add_argument("--state", help="the sealed engine (T80): goal2's state (Image.state_of, JSON) in place of an image; "
+                                    "needs --tables")
+    ap.add_argument("--tables", help="with --state: the folder of GOAL.EXE's constant tables (port/tables.py)")
     ap.add_argument("--cache", default=".cache")
     ap.add_argument("--family", action="store_true")
+    ap.add_argument("--engine", choices=("original", "port"), default="original")
+    ap.add_argument("--no-unicorn", action="store_true", help="run in a fresh interpreter with Unicorn imports positively denied; requires --engine port")
     ap.add_argument("--json")
+    ap.add_argument("--no-screen", action="store_true", help="compare without the board's screen (implied by --engine port)")
+    ap.add_argument("--ports", help="the port mode: port modules (port/) to run in place of the original's routines, "
+                                    "comma-separated, or all")
+    ap.add_argument("--variant", help="the port mode: MODULE.NAME, one of a port module's variants (a falsifier)")
+    return ap
+
+
+class Refused(Exception):
+    """A command line that parses but that main() will not run."""
+
+
+def validate(a):
+    """The spec names to run (--ports and --variant, as the saved match keeps them) for a parsed command line, or Refused.
+    The one definition of every refusal after parsing: main() calls it, and so does the heavy-job slot (_takes_a_slot), so
+    a refused line is answered at once and never queues for a slot (#328). A refusal that needs the run (the reference
+    image not in the cache and not downloadable) is not here."""
+    if getattr(a, 'no_unicorn', False) and getattr(a, 'engine', 'original') != 'port':
+        raise Refused('--no-unicorn requires --engine port')
+    specs = [s for s in (a.ports or "").split(",") if s]
+    if getattr(a, 'engine', 'original') == 'port':
+        specs = ['all'] + specs
+    if a.variant:
+        if "." not in a.variant:
+            raise Refused("--variant is MODULE.NAME")
+        specs = [s for s in specs if s != a.variant.split(".")[0]] + [a.variant]
+    if specs:
+        from . import port
+        try:
+            specs = port.spec_names(port.load(specs))         # refuses an unknown module or variant before any run
+        except ValueError as e:
+            raise Refused(str(e))
+    state = getattr(a, 'state', None)
+    if (state is None) != (getattr(a, 'tables', None) is None):
+        raise Refused('--state and --tables go together')
+    if state is not None and a.image is not None:
+        raise Refused('--state replaces --image')
+    try:                       # each path option is checked by the operation the run applies to it (original_match/fileopts.py)
+        if state is not None:
+            fileopts.check_input(state, "--state")
+            check_tables(a.tables)
+        elif a.image is not None:
+            fileopts.check_input(a.image, "--image")
+        else:
+            check_cache(a.cache)
+        if a.json is not None:
+            fileopts.check_new_output(a.json, "--json")
+    except fileopts.PathError as e:
+        raise Refused(str(e))
+    return specs
+
+
+TABLE_FILES = ("manifest.json", "ds.hex", "code_data.hex")
+
+
+def check_tables(folder):
+    """--tables names a folder holding the three files port/tables.py reads, each a readable regular file."""
+    for name in TABLE_FILES:
+        fileopts.check_input(str(Path(folder) / name), "--tables")
+
+
+def load_state(a):
+    """The sealed engine's input (T80): goal2's state from --state and the tables from --tables, as an Image."""
+    from .port import tables
+    data = fileopts.read_input(a.state, "--state")
+    check_tables(a.tables)
+    return data, Image.from_state(json.loads(data), tables.load(a.tables))
+
+
+def load_image(a):
+    """The image's bytes, as the run reads them: --image, else the reference in --cache."""
+    return fileopts.read_input(a.image, "--image") if a.image is not None else reference_image(a.cache)
+
+
+def write_report(path, report):
+    """The --json report, created exclusively."""
+    with fileopts.create_new_output(path, "--json") as f:
+        json.dump(report, f, indent=1)
+
+
+def _takes_a_slot(argv=None):
+    """Whether main() will run this command line (argparse and validate both accept it), so that it waits for a slot."""
+    import heavy_slot
+    ns = heavy_slot.parsed(parser(), argv)
+    if ns is None:
+        return False
+    try:
+        validate(ns)
+    except Refused:
+        return False
+    return True
+
+
+def main(argv=None):
+    ap = parser()
     a = ap.parse_args(argv)
-    data = open(a.image, "rb").read() if a.image else reference_image(a.cache)
-    image = Image.from_bytes(data)
+    global MATCH, SCREEN
+    try:
+        specs = validate(a)
+    except Refused as e:
+        ap.error(str(e))
+    if a.no_unicorn and not getattr(sys, '_goal2_unicorn_denied', False):
+        import os
+        bootstrap = "import builtins,sys,runpy\noriginal_import=builtins.__import__\ndef guarded(name,*a,**kw):\n if name=='unicorn' or name.startswith('unicorn.'):raise ImportError('positive Unicorn denial')\n return original_import(name,*a,**kw)\nbuiltins.__import__=guarded\nsys._goal2_unicorn_denied=True\ntry:__import__('unicorn')\nexcept ImportError:pass\nelse:raise AssertionError('denial did not take effect')\nsys.argv=['original_match.check']+sys.argv[1:]\nrunpy.run_module('original_match.check',run_name='__main__')\n"
+        os.execv(sys.executable, [sys.executable, '-B', '-c', bootstrap, *(argv if argv is not None else sys.argv[1:])])
+    MATCH = example.Match = ported(specs, a.engine)
+    if specs:
+        print(f"ports: {', '.join(specs)}", flush=True)
+    if a.state is not None:            # the sealed engine (T80): goal2's state and GOAL.EXE's tables, no image
+        data, image = load_state(a)
+    else:
+        data = load_image(a)
+        image = Image.from_bytes(data)
     report = {"kit": VERSION, "image_sha256": hashlib.sha256(data).hexdigest(), "reference": REFERENCE, "checks": {}}
+    if a.state is not None:
+        report["state"] = True
+    SCREEN = not (a.no_screen or a.engine == "port")
+    if not SCREEN:
+        report["screen"] = False
+        print("digests without the board's screen", flush=True)
+    if a.engine != "original":
+        report["engine"] = a.engine
+    if specs:
+        report["ports"] = specs
     steps = [("engine", engine), ("interactive", interactive), ("goals", goals), ("knockout", knockout)] + (
         [("family", family)] if a.family else [])
     for name, fn in steps:
         t0, c0 = time.time(), time.process_time()
-        ok, detail = fn(image)
+        if specs:                      # the port mode: a step a port stops FAILs, and the next steps still run
+            try:
+                ok, detail = fn(image)
+            except Exception as e:
+                ok, detail = False, {"stopped": _first_line(e)}
+        else:
+            ok, detail = fn(image)
         report["checks"][name] = {"pass": ok, "detail": detail, "wall_s": round(time.time() - t0, 1),
                                   "cpu_s": round(time.process_time() - c0, 1)}
         print(f"{name:12s} {'PASS' if ok else 'FAIL'}  {report['checks'][name]['wall_s']} s  {detail if not ok or name in ('interactive', 'knockout') else ''}")
-    if a.json:
-        with open(a.json, "x") as f:
-            json.dump(report, f, indent=1)
+    if a.json is not None:
+        write_report(a.json, report)
     sys.exit(0 if all(c["pass"] for c in report["checks"].values()) else 1)
 
 
 if __name__ == "__main__":
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))    # runtime/
+    import heavy_slot
+    if _takes_a_slot():    # a command line main() refuses (argparse or validate) holds no slot
+        heavy_slot.take("check")   # a heavy job (#318): waits for a slot of tools/heavy.sh
     main()

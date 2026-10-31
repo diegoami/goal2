@@ -7,9 +7,11 @@ remain T63–T66. Ordinary quick play does not import or require Unicorn.
 ## Source and resources
 
 [confirmed: archaeology PR255, merge `424d5998076da1e4efc399c2715689ddb44d3e1a`; independent [upstream approval](https://github.com/diegoami/goal2-archaeology/pull/255#issuecomment-6225373016)]
-All ten files in `goal2/engine/original_match/` are byte copies of
-`runtime/original_match/` at that commit, including its README. PROVENANCE.md has
-one row per file; tools/watched-kit-hashes.json records all ten full SHA-256 values.
+The kit was accepted at that commit. [designed: T150] It is re-vendored at
+`b519d999673c9458211279fd4da8a8325b9f56fe` (goal2-archaeology milestone `m9-port-sealed-engine`, #629 there,
+reviewed AGREE; plus #640 and #641): all 41 files in `goal2/engine/original_match/` (the ten above, `fileopts.py`
+and the sealed port's `port/`) are byte copies of `runtime/original_match/` at that commit, including its README.
+PROVENANCE.md has one row per file; tools/watched-kit-hashes.json records every full SHA-256 value.
 `tools/watched_evidence.py` compares the file set, hashes AND exact source bytes,
 and verifies that the source is an ancestor of archaeology origin/main.
 No local change to a vendored file is permitted; fixes go upstream.
