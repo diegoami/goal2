@@ -52,7 +52,7 @@ class Tables(unittest.TestCase):
         src, out = self.tmp / "src", self.tmp / "dist"
         shutil.copytree(ROOT / "goal2", src / "goal2", ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
         shutil.copy(ROOT / "pyproject.toml", src)
-        r = subprocess.run([sys.executable, "-m", "pip", "wheel", "--no-deps", "--no-build-isolation", "-q",
+        r = subprocess.run([sys.executable, "-m", "pip", "wheel", "--no-deps", "-q",
                             "-w", str(out), str(src)], capture_output=True, text=True)
         if r.returncode != 0 and "No module named pip" in r.stderr:
             self.skipTest("pip absent")

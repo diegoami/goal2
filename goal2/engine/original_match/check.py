@@ -36,7 +36,7 @@ import time
 from pathlib import Path
 
 from . import Image, Match, Fixture, VERSION
-import fileopts
+from . import fileopts
 from .assets import reference_image, check_cache, REFERENCE
 from . import example
 
@@ -302,7 +302,7 @@ def validate(a):
         raise Refused('--state and --tables go together')
     if state is not None and a.image is not None:
         raise Refused('--state replaces --image')
-    try:                       # each path option is checked by the operation the run applies to it (runtime/fileopts.py)
+    try:                       # each path option is checked by the operation the run applies to it (original_match/fileopts.py)
         if state is not None:
             fileopts.check_input(state, "--state")
             check_tables(a.tables)

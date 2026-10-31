@@ -25,7 +25,7 @@ def check_cache(cache_dir):
     """The cache the way reference_image uses it, without the download (fileopts.PathError otherwise): the reference there
     is a readable regular file, or it is missing and the cache folder can be created and written (the download writes
     there). What this does not check, because it needs the run: the file's SHA-256, `gh` and the network."""
-    import fileopts
+    from . import fileopts
     path = str(Path(cache_dir) / REFERENCE["asset"])
     if os.path.lexists(path):
         fileopts.check_input(path, "--cache")
