@@ -84,6 +84,8 @@ jobs:
         run: |
           slow=
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
+          # [designed: owner, 2026-10-31, #487] the automatic slow runs play one case per batch test; a slow dispatch, all
+          [ -z "$slow" ] && export GOAL2_CASES=1
           start=$(date +%s)
           # The wall time is printed whether the gate passes or fails, then the gate's status is the step's.
           status=0

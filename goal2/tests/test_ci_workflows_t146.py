@@ -40,6 +40,12 @@ class LinuxGate(unittest.TestCase):
         longest = max(r["gate_wall_s"] for r in slow) / 60
         self.assertGreaterEqual(minutes, 1.3 * longest, "the timeout leaves under 30 % margin")
 
+    def test_automatic_slow_runs_play_one_case_and_a_slow_dispatch_all(self):
+        # [designed: owner, 2026-10-31, #487] both workflows, the same rule
+        for path in (WORKFLOW, WORKFLOW.with_name("windows.yml")):
+            with self.subTest(workflow=path.name):
+                self.assertIn('[ -z "$slow" ] && export GOAL2_CASES=1', path.read_text())
+
     def test_offscreen_qt_and_dummy_sdl(self):
         for line in ("QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy"):
             self.assertIn(line, self.text)

@@ -332,7 +332,7 @@ class OriginalPitchJobsTests(unittest.TestCase):
         app=QCoreApplication.instance() or QCoreApplication([])
         beats=[];timer=QTimer();timer.timeout.connect(lambda:beats.append(1));timer.start(1)
         try:
-            for seed in (257,4660):
+            for seed in requires.cases((257,4660)):  # [designed: #487]
                 owner=Owner(self.state(),self.raw);before=copy.deepcopy(owner.state)
                 expected=run_watched_match(before,self.raw,Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True)
                 from goal2.game.watched_match import _drive_match, prepare_watched

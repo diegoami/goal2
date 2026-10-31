@@ -80,7 +80,7 @@ class CompetitiveAdapterTests(unittest.TestCase):
                (200,30,None,False,7,[3,2],None),(200,42,None,False,7,[0,0],[4,3]),
                (200,9,None,True,7,[1,1],[9,10]),(200,53,None,True,7,[2,2],[3,4]),
                (200,42,None,True,19,None,None)]
-        for kind,index,seed,quick,managed,score,penalties in cases:
+        for kind,index,seed,quick,managed,score,penalties in requires.cases(cases):  # [designed: #487]
             with self.subTest(kind=kind,index=index,managed=managed,seed=seed):
                 s,raw=state(managed);before=copy.deepcopy(s);fixture=Fixture(7,19,index,kind)
                 options={'reference_seed':seed,'record_draws':True}
