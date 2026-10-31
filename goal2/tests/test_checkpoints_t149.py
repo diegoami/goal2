@@ -65,7 +65,11 @@ class Jobs(unittest.TestCase):
         job = self.until("killed", "running")
         while "command_pid" not in job:
             time.sleep(0.05);job = self.jobs.read(self.root, "killed")
-        os.kill(job["command_pid"], signal.SIGKILL);os.kill(job["wrapper_pid"], signal.SIGKILL)
+        os.kill(job["command_pid"], signal.SIGKILL)
+        try:                # the wrapper waits on the command and may already have exited (#485)
+            os.kill(job["wrapper_pid"], signal.SIGKILL)
+        except ProcessLookupError:
+            pass
         self.assertEqual(self.until("killed", "vanished")["state"], "vanished")
 
     def test_a_running_name_is_refused_and_a_finished_one_is_kept_then_replaced(self):
