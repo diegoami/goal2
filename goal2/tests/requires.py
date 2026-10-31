@@ -27,6 +27,10 @@ ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / ".cache"
 EXTRAS = {"PySide6": "desktop", "unicorn": "watched", "pygame": "match-view"}
 SLOW = os.environ.get("GOAL2_SLOW") == "1"
+# [designed: owner, 2026-10-31, #487] CI's automatic slow runs play one case per batch test (GOAL2_CASES=1): with
+# every match on the sealed port, CPython takes 10-20 times Unicorn's CPU (measurements/T151). The manual slow
+# dispatch and the local gate leave it unset and play every case.
+CASES = os.environ.get("GOAL2_CASES")
 # The vendored watched-match engine: its emulator and the reference savestate it starts from.
 WATCHED = {"modules": ("unicorn",), "files": (REFERENCE["asset"],)}
 # The E010 half-time template and GOAL.DAT most campaign and desktop tests open.
@@ -83,8 +87,11 @@ def require(**needs) -> None:
 
 def cases(items, keep=1):
     """[designed: owner, 2026-10-20, #275] A batch test's cases: all of them when slow tests run
-    (GOAL2_SLOW=1), else the first `keep`, so the default run still plays one real case."""
+    (GOAL2_SLOW=1), else the first `keep`, so the default run still plays one real case.
+    [designed: owner, 2026-10-31, #487] GOAL2_CASES=N keeps the first N even when slow tests run."""
     items = list(items)
+    if CASES:
+        return items[:int(CASES)]
     return items if SLOW else items[:keep]
 
 

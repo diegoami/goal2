@@ -52,6 +52,9 @@ one, `git pull` and take the next free number.
    PR merges with it green as well. Locally, run the gate after `source .cache/cloud.env`: without
    it, Qt and SDL use the WSLg display and the focus tests fail (T121, T134, T102, T138). With the original files
    (the `GOAL2_RCLONE_TOKEN` secret) it also runs the worker, save, page and two-window scenarios.
+   [designed: owner, 2026-10-31, #487] With every match on the sealed port (T151), CPython plays a match in
+   10-20 times Unicorn's CPU, so CI's automatic slow runs play one case per batch test (`GOAL2_CASES=1`,
+   `goal2/tests/requires.py` `cases`); a dispatch with **slow** and the local gate play every case.
    A PR merges with it green as well. Run it with **slow** from the Actions tab for a milestone
    candidate. It uploads screenshots and logs only.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then

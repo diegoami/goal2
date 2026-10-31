@@ -73,6 +73,8 @@ jobs:
         run: |
           slow=
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
+          # [designed: owner, 2026-10-31, #487] the automatic slow runs play one case per batch test; a slow dispatch, all
+          [ -z "$slow" ] && export GOAL2_CASES=1
           python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee windows-premerge.log
       - name: Native scenarios (worker, saves, two windows)
         shell: bash --noprofile --norc -o pipefail {0}

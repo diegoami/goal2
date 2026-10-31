@@ -119,7 +119,7 @@ class CompetitiveJobsTests(unittest.TestCase):
 
     @requires.need(slow=True)  # [designed: #275] about 90 s alone on 32 CPUs
     def test_real_kind2_and_tied_knockout_match_direct_result_events_memory_seeds(self):
-        for kind,index in ((2,21),(200,42)):
+        for kind,index in requires.cases(((2,21),(200,42))):  # [designed: #487]
             with self.subTest(kind=kind):
                 s,raw,fixture=campaign(index,kind)
                 self.owner.state=s;self.owner.template_bytes=raw

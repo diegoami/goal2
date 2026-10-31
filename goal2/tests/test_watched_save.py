@@ -57,7 +57,7 @@ class WatchedSaveTests(unittest.TestCase):
         root=Path(__file__).resolve().parents[2]
         template=(root/'.cache/e010-r0008-halftime.sav').read_bytes()
         data=load((root/'.cache/GOAL.DAT').read_bytes())
-        for year in (1990,1992):
+        for year in requires.cases((1990,1992)):  # [designed: #487]
             with self.subTest(year=year):
                 state,_=start_opening_campaign(data,template,managed_country=4,start_year=year,
                                               seed_7b62=4660,seed_8336=33590)
