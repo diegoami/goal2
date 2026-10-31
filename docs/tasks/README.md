@@ -297,3 +297,9 @@ operational status.
 - [T148](T148.md): native UI scaling jobs on Linux and Windows CI (#469).
 
 - [T149](T149.md): checkpoints and resumable work (#470).
+
+- [T150](T150.md): re-vendor the sealed engine and build its tables from the player's GOAL.EXE (#480).
+
+- [T151](T151.md): play goal2's matches on the sealed port engine (#481).
+
+- [T152](T152.md): the match worker under PyPy 3.11 (#482).
