@@ -298,7 +298,7 @@ operational status.
 
 - [T149](T149.md): checkpoints and resumable work (#470).
 
-- [T150](T150.md): re-vendor the sealed engine and build its tables from the player's GOAL.EXE (#480).
+- [T150](T150.md): re-vendor the sealed engine and its tables (#480).
 
 - [T151](T151.md): play goal2's matches on the sealed port engine (#481).
 

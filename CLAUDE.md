@@ -99,6 +99,12 @@ Unicorn performance optimisation is authorised by a resume.
     executable byte enters this public repository or its releases: those live in the owner's
     private Google Drive folder, pulled into the git-ignored `.cache/` with `tools/artifacts.py`
     ([docs/artifacts.md](docs/artifacts.md)).
+    [designed: owner, 2026-10-31] One exception: the sealed match engine's constant tables
+    (`goal2/engine/tables/ds.hex` and `code_data.hex`, about 43 KB sliced from GOAL.EXE: its
+    initialised data and the code segments' data areas, goal2-archaeology T80a) are vendored and
+    committed like the engine, so a player needs no GOAL.EXE to play. This supersedes the owner's
+    2026-10-29 "built on the player's machine, never committed" for these two files only; GOAL.EXE
+    itself, other assets and savestates stay out.
 15. **The fidelity test is the arbiter.** When the rebuild and the vendored model disagree on a
     case the model is seed-exact for, the rebuild is wrong until proven otherwise.
 16. **Tests fail before and pass after.** Every new behaviour arrives with the test that visits
