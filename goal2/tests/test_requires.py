@@ -38,10 +38,18 @@ class Reasons(unittest.TestCase):
 
     def test_batch_cases_one_by_default_all_when_slow(self):
         # [designed: #275] Fails if cases() ever drops the slow switch or the default case.
-        with patch.object(requires, "SLOW", False):
+        # GOAL2_CASES unset, as CI's own run sets it (#487)
+        with patch.object(requires, "SLOW", False), patch.object(requires, "CASES", None):
             self.assertEqual(requires.cases(dict(a=1, b=2, c=3).items()), [("a", 1)])
-        with patch.object(requires, "SLOW", True):
+        with patch.object(requires, "SLOW", True), patch.object(requires, "CASES", None):
             self.assertEqual(requires.cases(dict(a=1, b=2, c=3).items()), [("a", 1), ("b", 2), ("c", 3)])
+
+    def test_goal2_cases_keeps_n_cases_even_when_slow(self):
+        # [designed: owner, 2026-10-31, #487] CI's automatic slow runs play one case per batch test.
+        with patch.object(requires, "SLOW", True), patch.object(requires, "CASES", "1"):
+            self.assertEqual(requires.cases(dict(a=1, b=2, c=3).items()), [("a", 1)])
+        with patch.object(requires, "SLOW", True), patch.object(requires, "CASES", "2"):
+            self.assertEqual(requires.cases("abc"), ["a", "b"])
 
     def test_require_raises_the_skip_and_need_decorates(self):
         with self.assertRaisesRegex(unittest.SkipTest, "optional dependency no_such_module absent"):

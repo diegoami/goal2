@@ -340,7 +340,7 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
 
     @requires.need(slow=True)  # [designed: #275] about 97 s alone on 32 CPUs
     def test_verified_normal_and_injury_jobs_equal_synchronous_and_publish_once(self):
-        for seed in (257,70):
+        for seed in requires.cases((257,70)):  # [designed: #487]
             self.owner.state=adapter.WatchedAdapter.state(self)
             self.jobs=WatchedJobs(self.owner)
             token=self.jobs.start(Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True)
