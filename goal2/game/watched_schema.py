@@ -2,8 +2,15 @@
 import re
 
 LEGACY_ENGINE_ID = 'original-match:3656a2d26e0f57a410d648edeaa6cd9eb7d1f607:1'
-ENGINE_ID = 'original-match:424d5998076da1e4efc399c2715689ddb44d3e1a:2'
-ENGINE_IDS = (LEGACY_ENGINE_ID, ENGINE_ID)
+KIT2_ENGINE_ID = 'original-match:424d5998076da1e4efc399c2715689ddb44d3e1a:2'
+# [designed: T150] The re-vendored kit (goal2-archaeology b519d999, PROVENANCE.md) labels its results kit '4'
+# (upstream aebd9c00: port frames replayed on load); the keys are kit 2's. Earlier results keep their identity.
+ENGINE_ID = 'original-match:b519d999673c9458211279fd4da8a8325b9f56fe:4'
+# [designed: T151] The same kit playing on its sealed port (engine="port"): its results add `ports`.
+PORT_ENGINE_ID = 'original-match-port:b519d999673c9458211279fd4da8a8325b9f56fe:4'
+ENGINE_IDS = (LEGACY_ENGINE_ID, KIT2_ENGINE_ID, ENGINE_ID, PORT_ENGINE_ID)
+COMPETITIVE_ENGINE_IDS = (KIT2_ENGINE_ID, ENGINE_ID, PORT_ENGINE_ID)
+CURRENT_KITS = ('2', '4')
 RESULT_SCHEMA = 1
 COMPETITIVE_SCHEMA = 2
 RESULT_KEYS = {'first','second','managed','index','score','half_time_score','goals',
@@ -26,7 +33,14 @@ def validate_result(result, *, competitive=False):
     # [designed: T51a] Recognize both exact profiles; never relabel historical results.
     if not isinstance(result,dict):raise ValueError('invalid watched original result schema')
     kit=result.get('kit')
-    keys=RESULT_KEYS if kit=='1' else RESULT_KEYS|KIT2_KEYS if kit=='2' else None
+    keys=RESULT_KEYS if kit=='1' else RESULT_KEYS|KIT2_KEYS if kit in CURRENT_KITS else None
+    port=kit=='4' and 'ports' in result
+    if port:
+        keys=keys|{'ports'}
+        ports=result['ports']
+        if (not isinstance(ports,dict) or set(ports)!={'names','calls'} or not isinstance(ports['names'],list)
+                or not ports['names'] or not isinstance(ports['calls'],dict)):
+            raise ValueError('invalid watched port record')
     if keys is None or set(result)!=keys:raise ValueError('invalid watched original result schema')
     if (any(not integer(result[k],1,128) for k in ('first','second','managed'))
             or result['first']==result['second'] or result['managed'] not in (result['first'],result['second'])
@@ -49,12 +63,12 @@ def validate_result(result, *, competitive=False):
                 or len(set(words))!=20):raise ValueError('invalid watched squad words')
     if not isinstance(result['board'],dict):raise ValueError('invalid watched board')
     if competitive:
-        if kit!='2':raise ValueError('competitive result requires kit2')
+        if kit not in CURRENT_KITS:raise ValueError('competitive result requires kit2')
         _competitive_kit2(result)
     _details(result,competitive=competitive)
-    if kit=='2':
+    if kit in CURRENT_KITS:
         _players(result) if competitive else _friendly_kit2(result)
-    return LEGACY_ENGINE_ID if kit=='1' else ENGINE_ID
+    return PORT_ENGINE_ID if port else {'1':LEGACY_ENGINE_ID,'2':KIT2_ENGINE_ID}.get(kit,ENGINE_ID)
 
 
 def _friendly_kit2(result):
@@ -359,7 +373,7 @@ def validate_history(row,kind=None):
     schema=row.get('schema')
     keys={'fixture_id','teams','score','engine','schema'}
     if schema==COMPETITIVE_SCHEMA and type(schema) is int:
-        if set(row)!=keys|{'resolution'} or row['engine']!=ENGINE_ID:raise ValueError('invalid competitive history profile')
+        if set(row)!=keys|{'resolution'} or row['engine'] not in COMPETITIVE_ENGINE_IDS:raise ValueError('invalid competitive history profile')
         validate_resolution(row['resolution'],row['score'],kind)
     elif schema==RESULT_SCHEMA and type(schema) is int:
         if set(row)!=keys or (kind is not None and kind!=1):raise ValueError('invalid friendly history profile')

@@ -108,8 +108,9 @@ class FidelityTests(unittest.TestCase):
 
 class ReportTests(unittest.TestCase):
     def test_retained_full_cases(self):
-        report = json.loads((EVIDENCE / 'runtime-03.json').read_text())
-        self.assertEqual(report['source']['pin'], '424d5998076da1e4efc399c2715689ddb44d3e1a')
+        # [designed: T150] runtime-04 is the same probe on the re-vendored kit (runtime-03: kit 424d599)
+        report = json.loads((EVIDENCE / 'runtime-04.json').read_text())
+        self.assertEqual(report['source']['pin'], 'b519d999673c9458211279fd4da8a8325b9f56fe')
         self.assertEqual(report['source']['observer_sha256'], hashlib.sha256(Path(probe.__file__).read_bytes()).hexdigest())
         kit_manifest = json.loads((ROOT / 'tools/watched-kit-hashes.json').read_text())
         self.assertEqual(report['source']['pin'], kit_manifest['source'])

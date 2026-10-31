@@ -7,10 +7,10 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = "424d5998076da1e4efc399c2715689ddb44d3e1a"
-# [designed: T118; confirmed: merged archaeology T85/#396] Only generated build metadata
-# has a newer source. All behavioural/reference sources remain pinned to the accepted kit.
-SOURCE_OVERRIDES = {"runtime/original_match/build.py": "a1067ba0df7ba9c7644f36e648d897b76c7697f8"}
+SOURCE = "b519d999673c9458211279fd4da8a8325b9f56fe"
+# [designed: T150] The re-vendored kit (milestone m9-port-sealed-engine, #640, #641) is one source again:
+# the T118 build.py override (a1067ba0, archaeology T85/#396) is contained in it.
+SOURCE_OVERRIDES = {}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
@@ -39,7 +39,7 @@ def verify_vendor():
     if actual != set(manifest["files"]):
         raise ValueError("kit file set differs from accepted source")
     for rel, digest in manifest["files"].items():
-        raw = source_bytes("runtime/original_match/" + Path(rel).name)
+        raw = source_bytes("runtime/original_match/" + Path(rel).relative_to("goal2/engine/original_match").as_posix())
         if hashlib.sha256(raw).hexdigest() != digest or (ROOT / rel).read_bytes() != raw:
             raise ValueError(f"vendored kit differs from accepted source: {rel}")
     return len(actual)

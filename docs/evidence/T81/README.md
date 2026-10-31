@@ -217,3 +217,7 @@ manifest's exact file set, retaining the source-pin and observer-hash assertions
 controls and exact source restoration. `provenance-final-01.log` and
 `links-final-01.log` pass. `source-and-validation.json` records complete source,
 resource, report and receipt identities; original bytes remain ignored.
+
+[designed: T150] `runtime-04.json` is the same probe (`tools/probe_watched_pitch.py --verify`) on the re-vendored
+kit `b519d999` (41 files): both cases pass with the same ticks, pose and ball changes as `runtime-03.json`; the
+complete-result digests differ only because the kit labels its results `kit: "4"` (runtime-03: `"2"`).

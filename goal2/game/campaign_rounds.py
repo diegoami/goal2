@@ -59,7 +59,7 @@ class World:
             keys={'fixture_id','teams','score','winner','mode','seed_before','seed_after','draws'}
             is_watched=isinstance(row,dict) and row.get('mode')=='watched'
             if is_watched:
-                from goal2.game.watched_schema import ENGINE_IDS, RESULT_SCHEMA, COMPETITIVE_SCHEMA, ENGINE_ID, validate_resolution
+                from goal2.game.watched_schema import ENGINE_IDS, RESULT_SCHEMA, COMPETITIVE_SCHEMA, COMPETITIVE_ENGINE_IDS, validate_resolution
                 scheduled=next((f for f in campaign.fixtures if f.fixture_id==fixture.fixture_id),None)
                 expected_year=((2*(scheduled.cycle-1)+int(scheduled.stage>=5)-int(campaign.start_year%4==2))&65535
                                if scheduled is not None else None)
@@ -67,7 +67,7 @@ class World:
                     'seed_after','secondary_after','engine_year','index','setup_seed'}
                 if row.get('schema')==COMPETITIVE_SCHEMA:
                     watched_keys|={'resolution'}
-                    if row.get('engine')!=ENGINE_ID:raise ValueError('competitive world requires current original engine')
+                    if row.get('engine') not in COMPETITIVE_ENGINE_IDS:raise ValueError('competitive world requires current original engine')
                     validate_resolution(row.get('resolution'),row.get('score'),fixture.kind)
                 if (set(row)!=watched_keys or row['engine'] not in ENGINE_IDS
                         or type(row['schema']) is not int or row['schema'] not in (RESULT_SCHEMA,COMPETITIVE_SCHEMA)
