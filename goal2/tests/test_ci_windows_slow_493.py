@@ -42,7 +42,7 @@ class WindowsSlow(unittest.TestCase):
         self.assertNotIn("tools/desktop-ui", self.text)
 
     def test_git_bash_by_path_and_the_pcs_own_python(self):
-        self.assertIn(r"""shell: '"C:\Program Files\Git\bin\bash.exe" --noprofile --norc -eo pipefail {0}'""", self.text)
+        self.assertIn(r"shell: 'C:\PROGRA~1\Git\bin\bash.exe --noprofile --norc -eo pipefail {0}'", self.text)
         self.assertNotIn("actions/setup-python", self.text)
         self.assertIn("py -3.13 -m venv", self.text)
 

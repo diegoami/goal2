@@ -25,8 +25,9 @@ jobs:
     timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] as the hosted runs' limit
     defaults:
       run:
-        # bash on a Windows PATH can be WSL's; the runner has no admin rights, so no setup-python either
-        shell: '"C:\Program Files\Git\bin\bash.exe" --noprofile --norc -eo pipefail {0}'
+        # bash on a Windows PATH can be WSL's; the runner has no admin rights, so no setup-python either.
+        # Git Bash by its short path: the runner refused the quoted "C:\Program Files\..." (run 41293719862)
+        shell: 'C:\PROGRA~1\Git\bin\bash.exe --noprofile --norc -eo pipefail {0}'
     env:
       PYTHONUTF8: '1'
       QT_QPA_PLATFORM: offscreen
