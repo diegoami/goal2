@@ -44,7 +44,9 @@ class CompetitiveJobs(WatchedJobs):
         owner._competitive_jobs = self
         self.owner = owner
         self.publication = CompetitivePublication(owner)
-        self.command = ([sys.executable, '-m', 'goal2.desktop.competitive_worker']
+        # [designed: T152] the engine worker runs under PyPy 3.11 when there is one (engine_python)
+        from goal2.game.engine_python import worker_command
+        self.command = (worker_command('goal2.desktop.competitive_worker')
                         if command is None else list(command))
         self.process = None
         self.token = None

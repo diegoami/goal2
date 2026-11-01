@@ -1,0 +1,13 @@
+{
+ "what": "One match through goal2's match worker under PyPy 3.11 vs the same match through _drive_match in the CPython process (goal2/tests/test_pypy_worker_t152.py, GOAL2_SLOW=1); both outcomes identical",
+ "head": "task/T152-pypy-worker (wip)",
+ "interpreters": {"worker": "PyPy 3.11.15 (7.3.23), ~/.local/bin/pypy3.11", "here": "CPython 3.14.4 (gate venv)"},
+ "machine": "Linux WSL2, 32 CPUs; a local gate ran at the same time",
+ "date": "2026-11-01",
+ "cases": [
+  {"case": "watched friendly 7 v 19, fixture 21, seed 257", "worker_pypy_wall_s": 62.4, "cpython_cpu_s": 201.8},
+  {"case": "World Cup knockout 7 v 19, fixture 42, kind 200 (extra time, penalties)", "worker_pypy_wall_s": 81.4,
+   "cpython_cpu_s": 339.2, "cpython_from": "measurements/T151/cpu-v1.json"}
+ ],
+ "note": "PyPy is 3.2-4.2 times CPython here, as goal2-archaeology #620 measured (about 4)."
+}

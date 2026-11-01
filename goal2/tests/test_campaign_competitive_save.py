@@ -71,7 +71,10 @@ class CompetitiveSaveTests(unittest.TestCase):
             events.append((event.kind,event.minute,event.score,event.data))
             if event.kind=='decision':original.answer()
         self.assertEqual(guest.expected(),probe.kit_stamps(events))
-        self.assertEqual(out.result,original.result());self.assertEqual(out.memory,original.memory_component())
+        # [designed: T151] goal2's route plays the sealed port; `original` is the accepted export (port_parity)
+        from goal2.tests.port_parity import assert_same_match
+        assert_same_match(self,out.result,out.memory,out.events,original.result(),original.memory_component(),
+            [dict(kind=k,minute=m,score=sc,data=d) for k,m,sc,d in events])
         self.assertEqual(len(after.campaign.completed_fixture_ids),3)
         row=after.campaign.results[-1];self.assertEqual(row['resolution']['kind'],f.kind)
         world=next(r for r in after.campaign.world.results if r['fixture_id']==f'original:{f.index}')

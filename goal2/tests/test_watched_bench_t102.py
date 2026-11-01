@@ -72,15 +72,22 @@ def reference(mode, state, fixture, pause_after=None):
             pairs = choose(mode, ev.data)
             match.answer(substitutions=pairs) if pairs else match.answer()
     left = match.m.rd(screens.SUBS_LEFT + match.side, 1)
-    return {'result': match.result(), 'memory': hashlib.sha256(match.memory_component()).hexdigest(),
+    return {'result': match.result(), 'memory': _memory_digest(match.memory_component()),
             'events': events, 'substitutions_left': left}
+
+
+def _memory_digest(memory):
+    """[designed: T151] The memory's digest with the screen left out (goal2/tests/port_parity.py): the reference
+    is the original engine, goal2's route plays the sealed port."""
+    from goal2.tests.port_parity import comparable_memory
+    return hashlib.sha256(b''.join(comparable_memory(memory))).hexdigest()
 
 
 def default(state, original, fixture):
     """Today's play-on default: run_watched_match."""
     from goal2.game.watched_match import run_watched_match
     outcome = run_watched_match(state, original, fixture, delay_byte=0, record_draws=True)
-    return {'result': outcome.result, 'memory': hashlib.sha256(outcome.memory).hexdigest(),
+    return {'result': outcome.result, 'memory': _memory_digest(outcome.memory),
             'events': [asdict(e) for e in outcome.events]}
 
 
@@ -191,9 +198,12 @@ class EngineCases(unittest.TestCase):
         job, want = self.jobs[mode], self.references[mode]
         outcome = job.jobs.outcome
         self.assertIsNotNone(outcome, mode)
-        self.assertEqual([asdict(e) for e in outcome.events], want['events'])
-        self.assertEqual(outcome.result, want['result'])
-        self.assertEqual(hashlib.sha256(outcome.memory).hexdigest(), want['memory'])
+        # [designed: T151] the route plays the sealed port; the reference is the original (port_parity)
+        from goal2.tests.port_parity import comparable_events, comparable_result
+        self.assertIn('ports', outcome.result)
+        self.assertEqual(comparable_events(outcome.events), comparable_events(want['events']))
+        self.assertEqual(comparable_result(outcome.result), comparable_result(want['result']))
+        self.assertEqual(_memory_digest(outcome.memory), want['memory'])
         return job, outcome
 
     def managed(self, job, outcome):

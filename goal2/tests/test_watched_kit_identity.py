@@ -76,6 +76,7 @@ class KitIdentityTests(unittest.TestCase):
             state=SimpleNamespace(managed_country=1,match_count=0,campaign=None,match_state={})
             outcome=WatchedOutcome(raw,b'memory',(SimpleNamespace(kind='full_time'),SimpleNamespace(kind='end')),(1,2),0)
             with patch.object(publication,'prepare_watched',return_value=image), \
+                 patch.object(publication,'sealed',side_effect=lambda prepared:prepared), \
                  patch.object(publication.Image,'from_memory_component',return_value=image), \
                  patch.object(schema,'_returned_image',return_value=image):
                 candidate=publication.completed_candidate(state,Fixture(1,2,1),outcome,b'template')

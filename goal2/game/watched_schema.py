@@ -6,8 +6,10 @@ KIT2_ENGINE_ID = 'original-match:424d5998076da1e4efc399c2715689ddb44d3e1a:2'
 # [designed: T150] The re-vendored kit (goal2-archaeology b519d999, PROVENANCE.md) labels its results kit '4'
 # (upstream aebd9c00: port frames replayed on load); the keys are kit 2's. Earlier results keep their identity.
 ENGINE_ID = 'original-match:b519d999673c9458211279fd4da8a8325b9f56fe:4'
-ENGINE_IDS = (LEGACY_ENGINE_ID, KIT2_ENGINE_ID, ENGINE_ID)
-COMPETITIVE_ENGINE_IDS = (KIT2_ENGINE_ID, ENGINE_ID)
+# [designed: T151] The same kit playing on its sealed port (engine="port"): its results add `ports`.
+PORT_ENGINE_ID = 'original-match-port:b519d999673c9458211279fd4da8a8325b9f56fe:4'
+ENGINE_IDS = (LEGACY_ENGINE_ID, KIT2_ENGINE_ID, ENGINE_ID, PORT_ENGINE_ID)
+COMPETITIVE_ENGINE_IDS = (KIT2_ENGINE_ID, ENGINE_ID, PORT_ENGINE_ID)
 CURRENT_KITS = ('2', '4')
 RESULT_SCHEMA = 1
 COMPETITIVE_SCHEMA = 2
@@ -32,6 +34,13 @@ def validate_result(result, *, competitive=False):
     if not isinstance(result,dict):raise ValueError('invalid watched original result schema')
     kit=result.get('kit')
     keys=RESULT_KEYS if kit=='1' else RESULT_KEYS|KIT2_KEYS if kit in CURRENT_KITS else None
+    port=kit=='4' and 'ports' in result
+    if port:
+        keys=keys|{'ports'}
+        ports=result['ports']
+        if (not isinstance(ports,dict) or set(ports)!={'names','calls'} or not isinstance(ports['names'],list)
+                or not ports['names'] or not isinstance(ports['calls'],dict)):
+            raise ValueError('invalid watched port record')
     if keys is None or set(result)!=keys:raise ValueError('invalid watched original result schema')
     if (any(not integer(result[k],1,128) for k in ('first','second','managed'))
             or result['first']==result['second'] or result['managed'] not in (result['first'],result['second'])
@@ -59,7 +68,7 @@ def validate_result(result, *, competitive=False):
     _details(result,competitive=competitive)
     if kit in CURRENT_KITS:
         _players(result) if competitive else _friendly_kit2(result)
-    return {'1':LEGACY_ENGINE_ID,'2':KIT2_ENGINE_ID}.get(kit,ENGINE_ID)
+    return PORT_ENGINE_ID if port else {'1':LEGACY_ENGINE_ID,'2':KIT2_ENGINE_ID}.get(kit,ENGINE_ID)
 
 
 def _friendly_kit2(result):

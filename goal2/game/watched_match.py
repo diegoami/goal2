@@ -145,6 +145,30 @@ def _prepare_match(state: GameState, original: bytes, fixture: Fixture, *, compe
     return image
 
 
+def sealed(image: Image) -> Image:
+    """[designed: owner, 2026-10-27/2026-10-31; T151] The sealed engine's input for a prepared image: goal2's
+    state (the image without GOAL.EXE's load module) and the vendored tables. [confirmed: goal2-archaeology
+    T80b/T80c, milestone m9-port-sealed-engine] The port plays every admitted match from it identical to the
+    original, without Unicorn and without the module's code."""
+    from goal2.game import engine_tables
+    tables = engine_tables.load()
+    return Image.from_state(image.state(tables), tables)
+
+
+def _complete_memory(memory: bytes, prepared: Image) -> bytes:
+    """[designed: T151] The port's memory after a match, with GOAL.EXE's code part (which the sealed engine does
+    not hold) from the prepared image, so the tournament's next step, still the original's under Unicorn
+    (goal2-archaeology #427), finds its code. [confirmed: goal2-archaeology T57 write watch,
+    out/T57/ranges-20261017.json] The game writes nothing there during a match."""
+    from goal2.engine.original_match.image import MEM_BASE
+    from goal2.engine.original_match.port.tables import DS_PARAGRAPH
+    out = bytearray(memory)
+    lo = MEM_BASE + prepared.load * 16
+    hi = lo + DS_PARAGRAPH * 16
+    out[lo:hi] = prepared.memory[prepared.load * 16:prepared.load * 16 + DS_PARAGRAPH * 16]
+    return bytes(out)
+
+
 @dataclass(frozen=True)
 class WatchedOutcome:
     """[designed] Completed original output; caller decides when/how to publish it."""
@@ -205,8 +229,10 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
         _integer(reference_seed,0,65535,'reference seed')
     if delay_byte is not None:
         _integer(delay_byte,0,255,'delay byte')
-    match = Match(image,fixture,managed=state.managed_country,captain=state.captain or None,
-                  seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions)
+    # [designed: owner, 2026-10-31; T151] Every match plays on the sealed port; there is no Unicorn fallback.
+    match = Match(sealed(image),fixture,managed=state.managed_country,captain=state.captain or None,
+                  seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions,
+                  engine="port")
     if _observe_pitch is not None:
         match.opts['ticks'] = True
     frame_sequence = 0
@@ -264,7 +290,7 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
         policy.answered(_report(match, report))
     # [confirmed: E033] result() requires completion after the B7FA player-update tail.
     result = copy.deepcopy(match.result())
-    memory = match.memory_component()
+    memory = _complete_memory(match.memory_component(), image)
     after = Image(memory)
     return WatchedOutcome(result,memory,tuple(events),(after.rd(0x7B62),after.rd(0x8336)),image.year())
 

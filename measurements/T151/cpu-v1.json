@@ -1,0 +1,12 @@
+{
+ "what": "CPU seconds (time.process_time) of one match through goal2's _drive_match, the sealed port vs the original engine under Unicorn (goal2/tests/test_port_route_t151.py, GOAL2_SLOW=1)",
+ "head": "task/T151-port-match-route (wip, after 7e942360)",
+ "interpreter": "CPython 3.14.4 (gate venv), Linux WSL2; other test jobs ran on the machine at the same time",
+ "date": "2026-10-31",
+ "cases": [
+  {"case": "watched friendly 7 v 19, fixture 21, two half-time substitutions, a pause, pitch samples observed", "port_cpu_s": 484.0, "original_cpu_s": 47.9, "score": [2, 1]},
+  {"case": "World Cup knockout 7 v 19, fixture 42, kind 200, extra time and penalties", "port_cpu_s": 339.2, "original_cpu_s": 17.1, "score": [0, 0]},
+  {"case": "watched friendly 7 v 19, fixture 21, seed 0x1234, no observation (scratch probe)", "port_cpu_s": 170.6, "original_cpu_s": 9.5, "score": [1, 1]}
+ ],
+ "note": "The port under CPython is 10-20 times the original's CPU; T152 runs the match worker under PyPy 3.11 (owner, 2026-10-29), about 4 times CPython's speed (goal2-archaeology #620)."
+}

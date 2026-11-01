@@ -314,7 +314,10 @@ class WatchedJobs:
         self._errors = (folder / 'errors').open('w+b')
         self._frames = (folder / 'frames').open('w+b')
         self._commands = (folder / 'commands').open('wb')
-        command = [sys.executable, '-m', 'goal2.game.watched_worker'] if self.command is None else list(self.command)
+        # [designed: T152] the engine worker runs under PyPy 3.11 when there is one (engine_python)
+        from goal2.game.engine_python import worker_command
+        command = worker_command('goal2.game.watched_worker') if self.command is None else list(self.command)
+        self.interpreter = command[0]
         self.process = _PreparingProcess(job.state, self._template, source,
             command + [str(source), str(folder / 'events')],
             cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
