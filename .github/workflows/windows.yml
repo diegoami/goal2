@@ -50,7 +50,7 @@ jobs:
       group: windows-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
     runs-on: windows-latest
-    timeout-minutes: 90
+    timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] T151 puts every match on the port; re-measured after its first full run
     defaults:
       run:
         shell: bash
@@ -100,6 +100,9 @@ jobs:
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
           # [designed: owner, 2026-10-31, #487] the automatic slow runs play one case per batch test; a slow dispatch, all
           [ -z "$slow" ] && export GOAL2_CASES=1
+          # [designed: owner, 2026-11-01] PR and main runs leave the match slow tests to the local gate,
+          # which plays every case; the layout stage keeps its slow tests
+          [ -z "$slow" ] && slow=--batch-fast
           python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $slow 2>&1 | tee windows-premerge.log
       - name: Native scenarios (worker, saves, two windows)
         shell: bash --noprofile --norc -o pipefail {0}

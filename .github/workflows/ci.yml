@@ -52,7 +52,7 @@ jobs:
       cancel-in-progress: true
     runs-on: ubuntu-24.04
     # A slow run took 25.5 min of gate and 27.2 min in all (measurements/T146/run-40807702296-v1.json).
-    timeout-minutes: 90
+    timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] T151 puts every match on the port; re-measured after its first full run
     defaults:
       run:
         shell: bash
@@ -111,6 +111,9 @@ jobs:
           [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.slow }}" = true ] && slow=--slow
           # [designed: owner, 2026-10-31, #487] the automatic slow runs play one case per batch test; a slow dispatch, all
           [ -z "$slow" ] && export GOAL2_CASES=1
+          # [designed: owner, 2026-11-01] PR and main runs leave the match slow tests to the local gate,
+          # which plays every case; the layout stage keeps its slow tests
+          [ -z "$slow" ] && slow=--batch-fast
           start=$(date +%s)
           # The wall time is printed whether the gate passes or fails, then the gate's status is the step's.
           status=0

@@ -46,6 +46,12 @@ class LinuxGate(unittest.TestCase):
             with self.subTest(workflow=path.name):
                 self.assertIn('[ -z "$slow" ] && export GOAL2_CASES=1', path.read_text())
 
+    def test_pr_and_main_runs_leave_the_match_slow_tests_to_the_local_gate(self):
+        # [designed: owner, 2026-11-01] both workflows: --batch-fast unless a dispatch asks for slow
+        for path in (WORKFLOW, WORKFLOW.with_name("windows.yml")):
+            with self.subTest(workflow=path.name):
+                self.assertIn('[ -z "$slow" ] && slow=--batch-fast', path.read_text())
+
     def test_offscreen_qt_and_dummy_sdl(self):
         for line in ("QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy"):
             self.assertIn(line, self.text)
