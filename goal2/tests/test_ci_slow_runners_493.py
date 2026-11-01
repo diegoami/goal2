@@ -3,7 +3,8 @@ whose push changes what the slow tests guard: tools/ci_changes.py), and run the 
 the owner's machines (self-hosted runners, labels goal2-slow and goal2-slow-linux), never for a fork PR,
 without touching the owner's desktop: offscreen Qt, dummy SDL, no display change, no native-window
 scenarios. Windows finds Git Bash by its path (bash on a Windows PATH can be WSL's) and the PC's own Python
-(no admin: setup-python cannot install there); Linux takes uv's. tools/runner/ registers a machine with
+(no admin: setup-python cannot install CPython there); Linux takes uv's. Both name PyPy 3.11 as the match
+workers' interpreter (T152): on CPython three slow modules hit their time limits (#494, run 41302324795). tools/runner/ registers a machine with
 exactly those labels, checksum-verified. Text checks: the workflow files are YAML, PyYAML is no dependency."""
 from pathlib import Path
 import re
@@ -57,8 +58,14 @@ class WindowsSlow(unittest.TestCase):
 
     def test_git_bash_by_path_and_the_pcs_own_python(self):
         self.assertIn(r"shell: 'C:\PROGRA~1\Git\bin\bash.exe --noprofile --norc -eo pipefail {0}'", self.text)
-        self.assertNotIn("actions/setup-python", self.text)
+        self.assertNotIn("python-version: '3", self.text)       # setup-python only for PyPy, never on PATH
         self.assertIn("py -3.13 -m venv", self.text)
+
+    def test_the_match_workers_run_under_pypy(self):
+        step = self.text.split("id: pypy\n", 1)[1].split("      - name: Python 3.13", 1)[0]
+        self.assertIn("python-version: 'pypy3.11'\n          update-environment: false\n", step)
+        self.assertIn('echo "GOAL2_ENGINE_PYTHON=${{ steps.pypy.outputs.python-path }}" >> "$GITHUB_ENV"', step)
+        self.assertLess(self.text.index("id: pypy"), self.text.index("tools/check_premerge.py"))
 
     def test_nothing_of_the_original_game_is_uploaded(self):
         self.assertIn(r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'", self.text)
@@ -81,6 +88,9 @@ class LinuxSlow(unittest.TestCase):
                 self.assertIn(needle, self.text)
         self.assertIn("runs-on: [goal2-slow-linux]", self.text)
         self.assertIn("uv venv -q --seed --python 3.12", self.text)
+        self.assertIn("uv python install -q pypy3.11", self.text)
+        self.assertIn('echo "GOAL2_ENGINE_PYTHON=$(PATH="$HOME/.local/bin:$PATH" uv python find pypy3.11)" >> "$GITHUB_ENV"', self.text)
+        self.assertLess(self.text.index("GOAL2_ENGINE_PYTHON="), self.text.index("tools/check_premerge.py"))
         for absent in ("actions/setup-python", "sudo", "pull_request_target", "--batch-fast", "GOAL2_CASES"):
             self.assertNotIn(absent, self.text)
 

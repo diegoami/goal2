@@ -66,6 +66,10 @@ jobs:
         run: |
           PATH="$HOME/.local/bin:$PATH" uv venv -q --seed --python 3.12 "$RUNNER_TEMP/venv"
           echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+      - name: PyPy 3.11 for the match workers (T152; uv's, named explicitly, not whatever is on PATH)
+        run: |
+          PATH="$HOME/.local/bin:$PATH" uv python install -q pypy3.11
+          echo "GOAL2_ENGINE_PYTHON=$(PATH="$HOME/.local/bin:$PATH" uv python find pypy3.11)" >> "$GITHUB_ENV"
       - name: Install goal2
         run: python -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'
       - name: Original-game files (owner's Drive, through the runner's mirror)
