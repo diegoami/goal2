@@ -57,6 +57,19 @@ class LayoutFirst(unittest.TestCase):
         self.gate.check_tests(4, sys.executable, False, runner, layout_slow=False)
         self.assertFalse(any(slow for _, slow in calls))
 
+    def test_batch_fast_keeps_the_layout_slow_tests_and_drops_the_batch_ones(self):
+        # [designed: owner, 2026-11-01] CI's PR and main runs: the local gate plays the matches
+        from unittest.mock import patch
+        seen = {}
+
+        def check_tests(jobs, python, slow, layout_slow=True):
+            seen.update(slow=slow, layout_slow=layout_slow)
+        with patch.object(self.gate, "check_checkout"), patch.object(self.gate, "check_originals"), \
+                patch.object(self.gate.subprocess, "run"), patch.object(self.gate, "check_tests", check_tests), \
+                patch.object(self.gate, "slow_changes", return_value=["goal2/engine/x.py"]):
+            self.assertEqual(self.gate.main(["--expected-head", "0" * 40, "--batch-fast"]), 0)
+        self.assertEqual(seen, {"slow": False, "layout_slow": True})
+
     def test_a_failing_layout_module_stops_the_gate_before_the_full_batch(self):
         failing = self.gate.LAYOUT_FIRST[0]
         runner, calls = self.fake(failing={failing})

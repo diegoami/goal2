@@ -1,6 +1,6 @@
 """[designed: owner, #127, 2026-10-20] The pre-merge checks of one exact, clean commit.
 
-    python3 tools/check_premerge.py --expected-head <full sha> [--no-tests | --slow] [--python PY] [--jobs N]
+    python3 tools/check_premerge.py --expected-head <full sha> [--no-tests | --slow | --fast | --batch-fast] [--python PY] [--jobs N]
 
 Checks: the checkout is clean at that commit; no original-game file is tracked (CLAUDE.md
 rule 14); Markdown links and JSON parse (tools/check_links.py); every game test module under
@@ -12,7 +12,9 @@ a file the slow tests guard since origin/main (SLOW_PATHS: the engine, the core,
 match, saves, the match view, the dependencies), always with --slow (every milestone candidate),
 never with --fast. [designed: owner, 2026-10-29, T145] The cheap layout and page-reserve modules
 (LAYOUT_FIRST) run first, with their slow tests unless --fast, and a failure there ends the gate
-before the full batch. Task-specific Done-when lines stay separate.
+before the full batch. [designed: owner, 2026-11-01] --batch-fast keeps the layout stage's slow tests and never
+runs the full batch's: CI's PR and main runs, whose 4-CPU runners took hours over the port's matches, while the
+local gate plays them all. Task-specific Done-when lines stay separate.
 """
 from __future__ import annotations
 
@@ -157,6 +159,8 @@ def main(argv: list[str] | None = None) -> int:
     tests.add_argument("--no-tests", dest="tests", action="store_false", help="skip the game test modules")
     tests.add_argument("--slow", action="store_true", help="always run the slow tests (milestone candidates)")
     tests.add_argument("--fast", action="store_true", help="never run the slow tests")
+    tests.add_argument("--batch-fast", action="store_true",
+                       help="the layout stage's slow tests only, never the full batch's (CI's PR and main runs)")
     parser.add_argument("--tests", action="store_true", help=argparse.SUPPRESS)  # the default since #275
     parser.add_argument("--python", default=sys.executable, help="interpreter for the game tests")
     parser.add_argument("--jobs", type=int, default=min(8, os.cpu_count() or 2))
@@ -167,7 +171,9 @@ def main(argv: list[str] | None = None) -> int:
         subprocess.run([sys.executable, "tools/check_links.py"], cwd=ROOT, check=True)
         if args.tests:
             slow = args.slow
-            if not (args.slow or args.fast):
+            if args.batch_fast:
+                print("SKIP the full batch's slow tests (--batch-fast: the local gate plays them)", flush=True)
+            elif not (args.slow or args.fast):
                 changed = slow_changes()
                 slow = changed is None or bool(changed)
                 why = ("origin/main unreadable" if changed is None else
