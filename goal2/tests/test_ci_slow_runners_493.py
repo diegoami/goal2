@@ -1,4 +1,5 @@
-"""[designed: owner, 2026-11-01, #493] The Windows and Linux slow workflows run the full gate with --slow on
+"""[designed: owner, 2026-11-01, #493] The Windows and Linux slow workflows run only when needed (a ready PR
+whose push changes what the slow tests guard: tools/ci_changes.py), and run the full gate with --slow on
 the owner's machines (self-hosted runners, labels goal2-slow and goal2-slow-linux), never for a fork PR,
 without touching the owner's desktop: offscreen Qt, dummy SDL, no display change, no native-window
 scenarios. Windows finds Git Bash by its path (bash on a Windows PATH can be WSL's) and the PC's own Python
@@ -19,11 +20,21 @@ class WindowsSlow(unittest.TestCase):
         self.assertTrue(WORKFLOW.is_file(), "no Windows slow workflow")
         self.text = WORKFLOW.read_text()
 
-    def test_it_runs_on_prs_main_and_dispatch(self):
-        on = re.search(r"^on:\n(.*?)^\S", self.text, re.M | re.S).group(1)
-        self.assertRegex(on, r"(?m)^  pull_request:")
-        self.assertRegex(on, r"(?m)^  push:\n    branches: \[main\]")
-        self.assertRegex(on, r"(?m)^  workflow_dispatch:")
+    def test_only_when_needed_prs_and_dispatch_never_main_or_drafts(self):
+        for path in (WORKFLOW, LINUX):
+            with self.subTest(workflow=path.name):
+                text = path.read_text()
+                on = re.search(r"^on:\n(.*?)^\S", text, re.M | re.S).group(1)
+                self.assertIn("  pull_request:\n    types: [opened, synchronize, reopened, ready_for_review]\n", on)
+                self.assertRegex(on, r"(?m)^  workflow_dispatch:")
+                self.assertNotRegex(on, r"(?m)^  push:")
+                self.assertIn("!github.event.pull_request.draft", text)
+                self.assertIn("python3 tools/ci_changes.py --kind slow ${since:+--since \"$since\"}", text)
+                self.assertIn('[ "${{ github.event.action }}" = synchronize ] && since="${{ github.event.before }}"', text)
+                job = text.split("\n  changes:\n")[1].split("\n  ", 1)[1]
+                self.assertIn("needs: changes\n    if: needs.changes.outputs.run == 'true'\n", job)
+                self.assertNotRegex(text, r"(?m)^concurrency:")     # job-level: a skipped push cancels nothing
+                self.assertIn("    concurrency:\n      group:", job)
 
     def test_only_the_owners_runner_and_never_a_fork(self):
         self.assertIn("runs-on: [goal2-slow]", self.text)
@@ -60,7 +71,7 @@ class LinuxSlow(unittest.TestCase):
 
     def test_the_same_workflow_on_the_linux_label_with_uvs_python(self):
         windows = WORKFLOW.read_text()
-        for needle in ("  pull_request:", "    branches: [main]", "  workflow_dispatch:",
+        for needle in ("  pull_request:", "  workflow_dispatch:",
                        "github.event.pull_request.head.repo.full_name == github.repository",
                        "python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" --slow",
                        "QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy",
@@ -95,6 +106,76 @@ class SetupScripts(unittest.TestCase):
         self.assertIn("need uv", text)
         self.assertIn("systemctl --user enable --now", text)
         self.assertIn("Restart=always", text)
+
+
+class HostedGates(unittest.TestCase):
+    """[designed: owner, 2026-11-01, #493] The hosted Linux and Windows gates skip drafts and docs-only pushes."""
+
+    def test_no_draft_and_only_pushes_beyond_docs(self):
+        for name, job in (("ci.yml", "linux"), ("windows.yml", "windows")):
+            with self.subTest(workflow=name):
+                text = (ROOT / ".github" / "workflows" / name).read_text()
+                on = re.search(r"^on:\n(.*?)^\S", text, re.M | re.S).group(1)
+                self.assertIn("  pull_request:\n    types: [opened, synchronize, reopened, ready_for_review]\n", on)
+                self.assertIn("  push:\n    branches: [main]\n    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']\n", on)
+                self.assertIn("!github.event.pull_request.draft", text)
+                self.assertIn("python3 tools/ci_changes.py --kind code ${since:+--since \"$since\"}", text)
+                self.assertIn(f"\n  {job}:\n    needs: changes\n    if: needs.changes.outputs.run == 'true'\n", text)
+                self.assertNotRegex(text, r"(?m)^concurrency:")
+
+
+class CiChanges(unittest.TestCase):
+    """tools/ci_changes.py on a scratch repository: a branch off main, pushed twice."""
+
+    def setUp(self):
+        import shutil
+        import subprocess
+        import sys
+        import tempfile
+        sys.path.insert(0, str(ROOT / "tools"))
+        try:
+            import ci_changes
+        finally:
+            sys.path.remove(str(ROOT / "tools"))
+        self.cc = ci_changes
+        self.repo = Path(tempfile.mkdtemp());self.addCleanup(shutil.rmtree, self.repo)
+        self.run = lambda *a: subprocess.run(["git", *a], cwd=self.repo, check=True, capture_output=True, text=True).stdout.strip()
+        self.run("init", "-q", "-b", "main");self.run("config", "user.email", "t@t");self.run("config", "user.name", "t")
+        self.commit("README.md")
+        self.run("update-ref", "refs/remotes/origin/main", "HEAD")
+        self.run("switch", "-q", "-c", "work")
+
+    def commit(self, path):
+        f = self.repo / path;f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(f.read_text() + "x" if f.exists() else "x")
+        self.run("add", path);self.run("commit", "-qm", path)
+        return self.run("rev-parse", "HEAD")
+
+    def decide(self, since=None, kind="slow"):
+        return self.cc.decide(since, cwd=self.repo, kind=kind)[0]
+
+    def test_a_docs_push_after_an_engine_push_runs_nothing(self):
+        engine = self.commit("goal2/engine/original_match/match.py")
+        self.assertTrue(self.decide());self.assertTrue(self.decide(kind="code"))       # the first push: the branch
+        self.commit("docs/process.md")
+        self.assertFalse(self.decide(engine));self.assertFalse(self.decide(engine, kind="code"))
+        self.assertTrue(self.decide())                                                    # ready-for-review: the branch
+
+    def test_a_ui_push_runs_the_hosted_gates_only(self):
+        first = self.commit("docs/x.md")
+        self.assertFalse(self.decide(kind="code"))
+        self.commit("goal2/desktop/shell.py")
+        self.assertTrue(self.decide(first, kind="code"));self.assertFalse(self.decide(first))
+
+    def test_a_rewritten_or_unknown_previous_head_counts_the_whole_branch(self):
+        self.commit("goal2/core/game.py")
+        for since in ("0" * 40, "f" * 40, None):
+            with self.subTest(since=since):
+                self.assertTrue(self.decide(since))
+
+    def test_git_failing_runs_to_be_safe(self):
+        self.run("update-ref", "-d", "refs/remotes/origin/main")
+        self.assertTrue(self.decide())
 
 
 if __name__ == "__main__":

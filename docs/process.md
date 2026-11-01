@@ -47,14 +47,11 @@ one, `git pull` and take the next free number.
    Windows Qt and SDL, the `spawn` worker and Windows file replacement.
    [designed: owner, 2026-11-01, #493] The **Windows slow** and **Linux slow** workflows
    (`.github/workflows/windows-slow.yml`, `linux-slow.yml`) run the gate with `--slow` (every slow test,
-   every case) on the owner's own machines: self-hosted runners labelled `goal2-slow` (Windows) and
-   `goal2-slow-linux` (Linux, WSL included), registered by `tools/runner/setup-windows.ps1` and
-   `setup-linux.sh`, which the owner runs on each machine (never one someone else uses: every run pulls the
-   original files from the owner's Drive). Runners with the same label share the queue. They never run a
-   fork PR, and every outside contributor's run needs the owner's approval (repository setting).
-   Offscreen Qt and dummy SDL: they leave the owner's desktop alone. A PR merges with them green when a
-   runner is online; while none is, the run waits, and the PR may merge on the other checks, with a note
-   on the PR.
+   every case) on the owner's own machines (self-hosted runners). Checks run only when needed: a draft PR
+   runs none; a ready PR's push runs the hosted checks when it changes more than docs, measurements and
+   Markdown, and the slow ones when it changes what the slow tests guard, judged since the PR's previous push
+   (`tools/ci_changes.py`); main runs the hosted ones only; a dispatch runs everything. The runners, adding
+   a machine, merging with these checks and the security rules: [runners.md](runners.md).
    [designed: owner, 2026-10-29, T146] The **Linux** workflow (`.github/workflows/ci.yml`) runs the
    same gate on every PR and on `main`, provisioned like a prepared checkout: the extras, the original
    files from the owner's Drive (a missing secret fails it, except on a fork PR), the

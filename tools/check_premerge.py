@@ -59,16 +59,17 @@ def check_originals() -> None:
 # (the vendored engine under the emulator, watched and competitive matches, saves and timing).
 # [designed: #316] goal2/core/ and its two test modules: the core runs the original's whole game.
 # [designed: T105] the desktop over the core (goal2/desktop/core_*) and its test module run it too.
-SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|competitive|session_save|campaign_competitive)"
+SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|competitive|session_save|campaign_competitive|engine_)"
                         r"|goal2/desktop/(watched|competitive|match_view|pygame_viewer|save|core_"
                         r"|squad_page|pool_page|player_card|roster|overview_page"      # [T107] the core pages' builders
                         r"|fixtures_page|bench_page|bulletin_page|bracket_page)"         # [T108/T110/T111] pages
-                        r"|goal2/tests/(requires\.py$"
-                        r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view"
+                        r"|goal2/tests/(requires\.py$|port_parity\.py$"
+                        r"|test_(watched|campaign_competitive|desktop_competitive|pygame_match_view|port_route|pypy_worker"
                         r"|core_runner_t100|core_screens_t103|core_desktop_t105|core_new_game_t106|core_team_t107"
                         r"|core_round_t108|core_watch_t109|core_bulletin_t110|core_continuation_t111|core_world_t113"
                         r"|core_lineup_t114|core_pause_t115|core_playback_t116|core_shootout_t118|core_walkoff_363|core_extra_t119|core_nice_try_371|core_takers_t120|core_save_t121|core_patches_t122|core_best_place_395|core_congratulations_409|core_cycle_t123))"
-                        r"|pyproject\.toml$|tools/(check_premerge|watched_evidence|prove_core_cycle|verify_core_cycle)\.py$|tools/watched-kit-hashes\.json$)")
+                        r"|pyproject\.toml$|tools/(check_premerge|ci_changes|watched_evidence|prove_core_cycle|verify_core_cycle)\.py$|tools/watched-kit-hashes\.json$"
+                        r"|\.github/workflows/(windows|linux)-slow\.yml$)")   # [designed: owner, 2026-11-01, #493] what decides and runs them
 
 
 def slow_changes(base: str = "origin/main") -> list[str] | None:

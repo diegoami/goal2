@@ -5,22 +5,45 @@ name: Windows slow
 # not required: while the PC is off the run waits. Never for a fork PR. It leaves the owner's desktop alone
 # (offscreen Qt, dummy SDL, no display change; the native-window scenarios stay on the hosted runner).
 # Nothing of the original game is uploaded, and the Drive token is only read from the secret.
+# [designed: owner, 2026-11-01, #493] Only when needed: never for a draft or a fork PR, nor on main (the PR's
+# head was tested with main merged in); a PR push runs it only when it changes what the slow tests guard
+# since the PR's previous push (tools/ci_changes.py; the first push, ready-for-review or a rewritten
+# branch: since main). A skipped push leaves the earlier push's run going. A dispatch runs everything.
 on:
   pull_request:
-  push:
-    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: windows-slow-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
+  changes:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (!github.event.pull_request.draft && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Does this push change what the slow tests guard?
+        id: decide
+        run: |
+          if [ "${{ github.event_name }}" = workflow_dispatch ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          since=
+          [ "${{ github.event.action }}" = synchronize ] && since="${{ github.event.before }}"
+          python3 tools/ci_changes.py --kind slow ${since:+--since "$since"}
   windows-slow:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: changes
+    if: needs.changes.outputs.run == 'true'
+    # job-level, so a skipped push never cancels the run of an earlier one
+    concurrency:
+      group: windows-slow-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
     runs-on: [goal2-slow]
     timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] as the hosted runs' limit
     defaults:
