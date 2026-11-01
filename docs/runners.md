@@ -5,7 +5,7 @@
 | Check | Where | What | When |
 |---|---|---|---|
 | **Linux**, **Windows** (`ci.yml`, `windows.yml`) | GitHub's hosted machines (free: goal2 is public) | the gate with `--batch-fast`: every test module, the layout stage's slow tests, none of the full batch's | a ready PR's push that changes more than docs, measurements and Markdown; main's pushes beyond those; a dispatch |
-| **Linux slow**, **Windows slow** (`linux-slow.yml`, `windows-slow.yml`) | the owner's own machines (self-hosted runners) | the gate with `--slow`: every slow test, every case | a ready PR's push that changes what the slow tests guard (`SLOW_PATHS` in `tools/check_premerge.py`); a dispatch. Never on main, never for a fork PR |
+| **Linux slow**, **Windows slow** (`linux-slow.yml`, `windows-slow.yml`) | the owner's own machines (self-hosted runners) | on a PR, the gate's own choice: slow tests only in the modules the change can reach (`tools/slow_reach.py`, #505); on a dispatch and every night at 01:00 UTC on main, `--slow`: every slow test, every case | a ready PR's push that changes what the slow tests guard (`SLOW_PATHS` in `tools/check_premerge.py`; not the CI plumbing); a dispatch; nightly on main. Never for a fork PR |
 
 ## When checks run
 

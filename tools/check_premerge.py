@@ -9,8 +9,9 @@ optional dependency, original-game file or goal2-archaeology checkout is absent 
 reason (goal2/tests/requires.py), so the gate runs anywhere; the skips are counted in the output.
 Slow tests run when it counts: [designed: owner, 2026-10-20] automatically when the commit changes
 a file the slow tests guard since origin/main (SLOW_PATHS: the engine, the core, the watched and competitive
-match, saves, the match view, the dependencies), always with --slow (every milestone candidate),
-never with --fast. [designed: owner, 2026-10-29, T145] The cheap layout and page-reserve modules
+match, saves, the match view, the dependencies), always with --slow (every milestone candidate, the nightly
+run on main), never with --fast. [designed: owner, 2026-11-01, #505] Automatically, only in the test modules
+those files can reach (tools/slow_reach.py: the import graph); every other module runs its fast tests. [designed: owner, 2026-10-29, T145] The cheap layout and page-reserve modules
 (LAYOUT_FIRST) run first, with their slow tests unless --fast, and a failure there ends the gate
 before the full batch. [designed: owner, 2026-11-01] --batch-fast keeps the layout stage's slow tests and never
 runs the full batch's: CI's PR and main runs, whose 4-CPU runners took hours over the port's matches, while the
@@ -70,8 +71,9 @@ SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|compet
                         r"|core_runner_t100|core_screens_t103|core_desktop_t105|core_new_game_t106|core_team_t107"
                         r"|core_round_t108|core_watch_t109|core_bulletin_t110|core_continuation_t111|core_world_t113"
                         r"|core_lineup_t114|core_pause_t115|core_playback_t116|core_shootout_t118|core_walkoff_363|core_extra_t119|core_nice_try_371|core_takers_t120|core_save_t121|core_patches_t122|core_best_place_395|core_congratulations_409|core_cycle_t123))"
-                        r"|pyproject\.toml$|tools/(check_premerge|ci_changes|watched_evidence|prove_core_cycle|verify_core_cycle)\.py$|tools/watched-kit-hashes\.json$"
-                        r"|\.github/workflows/(windows|linux)-slow\.yml$)")   # [designed: owner, 2026-11-01, #493] what decides and runs them
+                        r"|pyproject\.toml$|tools/(watched_evidence|prove_core_cycle|verify_core_cycle)\.py$|tools/watched-kit-hashes\.json$)")
+# [designed: owner, 2026-11-01, #505] Not the CI plumbing (this gate, tools/ci_changes.py, tools/slow_reach.py, the
+# slow workflows): their own fast tests check them, and a full slow run of them is a dispatch.
 
 
 def slow_changes(base: str = "origin/main") -> list[str] | None:
@@ -162,7 +164,8 @@ def run_stage(modules: list[str], workers: int, run, failed: list[str], done: li
     return skipped
 
 
-def check_tests(jobs: int, python: str, slow: bool, runner=run_module, layout_slow: bool = True) -> None:
+def check_tests(jobs: int, python: str, slow: bool | set[str], runner=run_module, layout_slow: bool = True) -> None:
+    """`slow`: every module's slow tests (True), none (False), or only these modules' (#505)."""
     modules = sorted(p.stem for p in (ROOT / "goal2" / "tests").glob("test_*.py"))
     layout = [m for m in LAYOUT_FIRST if m in modules]
     failed: list[str] = []
@@ -173,9 +176,12 @@ def check_tests(jobs: int, python: str, slow: bool, runner=run_module, layout_sl
     rest = [m for m in modules if m not in layout]
     batches = [([m for m in rest if m not in SERIAL], jobs)] + [([m], 1) for m in SERIAL if m in rest]
     for batch, workers in batches:
-        skipped += run_stage(batch, workers, lambda m: runner(m, python, slow), failed, done, len(modules))
-    print(f"game tests: {len(modules) - len(failed)}/{len(modules)} modules pass, {skipped} tests skipped"
-          + ("" if slow else " (slow tests not run)"), flush=True)
+        skipped += run_stage(batch, workers, lambda m: runner(m, python, slow if isinstance(slow, bool) else m in slow),
+                             failed, done, len(modules))
+    scope = ("" if slow is True else " (slow tests not run)" if not slow else
+             f" (slow tests in {len(set(slow) & set(rest))} modules)")
+    print(f"game tests: {len(modules) - len(failed)}/{len(modules)} modules pass, {skipped} tests skipped" + scope,
+          flush=True)
     if failed:
         raise ValidationError("failing test modules: " + ", ".join(sorted(failed)))
 
@@ -203,11 +209,18 @@ def main(argv: list[str] | None = None) -> int:
                 print("SKIP the full batch's slow tests (--batch-fast: the local gate plays them)", flush=True)
             elif not (args.slow or args.fast):
                 changed = slow_changes()
-                slow = changed is None or bool(changed)
-                why = ("origin/main unreadable" if changed is None else
-                       f"changed: {', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''}" if changed else
-                       "no engine, watched, competitive, save or timing change since origin/main")
-                print(f"{'RUN' if slow else 'SKIP'} slow tests ({why})", flush=True)
+                if changed is None:
+                    slow, why = True, "RUN every slow test (origin/main unreadable)"
+                elif not changed:
+                    slow, why = False, "SKIP slow tests (no engine, watched, competitive, save or timing change since origin/main)"
+                else:
+                    if str(ROOT / "tools") not in sys.path:     # imported as a module (the tests), not run as a script
+                        sys.path.insert(0, str(ROOT / "tools"))
+                    from slow_reach import Graph
+                    slow = Graph(ROOT).affected(changed)
+                    why = (f"RUN slow tests in {len(slow)} modules they can reach (changed: {', '.join(changed[:5])}"
+                           f"{' ...' if len(changed) > 5 else ''}): {' '.join(sorted(slow))}")
+                print(why, flush=True)
             check_tests(args.jobs, args.python, slow, layout_slow=not args.fast)
         check_checkout(args.expected_head)  # a check that changed tracked files cannot certify it
     except (ValidationError, OSError, subprocess.CalledProcessError) as exc:

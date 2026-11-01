@@ -42,6 +42,12 @@ one, `git pull` and take the next free number.
    `origin/main` (the engine, the core, watched and competitive matches, saves, the match view,
    the dependencies: `SLOW_PATHS` in the script), and always with `--slow`, which every milestone
    candidate uses. `--fast` never runs them; `--no-tests` leaves the game tests out.
+   [designed: owner, 2026-11-01, #505] By itself the gate turns the slow tests on only in the test modules
+   the changed files can reach (`tools/slow_reach.py`, from the import graph; `python3 tools/slow_reach.py
+   <file>` lists them); every other module runs its fast tests. The CI plumbing (this gate,
+   `tools/ci_changes.py`, `tools/slow_reach.py`, the slow workflows) is not in `SLOW_PATHS`: its own tests
+   check it. Every slow test runs with `--slow`: a milestone candidate, a dispatch of the slow workflows, and
+   their nightly run on `main`.
    [designed: owner, 2026-10-20, #278] The **Windows** workflow (`.github/workflows/windows.yml`)
    runs on every PR and on `main`. It runs the same gate on a native Windows runner, with real
    Windows Qt and SDL, the `spawn` worker and Windows file replacement.
