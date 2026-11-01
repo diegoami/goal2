@@ -5,14 +5,18 @@ name: Linux slow
 # runs skip them (#490). Reported, not required: while no runner is online the run waits. Never for a fork
 # PR. Offscreen Qt and dummy SDL.
 # Nothing of the original game is uploaded, and the Drive token is only read from the secret.
-# [designed: owner, 2026-11-01, #493] Only when needed: never for a draft or a fork PR, nor on main (the PR's
+# [designed: owner, 2026-11-01, #493] Only when needed: never for a draft or a fork PR, nor on a push to main (the PR's
 # head was tested with main merged in); a PR push runs it only when it changes what the slow tests guard
 # since the PR's previous push (tools/ci_changes.py; the first push, ready-for-review or a rewritten
-# branch: since main). A skipped push leaves the earlier push's run going. A dispatch runs everything.
+# branch: since main). A skipped push leaves the earlier push's run going. A dispatch and the nightly run on main (#505) run every slow test.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+  # [designed: owner, 2026-11-01, #505] every slow test once a night on main: the PR runs only play the slow tests
+  # their changes can reach (tools/slow_reach.py)
+  schedule:
+    - cron: '0 1 * * *'
 
 permissions:
   contents: read
@@ -20,7 +24,7 @@ permissions:
 jobs:
   changes:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' ||
       (!github.event.pull_request.draft && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-24.04
     outputs:
@@ -33,7 +37,7 @@ jobs:
       - name: Does this push change what the slow tests guard?
         id: decide
         run: |
-          if [ "${{ github.event_name }}" = workflow_dispatch ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "${{ github.event_name }}" != pull_request ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           since=
           [ "${{ github.event.action }}" = synchronize ] && since="${{ github.event.before }}"
           python3 tools/ci_changes.py --kind slow ${since:+--since "$since"}
@@ -94,11 +98,13 @@ jobs:
           python tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"
       - name: goal2-archaeology (full clone; check_provenance needs its pinned commits)
         run: rm -rf "$GOAL2_ARCHAEOLOGY" && git clone -q https://github.com/diegoami/goal2-archaeology.git "$GOAL2_ARCHAEOLOGY"
-      - name: Game tests and pre-merge checks, every slow test
+      - name: Game tests and pre-merge checks, the slow tests the change can reach (every one on a dispatch or at night)
         run: |
           start=$(date +%s)
           status=0
-          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" --slow 2>&1 | tee linux-slow-premerge.log || status=$?
+          full=
+          [ "${{ github.event_name }}" = pull_request ] || full=--slow
+          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $full 2>&1 | tee linux-slow-premerge.log || status=$?
           echo "gate wall time: $(( $(date +%s) - start )) s" | tee -a linux-slow-premerge.log
           exit $status
       - name: Keep only logs

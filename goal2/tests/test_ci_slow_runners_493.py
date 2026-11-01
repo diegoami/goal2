@@ -43,8 +43,16 @@ class WindowsSlow(unittest.TestCase):
         self.assertNotIn("pull_request_target", self.text)
         self.assertRegex(self.text, r"(?m)^permissions:\n  contents: read$")
 
-    def test_the_full_gate_with_slow_tests(self):
-        self.assertIn("python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" --slow", self.text)
+    def test_a_pr_plays_the_slow_tests_it_can_reach_a_dispatch_and_the_night_all(self):
+        # [designed: owner, 2026-11-01, #505]
+        for path in (WORKFLOW, LINUX):
+            with self.subTest(workflow=path.name):
+                text = path.read_text()
+                self.assertIn('[ "${{ github.event_name }}" = pull_request ] || full=--slow\n', text)
+                self.assertIn('python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $full 2>&1', text)
+                self.assertIn("  schedule:\n    - cron: '0 1 * * *'\n", text)
+                self.assertIn("github.event_name == 'schedule'", text)
+                self.assertIn('if [ "${{ github.event_name }}" != pull_request ]; then echo "run=true"', text)
         self.assertNotIn("GOAL2_CASES", self.text)
         self.assertNotIn("--batch-fast", self.text)
         minutes = int(re.search(r"timeout-minutes: (\d+)", self.text).group(1))
@@ -80,7 +88,7 @@ class LinuxSlow(unittest.TestCase):
         windows = WORKFLOW.read_text()
         for needle in ("  pull_request:", "  workflow_dispatch:",
                        "github.event.pull_request.head.repo.full_name == github.repository",
-                       "python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" --slow",
+                       "python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" $full",
                        "QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy",
                        r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'"):
             with self.subTest(needle=needle):
