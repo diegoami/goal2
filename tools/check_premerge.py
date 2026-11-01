@@ -19,7 +19,7 @@ local gate plays them all. Task-specific Done-when lines stay separate.
 from __future__ import annotations
 
 import argparse
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 import os
 from pathlib import Path
 import re
@@ -131,25 +131,52 @@ def report(results: list, failed: list[str]) -> int:
     return skipped
 
 
+# [designed: owner, 2026-11-01, #498] A slow run lasts hours: each module's result is printed as it finishes,
+# and while none finishes, every PROGRESS_S seconds a line names the modules still running and for how long.
+PROGRESS_S = 300
+
+
+def run_stage(modules: list[str], workers: int, run, failed: list[str], done: list[int], total: int) -> int:
+    """Run `modules` on `workers` threads, reporting each as it finishes; return the skipped-test count.
+    `done` is the gate's running count of finished modules, out of `total`."""
+    started: dict[str, float] = {}
+
+    def timed(module):
+        started[module] = time.monotonic()
+        return run(module)
+    skipped = 0
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        pending = {pool.submit(timed, m): m for m in modules}
+        while pending:
+            finished, _ = wait(pending, timeout=PROGRESS_S, return_when=FIRST_COMPLETED)
+            for future in finished:
+                del pending[future]
+                done[0] += 1
+                skipped += report([future.result()], failed)
+            if not finished:
+                now = time.monotonic()
+                running = sorted((m for m in pending.values() if m in started), key=started.get)
+                print(f"running {len(running)}: " + ", ".join(f"{m} ({(now - started[m]) / 60:.0f} min)"
+                      for m in running) + f"; {done[0]}/{total} modules done", flush=True)
+    return skipped
+
+
 def check_tests(jobs: int, python: str, slow: bool, runner=run_module, layout_slow: bool = True) -> None:
     modules = sorted(p.stem for p in (ROOT / "goal2" / "tests").glob("test_*.py"))
     layout = [m for m in LAYOUT_FIRST if m in modules]
     failed: list[str] = []
-    with ThreadPoolExecutor(max_workers=jobs) as pool:
-        skipped = report(list(pool.map(lambda m: runner(m, python, layout_slow), layout)), failed)
+    done = [0]
+    skipped = run_stage(layout, jobs, lambda m: runner(m, python, layout_slow), failed, done, len(modules))
     if failed:
-        raise ValidationError("layout stage failed (the full batch did not run): " + ", ".join(failed))
+        raise ValidationError("layout stage failed (the full batch did not run): " + ", ".join(sorted(failed)))
     rest = [m for m in modules if m not in layout]
     batches = [([m for m in rest if m not in SERIAL], jobs)] + [([m], 1) for m in SERIAL if m in rest]
-    results = []
     for batch, workers in batches:
-        with ThreadPoolExecutor(max_workers=workers) as pool:
-            results += pool.map(lambda m: runner(m, python, slow), batch)
-    skipped += report(results, failed)
+        skipped += run_stage(batch, workers, lambda m: runner(m, python, slow), failed, done, len(modules))
     print(f"game tests: {len(modules) - len(failed)}/{len(modules)} modules pass, {skipped} tests skipped"
           + ("" if slow else " (slow tests not run)"), flush=True)
     if failed:
-        raise ValidationError("failing test modules: " + ", ".join(failed))
+        raise ValidationError("failing test modules: " + ", ".join(sorted(failed)))
 
 
 def main(argv: list[str] | None = None) -> int:

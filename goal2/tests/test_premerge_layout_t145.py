@@ -103,5 +103,52 @@ class LayoutFirst(unittest.TestCase):
             self.gate.check_tests(4, sys.executable, False, runner)
 
 
+
+class Progress(unittest.TestCase):
+    """[designed: owner, 2026-11-01, #498] Each module's result is printed as it finishes, and while none
+    finishes, a line names the modules still running."""
+
+    def setUp(self):
+        self.gate = gate()
+
+    def test_a_result_is_printed_while_a_slower_module_still_runs(self):
+        import io
+        import threading
+        from contextlib import redirect_stdout
+        release, out = threading.Event(), io.StringIO()
+        seen_early = []
+
+        def run(module):
+            if module == "slow_one":
+                seen_early.append(release.wait(5) and "FAIL goal2.tests.quick_one" in out.getvalue())
+                return module, 0, 0.0, "Ran 1 test in 0.1s\n\nOK"
+            release.set()
+            return module, 1, 0.0, "quick_one output\nRan 1 test in 0.1s\n\nFAILED (failures=1)"
+        failed = []
+        with redirect_stdout(out):
+            self.gate.run_stage(["slow_one", "quick_one"], 2, run, failed, [0], 2)
+        self.assertEqual(seen_early, [True])
+        self.assertEqual(failed, ["quick_one"])
+        self.assertIn("quick_one output", out.getvalue())
+
+    def test_while_nothing_finishes_the_running_modules_are_named(self):
+        import io
+        import time
+        from contextlib import redirect_stdout
+        from unittest.mock import patch
+
+        def run(module):
+            time.sleep(0.5 if module == "long_one" else 0)
+            return module, 0, 0.0, "Ran 1 test in 0.1s\n\nOK"
+        out = io.StringIO()
+        with redirect_stdout(out), patch.object(self.gate, "PROGRESS_S", 0.1):
+            self.gate.run_stage(["short_one", "long_one"], 2, run, [], [0], 7)
+        lines = out.getvalue().splitlines()
+        progress = [line for line in lines if line.startswith("running ")]
+        self.assertTrue(progress, out.getvalue())
+        self.assertRegex(progress[0], r"^running 1: long_one \(0 min\); 1/7 modules done$")
+        self.assertEqual(lines[-1], "PASS goal2.tests.long_one (0 s)")
+
+
 if __name__ == "__main__":
     unittest.main()
