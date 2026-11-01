@@ -47,14 +47,13 @@ class QuickJobs:
         code=self.process.poll()
         if code is None:
             if self.interactive and not self.continued and self.halftime is None:
-                preview=self.directory/'halftime.json'
-                if preview.exists():
-                    import json
-                    try:
-                        packet=json.loads(preview.read_text());self.validate_halftime(packet)
-                    except (OSError,ValueError,TypeError,KeyError) as exc:
-                        self.cancel();raise ValueError(f'Invalid halftime preview: {exc}') from exc
-                    self.halftime=packet
+                from goal2.desktop.worker import read_json
+                try:
+                    packet=read_json(self.directory/'halftime.json')   # None until the worker's preview is readable (#503)
+                    if packet is not None:self.validate_halftime(packet)
+                except (OSError,ValueError,TypeError,KeyError) as exc:
+                    self.cancel();raise ValueError(f'Invalid halftime preview: {exc}') from exc
+                if packet is not None:self.halftime=packet
             return None
         try:
             self.errors.flush()
