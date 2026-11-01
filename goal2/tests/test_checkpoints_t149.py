@@ -60,6 +60,18 @@ class Jobs(unittest.TestCase):
         self.assertIsInstance(done["command_pid"], int)
         self.assertEqual([j["name"] for j in self.jobs.jobs(self.root)], ["short"])
 
+    def test_a_python_without_spawn_setsid_still_detaches_the_job(self):
+        # [designed: #495] uv's Pythons (python-build-standalone) refuse posix_spawn(setsid=True)
+        from unittest import mock
+        def refuse(*args, **kwargs):
+            raise NotImplementedError("posix_spawn: setsid unavailable on this platform")
+        with mock.patch.object(self.jobs.os, "posix_spawn", refuse):
+            job = self.started("nospawn", "print('detached')")
+        self.assertNotEqual(os.getsid(job["wrapper_pid"]) if self.jobs.alive(job["wrapper_pid"]) else None, os.getsid(0))
+        done = self.jobs.wait(self.root, "nospawn", timeout=20, poll=0.05)
+        self.assertEqual((done["state"], done["exit_code"]), ("finished", 0))
+        self.assertEqual(Path(done["log"]).read_text().strip(), "detached")
+
     def test_a_killed_job_is_vanished_not_running_or_finished(self):
         self.started("killed", "import time;time.sleep(60)")
         job = self.until("killed", "running")

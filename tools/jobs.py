@@ -112,10 +112,16 @@ def start(root: Path, name: str, command: list[str], cwd: Path | None = None) ->
     job = dict(name=name, command=command, cwd=str(cwd), head=head(cwd), started_utc=now(),
                log=str(jobs_dir / f"{name}.log"), wrapper_pid=None)
     write(jobs_dir / f"{name}.json", job)
-    # posix_spawn, not Popen: nothing in this process waits for the detached wrapper.
-    quiet = [(os.POSIX_SPAWN_OPEN, fd, os.devnull, os.O_RDWR, 0) for fd in (0, 1, 2)]
-    job["wrapper_pid"] = os.posix_spawn(sys.executable, [sys.executable, str(Path(__file__).resolve()), "_run",
-                                                         str(root), name], os.environ, file_actions=quiet, setsid=True)
+    argv = [sys.executable, str(Path(__file__).resolve()), "_run", str(root), name]
+    try:
+        # posix_spawn, not Popen: nothing in this process waits for the detached wrapper.
+        quiet = [(os.POSIX_SPAWN_OPEN, fd, os.devnull, os.O_RDWR, 0) for fd in (0, 1, 2)]
+        job["wrapper_pid"] = os.posix_spawn(sys.executable, argv, os.environ, file_actions=quiet, setsid=True)
+    except NotImplementedError:
+        # [designed: #495] uv's Pythons (python-build-standalone) are built without spawn's setsid; Popen's
+        # fork/exec detaches the same way, and its object is dropped unwaited like the spawned PID.
+        job["wrapper_pid"] = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                              stderr=subprocess.DEVNULL, start_new_session=True).pid
     write(jobs_dir / f"{name}.json", job)
     return job
 

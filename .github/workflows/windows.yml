@@ -4,10 +4,16 @@ name: Windows
 # saves and the Qt/SDL scenarios with the real Windows platforms. goal2 is public, so hosted runners
 # cost nothing. Nothing of the original game leaves the runner: no .cache/ content and no
 # original-game file is ever uploaded, and the Drive token is only read from the secret.
+# [designed: owner, 2026-11-01, #493] Not for a draft PR (it runs once the PR is ready), and a PR push only
+# when it changes more than docs, measurements and Markdown since the PR's previous push
+# (tools/ci_changes.py --kind code; GitHub's paths filters judge a PR's whole diff, not the push). A skipped
+# push leaves the earlier push's run going. main: the same paths, per push. A dispatch runs regardless.
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
+    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']
   workflow_dispatch:
     inputs:
       slow:
@@ -18,12 +24,31 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: windows-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
+  changes:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-24.04
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Does this push change more than docs?
+        id: decide
+        run: |
+          if [ "${{ github.event_name }}" != pull_request ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          since=
+          [ "${{ github.event.action }}" = synchronize ] && since="${{ github.event.before }}"
+          python3 tools/ci_changes.py --kind code ${since:+--since "$since"}
   windows:
+    needs: changes
+    if: needs.changes.outputs.run == 'true'
+    # job-level, so a skipped push never cancels the run of an earlier one
+    concurrency:
+      group: windows-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
     runs-on: windows-latest
     timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] T151 puts every match on the port; re-measured after its first full run
     defaults:
