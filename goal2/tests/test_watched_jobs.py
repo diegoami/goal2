@@ -206,6 +206,9 @@ class WatchedJobsTests(unittest.TestCase):
 
     def test_replacement_and_stale_cancel_cannot_touch_new_job(self):
         old=self.bridge('blocked')
+        # [designed: #492] the worker runs (its input is encoded) before the job goes stale: the stale
+        # poll's cancel waits 1 s, which a loaded CI runner's encode outlasted (#307's setup waits)
+        self.until(old,lambda events:events,hang_guard=SETUP_WAIT)
         self.owner.state=copy.deepcopy(self.owner.state)
         replacement=copy.deepcopy(self.owner.state)
         with self.assertRaisesRegex(ValueError,'stale'):
