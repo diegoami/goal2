@@ -114,13 +114,18 @@ class Progress(unittest.TestCase):
     def test_a_result_is_printed_while_a_slower_module_still_runs(self):
         import io
         import threading
+        import time
         from contextlib import redirect_stdout
         release, out = threading.Event(), io.StringIO()
         seen_early = []
 
         def run(module):
             if module == "slow_one":
-                seen_early.append(release.wait(5) and "FAIL goal2.tests.quick_one" in out.getvalue())
+                # the gate prints quick_one's result in its own thread, a moment after quick_one returns
+                deadline = time.monotonic() + 5
+                while "FAIL goal2.tests.quick_one" not in out.getvalue() and time.monotonic() < deadline:
+                    time.sleep(0.01)
+                seen_early.append(release.is_set() and "FAIL goal2.tests.quick_one" in out.getvalue())
                 return module, 0, 0.0, "Ran 1 test in 0.1s\n\nOK"
             release.set()
             return module, 1, 0.0, "quick_one output\nRan 1 test in 0.1s\n\nFAILED (failures=1)"
