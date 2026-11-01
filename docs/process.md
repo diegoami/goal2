@@ -45,13 +45,16 @@ one, `git pull` and take the next free number.
    [designed: owner, 2026-10-20, #278] The **Windows** workflow (`.github/workflows/windows.yml`)
    runs on every PR and on `main`. It runs the same gate on a native Windows runner, with real
    Windows Qt and SDL, the `spawn` worker and Windows file replacement.
-   [designed: owner, 2026-11-01, #493] The **Windows slow** workflow (`.github/workflows/windows-slow.yml`)
-   runs the gate with `--slow` (every slow test, every case) on the owner's PC: a self-hosted runner
-   (`goal2-pc`, label `goal2-slow`, in `C:\Users\diego\ghr-goal2`, started with `run.cmd`; no admin, so
-   not a service). It never runs a fork PR, and every outside contributor's run needs the owner's
-   approval (repository setting). Offscreen Qt and dummy SDL: it leaves the owner's desktop alone. A PR
-   merges with it green when the runner is online; while the PC is off it waits, and the PR may merge
-   on the other checks, with a note on the PR.
+   [designed: owner, 2026-11-01, #493] The **Windows slow** and **Linux slow** workflows
+   (`.github/workflows/windows-slow.yml`, `linux-slow.yml`) run the gate with `--slow` (every slow test,
+   every case) on the owner's own machines: self-hosted runners labelled `goal2-slow` (Windows) and
+   `goal2-slow-linux` (Linux, WSL included), registered by `tools/runner/setup-windows.ps1` and
+   `setup-linux.sh`, which the owner runs on each machine (never one someone else uses: every run pulls the
+   original files from the owner's Drive). Runners with the same label share the queue. They never run a
+   fork PR, and every outside contributor's run needs the owner's approval (repository setting).
+   Offscreen Qt and dummy SDL: they leave the owner's desktop alone. A PR merges with them green when a
+   runner is online; while none is, the run waits, and the PR may merge on the other checks, with a note
+   on the PR.
    [designed: owner, 2026-10-29, T146] The **Linux** workflow (`.github/workflows/ci.yml`) runs the
    same gate on every PR and on `main`, provisioned like a prepared checkout: the extras, the original
    files from the owner's Drive (a missing secret fails it, except on a fork PR), the

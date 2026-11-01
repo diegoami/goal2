@@ -1,0 +1,86 @@
+name: Linux slow
+
+# [designed: owner, 2026-11-01, #493] The full gate with every slow test on Linux, on the owner's machines
+# (self-hosted runners labelled goal2-slow-linux, WSL included; tools/runner/setup-linux.sh): the hosted
+# runs skip them (#490). Reported, not required: while no runner is online the run waits. Never for a fork
+# PR. Offscreen Qt and dummy SDL.
+# Nothing of the original game is uploaded, and the Drive token is only read from the secret.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linux-slow-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-slow:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [goal2-slow-linux]
+    timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] as the hosted runs' limit
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONUTF8: '1'
+      QT_QPA_PLATFORM: offscreen
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      GOAL2_ARCHAEOLOGY: ${{ github.workspace }}/../goal2-archaeology
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # check_premerge compares with origin/main and wants the PR's own head, not the merge ref.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Python 3.12 (uv's) in a fresh venv
+        # the runner has no root, so no setup-python; setup-linux.sh checks uv is there
+        run: |
+          PATH="$HOME/.local/bin:$PATH" uv venv -q --seed --python 3.12 "$RUNNER_TEMP/venv"
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+      - name: Install goal2
+        run: python -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'
+      - name: Original-game files (owner's Drive)
+        env:
+          GOAL2_RCLONE_TOKEN: ${{ secrets.GOAL2_RCLONE_TOKEN }}
+        run: |
+          version=v1.75.2;zip=rclone-$version-linux-amd64.zip
+          curl -sSfL "https://downloads.rclone.org/$version/$zip" -o "$RUNNER_TEMP/$zip"
+          curl -sSfL "https://downloads.rclone.org/$version/SHA256SUMS" -o "$RUNNER_TEMP/SHA256SUMS"
+          (cd "$RUNNER_TEMP" && grep " $zip\$" SHA256SUMS | sha256sum -c -)
+          unzip -q "$RUNNER_TEMP/$zip" -d "$RUNNER_TEMP"
+          export PATH="$RUNNER_TEMP/rclone-$version-linux-amd64:$PATH"
+          export RCLONE_CONFIG="$RUNNER_TEMP/rclone.conf"
+          folder=$(python -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")
+          rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" --non-interactive > /dev/null
+          python tools/artifacts.py pull
+          python tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"
+      - name: goal2-archaeology (full clone; check_provenance needs its pinned commits)
+        run: rm -rf "$GOAL2_ARCHAEOLOGY" && git clone -q https://github.com/diegoami/goal2-archaeology.git "$GOAL2_ARCHAEOLOGY"
+      - name: Game tests and pre-merge checks, every slow test
+        run: |
+          start=$(date +%s)
+          status=0
+          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" --slow 2>&1 | tee linux-slow-premerge.log || status=$?
+          echo "gate wall time: $(( $(date +%s) - start )) s" | tee -a linux-slow-premerge.log
+          exit $status
+      - name: Keep only logs
+        if: always()
+        run: |
+          mkdir -p upload
+          cp linux-slow-premerge.log upload/ 2>/dev/null || true
+          # [designed: #278] Refuse to upload anything with an original-game extension.
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+            echo "an original-game file reached the upload; refusing" && exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-slow-evidence
+          path: upload
+          if-no-files-found: ignore
