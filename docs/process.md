@@ -55,6 +55,10 @@ one, `git pull` and take the next free number.
    [designed: owner, 2026-10-31, #487] With every match on the sealed port (T151), CPython plays a match in
    10-20 times Unicorn's CPU, so CI's automatic slow runs play one case per batch test (`GOAL2_CASES=1`,
    `goal2/tests/requires.py` `cases`); a dispatch with **slow** and the local gate play every case.
+   [designed: owner, 2026-11-01] Even so, a PR's CI ran past 90 minutes on the 4-CPU runners, so both
+   workflows' PR and `main` runs pass `--batch-fast`: the layout stage keeps its slow tests, the full
+   batch runs none. The match slow tests are the local gate's (every case, on the owner's machine); a
+   slow test failing only on Windows shows at the milestone's **slow** dispatch.
    A PR merges with it green as well. Run it with **slow** from the Actions tab for a milestone
    candidate. It uploads screenshots and logs only.
 5. **Merge**: locally `gh pr merge <pr> --squash --match-head-commit <reviewed-sha>`, then
