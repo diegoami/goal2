@@ -144,7 +144,9 @@ class CiChanges(unittest.TestCase):
     """tools/ci_changes.py on a scratch repository: a branch off main, pushed twice."""
 
     def setUp(self):
+        import os
         import shutil
+        import stat
         import subprocess
         import sys
         import tempfile
@@ -154,7 +156,11 @@ class CiChanges(unittest.TestCase):
         finally:
             sys.path.remove(str(ROOT / "tools"))
         self.cc = ci_changes
-        self.repo = Path(tempfile.mkdtemp());self.addCleanup(shutil.rmtree, self.repo)
+        self.repo = Path(tempfile.mkdtemp())
+
+        def writable(func, path, _):        # git's objects are read-only, which Windows will not delete
+            os.chmod(path, stat.S_IWRITE);func(path)
+        self.addCleanup(shutil.rmtree, self.repo, **({"onexc": writable} if sys.version_info >= (3, 12) else {"onerror": writable}))
         self.run = lambda *a: subprocess.run(["git", *a], cwd=self.repo, check=True, capture_output=True, text=True).stdout.strip()
         self.run("init", "-q", "-b", "main");self.run("config", "user.email", "t@t");self.run("config", "user.name", "t")
         self.commit("README.md")
