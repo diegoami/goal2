@@ -25,7 +25,7 @@ concurrency:
 jobs:
   windows:
     runs-on: windows-latest
-    timeout-minutes: 90
+    timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] T151 puts every match on the port; re-measured after its first full run
     defaults:
       run:
         shell: bash
