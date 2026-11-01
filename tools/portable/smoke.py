@@ -3,8 +3,8 @@
     python smoke.py --zip ZIP --at DIR --cache DIR --source DIR --reference-python PY --reference-engine PYPY --out FILE
 
 The ZIP is unpacked into --at (the workflow names a folder with spaces and a non-ASCII letter) and its one top folder
-is the build's root. Every child of the packaged runtime runs with a bare environment: PATH holds only Windows' own
-folders (no Python, no Git; checked), no PYTHONPATH, and its working directory is outside the source tree. The checks:
+is the build's root. Every child of the packaged runtime runs with a bare environment: PATH holds only System32 and
+its Wbem (no Python, no Git; checked), no PYTHONPATH, and its working directory is outside the source tree. The checks:
 1. `goal2.cmd --help` (through cmd.exe) exits 0.
 2. The bundled `pypy\\pypy.exe` answers as PyPy 3.11; with the launcher's environment, started (as a worker is) in the
    CPython's site-packages, it imports goal2 from its own site-packages and cannot import PySide6.
@@ -49,7 +49,8 @@ for exe in sys.argv[2:]:
 def bare_environment() -> dict:
     system = os.environ.get("SYSTEMROOT", r"C:\Windows")
     env = {k: os.environ[k] for k in os.environ if k.upper() in KEPT}
-    env["PATH"] = os.pathsep.join([str(Path(system) / "System32"), system, str(Path(system) / "System32" / "Wbem")])
+    # Not the Windows folder itself: the Python launcher (py.exe) installs there (run 41363382627 found it).
+    env["PATH"] = os.pathsep.join([str(Path(system) / "System32"), str(Path(system) / "System32" / "Wbem")])
     env["PYTHONUTF8"] = "1"
     return env
 
@@ -77,7 +78,7 @@ def main(argv=None) -> int:
     work = Path(tempfile.mkdtemp(prefix="work ", dir=at))
     result = {"root": str(root), "work": str(work), "checks": {}}
     checks = result["checks"]
-    found = {tool: shutil.which(tool, path=env["PATH"]) for tool in ("python", "python3", "py", "pypy", "git")}
+    found = {tool: shutil.which(tool, path=env["PATH"]) for tool in ("python", "python3", "py", "pyw", "pypy", "git")}
     result["path"] = env["PATH"]
     checks["no_python_or_git_on_path"] = {"pass": not any(found.values()), "found": found}
 

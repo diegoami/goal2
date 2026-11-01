@@ -59,7 +59,7 @@ launcher, and the folder must hold exactly the files its record lists. `build_po
 
 `.github/workflows/package.yml` runs on the hosted Windows runner, on PRs that touch packaging, on `main` and on
 dispatch. It builds the folder and the ZIP, then runs the packaged smoke (`tools/portable/smoke.py`) from the ZIP
-unpacked in a folder with spaces and a non-ASCII letter, with only Windows' own folders on PATH:
+unpacked in a folder with spaces and a non-ASCII letter, with only `System32` and its `Wbem` on PATH (no Python, no Git):
 
 1. `goal2.cmd --help` exits 0;
 2. the bundled PyPy answers as PyPy 3.11, imports goal2 from its own site-packages when started where a worker is,
