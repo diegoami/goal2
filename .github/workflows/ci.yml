@@ -43,6 +43,15 @@ jobs:
           # check_premerge compares with origin/main and wants the PR's own head, not the merge ref.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
+      - name: PyPy 3.11 for the match workers (T152; not on PATH, the UI and tests stay on CPython)
+        id: pypy
+        uses: actions/setup-python@v5
+        with:
+          python-version: 'pypy3.11'
+          update-environment: false
+      - name: The match workers' interpreter
+        shell: bash
+        run: echo "GOAL2_ENGINE_PYTHON=${{ steps.pypy.outputs.python-path }}" >> "$GITHUB_ENV"
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
