@@ -97,6 +97,10 @@ Running a script again repairs the start-up and keeps the registration.
   memory. The Windows and WSL runners share the PC's CPUs, as does a local gate.
 - **Disk**: each runner keeps a checkout and the goal2-archaeology clone in its `w` folder; the job's Python and
   downloads are in its temp folder, removed after each run.
+- **The Drive mirror**: each runner keeps a copy of the owner's Drive folder (about 600 MB) outside its work
+  folder, which the checkout wipes: Windows `%LOCALAPPDATA%\goal2-runner\drive`, Linux
+  `~/.cache/goal2-runner/drive`. Each run brings it up to date (`rclone sync`: only what changed, deletions
+  too) and copies it into the run's `.cache/`. Deleting it is safe; the next run downloads it again in full.
 - **Stop for a while**: Windows: end `Runner.Listener.exe` in Task Manager (it returns at the next logon);
   Linux: `systemctl --user stop goal2-runner`.
 
@@ -104,9 +108,9 @@ Running a script again repairs the start-up and keeps the registration.
 
 1. GitHub: Settings → Actions → Runners → the runner → *Remove*, or on the machine
    `config.cmd remove --token <token>` / `./config.sh remove --token <token>` in the runner's folder.
-2. Windows: delete `goal2-runner.cmd` from the Startup folder (`shell:startup`) and the runner's folder.
-   Linux: `systemctl --user disable --now goal2-runner`, delete `~/.config/systemd/user/goal2-runner.service` and
-   the runner's folder.
+2. Windows: delete `goal2-runner.cmd` from the Startup folder (`shell:startup`), the runner's folder and
+   `%LOCALAPPDATA%\goal2-runner`. Linux: `systemctl --user disable --now goal2-runner`, delete
+   `~/.config/systemd/user/goal2-runner.service`, the runner's folder and `~/.cache/goal2-runner`.
 
 ## Security
 

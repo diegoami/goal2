@@ -108,6 +108,22 @@ class SetupScripts(unittest.TestCase):
         self.assertIn("Restart=always", text)
 
 
+class DriveMirror(unittest.TestCase):
+    """[designed: owner, 2026-11-01, #493] Each runner keeps a mirror of the Drive folder outside its work folder."""
+
+    def test_sync_into_a_mirror_outside_the_work_folder_then_a_local_copy(self):
+        for path, mirror in ((WORKFLOW, 'mirror="$(cygpath -m "$LOCALAPPDATA")/goal2-runner/drive"'),
+                             (LINUX, 'mirror="$HOME/.cache/goal2-runner/drive"')):
+            with self.subTest(workflow=path.name):
+                text = path.read_text()
+                self.assertIn(mirror, text)
+                self.assertIn('rclone sync --fast-list goal2drive: "$mirror"', text)     # sync: deletions too
+                self.assertIn('cp -R "$mirror/." .cache/', text)
+                self.assertNotIn("artifacts.py pull", text)
+                self.assertLess(text.index("rclone sync"), text.index("check_goaldat.py"))
+                self.assertIn('export RCLONE_CONFIG="$RUNNER_TEMP/rclone.conf"', text)
+
+
 class HostedGates(unittest.TestCase):
     """[designed: owner, 2026-11-01, #493] The hosted Linux and Windows gates skip drafts and docs-only pushes."""
 

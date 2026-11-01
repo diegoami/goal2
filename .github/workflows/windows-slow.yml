@@ -69,7 +69,7 @@ jobs:
           echo "$RUNNER_TEMP/venv/Scripts" >> "$GITHUB_PATH"
       - name: Install goal2
         run: python -m pip install -q --upgrade pip && python -m pip install -q -e '.[desktop,watched,match-view]'
-      - name: Original-game files (owner's Drive)
+      - name: Original-game files (owner's Drive, through the runner's mirror)
         env:
           GOAL2_RCLONE_TOKEN: ${{ secrets.GOAL2_RCLONE_TOKEN }}
         run: |
@@ -82,7 +82,12 @@ jobs:
           export RCLONE_CONFIG="$RUNNER_TEMP/rclone.conf"
           folder=$(python -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")
           rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" --non-interactive > /dev/null
-          python tools/artifacts.py pull
+          # [designed: owner, 2026-11-01, #493] a mirror of the Drive folder that outlives the work folder (checkout
+          # wipes .cache/): sync fetches only what changed (a full pull took 143-312 s), the run gets a local copy
+          mirror="$(cygpath -m "$LOCALAPPDATA")/goal2-runner/drive"
+          mkdir -p "$mirror" .cache
+          rclone sync --fast-list goal2drive: "$mirror"
+          cp -R "$mirror/." .cache/
           python tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"
       - name: goal2-archaeology (full clone; check_provenance needs its pinned commits)
         run: rm -rf "$GOAL2_ARCHAEOLOGY" && git clone -q https://github.com/diegoami/goal2-archaeology.git "$GOAL2_ARCHAEOLOGY"
