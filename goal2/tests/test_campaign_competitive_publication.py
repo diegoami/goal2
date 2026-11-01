@@ -119,7 +119,10 @@ class CompetitivePublicationTests(unittest.TestCase):
             events.append((event.kind,event.minute,event.score,event.data))
             if event.kind=='decision':original.answer()
         self.assertEqual(guest.expected(),probe.kit_stamps(events))
-        self.assertEqual(out.result,original.result());self.assertTrue(out.memory==original.memory_component(),'complete independent Memory differs')
+        # [designed: T151] goal2's route plays the sealed port; `original` is the accepted export (port_parity)
+        from goal2.tests.port_parity import assert_same_match
+        assert_same_match(self,out.result,out.memory,out.events,original.result(),original.memory_component(),
+            [dict(kind=k,minute=m,score=sc,data=d) for k,m,sc,d in events])
         self.assertEqual(out.result['score'],[0,0]);self.assertIsNotNone(out.result['shootout'])
         try:pub.complete(job.token,out)
         except ValueError as exc:self.fail('valid original knockout World completion rejected: '+str(exc))

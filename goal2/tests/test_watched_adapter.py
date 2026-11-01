@@ -13,7 +13,7 @@ from goal2.engine.original_match.check import EXPECTED_FAMILY
 from goal2.game.state import from_savestate
 from goal2.game.campaign import CampaignState, Fixture as CampaignFixture
 from goal2.game.watched_match import prepare_watched, run_watched_match, engine_year
-from goal2.tests import requires
+from goal2.tests import requires, port_parity
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -75,9 +75,8 @@ class WatchedAdapter(unittest.TestCase):
         expected, memory, events = direct(state, fixture, year, seed, delay)
         got = run_watched_match(state, template or self.raw, fixture, reference_seed=seed, delay_byte=delay,
                                 record_draws=True)
-        self.assertEqual(got.result, expected)
-        self.assertEqual(got.memory, memory)
-        self.assertEqual([asdict(e) for e in got.events], events)
+        # [designed: T151] goal2's route plays the sealed port; `direct` is the original engine (port_parity)
+        port_parity.assert_same_match(self, got.result, got.memory, got.events, expected, memory, events)
         self.assertEqual(state, before)
         after = Image(got.memory)
         self.assertEqual(after.players(), Image(memory).players())

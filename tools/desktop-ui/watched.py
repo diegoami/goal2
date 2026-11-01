@@ -26,12 +26,16 @@ def expected(owner):
     f=owner.state.campaign.next_fixture
     fixture=Fixture(f.side_a,f.side_b,int(f.fixture_id.split(':')[1]))
     publication=WatchedPublication(owner);job=publication.begin(fixture)
+    # [designed: T151] goal2's route plays the sealed port: the control is the route's own completed match, and
+    # that match is the independent original's (direct), the screen excepted (goal2/tests/port_parity.py).
+    import unittest
+    from goal2.game.watched_match import run_watched_match
+    from goal2.tests.port_parity import assert_same_match
+    outcome=run_watched_match(job.state,owner.template_bytes,fixture,delay_byte=0,record_draws=True)
     result,memory,events=direct(job.state,fixture,seed=None,delay=0)
-    image=Image.from_memory_component(memory)
-    outcome=WatchedOutcome(result,memory,tuple(Event(**e) for e in events),
-                           (image.rd(0x7b62),image.rd(0x8336)),engine_year(job.state.campaign))
+    assert_same_match(unittest.TestCase(),outcome.result,outcome.memory,outcome.events,result,memory,events)
     publication.complete(job.token,outcome)
-    return outcome,events
+    return outcome,[asdict(e) for e in outcome.events]
 
 
 def main():
@@ -56,7 +60,7 @@ def main():
                 engine=w.watched.engine.process;viewer=w.watched.process
                 w.start_watched();w.start_match();w.refresh();assert w.watched.engine.process is engine
                 def finished():return not w.watched.busy
-                pump(finished,app=app,timeout=300)
+                pump(finished,app=app,timeout=1200)  # [designed: T151] a match on the sealed port, CPython
                 assert m.state==control.state,'complete state/Memory/both RNG/history differs from direct original'
                 assert m.state.match_count==before.match_count+1
                 assert len(beats)>5,'Qt heartbeat did not run during original execution'

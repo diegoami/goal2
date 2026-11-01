@@ -75,13 +75,19 @@ class WatchedSaveTests(unittest.TestCase):
                 outcome=run_watched_match(job.state,template,fixture)
                 # [designed] Direct helper records draws; production need not retain their diagnostic digest.
                 for key in ('draws','draws_digest'):expected.pop(key)
-                self.assertEqual({k:v for k,v in outcome.result.items() if k not in ('draws','draws_digest')},expected)
+                # [designed: T151] goal2's route plays the sealed port; `direct` is the original (port_parity)
+                from goal2.tests.port_parity import comparable_result
+                self.assertIn('ports',outcome.result)
+                self.assertEqual(comparable_result({k:v for k,v in outcome.result.items() if k not in ('draws','draws_digest')}),
+                                 comparable_result(expected))
                 with patch('goal2.game.campaign_rounds.silent_until_managed',side_effect=ValueError('suffix failure')):
                     with self.assertRaisesRegex(ValueError,'suffix failure'):pub.complete(job.token,outcome)
                 self.assertEqual(owner.state,before)
                 job=pub.begin(fixture)
                 pub.complete(job.token,outcome)
-                self.assertEqual(owner.state.mem,memory)
+                from goal2.tests.port_parity import comparable_memory
+                self.assertEqual(owner.state.mem,outcome.memory)
+                self.assertEqual(comparable_memory(owner.state.mem),comparable_memory(memory))
                 self.assertEqual(owner.state.players,adapter.Image(memory).players())
                 self.assertEqual(owner.state.countries,adapter.Image(memory).countries())
                 self.assertEqual(owner.state.captain,state.captain)
