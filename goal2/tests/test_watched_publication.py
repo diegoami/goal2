@@ -5,12 +5,11 @@ from unittest.mock import patch
 from goal2.engine.original_match import Fixture, Image, Match
 from goal2.engine.original_match.check import EXPECTED_FAMILY
 from goal2.game.campaign import CampaignState, Fixture as Scheduled
-from goal2.game.watched_match import run_watched_match
 from goal2.game.watched_publication import WatchedPublication
 from goal2.game.watched_schema import PORT_ENGINE_ID
 from goal2.tests.port_parity import comparable_memory, comparable_result
 from goal2.tests import test_watched_adapter as adapter
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 direct = adapter.direct
 
 
@@ -32,8 +31,11 @@ class WatchedPublicationTests(unittest.TestCase):
             with self.subTest(seed=seed):
                 state=self.state();before=copy.deepcopy(state);owner=Owner(state,self.raw)
                 publication=WatchedPublication(owner);job=publication.begin(Fixture(7,19,21))
+                # [designed: #500] the route under engine_python() in a child; `direct` (Unicorn) here meanwhile
+                pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',job.state,self.raw,job.fixture,
+                                          reference_seed=seed,delay_byte=0,record_draws=True)
                 expected,memory,_=direct(job.state,job.fixture,seed=seed,delay=0)
-                outcome=run_watched_match(job.state,self.raw,job.fixture,reference_seed=seed,delay_byte=0,record_draws=True)
+                outcome=pending.result()
                 self.assertEqual(owner.state,before)
                 publication.complete(job.token,outcome)
                 current=copy.deepcopy(owner.state);image=Image(memory)
@@ -57,6 +59,8 @@ class WatchedPublicationTests(unittest.TestCase):
     def test_full_time_is_not_completion_and_tail_failure_is_atomic(self):
         owner=Owner(self.state(),self.raw);publication=WatchedPublication(owner)
         job=publication.begin(Fixture(7,19,21));before=copy.deepcopy(owner.state)
+        # [designed: #500] the original engine under Unicorn, here: this checks the vendored Match's own full-time
+        # boundary (result() before the tail), which needs the live match object; PyPy cannot load Unicorn
         match=Match(Image(job.state.mem),job.fixture,managed=7,seed=0x1234,delay_byte=0)
         for event in match.events():
             if event.kind=='decision':match.answer()
@@ -73,7 +77,7 @@ class WatchedPublicationTests(unittest.TestCase):
         with self.assertRaises(ValueError):publication.begin(Fixture(7,19,21,2))
         self.assertEqual(owner.state,before)
         job=publication.begin(Fixture(7,19,21))
-        outcome=run_watched_match(job.state,self.raw,job.fixture)
+        outcome=pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,self.raw,job.fixture)
         with patch.object(owner,'view',side_effect=ValueError('view failure')):
             with self.assertRaisesRegex(ValueError,'view failure'):publication.complete(job.token,outcome)
         self.assertEqual(owner.state,before)
@@ -94,7 +98,7 @@ class WatchedPublicationTests(unittest.TestCase):
         state=self.state();f=Scheduled('original:21',1,1,2,1,7,19)
         state.campaign=CampaignState(1992,1,1,2,123,78,(f,))
         owner=Owner(state,self.raw);publication=WatchedPublication(owner)
-        job=publication.begin(Fixture(7,19,21));outcome=run_watched_match(job.state,self.raw,job.fixture)
+        job=publication.begin(Fixture(7,19,21));outcome=pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,self.raw,job.fixture)
         publication.complete(job.token,outcome)
         self.assertEqual(owner.state.campaign.completed_fixture_ids,['original:21'])
         self.assertEqual(len(owner.state.campaign.results),1)
@@ -110,7 +114,7 @@ class WatchedPublicationTests(unittest.TestCase):
         owner.state.captain=owner.state.starting_eleven[4]
         source_state=copy.deepcopy(owner.state)
         source=Fixture(7,19,21);job=pub.begin(source)
-        outcome=run_watched_match(job.state,self.raw,job.fixture)
+        outcome=pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,self.raw,job.fixture)
         with self.assertRaises(FrozenInstanceError):source.index=22
         with self.assertRaises(FrozenInstanceError):job.fixture.index=23
         job.state.country_tactics^=8

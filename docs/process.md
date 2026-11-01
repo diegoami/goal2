@@ -68,6 +68,11 @@ one, `git pull` and take the next free number.
    [designed: owner, 2026-10-31, #487] With every match on the sealed port (T151), CPython plays a match in
    10-20 times Unicorn's CPU, so CI's automatic slow runs play one case per batch test (`GOAL2_CASES=1`,
    `goal2/tests/requires.py` `cases`); a dispatch with **slow** and the local gate play every case.
+   [designed: owner, 2026-11-01, #500] No test plays the sealed port in its own (CPython) process: a test
+   plays goal2's route the way goal2 does, in a child under `engine_python()` (PyPy 3.11, T152) through
+   `goal2/tests/pypy_engine.py` (`call`/`start`; an exception in the child is raised again as its type), and
+   the guard `goal2/tests/__init__.py` installs fails any test that starts the port in-process. The original
+   engine's reference runs (Unicorn, which PyPy cannot load) stay in CPython.
    [designed: owner, 2026-11-01] Even so, a PR's CI ran past 90 minutes on the 4-CPU runners, so both
    workflows' PR and `main` runs pass `--batch-fast`: the layout stage keeps its slow tests, the full
    batch runs none. The match slow tests are the local gate's (every case, on the owner's machine); a

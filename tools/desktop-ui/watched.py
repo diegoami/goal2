@@ -28,11 +28,15 @@ def expected(owner):
     publication=WatchedPublication(owner);job=publication.begin(fixture)
     # [designed: T151] goal2's route plays the sealed port: the control is the route's own completed match, and
     # that match is the independent original's (direct), the screen excepted (goal2/tests/port_parity.py).
+    # [designed: #500] the route's match plays under engine_python() in a child, as goal2 plays it; the
+    # original reference (Unicorn, which PyPy cannot load) runs here meanwhile
     import unittest
-    from goal2.game.watched_match import run_watched_match
+    from goal2.tests import pypy_engine
     from goal2.tests.port_parity import assert_same_match
-    outcome=run_watched_match(job.state,owner.template_bytes,fixture,delay_byte=0,record_draws=True)
+    pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',job.state,owner.template_bytes,fixture,
+                              delay_byte=0,record_draws=True)
     result,memory,events=direct(job.state,fixture,seed=None,delay=0)
+    outcome=pending.result()
     assert_same_match(unittest.TestCase(),outcome.result,outcome.memory,outcome.events,result,memory,events)
     publication.complete(job.token,outcome)
     return outcome,[asdict(e) for e in outcome.events]

@@ -2,7 +2,7 @@
 
 The choice (goal2/game/engine_python.py) honours GOAL2_ENGINE_PYTHON as given, takes only a PyPy 3.11 it finds, and
 falls back to sys.executable. A watched job and a competitive job run through their workers under PyPy give the same
-outcome as the same match played in this (CPython) process."""
+outcome as the same match played under CPython (#500: in a CPython child, not in the test process)."""
 import copy
 import os
 import sys
@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 from goal2.engine.original_match import Fixture
 from goal2.game import engine_python as ep
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -71,7 +71,8 @@ def pypy():
 
 
 class UnderPyPy(unittest.TestCase):
-    """A real job's worker under PyPy, against the same match played here."""
+    """A real job's worker under PyPy, against the same match played under CPython: in a CPython child (#500: no
+    match in the test process), started first so the two run side by side."""
 
     @classmethod
     def setUpClass(cls):
@@ -90,37 +91,41 @@ class UnderPyPy(unittest.TestCase):
     @requires.need(slow=True)
     def test_a_watched_job_under_pypy_is_the_match_played_here(self):
         from goal2.game.watched_jobs import WatchedJobs
-        from goal2.game.watched_match import run_watched_match
         from goal2.tests.test_watched_publication import Owner
         from goal2.game.state import from_savestate
         raw = self.raw();state = from_savestate(raw);state.captain = 0     # as test_watched_adapter's state()
         owner = Owner(state, raw);before = copy.deepcopy(owner.state)
+        t = time.monotonic()
+        cpython = pypy_engine.start("goal2.game.watched_match:run_watched_match", before, raw, Fixture(7, 19, 21),
+                                    reference_seed=257, delay_byte=0, record_draws=True, interpreter=sys.executable)
         jobs = WatchedJobs(owner);self.addCleanup(jobs.close)
         token = jobs.start(Fixture(7, 19, 21), reference_seed=257, delay_byte=0, record_draws=True)
         self.assertEqual(jobs.interpreter, self.pypy)
-        t = time.monotonic();events = self.until_done(jobs, token);worker_s = time.monotonic() - t
-        t = time.process_time()
-        expected = run_watched_match(before, raw, Fixture(7, 19, 21), reference_seed=257, delay_byte=0, record_draws=True)
-        here_s = time.process_time() - t
+        events = self.until_done(jobs, token);worker_s = time.monotonic() - t
+        expected = cpython.result();here_s = time.monotonic() - t
         self.assertEqual(jobs.outcome, expected)
         self.assertEqual(tuple(events), expected.events)
-        print(f"watched: worker under PyPy {worker_s:.1f} s wall, here (CPython) {here_s:.1f} s CPU", flush=True)
+        print(f"watched: worker under PyPy {worker_s:.1f} s wall, CPython child {here_s:.1f} s wall", flush=True)
 
     @requires.need(slow=True)
     def test_a_competitive_job_under_pypy_is_the_match_played_here(self):
         from goal2.desktop.competitive import CompetitiveJobs
-        from goal2.tests.test_desktop_competitive_jobs import CompetitiveJobsTests, direct
+        from goal2.tests.test_desktop_competitive_jobs import CompetitiveJobsTests
+        from goal2.tests.test_campaign_competitive_publication import campaign
+        t = time.monotonic();s, raw, fixture = campaign(42, 200)     # test_desktop_competitive_jobs.direct(200)
+        cpython = pypy_engine.start("goal2.game.competitive_match:run_competitive_match", s, raw, fixture,
+                                    record_draws=True, interpreter=sys.executable)
         case = CompetitiveJobsTests("test_real_kind2_and_tied_knockout_match_direct_result_events_memory_seeds")
         CompetitiveJobsTests.setUpClass();self.addCleanup(CompetitiveJobsTests.tearDownClass)
         case.setUp();self.addCleanup(case.doCleanups)
         jobs = CompetitiveJobs(case.owner);self.addCleanup(jobs.close)
         token = jobs.start(record_draws=True)
         self.assertEqual(jobs.interpreter, self.pypy)
-        t = time.monotonic();events = self.until_done(jobs, token);worker_s = time.monotonic() - t
-        t = time.process_time();expected = direct(200);here_s = time.process_time() - t
+        events = self.until_done(jobs, token);worker_s = time.monotonic() - t
+        expected = cpython.result();here_s = time.monotonic() - t
         self.assertEqual(jobs.outcome, expected)
         self.assertEqual(tuple(events), expected.events)
-        print(f"competitive: worker under PyPy {worker_s:.1f} s wall, here (CPython) {here_s:.1f} s CPU", flush=True)
+        print(f"competitive: worker under PyPy {worker_s:.1f} s wall, CPython child {here_s:.1f} s wall", flush=True)
 
     def raw(self):
         from goal2.engine.original_match.assets import reference_image

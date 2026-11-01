@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from goal2.desktop.match_view import Display
 from goal2.game.watched_pitch import validate
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 from goal2.tests.test_pygame_pitch_view import sample
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -19,6 +19,17 @@ def v2(sequence=0, holder=0, referee=(2, 5, False), linesmen=((8, -3), (-8, 4)))
     frame = sample(sequence);frame['version'] = 2
     frame['officials'] = {'referee': list(referee), 'linesmen': [list(l) for l in linesmen], 'holder': holder}
     return frame
+
+
+class Until:
+    """[designed: #500] The pitch samples up to minute `minute`, gathered in the engine child."""
+    def __init__(self, minute):
+        self.minute, self.frames = minute, []
+
+    def __call__(self, frame):
+        self.frames.append(frame)
+        if frame['minute'] >= self.minute:
+            raise pypy_engine.Enough
 
 
 class Glyphs(unittest.TestCase):
@@ -59,23 +70,13 @@ class Frames(unittest.TestCase):
     def test_on_a_real_match_the_holder_is_at_the_ball_and_the_linesmen_on_the_touchlines(self):
         from goal2.desktop.model import DesktopModel
         from goal2.engine.original_match.match import Fixture
-        from goal2.game.watched_match import _drive_match, prepare_watched
         m = DesktopModel.open(ROOT / '.cache/e010-r0008-halftime.sav', ROOT / '.cache/GOAL.DAT', Path(tempfile.mkdtemp()) / 'x', country=13)
         state = m.state;pending = state.campaign.next_fixture
         fixture = Fixture(pending.side_a, pending.side_b, int(pending.fixture_id.split(':')[1]))
-        frames = []
-
-        class Enough(Exception):
-            pass
-
-        def observe(frame):
-            frames.append(frame)
-            if frame['minute'] >= 20:
-                raise Enough
-        try:
-            _drive_match(state, prepare_watched(state, m.template_bytes, fixture), fixture, delay_byte=0, _observe_pitch=observe)
-        except Enough:
-            pass
+        # [designed: #500] the match under engine_python() in a child, stopped there at minute 20
+        _, until, _ = pypy_engine.call('goal2.tests.pypy_engine:drive', state, m.template_bytes, fixture, delay_byte=0,
+                                       observer=Until(20))
+        frames = until.frames
         near = sides = 0;played = [f for f in frames if f['minute'] >= 2]
         for i, frame in enumerate(frames):
             validate(frame, i, frames[i - 1]['watermark'] if i else 0)
