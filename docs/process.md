@@ -42,6 +42,12 @@ one, `git pull` and take the next free number.
    `origin/main` (the engine, the core, watched and competitive matches, saves, the match view,
    the dependencies: `SLOW_PATHS` in the script), and always with `--slow`, which every milestone
    candidate uses. `--fast` never runs them; `--no-tests` leaves the game tests out.
+   [designed: owner, 2026-11-01, #505] By itself the gate turns the slow tests on only in the test modules
+   the changed files can reach (`tools/slow_reach.py`, from the import graph; `python3 tools/slow_reach.py
+   <file>` lists them); every other module runs its fast tests. The CI plumbing (this gate,
+   `tools/ci_changes.py`, `tools/slow_reach.py`, the slow workflows) is not in `SLOW_PATHS`: its own tests
+   check it. Every slow test runs with `--slow`: a milestone candidate, a dispatch of the slow workflows, and
+   their nightly run on `main`.
    [designed: owner, 2026-10-20, #278] The **Windows** workflow (`.github/workflows/windows.yml`)
    runs on every PR and on `main`. It runs the same gate on a native Windows runner, with real
    Windows Qt and SDL, the `spawn` worker and Windows file replacement.
@@ -62,6 +68,11 @@ one, `git pull` and take the next free number.
    [designed: owner, 2026-10-31, #487] With every match on the sealed port (T151), CPython plays a match in
    10-20 times Unicorn's CPU, so CI's automatic slow runs play one case per batch test (`GOAL2_CASES=1`,
    `goal2/tests/requires.py` `cases`); a dispatch with **slow** and the local gate play every case.
+   [designed: owner, 2026-11-01, #500] No test plays the sealed port in its own (CPython) process: a test
+   plays goal2's route the way goal2 does, in a child under `engine_python()` (PyPy 3.11, T152) through
+   `goal2/tests/pypy_engine.py` (`call`/`start`; an exception in the child is raised again as its type), and
+   the guard `goal2/tests/__init__.py` installs fails any test that starts the port in-process. The original
+   engine's reference runs (Unicorn, which PyPy cannot load) stay in CPython.
    [designed: owner, 2026-11-01] Even so, a PR's CI ran past 90 minutes on the 4-CPU runners, so both
    workflows' PR and `main` runs pass `--batch-fast`: the layout stage keeps its slow tests, the full
    batch runs none. The match slow tests are the local gate's (every case, on the owner's machine); a

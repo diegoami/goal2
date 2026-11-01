@@ -13,7 +13,7 @@ from goal2.game.campaign import CampaignState,Fixture as Scheduled
 from goal2.game import watched_publication
 from goal2.game.watched_match import WatchedOutcome
 from goal2.tests.test_watched_publication import Owner
-from goal2.tests.test_campaign_competitive_match import state,run,independent_runtime
+from goal2.tests.test_campaign_competitive_match import state,run,start,independent_runtime
 from goal2.tests import requires
 
 
@@ -110,7 +110,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         s,raw,f=campaign();s.campaign.world=World(7,s.rng_seed_7b62,
             (WorldFixture('original:42',200,7,19,1),),[])
         owner=Owner(s,raw);pub,job=self.begin(owner,f)
-        out=run(job.state,raw,f,record_draws=True)
+        pending=start(job.state,raw,f,record_draws=True)   # [designed: #500] under engine_python(), in a child
         independent,probe=independent_runtime()
         original=independent.Match(independent.Image(direct_image(job.state,0).memory_component()),
             independent.Fixture(7,19,42,200),managed=7,captain=None,substitutions=(5,5),record_draws=True)
@@ -118,6 +118,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         for event in original.events():
             events.append((event.kind,event.minute,event.score,event.data))
             if event.kind=='decision':original.answer()
+        out,_,_=pending.result()
         self.assertEqual(guest.expected(),probe.kit_stamps(events))
         # [designed: T151] goal2's route plays the sealed port; `original` is the accepted export (port_parity)
         from goal2.tests.port_parity import assert_same_match

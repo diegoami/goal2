@@ -155,4 +155,46 @@ class HalftimeCases(unittest.TestCase):
             self.assertFalse(job.busy);self.assertIsNotNone(process.poll());self.assertEqual(model.state,before)
             self.assertEqual(model.save_path.read_bytes(),saved);self.assertFalse(model.match_pending)
 
+
+class RefusedRead(unittest.TestCase):
+    """[designed: #503] On Windows a file just renamed into place can refuse a reader for a moment
+    (PermissionError). The half-time preview and the continue command are then "not yet", never a failure."""
+    def setUp(self):
+        self.folder=tempfile.TemporaryDirectory();self.addCleanup(self.folder.cleanup)
+        self.directory=Path(self.folder.name)
+
+    def refusing(self,times):
+        from unittest.mock import patch
+        real=Path.read_text;left=[times]
+        def read_text(path,*args,**kwargs):
+            if left[0]:
+                left[0]-=1;raise PermissionError(13,'Permission denied',str(path))
+            return real(path,*args,**kwargs)
+        return patch.object(Path,'read_text',read_text)
+
+    def test_the_worker_side_waits_through_a_refused_or_absent_file(self):
+        from goal2.desktop.worker import read_json,write_json
+        path=self.directory/'continue.json'
+        self.assertIsNone(read_json(path))
+        write_json(path,[[1,2]])
+        with self.refusing(1):
+            self.assertIsNone(read_json(path))
+            self.assertEqual(read_json(path),[[1,2]])
+
+    def test_a_refused_preview_is_read_on_a_later_poll_and_the_match_goes_on(self):
+        from unittest.mock import patch
+        from goal2.desktop.worker import write_json
+        job=QuickJobs(model=None);job.interactive=True;job.directory=self.directory
+        class Running:
+            def poll(self):return None
+        job.process=Running();cancelled=[]
+        job.cancel=lambda:cancelled.append(True)
+        write_json(self.directory/'halftime.json',{'preview':1})
+        with patch.object(QuickJobs,'validate_halftime',lambda self,packet:None):
+            with self.refusing(1):
+                self.assertIsNone(job.poll())
+                self.assertIsNone(job.halftime);self.assertEqual(cancelled,[])
+                self.assertIsNone(job.poll())
+        self.assertEqual(job.halftime,{'preview':1});self.assertEqual(cancelled,[])
+
 if __name__=='__main__':unittest.main()

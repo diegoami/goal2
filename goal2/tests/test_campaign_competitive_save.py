@@ -13,12 +13,11 @@ from goal2.game import session_save
 from goal2.game.campaign import Fixture as Scheduled
 from goal2.game.campaign_schedule import start_opening_campaign
 from goal2.game.eligibility import available_words
-from goal2.game.watched_match import run_watched_match
 from goal2.game.watched_publication import WatchedPublication
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests.test_campaign_competitive_match import run,independent_runtime
 from goal2.tests.test_campaign_competitive_publication import campaign,publication,completed
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -46,7 +45,7 @@ def opening_qualifier():
         if f.kind!=1:raise AssertionError('actual1990 country4 opening fixture is not friendly')
         fixture=Fixture(f.side_a,f.side_b,int(f.fixture_id.split(':')[1]),f.kind)
         pub=WatchedPublication(owner);job=pub.begin(fixture)
-        pub.complete(job.token,run_watched_match(job.state,raw,fixture))
+        pub.complete(job.token,pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,raw,fixture))
     select(owner.state)
     before=copy.deepcopy(owner.state);f=before.campaign.next_fixture
     if f.kind==1:raise AssertionError('actual qualifier missing')
@@ -98,7 +97,8 @@ class CompetitiveSaveTests(unittest.TestCase):
             fixture=Fixture(nextf.side_a,nextf.side_b,int(nextf.fixture_id.split(':')[1]),nextf.kind)
             pub=WatchedPublication(owner) if fixture.kind==1 else publication(owner)
             job=pub.begin(fixture)
-            result=run_watched_match(job.state,raw,fixture) if fixture.kind==1 else run(job.state,raw,fixture)
+            result=(pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,raw,fixture)
+                    if fixture.kind==1 else run(job.state,raw,fixture))
             pub.complete(job.token,result);outcomes.append(owner.state)
         self.assertEqual(outcomes[0],outcomes[1])
         # [designed] The actual next row is friendly: explicit quick continuation keeps competitive history.
@@ -146,7 +146,7 @@ class CompetitiveSaveTests(unittest.TestCase):
             self.assertEqual(session_save.decode(session_save.encode(quick,raw))[0],quick)
         select(owner.state)
         pub=WatchedPublication(owner);fixture=Fixture(7,19,43);job=pub.begin(fixture)
-        pub.complete(job.token,run_watched_match(job.state,raw,fixture))
+        pub.complete(job.token,pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,raw,fixture))
         self.assertEqual(owner.state.campaign.results[0],history)
         self.assertEqual(owner.state.last_match['schema'],1)
         document=session_save.encode(owner.state,raw);resumed,_=session_save.decode(document)

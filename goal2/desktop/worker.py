@@ -29,9 +29,20 @@ def write_json(path,data):
     temporary=path.with_suffix('.tmp');temporary.write_text(json.dumps(data));temporary.replace(path)
 
 
+def read_json(path):
+    """[designed: #503] The other process's write_json once it can be read; None until then. On Windows a file
+    just renamed into place can refuse a reader for a moment (PermissionError: the rename, or an antivirus scan),
+    which is "not yet", like a file not there yet (Windows slow, run 41332953025: a half-time preview cancelled)."""
+    import json
+    try:
+        return json.loads(path.read_text())
+    except (FileNotFoundError, PermissionError):
+        return None
+
+
 def main(argv=None):
     from pathlib import Path
-    import json,time
+    import time
     args=sys.argv[1:] if argv is None else argv
     source,target=args[:2];state,template=load(source)
     if len(args)==2:
@@ -42,9 +53,7 @@ def main(argv=None):
         match=begin_full_match(Savestate(to_savestate(candidate,original=template)),candidate)
         directory=Path(target).parent
         write_json(directory/'halftime.json',match.preview())
-        command=directory/'continue.json'
-        while not command.exists():time.sleep(.02)
-        changes=json.loads(command.read_text())
+        while (changes:=read_json(directory/'continue.json')) is None:time.sleep(.02)
         if (not isinstance(changes,list) or any(not isinstance(p,list) or len(p)!=2 for p in changes)):
             raise ValueError('Invalid halftime substitutions')
         for outgoing,incoming in changes:match.substitute(outgoing,incoming)
