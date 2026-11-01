@@ -51,7 +51,8 @@ def choose(mode, data):
 
 def reference(mode, state, fixture, pause_after=None):
     """The vendored Match called directly: the same seed (none), delay byte and answers; `answer()`
-    with nothing given when the answer is empty; `pause()` after sample `pause_after`."""
+    with nothing given when the answer is empty; `pause()` after sample `pause_after`.
+    [designed: #500] The original engine under Unicorn, in a pool process: PyPy cannot load Unicorn."""
     from goal2.engine.original_match import Match, screens
     from goal2.tests.test_watched_adapter import direct_image
     match = Match(direct_image(state), fixture, managed=state.managed_country, captain=state.captain or None,
@@ -84,9 +85,10 @@ def _memory_digest(memory):
 
 
 def default(state, original, fixture):
-    """Today's play-on default: run_watched_match."""
-    from goal2.game.watched_match import run_watched_match
-    outcome = run_watched_match(state, original, fixture, delay_byte=0, record_draws=True)
+    """Today's play-on default: run_watched_match, under engine_python() in a child (#500)."""
+    from goal2.tests import pypy_engine
+    outcome = pypy_engine.call('goal2.game.watched_match:run_watched_match', state, original, fixture,
+                               delay_byte=0, record_draws=True)
     return {'result': outcome.result, 'memory': _memory_digest(outcome.memory),
             'events': [asdict(e) for e in outcome.events]}
 

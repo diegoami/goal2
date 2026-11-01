@@ -2,7 +2,8 @@
 `engine_python()` (PyPy 3.11, T152), never in the CPython test process (#496).
 
 `call(target, *args, **kwargs)` runs `target` ("package.module:function") in that child and returns its value;
-`start(...)` does the same without waiting (`.result()` waits), so a test can compute its reference meanwhile. The
+`start(...)` does the same without waiting (`.result()` waits), so a test can compute its reference meanwhile;
+`echo` (as the target, with the real target as its first argument) also returns the arguments as the call left them. The
 arguments and the value cross the process boundary pickled. An exception raised in the child is raised again in the
 parent as the same exception (its child traceback chained as the cause); one that does not survive pickling is
 raised as ChildError with its type, message and traceback.
@@ -10,8 +11,8 @@ raised as ChildError with its type, message and traceback.
 The guard: goal2/tests/__init__.py installs `guard()` in every test process (not in this module's children, marked
 by GOAL2_ENGINE_CHILD), so a sealed port engine (PortMachine) constructed in the test process fails the test with
 EngineInTestProcess. The original engine under Unicorn, the reference arm of the fidelity comparisons, is not the
-port: PyPy cannot load Unicorn (its package does not build for PyPy 3.11), so those reference runs stay where they
-are (#500's PR lists them).
+port: PyPy cannot load Unicorn (`pip install unicorn==2.1.4` fails to build its wheel on PyPy 3.11.15, tried
+2026-11-01), so those reference runs stay where they are (#500's PR lists them).
 
 `drive(...)` is the child side of the tests that watch the pitch or answer the bench: `_drive_match` on the prepared
 image, with picklable observers that come back to the parent with what they gathered.
@@ -144,6 +145,12 @@ def probe():
     """What the child is: (implementation, guarded, child flag)."""
     import platform
     return platform.python_implementation(), guarded(), os.environ.get(CHILD)
+
+
+def echo(target, *args, **kwargs):
+    """`target(*args, **kwargs)` and the arguments as they are after it: (value, args, kwargs), so the parent can
+    check that the call left its inputs unchanged."""
+    return resolve(target)(*args, **kwargs), args, kwargs
 
 
 def _drop(frame):
