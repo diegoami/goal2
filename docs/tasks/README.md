@@ -292,7 +292,7 @@ operational status.
 
 - [T146](T146.md): provisioned Linux PR gate (#467).
 
-- [T147](T147.md): wheel verification and portable Windows ZIP artifact (#468).
+- [T147](T147.md): portable Windows ZIP, bundled CPython and PyPy, playable from the folder (#468).
 
 - [T148](T148.md): native UI scaling jobs on Linux and Windows CI (#469).
 
@@ -303,3 +303,5 @@ operational status.
 - [T151](T151.md): play goal2's matches on the sealed port engine (#481).
 
 - [T152](T152.md): the match worker under PyPy 3.11 (#482).
+
+- [T153](T153.md): first-run import of the player's data folder (#508).
