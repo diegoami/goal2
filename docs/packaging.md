@@ -104,7 +104,9 @@ file is missing or differs, a dialog asks for a folder holding the files, checks
 beside its final name, checked again and then moved over it. A refused folder is named in plain words, file by file
 ("GOAL.DAT is missing", "... is not the right file"), and nothing is copied from it; Quit closes goal2. The import
 writes only into the data folder: never the folder offered, the saves or the working directory, so a re-import cannot
-overwrite a career. Then the desktop starts as with `--core-boot <data>\e039-r0005-date-call.sav --data
+overwrite a career. [designed: owner, 2026-11-03, #526] The original's help file, `GOAL.HLP`, is taken too when the
+folder has it (`data_setup.OPTIONAL`, for the redesigned UI's F1): a wrong one is refused by name like the others, and a
+folder without it still imports. Then the desktop starts as with `--core-boot <data>\e039-r0005-date-call.sav --data
 <data>\GOAL.DAT --save <saves>\desktop.g2core`; a second start goes straight in. Every path is absolute.
 
 Explicit arguments still win: `--data` bypasses the import (developers' `.cache/` runs and their `.cache/` default
