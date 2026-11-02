@@ -82,3 +82,35 @@ python tools/build_portable.py build --wheel dist/wheel/goal2-<version>-py3-none
 ```
 
 The folder and the ZIP land in `dist/`.
+
+## The player's data folder
+
+[designed: owner, 2026-11-02, T153] The ZIP holds nothing of the original game; its files come in through a first-run
+import (`goal2/desktop/data_setup.py`). The desktop's default start is the core route's new career (`--core-boot`,
+docs/desktop-management.md), which needs two of the owner's private files: the recorded emulator state at the DOS date
+call, `e039-r0005-date-call.sav`, which holds GOAL.EXE in memory (docs/core.md), and `GOAL.DAT` [confirmed: F032]. A
+player's own goal install cannot produce the recorded state, so the import takes the owner's data folder, the one
+`tools/artifacts.py pull` fills (docs/artifacts.md). Distribution to other players waits for GOAL.EXE to be out
+entirely (long-term, m3).
+
+| Path | What |
+|---|---|
+| `%LOCALAPPDATA%\goal2\data` (Windows), `~/.local/share/goal2/data` (elsewhere) | the imported files |
+| `...\goal2\saves` beside it | the default save, `desktop.g2core` |
+
+Started without `--data` and `--core-boot` (`goal2.cmd` with no arguments), the desktop checks the data folder. If a
+file is missing or differs, a dialog asks for a folder holding the files, checks each by SHA-256 against
+`data_setup.MANIFEST` (names and digests only, no byte of the files), and copies them into the data folder, each written
+beside its final name, checked again and then moved over it. A refused folder is named in plain words, file by file
+("GOAL.DAT is missing", "... is not the right file"), and nothing is copied from it; Quit closes goal2. The import
+writes only into the data folder: never the folder offered, the saves or the working directory, so a re-import cannot
+overwrite a career. Then the desktop starts as with `--core-boot <data>\e039-r0005-date-call.sav --data
+<data>\GOAL.DAT --save <saves>\desktop.g2core`; a second start goes straight in. Every path is absolute.
+
+Explicit arguments still win: `--data` bypasses the import (developers' `.cache/` runs and their `.cache/` default
+saves are unchanged), `--save` names another save, and `--resume`, `--core` or `--template` without `--data` take
+`GOAL.DAT` from the data folder. A second start opens Launch, whose Saved career panel shows the career saved at the default save
+and resumes it (#519); `goal2.cmd --resume <a core save>` opens one directly.
+
+The same import without Qt: `python\python.exe -m goal2.desktop.data_setup FOLDER` (and `--check` to name what the data
+folder lacks).

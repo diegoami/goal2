@@ -13,6 +13,8 @@ PHASE, each a fresh process (so "quit, restart" is real):
   is closed.
 - second: no arguments. The import dialog must not appear; Launch must.
 - resume: `--resume <the default save>`. The main window must open the saved core, its memory equal to the one saved.
+- launch-resume: no arguments; Launch's Saved career panel must name the core save, and its Resume button must open
+  the main window over it (#518/#519), its memory equal to the one saved.
 
 Nothing of the original is in this file or its output: only names, digests, sizes and the original's own words
 for the country and the result.
@@ -101,7 +103,7 @@ def play_round(model, log, budget=60000):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("phase", choices=("first", "second", "resume"))
+    p.add_argument("phase", choices=("first", "second", "resume", "launch-resume"))
     p.add_argument("--owner", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--build-root", type=Path)
@@ -186,6 +188,11 @@ def main():
             stage["name"] = "bulletins";return
         if launch is not None and name == "bulletins" and launch.pages.currentIndex() == 4:
             launch.bulletin_next.click();event("bulletin page passed");return
+        if launch is not None and args.phase == "launch-resume" and name == "start":
+            log["launch_saved"] = {"country": launch.saved_country.text(), "resume": launch.resume.text(),
+                                   "error": launch.error.text()}
+            event("Launch shown", dialog_shown=bool(shown), **log["launch_saved"])
+            stage["name"] = "resuming";launch.resume.click();return
         core = find("CoreWindow")
         if core is not None and args.phase == "first" and name in ("bulletins", "imported"):
             model = core.model
@@ -201,7 +208,7 @@ def main():
                            "sha256": hashlib.sha256(saved.read_bytes()).hexdigest(),
                            "memory_sha256": model.memory_sha256()}
             stage["name"] = "done";core.close();return
-        if core is not None and args.phase == "resume" and name == "start":
+        if core is not None and (args.phase, name) in (("resume", "start"), ("launch-resume", "resuming")):
             log["resumed"] = {"memory_sha256": core.model.memory_sha256(), "save_path": str(core.model.save_path),
                               "title": core.title.text()}
             event("resumed", **log["resumed"])
