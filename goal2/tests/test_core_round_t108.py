@@ -594,16 +594,15 @@ class Desktop(unittest.TestCase):
         self.assertTrue(w.core_jobs.busy);self.assertFalse(play.isEnabled())
         self.assertEqual(w.finish_core(300)[0], "done")
         r = w.core_round
-        # [designed: owner, T116] Watch defaults on; explicitly select Quick for this retained quick-round case.
-        self.assertIn("Watch", r.watch.text())
-        self.assertTrue(r.watch.isChecked());r.watch.click();self.assertFalse(r.watch.isChecked())
-        self.assertTrue(r.watch.isEnabled())
+        # [designed: owner, T116; #523/T155] Enter watches; this retained quick-round case takes the quick action.
+        self.assertIn("watch", r.kick_off.text());self.assertIn("quick result", r.quick.text())
+        self.assertTrue(r.quick.isEnabled())
         seen = []
         # round 1 has no other fixture: the captain page comes first
         self.assertEqual(r.views.currentIndex(), 0);seen.append("captain")
         self.assertEqual(len(r.captain_roster.rows), 11)
         self.fits(w, "captain")
-        r.captain_roster.current = 3;r.kick_off.click()
+        r.captain_roster.current = 3;r.quick.click()
         self.assertEqual(w.finish_core(300)[0], "done")
         self.assertEqual(r.views.currentIndex(), 1);seen.append("bench")
         self.assertEqual(model.core.wait.kind, "match-menu-halftime")
@@ -634,7 +633,8 @@ class Desktop(unittest.TestCase):
         while r.views.currentIndex() == 2:
             r.page_next.click();self.app.processEvents()
         self.assertEqual(r.views.currentIndex(), 0)
-        r.computer.click();self.assertEqual(w.finish_core(300)[0], "done")
+        # [T155] the original's own captain (C) with the quick result that round 1's choice carried over before
+        r.start_kick_off(None, False);self.assertEqual(w.finish_core(300)[0], "done")
         r.bench.play.click();self.assertEqual(w.finish_core(300)[0], "done")
         titles = []
         while w.fixture_views.currentIndex() == 2 and r.views.currentIndex() == 2:
