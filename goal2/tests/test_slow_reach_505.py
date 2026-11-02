@@ -35,10 +35,10 @@ TREE = {
     "goal2/b/w.py": "COMMAND = ['-m', 'goal2.a.z']\n",
     "goal2/c/__init__.py": "",
     "goal2/c/v.py": "",
-    "goal2/tests/__init__.py": "",
+    "goal2/tests/__init__.py": "from goal2.c import v\n",          # like the #500 guard: runs everywhere
     "goal2/tests/requires.py": "",
     "goal2/tests/test_one.py": "import goal2.a.x\n",
-    "goal2/tests/test_two.py": "from goal2.b import w\n",
+    "goal2/tests/test_two.py": "from goal2.b import w\nfrom goal2.tests import requires\n",
     "goal2/tests/test_three.py": "from goal2.c.v import thing\n",
     "goal2/tests/test_four.py": "from helper import load\n",
     "tools/helper.py": "PATH = 'data.json'\n",
@@ -62,7 +62,7 @@ class Reach(unittest.TestCase):
     def test_imports_relative_imports_and_named_workers_reach(self):
         self.assertEqual(self.affected("goal2/a/y.py"), {"test_one"})              # through x's `from . import y`
         self.assertEqual(self.affected("goal2/a/z.py"), {"test_two"})              # named in a string: a worker
-        self.assertEqual(self.affected("goal2/c/v.py"), {"test_three"})
+        self.assertEqual(self.affected("goal2/c/v.py"), {"test_three"})          # not through tests/__init__ (the guard)
         self.assertEqual(self.affected("goal2/a/__init__.py"), {"test_one", "test_two"})   # the package runs too
 
     def test_a_test_module_reaches_itself_and_unrelated_files_reach_nothing(self):

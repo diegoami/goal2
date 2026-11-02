@@ -12,6 +12,9 @@ transitive closure; a changed file affects the test modules whose closure holds 
 and the port), so it affects every test module that reaches its top-level package (goal2/engine/, goal2/core/, ...),
 or, for a file under tools/, the tools/ modules that name it (any tools/ module when none does). pyproject.toml, goal2/tests/requires.py and goal2/tests/__init__.py reach
 every test module, and so does a file that cannot be parsed (the graph is then unknown).
+[designed: #505] goal2/tests/__init__.py runs in every test process, but what it imports (the #500 guard, which
+refuses the port in the test process) is not code a test exercises: its imports are no edges, or every test
+would reach the engine and its interpreter choice. A change to the file itself still reaches every module.
 """
 from __future__ import annotations
 
@@ -22,7 +25,8 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-EVERYTHING = {"pyproject.toml", "goal2/tests/requires.py", "goal2/tests/__init__.py"}
+GUARD = "goal2/tests/__init__.py"
+EVERYTHING = {"pyproject.toml", "goal2/tests/requires.py", GUARD}
 NAMED = re.compile(r"\bgoal2(?:\.\w+)+")
 
 
@@ -33,7 +37,7 @@ class Graph:
         self.modules = {self._module(f): f for f in self.files if f.startswith("goal2/")}
         self.tools = {Path(f).stem: f for f in self.files if f.startswith("tools/") and f.count("/") == 1}
         self.broken: set[str] = set()
-        self.edges = {f: self._edges(f) for f in self.files}
+        self.edges = {f: (set() if f == GUARD else self._edges(f)) for f in self.files}
 
     @staticmethod
     def _module(path: str) -> str:

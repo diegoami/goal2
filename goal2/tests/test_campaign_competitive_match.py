@@ -14,7 +14,7 @@ from goal2.engine.original_match.assets import reference_image
 from goal2.game.state import from_savestate
 from goal2.game import watched_match
 from goal2.tests.test_watched_adapter import direct_image
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -35,9 +35,19 @@ def state(managed=7):
     return s,raw
 
 
+def target():
+    return 'goal2.game.competitive_match:run_competitive_match' if api() is not watched_match else 'goal2.game.watched_match:run_watched_match'
+
+
+def start(s,raw,f,**options):
+    """[designed: #500] The competitive match under engine_python() in a child (`.result()` waits): (outcome, the
+    arguments as the run left them)."""
+    return pypy_engine.start('goal2.tests.pypy_engine:echo',target(),s,raw,f,**options)
+
+
 def run(s,raw,f,**options):
-    fn=getattr(api(),'run_competitive_match',watched_match.run_watched_match)
-    return fn(s,raw,f,**options)
+    """[designed: #500] The competitive match under engine_python() in a child, never in the test process."""
+    return pypy_engine.call(target(),s,raw,f,**options)
 
 
 @lru_cache(maxsize=None)
@@ -85,8 +95,8 @@ class CompetitiveAdapterTests(unittest.TestCase):
                 s,raw=state(managed);before=copy.deepcopy(s);fixture=Fixture(7,19,index,kind)
                 options={'reference_seed':seed,'record_draws':True}
                 if quick:options['quick_at_half_time']=True
-                try:outcome=run(s,raw,fixture,**options)
-                except (ValueError,TypeError) as exc:self.fail('competitive execution missing: '+str(exc))
+                pending=start(s,raw,fixture,**options)
+                # [designed: #500] the reference: the accepted export under Unicorn, here, while the route plays in its child
                 image=direct_image(s)
                 original=independent.Match(independent.Image(image.memory_component()),
                     independent.Fixture(7,19,index,kind),managed=managed,captain=s.captain or None,
@@ -96,6 +106,9 @@ class CompetitiveAdapterTests(unittest.TestCase):
                     events.append((event.kind,event.minute,event.score,event.data))
                     if event.kind=='decision':
                         original.answer(quick=True) if quick and event.data['context']=='half_time' else original.answer()
+                try:outcome,(played,*_),_=pending.result()
+                except (ValueError,TypeError) as exc:self.fail('competitive execution missing: '+str(exc))
+                self.assertEqual(played,before)
                 self.assertEqual(guest.expected(),probe.kit_stamps(events))
                 # [designed: T151] goal2's route plays the sealed port; `original` is the accepted export (port_parity)
                 from goal2.tests.port_parity import assert_same_match

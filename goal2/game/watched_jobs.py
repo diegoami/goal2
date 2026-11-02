@@ -235,6 +235,8 @@ class WatchedJobs:
     returns newly observed events. Completion is available as outcome and published
     exactly once by poll. cancel/close bound termination and never publish.
     """
+    WORKER = 'goal2.game.watched_worker'
+
     def __init__(self, owner, *, command=None):
         if getattr(owner, '_watched_jobs', None) is not None:
             raise ValueError('active game already has a watched bridge')
@@ -314,9 +316,10 @@ class WatchedJobs:
         self._errors = (folder / 'errors').open('w+b')
         self._frames = (folder / 'frames').open('w+b')
         self._commands = (folder / 'commands').open('wb')
-        # [designed: T152] the engine worker runs under PyPy 3.11 when there is one (engine_python)
+        # [designed: T152, #496] the engine worker runs under PyPy 3.11 (engine_python), chosen here at the start,
+        # so a missing PyPy fails this start with its reason, never the window that holds the bridge
         from goal2.game.engine_python import worker_command
-        command = worker_command('goal2.game.watched_worker') if self.command is None else list(self.command)
+        command = worker_command(self.WORKER) if self.command is None else list(self.command)
         self.interpreter = command[0]
         self.process = _PreparingProcess(job.state, self._template, source,
             command + [str(source), str(folder / 'events')],

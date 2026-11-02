@@ -11,12 +11,11 @@ from unittest.mock import patch
 
 from goal2.engine.original_match import Fixture
 from goal2.game.watched_jobs import WatchedJobs
-from goal2.game.watched_match import run_watched_match
 from goal2.game.watched_pitch import (snapshot, validate, write_frame, MAX_FRAME_BYTES,
     MAX_FRAME_PACKET, MAX_FRAMES, FRAME_READ_BUDGET, FRAME_POLL_BUDGET)
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests import test_watched_adapter as adapter
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -295,6 +294,27 @@ class PitchObservationTests(unittest.TestCase):
         self.assertEqual(rebound['ball'],[11,1,False])
 
 
+class RawCheck:
+    """[designed: #500] Each pitch sample against the engine's own pitch table and ball, as it is taken in the engine
+    child (goal2.tests.pypy_engine.drive); the samples come back as `oracle`."""
+    def __init__(self):self.oracle=[]
+
+    def __call__(self,match,event,sequence,watermark,frame):
+        from goal2.engine.original_match.match import PITCH, PITCH_SIZE, BALL
+        check=unittest.TestCase()
+        check.assertEqual(event.kind,'tick')
+        for slot,player in enumerate(frame['players'],1):
+            raw=match.m.read(match.m.DS*16+PITCH+PITCH_SIZE*slot,PITCH_SIZE)
+            side=0 if slot>11 else 1;local=(slot-1)%11+1
+            check.assertEqual(player[:4],[raw[6],side,local,int.from_bytes(raw[13:15],'little')])
+            check.assertEqual(player[3],match._squad((7,19)[side])[local-1])
+            check.assertEqual(player[4:7],[int.from_bytes(raw[:1],'little',signed=True),int.from_bytes(raw[1:2],'little',signed=True),raw[18]])
+            check.assertEqual(player[7],int.from_bytes(raw[:2],'little')==match.m.rd(0x0640))
+        ball=match.m.read(match.m.DS*16+BALL,2)
+        check.assertEqual(frame['ball'],[int.from_bytes(ball[:1],'little',signed=True),int.from_bytes(ball[1:],'little',signed=True),int.from_bytes(ball,'little')==match.m.rd(0x0640)])
+        self.oracle.append(frame)
+
+
 class OriginalPitchJobsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -334,26 +354,12 @@ class OriginalPitchJobsTests(unittest.TestCase):
         try:
             for seed in requires.cases((257,4660)):  # [designed: #487]
                 owner=Owner(self.state(),self.raw);before=copy.deepcopy(owner.state)
-                expected=run_watched_match(before,self.raw,Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True)
-                from goal2.game.watched_match import _drive_match, prepare_watched
-                oracle=[]
-                def check_raw(match,event,sequence,watermark):
-                    from goal2.engine.original_match.match import PITCH, PITCH_SIZE, BALL
-                    frame=snapshot(match,event,sequence,watermark)
-                    self.assertEqual(event.kind,'tick')
-                    for slot,player in enumerate(frame['players'],1):
-                        raw=match.m.read(match.m.DS*16+PITCH+PITCH_SIZE*slot,PITCH_SIZE)
-                        side=0 if slot>11 else 1;local=(slot-1)%11+1
-                        self.assertEqual(player[:4],[raw[6],side,local,int.from_bytes(raw[13:15],'little')])
-                        self.assertEqual(player[3],match._squad((7,19)[side])[local-1])
-                        self.assertEqual(player[4:7],[int.from_bytes(raw[:1],'little',signed=True),int.from_bytes(raw[1:2],'little',signed=True),raw[18]])
-                        self.assertEqual(player[7],int.from_bytes(raw[:2],'little')==match.m.rd(0x0640))
-                    ball=match.m.read(match.m.DS*16+BALL,2)
-                    self.assertEqual(frame['ball'],[int.from_bytes(ball[:1],'little',signed=True),int.from_bytes(ball[1:],'little',signed=True),int.from_bytes(ball,'little')==match.m.rd(0x0640)])
-                    oracle.append(frame)
-                    return frame
-                with patch('goal2.game.watched_pitch.snapshot',side_effect=check_raw):
-                    observed=_drive_match(before,prepare_watched(before,self.raw,Fixture(7,19,21)),Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True,_observe_pitch=lambda f:None)
+                # [designed: #500] both runs under engine_python() in children; RawCheck checks each sample there
+                pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',before,self.raw,Fixture(7,19,21),
+                                          reference_seed=seed,delay_byte=0,record_draws=True)
+                observed,_,check=pypy_engine.call('goal2.tests.pypy_engine:drive',before,self.raw,Fixture(7,19,21),
+                    snapshot=RawCheck(),reference_seed=seed,delay_byte=0,record_draws=True)
+                expected=pending.result();oracle=check.oracle
                 self.assertEqual(observed,expected)
                 jobs=WatchedJobs(owner)
                 try:

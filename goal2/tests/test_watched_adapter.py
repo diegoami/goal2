@@ -13,7 +13,7 @@ from goal2.engine.original_match.check import EXPECTED_FAMILY
 from goal2.game.state import from_savestate
 from goal2.game.campaign import CampaignState, Fixture as CampaignFixture
 from goal2.game.watched_match import prepare_watched, run_watched_match, engine_year
-from goal2.tests import requires, port_parity
+from goal2.tests import requires, port_parity, pypy_engine
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -49,6 +49,8 @@ def direct_image(state, year=None):
 
 
 def direct(state, fixture, year=None, seed=None, delay=None):
+    """[designed: #500] The reference arm: the vendored original engine under Unicorn, in this process (PyPy, which
+    plays goal2's route, cannot load Unicorn)."""
     match = Match(direct_image(state, year), fixture, managed=state.managed_country,
                   captain=state.captain or None, seed=seed, record_draws=True, delay_byte=delay)
     events = []
@@ -72,9 +74,12 @@ class WatchedAdapter(unittest.TestCase):
 
     def compare(self, state, fixture, *, year=None, seed=None, delay=None, template=None):
         before = copy.deepcopy(state)
+        # [designed: #500] goal2's route plays under engine_python() in a child while the original runs here
+        pending = pypy_engine.start('goal2.tests.pypy_engine:echo', 'goal2.game.watched_match:run_watched_match', state,
+                                    template or self.raw, fixture, reference_seed=seed, delay_byte=delay, record_draws=True)
         expected, memory, events = direct(state, fixture, year, seed, delay)
-        got = run_watched_match(state, template or self.raw, fixture, reference_seed=seed, delay_byte=delay,
-                                record_draws=True)
+        got, (played, *_), _ = pending.result()
+        self.assertEqual(played, before)
         # [designed: T151] goal2's route plays the sealed port; `direct` is the original engine (port_parity)
         port_parity.assert_same_match(self, got.result, got.memory, got.events, expected, memory, events)
         self.assertEqual(state, before)

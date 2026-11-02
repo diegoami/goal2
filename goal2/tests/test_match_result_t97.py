@@ -23,13 +23,15 @@ def played_model():
     """A Greece campaign after a real original friendly (watched engine, about 15 s)."""
     from goal2.engine.original_match.match import Fixture
     from goal2.game.campaign_rounds import prepare
-    from goal2.game.watched_match import run_watched_match
+    from goal2.tests import pypy_engine
     from goal2.game.watched_publication import completed_candidate
     model = DesktopModel.open(ROOT / '.cache/e010-r0008-halftime.sav', ROOT / '.cache/GOAL.DAT',
                               Path(tempfile.mkdtemp()) / 'game.g2save', country=13)
     state = prepare(model.state, model.template_bytes);pending = state.campaign.next_fixture
     fixture = Fixture(pending.side_a, pending.side_b, int(pending.fixture_id.split(':')[1]))
-    outcome = run_watched_match(state, model.template_bytes, fixture, delay_byte=0, record_draws=True)
+    # [designed: #500] under engine_python() in a child
+    outcome = pypy_engine.call('goal2.game.watched_match:run_watched_match', state, model.template_bytes, fixture,
+                               delay_byte=0, record_draws=True)
     model.state = completed_candidate(state, fixture, outcome, model.template_bytes);model.mark_saved()
     return model
 

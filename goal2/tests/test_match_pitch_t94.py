@@ -5,10 +5,32 @@ import tempfile
 import unittest
 
 from goal2.desktop.match_view import Display
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 ROOT = Path(__file__).resolve().parents[2]
 RIGHT, LEFT = set('BMW'), set('bmw')  # [designed: owner, 2026-10-21] low capital for left
+
+
+class Sides:
+    """[designed: #500] For each sample from minute 5, per side, whether its right-side players are on its right
+    (see test_sides_on_the_real_pitch); gathered in the engine child until 4000."""
+    def __init__(self, codes):
+        self.codes, self.checked = codes, []
+
+    def __call__(self, frame):
+        if frame['minute'] < 5:
+            return
+        for team in (0, 1):
+            rows = [(self.codes.get(w), x, y) for _, t, _, w, x, y, _, hidden in frame['players'] if t == team and not hidden]
+            keeper = [y for c, x, y in rows if c == 'G']
+            right = [x for c, x, y in rows if c in RIGHT];left = [x for c, x, y in rows if c in LEFT]
+            if not keeper or not right or not left or keeper[0] == 0:
+                continue
+            attacking_right = keeper[0] < 0
+            mean = lambda v: sum(v) / len(v)
+            self.checked.append(mean(right) > mean(left) if attacking_right else mean(right) < mean(left))
+        if len(self.checked) >= 4000:
+            raise pypy_engine.Enough
 
 
 class Identity(unittest.TestCase):
@@ -55,34 +77,13 @@ class FromTheGame(unittest.TestCase):
         ones (b, m, w), and a side attacking left has them above."""
         from goal2.desktop.watched import pitch_identity
         from goal2.engine.original_match.match import Fixture
-        from goal2.game.watched_match import _drive_match, prepare_watched
         m = self.model();state = m.state;pending = state.campaign.next_fixture
         codes = {int(w): c for w, c in pitch_identity(m, pending)['roles'].items()}
         fixture = Fixture(pending.side_a, pending.side_b, int(pending.fixture_id.split(':')[1]))
-        checked = []
-
-        class Enough(Exception):
-            pass
-
-        def observe(frame):
-            if frame['minute'] < 5:
-                return
-            for team in (0, 1):
-                rows = [(codes.get(w), x, y) for _, t, _, w, x, y, _, hidden in frame['players'] if t == team and not hidden]
-                keeper = [y for c, x, y in rows if c == 'G']
-                right = [x for c, x, y in rows if c in RIGHT];left = [x for c, x, y in rows if c in LEFT]
-                if not keeper or not right or not left or keeper[0] == 0:
-                    continue
-                attacking_right = keeper[0] < 0
-                mean = lambda v: sum(v) / len(v)
-                checked.append(mean(right) > mean(left) if attacking_right else mean(right) < mean(left))
-            if len(checked) >= 4000:
-                raise Enough
-
-        try:
-            _drive_match(state, prepare_watched(state, m.template_bytes, fixture), fixture, delay_byte=0, _observe_pitch=observe)
-        except Enough:
-            pass
+        # [designed: #500] the match under engine_python() in a child; Sides checks the samples there
+        _, sides, _ = pypy_engine.call('goal2.tests.pypy_engine:drive', state, m.template_bytes, fixture, delay_byte=0,
+                                       observer=Sides(codes))
+        checked = sides.checked
         self.assertGreaterEqual(len(checked), 4000)
         # Players roam, so not every sample agrees; a mirrored pitch would agree in few of them.
         share = sum(checked) / len(checked)

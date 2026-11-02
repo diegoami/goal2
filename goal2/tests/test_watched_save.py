@@ -7,9 +7,8 @@ from goal2.game import session_save
 from goal2.game.watched_publication import WatchedPublication, ENGINE_ID
 from goal2.tests import test_watched_publication as publication
 Owner = publication.Owner
-from goal2.game.watched_match import run_watched_match
 from goal2.engine.original_match import Fixture
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 
 class WatchedSaveTests(unittest.TestCase):
@@ -19,7 +18,7 @@ class WatchedSaveTests(unittest.TestCase):
     def state(self):return publication.WatchedPublicationTests.state(self)
     def completed(self):
         owner=Owner(self.state(),self.raw);pub=WatchedPublication(owner)
-        job=pub.begin(Fixture(7,19,21));outcome=run_watched_match(job.state,self.raw,job.fixture)
+        job=pub.begin(Fixture(7,19,21));outcome=pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,self.raw,job.fixture)
         pub.complete(job.token,outcome)
         return owner
     def test_watched_roundtrip_and_malformed_saves(self):
@@ -43,7 +42,7 @@ class WatchedSaveTests(unittest.TestCase):
     def test_injected_failure_before_swap_preserves_complete_state(self):
         owner=Owner(self.state(),self.raw);pub=WatchedPublication(owner)
         job=pub.begin(Fixture(7,19,21));before=copy.deepcopy(owner.state)
-        outcome=run_watched_match(job.state,self.raw,job.fixture)
+        outcome=pypy_engine.call('goal2.game.watched_match:run_watched_match',job.state,self.raw,job.fixture)
         with patch('goal2.game.watched_publication.validate_saved_watched',side_effect=ValueError('injected')):
             with self.assertRaisesRegex(ValueError,'injected'):pub.complete(job.token,outcome)
         self.assertEqual(owner.state,before)
@@ -71,8 +70,9 @@ class WatchedSaveTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError,'prefix failure'):pub.begin(fixture)
                 self.assertEqual(owner.state,before)
                 job=pub.begin(fixture)
-                expected,memory,_=adapter.direct(job.state,fixture,year=0)
-                outcome=run_watched_match(job.state,template,fixture)
+                pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',job.state,template,fixture)
+                expected,memory,_=adapter.direct(job.state,fixture,year=0)   # [designed: #500] Unicorn, here, meanwhile
+                outcome=pending.result()
                 # [designed] Direct helper records draws; production need not retain their diagnostic digest.
                 for key in ('draws','draws_digest'):expected.pop(key)
                 # [designed: T151] goal2's route plays the sealed port; `direct` is the original (port_parity)
@@ -144,7 +144,7 @@ class WatchedSaveTests(unittest.TestCase):
                 for live in (owner,Owner(resumed,raw_template)):
                     continuation=WatchedPublication(live)
                     next_job=continuation.begin(next_fixture)
-                    next_outcome=run_watched_match(next_job.state,template,next_fixture)
+                    next_outcome=pypy_engine.call('goal2.game.watched_match:run_watched_match',next_job.state,template,next_fixture)
                     continuation.complete(next_job.token,next_outcome)
                     next_jobs.append(live.state)
                 self.assertEqual(next_jobs[0],next_jobs[1])

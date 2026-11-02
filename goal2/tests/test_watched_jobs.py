@@ -19,10 +19,10 @@ from unittest.mock import patch
 from goal2.engine.original_match import Fixture, Image
 from goal2.engine.original_match.match import Event
 from goal2.game.watched_jobs import WatchedJobs, MAX_PACKET, MAX_MEMORY, READ_BUDGET, _write, _memory
-from goal2.game.watched_match import _drive_match, run_watched_match
+from goal2.game.watched_match import _drive_match
 from goal2.tests import test_watched_adapter as adapter
 from goal2.tests.test_watched_publication import Owner
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -321,12 +321,16 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
 
     @requires.need(slow=True)  # [designed: #275] about 66 s alone on 32 CPUs
     def test_stream_outcome_mismatch_and_incomplete_tail_never_publish(self):
+        # [designed] Real valid output isolates stream/tail validation from schema errors.
+        # [designed: #500] Played once, under engine_python() in a child, before the loop: each mode's owner state is
+        # the same (asserted equal to `before` after each mode).
+        played=pypy_engine.call('goal2.game.watched_match:run_watched_match',self.owner.state,self.raw,Fixture(7,19,21),
+                                reference_seed=257,delay_byte=0)
         for mode in ('mismatch','tail','trailing'):
             token=self.bridge('blocked')
             self.jobs.process.terminate();self.jobs.process.wait(timeout=SETUP_WAIT)
             self.jobs._journal.seek(0);self.jobs._journal.truncate()
-            # [designed] Real valid output isolates stream/tail validation from schema errors.
-            outcome=run_watched_match(self.owner.state,self.raw,Fixture(7,19,21),reference_seed=257,delay_byte=0)
+            outcome=played
             events=tuple(e for e in outcome.events if e.kind!='end') if mode=='tail' else outcome.events
             if mode=='tail':outcome=replace(outcome,events=events)
             with open(self.jobs._journal.name,'ab') as stream:
@@ -346,12 +350,15 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
         for seed in requires.cases((257,70)):  # [designed: #487]
             self.owner.state=adapter.WatchedAdapter.state(self)
             self.jobs=WatchedJobs(self.owner)
+            # [designed: #500] the synchronous run under engine_python() in a child, beside the job's worker
+            pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',self.before,self.raw,Fixture(7,19,21),
+                                      reference_seed=seed,delay_byte=0,record_draws=True)
             token=self.jobs.start(Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True)
             start=time.monotonic()
             events=self.until(token,lambda events:not self.jobs.busy,hang_guard=600)
             elapsed=time.monotonic()-start
             outcome=self.jobs.outcome
-            expected=run_watched_match(self.before,self.raw,Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True)
+            expected=pending.result()
             self.assertEqual(outcome,expected)
             self.assertEqual(tuple(events),expected.events)
             self.assertEqual(events[-1].kind,'end')

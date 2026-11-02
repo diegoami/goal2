@@ -8,12 +8,11 @@ import unittest
 from goal2.engine.original_match import Fixture,Image
 from goal2.game import session_save
 from goal2.game.eligibility import available_words
-from goal2.game.watched_match import run_watched_match
 from goal2.game.watched_publication import WatchedPublication
 from goal2.game.watched_schema import LEGACY_ENGINE_ID,ENGINE_ID,PORT_ENGINE_ID
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests.test_watched_adapter import direct
-from goal2.tests import requires
+from goal2.tests import requires, pypy_engine
 
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE='9fb725ac914afabfdaa830198fc3a514c87c243f'
@@ -70,8 +69,10 @@ class LegacyCompatibilityTests(unittest.TestCase):
         pending=owner.state.campaign.next_fixture
         fixture=Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1]))
         job=pub.begin(fixture)
+        # [designed: #500] the route under engine_python() in a child; `direct` (Unicorn) here meanwhile
+        pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',job.state,template,fixture,record_draws=True)
         expected,memory,events=direct(job.state,fixture)
-        outcome=run_watched_match(job.state,template,fixture,record_draws=True)
+        outcome=pending.result()
         # [designed: T151] the route plays the sealed port; `direct` is the original engine
         from goal2.tests.port_parity import assert_same_match
         assert_same_match(self,outcome.result,outcome.memory,outcome.events,expected,memory,events)
