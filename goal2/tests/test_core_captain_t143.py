@@ -136,7 +136,7 @@ class Captain(unittest.TestCase):
         if CAPTURES is not None:self.assertTrue(self.w.grab().save(str(CAPTURES/'manual-selection.png')))
         with patch.object(self.w,'run_core',return_value=False) as action:
             QTest.mouseClick(r.kick_off,Qt.MouseButton.LeftButton,pos=r.kick_off.rect().center())
-            action.assert_called_once_with('kick_off',target,r.watch.isChecked())
+            action.assert_called_once_with('kick_off',target,True)
         self.unchanged()
         # The same chosen full player ID goes through the real driver's Up/Down/Enter
         # captain selection to the first genuine live poll. No guest memory edit.
@@ -155,7 +155,7 @@ class Captain(unittest.TestCase):
         projection['captain']['recommended']=None;projection['captain']['eligible']=[]
         with patch.object(self.w.model,'round_state',return_value=projection):r.show_captain()
         self.assertIsNone(self.selected())
-        with patch.object(self.w,'run_core',side_effect=AssertionError('no eligible candidate')):r.kick_off_selected()
+        with patch.object(self.w,'run_core',side_effect=AssertionError('no eligible candidate')):r.kick_off_selected(True)
         r.show_captain()
         r.captain_roster.set_current(next(i for i,row in enumerate(r.captain_roster.rows) if row[0]==target))
         with patch.object(self.w,'run_core',return_value=False):r.start()

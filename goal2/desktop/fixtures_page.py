@@ -593,19 +593,27 @@ class CoreRound:
         left.addWidget(self.captain_note)
         self.refusal = QLabel();self.refusal.setObjectName('benchMessage');self.refusal.setWordWrap(True)
         left.addWidget(self.refusal)
-        self.kick_off = QPushButton('Kick off: the selected player captains (Enter)');self.kick_off.setObjectName('coreKickOff')
-        self.kick_off.clicked.connect(self.kick_off_selected);left.addWidget(self.kick_off)
-        self.computer = QPushButton("Kick off: the original's own captain (C)");self.computer.setObjectName('coreCaptainC')
-        self.computer.clicked.connect(lambda: self.start_kick_off(None));left.addWidget(self.computer)
+        # [designed: owner, 2026-11-02, #523/T155] Watching is chosen by the action that starts the match, never by
+        # a toggle: Enter kicks off and watches (watch stays the default, owner demo feedback 2026-10-23, T116), Q
+        # kicks off to the original's quick result. Both take the selected captain, the suggested one unless changed.
+        self.kick_off = QPushButton('Kick off and watch (Enter)');self.kick_off.setObjectName('coreKickOff')
+        self.kick_off.clicked.connect(lambda: self.kick_off_selected(True));left.addWidget(self.kick_off)
+        self.quick = QPushButton('Kick off, quick result (Q)');self.quick.setObjectName('coreKickOffQuick')
+        self.quick.clicked.connect(lambda: self.kick_off_selected(False));left.addWidget(self.quick)
+        self.computer = QPushButton("Kick off and watch: the original's own captain (C)")
+        self.computer.setObjectName('coreCaptainC')
+        self.computer.clicked.connect(lambda: self.start_kick_off(None, True));left.addWidget(self.computer)
         self.players = QPushButton('Players: select your team >');self.players.setObjectName('corePreMatchPlayers')
         self.players.clicked.connect(self.show_pre_match);left.addWidget(self.players)
-        self.watch = QPushButton('Watch this match');self.watch.setObjectName('coreWatch');self.watch.setCheckable(True)
-        self.watch.setChecked(True)  # [designed: owner demo feedback, 2026-10-23, T116]
-        left.addWidget(self.watch)
+        from PySide6.QtGui import QKeySequence, QShortcut
+        for key, button in (('Q', self.quick), ('C', self.computer)):
+            shortcut = QShortcut(QKeySequence(key), captain)
+            shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+            shortcut.activated.connect(lambda b=button: b.isEnabled() and b.click())
         left.addStretch(1)
         self.captain_roster = RosterView('CAPTAIN', toggles=False, grouped=False, marks=False, capacity=11)
         self.captain_roster.setObjectName('coreCaptainRoster');self.captain_roster.setFixedWidth(320)
-        self.captain_roster.activated.connect(lambda r: self.kick_off_selected())
+        self.captain_roster.activated.connect(lambda r: self.kick_off_selected(True))
         row.addWidget(self.captain_roster, 0, Qt.AlignmentFlag.AlignTop)
         self.views.addWidget(captain)
         # 1: the bench
@@ -681,8 +689,8 @@ class CoreRound:
         from goal2.desktop.core_replay import ReplayPage
         self.replays=ReplayPage(self)
         self.viewer_timer = QTimer(window);self.viewer_timer.setInterval(2);self.viewer_timer.timeout.connect(self.poll_viewer)
-        self.buttons = [self.kick_off, self.computer, self.players, self.page_next, self.bench.play, self.notice_bench,
-                        self.notice_pass, self.watch, self.export_summary, self.skip_summary, self.resume_watch,
+        self.buttons = [self.kick_off, self.quick, self.computer, self.players, self.page_next, self.bench.play,
+                        self.notice_bench, self.notice_pass, self.export_summary, self.skip_summary, self.resume_watch,
                         self.bench.position_next,self.bench.position_club,self.bench.roster]
         self.buttons += [self.shootout_pick,self.shootout_undo,self.shootout_roster]
         self.buttons += self.takers.controls + self.replays.controls
@@ -874,9 +882,12 @@ class CoreRound:
         self.captain_roster.set_rows(rows, current, unavailable={r[0] for r in rows} - set(choice['eligible']))
         self.captain_title.setText(f"CAPTAIN / {choice['name'].upper()}")
         suggested = next((r[1] for r in rows if r[0] == choice['recommended']), 'no available player')
-        self.captain_note.setText(f'Suggested captain: {suggested}. Up/Down: choose your captain; Enter: kick off. '
-                                  'C: use the suggested captain. Choose Watch for the pitch, '
-                                  'or leave it off for the original\'s quick result.')
+        # [designed: owner, 2026-11-02, #523/T155] The suggested captain is selected, so one action kicks off; the
+        # page says in words that the captain can be changed, and how.
+        self.captain_note.setText(f'Captain: {suggested} (suggested, selected). To choose another captain, click a '
+                                  'player in the list or move with Up/Down, then kick off. Enter: kick off and watch '
+                                  'the match in the pitch window. Q: kick off for the original\'s quick result. '
+                                  'C: the original chooses its own captain, and you watch.')
         self.refusal.setText(f"Last original refusal: {state['refused']}. Play checks again." if state['refused'] else '')
         self.show(0)
 
@@ -884,16 +895,17 @@ class CoreRound:
         state = self.window.model.round_state()
         self.bench.message = '';self.bench.offer(state, 'pre_match');self.show(1)
 
-    def kick_off_selected(self):
+    def kick_off_selected(self, watch):
+        """Kick off with the selected captain, watched (`watch`) or to the original's quick result."""
         rows = self.captain_roster.rows
         if rows and 0 <= self.captain_roster.current < len(rows):
             player = rows[self.captain_roster.current][0]
-            if player in self.state['captain']['eligible']:self.start_kick_off(player)
+            if player in self.state['captain']['eligible']:self.start_kick_off(player, watch)
 
-    def start_kick_off(self, captain):
+    def start_kick_off(self, captain, watch):
         if self.window.core_jobs.busy:return
         self.watch_suspended = False
-        if self.window.run_core('kick_off', captain, self.watch.isChecked()):
+        if self.window.run_core('kick_off', captain, watch):
             self.show_waiting('The original plays the first half…')
 
     def start_play_on(self):

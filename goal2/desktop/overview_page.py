@@ -215,6 +215,11 @@ def build_core(self, model):
     self.core_routes['team info'].clicked.connect(lambda: core_open_team_info(self))
     self.core_routes['select squad'].clicked.connect(lambda: (self.navigate(1), self.team_views.show_view(0)))
     self.core_routes['play next game'].clicked.connect(lambda: self.core_round.start())
+    # [designed: owner, 2026-11-02, #523/T155] The menu's play next game is the desk's one primary control, shown
+    # as such where the original has it (the routes' last item), so the next match is one obvious click away.
+    self.play_next = self.core_routes['play next game']
+    self.play_next.setText('PLAY NEXT GAME >');self.play_next.setAccessibleName('Play next game')
+    self.play_next.setProperty('primary', True)
     middle.addStretch(1)
     self.country_roster = RosterView('SQUAD', toggles=False, grouped=True, marks=False)
     self.country_roster.setFixedWidth(320);desk.addWidget(self.country_roster, 0, Qt.AlignmentFlag.AlignTop)

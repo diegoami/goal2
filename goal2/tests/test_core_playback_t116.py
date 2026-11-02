@@ -168,8 +168,8 @@ class Desktop(unittest.TestCase):
             m=CoreModel(live().core,requires.CACHE/'GOAL.DAT',Path(folder)/'game.g2core')
             w=CoreWindow(m);w.core_round.watch_suspended=True;w.show();app.processEvents();w.finish_core()
             try:
-                self.assertTrue(w.core_round.watch.isChecked())
-                w.core_round.watch.click();self.assertFalse(w.core_round.watch.isChecked())
+                # [#523/T155] Watching is the default action (Enter), not a toggle.
+                self.assertIn('watch',w.core_round.kick_off.text());self.assertFalse(w.core_round.kick_off.isCheckable())
                 with patch.object(w,'refresh',wraps=w.refresh) as refresh:
                     w.run_core('live_step');self.assertEqual(w.finish_core()[0],'done')
                     self.assertEqual(refresh.call_count,0)
