@@ -1,0 +1,22 @@
+{
+  "note": "[designed: owner, 2026-11-02, T147] Every download of the portable build, pinned by version and SHA-256 (docs/packaging.md). tools/build_portable.py refuses a file whose SHA-256 differs. The wheels are pinned the same way in requirements-win64.txt (pip --require-hashes).",
+  "cpython": {
+    "version": "3.13.17",
+    "url": "https://www.python.org/ftp/python/3.13.17/python-3.13.17-embed-amd64.zip",
+    "sha256": "9e35319bffedab8b36ad44d8f377cb4f1733bcec257a0b6d04d94f01486ddb38",
+    "strip": ""
+  },
+  "pypy": {
+    "version": "7.3.23 (Python 3.11.15)",
+    "url": "https://downloads.python.org/pypy/pypy3.11-v7.3.23-win64.zip",
+    "sha256": "948b8ea58dea5b9917210fe4afd242c788fbfaba1c3f1a25e696a404f703389a",
+    "strip": "pypy3.11-v7.3.23-win64/"
+  },
+  "wheels": {
+    "requirements": "requirements-win64.txt",
+    "platform": "win_amd64",
+    "python_version": "3.13",
+    "implementation": "cp",
+    "abi": "cp313"
+  }
+}

@@ -1,0 +1,14 @@
+# [designed: owner, 2026-11-02, T147] The desktop, watched and match-view extras of pyproject.toml for the
+# portable build's CPython 3.13 (win_amd64), with every dependency, each pinned by version and SHA-256 (PyPI's
+# published digests, 2026-11-02). tools/build_portable.py installs them with pip --require-hashes --no-deps.
+# desktop: PySide6==6.12.0 and what it requires
+pyside6==6.12.0 --hash=sha256:31a8d2893f2f28ab483b1534dde0438f27af6e234593de30425cb4729052d8f8
+pyside6-essentials==6.12.0 --hash=sha256:c9a95102aa23c1f86516a30d5a9be37552d324eee7e567eb7508973f1218cb42
+pyside6-addons==6.12.0 --hash=sha256:98d8d62010da6605344cee83e5c96fb846170a1f2d924523f10f5d92078b02b0
+pyside6-webengine==6.12.0.140 --hash=sha256:f9b61b1d457a591ee590a6b80515f25a3e61e2576a2a0a70566380f9d9de4ab0
+pyside6-pdf==6.12.0.140 --hash=sha256:4971ba1a0ca15e7c29cfd808e9600aeb46b2305dad01456eb09fa3197166268e
+shiboken6==6.12.0 --hash=sha256:a1906cb8116869178c64b6bab52623bbc8b4ceed7b30bfc3c9aa0f6e67f6438e
+# watched: unicorn==2.1.4
+unicorn==2.1.4 --hash=sha256:d7107500c64ce5c168fbff6bef9485b5db1350050036f4cea568650cf8bdbdf5
+# match-view: pygame-ce==2.5.8
+pygame-ce==2.5.8 --hash=sha256:f495b0eb7a5c54c59da58e964bc7f68073c3f43cf307729fd48309104a04c190
