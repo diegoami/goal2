@@ -36,13 +36,17 @@ def _allow_foreground(pid):
 
 
 class CoreViewer:
+    @property
+    def released(self):
+        """[designed: owner, 2026-11-02] Closed by goal2: its channel is gone and it is never written to again."""
+        return self.stream is None
+
     def send(self, kind, value):
-        if self.closed:
+        if self.released:
             raise ValueError('The match window is closed')
         WatchedController.send(self, kind, value)
 
     def close(self):
-        """[designed: owner, 2026-11-02] Closed here as when the window closes itself: never written to again."""
         WatchedController.close_viewer(self)
         self.closed = True
 

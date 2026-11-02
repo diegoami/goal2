@@ -904,11 +904,12 @@ class CoreRound:
             self.show_waiting('The original plays the second half…')
 
     def drop_dead_viewer(self):
-        """[designed: owner, 2026-11-02] A viewer closed (here or by its window) or exited is let go, never
-        written to; the next live stop starts a new one (four Windows runs on 2026-11-02 crashed writing to one)."""
-        if self.viewer is not None and (self.viewer.closed or self.viewer.process is None
-                                        or self.viewer.process.poll() is not None):
-            self.viewer.close();self.viewer = None
+        """[designed: owner, 2026-11-02] A viewer goal2 already closed (its channel released) is let go, never
+        written to; the next live stop starts a new one (four Windows runs on 2026-11-02 crashed writing to one).
+        A viewer that failed or whose window closed is not dropped here: poll_viewer stops watching with its
+        reason and the live wait stays resumable (T109)."""
+        if self.viewer is not None and self.viewer.released:
+            self.viewer = None
 
     def resume_viewer(self):
         from goal2.desktop.core_viewer import CoreViewer

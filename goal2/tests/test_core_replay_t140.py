@@ -171,7 +171,7 @@ class Desktop(unittest.TestCase):
             r=w.core_round
             viewer=CoreViewer(pitch_identity(m.state,views.pitch_identity(m.state)));r.viewer=viewer
             viewer.close()
-            self.assertTrue(viewer.closed)
+            self.assertTrue(viewer.closed);self.assertTrue(viewer.released)
             with self.assertRaisesRegex(ValueError,'closed'):viewer.decision('replay')
             r.finished('resume',('done',m.round_state()))      # the replay prompt: let go, not written to
             self.assertIsNone(r.viewer)
@@ -180,6 +180,35 @@ class Desktop(unittest.TestCase):
             r.viewer_timer.stop()
             self.assertIsNot(r.viewer,viewer);self.assertIsNotNone(r.viewer)
             self.assertFalse(r.viewer.closed);self.assertIsNone(r.viewer.process.poll())
+
+    def test_an_exited_viewer_is_not_replaced_silently(self):
+        """[designed: T109] At a live stop, a viewer whose process exited is not dropped and replaced: watching
+        stops with its reason and the live wait stays resumable. (After a replay, show_match does replace it: the
+        manager asked to watch, owner #430.) The process is waited for, so the check does not depend on how fast it
+        exits (the first fix replaced it on Windows only, 2026-11-02)."""
+        import sys
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        from goal2.desktop.core_viewer import CoreViewer
+        m=CoreModel(prompt(),requires.CACHE/'GOAL.DAT',Path(tempfile.gettempdir())/'unused-t140.g2core')
+        with patch.dict(os.environ,{'SDL_AUDIODRIVER':'dummy'}):
+            w=CoreWindow(m);self.addCleanup(w.close);w.show();self.app.processEvents()
+            r=w.core_round;r.watch_suspended=True
+            r.finished('resume',('done',m.round_state()))
+            r.replays.watch.click()
+            self.assertEqual(w.finish_core(60)[0],'done')       # the replay, to its live stop
+            state=m.round_state();self.assertEqual(state['stop'],'live')
+            if r.viewer is not None:r.viewer.close();r.viewer=None
+            viewer=CoreViewer(state['identity'],command=[sys.executable,'-c','raise SystemExit(1)'])
+            r.viewer=viewer;viewer.process.wait(10)
+            r.watch_suspended=False
+            r.finished('resume',('done',state))
+            end=time.monotonic()+10
+            while r.viewer is not None and time.monotonic()<end:
+                self.app.processEvents();time.sleep(.005)
+            r.viewer_timer.stop()
+            self.assertIsNone(r.viewer)
+            self.assertTrue(r.watch_suspended)
 
     def test_native_viewer_shows_replay_then_live_in_the_same_owned_process(self):
         import json,sys
