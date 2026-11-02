@@ -222,12 +222,12 @@ def s05_bulletin():
     body = '''<div class="col grow" style="max-width:1392px">
 <div style="text-align:center;font:900 46px/1 Georgia,'DejaVu Serif',serif;letter-spacing:4px;padding:6px 0 4px;border-bottom:3px double var(--line)">THE SOCCER BULLETIN</div>
 <div style="display:flex;gap:18px" class="grow">
- <section class="box" style="width:330px;font-family:Georgia,'DejaVu Serif',serif"><h2>Physio's room</h2><p style="font-size:20px">WITSCHGE BACK IN TRAINING</p><p class="sub">The midfielder is “ready to play” again after Saturday's knock.</p></section>
- <section class="box grow" style="font-family:Georgia,'DejaVu Serif',serif;text-align:center"><h2>Front page · 1 of 2</h2>
+ <section class="box" style="width:330px;font-family:Georgia,'DejaVu Serif',serif"><h2>Second story</h2><span class="tag">illustrative</span><p class="sub">The bulletin's side panels carry other news of the round: players, the physio, the football association.</p></section>
+ <section class="box grow" style="font-family:Georgia,'DejaVu Serif',serif;text-align:center"><h2>Front page · 1 of 1</h2>
   <div style="font-size:52px;font-weight:900;line-height:1.05;margin:30px 0">K EES HAS GOT IT RIGHT</div>
   <div style="font-size:30px">HOLLAND DO THE JOB — JUST</div>
   <p class="sub" style="margin-top:26px;font-size:19px">Norway 0 – 1 Holland · friendly · Bergkamp 83</p></section>
- <section class="box" style="width:330px;font-family:Georgia,'DejaVu Serif',serif"><h2>Football association</h2><p style="font-size:20px">“A FINE START”</p><p class="sub">Next: Cyprus at home, the first qualifier of Group C.</p></section>
+ <section class="box" style="width:330px;font-family:Georgia,'DejaVu Serif',serif"><h2>Third story</h2><span class="tag">illustrative</span><p class="sub">Each panel keeps the original's words and capitals.</p></section>
 </div></div>'''
     return page("Bulletin", body, [("Esc", "skip all news")], ("Enter", "Next page"), crumb="news", nxt="<b>Cyprus</b> · qualifying · home")
 
@@ -304,12 +304,12 @@ def s09_player_tactics():
             ("tackling", "avoid injury"), ("mark", "Protect zone")]
     trs = "".join(f'<tr{" class=\"on\"" if i == 4 else ""}><td>{a}</td><td>{b}</td></tr>' for i, (a, b) in enumerate(rows))
     body = f'''<div class="col grow">
-<section class="box" style="display:flex;gap:20px;align-items:baseline">{rc("C")}<h1>R Koeman</h1><span class="sub">sweeper · club position sweeper · ready to play</span></section>
+<section class="box" style="display:flex;gap:20px;align-items:baseline">{rc("S")}<h1>R Koeman</h1><span class="sub">sweeper · club position sweeper · ready to play</span></section>
 <div style="display:flex;gap:18px" class="grow">
 <section class="box" style="width:560px"><h2>His own tactics</h2><table>{trs}</table>
 <p class="sub" style="margin:14px 0 0">Enter steps the highlighted line to its next option. <b>P</b> marks a line set for this player, not by the team's defaults.
 The mark line steps from zone to each opponent by name; marks are cleared after every match.</p></section>
-<section class="box grow"><h2>Skills</h2>{bars(SKILLS[:6])}<h2 style="margin-top:14px">Characteristics</h2>{bars(CHARS)}</section>
+<section class="box grow"><h2>Skills</h2>{bars([("keeping", 1, ""), ("kicking", 8, ""), ("tackling", 7, ""), ("heading", 6, ""), ("marking", 7, ""), ("passing", 8, "")])}<h2 style="margin-top:14px">Characteristics</h2>{bars(CHARS)}</section>
 </div></div>{strip(on="R Koeman")}'''
     return page("Player tactics", body, [(("↑", "↓", "←", "→"), "line"), ("Esc", "back to the card")],
                 ("Enter", "Alter tactic"), crumb="select squad · R Koeman · tactics")

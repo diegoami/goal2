@@ -513,6 +513,7 @@ image embedded in the chapters is in one row: the new screen that replaces it, o
 <!-- mapping:start -->
 | New screen | Original screens it replaces | Note |
 | --- | --- | --- |
+| S01 | — | goal2 adds it: the first-start import (T153) |
 | S02 | `title-load-prompt`, `m244-load-name`, `t156-243-load-name`, `file-not-found-prompt` | title, load, error |
 | S03 | `title-player-count`, `t156-002-hang-on-a-tick` | managers, busy |
 | S04 | `country-select`, `country-select-name-entry`, `t156-005-country-holland`, `t156-006-name-entry`, `t156-010-name-typed` | country, name |
@@ -531,6 +532,10 @@ image embedded in the chapters is in one row: the new screen that replaces it, o
 | S17 | `match-live`, `match-commentary`, `injury-event`, `t156-045-kick-off`, `t156-058-taker-timed-out`, `t156-066-injury-and-booking`, `t156-178-replay-playing`, `t156-247-goal-replay`, `t156-254-goal-replay-goal`, `t156-267-quick-hang-on`, `m244-shootout-first-goal` | pitch |
 | S18 | `t156-067-substitution-opportunity`, `t156-149-opponent-substitution`, `t156-175-replay-prompt`, `t156-176-save-goal-prompt`, `t156-177-goal-file-name`, `t156-274-quick-substitution-opportunity`, `e031-shootout-start`, `m244-shootout-prompt` | stops |
 | S19 | `squad-substitution-take-off`, `squad-substitution-put-on`, `squad-substitution-illegal`, `t156-074-bench-requested`, `t156-080-bench-request-cancelled`, `t156-124-halftime-bench`, `t156-132-substitution-made`, `t156-279-quick-bench`, `t156-301-quick-substitution-made` | bench |
+| S20 | `t156-119-halftime-board`, `t156-192-fulltime-board`, `t156-270-quick-halftime`, `t156-310-quick-fulltime`, `match-summary-save-prompt`, `match-summary`, `t156-198-summary-prompt`, `t156-199-summary-file-name` | boards, summary |
+| S21 | `save-game-name-entry`, `save-game-prompt`, `quit-confirm`, `t156-233-save-name-prompt`, `t156-237-save-name-typed`, `t156-239-quit-confirm`, `t156-240-quit-save-prompt`, `t156-245-load-goal-prompt` | save, quit, load goal |
+| S22 | — | goal2 adds it in place of the original's help viewer, of which no capture exists |
+| dropped | `dos-shell` | The emulator's DOS prompt before GOAL2 starts: not a game screen; goal2 starts on S01 or S02 |
 <!-- mapping:end -->
 
 ## 6. Questions for the owner
