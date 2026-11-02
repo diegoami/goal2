@@ -33,6 +33,13 @@ MANIFEST = (
     ("e039-r0005-date-call.sav", "0d9c683023c7327f17bfc29900f2eff4e703641d21d3f353693f09654688494b"),
 )
 DATA_NAME, BOOT_NAME = (name for name, _ in MANIFEST)
+# OPTIONAL: files taken when the offered folder has them, checked like MANIFEST's, but whose absence does not stop
+# the import. [designed: owner, 2026-11-03, #526] GOAL.HLP, the original's help file, for the redesigned UI's F1
+# (docs/design/ui-2026-11, S22). [confirmed: goal2-archaeology artifacts/known.json, GOAL.HLP, 32569 bytes]
+OPTIONAL = (
+    ("GOAL.HLP", "2f3be8648a52045b6f7af1f41cba020d6a662229e5db499e203c5d0957308f60"),
+)
+HELP_NAME = OPTIONAL[0][0]
 SAVE_NAME = "desktop.g2core"   # [designed: T153] the core route's default save in the saves folder
 PART = ".part"                 # a copy being written, beside its final name in the data folder
 
@@ -106,6 +113,10 @@ class Paths:
     def save(self) -> Path:
         return self.saves / SAVE_NAME
 
+    @property
+    def help(self) -> Path:
+        return self.data / HELP_NAME
+
 
 def paths(root=None) -> Paths:
     return Paths(Path(root) if root is not None else user_root())
@@ -134,12 +145,14 @@ def find(folder, name):
 
 def problems(folder) -> list:
     """What `folder` lacks of MANIFEST: (name, 'missing') or (name, 'wrong') for each file absent, unreadable or
-    with another digest. Empty when the folder is complete."""
+    with another digest; and (name, 'wrong') for an OPTIONAL file that is there but not the right one. Empty when
+    the folder is complete."""
     found = []
-    for name, digest in MANIFEST:
+    for name, digest in MANIFEST + OPTIONAL:
         path = find(folder, name)
         if path is None:
-            found.append((name, "missing"))
+            if (name, digest) in MANIFEST:
+                found.append((name, "missing"))
             continue
         try:
             ok = sha256(path) == digest
@@ -166,7 +179,7 @@ def describe(found, source) -> str:
 
 
 def import_folder(source, target=None) -> list:
-    """Check every file of MANIFEST in `source`, then copy them into the data folder (`target`, a Paths; default
+    """Check every file of MANIFEST in `source` (and of OPTIONAL that `source` has), then copy them into the data folder (`target`, a Paths; default
     the user's). Nothing is copied unless every file is right (ImportRefused names each that is not). A file is
     written beside its final name, checked again, then moved over it; one already right is left alone. Returns the
     names copied. Only the data folder is written: never `source`, the saves folder or the working directory."""
@@ -180,7 +193,7 @@ def import_folder(source, target=None) -> list:
     copied = []
     try:
         target.data.mkdir(parents=True, exist_ok=True)
-        for name, digest in MANIFEST:
+        for name, digest in MANIFEST + tuple(o for o in OPTIONAL if find(source, o[0]) is not None):
             final = target.data / name
             if final.is_file() and sha256(final) == digest:
                 continue
@@ -209,12 +222,14 @@ def ensure(target=None, dialog=None):
 
 
 INTRO = ("goal2 needs two files from your data folder (the folder tools/artifacts.py pull fills): {names}.\n"
+         "It also takes the original's help file, {help}, when the folder has it.\n"
          "Choose the folder that holds them. goal2 checks each and copies it to\n{data}\n"
          "Your saved careers, in {saves}, are never touched.")
 
 
 def intro(target) -> str:
-    return INTRO.format(names=" and ".join(name for name, _ in MANIFEST), data=target.data, saves=target.saves)
+    return INTRO.format(names=" and ".join(name for name, _ in MANIFEST), help=HELP_NAME, data=target.data,
+                        saves=target.saves)
 
 
 def make_dialog(target, choose=None):
