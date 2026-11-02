@@ -1,6 +1,8 @@
 """[designed: owner, 2026-11-01, #500] Tests play the match engine the way goal2 does: in a child process under
 `engine_python()` (PyPy 3.11, T152), never in the CPython test process (#496).
 
+There is no other interpreter to choose: no test plays a match under CPython (owner, 2026-11-02).
+
 `call(target, *args, **kwargs)` runs `target` ("package.module:function") in that child and returns its value;
 `start(...)` does the same without waiting (`.result()` waits), so a test can compute its reference meanwhile;
 `echo` (as the target, with the real target as its first argument) also returns the arguments as the call left them. The
@@ -91,8 +93,8 @@ def _cleanup(process, folder):
 class Pending:
     """A call running in its child."""
 
-    def __init__(self, target, args, kwargs, interpreter=None):
-        self.interpreter = interpreter or _interpreter()
+    def __init__(self, target, args, kwargs):
+        self.interpreter = _interpreter()
         self._folder = tempfile.TemporaryDirectory(prefix="goal2-engine-child-")
         folder = Path(self._folder.name)
         self._request, self._reply = folder / "request.pickle", folder / "reply.pickle"
@@ -121,14 +123,14 @@ class Pending:
         raise ChildError(text)
 
 
-def start(target: str, *args, interpreter: str | None = None, **kwargs) -> Pending:
-    """Start `target(*args, **kwargs)` in a child under `interpreter` (default: engine_python())."""
-    return Pending(target, args, kwargs, interpreter)
+def start(target: str, *args, **kwargs) -> Pending:
+    """Start `target(*args, **kwargs)` in a child under engine_python()."""
+    return Pending(target, args, kwargs)
 
 
-def call(target: str, *args, interpreter: str | None = None, **kwargs):
-    """`target(*args, **kwargs)` in a child under `interpreter` (default: engine_python()); its value."""
-    return start(target, *args, interpreter=interpreter, **kwargs).result()
+def call(target: str, *args, **kwargs):
+    """`target(*args, **kwargs)` in a child under engine_python(); its value."""
+    return start(target, *args, **kwargs).result()
 
 
 def resolve(target: str):

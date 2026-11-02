@@ -1,7 +1,12 @@
 """[designed: owner, 2026-11-01, #500] No test plays the sealed port engine in the CPython test process: the guard
 refuses it here, and goal2/tests/pypy_engine.py plays it in a child under engine_python() (PyPy 3.11), returning its
-value and raising its exception as the same type."""
+value and raising its exception as the same type.
+[designed: owner, 2026-11-02] No test plays a match under CPython at all: a child always runs under engine_python(),
+with no choice of interpreter (that PyPy and CPython play the same matches is goal2-archaeology #620's evidence).
+"""
+import inspect
 import os
+from pathlib import Path
 import pickle
 import subprocess
 import unittest
@@ -55,6 +60,15 @@ class Child(unittest.TestCase):
                                   capture_output=True, text=True, check=True).stdout.strip()
         self.assertEqual(implementation, expected)
         self.assertFalse(guarded);self.assertEqual(flag, "1")
+
+    def test_no_test_chooses_another_interpreter_for_the_child(self):
+        for function in (pypy_engine.start, pypy_engine.call, pypy_engine.Pending):
+            with self.subTest(function=function.__name__):
+                self.assertNotIn("interpreter", inspect.signature(function).parameters)
+        chosen = "interpreter" + "="                     # split, so this file does not name it
+        for path in sorted(Path(__file__).parent.glob("*.py")):
+            with self.subTest(path=path.name):
+                self.assertFalse(chosen in path.read_text(), f"{path.name} chooses the child's interpreter")
 
     def test_a_value_and_the_arguments_come_back(self):
         self.assertEqual(pypy_engine.call("goal2.tests.pypy_engine:echo", "builtins:sorted", [3, 1, 2]),
