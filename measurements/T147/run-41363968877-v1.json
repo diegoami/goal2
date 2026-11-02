@@ -1,0 +1,107 @@
+{
+ "run_id": 41363968877,
+ "head": "c34e2ff1ce0f37d48c322c931e32779fc4b5be9f",
+ "runner": "windows-latest (hosted)",
+ "zip": "goal2-0.1.0-win64",
+ "zip_bytes": 330128760,
+ "folder_bytes": 924137335,
+ "files": 9566,
+ "build_s": 81.2,
+ "packaged_match_s": 107.6,
+ "reference_match_s": 108.6,
+ "smoke_pass": true,
+ "checks": {
+  "no_python_or_git_on_path": true,
+  "launcher_help": true,
+  "pypy": true,
+  "match": true
+ },
+ "worker_console_window": {
+  "pypy.exe": true,
+  "pypyw.exe": false
+ },
+ "check_zip": "PASS goal2-0.1.0-win64.zip: {\"entries\": 9566, \"originals_compared\": 81, \"forbidden_type_entries\": 34}",
+ "smoke": {
+  "root": "D:\\a\\_temp\\goal2 smoke ä\\goal2-0.1.0-win64",
+  "work": "D:\\a\\_temp\\goal2 smoke ä\\work ch2l1rwv",
+  "checks": {
+   "no_python_or_git_on_path": {
+    "pass": true,
+    "found": {
+     "python": null,
+     "python3": null,
+     "py": null,
+     "pyw": null,
+     "pypy": null,
+     "git": null
+    }
+   },
+   "launcher_help": {
+    "pass": true,
+    "exit": 0,
+    "s": 0.1,
+    "help_text_seen": true,
+    "stderr": ""
+   },
+   "pypy": {
+    "pass": true,
+    "answers": "PyPy 3 11",
+    "goal2": "D:\\a\\_temp\\goal2 smoke ä\\goal2-0.1.0-win64\\pypy\\Lib\\site-packages\\goal2\\__init__.py",
+    "pyside6_import_exit": 1,
+    "stderr": ""
+   },
+   "match": {
+    "pass": true,
+    "packaged": {
+     "ui_python": "CPython 3.13.17",
+     "ui_executable": "D:\\a\\_temp\\goal2 smoke ä\\goal2-0.1.0-win64\\python\\python.exe",
+     "goal2": "D:\\a\\_temp\\goal2 smoke ä\\goal2-0.1.0-win64\\python\\Lib\\site-packages\\goal2\\__init__.py",
+     "worker": "D:\\a\\_temp\\goal2 smoke ä\\goal2-0.1.0-win64\\pypy\\pypy.exe",
+     "match_wall_s": 107.6,
+     "outcome_sha256": "dd6c73feb0c2f309f15d85f2277ab757049b9acc7bc59761e01366e91d998d44",
+     "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+     "events": 1079,
+     "result_sha256": "ff97c3b84b5cccde0469fe1ffd991aab9f19ab479b21e598e039e047a01c7e59",
+     "score": [
+      1,
+      0
+     ],
+     "seeds": [
+      25058,
+      61800
+     ],
+     "engine_year": 0
+    },
+    "reference": {
+     "ui_python": "CPython 3.13.16",
+     "ui_executable": "C:\\hostedtoolcache\\windows\\Python\\3.13.16\\x64\\python.exe",
+     "goal2": "D:\\a\\goal2\\goal2\\goal2\\__init__.py",
+     "worker": "C:\\hostedtoolcache\\windows\\PyPy\\3.11.17\\x64\\python.exe",
+     "match_wall_s": 108.6,
+     "outcome_sha256": "dd6c73feb0c2f309f15d85f2277ab757049b9acc7bc59761e01366e91d998d44",
+     "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+     "events": 1079,
+     "result_sha256": "ff97c3b84b5cccde0469fe1ffd991aab9f19ab479b21e598e039e047a01c7e59",
+     "score": [
+      1,
+      0
+     ],
+     "seeds": [
+      25058,
+      61800
+     ],
+     "engine_year": 0
+    },
+    "packaged_s": 108.1,
+    "reference_s": 109.0,
+    "stderr": ""
+   }
+  },
+  "path": "C:\\Windows\\System32;C:\\Windows\\System32\\Wbem",
+  "worker_console_window": {
+   "pypy.exe": true,
+   "pypyw.exe": false
+  },
+  "pass": true
+ }
+}
