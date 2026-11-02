@@ -167,7 +167,8 @@ def main():
             return
         launch = find("LaunchWindow")
         if launch is not None and args.phase == "second" and name == "start":
-            event("Launch shown", dialog_shown=bool(shown))
+            event("Launch shown", dialog_shown=bool(shown), saved=launch.saved_country.text(),
+                  saved_error=launch.error.text())
             stage["name"] = "done";launch.close();return
         if launch is not None and args.phase == "first" and name in ("start", "imported"):
             event("Launch shown", saved=launch.saved_country.text())
