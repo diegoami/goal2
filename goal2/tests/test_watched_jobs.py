@@ -259,6 +259,8 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
 
     def test_start_failures_clear_publication_and_allow_restart(self):
         self.jobs=WatchedJobs(self.owner)
+        # A fixed worker: engine_python() probes interpreters with subprocess, which this test patches.
+        self.jobs.command=[sys.executable,'-c',CONTROLLED,'blocked']
         for target in ('tempfile.TemporaryDirectory','subprocess.Popen'):
             with patch('goal2.game.watched_jobs.'+target,side_effect=OSError('launch unavailable')):
                 error = OSError if target == 'tempfile.TemporaryDirectory' else ValueError
@@ -269,7 +271,6 @@ import goal2.game.watched_jobs,goal2.game.watched_worker
             self.assertTrue(self.jobs.publication._pending is None,'failed launch must clear pending publication')
             self.assertFalse(self.jobs.busy)
             self.assertEqual(self.owner.state,self.before)
-        self.jobs.command=[sys.executable,'-c',CONTROLLED,'blocked']
         token=self.jobs.start(Fixture(7,19,21))
         self.assertTrue(self.jobs.busy)
         self.jobs.cancel_and_reap(token)
