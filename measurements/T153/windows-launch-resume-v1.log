@@ -1,0 +1,3 @@
+{'t': 0.41, 'what': 'Launch shown', 'dialog_shown': False, 'country': 'DENMARK', 'resume': 'RESUME DENMARK', 'error': ''}
+{'t': 0.81, 'what': 'resumed', 'memory_sha256': '91e9346399ddd1b2b2fb0df3539f16c68c44518c219f6dffb4ab8cb2cb158a85', 'save_path': 'C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves\\desktop.g2core', 'title': 'Denmark'}
+{"phase": "launch-resume", "exit": 0, "stage": "done", "dialog_shown": 0, "complete_after": true, "errors": []}

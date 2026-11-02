@@ -1,0 +1,18 @@
+{
+  "what": "[designed: T153] Done-when 2 on Windows, driven headlessly by drive_first_run.py (its docstring says what each phase clicks)",
+  "zip": {"run": "https://github.com/diegoami/goal2/actions/runs/41511007975", "artifact": "goal2-win64-zip",
+          "branch": "task/T153-first-run", "head": "5177e6709d688b5a678a8e75c6d1be45e206c628",
+          "file": "goal2-0.1.0-win64.zip", "sha256": "ce71e575127ae20a4577dfc0e7796c54a9812c4f9c2787bfaf7e3437b5eaca9e"},
+  "unzipped": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run (fresh folder, tar -xf)",
+  "interpreter": "the build's python\\python.exe (console, for the log; goal2.cmd uses pythonw.exe) running goal2_launch.main from the build root, so the launcher's environment and runpy -m goal2.desktop are the build's",
+  "environment": "QT_QPA_PLATFORM=offscreen, SDL_VIDEODRIVER=dummy; LOCALAPPDATA set to the run folder's local\\ so the owner's real %LOCALAPPDATA%\\goal2 stays fresh for the playtest",
+  "owner_data_folder": "\\\\wsl.localhost\\Ubuntu\\home\\diego\\projects\\goal2\\.cache (tools/artifacts.py pull's folder; read only)",
+  "phases": {
+    "first": "no arguments: import dialog; an empty folder refused naming both files; the owner's folder imported; Launch New career (Denmark, 1992, 'T Fiftythree'), bulletins, main window; one round played watched through CoreModel.round_step (4402 steps: captain, 4396 live polls, half time, 2 replay prompts declined, full time, summary declined); Save button; window closed",
+    "second": "no arguments: no dialog; Launch shows the saved career DENMARK",
+    "resume": "--resume <saves>\\desktop.g2core: main window, memory sha256 equal to the saved one",
+    "launch-resume": "no arguments: Launch's Resume button (RESUME DENMARK, #519): main window, memory sha256 equal to the saved one"
+  },
+  "not_driven": "the window's own round page and the pygame pitch viewer (the round was played through the same model calls without them); real mouse/keyboard input",
+  "note": "engine_python in the logs is read before the launcher sets GOAL2_ENGINE_PYTHON, hence null; the core round runs in the core, not in a PyPy worker"
+}
