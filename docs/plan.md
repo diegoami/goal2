@@ -26,6 +26,13 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
    The long-term goal stays an **independent executable** (no original files at run time), fed by goal2-archaeology's
    findings and engine port; the Python rule tasks T52-T59 (#112-#119) move to that track (label `long-term`). Stage 4 is small, last and unscheduled: the package will deliver the engine image from the private release at build time (#130/#148). This supersedes decision 2
    (the quick engine as the watched match's stand-in) once stage 1 lands; until then the stand-in stays.
+   [designed: owner, 2026-11-02, #509] **m3 is GOAL.EXE out entirely**, the milestone after m2 (tagged
+   `m2-standalone-engine`) and the owner's playtest of the portable ZIP:
+   - the tournament continuation (goal2-archaeology #427) and the Core's screens and logic are ported, each
+     proven identical to the original (CLAUDE.md rule 15), until no code path needs Unicorn or the recorded boot
+     state;
+   - GOAL.DAT is read from the player's own install first, and replaced by goal2's own data later;
+   - the Rust engine (diegoami/goal2rust) goes on in parallel and does not change this order.
 5. **The main session drafts** this plan and the register.
 
 Every rule the rebuild plays by is in [`assumptions.md`](assumptions.md), tagged by where it comes
