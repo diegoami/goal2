@@ -3993,6 +3993,7 @@
     "replay": 1
    },
    "server_step": 178,
+   "note": "host: G-1.HIL (3,989 bytes, sha256 3d8d44695950a28e1773b0d875cf470143128875bbab6ec5617af78deea98baa) was in the game folder after this step",
    "image": "images/t156-178-replay-playing.png"
   },
   {
@@ -4482,6 +4483,7 @@
     "replay": 1
    },
    "server_step": 200,
+   "note": "host: S-1.SUM (3,989 bytes, sha256 f604d6e5dcab9bdafcac9a8bd26258d6b46806ae92b5f69304b0744a943d2169) was in the game folder after this step",
    "image": "images/t156-200-bulletin-after-match.png"
   },
   {
@@ -5343,7 +5345,8 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 238
+   "server_step": 238,
+   "note": "host: T156.GL (169,553 bytes, sha256 f77d32670d7dc80704a58b5a203e1bbbe5bea08ad9856b401c2ae8e3bf75840c) was in the game folder after this step"
   },
   {
    "step": 239,

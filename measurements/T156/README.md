@@ -1,0 +1,9 @@
+# T156 uninterrupted original playthrough
+
+[confirmed: T156-R1 log] This folder holds the tools that made and check run `T156-R1`: one sitting of the original GOAL2, from its own title through a new Holland career, round one with a watched match, a save, a quit and a reload, to the second round's quick-result match. The run has 322 steps, each one key or one timed wait (plus the two launches). The record is [`docs/original-game/captures/t156-r1.json`](../../docs/original-game/captures/t156-r1.json) and the chapter is [`docs/original-game/playthrough.md`](../../docs/original-game/playthrough.md).
+
+- `capture/server.py`, `capture/client.py`, `capture/watch.sh`, `capture/highlight.py`: the capture tool [designed: T156]. The server holds one DOSBox-X through goal2-archaeology's E031 `PlayDriver`, imported read only from `/home/diego/projects/goal2-archaeology-engine` at `b519d999`. All state goes under a run folder in `/tmp`.
+- `build.py RUN`: writes the committed log from `RUN/steps.jsonl`, copies the chosen renders to `docs/original-game/images/t156-*.png` and appends their rows to `image-provenance.tsv`. The existing rows of that file stay byte-exact. Running it again gives the same files.
+- `check_png_hashes.py`: recomputes the SHA-256 of every T156 PNG from the committed files and matches it with the provenance row and the log step. It also checks that every step is one launch, key or timed wait, with its before and after digests, and that every new image is embedded in a chapter. It exits 1 on any mismatch: a byte added to one PNG gave two problems (provenance and log), and a key appended to the action of the 2-second waits gave one problem per changed step.
+
+The savestates (`sav_sha256` in the log), the game folder and the files the game wrote stayed in `/tmp/goal2-t156-run1` and are not committed (CLAUDE.md rule 14).

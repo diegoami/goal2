@@ -66,6 +66,16 @@ RELABEL = {
     301: ("put-on-kieft", "label typed as put-on-winter; the card and strip show W Kieft went on"),
 }
 
+# what the capture host saw in the private game folder after a step (client.py `ls` / `copyout`), not a screen
+HOST_NOTES = {
+    178: "host: G-1.HIL (3,989 bytes, sha256 3d8d44695950a28e1773b0d875cf470143128875bbab6ec5617af78deea98baa) "
+         "was in the game folder after this step",
+    200: "host: S-1.SUM (3,989 bytes, sha256 f604d6e5dcab9bdafcac9a8bd26258d6b46806ae92b5f69304b0744a943d2169) "
+         "was in the game folder after this step",
+    238: "host: T156.GL (169,553 bytes, sha256 f77d32670d7dc80704a58b5a203e1bbbe5bea08ad9856b401c2ae8e3bf75840c) "
+         "was in the game folder after this step",
+}
+
 
 def sha(b):
     return hashlib.sha256(b).hexdigest()
@@ -88,6 +98,8 @@ def main(run):
                "after_digest": e["text_digest"], "changed": e["changed"], "sav_sha256": e["sav_sha256"],
                "png_sha256": e["png_sha256"], "bottom": e["bottom"], "font": e["font"], "utc": e["utc"],
                "progress": e.get("progress"), "server_step": None if e.get("observation") else server_step}
+        if i in HOST_NOTES:
+            note = HOST_NOTES[i] if not note else note + "; " + HOST_NOTES[i]
         if note:
             rec["note"] = note
         if i in IMAGES:
