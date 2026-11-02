@@ -36,8 +36,19 @@ def _allow_foreground(pid):
 
 
 class CoreViewer:
-    send = WatchedController.send
-    close = WatchedController.close_viewer
+    @property
+    def released(self):
+        """[designed: owner, 2026-11-02] Closed by goal2: its channel is gone and it is never written to again."""
+        return self.stream is None
+
+    def send(self, kind, value):
+        if self.released:
+            raise ValueError('The match window is closed')
+        WatchedController.send(self, kind, value)
+
+    def close(self):
+        WatchedController.close_viewer(self)
+        self.closed = True
 
     def __init__(self, identity, command=None):
         if importlib.util.find_spec('pygame') is None:
