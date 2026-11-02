@@ -54,13 +54,16 @@ IMAGES = {
 EXISTING = {0: "images/title-load-prompt.png", 1: "images/title-player-count.png",
             3: "images/country-select.png", 242: "images/title-load-prompt.png"}
 
-# labels typed during the run that the screens later showed to be wrong; the action is unchanged
+# labels typed during the run that the screens later showed to be wrong (committed step numbers); the
+# action, digests and hashes are unchanged
 RELABEL = {
     **{s: (f"squad-down-{s - 202}", "the squad opened on Witschge already (step 202); these Downs moved past him")
        for s in range(203, 219)},
-    **{s: (f"bench-down-{s - 291}", "eight Downs from Gullit ended on W Kieft, not A Winter as intended")
-       for s in range(292, 300)},
-    300: ("put-on-kieft", "label typed as put-on-winter; the card and strip show W Kieft went on"),
+    **{s: (f"bench-down-{s - 292}", "label typed as find-winter; eight Downs from Gullit ended on W Kieft, "
+                                    "not A Winter as intended (seven were needed)") for s in range(293, 301)},
+    **{s: (f"eleven-down-{s - 279}", "label typed as find-gullit; the injured Gullit had moved to the end of the "
+                                    "eleven, so these nine Downs ended on Van Basten") for s in range(280, 289)},
+    301: ("put-on-kieft", "label typed as put-on-winter; the card and strip show W Kieft went on"),
 }
 
 

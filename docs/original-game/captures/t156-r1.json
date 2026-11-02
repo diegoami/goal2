@@ -6261,7 +6261,7 @@
   },
   {
    "step": 280,
-   "label": "find-gullit-1",
+   "label": "eleven-down-1",
    "action": "key Down",
    "before_digest": "66bad22224ce9a5c29caf859067d2dfabdfcda08d6a2bea7ae6a520cc2427e37",
    "after_digest": "74aef00c023365d0e97088b35e573611e1150ca3d766593017b7df3f532918d3",
@@ -6279,11 +6279,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 279
+   "server_step": 279,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 281,
-   "label": "find-gullit-2",
+   "label": "eleven-down-2",
    "action": "key Down",
    "before_digest": "74aef00c023365d0e97088b35e573611e1150ca3d766593017b7df3f532918d3",
    "after_digest": "e356388039631fac62cacfbae80adc6e258f9224d9983db10bc2176e781b9cc6",
@@ -6301,11 +6302,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 280
+   "server_step": 280,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 282,
-   "label": "find-gullit-3",
+   "label": "eleven-down-3",
    "action": "key Down",
    "before_digest": "e356388039631fac62cacfbae80adc6e258f9224d9983db10bc2176e781b9cc6",
    "after_digest": "e6447d2e4ca45d337e70f28feb455f16ed5b32ceae1cdd172710671318751290",
@@ -6323,11 +6325,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 281
+   "server_step": 281,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 283,
-   "label": "find-gullit-4",
+   "label": "eleven-down-4",
    "action": "key Down",
    "before_digest": "e6447d2e4ca45d337e70f28feb455f16ed5b32ceae1cdd172710671318751290",
    "after_digest": "78a78acbeb9d251fe9b720d81350114aeef8c95e0fd63f5f685039575183fa39",
@@ -6345,11 +6348,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 282
+   "server_step": 282,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 284,
-   "label": "find-gullit-5",
+   "label": "eleven-down-5",
    "action": "key Down",
    "before_digest": "78a78acbeb9d251fe9b720d81350114aeef8c95e0fd63f5f685039575183fa39",
    "after_digest": "42dfdf7b0b1cebda51cfd37ad1f7c0735da06b13cebc5d79c08c3d1ef09058a6",
@@ -6367,11 +6371,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 283
+   "server_step": 283,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 285,
-   "label": "find-gullit-6",
+   "label": "eleven-down-6",
    "action": "key Down",
    "before_digest": "42dfdf7b0b1cebda51cfd37ad1f7c0735da06b13cebc5d79c08c3d1ef09058a6",
    "after_digest": "4d13ba646a00559fb8b7afe5de86a5b7bf62a5c2b2cf66f33dc87cdba5ddfad6",
@@ -6389,11 +6394,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 284
+   "server_step": 284,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 286,
-   "label": "find-gullit-7",
+   "label": "eleven-down-7",
    "action": "key Down",
    "before_digest": "4d13ba646a00559fb8b7afe5de86a5b7bf62a5c2b2cf66f33dc87cdba5ddfad6",
    "after_digest": "4391357d7831a823a6aa839fcf675386bdf920edd5065aea61d5672c200fa530",
@@ -6411,11 +6417,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 285
+   "server_step": 285,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 287,
-   "label": "find-gullit-8",
+   "label": "eleven-down-8",
    "action": "key Down",
    "before_digest": "4391357d7831a823a6aa839fcf675386bdf920edd5065aea61d5672c200fa530",
    "after_digest": "64680b6a3f3acb7f54eb38ddda316e43cb8d92fd63295b618d269b08e1ead986",
@@ -6433,11 +6440,12 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 286
+   "server_step": 286,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 288,
-   "label": "find-gullit-9",
+   "label": "eleven-down-9",
    "action": "key Down",
    "before_digest": "64680b6a3f3acb7f54eb38ddda316e43cb8d92fd63295b618d269b08e1ead986",
    "after_digest": "207d638582beb2a7db7f0bbb009e91659c717ef25a87197bc1abf3f47e252f6e",
@@ -6455,7 +6463,8 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 287
+   "server_step": 287,
+   "note": "label typed as find-gullit; the injured Gullit had moved to the end of the eleven, so these nine Downs ended on Van Basten"
   },
   {
    "step": 289,
@@ -6525,7 +6534,7 @@
   },
   {
    "step": 292,
-   "label": "bench-down-1",
+   "label": "take-off-gullit",
    "action": "key Return",
    "before_digest": "dfea16525dd10e5fa1f474f3e9d45ddf781a83b733e71c49af1789bdd0cbcdab",
    "after_digest": "dfea16525dd10e5fa1f474f3e9d45ddf781a83b733e71c49af1789bdd0cbcdab",
@@ -6543,12 +6552,11 @@
     "delay": 1,
     "replay": 1
    },
-   "server_step": 291,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "server_step": 291
   },
   {
    "step": 293,
-   "label": "bench-down-2",
+   "label": "bench-down-1",
    "action": "key Down",
    "before_digest": "dfea16525dd10e5fa1f474f3e9d45ddf781a83b733e71c49af1789bdd0cbcdab",
    "after_digest": "ec1ed8f7b769e7849d1285d6c5e49df4a6bf8b1f3bf4f31f3a3847be8c2215e3",
@@ -6567,11 +6575,11 @@
     "replay": 1
    },
    "server_step": 292,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 294,
-   "label": "bench-down-3",
+   "label": "bench-down-2",
    "action": "key Down",
    "before_digest": "ec1ed8f7b769e7849d1285d6c5e49df4a6bf8b1f3bf4f31f3a3847be8c2215e3",
    "after_digest": "ee8b792e0a45cc2c56aa6a62cd523d40df05ed6398d7b19f55b0d1049eb83364",
@@ -6590,11 +6598,11 @@
     "replay": 1
    },
    "server_step": 293,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 295,
-   "label": "bench-down-4",
+   "label": "bench-down-3",
    "action": "key Down",
    "before_digest": "ee8b792e0a45cc2c56aa6a62cd523d40df05ed6398d7b19f55b0d1049eb83364",
    "after_digest": "3a1c44560cf724f266e430a497e65350e1a4815ed1ad1966ef3e1fa951602e7a",
@@ -6613,11 +6621,11 @@
     "replay": 1
    },
    "server_step": 294,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 296,
-   "label": "bench-down-5",
+   "label": "bench-down-4",
    "action": "key Down",
    "before_digest": "3a1c44560cf724f266e430a497e65350e1a4815ed1ad1966ef3e1fa951602e7a",
    "after_digest": "cb361d017022dd85b23813ef88c933d200af0d9d10c63cbbe23413b9ab1cce66",
@@ -6636,11 +6644,11 @@
     "replay": 1
    },
    "server_step": 295,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 297,
-   "label": "bench-down-6",
+   "label": "bench-down-5",
    "action": "key Down",
    "before_digest": "cb361d017022dd85b23813ef88c933d200af0d9d10c63cbbe23413b9ab1cce66",
    "after_digest": "d7fff661d956b323dd98aced53f022cf7ce82d84c441eb4da4af259599e7e81c",
@@ -6659,11 +6667,11 @@
     "replay": 1
    },
    "server_step": 296,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 298,
-   "label": "bench-down-7",
+   "label": "bench-down-6",
    "action": "key Down",
    "before_digest": "d7fff661d956b323dd98aced53f022cf7ce82d84c441eb4da4af259599e7e81c",
    "after_digest": "e09adef9b8b6835d4b1385d8cb28b69f8c80907bf1c88e9c041c0b064a2fb9f1",
@@ -6682,11 +6690,11 @@
     "replay": 1
    },
    "server_step": 297,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 299,
-   "label": "bench-down-8",
+   "label": "bench-down-7",
    "action": "key Down",
    "before_digest": "e09adef9b8b6835d4b1385d8cb28b69f8c80907bf1c88e9c041c0b064a2fb9f1",
    "after_digest": "0fe5acd4d41773be87f88bbb7cda40843bcc18dcab6bc476afeed1e8cfcb55b6",
@@ -6705,11 +6713,11 @@
     "replay": 1
    },
    "server_step": 298,
-   "note": "eight Downs from Gullit ended on W Kieft, not A Winter as intended"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 300,
-   "label": "put-on-kieft",
+   "label": "bench-down-8",
    "action": "key Down",
    "before_digest": "0fe5acd4d41773be87f88bbb7cda40843bcc18dcab6bc476afeed1e8cfcb55b6",
    "after_digest": "4f857277175a59d69e14745d343ed446b1700f6a67f341c5f98ef45f4b28d2ea",
@@ -6728,11 +6736,11 @@
     "replay": 1
    },
    "server_step": 299,
-   "note": "label typed as put-on-winter; the card and strip show W Kieft went on"
+   "note": "label typed as find-winter; eight Downs from Gullit ended on W Kieft, not A Winter as intended (seven were needed)"
   },
   {
    "step": 301,
-   "label": "put-on-winter",
+   "label": "put-on-kieft",
    "action": "key Return",
    "before_digest": "4f857277175a59d69e14745d343ed446b1700f6a67f341c5f98ef45f4b28d2ea",
    "after_digest": "5378874ca5a4f89cfec05a3b7033bdf5775c00c36fe479b6555271f47afe0556",
@@ -6751,6 +6759,7 @@
     "replay": 1
    },
    "server_step": 300,
+   "note": "label typed as put-on-winter; the card and strip show W Kieft went on",
    "image": "images/t156-301-quick-substitution-made.png"
   },
   {
