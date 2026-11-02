@@ -131,6 +131,56 @@ class Desktop(unittest.TestCase):
             QTest.keyClick(r.replays.watch,Qt.Key.Key_N);self.app.processEvents()
             run.assert_called_once_with('replay',False)
 
+    def record_closes(self, cls):
+        """Every close of a pitch viewer during the test: its caller and what the viewer process wrote, for the
+        failure message (the Windows runs of 2026-11-02 failed here only in CI, not when run by hand)."""
+        import traceback
+        closes, real = [], cls.close
+
+        def recorded(viewer):
+            output = ''
+            try:
+                if viewer.errors is not None:
+                    viewer.errors.seek(0);output += viewer.errors.read().decode(errors='replace')[-2000:]
+                if viewer.directory is not None and (viewer.directory/'status').exists():
+                    output += '\nstatus: ' + (viewer.directory/'status').read_text()[:600]
+            except OSError as exc:
+                output += f'\n(output unreadable: {exc})'
+            exited = None if viewer.process is None else viewer.process.poll()
+            closes.append(f'closed={viewer.closed} exit={exited}\n' + ''.join(traceback.format_stack(limit=10))
+                          + output)
+            return real(viewer)
+        patcher = patch.object(cls, 'close', recorded);patcher.start();self.addCleanup(patcher.stop)
+        return closes
+
+    @staticmethod
+    def closes_text(closes):
+        return '\n\nviewer closes during the test:\n' + ('\n---\n'.join(closes) or '(none)')
+
+    def test_a_viewer_closed_here_is_replaced_never_written_to(self):
+        """[designed: owner, 2026-11-02] A pitch viewer goal2 closed is never written to again: the next live
+        stop starts a new one (four Windows runs on 2026-11-02 crashed with AttributeError in resume_viewer)."""
+        from goal2.desktop.core_model import CoreModel
+        from goal2.desktop.core_window import CoreWindow
+        from goal2.core import views
+        from goal2.desktop.core_roles import pitch_identity
+        from goal2.desktop.core_viewer import CoreViewer
+        m=CoreModel(prompt(),requires.CACHE/'GOAL.DAT',Path(tempfile.gettempdir())/'unused-t140.g2core')
+        with patch.dict(os.environ,{'SDL_AUDIODRIVER':'dummy'}):
+            w=CoreWindow(m);self.addCleanup(w.close);w.show();self.app.processEvents()
+            r=w.core_round
+            viewer=CoreViewer(pitch_identity(m.state,views.pitch_identity(m.state)));r.viewer=viewer
+            viewer.close()
+            self.assertTrue(viewer.closed)
+            with self.assertRaisesRegex(ValueError,'closed'):viewer.decision('replay')
+            r.finished('resume',('done',m.round_state()))      # the replay prompt: let go, not written to
+            self.assertIsNone(r.viewer)
+            r.replays.watch.click()
+            self.assertEqual(w.finish_core(60)[0],'done')       # the replay's live stop: a new viewer
+            r.viewer_timer.stop()
+            self.assertIsNot(r.viewer,viewer);self.assertIsNotNone(r.viewer)
+            self.assertFalse(r.viewer.closed);self.assertIsNone(r.viewer.process.poll())
+
     def test_native_viewer_shows_replay_then_live_in_the_same_owned_process(self):
         import json,sys
         from goal2.desktop.core_model import CoreModel
@@ -142,6 +192,7 @@ class Desktop(unittest.TestCase):
             from goal2.core import views
             from goal2.desktop.core_roles import pitch_identity
             from goal2.desktop.core_viewer import CoreViewer
+            closes=self.record_closes(CoreViewer)
             viewer=CoreViewer(pitch_identity(m.state,views.pitch_identity(m.state)));r.viewer=viewer
             viewer.pose(views.pitch(m.state,0,0),[])
             deadline=time.monotonic()+15
@@ -151,7 +202,7 @@ class Desktop(unittest.TestCase):
             r.finished('resume',('done',m.round_state()))
             r.replays.watch.click()
             self.assertEqual(w.finish_core(60)[0],'done')
-            self.assertIs(r.viewer,viewer)
+            self.assertIs(r.viewer,viewer,self.closes_text(closes))
             seen=False;deadline=time.monotonic()+45
             while time.monotonic()<deadline:
                 self.app.processEvents()
@@ -159,7 +210,8 @@ class Desktop(unittest.TestCase):
                 if seen and r.state['stop']=='live' and not r.state.get('replay'):
                     r.viewer_timer.stop();break
                 time.sleep(.002)
-            else:self.fail('Replay did not render and return to live within the bounded native run')
+            else:self.fail('Replay did not render and return to live within the bounded native run'
+                           + self.closes_text(closes))
             if w.core_jobs.busy:w.finish_core(60)
             r.viewer_timer.stop()
             deadline=time.monotonic()+10

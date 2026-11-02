@@ -36,8 +36,15 @@ def _allow_foreground(pid):
 
 
 class CoreViewer:
-    send = WatchedController.send
-    close = WatchedController.close_viewer
+    def send(self, kind, value):
+        if self.closed:
+            raise ValueError('The match window is closed')
+        WatchedController.send(self, kind, value)
+
+    def close(self):
+        """[designed: owner, 2026-11-02] Closed here as when the window closes itself: never written to again."""
+        WatchedController.close_viewer(self)
+        self.closed = True
 
     def __init__(self, identity, command=None):
         if importlib.util.find_spec('pygame') is None:

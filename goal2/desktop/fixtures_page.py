@@ -729,6 +729,7 @@ class CoreRound:
             self.interval_attention = None
         self.refresh_match_button()
         if name == 'round_start':self.first_page = 0
+        self.drop_dead_viewer()
         if state['stop'] != 'live' and self.viewer is not None:
             if state.get('commentary') and self.viewer.display.frame is not None:
                 self.viewer.pose(self.viewer.display.frame, state['commentary'])
@@ -902,10 +903,18 @@ class CoreRound:
         if self.window.run_core('play_on'):
             self.show_waiting('The original plays the second half…')
 
+    def drop_dead_viewer(self):
+        """[designed: owner, 2026-11-02] A viewer closed (here or by its window) or exited is let go, never
+        written to; the next live stop starts a new one (four Windows runs on 2026-11-02 crashed writing to one)."""
+        if self.viewer is not None and (self.viewer.closed or self.viewer.process is None
+                                        or self.viewer.process.poll() is not None):
+            self.viewer.close();self.viewer = None
+
     def resume_viewer(self):
         from goal2.desktop.core_viewer import CoreViewer
         from goal2.desktop.core_roles import pitch_identity
         if self.state is None or self.state['stop'] != 'live' or self.window.core_jobs.busy:return
+        self.drop_dead_viewer()
         if self.viewer is None:
             self.viewer = CoreViewer(pitch_identity(self.window.model.state, self.state['identity']))
         self.watch_suspended = False
