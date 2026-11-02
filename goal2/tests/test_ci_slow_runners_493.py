@@ -43,16 +43,28 @@ class WindowsSlow(unittest.TestCase):
         self.assertNotIn("pull_request_target", self.text)
         self.assertRegex(self.text, r"(?m)^permissions:\n  contents: read$")
 
-    def test_a_pr_plays_the_slow_tests_it_can_reach_a_dispatch_and_the_night_all(self):
+    def test_a_pr_plays_the_slow_tests_it_can_reach_a_dispatch_all(self):
         # [designed: owner, 2026-11-01, #505]
         for path in (WORKFLOW, LINUX):
             with self.subTest(workflow=path.name):
                 text = path.read_text()
                 self.assertIn('[ "${{ github.event_name }}" = pull_request ] || full=--slow\n', text)
                 self.assertIn('python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $full 2>&1', text)
-                self.assertIn("  schedule:\n    - cron: '0 1 * * *'\n", text)
-                self.assertIn("github.event_name == 'schedule'", text)
                 self.assertIn('if [ "${{ github.event_name }}" != pull_request ]; then echo "run=true"', text)
+
+    def test_no_schedule_a_pr_dispatches_a_full_run_when_the_last_is_old(self):
+        # [designed: owner, 2026-11-02] the owner's PC is not left on for a schedule
+        for path in (WORKFLOW, LINUX):
+            with self.subTest(workflow=path.name):
+                text = path.read_text()
+                self.assertNotIn("schedule", re.search(r"^on:\n(.*?)^\S", text, re.M | re.S).group(1))
+                step = text.split("- name: A full run on main when the last one is over FULL_DAYS old\n", 1)[1]
+                step = step.split("\n  " + ("windows-slow" if path == WORKFLOW else "linux-slow") + ":", 1)[0]
+                self.assertIn("if: github.event_name == 'pull_request' && steps.decide.outputs.run == 'true'", step)
+                self.assertIn("FULL_DAYS: '7'", step)
+                self.assertIn(f"--workflow {path.name} --event workflow_dispatch --limit 1", step)
+                self.assertIn(f'gh workflow run {path.name} -R "$GITHUB_REPOSITORY" --ref main', step)
+                self.assertIn("      actions: write", text.split("\n  changes:\n")[1].split("\n  " + ("windows-slow" if path == WORKFLOW else "linux-slow") + ":")[0])
         self.assertNotIn("GOAL2_CASES", self.text)
         self.assertNotIn("--batch-fast", self.text)
         minutes = int(re.search(r"timeout-minutes: (\d+)", self.text).group(1))
