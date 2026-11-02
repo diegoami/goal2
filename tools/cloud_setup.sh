@@ -31,6 +31,13 @@ say "Python environment in .cache/venv with goal2[desktop,watched,match-view]"
 .cache/venv/bin/python -m pip install -q --upgrade pip
 .cache/venv/bin/python -m pip install -q -e '.[desktop,watched,match-view]'
 
+say "PyPy 3.11 for the match workers (T152; without it a match does not start, #496)"
+# [designed: owner, 2026-11-01, #496] no CPython fallback: goal2/game/engine_python.py finds uv's PyPy by itself
+if ! command -v uv >/dev/null; then
+  curl -LsSf https://astral.sh/uv/install.sh | env UV_NO_MODIFY_PATH=1 sh >/dev/null || echo "could not install uv"
+fi
+command -v uv >/dev/null && { uv python install -q pypy@3.11 || echo "could not install PyPy 3.11: matches will not start"; }
+
 say "rclone"
 if ! command -v rclone >/dev/null && command -v apt-get >/dev/null && [ "$(id -u)" = 0 ]; then
   apt-get install -y -qq rclone >/dev/null 2>&1 || true

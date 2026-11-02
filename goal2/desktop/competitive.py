@@ -38,16 +38,15 @@ def require_runtime():
 
 class CompetitiveJobs(WatchedJobs):
     """[designed] Separate bridge/token; parent owns state and match-pending exclusion."""
+    WORKER = 'goal2.desktop.competitive_worker'   # under PyPy 3.11, chosen at the start (WatchedJobs.start, #496)
+
     def __init__(self, owner, *, command=None):
         if getattr(owner, '_competitive_jobs', None) is not None:
             raise ValueError('active game already has a competitive bridge')
         owner._competitive_jobs = self
         self.owner = owner
         self.publication = CompetitivePublication(owner)
-        # [designed: T152] the engine worker runs under PyPy 3.11 when there is one (engine_python)
-        from goal2.game.engine_python import worker_command
-        self.command = (worker_command('goal2.desktop.competitive_worker')
-                        if command is None else list(command))
+        self.command = None if command is None else list(command)
         self.process = None
         self.token = None
         self.outcome = None
