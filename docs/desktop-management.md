@@ -73,9 +73,11 @@ player of the other list exchanges them. Each edit is the driver's action (docs/
 run as a background job: the controls wait while the original presses its own keys, then the pages read the
 original again. There is no draft, no Confirm and no captain: the original holds none outside a match. A refusal
 shows the original's reason in the status line. [designed: owner, 2026-10-22, #331; T108, G14a] **Play next game**
-plays the original's round (docs/core.md, "The round"), each step a background job: the round's other fixtures,
-then their results as a goal2 page; the **captain** (the eleven in the roster strip: Enter kicks off with the selected
-player as captain, the original moving its own highlight to him; C takes the original's own choice); the first half
+([designed: owner, 2026-11-02, #523/T155] the Country page's one primary control, PLAY NEXT GAME, in the routes' last
+place as in the original's menu) plays the original's round (docs/core.md, "The round"), each step a background job: the round's other fixtures,
+then their results as a goal2 page; the **captain** (the eleven in the roster strip, the suggested captain selected:
+**Kick off and watch** (Enter) or **Kick off, quick result** (Q) kick off with the selected player as captain, the
+original moving its own highlight to him; C takes the original's own choice and watches); the first half, watched or
 as the original's quick result; at **half time** T102's bench, filled from the original (the eleven, the bench, the
 original's substitutions-left counter, or its own "no more substitutes"; the half-time score): Enter on one and Enter
 on one of the other group passes the pair to the original, which makes or refuses it with its message, and **Start
@@ -89,8 +91,9 @@ docs/core.md "Saving"); `--resume` with a core save reopens it at the same manag
 saved at), with the same views and the same memory. `--template` and every other route are unchanged.
 
 [designed: owner, 2026-10-23; T109/T116] **Watch over the core.** On Play next game's captain page,
-**Watch this match** is selected by default (owner demo feedback). Choose the captain and kick off;
-turn Watch off explicitly for the quick result. The same pygame pitch window reads the original's
+watching is the default action (owner demo feedback): **Kick off and watch** (Enter). [designed: owner,
+2026-11-02, #523/T155] The action that kicks off chooses watching; **Kick off, quick result** (Q) takes the
+original's quick result. No toggle sets it beforehand. The same pygame pitch window reads the original's
 memory at its live polls, showing complete signed player/ball/official poses, role codes, score, minute and the
 latest three commentary lines above the pitch. Space opens the full commentary; Esc closes it, or closes the pitch window when
 commentary is hidden. Left/Right send the original's slower/faster keys, Up/Down change the marks. Each pose must be displayed and
