@@ -884,7 +884,7 @@ class CoreRound:
         suggested = next((r[1] for r in rows if r[0] == choice['recommended']), 'no available player')
         # [designed: owner, 2026-11-02, #523/T155] The suggested captain is selected, so one action kicks off; the
         # page says in words that the captain can be changed, and how.
-        self.captain_note.setText(f'Captain: {suggested} (suggested, selected). To choose another captain, click a '
+        self.captain_note.setText(f'Suggested captain: {suggested}, selected. To choose another captain, click a '
                                   'player in the list or move with Up/Down, then kick off. Enter: kick off and watch '
                                   'the match in the pitch window. Q: kick off for the original\'s quick result. '
                                   'C: the original chooses its own captain, and you watch.')
