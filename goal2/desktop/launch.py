@@ -75,6 +75,22 @@ def fields(layout, rows):
     return values
 
 
+def core_summary(model):
+    """[designed: #518] The Saved career panel's rows for a core save, from the manager menu's desk
+    (goal2/core/views.py `desk`, read from the original's memory)."""
+    desk = model.desk()
+    rows = {'country': desk['team']['name'], 'manager': desk['manager'],
+            'campaign': f"{desk['year']} {desk['stage_word']}".strip(), 'then': '—',
+            'checkpoint': 'At the manager menu', 'team': f"{len(desk['squad'])} players"}
+    if desk['sacked']:
+        rows['next'] = 'Sacked'
+    elif desk['opponent'] is not None:
+        rows['next'] = f"{desk['opponent']['name']} ({desk['fixture_kind'].strip()})"
+    else:
+        rows['next'] = 'No fixture left'
+    return rows
+
+
 class LaunchWindow(QMainWindow):
     """[designed: T86] Pages: 0 launch, 1 country browsing, 2 review. Owns no game until opened."""
 
@@ -142,11 +158,25 @@ class LaunchWindow(QMainWindow):
         panels.addWidget(new, 2)
         self.pages.addWidget(page)
 
+    def load_saved(self, path):
+        """[designed: owner, 2026-11-02, #518] A core save (G2C1, goal2/core/runner.py MAGIC) resumes the original's
+        own game (`CoreModel.from_save`); any other file goes to goal2's validating loader."""
+        from goal2.core.runner import MAGIC
+        try:
+            with open(path, 'rb') as f:
+                core = f.read(len(MAGIC)) == MAGIC
+        except OSError:
+            core = False
+        if core:
+            from goal2.desktop.core_model import CoreModel
+            return CoreModel.from_save(path, self.data_path)
+        return DesktopModel.from_save(path, self.data_path)
+
     def read_saved(self, path):
         """[designed] Summarise only what the validating loader accepts; otherwise name the reason."""
         self.saved_path = Path(path)
         try:
-            model = DesktopModel.from_save(self.saved_path, self.data_path)
+            model = self.load_saved(self.saved_path)
         except ValueError as exc:
             self.saved_model = None
             missing = not self.saved_path.exists()
@@ -157,7 +187,7 @@ class LaunchWindow(QMainWindow):
             self.retry.setVisible(True)
             return False
         self.saved_model = model
-        summary = model.summary()
+        summary = core_summary(model) if getattr(model, 'core_route', False) else model.summary()
         self.saved_country.setText(summary['country'].upper())
         for key, value in self.saved_fields.items():value.setText(summary[key])
         self.error.setText('');self.retry.setVisible(False)
@@ -167,7 +197,7 @@ class LaunchWindow(QMainWindow):
     def do_resume(self):
         # Validate the file again at the moment of opening: it may have changed since the summary.
         if self.read_saved(self.saved_path):
-            self.finish(DesktopModel.from_save(self.saved_path, self.data_path))
+            self.finish(self.load_saved(self.saved_path))
 
     def do_retry(self):
         self.read_saved(self.saved_path)
