@@ -56,26 +56,29 @@ def user_root(env=None, platform=None) -> Path:
     env = os.environ if env is None else env
     platform = sys.platform if platform is None else platform
     windows = platform.startswith("win")
+    flavour = PureWindowsPath if windows else PurePosixPath
     if windows:
         local = env.get("LOCALAPPDATA", "")
-        base = Path(local) if _absolute(local, windows) else _home(env, windows) / "AppData" / "Local"
+        base = flavour(local) if _absolute(local, windows) else _home(env, windows) / "AppData" / "Local"
         root = base / "goal2"
     else:
         root = _home(env, windows) / ".local" / "share" / "goal2"
-    if not _absolute(str(root), windows):
+    if not root.is_absolute():
         raise SetupError(f"cannot place goal2's data folder: {root} is not an absolute path")
-    return root
+    return Path(root)
 
 
 def _absolute(value, windows) -> bool:
     return bool(value) and (PureWindowsPath if windows else PurePosixPath)(value).is_absolute()
 
 
-def _home(env, windows) -> Path:
+def _home(env, windows):
+    """The home folder in the target platform's path flavour (so a check of one platform's paths runs anywhere)."""
+    flavour = PureWindowsPath if windows else PurePosixPath
     for key in (("USERPROFILE", "HOME") if windows else ("HOME",)):
         if _absolute(env.get(key, ""), windows):
-            return Path(env[key])
-    return Path.home()
+            return flavour(env[key])
+    return flavour(Path.home())
 
 
 @dataclass(frozen=True)
