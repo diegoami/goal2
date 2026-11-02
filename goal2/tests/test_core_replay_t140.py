@@ -154,6 +154,29 @@ class Desktop(unittest.TestCase):
         return closes
 
     @staticmethod
+    def state_text(w, r, viewer, seen):
+        """[#520] Where the replay stood when the bounded run gave up (it stalls only in the Windows CI job)."""
+        rows = {'replay seen': seen, 'round stop': (r.state or {}).get('stop'),
+                'round replay': (r.state or {}).get('replay'), 'watch suspended': r.watch_suspended,
+                'viewer timer active': r.viewer_timer.isActive(), 'core job busy': w.core_jobs.busy,
+                'pending inputs': r.pending_inputs, 'pending stop': r.pending_stop is not None,
+                'viewer is r.viewer': r.viewer is viewer, 'viewer closed': viewer.closed,
+                'viewer exit': None if viewer.process is None else viewer.process.poll(),
+                'frames sent': viewer.display.frame_sequence, 'frames acknowledged': viewer.frame_ack,
+                'drained': viewer.drained, 'viewer replaying': viewer.replaying,
+                'shown replaying': getattr(viewer.display.visible(), 'replaying', None),
+                'last status': viewer.last_status, 'status line': w.status.text(),
+                'live note': r.live_note.text()}
+        output = ''
+        try:
+            if viewer.errors is not None:
+                viewer.errors.seek(0);output = viewer.errors.read().decode(errors='replace')[-2000:]
+        except (OSError, ValueError) as exc:
+            output = f'(unreadable: {exc})'
+        return ('\n\nstate at the timeout:\n' + '\n'.join(f'  {k}: {v}' for k, v in rows.items())
+                + '\nviewer stderr:\n' + (output or '(empty)'))
+
+    @staticmethod
     def closes_text(closes):
         return '\n\nviewer closes during the test:\n' + ('\n---\n'.join(closes) or '(none)')
 
@@ -240,7 +263,7 @@ class Desktop(unittest.TestCase):
                     r.viewer_timer.stop();break
                 time.sleep(.002)
             else:self.fail('Replay did not render and return to live within the bounded native run'
-                           + self.closes_text(closes))
+                           + self.state_text(w,r,viewer,seen) + self.closes_text(closes))
             if w.core_jobs.busy:w.finish_core(60)
             r.viewer_timer.stop()
             deadline=time.monotonic()+10
