@@ -99,6 +99,17 @@ class PlayNext(unittest.TestCase):
         self.assertNotEqual(self.model.core.wait.kind, 'match-live')
         self.assertEqual(views.match_sides(self.model.state)['captain'], captain)
 
+    def test_the_advertised_q_and_c_keys_are_bound_at_the_captain_stop(self):
+        from unittest.mock import patch
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        r = self.play_next();captain = self.suggested(r)
+        self.assertIn('(Q)', r.quick.text());self.assertIn('(C)', r.computer.text())
+        for key, expected in ((Qt.Key.Key_Q, ('kick_off', captain, False)), (Qt.Key.Key_C, ('kick_off', None, True))):
+            with patch.object(self.w, 'run_core', return_value=False) as action:
+                QTest.keyClick(r.captain_roster, key);self.app.processEvents()
+                action.assert_called_once_with(*expected)
+
     def test_no_checkable_button_on_the_round_page_is_labelled_as_an_action(self):
         from PySide6.QtWidgets import QAbstractButton
         r = self.play_next()
