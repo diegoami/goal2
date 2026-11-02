@@ -103,10 +103,10 @@ def card(name="F V Breukelen", role="G", status="ready to play", status_cls="goo
   <div class="sub">position <b style="color:var(--text)">{esc(pos)}</b> · club position <b style="color:var(--text)">{esc(pos)}</b> · cards <b style="color:var(--text)">none</b></div>
   {extra}
   <div style="display:flex;gap:24px;min-height:0">
-    <div class="grow"><h3 style="margin:0 0 8px;color:var(--frame);font-size:14px;letter-spacing:1.5px">SKILLS</h3>{bars(skills)}</div>
+    <div class="grow"><h3 style="margin:0 0 8px;color:var(--frame);font-size:16px;letter-spacing:1.5px">SKILLS</h3>{bars(skills)}</div>
     <div style="width:380px" class="col">
-      <div><h3 style="margin:0 0 8px;color:var(--frame);font-size:14px;letter-spacing:1.5px">TACTICS</h3><dl class="kv">{trows}</dl></div>
-      <div><h3 style="margin:0 0 8px;color:var(--frame);font-size:14px;letter-spacing:1.5px">CHARACTERISTICS</h3>{bars(chars)}</div>
+      <div><h3 style="margin:0 0 8px;color:var(--frame);font-size:16px;letter-spacing:1.5px">TACTICS</h3><dl class="kv">{trows}</dl></div>
+      <div><h3 style="margin:0 0 8px;color:var(--frame);font-size:16px;letter-spacing:1.5px">CHARACTERISTICS</h3>{bars(chars)}</div>
     </div>
   </div>
 </section>'''
@@ -130,8 +130,9 @@ def s01_import():
   goal2 checks each file and copies it into its data folder. Your saved careers are never touched.</p>
   <table><tr><th>File</th><th>Needed for</th><th>Check</th></tr>
    <tr><td class="mono">GOAL.DAT</td><td>countries, players, fixtures</td><td style="color:var(--good)">✓ found, verified</td></tr>
+   <tr><td class="mono">GOAL.HLP</td><td>the original's help (F1)</td><td style="color:var(--good)">✓ found, verified</td></tr>
    <tr><td class="mono">e039-r0005-date-call.sav</td><td>the original's start</td><td style="color:var(--bad)">✗ missing in this folder</td></tr></table>
-  <p style="margin:18px 0 0;color:var(--bad)">One file is missing: e039-r0005-date-call.sav. Choose the folder that holds both files.</p>
+  <p style="margin:18px 0 0;color:var(--bad)">One file is missing: e039-r0005-date-call.sav. Choose the folder that holds all the files.</p>
   <div class="field" style="margin-top:18px"><span class="muted">Folder</span> <span class="mono">D:\\games\\goal2-data</span></div>
 </section></div>'''
     return page("Import data", body, [("Esc", "quit")], ("Enter", "Choose folder…"), context=False,
@@ -166,7 +167,7 @@ def s02_start():
 
 @screen
 def s03_new_game():
-    digits = "".join(f'<span class="btn{" primary" if i == 1 else ""}" style="font-size:28px;width:70px;justify-content:center">{i}</span>' for i in range(1, 7))
+    digits = "".join(f'<span class="btn{" primary" if i == 1 else ""}" style="font-size:32px;width:70px;justify-content:center">{i}</span>' for i in range(1, 7))
     body = f'''<div class="col" style="margin:auto;width:900px">
 <section class="box" style="padding:30px 34px"><h2>New game</h2>
  <h1 style="margin:0 0 6px">How many managers?</h1>
@@ -207,7 +208,7 @@ def s04_country():
  <section class="box grow"><h2>Characteristics</h2><div class="sub" style="margin-bottom:8px">average caps 0 · age 28</div>{charb}</section>
 </div>
 <section class="box" style="display:flex;align-items:center;gap:16px"><span class="muted">Manager's name</span>
- <div class="field grow"><span>Kees</span><span class="cursor"></span><span class="muted" style="margin-left:auto;font-size:15px">4 / 14</span></div>
+ <div class="field grow"><span>Kees</span><span class="cursor"></span><span class="muted" style="margin-left:auto;font-size:16px">4 / 14</span></div>
  <span class="sub">Enter on a country opens this line; Enter again starts the career.</span></section>
 </div>
 <section class="box" style="width:300px"><h2>Countries · world rank</h2><ul class="list">{clist}</ul>
@@ -220,13 +221,13 @@ def s04_country():
 @screen
 def s05_bulletin():
     body = '''<div class="col grow" style="max-width:1392px">
-<div style="text-align:center;font:900 46px/1 Georgia,'DejaVu Serif',serif;letter-spacing:4px;padding:6px 0 4px;border-bottom:3px double var(--line)">THE SOCCER BULLETIN</div>
+<div style="text-align:center;font:900 48px/1 Georgia,'DejaVu Serif',serif;letter-spacing:4px;padding:6px 0 4px;border-bottom:3px double var(--line)">THE SOCCER BULLETIN</div>
 <div style="display:flex;gap:18px" class="grow">
  <section class="box" style="width:330px;font-family:Georgia,'DejaVu Serif',serif"><h2>Second story</h2><span class="tag">illustrative</span><p class="sub">The bulletin's side panels carry other news of the round: players, the physio, the football association.</p></section>
  <section class="box grow" style="font-family:Georgia,'DejaVu Serif',serif;text-align:center"><h2>Front page · 1 of 1</h2>
-  <div style="font-size:52px;font-weight:900;line-height:1.05;margin:30px 0">K EES HAS GOT IT RIGHT</div>
-  <div style="font-size:30px">HOLLAND DO THE JOB — JUST</div>
-  <p class="sub" style="margin-top:26px;font-size:19px">Norway 0 – 1 Holland · friendly · Bergkamp 83</p></section>
+  <div style="font-size:48px;font-weight:900;line-height:1.05;margin:30px 0">K EES HAS GOT IT RIGHT</div>
+  <div style="font-size:32px">HOLLAND DO THE JOB — JUST</div>
+  <p class="sub" style="margin-top:26px;font-size:16px">Norway 0 – 1 Holland · friendly · Bergkamp 83</p></section>
  <section class="box" style="width:330px;font-family:Georgia,'DejaVu Serif',serif"><h2>Third story</h2><span class="tag">illustrative</span><p class="sub">Each panel keeps the original's words and capitals.</p></section>
 </div></div>'''
     return page("Bulletin", body, [], ("Enter", "Next page (any key)"), crumb="news")
@@ -417,7 +418,7 @@ def lineup(players, side):
 def s15_match_menu():
     body = f'''<div class="col grow">
 <section class="box" style="display:flex;align-items:center;gap:30px">
- <div class="score"><span style="color:var(--home)">Norway</span><span class="s">0</span><span class="muted" style="font-size:18px">v</span><span class="s">0</span><span>Holland</span></div>
+ <div class="score"><span style="color:var(--home)">Norway</span><span class="s">0</span><span class="muted" style="font-size:16px">v</span><span class="s">0</span><span>Holland</span></div>
  <span class="sub">FRIENDLY · location: Norway · before kick-off</span>
  <span style="margin-left:auto" class="sub">automatic action replay <b style="color:var(--text)">OFF</b> (Ins)</span></section>
 <div style="display:flex;gap:18px" class="grow">
@@ -473,8 +474,8 @@ def match_header(minute="17", events=("Bratseth wins the toss", "Nilsen to take 
     ev = "".join(f"<div>{esc(e)}</div>" for e in events)
     return f'''<section class="box" style="display:flex;align-items:center;gap:30px;padding:10px 18px">
  <div class="score"><span style="color:var(--home)">Norway</span><span class="s">{score[0]}</span><span class="s">{score[1]}</span><span>Holland</span></div>
- <span class="big" style="font-size:30px">{minute}′</span><span class="sub">FRIENDLY</span>
- <div style="margin-left:auto;text-align:right;font-size:19px">{ev}</div></section>'''
+ <span class="big" style="font-size:32px">{minute}′</span><span class="sub">FRIENDLY</span>
+ <div style="margin-left:auto;text-align:right;font-size:16px">{ev}</div></section>'''
 
 
 @screen
@@ -505,7 +506,7 @@ SUBSTITUTION OPPORTUNITY (your player injured: any key opens the bench), the oth
 @screen
 def s19_bench():
     extra = '''<div style="display:flex;gap:14px;align-items:center"><span class="big sel">MAKE SUBSTITUTIONS NOW</span>
-<span class="btn">substitutions left <b style="font-size:22px;margin-left:6px">5</b></span>
+<span class="btn">substitutions left <b style="font-size:32px;margin-left:6px">5</b></span>
 <span class="sub">half time · Norway 0–0 Holland</span></div>'''
     players = HOLLAND[:5] + HOLLAND[6:11] + [("R Witschge", "m")] + [("B Gathergood", "G")] + HOLLAND[12:20]
     body = f'''<div class="col grow">{card("R Witschge", "m", pos="left midfield", meta="age 28 · caps 0 · goals 0 · 5′11″ · left foot · performance ★★★★", skills=[("keeping", 1, ""), ("kicking", 6, ""), ("tackling", 6, ""), ("heading", 3, ""), ("marking", 6, ""), ("passing", 7, ""), ("crossing", 8, ""), ("feinting", 4, ""), ("control", 7, ""), ("dribbling", 7, ""), ("shooting", 5, ""), ("penalties", 4, "")], status="injured", status_cls="bad", extra=extra, chars=[("hardness", 3, "gentle"), ("fitness", 0, "injured"), ("energy", 0, "can't play"), ("morale", 4, "below par"), ("leadership", 0, "none")])}</div>

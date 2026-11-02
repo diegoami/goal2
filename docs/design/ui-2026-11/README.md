@@ -9,7 +9,7 @@ to say what it keeps, changes and drops. [designed: owner, 2026-11-02, #523, #52
 The design follows the original exactly: its **decisions, information, layout and keys**, in the same order.
 It departs only where a DOS limit forced the original's way or where the owner hit a problem in the playtest
 (#523), and each departure is tagged `[designed]` with its reason ([the rule](#3-rules-for-the-whole-ui)). The
-look is modern and readable, with the original's layout, colour meanings and role codes. It chooses no toolkit
+look is the original's: its own palette and a blocky VGA-style font, on a modern, readable layout. It chooses no toolkit
 and no technology; that is T158. [designed: owner, 2026-11-03, [owner decisions, 2026-11-03, #526](https://github.com/diegoami/goal2/issues/526#issuecomment-6590816260)]
 
 Contents:
@@ -22,7 +22,8 @@ Contents:
 
 **The mockups** are static pages at desktop size (1440×900), written by
 [mockups/build.py](mockups/build.py) into `mockups/*.html` with [mockups/style.css](mockups/style.css), and
-rendered to `images/`. They are pictures of the design, not app code. Their names, scores and fixtures are those
+rendered to `images/`. Their colours are read from the captures by [palette.py](palette.py) and their font is
+vendored in [mockups/fonts/](mockups/fonts/PROVENANCE.md). They are pictures of the design, not app code. Their names, scores and fixtures are those
 of run T156-R1 so that each can be read beside the capture it replaces; skill values and a few figures are
 illustrative. Regenerate with `python3 docs/design/ui-2026-11/mockups/build.py --render <chrome binary>`.
 [designed: T157]
@@ -135,7 +136,8 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 - **Purpose**: on the first start only, take the player's data files into goal2's data folder. **goal2 adds
   it** [designed: owner, 2026-11-02, T153].
 - **Shows**: the files needed, what each is for, and for each the result of its check (found and verified,
-  missing, wrong). What is wrong is said in plain words.
+  missing, wrong). What is wrong is said in plain words. The files include the original's GOAL.HLP, the help
+  text that F1 shows (S22). [designed: owner, 2026-11-03, #526; the import itself changes in T153's code]
 - **Actions**: *Choose folder…* (Enter), *Quit* (Esc).
 - **Replaces**: no original screen. The DOS prompt before the game (`dos-shell`) is not a game screen and is
   dropped.
@@ -434,8 +436,9 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 ### S22 Help
 
 - **Purpose**: the original's help, as its F1 opens it.
-- **Shows**: the original's own help text, from the player's GOAL.HLP, in readable type. No capture of the
-  original's help viewer exists yet, so its pages and keys follow once one is made.
+- **Shows**: the original's own help text, from the GOAL.HLP imported on the first start (S01), in the mockups'
+  font. No capture of the original's help viewer exists yet, so the viewer's pages and keys in the mockup are
+  illustrative until one is made. [designed: owner, 2026-11-03, #526]
 - **Actions**: **F1** opens it, **Esc** closes it.
 - **Replaces**: no captured screen. [confirmed: E031 C04–C04c; evidence gap: help viewer capture]
 
@@ -459,8 +462,8 @@ every screen in section 2, applies it. [designed: owner, 2026-11-03, [owner deci
 **The Enter hint.** The right end of the bottom bar says what Enter does on the highlighted choice now, as the
 original's hint line does ("Hit ◄┘ to select option", "◄┘-move player", "Hit ◄┘ to watch match"). The cursor
 starts where the original's does: *team info* on the desk, *play* on the match menu, the computer's pick on the
-captain card. [confirmed: T156-R1 steps 13, 17, 42, 43, 224; designed: owner decision 7, the larger readable
-hint]
+captain card. The hint is drawn as the original's highlight bar, light grey with black text. [confirmed: T156-R1
+steps 13, 17, 42, 43, 224]
 
 **Stops.** [designed: #523, the owner did not know that the match waited for a captain]
 - Whenever the game waits for the player, the screen says what it waits for and which key answers it. A stop
@@ -477,19 +480,53 @@ hint]
   decision 3]
 - Speed, display and commentary keep the original's keys.
 
-**Text size.** [designed: owner decision 7, modern and readable; the original's 8×16 text was a DOS limit]
-- Designed at 1440×900: body text 18 px, secondary text 15–16 px, headings 22–30 px; nothing below 14 px.
-- At other sizes the page scales as a whole and keeps its layout, as today's fixed pages do (T101).
-- Names, numbers and role codes are never abbreviated beyond the original's own forms.
+**The look.** The original's palette and a blocky font, on a modern layout. [designed: owner, 2026-11-03, #526:
+"try to mimic the color scheme of goal and try to have more of a retro feeling, maybe a blocky font is enough and
+we can keep the rest"]
+- **Layout** stays modern: the screens, boxes, flow and key bar of section 2.
+- **Colours** are the original's own sixteen-colour palette, read from the captures by
+  [palette.py](palette.py). Each colour keeps the meaning it has in the original:
 
-**Colours.** The original's colour meanings on a dark ground ([style.css](mockups/style.css)) [designed: owner
-decision 7]:
-- cyan for frames and headings; magenta for key hints; yellow for the highlighted choice and the Enter hint;
-- role codes by line: green goalkeeper, red defence, cyan midfield, yellow attack
-  [confirmed: goal2-archaeology F002 R011; docs/vision-266/role-codes];
-- home side red and away side white on the pitch, as in the original [confirmed: T156-R1 step 45];
-- green, amber and red only for status (ready, warning, injured);
-- every colour pairs with text or a symbol, so nothing depends on colour alone.
+  | Role | Colour | Read from (image, area x0, y0, x1, y1) | What the area shows |
+  | --- | --- | --- | --- |
+  | ground | `#000000` | t156-013-hub.png (0, 0, 640, 400) | the whole hub screen |
+  | text, bright | `#ffffff` | t156-013-hub.png (20, 110, 100, 128) | the manager's name 'K Ees' |
+  | text, normal | `#aaaaaa` | t156-224-fixture-list.png (430, 146, 520, 161) | 'qualifying' in the fixture list |
+  | frame lines | `#aaaaaa` | t156-013-hub.png (505, 20, 509, 390) | the frame of the hub's squad strip |
+  | frame lines, dark grey | `#555555` | t156-013-hub.png (0, 95, 10, 400) | the frames on the hub's left |
+  | headings, cyan | `#00aaaa` | t156-224-fixture-list.png (140, 80, 240, 95) | 'and results' under the fixtures title |
+  | card headings, red | `#aa0000` | t156-014-squad.png (8, 160, 60, 174) | 'skills' on the squad card |
+  | card labels, brown | `#aa5500` | t156-014-squad.png (8, 177, 70, 190) | 'keeping' on the squad card |
+  | key hints, magenta | `#aa00aa` | t156-013-hub.png (205, 270, 300, 305) | 'Use ↑↓ to find option' on the hub |
+  | highlight bar | `#aaaaaa` | t156-013-hub.png (362, 103, 442, 127) | the highlighted 'team info' option |
+  | values, yellow | `#ffff55` | t156-224-fixture-list.png (104, 130, 530, 370) | the team names of the fixture list |
+  | title banner, light red | `#ff5555` | t156-013-hub.png (100, 5, 440, 90) | the 'European Championship' banner |
+  | goalkeeper | `#00aa00` | t156-013-hub.png (510, 32, 520, 46) | V Breuklen's initial in the squad strip |
+  | defence | `#ff5555` | t156-013-hub.png (510, 48, 520, 62) | Koeman's initial |
+  | midfield | `#00aaaa` | t156-013-hub.png (510, 96, 520, 110) | Wouters's initial |
+  | attack | `#ffff55` | t156-013-hub.png (510, 192, 520, 206) | Van Basten's initial |
+  | bar, filled | `#aaaaaa` | t156-014-squad.png (80, 177, 270, 190) | the keeping bar |
+  | bar, empty | `#aa00aa` | t156-014-squad.png (120, 241, 270, 254) | the marking bar's empty part |
+  | pitch lines | `#aaaaaa` | t156-045-kick-off.png (18, 100, 22, 350) | the left touchline |
+  | pitch surround | `#00aa00` | t156-045-kick-off.png (0, 80, 640, 100) | the band above the pitch |
+  | home side | `#ff5555` | t156-045-kick-off.png (362, 222, 380, 240) | a Norway player's letter at kick-off |
+  | away side | `#ffffff` | t156-045-kick-off.png (170, 222, 188, 240) | a Holland player's letter at kick-off |
+
+  [confirmed: `python3 docs/design/ui-2026-11/palette.py` on the captures named in the table]
+- Role codes are coloured by line, as in the original: green goalkeeper, red defence, cyan midfield, yellow
+  attack. [confirmed: goal2-archaeology F002 R011; docs/vision-266/role-codes; the table above]
+- On the pitch, the home side is light red and the away side white, as in the original. [confirmed: T156-R1
+  step 45]
+- **Font**: "PxPlus IBM VGA 8x16" by VileR (The Ultimate Oldschool PC Font Pack v2.2, int10h.org), a blocky
+  VGA-style font under CC BY-SA 4.0. It is vendored in [mockups/fonts/](mockups/fonts/PROVENANCE.md) with its
+  licence and provenance. It is not the original game's font, and no byte of it comes from GOAL.EXE (CLAUDE.md
+  rule 14).
+- **Text size**: designed at 1440×900. Text is 16 px, the font's own 8×16 cell, and headings and names are
+  32 px, twice the cell; larger titles are 48 or 64 px. Only whole multiples are used, so the blocks stay
+  sharp. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
+  (T101).
+- Names, numbers and role codes are never abbreviated beyond the original's own forms.
+- Every colour pairs with text or a symbol, so nothing depends on colour alone.
 
 **The keyboard.**
 - Every original key works where the original has it: arrows, Enter, Esc, Space, Ins, Y/N, C, R, T, F1–F4,
@@ -497,8 +534,8 @@ decision 7]:
 - goal2 adds only Enter on *Continue* (S02, owner decision 4) and Tab to the optional starting year (S03, owner
   decision 9). No added key changes an original key's meaning.
 - Every key of a screen is on its bottom bar, as the original's bottom line lists them.
-- The mouse does what the keys do: every option, row and button can be clicked. [designed: the owner played
-  the playtest with the mouse, #523]
+- The mouse does what the keys do: every option, row and button can be clicked. [designed: owner, 2026-11-03,
+  #526]
 
 ## 4. What today's window keeps, changes and drops
 
@@ -574,6 +611,16 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
 4. **Load:** *Continue* plus a list of saves, in place of typing a file name.
 5. **Managers:** 1 to 6, hot seat, as the original.
 6. **Autopilot:** decided later; left out of this design.
-7. **The look:** modern and readable, with the original's layout, colour meanings and role codes.
+7. **The look:** modern and readable, with the original's layout, colour meanings and role codes. Revised the
+   same day (below).
 8. **Save names:** free names, shown in the save list, not the 8.3 names.
 9. **The start year:** the PC clock's year by default, as the original (NG-9), changeable in one optional field.
+
+**Approval, 2026-11-03** (the owner, on #526: "let us keep the design"), with three changes this design applies:
+
+10. **Mouse support** stays, as the owner's decision.
+11. **GOAL.HLP** joins the first-start import (S01), and F1 shows the original's help from it (S22). The change to
+    the import is made in T153's code, in a separate PR.
+12. **The look:** the original's colour scheme and a retro feel. The mockups use the original's palette, read from
+    the captures, and a blocky VGA-style font (PxPlus IBM VGA 8x16, CC BY-SA 4.0). The layout and everything else
+    stay ([the look](#3-rules-for-the-whole-ui)).
