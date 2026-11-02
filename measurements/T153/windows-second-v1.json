@@ -1,0 +1,31 @@
+{
+  "phase": "second",
+  "python": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]",
+  "executable": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\goal2-0.1.0-win64\\python\\python.exe",
+  "platform": "win32",
+  "data_folder": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\data",
+  "saves_folder": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves",
+  "events": [
+    {
+      "t": 0.44,
+      "what": "Launch shown",
+      "dialog_shown": false,
+      "saved": "DENMARK",
+      "saved_error": ""
+    }
+  ],
+  "errors": [],
+  "goal2_from": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\goal2-0.1.0-win64\\python\\Lib\\site-packages\\goal2",
+  "engine_python": null,
+  "complete_before": true,
+  "argv": [],
+  "exit": 0,
+  "dialog_shown": 0,
+  "complete_after": true,
+  "data_files": [
+    "GOAL.DAT",
+    "e039-r0005-date-call.sav"
+  ],
+  "seconds": 0.5,
+  "stage": "done"
+}

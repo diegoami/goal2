@@ -1,0 +1,49 @@
+{
+  "phase": "launch-resume",
+  "python": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]",
+  "executable": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\goal2-0.1.0-win64\\python\\python.exe",
+  "platform": "win32",
+  "data_folder": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\data",
+  "saves_folder": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves",
+  "events": [
+    {
+      "t": 0.41,
+      "what": "Launch shown",
+      "dialog_shown": false,
+      "country": "DENMARK",
+      "resume": "RESUME DENMARK",
+      "error": ""
+    },
+    {
+      "t": 0.81,
+      "what": "resumed",
+      "memory_sha256": "91e9346399ddd1b2b2fb0df3539f16c68c44518c219f6dffb4ab8cb2cb158a85",
+      "save_path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves\\desktop.g2core",
+      "title": "Denmark"
+    }
+  ],
+  "errors": [],
+  "goal2_from": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\goal2-0.1.0-win64\\python\\Lib\\site-packages\\goal2",
+  "engine_python": null,
+  "complete_before": true,
+  "argv": [],
+  "launch_saved": {
+    "country": "DENMARK",
+    "resume": "RESUME DENMARK",
+    "error": ""
+  },
+  "resumed": {
+    "memory_sha256": "91e9346399ddd1b2b2fb0df3539f16c68c44518c219f6dffb4ab8cb2cb158a85",
+    "save_path": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves\\desktop.g2core",
+    "title": "Denmark"
+  },
+  "exit": 0,
+  "dialog_shown": 0,
+  "complete_after": true,
+  "data_files": [
+    "GOAL.DAT",
+    "e039-r0005-date-call.sav"
+  ],
+  "seconds": 0.8,
+  "stage": "done"
+}

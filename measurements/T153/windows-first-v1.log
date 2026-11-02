@@ -1,0 +1,12 @@
+{'t': 0.2, 'what': 'import dialog shown', 'intro': 'goal2 needs two files from your data folder (the folder tools/artifacts.py pull fills): GOAL.DAT and e039-r0005-date-call.sav.\nChoose the folder that holds them. goal2 checks each and copies it to\nC:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\data\nYour saved careers, in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves, are never touched.'}
+{'t': 0.21, 'what': 'chose an empty folder', 'status': 'GOAL.DAT is missing: it is not in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-empty-ufwsa7p0.\ne039-r0005-date-call.sav is missing: it is not in C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-empty-ufwsa7p0.'}
+{'t': 0.61, 'what': "chose the owner's data folder", 'folder': '\\\\wsl.localhost\\Ubuntu\\home\\diego\\projects\\goal2\\.cache'}
+{'t': 3.35, 'what': 'Launch shown', 'saved': 'NO SAVED CAREER'}
+{'t': 4.61, 'what': 'review', 'country': 'Denmark', 'year': 1992}
+{'t': 4.79, 'what': 'career started', 'error': ''}
+{'t': 5.49, 'what': 'bulletin page passed'}
+{'t': 6.78, 'what': 'bulletin page passed'}
+{'t': 6.93, 'what': 'main window', 'title': 'Denmark', 'save_path': 'C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves\\desktop.g2core'}
+{'t': 196.4, 'what': 'round played watched', 'steps': 4402, 'stops': {'captain': 1, 'live': 4396, 'half-time': 1, 'replay': 2, 'full-time': 1, 'summary-save': 1}, 'pages': 3}
+{'t': 196.7, 'what': 'saved', 'status': 'Core saved to C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-t153-run\\local\\goal2\\saves\\desktop.g2core'}
+{"phase": "first", "exit": 0, "stage": "done", "dialog_shown": 1, "complete_after": true, "errors": []}
