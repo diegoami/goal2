@@ -306,4 +306,12 @@ operational status.
 
 - [T153](T153.md): first-run import of the player's data folder (#508).
 
-- [T154](T154.md): evaluate one clean UI/engine boundary (#516).
+- [T154](T154.md): evaluate one clean UI/engine boundary (#516; absorbed by T158).
+
+- [T155](T155.md): playing the next match is obvious, the playtest fixes (#523).
+
+- [T156](T156.md): capture an uninterrupted playthrough of the original, design phase stage 1 (#525).
+
+- [T157](T157.md): screen and flow design from the original's captures, design phase stage 2 (#526).
+
+- [T158](T158.md): technology choice for the rebuilt UI, design phase stage 3 (#527).
