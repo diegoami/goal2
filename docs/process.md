@@ -46,8 +46,9 @@ one, `git pull` and take the next free number.
    the changed files can reach (`tools/slow_reach.py`, from the import graph; `python3 tools/slow_reach.py
    <file>` lists them); every other module runs its fast tests. The CI plumbing (this gate,
    `tools/ci_changes.py`, `tools/slow_reach.py`, the slow workflows) is not in `SLOW_PATHS`: its own tests
-   check it. Every slow test runs with `--slow`: a milestone candidate, a dispatch of the slow workflows, and
-   their nightly run on `main`.
+   check it. Every slow test runs with `--slow`: a milestone candidate and a dispatch of the slow workflows.
+   [designed: owner, 2026-11-02] No schedule (the owner's PC is not left on for it): when a PR starts a slow
+   run and that workflow's last dispatch is over 7 days old, it also dispatches a full run on `main`.
    [designed: owner, 2026-10-20, #278] The **Windows** workflow (`.github/workflows/windows.yml`)
    runs on every PR and on `main`. It runs the same gate on a native Windows runner, with real
    Windows Qt and SDL, the `spawn` worker and Windows file replacement.

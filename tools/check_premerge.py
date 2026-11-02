@@ -9,8 +9,8 @@ optional dependency, original-game file or goal2-archaeology checkout is absent 
 reason (goal2/tests/requires.py), so the gate runs anywhere; the skips are counted in the output.
 Slow tests run when it counts: [designed: owner, 2026-10-20] automatically when the commit changes
 a file the slow tests guard since origin/main (SLOW_PATHS: the engine, the core, the watched and competitive
-match, saves, the match view, the dependencies), always with --slow (every milestone candidate, the nightly
-run on main), never with --fast. [designed: owner, 2026-11-01, #505] Automatically, only in the test modules
+match, saves, the match view, the dependencies), always with --slow (every milestone candidate, a dispatch
+of the slow workflows), never with --fast. [designed: owner, 2026-11-01, #505] Automatically, only in the test modules
 those files can reach (tools/slow_reach.py: the import graph); every other module runs its fast tests. [designed: owner, 2026-10-29, T145] The cheap layout and page-reserve modules
 (LAYOUT_FIRST) run first, with their slow tests unless --fast, and a failure there ends the gate
 before the full batch. [designed: owner, 2026-11-01] --batch-fast keeps the layout stage's slow tests and never
