@@ -47,11 +47,9 @@ def top(context=True, crumb="", nxt=None):
     if not context:
         return f'<header class="top"><span class="brand">GOAL2<small>the 1993 game, rebuilt</small></span>' \
                f'<span class="crumb">{esc(crumb)}</span></header>'
-    return ('<header class="top"><span class="brand">GOAL2</span>'
-            '<span class="comp"><b>2028</b> European Championship · <b>QUALIFYING</b></span>'
-            '<span class="who">Holland <span>· manager K Ees</span></span>'
-            f'<span class="crumb">{esc(crumb)}</span>'
-            f'<span class="next">Next: {nxt or "<b>Norway</b> · friendly · away"}</span></header>')
+    comp = ('<span class="comp" style="margin-left:auto"><b>2028</b> European Championship · <b>QUALIFYING</b></span>'
+            if nxt == "comp" else "")
+    return (f'<header class="top"><span class="brand">GOAL2</span><span class="who">{esc(crumb)}</span>{comp}</header>')
 
 
 def keybar(keys, primary=None):
@@ -149,7 +147,7 @@ def s02_start():
 <section class="box grow"><h2>Continue</h2>
   <div class="menu"><div class="item primary on">Continue Holland, 2028 qualifying<span class="k"><kbd>Enter</kbd></span></div></div>
   <dl class="kv" style="margin-top:14px"><dt>manager</dt><dd>K Ees</dd><dt>next</dt><dd>Cyprus · qualifying · home</dd>
-  <dt>saved</dt><dd>T156 · today 21:04</dd></dl></section>
+  <dt>saved</dt><dd>“Holland after round 1” · today 21:04</dd></dl></section>
 <section class="box" style="width:400px"><h2>Load a saved game?</h2>
   <div class="menu"><div class="item">Load another save<span class="k"><kbd>Y</kbd></span></div>
   <div class="item">New game<span class="k"><kbd>N</kbd></span></div>
@@ -157,9 +155,9 @@ def s02_start():
 </div>
 <section class="box"><h2>Saved games</h2><table>
  <tr><th>Name</th><th>Country</th><th>Year · stage</th><th>Next</th><th>Saved</th></tr>
- <tr class="on"><td>T156</td><td>Holland</td><td>2028 · qualifying</td><td>Cyprus (H)</td><td>today 21:04</td></tr>
- <tr><td>SAVED</td><td>Holland</td><td>2028 · qualifying</td><td>Norway (A)</td><td>today 20:31</td></tr>
- <tr><td>ITALY-90</td><td>Italy</td><td>2030 · finals</td><td>Brazil (N)</td><td>29 Oct</td></tr></table>
+ <tr class="on"><td>Holland after round 1</td><td>Holland</td><td>2028 · qualifying</td><td>Cyprus (H)</td><td>today 21:04</td></tr>
+ <tr><td>Before Norway</td><td>Holland</td><td>2028 · qualifying</td><td>Norway (A)</td><td>today 20:31</td></tr>
+ <tr><td>Italy, World Cup run</td><td>Italy</td><td>2030 · finals</td><td>Brazil (N)</td><td>29 Oct</td></tr></table>
  <p class="sub" style="margin:10px 0 0">A save that cannot be opened says why here, with <kbd>Y</kbd> try again or <kbd>N</kbd> back (the original's “file not found · try again? (Y/N)”).</p></section>
 </div>'''
     return page("Start", body, [("Y", "load a saved game"), ("N", "new game"), (("↑", "↓"), "choose save"),
@@ -176,10 +174,12 @@ def s03_new_game():
  <div style="display:flex;gap:14px;margin:24px 0">{digits}</div>
  <p class="sub">One manager is the usual game. With more, the country and name steps repeat for each,
  and the desk gains <b>next player</b>.</p>
+ <div style="display:flex;align-items:center;gap:14px;margin-top:6px"><span class="muted">Starting year <span class="sub">(optional)</span></span>
+  <div class="field" style="border-color:var(--line);width:160px"><span>2026</span></div><span class="sub">the PC clock's year, as the original; change it here if you like</span></div>
  <div class="box" style="margin-top:18px;background:var(--panel-2);display:flex;align-items:center;gap:14px">
   <span class="tag">busy state</span><span>Hang on a tick: preparing the 128 countries…</span></div>
 </section></div>'''
-    return page("New game", body, [(("←", "→"), "number"), ("Esc", "back to title")], ("Enter", "Accept"),
+    return page("New game", body, [(("←", "→"), "number"), ("Tab", "starting year"), ("Esc", "back to title")], ("Enter", "Accept"),
                 context=False, crumb="new game · step 1 of 3")
 
 
@@ -229,13 +229,16 @@ def s05_bulletin():
   <p class="sub" style="margin-top:26px;font-size:19px">Norway 0 – 1 Holland · friendly · Bergkamp 83</p></section>
  <section class="box" style="width:330px;font-family:Georgia,'DejaVu Serif',serif"><h2>Third story</h2><span class="tag">illustrative</span><p class="sub">Each panel keeps the original's words and capitals.</p></section>
 </div></div>'''
-    return page("Bulletin", body, [("Esc", "skip all news")], ("Enter", "Next page"), crumb="news", nxt="<b>Cyprus</b> · qualifying · home")
+    return page("Bulletin", body, [], ("Enter", "Next page (any key)"), crumb="news")
 
 
 @screen
 def s06_hub():
-    items = [("team info", ""), ("fixture list", ""), ("tournament", ""), ("history", ""), ("select squad", "Space")]
-    menu = "".join(f'<div class="item">{n}<span class="k">{kbd(k) if k else ""}</span></div>' for n, k in items)
+    items = [("team info", ""), ("fixture list", ""), ("tournament", ""), ("history", ""), ("select squad", "Space"),
+             ("play next game", "")]
+    menu = "".join(f'<div class="item{" on" if n == "team info" else ""}">{n}'
+                   f'{"<span class=sub style=margin-left:14px>Norway away · friendly</span>" if n == "play next game" else ""}'
+                   f'<span class="k">{kbd(k) if k else ""}</span></div>' for n, k in items)
     body = f'''<div class="col" style="width:420px">
 <section class="box"><h2>Manager</h2><dl class="kv"><dt>name</dt><dd>K Ees</dd><dt>rating</dt><dd>unknown</dd></dl></section>
 <section class="box"><h2>Team</h2><div class="big">Holland</div><dl class="kv"><dt>world</dt><dd>14</dd><dt>Europe</dt><dd>3</dd></dl></section>
@@ -244,19 +247,16 @@ def s06_hub():
 </div>
 <div class="col grow">
 <div class="menu">
- <div class="item primary on">▶ play next game<span class="sub" style="margin-left:14px">Norway away · friendly</span><span class="k"><kbd>Enter</kbd></span></div>
  {menu}
- <div class="item" style="opacity:.75">autopilot: let the assistant manage<span class="tag new" style="margin-left:10px">goal2 · later</span><span class="k"><kbd>A</kbd></span></div>
 </div>
-<section class="box"><h2>Before the match</h2><ul class="list" style="font-size:16px">
- <li><span style="color:var(--good)">●</span> 20 in the squad · all ready to play</li>
- <li><span style="color:var(--warn)">●</span> no captain chosen yet: you choose him at kick-off (or <kbd>C</kbd> lets the computer)</li></ul></section>
+<p class="sub" style="margin:0">Use ↑↓ to find an option, Enter to select it. Your own matches are watched: play next game leads to the
+match menu, the captain and the pitch.</p>
 </div>
 {strip()}'''
     return page("Manager's desk", body, [("F1", "help"), ("F3", "load goal"), ("F4", "load summary"), ("F7", "save"),
                                          ("F10", "quit"), ("T", "team tactics"), (("↑", "↓"), "choose")],
-                ("Enter", "Play next game"),
-                crumb="manager's desk")
+                ("Enter", "Team info"),
+                crumb="manager's desk", nxt="comp")
 
 
 @screen
@@ -289,9 +289,7 @@ def s08_squad():
     head = '''<div style="display:flex;gap:10px;align-items:center"><span class="btn primary" style="font-size:16px;padding:6px 14px">Squad (20)</span>
 <span class="btn" style="font-size:16px;padding:6px 14px">Pool</span><span class="sub">←→ toggles · Ins: the assistant's recommended 20</span></div>'''
     body = f'''<div class="col grow">{head}{card()}
-<section class="box" style="display:flex;gap:14px;align-items:center;padding:10px 16px"><span class="tag">move player</span>
-<span>Enter on a pool player, <kbd>←</kbd> back to the squad, Enter on the player he replaces. One exchange, shown before it is made:</span>
-<span class="sel" style="margin-left:auto">B Gathergood ⇄ S Menzo</span></section></div>
+</div>
 {strip(on="F V Breukelen")}'''
     return page("Squad", body, [(("↑", "↓"), "player"), (("←", "→"), "squad / pool"), ("Ins", "assistant's 20"),
                                 ("R", "next position"), ("C", "club position"), ("T", "his tactics"), ("F2", "new name"),
@@ -351,7 +349,7 @@ def s11_fixtures():
 <p class="sub" style="margin:12px 0 0">✓ marks a match you will watch. The action on the right names what Enter does now: on a marked row, “auto result”; on an unmarked row,
 “watch match”; on your own friendly, cancel or rearrange it.</p></section></div>'''
     return page("Fixtures", body, [(("↑", "↓"), "scroll"), ("Esc", "desk")], ("Enter", "Auto result (unmark)"),
-                crumb="fixture list", nxt="<b>Cyprus</b> · qualifying · home")
+                crumb="fixture list")
 
 
 @screen
@@ -372,7 +370,7 @@ def s12_tournament():
 <section class="box" style="width:480px"><h2>Group C matches</h2><table>{frs}</table></section>
 </div></div>'''
     return page("Tournament", body, [(("↑", "↓"), "group"), ("Space", "continent"), (("←", "→"), "display"),
-                                     ("Ins", "Championship results"), ("Esc", "desk")], None, crumb="tournament", nxt="<b>Belgium</b> · friendly · home")
+                                     ("Ins", "Championship results"), ("Esc", "desk")], None, crumb="tournament", nxt="comp")
 
 
 @screen
@@ -392,7 +390,7 @@ def s13_history():
 <section class="box" style="width:300px"><h2>Top caps</h2><div>R Witschge · 2<br>R Koeman · 2</div></section></div>
 <section class="box"><h2>Records</h2><table><tr><th></th><th>biggest win</th><th>biggest defeat</th></tr><tr><td>home</td><td>Holland 2 v 1 Cyprus</td><td class="muted">—</td></tr><tr><td>away</td><td>Norway 0 v 1 Holland</td><td class="muted">—</td></tr><tr><td>neutral</td><td class="muted">—</td><td class="muted">—</td></tr></table></section>
 </div>'''
-    return page("History", body, [("Esc", "desk")], None, crumb="history · Holland", nxt="<b>Belgium</b> · friendly · home")
+    return page("History", body, [("Esc", "desk")], None, crumb="history · Holland")
 
 
 @screen
@@ -408,7 +406,7 @@ def s14_round():
 <p class="sub" style="margin:14px 0 0">The results arrive one by one; Space pauses, ←→ change the pace. Then your match: the match menu, where you
 pick the team, choose the captain and kick off.</p></section></div>'''
     return page("Round", body, [("Space", "pause"), (("←", "→"), "speed")], ("Enter", "To your match"),
-                crumb="play next game · round 2", nxt="<b>Cyprus</b> · qualifying · home")
+                crumb="play next game · round 2", nxt="comp")
 
 
 def lineup(players, side):
@@ -441,14 +439,14 @@ def s15_match_menu():
 @screen
 def s16_captain():
     names = HOLLAND[:11]
-    rows = "".join(f'<li{" class=\"on\"" if n == "B Van Aerle" else ""}>{rc(c)} {esc(n)}{"<span class=\"r tag\">C pick</span>" if n == "A V Tiggelen" else ""}</li>' for n, c in names)
+    rows = "".join(f'<li{" class=\"on\"" if n == "A V Tiggelen" else ""}>{rc(c)} {esc(n)}</li>' for n, c in names)
     body = f'''<div class="col grow">
 <section class="box" style="display:flex;align-items:center;gap:20px;border-color:var(--select)">
  <span class="big sel" style="white-space:nowrap">Choose your captain to kick off</span>
- <span class="sub">The match starts as soon as a captain is chosen. Enter: the highlighted player · C: the computer picks (A V Tiggelen)
- · no key: the computer's pick stands after a short wait.</span></section>
+ <span class="sub">The match starts as soon as a captain is chosen. The highlight starts on the computer's pick. Enter: the highlighted
+ player · C: computer select · no key: the computer's pick stands after the original's wait.</span></section>
 <div style="display:flex;gap:18px" class="grow">
- {card("B Van Aerle", "C", pos="centre back", meta="age 29 · caps 41 · goals 1 · 5′11″ · right foot", skills=[("keeping", 1, ""), ("kicking", 6, ""), ("tackling", 8, ""), ("heading", 7, ""), ("marking", 8, ""), ("passing", 6, ""), ("crossing", 4, ""), ("feinting", 4, ""), ("control", 6, ""), ("dribbling", 4, ""), ("shooting", 3, ""), ("penalties", 4, "")], tactics=[("position", "stay back"), ("possession", "keep ball"), ("passing", "short passes"), ("tackling", "go in hard"), ("mark", "—")], chars=[("hardness", 6, "tough"), ("fitness", 7, "match fit"), ("energy", 7, "fine"), ("morale", 6, "good"), ("leadership", 7, "inspiring")])}
+ {card("A V Tiggelen", "C", pos="centre back", meta="age 29 · caps 41 · goals 1 · 5′11″ · right foot", skills=[("keeping", 1, ""), ("kicking", 6, ""), ("tackling", 8, ""), ("heading", 7, ""), ("marking", 8, ""), ("passing", 6, ""), ("crossing", 4, ""), ("feinting", 4, ""), ("control", 6, ""), ("dribbling", 4, ""), ("shooting", 3, ""), ("penalties", 4, "")], tactics=[("position", "stay back"), ("possession", "keep ball"), ("passing", "short passes"), ("tackling", "go in hard"), ("mark", "—")], chars=[("hardness", 6, "tough"), ("fitness", 7, "match fit"), ("energy", 7, "fine"), ("morale", 6, "good"), ("leadership", 7, "inspiring")])}
  <section class="box" style="width:300px"><h2>Holland's eleven</h2><ul class="list">{rows}</ul></section>
 </div>
 <p class="sub" style="margin:0">The same stop, with the same keys, chooses a corner or goal-kick taker during the match, and the penalty order (Esc undoes a pick) before a shoot-out.</p>
@@ -495,7 +493,7 @@ def s17_pitch():
 def s18_match_stop():
     over = '''<div class="scrim"><div class="dialog"><span class="tag">the match stops</span>
 <h2 style="margin-top:12px">**** GOAL **** by Bergkamp</h2><p>Norway 0 – 1 Holland, 83′. Do you want an action replay?</p>
-<p class="sub">Then: “Do you want to save this goal?” and its file name (G-1.HIL), in this same box. Other stops use it too:
+<p class="sub">Then: “Do you want to save this goal?” and a name of your choosing, in this same box. Other stops use it too:
 SUBSTITUTION OPPORTUNITY (your player injured: any key opens the bench), the other side's substitution, the shoot-out.</p>
 <div class="row"><span class="btn">No <kbd>N</kbd></span><span class="btn primary">Yes, show it <kbd>Y</kbd></span></div></div></div>'''
     body = f'''<div class="col grow">{match_header("83", ("**** GOAL ****", "by Bergkamp"), (0, 1))}
@@ -508,8 +506,7 @@ SUBSTITUTION OPPORTUNITY (your player injured: any key opens the bench), the oth
 def s19_bench():
     extra = '''<div style="display:flex;gap:14px;align-items:center"><span class="big sel">MAKE SUBSTITUTIONS NOW</span>
 <span class="btn">substitutions left <b style="font-size:22px;margin-left:6px">5</b></span>
-<span class="sub">half time · Norway 0–0 Holland</span></div>
-<div class="box" style="background:var(--panel-2);padding:8px 14px">One exchange, two Enters in either order: <b>who comes off</b> (highlighted: R Witschge, injured), then <b>who goes on</b>. The line names both before the second Enter.</div>'''
+<span class="sub">half time · Norway 0–0 Holland</span></div>'''
     players = HOLLAND[:5] + HOLLAND[6:11] + [("R Witschge", "m")] + [("B Gathergood", "G")] + HOLLAND[12:20]
     body = f'''<div class="col grow">{card("R Witschge", "m", pos="left midfield", meta="age 28 · caps 0 · goals 0 · 5′11″ · left foot · performance ★★★★", skills=[("keeping", 1, ""), ("kicking", 6, ""), ("tackling", 6, ""), ("heading", 3, ""), ("marking", 6, ""), ("passing", 7, ""), ("crossing", 8, ""), ("feinting", 4, ""), ("control", 7, ""), ("dribbling", 7, ""), ("shooting", 5, ""), ("penalties", 4, "")], status="injured", status_cls="bad", extra=extra, chars=[("hardness", 3, "gentle"), ("fitness", 0, "injured"), ("energy", 0, "can't play"), ("morale", 4, "below par"), ("leadership", 0, "none")])}</div>
 {strip(players=players[:11] + players[11:20], on="R Witschge")}'''
@@ -532,15 +529,16 @@ def s20_board():
 <div style="margin-top:12px">{bars([("possession", 4, "50 %"), ("territory", 4, "48 %")])}</div></section>
 <section class="box" style="width:300px"><h2>Holland scorers</h2><div>D Bergkamp <span class="sel">83′</span></div></section></div>
 <p class="sub" style="margin:0">A quick result shows this board with a QUICK RESULT banner in place of the statistics. After a watched match, exit asks
-“Save the match summary?” (Y/N, file name S-1.SUM); F4 at the desk reopens a saved summary on this board.</p></div>'''
+“Save the match summary?” (Y/N, then a name of your choice); F4 at the desk lists the saved summaries and reopens one on this board.</p></div>'''
     return page("Match board", body, [("Esc", "bench")], ("Enter", "Continue"), crumb="Norway v Holland · full time")
 
 
 @screen
 def s21_save_quit():
     over = '''<div class="scrim"><div class="dialog"><h2>Save the game</h2><p>Please enter the name of the saved game.</p>
-<div class="field"><span>T156</span><span class="cursor"></span><span class="muted" style="margin-left:auto">.GL</span></div>
-<p class="sub" style="margin-top:14px">The last name you used is offered. The same box asks for a goal file (F3, G-1.HIL) or a summary (F4, S-1.SUM).
+<div class="field"><span>Holland after round 1</span><span class="cursor"></span></div>
+<p class="sub" style="margin-top:14px">Any name; the last one you used is offered. Saves, goals and summaries are listed by these names (S02; F3 and F4 list the
+saved goals and summaries).
 F10 asks “Are you sure you want to quit? (Y/N)” and then “Do you want to save this game? (Y/N)”.</p>
 <div class="row"><span class="btn">Cancel <kbd>Esc</kbd></span><span class="btn primary">Save <kbd>Enter</kbd></span></div></div></div>'''
     body = '<div class="col grow"><section class="box grow"><h2>Manager\'s desk</h2></section></div>' + strip()
@@ -549,15 +547,11 @@ F10 asks “Are you sure you want to quit? (Y/N)” and then “Do you want to s
 
 @screen
 def s22_help():
-    over = '''<div class="scrim"><div class="dialog" style="width:860px"><span class="tag">F1 · on every screen</span>
-<h2 style="margin-top:12px">Keys of the manager's desk</h2>
-<table><tr><td><kbd>Enter</kbd></td><td>play next game, or open the highlighted option</td></tr>
-<tr><td><kbd>↑</kbd><kbd>↓</kbd></td><td>move the highlight</td></tr>
-<tr><td><kbd>Space</kbd> <kbd>T</kbd></td><td>select squad · team tactics</td></tr>
-<tr><td><kbd>F3</kbd> <kbd>F4</kbd></td><td>replay a saved goal · open a saved match summary</td></tr>
-<tr><td><kbd>F7</kbd> <kbd>F10</kbd></td><td>save · quit</td></tr></table>
-<p class="sub">Each screen lists its keys on the bottom bar; this page adds what they do. The original's own help text
-(GOAL.HLP) is shown below the keys when the player has it.</p>
+    over = '''<div class="scrim"><div class="dialog" style="width:860px"><span class="tag">F1 · the original's help</span>
+<h2 style="margin-top:12px">Help</h2><span class="tag">illustrative: no capture of the original's help viewer exists yet</span>
+<div class="box" style="margin-top:14px;background:var(--panel-2);min-height:220px"><h3>Topic</h3>
+<p class="sub">The original's own help text, from the player's GOAL.HLP, in readable type: its topics and pages as the original shows them.</p></div>
+<p class="sub">↑↓ scroll · PgUp/PgDn page · Esc close (the original viewer's keys, once captured).</p>
 <div class="row"><span class="btn primary">Close <kbd>Esc</kbd></span></div></div></div>'''
     body = '<div class="col grow"><section class="box grow"><h2>Manager\'s desk</h2></section></div>' + strip()
     return page("Help", body, [("Esc", "close")], None, crumb="help", overlay=over)

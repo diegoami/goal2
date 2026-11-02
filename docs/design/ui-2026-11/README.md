@@ -6,9 +6,11 @@ This is the design of goal2's interface, made before anything is rebuilt (design
 [docs/original-game](../../original-game/README.md). Today's window is used only in [section 4](#4-what-todays-window-keeps-changes-and-drops),
 to say what it keeps, changes and drops. [designed: owner, 2026-11-02, #523, #524]
 
-The design keeps the original's **decisions, information and keys**, in the same order. It changes the
-**presentation**: readable type, one clear primary action on each screen, and every stop that waits for the
-player says what it waits for. It chooses no toolkit and no technology; that is T158. [designed: T157]
+The design follows the original exactly: its **decisions, information, layout and keys**, in the same order.
+It departs only where a DOS limit forced the original's way or where the owner hit a problem in the playtest
+(#523), and each departure is tagged `[designed]` with its reason ([the rule](#3-rules-for-the-whole-ui)). The
+look is modern and readable, with the original's layout, colour meanings and role codes. It chooses no toolkit
+and no technology; that is T158. [designed: owner, 2026-11-03, [owner decisions, 2026-11-03, #526](https://github.com/diegoami/goal2/issues/526#issuecomment-6590816260)]
 
 Contents:
 1. [The player's journey](#1-the-players-journey)
@@ -16,7 +18,7 @@ Contents:
 3. [Rules for the whole UI](#3-rules-for-the-whole-ui)
 4. [What today's window keeps, changes and drops](#4-what-todays-window-keeps-changes-and-drops)
 5. [The mapping of every original screen](#5-the-mapping-of-every-original-screen)
-6. [Questions for the owner](#6-questions-for-the-owner)
+6. [Decisions (owner, 2026-11-03)](#6-decisions-owner-2026-11-03)
 
 **The mockups** are static pages at desktop size (1440×900), written by
 [mockups/build.py](mockups/build.py) into `mockups/*.html` with [mockups/style.css](mockups/style.css), and
@@ -73,19 +75,20 @@ flowchart TD
   news ==>|Enter| desk
 ```
 
-The thick arrows are the match day: from the desk, `Enter` five or six times reaches kick-off, and each screen on
-the way names the next step on its primary button. [designed: T157]
+The thick arrows are the match day: *play next game* on the desk, then Enter through the round, the match menu
+(*play*) and the captain to kick-off. Your own matches are watched; nothing asks whether to watch them unless the
+original asks. [confirmed: T156-R1 steps 36–45, 262–266; designed: owner decision 1, #526]
 
 | # | Original screen (capture) | Decision in the original | goal2 screen | Same decision? |
 | --- | --- | --- | --- | --- |
 | 0 | — | — | S01 Import | **goal2 adds it**: the data files are imported once, on the first start, because no original file ships with goal2 (CLAUDE.md rule 14; T153). |
-| 1 | Title, load a saved game? (step 0) | Y load / N new | S02 Start | Same Y and N; **goal2 adds** *Continue* (Enter) for the last save, and lists the saves instead of asking for a name. |
+| 1 | Title, load a saved game? (step 0) | Y load / N new | S02 Start | Same Y and N; **departs** [owner decision 4]: *Continue* (Enter) for the last save, and a list of saves by free names instead of typing a file name. |
 | 2 | Load name (step 243) / file not found | which save; retry | S02 Start | Same, as a list; a save that fails says why, with Y try again / N back. |
-| 3 | How many players (step 1), HANG ON A TICK (step 2) | 1–6 managers | S03 New game | Same. |
+| 3 | How many players (step 1), HANG ON A TICK (step 2) | 1–6 managers | S03 New game | Same, hot seat. **Departs** [owner decision 9]: one optional field for the starting year, the PC clock's year by default as the original takes it (NG-9). |
 | 4 | Country browser (steps 3–5) | which country | S04 Country | Same, with the card and the list together. |
 | 5 | Name entry (steps 6–10) | manager's name | S04 Country | Same, on the same screen, as in the original (an overlay of the browser). |
 | 6 | Bulletins (steps 11–12) | read the news | S05 Bulletin | Same. |
-| 7 | Hub (step 13) | what to do next | S06 Desk | Same six options and F-keys; **changed**: *play next game* is the primary action and is highlighted first. |
+| 7 | Hub (step 13) | what to do next | S06 Desk | Same: the landing page with all six options visible, *play next game* among them, the cursor on *team info*, the same F-keys. |
 | 8 | Squad and pool (steps 14–29) | who is in the twenty | S08 Squad | Same keys and the same two-Enter exchange. |
 | 9 | Player tactics (step 30) | one player's tactics | S09 Player tactics | Same. |
 | 10 | Team tactics (steps 33–34) | the team's tactics | S10 Team tactics | Same. |
@@ -107,7 +110,6 @@ the way names the next step on its primary button. [designed: T157]
 | 26 | F3 saved goal (steps 245–256) | which goal | S21 name box, S15, S17 | Same. |
 | 27 | Round two: results, menu, captain C, R quick result (steps 262–313) | quick result | S14, S15, S16, S17, S20 | Same; R on the pitch, as in the original. |
 | 28 | Group table, bulletin, hub (steps 316–318) | — | S12, S05, S06 | Same. |
-| 29 | — | — | Desk: *autopilot* | **goal2 adds it**, later: the bot plays the country for idle play (CLAUDE.md; plan G-M5). It makes the computer's choices (C) at every stop and stops on any key. |
 
 A season goes on like rows 7–28: the desk, the round, the match, the news, the desk. At the year's end the
 original shows the remaining results, winners and a new stage on the desk (E031 C54–C56, M244-G1E-06 steps
@@ -115,14 +117,18 @@ original shows the remaining results, winners and a new stage on the desk (E031 
 M244-G1E-06 steps 14–19]
 
 **Multi-manager play.** With more than one manager, S04 repeats for each, and the desk gains *next player*,
-which hands the desk to the next manager. [confirmed: E031 C16–C16b] The design keeps it; whether the first
-release offers it is [question 5](#6-questions-for-the-owner).
+which hands the desk to the next manager. [confirmed: E031 C16–C16b] The design keeps it: 1 to 6 managers, hot
+seat, as the original. [owner decision 5, #526]
+
+**The bot** (idle play, plan G-M5) is left out of this design; where it goes is decided later. [owner decision 6,
+#526]
 
 ## 2. Every screen
 
 Each screen lists its purpose, what it shows, its actions and keys, and the original screens it replaces (all of
-them are in [section 5](#5-the-mapping-of-every-original-screen)). A key in **bold** is the original's own; a key
-marked *(goal2)* is added. Enter always does the highlighted choice; the primary button shows what that is.
+them are in [section 5](#5-the-mapping-of-every-original-screen)). A key in **bold** is the original's own. Enter
+does the highlighted choice; the right end of the bottom bar says what that is now, as the original's hint line
+does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 ### S01 Import your data
 
@@ -130,7 +136,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
   it** [designed: owner, 2026-11-02, T153].
 - **Shows**: the files needed, what each is for, and for each the result of its check (found and verified,
   missing, wrong). What is wrong is said in plain words.
-- **Actions**: *Choose folder…* (Enter, primary), *Quit* (Esc).
+- **Actions**: *Choose folder…* (Enter), *Quit* (Esc).
 - **Replaces**: no original screen. The DOS prompt before the game (`dos-shell`) is not a game screen and is
   dropped.
 
@@ -141,21 +147,25 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: the title's question, *load a saved game?*, with the obvious answer first.
 - **Shows**: *Continue* with the last save's country, manager, next match and time saved; the title's choices;
   the list of saved games with country, year and stage, next match and time.
-- **Actions**: *Continue* (Enter, primary; goal2); **Y** load the highlighted save; **N** new game; ↑↓ choose a
+- **Actions**: *Continue* (Enter; owner decision 4); **Y** load the highlighted save; **N** new game; ↑↓ choose a
   save; Esc quit. A save that cannot be opened says why on this screen, with **Y** try again and **N** back.
 - **Replaces**: `title-load-prompt`, the load name (`m244-load-name`, `t156-243-load-name`) and
   `file-not-found-prompt`. [confirmed: T156-R1 steps 0, 242–244; E031 C11–C12; E015-r0008 state 10]
-- **Changes** [designed: T157]: the title asks Y/N and then for a file name, pre-filled with the one save
-  (step 243); goal2 lists the saves instead, because it can read them. With no save, the screen offers only
-  *New game*.
+- **Departs** [designed: owner decisions 4 and 8, #526]: the title asks Y/N and then for a file name, pre-filled
+  with the one save (step 243); goal2 offers *Continue* and lists the saves by the free names they were saved
+  under. With no save, the screen offers only *New game*.
 
 ![S02 Start](images/s02-start.png)
 
 ### S03 New game: how many managers
 
 - **Purpose**: the number of local managers, 1 to 6.
-- **Shows**: the six numbers, the highlighted one chosen; then a busy line while the game is prepared.
-- **Actions**: **←→** number, **Enter** accept (primary), Esc back to S02.
+- **Shows**: the six numbers, the highlighted one chosen; one optional field, the starting year; then a busy line
+  while the game is prepared. Managers play in turn (hot seat).
+- **Actions**: **←→** number, **Enter** accept, Tab to the year field, Esc back to S02.
+- **Departs** [designed: owner decision 9, #526]: the original takes the year from the PC clock without asking
+  (NG-9). goal2 does the same by default, and the one optional field lets the player change it. Today's 1990/1992
+  list goes.
 - **Replaces**: `title-player-count`, `t156-002-hang-on-a-tick`. [confirmed: T156-R1 steps 1–3; E031 C12]
 
 ![S03 New game](images/s03-new-game.png)
@@ -168,7 +178,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
   defaults, characteristics with their words, average caps and age; the country list in groups of 16; the
   name line (14 characters at most) once a country is chosen.
 - **Actions**: **↑↓** country, **←→** next group of 16, **Ins** world or continental ranking, **Space** the
-  country's players (the S08 card, read only), **Enter** choose (primary) then **Enter** accept the name,
+  country's players (the S08 card, read only), **Enter** choose, then **Enter** accept the name,
   **Esc** abort the name / back.
 - **Replaces**: `country-select`, `country-select-name-entry`, `t156-005-country-holland`,
   `t156-006-name-entry`, `t156-010-name-typed`. [confirmed: T156-R1 steps 3–11; E031 C13–C15b]
@@ -179,7 +189,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 
 - **Purpose**: the news: a new manager, the groups, after each round, at the end of a stage.
 - **Shows**: the Soccer Bulletin's three panels, page *n of m*.
-- **Actions**: **Enter** (any key) next page (primary); Esc skips the remaining pages *(goal2)*.
+- **Actions**: **Enter** (any key) next page.
 - **Replaces**: `bulletin`, `t156-011-bulletin-welcome`, `t156-012-bulletin-groups`,
   `t156-200-bulletin-after-match`, `t156-317-bulletin-round2`, `m244-elimination-bulletin`.
   [confirmed: T156-R1 steps 11–12, 200, 317; M244-G1E-06 step 18]
@@ -191,13 +201,14 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: the hub. Everything starts and ends here.
 - **Shows**: the manager (name, rating); the team and its rankings; the next opponents, their rankings and the
   kind of match (friendly away, qualifying home…); the managers; the six options; the twenty players with
-  role codes, the eleven above the bench. **goal2 adds** a short *before the match* line: who is not ready,
-  and that the captain is chosen at kick-off.
+  role codes, the eleven above the bench. Every action is on this page: nothing that the original's hub offers
+  is behind another screen.
 - **Actions**: **↑↓** option, **Enter** open it; **Space** select squad; **T** team tactics; **F1** help,
   **F3** load a saved goal, **F4** load a saved summary, **F7** save, **F10** quit; *next player* with more
-  than one manager; *autopilot* (A, goal2, later).
-- **Primary**: *play next game*, with the opponent and the kind of match on the button. [designed: T157,
-  #523: the owner could not find how to play the next match]
+  than one manager.
+- **Cursor**: starts on *team info*, as the original's (T156-R1 step 13). *play next game* is the last option;
+  your own match is watched by default, and the desk has no watch control, because the original has none.
+  [confirmed: T156-R1 steps 13, 36–42; owner decision 1, #526: today's *Watch match* button hid how to play]
 - **Replaces**: `manager-menu`, `t156-013-hub`, `t156-201-hub-after-round1`, `t156-244-loaded-hub`,
   `t156-318-hub-round2`, `m244-holland-menu`, `m244-finals-stage-hub`. [confirmed: T156-R1 steps 13, 201,
   244, 318; M244-G1A-02 steps 2–11; E031 C17–C26]
@@ -210,7 +221,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: check out all the competitors.
 - **Shows**: any country's card (the S04 card) and the country list, the next opponent marked.
 - **Actions**: **arrows** country, **Ins** ranking, **Space** that country's players (the S08 card, read
-  only), **T** its tactics, **Enter** its fixtures (primary), **Esc** desk.
+  only), **T** its tactics, **Enter** its fixtures, **Esc** desk.
 - **Replaces**: `m244-team-info-2030`, `m244-team-info-players-2030`. [confirmed: M244-G4C-05 steps 2–6]
 
 ![S07 Team info](images/s07-team-info.png)
@@ -220,8 +231,9 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: who is in the twenty, in what position.
 - **Shows**: the player card (name, age, caps, goals, height, foot, performance, position and club position,
   cards, readiness; twelve skills, his tactics, five characteristics with their words); the twenty or the
-  pool on the right; while an exchange is under way, the two players it will swap.
-- **Actions**: **↑↓** player, **←→** squad / pool, **Enter** move player (primary: Enter on a pool player,
+  pool on the right. Once a pool player is picked, the Enter hint reads *put here*, as in the original
+  (T156-R1 step 17).
+- **Actions**: **↑↓** player, **←→** squad / pool, **Enter** move player (Enter on a pool player,
   ← back, Enter on the player he replaces), **Ins** the assistant's recommended 20, **R** next position
   (Shift+R back), **C** club position, **T** his tactics, **F2** new name, **Esc** desk.
 - **Replaces**: `m244-squad`, `m244-squad-next`, `m244-pool`, `m244-pool-next`, `m244-position-next`,
@@ -236,7 +248,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: one player's own tactics: position, possession, passing, tackling, mark.
 - **Shows**: the five lines and their values, **P** on a line set for this player; his skills and
   characteristics beside them.
-- **Actions**: **arrows** line, **Enter** alter (primary), **Esc** back to the card. Reached by **T** from
+- **Actions**: **arrows** line, **Enter** alter, **Esc** back to the card. Reached by **T** from
   S08 and from the bench S19.
 - **Replaces**: `m244-individual-tactics`, `m244-position-tactic-toggle`, `mark-protect-zone`,
   `mark-named-opponent`, `squad-substitution-tactic`, `t156-030-player-tactics`. [confirmed: T156-R1 step 30;
@@ -248,7 +260,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 
 - **Purpose**: the team's eight lines: defence system, protection, offside, then the player defaults.
 - **Shows**: each line, its value now and the other option; the formation; the characteristics.
-- **Actions**: **↑↓** line, **Enter** change (primary), **Esc** desk.
+- **Actions**: **↑↓** line, **Enter** change, **Esc** desk.
 - **Replaces**: `team-tactics`, `m244-team-tactics`, `t156-033-team-tactics`, `t156-034-team-tactic-changed`.
   [confirmed: T156-R1 steps 33–35; M244-G1A-02 step 11; E031 C07]
 
@@ -259,7 +271,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: the coming round, and which other matches to watch.
 - **Shows**: each fixture with its kind, **✓** on the matches to watch, and for the highlighted row what Enter
   will do (watch match, auto result; cancel or rearrange on your own friendly).
-- **Actions**: **↑↓** scroll, **Enter** the named action (primary), **Esc** desk.
+- **Actions**: **↑↓** scroll, **Enter** the named action, **Esc** desk.
 - **Replaces**: `fixtures-watch`, `fixtures-auto`, `m244-fixtures`, `m244-fixtures-watch`,
   `t156-224-fixture-list`. [confirmed: T156-R1 step 224; M244-G1A-03 steps 4–5; E031 C17–C18]
 
@@ -271,7 +283,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Shows**: the display (Qualifying, Finals, Championship) and the continent, as tabs; the group table
   (P W D L F A T) beside the group's matches; on Finals the top scorers; on Championship the bracket.
 - **Actions**: **↑↓** group, **Space** continent, **←→** display, **Ins** Championship results (where the
-  original prints it), **Esc** desk. No primary action: it is read only.
+  original prints it), **Esc** desk. Read only.
 - **Replaces**: `m244-tournament-group-f`, `m244-tournament-group-g`, `m244-world-finals-bracket`,
   `m244-world-qualifying-a`, `m244-world-qualifying-b`, `m244-final-qualifying-table`,
   `t156-227-tournament-europe`, `t156-228-tournament-americas`, `t156-229-tournament-finals`,
@@ -294,7 +306,7 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 
 - **Purpose**: the round's other results, arriving one by one, before and after your match.
 - **Shows**: each result with its kind; your match, still to play, at the end.
-- **Actions**: **Space** pause, **←→** speed, **Enter** (hit any key) to your match (primary).
+- **Actions**: **Space** pause, **←→** speed, **Enter** (hit any key) to your match.
 - **Replaces**: `round-playing`, `round-results`, `t156-041-round1-results`,
   `t156-262-round2-results-rolling`, `t156-263-round2-results`. [confirmed: T156-R1 steps 41, 262–263;
   E015-r0007 states 27, 52]
@@ -306,10 +318,12 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: before kick-off, at half time, at full time and before extra time: compare the sides, change
   yours, then play.
 - **Shows**: the score, the kind of match, the location, the time (HALF TIME, FULL TIME, EXTRA TIME); both
-  formations and elevens; the actions: each side's team tactics and players, tournament, match stats, and
+  formations and elevens; the actions, with *play* highlighted first as in the original (step 42): each side's
+  team tactics and players, tournament, match stats, and
   **play** (before and during) or **exit** (after the final whistle); automatic action replay ON/OFF.
-- **Actions**: **arrows** choose, **Enter** open; **Ins** action replay on/off; *play* (primary) names what
-  follows: "choose your captain, then kick-off" before the match, "second half" at half time.
+- **Actions**: **arrows** choose, **Enter** open; **Ins** action replay on/off. *play* names what follows:
+  "choose your captain, then kick-off" before the match, "second half" at half time. [designed: #523, the owner
+  did not know that kick-off waits for a captain]
 - **The watch question.** When the original asks *watch this match? (Y/N)* (some fixtures; it never came for
   Holland's two matches in T156-R1), goal2 asks it over this menu with the same **Y**/**N**.
   [confirmed: E031 C35–C37; E015-r0007 state 28; T156-R1 steps 42, 264]
@@ -325,8 +339,9 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Purpose**: the stops where the original waits for one of your players: the captain before kick-off, the
   corner or goal-kick taker during play, the penalty order before a shoot-out.
 - **Shows**: a headline that says what the match waits for ("Choose your captain to kick off"); the
-  highlighted player's card; the eleven, with the computer's pick marked.
-- **Actions**: **↑↓** player, **Enter** choose (primary: "Captain: kick off"), **C** computer select; no key:
+  highlighted player's card; the eleven, the highlight starting on the computer's pick as in the original
+  (T156-R1 step 43).
+- **Actions**: **↑↓** player, **Enter** choose ("Captain: kick off"), **C** computer select; no key:
   the computer's pick stands after the original's wait (6–12 s for a taker in T156-R1). For the penalty
   order, **Esc** undoes a pick.
 - **Why the headline**: the owner's playtest could not start the match because a captain was needed and
@@ -345,13 +360,14 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
   role code (home red, away white, as the original draws them) and the ball; the commentary beside it.
 - **Actions**: **↑↓** display (marks), **←→** speed, **R** result (quick result; it still stops at half time,
   injuries, extra time and the shoot-out), **Space** commentary (enlarges it), **F9** sound, **Esc** / **Enter**
-  bench (primary). A replay shows *REPLAY* where *R result* is.
+  bench. A replay shows *REPLAY* where *R result* is.
 - **Replaces**: `match-live`, `match-commentary`, `injury-event`, `t156-045-kick-off`,
   `t156-058-taker-timed-out`, `t156-066-injury-and-booking`, `t156-178-replay-playing`, `t156-247-goal-replay`,
   `t156-254-goal-replay-goal`, `t156-267-quick-hang-on`, `m244-shootout-first-goal`.
   [confirmed: T156-R1 steps 45–192, 247–255, 267; E031 C39–C40, C08; M244-G4C-08 step 19]
-- **Changes** [designed: T157]: the commentary is always beside the pitch rather than only after Space; the
-  pitch is part of the window, not a second window.
+- **Departs** [designed: owner decision 2, #526]: the commentary is always beside the pitch rather than only
+  after Space (on a DOS 640×400 screen they could not both fit); the pitch is part of the window, not a second
+  window.
 
 ![S17 Pitch](images/s17-pitch.png)
 
@@ -374,9 +390,8 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 
 - **Purpose**: substitutions, during a match and at its breaks.
 - **Shows**: the card of the highlighted player; the mode, as the original names it ("make substitutions
-  now", or "substitution requested" during play); substitutions left; the eleven and the bench; while an
-  exchange is under way, who comes off and who goes on.
-- **Actions**: **↑↓** player, **Enter** take off / put on (in either order; primary names which), or
+  now", or "substitution requested" during play); substitutions left; the eleven and the bench.
+- **Actions**: **↑↓** player, **Enter** take off / put on (in either order; the hint names which), or
   request / cancel a substitution in request mode; **R**, **C** positions; **T** his tactics (S09); **Esc**
   match menu. A refused substitution says why and waits for a key.
 - **Replaces**: `squad-substitution-take-off`, `squad-substitution-put-on`, `squad-substitution-illegal`,
@@ -392,8 +407,8 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 - **Shows**: the score and half-time score, scorers and minutes, man of the match; corners, free kicks,
   penalties, shots, on target, saves, fouls, bookings, red cards, possession, territory. After a quick result
   a QUICK RESULT banner stands in place of the statistics, as in the original.
-- **Actions**: **Enter** (hit any key) continue (primary), **Esc** bench. After a watched match, *exit* asks
-  *save the match summary?* (**Y**/**N**) and its name (S21's box).
+- **Actions**: **Enter** (hit any key) continue, **Esc** bench. After a watched match, *exit* asks
+  *save the match summary?* (**Y**/**N**) and a name of the player's choosing (S21's box).
 - **Replaces**: `t156-119-halftime-board`, `t156-192-fulltime-board`, `t156-270-quick-halftime`,
   `t156-310-quick-fulltime`, `match-summary-save-prompt`, `match-summary`, `t156-198-summary-prompt`,
   `t156-199-summary-file-name`. [confirmed: T156-R1 steps 118–119, 191–199, 270, 310–313; E015-r0007 states
@@ -404,10 +419,12 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 ### S21 Save, quit, load a goal or a summary
 
 - **Purpose**: the name box and the yes/no questions of saving and quitting.
-- **Shows**: over the current screen, the question and the proposed name (the last name used; SAVED at first).
+- **Shows**: over the current screen, the question and the proposed name (the last name used).
 - **Actions**: **F7** save: type or accept the name, **Enter** save, **Esc** cancel. **F10** quit: *Are you
   sure you want to quit?* **Y**/**N**, then *Do you want to save this game?* **Y**/**N**. **F3** / **F4**: the
-  name of a saved goal or summary, **Enter** opens it (S15, then S17 or S20).
+  saved goals or summaries, listed by name; **Enter** opens one (S15, then S17 or S20).
+- **Departs** [designed: owner decision 8, #526]: free names, shown in the lists, instead of the original's 8.3
+  file names (SAVED.GL, G-1.HIL, S-1.SUM), which were a DOS limit.
 - **Replaces**: `save-game-name-entry`, `save-game-prompt`, `quit-confirm`, `t156-233-save-name-prompt`,
   `t156-237-save-name-typed`, `t156-239-quit-confirm`, `t156-240-quit-save-prompt`,
   `t156-245-load-goal-prompt`. [confirmed: T156-R1 steps 233–241, 245–246; E031 C23–C26b; reviewed F030]
@@ -416,64 +433,72 @@ marked *(goal2)* is added. Enter always does the highlighted choice; the primary
 
 ### S22 Help
 
-- **Purpose**: what every key of the current screen does.
-- **Shows**: the keys of the screen it was opened on, then the original's own help text when the player has
-  it (the original's F1 opened its help viewer; no capture of it exists yet).
-- **Actions**: **F1** opens it on any screen, **Esc** closes it.
+- **Purpose**: the original's help, as its F1 opens it.
+- **Shows**: the original's own help text, from the player's GOAL.HLP, in readable type. No capture of the
+  original's help viewer exists yet, so its pages and keys follow once one is made.
+- **Actions**: **F1** opens it, **Esc** closes it.
 - **Replaces**: no captured screen. [confirmed: E031 C04–C04c; evidence gap: help viewer capture]
 
 ![S22 Help](images/s22-help.png)
 
 ## 3. Rules for the whole UI
 
-**Navigation.** [designed: T157]
-- One screen at a time, as in the original. The manager's desk (S06) is home; every management screen
-  returns to it with Esc. There is no side bar of destinations.
-- The order of screens is the original's (section 1). goal2 adds screens only where section 1 says so (S01,
-  the *Continue* of S02, autopilot, S22).
-- A top bar on every screen after S05 keeps four facts in view: the competition and stage, the country and
-  manager, where you are, and the next match.
+**The rule.** Follow the original exactly. Depart only where a DOS limit forced the original's way, or where the
+owner hit a problem in the playtest. Every departure is marked `[designed]` with its reason. Everything below, and
+every screen in section 2, applies it. [designed: owner, 2026-11-03, [owner decisions, 2026-11-03, #526](https://github.com/diegoami/goal2/issues/526#issuecomment-6590816260)]
 
-**The primary action.** [designed: T157]
-- Each screen has at most one, drawn as the one yellow button at the bottom right with its key, and the
-  highlight starts on it. Read-only screens (S12, S13) have none.
-- Its label says what happens next, in football words: *Play next game: Norway away*, *Play: choose your
-  captain, then kick-off*, *Captain: kick off*.
-- The match day from the desk to kick-off is a chain of primary actions (S06 → S14 → S15 → S16 → S17).
+**Navigation.** [confirmed: T156-R1 steps 0–321]
+- One screen at a time, as in the original. The manager's desk (S06) is the landing page and home: every action
+  of the original's hub is on it, *play next game* included, and every management screen returns to it with
+  Esc. There is no side bar of destinations, and no action hides behind another screen. [owner decision 1]
+- The order of screens is the original's (section 1). goal2 adds only S01, the first-start import, because no
+  original file ships with goal2 [designed: owner, 2026-11-02, T153; CLAUDE.md rule 14].
+- Each screen has a title bar: the GOAL2 corner and the screen's name, as the original's logo corner and screen
+  titles; the competition's banner where the original shows it (the desk, the tournament, the round).
 
-**Stops.** [designed: T157, #523]
+**The Enter hint.** The right end of the bottom bar says what Enter does on the highlighted choice now, as the
+original's hint line does ("Hit ◄┘ to select option", "◄┘-move player", "Hit ◄┘ to watch match"). The cursor
+starts where the original's does: *team info* on the desk, *play* on the match menu, the computer's pick on the
+captain card. [confirmed: T156-R1 steps 13, 17, 42, 43, 224; designed: owner decision 7, the larger readable
+hint]
+
+**Stops.** [designed: #523, the owner did not know that the match waited for a captain]
 - Whenever the game waits for the player, the screen says what it waits for and which key answers it. A stop
   with a timeout (taker, captain, summary) says what happens with no key.
 - No stop is silent and no stop hides in another window.
 
-**The match.** [designed: T157]
-- It is watched in the main window (S17), with the commentary beside the pitch. The questions and notices
-  are boxes over the pitch (S18); half time and full time are the board (S20) and then the match menu (S15).
+**The match.**
+- Your own matches are watched by default, as in the original; no watch control is added. [owner decision 1]
+- It is watched in the main window (S17), with the commentary always beside the pitch. [designed: owner
+  decision 2] The questions and notices are boxes over the pitch (S18); half time and full time are the board
+  (S20) and then the match menu (S15).
 - Watch or quick result is the original's choice: the watch question where the original asks it (S15), and
-  **R** on the pitch for a quick result. [confirmed: E031 C35, C08; T156-R1 step 267]
+  **R** on the pitch for a quick result. No other button. [confirmed: E031 C35, C08; T156-R1 step 267; owner
+  decision 3]
 - Speed, display and commentary keep the original's keys.
 
-**Text size.** [designed: T157]
+**Text size.** [designed: owner decision 7, modern and readable; the original's 8×16 text was a DOS limit]
 - Designed at 1440×900: body text 18 px, secondary text 15–16 px, headings 22–30 px; nothing below 14 px.
 - At other sizes the page scales as a whole and keeps its layout, as today's fixed pages do (T101).
 - Names, numbers and role codes are never abbreviated beyond the original's own forms.
 
-**Colours.** [designed: T157] The original's hierarchy on a dark ground ([style.css](mockups/style.css)):
-- cyan for frames and headings; magenta for key hints; yellow for the highlighted choice and the primary
-  action;
+**Colours.** The original's colour meanings on a dark ground ([style.css](mockups/style.css)) [designed: owner
+decision 7]:
+- cyan for frames and headings; magenta for key hints; yellow for the highlighted choice and the Enter hint;
 - role codes by line: green goalkeeper, red defence, cyan midfield, yellow attack
   [confirmed: goal2-archaeology F002 R011; docs/vision-266/role-codes];
 - home side red and away side white on the pitch, as in the original [confirmed: T156-R1 step 45];
 - green, amber and red only for status (ready, warning, injured);
 - every colour pairs with text or a symbol, so nothing depends on colour alone.
 
-**The keyboard.** [designed: T157]
+**The keyboard.**
 - Every original key works where the original has it: arrows, Enter, Esc, Space, Ins, Y/N, C, R, T, F1–F4,
   F7, F9, F10, Shift+R (#423).
-- goal2 adds only: Enter on *Continue* (S02), Esc to skip the news (S05), A for autopilot (S06, later).
-  No added key changes an original key's meaning.
-- Every key of a screen is on its bottom bar; F1 explains them.
-- The mouse does everything the keys do: every option, row and button can be clicked.
+- goal2 adds only Enter on *Continue* (S02, owner decision 4) and Tab to the optional starting year (S03, owner
+  decision 9). No added key changes an original key's meaning.
+- Every key of a screen is on its bottom bar, as the original's bottom line lists them.
+- The mouse does what the keys do: every option, row and button can be clicked. [designed: the owner played
+  the playtest with the mouse, #523]
 
 ## 4. What today's window keeps, changes and drops
 
@@ -485,18 +510,18 @@ window. [confirmed: goal2/desktop/__main__.py:79–134; goal2/desktop/window.py:
 | --- | --- | --- | --- |
 | Import dialog (`data_setup.py`) | the check and the copy, the plain-words errors | becomes S01, with each file's check on screen | — |
 | Launch: *Return to your country* (`launch.py`) | the saved career summary, Resume, retry | becomes S02: *Continue*, the saves as a list, the title's Y/N | the path field ("Open another save") |
-| Launch: *Choose your country* | the 128 countries, the card | becomes S04: groups of 16, Ins, Space players, the name on the same screen | the start-year choice ([question 9](#6-questions-for-the-owner)) |
+| Launch: *Choose your country* | the 128 countries, the card | becomes S04: groups of 16, Ins, Space players, the name on the same screen | the 1990/1992 start-year list, replaced by S03's optional year field (owner decision 9) |
 | Launch: *Review before starting* | the manager name (14 characters) | the name moves into S04 | the review page |
 | Launch: bulletins | the three-column bulletin | becomes S05 | — |
 | Main window: top bar | country, manager, year and stage, next match | as in section 3 | — |
 | Main window: side bar (Country, Team, Pool, Fixtures & match, Save; Ctrl+1–5) and *SHOW MATCH (F8)* | — | the desk's six options take its place | the side bar, Ctrl+1–5, F8 |
 | Main window: status line | — | each screen says what it waits for itself | the status line |
-| Country (the desk) | the desk's panels and its six options; history | becomes S06 with *play next game* as the primary action; history becomes S13 | — |
+| Country (the desk) | the desk's panels and its six options; history | becomes S06, the landing page with all six actions on it (*play next game* included) and the cursor on *team info*; history becomes S13 | — |
 | Team: card, own tactics, team tactics | the card, R / Shift+R / C, T, F2 | becomes S08, S09, S10 | — |
 | Pool: card, compare, suggest | the pool card; the exchange | joins S08 (←→ squad / pool), the exchange shown before it is made | *Compare* as a separate view; *Suggest* becomes Ins (the assistant's 20) |
 | Fixtures & match: fixture list, tournament | the boards | become S11 and S12, reached from the desk | — |
 | Round pages (*Next > (Enter)*) | the order of the pages | become S14, S20, S12, S05 | the generic page titles |
-| Captain view with *Watch this match* toggle | the eleven, the suggested captain, Enter, C | becomes S16, which says the match waits for it; C bound | the Watch toggle (the watch question and R are the original's choices) |
+| Captain view with *Watch this match* toggle | the eleven, the suggested captain, Enter, C | becomes S16, which says the match waits for it; C bound | the Watch toggle: own matches are watched, the original's watch question and R remain (owner decisions 1, 3) |
 | Pre-match team (bench, pre-match) | the swap | joins S15's *players* and S19 | — |
 | Pitch window (pygame) | its keys | moves into the main window as S17 | the second window, its fixed caption |
 | Substitution notice, action replay, takers, shoot-out order | the questions and their keys | become S18 and S16 | — |
@@ -538,22 +563,17 @@ image embedded in the chapters is in one row: the new screen that replaces it, o
 | dropped | `dos-shell` | The emulator's DOS prompt before GOAL2 starts: not a game screen; goal2 starts on S01 or S02 |
 <!-- mapping:end -->
 
-## 6. Questions for the owner
+## 6. Decisions (owner, 2026-11-03)
 
-1. **The desk's highlight.** The original's hub starts on *team info*; this design starts on *play next game*
-   and makes it the primary action, with a *before the match* line (S06). Keep the original's start instead?
-2. **The match in the main window.** S17 puts the pitch inside the window, with the commentary always beside it;
-   today it is a second window and the original shows the commentary after Space. Agreed?
-3. **Watch or quick result.** The design keeps the original's way: the watch question where the original asks it,
-   and R on the pitch. Today's *Watch this match* toggle goes. Should a match ever start as a quick result from
-   the menu without passing through the pitch?
-4. **The start screen.** S02 adds *Continue* (Enter) and lists the saves instead of the title's typed file name.
-   Agreed?
-5. **Managers.** S03 keeps 1 to 6 managers. Does the first release offer more than one, or does it skip S03?
-6. **Autopilot.** The bot (G-M5) is an option on the desk (A), later. Is that its place?
-7. **The look.** A dark modern page with the original's colour roles and role codes, readable type and no DOS
-   font. Or closer to the DOS look (its font, its boxes)?
-8. **File names.** The original proposes 8.3 names (SAVED.GL, G-1.HIL, S-1.SUM). Keep them, or let goal2 name
-   saves freely?
-9. **The start year.** Today's Launch offers 1990 or 1992; the original asked for no year in T156-R1
-   (its career began in 2028, steps 1–13). The design has no start-year choice. Drop it?
+The owner answered the design's nine questions on #526 ([owner decisions, 2026-11-03, #526](https://github.com/diegoami/goal2/issues/526#issuecomment-6590816260)); this design applies them.
+
+1. **The desk** is the original's landing page with every action visible, *play next game* included; own matches
+   are watched by default; no watch control the original lacks; the cursor starts where the original's does.
+2. **The pitch** is in the main window, with the commentary always beside it.
+3. **Watch or quick result** as the original: its question where it asks one, R on the pitch, no extra button.
+4. **Load:** *Continue* plus a list of saves, in place of typing a file name.
+5. **Managers:** 1 to 6, hot seat, as the original.
+6. **Autopilot:** decided later; left out of this design.
+7. **The look:** modern and readable, with the original's layout, colour meanings and role codes.
+8. **Save names:** free names, shown in the save list, not the 8.3 names.
+9. **The start year:** the PC clock's year by default, as the original (NG-9), changeable in one optional field.
