@@ -1,0 +1,153 @@
+name: Package
+
+# [designed: owner, 2026-11-02, T147] The portable Windows ZIP (docs/packaging.md): tools/build_portable.py builds
+# goal2-<version>-win64/ (the embeddable CPython 3.13 with goal2 and its extras, PyPy 3.11 for the match workers,
+# the launcher) from pinned, hash-checked downloads, then the packaged smoke runs from the ZIP unpacked in a folder
+# with spaces, with no Python or Git on PATH (tools/portable/smoke.py), the ZIP's file list is checked for
+# original-game files, and the ZIP is uploaded as a run artifact. No release, tag or publication.
+# Nothing of the original game leaves the runner: the original files the smoke's match needs are pulled into .cache/
+# (outside the folder that gets zipped) as in windows.yml, the ZIP is refused if it holds one, and the upload refuses
+# original-game extensions. On PRs that touch packaging (drafts included: this is the task's own check), on main, on
+# dispatch.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/package.yml'
+      - 'tools/build_portable.py'
+      - 'tools/portable/**'
+      - 'pyproject.toml'
+      - 'goal2/tests/test_package_t147.py'
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**', 'measurements/**', '**/*.md']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: PyPy 3.11 for the source tree's reference match (not on PATH)
+        id: pypy
+        uses: actions/setup-python@v5
+        with:
+          python-version: 'pypy3.11'
+          update-environment: false
+      - name: CPython 3.13, the bundled CPython's version (builds the folder; plays the reference match)
+        id: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Original-game files (owner's Drive), for the smoke's match only
+        id: originals
+        env:
+          GOAL2_RCLONE_TOKEN: ${{ secrets.GOAL2_RCLONE_TOKEN }}
+          FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          if [ -z "$GOAL2_RCLONE_TOKEN" ]; then
+            if [ "$FORK" = true ]; then
+              echo "A fork PR has no GOAL2_RCLONE_TOKEN: the packaged match does not run."
+              echo "present=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "GOAL2_RCLONE_TOKEN is unset on a same-repository run: the packaged match cannot run; refusing."
+            exit 1
+          fi
+          version=v1.75.2;zip=rclone-$version-windows-amd64.zip
+          curl -sSfL "https://downloads.rclone.org/$version/$zip" -o "$RUNNER_TEMP/$zip"
+          curl -sSfL "https://downloads.rclone.org/$version/SHA256SUMS" -o "$RUNNER_TEMP/SHA256SUMS"
+          (cd "$RUNNER_TEMP" && grep " $zip\$" SHA256SUMS | sha256sum -c -)
+          unzip -q "$RUNNER_TEMP/$zip" -d "$RUNNER_TEMP"
+          export PATH="$RUNNER_TEMP/rclone-$version-windows-amd64:$PATH"
+          folder=$(python -c "import json,re;print(re.search(r'folders/([\w-]+)',json.load(open('artifacts.json'))['drive']['folderUrl']).group(1))")
+          rclone config create goal2drive drive scope=drive root_folder_id="$folder" token="$GOAL2_RCLONE_TOKEN" --non-interactive > /dev/null
+          python tools/artifacts.py pull
+          python tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"
+          echo "present=true" >> "$GITHUB_OUTPUT"
+      - name: Build the folder and the ZIP
+        run: |
+          python -m pip install -q --upgrade pip
+          python -m pip wheel -q --no-deps -w "$RUNNER_TEMP/wheel" .
+          python tools/build_portable.py build --wheel "$(ls "$RUNNER_TEMP"/wheel/goal2-*.whl)" \
+            --downloads "$RUNNER_TEMP/downloads" --out "$RUNNER_TEMP/portable" --stats "$RUNNER_TEMP/build-stats.json"
+          ls -l "$RUNNER_TEMP"/portable/*.zip
+      - name: Packaged smoke, from the ZIP unpacked in a folder with spaces, no Python or Git on PATH
+        if: steps.originals.outputs.present == 'true'
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem "$env:RUNNER_TEMP\portable\goal2-*-win64.zip" | Select-Object -First 1
+          python tools/portable/smoke.py --zip $zip.FullName --at "$env:RUNNER_TEMP\goal2 smoke ä" `
+            --cache "$env:GITHUB_WORKSPACE\.cache" --source "$env:GITHUB_WORKSPACE" `
+            --reference-python "${{ steps.python.outputs.python-path }}" `
+            --reference-engine "${{ steps.pypy.outputs.python-path }}" --out "$env:RUNNER_TEMP\smoke.json"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: The ZIP holds no original-game file
+        run: |
+          originals=
+          [ "${{ steps.originals.outputs.present }}" = true ] && originals="--originals .cache"
+          python tools/build_portable.py check-zip "$(ls "$RUNNER_TEMP"/portable/goal2-*-win64.zip)" $originals \
+            | tee "$RUNNER_TEMP/check-zip.log"
+      - name: The run's measurements (ZIP size, build time, the packaged match's time)
+        if: always()
+        run: |
+          mkdir -p upload
+          python - "$RUNNER_TEMP" "${{ github.run_id }}" "$(git rev-parse HEAD)" <<'EOF'
+          import json, sys
+          from pathlib import Path
+          tmp, run, head = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+          def load(name):
+              p = tmp / name
+              return json.loads(p.read_text()) if p.is_file() else None
+          build, smoke = load("build-stats.json"), load("smoke.json")
+          check = (tmp / "check-zip.log").read_text().strip() if (tmp / "check-zip.log").is_file() else None
+          match = (smoke or {}).get("checks", {}).get("match", {})
+          out = {"run_id": int(run), "head": head, "runner": "windows-latest (hosted)",
+                 "zip": (build or {}).get("name"), "zip_bytes": (build or {}).get("zip_bytes"),
+                 "folder_bytes": (build or {}).get("folder_bytes"), "files": (build or {}).get("files"),
+                 "build_s": (build or {}).get("build_s"),
+                 "packaged_match_s": ((match.get("packaged") or {}).get("match_wall_s")),
+                 "reference_match_s": ((match.get("reference") or {}).get("match_wall_s")),
+                 "smoke_pass": (smoke or {}).get("pass"),
+                 "checks": {k: v.get("pass") for k, v in (smoke or {}).get("checks", {}).items()},
+                 "worker_console_window": (smoke or {}).get("worker_console_window"),
+                 "check_zip": check, "smoke": smoke}
+          Path("upload", f"run-{run}-v1.json").write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n")
+          print(json.dumps({k: v for k, v in out.items() if k != "smoke"}, indent=1, ensure_ascii=False))
+          EOF
+          # [designed: #278] Refuse to upload anything with an original-game extension.
+          if find upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+            echo "an original-game file reached the upload; refusing" && exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: package-evidence
+          path: upload
+          if-no-files-found: ignore
+      - name: The ZIP for the run artifact
+        run: |
+          mkdir -p zip-upload
+          cp "$RUNNER_TEMP"/portable/goal2-*-win64.zip zip-upload/
+          if find zip-upload -type f | grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'; then
+            echo "an original-game file reached the upload; refusing" && exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: goal2-win64-zip
+          path: zip-upload
+          compression-level: 0
