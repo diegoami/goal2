@@ -56,8 +56,10 @@ class Choice(unittest.TestCase):
                 with self.subTest(bridge=cls.__name__):
                     self.assertIsNone(cls(SimpleNamespace()).command)    # the choice waits for the start
             chosen.assert_not_called()
-        self.assertEqual((WatchedJobs.WORKER, CompetitiveJobs.WORKER),
-                         ("goal2.game.watched_worker", "goal2.desktop.competitive_worker"))
+        # [designed: T160] both kinds play on the owner's engine process
+        from goal2.game.watched_jobs import ENGINE
+        self.assertEqual((WatchedJobs.KIND, CompetitiveJobs.KIND, ENGINE),
+                         ("watched", "competitive", "goal2.game.engine_server"))
 
     def test_a_found_interpreter_that_is_not_pypy_311_is_passed_over(self):
         env = {k: v for k, v in os.environ.items() if k != "GOAL2_ENGINE_PYTHON"}
@@ -83,7 +85,7 @@ class Choice(unittest.TestCase):
         from goal2.desktop import competitive
         from goal2.game import watched_jobs
         # [designed: #496] one launch site: the competitive bridge inherits WatchedJobs.start with its own WORKER
-        self.assertIn("worker_command(self.WORKER)", Path(watched_jobs.__file__).read_text())
+        self.assertIn("worker_command(ENGINE)", Path(watched_jobs.__file__).read_text())
         self.assertNotIn("Popen", Path(competitive.__file__).read_text())
         self.assertIn("super().start(", Path(competitive.__file__).read_text())
 

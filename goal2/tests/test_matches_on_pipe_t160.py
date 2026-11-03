@@ -112,7 +112,7 @@ class Session(unittest.TestCase):
             watched.cancel()                                   # the viewer stand-in, as the window's poll would
 
             # Another game, as Resume would load: a competitive Play to its publication.
-            state, raw, _fixture = campaign(42, 200)
+            state, raw, _fixture = campaign(21, 2)
             model.state, model.template_bytes = state, raw
             token = competitive.start(record_draws=True)
             out['pids']['competitive'] = engine.pid

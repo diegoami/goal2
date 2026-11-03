@@ -299,7 +299,13 @@ sys.exit(pygame_viewer.main())
                     else:
                         with self.assertRaises(ValueError):pump(lambda:c.poll())
                     self.assertIsNone(c.process);self.assertFalse(c.busy)
-                    self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll());self.assertEqual(m.state,before)
+                    if mode=='guest':
+                        # [designed: T160] the engine reported the match's error and stays up for the next match;
+                        # it ends with the owner's close (#417)
+                        self.assertIsNotNone(viewer.poll());self.assertIsNone(engine.poll());self.assertEqual(m.state,before)
+                        c.close();self.assertIsNotNone(engine.wait(timeout=5))
+                    else:
+                        self.assertIsNotNone(viewer.poll());self.assertIsNotNone(engine.poll());self.assertEqual(m.state,before)
                 finally:c.close()
 
 

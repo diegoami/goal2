@@ -347,21 +347,25 @@ class _Preparation:
                 shared.engine.open_encoded(raw)
             except BaseException as exc:
                 self.error = exc
+                self.engine_ran = shared.engine.process is not None
+        self.engine_ran = False
         self.thread = threading.Thread(target=run, name='goal2-engine-open', daemon=True)
         self.thread.start()
 
 
 class _Handle:
     """[designed: T160] The engine process that serves a job, as the job's `process` (Popen's lifecycle methods);
-    before the process exists, it has no pid and is running."""
+    before the process exists, it has no pid and is running. A job that ended before any process served it
+    reports itself ended (code 0), as the old worker's cancelled preparation did (#254)."""
 
     def __init__(self, engine):
         self.engine = engine
         self._process = None
+        self.unused = False
 
     @property
     def popen(self):
-        if self._process is None:
+        if self._process is None and not self.unused:
             self._process = self.engine.process
         return self._process
 
@@ -375,10 +379,14 @@ class _Handle:
 
     @property
     def returncode(self):
-        return None if self.popen is None else self.popen.returncode
+        if self.popen is None:
+            return 0 if self.unused else None
+        return self.popen.returncode
 
     def poll(self):
-        return None if self.popen is None else self.popen.poll()
+        if self.popen is None:
+            return 0 if self.unused else None
+        return self.popen.poll()
 
     def terminate(self):
         if self.popen is not None:
@@ -530,6 +538,9 @@ class WatchedJobs:
                 return
             preparing.thread.join()
             if preparing.error is not None:
+                if preparing.engine_ran and self._match.ended.wait(DEATH_WAIT):
+                    # [designed: T160] the game's write failed because the engine ended: its end says why
+                    raise _reply_failure(*self._match.replies.popleft(), False) from preparing.error
                 raise preparing.error
             self._preparing = None
         if self._match.replies:
@@ -721,6 +732,8 @@ class WatchedJobs:
         # events must reach the caller rather than disappear inside acknowledgement.
 
     def _release(self):
+        if self._handle is not None and self._handle._process is None:
+            self._handle.unused = True
         if self._match is not None:
             self.shared.release(self._match)
         if getattr(self, '_pitch_owns_pending', False):

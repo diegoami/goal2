@@ -33,41 +33,53 @@ def direct(kind):
 
 # [designed] Synthetic protocol fixtures replay a genuine accepted original outcome;
 # they deliberately do not claim another engine execution or fidelity evidence.
+# [designed: T160] The replay is a stand-in engine process: the protocol's replies (goal2.game.engine_server's
+# packets) to the match request, then it waits for the next request as the engine does.
 REPLAY = r'''
-import copy,json,struct,sys,time,signal
+import json,os,struct,sys,time,signal
 from pathlib import Path
-from goal2.game.watched_jobs import _write
-from goal2.game.session_save import _restore_json_value
-mode,fixture_file=sys.argv[1:3];source=Path(sys.argv[3]);journal=Path(sys.argv[4])
-request=json.loads((source.parent/'request.json').read_text());token=request['token']
+from goal2.game.engine_server import read_packet, encode_packet
+from goal2.game.session_save import _json_value, _restore_json_value
+from goal2.game.watched_jobs import _memory
+mode,fixture_file=sys.argv[1:3]
+out=sys.stdout.buffer
 if mode=='ignore':signal.signal(signal.SIGTERM,signal.SIG_IGN)
+def send(kind,value=None,payload=b''):out.write(encode_packet({'kind':kind,'value':_json_value(value)},payload));out.flush()
 packets=[]
 with open(fixture_file,'rb') as stream:
  while header:=stream.read(4):
   packets.append(_restore_json_value(json.loads(stream.read(struct.unpack('!I',header)[0])),'fixture'))
-if mode=='partial':journal.write_bytes(b'\x00\x00');sys.exit(0)
-if mode=='malformed':journal.write_bytes(struct.pack('!I',1)+b'{');sys.exit(0)
-if mode=='death':sys.exit(4)
-with journal.open('ab') as stream:
+send('ready',{'implementation':'stand-in','version':[0,0],'pid':os.getpid()})
+if mode=='unrequested':send('event',packets[0][3])
+def requests():
+ while True:
+  packet=read_packet(sys.stdin.buffer)
+  if packet is None or packet[0]['op']=='quit':sys.exit(0)
+  yield packet[0]
+for request in requests():
+ if request['op']=='open':send('opened');continue
+ if request['op']!='match':continue
+ if mode=='partial':out.write(b'\x00\x00');out.flush();sys.exit(0)
+ if mode=='malformed':out.write(struct.pack('!I',1)+b'{');out.flush();sys.exit(0)
+ if mode=='death':sys.exit(4)
  if mode in ('blocked','ignore'):
-  from goal2.engine.original_match.match import Event
-  _write(stream,token,0,'event',Event('full_time',90,(0,0)))
+  send('event',{'kind':'full_time','minute':90,'score':(0,0),'data':{}})
   time.sleep(60);sys.exit(0)
- sequence=0
  for _,_,kind,value in packets:
   if mode=='tail' and kind=='event' and value['kind']=='end':continue
   if kind=='complete':
+   if mode=='hold':
+    while not Path(sys.argv[3]).exists():time.sleep(.005)
    if mode=='tail':value['events']=[e for e in value['events'] if e['kind']!='end']
    if mode=='result':value['result']['first']=19
-   if mode=='memory':value['memory']='eA=='
    if mode=='mismatch':value['events'][0]['minute']+=1
-  _write(stream,'wrong' if mode=='identity' else token,sequence,kind,value);sequence+=1
- if mode=='duplicate':_write(stream,token,sequence,'complete',packets[-1][3])
- if mode=='trailing':stream.write(b'\x00\x00')
- if mode=='waitexit':
-  (source.parent/'ready').write_text('complete')
-  while not (source.parent/'release').exists():time.sleep(.005)
-sys.exit(5 if mode=='nonzero' else 0)
+   memory=b'x' if mode=='memory' else _memory(value.pop('memory'))
+   value.pop('memory',None)
+   send('complete',value,memory)
+  else:send(kind,value)
+ if mode=='duplicate':send('complete',value,memory)
+ if mode=='trailing':out.write(b'\x00\x00');out.flush();sys.exit(0)
+ if mode=='nonzero':sys.exit(5)
 '''
 
 
@@ -98,8 +110,8 @@ class CompetitiveJobsTests(unittest.TestCase):
         self.before = copy.deepcopy(s)
         self.jobs = None
 
-    def bridge(self, mode=None):
-        command = None if mode is None else [sys.executable,'-c',REPLAY,mode,str(self.fixture_file)]
+    def bridge(self, mode=None, *extra):
+        command = None if mode is None else [sys.executable,'-c',REPLAY,mode,str(self.fixture_file),*extra]
         self.jobs = CompetitiveJobs(self.owner, command=command)
         self.addCleanup(self.jobs.close)
         return self.jobs.start(record_draws=True)
@@ -152,20 +164,25 @@ class CompetitiveJobsTests(unittest.TestCase):
                 self.owner.match_pending=False
 
     def test_complete_packet_waits_for_successful_exit_and_full_tail(self):
-        token=self.bridge('waitexit')
-        self.until(token,lambda seen:self.jobs._complete is not None)
+        # [designed: T160] The engine's `complete`, after the full tail, ends the match; the engine stays up.
+        release=Path(self.folder.name)/'release'
+        token=self.bridge('hold',str(release))
+        self.until(token,lambda seen:bool(seen) and seen[-1].kind=='end')
+        self.assertIsNone(self.jobs._complete)
         self.assertTrue(self.jobs.busy);self.assertIsNone(self.jobs.outcome)
         self.unchanged()
-        (Path(self.jobs._folder.name)/'release').write_text('release')
+        process=self.jobs.process
+        release.write_text('release')
         self.until(token,lambda seen:not self.jobs.busy)
         self.assertEqual(self.owner.state.mem,direct(200).memory)
         self.assertEqual(self.owner.state.match_count,self.before.match_count+1)
+        self.assertIsNone(process.poll(),'the engine stays up for the next match')
 
     def test_fault_outputs_never_publish_or_change_prior_save(self):
-        for mode,message in (('identity','identity/order'),('result','invalid watched result identity'),('memory','invalid'),
-                             ('tail','incomplete'),('mismatch','live event stream'),('duplicate','identity/order'),
+        for mode,message in (('unrequested','no match running'),('result','invalid watched result identity'),('memory','not a Memory component'),
+                             ('tail','incomplete'),('mismatch','differs from the events streamed'),('duplicate','no match running'),
                              ('partial','truncated'),('malformed','Invalid watched worker IPC'),
-                             ('trailing','truncated'),('nonzero','without completion'),('death','without completion')):
+                             ('trailing','truncated'),('nonzero',r'exited \(5\) after its completion'),('death','without completion')):
             with self.subTest(mode=mode):
                 token=self.bridge(mode)
                 try:
@@ -178,7 +195,7 @@ class CompetitiveJobsTests(unittest.TestCase):
 
     def test_duplicate_completion_packet_is_rejected(self):
         token=self.bridge('duplicate')
-        with self.assertRaisesRegex(ValueError,'identity/order'):
+        with self.assertRaisesRegex(ValueError,'no match running'):
             self.until(token,lambda seen:not self.jobs.busy)
         self.unchanged()
 
@@ -228,8 +245,14 @@ class CompetitiveJobsTests(unittest.TestCase):
         def without_unicorn(name,*args,**kwargs):
             if name=='unicorn':raise ImportError('synthetic missing optional runtime')
             return original_import(name,*args,**kwargs)
+        # [designed: T160, #509] Play no longer needs Unicorn: it starts without it.
+        self.jobs.command=[sys.executable,'-c',REPLAY,'blocked',str(self.fixture_file)]
         with patch('builtins.__import__',side_effect=without_unicorn):
-            with self.assertRaisesRegex(ValueError,"pip install.*desktop,watched"):self.jobs.start()
+            token=self.jobs.start()
+            self.assertTrue(self.jobs.busy)
+            self.until(token,lambda seen:bool(seen))
+        self.jobs.cancel_and_reap(token);self.assertFalse(self.owner.match_pending)
+        self.jobs.command=None
         raw=self.owner.template_bytes;self.owner.template_bytes=b'broken'
         with self.assertRaisesRegex(ValueError,'Check the local game resources'):self.jobs.start()
         self.owner.template_bytes=raw;self.unchanged()

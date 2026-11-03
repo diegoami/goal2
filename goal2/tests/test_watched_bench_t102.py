@@ -113,18 +113,8 @@ class Job:
         self.held = None
 
     def count_written(self):
-        """Samples the worker has written, read from its frames journal."""
-        path = Path(self.jobs._frames.name)
-        with path.open('rb') as stream:
-            stream.seek(self.offset)
-            data = stream.read()
-        position = 0
-        while len(data) - position >= 4:
-            size = struct.unpack('!I', data[position:position + 4])[0]
-            if len(data) - position < size + 4:
-                break
-            position += size + 4;self.written += 1
-        self.offset += position
+        """Samples the engine has sent, as its reader thread has received them [designed: T160]."""
+        self.written = self.jobs._match.received_frames
 
     def step(self):
         from goal2.game.watched_jobs import LEAD
@@ -305,7 +295,8 @@ class CancelWhileWaiting(unittest.TestCase):
             self.assertIsNone(process.poll(), 'the worker should be waiting for the answer')
             started = time.monotonic();jobs.cancel_and_reap(token)
             self.assertLess(time.monotonic() - started, 2)
-            self.assertIsNotNone(process.poll());self.assertFalse(jobs.busy)
+            # [designed: T160] the engine answers the cancel where it waits, and stays up for the next match
+            self.assertIsNone(process.poll());self.assertFalse(jobs.busy)
             self.assertEqual(owner.state, before)
         finally:
             jobs.close()
@@ -318,7 +309,8 @@ DROPPING = r'''
 import sys,time
 from unittest.mock import patch
 from goal2.engine.original_match.match import Event, MatchError
-from goal2.game import watched_worker
+from goal2.game import engine_server
+from goal2.tests.test_watched_pitch_jobs import sample
 class Guest:
  def __init__(self,*args,**kwargs):self.image=args[0];self.opts={};self.pauses=0;self.paused=False
  def pause(self):
@@ -333,8 +325,8 @@ class Guest:
   if self.paused:yield Event('decision',1,(0,0),{'context':'pause','refused':None})
   time.sleep(60)
  def answer(self,**kwargs):pass
-with patch('goal2.game.watched_pitch.snapshot',lambda match,ev,sequence,watermark:{'sequence':sequence}):
- with patch('goal2.game.watched_match.Match',Guest):sys.exit(watched_worker.main())
+with patch('goal2.game.watched_pitch.snapshot',lambda match,ev,sequence,watermark:sample(sequence,watermark)):
+ with patch('goal2.game.watched_match.Match',Guest):sys.exit(engine_server.main())
 '''
 
 
