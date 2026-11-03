@@ -12,7 +12,8 @@ Start. The portable build's launcher and default stay today's window (goal2/desk
 two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages, S06 the manager's desk,
 S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, S17 at kick-off and in play (its first
 friendly under PyPy 3.11, cancelled after the pictures), S11 and S13 again after its first round (the route's
-quick friendly), and S21's save box, quit question and save question over the desk (T168), when it finds the data
+quick friendly), S21's save box, quit question and save question over the desk (T168), and T177's extras: S02's
+standalone friendly's country choice, S08's pool search and the desk's manager's name line, when it finds the data
 the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
 and the bulletin pages are stand-ins labelled so (CLAUDE.md rule 14; the Python route has no bulletins yet, #509).
 """
@@ -125,6 +126,7 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
                 saves.write(model, target.saves, name, saved=now - datetime.timedelta(hours=ago))
             window.start()
             shot("s02-start.png")
+            friendly_shot(window, key, shot)
             key(Qt.Key.Key_N, "n")
             shot("s03-new-game.png")
             key(Qt.Key.Key_Return)
@@ -146,6 +148,7 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
             key(Qt.Key.Key_Return)
             key(Qt.Key.Key_Return)
             shot("s06-desk.png")
+            extras_shots(window, key, shot)
             key(Qt.Key.Key_Return)   # the cursor starts on team info [T164]
             window.current().settle()
             shot("s07-team-info.png")
@@ -172,6 +175,42 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return written
+
+
+def friendly_shot(window, key, shot):
+    """S02's standalone friendly (F): Holland chosen, the opponent highlighted, then Esc twice back to S02; nothing is
+    played. [designed: owner, §6 item 18; T177]"""
+    from PySide6.QtCore import Qt
+    key(Qt.Key.Key_F, "f")
+    chooser = window.current()
+    while chooser.highlighted_country() != 20:   # Holland, 14th in the world
+        key(Qt.Key.Key_Down)
+    key(Qt.Key.Key_Return)
+    key(Qt.Key.Key_Up)
+    shot("s02-friendly.png")
+    key(Qt.Key.Key_Escape)
+    key(Qt.Key.Key_Escape)
+
+
+def extras_shots(window, key, shot):
+    """The desk's extras: S08's pool search ("van" typed after /) and the manager's name line on the desk, each left
+    with Esc, so the career is unchanged and the cursor is back on team info. [designed: owner, §6 item 18; T177]"""
+    from PySide6.QtCore import Qt
+    desk = window.current()
+    key(Qt.Key.Key_Space)
+    key(Qt.Key.Key_Slash, "/")
+    for character in "van":
+        key(Qt.Key.Key_A, character)
+    shot("s08-pool-search.png")
+    key(Qt.Key.Key_Escape)   # clears the search
+    key(Qt.Key.Key_Escape)   # the desk
+    desk.highlight(next(i for i, o in enumerate(desk.options) if o.text_label.text() == "manager's name"))
+    key(Qt.Key.Key_Return)
+    for character in "Rinus Michels":
+        key(Qt.Key.Key_A, character)
+    shot("s06-rename.png")
+    key(Qt.Key.Key_Escape)
+    desk.highlight(0)
 
 
 def save_quit_shots(window, key, shot):
