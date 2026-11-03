@@ -164,6 +164,17 @@ def run_stage(modules: list[str], workers: int, run, failed: list[str], done: li
     return skipped
 
 
+def default_jobs(env, cpus):
+    """[designed: owner, 2026-11-03, #567] The game tests' job count: GOAL2_GATE_JOBS when the machine sets it (a
+    runner's .env, tools/runner/), else min(8, cores). Returns (jobs, where it came from); a bad value stops the gate."""
+    raw = (env.get("GOAL2_GATE_JOBS") or "").strip()
+    if not raw:
+        return min(8, cpus or 2), "min(8, cores)"
+    if not raw.isdigit() or int(raw) < 1:
+        raise SystemExit(f"GOAL2_GATE_JOBS={raw!r}: a whole number of jobs, at least 1")
+    return int(raw), "GOAL2_GATE_JOBS"
+
+
 def check_tests(jobs: int, python: str, slow: bool | set[str], runner=run_module, layout_slow: bool = True) -> None:
     """`slow`: every module's slow tests (True), none (False), or only these modules' (#505)."""
     modules = sorted(p.stem for p in (ROOT / "goal2" / "tests").glob("test_*.py"))
@@ -197,7 +208,8 @@ def main(argv: list[str] | None = None) -> int:
                        help="the layout stage's slow tests only, never the full batch's (CI's PR and main runs)")
     parser.add_argument("--tests", action="store_true", help=argparse.SUPPRESS)  # the default since #275
     parser.add_argument("--python", default=sys.executable, help="interpreter for the game tests")
-    parser.add_argument("--jobs", type=int, default=min(8, os.cpu_count() or 2))
+    jobs, jobs_from = default_jobs(os.environ, os.cpu_count())
+    parser.add_argument("--jobs", type=int, default=jobs)
     args = parser.parse_args(argv)
     try:
         check_checkout(args.expected_head)
@@ -221,6 +233,7 @@ def main(argv: list[str] | None = None) -> int:
                     why = (f"RUN slow tests in {len(slow)} modules they can reach (changed: {', '.join(changed[:5])}"
                            f"{' ...' if len(changed) > 5 else ''}): {' '.join(sorted(slow))}")
                 print(why, flush=True)
+            print(f"game tests: {args.jobs} jobs ({'--jobs' if args.jobs != jobs else jobs_from})", flush=True)
             check_tests(args.jobs, args.python, slow, layout_slow=not args.fast)
         check_checkout(args.expected_head)  # a check that changed tracked files cannot certify it
     except (ValidationError, OSError, subprocess.CalledProcessError) as exc:

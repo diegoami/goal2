@@ -8,7 +8,7 @@
 #   GOAL2_RUNNER_TOKEN=<token> bash tools/runner/setup-linux.sh   # or a token from Settings > Actions > Runners
 #
 # GOAL2_RUNNER_DIR (default ~/actions-runner/goal2) and GOAL2_RUNNER_NAME (default goal2-<host>-linux)
-# override the folder and the name. Run again to repair the service; an existing registration is kept.
+# override the folder and the name. GOAL2_GATE_JOBS=<n> caps each gate's jobs on a shared machine (#567). Run again to repair the service; an existing registration is kept.
 set -euo pipefail
 REPO=diegoami/goal2
 LABEL=goal2-slow-linux
@@ -56,6 +56,16 @@ if [ ! -f .runner ]; then
     tar xzf "$tgz" && rm "$tgz"
     ./config.sh --unattended --url "https://github.com/$REPO" --token "$token" --name "$NAME" \
         --labels "$LABEL" --no-default-labels --work w --replace
+fi
+
+# [designed: owner, 2026-11-03, #567] A machine shared by several runners, or by a runner and a working session,
+# caps each gate's jobs: the runner reads its .env into every job, and check_premerge.py takes its default from it.
+if [ -n "${GOAL2_GATE_JOBS:-}" ]; then
+    case "$GOAL2_GATE_JOBS" in ''|*[!0-9]*|0*) echo "GOAL2_GATE_JOBS: a whole number of jobs, at least 1" >&2; exit 1 ;; esac
+    touch "$DIR/.env"
+    { grep -v '^GOAL2_GATE_JOBS=' "$DIR/.env" || true; echo "GOAL2_GATE_JOBS=$GOAL2_GATE_JOBS"; } > "$DIR/.env.new"
+    mv "$DIR/.env.new" "$DIR/.env"
+    echo "GOAL2_GATE_JOBS=$GOAL2_GATE_JOBS in $DIR/.env: restart the runner when it is idle (systemctl --user restart $UNIT)"
 fi
 
 mkdir -p "$HOME/.config/systemd/user"
