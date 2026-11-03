@@ -14,8 +14,13 @@ docs/original-game/images/t156-013-hub.png]:
 - **T** team tactics (S10), **Space** select squad (S08), **F1** help (S22); **F3** load a saved goal, **F4** load a
   saved summary, **F7** save, **F10** quit [confirmed: t156-013-hub.png, its bottom line].
 
-Placeholders [designed: T164, the task's scope]: *play next game* opens the match screens of T167; F3 comes with
-T167, F4, F7 and F10 with T168. Until then each says which task brings it, on the desk, and does nothing else.
+Placeholders [designed: T164, the task's scope]: F3 comes with T167, F4, F7 and F10 with T168. Until then each says
+which task brings it, on the desk, and does nothing else.
+
+*play next game* [designed: T166, #540, the interim route]: until T167 brings the round, the match menu and the
+captain, it plays the next own friendly watched on S17 (goal2/ui/s17_pitch.py `play_next_game`), with the original's
+suggested captain as T143 picks it; at full time S17 returns here with the result in the status line. A qualifier
+says it comes with T176 and T167.
 
 The banner names the competition as the original's hub does, *European Championship · QUALIFYING* and the year for a
 European country (`DesktopModel.competition`, #563) [confirmed: t156-013-hub.png], drawn as the mockup: the year,
@@ -51,7 +56,6 @@ HINT = ("Use ↑↓ to find an option, Enter to select it. Your own matches are 
         "match menu, the captain and the pitch.")   # [designed: s06-hub.html]
 # What each placeholder says until its task builds it. [designed: T164 scope 1, "each names the task"]
 LATER = {
-    "play next game": "The match screens (S14–S20) come with T167: play next game opens them then.",
     "F3": "F3, load a saved goal, comes with T167.",
     "F4": "F4, load a saved summary, comes with T168.",
     "F7": "F7, save, comes with T168.",
@@ -137,7 +141,7 @@ class DeskScreen(Screen):
         self.add_option("tournament", self.tournament, enter="Tournament")
         self.add_option("history", self.history, enter="History")
         self.add_option("select squad", self.select_squad, key=Qt.Key.Key_Space, enter="Select squad")
-        play = self.add_option("play next game", lambda: self.later("play next game"), enter="Play next game")
+        play = self.add_option("play next game", self.play_next_game, enter="Play next game")
         self.play_note = label("", "sub")
         play.layout().insertWidget(1, self.play_note)
         # Space is on its option, not on the bar, as the mockup draws it. [designed: s06-hub.html]
@@ -217,6 +221,14 @@ class DeskScreen(Screen):
     def later(self, what):
         """A placeholder: it says which task brings it, and does nothing else."""
         self.say(LATER[what])
+
+    def play_next_game(self):
+        """The next friendly on S17 (the interim route, T166); what stops it is said here."""
+        from goal2.ui.s17_pitch import play_next_game
+        opened = play_next_game(self.window_, self.model)
+        if isinstance(opened, str):
+            self.say(opened)
+        return opened
 
     def team_info(self):
         from goal2.ui.s07_team_info import TeamInfoScreen

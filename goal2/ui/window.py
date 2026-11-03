@@ -117,6 +117,15 @@ class Window(QMainWindow):
             return
         super().keyPressEvent(event)
 
+    def closeEvent(self, event):
+        """Closing the window: each screen on the stack that holds something running ends it first (S17 cancels its
+        match through the bridge, publishing nothing). [designed: T166, #540]"""
+        for screen in reversed(self.stack):
+            closing = getattr(screen, "closing", None)
+            if closing is not None:
+                closing()
+        super().closeEvent(event)
+
     def focusNextPrevChild(self, next_):
         """Tab is a key of the screens (S03's starting year), not a move of Qt's focus. [designed: owner decision 9,
         #526; docs/design/ui-2026-11 §3, "The keyboard"]"""
