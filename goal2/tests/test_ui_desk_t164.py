@@ -284,17 +284,43 @@ class Landing(App):
 class Options(App):
     def test_each_option_opens_its_screen_or_names_its_task(self):
         window, desk = self.desk()
-        # Placeholders: each names its task and does nothing else. [T178: fixture list, tournament and history are
-        # screens now, visited below]
-        for index, task in ((5, "T167"),):
-            while desk.cursor < index:
-                self.key(window, Qt.Key.Key_Down)
-            self.assertEqual(desk.highlighted().text_label.text(), SIX[index])
-            before = copy.deepcopy(desk.model.state)
+        # [T166, the interim route] play next game: a qualifier says it comes with T176 and T167 and changes nothing;
+        # the next friendly starts on S17 (under PyPy 3.11; without it the desk says why it cannot start).
+        # [T178: fixture list, tournament and history are screens now, visited below]
+        import dataclasses
+        from goal2.game.campaign import CampaignState
+        from goal2.ui.s17_pitch import PitchScreen
+        while desk.cursor < 5:
+            self.key(window, Qt.Key.Key_Down)
+        self.assertEqual(desk.highlighted().text_label.text(), SIX[5])
+        friendly = desk.model.state.campaign.next_fixture
+        self.assertEqual(friendly.kind, 1, "the 2028 Holland career opens on a friendly")
+        before = copy.deepcopy(desk.model.state)
+        qualifier = dataclasses.replace(friendly, kind=2)
+        with mock.patch.object(CampaignState, "next_fixture", new_callable=mock.PropertyMock, return_value=qualifier):
             self.key(window, Qt.Key.Key_Return)
+        self.assertIs(window.current(), desk)
+        self.assertIn("T176", desk.note.text())
+        self.assertIn("T167", desk.note.text())
+        self.assertEqual(desk.model.state, before)
+        try:
+            from goal2.tests.test_pypy_worker_t152 import pypy
+            pypy()
+            engine = True
+        except unittest.SkipTest:
+            engine = False
+        self.key(window, Qt.Key.Key_Return)
+        if engine:
+            screen = window.current()
+            self.assertIsInstance(screen, PitchScreen)
+            self.assertEqual(screen.controller.pending, friendly)
+            screen.closing()
+            window.pop()
+            self.assertIsNone(desk.model.state.last_match, "a cancelled match publishes nothing")
+        else:
             self.assertIs(window.current(), desk)
-            self.assertIn(task, desk.note.text(), SIX[index])
-            self.assertEqual(desk.model.state, before)
+            self.assertIn("cannot start", desk.note.text())
+        self.assertIs(window.current(), desk)
         for key, task in ((Qt.Key.Key_F3, "T167"), (Qt.Key.Key_F4, "T168"), (Qt.Key.Key_F7, "T168"),
                           (Qt.Key.Key_F10, "T168")):
             self.key(window, key)
