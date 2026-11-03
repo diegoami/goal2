@@ -13,9 +13,10 @@ names the per-user goal2 folder (its `data` holds the imported files). `--import
 GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` writes PNGs at 1440×900 from a
 temporary data folder of its own and exits: S01, the placeholder home and S22 (with a stand-in help text) always;
 S02 with two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages (labelled so), S06
-the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, and S11 and S13 again after
-its first round (the route's quick friendly), when it finds GOAL.DAT and the template in the data root's `data` or in
-a checkout's `.cache/`.
+the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, S17 at kick-off and in play
+(the career's first friendly, under PyPy 3.11, cancelled after the pictures), and S11 and S13 again after its first
+round (the route's quick friendly), when it finds GOAL.DAT and the template in the data root's `data` or in a
+checkout's `.cache/`.
 
 ## The journey
 
@@ -73,6 +74,8 @@ the format; T168 adds saving under a name from the desk (F7). The desk never sav
 | `goal2/ui/s11_fixtures.py` | S11 Fixtures (T178): the coming round, or a country's coming fixtures. |
 | `goal2/ui/s12_tournament.py` | S12 Tournament (T178): the displays and continents as tabs, a group's table beside its matches, the banner. |
 | `goal2/ui/s13_history.py` | S13 History (T178): this career's results by season; the boxes without a source. |
+| `goal2/ui/s17_pitch.py` | S17 Pitch (T166): the screen, `MatchController` over the watched bridge, the desk's interim `play_next_game` and the suggested captain (`best_leader`). |
+| `goal2/ui/pitch.py` | S17's pitch widget: lines, surround, marks coloured by side, the ball, the enlarged commentary. |
 | `goal2/ui/saves.py` | The named save format (Qt-free). |
 | `goal2/ui/start_look.py` | The style S02–S05 add to the theme's sheet, and their shared parts (boxes, rows, typed lines). |
 
@@ -106,7 +109,8 @@ of the bottom bar and a click on the Enter hint all reach the same handler.
 `Window.push(screen)` opens a screen over the current one, `pop()` returns to the one underneath and
 `replace_home(screen)` empties the stack and starts again from `screen`; `open_career(model, pages=())` makes `model`
 the open career (`window.career`) and shows its pages (S05), then the home. Keys go to the current screen
-(`Screen.handle_key`). The page is composed for 1440×900 and scales as a whole with the window: the central widget is
+(`Screen.handle_key`). Closing the window first calls `closing()` on every screen on the stack that has one (S17
+cancels its match) [designed: T166]. The page is composed for 1440×900 and scales as a whole with the window: the central widget is
 today's `goal2.desktop.fixed_page.FixedPage`, reused, which multiplies every length of the page, its style sheet's
 text sizes included (T101). Its `problems(window)` check (no scroll bar, nothing clipped or squeezed) applies to every
 screen of the new window too.
@@ -177,8 +181,8 @@ the manager's desk, the career's home: every management screen returns to it wit
   away), the managers, and the twenty with role codes, the eleven above the bench; the competition at the title
   bar's right end, named as the original's hub names it (T178, #563: *2028 European Championship · QUALIFYING*). The
   six options in the original's order, the cursor on *team info*: *team info* (S07), *fixture list* (S11),
-  *tournament* (S12), *history* (S13), *select squad* (S08, also Space) and *play next game* (T167's match
-  screens). **T** S10, **F1** S22; **F3** comes with T167, **F4**, **F7** and **F10** with T168. A
+  *tournament* (S12), *history* (S13), *select squad* (S08, also Space) and *play next game* (S17 for a friendly
+  until T167, below). **T** S10, **F1** S22; **F3** comes with T167, **F4**, **F7** and **F10** with T168. A
   placeholder says which task brings it, on the desk, and does nothing else. *re-import data*, a goal2 addition
   (decision 14), is a seventh option under a "goal2 addition" tag: S01 over the data folder, Esc back to the desk.
 - **S07** shows S04's card for the highlighted country, read from the career, beside the list in groups of 16, the next
@@ -225,3 +229,46 @@ stage the route has not reached says so instead of showing rows.
 `goal2/tests/test_ui_boards_t178.py` visits the model's calls against the career's world schedule and results, each
 screen's rows against them, the keys, Esc back, S07's Enter and the banner for a European and an American country.
 The pictures are in [design/ui-2026-11/T178-screens](design/ui-2026-11/T178-screens/).
+
+## The pitch: S17 (T166)
+
+[designed: owner, 2026-11-03, #526 decision 2, #527 D3; T166, #540] Your own friendly, watched in the main window with the
+commentary always beside it. What S17 shows is the engine's samples and events, in order, paced by S17's own
+acknowledgements, and the match the player watched is the match the engine published.
+
+- **Over the bridge.** `MatchController` holds one `WatchedJobs` ([watched-jobs.md](watched-jobs.md)) for the match,
+  started with the pitch samples and the bench (`frames=True, bench=True`, delay byte 0, draws recorded, as today's
+  `WatchedController`). A 4 ms timer on the window's thread polls it: `poll` for the events, `poll_frames` while the
+  view holds at most 32 samples, then the next sample is selected when the speed says it is due
+  (`goal2/desktop/match_view.py` `Display`, its six `SPEEDS`). The pitch acknowledges a sample (`ack_frames`) only
+  after painting it, so the engine is never more than `LEAD` samples ahead of what was drawn; a stalled or hidden
+  pitch stalls the engine. The bridge is made at kick-off and closed at full time or on a cancel: no engine process
+  outlives the match [designed: T166, interim].
+- **Shows** (s17-pitch.html): the two sides (home light red, away white), the score, the minute, the match's kind,
+  the last two events; the pitch (`goal2/ui/pitch.py`: the lines and boxes of the samples' grid, the green surround,
+  one character per grid cell in the original's drawing order, keepers as faces, the ball on an empty cell); the
+  commentary, the speed, the display and your side's colour. The home side is the fixture's first side
+  (`Fixture.side_a`) until the route knows a fixture's venue (#562).
+- **Keys** [confirmed: E031 C39–C40, C08; T156-R1 steps 45, 267]: **←→** speed, **↑↓** the five display styles
+  (role codes first), **Space** the whole commentary over the pitch and back, **R** quick result (every sample is
+  acknowledged as it arrives; *HANG ON A TICK* stands where *R result* was, `t156-267-quick-hang-on`), **F9** says
+  goal2 has no sound and does nothing else, **Esc** / **Enter** request the bench (`pause`).
+- **The stops until T167** [designed: T166, interim]: a bench decision (half time, a substitution opportunity, the
+  pause the bench request asked for) is answered as today's window answers one left unanswered, no substitution and
+  play on (`bench_page.Bench.escape`), once every sample before it is shown; the engine answers extra time and the
+  shoot-out order itself. Each stop is a line of the commentary. S18–S20 replace this in T167.
+- **The interim route** [designed: T166]: the desk's *play next game* (`s17_pitch.play_next_game`) sets the captain
+  to the original's suggestion as T143 picks it (`best_leader`, T143's rule over the route's player records; the
+  Core's own function needs Unicorn to import) through `DesktopModel.confirm`, and pushes S17 on the next friendly.
+  At full time S17 returns to the desk with the result in its status line. A qualifier says it comes with T176 and
+  T167.
+- **Closing the window** during the match cancels it through the bridge (`cancel_and_reap`, then `close`): nothing
+  is published and the engine process ends.
+- **The pygame viewer** stays for today's window (owner decision 17): S17 reuses its drawing constants
+  (`pygame_viewer.GRID`, `MARGIN`, `DRAW_ORDER`, `MARKS`, `glyph`), which move with S17 when the viewer is retired.
+
+`goal2/tests/test_ui_pitch_t166.py` plays the friendly from the desk to full time on S17 and compares its events with
+the bridge's and the published career with the same match through today's `WatchedController`; it checks the pacing
+with painting stalled, the keys, the close mid-match (no engine process within 5 s, nothing published), the sides'
+colours on the painted pitch and `best_leader` against T143's function. It needs PyPy 3.11 and the `.cache/` files and
+skips without them. The pictures are in [design/ui-2026-11/T166-screens](design/ui-2026-11/T166-screens/).
