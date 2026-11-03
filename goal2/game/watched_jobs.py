@@ -1,11 +1,15 @@
 """[designed: T65] Headless local process bridge; parent alone owns publication.
 
-IPC is a private, length-prefixed JSON journal in a mode-0700 temporary folder.
-Only the owned local child writes it; never open journals supplied by other users.
-Each poll reads at most 64 KiB and consumes at most 32 packets, including partial
-records. Completion waits for child exit, complete transcript and T64 validation.
+[designed: owner, 2026-11-03, #527 D3; T160] The match plays in the owner's one engine process
+(goal2.game.engine_process, docs/engine-process.md), shared by the owner's bridges (MatchEngine). Each poll
+consumes at most 32 of the match's replies. Completion waits for the engine's `complete`, a complete
+transcript and T64 validation.
+
+The file journal below (_write, CommandReader, _PreparingProcess, _remove_folder) is the old per-match
+worker's (goal2.game.watched_worker, goal2.desktop.competitive_worker), unused by the window; T161 removes it.
 """
 from pathlib import Path
+import collections
 import copy
 import json
 import base64
@@ -228,31 +232,218 @@ class _PreparingProcess:
         return self._process.wait(timeout=remaining)
 
 
+# --- the bridge on the engine process --------------------------------------------------------------------------
+
+# [designed: owner, 2026-11-03, #527 D3; T160] The matches play in the owner's one engine process
+# (goal2.game.engine_process, docs/engine-process.md), run as this module under engine_python().
+ENGINE = 'goal2.game.engine_server'
+# [designed: T160] How long a cancel waits for the engine's `cancelled` before the process is killed. The engine
+# reads a cancel at every event and pitch sample, milliseconds apart in play; the old worker's cancel was a
+# terminate, 0.5 s, then a kill, 0.5 s (#254).
+CANCEL_WAIT = 1.0
+# [designed: T160] How long after that kill the reader has to report the process's end.
+DEATH_WAIT = 3.0
+# [designed: T160] The replies one poll consumes, as the journal's 32 records a poll.
+REPLY_BUDGET = 32
+
+
+class _Match:
+    """[designed: T160] One match's replies as the engine's reader thread delivers them, drained by the bridge's
+    polls on the owner's thread. Pitch samples wait apart from the rest, for poll_frames."""
+    TERMINAL = ('complete', 'cancelled', 'error', 'death')
+
+    def __init__(self):
+        self.replies = collections.deque()
+        self.frames = collections.deque()
+        self.received_frames = 0
+        self.ended = threading.Event()
+
+    def put(self, kind, value):
+        if kind in ('ready', 'opened'):
+            return
+        if kind == 'frame':
+            self.frames.append(value)
+            self.received_frames += 1
+        else:
+            self.replies.append((kind, value))
+        if kind in self.TERMINAL:
+            self.ended.set()
+
+
+class MatchEngine:
+    """[designed: owner, 2026-11-03, #527 D3; T160] The owner's one engine process, shared by its bridges
+    (WatchedJobs and CompetitiveJobs, held on the owner as `_match_engine`).
+
+    The process starts at the first match, is sent the game with `open` once, and again only when the game a match
+    plays (the publication's prepared state and the template) differs from the last one sent, or the process is new.
+    One match is attached at a time; the reader thread's replies go to it and to nothing else, so the replies of a
+    cancelled or replaced match never reach the next one. The process is closed when the owner's last bridge closes.
+    """
+
+    def __init__(self):
+        from goal2.game.engine_process import EngineProcess
+        self.engine = EngineProcess(self._reply)
+        self.bridges = []
+        self.game = None          # (state, template) of the last `open` sent
+        self.match = None         # the attached _Match
+        self._lock = threading.Lock()
+
+    @classmethod
+    def join(cls, owner, bridge):
+        shared = getattr(owner, '_match_engine', None)
+        if shared is None:
+            shared = cls()
+            owner._match_engine = shared
+        shared.bridges.append(bridge)
+        return shared
+
+    def leave(self, owner, bridge):
+        self.bridges = [b for b in self.bridges if b is not bridge]
+        if self.bridges:
+            return
+        if getattr(owner, '_match_engine', None) is self:
+            del owner._match_engine
+        self.engine.close()
+
+    def _reply(self, kind, value):
+        with self._lock:
+            match = self.match
+        if match is not None:
+            match.put(kind, value)
+
+    def claim(self, match):
+        with self._lock:
+            if self.match is not None:
+                raise ValueError('Another match is already running; finish or cancel it first')
+            self.match = match
+
+    def release(self, match):
+        with self._lock:
+            if self.match is match:
+                self.match = None
+
+    def needs_open(self, state, template):
+        process = self.engine.process
+        return (process is None or process.poll() is not None or self.game is None
+                or self.game[1] != template or self.game[0] != state)
+
+
+class _Preparation:
+    """[designed: #254; T160] Encode the game off the owner's thread and send it with `open`. It never reads the
+    active owner and never sends a match; a cancelled preparation sends nothing more."""
+
+    def __init__(self, shared, state, template):
+        self.cancelled = False
+        self.error = None
+        self.phase = 'encode'
+
+        def run():
+            try:
+                raw = encode(state, template)
+                if self.cancelled:
+                    return
+                self.phase = 'open'
+                shared.game = (state, template)
+                shared.engine.open_encoded(raw)
+            except BaseException as exc:
+                self.error = exc
+        self.thread = threading.Thread(target=run, name='goal2-engine-open', daemon=True)
+        self.thread.start()
+
+
+class _Handle:
+    """[designed: T160] The engine process that serves a job, as the job's `process` (Popen's lifecycle methods);
+    before the process exists, it has no pid and is running."""
+
+    def __init__(self, engine):
+        self.engine = engine
+        self._process = None
+
+    @property
+    def popen(self):
+        if self._process is None:
+            self._process = self.engine.process
+        return self._process
+
+    def bind(self):
+        """The engine's current process serves the job (its match request goes to it)."""
+        return self.popen
+
+    @property
+    def pid(self):
+        return None if self.popen is None else self.popen.pid
+
+    @property
+    def returncode(self):
+        return None if self.popen is None else self.popen.returncode
+
+    def poll(self):
+        return None if self.popen is None else self.popen.poll()
+
+    def terminate(self):
+        if self.popen is not None:
+            self.popen.terminate()
+
+    def kill(self):
+        if self.popen is not None:
+            self.popen.kill()
+
+    def wait(self, timeout=None):
+        return None if self.popen is None else self.popen.wait(timeout=timeout)
+
+
+def _reply_failure(kind, value, completed):
+    """The error a reply that ends a match without its publication raises."""
+    if kind == 'error' and isinstance(value, str):
+        return ValueError('Watched worker failed: ' + value)
+    if kind == 'death' and isinstance(value, dict):
+        detail = value.get('error') or str(value.get('stderr') or '')[-1500:]
+        when = 'after its completion' if completed else 'without completion'
+        return ValueError(f'Watched engine exited ({value.get("code")}) {when}: {detail}')
+    if completed:
+        return ValueError(f'watched engine reply {kind!r} after the completed match')
+    return ValueError('invalid watched engine reply')
+
+
 class WatchedJobs:
     """[designed] One active job per owner; token-scoped reads/cancellation.
 
     Keep this bridge for the owner's lifetime. start() returns a token; poll(token)
     returns newly observed events. Completion is available as outcome and published
     exactly once by poll. cancel/close bound termination and never publish.
+    [designed: T160] The match plays in the owner's engine process (MatchEngine); `command` replaces the
+    engine's command line for a process it starts.
     """
-    WORKER = 'goal2.game.watched_worker'
+    KIND = 'watched'
 
     def __init__(self, owner, *, command=None):
         if getattr(owner, '_watched_jobs', None) is not None:
             raise ValueError('active game already has a watched bridge')
         owner._watched_jobs = self
+        self._setup(owner, WatchedPublication(owner), command)
+
+    def _setup(self, owner, publication, command):
         self.owner = owner
-        self.publication = WatchedPublication(owner)
-        self.command = command
-        self.process = None
+        self.publication = publication
+        self.command = None if command is None else list(command)
         self.token = None
         self.outcome = None
         self.events = []
         self.closed = False
+        self._active = False
+        self._match = None
+        self._handle = None
+        self._preparing = None
+        self.shared = MatchEngine.join(owner, self)
 
     @property
     def busy(self):
-        return self.process is not None
+        return self._active
+
+    @property
+    def process(self):
+        """The engine process serving the active job (a _Handle), or None."""
+        return self._handle if self._active else None
 
     def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False,
               bench=False):
@@ -275,22 +466,19 @@ class WatchedJobs:
         self._frame_sequence = 0
         self._frame_ack = -1
         self._frame_watermark = 0
-        self._frame_buffer = bytearray()
         self._engine_done = False
         self._complete = None
         self._completion_thread = None
         self._completion_work = None
-        self._sequence = 0
-        self._buffer = bytearray()
         # [designed: T102] The bench: the decision waiting for the player's answer, the decisions
-        # asked so far, the engine's reports and the command journal's position.
+        # asked and answered so far and the engine's reports.
         self._bench = bench
         self.waiting = None
+        self._asked = 0
         self._decisions = 0
         self._pause_pending = False
         self.dropped_pauses = 0
         self.reports = []
-        self._command_sequence = 0
         try:
             self._start(job, reference_seed, delay_byte, record_draws)
             if frames:
@@ -306,66 +494,88 @@ class WatchedJobs:
         self._original = self.owner.state
         self._snapshot = copy.deepcopy(self.owner.state)
         self._template = bytes(self.owner.template_bytes)
-        self._folder = tempfile.TemporaryDirectory(prefix='goal2-watched-')
-        folder = Path(self._folder.name)
-        source = folder / 'input'
-        (folder / 'request.json').write_text(json.dumps({'token':job.token, 'fixture':asdict(job.fixture),
-            'frames':self._frames_enabled, 'bench':self._bench,
-            'options':dict(reference_seed=reference_seed, delay_byte=delay_byte, record_draws=record_draws)}))
-        self._journal = (folder / 'events').open('w+b')
-        self._errors = (folder / 'errors').open('w+b')
-        self._frames = (folder / 'frames').open('w+b')
-        self._commands = (folder / 'commands').open('wb')
-        # [designed: T152, #496] the engine worker runs under PyPy 3.11 (engine_python), chosen here at the start,
+        # [designed: T152, #496] the engine runs under PyPy 3.11 (engine_python), chosen here at the start,
         # so a missing PyPy fails this start with its reason, never the window that holds the bridge
         from goal2.game.engine_python import worker_command
-        command = worker_command(self.WORKER) if self.command is None else list(self.command)
+        command = worker_command(ENGINE) if self.command is None else list(self.command)
         self.interpreter = command[0]
-        self.process = _PreparingProcess(job.state, self._template, source,
-            command + [str(source), str(folder / 'events')],
-            cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL, stderr=self._errors)
+        shared = self.shared
+        shared.engine.command = command
+        match = _Match()
+        shared.claim(match)
+        self._match = match
+        self._active = True
+        self._sent = False
+        self._handle = _Handle(shared.engine)
+        self._request = dict(fixture=job.fixture, frames=self._frames_enabled, bench=self._bench,
+                             options=dict(reference_seed=reference_seed, delay_byte=delay_byte,
+                                          record_draws=record_draws))
+        if shared.needs_open(job.state, self._template):
+            self._preparing = _Preparation(shared, job.state, self._template)
+        else:
+            self._send_match()
+
+    def _send_match(self):
+        request = self._request
+        self.shared.engine.match(self.KIND, request['fixture'], options=request['options'],
+                                 frames=request['frames'], bench=request['bench'])
+        self._handle.bind()
+        self._sent = True
+
+    def _launch(self):
+        """[designed: #254] On the owner's thread, once the game is sent: the match request."""
+        preparing = self._preparing
+        if preparing is not None:
+            if preparing.thread.is_alive():
+                return
+            preparing.thread.join()
+            if preparing.error is not None:
+                raise preparing.error
+            self._preparing = None
+        if self._match.replies:
+            # [designed: T160] the engine refused the game, or ended, before the match was asked
+            raise _reply_failure(*self._match.replies.popleft(), False)
+        self._send_match()
 
     def _check_token(self, token):
         if token != self.token or not self.busy:
             raise ValueError('stale or consumed watched job token')
 
+    def _check_owner(self):
+        if (self.owner.state is not self._original or self.owner.state != self._snapshot
+                or self.owner.template_bytes != self._template):
+            raise ValueError('watched job is stale; active game changed')
+
     def poll(self, token):
         self._check_token(token)
         new = []
         try:
-            if (self.owner.state is not self._original or self.owner.state != self._snapshot
-                    or self.owner.template_bytes != self._template):
-                raise ValueError('watched job is stale; active game changed')
-            # [designed] Drain queued complete frames before reading another bounded batch.
-            ready = (len(self._buffer) >= 4 and
-                     len(self._buffer) >= 4 + struct.unpack('!I', self._buffer[:4])[0])
-            if not ready:
-                self._buffer.extend(self._journal.read(READ_BUDGET))
-            for _ in range(32):
-                if len(self._buffer) < 4:
+            self._check_owner()
+            if not self._sent:
+                self._launch()
+                return new
+            replies = self._match.replies
+            for _ in range(REPLY_BUDGET):
+                if not replies:
                     break
-                size = struct.unpack('!I', self._buffer[:4])[0]
-                if size > MAX_PACKET:
-                    raise ValueError('watched IPC packet exceeds limit')
-                if len(self._buffer) < size + 4:
-                    break
-                packet = bytes(self._buffer[4:4 + size])
-                del self._buffer[:4 + size]
-                identity, number, kind, value = _restore_json_value(json.loads(packet), 'watched IPC')
-                if identity != token or type(number) is not int or number != self._sequence or self._complete is not None:
-                    raise ValueError('watched IPC identity/order differs from active job')
-                self._sequence += 1
-                if kind == 'event':
-                    value = _event(value)
+                kind, value = replies.popleft()
+                if self._complete is not None:
+                    raise _reply_failure(kind, value, True)
+                if kind == 'event' and isinstance(value, Event):
+                    value = _event(asdict(value))
                     self.events.append(value)
                     new.append(copy.deepcopy(value))
                     if self._bench and value.kind == 'decision' and value.data.get('context') in BENCH_CONTEXTS:
                         if self.waiting is not None:
                             raise ValueError('bench decision before the previous was answered')
                         self.waiting = copy.deepcopy(value)
+                        self._asked += 1
                         if value.data['context'] == 'pause':
                             self._pause_pending = False
+                elif kind == 'decision' and self._bench and isinstance(value, dict):
+                    # [designed: T159] The engine names the decision it waits on: the bench decision just observed.
+                    if value.get('decision') != self._asked - 1 or not self.events or value.get('event') != self.events[-1]:
+                        raise ValueError('bench decision reply differs from the observed decision')
                 elif kind == 'answered' and self._bench and isinstance(value, dict) and len(self.reports) < self._decisions:
                     self.reports.append(_report(value))
                 elif kind == 'pause_dropped' and self._bench and self._pause_pending and type(value) is int:
@@ -373,31 +583,17 @@ class WatchedJobs:
                     # or the shoot-out): the next Enter is sent again.
                     self._pause_pending = False
                     self.dropped_pauses += 1
-                elif kind == 'complete':
-                    value = WatchedOutcome(value['result'], _memory(value['memory']),
-                        tuple(_event(event) for event in value['events']), tuple(value['seeds']), value['engine_year'])
+                elif kind == 'complete' and isinstance(value, WatchedOutcome):
                     if tuple(self.events) != value.events:
                         raise ValueError('watched completion differs from live event stream')
                     self._complete = value
-                elif kind == 'error' and isinstance(value, str):
-                    raise ValueError('Watched worker failed: ' + value)
                 else:
-                    raise ValueError('invalid watched IPC record')
-            code = self.process.poll()
-            # [designed] Drain bounded batches after exit, before accepting the final packet.
-            if code is not None and not self._buffer and self._journal.tell() == Path(self._journal.name).stat().st_size:
-                if code != 0 or self._complete is None:
-                    self._errors.seek(0)
-                    detail = self._errors.read(1500).decode(errors='replace')
-                    raise ValueError(f'Watched worker exited ({code}) without completion: {detail}')
+                    raise _reply_failure(kind, value, False)
+            if self._complete is not None and not replies:
+                # [designed: T160] The engine's `complete`, after every event of the match, ends it; the process
+                # stays up for the next match.
                 self._engine_done = True
                 self._maybe_publish(token)
-            elif code is not None and len(self._buffer) < 4 and self._journal.tell() == Path(self._journal.name).stat().st_size:
-                raise ValueError('truncated watched IPC record')
-            elif code is not None and len(self._buffer) >= 4:
-                size = struct.unpack('!I', self._buffer[:4])[0]
-                if len(self._buffer) < size + 4 and self._journal.tell() == Path(self._journal.name).stat().st_size:
-                    raise ValueError('truncated watched IPC record')
             return new
         except Exception as exc:
             self.cancel(token)
@@ -405,17 +601,14 @@ class WatchedJobs:
 
     @property
     def engine_complete(self):
-        """[designed] Valid transcript/exit received; presentation may still own pending state."""
+        """[designed] Valid transcript received; presentation may still own pending state."""
         return getattr(self, '_engine_done', False)
 
     def _maybe_publish(self, token):
         if not self._engine_done:
             return
         if self._frames_enabled:
-            size = Path(self._frames.name).stat().st_size
-            if size > MAX_FRAME_BYTES:
-                raise ValueError('pitch frame total budget exceeded')
-            if self._frame_buffer or self._frames.tell() != size:
+            if self._match.frames:
                 return
             if self._frame_sequence != self._complete.result['ticks'] or self._frame_sequence == 0:
                 raise ValueError('pitch frame count differs from completed ticks')
@@ -444,51 +637,32 @@ class WatchedJobs:
         self._release()
 
     def poll_frames(self, token):
-        """[designed] Read <=64KiB/decode <=32 samples; caller owns returned poses.
+        """[designed] Decode <=32 samples; caller owns returned poses.
 
         Canonical poll must run first. A frame ahead of that poll's event watermark
-        waits in the bounded decoder; after canonical completion it is an error.
+        waits in the queue; after canonical completion it is an error.
         Returned frames require cumulative acknowledgement after actual consumption.
         """
         self._check_token(token)
         if not self._frames_enabled:
             raise ValueError('pitch frames were not enabled')
         try:
-            if (self.owner.state is not self._original or self.owner.state != self._snapshot
-                    or self.owner.template_bytes != self._template):
-                raise ValueError('watched job is stale; active game changed')
-            size = Path(self._frames.name).stat().st_size
-            if size > MAX_FRAME_BYTES:
-                raise ValueError('pitch frame total budget exceeded')
-            ready = len(self._frame_buffer) >= 4 and len(self._frame_buffer) >= 4 + struct.unpack('!I',self._frame_buffer[:4])[0]
-            if not ready:
-                self._frame_buffer.extend(self._frames.read(FRAME_READ_BUDGET))
+            self._check_owner()
+            frames = self._match.frames
             new = []
             for _ in range(FRAME_POLL_BUDGET):
-                if len(self._frame_buffer) < 4:
+                if not frames:
                     break
-                length = struct.unpack('!I',self._frame_buffer[:4])[0]
-                if length > MAX_FRAME_PACKET:
-                    raise ValueError('pitch frame packet budget exceeded')
-                if len(self._frame_buffer) < length + 4:
-                    break
-                identity, frame = json.loads(bytes(self._frame_buffer[4:length+4]))
-                if identity != token:
-                    raise ValueError('pitch frame token differs')
+                frame = frames[0]
                 validate(frame, self._frame_sequence, self._frame_watermark)
                 if frame['watermark'] > len(self.events):
                     if self._engine_done:
                         raise ValueError('pitch frame watermark exceeds canonical events')
                     break
-                del self._frame_buffer[:length+4]
+                frames.popleft()
                 self._frame_sequence += 1
                 self._frame_watermark = frame['watermark']
                 new.append(frame)
-            if (self._engine_done and self._frames.tell() == size and self._frame_buffer
-                    and (len(self._frame_buffer) < 4 or len(self._frame_buffer) < 4 + struct.unpack('!I',self._frame_buffer[:4])[0])):
-                raise ValueError('truncated pitch frame record')
-            if self._engine_done and size == 0:
-                raise ValueError('pitch frame stream is empty')
             self._maybe_publish(token)
             return new
         except Exception as exc:
@@ -503,27 +677,20 @@ class WatchedJobs:
             raise ValueError('stale or invalid pitch frame acknowledgement')
         self._frame_ack = sequence
         if self._bench:
-            # [designed: T102] The pacing: the child may run LEAD samples past this one.
-            self._command(token, 'ack', sequence)
+            # [designed: T102] The pacing: the engine may run LEAD samples past this one.
+            self._command(token, lambda engine: engine.ack(sequence))
 
-    def _command(self, token, kind, value):
-        """[designed: T102] One record of the command journal, written by the parent alone."""
+    def _command(self, token, send):
+        """[designed: T102; T160] One request to the running match, on the engine's pipe."""
         try:
-            packet = json.dumps([token, self._command_sequence, kind, value], allow_nan=False,
-                                separators=(',', ':')).encode('utf8')
-            if len(packet) > MAX_COMMAND_PACKET or self._commands.tell() + len(packet) + 4 > MAX_COMMANDS:
-                raise ValueError('watched command journal exceeds limit')
-            self._commands.write(struct.pack('!I', len(packet)) + packet)
-            self._commands.flush()
-            self._command_sequence += 1
+            send(self.shared.engine)
         except Exception as exc:
             self.cancel(token)
             raise ValueError(f'Invalid watched command: {exc}') from exc
 
     def frames_drained(self):
-        """[designed: T102] Every pitch sample the child has written so far has been read."""
-        return (not self._frame_buffer and
-                self._frames.tell() == Path(self._frames.name).stat().st_size)
+        """[designed: T102] Every pitch sample the engine has sent so far has been read."""
+        return not self._match.frames
 
     def pause(self, token):
         """[designed: T102] The player's Enter in play: the original takes it at its next key poll
@@ -533,9 +700,9 @@ class WatchedJobs:
         self._check_token(token)
         if not self._bench:
             raise ValueError('the bench was not enabled')
-        if self.waiting is not None or self._pause_pending or self._engine_done:
+        if self.waiting is not None or self._pause_pending or self._engine_done or not self._sent:
             return False
-        self._command(token, 'pause', None)
+        self._command(token, lambda engine: engine.pause())
         self._pause_pending = True
         return True
 
@@ -546,42 +713,58 @@ class WatchedJobs:
         if self.waiting is None:
             raise ValueError('no bench decision is waiting')
         pairs = _pairs(list(substitutions))
-        self._command(token, 'answer', {'decision': self._decisions, 'substitutions': pairs})
+        decision = self._decisions
+        self._command(token, lambda engine: engine.answer(decision, pairs))
         self._decisions += 1
         self.waiting = None
         # [designed] Publication occurs on the next canonical poll, whose returned
         # events must reach the caller rather than disappear inside acknowledgement.
 
-
     def _release(self):
-        for name in ('_journal', '_errors', '_frames', '_commands'):
-            stream = getattr(self, name, None)
-            if stream is not None:
-                stream.close()
-        folder = getattr(self, '_folder', None)
-        if folder is not None:
-            _remove_folder(folder)
-            self._folder = None
+        if self._match is not None:
+            self.shared.release(self._match)
         if getattr(self, '_pitch_owns_pending', False):
             self.owner.match_pending = False
             self._pitch_owns_pending = False
-        self.process = None
+        self._active = False
+        self._preparing = None
         self._completion_thread = None
         self._completion_work = None
 
+    def _kill(self):
+        """End the engine process; its reader reports the end (a death) to the attached match."""
+        self._handle.bind()
+        process = self.shared.engine.process
+        if process is not None:
+            process.kill()
+
     def cancel(self, token):
         self._check_token(token)
-        # [designed: #254] Invalidate first; a timed-out preparer/child stays owned
-        # and busy until cancellation can reap it, before any folder is released.
+        # [designed: #254] Invalidate first; a job whose game is still being encoded, or whose
+        # engine has not answered, stays owned and busy until cancellation can reap it.
         self.publication.cancel()
-        self.process.terminate()
-        try:
-            self.process.wait(timeout=0.5)
-        except subprocess.TimeoutExpired:
-            self.process.kill()
-            self.process.wait(timeout=0.5)
-        # [designed: #254] Completion starts only after engine exit, so these
-        # bounded waits cannot overlap a running engine/input-preparation wait.
+        preparing = self._preparing
+        if preparing is not None and preparing.thread.is_alive():
+            preparing.cancelled = True
+            preparing.thread.join(0.5)
+            if preparing.thread.is_alive() and preparing.phase == 'open':
+                # [designed: T160] An engine that does not take the game is ended; that ends the write.
+                self._kill()
+            preparing.thread.join(0.5)
+            if preparing.thread.is_alive():
+                raise subprocess.TimeoutExpired('watched input preparation', 1.0)
+        match = self._match
+        if self._sent and not match.ended.is_set():
+            try:
+                self.shared.engine.cancel()
+            except OSError:
+                pass
+            if not match.ended.wait(CANCEL_WAIT):
+                self._kill()
+                if not match.ended.wait(DEATH_WAIT):
+                    raise subprocess.TimeoutExpired('match engine cancellation', CANCEL_WAIT + DEATH_WAIT)
+        # [designed: #254] Completion starts only after the engine's `complete`, so these
+        # bounded waits cannot overlap a running match.
         thread = getattr(self, '_completion_thread', None)
         if thread is not None:
             thread.join(0.5)
@@ -610,3 +793,11 @@ class WatchedJobs:
         self.closed = True
         if getattr(self.owner, '_watched_jobs', None) is self:
             del self.owner._watched_jobs
+        self._leave()
+
+    def _leave(self):
+        """[designed: T160] The owner's engine process ends with its last bridge (#417)."""
+        shared = getattr(self, 'shared', None)
+        if shared is not None:
+            self.shared = None
+            shared.leave(self.owner, self)
