@@ -159,10 +159,11 @@ sys.exit(pygame_viewer.main())
                 self.assertIsNotNone(viewer.poll());self.assertFalse(w.watched.engine.busy)
                 self.assertEqual(m.state,before);self.assertFalse(m.match_pending)
                 from dataclasses import replace
-                m.state.campaign.fixtures=tuple(replace(f,kind=2) for f in m.state.campaign.fixtures)
+                # [designed: T176] Qualifiers are watched (test_watch_qualifiers_t176); an unsupported kind is not.
+                m.state.campaign.fixtures=tuple(replace(f,kind=255) for f in m.state.campaign.fixtures)
                 w.tactics[0][1].setChecked(not w.tactics[0][1].isChecked())
                 w.start_watched()
-                self.assertIn('qualifiers are unsupported',w.status.text())
+                self.assertIn('scheduled friendlies and supported qualifiers only',w.status.text())
                 self.assertFalse(w.watched.busy);self.assertIsNone(w.watched.process)
             finally:timer.stop();w.close();w.deleteLater();app.processEvents()
             self.assertIsNotNone(engine.wait(timeout=5))
@@ -175,12 +176,13 @@ sys.exit(pygame_viewer.main())
                     with self.assertRaisesRegex(ValueError,'pygame-ce.*pip install'):c.start(frames=False,)
                 self.assertEqual(m.state,before);self.assertIsNone(c.process)
                 m.state.campaign=None
-                with self.assertRaisesRegex(ValueError,'scheduled friendlies only'):c.start(frames=False,)
+                with self.assertRaisesRegex(ValueError,'scheduled friendlies and supported qualifiers only'):c.start(frames=False,)
                 m.state=before
                 from dataclasses import replace
                 campaign=m.state.campaign
-                campaign.fixtures=tuple(replace(f,kind=2) for f in campaign.fixtures)
-                with self.assertRaisesRegex(ValueError,'qualifiers are unsupported'):c.start(frames=False,)
+                # [designed: T176] Qualifiers are watched (test_watch_qualifiers_t176); an unsupported kind is not.
+                campaign.fixtures=tuple(replace(f,kind=255) for f in campaign.fixtures)
+                with self.assertRaisesRegex(ValueError,'scheduled friendlies and supported qualifiers only'):c.start(frames=False,)
                 self.assertIsNone(c.process)
             finally:c.close()
 

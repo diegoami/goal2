@@ -321,7 +321,7 @@ class ManagementWindow(QMainWindow):
         if not self.require_active():return
         try:
             # [designed: T176] a friendly or a qualifier (WatchedController.fixture)
-            what='friendly' if self.watched.fixture().kind==1 else 'qualifier'
+            what='friendly' if self.watched.fixture().kind==1 else 'competitive match'
             state=self.model.state
             if self.draft()!=(state.starting_eleven,state.captain,state.country_tactics):
                 raise ValueError('Confirm or discard management edits before watching')
@@ -334,7 +334,7 @@ class ManagementWindow(QMainWindow):
             done=self.watched.poll()
             self.bench.poll()
             if done:
-                self.set_busy(False);self.refresh(('Original friendly' if self.watched.engine is self.watched.friendly_engine else 'Original qualifier')+' complete; result can be saved.');self.match_finished()
+                self.set_busy(False);self.refresh(('Original friendly' if self.watched.engine is self.watched.friendly_engine else 'Original competitive match')+' complete; result can be saved.');self.match_finished()
             elif self.watched.busy and self.watched.display.events:
                 event=self.watched.display.events[-1]
                 self.status.setText(f"Original engine: {event['minute']}′ {event['score'][0]} — {event['score'][1]}")

@@ -84,7 +84,8 @@ the next match; commands left over from a match that has ended are ignored.
 
 [designed: T160] The window's watched and competitive matches play here, through the bridge API they had on the
 file journals ([watched-jobs.md](watched-jobs.md)): `WatchedJobs` (the watched Play, under
-`goal2/desktop/watched.py`'s `WatchedController`) and `CompetitiveJobs` (`goal2/desktop/competitive.py`). The owner
+`goal2/desktop/watched.py`'s `WatchedController`) and `CompetitiveJobs` (`goal2/desktop/competitive.py`; [designed: T176]
+also under `WatchedController` for a watched qualifier, `kind: competitive` with `frames` and `bench`). The owner
 (the window's model) holds one `MatchEngine`, which both bridges share:
 
 - It owns one `EngineProcess`. The game is sent with `open` once, and again only when the game a match plays (the

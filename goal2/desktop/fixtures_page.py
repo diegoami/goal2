@@ -310,12 +310,12 @@ def enabled(self,active):
     # [designed: owner decision 1, #526; T176] A qualifier is watched too; Play keeps its quick original route.
     watch=pending is not None and (pending.kind==1 or competitive)
     self.play.setEnabled(active and (quick or competitive));self.watch.setEnabled(active and watch)
-    self.watch.setText('Watch original qualifier' if competitive else 'Watch original friendly')
+    self.watch.setText('Watch original competitive match' if competitive else 'Watch original friendly')
     # [designed: T50] A finished stage is not an unsupported fixture: the finals builder is T52's.
     finished=state.campaign is not None and pending is None
     self.fixture_routes.setText(('Play: '+('quick friendly' if quick else 'original competitive') if quick or competitive else
         'Play unavailable: this stage is complete; the next stage is not available yet' if finished else 'Play unavailable: unsupported pending fixture')+
-        '\n'+(('Watch: original qualifier' if competitive else 'Watch: original friendly') if watch else
+        '\n'+(('Watch: original competitive' if competitive else 'Watch: original friendly') if watch else
                'Watch unavailable: scheduled friendlies and supported qualifiers only'))
 
 

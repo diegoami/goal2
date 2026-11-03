@@ -187,7 +187,7 @@ class WatchedController:
         except Exception as exc:
             self.close_viewer()
             if isinstance(exc, (OSError, ValueError, QuickEngineError)):
-                what = 'friendly' if pending.kind == 1 else 'qualifier'
+                what = 'friendly' if pending.kind == 1 else 'competitive match'
                 raise ValueError(f'Cannot start original {what}: {exc}') from exc
             raise
 

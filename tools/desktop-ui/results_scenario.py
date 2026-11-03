@@ -178,7 +178,7 @@ def results(args):
             unsupported.state.campaign.fixtures=tuple(replace(x,kind=255) if x.fixture_id==f.fixture_id else x for x in unsupported.state.campaign.fixtures)
             w=ManagementWindow(unsupported);w.show();app.processEvents();before=copy.deepcopy(unsupported.state)
             w.start_match();assert 'No supported pending competitive fixture' in w.status.text(),'unsupported Play guard differs'
-            w.start_watched();assert 'Watch supports scheduled friendlies only' in w.status.text(),'unsupported Watch guard differs'
+            w.start_watched();assert 'Watch supports scheduled friendlies and supported qualifiers only' in w.status.text(),'unsupported Watch guard differs'
             assert not w.play.isEnabled() and not w.watch.isEnabled() and unsupported.state==before
             report['unsupported_callbacks_refused']=True;w.close();w.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete);app.processEvents()
             report['result']='PASS'
