@@ -179,6 +179,9 @@ another session, model or computer.
   List other checkouts with `--checkout DIR` or `GOAL2_CHECKOUTS`.
 - **Checkpoint** before stopping, after a merge, when a long job starts or ends, and when a blocker
   is found. A checkpoint records state, not decisions: those go into the documents (CLAUDE.md rule 8).
+- **One local gate at a time per computer.** [designed: main session, 2026-11-03] WSL crashed twice on the owner's
+  main computer (21 GB) while two implementers each ran `check_premerge.py`. Each gate plays PyPy matches in
+  parallel. With several implementers running, the main session runs their gates one after another.
 - **Long jobs** (a gate, a slow study, a native probe) start with
   `python3 tools/jobs.py start <name> -- <command>`. They outlive the session; `list` says whether
   each is running, finished with its exit code, or vanished, and `wait <name>` waits by PID
