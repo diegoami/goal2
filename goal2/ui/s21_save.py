@@ -272,8 +272,9 @@ def save(window, model, done=None, cancelled=None):
     return window.push(SaveScreen(window, window.current(), model, done, cancelled))
 
 
-def ask_to_save(window, model, then, cancelled=None):
-    """*Do you want to save this game?* Y: the name box, then `then`; N: `then` at once; Esc: stay."""
+def ask_to_save(window, model, then, cancelled=None, title="quit"):
+    """*Do you want to save this game?* Y: the name box, then `then`; N: `then` at once; Esc: stay. `title` names the
+    box after what follows it (*quit*; the desk's *new career*, T177)."""
     def yes():
         window.pop()
         save(window, model, done=then, cancelled=cancelled)
@@ -286,7 +287,7 @@ def ask_to_save(window, model, then, cancelled=None):
         window.pop()
         if cancelled is not None:
             cancelled()
-    return window.push(QuestionScreen(window, window.current(), "quit", "Save", SAVE_QUESTION, yes, no, cancel))
+    return window.push(QuestionScreen(window, window.current(), title, "Save", SAVE_QUESTION, yes, no, cancel))
 
 
 def quit_game(window, model):
