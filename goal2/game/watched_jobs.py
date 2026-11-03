@@ -397,7 +397,9 @@ class _Handle:
             self.popen.kill()
 
     def wait(self, timeout=None):
-        return None if self.popen is None else self.popen.wait(timeout=timeout)
+        if self.popen is None:
+            return 0 if self.unused else None
+        return self.popen.wait(timeout=timeout)
 
 
 def _reply_failure(kind, value, completed):
@@ -524,11 +526,27 @@ class WatchedJobs:
             self._send_match()
 
     def _send_match(self):
+        """[designed: #254; T160] The match request, on the owner's thread. It never starts a process there (which
+        would send it the game on this thread): an engine that ended since it took the game fails the start."""
+        process = self.shared.engine.process
+        if self._match.replies or process is None or process.poll() is not None:
+            self._ended_before_match()
         request = self._request
-        self.shared.engine.match(self.KIND, request['fixture'], options=request['options'],
-                                 frames=request['frames'], bench=request['bench'])
+        try:
+            self.shared.engine.match(self.KIND, request['fixture'], options=request['options'],
+                                     frames=request['frames'], bench=request['bench'])
+        except OSError as exc:
+            self._ended_before_match(exc)
         self._handle.bind()
         self._sent = True
+
+    def _ended_before_match(self, error=None):
+        """[designed: T160] The engine refused the game, or ended, before the match was asked: its reply says why."""
+        if self._match.ended.wait(DEATH_WAIT) and self._match.replies:
+            raise _reply_failure(*self._match.replies.popleft(), False) from error
+        if error is not None:
+            raise error
+        raise ValueError('the engine process ended before the match was asked')
 
     def _launch(self):
         """[designed: #254] On the owner's thread, once the game is sent: the match request."""
@@ -538,14 +556,11 @@ class WatchedJobs:
                 return
             preparing.thread.join()
             if preparing.error is not None:
-                if preparing.engine_ran and self._match.ended.wait(DEATH_WAIT):
+                if preparing.engine_ran:
                     # [designed: T160] the game's write failed because the engine ended: its end says why
-                    raise _reply_failure(*self._match.replies.popleft(), False) from preparing.error
+                    self._ended_before_match(preparing.error)
                 raise preparing.error
             self._preparing = None
-        if self._match.replies:
-            # [designed: T160] the engine refused the game, or ended, before the match was asked
-            raise _reply_failure(*self._match.replies.popleft(), False)
         self._send_match()
 
     def _check_token(self, token):

@@ -240,11 +240,13 @@ class WatchedJobsTests(unittest.TestCase):
                              ('event shape','invalid watched event shape'),('truncated','truncated'),('oversized','exceeds'),
                              ('unrequested','no match running'),('order','order/watermark')]:
             with self.subTest(message=message):
-                token=self.bridge(idle=mode)
-                with self.assertRaisesRegex(ValueError,message):
-                    self.until(token,lambda events:False)
-                self.assertEqual(self.owner.state,self.before)
-                self.jobs.close()
+                try:
+                    token=self.bridge(idle=mode)
+                    with self.assertRaisesRegex(ValueError,message):
+                        self.until(token,lambda events:False)
+                    self.assertEqual(self.owner.state,self.before)
+                finally:
+                    self.jobs.close()
 
     def test_bridge_imports_without_ui_or_optional_runtime(self):
         import subprocess

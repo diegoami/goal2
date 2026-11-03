@@ -111,8 +111,9 @@ class Session(unittest.TestCase):
             engine = model._match_engine.engine
             before = copy.deepcopy(model.state)
 
-            # A watched Play, cancelled at its first event.
-            watched.start(frames=False)
+            # A watched Play with the pitch and the bench, as the window's, cancelled at its first event. Nothing
+            # acknowledges the samples, so the engine waits at the LEAD, where it reads the cancel at once.
+            watched.start()
             token = watched.engine_token
             seen = []
             until(lambda: seen.extend(watched.engine.poll(token)) or bool(seen), WAIT, 'no first event')
