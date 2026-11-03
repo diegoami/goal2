@@ -624,3 +624,10 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
 12. **The look:** the original's colour scheme and a retro feel. The mockups use the original's palette, read from
     the captures, and a blocky VGA-style font (PxPlus IBM VGA 8x16, CC BY-SA 4.0). The layout and everything else
     stay ([the look](#3-rules-for-the-whole-ui)).
+
+**Owner decisions, 2026-11-03** (on T162's questions, #536: "do as proposed"):
+
+13. **S22's text box** fills most of the screen, not the mockup's nine lines: the original's help is a long text.
+    Made in T163.
+14. **Adding GOAL.HLP later**: the desk (S06) gets a *re-import data* entry, which opens S01 over the imported
+    folder. Made in T164. Until then, F1's message names the re-import command.
