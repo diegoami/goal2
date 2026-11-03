@@ -658,3 +658,5 @@ with some modification for the sake of the UX."
     players never overlap (a Championship Manager look). Everything else on the pitch mimics the original:
     proportions, goal and penalty areas, surround, the officials, the keepers, the header. A departure is made
     only for the UX, and is marked `[designed]` with its reason.
+    **Scheduled after the first playable version** (owner, 2026-11-03: "the look of the players is fine, an
+    improvment with disk is post playable"). T179 (#573) is `post-playable`.
