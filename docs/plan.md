@@ -33,6 +33,12 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
      state;
    - GOAL.DAT is read from the player's own install first, and replaced by goal2's own data later;
    - the Rust engine (diegoami/goal2rust) goes on in parallel and does not change this order.
+   - [designed: owner, 2026-11-03, #509] **A key wait that draws counts as answered at its first key poll.** After a
+     win of kind 0x67 or 0xCB, the original's post-match news plays a crowd animation until a key is pressed, each
+     loop 1,000 to 1,500 draws on the RNG word 7B62 [confirmed: goal2-archaeology `seg_000E_01.asm:469-640`]. goal2
+     counts it as a key queued before the wait: the tune makes no draws and exactly one animation call runs. The
+     Core oracle is driven the same way, so the full-cycle equivalence (T174) holds; neither skipping the draws
+     nor counting real time was chosen.
    [designed: owner, 2026-11-03, #524-#527] **The rebuilt UI.** The design phase is done:
    - the screens follow the original's flow, in its palette with a blocky VGA font (docs/design/ui-2026-11);
    - the window is PySide6, trimmed to Essentials, with the pitch as a widget in it (docs/design/technology-2026-11);
