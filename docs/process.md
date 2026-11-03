@@ -27,6 +27,16 @@ one, `git pull` and take the next free number.
 - **Split** a task likely to outlast about an hour of implementation, or one touching more than
   three independently mergeable layers, into tasks that each merge on their own.
 - The main session edits task files directly on `main`, the reason in the commit.
+- **Finding gaps is the main session's job, not the owner's.** [designed: owner, 2026-11-03: "keep finding gaps,
+  it is annoying having to spoonfeed you those"]
+  - **Before writing a task**, the main session checks it against the original's workflow. For a screen, its
+    Done-when tests every action on the design's *Actions* line, or names the action it leaves out with the
+    reason and an issue. It also checks what today's window does for the same step, so nothing working is lost.
+  - **Before merging**, the main session walks the player's journey through the merged screens, as the owner
+    would. It checks the key bar against the design, and asks whether a player can still do what the original
+    lets them do at that step. A gap that breaks play is filed and scheduled before the next task is written.
+  - **At each milestone**, before handing the owner a build, it plays the build's path end to end
+    (offscreen screenshots, or the capture process) and reports the gaps it found itself.
 
 ## 3. The loop
 
