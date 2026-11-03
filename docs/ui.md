@@ -13,7 +13,8 @@ names the per-user goal2 folder (its `data` holds the imported files). `--import
 GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` writes PNGs at 1440×900 from a
 temporary data folder of its own and exits: S01, the placeholder home and S22 (with a stand-in help text) always;
 S02 with two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages (labelled so), S06
-the desk and S07 team info with the new career when it finds GOAL.DAT and the template in the data root's `data` or in
+the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, and S11 and S13 again after
+its first round (the route's quick friendly), when it finds GOAL.DAT and the template in the data root's `data` or in
 a checkout's `.cache/`.
 
 ## The journey
@@ -69,6 +70,9 @@ the format; T168 adds saving under a name from the desk (F7). The desk never sav
 | `goal2/ui/s05_bulletin.py` | S05 Bulletin: pages *n of m*, any key onward. |
 | `goal2/ui/s06_desk.py` | S06 The manager's desk (T164), and `ReimportScreen`, S01 over the data folder. |
 | `goal2/ui/s07_team_info.py` | S07 Team info (T164): S04's card for any country, the list, the next opponent marked; a country's twenty and its tactics, read only. |
+| `goal2/ui/s11_fixtures.py` | S11 Fixtures (T178): the coming round, or a country's coming fixtures. |
+| `goal2/ui/s12_tournament.py` | S12 Tournament (T178): the displays and continents as tabs, a group's table beside its matches, the banner. |
+| `goal2/ui/s13_history.py` | S13 History (T178): this career's results by season; the boxes without a source. |
 | `goal2/ui/saves.py` | The named save format (Qt-free). |
 | `goal2/ui/start_look.py` | The style S02–S05 add to the theme's sheet, and their shared parts (boxes, rows, typed lines). |
 
@@ -171,16 +175,53 @@ the manager's desk, the career's home: every management screen returns to it wit
 - **S06** shows the manager (name; rating *unknown*: the route keeps none), the team with its world and continental
   rankings, the next opponents with theirs and the match's kind (the route assigns no venue, T41a, so no home or
   away), the managers, and the twenty with role codes, the eleven above the bench; the competition at the title
-  bar's right end. The six options in the original's order, the cursor on *team info*: *team info* (S07), *fixture
-  list*, *tournament*, *history* (T178's screens, #560), *select squad* (S08, also Space) and *play next game*
-  (T167's match screens). **T** S10, **F1** S22; **F3** comes with T167, **F4**, **F7** and **F10** with T168. A
+  bar's right end, named as the original's hub names it (T178, #563: *2028 European Championship · QUALIFYING*). The
+  six options in the original's order, the cursor on *team info*: *team info* (S07), *fixture list* (S11),
+  *tournament* (S12), *history* (S13), *select squad* (S08, also Space) and *play next game* (T167's match
+  screens). **T** S10, **F1** S22; **F3** comes with T167, **F4**, **F7** and **F10** with T168. A
   placeholder says which task brings it, on the desk, and does nothing else. *re-import data*, a goal2 addition
   (decision 14), is a seventh option under a "goal2 addition" tag: S01 over the data folder, Esc back to the desk.
 - **S07** shows S04's card for the highlighted country, read from the career, beside the list in groups of 16, the next
   opponent marked. It opens on the world ranking at the next opponent. **↑↓** country, **←→** group, **Ins** the
   other ranking (the highlight stays), **Space** the country's twenty read only, **T** its tactics (S10 for your own
-  country; the eight lines read only for another), **Enter** its fixtures (T178), **Esc** the desk.
+  country; the eight lines read only for another), **Enter** its fixtures (S11, T178; Esc back to S07), **Esc** the
+  desk.
 
 `goal2/tests/test_ui_desk_t164.py` visits the landing from a new career and a save, each option, Esc back from S07,
 S08, S10 and S01, the swap against today's Team swap through `confirm`, S07's keys, and S04's order and average age
 against `t156-005-country-holland`. The pictures are in [design/ui-2026-11/T164-screens](design/ui-2026-11/T164-screens/).
+
+## Fixtures, tournament and history: S11, S12, S13 (T178)
+
+[designed: owner, 2026-11-03, #526, #527 D2; T178, #560, #563] Three read-only screens the desk opens, over the
+Python route's state. Every number they show is the model's (`DesktopModel`'s read-only calls, each tested), and a
+stage the route has not reached says so instead of showing rows.
+
+- **The model's calls.** `fixture_list(country=None)`: a round is what one *play next game* plays on this route, the
+  world rows from the cursor up to the managed fixture after the next one, numbered by the career's match day; with
+  a country, that country's coming fixtures. `tournament()`: every group of the stage being played, its table
+  (`standings.group_table`, the managed one `competition_table`'s) and its matches; None after the opening stage.
+  `history()`: this career's results by season (`campaign.results`). `competition(continent, phase)`: the banner's
+  year, name and phase (`CHAMPIONSHIPS`, `PHASES`); `continent(country)`.
+- **The banner** [confirmed: t156-013-hub, t156-227, t156-228, m244-finals-stage-hub, m244-world-qualifying-a]:
+  *European Championship* and *American Championship* as the captures print them, *African* and *Asian
+  Championship* from the adjectives at `DS:690A` [derived], *World Cup* from stage 5; QUALIFYING or FINALS by
+  stage. Stage 6 (the play-offs) is in no capture and keeps the route's words.
+- **S11** lists the round, each fixture's kind (*friendly*, *qualifying*), ✓ on your own match and what happens at
+  kick-off (*your match*, *auto result*); **↑↓** scroll, **Esc** back. Enter on your own match says it is always
+  watched (owner decision 1). The original's ✓ toggle on another country's match is not built: the engine plays only
+  the managed country's match watched (`prepare_watched` refuses another fixture, and the world refuses a watched
+  silent row), so Enter there says it comes later. *Cancel or rearrange* your own friendly has no call on the route
+  and says so too. The two sides have no *home* and *away* headings: the route keeps no venue (T41a, #562).
+- **S12**: the displays (Qualifying, Finals, Championship) and the continents (Europe, Africa, Americas, Asia) as
+  tabs, a click on a tab as its key; the group's table P W D L F A T beside its twelve matches. **↑↓** group,
+  **Space** continent, **←→** display, **Ins** the Championship results (not reached), **Esc** the desk. It opens on
+  your group. Finals and Championship read *not reached yet* until T170.
+- **S13**: the design's five boxes. The results box holds one row per season and competition (2027/28 EC: W D L F A
+  of the competition's matches, the best place) and the season's results under it, friendlies too. Statistics,
+  successes, top scorers, top caps and records say they are kept from a later version (#509 Track B): the route keeps
+  no source for them, and nothing is read from the template's memory.
+
+`goal2/tests/test_ui_boards_t178.py` visits the model's calls against the career's world schedule and results, each
+screen's rows against them, the keys, Esc back, S07's Enter and the banner for a European and an American country.
+The pictures are in [design/ui-2026-11/T178-screens](design/ui-2026-11/T178-screens/).

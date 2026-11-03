@@ -648,3 +648,13 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
     - **A standalone friendly** between any two countries, outside a career, from S02.
     - **Renaming the manager** after the career started, from the desk.
     - **A new career from inside a game**, from the desk, with the unsaved-progress question first.
+
+**Owner decision, 2026-11-03** (on T166's pitch, #573): "it should look like the original but one thing that can
+change is using overlapping characters in a small resolution pitch. I am ok on having circles with a letter inside
+which do no overlap, a championship manager look, but otherwise try to mimic the original as much as possible,
+with some modification for the sake of the UX."
+
+19. **S17's players are discs with the role letter inside**, in the side's colour, sized so that neighbouring
+    players never overlap (a Championship Manager look). Everything else on the pitch mimics the original:
+    proportions, goal and penalty areas, surround, the officials, the keepers, the header. A departure is made
+    only for the UX, and is marked `[designed]` with its reason.

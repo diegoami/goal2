@@ -29,13 +29,37 @@ STAGES={2:'Continental qualifying',3:'Continental finals groups',4:'Continental 
 CONTINENTS={1:'Europe',2:'America',3:'Africa',4:'Asia'}
 # [designed: T86] Until #265 delivers manager names, the one manager is shown by number.
 MANAGER='Manager 1 (naming arrives later, #265)'
+# The competition's name on the banners (T178, #563). [confirmed: docs/original-game/images/t156-013-hub.png and
+# t156-227-tournament-europe.png "European Championship"; t156-228-tournament-americas.png "American Championship";
+# m244-world-qualifying-a.png "World cup"] [derived: goal2-archaeology static/goal-exe-map.md at
+# b519d999673c9458211279fd4da8a8325b9f56fe, DS:690A holds the adjectives EUROPEAN, AMERICAN, AFRICAN, ASIAN in
+# continent order: Africa's and Asia's names follow the two captured ones; no capture shows them]
+CHAMPIONSHIPS={1:'European Championship',2:'American Championship',3:'African Championship',4:'Asian Championship'}
+WORLD_CUP='World Cup'
+# The banner's second line by calendar stage. [confirmed: t156-013-hub.png stage 2 "QUALIFYING";
+# m244-finals-stage-hub.png the continental finals "FINALS"; m244-world-qualifying-a.png "QUALIFYING";
+# m244-world-finals-bracket.png the World Cup finals "FINALS"] Stage 6, the play-offs, is in no capture: the
+# banner keeps the route's words there (STAGES).
+PHASES={2:'QUALIFYING',3:'FINALS',4:'FINALS',5:'QUALIFYING',7:'FINALS',8:'FINALS'}
+# A fixture's kind in the fixture list's words. [confirmed: t156-224-fixture-list.png "friendly", "qualifying"]
+KIND_WORDS={1:'friendly',2:'qualifying',5:'qualifying'}
+
+
+def stage_year(start_year,cycle,stage):
+    """[derived: F025 §2 displayed year = base + 2 * word] The source year of a calendar stage."""
+    word=2*(cycle-1)+int(stage>=5)-int(start_year%4==2)
+    return start_year+2*word
 
 
 def campaign_year(campaign):
     """[derived: F025 §2 displayed year = base + 2 * word; docs/watched-kit-acceptance.md] The
     source year of the campaign's current stage."""
-    word=2*(campaign.cycle-1)+int(campaign.stage>=5)-int(campaign.start_year%4==2)
-    return campaign.start_year+2*word
+    return stage_year(campaign.start_year,campaign.cycle,campaign.stage)
+
+
+def kind_word(kind,stage):
+    """The fixture list's word for a fixture's kind; the route's stage words where no capture names it."""
+    return KIND_WORDS.get(kind,STAGES.get(stage,'competitive').lower())
 
 
 class DesktopModel:
@@ -291,6 +315,134 @@ class DesktopModel:
         rows=[dict(asdict(r),name=self.goaldat.country_names[r.country],played=r.played,
                    goal_difference=r.goal_difference) for r in table]
         return dict(group,stage=campaign.stage,rows=rows)
+
+    # -- Read-only calls of the fixture list, the tournament, the history and the banner (T178, #560, #563). Each
+    # reads the career's own state; none changes it, and a stage the route has not reached returns None.
+    def continent(self,country=None):
+        """[confirmed: F007, C-CTY-03] A country's continent 1..4 (Europe, America, Africa, Asia), from its live
+        record +0x2C; the managed country by default."""
+        state=self.state
+        return state.countries[state.managed_country if country is None else country][0x2C]
+
+    def competition(self,continent=None,phase=None):
+        """The competition's banner: {'year', 'name', 'phase'}, as the original's hub and tournament print it
+        (CHAMPIONSHIPS, PHASES). `continent` names another continent's championship (S12's continent tab), `phase`
+        another display's line (S12's Finals and Championship tabs print FINALS, t156-229, t156-230). None for a
+        standalone friendly. [designed: T178, #563] Where no capture names the stage (6), the route's words."""
+        campaign=self.state.campaign
+        if campaign is None:return None
+        stage=campaign.stage;year=campaign_year(campaign)
+        if stage not in PHASES:return {'year':year,'name':STAGES[stage],'phase':''}
+        name=WORLD_CUP if stage>=5 else CHAMPIONSHIPS[self.continent() if continent is None else continent]
+        return {'year':year,'name':name,'phase':PHASES[stage] if phase is None else phase}
+
+    def _fixture_row(self,fixture,stage):
+        names=self.goaldat.country_names;own=self.state.managed_country
+        mine=own in (fixture.side_a,fixture.side_b)
+        return {'fixture_id':fixture.fixture_id,'kind':fixture.kind,'kind_name':kind_word(fixture.kind,stage),
+                'first':fixture.side_a,'second':fixture.side_b,'first_name':names[fixture.side_a],
+                'second_name':names[fixture.side_b],'own':mine,
+                # [designed: owner decision 1, #526] your own matches are always watched; another country's is
+                # an auto result on this route (watching it needs a computer-vs-computer engine match, #560).
+                'watch':mine}
+
+    def fixture_list(self,country=None):
+        """[designed: T178, #560] S11's list from the world schedule (`campaign.world`), None without one.
+
+        The original's list shows the fixtures from the current one on, the managed ones ticked [confirmed: T105,
+        000E:0000; t156-224-fixture-list.png]. On this route a *round* is what one *play next game* plays: the
+        world rows from the cursor (the first row without a result) up to the managed fixture after the next one,
+        the silent rows before and after your match (`campaign_rounds.prepare` and `complete`) [derived:
+        goal2/game/campaign_rounds.py]. Its number is the career's match day: completed managed fixtures + 1.
+        With `country`, every coming fixture of that country instead (S07's Enter), and no round number.
+        Returns {'round', 'country', 'rows'}; each row its fixture id, kind and the kind's word, both countries,
+        `own` (the managed country plays) and `watch` (it will be watched)."""
+        campaign=self.state.campaign
+        if campaign is None or campaign.world is None:return None
+        world=campaign.world;own=self.state.managed_country
+        rest=world.fixtures[len(world.results):]
+        if country is None:
+            managed=[i for i,f in enumerate(rest) if own in (f.side_a,f.side_b)]
+            rows=rest[:managed[1] if len(managed)>1 else len(rest)]
+            number=len(campaign.completed_fixture_ids)+1
+        else:
+            if type(country) is not int or not 1<=country<=128:raise ValueError('Country must be 1..128')
+            rows=[f for f in rest if country in (f.side_a,f.side_b)];number=None
+        return {'round':number,'country':country,'rows':[self._fixture_row(f,campaign.stage) for f in rows]}
+
+    def tournament(self):
+        """[derived: F023 §§3,8; designed: T178] Every group of the stage being played, with its table and its
+        matches, from the world state (`standings.opening_groups`, `group_table`); None where the route has no
+        groups (a legacy career, or a stage after the opening one: T170).
+
+        Returns {'stage', 'groups'}; each group its continent 1..4, group 1..8, slots, places, `managed`, `rows`
+        (the table, in the shape of `competition_table`'s rows) and `matches` (its fixtures of the stage in source
+        order, each with its score or None)."""
+        from dataclasses import asdict
+        from goal2.game.standings import TableFixture,group_table,opening_groups
+        campaign=self.state.campaign
+        groups=opening_groups(campaign,self.template_bytes) if campaign is not None else None
+        if groups is None:return None
+        world=campaign.world;stage=campaign.stage;names=self.goaldat.country_names
+        fixtures=tuple(TableFixture(f.fixture_id,f.kind,f.side_a,f.side_b) for f in world.fixtures)
+        scores={r['fixture_id']:list(r['score']) for r in world.results}
+        out=[]
+        for continent,group,slots in groups:
+            # [confirmed: F023 §§4,7] as `standings.opening_group`: Europe two World Cup places, the others one.
+            places=2 if stage==5 and continent==1 else 1
+            table=group_table(slots,fixtures,world.results,stage=stage,places=places)
+            rows=[dict(asdict(r),name=names[r.country],played=r.played,goal_difference=r.goal_difference)
+                  for r in table]
+            matches=[dict(fixture_id=f.fixture_id,first=f.side_a,second=f.side_b,first_name=names[f.side_a],
+                          second_name=names[f.side_b],score=scores.get(f.fixture_id))
+                     for f in world.fixtures if f.kind==stage and f.side_a in slots]
+            out.append({'continent':continent,'group':group,'slots':slots,'places':places,
+                        'managed':self.state.managed_country in slots,'rows':rows,'matches':matches})
+        return {'stage':stage,'groups':out}
+
+    def history(self):
+        """[designed: T178, #560] This career's results by season, from `campaign.results`; None for a standalone
+        friendly. The original's history (M244-G1A-03 step 12, m244-history.png) is not decoded (goal2-archaeology
+        spec/team-analysis.md C-TEAM-12): the route keeps only this career's results (#509 Track B).
+
+        Returns a list of seasons, the oldest first, the current one always: {'season' ('2027/28' for 2028,
+        [confirmed: m244-history.png, a 2028 career's "2027/28 EC"]), 'year', 'competition' ('EC' for a European
+        country's championship [confirmed: m244-history.png], 'WC' for the World Cup [derived: m244-history.png's
+        successes box], else the route's word 'continental'), 'won', 'drawn', 'lost', 'goals_for',
+        'goals_against' (the competition's matches, as the design's results box counts them: its row holds the
+        qualifier, not the friendly [designed: docs/design/ui-2026-11/mockups/build.py s13_history]), 'best' (the
+        furthest stage: 'qualifying' [confirmed: m244-history.png], else the route's stage words) and 'results'
+        (every recorded result of the season, friendlies too, in the order played)}."""
+        campaign=self.state.campaign
+        if campaign is None:return None
+        own=self.state.managed_country;continent=self.continent();names=self.goaldat.country_names
+        fixtures={f.fixture_id:f for f in campaign.fixtures}
+        seasons={}
+        def season(cycle,stage):
+            world=stage>=5;year=stage_year(campaign.start_year,cycle,stage)
+            entry=seasons.get((cycle,world))
+            if entry is None:
+                code='WC' if world else 'EC' if continent==1 else 'continental'
+                entry=seasons[(cycle,world)]={'season':f'{year-1}/{year%100:02d}','year':year,'competition':code,
+                    'won':0,'drawn':0,'lost':0,'goals_for':0,'goals_against':0,'stage':stage,'results':[]}
+            entry['stage']=max(entry['stage'],stage)
+            return entry
+        for row in campaign.results:
+            fixture=fixtures[row['fixture_id']];entry=season(fixture.cycle,fixture.stage)
+            side=row['teams'].index(own);scored,conceded=row['score'][side],row['score'][1-side]
+            entry['results'].append({'fixture_id':row['fixture_id'],'first_name':names[row['teams'][0]],
+                'second_name':names[row['teams'][1]],'score':list(row['score']),
+                'kind_name':kind_word(fixture.kind,fixture.stage)})
+            if fixture.kind==1:continue
+            entry['won' if scored>conceded else 'drawn' if scored==conceded else 'lost']+=1
+            entry['goals_for']+=scored;entry['goals_against']+=conceded
+        season(campaign.cycle,campaign.stage)
+        out=[]
+        for key in sorted(seasons):
+            entry=seasons[key];stage=entry.pop('stage')
+            entry['best']='qualifying' if stage in (2,5) else STAGES[stage].lower()
+            out.append(entry)
+        return out
 
     def fixture_label(self,fixture):
         """[designed: T86] Opponent and competition of a scheduled fixture, without claiming a home side."""
