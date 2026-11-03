@@ -181,8 +181,8 @@ class Desktop(unittest.TestCase):
         self.assertEqual((view['status'], view['complete'], view['qualifiers']), ('in progress', False, None))
         self.assertIn('only the group winner qualifies', view['text'])
         before = copy.deepcopy(m.state)
-        with self.assertRaisesRegex(ValueError, 'Start year must be one of 1990, 1992'):
-            m.new_campaign(4, 1994)
+        with self.assertRaisesRegex(ValueError, 'Start year 1993 cannot open a campaign: .*only even start years'):
+            m.new_campaign(4, 1993)
         self.assertEqual(m.state, before)
 
     def test_finished_stage_names_finalists(self):

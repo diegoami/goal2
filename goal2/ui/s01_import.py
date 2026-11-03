@@ -6,6 +6,10 @@ each file, what it is for and the result of its check (found and verified, missi
 the original's help that F1 shows, is optional. What is wrong is said in plain words, `data_setup`'s own. Enter
 chooses the folder, Esc quits. The rules (names, digests, what is optional, what is copied where) are
 `data_setup`'s, unchanged: this screen only shows them.
+
+[designed: owner, 2026-11-03, #527, D2; T163, #537] The new window's careers run on the Python route, so its files are
+`data_setup.WINDOW_MANIFEST`: GOAL.DAT and the E010 half-time template that a new career starts from. The Core's boot
+state, which the mockup's third row names, is not asked for; the template takes its row.
 """
 from __future__ import annotations
 
@@ -20,9 +24,9 @@ from goal2.ui.screen import Screen, label, para, set_para
 NEEDED_FOR = {
     data_setup.DATA_NAME: "countries, players, fixtures",
     data_setup.HELP_NAME: "the original's help (F1), optional",
-    data_setup.BOOT_NAME: "the original's start",
+    data_setup.TEMPLATE_NAME: "a new career's start",   # [designed: T163] in the place of the boot state's row
 }
-ROWS = (data_setup.DATA_NAME, data_setup.HELP_NAME, data_setup.BOOT_NAME)   # the mockup's order
+ROWS = (data_setup.DATA_NAME, data_setup.HELP_NAME, data_setup.TEMPLATE_NAME)   # the mockup's order
 
 # The check column's words, by result. [designed: s01-import.html for the first two; T162 for the others]
 CHECK = {
@@ -40,7 +44,7 @@ INTRO = ("goal2 plays the original's game from your own data files. Choose the f
 def checks(folder) -> dict:
     """Each file's check in `folder`, by `data_setup`'s own rules: 'verified', 'missing', 'wrong' or, for an
     optional file the folder does not have, 'absent'."""
-    found = dict(data_setup.problems(folder))
+    found = dict(data_setup.problems(folder, data_setup.WINDOW_MANIFEST))
     optional = {name for name, _ in data_setup.OPTIONAL}
     out = {}
     for name in ROWS:
@@ -143,8 +147,8 @@ class ImportScreen(Screen):
         return self.cells[name].text()
 
     def choose_and_import(self):
-        """Enter: choose a folder, check each file, and import it; True once imported (the window goes on to the
-        home screen). A refused folder stays on screen with each file's check and the plain words of the refusal."""
+        """Enter: choose a folder, check each file, and import it; True once imported (the window goes on to S02
+        Start). A refused folder stays on screen with each file's check and the plain words of the refusal."""
         folder = self.choose()
         if not folder:
             return False
@@ -154,7 +158,7 @@ class ImportScreen(Screen):
         self.folder = folder
         self.result = checks(folder)
         try:
-            data_setup.import_folder(folder, self.target)
+            data_setup.import_folder(folder, self.target, data_setup.WINDOW_MANIFEST)
         except data_setup.ImportRefused as exc:
             self._show(f"{exc}\nChoose the folder that holds all the files.")
             return False
@@ -162,8 +166,8 @@ class ImportScreen(Screen):
             self._show(str(exc))
             return False
         self._show()
-        from goal2.ui.home import HomeScreen
-        self.window_.replace_home(HomeScreen(self.window_))
+        from goal2.ui.s02_start import StartScreen
+        self.window_.replace_home(StartScreen(self.window_))
         return True
 
     def escape(self):

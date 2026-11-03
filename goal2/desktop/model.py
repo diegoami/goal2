@@ -70,8 +70,12 @@ class DesktopModel:
         """[designed] Explicit new-game action, never a selector/redraw callback."""
         if type(country) is not int or not 1<=country<=128:
             raise ValueError('Country must be an integer from1 to128')
-        if start_year not in dict(START_YEARS):
-            raise ValueError('Start year must be one of '+', '.join(str(y) for y,_ in START_YEARS))
+        # [confirmed: NG-9, docs/assumptions.md; designed: T163, #537] Every start year the calendar takes
+        # (campaign.opening_calendar: an even year), as the original's new game sets it from the clock; the
+        # old window still offers START_YEARS only.
+        from goal2.game.campaign import CampaignError,opening_calendar
+        try:opening_calendar(start_year)
+        except CampaignError as exc:raise ValueError(f'Start year {start_year!r} cannot open a campaign: {exc}') from exc
         candidate,_=start_opening_campaign(self._goaldat,self.template_bytes,managed_country=country,
                                          start_year=start_year,seed_7b62=4660,seed_8336=33590)
         # [designed: T92] A new game keeps the manager (the same person); renamed players do not carry.
