@@ -43,6 +43,26 @@ def until(predicate, limit, what):
     raise AssertionError(f'{what} within {limit} s')
 
 
+def other_game():
+    """A competitive campaign game: test_campaign_competitive_publication.campaign(21, 2), built here because that
+    helper asks for Unicorn, which Play no longer needs."""
+    from goal2.engine.original_match import Image
+    from goal2.engine.original_match.assets import reference_image
+    from goal2.game.campaign import CampaignState, Fixture as Scheduled
+    from goal2.game.campaign_pool import validate
+    from goal2.game.state import from_savestate
+    raw = reference_image(ROOT / '.cache')
+    state = from_savestate(raw)
+    state.managed_country, state.captain = 7, 0
+    state.managed_squad = Image(state.mem).squad(7)
+    state.starting_eleven = state.managed_squad[:11]
+    state.country_tactics = state.countries[7][0x2D]
+    state.campaign = CampaignState(2028, 1, 1, 2, state.rng_seed_7b62, state.rng_seed_8336,
+                                   (Scheduled('original:21', 1, 1, 2, 2, 7, 19),))
+    state.campaign.reserve_ids = validate(state)
+    return state, raw
+
+
 def play(jobs, token, limit=WAIT):
     """Poll a job to its end; its events."""
     seen = []
@@ -63,6 +83,7 @@ class Session(unittest.TestCase):
         from goal2.tests.test_pypy_worker_t152 import pypy
         cls.pypy = pypy()
         cls.app = QApplication.instance() or QApplication([])
+        cls.other_game = other_game()
         blocker = NoUnicorn()
         hidden = {name: sys.modules.pop(name) for name in list(sys.modules)
                   if name == 'unicorn' or name.startswith('unicorn.')}
@@ -78,7 +99,6 @@ class Session(unittest.TestCase):
         import tempfile
         from goal2.desktop.model import DesktopModel
         from goal2.desktop.window import ManagementWindow
-        from goal2.tests.test_campaign_competitive_publication import campaign
         cls.folder = tempfile.TemporaryDirectory()
         model = DesktopModel.open(ROOT / '.cache/e010-r0008-halftime.sav', ROOT / '.cache/GOAL.DAT',
                                   Path(cls.folder.name) / 'session.g2save', country=4)
@@ -112,7 +132,7 @@ class Session(unittest.TestCase):
             watched.cancel()                                   # the viewer stand-in, as the window's poll would
 
             # Another game, as Resume would load: a competitive Play to its publication.
-            state, raw, _fixture = campaign(21, 2)
+            state, raw = cls.other_game
             model.state, model.template_bytes = state, raw
             token = competitive.start(record_draws=True)
             out['pids']['competitive'] = engine.pid
