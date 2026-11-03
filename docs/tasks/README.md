@@ -321,3 +321,7 @@ operational status.
 - [T160](T160.md): watched and competitive matches on the engine pipe, m3 Track A (#534).
 
 - [T162](T162.md): the new window's foundation: look, screen stack, import and help, m3 Track A (#536).
+
+- [T163](T163.md): new window, start and new game, S02–S05, m3 Track A (#537).
+
+- [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
