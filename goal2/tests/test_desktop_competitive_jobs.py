@@ -1,6 +1,6 @@
 """[designed: T80] Real competitive subprocess parity plus explicit synthetic faults."""
 import copy
-from dataclasses import replace
+from dataclasses import asdict, replace
 from functools import lru_cache
 import hashlib
 import json
@@ -16,7 +16,8 @@ from unittest.mock import patch
 from goal2.desktop.competitive import CompetitiveJobs, pending_fixture
 from goal2.desktop.model import DesktopModel
 from goal2.game.session_save import encode
-from goal2.game.watched_jobs import _write
+from goal2.game.engine_server import encode_packet
+from goal2.game.session_save import _json_value
 from goal2.tests.test_campaign_competitive_publication import campaign
 from goal2.tests.test_campaign_competitive_match import run
 from goal2.data.goaldat import load
@@ -34,21 +35,21 @@ def direct(kind):
 # [designed] Synthetic protocol fixtures replay a genuine accepted original outcome;
 # they deliberately do not claim another engine execution or fidelity evidence.
 # [designed: T160] The replay is a stand-in engine process: the protocol's replies (goal2.game.engine_server's
-# packets) to the match request, then it waits for the next request as the engine does.
+# packets) to the match request, then it waits for the next request as the engine does. [designed: T161] The fixture
+# file holds those replies as the engine sends them: each event, then `complete` with the memory as its payload.
 REPLAY = r'''
 import json,os,struct,sys,time,signal
 from pathlib import Path
 from goal2.game.engine_server import read_packet, encode_packet
 from goal2.game.session_save import _json_value, _restore_json_value
-from goal2.game.watched_jobs import _memory
 mode,fixture_file=sys.argv[1:3]
 out=sys.stdout.buffer
 if mode=='ignore':signal.signal(signal.SIGTERM,signal.SIG_IGN)
 def send(kind,value=None,payload=b''):out.write(encode_packet({'kind':kind,'value':_json_value(value)},payload));out.flush()
 packets=[]
 with open(fixture_file,'rb') as stream:
- while header:=stream.read(4):
-  packets.append(_restore_json_value(json.loads(stream.read(struct.unpack('!I',header)[0])),'fixture'))
+ while (packet:=read_packet(stream)) is not None:
+  packets.append((packet[0]['kind'],_restore_json_value(packet[0]['value'],'fixture'),packet[1]))
 send('ready',{'implementation':'stand-in','version':[0,0],'pid':os.getpid()})
 def requests():
  while True:
@@ -64,7 +65,7 @@ for request in requests():
  if mode in ('blocked','ignore'):
   send('event',{'kind':'full_time','minute':90,'score':(0,0),'data':{}})
   time.sleep(60);sys.exit(0)
- for _,_,kind,value in packets:
+ for kind,value,payload in packets:
   if mode=='tail' and kind=='event' and value['kind']=='end':continue
   if kind=='complete':
    if mode=='hold':
@@ -72,8 +73,7 @@ for request in requests():
    if mode=='tail':value['events']=[e for e in value['events'] if e['kind']!='end']
    if mode=='result':value['result']['first']=19
    if mode=='mismatch':value['events'][0]['minute']+=1
-   memory=b'x' if mode=='memory' else _memory(value.pop('memory'))
-   value.pop('memory',None)
+   memory=b'x' if mode=='memory' else payload
    send('complete',value,memory)
   else:send(kind,value)
  if mode=='duplicate':send('complete',value,memory)
@@ -89,11 +89,13 @@ class CompetitiveJobsTests(unittest.TestCase):
         requires.require(files=("GOAL.DAT",))
         cls.data = load((ROOT/'.cache/GOAL.DAT').read_bytes())
         cls.fixture_dir = tempfile.TemporaryDirectory(prefix='goal2-T80-fixtures-')
-        cls.fixture_file = Path(cls.fixture_dir.name)/'knockout.json-journal'
+        cls.fixture_file = Path(cls.fixture_dir.name)/'knockout.packets'
         out = direct(200)
         with cls.fixture_file.open('wb') as stream:
-            for n, event in enumerate(out.events):_write(stream,'fixture',n,'event',event)
-            _write(stream,'fixture',len(out.events),'complete',out)
+            for event in out.events:stream.write(encode_packet({'kind':'event','value':_json_value(asdict(event))}))
+            stream.write(encode_packet({'kind':'complete','value':_json_value(
+                {'result':out.result,'events':[asdict(e) for e in out.events],'seeds':list(out.seeds),
+                 'engine_year':out.engine_year})},bytes(out.memory)))
 
     @classmethod
     def tearDownClass(cls):cls.fixture_dir.cleanup()
