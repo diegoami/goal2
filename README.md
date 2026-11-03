@@ -22,6 +22,9 @@ uses PySide6 desktop: [roadmap](docs/desktop-ui-roadmap.md). The [desktop manage
 lineup/captain/tactics and save/resume through `python3 -m goal2.desktop`; install
 `.[desktop]` first. Match execution follows separately in T70. Browser and terminal
 launch instructions below describe the retained interfaces.
+[designed: owner, 2026-11-03, #526, #527] The rebuilt UI's new window, from
+[the design](docs/design/ui-2026-11/README.md), is built beside it in `goal2/ui`
+([guide](docs/ui.md)): `python3 -m goal2.ui`.
 
 The plan is [`docs/plan.md`](docs/plan.md); every rule the rebuild plays by, and where it comes
 from, is in [`docs/assumptions.md`](docs/assumptions.md). Tasks live in `docs/tasks/` (`T<nn>.md`, indexed in `docs/tasks/README.md`).
