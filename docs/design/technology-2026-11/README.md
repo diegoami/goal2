@@ -328,7 +328,8 @@ hybrid) and the design's stylesheet reused as it is.
    release the interpreter lock in its native parts, or confirm it is meant to run only in an engine process.
 
 After the decision, `tools/tech_probe/` is deleted (the task's hazard); `measurements/T158/` and this document
-stay.
+stay. [designed: T161] T161 deleted it; every `tools/tech_probe/` path in this document is at commit `05d842cc`
+(`git show 05d842cc:tools/tech_probe/README.md`).
 
 ## 7. Measurements
 
