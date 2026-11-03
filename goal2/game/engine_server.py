@@ -169,9 +169,9 @@ def _bench_policy(commands, send):
 
 
 def _event_value(event):
+    """An Event as plain data; `send` encodes it (its tuples kept, session_save._json_value)."""
     from dataclasses import asdict
-    from goal2.game.session_save import _json_value
-    return _json_value(asdict(event))
+    return asdict(event)
 
 
 class Server:
@@ -230,6 +230,8 @@ class Server:
             except WindowGone:
                 return 0
             except Exception as exc:  # noqa: BLE001 - reported to the window; the process stays up
+                import traceback
+                traceback.print_exc(file=sys.stderr)
                 self.send("error", f"{type(exc).__name__}: {exc}")
 
     def _open(self, payload):

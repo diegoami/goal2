@@ -87,7 +87,7 @@ class Choices:
     at the others, Enter after sample PAUSE_FRAME + 1. It records what the engine says back."""
 
     def __init__(self):
-        self.decisions, self.answered, self.dropped = [], [], []
+        self.decisions, self.reports, self.dropped = [], [], []
 
     def decide(self, event):
         self.decisions.append(event)
@@ -100,7 +100,7 @@ class Choices:
         self.dropped.append(sequence)
 
     def answered(self, report):
-        self.answered.append(report)
+        self.reports.append(report)
 
 
 def reference(state, raw, fixture, **kwargs):
@@ -284,7 +284,7 @@ class SameMatch(unittest.TestCase):
         self.assertGreaterEqual(len(seen["decisions"]), 1)
         self.assertEqual([d["decision"] for d in seen["decisions"]], list(range(len(seen["decisions"]))))
         self.assertEqual([d["event"] for d in seen["decisions"]], choices.decisions)
-        self.assertEqual(seen["answered"], choices.answered)
+        self.assertEqual(seen["answered"], choices.reports)
         self.assertEqual(seen["answered"][0]["asked"], first_pair(seen["decisions"][0]["event"].data))
         self.assertEqual(seen["dropped"], choices.dropped)
         # The Enter after sample PAUSE_FRAME + 1 was either taken (a pause decision) or reported dropped.
