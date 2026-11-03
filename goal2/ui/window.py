@@ -5,6 +5,8 @@ original. `push` opens a screen over the current one, `pop` returns to the one u
 `replace_home` empties the stack and starts again from a screen: S01 until the data is imported, then S02 Start, and
 the manager's desk (S06) once a career is open (`open_career`) [designed: T164, #538]. F1 on any screen opens the help (S22) over it, and Esc there
 returns to the same screen. [designed: T163, #537; docs/design/ui-2026-11 §1, the journey]
+Closing the window never loses unsaved progress silently: it asks S21's save question first (`closeEvent`), and
+`leave` closes once the player has answered (F10's questions or the close button's). [designed: T168, #542]
 
 The page is composed for 1440x900 and scales as a whole with the window, as today's fixed pages do
 [designed: docs/design/ui-2026-11 §3, "Text size"; T101]: the window's central widget is
@@ -38,6 +40,7 @@ class Window(QMainWindow):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.stack = []
         self.career = None   # the open career, a DesktopModel, once S02 or S04 opened one
+        self.leaving = False   # the player chose to quit: closing asks nothing more [designed: T168]
         self.resize(fixed_page.WIDTH, fixed_page.HEIGHT)
 
     def _font(self):
@@ -117,14 +120,31 @@ class Window(QMainWindow):
             return
         super().keyPressEvent(event)
 
+    def leave(self):
+        """Quit once the player has answered: F10's questions, or the close button's. Nothing more is asked."""
+        self.leaving = True
+        self.close()
+
     def closeEvent(self, event):
         """Closing the window: each screen on the stack that holds something running ends it first (S17 cancels its
-        match through the bridge, publishing nothing). [designed: T166, #540]"""
-        for screen in reversed(self.stack):
-            closing = getattr(screen, "closing", None)
-            if closing is not None:
-                closing()
-        super().closeEvent(event)
+        match through the bridge, publishing nothing). [designed: T166, #540] Then, when the open career has unsaved
+        progress (the model's `unsaved`), the window stays and asks *Do you want to save this game?* (S21): Y the name
+        box then close, N close, Esc stay, with the cancelled match's screens gone. Nothing unsaved closes at once.
+        [designed: T168, #542; T87's question, docs/desktop-management.md]"""
+        running = [screen for screen in self.stack if getattr(screen, "closing", None) is not None]
+        for screen in reversed(running):
+            screen.closing()
+        if self.leaving or self.career is None or not self.career.unsaved:
+            super().closeEvent(event)
+            return
+        event.ignore()
+        from goal2.ui.s21_save import BoxScreen, ask_to_save
+        lowest = self.stack.index(running[0]) if running else 0
+        while lowest and len(self.stack) > lowest:
+            self.pop()
+        while isinstance(self.current(), BoxScreen) and len(self.stack) > 1:
+            self.pop()
+        ask_to_save(self, self.career, self.leave)
 
     def focusNextPrevChild(self, next_):
         """Tab is a key of the screens (S03's starting year), not a move of Qt's focus. [designed: owner decision 9,

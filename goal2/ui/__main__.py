@@ -11,9 +11,9 @@ Start. The portable build's launcher and default stay today's window (goal2/desk
 `--screenshot DIR` writes PNGs at 1440x900 into DIR and exits: S01, the placeholder home and S22 always; S02 with
 two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages, S06 the manager's desk,
 S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, S17 at kick-off and in play (its first
-friendly under PyPy 3.11, cancelled after the pictures), and S11 and S13 again after its first round (the route's
-quick friendly), when it finds the data the new window needs (data_setup.WINDOW_MANIFEST) in
-the --data-root's data folder or, in a checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
+friendly under PyPy 3.11, cancelled after the pictures), S11 and S13 again after its first round (the route's
+quick friendly), and S21's save box, quit question and save question over the desk (T168), when it finds the data
+the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
 and the bulletin pages are stand-ins labelled so (CLAUDE.md rule 14; the Python route has no bulletins yet, #509).
 """
 from __future__ import annotations
@@ -167,10 +167,27 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
                 key(Qt.Key.Key_Return)
                 shot(name)
                 key(Qt.Key.Key_Escape)
-        window.close()
+            save_quit_shots(window, key, shot)
+        window.leave()
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return written
+
+
+def save_quit_shots(window, key, shot):
+    """S21 over the desk: F7's name box with a name typed (the mockup's), F10's question and the save question that
+    follows it with the career unsaved; each cancelled after its picture, so nothing is written. [designed: T168]"""
+    from PySide6.QtCore import Qt
+    key(Qt.Key.Key_F7)
+    for character in "Holland after round 1":
+        key(Qt.Key.Key_A, character)
+    shot("s21-save.png")
+    key(Qt.Key.Key_Escape)
+    key(Qt.Key.Key_F10)
+    shot("s21-quit.png")
+    key(Qt.Key.Key_Y, "y")
+    shot("s21-save-question.png")
+    key(Qt.Key.Key_Escape)
 
 
 def pitch_shots(app, window, career, shot, limit=120):
