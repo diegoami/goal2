@@ -82,6 +82,13 @@ answer or an acknowledgement is cancelled like any other (#254). `extra_time` an
 keep their default answers; without `bench`, and for `run_watched_match`, every decision plays on.
 Acceptance: `python3 -m unittest goal2.tests.test_watched_bench_t102 -v`.
 
+[designed: T176] A qualifier is watched on the competitive bridge: `CompetitiveJobs.start(frames=True, bench=True)`
+plays the pending qualifier as the `competitive` match with the pitch samples and the bench, with the API above, and
+its `CompetitivePublication` publishes it, once; the friendly publication is never used for it.
+`goal2.desktop.watched.WatchedController` starts a qualifier there (the owner's bridge, the window's, when it has one)
+and a friendly on `WatchedJobs`. The budget is the engine's for a competitive match, five a side (BM-7).
+Acceptance: `python3 -m unittest goal2.tests.test_watch_qualifiers_t176 -v`.
+
 [designed] Acceptance is `python3 -m unittest goal2.tests.test_watched_jobs -v`.
 The suite compares real seeds 257 and 70 for countries7/19, fixture21/year0,
 captain0, no requested substitutions, delay0 and draw recording enabled. It checks

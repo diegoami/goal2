@@ -320,12 +320,13 @@ class ManagementWindow(QMainWindow):
     def start_watched(self):
         if not self.require_active():return
         try:
-            self.watched.fixture()
+            # [designed: T176] a friendly or a qualifier (WatchedController.fixture)
+            what='friendly' if self.watched.fixture().kind==1 else 'competitive match'
             state=self.model.state
             if self.draft()!=(state.starting_eleven,state.captain,state.country_tactics):
                 raise ValueError('Confirm or discard management edits before watching')
             from goal2.desktop.fixtures_page import playback_rate
-            self.watched.start(playback_rate=playback_rate(self));self.set_busy(True);self.status.setText('Starting original friendly in Pygame…');self.watch_timer.start()
+            self.watched.start(playback_rate=playback_rate(self));self.set_busy(True);self.status.setText(f'Starting original {what} in Pygame…');self.watch_timer.start()
         except (OSError,ValueError,IndexError,KeyError) as exc:self.status.setText(str(exc))
 
     def poll_watched(self):
@@ -333,7 +334,7 @@ class ManagementWindow(QMainWindow):
             done=self.watched.poll()
             self.bench.poll()
             if done:
-                self.set_busy(False);self.refresh('Original friendly complete; result can be saved.');self.match_finished()
+                self.set_busy(False);self.refresh(('Original friendly' if self.watched.engine is self.watched.friendly_engine else 'Original competitive match')+' complete; result can be saved.');self.match_finished()
             elif self.watched.busy and self.watched.display.events:
                 event=self.watched.display.events[-1]
                 self.status.setText(f"Original engine: {event['minute']}′ {event['score'][0]} — {event['score'][1]}")
