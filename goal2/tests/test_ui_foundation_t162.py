@@ -29,6 +29,7 @@ from goal2.desktop import data_setup, fixed_page  # noqa: E402
 from goal2.ui import theme  # noqa: E402
 from goal2.ui.home import HomeScreen  # noqa: E402
 from goal2.ui.s01_import import ImportScreen  # noqa: E402
+from goal2.ui.s02_start import StartScreen  # noqa: E402
 from goal2.ui.s22_help import HelpScreen  # noqa: E402
 from goal2.ui.screen import Screen  # noqa: E402
 from goal2.ui.window import Window  # noqa: E402
@@ -36,7 +37,7 @@ from goal2.ui.window import Window  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 README = ROOT / "docs" / "design" / "ui-2026-11" / "README.md"
 
-STAND_IN = {"GOAL.DAT": b"stand-in data file\n", "e039-r0005-date-call.sav": b"stand-in date-call state\n"}
+STAND_IN = {"GOAL.DAT": b"stand-in data file\n", "e010-r0008-halftime.sav": b"stand-in template\n"}
 STAND_IN_MANIFEST = tuple((name, hashlib.sha256(raw).hexdigest()) for name, raw in STAND_IN.items())
 HELP = b"stand-in help file\n"
 STAND_IN_OPTIONAL = (("GOAL.HLP", hashlib.sha256(HELP).hexdigest()),)
@@ -67,7 +68,7 @@ class App(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="goal2-t162-"))
         self.addCleanup(shutil.rmtree, self.tmp, True)
-        for name, value in (("MANIFEST", STAND_IN_MANIFEST), ("OPTIONAL", STAND_IN_OPTIONAL)):
+        for name, value in (("WINDOW_MANIFEST", STAND_IN_MANIFEST), ("OPTIONAL", STAND_IN_OPTIONAL)):
             patcher = mock.patch.object(data_setup, name, value)
             patcher.start()
             self.addCleanup(patcher.stop)
@@ -260,7 +261,7 @@ class ImportData(App):
         self.assertEqual(screen.enter_text.text(), "Choose folder…")
         self.assertEqual(screen.key_texts(), [(("F1",), "help"), (("Esc",), "quit")])
         texts = [w.text() for w in screen.findChildren(type(screen.name_label)) if w.isVisible()]
-        for name in ("GOAL.DAT", "GOAL.HLP", "e039-r0005-date-call.sav"):
+        for name in ("GOAL.DAT", "GOAL.HLP", "e010-r0008-halftime.sav"):
             self.assertIn(name, texts)
             self.assertEqual(screen.check_text(name), "not checked yet")
         self.assertIn("the original's help (F1), optional", texts)
@@ -269,12 +270,12 @@ class ImportData(App):
     def test_a_folder_missing_goal_dat_shows_it_missing_and_does_not_continue(self):
         window = self.window()
         screen = self.screen(window)
-        self.offered = str(self.folder("offered", {"e039-r0005-date-call.sav": STAND_IN["e039-r0005-date-call.sav"]}))
+        self.offered = str(self.folder("offered", {"e010-r0008-halftime.sav": STAND_IN["e010-r0008-halftime.sav"]}))
         self.key(window, Qt.Key.Key_Return)
         self.assertIs(window.current(), screen, "S01 refuses to continue")
         self.assertEqual(screen.check_text("GOAL.DAT"), "✗ missing in this folder")
         self.assertEqual(screen.cells["GOAL.DAT"].property("check"), "bad")
-        self.assertEqual(screen.check_text("e039-r0005-date-call.sav"), "✓ found, verified")
+        self.assertEqual(screen.check_text("e010-r0008-halftime.sav"), "✓ found, verified")
         self.assertEqual(screen.check_text("GOAL.HLP"), "not in this folder (optional)")
         self.assertIn("GOAL.DAT is missing", screen.message, "data_setup's plain words are kept")
         self.assertTrue(screen.error.isVisible())
@@ -286,9 +287,9 @@ class ImportData(App):
         self.screen(window)
         self.offered = str(self.folder("offered", dict(STAND_IN, **{"GOAL.HLP": HELP})))
         self.click(window.current().enter_hint)
-        self.assertIsInstance(window.current(), HomeScreen)
+        self.assertIsInstance(window.current(), StartScreen)
         self.assertEqual(len(window.stack), 1)
-        self.assertTrue(data_setup.complete(self.target.data))
+        self.assertTrue(data_setup.complete(self.target.data, data_setup.WINDOW_MANIFEST))
         self.assertEqual(self.target.help.read_bytes(), HELP)
 
     def test_a_wrong_help_file_is_refused_and_a_missing_one_accepted(self):
@@ -303,7 +304,7 @@ class ImportData(App):
         self.assertFalse(self.target.root.exists())
         self.offered = str(self.folder("without", STAND_IN))
         self.key(window, Qt.Key.Key_Return)
-        self.assertIsInstance(window.current(), HomeScreen)
+        self.assertIsInstance(window.current(), StartScreen)
         self.assertFalse(self.target.help.exists())
 
     def test_esc_quits_and_an_imported_folder_starts_at_home(self):
@@ -311,10 +312,10 @@ class ImportData(App):
         self.screen(window)
         self.key(window, Qt.Key.Key_Escape)
         self.assertFalse(window.isVisible())
-        data_setup.import_folder(self.folder("offered", STAND_IN), self.target)
+        data_setup.import_folder(self.folder("offered", STAND_IN), self.target, data_setup.WINDOW_MANIFEST)
         again = self.window()
         again.start()
-        self.assertIsInstance(again.current(), HomeScreen)
+        self.assertIsInstance(again.current(), StartScreen)
 
 
 class Help(App):
