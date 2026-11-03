@@ -1,0 +1,377 @@
+{
+ "host": {
+  "cpus": 32,
+  "machine": "AMD64",
+  "os": "Windows",
+  "release": "11"
+ },
+ "kind": "engine-speed",
+ "records": [
+  {
+   "arm": "pypy",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\portable\\pypy\\pypy.exe",
+   "import_s": 0.072,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:36:30",
+    "windows_cpu_pct": 0.0,
+    "wsl_loadavg": [
+     0.59,
+     0.73,
+     1.46
+    ]
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 62.312,
+   "match_wall_s": 63.382,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 63.799,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "cpython",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\rustvenv\\Scripts\\python.exe",
+   "import_s": 0.081,
+   "interpreter": "CPython 3.13.15",
+   "load": {
+    "at": "2026-11-03T01:37:35",
+    "windows_cpu_pct": 2.0,
+    "wsl_loadavg": [
+     0.2,
+     0.59,
+     1.35
+    ]
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 232.188,
+   "match_wall_s": 235.786,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 236.1,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\rustvenv\\Scripts\\python.exe",
+   "import_s": 0.096,
+   "interpreter": "CPython 3.13.15",
+   "load": {
+    "at": "2026-11-03T01:41:32",
+    "windows_cpu_pct": 7.0,
+    "wsl_loadavg": [
+     0.19,
+     0.4,
+     1.1
+    ]
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 39.594,
+   "match_wall_s": 40.137,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 40.427,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\portable\\pypy\\pypy.exe",
+   "import_s": 0.071,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:42:15",
+    "windows_cpu_pct": 3.0,
+    "wsl_loadavg": [
+     0.1,
+     0.35,
+     1.05
+    ]
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 62.531,
+   "match_wall_s": 63.536,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 63.931,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 2,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "cpython",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\rustvenv\\Scripts\\python.exe",
+   "import_s": 0.07,
+   "interpreter": "CPython 3.13.15",
+   "load": {
+    "at": "2026-11-03T01:43:20",
+    "windows_cpu_pct": 2.0,
+    "wsl_loadavg": [
+     0.22,
+     0.34,
+     1.0
+    ]
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 218.219,
+   "match_wall_s": 220.931,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 221.174,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 2,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\rustvenv\\Scripts\\python.exe",
+   "import_s": 0.103,
+   "interpreter": "CPython 3.13.15",
+   "load": {
+    "at": "2026-11-03T01:47:03",
+    "windows_cpu_pct": 13.0,
+    "wsl_loadavg": [
+     0.97,
+     0.41,
+     0.86
+    ]
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 37.844,
+   "match_wall_s": 38.559,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 38.858,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 2,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "pypy",
+   "error": "",
+   "load": {
+    "at": "2026-11-03T01:47:43",
+    "windows_cpu_pct": 1.0,
+    "wsl_loadavg": [
+     1.07,
+     0.52,
+     0.88
+    ]
+   },
+   "process_wall_s": 37.964,
+   "round": 3,
+   "seed": 257
+  },
+  {
+   "arm": "cpython",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\rustvenv\\Scripts\\python.exe",
+   "import_s": 0.07,
+   "interpreter": "CPython 3.13.15",
+   "load": {
+    "at": "2026-11-03T01:48:23",
+    "windows_cpu_pct": 2.0,
+    "wsl_loadavg": [
+     0.81,
+     0.53,
+     0.87
+    ]
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 225.281,
+   "match_wall_s": 228.456,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 228.698,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 3,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\rustvenv\\Scripts\\python.exe",
+   "import_s": 0.111,
+   "interpreter": "CPython 3.13.15",
+   "load": {
+    "at": "2026-11-03T01:52:13",
+    "windows_cpu_pct": 17.0,
+    "wsl_loadavg": [
+     1.67,
+     0.83,
+     0.89
+    ]
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 39.375,
+   "match_wall_s": 40.09,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 40.385,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 3,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\portable\\pypy\\pypy.exe",
+   "import_s": 0.07,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T02:10:17",
+    "windows_cpu_pct": 10.0,
+    "wsl_loadavg": [
+     0.43,
+     0.89,
+     1.0
+    ]
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 54.672,
+   "match_wall_s": 55.219,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 55.575,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 4,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1079,
+   "events_sha256": "d5d38fe8adffe4cee10c90ef2485499c01aa8d7cd5fff9c665f6b59bbc8aad10",
+   "executable": "C:\\Users\\diego\\goal2-t158\\portable\\pypy\\pypy.exe",
+   "import_s": 0.072,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T02:11:14",
+    "windows_cpu_pct": 0.0,
+    "wsl_loadavg": [
+     0.33,
+     0.78,
+     0.96
+    ]
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 60.609,
+   "match_wall_s": 61.246,
+   "outcome_sha256": "f9ba358e25a406aa637ef3da080973bfb4f615d2e7f13c52ccacce1c5b87d9b1",
+   "process_wall_s": 61.749,
+   "result_sha256": "125cf902faf91c8b8829489f25e25a347e0b237df2d974227b24ea039f24c71a",
+   "round": 5,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 257,
+   "seeds": [
+    25058,
+    61800
+   ]
+  }
+ ]
+}

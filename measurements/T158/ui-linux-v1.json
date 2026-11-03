@@ -1,0 +1,876 @@
+{
+ "host": {
+  "cpus": 32,
+  "machine": "x86_64",
+  "os": "Linux",
+  "release": "6.18.54.1-microsoft-standard-WSL2"
+ },
+ "kind": "ui-start-memory",
+ "records": [
+  {
+   "candidate": "PySide6 (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/qt_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:24:28",
+    "loadavg": [
+     1.33,
+     1.28,
+     2.33
+    ],
+    "windows_cpu_pct": 20.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 67.8,
+    "uss_mb": 56.0
+   },
+   "ready_own_s": 0.1072,
+   "ready_s": 0.1255,
+   "run": 1
+  },
+  {
+   "candidate": "PySide6 (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/qt_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:24:34",
+    "loadavg": [
+     1.31,
+     1.28,
+     2.32
+    ],
+    "windows_cpu_pct": 16.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 67.7,
+    "uss_mb": 56.1
+   },
+   "ready_own_s": 0.0863,
+   "ready_s": 0.1028,
+   "run": 2
+  },
+  {
+   "candidate": "PySide6 (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/qt_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:24:39",
+    "loadavg": [
+     1.2,
+     1.26,
+     2.31
+    ],
+    "windows_cpu_pct": 15.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 67.7,
+    "uss_mb": 56.1
+   },
+   "ready_own_s": 0.0794,
+   "ready_s": 0.0946,
+   "run": 3
+  },
+  {
+   "candidate": "PySide6 (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/qt_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:24:45",
+    "loadavg": [
+     1.1,
+     1.24,
+     2.3
+    ],
+    "windows_cpu_pct": 0.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 67.8,
+    "uss_mb": 55.9
+   },
+   "ready_own_s": 0.0768,
+   "ready_s": 0.0924,
+   "run": 4
+  },
+  {
+   "candidate": "PySide6 (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/qt_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:24:50",
+    "loadavg": [
+     1.17,
+     1.25,
+     2.29
+    ],
+    "windows_cpu_pct": 14.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 67.8,
+    "uss_mb": 56.0
+   },
+   "ready_own_s": 0.1005,
+   "ready_s": 0.1173,
+   "run": 5
+  },
+  {
+   "candidate": "pygame-ce (CPython, dummy video)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:24:56",
+    "loadavg": [
+     1.16,
+     1.24,
+     2.28
+    ],
+    "windows_cpu_pct": 17.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 45.7,
+    "uss_mb": 35.7
+   },
+   "ready_own_s": 0.0554,
+   "ready_s": 0.0719,
+   "run": 1
+  },
+  {
+   "candidate": "pygame-ce (CPython, dummy video)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:01",
+    "loadavg": [
+     1.15,
+     1.24,
+     2.27
+    ],
+    "windows_cpu_pct": 5.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 45.5,
+    "uss_mb": 35.5
+   },
+   "ready_own_s": 0.0471,
+   "ready_s": 0.0648,
+   "run": 2
+  },
+  {
+   "candidate": "pygame-ce (CPython, dummy video)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:06",
+    "loadavg": [
+     1.13,
+     1.23,
+     2.27
+    ],
+    "windows_cpu_pct": 8.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 45.5,
+    "uss_mb": 35.5
+   },
+   "ready_own_s": 0.0397,
+   "ready_s": 0.0562,
+   "run": 3
+  },
+  {
+   "candidate": "pygame-ce (CPython, dummy video)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:12",
+    "loadavg": [
+     1.12,
+     1.23,
+     2.26
+    ],
+    "windows_cpu_pct": 1.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 45.6,
+    "uss_mb": 35.9
+   },
+   "ready_own_s": 0.0384,
+   "ready_s": 0.0536,
+   "run": 4
+  },
+  {
+   "candidate": "pygame-ce (CPython, dummy video)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:17",
+    "loadavg": [
+     1.03,
+     1.21,
+     2.25
+    ],
+    "windows_cpu_pct": 5.0
+   },
+   "memory": {
+    "names": [
+     "python"
+    ],
+    "processes": 1,
+    "rss_mb": 45.5,
+    "uss_mb": 35.6
+   },
+   "ready_own_s": 0.0368,
+   "ready_s": 0.0516,
+   "run": 5
+  },
+  {
+   "candidate": "pygame-ce (PyPy, dummy video)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:23",
+    "loadavg": [
+     1.03,
+     1.2,
+     2.24
+    ],
+    "windows_cpu_pct": 3.0
+   },
+   "memory": {
+    "names": [
+     "pypy3.11"
+    ],
+    "processes": 1,
+    "rss_mb": 140.8,
+    "uss_mb": 136.1
+   },
+   "ready_own_s": 0.1168,
+   "ready_s": 0.1586,
+   "run": 1
+  },
+  {
+   "candidate": "pygame-ce (PyPy, dummy video)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:28",
+    "loadavg": [
+     1.03,
+     1.2,
+     2.23
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "memory": {
+    "names": [
+     "pypy3.11"
+    ],
+    "processes": 1,
+    "rss_mb": 143.1,
+    "uss_mb": 138.4
+   },
+   "ready_own_s": 0.0692,
+   "ready_s": 0.1083,
+   "run": 2
+  },
+  {
+   "candidate": "pygame-ce (PyPy, dummy video)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:34",
+    "loadavg": [
+     1.03,
+     1.2,
+     2.23
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "memory": {
+    "names": [
+     "pypy3.11"
+    ],
+    "processes": 1,
+    "rss_mb": 143.4,
+    "uss_mb": 138.7
+   },
+   "ready_own_s": 0.0621,
+   "ready_s": 0.0966,
+   "run": 3
+  },
+  {
+   "candidate": "pygame-ce (PyPy, dummy video)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:39",
+    "loadavg": [
+     1.02,
+     1.19,
+     2.22
+    ],
+    "windows_cpu_pct": 1.0
+   },
+   "memory": {
+    "names": [
+     "pypy3.11"
+    ],
+    "processes": 1,
+    "rss_mb": 143.1,
+    "uss_mb": 138.4
+   },
+   "ready_own_s": 0.0634,
+   "ready_s": 0.1019,
+   "run": 4
+  },
+  {
+   "candidate": "pygame-ce (PyPy, dummy video)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/pygame_probe.py"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:45",
+    "loadavg": [
+     1.02,
+     1.19,
+     2.21
+    ],
+    "windows_cpu_pct": 20.0
+   },
+   "memory": {
+    "names": [
+     "pypy3.11"
+    ],
+    "processes": 1,
+    "rss_mb": 143.3,
+    "uss_mb": 138.6
+   },
+   "ready_own_s": 0.066,
+   "ready_s": 0.103,
+   "run": 5
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (CPython server)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:50",
+    "loadavg": [
+     1.09,
+     1.2,
+     2.2
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "python"
+    ],
+    "processes": 11,
+    "rss_mb": 1037.2,
+    "uss_mb": 191.2
+   },
+   "ready_own_s": 0.4629,
+   "ready_s": 0.494,
+   "run": 1
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (CPython server)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:25:56",
+    "loadavg": [
+     1.08,
+     1.2,
+     2.2
+    ],
+    "windows_cpu_pct": 17.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "python"
+    ],
+    "processes": 11,
+    "rss_mb": 1037.0,
+    "uss_mb": 191.0
+   },
+   "ready_own_s": 0.3264,
+   "ready_s": 0.3579,
+   "run": 2
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (CPython server)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:02",
+    "loadavg": [
+     1.08,
+     1.19,
+     2.19
+    ],
+    "windows_cpu_pct": 0.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "python"
+    ],
+    "processes": 11,
+    "rss_mb": 1034.8,
+    "uss_mb": 192.4
+   },
+   "ready_own_s": 0.3364,
+   "ready_s": 0.3679,
+   "run": 3
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (CPython server)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:07",
+    "loadavg": [
+     1.07,
+     1.19,
+     2.18
+    ],
+    "windows_cpu_pct": 7.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "python"
+    ],
+    "processes": 11,
+    "rss_mb": 1034.9,
+    "uss_mb": 192.1
+   },
+   "ready_own_s": 0.3289,
+   "ready_s": 0.3618,
+   "run": 4
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (CPython server)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:13",
+    "loadavg": [
+     1.06,
+     1.19,
+     2.18
+    ],
+    "windows_cpu_pct": 3.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "python"
+    ],
+    "processes": 11,
+    "rss_mb": 1034.7,
+    "uss_mb": 191.1
+   },
+   "ready_own_s": 0.3416,
+   "ready_s": 0.3721,
+   "run": 5
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (PyPy server)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:19",
+    "loadavg": [
+     1.06,
+     1.18,
+     2.17
+    ],
+    "windows_cpu_pct": 2.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "pypy3.11"
+    ],
+    "processes": 11,
+    "rss_mb": 1098.8,
+    "uss_mb": 268.8
+   },
+   "ready_own_s": 0.3446,
+   "ready_s": 0.439,
+   "run": 1
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (PyPy server)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:25",
+    "loadavg": [
+     1.05,
+     1.18,
+     2.16
+    ],
+    "windows_cpu_pct": 6.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "pypy3.11"
+    ],
+    "processes": 11,
+    "rss_mb": 1103.3,
+    "uss_mb": 268.0
+   },
+   "ready_own_s": 0.3395,
+   "ready_s": 0.421,
+   "run": 2
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (PyPy server)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:30",
+    "loadavg": [
+     1.93,
+     1.37,
+     2.22
+    ],
+    "windows_cpu_pct": 9.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "pypy3.11"
+    ],
+    "processes": 11,
+    "rss_mb": 1108.4,
+    "uss_mb": 268.3
+   },
+   "ready_own_s": 0.3206,
+   "ready_s": 0.3989,
+   "run": 3
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (PyPy server)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:36",
+    "loadavg": [
+     1.86,
+     1.36,
+     2.21
+    ],
+    "windows_cpu_pct": 18.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "pypy3.11"
+    ],
+    "processes": 11,
+    "rss_mb": 1102.1,
+    "uss_mb": 267.0
+   },
+   "ready_own_s": 0.3346,
+   "ready_s": 0.4226,
+   "run": 4
+  },
+  {
+   "candidate": "web in headless Chromium, new profile (PyPy server)",
+   "command": [
+    "/home/diego/.local/bin/pypy3.11",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "browser",
+    "--headless"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:42",
+    "loadavg": [
+     1.79,
+     1.36,
+     2.2
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "memory": {
+    "names": [
+     "chrome",
+     "pypy3.11"
+    ],
+    "processes": 11,
+    "rss_mb": 1105.1,
+    "uss_mb": 269.3
+   },
+   "ready_own_s": 0.3309,
+   "ready_s": 0.412,
+   "run": 5
+  },
+  {
+   "candidate": "web in pywebview / Qt WebEngine (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "webview"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:48",
+    "loadavg": [
+     1.72,
+     1.35,
+     2.2
+    ],
+    "windows_cpu_pct": 8.0
+   },
+   "memory": {
+    "names": [
+     "QtWebEngineProcess",
+     "python"
+    ],
+    "processes": 5,
+    "rss_mb": 550.3,
+    "uss_mb": 289.0
+   },
+   "ready_own_s": 0.3221,
+   "ready_s": 0.353,
+   "run": 1
+  },
+  {
+   "candidate": "web in pywebview / Qt WebEngine (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "webview"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:53",
+    "loadavg": [
+     1.75,
+     1.36,
+     2.19
+    ],
+    "windows_cpu_pct": 10.0
+   },
+   "memory": {
+    "names": [
+     "QtWebEngineProcess",
+     "python"
+    ],
+    "processes": 5,
+    "rss_mb": 549.6,
+    "uss_mb": 287.9
+   },
+   "ready_own_s": 0.3059,
+   "ready_s": 0.3353,
+   "run": 2
+  },
+  {
+   "candidate": "web in pywebview / Qt WebEngine (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "webview"
+   ],
+   "load": {
+    "at": "2026-11-03T01:26:59",
+    "loadavg": [
+     1.69,
+     1.36,
+     2.19
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "memory": {
+    "names": [
+     "QtWebEngineProcess",
+     "python"
+    ],
+    "processes": 5,
+    "rss_mb": 549.8,
+    "uss_mb": 288.5
+   },
+   "ready_own_s": 0.2865,
+   "ready_s": 0.318,
+   "run": 3
+  },
+  {
+   "candidate": "web in pywebview / Qt WebEngine (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "webview"
+   ],
+   "load": {
+    "at": "2026-11-03T01:27:05",
+    "loadavg": [
+     1.63,
+     1.35,
+     2.18
+    ],
+    "windows_cpu_pct": 20.0
+   },
+   "memory": {
+    "names": [
+     "QtWebEngineProcess",
+     "python"
+    ],
+    "processes": 5,
+    "rss_mb": 549.7,
+    "uss_mb": 288.2
+   },
+   "ready_own_s": 0.3274,
+   "ready_s": 0.3613,
+   "run": 4
+  },
+  {
+   "candidate": "web in pywebview / Qt WebEngine (CPython, offscreen)",
+   "command": [
+    ".cache/venv/bin/python",
+    "tools/tech_probe/web_probe.py",
+    "--shell",
+    "webview"
+   ],
+   "load": {
+    "at": "2026-11-03T01:27:10",
+    "loadavg": [
+     1.68,
+     1.37,
+     2.18
+    ],
+    "windows_cpu_pct": 20.0
+   },
+   "memory": {
+    "names": [
+     "QtWebEngineProcess",
+     "python"
+    ],
+    "processes": 5,
+    "rss_mb": 549.6,
+    "uss_mb": 288.1
+   },
+   "ready_own_s": 0.3087,
+   "ready_s": 0.3406,
+   "run": 5
+  }
+ ]
+}

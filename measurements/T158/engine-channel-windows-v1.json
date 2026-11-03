@@ -1,0 +1,925 @@
+{
+ "host": {
+  "cpus": 32,
+  "machine": "AMD64",
+  "os": "Windows",
+  "release": "11"
+ },
+ "kind": "engine-channel",
+ "records": [
+  {
+   "child_clock_resolution": 0.015625,
+   "events": 300,
+   "first_event_s": 3.9406,
+   "interpreter_start_s": 1.1317,
+   "latency_ms": {
+    "max": 33.531,
+    "mean": 17.089,
+    "n": 300,
+    "p50": 16.84,
+    "p95": 32.667
+   },
+   "load": {
+    "at": "2026-11-03T01:27:27",
+    "windows_cpu_pct": 23.0,
+    "wsl_loadavg": [
+     1.61,
+     1.37,
+     2.16
+    ]
+   },
+   "mode": "file",
+   "poll_ms": {
+    "max": 53.744,
+    "mean": 0.245,
+    "n": 793,
+    "p50": 0.064,
+    "p95": 0.195
+   },
+   "rtt_ms": {
+    "max": 30.707,
+    "mean": 30.39,
+    "n": 20,
+    "p50": 30.399,
+    "p95": 30.707
+   },
+   "run": 1,
+   "seed": 257,
+   "start_s": 2.0788,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 73.388,
+    "mean": 0.549,
+    "n": 1582,
+    "p50": 0.454,
+    "p95": 0.716
+   }
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "events": 300,
+   "first_event_s": 2.0106,
+   "interpreter_start_s": 0.556,
+   "latency_ms": {
+    "max": 33.967,
+    "mean": 18.61,
+    "n": 300,
+    "p50": 16.712,
+    "p95": 33.281
+   },
+   "load": {
+    "at": "2026-11-03T01:27:56",
+    "windows_cpu_pct": 17.0,
+    "wsl_loadavg": [
+     1.37,
+     1.33,
+     2.13
+    ]
+   },
+   "mode": "file",
+   "poll_ms": {
+    "max": 50.682,
+    "mean": 0.265,
+    "n": 648,
+    "p50": 0.064,
+    "p95": 0.211
+   },
+   "rtt_ms": {
+    "max": 30.795,
+    "mean": 30.403,
+    "n": 20,
+    "p50": 30.416,
+    "p95": 30.795
+   },
+   "run": 2,
+   "seed": 257,
+   "start_s": 0.6544,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 50.787,
+    "mean": 0.58,
+    "n": 1292,
+    "p50": 0.435,
+    "p95": 0.738
+   }
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "events": 300,
+   "first_event_s": 1.6757,
+   "interpreter_start_s": 0.3968,
+   "latency_ms": {
+    "max": 33.941,
+    "mean": 20.609,
+    "n": 300,
+    "p50": 20.898,
+    "p95": 33.126
+   },
+   "load": {
+    "at": "2026-11-03T01:28:20",
+    "windows_cpu_pct": 8.0,
+    "wsl_loadavg": [
+     1.04,
+     1.26,
+     2.08
+    ]
+   },
+   "mode": "file",
+   "poll_ms": {
+    "max": 6.202,
+    "mean": 0.119,
+    "n": 648,
+    "p50": 0.066,
+    "p95": 0.197
+   },
+   "rtt_ms": {
+    "max": 30.691,
+    "mean": 30.36,
+    "n": 20,
+    "p50": 30.333,
+    "p95": 30.691
+   },
+   "run": 3,
+   "seed": 257,
+   "start_s": 0.4799,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 35.952,
+    "mean": 0.52,
+    "n": 1294,
+    "p50": 0.448,
+    "p95": 0.759
+   }
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "events": 300,
+   "first_event_s": 1.7931,
+   "interpreter_start_s": 0.5198,
+   "latency_ms": {
+    "max": 33.702,
+    "mean": 19.392,
+    "n": 300,
+    "p50": 16.857,
+    "p95": 33.122
+   },
+   "load": {
+    "at": "2026-11-03T01:28:44",
+    "windows_cpu_pct": 26.0,
+    "wsl_loadavg": [
+     0.69,
+     1.16,
+     2.03
+    ]
+   },
+   "mode": "file",
+   "poll_ms": {
+    "max": 21.731,
+    "mean": 0.147,
+    "n": 672,
+    "p50": 0.068,
+    "p95": 0.197
+   },
+   "rtt_ms": {
+    "max": 31.182,
+    "mean": 30.482,
+    "n": 20,
+    "p50": 30.416,
+    "p95": 31.182
+   },
+   "run": 4,
+   "seed": 257,
+   "start_s": 0.6016,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 34.24,
+    "mean": 0.53,
+    "n": 1339,
+    "p50": 0.435,
+    "p95": 0.758
+   }
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "events": 300,
+   "first_event_s": 1.6764,
+   "interpreter_start_s": 0.4019,
+   "latency_ms": {
+    "max": 33.66,
+    "mean": 18.882,
+    "n": 300,
+    "p50": 16.922,
+    "p95": 33.256
+   },
+   "load": {
+    "at": "2026-11-03T01:29:09",
+    "windows_cpu_pct": 2.0,
+    "wsl_loadavg": [
+     0.53,
+     1.08,
+     1.98
+    ]
+   },
+   "mode": "file",
+   "poll_ms": {
+    "max": 65.049,
+    "mean": 0.248,
+    "n": 645,
+    "p50": 0.065,
+    "p95": 0.185
+   },
+   "rtt_ms": {
+    "max": 31.622,
+    "mean": 30.568,
+    "n": 20,
+    "p50": 30.529,
+    "p95": 31.622
+   },
+   "run": 5,
+   "seed": 257,
+   "start_s": 0.4806,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 78.894,
+    "mean": 0.57,
+    "n": 1287,
+    "p50": 0.461,
+    "p95": 0.742
+   }
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "cold_latency_ms": {
+    "max": 16.92,
+    "mean": 11.276,
+    "n": 300,
+    "p50": 12.081,
+    "p95": 16.679
+   },
+   "cold_match_first_event_s": 1.0121,
+   "events": 300,
+   "first_event_s": 1.2744,
+   "latency_ms": {
+    "max": 17.028,
+    "mean": 12.096,
+    "n": 300,
+    "p50": 12.375,
+    "p95": 16.716
+   },
+   "load": {
+    "at": "2026-11-03T01:29:33",
+    "windows_cpu_pct": 3.0,
+    "wsl_loadavg": [
+     0.35,
+     0.99,
+     1.93
+    ]
+   },
+   "mode": "pipe",
+   "open_bytes": 26697189,
+   "open_s": 0.1487,
+   "rtt_ms": {
+    "max": 0.851,
+    "mean": 0.361,
+    "n": 20,
+    "p50": 0.329,
+    "p95": 0.851
+   },
+   "run": 1,
+   "seed": 257,
+   "start_s": 0.1136,
+   "transport_ms": {
+    "max": 10.725,
+    "mean": 3.637,
+    "n": 300,
+    "p50": 3.13,
+    "p95": 9.029
+   },
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 1.524,
+    "mean": 0.426,
+    "n": 874,
+    "p50": 0.424,
+    "p95": 0.701
+   },
+   "warm_first_event_s": 0.869
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "cold_latency_ms": {
+    "max": 27.018,
+    "mean": 11.541,
+    "n": 300,
+    "p50": 12.341,
+    "p95": 16.725
+   },
+   "cold_match_first_event_s": 1.0182,
+   "events": 300,
+   "first_event_s": 1.279,
+   "latency_ms": {
+    "max": 17.771,
+    "mean": 12.236,
+    "n": 300,
+    "p50": 12.932,
+    "p95": 16.757
+   },
+   "load": {
+    "at": "2026-11-03T01:30:08",
+    "windows_cpu_pct": 1.0,
+    "wsl_loadavg": [
+     0.75,
+     1.01,
+     1.9
+    ]
+   },
+   "mode": "pipe",
+   "open_bytes": 26697189,
+   "open_s": 0.1497,
+   "rtt_ms": {
+    "max": 0.977,
+    "mean": 0.376,
+    "n": 20,
+    "p50": 0.338,
+    "p95": 0.977
+   },
+   "run": 2,
+   "seed": 257,
+   "start_s": 0.1112,
+   "transport_ms": {
+    "max": 10.301,
+    "mean": 3.442,
+    "n": 300,
+    "p50": 2.742,
+    "p95": 8.563
+   },
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 1.7,
+    "mean": 0.437,
+    "n": 858,
+    "p50": 0.429,
+    "p95": 0.712
+   },
+   "warm_first_event_s": 0.6927
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "cold_latency_ms": {
+    "max": 16.849,
+    "mean": 11.114,
+    "n": 300,
+    "p50": 11.256,
+    "p95": 16.538
+   },
+   "cold_match_first_event_s": 0.9883,
+   "events": 300,
+   "first_event_s": 1.2373,
+   "latency_ms": {
+    "max": 17.988,
+    "mean": 11.171,
+    "n": 300,
+    "p50": 11.885,
+    "p95": 16.558
+   },
+   "load": {
+    "at": "2026-11-03T01:30:43",
+    "windows_cpu_pct": 5.0,
+    "wsl_loadavg": [
+     0.58,
+     0.94,
+     1.84
+    ]
+   },
+   "mode": "pipe",
+   "open_bytes": 26697189,
+   "open_s": 0.1366,
+   "rtt_ms": {
+    "max": 0.326,
+    "mean": 0.184,
+    "n": 20,
+    "p50": 0.174,
+    "p95": 0.326
+   },
+   "run": 3,
+   "seed": 257,
+   "start_s": 0.1124,
+   "transport_ms": {
+    "max": 10.227,
+    "mean": 2.948,
+    "n": 300,
+    "p50": 1.851,
+    "p95": 8.662
+   },
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 0.822,
+    "mean": 0.379,
+    "n": 917,
+    "p50": 0.369,
+    "p95": 0.628
+   },
+   "warm_first_event_s": 0.6808
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "cold_latency_ms": {
+    "max": 16.769,
+    "mean": 11.249,
+    "n": 300,
+    "p50": 12.23,
+    "p95": 16.564
+   },
+   "cold_match_first_event_s": 1.1131,
+   "events": 300,
+   "first_event_s": 1.3904,
+   "latency_ms": {
+    "max": 16.662,
+    "mean": 11.737,
+    "n": 300,
+    "p50": 12.553,
+    "p95": 16.531
+   },
+   "load": {
+    "at": "2026-11-03T01:31:17",
+    "windows_cpu_pct": 8.0,
+    "wsl_loadavg": [
+     0.72,
+     0.94,
+     1.8
+    ]
+   },
+   "mode": "pipe",
+   "open_bytes": 26697189,
+   "open_s": 0.1574,
+   "rtt_ms": {
+    "max": 0.294,
+    "mean": 0.189,
+    "n": 20,
+    "p50": 0.188,
+    "p95": 0.294
+   },
+   "run": 4,
+   "seed": 257,
+   "start_s": 0.1199,
+   "transport_ms": {
+    "max": 10.276,
+    "mean": 3.453,
+    "n": 300,
+    "p50": 2.907,
+    "p95": 8.664
+   },
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 0.789,
+    "mean": 0.305,
+    "n": 749,
+    "p50": 0.293,
+    "p95": 0.535
+   },
+   "warm_first_event_s": 0.7111
+  },
+  {
+   "child_clock_resolution": 0.015625,
+   "cold_latency_ms": {
+    "max": 16.999,
+    "mean": 12.708,
+    "n": 300,
+    "p50": 14.315,
+    "p95": 16.82
+   },
+   "cold_match_first_event_s": 1.0912,
+   "events": 300,
+   "first_event_s": 1.3644,
+   "latency_ms": {
+    "max": 19.225,
+    "mean": 10.995,
+    "n": 300,
+    "p50": 12.034,
+    "p95": 16.728
+   },
+   "load": {
+    "at": "2026-11-03T01:31:48",
+    "windows_cpu_pct": 3.0,
+    "wsl_loadavg": [
+     0.89,
+     0.96,
+     1.78
+    ]
+   },
+   "mode": "pipe",
+   "open_bytes": 26697189,
+   "open_s": 0.157,
+   "rtt_ms": {
+    "max": 0.825,
+    "mean": 0.475,
+    "n": 20,
+    "p50": 0.402,
+    "p95": 0.825
+   },
+   "run": 5,
+   "seed": 257,
+   "start_s": 0.1161,
+   "transport_ms": {
+    "max": 10.43,
+    "mean": 2.848,
+    "n": 300,
+    "p50": 2.014,
+    "p95": 8.803
+   },
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 1.207,
+    "mean": 0.419,
+    "n": 866,
+    "p50": 0.406,
+    "p95": 0.708
+   },
+   "warm_first_event_s": 0.7515
+  },
+  {
+   "cold_latency_ms": {
+    "max": 30.354,
+    "mean": 14.724,
+    "n": 300,
+    "p50": 14.585,
+    "p95": 28.656
+   },
+   "events": 300,
+   "first_event_s": 0.4053,
+   "latency_ms": {
+    "max": 30.829,
+    "mean": 14.342,
+    "n": 300,
+    "p50": 13.285,
+    "p95": 29.125
+   },
+   "load": {
+    "at": "2026-11-03T01:32:24",
+    "windows_cpu_pct": 9.0,
+    "wsl_loadavg": [
+     0.5,
+     0.85,
+     1.71
+    ]
+   },
+   "mode": "thread-hybrid",
+   "rtt_ms": {
+    "max": 0.062,
+    "mean": 0.015,
+    "n": 20,
+    "p50": 0.008,
+    "p95": 0.062
+   },
+   "run": 1,
+   "rust": true,
+   "seed": 257,
+   "start_s": 0.2252,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 25.045,
+    "mean": 14.183,
+    "n": 383,
+    "p50": 14.737,
+    "p95": 15.293
+   },
+   "warm_first_event_s": 0.4385
+  },
+  {
+   "cold_latency_ms": {
+    "max": 30.714,
+    "mean": 15.546,
+    "n": 300,
+    "p50": 15.529,
+    "p95": 29.539
+   },
+   "events": 300,
+   "first_event_s": 0.5487,
+   "latency_ms": {
+    "max": 35.799,
+    "mean": 14.575,
+    "n": 300,
+    "p50": 13.639,
+    "p95": 29.354
+   },
+   "load": {
+    "at": "2026-11-03T01:32:48",
+    "windows_cpu_pct": 4.0,
+    "wsl_loadavg": [
+     0.4,
+     0.8,
+     1.67
+    ]
+   },
+   "mode": "thread-hybrid",
+   "rtt_ms": {
+    "max": 0.043,
+    "mean": 0.021,
+    "n": 20,
+    "p50": 0.017,
+    "p95": 0.043
+   },
+   "run": 2,
+   "rust": true,
+   "seed": 257,
+   "start_s": 0.0033,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 26.48,
+    "mean": 12.158,
+    "n": 426,
+    "p50": 13.818,
+    "p95": 16.502
+   },
+   "warm_first_event_s": 0.4764
+  },
+  {
+   "cold_latency_ms": {
+    "max": 39.057,
+    "mean": 15.487,
+    "n": 300,
+    "p50": 14.995,
+    "p95": 29.085
+   },
+   "events": 300,
+   "first_event_s": 0.6013,
+   "latency_ms": {
+    "max": 31.466,
+    "mean": 13.682,
+    "n": 300,
+    "p50": 12.468,
+    "p95": 29.286
+   },
+   "load": {
+    "at": "2026-11-03T01:33:13",
+    "windows_cpu_pct": 28.0,
+    "wsl_loadavg": [
+     0.38,
+     0.77,
+     1.64
+    ]
+   },
+   "mode": "thread-hybrid",
+   "rtt_ms": {
+    "max": 0.104,
+    "mean": 0.023,
+    "n": 20,
+    "p50": 0.012,
+    "p95": 0.104
+   },
+   "run": 3,
+   "rust": true,
+   "seed": 257,
+   "start_s": 0.0033,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 24.816,
+    "mean": 12.545,
+    "n": 386,
+    "p50": 14.202,
+    "p95": 17.562
+   },
+   "warm_first_event_s": 0.4502
+  },
+  {
+   "cold_latency_ms": {
+    "max": 30.97,
+    "mean": 14.523,
+    "n": 300,
+    "p50": 13.898,
+    "p95": 28.641
+   },
+   "events": 300,
+   "first_event_s": 0.5349,
+   "latency_ms": {
+    "max": 30.493,
+    "mean": 14.426,
+    "n": 300,
+    "p50": 14.372,
+    "p95": 29.17
+   },
+   "load": {
+    "at": "2026-11-03T01:33:37",
+    "windows_cpu_pct": 6.0,
+    "wsl_loadavg": [
+     0.57,
+     0.77,
+     1.61
+    ]
+   },
+   "mode": "thread-hybrid",
+   "rtt_ms": {
+    "max": 0.06,
+    "mean": 0.018,
+    "n": 20,
+    "p50": 0.015,
+    "p95": 0.06
+   },
+   "run": 4,
+   "rust": true,
+   "seed": 257,
+   "start_s": 0.0026,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 15.662,
+    "mean": 13.902,
+    "n": 390,
+    "p50": 14.622,
+    "p95": 15.287
+   },
+   "warm_first_event_s": 0.5554
+  },
+  {
+   "cold_latency_ms": {
+    "max": 38.908,
+    "mean": 15.366,
+    "n": 300,
+    "p50": 15.159,
+    "p95": 28.677
+   },
+   "events": 300,
+   "first_event_s": 0.5877,
+   "latency_ms": {
+    "max": 34.191,
+    "mean": 15.464,
+    "n": 300,
+    "p50": 15.131,
+    "p95": 28.595
+   },
+   "load": {
+    "at": "2026-11-03T01:34:01",
+    "windows_cpu_pct": 6.0,
+    "wsl_loadavg": [
+     0.44,
+     0.72,
+     1.58
+    ]
+   },
+   "mode": "thread-hybrid",
+   "rtt_ms": {
+    "max": 0.029,
+    "mean": 0.01,
+    "n": 20,
+    "p50": 0.007,
+    "p95": 0.029
+   },
+   "run": 5,
+   "rust": true,
+   "seed": 257,
+   "start_s": 0.0008,
+   "ui": "CPython 3.13.15",
+   "ui_late_ms": {
+    "max": 20.423,
+    "mean": 13.763,
+    "n": 376,
+    "p50": 14.564,
+    "p95": 15.344
+   },
+   "warm_first_event_s": 0.5173
+  },
+  {
+   "cold_latency_ms": {
+    "max": 72.697,
+    "mean": 15.999,
+    "n": 300,
+    "p50": 14.465,
+    "p95": 31.585
+   },
+   "events": 300,
+   "first_event_s": 1.051,
+   "latency_ms": {
+    "max": 46.687,
+    "mean": 15.768,
+    "n": 300,
+    "p50": 16.569,
+    "p95": 30.89
+   },
+   "load": {
+    "at": "2026-11-03T01:34:36",
+    "windows_cpu_pct": 26.0,
+    "wsl_loadavg": [
+     0.54,
+     0.72,
+     1.54
+    ]
+   },
+   "mode": "thread",
+   "rtt_ms": {
+    "max": 0.319,
+    "mean": 0.072,
+    "n": 20,
+    "p50": 0.049,
+    "p95": 0.319
+   },
+   "run": 1,
+   "rust": false,
+   "seed": 257,
+   "start_s": 0.0,
+   "ui": "PyPy 3.11.15",
+   "ui_late_ms": {
+    "max": 165.003,
+    "mean": 9.487,
+    "n": 669,
+    "p50": 8.902,
+    "p95": 20.723
+   },
+   "warm_first_event_s": 0.8813
+  },
+  {
+   "cold_latency_ms": {
+    "max": 80.981,
+    "mean": 15.653,
+    "n": 300,
+    "p50": 14.021,
+    "p95": 31.66
+   },
+   "events": 300,
+   "first_event_s": 0.7781,
+   "latency_ms": {
+    "max": 44.857,
+    "mean": 15.341,
+    "n": 300,
+    "p50": 14.906,
+    "p95": 31.778
+   },
+   "load": {
+    "at": "2026-11-03T01:35:23",
+    "windows_cpu_pct": 26.0,
+    "wsl_loadavg": [
+     0.9,
+     0.8,
+     1.53
+    ]
+   },
+   "mode": "thread",
+   "rtt_ms": {
+    "max": 0.106,
+    "mean": 0.051,
+    "n": 20,
+    "p50": 0.051,
+    "p95": 0.106
+   },
+   "run": 2,
+   "rust": false,
+   "seed": 257,
+   "start_s": 0.0,
+   "ui": "PyPy 3.11.15",
+   "ui_late_ms": {
+    "max": 47.692,
+    "mean": 9.243,
+    "n": 645,
+    "p50": 8.649,
+    "p95": 21.245
+   },
+   "warm_first_event_s": 0.7047
+  },
+  {
+   "cold_latency_ms": {
+    "max": 38.918,
+    "mean": 15.819,
+    "n": 300,
+    "p50": 14.835,
+    "p95": 31.327
+   },
+   "events": 300,
+   "first_event_s": 0.6632,
+   "latency_ms": {
+    "max": 40.013,
+    "mean": 14.509,
+    "n": 300,
+    "p50": 13.981,
+    "p95": 30.853
+   },
+   "load": {
+    "at": "2026-11-03T01:35:56",
+    "windows_cpu_pct": 13.0,
+    "wsl_loadavg": [
+     0.87,
+     0.8,
+     1.5
+    ]
+   },
+   "mode": "thread",
+   "rtt_ms": {
+    "max": 0.037,
+    "mean": 0.028,
+    "n": 20,
+    "p50": 0.028,
+    "p95": 0.037
+   },
+   "run": 3,
+   "rust": false,
+   "seed": 257,
+   "start_s": 0.0,
+   "ui": "PyPy 3.11.15",
+   "ui_late_ms": {
+    "max": 57.904,
+    "mean": 9.439,
+    "n": 631,
+    "p50": 9.253,
+    "p95": 21.233
+   },
+   "warm_first_event_s": 0.6588
+  }
+ ]
+}

@@ -1,0 +1,1411 @@
+{
+ "host": {
+  "cpus": 32,
+  "machine": "x86_64",
+  "os": "Linux",
+  "release": "6.18.54.1-microsoft-standard-WSL2"
+ },
+ "kind": "engine-speed",
+ "records": [
+  {
+   "arm": "pypy",
+   "events": 1228,
+   "events_sha256": "cf691dd3c960ea33d5072295f79a34d9353ce9bae8bb4b0af2677d3a81d62144",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.056,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T00:55:50",
+    "loadavg": [
+     6.78,
+     3.18,
+     3.06
+    ],
+    "windows_cpu_pct": 9.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 51.129,
+   "match_wall_s": 51.228,
+   "outcome_sha256": "07486ab345bea0795d3399952cbeed20d2f7aea656e37ea755a9187ac8a9ea1a",
+   "process_wall_s": 51.602,
+   "result_sha256": "743057b2050835ea5a6df7819427744e6ca3d8ecead150714a75e206945bdc39",
+   "round": 1,
+   "rust": false,
+   "score": [
+    2,
+    3
+   ],
+   "seed": 1,
+   "seeds": [
+    36592,
+    21548
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1228,
+   "events_sha256": "cf691dd3c960ea33d5072295f79a34d9353ce9bae8bb4b0af2677d3a81d62144",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.054,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T00:56:43",
+    "loadavg": [
+     8.29,
+     4.15,
+     3.4
+    ],
+    "windows_cpu_pct": 6.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 31.876,
+   "match_wall_s": 31.876,
+   "outcome_sha256": "07486ab345bea0795d3399952cbeed20d2f7aea656e37ea755a9187ac8a9ea1a",
+   "process_wall_s": 32.078,
+   "result_sha256": "743057b2050835ea5a6df7819427744e6ca3d8ecead150714a75e206945bdc39",
+   "round": 1,
+   "rust": true,
+   "score": [
+    2,
+    3
+   ],
+   "seed": 1,
+   "seeds": [
+    36592,
+    21548
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1231,
+   "events_sha256": "d7d68cd31a7624bae8906f0fe2b05e96bae63f314f4642dea68b848156a3a8a4",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.058,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T00:57:17",
+    "loadavg": [
+     8.77,
+     4.74,
+     3.62
+    ],
+    "windows_cpu_pct": 9.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 50.248,
+   "match_wall_s": 50.25,
+   "outcome_sha256": "6a2ad2a02902251732ac673d475d1053afa2c4f64a1fa1dc27d4cf6fa5217d0c",
+   "process_wall_s": 50.63,
+   "result_sha256": "624040de0bfdf9b775ad3690d6dba023a02d39162b9b55315458d3e45c783dac",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    1
+   ],
+   "seed": 2,
+   "seeds": [
+    53370,
+    10007
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1231,
+   "events_sha256": "d7d68cd31a7624bae8906f0fe2b05e96bae63f314f4642dea68b848156a3a8a4",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.054,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T00:58:09",
+    "loadavg": [
+     9.16,
+     5.54,
+     3.96
+    ],
+    "windows_cpu_pct": 9.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 33.312,
+   "match_wall_s": 33.314,
+   "outcome_sha256": "6a2ad2a02902251732ac673d475d1053afa2c4f64a1fa1dc27d4cf6fa5217d0c",
+   "process_wall_s": 33.522,
+   "result_sha256": "624040de0bfdf9b775ad3690d6dba023a02d39162b9b55315458d3e45c783dac",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    1
+   ],
+   "seed": 2,
+   "seeds": [
+    53370,
+    10007
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1212,
+   "events_sha256": "cdb0378ecdcdb05ddb3bec709c7abd0904f9b31cbc5523d6b647b3e75fa8d30c",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.058,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T00:58:43",
+    "loadavg": [
+     9.34,
+     5.94,
+     4.15
+    ],
+    "windows_cpu_pct": 1.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 55.24,
+   "match_wall_s": 55.25,
+   "outcome_sha256": "3ebf3a1a2e581c8d51b232ca3fc74dcd51753bde73e6b8ae71d5f9fa52bb6482",
+   "process_wall_s": 55.664,
+   "result_sha256": "5197147d7c4cacbb8732ae12b650236ac286f125e6305003e567a3720b83818d",
+   "round": 1,
+   "rust": false,
+   "score": [
+    0,
+    0
+   ],
+   "seed": 3,
+   "seeds": [
+    34655,
+    45492
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1212,
+   "events_sha256": "cdb0378ecdcdb05ddb3bec709c7abd0904f9b31cbc5523d6b647b3e75fa8d30c",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.066,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T00:59:40",
+    "loadavg": [
+     9.81,
+     6.67,
+     4.51
+    ],
+    "windows_cpu_pct": 23.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 36.062,
+   "match_wall_s": 36.091,
+   "outcome_sha256": "3ebf3a1a2e581c8d51b232ca3fc74dcd51753bde73e6b8ae71d5f9fa52bb6482",
+   "process_wall_s": 36.323,
+   "result_sha256": "5197147d7c4cacbb8732ae12b650236ac286f125e6305003e567a3720b83818d",
+   "round": 1,
+   "rust": true,
+   "score": [
+    0,
+    0
+   ],
+   "seed": 3,
+   "seeds": [
+    34655,
+    45492
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1243,
+   "events_sha256": "efe92e515d01a3580e4a3ab2791f210a0362d8c07f2ee0bee74daf5eb5456118",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.069,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:00:18",
+    "loadavg": [
+     9.82,
+     7.02,
+     4.71
+    ],
+    "windows_cpu_pct": 12.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 57.193,
+   "match_wall_s": 57.207,
+   "outcome_sha256": "d0dba52c329fbc8b6f7e2ad3b2c3f85cc9ab87997aaaee160233b3fb2c25bfd7",
+   "process_wall_s": 57.614,
+   "result_sha256": "3fcf45a00498f70acb68af0301e61b0d2a6ce11a8834922e3d6f9ed813abbefa",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    2
+   ],
+   "seed": 4,
+   "seeds": [
+    9139,
+    46072
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1243,
+   "events_sha256": "efe92e515d01a3580e4a3ab2791f210a0362d8c07f2ee0bee74daf5eb5456118",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.053,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:01:17",
+    "loadavg": [
+     9.15,
+     7.37,
+     4.98
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 31.969,
+   "match_wall_s": 31.969,
+   "outcome_sha256": "d0dba52c329fbc8b6f7e2ad3b2c3f85cc9ab87997aaaee160233b3fb2c25bfd7",
+   "process_wall_s": 32.185,
+   "result_sha256": "3fcf45a00498f70acb68af0301e61b0d2a6ce11a8834922e3d6f9ed813abbefa",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    2
+   ],
+   "seed": 4,
+   "seeds": [
+    9139,
+    46072
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1170,
+   "events_sha256": "82ba38edc6195b696c4d86016419a28cc04796086efe9f9a0f3c67d01b81489b",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.059,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:01:51",
+    "loadavg": [
+     8.75,
+     7.47,
+     5.1
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 51.29,
+   "match_wall_s": 51.294,
+   "outcome_sha256": "f9537abf4ec44e2a7135f4188481839fa666e41361050899376865ceeec30500",
+   "process_wall_s": 51.673,
+   "result_sha256": "c03ef2703a8f109f7a16e02ad3045ceef29905d95bdb1d692e2f6cbed07a3690",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 5,
+   "seeds": [
+    18359,
+    41710
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1170,
+   "events_sha256": "82ba38edc6195b696c4d86016419a28cc04796086efe9f9a0f3c67d01b81489b",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.057,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:02:44",
+    "loadavg": [
+     8.51,
+     7.63,
+     5.3
+    ],
+    "windows_cpu_pct": 7.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 31.024,
+   "match_wall_s": 31.027,
+   "outcome_sha256": "f9537abf4ec44e2a7135f4188481839fa666e41361050899376865ceeec30500",
+   "process_wall_s": 31.242,
+   "result_sha256": "c03ef2703a8f109f7a16e02ad3045ceef29905d95bdb1d692e2f6cbed07a3690",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 5,
+   "seeds": [
+    18359,
+    41710
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1019,
+   "events_sha256": "735697ac00c967e2fe611833329d83eb5781917afbaa177eaf53a7f072e30a44",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.058,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:03:16",
+    "loadavg": [
+     8.37,
+     7.69,
+     5.39
+    ],
+    "windows_cpu_pct": 9.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 49.583,
+   "match_wall_s": 49.585,
+   "outcome_sha256": "672b61c9148fac51339f233a8149d3812c0f28c092da9183a33f895ef4cfe51c",
+   "process_wall_s": 49.965,
+   "result_sha256": "fa1da09db06cf9cea73a5361cf48617af7316bcdce26dd15c08e5f4e47150a03",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    1
+   ],
+   "seed": 6,
+   "seeds": [
+    30438,
+    8958
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1019,
+   "events_sha256": "735697ac00c967e2fe611833329d83eb5781917afbaa177eaf53a7f072e30a44",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.053,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:04:08",
+    "loadavg": [
+     8.36,
+     7.79,
+     5.55
+    ],
+    "windows_cpu_pct": 9.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 30.237,
+   "match_wall_s": 30.258,
+   "outcome_sha256": "672b61c9148fac51339f233a8149d3812c0f28c092da9183a33f895ef4cfe51c",
+   "process_wall_s": 30.458,
+   "result_sha256": "fa1da09db06cf9cea73a5361cf48617af7316bcdce26dd15c08e5f4e47150a03",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    1
+   ],
+   "seed": 6,
+   "seeds": [
+    30438,
+    8958
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1182,
+   "events_sha256": "7ec3d204e4274bf83ee5f19810a1ec361b4510c40a6e474a2dbb0438779b2b9d",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.056,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:04:40",
+    "loadavg": [
+     5.73,
+     7.23,
+     5.44
+    ],
+    "windows_cpu_pct": 0.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 48.954,
+   "match_wall_s": 48.96,
+   "outcome_sha256": "77a3303a045bf60fa8a149e6e7fbd1e1e7c52de8624f76654f795031b23d2a75",
+   "process_wall_s": 49.319,
+   "result_sha256": "1dc3e981f3f70d010337675b93cc99ecfae9ae0ca5e3839f5065e1a84e369800",
+   "round": 1,
+   "rust": false,
+   "score": [
+    0,
+    0
+   ],
+   "seed": 7,
+   "seeds": [
+    35121,
+    55962
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1182,
+   "events_sha256": "7ec3d204e4274bf83ee5f19810a1ec361b4510c40a6e474a2dbb0438779b2b9d",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.05,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:05:30",
+    "loadavg": [
+     3.05,
+     6.27,
+     5.21
+    ],
+    "windows_cpu_pct": 1.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 29.074,
+   "match_wall_s": 29.085,
+   "outcome_sha256": "77a3303a045bf60fa8a149e6e7fbd1e1e7c52de8624f76654f795031b23d2a75",
+   "process_wall_s": 29.284,
+   "result_sha256": "1dc3e981f3f70d010337675b93cc99ecfae9ae0ca5e3839f5065e1a84e369800",
+   "round": 1,
+   "rust": true,
+   "score": [
+    0,
+    0
+   ],
+   "seed": 7,
+   "seeds": [
+    35121,
+    55962
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1181,
+   "events_sha256": "d01b3df2498268a1a70136c257c58d949a4ee867ecfad12cfe03d52c370f0621",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.054,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:06:01",
+    "loadavg": [
+     2.24,
+     5.76,
+     5.07
+    ],
+    "windows_cpu_pct": 2.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 49.029,
+   "match_wall_s": 49.04,
+   "outcome_sha256": "c795965c8deb51e07411ec34bab3205df3e1e892ddb0326c7f4b4256865a97fd",
+   "process_wall_s": 49.416,
+   "result_sha256": "7fb042c4cd49806cdc0b8913eb0562e9794af105cf8dabf5981a15653dbbf8b9",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    2
+   ],
+   "seed": 8,
+   "seeds": [
+    14347,
+    24891
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1181,
+   "events_sha256": "d01b3df2498268a1a70136c257c58d949a4ee867ecfad12cfe03d52c370f0621",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.054,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:06:52",
+    "loadavg": [
+     1.54,
+     5.03,
+     4.86
+    ],
+    "windows_cpu_pct": 2.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 30.81,
+   "match_wall_s": 30.817,
+   "outcome_sha256": "c795965c8deb51e07411ec34bab3205df3e1e892ddb0326c7f4b4256865a97fd",
+   "process_wall_s": 31.023,
+   "result_sha256": "7fb042c4cd49806cdc0b8913eb0562e9794af105cf8dabf5981a15653dbbf8b9",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    2
+   ],
+   "seed": 8,
+   "seeds": [
+    14347,
+    24891
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1255,
+   "events_sha256": "df41113b083d81b49125439c255ca7aedbe9c6694ab67b6293d348f7d12e40a0",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.06,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:07:24",
+    "loadavg": [
+     1.47,
+     4.67,
+     4.74
+    ],
+    "windows_cpu_pct": 15.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 48.71,
+   "match_wall_s": 48.718,
+   "outcome_sha256": "fed6f6ac025af53103ac976b9a44492ebde6aeecc5a1c0a6adfa7c2ba74bf5c2",
+   "process_wall_s": 49.084,
+   "result_sha256": "31165c43d9bb964c2fe3b77a57a02f83dbeb8f94e421df0379097c726c27cc51",
+   "round": 1,
+   "rust": false,
+   "score": [
+    0,
+    1
+   ],
+   "seed": 9,
+   "seeds": [
+    4754,
+    27024
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1255,
+   "events_sha256": "df41113b083d81b49125439c255ca7aedbe9c6694ab67b6293d348f7d12e40a0",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.05,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:08:14",
+    "loadavg": [
+     1.17,
+     4.05,
+     4.53
+    ],
+    "windows_cpu_pct": 3.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 28.949,
+   "match_wall_s": 28.956,
+   "outcome_sha256": "fed6f6ac025af53103ac976b9a44492ebde6aeecc5a1c0a6adfa7c2ba74bf5c2",
+   "process_wall_s": 29.154,
+   "result_sha256": "31165c43d9bb964c2fe3b77a57a02f83dbeb8f94e421df0379097c726c27cc51",
+   "round": 1,
+   "rust": true,
+   "score": [
+    0,
+    1
+   ],
+   "seed": 9,
+   "seeds": [
+    4754,
+    27024
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1172,
+   "events_sha256": "f5df8324007e3d9e37300eabcb6f34774957842e5e11ee68db4dca0b0940154e",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.056,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:08:45",
+    "loadavg": [
+     1.09,
+     3.76,
+     4.41
+    ],
+    "windows_cpu_pct": 4.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 44.629,
+   "match_wall_s": 44.64,
+   "outcome_sha256": "cf1606ed9538b52ff1537c10e8d5d335edf82d13752c4664f7f1f24d50e1d9ba",
+   "process_wall_s": 44.991,
+   "result_sha256": "91bf323ca9165b29312af15f8e35ced11c13343bc74f0096742533ccab7e5f52",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    1
+   ],
+   "seed": 10,
+   "seeds": [
+    41770,
+    17611
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1172,
+   "events_sha256": "f5df8324007e3d9e37300eabcb6f34774957842e5e11ee68db4dca0b0940154e",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.048,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:09:31",
+    "loadavg": [
+     1.11,
+     3.39,
+     4.25
+    ],
+    "windows_cpu_pct": 5.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 27.558,
+   "match_wall_s": 27.563,
+   "outcome_sha256": "cf1606ed9538b52ff1537c10e8d5d335edf82d13752c4664f7f1f24d50e1d9ba",
+   "process_wall_s": 27.764,
+   "result_sha256": "91bf323ca9165b29312af15f8e35ced11c13343bc74f0096742533ccab7e5f52",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    1
+   ],
+   "seed": 10,
+   "seeds": [
+    41770,
+    17611
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1218,
+   "events_sha256": "4befd8cfceb26a00284e8f577f75e65b5f69d7198daa001ef67b76267ed0e98e",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.054,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:10:00",
+    "loadavg": [
+     1.05,
+     3.16,
+     4.15
+    ],
+    "windows_cpu_pct": 11.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 45.527,
+   "match_wall_s": 45.546,
+   "outcome_sha256": "7b6ead1623ebcd8a5e9ae608a89124caaa6311d29ed3c688ab0c3753bbbf5d57",
+   "process_wall_s": 45.894,
+   "result_sha256": "484523541df5dd5dd34fb6bff4473957c4ec4db30ceb4aa3c0544dd0977378e5",
+   "round": 1,
+   "rust": false,
+   "score": [
+    0,
+    2
+   ],
+   "seed": 11,
+   "seeds": [
+    31062,
+    1162
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1218,
+   "events_sha256": "4befd8cfceb26a00284e8f577f75e65b5f69d7198daa001ef67b76267ed0e98e",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.048,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:10:47",
+    "loadavg": [
+     1.42,
+     2.95,
+     4.03
+    ],
+    "windows_cpu_pct": 0.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 28.165,
+   "match_wall_s": 28.172,
+   "outcome_sha256": "7b6ead1623ebcd8a5e9ae608a89124caaa6311d29ed3c688ab0c3753bbbf5d57",
+   "process_wall_s": 28.365,
+   "result_sha256": "484523541df5dd5dd34fb6bff4473957c4ec4db30ceb4aa3c0544dd0977378e5",
+   "round": 1,
+   "rust": true,
+   "score": [
+    0,
+    2
+   ],
+   "seed": 11,
+   "seeds": [
+    31062,
+    1162
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1212,
+   "events_sha256": "22e61fd20b6763efc3a614fdd5b04d1c01eef34016b570697d8766cfb72823e7",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.053,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:11:17",
+    "loadavg": [
+     1.36,
+     2.79,
+     3.94
+    ],
+    "windows_cpu_pct": 1.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 45.294,
+   "match_wall_s": 45.318,
+   "outcome_sha256": "d55871c389d0625248f07e2df6b95be4733824d7dbad6069df9361d1650a3235",
+   "process_wall_s": 45.66,
+   "result_sha256": "9352b53b30a21b7a051ee679b672b33bf3b6a606f0666ce91b9cd9e93e8a15f4",
+   "round": 1,
+   "rust": false,
+   "score": [
+    3,
+    2
+   ],
+   "seed": 12,
+   "seeds": [
+    52606,
+    17823
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1212,
+   "events_sha256": "22e61fd20b6763efc3a614fdd5b04d1c01eef34016b570697d8766cfb72823e7",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.048,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:12:04",
+    "loadavg": [
+     1.17,
+     2.54,
+     3.8
+    ],
+    "windows_cpu_pct": 5.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 27.788,
+   "match_wall_s": 27.795,
+   "outcome_sha256": "d55871c389d0625248f07e2df6b95be4733824d7dbad6069df9361d1650a3235",
+   "process_wall_s": 27.987,
+   "result_sha256": "9352b53b30a21b7a051ee679b672b33bf3b6a606f0666ce91b9cd9e93e8a15f4",
+   "round": 1,
+   "rust": true,
+   "score": [
+    3,
+    2
+   ],
+   "seed": 12,
+   "seeds": [
+    52606,
+    17823
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1117,
+   "events_sha256": "bd60ff66521082b58d2aac2f007fc99406111058c6e76173de413a77f8188ad3",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.053,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:12:33",
+    "loadavg": [
+     1.1,
+     2.39,
+     3.71
+    ],
+    "windows_cpu_pct": 3.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 45.134,
+   "match_wall_s": 45.14,
+   "outcome_sha256": "90e0bd771cacc587889b05c2bf48572a48e169296ee24fcbfea2b9d056c0a108",
+   "process_wall_s": 45.487,
+   "result_sha256": "6dde520f00c741f78c9ef094e55272c381d3f80fc4453940cfd94f84e82c4385",
+   "round": 1,
+   "rust": false,
+   "score": [
+    2,
+    1
+   ],
+   "seed": 13,
+   "seeds": [
+    2126,
+    33088
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1117,
+   "events_sha256": "bd60ff66521082b58d2aac2f007fc99406111058c6e76173de413a77f8188ad3",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.049,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:13:20",
+    "loadavg": [
+     0.96,
+     2.16,
+     3.56
+    ],
+    "windows_cpu_pct": 2.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 28.925,
+   "match_wall_s": 28.93,
+   "outcome_sha256": "90e0bd771cacc587889b05c2bf48572a48e169296ee24fcbfea2b9d056c0a108",
+   "process_wall_s": 29.127,
+   "result_sha256": "6dde520f00c741f78c9ef094e55272c381d3f80fc4453940cfd94f84e82c4385",
+   "round": 1,
+   "rust": true,
+   "score": [
+    2,
+    1
+   ],
+   "seed": 13,
+   "seeds": [
+    2126,
+    33088
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1210,
+   "events_sha256": "1ac1782c839f63e764d768ccbc2322b3e3a3ed5f315146a265ec5de00761b36c",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.053,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:13:50",
+    "loadavg": [
+     0.9,
+     2.03,
+     3.47
+    ],
+    "windows_cpu_pct": 1.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 46.253,
+   "match_wall_s": 46.261,
+   "outcome_sha256": "1b6606d0ab0b066ad13d334081507ec49c054281757c838cf69805d279e5a6dc",
+   "process_wall_s": 46.622,
+   "result_sha256": "e217e7de192f394e710168cbf0e4c1eb4796e1cdd95f57c3302c58f4f15f51c9",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    2
+   ],
+   "seed": 14,
+   "seeds": [
+    8663,
+    16889
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1210,
+   "events_sha256": "1ac1782c839f63e764d768ccbc2322b3e3a3ed5f315146a265ec5de00761b36c",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.05,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:14:38",
+    "loadavg": [
+     0.95,
+     1.88,
+     3.35
+    ],
+    "windows_cpu_pct": 12.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 30.053,
+   "match_wall_s": 30.058,
+   "outcome_sha256": "1b6606d0ab0b066ad13d334081507ec49c054281757c838cf69805d279e5a6dc",
+   "process_wall_s": 30.253,
+   "result_sha256": "e217e7de192f394e710168cbf0e4c1eb4796e1cdd95f57c3302c58f4f15f51c9",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    2
+   ],
+   "seed": 14,
+   "seeds": [
+    8663,
+    16889
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1217,
+   "events_sha256": "10d30ee272aea67ed2e2601a8906d86e03b4ad19c669c34bcba18f72c8e66718",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.059,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:15:10",
+    "loadavg": [
+     1.38,
+     1.88,
+     3.3
+    ],
+    "windows_cpu_pct": 21.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 49.177,
+   "match_wall_s": 49.195,
+   "outcome_sha256": "a543a66bc60bd069bc600e1809a6d5b2e923b956044a2b14ea7d0ba39d5c4420",
+   "process_wall_s": 49.591,
+   "result_sha256": "8be8b5004e60b9a087f9e6eb61714a81e6e79b3c1340d76460ec5e957da8855c",
+   "round": 1,
+   "rust": false,
+   "score": [
+    0,
+    0
+   ],
+   "seed": 15,
+   "seeds": [
+    63557,
+    55962
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1217,
+   "events_sha256": "10d30ee272aea67ed2e2601a8906d86e03b4ad19c669c34bcba18f72c8e66718",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.05,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:16:00",
+    "loadavg": [
+     1.56,
+     1.88,
+     3.22
+    ],
+    "windows_cpu_pct": 31.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 28.767,
+   "match_wall_s": 28.783,
+   "outcome_sha256": "a543a66bc60bd069bc600e1809a6d5b2e923b956044a2b14ea7d0ba39d5c4420",
+   "process_wall_s": 28.98,
+   "result_sha256": "8be8b5004e60b9a087f9e6eb61714a81e6e79b3c1340d76460ec5e957da8855c",
+   "round": 1,
+   "rust": true,
+   "score": [
+    0,
+    0
+   ],
+   "seed": 15,
+   "seeds": [
+    63557,
+    55962
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1098,
+   "events_sha256": "e524263e641a78255c5751e378761c853b155faac98c87fc147fedcf892bc239",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.054,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:16:31",
+    "loadavg": [
+     1.42,
+     1.81,
+     3.15
+    ],
+    "windows_cpu_pct": 3.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 43.283,
+   "match_wall_s": 43.293,
+   "outcome_sha256": "5a3b416bf824546ad37d7ae372abf8e082b30e53ad459fb538a623d4783f0cc5",
+   "process_wall_s": 43.632,
+   "result_sha256": "f086abd7f6d1b89546f13a8031b38f14528add501337cc5b2ed9a4d29107a893",
+   "round": 1,
+   "rust": false,
+   "score": [
+    2,
+    1
+   ],
+   "seed": 16,
+   "seeds": [
+    40016,
+    39837
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1098,
+   "events_sha256": "e524263e641a78255c5751e378761c853b155faac98c87fc147fedcf892bc239",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.048,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:17:16",
+    "loadavg": [
+     1.12,
+     1.68,
+     3.04
+    ],
+    "windows_cpu_pct": 2.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 27.074,
+   "match_wall_s": 27.082,
+   "outcome_sha256": "5a3b416bf824546ad37d7ae372abf8e082b30e53ad459fb538a623d4783f0cc5",
+   "process_wall_s": 27.272,
+   "result_sha256": "f086abd7f6d1b89546f13a8031b38f14528add501337cc5b2ed9a4d29107a893",
+   "round": 1,
+   "rust": true,
+   "score": [
+    2,
+    1
+   ],
+   "seed": 16,
+   "seeds": [
+    40016,
+    39837
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1110,
+   "events_sha256": "b719c63c24d16ce8336c2de39268aae4b0bf6fe4cdf88c5f69dd5d8c5cd6ca15",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.052,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:17:44",
+    "loadavg": [
+     1.08,
+     1.62,
+     2.99
+    ],
+    "windows_cpu_pct": 0.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 42.599,
+   "match_wall_s": 42.609,
+   "outcome_sha256": "3a24953ea826563d9559972ef3856feb0af3625003aae204d5800ebe6d3538e6",
+   "process_wall_s": 42.953,
+   "result_sha256": "c46a8a10836a4ea4dc61cddb4fed53f788b85b625cd001d0424aaab3a0c28d04",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 17,
+   "seeds": [
+    48794,
+    41710
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1110,
+   "events_sha256": "b719c63c24d16ce8336c2de39268aae4b0bf6fe4cdf88c5f69dd5d8c5cd6ca15",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.048,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:18:28",
+    "loadavg": [
+     1.17,
+     1.57,
+     2.9
+    ],
+    "windows_cpu_pct": 2.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 26.976,
+   "match_wall_s": 26.986,
+   "outcome_sha256": "3a24953ea826563d9559972ef3856feb0af3625003aae204d5800ebe6d3538e6",
+   "process_wall_s": 27.177,
+   "result_sha256": "c46a8a10836a4ea4dc61cddb4fed53f788b85b625cd001d0424aaab3a0c28d04",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 17,
+   "seeds": [
+    48794,
+    41710
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1188,
+   "events_sha256": "57d8732844ce54d8926b85806b6cdea75d03967a5b05360199a1f199004ad372",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.053,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:18:57",
+    "loadavg": [
+     1.1,
+     1.51,
+     2.84
+    ],
+    "windows_cpu_pct": 12.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 45.716,
+   "match_wall_s": 45.724,
+   "outcome_sha256": "51e52a7ec6e3d89680a3ae26ce5231157c368350d66933c597dd802593740512",
+   "process_wall_s": 46.08,
+   "result_sha256": "a12d15b75a32823ab9cbe81be4538c572d19ff8bbfe8bb0ea423527a78886ec8",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 18,
+   "seeds": [
+    37086,
+    59514
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1188,
+   "events_sha256": "57d8732844ce54d8926b85806b6cdea75d03967a5b05360199a1f199004ad372",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.049,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:19:44",
+    "loadavg": [
+     1.13,
+     1.46,
+     2.76
+    ],
+    "windows_cpu_pct": 3.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 28.228,
+   "match_wall_s": 28.237,
+   "outcome_sha256": "51e52a7ec6e3d89680a3ae26ce5231157c368350d66933c597dd802593740512",
+   "process_wall_s": 28.426,
+   "result_sha256": "a12d15b75a32823ab9cbe81be4538c572d19ff8bbfe8bb0ea423527a78886ec8",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 18,
+   "seeds": [
+    37086,
+    59514
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1183,
+   "events_sha256": "8dc46ffdade9e271bab45b27896e090f18dd4bcaa747e06cb129b240bd309f39",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.057,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:20:14",
+    "loadavg": [
+     1.33,
+     1.47,
+     2.72
+    ],
+    "windows_cpu_pct": 5.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 43.502,
+   "match_wall_s": 43.51,
+   "outcome_sha256": "46df97f9da47185b66d3b118551b5e0d25223fc3eabb596601769bb0d72b7942",
+   "process_wall_s": 43.853,
+   "result_sha256": "7774536b7c2c4f1adae5e432dc28f2119a278941bd05a54fc889b1112492545a",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 19,
+   "seeds": [
+    32510,
+    41710
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1183,
+   "events_sha256": "8dc46ffdade9e271bab45b27896e090f18dd4bcaa747e06cb129b240bd309f39",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.049,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:20:59",
+    "loadavg": [
+     1.16,
+     1.41,
+     2.64
+    ],
+    "windows_cpu_pct": 3.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 28.984,
+   "match_wall_s": 28.993,
+   "outcome_sha256": "46df97f9da47185b66d3b118551b5e0d25223fc3eabb596601769bb0d72b7942",
+   "process_wall_s": 29.192,
+   "result_sha256": "7774536b7c2c4f1adae5e432dc28f2119a278941bd05a54fc889b1112492545a",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 19,
+   "seeds": [
+    32510,
+    41710
+   ]
+  },
+  {
+   "arm": "pypy",
+   "events": 1190,
+   "events_sha256": "b90b2f10619c141cb141a4516154d36931bdaec1ec5aac2460ef45ec4ad98d90",
+   "executable": "/home/diego/.local/bin/pypy3.11",
+   "import_s": 0.055,
+   "interpreter": "PyPy 3.11.15",
+   "load": {
+    "at": "2026-11-03T01:21:29",
+    "loadavg": [
+     1.15,
+     1.38,
+     2.59
+    ],
+    "windows_cpu_pct": 6.0
+   },
+   "machine": null,
+   "machine_class": null,
+   "match_cpu_s": 48.445,
+   "match_wall_s": 48.467,
+   "outcome_sha256": "9bb3748f3d6cfb6b44e1b4b8119ffb09d8d126bbd0c2aa6daf276ee666525050",
+   "process_wall_s": 48.817,
+   "result_sha256": "aec752c9a8a8d643275b48f9b6b51a40973d7eb19c98f9c442e72da97bb10588",
+   "round": 1,
+   "rust": false,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 20,
+   "seeds": [
+    46889,
+    1514
+   ]
+  },
+  {
+   "arm": "hybrid",
+   "events": 1190,
+   "events_sha256": "b90b2f10619c141cb141a4516154d36931bdaec1ec5aac2460ef45ec4ad98d90",
+   "executable": "/tmp/claude-1000/-home-diego-projects-goal2/bde2e91e-63ff-4376-b818-e86012330f69/scratchpad/t158/rustvenv/bin/python",
+   "import_s": 0.05,
+   "interpreter": "CPython 3.14.4",
+   "load": {
+    "at": "2026-11-03T01:22:20",
+    "loadavg": [
+     1.13,
+     1.34,
+     2.51
+    ],
+    "windows_cpu_pct": 8.0
+   },
+   "machine": "goal2rust.machine",
+   "machine_class": "PortMachine",
+   "match_cpu_s": 27.933,
+   "match_wall_s": 27.939,
+   "outcome_sha256": "9bb3748f3d6cfb6b44e1b4b8119ffb09d8d126bbd0c2aa6daf276ee666525050",
+   "process_wall_s": 28.141,
+   "result_sha256": "aec752c9a8a8d643275b48f9b6b51a40973d7eb19c98f9c442e72da97bb10588",
+   "round": 1,
+   "rust": true,
+   "score": [
+    1,
+    0
+   ],
+   "seed": 20,
+   "seeds": [
+    46889,
+    1514
+   ]
+  }
+ ]
+}

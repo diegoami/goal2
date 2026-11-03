@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- [designed: T158] The web candidate's prototype: S06 and S16 to kick-off, drawn with the design's own
+     stylesheet (docs/design/ui-2026-11/mockups/style.css, served as /style.css) and font. Throwaway. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GOAL2 prototype (web)</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  html, body { width: 100%; height: 100%; background: #000; }
+  body { display: block; }
+  #page { width: 1440px; height: 900px; transform-origin: 0 0; position: absolute; left: 0; top: 0;
+          display: flex; flex-direction: column; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.35; }
+  .menu .item, .list li, .btn { cursor: pointer; }
+  .notice { color: var(--value); }
+  .pitch canvas { position: absolute; inset: 0; }
+</style>
+</head>
+<body>
+<div id="page" aria-live="polite"></div>
+<script src="/app.js"></script>
+</body>
+</html>
