@@ -11,9 +11,12 @@ the model's own (`DesktopModel`, route (b), #527 D2): the screen holds no rule o
 - **Enter** moves a player, the original's two Enters [confirmed: F031, `0791:DEA6`; T156-R1 step 17]: Enter on a
   pool player picks him, ← back, Enter on the player he replaces exchanges them (`DesktopModel.exchange`). Once a
   player is picked the Enter hint reads *put here*, and the screen says what it waits for (§3, "Stops"). Enter on a
-  squad player first, then on a pool player, does the same exchange. [designed: T165] Enter on another player of the
-  same side moves the pick to him, Enter on the picked player drops it; two squad players are not swapped on this
-  route (the Python route keeps the eleven apart from the squad order).
+  squad player first, then on a pool player, does the same exchange. Enter on the picked player drops the pick.
+  [confirmed: m244-squad, T156-R1 steps 14–29; designed: T164, #555] Enter on a squad player and then on another squad
+  player swaps them, as the original's *move player* within the twenty chooses the eleven: a starter and a bench
+  player swap in and out, two starters change places (`DesktopModel.swap`, which publishes the eleven as `confirm`
+  does). An unavailable starter can be moved to the bench this way. Two bench players keep the squad's order (the
+  model says why). [designed: T165] Enter on another pool player moves the pick to him.
 - **Ins**, the assistant's recommended 20, is on the bar marked *coming later* and only says so: the original's
   assistant (`0791:DC7E`, F024/F031) is not ported, and today's *Suggest* runs it under Unicorn on the Core route,
   which m3 removes. [designed: owner, 2026-11-03, #509]
@@ -156,9 +159,11 @@ class SquadScreen(Screen):
             self.card.set_card(card(self.model.state, word, self.model.goaldat))
         self.note.setText(self.message)
         if self.picked is not None:
-            self.wait_for(f"Put {full_name(self.model, self.picked[1])} here",
-                          "← or → to the other side, then Enter on the player he replaces. Enter on him again "
-                          "keeps the squad as it is.")
+            detail = ("Enter on another player of the twenty swaps them; → to the pool, then Enter on the player "
+                      "who replaces him. Enter on him again keeps the squad as it is." if self.picked[0] == "squad"
+                      else "← to the squad, then Enter on the player he replaces. Enter on him again keeps the squad "
+                      "as it is.")
+            self.wait_for(f"Put {full_name(self.model, self.picked[1])} here", detail)
         else:
             self.wait_for(None)
         self._refresh_hint()
@@ -221,8 +226,16 @@ class SquadScreen(Screen):
             return None
         here = (self.side, word)
         self.message = ""
-        if self.picked is None or self.picked[0] == self.side:
+        if self.picked is None or self.picked == here or (self.picked[0] == self.side == "pool"):
             self.picked = None if self.picked == here else here
+            return self.refresh()
+        if self.picked[0] == self.side:   # two squad players: the swap within the twenty (#555)
+            first = self.picked[1]
+            self.picked = None
+            try:
+                self.model.swap(first, word)
+            except ValueError as exc:
+                return self.say(str(exc))
             return self.refresh()
         sides = {self.picked[0]: self.picked[1], self.side: word}
         self.picked = None

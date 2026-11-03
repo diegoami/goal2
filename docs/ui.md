@@ -10,15 +10,16 @@ and the portable build's default until T169 switches over. [designed: owner, 202
 It opens S01 while the per-user data folder lacks a file the new window needs, otherwise S02 Start. `--data-root`
 names the per-user goal2 folder (its `data` holds the imported files). `--import FOLDER` imports FOLDER as S01 does
 (`WINDOW_MANIFEST`, GOAL.HLP too when the folder has it), then starts; S22's message names it as the way to add
-GOAL.HLP until T164's *re-import data*. `--screenshot` writes PNGs at 1440×900 from a
+GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` writes PNGs at 1440×900 from a
 temporary data folder of its own and exits: S01, the placeholder home and S22 (with a stand-in help text) always;
-S02 with two saves, S03, S04 with its twenty and the name line, S05 with stand-in pages (labelled so) and the home with the new
-career when it finds GOAL.DAT and the template in the data root's `data` or in a checkout's `.cache/`.
+S02 with two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages (labelled so), S06
+the desk and S07 team info with the new career when it finds GOAL.DAT and the template in the data root's `data` or in
+a checkout's `.cache/`.
 
 ## The journey
 
-[designed: owner, 2026-11-03, #526, #527; T163, #537] S01 → S02 → (N) S03 → S04 → home, or S02 → (Enter or Y)
-home, as the design's [section 1](design/ui-2026-11/README.md#1-the-players-journey). The screens run over the
+[designed: owner, 2026-11-03, #526, #527; T163, #537; T164, #538] S01 → S02 → (N) S03 → S04 → S06 the desk, or S02 →
+(Enter or Y) S06, as the design's [section 1](design/ui-2026-11/README.md#1-the-players-journey). The screens run over the
 Python route's state (`goal2/desktop/model.py` `DesktopModel`, the owner's route (b), D2): a career started or
 loaded here is the one the model makes, and the screens copy no career rule.
 
@@ -31,9 +32,15 @@ loaded here is the one the model makes, and the screens copy no career rule.
   5). `DesktopModel.new_campaign` takes every year `opening_calendar` takes; the old window still offers 1990 and
   1992.
 - **Managers.** S03 shows 1 to 6; 2 to 6 say they come later (#551).
+- **S04's list** [confirmed: T156-R1 steps 3–5, `t156-005-country-holland.png`; #559] is in the order of the ranking
+  Ins selects (`s04_country.ordered`): under *continental* each continent's 32 by rank, Europe first (Denmark,
+  Germany, Holland…), under *world* the world ranks. It opens on *continental*, at Denmark, as the original. The
+  twenty's average age and caps are cut to whole numbers, not rounded: Holland's 28.6 shows as the capture's 28
+  [derived: #559].
 - **Bulletins** [designed: owner, 2026-11-03, #509]: the Python route has none yet, so a new career goes from S04
-  straight home; `Window.open_career(model, pages)` shows S05 first for a career that supplies pages.
-- **The home** is a placeholder with the career's summary until T164 builds the desk (S06).
+  straight to the desk; `Window.open_career(model, pages)` shows S05 first for a career that supplies pages.
+- **The home** of an open career is the desk (S06). `goal2/ui/home.py` stays only as the screen with no career open
+  (T162's tests and the screenshot tool's `home.png`).
 
 ## Saved games
 
@@ -43,7 +50,7 @@ loaded here is the one the model makes, and the screens copy no career rule.
 model's own session save byte for byte. The file name is derived from the free name (letters, digits, `-`, `_`; a
 name Windows reserves gets `-save`; `-2`, `-3`… when another name derives the same), and S02 lists the stored name.
 A save is read only by the model's validating loader (`DesktopModel.from_save`). `goal2/ui/saves.py` reads and writes
-the format; T168 adds saving under a name from the desk.
+the format; T168 adds saving under a name from the desk (F7). The desk never saves through `DesktopModel.save`.
 
 ## The parts
 
@@ -55,11 +62,13 @@ the format; T168 adds saving under a name from the desk.
 | `goal2/ui/screen.py` | `Screen`, the base class of every screen. |
 | `goal2/ui/s01_import.py` | S01 Import your data, over `data_setup`'s check and copy. |
 | `goal2/ui/s22_help.py` | S22 Help: the imported GOAL.HLP, over the screen F1 was pressed on, in a box that fills most of the screen (owner decision 13). |
-| `goal2/ui/home.py` | The placeholder home screen: the open career's summary, until T164's desk. |
+| `goal2/ui/home.py` | The placeholder screen with no career open. |
 | `goal2/ui/s02_start.py` | S02 Start: Continue, the named saves, Y load, N new game, a failed load's Y/N. |
 | `goal2/ui/s03_new_game.py` | S03 New game: 1–6 managers (2–6 later, #551), the optional starting year by NG-9. |
-| `goal2/ui/s04_country.py` | S04 Country and name: the card (with the twenty's average caps and age), the list in groups of 16, Ins, the name line; `PlayersScreen`, the twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
+| `goal2/ui/s04_country.py` | S04 Country and name: the card (`CountryCard`, shared with S07, with the twenty's average caps and age), the list in groups of 16 in the ranking's order (`ordered`), Ins, the name line; `PlayersScreen`, a country's twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
 | `goal2/ui/s05_bulletin.py` | S05 Bulletin: pages *n of m*, any key onward. |
+| `goal2/ui/s06_desk.py` | S06 The manager's desk (T164), and `ReimportScreen`, S01 over the data folder. |
+| `goal2/ui/s07_team_info.py` | S07 Team info (T164): S04's card for any country, the list, the next opponent marked; a country's twenty and its tactics, read only. |
 | `goal2/ui/saves.py` | The named save format (Qt-free). |
 | `goal2/ui/start_look.py` | The style S02–S05 add to the theme's sheet, and their shared parts (boxes, rows, typed lines). |
 
@@ -108,7 +117,7 @@ mockup is a design question too.
 ## Tests
 
 `goal2/tests/test_ui_foundation_t162.py` visits the palette against the README's table, the font, the stack, a click
-against its key, S01 and S22, offscreen. `goal2/tests/test_ui_start_t163.py` visits the journey from S02 to home
+against its key, S01 and S22, offscreen. `goal2/tests/test_ui_start_t163.py` visits the journey from S02 to the desk
 against the model's own careers, the start year, the managers, S04's keys, named saves, S01's manifest, S22's size
 and S05's pages; its careers read GOAL.DAT and the template from `.cache/` and skip without them. It writes stand-in data files and a stand-in help text into temporary
 folders: no byte of the original's files is in the tests (CLAUDE.md rule 14).
@@ -131,7 +140,10 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
 - **S08**: ↑↓ the player, ←→ the squad or the pool. The pool's eighty are paged twenty at a time, as the original's
   pool list; ↑↓ go on to the next or previous page. Enter on a pool player picks him; the Enter hint then reads
   *Put here* and the screen says what it waits for; ← back and Enter on the player he replaces makes the exchange.
-  Enter on the picked player again drops the pick. **Ins** reads *coming later* and only says so, until the
+  Enter on the picked player again drops the pick. [T164, #555] Enter on a squad player and then on another squad
+  player swaps them (`DesktopModel.swap`): a starter and a bench player swap in and out, the incoming one taking the
+  starter's place in the eleven; two starters change places. It is how the eleven is chosen, and how an injured or
+  suspended starter goes to the bench. Two bench players keep the squad's order, and the screen says so. **Ins** reads *coming later* and only says so, until the
   original's assistant (`0791:DC7E`) is ported [designed: owner, 2026-11-03, #509]. **R** / **Shift+R** the next or
   previous position, **C** the club position, **T** S09, **F2** the name line in the card's header (at most 12
   characters; Enter gives the name, Esc keeps the old one), **Esc** back.
@@ -150,3 +162,25 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
 request on a copy of it through the model; it compares `view()` and the whole state. It skips without the `.cache/`
 files. `tools/ui_squad_screenshots.py DIR` writes the screens' pictures (they are in
 [design/ui-2026-11/T165-screens](design/ui-2026-11/T165-screens/)).
+
+## The desk and team info: S06, S07 (T164)
+
+[designed: owner, 2026-11-03, #526 decisions 1 and 14, #527 D2; T164, #538] A new career or a loaded save lands on S06,
+the manager's desk, the career's home: every management screen returns to it with Esc, and it has no Esc of its own.
+
+- **S06** shows the manager (name; rating *unknown*: the route keeps none), the team with its world and continental
+  rankings, the next opponents with theirs and the match's kind (the route assigns no venue, T41a, so no home or
+  away), the managers, and the twenty with role codes, the eleven above the bench; the competition at the title
+  bar's right end. The six options in the original's order, the cursor on *team info*: *team info* (S07), *fixture
+  list*, *tournament*, *history* (T178's screens, #560), *select squad* (S08, also Space) and *play next game*
+  (T167's match screens). **T** S10, **F1** S22; **F3** comes with T167, **F4**, **F7** and **F10** with T168. A
+  placeholder says which task brings it, on the desk, and does nothing else. *re-import data*, a goal2 addition
+  (decision 14), is a seventh option under a "goal2 addition" tag: S01 over the data folder, Esc back to the desk.
+- **S07** shows S04's card for the highlighted country, read from the career, beside the list in groups of 16, the next
+  opponent marked. It opens on the world ranking at the next opponent. **↑↓** country, **←→** group, **Ins** the
+  other ranking (the highlight stays), **Space** the country's twenty read only, **T** its tactics (S10 for your own
+  country; the eight lines read only for another), **Enter** its fixtures (T178), **Esc** the desk.
+
+`goal2/tests/test_ui_desk_t164.py` visits the landing from a new career and a save, each option, Esc back from S07,
+S08, S10 and S01, the swap against today's Team swap through `confirm`, S07's keys, and S04's order and average age
+against `t156-005-country-holland`. The pictures are in [design/ui-2026-11/T164-screens](design/ui-2026-11/T164-screens/).

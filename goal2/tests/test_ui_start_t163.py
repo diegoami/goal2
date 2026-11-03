@@ -3,7 +3,7 @@
 The claim it protects: a career started or loaded in the new window is the same career the Python route's model
 makes, `DesktopModel.new_campaign` or the model's validating loader with the same inputs. Visited here: S02's
 Continue, load and failed load over named saves; S03's managers and its starting year by NG-9; S04's list, ranking,
-players and name line; S05's pages; S01's manifest; S22's size; and the flow from S02 to home.
+players and name line; S05's pages; S01's manifest; S22's size; and the flow from S02 to the desk (S06, T164).
 
 The careers read GOAL.DAT and the E010 half-time template from the git-ignored `.cache/`, as the desktop tests do,
 and skip when they are absent (goal2/tests/requires.py). The S01 and S05 tests use stand-ins of their own.
@@ -31,6 +31,7 @@ from goal2.desktop.model import STAGES, DesktopModel  # noqa: E402
 from goal2.ui import s03_new_game, s04_country, saves, squad_card, start_look, theme  # noqa: E402
 from goal2.ui import __main__ as entry  # noqa: E402
 from goal2.ui.home import HomeScreen  # noqa: E402
+from goal2.ui.s06_desk import DeskScreen  # noqa: E402
 from goal2.ui.s01_import import ImportScreen  # noqa: E402
 from goal2.ui.s02_start import StartScreen  # noqa: E402
 from goal2.ui.s03_new_game import NewGameScreen  # noqa: E402
@@ -143,8 +144,8 @@ class NewGame(App):
             self.assertIsInstance(screen, CountryScreen)
             self.key(window, Qt.Key.Key_Down, 3)
             screen.settle()
-            self.assertEqual(screen.chosen(), (4, "Bulgaria"))
-            self.assertEqual(screen.name.text(), "Bulgaria")
+            self.assertEqual(screen.chosen(), (27, "Sweden"), "the fourth of Europe's continental ranking (#559)")
+            self.assertEqual(screen.name.text(), "Sweden")
             self.key(window, Qt.Key.Key_Return)
             self.assertTrue(screen.naming)
             self.assertEqual(screen.enter_text.text(), "Start the career")
@@ -152,17 +153,17 @@ class NewGame(App):
             self.assertEqual(screen.field.text, "K Ees")
             self.fits(window)
             self.key(window, Qt.Key.Key_Return)
-            self.assertIn(4, [c.args[1] for c in new_campaign.call_args_list])
-            self.assertEqual(new_campaign.call_args_list[-1].args[1:], (4, 2028),
+            self.assertIn(27, [c.args[1] for c in new_campaign.call_args_list])
+            self.assertEqual(new_campaign.call_args_list[-1].args[1:], (27, 2028),
                              "the default year, 2026 on the clock, starts in 2028 through new_campaign")
         home = window.current()
-        self.assertIsInstance(home, HomeScreen, "no bulletin pages on the Python route: straight home (#509)")
+        self.assertIsInstance(home, DeskScreen, "no bulletin pages on the Python route: straight to the desk (#509)")
         self.assertEqual(window.stack, [home])
         career = window.career
         self.assertIs(home.model, career)
-        self.same_career(career, self.reference(4, 2028, "K Ees"))
+        self.same_career(career, self.reference(27, 2028, "K Ees"))
         self.assertEqual((career.state.campaign.start_year, career.state.campaign.stage), (2028, 2))
-        self.assertEqual(home.values["manager"].text(), "K Ees")
+        self.assertEqual(home.manager["name"].text(), "K Ees")
         self.fits(window)
 
     def test_the_default_year_starts_a_2028_career(self):
@@ -175,7 +176,7 @@ class NewGame(App):
         self.key(window, Qt.Key.Key_Return)
         career = window.career
         self.assertEqual((career.state.campaign.start_year, career.state.campaign.stage), (2028, 2))
-        self.same_career(career, self.reference(1, 2028, "D Penev"))
+        self.same_career(career, self.reference(7, 2028, "D Penev"))   # Denmark, first of the list (#559)
 
     def test_the_year_by_ng9_is_shown_before_enter(self):
         self.data()
@@ -285,28 +286,31 @@ class CountryKeys(App):
         self.data()
         window = self.window()
         screen = self.to_country_screen(window)
-        countries = screen.browser.countries()
+        # [T164, #559] the list is in the ranking's order and opens on continental
+        countries = s04_country.ordered(screen.browser.countries(), True)
         self.assertEqual(screen.visible_names(), [c[1] for c in countries[:16]])
-        self.assertEqual(screen.visible_ranks(), [str(c[2]) for c in countries[:16]])
+        self.assertEqual(screen.visible_ranks(), [str(c[4]) for c in countries[:16]])
         self.assertIn("16 of 128", screen.group_note.text())
         self.key(window, Qt.Key.Key_Right)
         self.assertEqual(screen.visible_names(), [c[1] for c in countries[16:32]])
-        self.assertEqual(screen.chosen()[0], 17)
+        self.assertEqual(screen.chosen()[0], countries[16][0])
         self.assertIn("32 of 128", screen.group_note.text())
         self.key(window, Qt.Key.Key_Left)
         self.assertEqual(screen.visible_names(), [c[1] for c in countries[:16]])
+        self.assertIn("CONTINENTAL RANK", screen.list_heading.text())
+        self.key(window, Qt.Key.Key_Insert)
         self.assertIn("WORLD RANK", screen.list_heading.text())
+        world = s04_country.ordered(screen.browser.countries(), False)
+        start = screen.index // 16 * 16   # the highlight stays on Denmark, in his world group
+        self.assertEqual(screen.visible_ranks(), [str(c[2]) for c in world[start:start + 16]])
         self.key(window, Qt.Key.Key_Insert)
         self.assertIn("CONTINENTAL RANK", screen.list_heading.text())
-        self.assertEqual(screen.visible_ranks(), [str(c[4]) for c in countries[:16]])
-        self.key(window, Qt.Key.Key_Insert)
-        self.assertIn("WORLD RANK", screen.list_heading.text())
         self.click(screen.rows[3])
-        self.assertEqual(screen.chosen()[0], 4, "a click highlights a country, as ↑↓ do")
+        self.assertEqual(screen.chosen()[0], 27, "a click highlights a country, as ↑↓ do")
         screen.settle()
         from goal2.game.player_card import card
         cards = [card(screen.browser.state, w, screen.browser.goaldat) for w in screen.browser.state.managed_squad]
-        caps, age = (round(sum(c[k] for c in cards) / 20) for k in ("caps", "age"))
+        caps, age = (sum(c[k] for c in cards) // 20 for k in ("caps", "age"))   # cut, as the original (#559)
         self.assertEqual(screen.averages.text(), f"average caps {caps} · age {age}", "from the twenty's cards")
         self.key(window, Qt.Key.Key_Space)
         players = window.current()
@@ -331,12 +335,12 @@ class CountryKeys(App):
         self.assertTrue(screen.naming)
         self.type(window, "Ab")
         self.key(window, Qt.Key.Key_Right)
-        self.assertEqual(screen.chosen()[0], 4, "on the name line the arrows do not move the list")
+        self.assertEqual(screen.chosen()[0], 27, "on the name line the arrows do not move the list")
         self.key(window, Qt.Key.Key_Escape)
         self.assertIs(window.current(), screen, "Esc on the name line keeps the country list")
         self.assertFalse(screen.naming)
         self.assertEqual(screen.field.text, "")
-        self.assertEqual(screen.enter_text.text(), "Choose Bulgaria")
+        self.assertEqual(screen.enter_text.text(), "Choose Sweden")
         self.key(window, Qt.Key.Key_Return)
         self.key(window, Qt.Key.Key_Return)
         self.assertIs(window.current(), screen, "an empty name does not start a career")
@@ -378,13 +382,13 @@ class Load(App):
         self.assertEqual(start.enter_text.text(), "Continue")
         self.fits(window)
         self.key(window, Qt.Key.Key_Return)
-        self.assertIsInstance(window.current(), HomeScreen)
+        self.assertIsInstance(window.current(), DeskScreen)
         self.assertEqual(window.career.state, newer_model.state, "Enter continues the newest save")
         again = self.window()
         again.start()
         self.key(again, Qt.Key.Key_Down)
         self.key(again, Qt.Key.Key_Y)
-        self.assertIsInstance(again.current(), HomeScreen)
+        self.assertIsInstance(again.current(), DeskScreen)
         self.assertEqual(again.career.state, older_model.state, "Y loads the highlighted save")
         self.assertEqual(again.career.save_path, older)
 
@@ -421,7 +425,7 @@ class Load(App):
         self.assertEqual((bar[("Y",)], bar[("N",)]), ("load a saved game", "new game"))
         self.key(window, Qt.Key.Key_Down)
         self.key(window, Qt.Key.Key_Y)
-        self.assertIsInstance(window.current(), HomeScreen)
+        self.assertIsInstance(window.current(), DeskScreen)
         self.assertEqual(window.career.save_path, good)
 
     def test_a_file_that_is_no_save_is_listed_with_its_reason(self):
@@ -588,23 +592,19 @@ class Bulletin(App):
         self.click(screen.enter_hint)
         self.assertEqual(done, [True], "Enter after the last page goes on")
 
+    @CAREER
     def test_a_career_with_pages_shows_them_before_home(self):
+        # [T164] the home of a career is the desk (S06), which reads a real career: the model's own
+        self.data()
         window = self.window()
-
-        class Career:
-            manager = "K Ees"
-
-            def summary(self):
-                return dict.fromkeys(("country", "manager", "campaign", "next", "then", "team"), "x")
-
-        career = Career()
+        career = self.reference(20, 2028, "K Ees")
         window.open_career(career, [self.page(1)])
         self.assertIsInstance(window.current(), BulletinScreen)
         self.key(window, Qt.Key.Key_Return)
-        self.assertIsInstance(window.current(), HomeScreen)
+        self.assertIsInstance(window.current(), DeskScreen)
         self.assertIs(window.current().model, career)
         window.open_career(career)
-        self.assertIsInstance(window.current(), HomeScreen, "no pages: straight home")
+        self.assertIsInstance(window.current(), DeskScreen, "no pages: straight to the desk")
 
 
 class Look(unittest.TestCase):
