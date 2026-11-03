@@ -116,11 +116,14 @@ def main():
                     'image_sha256':outcome.result['image_sha256'],'engine_year':outcome.engine_year,
                     'captain':before.captain,'tactics':before.country_tactics,'eleven':before.starting_eleven,
                     'seeds':list(outcome.seeds),'state_memory_rng_history_equal':True})
-            # [designed] Actually visit the pending qualifier boundary, then active-owner shutdown.
+            # [designed] Actually visit the pending qualifier, then active-owner shutdown.
+            # [designed: T176] A qualifier is watched on the competitive bridge; its cancel keeps game and save.
             snapshot=copy.deepcopy(m.state);saved=save.read_bytes()
             assert m.state.campaign.next_fixture.kind!=1
             w.start_watched();app.processEvents()
-            assert not w.watched.busy and 'qualifiers are unsupported' in w.status.text(),w.status.text()
+            assert w.watched.busy and w.watched.engine.KIND=='competitive',w.status.text()
+            w.cancel_match();app.processEvents()
+            assert not w.watched.busy and not w.competitive.busy,w.status.text()
             assert m.state==snapshot and save.read_bytes()==saved
             reveal(w.new);QTest.mouseClick(w.new,Qt.MouseButton.LeftButton);app.processEvents()
             reveal(w.confirm);QTest.mouseClick(w.confirm,Qt.MouseButton.LeftButton);app.processEvents()

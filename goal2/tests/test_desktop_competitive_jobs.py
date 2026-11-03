@@ -291,10 +291,16 @@ class CompetitiveJobsTests(unittest.TestCase):
             unrelated.terminate();unrelated.wait(timeout=2)
 
     def test_qt_heartbeat_while_worker_full_time_tail_is_blocked(self):
-        from PySide6.QtCore import QCoreApplication,QTimer
+        from PySide6.QtCore import QCoreApplication,QTimer,Qt
         app=QCoreApplication.instance() or QCoreApplication([])
         token=self.bridge('blocked');self.until(token,lambda seen:bool(seen))
-        beats=[];timer=QTimer();timer.setInterval(1);timer.timeout.connect(lambda:beats.append(1));timer.start()
+        # [derived: T176, measured on the Windows host of the windows-slow runner] A CoarseTimer's 1 ms ticks follow
+        # the process's Windows timer resolution, not the window thread: after the earlier replay tests of this class
+        # it ticked about every 10 ms (11-12 beats on main, 3 and 8 on CI) while each poll took under 0.1 ms and each
+        # processEvents under 1 ms; timeBeginPeriod(1) or a PreciseTimer gave 62-76. The heartbeat is precise, so
+        # only a blocked window thread can starve it.
+        beats=[];timer=QTimer();timer.setTimerType(Qt.TimerType.PreciseTimer);timer.setInterval(1)
+        timer.timeout.connect(lambda:beats.append(1));timer.start()
         deadline=time.monotonic()+.12
         while time.monotonic()<deadline:
             self.jobs.poll(token);app.processEvents();time.sleep(.001)

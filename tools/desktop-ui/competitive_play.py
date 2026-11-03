@@ -56,11 +56,10 @@ def main():
                 click(window.resume)
                 assert model.state==before and window.captain.currentData()==0
                 assert 'competitive' in window.play.text().lower()
-                # [designed: T77/#237] Disabled routes retain defensive callback coverage.
-                assert not window.watch.isEnabled()
-                assert 'Watch unavailable: scheduled friendlies only' in window.fixture_routes.text().splitlines()
-                window.start_watched();app.processEvents()
-                assert 'friendlies only' in window.status.text(),window.status.text()
+                # [designed: T176] A competitive fixture offers Watch beside Play (test_watch_qualifiers_t176);
+                # this tool checks Play.
+                assert window.watch.isEnabled()
+                assert 'Watch: original competitive' in window.fixture_routes.text().splitlines()
                 assert model.state==before and not getattr(model,'match_pending',False)
                 click(window.play)
                 assert getattr(model,'match_pending',False) and window.competitive.busy,'Play did not start the original competitive child'
