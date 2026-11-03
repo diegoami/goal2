@@ -9,8 +9,8 @@ docs/original-game/images/t156-013-hub.png]:
   route keeps no rating), the team with its world and continental rankings, the next opponents with theirs and the
   match's kind, the managers, and the twenty with their role codes, the eleven above the bench;
 - the six options, in the original's order: *team info* (S07), *fixture list* (S11), *tournament* (S12), *history*
-  (S13), *select squad* (Space, S08) and *play next game*. The cursor starts on *team info*, ↑↓ move it, Enter opens the option, a click on an
-  option does the same [confirmed: T156-R1 steps 13, 36–41];
+  (S13), *select squad* (Space, S08) and *play next game*. The cursor starts on *team info*, ↑↓ move it, Enter opens
+  the option, a click on an option does the same [confirmed: T156-R1 steps 13, 36–41];
 - **T** team tactics (S10), **Space** select squad (S08), **F1** help (S22); **F3** load a saved goal, **F4** load a
   saved summary, **F7** save, **F10** quit [confirmed: t156-013-hub.png, its bottom line].
 

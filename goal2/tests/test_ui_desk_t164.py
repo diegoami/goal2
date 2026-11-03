@@ -2,11 +2,11 @@
 
 The claim it protects: from the desk the player reaches everything the original's hub offers, and chooses the eleven.
 Visited here: a new career and a loaded save land on S06 with the cursor on *team info*, the six options and the
-F-keys of the design; each option opens its screen or names the task that brings it; Esc returns to the desk from
-S07, S08, S10, S01 and (T178) S11, S12, S13; S08's swap within the twenty is the model's (`DesktopModel.swap`), the same eleven and bench as
-today's Team swap through `confirm`, and it moves an injured starter to the bench so the eleven is playable; S07's
-card, next opponent, Ins, Space and T; S04's list in the ranking Ins selects (#559) and Holland's average age, 28, as
-the original's capture shows it (t156-005-country-holland).
+F-keys of the design; each option opens its screen or names the task that brings it; Esc returns to the desk from S07,
+S08, S10, S01 and (T178) S11, S12, S13; S08's swap within the twenty is the model's (`DesktopModel.swap`), the same
+eleven and bench as today's Team swap through `confirm`, and it moves an injured starter to the bench so the eleven is
+playable; S07's card, next opponent, Ins, Space and T; S04's list in the ranking Ins selects (#559) and Holland's
+average age, 28, as the original's capture shows it (t156-005-country-holland).
 
 The careers read GOAL.DAT and the E010 half-time template from the git-ignored `.cache/` and skip without them
 (goal2/tests/requires.py); nothing of the original is in this file (CLAUDE.md rule 14).
@@ -313,8 +313,8 @@ class Options(App):
             self.assertDesk(window, desk)
         # [T178] fixture list, tournament and history open S11, S12 and S13; Esc returns to the desk.
         for index, kind in ((1, FixturesScreen), (2, TournamentScreen), (3, HistoryScreen)):
-            while desk.cursor < index:
-                self.key(window, Qt.Key.Key_Down)
+            while desk.cursor != index:
+                self.key(window, Qt.Key.Key_Down if desk.cursor < index else Qt.Key.Key_Up)
             self.key(window, Qt.Key.Key_Return)
             self.assertIsInstance(window.current(), kind)
             self.fits(window)
