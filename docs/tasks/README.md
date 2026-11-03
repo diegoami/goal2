@@ -338,6 +338,8 @@ operational status.
 
 - [T168](T168.md): new window, save, quit and load, S21, m3 Track A (#542).
 
+- [T177](T177.md): new window, the four extras kept from today's window, m3 Track A (#557).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
