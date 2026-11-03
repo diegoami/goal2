@@ -33,6 +33,13 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
      state;
    - GOAL.DAT is read from the player's own install first, and replaced by goal2's own data later;
    - the Rust engine (diegoami/goal2rust) goes on in parallel and does not change this order.
+   [designed: owner, 2026-11-03, #524-#527] **The rebuilt UI.** The design phase is done:
+   - the screens follow the original's flow, in its palette with a blocky VGA font (docs/design/ui-2026-11);
+   - the window is PySide6, trimmed to Essentials, with the pitch as a widget in it (docs/design/technology-2026-11);
+   - the game grows from the Python route, which already plays on the port; the Core stays only as a test oracle;
+   - the window talks to one long-lived PyPy engine process over a pipe, and goal2rust's hybrid later runs inside
+     that process once it is equal;
+   - the portable ZIP drops QtWebEngine, Addons, Pdf and pygame-ce, and Unicorn goes at m3.
 5. **The main session drafts** this plan and the register.
 
 Every rule the rebuild plays by is in [`assumptions.md`](assumptions.md), tagged by where it comes
