@@ -2,8 +2,8 @@
 
 [designed: owner decisions 4 and 8, #526; T163, #537] S02 lists the saves by the free names they were saved under, not
 by file names. The name is stored with the save, so a file name is only derived from it, safely, and the list shows
-the stored name. T168 adds saving under a name from the desk (`write` is the writer it calls); this module defines
-the format and reads it.
+the stored name. The desk's F7 (S21, goal2/ui/s21_save.py) saves under a name through `write`, the only writer
+[designed: T168, #542]: `model.save_path` is the `.g2game` file, so the model's own save is never called on it.
 
 The format [designed: T163]: a zip file named `<derived name>.g2game` holding two members,
 - `goal2-save.json`: `{"format": "goal2-named-save", "version": 1, "name": <free name>, "saved": <ISO 8601 time,
@@ -87,17 +87,26 @@ def now() -> datetime.datetime:
 
 def write(model, folder, name, saved=None) -> Path:
     """Save `model`'s career in `folder` under the free `name`; returns the file. The session is written by the
-    model's own save (`DesktopModel.save`), then stored with the name, and the file replaces any older one only once
-    it is complete."""
+    model's own save (`DesktopModel.save`) into a temporary folder, never to `model.save_path`, then stored with the
+    name, and the file replaces any older one only once it is complete. [designed: T168, #542] A save that fails
+    raises SaveError saying why, leaves every file in `folder` as it was and the model's unsaved progress unsaved.
+    Once saved, `model.save_name` is the name, the one F7 proposes next."""
     name = clean_name(name)
     saved = saved if saved is not None else now()
     folder = Path(folder)
-    folder.mkdir(parents=True, exist_ok=True)
+    try:
+        folder.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        raise SaveError(f"cannot write in {folder}: {exc}") from exc
     path = path_for(folder, name)
     meta = {"format": FORMAT, "version": VERSION, "name": name, "saved": saved.isoformat()}
+    before = {key: getattr(model, key) for key in ("saved", "save_path") if hasattr(model, key)}
     with tempfile.TemporaryDirectory(prefix="goal2-save-") as tmp:
         session = Path(tmp) / SESSION
-        model.save(session)
+        try:
+            model.save(session)
+        except (OSError, ValueError) as exc:
+            raise SaveError(str(exc)) from exc
         part = path.with_name(path.name + ".part")
         try:
             with zipfile.ZipFile(part, "w", zipfile.ZIP_DEFLATED) as archive:
@@ -105,9 +114,35 @@ def write(model, folder, name, saved=None) -> Path:
                 archive.write(session, SESSION)
             os.replace(part, path)
         except OSError as exc:
+            # The model's save marked the career saved: it is not, so its unsaved progress stays unsaved.
+            for key, value in before.items():
+                setattr(model, key, value)
+            try:
+                if part.is_file():
+                    part.unlink()
+            except OSError:
+                pass
             raise SaveError(f"cannot write {path}: {exc}") from exc
     model.save_path = path
+    model.save_name = name
     return path
+
+
+def replaces(model, folder, name):
+    """The file of another save that saving `model` in `folder` under `name` would replace, else None. The career's
+    own save, the one it was last saved or loaded under, is not another's. [designed: T168, #542]"""
+    path = path_for(folder, name)
+    if not path.exists():
+        return None
+    own = getattr(model, "save_path", None)
+    if last_name(model) == clean_name(name) and own is not None and Path(own).resolve() == path.resolve():
+        return None
+    return path
+
+
+def last_name(model):
+    """The name F7 proposes: the one the career was last saved or loaded under, None for a new career."""
+    return getattr(model, "save_name", None)
 
 
 def read_meta(path):
@@ -135,7 +170,7 @@ def load(path, data_path):
     """The career in the save at `path`, read by the model's validating loader; SaveError saying why when it cannot
     be opened."""
     from goal2.desktop.model import DesktopModel
-    read_meta(path)
+    name = read_meta(path)[0]
     with tempfile.TemporaryDirectory(prefix="goal2-load-") as tmp:
         session = Path(tmp) / SESSION
         try:
@@ -148,6 +183,7 @@ def load(path, data_path):
         except ValueError as exc:
             raise SaveError(str(exc)) from exc
     model.save_path = Path(path)
+    model.save_name = name
     return model
 
 

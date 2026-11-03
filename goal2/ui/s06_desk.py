@@ -14,8 +14,9 @@ docs/original-game/images/t156-013-hub.png]:
 - **T** team tactics (S10), **Space** select squad (S08), **F1** help (S22); **F3** load a saved goal, **F4** load a
   saved summary, **F7** save, **F10** quit [confirmed: t156-013-hub.png, its bottom line].
 
-Placeholders [designed: T164, the task's scope]: F3 comes with T167, F4, F7 and F10 with T168. Until then each says
-which task brings it, on the desk, and does nothing else.
+Placeholders [designed: T164, the task's scope]: F3 comes with T167, F4 with T181. Until then each says which task
+brings it, on the desk, and does nothing else. **F7** saves and **F10** quits through S21 (goal2/ui/s21_save.py), with
+the save question when anything is unsaved. [designed: T168, #542]
 
 *play next game* [designed: T166, #540, the interim route]: until T167 brings the round, the match menu and the
 captain, it plays the next own friendly watched on S17 (goal2/ui/s17_pitch.py `play_next_game`), with the original's
@@ -35,8 +36,8 @@ pitch role [designed: T41a, goal2/game/campaign.py `Fixture.side_a`], so the des
 not the mockup's "away".
 
 Everything shown is the model's (`DesktopModel.summary`, `view`, `countries`; `goal2.game.country_card.card` for the
-rankings), route (b) [designed: owner, 2026-11-03, #527 D2]. The desk never saves: saving is T168's, through
-`goal2.ui.saves.write`.
+rankings), route (b) [designed: owner, 2026-11-03, #527 D2]. The desk never saves through the model: F7 saves through
+`goal2.ui.saves.write` only (S21).
 """
 from __future__ import annotations
 
@@ -57,9 +58,7 @@ HINT = ("Use ↑↓ to find an option, Enter to select it. Your own matches are 
 # What each placeholder says until its task builds it. [designed: T164 scope 1, "each names the task"]
 LATER = {
     "F3": "F3, load a saved goal, comes with T167.",
-    "F4": "F4, load a saved summary, comes with T168.",
-    "F7": "F7, save, comes with T168.",
-    "F10": "F10, quit with the save question, comes with T168.",
+    "F4": "F4, load a saved summary, comes with T181.",
 }
 
 
@@ -86,9 +85,10 @@ class DeskScreen(Screen):
         self.model = model
         self.message = ""
         self._banner()
-        for key, caption, text in ((Qt.Key.Key_F3, "F3", "load goal"), (Qt.Key.Key_F4, "F4", "load summary"),
-                                   (Qt.Key.Key_F7, "F7", "save"), (Qt.Key.Key_F10, "F10", "quit")):
+        for key, caption, text in ((Qt.Key.Key_F3, "F3", "load goal"), (Qt.Key.Key_F4, "F4", "load summary")):
             self.bind((key,), text, lambda caption=caption: self.later(caption))
+        self.bind((Qt.Key.Key_F7,), "save", self.save)
+        self.bind((Qt.Key.Key_F10,), "quit", self.quit)
         self.bind((Qt.Key.Key_T,), "team tactics", self.team_tactics)
         self._build()
         self.refresh()
@@ -256,6 +256,16 @@ class DeskScreen(Screen):
 
     def reimport(self):
         return self.window_.push(ReimportScreen(self.window_, self.window_.target, self.window_.choose))
+
+    def save(self):
+        """F7: S21's name box over the desk; once saved, the desk says the name."""
+        from goal2.ui.s21_save import save
+        return save(self.window_, self.model)
+
+    def quit(self):
+        """F10: S21's quit question, then the save question when anything is unsaved."""
+        from goal2.ui.s21_save import quit_game
+        return quit_game(self.window_, self.model)
 
 
 def _escape(text):
