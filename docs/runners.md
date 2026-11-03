@@ -40,8 +40,8 @@ say so on the PR ("Windows slow: no runner online; the local gate ran --slow").
 |---|---|---|---|---|
 | `goal2-pc` | the owner's PC, Windows | `goal2-slow` | `C:\Users\diego\ghr-goal2` | `goal2-runner.cmd` in the Startup folder, at logon |
 | `goal2-WINDOWS-BJ0PUMB-linux` | the owner's PC, WSL (Ubuntu) | `goal2-slow-linux` | `~/actions-runner/goal2` | systemd user service `goal2-runner` |
-| `goal2-it13` | the owner's second computer (IT13), Windows | `goal2-slow` | `C:\Users\diego\ghr-goal2` | `goal2-runner.cmd` in the Startup folder, at logon |
-| `goal2-IT13-linux` | the owner's second computer (IT13), WSL (Ubuntu) | `goal2-slow-linux` | `~/actions-runner/goal2` | systemd user service `goal2-runner` |
+| `goal2-it13` | the owner's second computer (IT13), Windows, 6 gate jobs | `goal2-slow` | `C:\Users\diego\ghr-goal2` | `goal2-runner.cmd` in the Startup folder, at logon |
+| `goal2-IT13-linux` | the owner's second computer (IT13), WSL (Ubuntu), 6 gate jobs | `goal2-slow-linux` | `~/actions-runner/goal2` | systemd user service `goal2-runner` |
 
 Runners with the same label share one queue: two Windows machines check two PRs at once, and when one is
 off the other takes the work. Check them on GitHub (Settings → Actions → Runners) or:
@@ -49,6 +49,21 @@ off the other takes the work. Check them on GitHub (Settings → Actions → Run
 ```bash
 gh api repos/diegoami/goal2/actions/runners --jq '.runners[]|.name+" "+.status+" busy="+(.busy|tostring)'
 ```
+
+## A machine shared by several runners or a working session
+
+[designed: owner, 2026-11-03, #567] IT13 hosts both kinds of runner and a working session on 20 cores. Each gate
+defaults to `min(8, cores)` jobs, so three at once overload it: one Windows slow bench test timed out that way (#417's
+symptom, run 41628341112). On such a machine:
+
+- **Each runner's gate is capped** by `GOAL2_GATE_JOBS` in the runner's `.env`, which the runner passes to every job.
+  `check_premerge.py` takes its default from it and prints `game tests: <n> jobs (GOAL2_GATE_JOBS)`. Set it when
+  installing or again later: `GOAL2_GATE_JOBS=6 bash tools/runner/setup-linux.sh` or
+  `setup-windows.ps1 -GateJobs 6`. Then restart the runner when it is idle: a restart ends the job it is running.
+- **A working session runs no local gate while a runner on the same machine is busy.** Check with
+  `gh api repos/diegoami/goal2/actions/runners --jq '.runners[]|.name+" busy="+(.busy|tostring)'` first.
+- Raising a job's priority does not help: Windows starts a child process at normal priority whatever its parent's
+  (`CreateProcess` inherits only idle and below-normal), and it would only move the starvation onto the other runner.
 
 ## Adding a machine
 
