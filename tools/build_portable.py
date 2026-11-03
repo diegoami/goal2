@@ -10,7 +10,8 @@ The folder (docs/packaging.md):
 - `pypy/`: the PyPy 3.11 Windows release, with goal2 from the same wheel in its own `Lib\\site-packages` (the match
   workers import only goal2's pure-Python modules) and the CPython's `vcruntime140*.dll` beside `pypy.exe`, which
   imports `VCRUNTIME140.dll` but does not ship it (a DLL missing only on a clean machine, T147's hazard).
-- `goal2.cmd` and `goal2_launch.py` (tools/portable/): the launcher.
+- `goal2.cmd`, `goal2-new.cmd` and `goal2_launch.py` (tools/portable/): the launchers, today's desktop (the default)
+  and the new window.
 - `portable-files.json`: every file of the folder and where it came from (cpython, pypy, wheels, goal2, launcher).
 
 Every download is pinned by version and SHA-256 (tools/portable/manifest.json; the wheels by pip --require-hashes),
@@ -38,7 +39,7 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parents[1]
 PORTABLE = ROOT / "tools" / "portable"
 MANIFEST = PORTABLE / "manifest.json"
-LAUNCHER = ("goal2.cmd", "goal2_launch.py")
+LAUNCHER = ("goal2.cmd", "goal2-new.cmd", "goal2_launch.py")
 RECORD = "portable-files.json"
 THIRD_PARTY = {"cpython", "pypy", "wheels"}
 VCRUNTIME = ("vcruntime140.dll", "vcruntime140_1.dll")
