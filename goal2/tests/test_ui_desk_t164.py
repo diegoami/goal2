@@ -321,12 +321,21 @@ class Options(App):
             self.assertIs(window.current(), desk)
             self.assertIn("cannot start", desk.note.text())
         self.assertIs(window.current(), desk)
-        for key, task in ((Qt.Key.Key_F3, "T167"), (Qt.Key.Key_F4, "T168"), (Qt.Key.Key_F7, "T168"),
-                          (Qt.Key.Key_F10, "T168")):
+        for key, task in ((Qt.Key.Key_F3, "T167"), (Qt.Key.Key_F4, "T181")):
             self.key(window, key)
             self.assertIs(window.current(), desk)
             self.assertIn(task, desk.note.text())
-        self.assertTrue(window.isVisible(), "F10 does not quit until T168")
+        # [T168] F7 opens S21's name box and F10 its quit question; Esc and N return to the desk.
+        from goal2.ui.s21_save import QuestionScreen, SaveScreen
+        self.key(window, Qt.Key.Key_F7)
+        self.assertIsInstance(window.current(), SaveScreen)
+        self.key(window, Qt.Key.Key_Escape)
+        self.assertIs(window.current(), desk)
+        self.key(window, Qt.Key.Key_F10)
+        self.assertIsInstance(window.current(), QuestionScreen)
+        self.key(window, Qt.Key.Key_N)
+        self.assertIs(window.current(), desk)
+        self.assertTrue(window.isVisible(), "F10, N stays")
         # The screens, each by its key, and Esc back to the desk.
         self.key(window, Qt.Key.Key_Up, 5)
         self.assertEqual(desk.cursor, 0)

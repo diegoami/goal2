@@ -5,6 +5,8 @@ original. `push` opens a screen over the current one, `pop` returns to the one u
 `replace_home` empties the stack and starts again from a screen: S01 until the data is imported, then S02 Start, and
 the manager's desk (S06) once a career is open (`open_career`) [designed: T164, #538]. F1 on any screen opens the help (S22) over it, and Esc there
 returns to the same screen. [designed: T163, #537; docs/design/ui-2026-11 §1, the journey]
+Closing the window never loses unsaved progress silently: it asks S21's save question first (`closeEvent`), and
+`leave` closes once the player has answered (F10's questions or the close button's). [designed: T168, #542]
 
 The page is composed for 1440x900 and scales as a whole with the window, as today's fixed pages do
 [designed: docs/design/ui-2026-11 §3, "Text size"; T101]: the window's central widget is

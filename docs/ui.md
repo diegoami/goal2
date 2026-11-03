@@ -14,8 +14,8 @@ GOAL.HLP, and the desk's *re-import data* with a career open. `--screenshot` wri
 temporary data folder of its own and exits: S01, the placeholder home and S22 (with a stand-in help text) always;
 S02 with two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages (labelled so), S06
 the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, S17 at kick-off and in play
-(the career's first friendly, under PyPy 3.11, cancelled after the pictures), and S11 and S13 again after its first
-round (the route's quick friendly), when it finds GOAL.DAT and the template in the data root's `data` or in a
+(the career's first friendly, under PyPy 3.11, cancelled after the pictures), S11 and S13 again after its first
+round (the route's quick friendly), and S21's save box, quit question and save question over the desk, when it finds GOAL.DAT and the template in the data root's `data` or in a
 checkout's `.cache/`.
 
 ## The journey
@@ -52,7 +52,11 @@ loaded here is the one the model makes, and the screens copy no career rule.
 model's own session save byte for byte. The file name is derived from the free name (letters, digits, `-`, `_`; a
 name Windows reserves gets `-save`; `-2`, `-3`… when another name derives the same), and S02 lists the stored name.
 A save is read only by the model's validating loader (`DesktopModel.from_save`). `goal2/ui/saves.py` reads and writes
-the format; T168 adds saving under a name from the desk (F7). The desk never saves through `DesktopModel.save`.
+the format; `saves.write` is the only writer, and F7 saves through it (S21, below). [designed: T168, #542] The model's
+`save_path` is the `.g2game` file, so nothing calls `DesktopModel.save` on it: `write` has the model save its session
+into a temporary folder and stores it in the zip, which replaces an older file only once complete. A save that fails
+raises `SaveError` saying why, leaves the folder's files as they were and restores the model's saved mark, so its
+progress stays unsaved. `model.save_name` is the name a career was last saved or loaded under (`saves.last_name`).
 
 ## The parts
 
@@ -77,6 +81,7 @@ the format; T168 adds saving under a name from the desk (F7). The desk never sav
 | `goal2/ui/s17_pitch.py` | S17 Pitch (T166): the screen, `MatchController` over the watched bridge, the desk's interim `play_next_game` and the suggested captain (`best_leader`). |
 | `goal2/ui/pitch.py` | S17's pitch widget: lines, surround, marks coloured by side, the ball, the enlarged commentary. |
 | `goal2/ui/saves.py` | The named save format (Qt-free). |
+| `goal2/ui/s21_save.py` | S21 Save and quit (T168): F7's name box, the replace question, F10's two questions and the close button's. |
 | `goal2/ui/start_look.py` | The style S02–S05 add to the theme's sheet, and their shared parts (boxes, rows, typed lines). |
 
 The rest of `goal2/ui` (`grid`, `plain_renderer`, `input` and the terminal screens) is the older terminal screen
@@ -182,8 +187,8 @@ the manager's desk, the career's home: every management screen returns to it wit
   bar's right end, named as the original's hub names it (T178, #563: *2028 European Championship · QUALIFYING*). The
   six options in the original's order, the cursor on *team info*: *team info* (S07), *fixture list* (S11),
   *tournament* (S12), *history* (S13), *select squad* (S08, also Space) and *play next game* (S17 for a friendly
-  until T167, below). **T** S10, **F1** S22; **F3** comes with T167, **F4**, **F7** and **F10** with T168. A
-  placeholder says which task brings it, on the desk, and does nothing else. *re-import data*, a goal2 addition
+  until T167, below). **T** S10, **F1** S22, **F7** save and **F10** quit (S21, T168, below); **F3** comes with
+  T167, **F4** with T181. A placeholder says which task brings it, on the desk, and does nothing else. *re-import data*, a goal2 addition
   (decision 14), is a seventh option under a "goal2 addition" tag: S01 over the data folder, Esc back to the desk.
 - **S07** shows S04's card for the highlighted country, read from the career, beside the list in groups of 16, the next
   opponent marked. It opens on the world ranking at the next opponent. **↑↓** country, **←→** group, **Ins** the
@@ -263,7 +268,8 @@ acknowledgements, and the match the player watched is the match the engine publi
   At full time S17 returns to the desk with the result in its status line. A qualifier says it comes with T176 and
   T167.
 - **Closing the window** during the match cancels it through the bridge (`cancel_and_reap`, then `close`): nothing
-  is published and the engine process ends.
+  is published and the engine process ends. With unsaved progress the window then asks to save over the desk (S21,
+  below).
 - **The pygame viewer** stays for today's window (owner decision 17): S17 reuses its drawing constants
   (`pygame_viewer.GRID`, `MARGIN`, `DRAW_ORDER`, `MARKS`, `glyph`), which move with S17 when the viewer is retired.
 
@@ -272,3 +278,28 @@ the bridge's and the published career with the same match through today's `Watch
 with painting stalled, the keys, the close mid-match (no engine process within 5 s, nothing published), the sides'
 colours on the painted pitch and `best_leader` against T143's function. It needs PyPy 3.11 and the `.cache/` files and
 skips without them. The pictures are in [design/ui-2026-11/T166-screens](design/ui-2026-11/T166-screens/).
+
+## Save and quit: S21 (T168)
+
+[designed: owner, 2026-11-03, #526 decision 8; T168, #542; confirmed: T156-R1 steps 233–241, E031 C23–C26b] S21 is a
+box over the screen it came from, that screen dimmed under it as S22's, titled *manager's desk · save* (or *· quit*).
+
+- **F7** (the desk): *Please enter the name of the saved game.* The box proposes the name the career was last saved or
+  loaded under (none for a new career); the first key typed replaces the proposal and Backspace edits it, as the
+  original's (t156-233, t156-237). **Enter** saves through `saves.write`, **Esc** cancels; once saved, the desk says
+  *Saved as "name"*. A name another save already has asks *Replace it? (Y/N)*: **N** returns to the name and keeps
+  the old file, **Y** replaces it; the career's own save is replaced without a question. A failed save says why in
+  the box and nothing is replaced.
+- **F10**: *Are you sure you want to quit? (Y/N)*; **N** (or Esc) stays. **Y** quits at once when nothing is
+  unsaved; otherwise *Do you want to save this game? (Y/N)*: **Y** the name box, then quit; **N** quit; **Esc**
+  stays.
+- **The close button** (`Window.closeEvent`): screens with something running end it first (S17 cancels its match,
+  T166) and leave the stack; then, with unsaved progress, the window stays and asks *Do you want to save this game?*
+  as above (**Y** save and close, **N** close, **Esc** stay). With nothing unsaved it closes at once.
+  `Window.leave()` closes once the player has answered.
+- *Unsaved* is the model's own `unsaved`: progress since the career was created, loaded or saved (T87).
+
+`goal2/tests/test_ui_save_t168.py` visits the round trip (a swap on S08, F7 under a typed name, S02 loads it back
+with `view()` equal), the replace question, F10's answers, the close button's, the model's save never called on a
+`.g2game` file, and a failed save in an unwritable folder. The pictures are in
+[design/ui-2026-11/T168-screens](design/ui-2026-11/T168-screens/).
