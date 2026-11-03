@@ -315,3 +315,7 @@ operational status.
 - [T157](T157.md): screen and flow design from the original's captures, design phase stage 2 (#526).
 
 - [T158](T158.md): technology choice for the rebuilt UI, design phase stage 3 (#527).
+
+- [T159](T159.md): the engine process and its pipe protocol, m3 Track A (#533).
+
+- [T162](T162.md): the new window's foundation: look, screen stack, import and help, m3 Track A (#536).
