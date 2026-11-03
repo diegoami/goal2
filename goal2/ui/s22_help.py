@@ -26,9 +26,13 @@ DOS_EOF = b"\x1a"
 # [designed: owner decision 13; T163] the help box's place on the 1440x900 page: between the title bar (64 px) and
 # the bottom bar (70 px), less a margin, and wide enough for the help's 80 columns
 TOP, BOTTOM, MARGIN, WIDTH = 64, 70, 10, 1100
+# [designed: T163 6a] Until T164's *re-import data* on the desk, the way to add GOAL.HLP is to start the new window
+# with the folder that holds it: its own import (`python -m goal2.ui --import FOLDER`, data_setup.WINDOW_MANIFEST),
+# not the old window's (`goal2.desktop.data_setup`, whose manifest asks for the Core's boot state).
+IMPORT_COMMAND = "python -m goal2.ui --import FOLDER"
 NO_HELP = ("goal2 has no help text: {name} was not imported with your data files.\n\n"
-           "To add it, put {name} in the folder that holds your data files and import that folder again "
-           "(python -m goal2.desktop.data_setup FOLDER). The other files stay as they are.")
+           "To add it, put {name} in the folder that holds your data files and import that folder again: start "
+           "goal2 with " + IMPORT_COMMAND + ", FOLDER being that folder. The other files stay as they are.")
 
 
 def decode(raw: bytes) -> str:

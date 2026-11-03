@@ -52,6 +52,17 @@ def new_career(target, country, start_year, name):
     return model
 
 
+def averages(model):
+    """The twenty's average caps and age, rounded to a whole number, as the S04 mockup shows them ("average caps 0 ·
+    age 28"). [designed: T163 6a; design S04 "average caps and age"] They are the cards' own `age` and `caps`
+    (goal2.game.player_card.card: record byte 1, and the word at 8): read here from the same record bytes, because a
+    whole card costs about a tenth of a second (it reads the emulator memory), and the test checks them against the
+    cards."""
+    records = [model.state.players[word] for word in model.state.managed_squad]
+    values = {"age": [r[1] for r in records], "caps": [r[8] | r[9] << 8 for r in records]}
+    return {key: round(sum(v) / len(v)) for key, v in values.items()}
+
+
 class CountryScreen(Screen):
     title = "new game · step 2 of 3 · country and name"
     pre_game = True
@@ -144,6 +155,8 @@ class CountryScreen(Screen):
         inner.addWidget(default_rows)
         inner.addStretch(1)
         traits, inner = box("Characteristics")
+        self.averages = label("", "sub")
+        inner.addWidget(self.averages)
         self.characteristics = label(NOT_DECODED, "undecoded")
         inner.addWidget(self.characteristics)
         inner.addStretch(1)
@@ -202,6 +215,7 @@ class CountryScreen(Screen):
         if c is None:
             return
         self.name.setText(c["name"])
+        self.averages.setText("average caps {caps} · age {age}".format(**self.average))
         self.first.setText("first: " + self.first_match)
         self.team["status"].setText(c.get("status", NOT_DECODED))
         self.team["manager"].setText(c["manager"] or "")
@@ -231,6 +245,7 @@ class CountryScreen(Screen):
         self.card = country_card(self.browser.state, number, self.browser.goaldat)
         summary = self.browser.summary()
         self.first_match = f"{summary['campaign']}: {summary['next']}"
+        self.average = averages(self.browser)
         self.previewed = number
         self._show_card()
 
@@ -335,16 +350,19 @@ class CountryScreen(Screen):
 
 
 class PlayersScreen(Screen):
-    """The country's twenty, read only: the list with role codes and the highlighted player's card.
-    [confirmed: T156-R1 step 4, Space in the country browser; designed: S04 "the S08 card, read only"]"""
+    """The country's twenty, read only: T165's S08 card (goal2/ui/squad_card.py `PlayerCard`, bars without numbers
+    [designed: owner, 2026-10-21, T99], with performance and cards) beside its strip of the twenty.
+    [confirmed: T156-R1 step 4, Space in the country browser; designed: S04 "the S08 card, read only"; T163 6a]"""
     title = "new game · step 2 of 3 · players"
     pre_game = True
 
     def __init__(self, window, browser, country_name):
         super().__init__(window)
         from goal2.game.player_card import card
-        state = browser.state
-        self.cards = [card(state, word, browser.goaldat) for word in state.managed_squad]
+        from goal2.ui.squad_card import PlayerCard, Strip, squad_rows
+        rows, eleven = squad_rows(browser)
+        self.cards = [card(browser.state, row["id"], browser.goaldat) for row in rows]
+        self.eleven = eleven
         self.index = 0
         self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), shown=False)
         self.bind((Qt.Key.Key_Down,), "", lambda: self.move(1), shown=False)
@@ -353,71 +371,26 @@ class PlayersScreen(Screen):
         self.bindings.remove(esc)
         self.bindings.append(esc)
         self._refresh_bar()
-        self._build(country_name)
-        self._show()
-
-    def _build(self, country_name):
         row = QHBoxLayout()
         row.setSpacing(18)
-        squad, inner = box(f"{country_name} · the twenty")
-        squad.setFixedWidth(LIST_WIDTH)
-        inner.setSpacing(0)
-        self.rows = []
-        for i, c in enumerate(self.cards):
-            if i == 11:
-                inner.addSpacing(10)
-            r = Row([30, None], on_click=lambda i=i: self.pick(i))
-            r.set_cells([c["role"], c["full_name"]], [{"goalkeeper": "gk", "defence": "def", "midfield": "mid",
-                                                      "attack": "att"}.get(c["line"], "cell"), None])
-            inner.addWidget(r)
-            self.rows.append(r)
-        inner.addStretch(1)
-        row.addWidget(squad)
-        right = QVBoxLayout()
-        right.setSpacing(14)
-        head, inner = box()
-        self.player_name = label("", "h1")
-        inner.addWidget(self.player_name)
-        facts, self.facts = key_value((("position", "position"), ("club_position", "club position"),
-                                       ("age", "age"), ("caps", "caps"), ("goals", "goals"),
-                                       ("height", "height"), ("foot", "foot"), ("readiness", "readiness")))
-        inner.addWidget(facts)
-        right.addWidget(head)
-        panels = QHBoxLayout()
-        panels.setSpacing(18)
-        skills, inner = box("Skills")
-        skill_rows, self.skills = key_value([(n, n) for n, _ in self.cards[0]["skills"]])
-        inner.addWidget(skill_rows)
-        inner.addStretch(1)
-        traits, inner = box("Characteristics")
-        trait_rows, self.traits = key_value([(c[0], c[0]) for c in self.cards[0]["characteristics"]])
-        inner.addWidget(trait_rows)
-        inner.addStretch(1)
-        tactics, inner = box("His tactics")
-        tactic_rows, self.tactics = key_value([(t[0], t[0]) for t in self.cards[0]["tactics"]])
-        inner.addWidget(tactic_rows)
-        inner.addStretch(1)
-        for part in (skills, traits, tactics):
-            panels.addWidget(part, 1)
-        right.addLayout(panels, 1)
-        holder = QWidget()
-        holder.setLayout(right)
-        row.addWidget(holder, 1)
+        self.card = PlayerCard()
+        row.addWidget(self.card, 1)
+        self.strip = Strip()
+        self.strip.chosen.connect(self.pick)
+        row.addWidget(self.strip)
         self.body_layout.addLayout(row, 1)
+        self.heading = f"{country_name} · the twenty"
+        self._show()
 
     def _show(self):
         c = self.cards[self.index]
-        for i, row in enumerate(self.rows):
-            row.set_on(i == self.index)
-        self.player_name.setText(c["full_name"])
-        for key, value in self.facts.items():
-            value.setText(str(c[key]))
-        for name, value in c["skills"]:
-            self.skills[name].setText(str(value))
-        for name, word, *_ in c["characteristics"]:
-            self.traits[name].setText(word)
-        for name, word, *_ in c["tactics"]:
-            self.tactics[name].setText(word)
+        self.card.set_card(c)
+        self.strip.show_rows(self.heading, [(c["role"], c["line"], c["full_name"]) for c in self.cards],
+                             self.index, gap=self.eleven == 11)
+
+    @property
+    def player_name(self):
+        return self.card.name
 
     def move(self, step):
         self.index = max(0, min(self.index + step, len(self.cards) - 1))

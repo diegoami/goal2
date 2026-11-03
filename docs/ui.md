@@ -4,13 +4,15 @@ The rebuilt UI of [the design](design/ui-2026-11/README.md), in PySide6 widgets 
 the owner's decision D1, #527). It is built beside today's window, `goal2/desktop`, which stays the shipped window
 and the portable build's default until T169 switches over. [designed: owner, 2026-11-03, #526, #527, #536]
 
-    python -m goal2.ui [--data-root DIR]
+    python -m goal2.ui [--data-root DIR] [--import FOLDER]
     QT_QPA_PLATFORM=offscreen python -m goal2.ui --screenshot DIR
 
 It opens S01 while the per-user data folder lacks a file the new window needs, otherwise S02 Start. `--data-root`
-names the per-user goal2 folder (its `data` holds the imported files). `--screenshot` writes PNGs at 1440×900 from a
+names the per-user goal2 folder (its `data` holds the imported files). `--import FOLDER` imports FOLDER as S01 does
+(`WINDOW_MANIFEST`, GOAL.HLP too when the folder has it), then starts; S22's message names it as the way to add
+GOAL.HLP until T164's *re-import data*. `--screenshot` writes PNGs at 1440×900 from a
 temporary data folder of its own and exits: S01, the placeholder home and S22 (with a stand-in help text) always;
-S02 with two saves, S03, S04 with the name line, S05 with stand-in pages (labelled so) and the home with the new
+S02 with two saves, S03, S04 with its twenty and the name line, S05 with stand-in pages (labelled so) and the home with the new
 career when it finds GOAL.DAT and the template in the data root's `data` or in a checkout's `.cache/`.
 
 ## The journey
@@ -56,7 +58,7 @@ the format; T168 adds saving under a name from the desk.
 | `goal2/ui/home.py` | The placeholder home screen: the open career's summary, until T164's desk. |
 | `goal2/ui/s02_start.py` | S02 Start: Continue, the named saves, Y load, N new game, a failed load's Y/N. |
 | `goal2/ui/s03_new_game.py` | S03 New game: 1–6 managers (2–6 later, #551), the optional starting year by NG-9. |
-| `goal2/ui/s04_country.py` | S04 Country and name: the card, the list in groups of 16, Ins, the name line; `PlayersScreen`, the twenty read only (Space). |
+| `goal2/ui/s04_country.py` | S04 Country and name: the card (with the twenty's average caps and age), the list in groups of 16, Ins, the name line; `PlayersScreen`, the twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
 | `goal2/ui/s05_bulletin.py` | S05 Bulletin: pages *n of m*, any key onward. |
 | `goal2/ui/saves.py` | The named save format (Qt-free). |
 | `goal2/ui/start_look.py` | The style S02–S05 add to the theme's sheet, and their shared parts (boxes, rows, typed lines). |

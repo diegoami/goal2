@@ -3,15 +3,16 @@
 [designed: T162, #536; T163, #537] It opens S01 while the data folder lacks a file the new window needs, otherwise S02
 Start. The portable build's launcher and default stay today's window (goal2/desktop) until T169 switches over.
 
-    python -m goal2.ui [--data-root DIR]
+    python -m goal2.ui [--data-root DIR] [--import FOLDER]
     QT_QPA_PLATFORM=offscreen python -m goal2.ui --screenshot DIR
 
 `--data-root` is the per-user goal2 folder (default: data_setup.user_root(); the data is in its `data`).
+`--import FOLDER` imports the data files in FOLDER as S01 does (GOAL.HLP too, when the folder has it), then starts.
 `--screenshot DIR` writes PNGs at 1440x900 into DIR and exits: S01, the placeholder home and S22 always; S02 with
-two saves, S03, S04 with the name line, S05 with stand-in pages and the home with the new career when it finds the
-data the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a checkout, in
-`.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there and the
-bulletin pages are stand-ins labelled so (CLAUDE.md rule 14; the Python route has no bulletins yet, #509).
+two saves, S03, S04 with its twenty and the name line, S05 with stand-in pages and the home with the new career when
+it finds the data the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a
+checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
+and the bulletin pages are stand-ins labelled so (CLAUDE.md rule 14; the Python route has no bulletins yet, #509).
 """
 from __future__ import annotations
 
@@ -129,6 +130,9 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
             for _ in range(19):
                 key(Qt.Key.Key_Down)
             screen.settle()
+            key(Qt.Key.Key_Space)
+            shot("s04-players.png")
+            key(Qt.Key.Key_Escape)
             key(Qt.Key.Key_Return)
             for character in "Kees":
                 key(Qt.Key.Key_A, character)
@@ -146,25 +150,47 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
     return written
 
 
-def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(prog="python -m goal2.ui", description="goal2's new window (docs/ui.md)")
-    parser.add_argument("--data-root", type=Path, help="the per-user goal2 folder (default: the user's)")
-    parser.add_argument("--screenshot", type=Path, metavar="DIR", help="write PNGs of the screens and exit")
-    args = parser.parse_args(argv)
-    if args.screenshot is not None:
-        for path in screenshots(args.screenshot, args.data_root):
-            print(path)
-        return 0
+def import_data(folder, data_root=None) -> int:
+    """`--import FOLDER`: the new window's own import (S01's, data_setup.WINDOW_MANIFEST, GOAL.HLP when the folder
+    has it); 0 once imported, else 1 with data_setup's plain words. [designed: T163 6a]"""
+    from goal2.desktop import data_setup
+    target = data_setup.paths(data_root)
+    try:
+        copied = data_setup.import_folder(folder, target, data_setup.WINDOW_MANIFEST)
+    except data_setup.SetupError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(f"Imported {', '.join(copied) or 'nothing new'} into {target.data}.")
+    return 0
+
+
+def run_window(data_root=None) -> int:
     from PySide6.QtWidgets import QApplication
     from goal2.desktop import data_setup
     from goal2.ui import theme
     from goal2.ui.window import Window
     app = QApplication.instance() or QApplication(sys.argv[:1])
     theme.install(app)
-    window = Window(data_setup.paths(args.data_root))
+    window = Window(data_setup.paths(data_root))
     window.start()
     window.show()
     return app.exec()
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(prog="python -m goal2.ui", description="goal2's new window (docs/ui.md)")
+    parser.add_argument("--data-root", type=Path, help="the per-user goal2 folder (default: the user's)")
+    parser.add_argument("--screenshot", type=Path, metavar="DIR", help="write PNGs of the screens and exit")
+    parser.add_argument("--import", dest="folder", type=Path, metavar="FOLDER",
+                        help="import the data files in FOLDER (GOAL.HLP too, when it is there), then start")
+    args = parser.parse_args(argv)
+    if args.screenshot is not None:
+        for path in screenshots(args.screenshot, args.data_root):
+            print(path)
+        return 0
+    if args.folder is not None and import_data(args.folder, args.data_root):
+        return 1
+    return run_window(args.data_root)
 
 
 if __name__ == "__main__":

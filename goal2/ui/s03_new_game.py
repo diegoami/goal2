@@ -160,7 +160,8 @@ class NewGameScreen(Screen):
         set_para(self.year_note, words)
         if note is None and self.chosen > 1:
             note = self.later()
-        set_para(self.note, note or "")
+        self.note_plain = note or ""
+        set_para(self.note, self.note_plain)
         self.note_box.setVisible(bool(note))
 
     def later(self):
@@ -172,7 +173,7 @@ class NewGameScreen(Screen):
         return self.year_note.text()
 
     def note_text(self):
-        return self.note.text() if self.note_box.isVisible() else ""
+        return self.note_plain if self.note_box.isVisible() else ""
 
     # The keys.
     def choose(self, n):

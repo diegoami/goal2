@@ -28,7 +28,8 @@ from PySide6.QtWidgets import QApplication  # noqa: E402
 
 from goal2.desktop import data_setup, fixed_page  # noqa: E402
 from goal2.desktop.model import STAGES, DesktopModel  # noqa: E402
-from goal2.ui import s03_new_game, saves, start_look, theme  # noqa: E402
+from goal2.ui import s03_new_game, s04_country, saves, squad_card, start_look, theme  # noqa: E402
+from goal2.ui import __main__ as entry  # noqa: E402
 from goal2.ui.home import HomeScreen  # noqa: E402
 from goal2.ui.s01_import import ImportScreen  # noqa: E402
 from goal2.ui.s02_start import StartScreen  # noqa: E402
@@ -248,6 +249,37 @@ class NewGame(App):
 
 
 @CAREER
+class StartAndBusy(App):
+    def test_esc_on_s02_quits(self):
+        self.data()
+        window = self.window()
+        window.start()
+        self.assertIsInstance(window.current(), StartScreen)
+        self.assertIn((("Esc",), "quit"), window.current().key_texts())
+        self.key(window, Qt.Key.Key_Escape)
+        self.assertFalse(window.isVisible(), "Esc on the title quits")
+
+    def test_s03_shows_its_busy_line_while_the_game_is_prepared(self):
+        self.data()
+        window = self.window()
+        window.start()
+        self.key(window, Qt.Key.Key_N)
+        new_game = window.current()
+        seen = []
+        real = s04_country.CountryScreen
+
+        def prepare(*args, **kwargs):
+            seen.append((new_game.note_text(), new_game.note_box.isVisible()))
+            return real(*args, **kwargs)
+
+        with mock.patch.object(s04_country, "CountryScreen", side_effect=prepare):
+            self.key(window, Qt.Key.Key_Return)
+        self.assertEqual(seen, [("Hang on a tick: preparing the 128 countries…", True)])
+        self.assertIsInstance(window.current(), real)
+        self.assertFalse(new_game.note_box.isVisible(), "the busy line goes once the game is prepared")
+
+
+@CAREER
 class CountryKeys(App):
     def test_groups_ranking_players_and_the_name_line(self):
         self.data()
@@ -271,13 +303,27 @@ class CountryKeys(App):
         self.assertIn("WORLD RANK", screen.list_heading.text())
         self.click(screen.rows[3])
         self.assertEqual(screen.chosen()[0], 4, "a click highlights a country, as ↑↓ do")
+        screen.settle()
+        from goal2.game.player_card import card
+        cards = [card(screen.browser.state, w, screen.browser.goaldat) for w in screen.browser.state.managed_squad]
+        caps, age = (round(sum(c[k] for c in cards) / 20) for k in ("caps", "age"))
+        self.assertEqual(screen.averages.text(), f"average caps {caps} · age {age}", "from the twenty's cards")
         self.key(window, Qt.Key.Key_Space)
         players = window.current()
         self.assertIsInstance(players, PlayersScreen)
         self.assertEqual(len(players.cards), 20)
-        self.assertEqual([c["id"] for c in players.cards], list(screen.browser.state.managed_squad))
+        self.assertEqual(sorted(c["id"] for c in players.cards), sorted(screen.browser.state.managed_squad))
+        self.assertIsInstance(players.card, squad_card.PlayerCard, "T165's S08 card, read only")
         self.key(window, Qt.Key.Key_Down)
         self.assertEqual(players.player_name.text(), players.cards[1]["full_name"])
+        skill_words = [word.text() for _, word in players.card.skills.rows.values()]
+        self.assertEqual([w for w in skill_words if any(ch.isdigit() for ch in w)], [], "bars without numbers (T99)")
+        self.assertTrue(all(bar.value is not None for bar, _ in players.card.skills.rows.values()))
+        self.assertIn("performance", players.card.facts.text())
+        self.assertIn("cards", players.card.positions.text())
+        self.assertEqual(players.strip.shown_texts()[1][1], players.cards[1]["full_name"])
+        self.click(players.strip.rows[5])
+        self.assertEqual(players.player_name.text(), players.cards[5]["full_name"], "a click picks, as ↑↓ do")
         self.fits(window)
         self.key(window, Qt.Key.Key_Escape)
         self.assertIs(window.current(), screen)
@@ -485,6 +531,37 @@ class Help(App):
         window.resize(720, 450)
         self.app.processEvents()
         self.assertGreaterEqual(screen.viewer.height(), 0.7 * window.page.height(), "at every scale")
+
+
+class HelpImport(App):
+    def test_the_no_help_text_names_the_new_windows_import_and_it_works(self):
+        window = self.window()
+        window.replace_home(HomeScreen(window))
+        self.key(window, Qt.Key.Key_F1)
+        text = window.current().shown_text()
+        self.assertIn("python -m goal2.ui --import FOLDER", text)
+        self.assertNotIn("goal2.desktop.data_setup", text, "the old window's import asks for the boot state")
+        files = {"GOAL.DAT": b"stand-in data\n", "e010-r0008-halftime.sav": b"stand-in template\n",
+                 "GOAL.HLP": b"stand-in help\n"}
+        manifest = tuple((n, hashlib.sha256(files[n]).hexdigest()) for n in ("GOAL.DAT", "e010-r0008-halftime.sav"))
+        optional = (("GOAL.HLP", hashlib.sha256(files["GOAL.HLP"]).hexdigest()),)
+        folder = self.tmp / "with-help"
+        folder.mkdir()
+        for name, raw in files.items():
+            (folder / name).write_bytes(raw)
+        argv = text.split("start goal2 with ")[1].split(",")[0].replace("FOLDER", str(folder)).split()
+        self.assertEqual(argv[:3], ["python", "-m", "goal2.ui"])
+        with mock.patch.object(data_setup, "WINDOW_MANIFEST", manifest), \
+                mock.patch.object(data_setup, "OPTIONAL", optional), \
+                mock.patch.object(entry, "run_window", return_value=0) as run:
+            self.assertEqual(entry.main(["--data-root", str(self.target.root)] + argv[3:]), 0)
+            run.assert_called_once_with(self.target.root)
+            self.assertEqual(self.target.help.read_bytes(), files["GOAL.HLP"])
+            self.assertFalse((self.target.data / data_setup.BOOT_NAME).exists())
+            (folder / "GOAL.DAT").unlink()
+            run.reset_mock()
+            self.assertEqual(entry.main(["--data-root", str(self.target.root), "--import", str(folder)]), 1)
+            run.assert_not_called()
 
 
 class Bulletin(App):
