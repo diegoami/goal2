@@ -306,7 +306,7 @@ cell the last drawn in the original's order shows, and the ball hides under a pl
 full commentary open, Up/Down scroll it.
 
 [designed: T102, #305; confirmed: goal2-archaeology E031 C39–C41k, 53d7ef5; F027 E544] **The bench**
-in a watched friendly. At half time, and at a stoppage the original offers (a substitution
+in a watched friendly (and, T176, a watched qualifier). At half time, and at a stoppage the original offers (a substitution
 opportunity), the pitch view freezes on the decision and shows the original's board (HALF TIME,
 SUBSTITUTION OPPORTUNITY), and the goal2 window raises the bench in front: a view of **Fixtures &
 match** that copies the original's in-match players screen. The eleven and the bench are in the
@@ -514,7 +514,7 @@ continues uninterrupted. Substituted XI/captain choices persist for later
 fixtures and through full-time save/resume.
 
 
-[designed: T66] To watch the next scheduled **friendly**, install the optional
+[designed: T66; T176] To watch the next scheduled **friendly** or **qualifier**, install the optional
 presentation and original runtime dependencies in the same environment as Qt:
 
 ```sh
@@ -522,7 +522,8 @@ python3 -m pip install '.[desktop,watched,match-view]'
 python3 -m goal2.desktop --template .cache/e010-r0008-halftime.sav --data .cache/GOAL.DAT --save .cache/desktop.g2save
 ```
 
-[designed] Confirm XI, captain and tactics, then choose **Watch original friendly**.
+[designed] Confirm XI, captain and tactics, then choose **Watch original friendly** (**Watch original
+competitive match** when the next fixture is a qualifier, below).
 A separate Pygame window shows a numbered animated pitch, original ordered commentary, minute and score;
 after the original post-match tail, scroll with the mouse wheel or arrow keys to
 see the original full-time board, man of the match and **Raw rating**. Countries,
@@ -614,7 +615,19 @@ or local resources show install/resource guidance while management remains usabl
 Competitive Play, friendly Quick and friendly Watch share one match lock. Save,
 Resume and management edits wait until completion or cancellation. Cancel/close
 reaps only the owned child and preserves the active state and previous save.
-**Watch original friendly** continues to support scheduled friendlies only.
+
+[designed: owner decision 1, #526; T176] A qualifier is watched too. When the next fixture is a qualifier that
+competitive Play supports, the page offers both routes: **Play** (the original competitive match, quick, as above)
+and **Watch original competitive match**. Watch plays the same `competitive` match on the engine process with the pitch
+samples and the bench (`WatchedController` starts it on the owner's `CompetitiveJobs`, the bridge Play uses), and the
+competitive publication publishes it once, with the campaign state Play would publish for the same match and answers.
+The bench offers five substitutions a side, the rebuild's competition budget [designed: owner BM-7, #73], where the
+original gives two [confirmed: F027 §4, A4A1; E031 C41, GOAL.HLP]; a sixth is refused (no more substitutes). An
+unsupported kind refuses both routes.
+
+```bash
+python3 -m unittest goal2.tests.test_watch_qualifiers_t176 -v
+```
 
 ```bash
 python3 -m unittest goal2.tests.test_desktop_competitive_jobs -v
