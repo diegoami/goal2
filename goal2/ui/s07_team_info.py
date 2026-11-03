@@ -11,7 +11,7 @@ the competitors"]:
 - **Space** the country's twenty, read only (T165's card: `s04_country.PlayersScreen`).
 - **T** its tactics: for your own country S10 Team tactics, the screen the desk's T opens; for any other country its
   eight lines read only (`CountryTacticsScreen`) [designed: T164: only your own tactics are yours to change].
-- **Enter** its fixtures: S11 comes with T178 (#560), so Enter says so and does nothing else.
+- **Enter** its fixtures: S11 with that country's coming fixtures (T178, #560); Esc there returns here.
 - **Esc** back to the desk. A click on a country highlights it, as ↑↓ do [designed: owner, 2026-11-03, #526].
 
 Everything is read from the career (`DesktopModel.countries`, `goal2.game.country_card.card`); this screen changes
@@ -186,8 +186,10 @@ class TeamInfoScreen(Screen):
         return self.window_.push(CountryTacticsScreen(self.window_, self.model, number))
 
     def fixtures(self):
-        """Enter: the country's fixtures, S11, which T178 brings (#560)."""
-        self.say(f"The fixtures of {self.chosen()[1]} (S11) come with T178 (#560).")
+        """Enter: S11 with the highlighted country's coming fixtures (T178, #560)."""
+        from goal2.ui.s11_fixtures import FixturesScreen
+        self.settle()
+        return self.window_.push(FixturesScreen(self.window_, self.model, country=self.chosen()[0], back="team info"))
 
     def shown(self):
         """Back from S10 or the players: the card again (your own tactics may have changed)."""

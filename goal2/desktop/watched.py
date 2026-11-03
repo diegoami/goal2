@@ -124,8 +124,6 @@ class WatchedController:
             raise ValueError('A match is already running')
         if importlib.util.find_spec('pygame') is None:
             raise ValueError("Watch requires pygame-ce: python3 -m pip install '.[desktop,watched,match-view]'")
-        if importlib.util.find_spec('unicorn') is None:
-            raise ValueError("Watch requires Unicorn: python3 -m pip install '.[watched]'")
         pending = self.fixture()
         self.close_viewer()
         try:

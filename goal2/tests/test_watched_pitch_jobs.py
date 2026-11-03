@@ -3,7 +3,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
-import struct
+import subprocess
 import sys
 import time
 import unittest
@@ -12,7 +12,7 @@ from unittest.mock import patch
 from goal2.engine.original_match import Fixture
 from goal2.game.watched_jobs import WatchedJobs
 from goal2.game.watched_pitch import (snapshot, validate, write_frame, MAX_FRAME_BYTES,
-    MAX_FRAME_PACKET, MAX_FRAMES, FRAME_READ_BUDGET, FRAME_POLL_BUDGET)
+    MAX_FRAME_PACKET, MAX_FRAMES, FRAME_POLL_BUDGET)
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests import test_watched_adapter as adapter
 from goal2.tests import requires, pypy_engine
@@ -36,22 +36,24 @@ class PitchTransportTests(unittest.TestCase):
     def setUp(self):
         self.owner=Owner(adapter.WatchedAdapter.state(self),self.raw)
         self.before=copy.deepcopy(self.owner.state)
-        self.jobs=WatchedJobs(self.owner,command=[sys.executable,'-c','import time;time.sleep(60)'])
+        from goal2.tests.test_watched_jobs import IDLE_COMMAND
+        self.jobs=WatchedJobs(self.owner,command=IDLE_COMMAND)
         # [designed: #377] setUp can fail before tearDown is eligible to run.
         self.addCleanup(self.jobs.close)
         self.token=self.jobs.start(Fixture(7,19,21),frames=True)
         self.process=self.jobs.process
-        # [designed] Synthetic file injection never impersonates an actual original run.
-        # [designed: #377, as #307] This joins input encoding, not match execution;
+        # [designed] Synthetic replies never impersonate an actual original run: a stand-in engine plays nothing.
+        # [designed: #377, as #307] This waits for the game's encoding, not match execution;
         # use the existing setup bound so a loaded Windows runner can finish encoding.
-        self.process.terminate();self.process.wait(timeout=60)
-        self.alive=patch.object(self.process,'poll',return_value=None)
-        self.addCleanup(self.alive.stop)
-        self.alive.start()
+        deadline=time.monotonic()+60
+        while not self.jobs._sent:
+            self.jobs.poll(self.token)
+            if time.monotonic()>deadline:raise subprocess.TimeoutExpired('stand-in engine setup',60)
+            time.sleep(.005)
 
     def put(self, frames):
-        with open(self.jobs._frames.name,'ab') as f:
-            for frame in frames:write_frame(f,self.token,frame)
+        # [designed: T160] As the engine's reader thread delivers them.
+        for frame in frames:self.jobs._match.put('frame',frame)
 
     def reject(self, message):
         with self.assertRaisesRegex(ValueError,message):self.jobs.poll_frames(self.token)
@@ -64,7 +66,6 @@ class PitchTransportTests(unittest.TestCase):
         while len(returned)<300:
             batch=self.jobs.poll_frames(self.token)
             self.assertLessEqual(len(batch),FRAME_POLL_BUDGET)
-            self.assertLessEqual(len(self.jobs._frame_buffer),FRAME_READ_BUDGET+MAX_FRAME_PACKET)
             returned.extend(batch)
         self.assertEqual([f['sequence'] for f in returned],list(range(300)))
         self.assertEqual(self.jobs.events,[])
@@ -113,22 +114,15 @@ class PitchTransportTests(unittest.TestCase):
         self.jobs._complete=SimpleNamespace(result={'ticks':2})
         self.reject('count differs')
 
-    def test_partial_tail_read_is_bounded(self):
-        self.put([sample(n) for n in range(80)])
-        with open(self.jobs._frames.name,'ab') as f:f.write(struct.pack('!I',2000)+b'{')
-        count=0
-        while count<80:
-            frames=self.jobs.poll_frames(self.token);count+=len(frames)
-            self.assertLessEqual(len(frames),FRAME_POLL_BUDGET)
-            self.assertLessEqual(len(self.jobs._frame_buffer),FRAME_READ_BUDGET+MAX_FRAME_PACKET)
-        self.assertEqual(count,80)
-        self.assertEqual(self.jobs.poll_frames(self.token),[])
-        self.jobs._engine_done=True
-        self.reject('truncated')
-
     def test_token_rejection(self):
-        with open(self.jobs._frames.name,'ab') as f:write_frame(f,'wrong',sample())
-        self.reject('token differs')
+        # [designed: T160] A sample of a cancelled match, delivered after the next start, is never read by it.
+        old=self.jobs._match
+        self.jobs.cancel(self.token)
+        self.token=self.jobs.start(Fixture(7,19,21),frames=True)
+        old.put('frame',sample())
+        self.assertEqual(self.jobs.poll_frames(self.token),[])
+        self.assertTrue(self.jobs.busy)
+        self.assertEqual(self.owner.state,self.before)
 
     def test_sequence_rejection(self):
         self.put([sample(1)])
@@ -151,22 +145,14 @@ class PitchTransportTests(unittest.TestCase):
         self.jobs._engine_done=True
         self.reject('watermark exceeds')
 
-    def test_truncated_and_oversized_records(self):
-        with open(self.jobs._frames.name,'ab') as f:f.write(struct.pack('!I',MAX_FRAME_PACKET+1))
-        self.reject('packet budget')
-
-    def test_truncated_record_after_engine_completion(self):
-        with open(self.jobs._frames.name,'ab') as f:f.write(b'\x00\x00')
-        self.jobs._engine_done=True
-        self.reject('truncated')
-
-    def test_malformed_json(self):
-        with open(self.jobs._frames.name,'ab') as f:f.write(struct.pack('!I',1)+b'{')
-        self.reject('Invalid watched pitch IPC')
-
     def test_total_buffer_overflow(self):
-        with open(self.jobs._frames.name,'ab') as f:f.truncate(MAX_FRAME_BYTES+1)
-        self.reject('total budget')
+        # [designed: T160] The samples are bounded by count (MAX_FRAMES), never dropped.
+        self.put([sample(n) for n in range(MAX_FRAMES)])
+        while self.jobs._frame_sequence<MAX_FRAMES:
+            self.assertTrue(self.jobs.poll_frames(self.token))
+        self.jobs.ack_frames(self.token,MAX_FRAMES-1)
+        self.put([sample(MAX_FRAMES)])
+        self.reject('order/watermark')
 
     def test_writer_packet_total_and_count_budgets(self):
         import io
@@ -179,10 +165,9 @@ class PitchTransportTests(unittest.TestCase):
 
     def test_owned_death_and_worker_error_cancel_without_publication(self):
         import subprocess
-        from goal2.game.watched_jobs import _write
         sibling=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'])
         try:
-            with open(self.jobs._journal.name,'ab') as f:_write(f,self.token,0,'error','synthetic frame overflow')
+            self.jobs._match.put('error','synthetic frame overflow')
             with self.assertRaisesRegex(ValueError,'synthetic frame overflow'):self.jobs.poll(self.token)
             self.assertIsNone(sibling.poll())
             self.assertFalse(self.owner.match_pending)
@@ -191,8 +176,10 @@ class PitchTransportTests(unittest.TestCase):
             sibling.terminate();sibling.wait(timeout=2)
 
     def test_child_death_without_completion_rejected(self):
-        self.alive.stop()
-        with self.assertRaisesRegex(ValueError,'without completion'):self.jobs.poll(self.token)
+        self.process.kill()
+        with self.assertRaisesRegex(ValueError,'without completion'):
+            deadline=time.monotonic()+30
+            while time.monotonic()<deadline:self.jobs.poll(self.token);time.sleep(.005)
         self.assertEqual(self.owner.state,self.before)
         self.assertFalse(self.owner.match_pending)
 
@@ -221,25 +208,21 @@ class PitchSetupCleanupTests(unittest.TestCase):
         # [designed: #377] Inject the originating setup failure, not a cleanup error.
         # unittest does not call tearDown when setUp raises; registered cleanups must run.
         import subprocess
-        from goal2.game.watched_jobs import _PreparingProcess
-        original_wait = _PreparingProcess.wait
         original_jobs = WatchedJobs
         created = []
         def capture(*args, **kwargs):
             jobs = original_jobs(*args, **kwargs)
             created.append(jobs)
             return jobs
-        def fail_first_wait(process, timeout=None):
-            if not getattr(process, '_setup_failure_injected', False):
-                process._setup_failure_injected = True
-                raise subprocess.TimeoutExpired('injected setup wait', timeout)
-            return original_wait(process, timeout)
+        def fail_first_launch(jobs):
+            # [designed: T160] the setup's wait ends in the match request
+            raise subprocess.TimeoutExpired('injected setup wait', 60)
         case = PitchTransportTests('test_token_rejection')
         case.raw = adapter.WatchedAdapter.raw
         result = unittest.TestResult()
         try:
             with patch(__name__ + '.WatchedJobs', side_effect=capture), patch.object(
-                    _PreparingProcess, 'wait', fail_first_wait):
+                    original_jobs, '_send_match', fail_first_launch):
                 case.run(result)
             self.assertEqual(len(result.errors), 1, result.errors)
             self.assertIn('injected setup wait', result.errors[0][1])
@@ -251,10 +234,10 @@ class PitchSetupCleanupTests(unittest.TestCase):
             self.assertFalse(jobs.owner.match_pending)
             self.assertIsNone(jobs.publication._pending)
             self.assertFalse(hasattr(jobs.owner, '_watched_jobs'))
-            for name in ('_journal', '_errors', '_frames', '_commands'):
-                stream = getattr(jobs, name)
-                self.assertTrue(stream.closed, name)
-                self.assertFalse(Path(stream.name).parent.exists(), name)
+            # [designed: T160] the owner's engine process ended with its last bridge
+            self.assertFalse(hasattr(jobs.owner, '_match_engine'))
+            self.assertIsNone(jobs.process)
+            self.assertTrue(jobs.closed)
         finally:
             # The fail-before probe must not itself leak the deliberately orphaned job.
             for jobs in created:
@@ -338,7 +321,7 @@ class OriginalPitchJobsTests(unittest.TestCase):
                     while not jobs.engine_complete:
                         self.assertLess(time.monotonic(),deadline,'actual original did not finish')
                         jobs.poll(token);time.sleep(.002)
-                    self.assertIsNotNone(jobs.process.poll());self.assertTrue(owner.match_pending)
+                    self.assertTrue(owner.match_pending)
                     with self.assertRaisesRegex(ValueError,'Saving during a match'):DesktopModel.save(owner,target)
                     self.assertEqual(target.read_bytes(),prior)
                     jobs.cancel(token) if mode=='cancel' else jobs.close()
@@ -377,14 +360,12 @@ class OriginalPitchJobsTests(unittest.TestCase):
                         time.sleep(.002)
                     self.assertTrue(jobs.busy);self.assertIsNone(jobs.outcome)
                     self.assertEqual(owner.state,before)
-                    self.assertIsNotNone(jobs.process.poll())
                     from goal2.desktop.model import DesktopModel
                     with self.assertRaisesRegex(ValueError,'Saving during a match'):
                         DesktopModel.save(owner, ROOT/'.cache'/'must-not-save-pending')
                     while True:
                         batch=jobs.poll_frames(token)
                         self.assertLessEqual(len(batch),FRAME_POLL_BUDGET)
-                        self.assertLessEqual(len(jobs._frame_buffer),FRAME_READ_BUDGET+MAX_FRAME_PACKET)
                         for frame in batch:
                             validate(frame,len(frames),frames[-1]['watermark'] if frames else 0)
                             self.assertLessEqual(frame['watermark'],len(events))
