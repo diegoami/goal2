@@ -40,6 +40,8 @@ say so on the PR ("Windows slow: no runner online; the local gate ran --slow").
 |---|---|---|---|---|
 | `goal2-pc` | the owner's PC, Windows | `goal2-slow` | `C:\Users\diego\ghr-goal2` | `goal2-runner.cmd` in the Startup folder, at logon |
 | `goal2-WINDOWS-BJ0PUMB-linux` | the owner's PC, WSL (Ubuntu) | `goal2-slow-linux` | `~/actions-runner/goal2` | systemd user service `goal2-runner` |
+| `goal2-it13` | the owner's second computer (IT13), Windows | `goal2-slow` | `C:\Users\diego\ghr-goal2` | `goal2-runner.cmd` in the Startup folder, at logon |
+| `goal2-IT13-linux` | the owner's second computer (IT13), WSL (Ubuntu) | `goal2-slow-linux` | `~/actions-runner/goal2` | systemd user service `goal2-runner` |
 
 Runners with the same label share one queue: two Windows machines check two PRs at once, and when one is
 off the other takes the work. Check them on GitHub (Settings → Actions → Runners) or:
@@ -90,6 +92,12 @@ Running a script again repairs the start-up and keeps the registration.
 - **Offline runner**: the PC is off or asleep, the user logged off (Windows), or WSL stopped: Windows stops WSL
   some time after its last terminal closes. Start it again by logging in (Windows), opening a WSL terminal, or
   `systemctl --user start goal2-runner` (Linux).
+- **"The runner registration has been deleted from the server"** right after a successful registration: the
+  machine's clock is wrong. [confirmed: IT13, 2026-11-03] The clock was an hour behind while `timedatectl` said
+  it was synchronized; the runner signs its session token with that clock and GitHub refuses it. Compare
+  `date -u` with `curl -sI https://api.github.com | grep -i ^date`; fix the time on Windows (WSL follows it), then
+  `systemctl --user restart goal2-runner`. The Linux service retries every 30 s by itself; the Windows listener
+  exits and stays off until the next logon, or until `goal2-runner.cmd` in `shell:startup` is started again.
 - **Logs of a run**: on GitHub (the run's page), and the uploaded `*-slow-evidence` artifact (the gate's log only).
 - **The runner's own logs**: Windows `C:\Users\diego\ghr-goal2\_diag\`; Linux `journalctl --user -u goal2-runner`
   and `~/actions-runner/goal2/_diag/`.
