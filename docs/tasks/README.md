@@ -328,4 +328,6 @@ operational status.
 
 - [T176](T176.md): watch your own qualifiers on the Python route, m3 Track A (#556).
 
+- [T178](T178.md): new window, fixtures, tournament and history, S11–S13, m3 Track A (#560).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
