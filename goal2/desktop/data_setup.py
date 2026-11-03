@@ -33,6 +33,16 @@ MANIFEST = (
     ("e039-r0005-date-call.sav", "0d9c683023c7327f17bfc29900f2eff4e703641d21d3f353693f09654688494b"),
 )
 DATA_NAME, BOOT_NAME = (name for name, _ in MANIFEST)
+# WINDOW_MANIFEST: what the new window (goal2/ui, docs/ui.md) needs instead. [designed: owner, 2026-11-03, #527, D2;
+# T163, #537] Its new careers run on the Python route (goal2/desktop/model.py `DesktopModel`), which starts from the
+# E010 half-time template and GOAL.DAT, so the Core's boot state is not asked for. [confirmed: the template's digest
+# is the one docs/evidence/T80/resources-and-source.json records for e010-r0008-halftime.sav; GOAL.DAT's is
+# MANIFEST's]
+TEMPLATE_NAME = "e010-r0008-halftime.sav"
+WINDOW_MANIFEST = (
+    (DATA_NAME, MANIFEST[0][1]),
+    (TEMPLATE_NAME, "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949"),
+)
 # OPTIONAL: files taken when the offered folder has them, checked like MANIFEST's, but whose absence does not stop
 # the import. [designed: owner, 2026-11-03, #526] GOAL.HLP, the original's help file, for the redesigned UI's F1
 # (docs/design/ui-2026-11, S22). [confirmed: goal2-archaeology artifacts/known.json, GOAL.HLP, 32569 bytes]
@@ -143,15 +153,16 @@ def find(folder, name):
     return matches[0] if len(matches) == 1 else None
 
 
-def problems(folder) -> list:
-    """What `folder` lacks of MANIFEST: (name, 'missing') or (name, 'wrong') for each file absent, unreadable or
-    with another digest; and (name, 'wrong') for an OPTIONAL file that is there but not the right one. Empty when
-    the folder is complete."""
+def problems(folder, manifest=None) -> list:
+    """What `folder` lacks of MANIFEST (or of `manifest`, a list like it): (name, 'missing') or (name, 'wrong') for
+    each file absent, unreadable or with another digest; and (name, 'wrong') for an OPTIONAL file that is there but
+    not the right one. Empty when the folder is complete."""
+    manifest = MANIFEST if manifest is None else tuple(manifest)
     found = []
-    for name, digest in MANIFEST + OPTIONAL:
+    for name, digest in manifest + OPTIONAL:
         path = find(folder, name)
         if path is None:
-            if (name, digest) in MANIFEST:
+            if (name, digest) in manifest:
                 found.append((name, "missing"))
             continue
         try:
@@ -163,8 +174,8 @@ def problems(folder) -> list:
     return found
 
 
-def complete(folder) -> bool:
-    return Path(folder).is_dir() and not problems(folder)
+def complete(folder, manifest=None) -> bool:
+    return Path(folder).is_dir() and not problems(folder, manifest)
 
 
 def describe(found, source) -> str:
@@ -178,22 +189,24 @@ def describe(found, source) -> str:
     return "\n".join(lines)
 
 
-def import_folder(source, target=None) -> list:
+def import_folder(source, target=None, manifest=None) -> list:
     """Check every file of MANIFEST in `source` (and of OPTIONAL that `source` has), then copy them into the data folder (`target`, a Paths; default
     the user's). Nothing is copied unless every file is right (ImportRefused names each that is not). A file is
     written beside its final name, checked again, then moved over it; one already right is left alone. Returns the
-    names copied. Only the data folder is written: never `source`, the saves folder or the working directory."""
+    names copied. Only the data folder is written: never `source`, the saves folder or the working directory.
+    `manifest` replaces MANIFEST (the new window passes WINDOW_MANIFEST)."""
+    manifest = MANIFEST if manifest is None else tuple(manifest)
     source = Path(source)
     target = target if target is not None else paths()
     if not source.is_dir():
-        raise ImportRefused(source, [(name, "missing") for name, _ in MANIFEST])
-    found = problems(source)
+        raise ImportRefused(source, [(name, "missing") for name, _ in manifest])
+    found = problems(source, manifest)
     if found:
         raise ImportRefused(source, found)
     copied = []
     try:
         target.data.mkdir(parents=True, exist_ok=True)
-        for name, digest in MANIFEST + tuple(o for o in OPTIONAL if find(source, o[0]) is not None):
+        for name, digest in manifest + tuple(o for o in OPTIONAL if find(source, o[0]) is not None):
             final = target.data / name
             if final.is_file() and sha256(final) == digest:
                 continue

@@ -23,6 +23,9 @@ from goal2.ui import theme
 from goal2.ui.screen import LINE_HEIGHT, Clickable, Screen, kbd, label
 
 DOS_EOF = b"\x1a"
+# [designed: owner decision 13; T163] the help box's place on the 1440x900 page: between the title bar (64 px) and
+# the bottom bar (70 px), less a margin, and wide enough for the help's 80 columns
+TOP, BOTTOM, MARGIN, WIDTH = 64, 70, 10, 1100
 NO_HELP = ("goal2 has no help text: {name} was not imported with your data files.\n\n"
            "To add it, put {name} in the folder that holds your data files and import that folder again "
            "(python -m goal2.desktop.data_setup FOLDER). The other files stay as they are.")
@@ -80,21 +83,35 @@ class HelpScreen(Screen):
         self._dialog()
 
     def _dialog(self):
+        """[designed: owner decision 13, #526, #536; T163] The text box fills most of the screen, not the mockup's nine
+        lines: the original's help is a long text. The heading, the tag and Close share one row above it; the keys
+        that scroll are on the bottom bar."""
         outer = QVBoxLayout(self.scrim)
-        outer.setContentsMargins(0, 0, 0, 0)
-        outer.addStretch(1)
+        outer.setContentsMargins(0, TOP + MARGIN, 0, BOTTOM + MARGIN)
         row = QHBoxLayout()
         row.addStretch(1)
         dialog = QFrame()
         dialog.setObjectName("dialog")
-        dialog.setFixedWidth(860)
+        dialog.setFixedWidth(WIDTH)
         layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(30, 26, 30, 26)
+        layout.setContentsMargins(26, 18, 26, 18)
         layout.setSpacing(0)
-        layout.addWidget(label("F1 · THE ORIGINAL'S HELP", "tag"), 0, Qt.AlignmentFlag.AlignLeft)
+        head = QHBoxLayout()
+        head.setSpacing(18)
+        head.addWidget(label("Help", "h2"))
+        head.addWidget(label("F1 · THE ORIGINAL'S HELP", "tag"), 0, Qt.AlignmentFlag.AlignVCenter)
+        head.addStretch(1)
+        close = Clickable("enterHint")
+        close_layout = QHBoxLayout(close)
+        close_layout.setContentsMargins(22, 8, 22, 8)
+        close_layout.setSpacing(10)
+        close_layout.addWidget(label("Close", "enterText"))
+        close_layout.addWidget(kbd("Esc"))
+        close.clicked.connect(self.escape)
+        self.close_button = close
+        head.addWidget(close)
+        layout.addLayout(head)
         layout.addSpacing(12)
-        layout.addWidget(label("Help", "h2"))
-        layout.addSpacing(14)
         self.viewer = QTextEdit()
         self.viewer.setObjectName("helpText")
         self.viewer.setReadOnly(True)
@@ -102,34 +119,17 @@ class HelpScreen(Screen):
         self.viewer.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.viewer.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.viewer.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
-        self.viewer.setFixedHeight(220)
+        self.viewer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.viewer.setPlainText(self.text if self.text is not None else NO_HELP.format(name=data_setup.HELP_NAME))
         spaced = QTextCursor(self.viewer.document())
         spaced.select(QTextCursor.SelectionType.Document)
         block = QTextBlockFormat()
         block.setLineHeight(LINE_HEIGHT, QTextBlockFormat.LineHeightTypes.ProportionalHeight.value)
         spaced.mergeBlockFormat(block)
-        layout.addWidget(self.viewer)
-        layout.addSpacing(6)
-        keys = label("↑↓ scroll · PgUp/PgDn page · Esc close", "sub")
-        layout.addWidget(keys)
-        layout.addSpacing(18)
-        buttons = QHBoxLayout()
-        buttons.addStretch(1)
-        close = Clickable("enterHint")
-        close_layout = QHBoxLayout(close)
-        close_layout.setContentsMargins(22, 12, 22, 12)
-        close_layout.setSpacing(10)
-        close_layout.addWidget(label("Close", "enterText"))
-        close_layout.addWidget(kbd("Esc"))
-        close.clicked.connect(self.escape)
-        self.close_button = close
-        buttons.addWidget(close)
-        layout.addLayout(buttons)
+        layout.addWidget(self.viewer, 1)
         row.addWidget(dialog)
         row.addStretch(1)
-        outer.addLayout(row)
-        outer.addStretch(1)
+        outer.addLayout(row, 1)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
