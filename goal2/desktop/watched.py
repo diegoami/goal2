@@ -146,6 +146,9 @@ class WatchedController:
         if importlib.util.find_spec('pygame') is None:
             raise ValueError("Watch requires pygame-ce: python3 -m pip install '.[desktop,watched,match-view]'")
         pending = self.fixture()
+        # [designed: T176] Kind 1 is a friendly; any other kind fixture() accepted is a qualifier. A fixture with no
+        # kind (a test's stand-in for a scheduled friendly) stays on the friendly route, as before T176.
+        qualifier = getattr(pending, 'kind', 1) != 1
         self.close_viewer()
         try:
             self.frames_enabled = frames
@@ -173,7 +176,7 @@ class WatchedController:
             self.process = subprocess.Popen(list(command) + [str(self.directory), self.token],
                 cwd=Path(__file__).resolve().parents[2], stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL, stderr=self.errors)
-            if pending.kind == 1:
+            if not qualifier:
                 if self.engine is self._qualifier_engine:
                     self.engine = self.friendly_engine
                 self.engine_token = self.engine.start(Fixture(pending.side_a,pending.side_b,int(pending.fixture_id.split(':')[1])), frames=frames, **options)
@@ -187,7 +190,7 @@ class WatchedController:
         except Exception as exc:
             self.close_viewer()
             if isinstance(exc, (OSError, ValueError, QuickEngineError)):
-                what = 'friendly' if pending.kind == 1 else 'competitive match'
+                what = 'competitive match' if qualifier else 'friendly'
                 raise ValueError(f'Cannot start original {what}: {exc}') from exc
             raise
 
