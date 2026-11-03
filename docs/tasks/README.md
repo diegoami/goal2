@@ -326,4 +326,6 @@ operational status.
 
 - [T164](T164.md): new window, the desk and team info, S06–S07, m3 Track A (#538).
 
+- [T176](T176.md): watch your own qualifiers on the Python route, m3 Track A (#556).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
