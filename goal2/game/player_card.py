@@ -71,7 +71,9 @@ def tactics(memory, record, team_tactics):
         rows.append((name, word, personal))
     if record[6] < 2:
         mark = ''
-    elif record[0x10] & 0x80:
+    elif record[0x10] & 0x40:
+        # [confirmed: F027 line 28; goal2-archaeology docs/engine-study/tactics.md line 43] element 7 of +0x10
+        # (0x40) is the player screen's protection flag; 0x80 is suspended (#552).
         mark = 'Protect zone P'
     else:
         mark = memory.pascal(0x0E90 + 11 * (team_tactics >> 7 & 1), 11)
