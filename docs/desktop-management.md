@@ -333,13 +333,13 @@ without the pitch samples, where the original takes the Enter [designed: #316]. 
 original cannot take (after the final whistle, in the shoot-out) is dropped, and the next Enter
 asks again [designed: #316].
 
-[designed: T102] **Pacing.** The engine runs ahead of the pitch view, so it is paced: the worker
-writes pitch sample k only after the view has acknowledged sample k − 64, and is never more than
+[designed: T102] **Pacing.** The engine runs ahead of the pitch view, so it is paced: the engine
+sends pitch sample k only after the view has acknowledged sample k − 64, and is never more than
 64 samples ahead of what the player sees. 64 is the view's own bounded queue: the engine never
 runs further ahead than the view can hold, and an Enter in play reaches the original within 64
 samples of the frame on screen (about a second at Normal, 6.4 s at Slowest, a quarter of a second
-at Fastest). Answers and acknowledgements reach the worker through a second private journal
-written only by the parent, with the events journal's rules (`docs/watched-jobs.md`).
+at Fastest). Answers and acknowledgements reach the engine as requests on its pipe
+[designed: T160] (`docs/engine-process.md`, `docs/watched-jobs.md`).
 
 [designed: T97; accepted vision #266 screen 08] When a match ends, **Fixtures & match** opens its
 result: FULL TIME and the score, the kind, half time and engine, each side's scorers, the
@@ -535,7 +535,8 @@ keeps the published result. Save/Resume remain Qt actions; saving during a match
 is unavailable. A second match requires an explicit new Play/Watch action.
 Pending qualifiers, standalone watching, in-play tactics changes, mid-match saves and
 competitive watching are unsupported; substitutions are made on the bench (above). Quick management/play remains available without
-pygame-ce, Unicorn or watched resources; Watch reports the missing dependency.
+pygame-ce or watched resources; Watch reports the missing dependency. [designed: T160] Watch and competitive Play
+need no Unicorn: the match plays in the engine process under PyPy 3.11 (`docs/engine-process.md`).
 
 [designed: T83] The field is a modern schematic. Team colors identify the fixture
 countries; numbers 1–11 are current local pitch slots, not persistent shirt
@@ -548,8 +549,8 @@ event watermark. The last tick stays on screen through full-time. Save and all
 management mutations stay locked until every sample has been displayed and the
 original result validated. Closing while playback is pending discards the pending
 result even if the engine has finished. The bounded queue holds at most 64
-unacknowledged samples; the worker's finite journal remains lossless within T82's
-8192-frame/16MiB budget. `WatchedController.start(playback_rate=...)` accepts an
+unacknowledged samples; the engine's samples remain lossless within T82's
+8192-frame count [designed: T160, the pipe's packets are bounded instead of the journal's 16 MiB]. `WatchedController.start(playback_rate=...)` accepts an
 explicit 1–240 samples/s target; `frames=False` retains the text presentation for
 compatibility checks. See [T83 evidence](evidence/T83/README.md).
 
@@ -563,11 +564,11 @@ no original text resources or images are bundled here.
 [designed] Tested optional dependencies are pygame-ce2.5.8 (SDL2.32.10),
 Unicorn 2.1.4 and PySide6 6.12.0 on Linux/WSL. The viewer receives bounded private
 JSON presentation records, never game state/Memory or engine input. Qt polls the
-T65 worker and owns the single validated result publication. Viewer startup has
+T65 bridge [designed: T160, on the window's engine process] and owns the single validated result publication. Viewer startup has
 a10-second bound. Failed folder/stream allocation releases partial resources and
 reports the original cause; the same controller can retry. Cancellation terminates
-then kills/reaps only its owned engine
-and viewer, each with half-second waits. Native Windows packaging is untested.
+then kills/reaps only its owned viewer, with half-second waits, and ends the match in the
+engine process [designed: T160: a cancel answered within 1 s, else the engine is killed]. Native Windows packaging is untested.
 
 [designed: #236] The watched viewer retries Windows status replacement denial
 (WinError5) for up to250ms. Qt defers status-read access denial to later polls,

@@ -5,6 +5,14 @@ local-process bridge. The owner supplies `state`, `template_bytes` and
 `view(candidate)`, as for T64. Keep one bridge for the owner's lifetime and close
 it when leaving that owner. It imports neither Qt nor Pygame and starts no server.
 
+[designed: owner, 2026-11-03, #527 D3; T160] The match plays in the owner's one engine process
+([engine-process.md](engine-process.md)), which the owner's bridges share (`MatchEngine`, held on the owner;
+`goal2.desktop.competitive.CompetitiveJobs` is the other bridge). The process starts at the first match and is sent
+the game with `open`: once, and again only when the game a match plays (the publication's prepared state and the
+template) differs from the last one sent, or the process is new. It ends when the owner's last bridge closes (#417).
+One match is attached at a time; the engine's reader thread queues that match's replies and the bridge's polls drain
+them, so a reply of a cancelled or replaced match never reaches the next one.
+
 ```python
 jobs = WatchedJobs(owner)
 token = jobs.start(fixture)
@@ -17,24 +25,26 @@ if not jobs.busy:
 jobs.close()
 ```
 
-[designed] `start` snapshots the accepted T64 job and launches a local Python
-child. The child prepares its private input and uses the shared watched driver.
+[designed] `start` snapshots the accepted T64 job. [designed: T160] When the game must be sent, a thread
+encodes it and sends it with `open`; the owner's thread asks the match (`match`) once that is done, or at once
+when the engine already has the game. The engine prepares the match and uses the shared watched driver.
 The driver's private observer sends each event as consumed, before guest execution
 continues. Original decisions use `Match.answer()` with no edits; unsupported
 contexts, explicit refusals and immediate repeated decisions fail. Intervening
 guest events distinguish later same-minute injury notices. No completed transcript
 is replayed as live progress. The public synchronous friendly API remains intact.
 
-[designed] `poll(token)` returns newly observed events in order. Each call reads at
-most 64 KiB and parses at most 32 length-prefixed JSON records. A partial record
-waits for more bytes; frames over 8 MiB fail. Completed Memory is compressed for
-transport and decompressed with a 32 MiB ceiling, preserving opaque bytes. Input
+[designed] `poll(token)` returns newly observed events in order. [designed: T160] Each call consumes at most 32
+of the match's queued replies. The pipe's packets are bounded and checked as they are read
+([engine-process.md](engine-process.md)); an unreadable reply ends the engine, which `poll` reports with the
+reason. Completed Memory is the `complete` reply's payload, opaque bytes. Input
 uses the existing explicit-data session-save encoding; IPC executes no serialized
 Python objects. These bounds limit work per call, not elapsed response time.
 
 [designed] Full time is a presentation event, not completion. Publication waits
-for the child's successful exit, an exactly matching complete live transcript and
-T64's complete-result, input, Memory/RNG and tail checks. `outcome` becomes available
+for the engine's `complete` [designed: T160; the old worker's successful exit], an exactly matching complete live
+transcript and T64's complete-result, input, Memory/RNG and tail checks; a reply after `complete` (the engine's
+end included) before the publication fails the match. `outcome` becomes available
 only after successful publication. Repeated reads/actions after consumption fail;
 reads never start matches. A second bridge on the same owner or second in-flight
 start is refused. The owning caller should pass the token returned by `start` to
@@ -43,30 +53,31 @@ every poll/cancel action.
 [designed] Active state/template replacement or mutation invalidates the job.
 Failures preserve the active state and both seeds. A failed job consumes its token
 and permits a fresh start. Cancellation requires the current active token, so a
-stale action cannot cancel a newer job. Close/cancel terminate only the owned
-process, wait up to 0.5 seconds, then kill and wait up to 0.5 seconds. The private
-mode-0700 temporary directory and local IPC files live until that process is
-reaped; no input/result file is a saved game publication.
+stale action cannot cancel a newer job. [designed: T160] Cancel asks the engine to end the match and waits up to
+`CANCEL_WAIT` (1 s) for its `cancelled`; an engine that does not answer is killed (only the owned process), and the
+next start gets a new one. A cancel while the game is still being encoded waits 0.5 s twice, then raises
+`TimeoutExpired` and keeps the job owned (#254; `cancel_and_reap` retries); an engine that does not take the game
+within the first 0.5 s is killed, which ends the write. Nothing the bridge sends or keeps is a saved game
+publication.
 
-[designed] The caller receives actionable errors for missing optional runtime,
-guest refusal/no-progress, unexpected exit, malformed/truncated IPC and stale
-ownership. The worker uses the caller's Python interpreter; install the optional
-runtime using the instructions in [watched kit acceptance](watched-kit-acceptance.md).
+[designed] The caller receives actionable errors for guest refusal/no-progress, the engine's exit (its code and
+the tail of its stderr, or why its reply could not be read), malformed/truncated IPC and stale
+ownership. [designed: T152, #496; T160] The engine runs under PyPy 3.11 (`engine_python()`); a missing PyPy fails
+the start with its reason. Play needs no Unicorn (T160 removed the guards that asked for it).
 Diagnostic seed/delay/draw-recording options are explicit `start` keyword arguments.
-Stage-1 workers accept friendly fixtures only; without `bench=True` they expose no in-play controls.
+Without `bench=True` a match exposes no in-play controls.
 
-[designed: T102] `start(..., bench=True)` gives the job to a watching player. A second private
-journal, `commands`, in the same mode-0700 folder, is written only by the parent and read only by
-the child, with the events journal's rules (length-prefixed JSON, the job's token, a strict
-sequence, at most 4 KiB a record and 2 MiB in all). At a `half_time`, `pause` or `substitution`
-decision the child sends the event and waits; `waiting` holds it and `answer(token, pairs)` sends
-the (off, on) pairs (none plays on). The child passes them to `Match.answer` as they are; whether a
-pair is legal is the original's. After an answer with pairs the child sends an `answered` record,
+[designed: T102] `start(..., bench=True)` gives the job to a watching player. [designed: T160] The parent's
+answers, Enters and acknowledgements are the pipe's `answer`, `pause` and `ack` requests
+([engine-process.md](engine-process.md)). At a `half_time`, `pause` or `substitution`
+decision the engine sends the event (and `decision`) and waits; `waiting` holds it and `answer(token, pairs)` sends
+the (off, on) pairs (none plays on). The engine passes them to `Match.answer` as they are; whether a
+pair is legal is the original's. After an answer with pairs the engine sends an `answered` record,
 not an event of the match, with what the original `made`, `requested` (at a pause, for the next
 stoppage) and `refused` (with the reason; with no substitutions left the original's "no more
 substitutes"), and the engine's `substitutions_left`; `reports` collects them. `pause(token)` is
 the player's Enter in play (`Match.pause`). With pitch samples, each `ack_frames` is forwarded, and
-the child writes sample k only once sample k − `LEAD` (64) is acknowledged. A child waiting for an
+the engine sends sample k only once sample k − `LEAD` (64) is acknowledged. An engine waiting for an
 answer or an acknowledgement is cancelled like any other (#254). `extra_time` and `shootout_order`
 keep their default answers; without `bench`, and for `run_watched_match`, every decision plays on.
 Acceptance: `python3 -m unittest goal2.tests.test_watched_bench_t102 -v`.
@@ -75,5 +86,6 @@ Acceptance: `python3 -m unittest goal2.tests.test_watched_bench_t102 -v`.
 The suite compares real seeds 257 and 70 for countries7/19, fixture21/year0,
 captain0, no requested substitutions, delay0 and draw recording enabled. It checks
 the complete synchronous result, ordered events, Memory and both seeds, and prints
-measured worker time without a hardware-dependent performance assertion. Retained
+measured match time without a hardware-dependent performance assertion. [designed: T160] The window's one
+engine process for both kinds of match: `python3 -m unittest goal2.tests.test_matches_on_pipe_t160 -v`. Retained
 attempts and controls are under task evidence (`evidence/T65/`, removed 2026-10-20; on branch `local`).
