@@ -340,6 +340,8 @@ operational status.
 
 - [T177](T177.md): new window, the four extras kept from today's window, m3 Track A (#557).
 
+- [T169](T169.md): the portable ZIP gets the new window beside today's, m3 Track A (#543).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
