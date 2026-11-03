@@ -631,3 +631,10 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
     Made in T163.
 14. **Adding GOAL.HLP later**: the desk (S06) gets a *re-import data* entry, which opens S01 over the imported
     folder. Made in T164. Until then, F1's message names the re-import command.
+
+**Owner decisions, 2026-11-03** (on gaps that T163 and T165 found):
+
+15. **S05 waits for the original's news.** Until Track B ports it (U2, #509), a new career goes from S04 to the
+    home screen. goal2 writes no bulletin of its own.
+16. **Ins (the assistant's 20) says *coming later*** until the original's assistant (`0791:DC7E`) is ported in
+    Track B's U3. There is no Unicorn and no stand-in rule meanwhile.
