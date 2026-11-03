@@ -10,8 +10,9 @@ Start. The portable build's launcher and default stay today's window (goal2/desk
 `--import FOLDER` imports the data files in FOLDER as S01 does (GOAL.HLP too, when the folder has it), then starts.
 `--screenshot DIR` writes PNGs at 1440x900 into DIR and exits: S01, the placeholder home and S22 always; S02 with
 two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages, S06 the manager's desk,
-S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, and S11 and S13 again after its first
-round (the route's quick friendly), when it finds the data the new window needs (data_setup.WINDOW_MANIFEST) in
+S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, S17 at kick-off and in play (its first
+friendly under PyPy 3.11, cancelled after the pictures), and S11 and S13 again after its first round (the route's
+quick friendly), when it finds the data the new window needs (data_setup.WINDOW_MANIFEST) in
 the --data-root's data folder or, in a checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
 and the bulletin pages are stand-ins labelled so (CLAUDE.md rule 14; the Python route has no bulletins yet, #509).
 """
@@ -154,6 +155,7 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
                 key(Qt.Key.Key_Return)
                 shot(name)
                 key(Qt.Key.Key_Escape)
+            pitch_shots(app, window, career, shot)
             # After the first round, played by the route's own quick friendly (goal2/desktop/worker.py `play`): S11's
             # round 2 and S13 with the recorded result. [designed: T178]
             from goal2.desktop import worker
@@ -169,6 +171,42 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return written
+
+
+def pitch_shots(app, window, career, shot, limit=120):
+    """S17 at kick-off (the sides in their places) and in play (at 17′, the mockup's minute), each waited for at most
+    `limit` seconds, on a copy of the career:
+    its first friendly from the desk's *play next game*, cancelled after the pictures, so the career is unchanged.
+    The engine runs under PyPy 3.11; without it S17 is not pictured. [designed: T166]"""
+    import copy
+    import time
+    from goal2.ui.s17_pitch import PitchScreen, play_next_game
+    desk = window.open_career(copy.deepcopy(career))
+    opened = play_next_game(window, desk.model)
+    if not isinstance(opened, PitchScreen):
+        print(f"S17 is not pictured: {opened}", file=sys.stderr)
+        window.open_career(career)
+        return
+
+    def until(done):
+        deadline = time.monotonic() + limit
+        while not done() and time.monotonic() < deadline and not opened.ended:
+            app.processEvents()
+            time.sleep(.001)
+    controller = opened.controller
+
+    def lined_up():
+        # Kick-off, as t156-045-kick-off.png: the sides have walked out to their places (at the toss the players
+        # share a cell), the kick-off announced.
+        frame = controller.display.frame
+        return (frame is not None and controller.drawn >= frame["sequence"] and len(opened.pitch.painted) >= 20
+                and any("kick off" in line for line in opened.lines))
+    until(lined_up)
+    shot("s17-pitch-kickoff.png")
+    until(lambda: controller.display.frame is not None and controller.display.frame["minute"] >= 17)
+    shot("s17-pitch.png")
+    opened.closing()
+    window.open_career(career)
 
 
 def import_data(folder, data_root=None) -> int:
