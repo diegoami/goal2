@@ -59,7 +59,7 @@ def speed(args):
     arms = {"pypy": ([args.pypy], False), "cpython": ([args.rust_python], False),
             "hybrid": ([args.rust_python], True)}
     child = str(common.PROBE / "match_child.py")
-    for rnd in range(1, args.rounds + 1):
+    for rnd in range(args.first_round, args.first_round + args.rounds):
         for seed in [int(s) for s in args.seeds.split(",")]:
             for arm in args.arms.split(","):
                 command, rust = arms[arm]
@@ -70,7 +70,7 @@ def speed(args):
                 record = {"round": rnd, "arm": arm, "seed": seed, "load": load,
                           "process_wall_s": round(time.perf_counter() - started, 3)}
                 if r.returncode:
-                    record["error"] = r.stderr[-2000:]
+                    record["error"] = f"exit {r.returncode}: " + r.stderr[-2000:] + r.stdout[-500:]
                 else:
                     record.update(json.loads(r.stdout.strip().splitlines()[-1]))
                 out.add(record)
@@ -392,6 +392,7 @@ def main():
     s.add_argument("--arms", default="pypy,cpython,hybrid")
     s.add_argument("--seeds", default="257")
     s.add_argument("--rounds", type=int, default=3)
+    s.add_argument("--first-round", type=int, default=1, help="the number of the first round (a later rerun)")
     s.add_argument("--out", required=True)
     c = sub.add_parser("channel")
     c.add_argument("--cache", required=True)

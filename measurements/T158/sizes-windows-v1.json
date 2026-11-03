@@ -1,0 +1,116 @@
+{
+ "host": {
+  "cpus": 32,
+  "machine": "AMD64",
+  "os": "Windows",
+  "release": "11"
+ },
+ "kind": "portable-sizes",
+ "records": [
+  {
+   "bytes": 11918243,
+   "files": 618,
+   "group": "goal2",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\goal2-0.1.0.dist-info",
+   "zip_bytes": 4389082
+  },
+  {
+   "bytes": 26018809,
+   "files": 659,
+   "group": "pygame_ce",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\pygame_ce-2.5.8.dist-info",
+   "zip_bytes": 10684839
+  },
+  {
+   "bytes": 5028570,
+   "files": 76,
+   "group": "pyside6",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\pyside6-6.12.0.dist-info",
+   "zip_bytes": 581639
+  },
+  {
+   "bytes": 103689888,
+   "files": 1216,
+   "group": "pyside6_addons",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\pyside6_addons-6.12.0.dist-info",
+   "zip_bytes": 39204456
+  },
+  {
+   "bytes": 215735909,
+   "files": 2492,
+   "group": "pyside6_essentials",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\pyside6_essentials-6.12.0.dist-info",
+   "zip_bytes": 79363472
+  },
+  {
+   "bytes": 5871630,
+   "files": 19,
+   "group": "pyside6_pdf",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\pyside6_pdf-6.12.0.140.dist-info",
+   "zip_bytes": 2910277
+  },
+  {
+   "bytes": 348653198,
+   "files": 126,
+   "group": "pyside6_webengine",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\pyside6_webengine-6.12.0.140.dist-info",
+   "zip_bytes": 128142068
+  },
+  {
+   "bytes": 3119528,
+   "files": 78,
+   "group": "shiboken6",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\shiboken6-6.12.0.dist-info",
+   "zip_bytes": 1224617
+  },
+  {
+   "bytes": 60154806,
+   "files": 63,
+   "group": "unicorn",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages\\unicorn-2.1.4.dist-info",
+   "zip_bytes": 16037165
+  },
+  {
+   "bytes": 0,
+   "files": 0,
+   "group": "site-packages-other",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python\\Lib\\site-packages",
+   "zip_bytes": 0
+  },
+  {
+   "bytes": 22640831,
+   "files": 34,
+   "group": "cpython",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\python",
+   "zip_bytes": 11438016
+  },
+  {
+   "bytes": 125707602,
+   "files": 4344,
+   "group": "pypy",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable\\pypy",
+   "zip_bytes": 35775030
+  },
+  {
+   "bytes": 735490,
+   "files": 3,
+   "group": "launcher",
+   "root": "C:\\Users\\diego\\goal2-t158\\portable",
+   "zip_bytes": 58468
+  },
+  {
+   "bytes": 3657174,
+   "files": 175,
+   "group": "pywebview",
+   "root": "C:\\Users\\diego\\goal2-t158\\webview-lib",
+   "zip_bytes": 1131228
+  },
+  {
+   "bytes": 811862,
+   "files": 8,
+   "group": "goal2rust",
+   "root": "C:\\Users\\diego\\goal2-t158\\wheels\\goal2rust_engine-0.1.0-cp313-cp313-win_amd64.whl",
+   "zip_bytes": 328477
+  }
+ ]
+}
