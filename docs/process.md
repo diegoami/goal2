@@ -10,6 +10,13 @@ kept on the branch `local`.
 2. **A walking skeleton before the fan-out**, then rules behind its seams, best-evidenced first.
 3. **The first playable build**: the UI chain before more rules. Until it ships, only a bug that
    breaks play is scheduled (crash, stall, unwinnable game, save that will not load).
+4. **Parallel tracks on more computers.** [designed: owner, 2026-11-03, #509: "we should do this more often"]
+   When a plan splits into tracks that touch different repositories or different files, the main session
+   offers to run one track on another computer. It writes that session's whole starting prompt into the
+   repository (`docs/handover-<date>-<track>.md`: set-up, the track's steps, its reserved task numbers,
+   the files each track owns, merging by rebase and `--match-head-commit`, status on the plan's issue), and
+   gives the owner a one-line prompt that points at it. The first was m3's Track B
+   ([handover-2026-11-03-track-b.md](handover-2026-11-03-track-b.md)).
 
 ## 2. Task files
 
