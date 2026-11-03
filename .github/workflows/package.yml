@@ -3,9 +3,10 @@ name: Package
 # [designed: owner, 2026-11-02, T147] The portable Windows ZIP (docs/packaging.md): tools/build_portable.py builds
 # goal2-<version>-win64/ (the embeddable CPython 3.13 with goal2 and its extras, PyPy 3.11 for the match workers,
 # the launcher) from pinned, hash-checked downloads, then the packaged smoke runs from the ZIP unpacked in a folder
-# with spaces, with no Python or Git on PATH (tools/portable/smoke.py), the ZIP's file list is checked for
+# with spaces, with no Python or Git on PATH (tools/portable/smoke.py; since T169 also goal2-new.cmd and the new
+# window, offscreen: S01's import, S02 and a friendly under the bundled PyPy), the ZIP's file list is checked for
 # original-game files, and the ZIP is uploaded as a run artifact. No release, tag or publication.
-# Nothing of the original game leaves the runner: the original files the smoke's match needs are pulled into .cache/
+# Nothing of the original game leaves the runner: the original files the smoke's matches need are pulled into .cache/
 # (outside the folder that gets zipped) as in windows.yml, the ZIP is refused if it holds one, and the upload refuses
 # original-game extensions. On PRs that touch packaging (drafts included: this is the task's own check), on main, on
 # dispatch.
@@ -86,7 +87,7 @@ jobs:
           python tools/build_portable.py build --wheel "$(ls "$RUNNER_TEMP"/wheel/goal2-*.whl)" \
             --downloads "$RUNNER_TEMP/downloads" --out "$RUNNER_TEMP/portable" --stats "$RUNNER_TEMP/build-stats.json"
           ls -l "$RUNNER_TEMP"/portable/*.zip
-      - name: Packaged smoke, from the ZIP unpacked in a folder with spaces, no Python or Git on PATH
+      - name: Packaged smoke (both launchers, the new window), from the ZIP unpacked in a folder with spaces, no Python or Git on PATH
         if: steps.originals.outputs.present == 'true'
         shell: pwsh
         run: |
@@ -102,7 +103,7 @@ jobs:
           [ "${{ steps.originals.outputs.present }}" = true ] && originals="--originals .cache"
           python tools/build_portable.py check-zip "$(ls "$RUNNER_TEMP"/portable/goal2-*-win64.zip)" $originals \
             | tee "$RUNNER_TEMP/check-zip.log"
-      - name: The run's measurements (ZIP size, build time, the packaged match's time)
+      - name: The run's measurements (ZIP size, build time, the packaged matches' times)
         if: always()
         run: |
           mkdir -p upload
@@ -116,12 +117,14 @@ jobs:
           build, smoke = load("build-stats.json"), load("smoke.json")
           check = (tmp / "check-zip.log").read_text().strip() if (tmp / "check-zip.log").is_file() else None
           match = (smoke or {}).get("checks", {}).get("match", {})
+          window = ((smoke or {}).get("checks", {}).get("new_window", {}).get("seen") or {}).get("steps", {})
           out = {"run_id": int(run), "head": head, "runner": "windows-latest (hosted)",
                  "zip": (build or {}).get("name"), "zip_bytes": (build or {}).get("zip_bytes"),
                  "folder_bytes": (build or {}).get("folder_bytes"), "files": (build or {}).get("files"),
                  "build_s": (build or {}).get("build_s"),
                  "packaged_match_s": ((match.get("packaged") or {}).get("match_wall_s")),
                  "reference_match_s": ((match.get("reference") or {}).get("match_wall_s")),
+                 "new_window_match_s": (window.get("match") or {}).get("match_wall_s"),
                  "smoke_pass": (smoke or {}).get("pass"),
                  "checks": {k: v.get("pass") for k, v in (smoke or {}).get("checks", {}).items()},
                  "worker_console_window": (smoke or {}).get("worker_console_window"),
