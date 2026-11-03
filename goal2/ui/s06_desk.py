@@ -8,15 +8,18 @@ docs/original-game/images/t156-013-hub.png]:
 - the manager (name; *rating unknown*, as the original shows a new manager's and as the mockup draws it: the Python
   route keeps no rating), the team with its world and continental rankings, the next opponents with theirs and the
   match's kind, the managers, and the twenty with their role codes, the eleven above the bench;
-- the six options, in the original's order: *team info*, *fixture list*, *tournament*, *history*, *select squad*
-  (Space) and *play next game*. The cursor starts on *team info*, ↑↓ move it, Enter opens the option, a click on an
+- the six options, in the original's order: *team info* (S07), *fixture list* (S11), *tournament* (S12), *history*
+  (S13), *select squad* (Space, S08) and *play next game*. The cursor starts on *team info*, ↑↓ move it, Enter opens the option, a click on an
   option does the same [confirmed: T156-R1 steps 13, 36–41];
 - **T** team tactics (S10), **Space** select squad (S08), **F1** help (S22); **F3** load a saved goal, **F4** load a
   saved summary, **F7** save, **F10** quit [confirmed: t156-013-hub.png, its bottom line].
 
-Placeholders [designed: T164, the task's scope]: *fixture list*, *tournament* and *history* are T178's screens (#560),
-*play next game* opens the match screens of T167; F3 comes with T167, F4, F7 and F10 with T168. Until then each says
-which task brings it, on the desk, and does nothing else.
+Placeholders [designed: T164, the task's scope]: *play next game* opens the match screens of T167; F3 comes with
+T167, F4, F7 and F10 with T168. Until then each says which task brings it, on the desk, and does nothing else.
+
+The banner names the competition as the original's hub does, *European Championship · QUALIFYING* and the year for a
+European country (`DesktopModel.competition`, #563) [confirmed: t156-013-hub.png], drawn as the mockup: the year,
+the name in the banner's light red, the phase [designed: s06-hub.html].
 
 [designed: owner decision 14, #526] *re-import data*, a goal2 addition, opens S01 over the data folder (to add
 GOAL.HLP later); Esc there returns to the desk. It is the seventh option, after the original's six and set apart under
@@ -48,9 +51,6 @@ HINT = ("Use ↑↓ to find an option, Enter to select it. Your own matches are 
         "match menu, the captain and the pitch.")   # [designed: s06-hub.html]
 # What each placeholder says until its task builds it. [designed: T164 scope 1, "each names the task"]
 LATER = {
-    "fixture list": "The fixture list (S11) comes with T178 (#560).",
-    "tournament": "The tournament (S12) comes with T178 (#560).",
-    "history": "The history (S13) comes with T178 (#560).",
     "play next game": "The match screens (S14–S20) come with T167: play next game opens them then.",
     "F3": "F3, load a saved goal, comes with T167.",
     "F4": "F4, load a saved summary, comes with T168.",
@@ -133,9 +133,9 @@ class DeskScreen(Screen):
         self.body_layout.addLayout(main, 1)
         # The six options, in the original's order. [confirmed: t156-013-hub.png]
         self.add_option("team info", self.team_info, enter="Team info")
-        self.add_option("fixture list", lambda: self.later("fixture list"), enter="Fixture list")
-        self.add_option("tournament", lambda: self.later("tournament"), enter="Tournament")
-        self.add_option("history", lambda: self.later("history"), enter="History")
+        self.add_option("fixture list", self.fixture_list, enter="Fixture list")
+        self.add_option("tournament", self.tournament, enter="Tournament")
+        self.add_option("history", self.history, enter="History")
         self.add_option("select squad", self.select_squad, key=Qt.Key.Key_Space, enter="Select squad")
         play = self.add_option("play next game", lambda: self.later("play next game"), enter="Play next game")
         self.play_note = label("", "sub")
@@ -169,14 +169,11 @@ class DeskScreen(Screen):
     # What is shown.
     def refresh(self):
         model, state = self.model, self.model.state
-        summary = model.summary()
         names = model.goaldat.country_names
-        year, _, competition = summary["campaign"].partition(" ")
-        if year.isdigit():
-            self.banner.setText(f'<span style="color:{theme.VALUE}">{year}</span> '
-                                f'<span style="color:{theme.TITLE_BANNER}">{competition}</span>')
-        else:
-            self.banner.setText(f'<span style="color:{theme.TITLE_BANNER}">{summary["campaign"]}</span>')
+        from goal2.ui.s12_tournament import banner_text
+        competition = model.competition()
+        self.banner.setText(banner_text(competition) if competition is not None else
+                            f'<span style="color:{theme.TITLE_BANNER}">{_escape(model.summary()["campaign"])}</span>')
         self.manager["name"].setText(model.manager)
         self.manager["rating"].setText("unknown")
         own = country_card(state, state.managed_country, model.goaldat)
@@ -224,6 +221,18 @@ class DeskScreen(Screen):
     def team_info(self):
         from goal2.ui.s07_team_info import TeamInfoScreen
         return self.window_.push(TeamInfoScreen(self.window_, self.model))
+
+    def fixture_list(self):
+        from goal2.ui.s11_fixtures import FixturesScreen
+        return self.window_.push(FixturesScreen(self.window_, self.model))
+
+    def tournament(self):
+        from goal2.ui.s12_tournament import TournamentScreen
+        return self.window_.push(TournamentScreen(self.window_, self.model))
+
+    def history(self):
+        from goal2.ui.s13_history import HistoryScreen
+        return self.window_.push(HistoryScreen(self.window_, self.model))
 
     def select_squad(self):
         from goal2.ui.s08_squad import open_squad

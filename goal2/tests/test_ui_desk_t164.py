@@ -3,7 +3,7 @@
 The claim it protects: from the desk the player reaches everything the original's hub offers, and chooses the eleven.
 Visited here: a new career and a loaded save land on S06 with the cursor on *team info*, the six options and the
 F-keys of the design; each option opens its screen or names the task that brings it; Esc returns to the desk from
-S07, S08, S10 and S01; S08's swap within the twenty is the model's (`DesktopModel.swap`), the same eleven and bench as
+S07, S08, S10, S01 and (T178) S11, S12, S13; S08's swap within the twenty is the model's (`DesktopModel.swap`), the same eleven and bench as
 today's Team swap through `confirm`, and it moves an injured starter to the bench so the eleven is playable; S07's
 card, next opponent, Ins, Space and T; S04's list in the ranking Ins selects (#559) and Holland's average age, 28, as
 the original's capture shows it (t156-005-country-holland).
@@ -38,6 +38,9 @@ from goal2.ui.s06_desk import DeskScreen, ReimportScreen  # noqa: E402
 from goal2.ui.s07_team_info import CountryTacticsScreen, TeamInfoScreen, TeamPlayersScreen  # noqa: E402
 from goal2.ui.s08_squad import SquadScreen  # noqa: E402
 from goal2.ui.s10_team_tactics import TeamTacticsScreen  # noqa: E402
+from goal2.ui.s11_fixtures import FixturesScreen  # noqa: E402
+from goal2.ui.s12_tournament import TournamentScreen  # noqa: E402
+from goal2.ui.s13_history import HistoryScreen  # noqa: E402
 from goal2.ui.s22_help import HelpScreen  # noqa: E402
 from goal2.ui.screen import Clickable  # noqa: E402
 from goal2.ui.squad_card import full_name, squad_rows  # noqa: E402
@@ -256,7 +259,9 @@ class Landing(App):
         self.assertEqual([t[0] for t in desk.strip.shown_texts()], [r["role"] for r in rows],
                          "the twenty's role codes, the eleven above the bench")
         self.assertTrue(desk.strip.gap.isVisibleTo(desk.strip))
-        self.assertIn("Continental qualifying", desk.banner.text())
+        # [T178, #563] the competition's name, as the original's hub: European Championship, QUALIFYING.
+        self.assertIn("European Championship", desk.banner.text())
+        self.assertIn("QUALIFYING", desk.banner.text())
         self.fits(window)
 
     def test_a_new_career_lands_on_the_desk(self):
@@ -279,8 +284,9 @@ class Landing(App):
 class Options(App):
     def test_each_option_opens_its_screen_or_names_its_task(self):
         window, desk = self.desk()
-        # Placeholders: each names its task and does nothing else.
-        for index, task in ((1, "T178"), (2, "T178"), (3, "T178"), (5, "T167")):
+        # Placeholders: each names its task and does nothing else. [T178: fixture list, tournament and history are
+        # screens now, visited below]
+        for index, task in ((5, "T167"),):
             while desk.cursor < index:
                 self.key(window, Qt.Key.Key_Down)
             self.assertEqual(desk.highlighted().text_label.text(), SIX[index])
@@ -305,6 +311,16 @@ class Options(App):
             self.fits(window)
             self.key(window, Qt.Key.Key_Escape)
             self.assertDesk(window, desk)
+        # [T178] fixture list, tournament and history open S11, S12 and S13; Esc returns to the desk.
+        for index, kind in ((1, FixturesScreen), (2, TournamentScreen), (3, HistoryScreen)):
+            while desk.cursor < index:
+                self.key(window, Qt.Key.Key_Down)
+            self.key(window, Qt.Key.Key_Return)
+            self.assertIsInstance(window.current(), kind)
+            self.fits(window)
+            self.key(window, Qt.Key.Key_Escape)
+            self.assertDesk(window, desk)
+        self.key(window, Qt.Key.Key_Up, 5)
         # Enter on select squad is Space.
         while desk.cursor != 4:
             self.key(window, Qt.Key.Key_Down if desk.cursor < 4 else Qt.Key.Key_Up)
@@ -317,7 +333,8 @@ class Options(App):
         window, desk = self.desk()
         self.click(desk.options[2])
         self.assertEqual(desk.cursor, 2)
-        self.assertIn("T178", desk.note.text())
+        self.assertIsInstance(window.current(), TournamentScreen, "T178: the tournament, S12")
+        self.key(window, Qt.Key.Key_Escape)
         self.click(desk.options[0])
         self.assertIsInstance(window.current(), TeamInfoScreen)
         self.key(window, Qt.Key.Key_Escape)
@@ -495,10 +512,12 @@ class TeamInfo(App):
         self.assertIsInstance(window.current(), TeamTacticsScreen, "your own tactics: S10")
         self.key(window, Qt.Key.Key_Escape)
         self.assertIs(window.current(), screen)
-        # Enter: the fixtures name T178; a click on a country highlights it.
+        # Enter: the country's fixtures, S11 (T178); Esc back here. A click on a country highlights it.
         self.key(window, Qt.Key.Key_Return)
+        self.assertIsInstance(window.current(), FixturesScreen)
+        self.assertEqual(window.current().country, HOLLAND)
+        self.key(window, Qt.Key.Key_Escape)
         self.assertIs(window.current(), screen)
-        self.assertIn("T178", screen.note.text())
         self.click(screen.rows[0])
         self.assertEqual(screen.index % 16, 0)
         self.key(window, Qt.Key.Key_Escape)
