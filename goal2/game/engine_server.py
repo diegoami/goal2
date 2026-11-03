@@ -296,7 +296,16 @@ def main() -> int:
     sys.stdout.flush()
     os.dup2(sys.stderr.fileno(), sys.stdout.fileno())
     sys.stdout = sys.stderr
-    return Server(sys.stdin.buffer, out).serve()
+    code = Server(sys.stdin.buffer, out).serve()
+    # [designed: T160] Leave without the interpreter's shutdown: the request reader is a daemon thread that may be
+    # blocked in a read of stdin (after `quit`), and CPython's shutdown then aborts on that stream's lock ("could not
+    # acquire lock for <_io.BufferedReader name='<stdin>'>", exit -6). Every reply was flushed when it was sent.
+    for stream in (out, sys.stderr):
+        try:
+            stream.flush()
+        except (OSError, ValueError):
+            pass
+    os._exit(code)
 
 
 if __name__ == "__main__":

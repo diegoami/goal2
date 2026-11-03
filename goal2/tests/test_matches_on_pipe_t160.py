@@ -299,5 +299,21 @@ class Tokens(unittest.TestCase):
         jobs.cancel(new)
 
 
+class Quit(unittest.TestCase):
+    def test_the_engine_ends_with_code_0_on_close(self):
+        """[designed: T160] `quit` (the owner's close) ends the engine cleanly, also under CPython, where its blocked
+        request reader made the interpreter's shutdown abort (-6; CI run 41648350078)."""
+        from goal2.game.engine_process import EngineProcess
+        for _ in range(5):
+            engine = EngineProcess(lambda kind, value: None,
+                                   command=[sys.executable, '-m', 'goal2.game.engine_server'])
+            self.addCleanup(engine.close)
+            engine.open_encoded(b'not a game')
+            time.sleep(.2)
+            process = engine.process
+            engine.close()
+            self.assertEqual(process.returncode, 0, engine.stderr)
+
+
 if __name__ == '__main__':
     unittest.main()

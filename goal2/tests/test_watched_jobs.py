@@ -205,7 +205,9 @@ class WatchedJobsTests(unittest.TestCase):
         self.assertEqual(self.owner.state,self.before)
         self.jobs.close()
         token=self.bridge('ignore');process=self.jobs.process
-        self.until(token,lambda events:bool(events))
+        # [designed: T160] The cancel is a request on the pipe, not a signal: the guest is waited for where it no
+        # longer reads it (after full time), so close must kill the engine. Before that, the engine answers it.
+        self.until(token,lambda events:any(e.kind=='full_time' for e in events))
         self.jobs.close()
         self.assertIsNotNone(process.poll())
         if os.name == 'posix':self.assertEqual(process.poll(),-signal.SIGKILL)
