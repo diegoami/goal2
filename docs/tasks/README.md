@@ -324,4 +324,6 @@ operational status.
 
 - [T163](T163.md): new window, start and new game, S02–S05, m3 Track A (#537).
 
+- [T164](T164.md): new window, the desk and team info, S06–S07, m3 Track A (#538).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
