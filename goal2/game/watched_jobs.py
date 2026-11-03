@@ -622,7 +622,7 @@ class WatchedJobs:
                 self._maybe_publish(token)
             return new
         except Exception as exc:
-            self.cancel(token)
+            self._fail(token)
             raise ValueError(f'Invalid watched worker IPC: {exc}') from exc
 
     @property
@@ -692,7 +692,7 @@ class WatchedJobs:
             self._maybe_publish(token)
             return new
         except Exception as exc:
-            self.cancel(token)
+            self._fail(token)
             raise ValueError(f'Invalid watched pitch IPC: {exc}') from exc
 
     def ack_frames(self, token, sequence):
@@ -801,6 +801,15 @@ class WatchedJobs:
             if thread.is_alive():
                 raise subprocess.TimeoutExpired('watched completion preparation', 1.0)
         self._release()
+
+    def _fail(self, token):
+        """[designed: T160] End a failed match. A reply can fail it while its completion is being prepared (the
+        engine's end after its `complete`); that preparation can no longer publish, and the failure waits for it
+        (cancel_and_reap, #311) so that the caller sees the failure, not the wait's timeout."""
+        if getattr(self, '_completion_thread', None) is not None:
+            self.cancel_and_reap(token)
+        else:
+            self.cancel(token)
 
     def cancel_and_reap(self, token, deadline=REAP_DEADLINE):
         """[designed: #311; #254] Cancel until the job is reaped. One cancel during the input

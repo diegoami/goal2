@@ -50,7 +50,6 @@ with open(fixture_file,'rb') as stream:
  while header:=stream.read(4):
   packets.append(_restore_json_value(json.loads(stream.read(struct.unpack('!I',header)[0])),'fixture'))
 send('ready',{'implementation':'stand-in','version':[0,0],'pid':os.getpid()})
-if mode=='unrequested':send('event',packets[0][3])
 def requests():
  while True:
   packet=read_packet(sys.stdin.buffer)
@@ -179,7 +178,8 @@ class CompetitiveJobsTests(unittest.TestCase):
         self.assertIsNone(process.poll(),'the engine stays up for the next match')
 
     def test_fault_outputs_never_publish_or_change_prior_save(self):
-        for mode,message in (('unrequested','no match running'),('result','invalid watched result identity'),('memory','not a Memory component'),
+        # [designed: T160] A packet carries no token: the old `identity` mode has no counterpart on the pipe.
+        for mode,message in (('result','invalid watched result identity'),('memory','not a Memory component'),
                              ('tail','incomplete'),('mismatch','differs from the events streamed'),('duplicate','no match running'),
                              ('partial','truncated'),('malformed','Invalid watched worker IPC'),
                              ('trailing','truncated'),('nonzero',r'exited \(5\) after its completion'),('death','without completion')):

@@ -76,7 +76,6 @@ BAD={
  'oversized':lambda:struct.pack('!I',2**31),
 }
 send('ready',{'implementation':'stand-in','version':[0,0],'pid':os.getpid()})
-if mode=='unrequested':send('event',event())
 while True:
  packet=read_packet(sys.stdin.buffer)
  if packet is None or packet[0]['op']=='quit':sys.exit(0)
@@ -235,10 +234,11 @@ class WatchedJobsTests(unittest.TestCase):
 
     def test_partial_oversized_wrong_identity_and_order_ipc(self):
         # [designed: T160] Each a stand-in engine's reply; an unreadable one ends the engine (T159), which the job
-        # reports as the engine's exit with the reason. `unrequested` is a reply before any match was asked.
+        # reports as the engine's exit with the reason. A packet carries no token: the old "wrong identity" record
+        # has no counterpart (a reply sent before the match request can be read after it, as the match's).
         for mode,message in [('malformed','Invalid watched worker IPC'),('unknown fields','Invalid watched worker IPC'),
                              ('event shape','invalid watched event shape'),('truncated','truncated'),('oversized','exceeds'),
-                             ('unrequested','no match running'),('order','order/watermark')]:
+                             ('order','order/watermark')]:
             with self.subTest(message=message):
                 try:
                     token=self.bridge(idle=mode)
