@@ -134,8 +134,12 @@ class Commands:
         elif op == "pause":
             self.pauses += 1
         elif op == "answer" and type(header.get("decision")) is int:
-            from goal2.game.watched_jobs import _pairs
-            self.answers.append((header["decision"], _pairs(header.get("substitutions", []))))
+            from goal2.game.watched_jobs import _choice, _pairs
+            if "taker" in header or "shootout_order" in header:
+                # [designed: T167, #541] the answer to a player prompt (watched_match.PROMPT_CONTEXTS)
+                self.answers.append((header["decision"], _choice(header)))
+            else:
+                self.answers.append((header["decision"], _pairs(header.get("substitutions", []))))
         else:
             raise ValueError(f"invalid engine request during a match: {op!r}")
 
@@ -245,8 +249,10 @@ class Server:
         if self.game is None:
             raise ValueError("no game is open")
         kind, frames, bench = header.get("kind"), header.get("frames", False), header.get("bench", False)
+        prompts = header.get("prompts", False)
         options = header.get("options") or {}
-        if kind not in KINDS or type(frames) is not bool or type(bench) is not bool or (bench and not frames):
+        if (kind not in KINDS or type(frames) is not bool or type(bench) is not bool or (bench and not frames)
+                or type(prompts) is not bool or (prompts and not bench)):
             raise ValueError("invalid engine match request")
         if not isinstance(options, dict) or set(options) - set(OPTIONS):
             raise ValueError("invalid engine match options")
@@ -276,7 +282,7 @@ class Server:
                 extra = {}
             commands.poll()
             outcome = _drive_match(state, image, fixture, _observe=observe, _observe_pitch=pitch if frames else None,
-                                   policy=policy, **extra, **options)
+                                   policy=policy, prompts=prompts, **extra, **options)
         except Cancelled:
             self.send("cancelled")
             return
