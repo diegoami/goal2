@@ -252,7 +252,9 @@ class Landing(App):
         self.assertEqual(desk.opponent_name.text(), card["name"])
         self.assertEqual(desk.opponent_ranks["world"].text(), str(card["world"]))
         self.assertEqual(desk.opponent_ranks["continent"].text(), str(card["continental"]))
-        self.assertEqual(desk.opponent_ranks["match"].text(), "friendly")
+        # [T167, #562] the hub's home or away after the kind: Holland is side B of Romania v Holland, so home
+        self.assertEqual(desk.opponent_ranks["match"].text(), f"friendly {model.venue(fixture)}")
+        self.assertEqual(model.venue(fixture), "home" if fixture.side_b == HOLLAND else "away")
         self.assertIn("1 · K Ees", desk.managers.text())
         rows, eleven = squad_rows(model)
         self.assertEqual(eleven, 11)
@@ -284,42 +286,22 @@ class Landing(App):
 class Options(App):
     def test_each_option_opens_its_screen_or_names_its_task(self):
         window, desk = self.desk()
-        # [T166, the interim route] play next game: a qualifier says it comes with T176 and T167 and changes nothing;
-        # the next friendly starts on S17 (under PyPy 3.11; without it the desk says why it cannot start).
+        # [T167, the match day; was T166's interim route] play next game opens S14, the round, for the friendly and
+        # for a qualifier alike, and changes nothing until kick-off (goal2/tests/test_ui_match_day_t167.py plays it).
         # [T178: fixture list, tournament and history are screens now, visited below]
-        import dataclasses
-        from goal2.game.campaign import CampaignState
-        from goal2.ui.s17_pitch import PitchScreen
+        from goal2.ui.s14_round import RoundScreen
         while desk.cursor < 5:
             self.key(window, Qt.Key.Key_Down)
         self.assertEqual(desk.highlighted().text_label.text(), SIX[5])
         friendly = desk.model.state.campaign.next_fixture
         self.assertEqual(friendly.kind, 1, "the 2028 Holland career opens on a friendly")
         before = copy.deepcopy(desk.model.state)
-        qualifier = dataclasses.replace(friendly, kind=2)
-        with mock.patch.object(CampaignState, "next_fixture", new_callable=mock.PropertyMock, return_value=qualifier):
-            self.key(window, Qt.Key.Key_Return)
-        self.assertIs(window.current(), desk)
-        self.assertIn("T176", desk.note.text())
-        self.assertIn("T167", desk.note.text())
-        self.assertEqual(desk.model.state, before)
-        try:
-            from goal2.tests.test_pypy_worker_t152 import pypy
-            pypy()
-            engine = True
-        except unittest.SkipTest:
-            engine = False
         self.key(window, Qt.Key.Key_Return)
-        if engine:
-            screen = window.current()
-            self.assertIsInstance(screen, PitchScreen)
-            self.assertEqual(screen.controller.pending, friendly)
-            screen.closing()
-            window.pop()
-            self.assertIsNone(desk.model.state.last_match, "a cancelled match publishes nothing")
-        else:
-            self.assertIs(window.current(), desk)
-            self.assertIn("cannot start", desk.note.text())
+        screen = window.current()
+        self.assertIsInstance(screen, RoundScreen)
+        self.assertIn("your match is next", screen.visible()[-1][3])
+        window.pop()
+        self.assertEqual(desk.model.state, before, "the round shown changes nothing")
         self.assertIs(window.current(), desk)
         for key, task in ((Qt.Key.Key_F3, "T167"), (Qt.Key.Key_F4, "T181")):
             self.key(window, key)

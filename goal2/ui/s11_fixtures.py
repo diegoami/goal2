@@ -35,9 +35,9 @@ VISIBLE = 18   # [designed: s11-fixtures.html, the box's height at 1440x900 hold
 # Watch, the first side, v, the second side, the match's kind, what happens at kick-off. [designed: s11-fixtures.html]
 WIDTHS = (120, 300, 40, 260, 230, 0)
 CHECK = "✓"   # [confirmed: t156-224-fixture-list.png, the mark on the watched row]
-LATER_WATCH = ("Watching another country's match comes later (a follow-up of #560): this route's engine plays only "
+LATER_WATCH = ("Watching another country's match comes later (#570): this route's engine plays only "
                "your own match watched.")
-LATER_FRIENDLY = ("Cancelling or rearranging your own friendly comes later (a follow-up of #560): this route has no "
+LATER_FRIENDLY = ("Cancelling or rearranging your own friendly comes later (#571): this route has no "
                   "call for it yet.")
 OWN_WATCHED = "Your own matches are always watched: play next game on the desk kicks this one off."
 NOTE = ("✓ marks a match you will watch: your own, always. The column on the right says what happens at kick-off. "

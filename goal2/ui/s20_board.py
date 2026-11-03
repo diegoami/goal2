@@ -48,7 +48,8 @@ def board(events, phase, quick):
     half = next((list(e["score"]) for e in events if e["kind"] == "half_time"), None)
     scorers = [[], []]
     for e in events:
-        if e["kind"] == "goal":
+        # [confirmed: the kit's Match._flush] a goal taken back is a `goal` event with no scorer row (player 0)
+        if e["kind"] == "goal" and e["data"].get("player"):
             scorers[e["data"]["team"]].append((e["data"].get("player"), e["minute"]))
     full = next((e["data"] for e in events if e["kind"] == "full_time"), None) if phase == "full" else None
     counters = {}
