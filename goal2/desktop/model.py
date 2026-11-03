@@ -142,6 +142,66 @@ class DesktopModel:
         campaign_pool.view(candidate,self.goaldat)
         self.state=candidate
 
+    # -- Player and team edits of the squad screens (T165). Each validates a copied candidate before publication.
+    # [confirmed: goal2-archaeology F029 at b519d999673c9458211279fd4da8a8325b9f56fe, "The C key of the select-squad
+    # screen": 0791:E44F's R and C call 1771:4952; C sets the position +6 to the club position +7, R cycles +6.]
+    # [confirmed: goal2-archaeology docs/tasks/T74.md at b519d999, from E033's notes: R steps +6 by one, wrapping
+    # 0..13 (1771:4925).]
+    # [designed: owner, #423] Shift+R steps back by one. [designed: T165] 4952's marking refresh and the in-match
+    # flag DS:9B55 need a match set up; this route has none between matches, so only +6 changes.
+    def _managed_words(self,state):
+        words=list(state.managed_squad)
+        if state.campaign is not None:
+            from goal2.game import campaign_pool
+            words+=campaign_pool.validate(state)
+        return words
+
+    def _edit_player(self,word,change):
+        state=self.state
+        if type(word) is not int or word not in self._managed_words(state):
+            raise ValueError('Choose a player of this squad or its pool')
+        record=bytearray(state.players[word])
+        if len(record)!=20 or not 0<=record[6]<14 or not 0<=record[7]<14:
+            raise ValueError('Invalid player record')
+        change(record)
+        candidate=copy.copy(state);candidate.players=list(state.players);candidate.players[word]=bytes(record)
+        self.view(candidate)
+        self.state=candidate
+        return candidate.players[word]
+
+    def set_position(self,word,step=1):
+        """R (step 1) or Shift+R (step -1): the player's position +6 one step on, wrapping 0..13."""
+        if step not in (1,-1):raise ValueError('A position step is 1 or -1')
+        return self._edit_player(word,lambda r:r.__setitem__(6,(r[6]+step)%14))
+
+    def club_position(self,word):
+        """C: the player's position +6 becomes his club position +7."""
+        return self._edit_player(word,lambda r:r.__setitem__(6,r[7]))
+
+    def own_tactic(self,word,element):
+        """[confirmed: F010 at b519d999, `1771:4B61`] Enter on own-tactics row `element` 1..4 cycles +0xF: no own
+        setting -> his own with element clear (sets element+4, clears element) -> his own with element set -> no own
+        setting (clears element+4 and copies the team's element into +0xF). Element k is bit k-1 (F027)."""
+        if element not in (1,2,3,4):raise ValueError('An own tactic is element 1..4')
+        team=self.state.country_tactics
+        def cycle(r):
+            own,value,bit=1<<(element+3),1<<(element-1),r[15]
+            if not bit&own:bit=(bit|own)&~value
+            elif not bit&value:bit|=value
+            else:bit=(bit&~own&~value)|(team&value)
+            r[15]=bit&255
+        return self._edit_player(word,cycle)
+
+    def set_team_tactic(self,element):
+        """[confirmed: F010 at b519d999] The team tactics screen 1771:1981 toggles element `element` 1..8 of the
+        country's tactics +0x2D (214B:0CF4 XORs bit element-1); the managed country's live byte is
+        state.country_tactics, as `confirm` sets it."""
+        if element not in range(1,9):raise ValueError('A team tactic is element 1..8')
+        candidate=copy.copy(self.state);candidate.country_tactics=self.state.country_tactics^(1<<(element-1))
+        self.view(candidate)
+        self.state=candidate
+        return candidate.country_tactics
+
     def result_text(self,state=None):
         """[designed: T70] Name retained quick results, never watched events."""
         state=self.state if state is None else state
