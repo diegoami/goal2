@@ -98,6 +98,11 @@ Running a script again repairs the start-up and keeps the registration.
   `date -u` with `curl -sI https://api.github.com | grep -i ^date`; fix the time on Windows (WSL follows it), then
   `systemctl --user restart goal2-runner`. The Linux service retries every 30 s by itself; the Windows listener
   exits and stays off until the next logon, or until `goal2-runner.cmd` in `shell:startup` is started again.
+- **"Install goal2" fails 2 s in with the same `IncompleteRead(<n> bytes read, <m> more expected)` every time** on one
+  runner while the others install fine: a truncated entry in that user's pip cache, which the job's fresh venv
+  shares. [confirmed: #549, `goal2-it13`, 2026-11-03] Reproduce with the runner's Python in a fresh venv
+  (`py -3.13 -m venv`, then `python -m pip install --upgrade pip`); if `--no-cache-dir` succeeds, it is the cache:
+  `py -3.13 -m pip cache purge` (Linux: `python3 -m pip cache purge`), then rerun the failed job.
 - **Logs of a run**: on GitHub (the run's page), and the uploaded `*-slow-evidence` artifact (the gate's log only).
 - **The runner's own logs**: Windows `C:\Users\diego\ghr-goal2\_diag\`; Linux `journalctl --user -u goal2-runner`
   and `~/actions-runner/goal2/_diag/`.
