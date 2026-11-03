@@ -27,8 +27,11 @@ need tar "apt install tar"
 need uv "curl -LsSf https://astral.sh/uv/install.sh | sh"
 need systemctl "a systemd user session (WSL: systemd=true in /etc/wsl.conf)"
 # offscreen Qt and SDL (the xcb ones ci.yml installs are for Qt's X11 windows, which the runs never open)
+# Read the listing once and match without a pipe: under pipefail `ldconfig -p | grep -q` failed whenever grep
+# matched before ldconfig had written a listing longer than a pipe holds (SIGPIPE), reporting installed ones (#547).
+libs=$(ldconfig -p 2> /dev/null || true)
 for lib in libEGL.so.1 libGL.so.1 libxkbcommon.so.0 libfontconfig.so.1 libdbus-1.so.3; do
-    ldconfig -p 2> /dev/null | grep -q "$lib" || missing+=("$lib (apt install libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3)")
+    [[ $libs == *"$lib"* ]] || missing+=("$lib (apt install libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3)")
 done
 if [ ${#missing[@]} -gt 0 ]; then
     printf 'missing: %s\n' "${missing[@]}" >&2

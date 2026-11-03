@@ -137,6 +137,38 @@ class SetupScripts(unittest.TestCase):
         self.assertIn("systemctl --user enable --now", text)
         self.assertIn("Restart=always", text)
 
+    @unittest.skipUnless(Path("/bin/bash").exists() and Path("/usr/bin/yes").exists(), "needs bash and yes (Linux)")
+    def test_linux_finds_installed_libraries_in_a_long_ldconfig_listing(self):
+        """[confirmed: #547, IT13 2026-11-03] `ldconfig -p` can print more than a pipe holds (81 KB there); under
+        pipefail `ldconfig -p | grep -q` then failed whenever grep matched early and ldconfig died of SIGPIPE,
+        reporting installed libraries as missing. The script runs here on stubs: an ldconfig listing the five
+        libraries first and megabytes after them, uv absent so it stops at its report before touching anything."""
+        import shutil
+        import subprocess
+        import tempfile
+        libs = ("libEGL.so.1", "libGL.so.1", "libxkbcommon.so.0", "libfontconfig.so.1", "libdbus-1.so.3")
+        with tempfile.TemporaryDirectory() as tmp:
+            bin_ = Path(tmp) / "bin"
+            bin_.mkdir()
+            listing = "".join(f"\\t{lib} (libc6,x86-64) => /usr/lib/x86_64-linux-gnu/{lib}\\n" for lib in libs)
+            stubs = {name: "#!/bin/sh\nexit 0\n" for name in ("git", "curl", "unzip", "sha256sum", "tar", "systemctl")}
+            stubs["ldconfig"] = f"#!/bin/sh\nprintf '{listing}'\n/usr/bin/yes 'filler line of a long listing' | /usr/bin/head -n 200000\n"
+            for name, body in stubs.items():
+                (bin_ / name).write_text(body)
+                (bin_ / name).chmod(0o755)
+            (bin_ / "grep").symlink_to(shutil.which("grep"))
+            run = lambda: subprocess.run(["/bin/bash", str(RUNNER / "setup-linux.sh")], capture_output=True, text=True,
+                                         env={"PATH": str(bin_), "HOME": tmp, "GOAL2_RUNNER_NAME": "test"}, timeout=60)
+            for _ in range(5):
+                done = run()
+                self.assertEqual(done.returncode, 1, done.stderr)
+                self.assertIn("missing: uv", done.stderr)
+                self.assertNotIn(".so", done.stderr)
+            # A library that is really absent is still reported, and only it.
+            (bin_ / "ldconfig").write_text(stubs["ldconfig"].replace("libdbus-1.so.3", "libother.so.9"))
+            done = run()
+            self.assertEqual(re.findall(r"missing: (\S+\.so\S*)", done.stderr), ["libdbus-1.so.3"])
+
 
 class DriveMirror(unittest.TestCase):
     """[designed: owner, 2026-11-01, #493] Each runner keeps a mirror of the Drive folder outside its work folder."""
