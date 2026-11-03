@@ -334,6 +334,8 @@ operational status.
 
 - [T167](T167.md): new window, the match day, S14–S16 and S20, m3 Track A (#541).
 
+- [T161](T161.md): delete the file-journal match channel, m3 Track A (#535).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
