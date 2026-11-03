@@ -1,0 +1,303 @@
+"""[designed: owner, 2026-11-03, #527 D3; T159] The engine process: one long-lived child that plays matches for the
+window over one pipe, `python -m goal2.game.engine_server` under engine_python() (PyPy 3.11).
+
+The protocol is docs/engine-process.md's; it is the one docs/design/technology-2026-11/README.md §3.4 proposes,
+from the prototype tools/tech_probe/pipe_child.py. Both directions are packets: a 4-byte big-endian length, that
+many bytes of UTF-8 JSON (an object, the header), then, when the header has `size`, that many bytes of binary
+payload. Requests carry `op`, replies `kind` and `value`.
+
+The match is today's workers' match, never a second driver [designed: T159, the task's hazard]: the same
+preparation (prepare_watched, or prepare_competitive with `substitutions=(5, 5)`, as goal2.game.watched_worker and
+goal2.desktop.competitive_worker), the same `_drive_match`, and the bench's answers, pauses and LEAD pacing through
+the workers' own BenchPolicy, fed from the pipe instead of the command journal.
+
+Commands arrive on a reader thread and wait in a queue; the match reads them where the workers read their journal
+(each paced sample and each decision wait) and, for `cancel`, also at each event and sample, so a match without the
+bench can be cancelled too. End of stdin (the window gone) ends the process wherever it waits (#417).
+
+Nothing else of this process writes to the protocol's stream: file descriptor 1 is moved to a private descriptor at
+start, and fd 1 and sys.stdout then point at stderr, so a stray print or warning lands in the diagnostics.
+"""
+from __future__ import annotations
+
+import json
+import os
+import queue
+import struct
+import sys
+import threading
+
+# [designed: T159] The bounds of one packet. A header holds at most a completed match's result and events (today's
+# whole completion record is bounded by watched_jobs.MAX_PACKET, 8 MiB, with the memory in it); a payload holds
+# the encoded game (26.7 MB today, measurements/T158 `open_bytes`) or a completed match's memory.
+MAX_HEADER = 16 * 1024 * 1024
+MAX_PAYLOAD = 64 * 1024 * 1024
+# The options a match request may carry: today's workers pass exactly these to _drive_match (watched_jobs._start).
+OPTIONS = ("reference_seed", "delay_byte", "record_draws")
+KINDS = ("watched", "competitive")
+
+
+class ProtocolError(ValueError):
+    """A packet that cannot be read: oversized, truncated or malformed. The stream cannot be resynchronised."""
+
+
+def encode_packet(header: dict, payload: bytes = b"") -> bytes:
+    """One packet: the header with `size` set when there is a payload."""
+    if payload:
+        header = dict(header, size=len(payload))
+    data = json.dumps(header, allow_nan=False, separators=(",", ":")).encode("utf8")
+    if len(data) > MAX_HEADER:
+        raise ProtocolError(f"engine packet header of {len(data)} bytes exceeds {MAX_HEADER}")
+    if len(payload) > MAX_PAYLOAD:
+        raise ProtocolError(f"engine packet payload of {len(payload)} bytes exceeds {MAX_PAYLOAD}")
+    return struct.pack("!I", len(data)) + data + bytes(payload)
+
+
+def write_packet(stream, header: dict, payload: bytes = b"") -> None:
+    stream.write(encode_packet(header, payload))
+    stream.flush()
+
+
+def _read_exact(stream, size: int, what: str) -> bytes:
+    data = bytearray()
+    while len(data) < size:
+        chunk = stream.read(size - len(data))
+        if not chunk:
+            raise ProtocolError(f"truncated engine packet: the stream ended {len(data)} of {size} bytes into its {what}")
+        data += chunk
+    return bytes(data)
+
+
+def read_packet(stream, *, max_header: int = MAX_HEADER, max_payload: int = MAX_PAYLOAD):
+    """The next packet as (header, payload), or None at the stream's end between packets. A packet over the bounds
+    is refused from its declared size, before any of it is read."""
+    first = stream.read(4)
+    if not first:
+        return None
+    if len(first) < 4:
+        first += _read_exact(stream, 4 - len(first), "length")
+    size = struct.unpack("!I", first)[0]
+    if size > max_header:
+        raise ProtocolError(f"engine packet header of {size} bytes exceeds {max_header}")
+    try:
+        header = json.loads(_read_exact(stream, size, "header").decode("utf8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ProtocolError(f"malformed engine packet header: {exc}") from exc
+    if not isinstance(header, dict):
+        raise ProtocolError("malformed engine packet header: not an object")
+    payload = b""
+    if "size" in header:
+        length = header["size"]
+        if type(length) is not int or length < 0:
+            raise ProtocolError("malformed engine packet header: invalid payload size")
+        if length > max_payload:
+            raise ProtocolError(f"engine packet payload of {length} bytes exceeds {max_payload}")
+        payload = _read_exact(stream, length, "payload")
+    return header, payload
+
+
+# --- the child -------------------------------------------------------------------------------------------------
+
+class WindowGone(Exception):
+    """End of stdin, or `quit`, while a match runs: the process ends."""
+
+
+class Cancelled(Exception):
+    """The window's `cancel`: the match ends and the process waits for the next."""
+
+
+_EOF = object()
+
+
+class Commands:
+    """[designed: T159] The match's view of the pipe, with the interface BenchPolicy reads from the workers' command
+    journal (goal2.game.watched_jobs.CommandReader): the latest acknowledged sample, the Enter presses counted, the
+    answers in order, and `wait(ready)`."""
+
+    def __init__(self, inbox: queue.Queue):
+        self.inbox = inbox
+        self.ack = -1
+        self.pauses = 0
+        self.answers = []
+
+    def _apply(self, item):
+        if item is _EOF:
+            raise WindowGone
+        header, _payload = item
+        op = header.get("op")
+        if op == "cancel":
+            raise Cancelled
+        if op == "quit":
+            raise WindowGone
+        if op == "ack" and type(header.get("sample")) is int:
+            self.ack = max(self.ack, header["sample"])
+        elif op == "pause":
+            self.pauses += 1
+        elif op == "answer" and type(header.get("decision")) is int:
+            from goal2.game.watched_jobs import _pairs
+            self.answers.append((header["decision"], _pairs(header.get("substitutions", []))))
+        else:
+            raise ValueError(f"invalid engine request during a match: {op!r}")
+
+    def poll(self):
+        """Apply every command already received, without waiting."""
+        while True:
+            try:
+                item = self.inbox.get_nowait()
+            except queue.Empty:
+                return
+            self._apply(item)
+
+    def wait(self, ready):
+        """Read until `ready()`; the commands read at least once, as CommandReader.wait does."""
+        self.poll()
+        while not ready():
+            self._apply(self.inbox.get())
+
+
+def _bench_policy(commands, send):
+    from goal2.game.watched_worker import BenchPolicy
+
+    class PipeBench(BenchPolicy):
+        """[designed: T159] The workers' BenchPolicy; a decision is also announced as `decision` before the wait."""
+
+        def decide(self, event):
+            send("decision", {"decision": self.asked, "event": _event_value(event)})
+            return super().decide(event)
+
+    return PipeBench(commands, send)
+
+
+def _event_value(event):
+    """An Event as plain data; `send` encodes it (its tuples kept, session_save._json_value)."""
+    from dataclasses import asdict
+    return asdict(event)
+
+
+class Server:
+    def __init__(self, stdin, out):
+        self.out = out
+        self.inbox: queue.Queue = queue.Queue()
+        self.game = None
+        self.lock = threading.Lock()   # the reader thread reports a malformed request too
+        self.reader = threading.Thread(target=self._read, args=(stdin,), name="goal2-engine-requests", daemon=True)
+
+    def _read(self, stdin):
+        try:
+            while True:
+                packet = read_packet(stdin)
+                if packet is None:
+                    break
+                self.inbox.put(packet)
+        except ProtocolError as exc:
+            # The stream cannot be resynchronised: say why, then behave as at its end.
+            self.send("error", f"{type(exc).__name__}: {exc}")
+        except OSError as exc:
+            print(f"engine_server: stdin failed: {exc}", file=sys.stderr, flush=True)
+        self.inbox.put(_EOF)
+
+    def send(self, kind, value=None, payload=b""):
+        from goal2.game.session_save import _json_value
+        packet = encode_packet({"kind": kind, "value": _json_value(value)}, payload)
+        with self.lock:
+            self.out.write(packet)
+            self.out.flush()
+
+    def serve(self) -> int:
+        import platform
+        self.reader.start()
+        self.send("ready", {"implementation": platform.python_implementation(),
+                            "version": list(sys.version_info[:2]), "pid": os.getpid()})
+        while True:
+            item = self.inbox.get()
+            if item is _EOF:
+                return 0
+            header, payload = item
+            op = header.get("op")
+            try:
+                if op == "open":
+                    self._open(payload)
+                    self.send("opened")
+                elif op == "match":
+                    self._match(header)
+                elif op == "quit":
+                    return 0
+                elif op in ("ack", "pause", "answer", "cancel"):
+                    # [designed: T159] A command sent before the window read the end of the match it was for.
+                    continue
+                else:
+                    self.send("error", f"unknown engine request: {op!r}")
+            except WindowGone:
+                return 0
+            except Exception as exc:  # noqa: BLE001 - reported to the window; the process stays up
+                import traceback
+                traceback.print_exc(file=sys.stderr)
+                self.send("error", f"{type(exc).__name__}: {exc}")
+
+    def _open(self, payload):
+        from goal2.game.session_save import decode
+        self.game = decode(payload)
+
+    def _match(self, header):
+        import copy
+        from goal2.engine.original_match import Fixture
+        from goal2.game.watched_match import _drive_match
+        if self.game is None:
+            raise ValueError("no game is open")
+        kind, frames, bench = header.get("kind"), header.get("frames", False), header.get("bench", False)
+        options = header.get("options") or {}
+        if kind not in KINDS or type(frames) is not bool or type(bench) is not bool or (bench and not frames):
+            raise ValueError("invalid engine match request")
+        if not isinstance(options, dict) or set(options) - set(OPTIONS):
+            raise ValueError("invalid engine match options")
+        fixture = Fixture(**header["fixture"])
+        # [designed: T159] Each match plays the game as opened: the workers load it afresh for every match.
+        state, original = copy.deepcopy(self.game[0]), self.game[1]
+        commands = Commands(self.inbox)
+        policy = _bench_policy(commands, self.send) if bench else None
+
+        def observe(event):
+            commands.poll()
+            self.send("event", _event_value(event))
+
+        def pitch(frame):
+            commands.poll()
+            if policy is not None:
+                policy.pace(frame["sequence"])
+            self.send("frame", frame)
+        try:
+            if kind == "competitive":
+                from goal2.game.competitive_match import prepare_competitive
+                image = prepare_competitive(state, original, fixture)
+                extra = {"substitutions": (5, 5)}
+            else:
+                from goal2.game.watched_match import prepare_watched
+                image = prepare_watched(state, original, fixture)
+                extra = {}
+            commands.poll()
+            outcome = _drive_match(state, image, fixture, _observe=observe, _observe_pitch=pitch if frames else None,
+                                   policy=policy, **extra, **options)
+        except Cancelled:
+            self.send("cancelled")
+            return
+        self.send("complete", {"result": outcome.result, "events": [_event_value(e) for e in outcome.events],
+                               "seeds": list(outcome.seeds), "engine_year": outcome.engine_year},
+                  bytes(outcome.memory))
+
+
+def main() -> int:
+    # [designed: T159] The protocol's stream is a private copy of fd 1; fd 1 and sys.stdout become stderr.
+    out = os.fdopen(os.dup(sys.stdout.fileno()), "wb")
+    if sys.platform == "win32":
+        # [designed: T159, the task's Windows hazard] binary on both ends: no newline translation
+        import msvcrt
+        msvcrt.setmode(out.fileno(), os.O_BINARY)
+        msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
+    sys.stdout.flush()
+    os.dup2(sys.stderr.fileno(), sys.stdout.fileno())
+    sys.stdout = sys.stderr
+    return Server(sys.stdin.buffer, out).serve()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
