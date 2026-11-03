@@ -122,7 +122,7 @@ docs/core.md "Booting at the DOS date call"); GOAL.DAT is read at run time from 
 python3 -m goal2.desktop --core-boot .cache/e039-r0005-date-call.sav --data .cache/GOAL.DAT --save .cache/desktop.g2core
 ```
 
-**New career** offers the start year as the Python route does (1990 or 1992). The core answers the DOS date
+**New career** offers the start year as Launch offers it on the Python route (1990 or 1992, `START_YEARS`). The core answers the DOS date
 `start − 1`/10/04, which the original turns into that start year [confirmed: NG-9], and presses N while the title's
 tune plays (`Core.boot`'s `title_key`), then Enter on the player count (one manager). The country list is the
 original's browser in its own order and the card is read from the core's memory (`views.country_select`,
