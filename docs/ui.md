@@ -68,3 +68,41 @@ mockup is a design question too.
 `goal2/tests/test_ui_foundation_t162.py` visits the palette against the README's table, the font, the stack, a click
 against its key, S01 and S22, offscreen. It writes stand-in data files and a stand-in help text into temporary
 folders: no byte of the original's files is in the tests (CLAUDE.md rule 14).
+
+## Squad, pool and tactics: S08, S09, S10 (T165)
+
+[designed: owner, 2026-11-03, #526, #527 D2; T165] Three screens over an open `DesktopModel` (route (b)). Every change
+they make is the model's own call, so the screen and the model cannot disagree: the exchange (`exchange`), the position
+(`set_position`, `club_position`), the player's own tactics (`own_tactic`), the team tactics (`set_team_tactic`) and
+the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_squad.open_squad(window, model)` and
+`goal2.ui.s10_team_tactics.open_team_tactics(window, model)` push them.
+
+| Module | What it holds |
+| --- | --- |
+| `goal2/ui/squad_card.py` | The parts the three share: the player card (every field of `goal2.game.player_card.card`), the strip on the right (the eleven, a gap, the bench; or a page of the pool), bars, label-value lines, table rows, the name line. |
+| `goal2/ui/s08_squad.py` | S08 Squad and pool. |
+| `goal2/ui/s09_player_tactics.py` | S09 Player tactics. |
+| `goal2/ui/s10_team_tactics.py` | S10 Team tactics. |
+
+- **S08**: ↑↓ the player, ←→ the squad or the pool. The pool's eighty are paged twenty at a time, as the original's
+  pool list; ↑↓ go on to the next or previous page. Enter on a pool player picks him; the Enter hint then reads
+  *Put here* and the screen says what it waits for; ← back and Enter on the player he replaces makes the exchange.
+  Enter on the picked player again drops the pick. **Ins** reads *coming later* and only says so, until the
+  original's assistant (`0791:DC7E`) is ported [designed: owner, 2026-11-03, #509]. **R** / **Shift+R** the next or
+  previous position, **C** the club position, **T** S09, **F2** the name line in the card's header (at most 12
+  characters; Enter gives the name, Esc keeps the old one), **Esc** back.
+- **S09**: between matches the original's four lines (position, possession, passing, tackling) with **P** on a line
+  set for this player. The mark line comes with the match screens: the original shows it only with a match set up
+  (`1771:49B8`, F010). Arrows choose, Enter alters, Esc returns to the card.
+- **S10**: the eight lines with the value now and the other option; ↑↓ choose, Enter changes, Esc returns. The
+  characteristics say "not decoded yet (G05)": the Python route has no team characteristics.
+- **The mouse**: a click on a row (a player, a tactic line) moves the cursor there, and a click on the highlighted row
+  is Enter. *Squad* and *Pool* above the card are ← and →.
+- **Colours** are set on each part by itself, as colour only, from `theme`'s roles; the window's style sheet is
+  T162's. The parts are all made with the screen and only change their texts, because the window scales a screen's
+  lengths when it is pushed.
+
+`goal2/tests/test_ui_squad_t165.py` drives each screen over a career from `DesktopModel.open` and makes the same
+request on a copy of it through the model; it compares `view()` and the whole state. It skips without the `.cache/`
+files. `tools/ui_squad_screenshots.py DIR` writes the screens' pictures (they are in
+[design/ui-2026-11/T165-screens](design/ui-2026-11/T165-screens/)).
