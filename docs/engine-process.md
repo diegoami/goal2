@@ -10,7 +10,8 @@ the bugs of the file journals it replaces are in §3.2.
 | --- | --- |
 | The engine (child) | `goal2/game/engine_server.py`, run as `python -m goal2.game.engine_server` |
 | The window (parent) | `goal2/game/engine_process.py`, `EngineProcess` |
-| Tests | `goal2/tests/test_engine_pipe_t159.py` |
+| The window's matches (T160) | `goal2/game/watched_jobs.py`, `MatchEngine`, under `WatchedJobs` and `CompetitiveJobs` |
+| Tests | `goal2/tests/test_engine_pipe_t159.py`, `goal2/tests/test_matches_on_pipe_t160.py` |
 
 ## Packets
 
@@ -78,3 +79,21 @@ the next match; commands left over from a match that has ended are ignored.
 - **The window's death.** End of the engine's stdin ends the engine wherever it waits, a decision's answer or an
   acknowledgement included (#417).
 - **`close()`** sends `quit`, waits up to 2 s, then kills; that end is not reported as a death.
+
+## The window's matches
+
+[designed: T160] The window's watched and competitive matches play here, through the bridge API they had on the
+file journals ([watched-jobs.md](watched-jobs.md)): `WatchedJobs` (the watched Play, under
+`goal2/desktop/watched.py`'s `WatchedController`) and `CompetitiveJobs` (`goal2/desktop/competitive.py`). The owner
+(the window's model) holds one `MatchEngine`, which both bridges share:
+
+- It owns one `EngineProcess`. The game is sent with `open` once, and again only when the game a match plays (the
+  publication's prepared state and the template) differs from the last one sent, or the process is new. The game is
+  encoded and sent on a thread; the owner's thread sends the `match`.
+- One match is attached at a time. The reader thread's replies go to that match's queue, which the bridge's `poll`
+  and `poll_frames` drain on the owner's thread; a cancelled or replaced match is detached before the next starts, so
+  its replies never reach the next one. A cancel waits for the engine's `cancelled` up to `CANCEL_WAIT` (1 s), then
+  kills the process.
+- A `death` is reported through `poll` as the engine's exit (its code, and the error or the tail of its stderr); the
+  next match starts a new process.
+- The process is closed when the owner's last bridge closes: the window's close (#417).
