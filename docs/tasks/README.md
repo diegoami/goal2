@@ -318,4 +318,6 @@ operational status.
 
 - [T159](T159.md): the engine process and its pipe protocol, m3 Track A (#533).
 
+- [T160](T160.md): watched and competitive matches on the engine pipe, m3 Track A (#534).
+
 - [T162](T162.md): the new window's foundation: look, screen stack, import and help, m3 Track A (#536).
