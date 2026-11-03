@@ -9,8 +9,8 @@ Start. The portable build's launcher and default stay today's window (goal2/desk
 `--data-root` is the per-user goal2 folder (default: data_setup.user_root(); the data is in its `data`).
 `--import FOLDER` imports the data files in FOLDER as S01 does (GOAL.HLP too, when the folder has it), then starts.
 `--screenshot DIR` writes PNGs at 1440x900 into DIR and exits: S01, the placeholder home and S22 always; S02 with
-two saves, S03, S04 with its twenty and the name line, S05 with stand-in pages and the home with the new career when
-it finds the data the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a
+two saves, S03, S04 with its twenty and the name line, S05 with stand-in pages, S06 the manager's desk and S07 team
+info with the new career when it finds the data the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a
 checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
 and the bulletin pages are stand-ins labelled so (CLAUDE.md rule 14; the Python route has no bulletins yet, #509).
 """
@@ -127,7 +127,7 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
             shot("s03-new-game.png")
             key(Qt.Key.Key_Return)
             screen = window.current()
-            for _ in range(19):
+            for _ in range(2):   # Denmark, Germany, Holland: the capture t156-005 [T164, #559]
                 key(Qt.Key.Key_Down)
             screen.settle()
             key(Qt.Key.Key_Space)
@@ -143,7 +143,10 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
             shot("s05-bulletin-stand-in.png")
             key(Qt.Key.Key_Return)
             key(Qt.Key.Key_Return)
-            shot("home-career.png")
+            shot("s06-desk.png")
+            key(Qt.Key.Key_Return)   # the cursor starts on team info [T164]
+            window.current().settle()
+            shot("s07-team-info.png")
         window.close()
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

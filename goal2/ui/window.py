@@ -3,7 +3,7 @@
 [designed: owner, 2026-11-03, #526, #536; docs/design/ui-2026-11 §3, "Navigation"] One screen at a time, as in the
 original. `push` opens a screen over the current one, `pop` returns to the one under it (Esc, by default) and
 `replace_home` empties the stack and starts again from a screen: S01 until the data is imported, then S02 Start, and
-the home screen once a career is open (`open_career`). F1 on any screen opens the help (S22) over it, and Esc there
+the manager's desk (S06) once a career is open (`open_career`) [designed: T164, #538]. F1 on any screen opens the help (S22) over it, and Esc there
 returns to the same screen. [designed: T163, #537; docs/design/ui-2026-11 §1, the journey]
 
 The page is composed for 1440x900 and scales as a whole with the window, as today's fixed pages do
@@ -89,16 +89,16 @@ class Window(QMainWindow):
         return self.replace_home(ImportScreen(self, self.target, self.choose))
 
     def open_career(self, model, pages=()):
-        """A career started (S04) or loaded (S02): its bulletin pages first (S05), if it has any, then the home
-        screen. [designed: owner, 2026-11-03, #509] The Python route has no bulletins yet, so a new career goes
-        straight home until the news is ported."""
-        from goal2.ui.home import HomeScreen
+        """A career started (S04) or loaded (S02): its bulletin pages first (S05), if it has any, then the manager's
+        desk (S06), the career's home. [designed: owner, 2026-11-03, #509] The Python route has no bulletins yet, so
+        a new career goes straight to the desk until the news is ported. [designed: T164, #538]"""
+        from goal2.ui.s06_desk import DeskScreen
         self.career = model
         pages = list(pages)
         if pages:
             from goal2.ui.s05_bulletin import BulletinScreen
             return self.replace_home(BulletinScreen(self, pages, lambda: self.open_career(model)))
-        return self.replace_home(HomeScreen(self, model))
+        return self.replace_home(DeskScreen(self, model))
 
     def open_help(self):
         """F1: the help (S22) over the current screen."""

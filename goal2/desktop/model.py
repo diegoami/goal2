@@ -351,6 +351,40 @@ class DesktopModel:
         self.view(candidate)
         self.state=candidate
 
+    def swap(self,first,second):
+        """S08's Enter, Enter on two players of the twenty: they change places in the line-up. [confirmed:
+        docs/original-game/images/m244-squad.png, T156-R1 steps 14–29: the twenty's order is the line-up, the eleven
+        above the bench, and *move player* exchanges two of them] A starter and a bench player swap in and out, the
+        incoming player taking the starter's place in the eleven; two starters exchange their places in it.
+        [designed: T164, #555] The eleven is published as `confirm` publishes it (a copied candidate, validated by
+        `view`, then made live), with the captain and the tactics kept; a captain who leaves the eleven is replaced
+        by the incoming player, as a substituted captain is (T47). Unlike `confirm` it does not refuse an
+        unavailable eleven: one swap at a time must be able to repair an eleven with two injured starters, and
+        kickoff still refuses an unavailable eleven (eligibility.validate_teams) [designed: T44, "retain human
+        repair"]. Two bench players keep the squad's order: this route holds the bench as the squad's order and no
+        bench order of its own, so they are refused with that reason. Returns the new eleven."""
+        state=self.state;squad=list(state.managed_squad);eleven=list(state.starting_eleven)
+        if (type(first) is not int or type(second) is not int or first==second
+                or first not in squad or second not in squad):
+            raise ValueError('Choose two different players of this squad')
+        if len(eleven)!=11 or len(set(eleven))!=11 or not set(eleven)<=set(squad):
+            raise ValueError('Invalid starting eleven')
+        if first not in eleven and second not in eleven:
+            raise ValueError('Two bench players keep the squad\'s order on this route')
+        captain=state.captain
+        if first in eleven and second in eleven:
+            i,j=eleven.index(first),eleven.index(second)
+            eleven[i],eleven[j]=second,first
+        else:
+            out,incoming=(first,second) if first in eleven else (second,first)
+            eleven[eleven.index(out)]=incoming
+            if captain==out:captain=incoming
+        candidate=copy.copy(state)
+        candidate.starting_eleven=eleven;candidate.captain=captain
+        self.view(candidate)
+        self.state=candidate
+        return list(eleven)
+
     def save(self,path):
         """[designed] Reuse the atomic explicit-data save writer."""
         if getattr(self,'match_pending',False):
