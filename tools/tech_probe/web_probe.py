@@ -3,8 +3,8 @@
     python tools/tech_probe/web_probe.py [--shell browser|webview|none] [--port 0] [--quit-after S]
 
 --shell browser   the player's own browser as an app window: Edge on Windows (`msedge --app=URL`, always there on
-                  Windows 10/11), Chrome/Chromium elsewhere (T158_CHROME names the binary); a private profile in a
-                  temporary folder, closed with the probe
+                  Windows 10/11), Chrome/Chromium elsewhere (T158_CHROME names the binary); its own profile
+                  (--profile, else a temporary folder), closed with the probe
 --shell webview   a desktop shell around the page: pywebview (Edge WebView2 on Windows, Qt WebEngine or GTK WebKit
                   on Linux); T158_EXTRA_PATH may name a folder pywebview was installed into (pip --target)
 --shell none      only the server; open the printed URL yourself
@@ -31,8 +31,6 @@ from pathlib import Path
 
 START = time.perf_counter()
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-if os.environ.get("T158_EXTRA_PATH"):
-    sys.path.insert(0, os.environ["T158_EXTRA_PATH"])
 import common  # noqa: E402
 import screens  # noqa: E402
 
@@ -42,6 +40,21 @@ FILES = {"/app.js": (WEB / "app.js", "text/javascript"), "/style.css": (MOCKUPS 
          "/fonts/PxPlus_IBM_VGA_8x16.ttf": (common.FONT, "font/ttf")}
 TOKEN = secrets.token_urlsafe(12)
 ready = threading.Event()
+browser = None
+
+
+def end_browser():
+    """The browser shell goes with the probe: its whole process tree."""
+    if browser is None or browser.poll() is not None:
+        return
+    if common.WINDOWS:
+        subprocess.run(["taskkill", "/T", "/F", "/PID", str(browser.pid)], capture_output=True)
+    else:
+        import signal
+        try:
+            os.killpg(browser.pid, signal.SIGTERM)
+        except OSError:
+            pass
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -92,6 +105,7 @@ def main():
     parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--quit-after", type=float)
     parser.add_argument("--headless", action="store_true", help="browser shell without a window (Linux measurements)")
+    parser.add_argument("--profile", help="the browser's profile folder (default: a new temporary one, removed after)")
     args = parser.parse_args()
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -101,7 +115,8 @@ def main():
         def stop():
             ready.wait(120)
             time.sleep(args.quit_after)
-            os._exit(0)  # the browser's private profile is a temporary folder; the shell closes with us
+            end_browser()
+            os._exit(0)
         threading.Thread(target=stop, daemon=True).start()
     if args.shell == "webview":
         import webview
@@ -109,16 +124,20 @@ def main():
         webview.start()
         return
     if args.shell == "browser":
-        profile = tempfile.mkdtemp(prefix="t158-browser-")
+        global browser
+        profile = args.profile or tempfile.mkdtemp(prefix="t158-browser-")
         command = [chrome(), f"--app={url}", f"--user-data-dir={profile}", "--window-size=1440,900",
                    "--no-first-run", "--no-default-browser-check"]
         if args.headless:
             command += ["--headless", "--no-sandbox", url]
-        browser = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        browser = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                   start_new_session=not common.WINDOWS)
         try:
             browser.wait()
         finally:
-            shutil.rmtree(profile, ignore_errors=True)
+            end_browser()
+            if not args.profile:
+                shutil.rmtree(profile, ignore_errors=True)
         return
     try:
         threading.Event().wait()

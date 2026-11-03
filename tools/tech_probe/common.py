@@ -17,6 +17,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+# A folder a probe's extra package was installed into with pip --target (pywebview; pygame-ce for PyPy).
+for _extra in filter(None, os.environ.get("T158_EXTRA_PATH", "").split(os.pathsep)):
+    sys.path.insert(0, _extra)
 PROBE = Path(__file__).resolve().parent
 DESIGN = ROOT / "docs" / "design" / "ui-2026-11"
 FONT = DESIGN / "mockups" / "fonts" / "PxPlus_IBM_VGA_8x16.ttf"
