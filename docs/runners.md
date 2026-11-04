@@ -60,8 +60,12 @@ symptom, run 41628341112). On such a machine:
   `check_premerge.py` takes its default from it and prints `game tests: <n> jobs (GOAL2_GATE_JOBS)`. Set it when
   installing or again later: `GOAL2_GATE_JOBS=6 bash tools/runner/setup-linux.sh` or
   `setup-windows.ps1 -GateJobs 6`. Then restart the runner when it is idle: a restart ends the job it is running.
-- **A working session runs no local gate while a runner on the same machine is busy.** Check with
-  `gh api repos/diegoami/goal2/actions/runners --jq '.runners[]|.name+" busy="+(.busy|tostring)'` first.
+- **A working session doesn't start a local gate while a runner on the same machine is busy.** A gate is
+  `check_premerge.py`, `ci_gate.py run-tests` or a full unit suite, in either repository. Before starting one, check
+  `gh api repos/diegoami/goal2/actions/runners --jq '.runners[]|.name+" busy="+(.busy|tostring)'`, and wait while one
+  is busy. [designed: owner, 2026-11-04] The rule covers only starting a gate. A gate or suite that is already
+  running is never stopped, whatever the runners are doing: stopping it throws its result away and frees nothing a
+  runner is waiting for.
 - Raising a job's priority does not help: Windows starts a child process at normal priority whatever its parent's
   (`CreateProcess` inherits only idle and below-normal), and it would only move the starvation onto the other runner.
 
