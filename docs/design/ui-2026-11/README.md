@@ -532,7 +532,8 @@ we can keep the rest"]
 - Every original key works where the original has it: arrows, Enter, Esc, Space, Ins, Y/N, C, R, T, F1–F4,
   F7, F9, F10, Shift+R (#423).
 - goal2 adds only Enter on *Continue* (S02, owner decision 4) and Tab to the optional starting year (S03, owner
-  decision 9). No added key changes an original key's meaning.
+  decision 9), and for the extras of decision 18, **F** on S02 (the standalone friendly) and **/** and **P** on S08
+  (the pool's search and position filter) [designed: T177]. No added key changes an original key's meaning.
 - Every key of a screen is on its bottom bar, as the original's bottom line lists them.
 - The mouse does what the keys do: every option, row and button can be clicked. [designed: owner, 2026-11-03,
   #526]
