@@ -12,7 +12,8 @@ Holland career (the route's first fixture is a friendly, Romania v Holland):
 - **Pacing**: with the pitch's painting stalled, the engine's samples never run past the acknowledged one + LEAD (and
   reach it), over the whole match.
 - **Keys**: ←→ step through the six speeds, ↑↓ the display, Space enlarges the commentary, F9 says goal2 has no sound,
-  R reaches full time with *HANG ON A TICK* shown, Enter requests a pause that is answered.
+  R reaches full time with *HANG ON A TICK* shown, Enter requests a pause: the bench (S19) opens in request mode at
+  the pause and its Esc answers it, no substitution [T180: was T166's default answer].
 - **Close**: closing the window mid-match leaves no engine process within 5 s and publishes nothing.
 - **Colours**: the home side's codes (the fixture's side B, `DesktopModel.home`, #562) are drawn light red, the
   away side's white, on the painted pitch.
@@ -126,7 +127,7 @@ def play_next(window, desk):
 
 def to_the_desk(window, screen, limit, each=None):
     """[T167] On from S17 to the desk through the match day's stops: C on a taker card (no key: the current pick),
-    Enter on the boards, the menus (play, then exit) and the round."""
+    Enter on the boards, the menus (play, then exit) and the round; [T180] Space on S18's notices."""
     from goal2.ui.s14_round import RoundScreen
     from goal2.ui.s16_choose import ChooseScreen
 
@@ -134,6 +135,9 @@ def to_the_desk(window, screen, limit, each=None):
         if each is not None:
             each()
         current = window.current()
+        if current is screen and screen.stop_box.open:
+            key(window, Qt.Key.Key_Space)   # [T180] S18's notice (the other side's substitution): any key
+            return
         if current is screen or isinstance(current, DeskScreen):
             return
         if isinstance(current, ChooseScreen):
@@ -320,7 +324,8 @@ class SameMatch(unittest.TestCase):
 
 @CAREER
 class BenchAndClose(unittest.TestCase):
-    """Enter requests a pause, answered with no substitution; then the window closes mid-match."""
+    """Enter requests a pause; S19 opens in request mode and its Esc answers it with no substitution; then the window
+    closes mid-match."""
 
     @classmethod
     def setUpClass(cls):
@@ -338,7 +343,11 @@ class BenchAndClose(unittest.TestCase):
             key(window, Qt.Key.Key_Return)
             out["requests"] = controller.requests
             out["request_note"] = screen.note.text()
+            pump(lambda: type(window.current()).__name__ == "BenchScreen", 120, "the bench did not open at the pause")
+            out["bench_mode"] = window.current().mode
+            key(window, Qt.Key.Key_Escape)        # [T180] back to the match: the answer, no substitution
             pump(lambda: "pause" in controller.answered, 120, "the pause was not answered")
+            out["choice"] = controller.choices[-1]
             out["waiting"] = bridge.waiting
             out["decisions"] = [e.data.get("context") for e in bridge.events if e.kind == "decision"]
             pump(lambda: any("PAUSE" in line for line in screen.lines), 60, "the pause is not in the commentary")
@@ -363,7 +372,9 @@ class BenchAndClose(unittest.TestCase):
         self.assertIn("Bench requested", out["request_note"])
         self.assertIn("pause", out["decisions"])
         self.assertIsNone(out["waiting"])
-        self.assertIn("T180", out["note"])   # [T167: the bench comes with T180]
+        self.assertEqual(out["bench_mode"], "request")   # [T180: was T166's default answer, "T180" in the note]
+        self.assertEqual(out["choice"], ("pause", []))
+        self.assertNotIn("T180", out["note"])
 
     def test_closing_the_window_mid_match_leaves_no_engine_and_publishes_nothing(self):
         out = self.out

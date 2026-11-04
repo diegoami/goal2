@@ -342,6 +342,8 @@ class BenchScreen(Screen):
         return " ".join(parts)
 
     def enter_hint_text(self):
+        if getattr(self, "answer", None) is None:
+            return ""             # Screen.__init__ draws the bar before the bench is set
         if self.mode == "refused":
             return "Back to the match"
         if self.mode == "view":

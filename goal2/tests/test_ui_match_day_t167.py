@@ -175,6 +175,10 @@ class MatchDay(unittest.TestCase):
 
         def each():
             screen = window.current()
+            if type(screen).__name__ == "PitchScreen" and screen.stop_box.open:
+                out.setdefault("notices", []).append(screen.stop_box.kind)
+                key(window, Qt.Key.Key_Space)    # [T180] S18's notice (the other side's substitution): any key
+                return
             label = name(screen)
             if not order or order[-1] != label:
                 order.append(label)
@@ -392,9 +396,11 @@ class MatchDay(unittest.TestCase):
         owner.state = copy.deepcopy(out["snapshot"])
         job = WatchedPublication(owner).begin(engine_fixture(out["fixture"]))
         answers = {i: value for i, (_, value) in enumerate(out["choices"])}
+        from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS   # [T180] BM-7's budget, as the engine server's
         drive, _, _ = pypy_engine.call("goal2.tests.pypy_engine:drive", copy.deepcopy(job.state),
                                        bytes(owner.template_bytes), engine_fixture(out["fixture"]), pitch=True,
-                                       policy=Scripted(answers), prompts=True, delay_byte=0, record_draws=True)
+                                       policy=Scripted(answers), prompts=True, delay_byte=0, record_draws=True,
+                                       substitutions=FRIENDLY_SUBSTITUTIONS)
         self.assertEqual([as_shown(e) for e in out["outcome"].events], [as_shown(e) for e in drive.events])
         self.assertEqual(out["outcome"].result, drive.result)
         self.assertEqual(out["outcome"].memory, drive.memory)
