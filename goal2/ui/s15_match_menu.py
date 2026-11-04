@@ -216,3 +216,44 @@ class MenuScreen(Screen):
         """Back from S08 or S10 before kick-off: the elevens again (a swap may have changed yours)."""
         if self.phase == "before":
             self.day.refresh_menu(self)
+
+
+class SavedGoalMenu(Screen):
+    """[designed: T181; confirmed: t156-246-goal-replay-menu] S15 before a saved goal's S17 replay.
+
+    The saved lineup display is frozen at kick-off. Live tactics, players and tournament actions are absent:
+    this recording has no career or engine to change [designed: T181, #575].
+    """
+    title = 'match menu · saved goal'
+
+    def __init__(self, window, model, record):
+        super().__init__(window)
+        self.record = record
+        data = record['data']
+        from goal2.ui.kits import Kits
+        kits = Kits(tuple(data['kits']['shirt']), tuple(data['kits']['keeper']))
+        frame, column = box('SAVED GOAL')
+        countries, score = data['countries'], data['score']
+        column.addWidget(label(f'{countries[HOME]}  {score[HOME]} v {score[1 - HOME]}  {countries[1 - HOME]}', 'h1'))
+        column.addWidget(label(f"{data['kind']} · {data['scorer']} · {data['minute']}′", 'sub'))
+        self.body_layout.addWidget(frame)
+        middle = QHBoxLayout()
+        for team in (HOME, 1 - HOME):
+            saved = data.get('menu', {}).get(str(team), ['', []])
+            panel, inner = box(f'{countries[team]} · {saved[0]}')
+            for role, name in saved[1]:
+                text = label(f'{role}  {name}', 'value')
+                colour(text, kits.colour(team))
+                inner.addWidget(text)
+            middle.addWidget(panel)
+        self.body_layout.addLayout(middle)
+        self.play = self.add_option('▶ play', lambda: self.play_goal(window, model), enter='Play')
+        self.body_layout.addWidget(self.play)
+        self.body_layout.addWidget(self.add_option('exit', window.pop, enter='Exit'))
+        self.body_layout.addWidget(para('Saved goal: play the recording, or Esc back to the list.', 'sub'))
+        self.body_layout.addStretch(1)
+        self.highlight(0)
+
+    def play_goal(self, window, model):
+        from goal2.ui.replays import play_saved
+        return play_saved(window, model, self.record)

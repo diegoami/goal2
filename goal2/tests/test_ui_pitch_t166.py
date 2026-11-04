@@ -136,7 +136,7 @@ def to_the_desk(window, screen, limit, each=None):
             each()
         current = window.current()
         if current is screen and screen.stop_box.open:
-            key(window, Qt.Key.Key_Space)   # [T180] S18's notice (the other side's substitution): any key
+            key(window, Qt.Key.Key_N if screen.stop_box.answers else Qt.Key.Key_Space)  # [T181] questions Y/N, notices any key
             return
         if current is screen or isinstance(current, DeskScreen):
             return
@@ -145,7 +145,7 @@ def to_the_desk(window, screen, limit, each=None):
         elif isinstance(current, RoundScreen) and current.arriving:
             return
         else:
-            key(window, Qt.Key.Key_Return)
+            key(window, Qt.Key.Key_N if getattr(current, 'save_summary', False) else Qt.Key.Key_Return)
     pump(lambda: isinstance(window.current(), DeskScreen), limit, "the match did not reach the desk", step)
 
 

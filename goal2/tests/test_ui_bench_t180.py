@@ -206,10 +206,10 @@ class Walk:
                 key(self.window, Qt.Key.Key_Right)   # the fastest speed
 
     def on_box(self, pitch, box):
-        key(self.window, Qt.Key.Key_Space)          # any key
+        key(self.window, Qt.Key.Key_N if box.answers else Qt.Key.Key_Space)  # [T181] no replay/save, any notice key
 
     def on_board(self, screen):
-        key(self.window, Qt.Key.Key_Return)
+        key(self.window, Qt.Key.Key_N if screen.save_summary else Qt.Key.Key_Return)
 
     def on_menu(self, screen):
         play_on(self.window, screen)
@@ -238,7 +238,7 @@ class FriendlyWalk(Walk):
             self.out["board_escape"] = screen.escape_text
             key(self.window, Qt.Key.Key_Escape)     # the bench
             return
-        key(self.window, Qt.Key.Key_Return)
+        key(self.window, Qt.Key.Key_N if screen.save_summary else Qt.Key.Key_Return)
 
     def on_bench(self, screen):
         window, record = self.window, self.bench_record(screen)
@@ -320,7 +320,7 @@ class QualifierWalk(Walk):
             self.out["half"] = True
             key(self.window, Qt.Key.Key_Escape)     # the bench: its counter
             return
-        key(self.window, Qt.Key.Key_Return)
+        key(self.window, Qt.Key.Key_N if screen.save_summary else Qt.Key.Key_Return)
 
     def on_bench(self, screen):
         window, record = self.window, self.bench_record(screen)

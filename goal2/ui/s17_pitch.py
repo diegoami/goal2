@@ -129,6 +129,10 @@ class MatchController:
         self._scanned = 0         # the shown events already looked at for a notice
         self.lineup = None        # the latest pitch sample's players (the opponents' eleven for S09's mark line)
         self.lineup_at = 0        # its watermark: the events before it
+        from goal2.ui.replays import GoalWindow
+        self.goal_window = GoalWindow()
+        self.goal = None          # [designed: T181] a goal once its sample has actually been painted
+        self._goal_scanned = 0
     def _send(self, kind, value):
         self.display.accept(["s17", self.display.sequence, kind, value])
 
@@ -212,7 +216,7 @@ class MatchController:
 
     @property
     def held(self):
-        return self.notice is not None or self.refusal is not None
+        return self.notice is not None or self.refusal is not None or self.goal is not None
 
     def _look_for_notice(self):
         """[confirmed: t156-149] The other side's substitution, once shown, stops the display for its notice
@@ -303,6 +307,22 @@ class MatchController:
     # The player's keys.
     def painted(self, sequence):
         self.drawn = max(self.drawn, sequence)
+        frame = self.display.frame
+        if self.quick or frame is None or frame['sequence'] != sequence:
+            return
+        self.goal_window.painted(frame)
+        # [designed: T181] Goals behind the displayed sample's watermark are visible; a future event in a poll
+        # cannot open a question over a pitch that has not yet shown it. A recalled goal has player 0 (T167).
+        while self._goal_scanned < min(frame['watermark'], len(self.events)) and self.goal is None:
+            event = self.events[self._goal_scanned]
+            self._goal_scanned += 1
+            if event['kind'] == 'goal' and event['data'].get('player'):
+                self.goal = event
+
+    def dismiss_goal(self):
+        self.goal = None
+        self.goal_window.clear()
+        self.display.next_frame = time.monotonic()
 
     def step_speed(self, step):
         self.display.step_rate(step)
@@ -365,6 +385,10 @@ class PitchScreen(Screen):
         self._seen = 0            # the shown events already made into lines
         self.ended = False
         self.held = None          # the stop the match day is showing
+        self.replay = None        # [designed: T181] a presentation-only Playback, no bridge acknowledgements
+        self.replay_done = None
+        self.replay_display = None
+        self.goal_record = None
         names = controller.display.countries
         self.name_label.setText(f"watching · {names[HOME]} v {names[1 - HOME]}")
         self._build(names)
@@ -399,7 +423,7 @@ class PitchScreen(Screen):
         score = QHBoxLayout()
         score.setSpacing(18)
         # [confirmed: t156-045-kick-off.png; #562, #583] the home side first, each name in its side's kit
-        self.kits = for_fixture(self.model, self.controller.pending)
+        self.kits = getattr(self.controller, 'kits', None) or for_fixture(self.model, self.controller.pending)
         self.home = label(names[HOME], "h1")
         colour(self.home, side_colour(HOME, self.kits))
         self.away = label(names[1 - HOME], "h1")
@@ -434,7 +458,7 @@ class PitchScreen(Screen):
         self.body_layout.addWidget(head)
         middle = QHBoxLayout()
         middle.setSpacing(18)
-        self.pitch = PitchWidget(lambda: self.controller.display, self.controller.painted, self.window_.family)
+        self.pitch = PitchWidget(self.display, self.painted, self.window_.family)
         self.pitch.kits = self.kits
         middle.addWidget(self.pitch, 0, Qt.AlignmentFlag.AlignTop)
         commentary, inner = box("Commentary")
@@ -460,7 +484,41 @@ class PitchScreen(Screen):
         self.body_layout.addLayout(middle, 1)
 
     # The poll and what is shown.
+    def display(self):
+        return self.replay_display if self.replay is not None else self.controller.display
+
+    def painted(self, sequence):
+        if self.replay is not None:
+            self.replay.painted(sequence)
+        else:
+            self.controller.painted(sequence)
+
+    def start_replay(self, frames, done):
+        from goal2.ui.replays import Playback
+        self.replay = Playback(frames)
+        self.replay_display = copy.copy(self.controller.display)
+        self.replay_done = done
+        self._result_text('REPLAY')
+        self.replay_tick(time.monotonic())
+
+    def replay_tick(self, now):
+        replay = self.replay
+        if replay.advance(now, self.controller.display.pitch_rate):
+            self.replay_display.frame = replay.frame
+            self.pitch.update()
+        self.refresh()
+        if replay.finished:
+            done = self.replay_done
+            self.replay = self.replay_display = self.replay_done = None
+            self._result_text(HANG_ON if self.controller.quick else 'result')
+            self.pitch.update()
+            self.refresh()
+            done()
+
     def tick(self):
+        if self.replay is not None:
+            self.replay_tick(time.monotonic())
+            return
         controller = self.controller
         if controller.tick(time.monotonic()):
             self.pitch.update()
@@ -469,6 +527,8 @@ class PitchScreen(Screen):
             self.end()
         elif self.stop_box.open or self.window_.current() is not self or self.day is None:
             return
+        elif controller.goal is not None:
+            self.day.goal(self, controller.goal)
         elif controller.notice is not None:
             self.show_notice(controller.notice)
         elif controller.refusal is not None:
@@ -486,20 +546,24 @@ class PitchScreen(Screen):
                        f"{country}: {score_line(names, event['score'], event['minute'])}. Press any key: play on.",
                        lambda key: self.dismiss())
 
-    def show_stop(self, kind, headline, detail, handler):
+    def show_stop(self, kind, headline, detail, handler, answers=None):
         """S18 over the pitch, answered by any key."""
-        self.stop_box.show_stop(kind, headline, detail, handler)
+        self.stop_box.show_stop(kind, headline, detail, handler, answers)
         self._enter_before = self.enter_action
         self.set_enter("Continue", lambda: self.answer_stop_box(Qt.Key.Key_Return))
         self.refresh()
 
     def answer_stop_box(self, key):
+        if self.stop_box.answers and key not in self.stop_box.answers:
+            return False
         self.set_enter(*self._enter_before)
         return self.stop_box.answer(key)
 
     def handle_key(self, key):
         if self.stop_box.open and key != Qt.Key.Key_F1:
             self.answer_stop_box(key)
+            return True
+        if self.replay is not None and key not in (Qt.Key.Key_F1, Qt.Key.Key_Left, Qt.Key.Key_Right):
             return True
         return super().handle_key(key)
 
@@ -526,7 +590,8 @@ class PitchScreen(Screen):
             if event["kind"] == "commentary" or event["kind"] == "decision":
                 self.lines.append(commentary_line(event))
         self._seen = len(shown)
-        minute, score = controller.frame_or_event()
+        minute, score = ((self.replay.frame['minute'], self.replay.frame['score'])
+                         if self.replay is not None and self.replay.frame is not None else controller.frame_or_event())
         _set(self.minute, f"{minute}′")
         for text, goals in zip(self.goals, (score[HOME], score[1 - HOME])):
             _set(text, str(goals))
@@ -561,15 +626,18 @@ class PitchScreen(Screen):
         self.pitch.commentary = self.lines
         self.pitch.update()
 
+    def _result_text(self, text):
+        self.result_binding.text = text
+        for item in self.key_bar.findChildren(Clickable, 'keyItem'):
+            if getattr(item, 'binding', None) is self.result_binding:
+                for label_ in item.findChildren(QLabel, 'keyLabel'):
+                    label_.setText(text)
+                    colour(label_, theme.VALUE)
+
     def quick_result(self):
         self.controller.quick_result()
         if self.controller.quick:
-            self.result_binding.text = HANG_ON
-            for item in self.key_bar.findChildren(Clickable, "keyItem"):
-                if getattr(item, "binding", None) is self.result_binding:
-                    for text in item.findChildren(QLabel, "keyLabel"):
-                        text.setText(HANG_ON)
-                        colour(text, theme.VALUE)
+            self._result_text(HANG_ON)
         self.refresh()
 
     def sound(self):

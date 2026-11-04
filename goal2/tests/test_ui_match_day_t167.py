@@ -177,7 +177,7 @@ class MatchDay(unittest.TestCase):
             screen = window.current()
             if type(screen).__name__ == "PitchScreen" and screen.stop_box.open:
                 out.setdefault("notices", []).append(screen.stop_box.kind)
-                key(window, Qt.Key.Key_Space)    # [T180] S18's notice (the other side's substitution): any key
+                key(window, Qt.Key.Key_N if screen.stop_box.answers else Qt.Key.Key_Space)  # [T181] no replay/save; notices any key
                 return
             label = name(screen)
             if not order or order[-1] != label:
@@ -196,7 +196,7 @@ class MatchDay(unittest.TestCase):
                     out.setdefault("boards", {})[screen.phase] = {
                         "banner": screen.banner is not None, "rows": list(screen.stat_rows),
                         "scorers": list(screen.scorer_texts), "data": screen.data}
-                    key(window, Qt.Key.Key_Return)
+                    key(window, Qt.Key.Key_N if screen.save_summary else Qt.Key.Key_Return)
                 elif kind == "MenuScreen":
                     out.setdefault("menus", {})[screen.phase] = {
                         "situation": screen.situation.text(), "play": screen.play.text_label.text(),
