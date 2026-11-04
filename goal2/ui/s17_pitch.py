@@ -26,6 +26,9 @@ player watched is the match the engine published. It drives nothing: `MatchContr
   within its pacing; a quick result shows none. A bench answer's report (`WatchedJobs.reports`) that refuses a pair
   holds the display the same way and shows S19 with the engine's reason until a key; made and requested pairs are
   noted under the commentary.
+- **Goals** [designed: T181, #575; confirmed: T156-R1 175–178]: after the goal's sample is painted, S18 asks for
+  replay and saving. Playback redraws only recorded painted samples, with the live display held; automatic replay
+  skips the first question. Quick result asks neither. The recording's bound and format are in `replays.py`.
 - **Full time** publishes through the bridge, then the match day shows S20 and S15. Closing the window during a match
   cancels it through the bridge (`Window.closeEvent` calls `closing`): nothing is published.
 

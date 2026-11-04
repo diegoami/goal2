@@ -17,8 +17,8 @@ the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the n
 first friendly under PyPy 3.11 on a copy of the career (S14 before and after the match, S15 before kick-off and at half
 time, S16 the captain and a set-piece taker, S17 at kick-off and in play, S20 at half time and full time), S11 and S13 again after its first
 round (the route's quick friendly), S21's save box, quit question and save question over the desk, and T177's extras
-(S02's standalone friendly with its country chosen, S08's pool search, the desk's manager's name line), when it finds
-GOAL.DAT and the template in the data root's `data` or in a checkout's `.cache/`.
+(S02's standalone friendly with its country chosen, S08's pool search, the desk's manager's name line), and T181's
+goal questions/replay/name box, summary question/name box and F3/F4 lists, when it finds GOAL.DAT and the template in the data root's `data` or in a checkout's `.cache/`.
 
 ## The journey
 

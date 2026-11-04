@@ -4,6 +4,9 @@
 [confirmed: T156-R1 steps 118-119, 191-192, 270, 310; t156-119-halftime-board.png, t156-192-fulltime-board.png,
 t156-270-quick-halftime.png, t156-310-quick-fulltime.png]
 
+[designed: T181, #575; confirmed: T156-R1 198–199] At watched full time the board asks whether to save its summary;
+Y opens S21 for a name, N continues. F4 later shows that frozen board, including its stored names and kits.
+
 Everything shown is what the bridge's events and outcome give (`board`); nothing is invented:
 
 - the score, the half-time score, each side's scorers and minutes (the `goal` events);
