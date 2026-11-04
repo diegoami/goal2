@@ -120,6 +120,21 @@ def enter_on(window, screen, word):
     return out
 
 
+def outfield(answer, words):
+    """Outfield players only: a keeper put on for an outfield player makes the original refuse the eleven
+    (test_watched_bench_t102 `choose`)."""
+    return [w for w in words if answer.position(w) != 0]
+
+
+def play_on(window, menu):
+    """S15's *play*: ↓ to it (after *players* the cursor stays there, as in the original, T156-R1 steps 134-137), Enter."""
+    for _ in range(len(menu.options)):
+        if menu.highlighted() is menu.play:
+            break
+        key(window, Qt.Key.Key_Down)
+    key(window, Qt.Key.Key_Return)
+
+
 class Walk:
     """One match day from the desk to the desk: `react(screen)` answers each screen as it shows; the order of the
     screens, every S18 box and every S19 visit are recorded."""
@@ -196,7 +211,7 @@ class Walk:
         key(self.window, Qt.Key.Key_Return)
 
     def on_menu(self, screen):
-        key(self.window, Qt.Key.Key_Return)
+        play_on(self.window, screen)
 
     def on_bench(self, screen):
         self.bench_record(screen)
@@ -215,7 +230,7 @@ class FriendlyWalk(Walk):
             self.out["stop_menu"] = {"situation": screen.situation.text(), "play": screen.play.text_label.text()}
             key(self.window, Qt.Key.Key_Space)      # Austria's players: the bench
             return
-        key(self.window, Qt.Key.Key_Return)
+        play_on(self.window, screen)
 
     def on_board(self, screen):
         if screen.phase == "half":
@@ -233,7 +248,8 @@ class FriendlyWalk(Walk):
             return
         if answer.context == "substitution" and "first_stop" not in self.out:
             injured = [w for w in answer.eleven if w in answer.injured]
-            on = answer.bench[0]
+            keeper = answer.position(injured[0]) == 0
+            on = next(w for w in answer.bench if (answer.position(w) == 0) == keeper)
             hints = [enter_on(window, screen, injured[0]), enter_on(window, screen, on)]
             self.out["first_stop"] = {"pair": [injured[0], on], "hints": hints, "record": record,
                                       "chosen": [list(p) for p in answer.chosen]}
@@ -241,8 +257,8 @@ class FriendlyWalk(Walk):
             return
         if answer.context == "half_time" and "half" not in self.out:
             off_at_stop = self.out["first_stop"]["pair"][0]
-            fresh = [w for w in answer.bench if w != off_at_stop]
-            starters = [w for w in answer.eleven[1:] if w not in answer.injured]
+            fresh = outfield(answer, [w for w in answer.bench if w != off_at_stop])
+            starters = outfield(answer, [w for w in answer.eleven if w not in answer.injured])
             pairs = [[starters[0], fresh[0]]]
             hints = [enter_on(window, screen, fresh[0]), enter_on(window, screen, starters[0])]   # bench first
             for off, on in zip(starters[1:5], fresh[1:5]):
@@ -296,7 +312,7 @@ class QualifierWalk(Walk):
             self.out["made_stop"] = {"situation": screen.situation.text()}
             key(self.window, Qt.Key.Key_Space)
             return
-        key(self.window, Qt.Key.Key_Return)
+        play_on(self.window, screen)
 
     def on_board(self, screen):
         if screen.phase == "half" and "half" not in self.out:
@@ -309,7 +325,7 @@ class QualifierWalk(Walk):
         window, record = self.window, self.bench_record(screen)
         answer = screen.answer
         if screen.mode == "request" and "requested" not in self.out:
-            off, on = answer.eleven[5], answer.bench[0]
+            off, on = outfield(answer, answer.eleven)[4], outfield(answer, answer.bench)[0]
             hints = [enter_on(window, screen, off), enter_on(window, screen, on)]
             self.out["requested"] = {"pair": [off, on], "record": record, "hints": hints,
                                      "after": self.bench_record(screen), "cancel_hint": None}

@@ -70,6 +70,9 @@ class BenchAnswer:
         self.injured = set(data.get("injured") or [])
         self.at_kick = {int(w): int(code) for w, code in data.get("positions") or []}
         self.requested = [list(p) for p in data.get("requested") or []] if self.context == "substitution" else []
+        # [confirmed: the kit's Match._on_menu] the original refused the eleven of the last answer (two keepers, …):
+        # the decision is offered again with its message, and the view says it as it is
+        self.refused = data.get("refused")
         self.chosen = [list(p) for p in self.requested]
         self.first = None          # the first Enter of a pair
         self.positions = {}        # word: position code, from R and C
@@ -327,6 +330,8 @@ class BenchScreen(Screen):
         if self.mode == "view":
             return "The route takes no substitution before extra time: play on from the match menu."
         parts = []
+        if answer.refused:
+            parts.append(f"The original refused the eleven: {answer.refused}.")
         if answer.chosen:
             parts.append(("Requested: " if self.mode == "request" else "Chosen: ")
                          + ", ".join(f"{full_name(self.model, a)} off, {full_name(self.model, b)} on"

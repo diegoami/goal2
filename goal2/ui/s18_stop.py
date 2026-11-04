@@ -132,6 +132,9 @@ def substitution_text(model, decision):
                      + " injured.")
     if data.get("requested"):
         parts.append("Your requested substitutions can be made now.")
+    if data.get("refused"):
+        # [confirmed: the kit's Match._on_menu] the original refused the eleven: offered again, with its message
+        parts.append(f"The original refused the eleven: {data['refused']}.")
     return " ".join(parts) or "Your side may make a substitution."
 
 
