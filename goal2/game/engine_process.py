@@ -147,15 +147,20 @@ class EngineProcess:
         """The player's Enter in play."""
         return self._command({"op": "pause"})
 
-    def answer(self, decision: int, substitutions=(), *, choice=None) -> bool:
+    def answer(self, decision: int, substitutions=(), *, choice=None, changes=None) -> bool:
         """Answer bench decision `decision` with (off, on) pairs; none plays on. `choice` answers a player prompt
-        instead: {'taker': word or None} or {'shootout_order': [words]} [designed: T167, #541]."""
-        from goal2.game.watched_jobs import _choice, _pairs
+        instead: {'taker': word or None} or {'shootout_order': [words]} [designed: T167, #541]. `changes` adds the
+        bench's positions, marks and own tactics to the same answer (watched_jobs.CHANGES) [designed: T180]."""
+        from goal2.game.watched_jobs import _changes, _choice, _pairs
         if type(decision) is not int or decision < 0:
             raise ValueError("invalid bench decision number")
         if choice is not None:
             return self._command(dict({"op": "answer", "decision": decision}, **_choice(choice)))
-        return self._command({"op": "answer", "decision": decision, "substitutions": _pairs(list(substitutions))})
+        command = {"op": "answer", "decision": decision, "substitutions": _pairs(list(substitutions))}
+        changes = _changes(changes or {})
+        if changes:
+            command["changes"] = changes
+        return self._command(command)
 
     def cancel(self) -> bool:
         """End the running match; the engine replies `cancelled` and stays up. Unanswered within the deadline, the

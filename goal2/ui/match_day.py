@@ -11,9 +11,14 @@ on them is the answer the engine receives, sent once, through the bridge, in the
 
 - **The captain** chosen on S16 is confirmed through `DesktopModel.confirm` before kick-off; the engine plays with
   it (`Match(captain=…)`).
-- **The stops** the match holds (`MatchController.stop`): half time and the menu before extra time go S20 → S15 and
-  *play* answers them (no substitution: the bench is T180's); a set-piece taker and the shoot-out order go to S16,
-  whose choice is the answer. A substitution opportunity and the pause keep T166's default, with a note (T180).
+- **The stops** the match holds (`MatchController.stop`) [designed: T167; T180, #574]: half time and the menu before
+  extra time go S20 → S15 (S20's Esc: the bench S19, then S15), and *play* answers them with the bench's answer; a
+  set-piece taker goes to S16, whose choice is the answer; the shoot-out order to S18's notice, then S16. A
+  substitution opportunity goes to S18 (*SUBSTITUTION OPPORTUNITY*), any key to S15 (phase "stop", whose *players*
+  opens S19 in *make substitutions now* mode) and *play* answers it. The pause Esc or Enter asks for on S17 opens S19
+  in request mode; its Esc answers and returns to the pitch. One bench answer (`s19_bench.BenchAnswer`) is built per
+  bench decision and sent once; S09's mark and own tactics from S19 go in it. No stop keeps a default answer.
+- **The engine's report** of a bench answer that refuses a pair shows S19 with the reason until a key (`refused`).
 - **One bridge for the window's life** (D3): `MatchDay` keeps the owner's `WatchedJobs` (friendlies) and
   `CompetitiveJobs` (qualifiers, T176) open between matches, so every match of the window plays in the owner's one
   engine process; the desk closes them when the window closes (`DeskScreen.closing`).
@@ -76,6 +81,7 @@ class MatchDay:
         self.watch = None
         self.controller = None
         self.pitch = None
+        self.bench = None          # the bench's answer to the decision held, built on S19 and S09 [designed: T180]
         self.replay_auto = self._settings().get("automatic_action_replay", False)
 
     # The window's bridges (D3).
@@ -146,7 +152,7 @@ class MatchDay:
             return "This fixture's kind is not supported by the engine."
         if self.controller is not None and not self.controller.finished:
             return "A match is already running."
-        self.fixture, self.watch, self.controller, self.pitch = fixture, None, None, None
+        self.fixture, self.watch, self.controller, self.pitch, self.bench = fixture, None, None, None, None
         try:
             self.before = model.round_before()
         except ValueError as exc:
@@ -181,7 +187,8 @@ class MatchDay:
         if menu.phase == "before":
             return self.choose_captain()
         self.window.pop()                       # S15, back to S17
-        self.pitch.resume()
+        bench, self.bench = self.bench, None
+        self.pitch.resume(bench.value() if bench is not None else None)
         return self.pitch
 
     def choose_captain(self):
@@ -237,22 +244,91 @@ class MatchDay:
 
     # The stops, from S17.
     def stop(self, pitch, decision):
+        from goal2.ui import s18_stop
         context = decision.data.get("context")
+        if context in ("half_time", "extra_time", "substitution", "pause"):
+            from goal2.ui.s19_bench import BenchAnswer
+            self.bench = BenchAnswer(self.model, decision, pitch.controller.opponents(),
+                                     friendly=self.fixture.kind == 1)
         if context in ("half_time", "extra_time"):
             return self.show_board(pitch, "half" if context == "half_time" else "extra")
+        names = pitch.controller.display.countries
+        where = s18_stop.score_line(names, decision.score, decision.minute)
+        if context == "substitution":
+            # [confirmed: T156-R1 steps 67-68] the notice, then any key: the match menu
+            return pitch.show_stop(s18_stop.NOTICE_SUBSTITUTION, s18_stop.SUBSTITUTION_OPPORTUNITY,
+                                   f"{s18_stop.substitution_text(self.model, decision)} {where}. Press any key: the "
+                                   f"match menu, where players opens the bench.",
+                                   lambda key: self._stop_menu())
+        if context == "pause":
+            return self.open_bench(back=lambda: self._bench_played(pitch))
+        if context == "shootout_order":
+            # [confirmed: e031-shootout-start.png] the shoot-out's notice before its order
+            return pitch.show_stop(s18_stop.NOTICE_SHOOTOUT, s18_stop.SHOOTOUT,
+                                   f"{where}. Press any key: choose the order of your takers.",
+                                   lambda key: self._shootout_order(pitch, decision))
+        return self._taker(pitch, decision)
+
+    def _taker(self, pitch, decision):
         from goal2.ui.s16_choose import ChooseScreen
         data = decision.data
         eleven = list(data.get("eleven") or [])
-        if context == "set_piece":
-            screen = ChooseScreen(self.window, self.model, "taker", eleven, data.get("current"),
-                                  lambda word: self._chosen(pitch, {"taker": word}),
-                                  available=data.get("available"), role=data.get("role"), match=self._match_name())
-        else:
-            screen = ChooseScreen(self.window, self.model, "order", eleven, eleven[0] if eleven else None,
-                                  lambda order: self._chosen(pitch, {"shootout_order": list(order)}),
-                                  available=data.get("available"), takers=data.get("takers") or 0,
-                                  match=self._match_name())
+        screen = ChooseScreen(self.window, self.model, "taker", eleven, data.get("current"),
+                              lambda word: self._chosen(pitch, {"taker": word}),
+                              available=data.get("available"), role=data.get("role"), match=self._match_name())
         return self.window.push(screen)
+
+    def _shootout_order(self, pitch, decision):
+        from goal2.ui.s16_choose import ChooseScreen
+        data = decision.data
+        eleven = list(data.get("eleven") or [])
+        screen = ChooseScreen(self.window, self.model, "order", eleven, eleven[0] if eleven else None,
+                              lambda order: self._chosen(pitch, {"shootout_order": list(order)}),
+                              available=data.get("available"), takers=data.get("takers") or 0,
+                              match=self._match_name())
+        return self.window.push(screen)
+
+    def _stop_menu(self):
+        """S18's key at a substitution opportunity: the match menu (S15, phase "stop")."""
+        from goal2.ui.s15_match_menu import MenuScreen
+        score = self.bench.score if self.bench is not None else (0, 0)
+        return self.window.push(MenuScreen(self.window, self, "stop", score))
+
+    def _names(self):
+        return self.controller.display.countries if self.controller is not None else ("", "")
+
+    def open_bench(self, back=None):
+        """S19 for the bench decision held: from S15's *players* or S20's Esc (Esc back to S15), or at a pause
+        (Esc answers and returns to the pitch)."""
+        from goal2.ui.s19_bench import BenchScreen
+        if self.bench is None:
+            return None
+        return self.window.push(BenchScreen(self.window, self.model, self.bench, names=self._names(), back=back))
+
+    def _bench_played(self, pitch):
+        """S19's Esc at a pause: the bench's answer is sent once and the match plays on."""
+        self.window.pop()
+        bench, self.bench = self.bench, None
+        pitch.resume(bench.value() if bench is not None else None)
+        return pitch
+
+    def refused(self, pitch, report):
+        """The engine refused a pair of the bench's answer: S19 with its reason until a key, then the match."""
+        from goal2.ui.s19_bench import BenchAnswer, BenchScreen
+        from types import SimpleNamespace
+        decision = next((e for e in reversed(pitch.controller.shown()) if e["kind"] == "decision"
+                         and e["data"].get("context") == report["context"]), None)
+        decision = (SimpleNamespace(data=decision["data"], minute=decision["minute"], score=decision["score"])
+                    if decision is not None else SimpleNamespace(data={"context": report["context"]}, minute=0,
+                                                                  score=[0, 0]))
+        answer = BenchAnswer(self.model, decision, friendly=self.fixture.kind == 1)
+        answer.chosen = [list(p) for p in report["asked"]]
+
+        def back():
+            self.window.pop()
+            pitch.dismiss()
+        return self.window.push(BenchScreen(self.window, self.model, answer, names=self._names(), back=back,
+                                            report=report))
 
     def _chosen(self, pitch, value):
         self.window.pop()                       # S16, back to S17
@@ -263,8 +339,9 @@ class MatchDay:
         controller = pitch.controller
         data = board(controller.shown(), phase, controller.quick)
         names = controller.display.countries
+        bench = (lambda: self._board_bench(phase, data)) if phase != "full" and self.bench is not None else None
         screen = BoardScreen(self.window, self.model, names, self.kind_name.upper(), phase, data,
-                             lambda note: self._after_board(phase, data, note))
+                             lambda note: self._after_board(phase, data, note), bench=bench)
         return self.window.push(screen)
 
     def _after_board(self, phase, data, note):
@@ -272,6 +349,11 @@ class MatchDay:
         menu = self._replace(MenuScreen(self.window, self, phase, data["score"]))
         menu.say(note)
         return menu
+
+    def _board_bench(self, phase, data):
+        """S20's Esc: the bench, over the menu it returns to. [confirmed: T156-R1 step 119, "Esc,◄┘-bench"]"""
+        self._after_board(phase, data, None)
+        return self.open_bench()
 
     def show_stats(self, menu):
         """S15's *match stats*: S20 for the match so far (nothing before kick-off)."""
@@ -287,7 +369,9 @@ class MatchDay:
         return self.window.push(screen)
 
     def full_time(self, pitch):
-        """S17's full time: the board, then the menu with *exit*."""
+        """S17's full time: the board, then the menu with *exit*. The bench's answer, and with it S09's marks, is
+        gone: the original clears the marks after each match [confirmed: F010]."""
+        self.bench = None
         return self.show_board(pitch, "full")
 
     def exit(self):
