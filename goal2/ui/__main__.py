@@ -297,6 +297,9 @@ def pitch_shots(app, window, career, shot, limit=600):
         """Picture each stop the first time it shows, then answer it as the default (Enter)."""
         screen = window.current()
         if isinstance(screen, PitchScreen):
+            if screen.stop_box.open:
+                key(Qt.Key.Key_Space)   # [T180] S18's notice (the other side's substitution): any key
+                return False
             frame = controller.display.frame
             if "s17" not in taken and frame is not None and frame["minute"] >= 17:
                 taken.add("s17")
