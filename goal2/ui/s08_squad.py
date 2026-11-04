@@ -26,16 +26,28 @@ the model's own (`DesktopModel`, route (b), #527 D2): the screen holds no rule o
 - The mouse does what the keys do [designed: owner, 2026-11-03, #526]: a click on a row moves the cursor to it, a
   click on the highlighted row is Enter; a click on a key of the bar, on the Enter hint or on *Squad* / *Pool* is
   that key.
+- **The pool's search and position filter**, a GOAL2 ADDITION the original lacks [designed: owner, §6 item 18
+  (docs/design/ui-2026-11, 2026-11-03); T177, #557], as today's Pool page has them (docs/desktop-management.md,
+  `DesktopModel.pool_view(query=, position=)`): **/** opens the search line over the pool, typing filters by name,
+  accents folded (`campaign_pool.fold`: "muller" finds "Müller"), Backspace edits, Enter keeps the filter and closes
+  the line, Esc clears it; **P** steps the position filter through the original's fourteen position codes and back
+  to all (**Shift+P** the other way). The rows the pool shows are `pool_view(query, position)`'s, and the two Enters
+  exchange from a filtered list as from the whole pool. Neither key is one of the original's on this screen (its
+  bottom line lists F2, R, C, T, Enter, Esc; its top line ←→, ↑↓, Enter, Ins [confirmed: E031 C06, C27, C29–C31;
+  docs/original-game/squad-and-tactics.md]); a click on the search line or on the position filter is the key.
 """
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
 
 from goal2.ui import theme
-from goal2.ui.screen import Clickable, Screen, label
+from goal2.ui.screen import Clickable, Screen, kbd, label
 from goal2.ui.squad_card import PlayerCard, Strip, colour, full_name, last_on_the_bar, squad_rows
 
+SEARCH_MAX = 12   # [designed: T177] a surname's length on this route (`rename_player`'s 12 characters)
+# [designed: owner, §6 item 18; T177] the extra's words on the screen
+ADDITION = "GOAL2 ADDITION · POOL SEARCH"
 COMING_LATER = ("The assistant's recommended 20 is coming later: the original's assistant is not ported yet. "
                 "Nothing was changed.")
 
@@ -62,11 +74,31 @@ class SideButton(Clickable):
         colour(self.text, theme.ON_HIGHLIGHT if on else theme.TEXT_BRIGHT)
 
 
+class FilterButton(Clickable):
+    """The pool's search line or its position filter, with its key cap: a click is the key."""
+
+    def __init__(self, caption, text, handler):
+        super().__init__("filterButton")
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(10, 4, 10, 4)
+        layout.setSpacing(8)
+        layout.addWidget(kbd(caption))
+        self.text = label(text, "value")
+        layout.addWidget(self.text)
+        self.clicked.connect(handler)
+
+    def set_text(self, text, active=False):
+        self.text.setText(text)
+        self.setStyleSheet(f"#filterButton {{ background: {theme.GROUND}; border: 1px solid "
+                           f"{theme.FRAME if active else theme.FRAME_DARK}; }}")
+
+
 class SquadScreen(Screen):
     title = "select squad"
     escape_text = "desk"
     picked = None     # (side, player) once a player is picked for a move
     editing = False   # the name line is open (F2)
+    searching = False   # the pool's search line is open (/) [designed: T177]
 
     def __init__(self, window, model):
         super().__init__(window)
@@ -74,6 +106,8 @@ class SquadScreen(Screen):
         self.side = "squad"
         self.cursor = {"squad": 0, "pool": 0}
         self.message = ""
+        self.query = ""        # the pool's search, by name [designed: T177]
+        self.position = None   # the pool's position filter: a position code 0-13, or None for all
         self._build()
         self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), captions=("",), shown=False)
         self.bind((Qt.Key.Key_Down,), "", lambda: self.move(1), captions=("",), shown=False)
@@ -86,6 +120,10 @@ class SquadScreen(Screen):
         self.bind((Qt.Key.Key_C,), "club position", self.club_position)
         self.bind((Qt.Key.Key_T,), "his tactics", self.his_tactics)
         self.bind((Qt.Key.Key_F2,), "new name", self.new_name)
+        # [designed: owner, §6 item 18; T177] The pool's search and position filter, keys the original's S08 lacks.
+        self.search_binding = self.bind((Qt.Key.Key_Slash,), "search", self.open_search)
+        self.position_binding = self.bind((Qt.Key.Key_P,), "position",
+                                          lambda: self.step_position(-1 if shift_held() else 1))
         # [designed: T165] Nine keys and the Enter hint fill the 1440 px bar: the keys sit 12 px apart, not 22, and
         # Ins reads "coming later" (the row above the card names it: the assistant's recommended 20).
         self.key_layout.setSpacing(12)
@@ -112,6 +150,17 @@ class SquadScreen(Screen):
         self.note = label("", "sub")
         top.addWidget(self.note)
         column.addLayout(top)
+        # [designed: owner, §6 item 18; T177] the pool's search and position filter, tagged as a goal2 addition
+        extras = QHBoxLayout()
+        extras.setSpacing(10)
+        extras.addWidget(label(ADDITION, "tagNew"))
+        self.search_button = FilterButton("/", "", self.open_search)
+        self.search_button.setFixedWidth(330)
+        extras.addWidget(self.search_button)
+        self.position_button = FilterButton("P", "", lambda: self.step_position(1))
+        extras.addWidget(self.position_button)
+        extras.addStretch(1)
+        column.addLayout(extras)
         self.card = PlayerCard()
         column.addWidget(self.card, 1)
         main.addLayout(column, 1)
@@ -126,7 +175,7 @@ class SquadScreen(Screen):
         side = side or self.side
         if side == "squad":
             return squad_rows(self.model)[0]
-        pool = self.model.pool_view()
+        pool = self.model.pool_view(query=self.query, position=self.position)
         return pool["reserves"] if pool is not None else []
 
     def current(self):
@@ -157,6 +206,7 @@ class SquadScreen(Screen):
         self.pool_button.set_on(self.side == "pool")
         if word is not None:
             self.card.set_card(card(self.model.state, word, self.model.goaldat))
+        self._show_filters(rows)
         self.note.setText(self.message)
         if self.picked is not None:
             detail = ("Enter on another player of the twenty swaps them; → to the pool, then Enter on the player "
@@ -168,7 +218,53 @@ class SquadScreen(Screen):
             self.wait_for(None)
         self._refresh_hint()
 
+    def _refresh_bar(self):
+        """[designed: T177] The bar has no room for two more items at 1440 px (T165's nine leave 5 px), so pairs of
+        related keys share a column, one above the other: R over C (the positions), / over P (the pool's search and
+        filter). Each key keeps its own item, caption, text and click."""
+        super()._refresh_bar()
+        pairs = getattr(self, "PAIRS", None)
+        if pairs is None or not hasattr(self, "position_binding"):
+            return
+        items = {item.binding.text: item for item in self.key_bar.findChildren(Clickable, "keyItem")
+                 if getattr(item, "binding", None) is not None}
+        for upper, lower in pairs:
+            if upper not in items or lower not in items:
+                continue
+            column = QWidget()
+            column.setObjectName("keyColumn")
+            stack = QVBoxLayout(column)
+            stack.setContentsMargins(0, 0, 0, 0)
+            stack.setSpacing(4)
+            index = self.key_layout.indexOf(items[upper])
+            for text in (upper, lower):
+                self.key_layout.removeWidget(items[text])
+                stack.addWidget(items[text])
+            self.key_layout.insertWidget(index, column)
+
+    PAIRS = (("next position", "club position"), ("search", "position"))
+
+    def _show_filters(self, rows):
+        cursor = "▌" if self.searching else ""
+        if self.query or self.searching:
+            text = f"search: {self.query}{cursor}"
+        else:
+            text = "search the pool by name"
+        self.search_button.set_text(text, self.searching)
+        self.position_button.set_text(f"position: {self.position_name()}", self.position is not None)
+        if self.side == "pool" and not rows and (self.query or self.position is not None):
+            self.message = self.message or "No player of the pool matches the search."
+
+    def position_name(self):
+        """The position filter's words: the original's code and position name, or *all*."""
+        if self.position is None:
+            return "all"
+        from goal2.game import roles
+        return f"{roles.tables(self.model.state)[0][self.position]} · {roles.names(self.model.state)[self.position]}"
+
     def enter_hint_text(self):
+        if self.searching:
+            return "Keep search"
         if self.editing:
             return "Give this name"
         return "Put here" if self.picked is not None else "Move player"
@@ -178,7 +274,30 @@ class SquadScreen(Screen):
         self.refresh()
 
     # Keys.
+    def type_text(self, key, text) -> bool:
+        """On the search line, printable characters and Backspace edit the search; the pool follows each key."""
+        if not self.searching:
+            return False
+        if key == Qt.Key.Key_Backspace:
+            self.set_query(self.query[:-1])
+            return True
+        if text and len(text) == 1 and text.isprintable():
+            if len(self.query) < SEARCH_MAX:
+                self.set_query(self.query + text)
+            return True
+        return False
+
     def handle_key(self, key):
+        if self.searching:
+            if key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                self.close_search()
+                return True
+            if key == Qt.Key.Key_Escape:
+                self.close_search(clear=True)
+                return True
+            if key in (Qt.Key.Key_F1, Qt.Key.Key_Up, Qt.Key.Key_Down):
+                return super().handle_key(key)
+            return True
         if self.editing:
             if key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
                 self.give_name()
@@ -192,6 +311,8 @@ class SquadScreen(Screen):
         return super().handle_key(key)
 
     def press_enter(self):
+        if self.searching:
+            return self.close_search()
         if self.editing:
             return self.give_name()
         return super().press_enter()
@@ -243,6 +364,46 @@ class SquadScreen(Screen):
             self.model.exchange(sides["squad"], sides["pool"])
         except ValueError as exc:
             return self.say(str(exc))
+        return self.refresh()
+
+    # The pool's search and position filter. [designed: owner, §6 item 18; T177]
+    def open_search(self):
+        """/: the pool, with the search line open."""
+        if self.editing:
+            return None
+        if self.side != "pool":
+            self.show_side("pool")
+            if self.side != "pool":
+                return None
+        self.searching = True
+        self.message = ""
+        return self.refresh()
+
+    def close_search(self, clear=False):
+        """Enter keeps the search, Esc clears it; the line closes either way."""
+        self.searching = False
+        if clear:
+            return self.set_query("")
+        return self.refresh()
+
+    def set_query(self, query):
+        self.query = query
+        self.cursor["pool"] = 0
+        self.message = ""
+        self.refresh()
+
+    def step_position(self, step):
+        """P: the next of the original's fourteen position codes, then all again; Shift+P the other way."""
+        if self.editing or self.searching:
+            return None
+        if self.side != "pool":
+            self.show_side("pool")
+            if self.side != "pool":
+                return None
+        values = [None, *range(14)]
+        self.position = values[(values.index(self.position) + step) % len(values)]
+        self.cursor["pool"] = 0
+        self.message = ""
         return self.refresh()
 
     def assistant(self):

@@ -16,8 +16,9 @@ S02 with two saves, S03, S04 on Holland with its twenty and the name line, S05 w
 the desk, S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, the match day of the career's
 first friendly under PyPy 3.11 on a copy of the career (S14 before and after the match, S15 before kick-off and at half
 time, S16 the captain and a set-piece taker, S17 at kick-off and in play, S20 at half time and full time), S11 and S13 again after its first
-round (the route's quick friendly), and S21's save box, quit question and save question over the desk, when it finds GOAL.DAT and the template in the data root's `data` or in a
-checkout's `.cache/`.
+round (the route's quick friendly), S21's save box, quit question and save question over the desk, and T177's extras
+(S02's standalone friendly with its country chosen, S08's pool search, the desk's manager's name line), when it finds
+GOAL.DAT and the template in the data root's `data` or in a checkout's `.cache/`.
 
 ## The journey
 
@@ -70,11 +71,12 @@ progress stays unsaved. `model.save_name` is the name a career was last saved or
 | `goal2/ui/s01_import.py` | S01 Import your data, over `data_setup`'s check and copy. |
 | `goal2/ui/s22_help.py` | S22 Help: the imported GOAL.HLP, over the screen F1 was pressed on, in a box that fills most of the screen (owner decision 13). |
 | `goal2/ui/home.py` | The placeholder screen with no career open. |
-| `goal2/ui/s02_start.py` | S02 Start: Continue, the named saves, Y load, N new game, a failed load's Y/N. |
+| `goal2/ui/s02_start.py` | S02 Start: Continue, the named saves, Y load, N new game, a failed load's Y/N; F the standalone friendly (T177). |
+| `goal2/ui/friendly.py` | The standalone friendly (T177): two countries chosen, played on S17, back to S02; nothing saved. |
 | `goal2/ui/s03_new_game.py` | S03 New game: 1–6 managers (2–6 later, #551), the optional starting year by NG-9. |
 | `goal2/ui/s04_country.py` | S04 Country and name: the card (`CountryCard`, shared with S07, with the twenty's average caps and age), the list in groups of 16 in the ranking's order (`ordered`), Ins, the name line; `PlayersScreen`, a country's twenty read only (Space) on T165's S08 card (`squad_card.PlayerCard`, bars without numbers). |
 | `goal2/ui/s05_bulletin.py` | S05 Bulletin: pages *n of m*, any key onward. |
-| `goal2/ui/s06_desk.py` | S06 The manager's desk (T164), and `ReimportScreen`, S01 over the data folder. |
+| `goal2/ui/s06_desk.py` | S06 The manager's desk (T164), its *manager's name* and *new career* (T177), and `ReimportScreen`, S01 over the data folder. |
 | `goal2/ui/s07_team_info.py` | S07 Team info (T164): S04's card for any country, the list, the next opponent marked; a country's twenty and its tactics, read only. |
 | `goal2/ui/s11_fixtures.py` | S11 Fixtures (T178): the coming round, or a country's coming fixtures. |
 | `goal2/ui/s12_tournament.py` | S12 Tournament (T178): the displays and continents as tabs, a group's table beside its matches, the banner. |
@@ -165,7 +167,8 @@ the name (`rename_player`). A later task puts them on the desk: `goal2.ui.s08_sq
   suspended starter goes to the bench. Two bench players keep the squad's order, and the screen says so. **Ins** reads *coming later* and only says so, until the
   original's assistant (`0791:DC7E`) is ported [designed: owner, 2026-11-03, #509]. **R** / **Shift+R** the next or
   previous position, **C** the club position, **T** S09, **F2** the name line in the card's header (at most 12
-  characters; Enter gives the name, Esc keeps the old one), **Esc** back.
+  characters; Enter gives the name, Esc keeps the old one), **Esc** back. **/** and **P**, the pool's search and
+  position filter, are T177's (below).
 - **S09**: between matches the original's four lines (position, possession, passing, tackling) with **P** on a line
   set for this player. The mark line comes with the match screens: the original shows it only with a match set up
   (`1771:49B8`, F010). Arrows choose, Enter alters, Esc returns to the card.
@@ -192,8 +195,9 @@ the manager's desk, the career's home: every management screen returns to it wit
   bar's right end, named as the original's hub names it (T178, #563: *2028 European Championship · QUALIFYING*). The
   six options in the original's order, the cursor on *team info*: *team info* (S07), *fixture list* (S11),
   *tournament* (S12), *history* (S13), *select squad* (S08, also Space) and *play next game* (the match day, T167, below). **T** S10, **F1** S22, **F7** save and **F10** quit (S21, T168, below); **F3** comes with
-  T167, **F4** with T181. A placeholder says which task brings it, on the desk, and does nothing else. *re-import data*, a goal2 addition
-  (decision 14), is a seventh option under a "goal2 addition" tag: S01 over the data folder, Esc back to the desk.
+  T167, **F4** with T181. A placeholder says which task brings it, on the desk, and does nothing else. Under a "goal2
+  addition" tag, on one row after the six: *manager's name* and *new career* (T177, below) and *re-import data*
+  (decision 14), S01 over the data folder, Esc back to the desk.
 - **S07** shows S04's card for the highlighted country, read from the career, beside the list in groups of 16, the next
   opponent marked. It opens on the world ranking at the next opponent. **↑↓** country, **←→** group, **Ins** the
   other ranking (the highlight stays), **Space** the country's twenty read only, **T** its tactics (S10 for your own
@@ -347,3 +351,38 @@ box over the screen it came from, that screen dimmed under it as S22's, titled *
 with `view()` equal), the replace question, F10's answers, the close button's, the model's save never called on a
 `.g2game` file, and a failed save in an unwritable folder. The pictures are in
 [design/ui-2026-11/T168-screens](design/ui-2026-11/T168-screens/).
+
+## The extras kept from today's window (T177)
+
+[designed: owner, §6 item 18 (design/ui-2026-11, 2026-11-03); T177, #557] Four of today's extras stay, though the
+original lacks them. Each is tagged *GOAL2 ADDITION* on its screen, as the desk's re-import, and does what today's
+window does through the model ([desktop-management.md](desktop-management.md)); no key the original uses on that
+screen changes meaning.
+
+- **The pool's search and position filter (S08).** **/** opens the search line over the pool (from the squad side
+  too): typing filters by name, accents folded (`campaign_pool.fold`: "muller" finds "Müller"), Backspace edits,
+  Enter keeps the search and closes the line, Esc clears it. **P** steps the position filter through the original's
+  fourteen position codes and back to all, **Shift+P** the other way. The rows are `pool_view(query, position)`'s, and
+  the two Enters exchange from a filtered list as from the whole pool (`exchange`). A click on the search line or the
+  filter is its key. The original's S08 uses ←→, ↑↓, Enter, Ins, F2, R, C, T and Esc [confirmed: E031 C06, C27,
+  C29–C31], not / or P. The bar has no room for two more items at 1440 px, so R stands over C and / over P, two to a
+  column.
+- **A standalone friendly (S02, F).** `goal2/ui/friendly.py`: the 128 countries in groups of 16 by world rank, ↑↓
+  and ←→ as on S04; Enter chooses your country, then the opponent, and kicks off; Esc steps back. The friendly is a
+  private `DesktopModel.new_friendly` (no campaign), with the original's suggested captain as *play next game* sets
+  it, played watched on S17 through the bridge (`s17_pitch.MatchController`), your country first; the engine's fixture
+  index is the template's own. At full time (or a cancel) S17 returns to S02 with its result line. It is never the
+  window's career, so nothing asks to save and nothing is saved. The original's title takes only Y and N
+  [confirmed: T156-R1 steps 0, 242–244; E031 C11–C12].
+- **Renaming the manager (S06, *manager's name*).** A name line in the manager's box, 14 characters at most as S04's;
+  Enter gives the name through `rename_manager`, Esc keeps the old one. The career is then unsaved.
+- **A new career (S06, *new career*).** With anything unsaved it asks S21's *Do you want to save this game?* first
+  (`ask_to_save`, titled *new career*): Y the name box, then S03; N S03 without saving; Esc stays. With nothing
+  unsaved it goes straight to S03. S03 opens over the desk: Esc returns to the desk and its career, and a career
+  started on S04 replaces it.
+
+`goal2/tests/test_ui_extras_t177.py` visits each against the model: the search and the filter against `pool_view`,
+an exchange from a filtered list against `exchange`, the original's S08 keys, the rename against `rename_manager`,
+the new career's three answers and the straight path, and the friendly from S02 to full time and back with no save
+(it needs PyPy 3.11 and skips without it). The pictures are in
+[design/ui-2026-11/T177-screens](design/ui-2026-11/T177-screens/).

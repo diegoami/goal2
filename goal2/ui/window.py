@@ -139,9 +139,11 @@ class Window(QMainWindow):
             return
         event.ignore()
         from goal2.ui.s21_save import BoxScreen, ask_to_save
-        lowest = self.stack.index(running[0]) if running else 0
-        while lowest and len(self.stack) > lowest:
-            self.pop()
+        # The cancelled match's screens go down to the stack's base (the desk, which also ends its match day's
+        # bridges: its `closing` is no reason to keep what is above it).
+        if any(screen is not self.stack[0] for screen in running):
+            while len(self.stack) > 1:
+                self.pop()
         while isinstance(self.current(), BoxScreen) and len(self.stack) > 1:
             self.pop()
         ask_to_save(self, self.career, self.leave)
