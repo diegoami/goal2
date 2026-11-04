@@ -19,7 +19,7 @@ C36, C37]
   other side's are read only (E031 C36: "view only").
 - **Ins** turns the automatic action replay on or off; the label names the state, as the original's (E031 C37). The
   flag is stored in the data folder (`settings.json`, `automatic_action_replay`) [designed: T167]; the replay itself
-  is T168's.
+  is T181's.
 - **The watch question** [confirmed: F030 at 1bd066ca, `0791:E80D`]: where the original asks *Do you want to watch
   this match?* (`match_day.asks_watch`), the menu asks it before kick-off with **Y**/**N**; it has no timeout. N plays
   a quick result: S17 with R pressed (owner decision 3).

@@ -105,7 +105,7 @@ class BoardScreen(Screen):
         row.addWidget(label(detail, "sub"))
         row.addStretch(1)
         motm = data["man_of_the_match"]
-        motm_name = data.get('motm_name', full_name(model, motm) if motm else '')
+        motm_name = data['motm_name'] if 'motm_name' in data else full_name(model, motm) if motm else ''
         self.motm = label(f"MAN OF THE MATCH {motm_name}" if motm_name else "", "value")
         colour(self.motm, theme.VALUE)
         row.addWidget(self.motm)

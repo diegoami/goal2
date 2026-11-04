@@ -76,7 +76,7 @@ class RecordedSamples(unittest.TestCase):
             self.assertEqual(replays.entries(folder, 'goal'), [])
 
 
-@requires.need(modules=('PySide6',), **requires.HALFTIME)
+@requires.need(modules=('PySide6', 'pygame'), **requires.HALFTIME)
 class ReplayScreens(unittest.TestCase):
     """[designed: T181] Synthetic packets isolate the UI's questions/painting; no real match is played here."""
     def setUp(self):
@@ -181,6 +181,38 @@ class ReplayScreens(unittest.TestCase):
         self.assertIsNone(self.pitch.replay)
         self.assertFalse(self.pitch.stop_box.open)
 
+    def test_r_after_paint_before_the_next_tick_discards_pending_goal(self):
+        event = {'kind': 'goal', 'minute': 3, 'score': [0, 1],
+                 'data': {'team': 1, 'player': self.model.state.managed_squad[1]}}
+        self.controller.events.append(event)
+        row = frames(1)[0]
+        row['watermark'] = 1
+        self.controller.display.frame = row
+        self.pitch.painted(row['sequence'])
+        self.assertIsNotNone(self.controller.goal)
+        self.pitch.quick_result()
+        self.pitch.tick()
+        self.assertIsNone(self.controller.goal)
+        self.assertFalse(self.controller.held)
+        self.assertFalse(self.pitch.stop_box.open)
+        self.assertIsNone(self.pitch.replay)
+
+    def test_future_and_recalled_goal_events_do_not_open_a_question(self):
+        from PySide6.QtCore import Qt
+        event = {'kind': 'goal', 'minute': 3, 'score': [0, 1], 'data': {'team': 1, 'player': 0}}
+        self.controller.events.append(event)
+        row = frames(1)[0]
+        row['watermark'] = 1
+        self.controller.display.frame = row
+        self.pitch.painted(row['sequence'])
+        self.assertIsNone(self.controller.goal, 'a recalled goal is not a scored goal')
+        event = {'kind': 'goal', 'minute': 4, 'score': [0, 1],
+                 'data': {'team': 1, 'player': self.model.state.managed_squad[1]}}
+        self.controller.events.append(event)
+        self.pitch.painted(row['sequence'])
+        self.assertIsNone(self.controller.goal, 'the future goal is ahead of this sample watermark')
+        self.assertFalse(self.pitch.stop_box.open)
+
     def test_saved_goal_f3_name_menu_play_and_escape_keep_the_career_unchanged(self):
         from PySide6.QtCore import Qt
         from goal2.ui import replays
@@ -215,6 +247,34 @@ class ReplayScreens(unittest.TestCase):
         self.assertIs(self.window.current(), desk)
         self.assertEqual(self.model.state, before)
 
+    def test_duplicate_name_needs_yes_and_long_saved_list_scrolls(self):
+        from PySide6.QtCore import Qt
+        from goal2.ui import replays
+        self.goal()
+        self.pitch.answer_stop_box(Qt.Key.Key_N)
+        self.pitch.answer_stop_box(Qt.Key.Key_Y)
+        name_box = self.window.current()
+        name_box.field.set_text('Goal 00')
+        name_box.save()
+        record = replays.read(replays.entries(self.window.target.root / 'recordings', 'goal')[0]['path'])
+        for n in range(1, 12):
+            replays.write(self.window.target.root / 'recordings', 'goal', f'Goal {n:02}', record['data'])
+        replays.name_recording(self.window, self.pitch, 'goal', record['data'], lambda: None)
+        name_box = self.window.current()
+        name_box.field.set_text('Goal 00')
+        name_box.save()
+        self.assertIsNotNone(name_box.replacing)
+        name_box.keep()
+        self.assertIsNone(name_box.replacing)
+        name_box.escape()
+        listing = replays.open_list(self.window, self.model, 'goal')
+        for _ in range(10):
+            listing.handle_key(Qt.Key.Key_Down)
+        self.assertEqual(listing.entries[listing.position]['name'], 'Goal 10')
+        self.assertGreater(listing.top, 0)
+        listing.press_enter()
+        self.assertEqual(self.window.current().record['name'], 'Goal 10')
+
     def test_saved_summary_f4_preserves_counts_and_names_after_the_career_changes(self):
         from PySide6.QtCore import Qt
         from goal2.ui.s20_board import BoardScreen, board, COUNTERS
@@ -235,7 +295,7 @@ class ReplayScreens(unittest.TestCase):
         record = replays.read(replays.entries(self.window.target.root / 'recordings', 'summary')[0]['path'])
         counts = list(screen.stat_rows)
         scorers = list(screen.scorer_texts)
-        with patch('goal2.ui.s20_board.full_name', return_value='A different player'):
+        with patch('goal2.ui.s20_board.full_name', side_effect=KeyError('old player absent from this career')):
             self.window.current().handle_key(Qt.Key.Key_F4)
             self.window.current().press_enter()
         opened = self.window.current()
@@ -246,11 +306,10 @@ class ReplayScreens(unittest.TestCase):
 
 
 
-@requires.need(modules=('PySide6',), **requires.HALFTIME, slow=True)
+@requires.need(modules=('PySide6', 'pygame'), **requires.HALFTIME, slow=True)
 class WatchedReplay(unittest.TestCase):
     def test_replayed_engine_samples_and_published_state_equal_the_same_match_through_bridge(self):
         """[designed: T181] Actual PyPy match, not synthetic: a replay is presentation only."""
-        import time
         from PySide6.QtCore import Qt
         from goal2.tests.test_pypy_worker_t152 import pypy
         from goal2.tests.test_ui_match_day_t167 import app, career, key, pump
@@ -284,7 +343,6 @@ class WatchedReplay(unittest.TestCase):
                         drawn[-1].append(row)
                 original_painted(sequence)
             pitch.pitch.on_drawn = painted
-            last_box = [None]
             def step():
                 screen = window.current()
                 if screen is pitch:
@@ -313,7 +371,7 @@ class WatchedReplay(unittest.TestCase):
             outcome = play_through_bridge(reference, controller.choices, fixture=engine_fixture(day.fixture), wait=1500)
             self.assertEqual(controller.outcome.result, outcome.result)
             self.assertEqual(model.state, reference.state)
-            self.assertEqual([e.kind for e in controller.outcome.events], [e.kind for e in outcome.events])
+            self.assertEqual(controller.outcome.events, outcome.events)
             window.leave()
             application.processEvents()
 

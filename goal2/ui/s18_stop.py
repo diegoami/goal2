@@ -17,7 +17,7 @@ The notices, each answered by any key, as the original's "press any key":
 
 The box belongs to S17 (`PitchScreen.stop_box`): it is drawn over the pitch, and while it shows every key answers it.
 The goal questions (*action replay?*, *save this goal?*) are T181's: `show(..., answers=...)` takes keys with their
-words for a question, so that T181 adds them here.
+words for a question; T181 asks those questions once the goal's sample has been painted.
 """
 from __future__ import annotations
 

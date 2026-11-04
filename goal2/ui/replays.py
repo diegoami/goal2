@@ -82,6 +82,21 @@ def _validate(value):
         if any(not isinstance(kits[k], list) or len(kits[k]) != 2
                or any(type(n) is not int or not 0 <= n <= 15 for n in kits[k]) for k in ('shirt', 'keeper')):
             raise ValueError('invalid kits')
+        roles = data.get('roles', {})
+        if (not isinstance(roles, dict) or len(roles) > 64
+                or any(not isinstance(k, str) or not k.isascii() or not k.isdigit() or not 1 <= int(k) <= 3060
+                       or not isinstance(v, str) or len(v) != 1 for k, v in roles.items())
+                or data.get('managed') not in (None, 0, 1)
+                or type(data.get('marks', 0)) is not int or not 0 <= data.get('marks', 0) < 5):
+            raise ValueError('invalid role display')
+        menu = data.get('menu', {})
+        if (not isinstance(menu, dict) or set(menu) - {'0', '1'}
+                or any(not isinstance(side, (list, tuple)) or len(side) != 2 or not isinstance(side[0], str)
+                       or not isinstance(side[1], (list, tuple)) or len(side[1]) > 11
+                       or any(not isinstance(row, (list, tuple)) or len(row) != 2
+                              or any(not isinstance(cell, str) for cell in row) for row in side[1])
+                       for side in menu.values())):
+            raise ValueError('invalid saved lineup')
         if value['kind'] == 'goal':
             from goal2.game.watched_pitch import validate
             rows = data['frames']
@@ -102,11 +117,23 @@ def _validate(value):
                                                            'man_of_the_match', 'quick', 'scorer_names', 'motm_name'}):
                 raise ValueError('invalid board')
             from goal2.ui.s20_board import COUNTERS
-            if (len(board['score']) != 2 or len(board['scorers']) != 2 or len(board['scorer_names']) != 2
-                    or set(board['counters']) != {k for k, _ in COUNTERS}
-                    or any(len(names) != len(scorers) for names, scorers in zip(board['scorer_names'], board['scorers']))
-                    or any(not isinstance(n, str) for names in board['scorer_names'] for n in names)
-                    or not isinstance(board['motm_name'], str)):
+            def pair(row):
+                return (isinstance(row, (list, tuple)) and len(row) == 2
+                        and all(type(n) is int and 0 <= n <= 65535 for n in row))
+            if (not pair(board['score']) or (board['half_time'] is not None and not pair(board['half_time']))
+                    or not isinstance(board['scorers'], list) or len(board['scorers']) != 2
+                    or any(not isinstance(side, list) or any(not pair(row) for row in side)
+                           for side in board['scorers'])
+                    or not isinstance(board['scorer_names'], list) or len(board['scorer_names']) != 2
+                    or not isinstance(board['counters'], dict) or set(board['counters']) != {k for k, _ in COUNTERS}
+                    or any(row is not None and not pair(row) for row in board['counters'].values())
+                    or any(not isinstance(names, list) or len(names) != len(scorers)
+                           for names, scorers in zip(board['scorer_names'], board['scorers']))
+                    or any(not isinstance(n, str) or len(n) > 100 for names in board['scorer_names'] for n in names)
+                    or not isinstance(board['motm_name'], str) or len(board['motm_name']) > 100
+                    or type(board['quick']) is not bool
+                    or (board['bars'] is not None and (not isinstance(board['bars'], list) or len(board['bars']) != 2
+                                                       or any(not pair(row) for row in board['bars'])))):
                 raise ValueError('invalid board detail')
     except (ValueError, TypeError, KeyError, IndexError, SaveError) as exc:
         raise RecordError('The recording is damaged or incomplete.') from exc
@@ -212,6 +239,7 @@ def name_recording(window, under, kind, data, done):
 
         def __init__(self):
             super().__init__(window, under, None, done=done, cancelled=done)
+            self.record_kind = kind
             self.head.setText(self.box_title.capitalize())
             self.note.setText('Give this recording a name. Enter saves it; Esc returns without saving.')
             self._mode()
@@ -375,6 +403,7 @@ def play_saved(window, model, record):
             self.set_enter('Match menu', self.escape)
             self.pitch.marks = record['data'].get('marks', self.pitch.marks)
             self.start_replay(record['data']['frames'], self.completed)
+            self.set_enter('Match menu', self.escape)
 
         def tick(self):
             if self.replay is not None:

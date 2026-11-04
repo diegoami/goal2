@@ -331,6 +331,8 @@ class MatchController:
         """R: the engine plays on without pacing."""
         if self.running and not self.quick:
             self.quick = True
+            self.goal = None
+            self.goal_window.clear()
             self.note = HANG_ON
 
     def request_bench(self):
@@ -498,6 +500,8 @@ class PitchScreen(Screen):
         self.replay = Playback(frames)
         self.replay_display = copy.copy(self.controller.display)
         self.replay_done = done
+        self._replay_enter_before = self.enter_action
+        self.set_enter('Replay playing', lambda: None)
         self._result_text('REPLAY')
         self.replay_tick(time.monotonic())
 
@@ -510,6 +514,7 @@ class PitchScreen(Screen):
         if replay.finished:
             done = self.replay_done
             self.replay = self.replay_display = self.replay_done = None
+            self.set_enter(*self._replay_enter_before)
             self._result_text(HANG_ON if self.controller.quick else 'result')
             self.pitch.update()
             self.refresh()
@@ -550,7 +555,8 @@ class PitchScreen(Screen):
         """S18 over the pitch, answered by any key."""
         self.stop_box.show_stop(kind, headline, detail, handler, answers)
         self._enter_before = self.enter_action
-        self.set_enter("Continue", lambda: self.answer_stop_box(Qt.Key.Key_Return))
+        self.set_enter('Answer Y or N' if answers else 'Continue',
+                       lambda: self.answer_stop_box(Qt.Key.Key_Return))
         self.refresh()
 
     def answer_stop_box(self, key):
@@ -563,7 +569,7 @@ class PitchScreen(Screen):
         if self.stop_box.open and key != Qt.Key.Key_F1:
             self.answer_stop_box(key)
             return True
-        if self.replay is not None and key not in (Qt.Key.Key_F1, Qt.Key.Key_Left, Qt.Key.Key_Right):
+        if self.replay is not None and key in (Qt.Key.Key_R, Qt.Key.Key_Escape, Qt.Key.Key_Return, Qt.Key.Key_Enter):
             return True
         return super().handle_key(key)
 

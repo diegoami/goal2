@@ -194,8 +194,7 @@ the manager's desk, the career's home: every management screen returns to it wit
   rankings, the next opponents with theirs and the match's kind with home or away (*friendly away*, T167, #562), the managers, and the twenty with role codes, the eleven above the bench; the competition at the title
   bar's right end, named as the original's hub names it (T178, #563: *2028 European Championship · QUALIFYING*). The
   six options in the original's order, the cursor on *team info*: *team info* (S07), *fixture list* (S11),
-  *tournament* (S12), *history* (S13), *select squad* (S08, also Space) and *play next game* (the match day, T167, below). **T** S10, **F1** S22, **F7** save and **F10** quit (S21, T168, below); **F3** comes with
-  T167, **F4** with T181. A placeholder says which task brings it, on the desk, and does nothing else. Under a "goal2
+  *tournament* (S12), *history* (S13), *select squad* (S08, also Space) and *play next game* (the match day, T167, below). **T** S10, **F1** S22, **F7** save and **F10** quit (S21, T168, below); **F3** lists saved goals and **F4** saved match summaries (T181). Under a "goal2
   addition" tag, on one row after the six: *manager's name* and *new career* (T177, below) and *re-import data*
   (decision 14), S01 over the data folder, Esc back to the desk.
 - **S07** shows S04's card for the highlighted country, read from the career, beside the list in groups of 16, the next
@@ -306,7 +305,7 @@ answer the engine receives, sent once, through the bridge, in the order the engi
   kick-off, also **T** and **Space**; at a break *players* opens the bench S19 and team tactics read only, T180),
   the tournament, the match stats, and *play* ("choose your captain, then kick-off", "second half") or *exit*.
   **Ins** turns the automatic action replay on or off, stored in the data root's `settings.json`; the replay itself
-  is T168's. The watch question comes only where the original asks it (`asks_watch`: kinds 8, 200, 201, 203, and
+  is T181's. The watch question comes only where the original asks it (`asks_watch`: kinds 8, 200, 201, 203, and
   101, 103 with a manager on side B's continent, F030), with **Y**/**N**; N plays a quick result (S17 with R pressed).
 - **S16** asks the captain before kick-off ("Choose your captain to kick off"; the highlight on T143's pick; **↑↓**,
   **Enter**, **C** the computer's), confirmed through `DesktopModel.confirm` before the engine is asked; a set-piece
@@ -337,7 +336,7 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
 - **S18** (`goal2/ui/s18_stop.py`) is a box over the pitch (`PitchScreen.stop_box`): *SUBSTITUTION OPPORTUNITY* (your
   player injured, or the stoppage after a request; the original's refused eleven is said there), any key to S15
   (phase *stop*), whose *players* opens S19; the other side's substitution (*SUBSTITUTION X on for Y*), any key plays
-  on; the penalty shoot-out's notice before S16's order. T181 adds the goal questions to the same box.
+  on; the penalty shoot-out's notice before S16's order. T181's goal questions use the same box (below).
 - **S19** (`goal2/ui/s19_bench.py`) keeps T102's bench rules (`goal2/desktop/bench_page.py`): the card, the eleven and
   the bench, the mode (*make substitutions now*, *substitution requested*), the counter (the decision's
   `substitutions_left`, *no more substitutes* at 0). **↑↓** player, **Enter** takes off or puts on (either order;
@@ -419,3 +418,40 @@ an exchange from a filtered list against `exchange`, the original's S08 keys, th
 the new career's three answers and the straight path, and the friendly from S02 to full time and back with no save
 (it needs PyPy 3.11 and skips without it). The pictures are in
 [design/ui-2026-11/T177-screens](design/ui-2026-11/T177-screens/).
+
+## Action replay and recorded goals and boards (T181)
+
+[designed: owner, #575; confirmed: T156-R1 steps 175–178, 198–199, 245–256] After a watched goal, S18 asks
+*Do you want an action replay?* **Y** redraws the goal's samples on S17 with **REPLAY** in place of **R result**, then
+S18 asks *Do you want to save this goal?* **Y** opens S21's name box. **N** declines each question. With S15's automatic
+action replay flag on, playback starts without the first question. A quick result asks neither. The questions and
+playback hold the live display and its acknowledgements, keeping the bridge's LEAD pacing: replay paints never
+acknowledge a live sample. Once answered, play resumes from the held live sample. No replay asks the engine to play
+again or changes a bench answer.
+
+[designed: T181] S17 retains at most **600 already painted samples**, ten seconds at the normal 60 samples/s: the
+recent attack, with memory independent of match length. Repainting for a resize adds no duplicate. A new goal after
+the last goal starts a fresh window. Playback waits for every selected sample to be painted before advancing,
+including the last; it never skips samples to catch up.
+
+Named goals (`.g2goal`) and match summaries (`.g2summary`) use goal2's versioned JSON format in the data root's
+`recordings` folder, beside `saves`. These are not the original's files. Writes replace a file only when complete;
+a duplicate name asks before replacing, and a failed write leaves the prior recording intact. S21 accepts a free
+name, **Enter** saves, **Esc** returns without saving.
+
+**F3** on the desk lists saved goals by name; arrows select and scroll, **Enter** opens S15's saved-goal menu, and
+*play* opens S17. **Esc** returns through the menu and list to the desk. The saved goal keeps the exact samples,
+countries, score, minute, scorer, kits and role display. Its menu freezes the kick-off lineups. The recording is
+read only: live tactics, players, tournament and match-stat actions are absent because it has no career to inspect
+or change. **Esc/Enter** during saved playback return to the menu.
+
+At a watched match's full time, S20 asks *Do you want to save the match summary?* **Y** opens S21 for a name; **N**
+continues to the full-time menu. **F4** on the desk lists the named summaries; **Enter** shows the saved S20, **Esc**
+returns. The record freezes the counts, bars, score, scorer names, minutes, man of the match, countries and kits, so
+loading another career does not change what it shows. A quick result has no summary-save question.
+
+`test_ui_replay_t181` checks bounded recording, every replayed paint in order, the manual/automatic/quick paths,
+named-goal F3 playback, atomic replacement, damaged-file refusal and F4's frozen board. Its slow case plays an actual
+watched match with replay and compares the published career and result to the same bridge match with the same
+answers. `python -m goal2.ui --screenshot DIR` adds the goal questions, replay, name boxes, summary question,
+saved-goal menu and F3/F4 lists.
