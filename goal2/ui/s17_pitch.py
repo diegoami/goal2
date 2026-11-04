@@ -18,10 +18,14 @@ player watched is the match the engine published. It drives nothing: `MatchContr
 - **F9** [designed: T166]: goal2 has no sound; the key says so and does nothing else.
 - **The stops** [designed: T167, #541; docs/design/ui-2026-11 §1, the match day]: the controller holds a stop once every
   sample before it is shown, and the match day (goal2/ui/match_day.py) shows it: half time and the menu before extra
-  time on S20 then S15, a set-piece taker and the shoot-out order on S16. Its answer is the one the engine receives,
-  sent once through the bridge. A substitution opportunity and the pause Esc or Enter asks for keep T166's answer
-  until T180 builds S18 and S19: no substitution, play on (goal2/desktop/bench_page.py `escape`), noted in the
-  commentary.
+  time on S20 then S15, a set-piece taker and the shoot-out order on S16, a substitution opportunity on S18 then
+  S15, the pause Esc or Enter asks for on the bench S19 [designed: T180, #574]. Its answer is the one the engine
+  receives, sent once through the bridge; no stop keeps a default answer.
+- **The notices** [designed: T180; confirmed: t156-149-opponent-substitution.png]: the other side's substitution
+  stops the display on S18 (the box over the pitch) until a key, as the original's notice, while the engine waits
+  within its pacing; a quick result shows none. A bench answer's report (`WatchedJobs.reports`) that refuses a pair
+  holds the display the same way and shows S19 with the engine's reason until a key; made and requested pairs are
+  noted under the commentary.
 - **Full time** publishes through the bridge, then the match day shows S20 and S15. Closing the window during a match
   cancels it through the bridge (`Window.closeEvent` calls `closing`): nothing is published.
 
@@ -48,14 +52,13 @@ TICK_MS = 4            # the controller's poll; the fastest speed shows 240 samp
 COMMENTARY_ROWS = 15   # the lines the commentary box shows [designed: s17-pitch.png, the box's height]
 HANG_ON = "HANG ON A TICK"   # [confirmed: t156-267-quick-hang-on.png, "HANG ON"; T156-R1 step 2's full words]
 NO_SOUND = "F9: goal2 has no sound, so the key does nothing."
-BENCH_LATER = "The bench comes with T180: the match plays on with no substitution."
+REQUESTED = "Bench requested: the bench opens when the original stops for it."
 # The stops' words. [confirmed: E031 C40-C41, C44-C46b; goal2/desktop/match_view.py `Display.board`]
 STOPS = {"half_time": "HALF TIME", "substitution": "SUBSTITUTION OPPORTUNITY", "pause": "PAUSE",
          "extra_time": "EXTRA TIME", "shootout_order": "PENALTY SHOOT-OUT"}
-# The bench decisions that keep T166's default answer until T180 (S18, S19) [designed: T167]; every other stop is
-# held for the match day's screens (STOPS_SHOWN).
-DEFAULTED = ("substitution", "pause")
-STOPS_SHOWN = ("half_time", "extra_time", "set_piece", "shootout_order")
+# Every decision the match day answers is held for its screens [designed: T167; T180]: S20/S15, S16, S18 and S19.
+STOPS_SHOWN = ("half_time", "extra_time", "set_piece", "shootout_order", "substitution", "pause")
+BENCH = ("half_time", "pause", "substitution")   # [confirmed: watched_match.BENCH_CONTEXTS]
 
 
 def suggested_captain(state):
@@ -119,7 +122,13 @@ class MatchController:
         self.error = None
         self.finished = False
         self.stop = None          # the decision the match waits on, once every sample before it is shown
-
+        self.notice = None        # the other side's substitution shown on S18, the display held until a key
+        self.refusal = None       # an answer's report that refused a pair, shown on S19 until a key
+        self.reports = []         # the engine's reports of the bench answers, in order
+        self._expected = None     # the report the last bench answer waits for (its index in the bridge's reports)
+        self._scanned = 0         # the shown events already looked at for a notice
+        self.lineup = None        # the latest pitch sample's players (the opponents' eleven for S09's mark line)
+        self.lineup_at = 0        # its watermark: the events before it
     def _send(self, kind, value):
         self.display.accept(["s17", self.display.sequence, kind, value])
 
@@ -162,11 +171,15 @@ class MatchController:
                      "data": copy.deepcopy(event.data)}
             self._send("event", value)
             self.events.append(value)
+        self._read_report()
         if not bridge.busy:
             return self._full_time()
+        if self.held:
+            return False          # S18 or S19 shows a notice: the display waits, so the engine waits (LEAD)
         if len(display.frames) <= MAX_BACKLOG - 32:
             for frame in bridge.poll_frames(token):
                 self._send("frame", frame)
+                self.lineup, self.lineup_at = frame["players"], frame["watermark"]
             if not bridge.busy:
                 return self._full_time()
         if self.quick and display.frames:
@@ -182,12 +195,7 @@ class MatchController:
             context = waiting.data.get("context")
             if self.quick:
                 self.released = len(self.events)
-            if context in DEFAULTED:
-                bridge.answer(token, ())
-                self.answered.append(context)
-                self.choices.append((context, []))
-                self.note = f"{STOPS.get(context, context)}: {BENCH_LATER}"
-            elif context == "set_piece" and self.quick:
+            if context == "set_piece" and self.quick:
                 # [designed: T167; docs/design S17 "R ... still stops at half time, injuries, extra time and the
                 # shoot-out"] a quick result shows no taker card: no key, the current pick stands (F030)
                 self._answer(context, {"taker": None})
@@ -199,7 +207,60 @@ class MatchController:
             changed = display.advance(now)
             if changed:
                 self.released = max(self.released, display.frame["watermark"])
+        self._look_for_notice()
         return changed
+
+    @property
+    def held(self):
+        return self.notice is not None or self.refusal is not None
+
+    def _look_for_notice(self):
+        """[confirmed: t156-149] The other side's substitution, once shown, stops the display for its notice
+        (not in a quick result, which shows none)."""
+        managed = self.display.managed
+        while self._scanned < self.released and self.notice is None:
+            event = self.events[self._scanned]
+            self._scanned += 1
+            if (not self.quick and managed is not None and event["kind"] == "substitution"
+                    and event["data"].get("team") == 1 - managed):
+                self.notice = event
+
+    def _read_report(self):
+        """The engine's report of the last bench answer (made, requested, refused with the reason)."""
+        if self._expected is None or len(self.bridge.reports) <= self._expected:
+            return
+        report = copy.deepcopy(self.bridge.reports[self._expected])
+        self._expected = None
+        self.reports.append(report)
+        from goal2.ui.squad_card import full_name
+        name = lambda w: full_name(self.model, w)
+        said = []
+        if report["made"]:
+            said.append("Made: " + ", ".join(f"{name(b)} on for {name(a)}" for a, b in report["made"]) + ".")
+        if report["requested"]:
+            said.append("Requested: made at the next stoppage.")
+        if report["refused"]:
+            said.append("Not made: " + ", ".join(f"{name(b)} for {name(a)}" for a, b, _ in report["refused"]) + ".")
+            self.refusal = report
+        self.note = " ".join(said)
+
+    def dismiss(self):
+        """A key on S18's notice or on S19's refusal: the display plays on."""
+        self.notice = None
+        self.refusal = None
+
+    def opponents(self):
+        """The other side's eleven as the engine has it now, keeper first: the latest pitch sample's players
+        (watched_pitch.snapshot: each slot's current player word, substitutions included [derived: T81]), with the
+        other side's substitutions shown since. [designed: T180] The decision does not carry them."""
+        managed = self.display.managed
+        if self.lineup is None or managed is None:
+            return []
+        words = [p[3] for p in sorted((p for p in self.lineup if p[1] == 1 - managed), key=lambda p: p[2])]
+        for event in self.events[self.lineup_at:]:
+            if event["kind"] == "substitution" and event["data"].get("team") == 1 - managed:
+                words = [event["data"]["on"] if w == event["data"]["off"] else w for w in words]
+        return words
 
     def _full_time(self):
         """The bridge has published the match (or failed it): every event is shown; the bridge stays open (D3)."""
@@ -211,9 +272,20 @@ class MatchController:
         self.bridge = None
         return False
 
-    def _answer(self, context, value):
+    def _answer(self, context, value, requested=()):
         if context in ("set_piece", "shootout_order"):
             self.bridge.choose(self.token, value)
+        elif context in BENCH:
+            # [designed: T180] the bench's answer: the pairs, with its other changes when there are any
+            if isinstance(value, dict):
+                pairs = value.get("substitutions") or []
+                self.bridge.answer(self.token, pairs, {k: v for k, v in value.items() if k != "substitutions"})
+            else:
+                pairs = list(value or [])
+                self.bridge.answer(self.token, pairs)
+            if pairs or (context == "substitution" and requested and not isinstance(value, dict)):
+                # [confirmed: the kit's Match._on_notice; watched_match._drive_match] a report follows
+                self._expected = len(self.bridge.reports)
         else:
             self.bridge.answer(self.token, ())
         self.answered.append(context)
@@ -221,12 +293,12 @@ class MatchController:
 
     def answer_stop(self, value=None):
         """The match day's answer to the held stop, sent once: {'taker': word or None} at a set piece,
-        {'shootout_order': [words]} before a shoot-out, nothing at half time and before extra time (play on; the
-        bench comes with T180)."""
+        {'shootout_order': [words]} before a shoot-out, the bench's (S19, `BenchAnswer.value`) at half time, a
+        substitution opportunity and a pause, nothing before extra time (play on)."""
         stop, self.stop = self.stop, None
         if stop is None or not self.running:
             return
-        self._answer(stop.data.get("context"), value if value is not None else [])
+        self._answer(stop.data.get("context"), value if value is not None else [], stop.data.get("requested"))
 
     # The player's keys.
     def painted(self, sequence):
@@ -248,7 +320,7 @@ class MatchController:
         sent = self.bridge.pause(self.token)
         if sent:
             self.requests += 1
-            self.note = "Bench requested. " + BENCH_LATER
+            self.note = REQUESTED
         return sent
 
     def cancel(self):
@@ -277,8 +349,7 @@ def commentary_line(event):
     if event["kind"] == "commentary":
         return f"{event['minute']}′ {event['data'].get('text', '')}"
     context = event["data"].get("context")
-    answer = "no substitution, play on (T180)" if context in DEFAULTED else "your answer"
-    return f"{event['minute']}′ ── {STOPS.get(context, str(context).upper())}: {answer}"
+    return f"{event['minute']}′ ── {STOPS.get(context, str(context).upper())}: your answer"
 
 
 class PitchScreen(Screen):
@@ -307,6 +378,8 @@ class PitchScreen(Screen):
         self.bind((Qt.Key.Key_Space,), "commentary", self.toggle_commentary)
         self.bind((Qt.Key.Key_F9,), "sound", self.sound)
         self.set_enter("Bench", self.request_bench)
+        from goal2.ui.s18_stop import StopBox
+        self.stop_box = StopBox(self)   # S18, over the pitch [designed: T180]
         self.timer = QTimer(self)
         self.timer.setInterval(TICK_MS)
         self.timer.timeout.connect(self.tick)
@@ -394,9 +467,51 @@ class PitchScreen(Screen):
         self.refresh()
         if controller.finished and not self.ended:
             self.end()
-        elif controller.stop is not None and self.held is None and self.day is not None:
+        elif self.stop_box.open or self.window_.current() is not self or self.day is None:
+            return
+        elif controller.notice is not None:
+            self.show_notice(controller.notice)
+        elif controller.refusal is not None:
+            self.day.refused(self, controller.refusal)
+        elif controller.stop is not None and self.held is None:
             self.held = controller.stop
             self.day.stop(self, controller.stop)
+
+    def show_notice(self, event):
+        """[confirmed: t156-149] S18: the other side's substitution; any key plays on."""
+        from goal2.ui.s18_stop import NOTICE_OPPONENT, opponent_text, score_line
+        names = self.controller.display.countries
+        country = names[event["data"]["team"]]
+        self.show_stop(NOTICE_OPPONENT, opponent_text(self.model, event),
+                       f"{country}: {score_line(names, event['score'], event['minute'])}. Press any key: play on.",
+                       lambda key: self.dismiss())
+
+    def show_stop(self, kind, headline, detail, handler):
+        """S18 over the pitch, answered by any key."""
+        self.stop_box.show_stop(kind, headline, detail, handler)
+        self._enter_before = self.enter_action
+        self.set_enter("Continue", lambda: self.answer_stop_box(Qt.Key.Key_Return))
+        self.refresh()
+
+    def answer_stop_box(self, key):
+        self.set_enter(*self._enter_before)
+        return self.stop_box.answer(key)
+
+    def handle_key(self, key):
+        if self.stop_box.open and key != Qt.Key.Key_F1:
+            self.answer_stop_box(key)
+            return True
+        return super().handle_key(key)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.stop_box.open:
+            self.stop_box.place()
+
+    def dismiss(self):
+        """A key on a notice or a refusal: the display plays on."""
+        self.controller.dismiss()
+        self.refresh()
 
     def resume(self, value=None):
         """The match day's answer to the stop it showed: sent once, and the match plays on."""

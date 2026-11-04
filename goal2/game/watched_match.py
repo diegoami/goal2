@@ -181,23 +181,30 @@ class WatchedOutcome:
 
 def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
                       reference_seed: int | None = None, delay_byte: int | None = None,
-                      record_draws: bool = False) -> WatchedOutcome:
+                      record_draws: bool = False, substitutions=None) -> WatchedOutcome:
     """[designed: T63/T65] Complete the original with default play-on answers.
 
     Reference overrides are explicit diagnostics; normal play keeps setup's
     fixture-index * (engine-year + 1) reseed. No live-state mutation or Python
     energy/form update occurs. Events here are a completed diagnostic transcript;
     a future worker must stream directly from Match.events(), never replay this.
+    [designed: T180] `substitutions` is the kit's budget (None: the original's); the engine server gives a
+    watched friendly FRIENDLY_SUBSTITUTIONS, and a reference of it the same.
     """
     image=prepare_watched(state,original,fixture)
     return _drive_match(state,image,fixture,reference_seed=reference_seed,delay_byte=delay_byte,
-                        record_draws=record_draws)
+                        record_draws=record_draws,substitutions=substitutions)
 
 
 # [confirmed: vendored kit goal2/engine/original_match/match.py MENU_CONTEXT/DECIDED_AT_MENU] The
 # decisions where the original offers the managed side its bench: the half-time menu (0791:9AE3),
 # Enter in play (0791:945B) and the stoppage notice (0791:8103).
 BENCH_CONTEXTS = ('half_time', 'pause', 'substitution')
+# [designed: owner BM-7, #73; docs/assumptions.md BM-7; T180] A watched friendly plays with the rebuild's unlimited
+# budget, as the Core's new careers do: the kit's `substitutions` is a byte (0..255), so "unlimited" is the Core's
+# 255 (goal2/core/patches.py OWNER, owner-substitutions-v1), for both sides. [confirmed: the kit's Match docstring]
+# A player taken off cannot come back, so 9 or more is no limit for a bench of nine.
+FRIENDLY_SUBSTITUTIONS = 255
 # [confirmed: goal2-archaeology F027 C-DISC-24 (E544), E015-r0013 state 790] With no substitutions
 # left the original's players screen shows this panel and makes no swap.
 NO_MORE_SUBSTITUTES = 'no more substitutes'
@@ -299,14 +306,21 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
                 continue
             if policy is not None and ev.data['context'] in BENCH_CONTEXTS:
                 # [designed: T102] The watching player answers; a refused eleven is offered again.
-                pairs = [[int(off), int(on)] for off, on in policy.decide(copy.deepcopy(ev))]
-                if pairs:
-                    match.answer(substitutions=pairs)
+                # [designed: T180] An answer may also be {'substitutions': pairs, 'positions', 'marking',
+                # 'own_tactics'}: the bench's other changes, passed to the kit in the same answer.
+                value = policy.decide(copy.deepcopy(ev))
+                changes = {}
+                if isinstance(value, dict):
+                    changes = {k: v for k, v in value.items() if k != 'substitutions' and v}
+                    value = value.get('substitutions') or []
+                pairs = [[int(off), int(on)] for off, on in value]
+                if pairs or changes:
+                    match.answer(substitutions=pairs, **changes)
                 else:
                     match.answer()
-                    if ev.data['context'] == 'substitution':
-                        # The engine's default makes the requested pairs; they are reported as asked.
-                        pairs = [[int(off), int(on)] for off, on in ev.data.get('requested') or []]
+                if not pairs and not changes and ev.data['context'] == 'substitution':
+                    # The engine's default makes the requested pairs; they are reported as asked.
+                    pairs = [[int(off), int(on)] for off, on in ev.data.get('requested') or []]
                 if pairs:
                     report = {'context': ev.data['context'], 'asked': pairs, 'made': [], 'reasons': {},
                               'requested': []}

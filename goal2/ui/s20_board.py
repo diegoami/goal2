@@ -18,7 +18,9 @@ Everything shown is what the bridge's events and outcome give (`board`); nothing
   statistics, the scorers kept, as in the original (t156-270, t156-310).
 
 The home side is named first (`DesktopModel.home`, #562), each name in its side's kit (#583). **Enter** continues (to S15); **Esc**
-the bench, which comes with T180: until then it is the default answer, no substitution, with a note [designed: T167].
+the bench (S19) in *make substitutions now* mode, at half time and before extra time [confirmed: T156-R1 step 119,
+"Esc,◄┘-bench"; designed: T180]: its Esc returns to S15, whose *play* sends the bench's answer. At full time, and on
+the board S15's *match stats* opens, there is no bench: Esc continues as Enter does.
 """
 from __future__ import annotations
 
@@ -37,7 +39,6 @@ COUNTERS = (("corners", "corners"), ("free_kicks", "free kicks"), ("penalties", 
 EVENT_COUNTERS = {"bookings": "booking", "red_cards": "sending_off"}   # counted from the events at half time
 TIMES = {"half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME"}
 NOT_YET = "at full time"   # what a counter the route has only at the final whistle says before it [designed: T167]
-BENCH_LATER = "The bench comes with T180: no substitution, play on."
 
 
 def board(events, phase, quick):
@@ -71,12 +72,14 @@ def board(events, phase, quick):
 class BoardScreen(Screen):
     escape_text = "bench"
 
-    def __init__(self, window, model, names, kind, phase, data, onward, kits):
+    def __init__(self, window, model, names, kind, phase, data, onward, kits, bench=None):
         """`names`: the countries as [team 0, team 1]; `kind`: FRIENDLY, QUALIFYING…; `phase`: half, extra, full;
         `kits`: the match's kits (goal2/ui/kits.py), each name in its side's shirt, as the original's board
-        [confirmed: t156-192-fulltime-board.png, Norway light red and Holland white; #583]."""
+        [confirmed: t156-192-fulltime-board.png, Norway light red and Holland white; #583]; `bench`: what Esc opens
+        (S19), None where there is no bench (Esc then continues)."""
+        self.escape_text = "bench" if bench is not None else "continue"
         super().__init__(window)
-        self.model, self.data, self.onward, self.phase = model, data, onward, phase
+        self.model, self.data, self.onward, self.phase, self.bench = model, data, onward, phase, bench
         home, away = HOME, 1 - HOME
         self.title = f"{names[home]} v {names[away]} · {TIMES[phase].lower()}"
         self.name_label.setText(self.title)
@@ -162,5 +165,7 @@ class BoardScreen(Screen):
         return self.onward(None)
 
     def escape(self):
-        """Esc: the bench (S19, T180). Until then the default answer, no substitution, play on, with its note."""
-        return self.onward(BENCH_LATER)
+        """Esc: the bench (S19), else continue."""
+        if self.bench is not None:
+            return self.bench()
+        return self.onward(None)

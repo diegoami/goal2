@@ -43,7 +43,8 @@ def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait
     """The same match through the bridge, headless, with the same answers: `model`'s next fixture on its own
     WatchedJobs (or CompetitiveJobs), with the pitch samples, the bench and the player prompts, every sample
     acknowledged as it arrives, and each decision the bridge waits on answered with the next of `choices` ((context,
-    value) as the window's MatchController records them: [] plays on, a dict answers a prompt). Returns the outcome;
+    value) as the window's MatchController records them: [] plays on, pairs or the bench's dict answer a bench
+    decision (T180), a dict answers a prompt). Returns the outcome;
     the bridge is closed, so `model.state` is the published career."""
     import time
     if competitive:
@@ -75,8 +76,12 @@ def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait
                 context, value = answers.pop(0)
                 if context != jobs.waiting.data.get("context"):
                     raise AssertionError(f"the reference waits on {jobs.waiting.data.get('context')}, not {context}")
-                if isinstance(value, dict):
+                if context in ("set_piece", "shootout_order"):
                     jobs.choose(token, value)
+                elif isinstance(value, dict):
+                    # [designed: T180] the bench's pairs with its positions, marks and own tactics
+                    jobs.answer(token, value.get("substitutions") or [],
+                                {k: v for k, v in value.items() if k != "substitutions"})
                 else:
                     jobs.answer(token, value)
             time.sleep(.002)

@@ -8,7 +8,7 @@ payload. Requests carry `op`, replies `kind` and `value`.
 
 The match is today's workers' match, never a second driver [designed: T159, the task's hazard]: the same
 preparation (prepare_watched, or prepare_competitive with `substitutions=(5, 5)`, as goal2.game.watched_worker and
-goal2.desktop.competitive_worker), the same `_drive_match`, and the bench's answers, pauses and LEAD pacing through
+goal2.desktop.competitive_worker; a friendly with BM-7's unlimited budget, watched_match.FRIENDLY_SUBSTITUTIONS, T180), the same `_drive_match`, and the bench's answers, pauses and LEAD pacing through
 the workers' own BenchPolicy, fed from the pipe instead of the command journal.
 
 Commands arrive on a reader thread and wait in a queue; the match reads them where the workers read their journal
@@ -134,10 +134,14 @@ class Commands:
         elif op == "pause":
             self.pauses += 1
         elif op == "answer" and type(header.get("decision")) is int:
-            from goal2.game.watched_jobs import _choice, _pairs
+            from goal2.game.watched_jobs import _changes, _choice, _pairs
             if "taker" in header or "shootout_order" in header:
                 # [designed: T167, #541] the answer to a player prompt (watched_match.PROMPT_CONTEXTS)
                 self.answers.append((header["decision"], _choice(header)))
+            elif header.get("changes"):
+                # [designed: T180] the bench's pairs with its positions, marks and own tactics, in one answer
+                self.answers.append((header["decision"], dict(_changes(header["changes"]),
+                                                              substitutions=_pairs(header.get("substitutions", [])))))
             else:
                 self.answers.append((header["decision"], _pairs(header.get("substitutions", []))))
         else:
@@ -277,9 +281,10 @@ class Server:
                 image = prepare_competitive(state, original, fixture)
                 extra = {"substitutions": (5, 5)}
             else:
-                from goal2.game.watched_match import prepare_watched
+                from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS, prepare_watched
                 image = prepare_watched(state, original, fixture)
-                extra = {}
+                # [designed: owner BM-7, #73; T180] a watched friendly plays with the rebuild's unlimited budget
+                extra = {"substitutions": FRIENDLY_SUBSTITUTIONS} if fixture.kind == 1 else {}
             commands.poll()
             outcome = _drive_match(state, image, fixture, _observe=observe, _observe_pitch=pitch if frames else None,
                                    policy=policy, prompts=prompts, **extra, **options)

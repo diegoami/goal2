@@ -1,8 +1,8 @@
 """S15 Match menu: before kick-off, at half time, before extra time and at full time.
 
 [designed: owner, 2026-11-03, #526, #523; docs/design/ui-2026-11 S15 and its mockup s15-match-menu.html; T167, #541]
-[confirmed: T156-R1 steps 42, 47-49, 193-198, 264; t156-042-match-menu.png, t156-193-fulltime-menu.png; E031 C36,
-C37]
+[confirmed: T156-R1 steps 42, 47-49, 68-73, 193-198, 264; t156-042-match-menu.png, t156-193-fulltime-menu.png; E031
+C36, C37]
 
 - **Shows** the score, the kind of match, the location (the home side's country, `DesktopModel.home`, #562;
   t156-042 "location: Norway"), the time (before kick-off, HALF TIME, EXTRA TIME, FULL TIME), and both sides'
@@ -12,9 +12,11 @@ C37]
   *play* names what follows: "choose your captain, then kick-off" before the match, "second half" at half time,
   "extra time" before it [designed: #523].
 - **Your side** before kick-off: team tactics opens S10 (also **T**), players opens S08 (also **Space**), and what they
-  change is the model's, before the engine is asked. During the match the bridge plays the state it was given, so
-  they open read only, with a note: changing the team at a break is the bench's, T180 [designed: T167]. The other side's
-  are read only (E031 C36: "view only").
+  change is the model's, before the engine is asked. At a break of the match (half time, before extra time, a
+  substitution opportunity: phase "stop", after S18's key, T156-R1 step 68) *players* opens the bench, S19, in *make
+  substitutions now* mode, and *play* sends the bench's answer [designed: T180, #574]. Team tactics during the match,
+  and players after the final whistle, open read only: the bridge plays the state it was given [designed: T167]. The
+  other side's are read only (E031 C36: "view only").
 - **Ins** turns the automatic action replay on or off; the label names the state, as the original's (E031 C37). The
   flag is stored in the data folder (`settings.json`, `automatic_action_replay`) [designed: T167]; the replay itself
   is T168's.
@@ -33,9 +35,11 @@ from goal2.ui.screen import Screen, label, para
 from goal2.ui.kits import for_fixture
 from goal2.ui.squad_card import Row, box, colour
 
-TIMES = {"before": "before kick-off", "half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME"}
-NEXT = {"before": "next: choose your captain, then kick-off", "half": "next: second half", "extra": "next: extra time"}
-DURING = ("Changing your team at a break comes with the bench (T180); this shows it read only.")
+TIMES = {"before": "before kick-off", "half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME",
+         "stop": "SUBSTITUTION OPPORTUNITY"}
+NEXT = {"before": "next: choose your captain, then kick-off", "half": "next: second half", "extra": "next: extra time",
+        "stop": "next: play on"}
+DURING = "During the match your team tactics are shown read only; players opens the bench at a break."
 WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do you want to watch this match ?"]
 
 
@@ -192,6 +196,8 @@ class MenuScreen(Screen):
         if country == model.state.managed_country and not self.during():
             from goal2.ui.s08_squad import open_squad
             return open_squad(window, model)
+        if country == model.state.managed_country and self.day.bench is not None:
+            return self.day.open_bench()   # S19 at a break [designed: T180]
         from goal2.ui.s07_team_info import TeamPlayersScreen
         if country == model.state.managed_country:
             self.say(DURING)

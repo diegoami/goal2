@@ -320,8 +320,8 @@ original's default answer there is what was asked for, so they are still made, t
 ("Esc: the requested substitutions are still made") and reports them as any answered swap
 [confirmed: the vendored kit's `Match._on_notice`; #316]. The window
 never decides whether a pair is legal: the original makes it or refuses it, and the bench then
-shows the original's reason and its counter (a sixth substitution in a friendly: no more
-substitutes). **Enter** on the pitch asks for the bench mid-play, as the original's Enter does
+shows the original's reason and its counter (a sixth substitution in a qualifier: no more
+substitutes; a friendly's budget is BM-7's 255, T180). **Enter** on the pitch asks for the bench mid-play, as the original's Enter does
 (the hint says `[Enter] Bench`; Space stays the commentary): the original pauses at its next key
 poll, pairs chosen there are requests the original makes at the next stoppage, and the
 substitution opportunity that follows offers them again. After the match the substitute stays in

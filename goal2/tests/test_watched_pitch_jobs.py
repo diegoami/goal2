@@ -338,10 +338,14 @@ class OriginalPitchJobsTests(unittest.TestCase):
             for seed in requires.cases((257,4660)):  # [designed: #487]
                 owner=Owner(self.state(),self.raw);before=copy.deepcopy(owner.state)
                 # [designed: #500] both runs under engine_python() in children; RawCheck checks each sample there
+                # [T180] the engine server plays a watched friendly with BM-7's budget: the references are given it
+                from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
                 pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',before,self.raw,Fixture(7,19,21),
-                                          reference_seed=seed,delay_byte=0,record_draws=True)
+                                          reference_seed=seed,delay_byte=0,record_draws=True,
+                                          substitutions=FRIENDLY_SUBSTITUTIONS)
                 observed,_,check=pypy_engine.call('goal2.tests.pypy_engine:drive',before,self.raw,Fixture(7,19,21),
-                    snapshot=RawCheck(),reference_seed=seed,delay_byte=0,record_draws=True)
+                    snapshot=RawCheck(),reference_seed=seed,delay_byte=0,record_draws=True,
+                    substitutions=FRIENDLY_SUBSTITUTIONS)
                 expected=pending.result();oracle=check.oracle
                 self.assertEqual(observed,expected)
                 jobs=WatchedJobs(owner)

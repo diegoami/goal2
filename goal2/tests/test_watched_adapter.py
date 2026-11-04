@@ -48,11 +48,13 @@ def direct_image(state, year=None):
     return image
 
 
-def direct(state, fixture, year=None, seed=None, delay=None):
+def direct(state, fixture, year=None, seed=None, delay=None, substitutions=None):
     """[designed: #500] The reference arm: the vendored original engine under Unicorn, in this process (PyPy, which
-    plays goal2's route, cannot load Unicorn)."""
+    plays goal2's route, cannot load Unicorn). `substitutions`: the budget, as the route's (BM-7's 255 for a watched
+    friendly, T180); None is the kit's default."""
     match = Match(direct_image(state, year), fixture, managed=state.managed_country,
-                  captain=state.captain or None, seed=seed, record_draws=True, delay_byte=delay)
+                  captain=state.captain or None, seed=seed, record_draws=True, delay_byte=delay,
+                  substitutions=substitutions)
     events = []
     for ev in match.events():
         events.append(asdict(ev))
