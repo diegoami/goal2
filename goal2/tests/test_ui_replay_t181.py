@@ -104,12 +104,16 @@ class ReplayScreens(unittest.TestCase):
             def __init__(self):
                 self.acks = []
                 self.polls = 0
+                self.pauses = 0
             def start(self, *args, **kwargs): return self.token
             def poll(self, token):
                 self.polls += 1
                 return []
             def poll_frames(self, token): return []
             def ack_frames(self, token, sequence): self.acks.append(sequence)
+            def pause(self, token):
+                self.pauses += 1
+                return True
             def frames_drained(self): return True
             def cancel_and_reap(self, token): self.busy = False
             def close(self): self.busy = False; self.closed = True
@@ -168,6 +172,45 @@ class ReplayScreens(unittest.TestCase):
         self.pitch.answer_stop_box(Qt.Key.Key_N)
         self.assertIsNone(self.controller.goal)
         self.assertFalse(self.pitch.stop_box.open)
+
+    def click_live_controls(self):
+        from PySide6.QtCore import Qt
+        from goal2.ui.screen import Clickable
+        for item in self.pitch.key_bar.findChildren(Clickable, 'keyItem'):
+            binding = getattr(item, 'binding', None)
+            if binding is self.pitch.result_binding or (binding is not None and Qt.Key.Key_Escape in binding.keys):
+                item.clicked.emit()  # the mouse callback bypasses handle_key
+        self.pitch.enter_hint.clicked.emit()
+
+    def test_keybar_mouse_callbacks_cannot_change_live_match_during_goal_questions(self):
+        self.goal()
+        held = self.controller.goal
+        self.click_live_controls()
+        self.assertEqual((self.controller.quick, self.bridge.pauses, self.controller.requests), (False, 0, 0))
+        self.assertIs(self.controller.goal, held)
+        self.assertEqual(self.bridge.acks, [])
+        self.assertEqual(self.pitch.stop_box.kind, 'replay')
+        from PySide6.QtCore import Qt
+        self.pitch.answer_stop_box(Qt.Key.Key_N)
+        self.assertEqual(self.pitch.stop_box.kind, 'save-goal')
+        self.click_live_controls()
+        self.assertEqual((self.controller.quick, self.bridge.pauses, self.controller.requests), (False, 0, 0))
+        self.assertIs(self.controller.goal, held)
+        self.assertEqual(self.bridge.acks, [])
+        self.assertEqual(self.pitch.stop_box.kind, 'save-goal')
+
+    def test_keybar_mouse_callbacks_cannot_change_live_match_during_replay(self):
+        from PySide6.QtCore import Qt
+        self.goal()
+        held = self.controller.goal
+        self.pitch.answer_stop_box(Qt.Key.Key_Y)
+        self.assertIsNotNone(self.pitch.replay)
+        self.click_live_controls()
+        self.assertEqual((self.controller.quick, self.bridge.pauses, self.controller.requests), (False, 0, 0))
+        self.assertIs(self.controller.goal, held)
+        self.assertEqual(self.bridge.acks, [])
+        self.assertIsNotNone(self.pitch.replay)
+        self.assertEqual(self.pitch.result_binding.text, 'REPLAY')
 
     def test_final_sample_goal_questions_finish_before_live_ack_and_publication(self):
         from PySide6.QtCore import Qt

@@ -648,6 +648,10 @@ class PitchScreen(Screen):
                     colour(label_, theme.VALUE)
 
     def quick_result(self):
+        # [designed: T181] Mouse key-bar callbacks do not pass through handle_key. They must hold the same live
+        # controls during replay and the goal questions; a click cannot clear a goal or bypass its pacing.
+        if self.replay is not None or self.stop_box.kind in ('replay', 'save-goal'):
+            return
         self.controller.quick_result()
         if self.controller.quick:
             self._result_text(HANG_ON)
@@ -658,6 +662,8 @@ class PitchScreen(Screen):
         self.refresh()
 
     def request_bench(self):
+        if self.replay is not None or self.stop_box.kind in ('replay', 'save-goal'):
+            return
         self.controller.request_bench()
         self.refresh()
 
