@@ -35,10 +35,10 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | Request | Fields | What it does |
 | --- | --- | --- |
 | `open` | payload: the game, `session_save.encode` | Keeps the game; each match plays a fresh copy of it. Sent once per game, not per match. |
-| `match` | `kind` (`watched` or `competitive`), `fixture`, `options` (`reference_seed`, `delay_byte`, `record_draws`), `frames`, `bench` | Plays one match. |
+| `match` | `kind` (`watched` or `competitive`), `fixture`, `options` (`reference_seed`, `delay_byte`, `record_draws`), `frames`, `bench`, `prompts` (optional) | Plays one match. With `prompts` (which needs `bench`) the player prompts are asked too (below). |
 | `ack` | `sample` | The window has shown this pitch sample. |
 | `pause` | | The player's Enter in play. |
-| `answer` | `decision`, `substitutions` ((off, on) pairs) | Answers the bench decision of that number. |
+| `answer` | `decision`, and `substitutions` ((off, on) pairs), or `taker` (a player word or null), or `shootout_order` (player words) | Answers the bench decision or player prompt of that number. |
 | `cancel` | | Ends the running match. |
 | `quit` | | Ends the process. |
 
@@ -67,6 +67,13 @@ With `bench` (which needs `frames`) `BenchPolicy` (`engine_server.py`) answers t
 paces the samples: sample k is sent only once sample k − LEAD has been acknowledged (`watched_jobs.LEAD`).
 [designed: T161] These are the deleted file workers' preparation, driver and `BenchPolicy`, unchanged but for the
 channel they read.
+
+[designed: T167, #541] With `prompts` the match is played with the kit's set-piece prompt (`Match(set_piece=True)`)
+and the window also answers `watched_match.PROMPT_CONTEXTS`: the set-piece taker (`set_piece`, answered with `taker`;
+null is no key, the original's current pick stands after its wait, F030), the shoot-out order (`shootout_order`) and
+the menu before extra time (`extra_time`, answered with no substitutions). Each is announced with `decision` as a
+bench decision is, numbered in the same sequence, and passed to `Match.answer` as it is. A match whose takers all
+get no key plays as one without the prompts (the same memory and seeds; T167's test).
 
 Commands arrive on a reader thread of the engine and wait in a queue. The match reads them at each paced sample and
 each decision wait and, so that a match without the bench can be cancelled too, also before each event and sample. A

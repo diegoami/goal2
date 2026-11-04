@@ -14,7 +14,7 @@ import threading
 import time
 
 from goal2.engine.original_match.match import Event
-from goal2.game.watched_match import WatchedOutcome, BENCH_CONTEXTS
+from goal2.game.watched_match import WatchedOutcome, BENCH_CONTEXTS, PROMPT_CONTEXTS
 from goal2.game.watched_publication import WatchedPublication
 from goal2.game.watched_pitch import FRAME_POLL_BUDGET, validate
 
@@ -29,6 +29,21 @@ REAP_DEADLINE = 30
 LEAD = 64
 # [designed: T102] The most (off, on) pairs one answer carries.
 MAX_PAIRS = 20
+
+
+def _choice(value):
+    """[designed: T167, #541] The shape of a player prompt's answer: {'taker': a player word or None} or
+    {'shootout_order': distinct player words}. Whether the player can take it is the kit's to decide."""
+    words = lambda v: (isinstance(v, (list, tuple)) and len(v) <= 11 and len(set(v)) == len(v)
+                       and all(type(w) is int and 1 <= w <= 3060 for w in v))
+    if not isinstance(value, dict):
+        raise ValueError('invalid prompt answer')
+    keys = set(value) - {'op', 'decision'}
+    if keys == {'taker'} and (value['taker'] is None or words([value['taker']])):
+        return {'taker': value['taker']}
+    if keys == {'shootout_order'} and words(value['shootout_order']):
+        return {'shootout_order': list(value['shootout_order'])}
+    raise ValueError('invalid prompt answer')
 
 
 def _pairs(value):
@@ -288,9 +303,12 @@ class WatchedJobs:
         return self._handle if self._active else None
 
     def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False,
-              bench=False):
-        if type(frames) is not bool or type(bench) is not bool:
-            raise ValueError('frames and bench must be boolean')
+              bench=False, prompts=False):
+        if type(frames) is not bool or type(bench) is not bool or type(prompts) is not bool:
+            raise ValueError('frames, bench and prompts must be boolean')
+        if prompts and not bench:
+            # [designed: T167, #541] the player prompts are answered by the watching player, as the bench is
+            raise ValueError('the player prompts need the bench (bench=True)')
         if bench and not frames:
             # [designed: #316] The original takes the player's Enter in play at a pitch sample
             # (_drive_match asks pause_now there), so without them a pause could never be placed.
@@ -315,6 +333,7 @@ class WatchedJobs:
         # [designed: T102] The bench: the decision waiting for the player's answer, the decisions
         # asked and answered so far and the engine's reports.
         self._bench = bench
+        self._prompts = prompts
         self.waiting = None
         self._asked = 0
         self._decisions = 0
@@ -350,6 +369,7 @@ class WatchedJobs:
         self._sent = False
         self._handle = _Handle(shared.engine)
         self._request = dict(fixture=job.fixture, frames=self._frames_enabled, bench=self._bench,
+                             prompts=getattr(self, '_prompts', False),
                              options=dict(reference_seed=reference_seed, delay_byte=delay_byte,
                                           record_draws=record_draws))
         if shared.needs_open(job.state, self._template):
@@ -366,7 +386,8 @@ class WatchedJobs:
         request = self._request
         try:
             self.shared.engine.match(self.KIND, request['fixture'], options=request['options'],
-                                     frames=request['frames'], bench=request['bench'])
+                                     frames=request['frames'], bench=request['bench'],
+                                     prompts=request.get('prompts', False))
         except OSError as exc:
             self._ended_before_match(exc)
         self._handle.bind()
@@ -423,7 +444,9 @@ class WatchedJobs:
                     value = _event(asdict(value))
                     self.events.append(value)
                     new.append(copy.deepcopy(value))
-                    if self._bench and value.kind == 'decision' and value.data.get('context') in BENCH_CONTEXTS:
+                    if self._bench and value.kind == 'decision' and (
+                            value.data.get('context') in BENCH_CONTEXTS
+                            or (self._prompts and value.data.get('context') in PROMPT_CONTEXTS)):
                         if self.waiting is not None:
                             raise ValueError('bench decision before the previous was answered')
                         self.waiting = copy.deepcopy(value)
@@ -577,6 +600,20 @@ class WatchedJobs:
         self.waiting = None
         # [designed] Publication occurs on the next canonical poll, whose returned
         # events must reach the caller rather than disappear inside acknowledgement.
+
+    def choose(self, token, choice):
+        """[designed: T167, #541] Answer the waiting player prompt (`set_piece` or `shootout_order`):
+        {'taker': word or None} or {'shootout_order': [words]}. Passed to the kit's `Match.answer` as it is."""
+        self._check_token(token)
+        if self.waiting is None or self.waiting.data.get('context') not in ('set_piece', 'shootout_order'):
+            raise ValueError('no player prompt is waiting')
+        choice = _choice(choice)
+        if set(choice) != ({'taker'} if self.waiting.data['context'] == 'set_piece' else {'shootout_order'}):
+            raise ValueError('the answer is for another prompt')
+        decision = self._decisions
+        self._command(token, lambda engine: engine.answer(decision, choice=choice))
+        self._decisions += 1
+        self.waiting = None
 
     def _release(self):
         if self._handle is not None and self._handle._process is None:

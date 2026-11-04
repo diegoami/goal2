@@ -83,6 +83,11 @@ the player's Enter in play (`Match.pause`). With pitch samples, each `ack_frames
 the engine sends sample k only once sample k − `LEAD` (64) is acknowledged. An engine waiting for an
 answer or an acknowledgement is cancelled like any other (#254). `extra_time` and `shootout_order`
 keep their default answers; without `bench`, and for `run_watched_match`, every decision plays on.
+[designed: T167, #541] `start(..., prompts=True)` (with `bench`) also waits on the player prompts
+(`watched_match.PROMPT_CONTEXTS`: `set_piece`, `shootout_order`, `extra_time`): `waiting` holds them as it holds a
+bench decision, `choose(token, {'taker': word or None})` or `choose(token, {'shootout_order': [words]})` answers a
+prompt, and `answer(token, ())` the menu before extra time. The new window's match day uses it
+([ui.md](ui.md)); `CompetitiveJobs.start` passes it on.
 Acceptance: `python3 -m unittest goal2.tests.test_watched_bench_t102 -v`.
 
 [designed: T176] A qualifier is watched on the competitive bridge: `CompetitiveJobs.start(frames=True, bench=True)`

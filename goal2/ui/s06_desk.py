@@ -18,22 +18,33 @@ Placeholders [designed: T164, the task's scope]: F3 comes with T167, F4 with T18
 brings it, on the desk, and does nothing else. **F7** saves and **F10** quits through S21 (goal2/ui/s21_save.py), with
 the save question when anything is unsaved. [designed: T168, #542]
 
-*play next game* [designed: T166, #540, the interim route]: until T167 brings the round, the match menu and the
-captain, it plays the next own friendly watched on S17 (goal2/ui/s17_pitch.py `play_next_game`), with the original's
-suggested captain as T143 picks it; at full time S17 returns here with the result in the status line. A qualifier
-says it comes with T176 and T167.
+*play next game* [designed: T167, #541]: the match day (goal2/ui/match_day.py), the original's screens in its order:
+S14 the round, S15 the match menu, S16 the captain, S17 the pitch, S20 the boards, then the round's remaining results
+and this desk again, with the result in the status line. A friendly and a qualifier alike (T176). The desk closes the
+match day's bridges when the window closes (`closing`), and with them the engine process.
 
 The banner names the competition as the original's hub does, *European Championship · QUALIFYING* and the year for a
 European country (`DesktopModel.competition`, #563) [confirmed: t156-013-hub.png], drawn as the mockup: the year,
 the name in the banner's light red, the phase [designed: s06-hub.html].
 
 [designed: owner decision 14, #526] *re-import data*, a goal2 addition, opens S01 over the data folder (to add
-GOAL.HLP later); Esc there returns to the desk. It is the seventh option, after the original's six and set apart under
+GOAL.HLP later); Esc there returns to the desk. It is the last option, after the original's six and set apart under
 a "goal2 addition" tag, so ↑↓ reach it and no key is added.
 
-The venue of the next match is not shown: the Python route stores a fixture's two countries without assigning a
-pitch role [designed: T41a, goal2/game/campaign.py `Fixture.side_a`], so the desk shows the match's kind only,
-not the mockup's "away".
+The next match says home or away after its kind, as the original's hub (*friendly away*): the home side is the
+fixture's side B (`DesktopModel.home`, `venue`) [confirmed: F031 "Venue", 000E:724A; #562].
+
+Two more goal2 additions, today's extras the original lacks, sit beside it under the same tag [designed: owner, §6
+item 18 (docs/design/ui-2026-11, 2026-11-03); T177, #557], options reached by ↑↓ and Enter or a click, so no key of the
+original's hub changes meaning:
+- *manager's name* opens a name line in the manager's box, 14 characters at most, as S04's (`MANAGER_MAX`): typing and
+  Backspace edit it, **Enter** gives the name through `DesktopModel.rename_manager`, as today's desk's *Manager name*
+  does (docs/desktop-management.md, T92), **Esc** keeps the old one. The career is then unsaved (the model's
+  `unsaved`).
+- *new career* goes to S03 New game over the desk, as today's Game menu's *New campaign*; with anything unsaved it
+  asks S21's *Do you want to save this game?* first (`s21_save.ask_to_save`, T87's question): **Y** the name box, then
+  S03; **N** S03 without saving; **Esc** stays on the desk. Esc on S03 returns to the desk and its career; a career
+  started on S04 replaces it.
 
 Everything shown is the model's (`DesktopModel.summary`, `view`, `countries`; `goal2.game.country_card.card` for the
 rankings), route (b) [designed: owner, 2026-11-03, #527 D2]. The desk never saves through the model: F7 saves through
@@ -46,11 +57,12 @@ from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
 from goal2.desktop import data_setup
 from goal2.game.country_card import card as country_card
+from goal2.game.identities import MANAGER_MAX
 from goal2.ui import theme
 from goal2.ui.s01_import import ImportScreen, checks
 from goal2.ui.screen import Screen, label, para, set_para
 from goal2.ui.squad_card import Strip, box, colour, full_name, squad_rows
-from goal2.ui.start_look import key_value
+from goal2.ui.start_look import LineField, key_value
 
 LEFT_WIDTH = 420   # [designed: s06-hub.html, the left column's `width:420px`]
 HINT = ("Use ↑↓ to find an option, Enter to select it. Your own matches are watched: play next game leads to the "
@@ -73,12 +85,15 @@ def next_match(model):
     if fixture is None:
         return None, "stage complete"
     opponent = fixture.side_b if fixture.side_a == state.managed_country else fixture.side_a
-    return opponent, model.fixture_label(fixture).split(" / ", 1)[1].lower()
+    kind = model.fixture_label(fixture).split(" / ", 1)[1].lower()
+    # [confirmed: F031 "Venue", 000E:724A; t156-013-hub.png "friendly away"] the hub's home or away (#562)
+    return opponent, f"{kind} {model.venue(fixture)}"
 
 
 class DeskScreen(Screen):
     title = "manager's desk"
     escape_text = None   # the home: nothing under it [designed: §3 "Navigation"]
+    naming = False       # the manager's name line is open [designed: T177]
 
     def __init__(self, window, model):
         super().__init__(window)
@@ -111,6 +126,10 @@ class DeskScreen(Screen):
         manager, inner = box("Manager")
         rows, self.manager = key_value((("name", "name"), ("rating", "rating")))
         inner.addWidget(rows)
+        # [designed: owner, §6 item 18; T177] the name line of *manager's name*, as S04's, hidden until it opens
+        self.name_field = LineField(MANAGER_MAX, count=True)
+        self.name_field.hide()
+        inner.addWidget(self.name_field)
         left.addWidget(manager)
         team, inner = box("Team")
         self.team_name = label("", "h1")
@@ -162,8 +181,13 @@ class DeskScreen(Screen):
         addition.addWidget(label("GOAL2 ADDITION", "tagNew"), 0, Qt.AlignmentFlag.AlignLeft)
         addition.addStretch(1)
         middle.addLayout(addition)
-        reimport = self.add_option("re-import data", self.reimport, enter="Re-import data")
-        middle.addWidget(reimport)
+        # [designed: owner, §6 item 18; T177] today's extras, then the re-import (decision 14), on one row
+        extras = QHBoxLayout()
+        extras.setSpacing(10)
+        extras.addWidget(self.add_option("manager's name", self.rename, enter="New manager's name"))
+        extras.addWidget(self.add_option("new career", self.new_career, enter="New career"))
+        extras.addWidget(self.add_option("re-import data", self.reimport, enter="Re-import data"))
+        middle.addLayout(extras)
         main.addLayout(middle, 1)
         self.strip = Strip()
         for row in self.strip.rows:
@@ -217,14 +241,89 @@ class DeskScreen(Screen):
         self.message = ""
         self.refresh()
 
+    # The name line. [designed: owner, §6 item 18; T177]
+    def enter_hint_text(self):
+        return "Give this name" if self.naming else super().enter_hint_text()
+
+    def type_text(self, key, text) -> bool:
+        """On the name line, printable characters and Backspace edit the name; nothing else moves."""
+        if not self.naming:
+            return False
+        if key == Qt.Key.Key_Backspace:
+            self.name_field.backspace()
+            return True
+        if text and len(text) == 1 and text.isprintable():
+            self.name_field.type(text)
+            return True
+        return False
+
+    def handle_key(self, key):
+        if self.naming:
+            if key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                self.give_name()
+            elif key == Qt.Key.Key_Escape:
+                self.close_name()
+            elif key == Qt.Key.Key_F1:
+                return super().handle_key(key)
+            return True
+        return super().handle_key(key)
+
+    def press_enter(self):
+        if self.naming:
+            return self.give_name()
+        return super().press_enter()
+
+    def rename(self):
+        """*manager's name*: the name line, empty, the current name shown in it until a key is typed."""
+        self.naming = True
+        self.name_field.placeholder = self.model.manager
+        self.name_field.set_text("")
+        self.name_field.set_active(True)
+        self.name_field.show()
+        self.manager["name"].hide()
+        self.say("Type the manager's new name (14 characters at most): Enter gives it, Esc keeps the old one.")
+        self._refresh_hint()
+
+    def give_name(self):
+        """Enter on the name line: the model's `rename_manager`, as today's desk; the career is then unsaved."""
+        text = self.name_field.text.strip()
+        if not text:
+            return self.say("Type the manager's name first: 14 characters at most. Esc keeps the old one.")
+        try:
+            name = self.model.rename_manager(text)
+        except ValueError as exc:
+            return self.say(str(exc))
+        self.close_name()
+        self.say(f"The manager is now {name}.")
+        return name
+
+    def close_name(self):
+        self.naming = False
+        self.name_field.set_active(False)
+        self.name_field.hide()
+        self.manager["name"].show()
+        self.message = ""
+        self.refresh()
+        self._refresh_hint()
+
+    def new_career(self):
+        """*new career*: S03 over the desk, after S21's save question when anything is unsaved (T87, T168)."""
+        def to_s03():
+            from goal2.ui.s03_new_game import NewGameScreen
+            return self.window_.push(NewGameScreen(self.window_))
+        if self.model.unsaved:
+            from goal2.ui.s21_save import ask_to_save
+            return ask_to_save(self.window_, self.model, to_s03, title="new career")
+        return to_s03()
+
     # The actions.
     def later(self, what):
         """A placeholder: it says which task brings it, and does nothing else."""
         self.say(LATER[what])
 
     def play_next_game(self):
-        """The next friendly on S17 (the interim route, T166); what stops it is said here."""
-        from goal2.ui.s17_pitch import play_next_game
+        """The match day (goal2/ui/match_day.py): S14, S15, S16, S17, S20; what stops it is said here."""
+        from goal2.ui.match_day import play_next_game
         opened = play_next_game(self.window_, self.model)
         if isinstance(opened, str):
             self.say(opened)
@@ -253,6 +352,11 @@ class DeskScreen(Screen):
     def team_tactics(self):
         from goal2.ui.s10_team_tactics import open_team_tactics
         return open_team_tactics(self.window_, self.model)
+
+    def closing(self):
+        """The window closes: the match day's bridges close, and with them the engine process (D3, #417)."""
+        from goal2.ui.match_day import close_window
+        close_window(self.window_)
 
     def reimport(self):
         return self.window_.push(ReimportScreen(self.window_, self.window_.target, self.window_.choose))

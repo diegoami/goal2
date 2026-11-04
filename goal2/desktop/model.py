@@ -444,6 +444,74 @@ class DesktopModel:
             out.append(entry)
         return out
 
+    # -- The match day's read-only calls (T167, #541, #562). Each reads the career's state; none changes it.
+    @staticmethod
+    def home(fixture):
+        """The home country of a scheduled fixture: its side B. [confirmed: goal2-archaeology F031 at 7c259dfd, "Venue":
+        the hub `000E:724A` writes "away" (DS:6EBA) when the country is side A of its next fixture and "home"
+        (DS:6EBF) when it is side B; F023 at 7c259dfd: a host's fixtures put the host as side B; T156-R1 step 13,
+        t156-013-hub.png: Holland's opening friendly "away" to Norway, and step 42, t156-042-match-menu.png: "location
+        Norway", Norway named first] [derived: the original's match screens name the home side first and draw it
+        light red, t156-042, t156-045, t156-270] The fixture's sides are the engine's team 0 (A) and team 1 (B)
+        (`Match.side`), so the home side is the samples' team 1. Closes #562."""
+        return fixture.side_b
+
+    def venue(self,fixture=None):
+        """'home' or 'away' for the managed country in `fixture` (default: the next one), as the hub says it
+        [confirmed: F031 "Venue", 000E:724A]; None without a fixture of its own."""
+        campaign=self.state.campaign
+        fixture=fixture if fixture is not None else (campaign.next_fixture if campaign is not None else None)
+        own=self.state.managed_country
+        if fixture is None or own not in (fixture.side_a,fixture.side_b):return None
+        return 'home' if self.home(fixture)==own else 'away'
+
+    def _result_row(self,row,fixture,stage):
+        """A world result as S14 lists it: the home side first [derived: home(), t156-041-round1-results.png]."""
+        names=self.goaldat.country_names;home=self.home(fixture)
+        flip=home!=fixture.side_a
+        teams=[fixture.side_b,fixture.side_a] if flip else [fixture.side_a,fixture.side_b]
+        score=None if row is None else (list(reversed(row['score'])) if flip else list(row['score']))
+        return {'fixture_id':fixture.fixture_id,'kind':fixture.kind,'kind_name':kind_word(fixture.kind,stage),
+                'home':teams[0],'away':teams[1],'home_name':names[teams[0]],'away_name':names[teams[1]],
+                'score':score,'own':self.state.managed_country in teams}
+
+    def round_before(self):
+        """S14 before your match: the round's results the route resolves before it, in order, and your match last,
+        still to play. They are what `campaign_rounds.prepare` resolves (`silent_until_managed`), computed here on a
+        copy: the publication resolves the same rows again when the match starts, from the same state and seed, so
+        the rows shown are the rows published [derived: goal2/game/campaign_rounds.py, a pure function of the state
+        and the template]. None without a world schedule or a next fixture.
+        Returns {'round', 'results': rows, 'match': your fixture's row (score None)}."""
+        from goal2.game import campaign_rounds
+        campaign=self.state.campaign
+        if campaign is None or campaign.world is None or campaign.next_fixture is None:return None
+        pending=campaign.next_fixture
+        candidate=campaign_rounds.prepare(self.state,self.template_bytes,competitive=pending.kind!=1)
+        world=candidate.campaign.world;done=len(campaign.world.results)
+        rows=[self._result_row(row,fixture,campaign.stage)
+              for fixture,row in zip(world.fixtures[done:],world.results[done:])]
+        mine=world.fixtures[len(world.results)]
+        return {'round':len(campaign.completed_fixture_ids)+1,'results':rows,
+                'match':self._result_row(None,mine,campaign.stage)}
+
+    def round_after(self,fixture_id):
+        """S14 after your match: your result, then the results the route resolved after it until the round ends
+        (`campaign_rounds.complete`'s `silent_until_managed`), read from the published world results. None when
+        `fixture_id` has no result yet.
+        Returns {'round', 'match': your row with its score, 'results': the rows after it}."""
+        campaign=self.state.campaign
+        if campaign is None or campaign.world is None:return None
+        world=campaign.world
+        at=next((i for i,row in enumerate(world.results) if row['fixture_id']==fixture_id),None)
+        if at is None:return None
+        stage=next((f.stage for f in campaign.fixtures if f.fixture_id==fixture_id),campaign.stage)
+        rows=[]
+        for fixture,row in zip(world.fixtures[at+1:],world.results[at+1:]):
+            if row['mode']!='silent':break
+            rows.append(self._result_row(row,fixture,stage))
+        return {'round':campaign.completed_fixture_ids.index(fixture_id)+1,
+                'match':self._result_row(world.results[at],world.fixtures[at],stage),'results':rows}
+
     def fixture_label(self,fixture):
         """[designed: T86] Opponent and competition of a scheduled fixture, without claiming a home side."""
         state=self.state;names=self.goaldat.country_names

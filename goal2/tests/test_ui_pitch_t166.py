@@ -4,16 +4,18 @@ The claim it protects: what S17 shows is the engine's samples and events, in ord
 acknowledgements, and the match the player watched is the match the engine published. Visited offscreen on a 2028
 Holland career (the route's first fixture is a friendly, Romania v Holland):
 
-- **Same match**: *play next game* on the desk plays the friendly to full time on S17; the events S17 shows equal the
-  bridge's, in order, and the outcome's; the published career equals the same match played through today's
-  `WatchedController` (goal2/desktop/watched.py, frames off, every decision played on) with the same captain.
+- **Same match**: *play next game* on the desk goes through the match day (T167: S14, S15, S16 with C, the
+  computer's captain) and plays the friendly to full time on S17; the events S17 shows equal the bridge's, in order,
+  and the outcome's; the published career equals the same match played through the bridge with the same answers
+  (`goal2.tests.match_day_policy.play_through_bridge`) [T167: was today's `WatchedController`, frames off, which has
+  no player prompts].
 - **Pacing**: with the pitch's painting stalled, the engine's samples never run past the acknowledged one + LEAD (and
   reach it), over the whole match.
 - **Keys**: ←→ step through the six speeds, ↑↓ the display, Space enlarges the commentary, F9 says goal2 has no sound,
   R reaches full time with *HANG ON A TICK* shown, Enter requests a pause that is answered.
 - **Close**: closing the window mid-match leaves no engine process within 5 s and publishes nothing.
-- **Colours**: the home side's codes (the fixture's first side, interim until #562) are drawn light red, the away
-  side's white, on the painted pitch.
+- **Colours**: the home side's codes (the fixture's side B, `DesktopModel.home`, #562) are drawn light red, the
+  away side's white, on the painted pitch.
 - **The captain**: `best_leader` is T143's rule (goal2/core/views.py `_captain_recommendation`), over every country's
   eleven.
 
@@ -23,7 +25,6 @@ engine runs under PyPy 3.11 and the test skips without it. Nothing of the origin
 import copy
 import os
 import shutil
-import sys
 import tempfile
 import time
 import unittest
@@ -46,6 +47,7 @@ from goal2.ui import theme  # noqa: E402
 from goal2.ui.s06_desk import DeskScreen  # noqa: E402
 from goal2.ui.s17_pitch import HANG_ON, NO_SOUND, PitchScreen, best_leader, suggested_captain  # noqa: E402
 from goal2.ui.window import Window  # noqa: E402
+from goal2.ui.pitch import HOME  # noqa: E402
 
 CACHE = requires.CACHE
 CAREER = requires.need(**requires.HALFTIME)
@@ -111,42 +113,50 @@ def open_desk(model):
 
 
 def play_next(window, desk):
+    """[T167] The match day to kick-off: S14 Enter, S15 Enter (play), S16 C (the computer's captain)."""
     desk.highlight(PLAY_NEXT)
     key(window, Qt.Key.Key_Return)
+    key(window, Qt.Key.Key_Return)
+    key(window, Qt.Key.Key_Return)
+    key(window, Qt.Key.Key_C, "c")
     screen = window.current()
     assert isinstance(screen, PitchScreen), desk.note.text()
     return screen
+
+
+def to_the_desk(window, screen, limit, each=None):
+    """[T167] On from S17 to the desk through the match day's stops: C on a taker card (no key: the current pick),
+    Enter on the boards, the menus (play, then exit) and the round."""
+    from goal2.ui.s14_round import RoundScreen
+    from goal2.ui.s16_choose import ChooseScreen
+
+    def step():
+        if each is not None:
+            each()
+        current = window.current()
+        if current is screen or isinstance(current, DeskScreen):
+            return
+        if isinstance(current, ChooseScreen):
+            key(window, Qt.Key.Key_C, "c")
+        elif isinstance(current, RoundScreen) and current.arriving:
+            return
+        else:
+            key(window, Qt.Key.Key_Return)
+    pump(lambda: isinstance(window.current(), DeskScreen), limit, "the match did not reach the desk", step)
 
 
 def as_shown(event):
     return {"kind": event.kind, "minute": event.minute, "score": list(event.score), "data": event.data}
 
 
-def reference(captain):
-    """The same friendly through today's WatchedController: frames off, so every decision plays on in the engine,
-    with the captain S17's route chose. Its viewer is a child that shows nothing, as test_matches_on_pipe_t160's."""
-    from goal2.desktop.watched import WatchedController
+def reference(snapshot, choices, fixture):
+    """[T167] The same friendly through the bridge with the same answers, from the state the window's bridge started
+    from (its captain confirmed). [was T166: today's WatchedController with frames off]"""
+    from goal2.tests.match_day_policy import play_through_bridge
+    from goal2.ui.s17_pitch import engine_fixture
     model = career()
-    state = model.state
-    model.confirm(list(state.starting_eleven or state.managed_squad[:11]), captain, state.country_tactics)
-    watched = WatchedController(model)
-    watched.viewer_command = [sys.executable, "-c", "import time;time.sleep(600)"]
-    try:
-        watched.start(frames=False)
-        token = watched.engine_token
-
-        def done():
-            watched.engine.poll(token)
-            return not watched.engine.busy
-        deadline = time.monotonic() + WAIT
-        while not done():
-            if time.monotonic() > deadline:
-                raise AssertionError("the reference match did not finish")
-            time.sleep(.005)
-        outcome = watched.engine.outcome
-        watched.cancel()
-    finally:
-        watched.close()
+    model.state = copy.deepcopy(snapshot)
+    outcome = play_through_bridge(model, choices, fixture=engine_fixture(fixture), wait=WAIT)
     return model, outcome
 
 
@@ -211,7 +221,7 @@ class SameMatch(unittest.TestCase):
             out["f9"] = (screen.note.text(), window.current() is screen, controller.requests)
             # R: no more pacing, to full time.
             key(window, Qt.Key.Key_R)
-            pump(lambda: window.current() is not screen, WAIT, "the match did not reach full time", watch)
+            to_the_desk(window, screen, WAIT, watch)
             out["desk"] = window.current()
             out["desk_note"] = out["desk"].note.text() if isinstance(out["desk"], DeskScreen) else None
             out["shown"] = controller.shown()
@@ -222,7 +232,8 @@ class SameMatch(unittest.TestCase):
             window.close()
             window.deleteLater()
             cls.app.processEvents()
-        cls.reference_model, cls.reference_outcome = reference(out["captain"])
+        cls.reference_model, cls.reference_outcome = reference(controller.given._snapshot, controller.choices,
+                                                               out["fixture"])
 
     def test_play_next_game_plays_the_friendly_to_full_time_and_publishes_it(self):
         out = self.out
@@ -233,7 +244,8 @@ class SameMatch(unittest.TestCase):
         result = self.model.result_text().split("\n", 1)[0]
         self.assertIn(result, out["desk_note"])
         self.assertEqual(self.model.state.match_count, _BASE["model"].state.match_count + 1)
-        self.assertIsNone(out["engine_left"], "the bridge and its engine are closed at full time")
+        # [T167, D3: was T166's "closed at full time"] the match day keeps the window's engine for the next match
+        self.assertIsNotNone(out["engine_left"], "the window's engine stays for the next match")
 
     def test_the_events_shown_are_the_bridge_s_in_order(self):
         shown = self.out["shown"]
@@ -241,7 +253,7 @@ class SameMatch(unittest.TestCase):
         self.assertEqual(shown, [as_shown(e) for e in self.out["outcome"].events])
         self.assertTrue(any(e["kind"] == "decision" and e["data"]["context"] == "half_time" for e in shown))
 
-    def test_the_published_career_equals_today_s_controller_s(self):
+    def test_the_published_career_equals_the_same_match_through_the_bridge(self):
         self.assertEqual([as_shown(e) for e in self.out["outcome"].events],
                          [as_shown(e) for e in self.reference_outcome.events])
         self.assertEqual(self.out["outcome"].result, self.reference_outcome.result)
@@ -299,7 +311,7 @@ class SameMatch(unittest.TestCase):
         image = self.out["kick_off_image"]
         for slot, team, text, colour, box in painted:
             with self.subTest(slot=slot):
-                self.assertEqual(colour, theme.HOME_SIDE if team == 0 else theme.AWAY_SIDE)
+                self.assertEqual(colour, theme.HOME_SIDE if team == HOME else theme.AWAY_SIDE)   # [T167, #562]
                 want = QColor(colour)
                 pixels = (image.pixelColor(x, y) for x in range(max(0, box.left()), min(image.width(), box.right()))
                           for y in range(max(0, box.top()), min(image.height(), box.bottom())))
@@ -351,7 +363,7 @@ class BenchAndClose(unittest.TestCase):
         self.assertIn("Bench requested", out["request_note"])
         self.assertIn("pause", out["decisions"])
         self.assertIsNone(out["waiting"])
-        self.assertIn("T167", out["note"])
+        self.assertIn("T180", out["note"])   # [T167: the bench comes with T180]
 
     def test_closing_the_window_mid_match_leaves_no_engine_and_publishes_nothing(self):
         out = self.out
