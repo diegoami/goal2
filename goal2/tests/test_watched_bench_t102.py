@@ -99,10 +99,12 @@ def _memory_digest(memory):
 
 
 def default(state, original, fixture):
-    """Today's play-on default: run_watched_match, under engine_python() in a child (#500)."""
+    """Today's play-on default: run_watched_match, under engine_python() in a child (#500), with the watched
+    friendly's budget (BM-7, T180)."""
+    from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
     from goal2.tests import pypy_engine
     outcome = pypy_engine.call('goal2.game.watched_match:run_watched_match', state, original, fixture,
-                               delay_byte=0, record_draws=True)
+                               delay_byte=0, record_draws=True, substitutions=FRIENDLY_SUBSTITUTIONS)
     return {'result': outcome.result, 'memory': _memory_digest(outcome.memory),
             'events': [asdict(e) for e in outcome.events]}
 
