@@ -6,7 +6,7 @@ C37]
 
 - **Shows** the score, the kind of match, the location (the home side's country, `DesktopModel.home`, #562;
   t156-042 "location: Norway"), the time (before kick-off, HALF TIME, EXTRA TIME, FULL TIME), and both sides'
-  formations and elevens, the home side on the left in light red, as the original's menu.
+  formations and elevens, the home side on the left, each name in its side's kit (#583).
 - **The actions**, *play* highlighted first as in the original (step 42): each side's team tactics and players,
   tournament (S12), match stats (S20), and **play** (before and during) or **exit** (after the final whistle).
   *play* names what follows: "choose your captain, then kick-off" before the match, "second half" at half time,
@@ -30,6 +30,7 @@ from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 from goal2.ui import theme
 from goal2.ui.pitch import HOME
 from goal2.ui.screen import Screen, label, para
+from goal2.ui.kits import for_fixture
 from goal2.ui.squad_card import Row, box, colour
 
 TIMES = {"before": "before kick-off", "half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME"}
@@ -56,12 +57,16 @@ class MenuScreen(Screen):
         row = QHBoxLayout()
         row.setSpacing(24)
         inner.addLayout(row)
+        # [confirmed: t156-045, t156-192; #583] each name in its side's kit, as the original's scoreboard
+        kits = for_fixture(model, fixture)
         first = label(names[self.home_country], "h1")
-        colour(first, theme.HOME_SIDE)
+        colour(first, kits.colour(HOME))
         row.addWidget(first)
         self.score_label = label(f"{score[HOME]}  v  {score[1 - HOME]}", "h1")
         row.addWidget(self.score_label)
-        row.addWidget(label(names[self.away_country], "h1"))
+        second = label(names[self.away_country], "h1")
+        colour(second, kits.colour(1 - HOME))
+        row.addWidget(second)
         self.situation = label(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}",
                                "sub")
         row.addWidget(self.situation)

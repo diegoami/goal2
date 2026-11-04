@@ -102,12 +102,12 @@ class App(unittest.TestCase):
 class Look(App):
     def test_the_palette_is_the_readme_table(self):
         table = readme_palette()
-        self.assertEqual(len(table), 22, "the README's palette table has 22 roles")
+        self.assertEqual(len(table), 20, "the README's palette table has 20 roles")  # [#583: the side colours are the kits]
         self.assertEqual(theme.PALETTE, table)
         named = {"ground": theme.GROUND, "text, bright": theme.TEXT_BRIGHT, "highlight bar": theme.HIGHLIGHT,
                  "key hints, magenta": theme.KEY_HINT, "headings, cyan": theme.HEADING, "values, yellow": theme.VALUE,
                  "goalkeeper": theme.GOALKEEPER, "defence": theme.DEFENCE, "midfield": theme.MIDFIELD,
-                 "attack": theme.ATTACK, "home side": theme.HOME_SIDE, "away side": theme.AWAY_SIDE}
+                 "attack": theme.ATTACK}
         for role, colour in named.items():
             self.assertEqual(colour, table[role], role)
 

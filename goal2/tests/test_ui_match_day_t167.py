@@ -251,6 +251,7 @@ class MatchDay(unittest.TestCase):
                 out["pid"] = window.match_day.engine_pid()
                 pump(lambda: controller.drawn >= 0 and len(pitch.pitch.painted) >= 20, 120, "no kick-off drawn")
                 out["painted"] = list(pitch.pitch.painted)
+                out["kits"] = pitch.kits
                 out["home_label"] = (pitch.home.text(), pitch.home.styleSheet())
                 for _ in range(4):
                     key(window, Qt.Key.Key_Right)   # the fastest speed
@@ -479,18 +480,23 @@ class MatchDay(unittest.TestCase):
         self.assertIsNone(self.out["engine_left"], "the window's close ends the engine")
 
     # The home side.
-    def test_home_is_drawn_light_red(self):
-        from goal2.ui.pitch import HOME
+    def test_each_side_wears_the_engine_s_kit(self):
+        """[#583; was 'home is drawn light red'] The pitch, S17's names and S15's are in the kits the engine
+        computed for this match (DS:832E..8331, 0791:1073); home has no colour of its own."""
+        from goal2.tests.test_ui_pitch_t166 import engine_kits
+        from goal2.ui.pitch import HOME, KEEPERS
         out = self.out["friendly"]
         fixture = out["fixture"]
         self.assertEqual(self.model.home(fixture), fixture.side_b)
         painted = out["painted"]
         self.assertEqual({team for _, team, *_ in painted}, {0, 1})
+        kits = out["kits"]
+        self.assertEqual((kits.shirt, kits.keeper), engine_kits(out["outcome"]))
         for slot, team, text, colour, box in painted:
-            self.assertEqual(colour, theme.HOME_SIDE if team == HOME else theme.AWAY_SIDE)
+            self.assertEqual(colour, kits.colour(team, slot in KEEPERS))
         names = self.model.goaldat.country_names
         self.assertEqual(out["home_label"][0], names[fixture.side_b])
-        self.assertIn(theme.HOME_SIDE, out["home_label"][1])
+        self.assertIn(kits.colour(HOME), out["home_label"][1])
         self.assertIn(f"location: {names[fixture.side_b]}", out["menu_before"]["situation"])
 
 

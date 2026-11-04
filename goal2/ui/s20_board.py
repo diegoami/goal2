@@ -17,7 +17,7 @@ Everything shown is what the bridge's events and outcome give (`board`); nothing
 - after a quick result (R on S17, or N to the watch question) a QUICK RESULT banner stands in place of the
   statistics, the scorers kept, as in the original (t156-270, t156-310).
 
-The home side is named first and drawn light red (`DesktopModel.home`, #562). **Enter** continues (to S15); **Esc**
+The home side is named first (`DesktopModel.home`, #562), each name in its side's kit (#583). **Enter** continues (to S15); **Esc**
 the bench, which comes with T180: until then it is the default answer, no substitution, with a note [designed: T167].
 """
 from __future__ import annotations
@@ -71,8 +71,10 @@ def board(events, phase, quick):
 class BoardScreen(Screen):
     escape_text = "bench"
 
-    def __init__(self, window, model, names, kind, phase, data, onward):
-        """`names`: the countries as [team 0, team 1]; `kind`: FRIENDLY, QUALIFYING…; `phase`: half, extra, full."""
+    def __init__(self, window, model, names, kind, phase, data, onward, kits):
+        """`names`: the countries as [team 0, team 1]; `kind`: FRIENDLY, QUALIFYING…; `phase`: half, extra, full;
+        `kits`: the match's kits (goal2/ui/kits.py), each name in its side's shirt, as the original's board
+        [confirmed: t156-192-fulltime-board.png, Norway light red and Holland white; #583]."""
         super().__init__(window)
         self.model, self.data, self.onward, self.phase = model, data, onward, phase
         home, away = HOME, 1 - HOME
@@ -84,13 +86,13 @@ class BoardScreen(Screen):
         row.setSpacing(24)
         inner.addLayout(row)
         first = label(names[home], "h1")
-        colour(first, theme.HOME_SIDE)
+        colour(first, kits.colour(home))
         row.addWidget(first)
         score = data["score"]
         self.score_label = label(f"{score[home]}  {score[away]}", "h1")
         row.addWidget(self.score_label)
         second = label(names[away], "h1")
-        colour(second, theme.AWAY_SIDE)
+        colour(second, kits.colour(away))
         row.addWidget(second)
         row.addWidget(label(TIMES[phase], "h1"))
         half = data["half_time"]
