@@ -169,6 +169,41 @@ class ReplayScreens(unittest.TestCase):
         self.assertIsNone(self.controller.goal)
         self.assertFalse(self.pitch.stop_box.open)
 
+    def test_final_sample_goal_questions_finish_before_live_ack_and_publication(self):
+        from PySide6.QtCore import Qt
+        from types import SimpleNamespace
+        self.bridge.outcome = SimpleNamespace()
+        final = {'acknowledged': False}
+        def acknowledge(token, sequence):
+            self.bridge.acks.append(sequence)
+            final['acknowledged'] = True
+        def poll(token):
+            self.bridge.polls += 1
+            if final['acknowledged']:
+                self.bridge.busy = False
+            return []
+        with patch.object(self.bridge, 'ack_frames', side_effect=acknowledge), \
+                patch.object(self.bridge, 'poll', side_effect=poll):
+            rows = self.goal()
+            self.assertFalse(self.controller.finished, 'publication cannot overtake the painted goal')
+            self.assertEqual(self.pitch.stop_box.kind, 'replay')
+            self.assertEqual(self.bridge.acks, [], 'goal question holds the live acknowledgement')
+            self.assertEqual(self.bridge.polls, 0)
+            self.pitch.tick()
+            self.assertEqual(self.bridge.acks, [], 'the pending question stays held on later ticks')
+            self.pitch.answer_stop_box(Qt.Key.Key_Y)
+            self.assertEqual(self.play_replay(), rows)
+            self.assertEqual(self.pitch.stop_box.kind, 'save-goal')
+            self.pitch.tick()
+            self.assertFalse(self.controller.finished)
+            self.assertEqual(self.bridge.acks, [])
+            self.pitch.answer_stop_box(Qt.Key.Key_N)
+            self.pitch.tick()
+            self.assertTrue(self.controller.finished)
+            self.assertEqual(self.bridge.acks, [rows[-1]['sequence']])
+            self.assertIs(self.controller.outcome, self.bridge.outcome)
+            self.assertEqual(type(self.window.current()).__name__, 'BoardScreen')
+
     def test_automatic_replay_has_no_replay_question_and_quick_result_has_neither_question(self):
         from PySide6.QtCore import Qt
         rows = self.goal(automatic=True)

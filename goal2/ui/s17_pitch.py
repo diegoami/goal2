@@ -169,6 +169,10 @@ class MatchController:
             return False
 
     def _tick(self, now):
+        # [designed: T181] painted() can discover a goal on the last sample. Hold that acknowledgement as well
+        # as polling until its questions finish, so publication cannot overtake the replay/save flow.
+        if self.goal is not None and not self.quick:
+            return False
         bridge, token, display = self.bridge, self.token, self.display
         if self.drawn > self.acked and not self.quick:
             bridge.ack_frames(token, self.drawn)
