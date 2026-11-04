@@ -1,11 +1,10 @@
 """[designed: T182, #585] Friendly scenarios, each match setup played once."""
 import unittest
 from goal2.tests import test_watch_qualifiers_t176 as _original  # [designed: T182] retain the original change-to-test reach
-from goal2.tests.watch_qualifiers_t176_cases import *
-from goal2.tests import watch_qualifiers_t176_cases as _cases
+from goal2.tests.test_watch_qualifiers_t176 import *
 
 
-class WatchQualifiers(_cases.WatchQualifiers):
+class WatchQualifiers(_original.WatchQualifiers):
     COMPETITIVE = False
     FRIENDLY = True
 
