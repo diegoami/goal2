@@ -342,6 +342,10 @@ operational status.
 
 - [T169](T169.md): the portable ZIP gets the new window beside today's, m3 Track A (#543).
 
+- [T180](T180.md): new window, the match stops and the bench, S18, S19, S09's mark line, m3 Track A (#574).
+
+- [T181](T181.md): new window, action replay, saved goals and summaries, F3 and F4, m3 Track A (#575).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
