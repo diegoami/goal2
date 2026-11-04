@@ -10,6 +10,12 @@ title's question, *load a saved game?*, with the obvious answer first:
   "file not found · try again? (Y/N)" [confirmed: T156-R1 steps 242–244; E031 C11–C12; E015-r0008 state 10];
 - with no save, only *New game*.
 The saves live in the data root's `saves` folder (`data_setup.Paths.saves`).
+
+**F**, a standalone friendly between any two countries, outside a career, is a GOAL2 ADDITION the original lacks
+[designed: owner, §6 item 18 (docs/design/ui-2026-11, 2026-11-03); T177, #557]: today's *New standalone friendly*
+(goal2/ui/friendly.py). The original's title takes only Y and N [confirmed: T156-R1 steps 0, 242–244; E031 C11–C12],
+so F changes no key's meaning. It is the menu's last item, under the addition's tag; the friendly returns here with
+its result on this screen, and nothing is saved.
 """
 from __future__ import annotations
 
@@ -48,6 +54,7 @@ class StartScreen(Screen):
         self.failed = None   # the entry whose opening failed: the screen asks Y try again / N back
         self.y = self.bind((Qt.Key.Key_Y,), "load a saved game", self.press_y)
         self.n = self.bind((Qt.Key.Key_N,), "new game", self.press_n)
+        self.f = self.bind((Qt.Key.Key_F,), "friendly", self.press_f)   # [designed: owner, §6 item 18; T177]
         self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), shown=False)
         self.bind((Qt.Key.Key_Down,), "", lambda: self.move(1), shown=False)
         self.choose_binding = self.bind((), "choose save", None, captions=("↑", "↓"))
@@ -98,6 +105,14 @@ class StartScreen(Screen):
         self.quit_item = KeyItem("Quit", "Esc", self.escape)
         for item in (self.load_item, self.new_item, self.quit_item):
             menu.addWidget(item)
+        # [designed: owner, §6 item 18; T177] the standalone friendly, under the addition's tag
+        menu.addSpacing(6)
+        tag = QHBoxLayout()
+        tag.addWidget(label("GOAL2 ADDITION", "tagNew"))
+        tag.addStretch(1)
+        menu.addLayout(tag)
+        self.friendly_item = KeyItem("Standalone friendly", "F", self.press_f)
+        menu.addWidget(self.friendly_item)
         menu.addStretch(1)
         top.addWidget(self.menu_box)
         layout.addLayout(top)
@@ -111,6 +126,9 @@ class StartScreen(Screen):
             r = Row([w for _, w in COLUMNS], on_click=lambda i=i: self.click_row(i))
             inner.addWidget(r)
             self.rows.append(r)
+        self.message = para("", "sub")   # what came back to the title: the standalone friendly's result [T177]
+        self.message.hide()
+        layout.addWidget(self.message)
         self.problem = para("", "error")
         self.problem.setMinimumWidth(WIDTH - 34)
         inner.addWidget(self.problem)
@@ -205,6 +223,18 @@ class StartScreen(Screen):
             return self.open_entry(self.failed)   # try again
         entry = self.highlighted_entry()
         return self.open_entry(entry) if entry is not None else None
+
+    def press_f(self):
+        """F: the standalone friendly's country choice (goal2/ui/friendly.py). [designed: owner, §6 item 18; T177]"""
+        if self.failed is not None:
+            return None
+        from goal2.ui.friendly import open_friendly
+        return open_friendly(self.window_)
+
+    def say(self, text):
+        """A line under the title's boxes: what a standalone friendly ended with (S17's result line)."""
+        set_para(self.message, text)
+        self.message.setVisible(bool(text))
 
     def press_n(self):
         if self.failed is not None:

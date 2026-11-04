@@ -14,8 +14,8 @@ it reports it (`drawn`), and only then does the screen acknowledge it to the bri
   pygame_viewer.py `DRAW_ORDER`].
 - **The colours** are the palette's [confirmed: docs/design/ui-2026-11 §3, the table]: pitch lines grey, the surround
   green, the home side light red and the away side white [confirmed: T156-R1 step 45, t156-045-kick-off.png]. The
-  home side is the fixture's first side (`Fixture.side_a`, team 0 of the samples) until the route knows a fixture's
-  venue [designed: T166, interim until #562]. Keepers take their side's colour: the original draws them in the kit's
+  home side is the fixture's side B, team 1 of the samples (`DesktopModel.home`, #562) [confirmed: F031 "Venue";
+  derived: t156-045, Norway home and light red]. Keepers take their side's colour: the original draws them in the kit's
   second colour, which the palette has no role for [designed: T166].
 - **The ball** shows only on an empty cell [confirmed: 0791:8F10 draw_ball], as a small bright square, as the mockup
   draws it [designed: s17-pitch.html].
@@ -37,10 +37,14 @@ WIDTH, HEIGHT = 1000, 560   # [designed: s17-pitch.html, `.pitch` 1000x560]
 SURROUND = 14               # the green band's depth, in page pixels [designed: s17-pitch.png]
 
 
+# The samples' team that plays at home: the fixture's side B (`DesktopModel.home`) [confirmed: F031 "Venue"; #562].
+HOME = 1
+
+
 def side_colour(team: int) -> str:
-    """The colour of a side's marks: team 0 of the samples (the fixture's first side, home for now) light red, team 1
-    white. [confirmed: docs/design/ui-2026-11 §3, "home side" and "away side"; designed: T166, home = first side]"""
-    return theme.HOME_SIDE if team == 0 else theme.AWAY_SIDE
+    """The colour of a side's marks: the home side (team HOME of the samples) light red, the away side white.
+    [confirmed: docs/design/ui-2026-11 §3, "home side" and "away side"; DesktopModel.home, #562]"""
+    return theme.HOME_SIDE if team == HOME else theme.AWAY_SIDE
 
 
 class PitchWidget(QWidget):
