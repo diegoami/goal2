@@ -303,10 +303,19 @@ class Options(App):
         window.pop()
         self.assertEqual(desk.model.state, before, "the round shown changes nothing")
         self.assertIs(window.current(), desk)
-        for key, task in ((Qt.Key.Key_F3, "T167"), (Qt.Key.Key_F4, "T181")):
+        # [designed: T181] F3/F4 open saved-recording lists; Esc leaves the career unchanged.
+        for key, title, empty in ((Qt.Key.Key_F3, "saved goals", "No saved goals."),
+                                  (Qt.Key.Key_F4, "saved match summaries", "No saved match summaries.")):
             self.key(window, key)
+            listing = window.current()
+            self.assertEqual(type(listing).__name__, "RecordingsScreen")
+            self.assertEqual(listing.title, title)
+            self.assertEqual(listing.entries, [])
+            self.assertIn(empty, listing.note.text())
+            self.assertEqual(desk.model.state, before)
+            self.fits(window)
+            self.key(window, Qt.Key.Key_Escape)
             self.assertIs(window.current(), desk)
-            self.assertIn(task, desk.note.text())
         # [T168] F7 opens S21's name box and F10 its quit question; Esc and N return to the desk.
         from goal2.ui.s21_save import QuestionScreen, SaveScreen
         self.key(window, Qt.Key.Key_F7)
