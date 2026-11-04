@@ -10,8 +10,9 @@ Start. The portable build's launcher and default stay today's window (goal2/desk
 `--import FOLDER` imports the data files in FOLDER as S01 does (GOAL.HLP too, when the folder has it), then starts.
 `--screenshot DIR` writes PNGs at 1440x900 into DIR and exits: S01, the placeholder home and S22 always; S02 with
 two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages, S06 the manager's desk,
-S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, S17 at kick-off and in play (its first
-friendly under PyPy 3.11, cancelled after the pictures), S11 and S13 again after its first round (the route's
+S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, the match day of its first friendly
+under PyPy 3.11, on a copy of the career (T167: S14 before and after the match, S15 before kick-off and at half time,
+S16 the captain and a set-piece taker, S17 at kick-off and in play, S20 at half time and full time), S11 and S13 again after its first round (the route's
 quick friendly), S21's save box, quit question and save question over the desk (T168), and T177's extras: S02's
 standalone friendly's country choice, S08's pool search and the desk's manager's name line, when it finds the data
 the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
@@ -229,39 +230,95 @@ def save_quit_shots(window, key, shot):
     key(Qt.Key.Key_Escape)
 
 
-def pitch_shots(app, window, career, shot, limit=120):
-    """S17 at kick-off (the sides in their places) and in play (at 17′, the mockup's minute), each waited for at most
-    `limit` seconds, on a copy of the career:
-    its first friendly from the desk's *play next game*, cancelled after the pictures, so the career is unchanged.
-    The engine runs under PyPy 3.11; without it S17 is not pictured. [designed: T166]"""
+def pitch_shots(app, window, career, shot, limit=600):
+    """The match day on a copy of the career, its first friendly from the desk's *play next game*: S14 the round,
+    S15 before kick-off, S16 the captain, S17 at kick-off (the sides in their places) and in play (at 17′, the
+    mockup's minute), S16 a set-piece taker, S20 at half time, S15 at half time, S20 at full time and S14 after it.
+    Each screen is pictured the first time it shows, each stop answered as the player's default (Enter); the whole
+    match waited for at most `limit` seconds. The copy is dropped afterwards, so the career is unchanged. The engine
+    runs under PyPy 3.11; without it S17 on is not pictured. [designed: T166; T167]"""
     import copy
     import time
-    from goal2.ui.s17_pitch import PitchScreen, play_next_game
+    from PySide6.QtCore import Qt
+    from goal2.ui.match_day import close_window, play_next_game
+    from goal2.ui.s14_round import RoundScreen
+    from goal2.ui.s15_match_menu import MenuScreen
+    from goal2.ui.s16_choose import ChooseScreen
+    from goal2.ui.s17_pitch import PitchScreen
+    from goal2.ui.s20_board import BoardScreen
     desk = window.open_career(copy.deepcopy(career))
     opened = play_next_game(window, desk.model)
-    if not isinstance(opened, PitchScreen):
-        print(f"S17 is not pictured: {opened}", file=sys.stderr)
+    if not isinstance(opened, RoundScreen):
+        print(f"The match day is not pictured: {opened}", file=sys.stderr)
         window.open_career(career)
         return
 
+    def key(k):
+        from PySide6.QtCore import QEvent
+        from PySide6.QtGui import QKeyEvent
+        window.keyPressEvent(QKeyEvent(QEvent.Type.KeyPress, k, Qt.KeyboardModifier.NoModifier, ""))
+        app.processEvents()
+
     def until(done):
         deadline = time.monotonic() + limit
-        while not done() and time.monotonic() < deadline and not opened.ended:
+        while not done() and time.monotonic() < deadline:
             app.processEvents()
             time.sleep(.001)
-    controller = opened.controller
+        return done()
+    until(lambda: not opened.arriving)
+    shot("s14-round.png")
+    key(Qt.Key.Key_Return)
+    shot("s15-match-menu.png")
+    key(Qt.Key.Key_Return)
+    shot("s16-captain.png")
+    key(Qt.Key.Key_Return)
+    pitch = window.current()
+    if not isinstance(pitch, PitchScreen):
+        print(f"S17 is not pictured: {getattr(window.current(), 'note', None)}", file=sys.stderr)
+        close_window(window)
+        window.open_career(career)
+        return
+    controller = pitch.controller
 
     def lined_up():
         # Kick-off, as t156-045-kick-off.png: the sides have walked out to their places (at the toss the players
         # share a cell), the kick-off announced.
         frame = controller.display.frame
-        return (frame is not None and controller.drawn >= frame["sequence"] and len(opened.pitch.painted) >= 20
-                and any("kick off" in line for line in opened.lines))
+        return (frame is not None and controller.drawn >= frame["sequence"] and len(pitch.pitch.painted) >= 20
+                and any("kick off" in line for line in pitch.lines))
     until(lined_up)
     shot("s17-pitch-kickoff.png")
-    until(lambda: controller.display.frame is not None and controller.display.frame["minute"] >= 17)
-    shot("s17-pitch.png")
-    opened.closing()
+    taken = set()
+
+    def step():
+        """Picture each stop the first time it shows, then answer it as the default (Enter)."""
+        screen = window.current()
+        if isinstance(screen, PitchScreen):
+            frame = controller.display.frame
+            if "s17" not in taken and frame is not None and frame["minute"] >= 17:
+                taken.add("s17")
+                shot("s17-pitch.png")
+                for _ in range(4):
+                    key(Qt.Key.Key_Right)   # the fastest speed for the rest
+            return False
+        if isinstance(screen, ChooseScreen) and "taker" not in taken:
+            taken.add("taker")
+            shot("s16-taker.png")
+        elif isinstance(screen, BoardScreen) and screen.phase not in taken:
+            taken.add(screen.phase)
+            shot(f"s20-board-{screen.phase}.png")
+        elif isinstance(screen, MenuScreen) and f"menu-{screen.phase}" not in taken:
+            taken.add(f"menu-{screen.phase}")
+            if screen.phase == "half":
+                shot("s15-match-menu-half.png")
+        elif isinstance(screen, RoundScreen):
+            return True
+        key(Qt.Key.Key_Return)
+        return False
+    if until(step):
+        until(lambda: not window.current().arriving)
+        shot("s14-round-after.png")
+    close_window(window)
     window.open_career(career)
 
 

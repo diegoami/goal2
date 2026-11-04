@@ -18,10 +18,10 @@ Placeholders [designed: T164, the task's scope]: F3 comes with T167, F4 with T18
 brings it, on the desk, and does nothing else. **F7** saves and **F10** quits through S21 (goal2/ui/s21_save.py), with
 the save question when anything is unsaved. [designed: T168, #542]
 
-*play next game* [designed: T166, #540, the interim route]: until T167 brings the round, the match menu and the
-captain, it plays the next own friendly watched on S17 (goal2/ui/s17_pitch.py `play_next_game`), with the original's
-suggested captain as T143 picks it; at full time S17 returns here with the result in the status line. A qualifier
-says it comes with T176 and T167.
+*play next game* [designed: T167, #541]: the match day (goal2/ui/match_day.py), the original's screens in its order:
+S14 the round, S15 the match menu, S16 the captain, S17 the pitch, S20 the boards, then the round's remaining results
+and this desk again, with the result in the status line. A friendly and a qualifier alike (T176). The desk closes the
+match day's bridges when the window closes (`closing`), and with them the engine process.
 
 The banner names the competition as the original's hub does, *European Championship · QUALIFYING* and the year for a
 European country (`DesktopModel.competition`, #563) [confirmed: t156-013-hub.png], drawn as the mockup: the year,
@@ -30,6 +30,9 @@ the name in the banner's light red, the phase [designed: s06-hub.html].
 [designed: owner decision 14, #526] *re-import data*, a goal2 addition, opens S01 over the data folder (to add
 GOAL.HLP later); Esc there returns to the desk. It is the last option, after the original's six and set apart under
 a "goal2 addition" tag, so ↑↓ reach it and no key is added.
+
+The next match says home or away after its kind, as the original's hub (*friendly away*): the home side is the
+fixture's side B (`DesktopModel.home`, `venue`) [confirmed: F031 "Venue", 000E:724A; #562].
 
 Two more goal2 additions, today's extras the original lacks, sit beside it under the same tag [designed: owner, §6
 item 18 (docs/design/ui-2026-11, 2026-11-03); T177, #557], options reached by ↑↓ and Enter or a click, so no key of the
@@ -42,10 +45,6 @@ original's hub changes meaning:
   asks S21's *Do you want to save this game?* first (`s21_save.ask_to_save`, T87's question): **Y** the name box, then
   S03; **N** S03 without saving; **Esc** stays on the desk. Esc on S03 returns to the desk and its career; a career
   started on S04 replaces it.
-
-The venue of the next match is not shown: the Python route stores a fixture's two countries without assigning a
-pitch role [designed: T41a, goal2/game/campaign.py `Fixture.side_a`], so the desk shows the match's kind only,
-not the mockup's "away".
 
 Everything shown is the model's (`DesktopModel.summary`, `view`, `countries`; `goal2.game.country_card.card` for the
 rankings), route (b) [designed: owner, 2026-11-03, #527 D2]. The desk never saves through the model: F7 saves through
@@ -86,7 +85,9 @@ def next_match(model):
     if fixture is None:
         return None, "stage complete"
     opponent = fixture.side_b if fixture.side_a == state.managed_country else fixture.side_a
-    return opponent, model.fixture_label(fixture).split(" / ", 1)[1].lower()
+    kind = model.fixture_label(fixture).split(" / ", 1)[1].lower()
+    # [confirmed: F031 "Venue", 000E:724A; t156-013-hub.png "friendly away"] the hub's home or away (#562)
+    return opponent, f"{kind} {model.venue(fixture)}"
 
 
 class DeskScreen(Screen):
@@ -321,8 +322,8 @@ class DeskScreen(Screen):
         self.say(LATER[what])
 
     def play_next_game(self):
-        """The next friendly on S17 (the interim route, T166); what stops it is said here."""
-        from goal2.ui.s17_pitch import play_next_game
+        """The match day (goal2/ui/match_day.py): S14, S15, S16, S17, S20; what stops it is said here."""
+        from goal2.ui.match_day import play_next_game
         opened = play_next_game(self.window_, self.model)
         if isinstance(opened, str):
             self.say(opened)
@@ -351,6 +352,11 @@ class DeskScreen(Screen):
     def team_tactics(self):
         from goal2.ui.s10_team_tactics import open_team_tactics
         return open_team_tactics(self.window_, self.model)
+
+    def closing(self):
+        """The window closes: the match day's bridges close, and with them the engine process (D3, #417)."""
+        from goal2.ui.match_day import close_window
+        close_window(self.window_)
 
     def reimport(self):
         return self.window_.push(ReimportScreen(self.window_, self.window_.target, self.window_.choose))

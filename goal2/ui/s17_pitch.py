@@ -16,17 +16,17 @@ player watched is the match the engine published. It drives nothing: `MatchContr
   acknowledged as it arrives and the screen says *HANG ON A TICK* where *R result* was, as the original does
   [confirmed: t156-267-quick-hang-on.png]; the pitch keeps the last sample it drew.
 - **F9** [designed: T166]: goal2 has no sound; the key says so and does nothing else.
-- **The stops, until T167** [designed: T166, interim]: the match menu, the bench and the boards (S18-S20) come with
-  T167. Until then every bench decision (half time, a substitution opportunity, the pause Esc or Enter asks for) is
-  answered as today's window answers one left unanswered: no substitution, play on (goal2/desktop/bench_page.py
-  `escape`). The engine answers the others as it always does (extra time, the shoot-out order). Each stop is noted in
-  the commentary.
-- **Full time** publishes through the bridge and returns to the desk, with the result in its status line. Closing the
-  window during a match cancels it through the bridge (`Window.closeEvent` calls `closing`): nothing is published
-  and the engine process ends.
+- **The stops** [designed: T167, #541; docs/design/ui-2026-11 §1, the match day]: the controller holds a stop once every
+  sample before it is shown, and the match day (goal2/ui/match_day.py) shows it: half time and the menu before extra
+  time on S20 then S15, a set-piece taker and the shoot-out order on S16. Its answer is the one the engine receives,
+  sent once through the bridge. A substitution opportunity and the pause Esc or Enter asks for keep T166's answer
+  until T180 builds S18 and S19: no substitution, play on (goal2/desktop/bench_page.py `escape`), noted in the
+  commentary.
+- **Full time** publishes through the bridge, then the match day shows S20 and S15. Closing the window during a match
+  cancels it through the bridge (`Window.closeEvent` calls `closing`): nothing is published.
 
-The bridge lives for one match [designed: T166, interim]: the controller makes it at kick-off and closes it at full
-time or on a cancel, so no engine process outlives the match.
+The bridge is the match day's, one for the window's life (D3, #527): the controller starts its match on it and never
+closes it [designed: T167, replacing T166's bridge per match].
 """
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
 from goal2.desktop.match_view import MAX_BACKLOG, PLAYBACK_RATE, Display
 from goal2.desktop.pygame_viewer import MARKS
 from goal2.ui import theme
-from goal2.ui.pitch import PitchWidget, side_colour
+from goal2.ui.pitch import HOME, PitchWidget, side_colour
 from goal2.ui.screen import Clickable, Screen, label
 from goal2.ui.squad_card import box, colour
 
@@ -47,13 +47,14 @@ TICK_MS = 4            # the controller's poll; the fastest speed shows 240 samp
 COMMENTARY_ROWS = 15   # the lines the commentary box shows [designed: s17-pitch.png, the box's height]
 HANG_ON = "HANG ON A TICK"   # [confirmed: t156-267-quick-hang-on.png, "HANG ON"; T156-R1 step 2's full words]
 NO_SOUND = "F9: goal2 has no sound, so the key does nothing."
-BENCH_LATER = "The bench comes with T167: the match plays on with no substitution."
+BENCH_LATER = "The bench comes with T180: the match plays on with no substitution."
 # The stops' words. [confirmed: E031 C40-C41, C44-C46b; goal2/desktop/match_view.py `Display.board`]
 STOPS = {"half_time": "HALF TIME", "substitution": "SUBSTITUTION OPPORTUNITY", "pause": "PAUSE",
          "extra_time": "EXTRA TIME", "shootout_order": "PENALTY SHOOT-OUT"}
-BENCH = ("half_time", "substitution", "pause")   # the decisions the watching player answers (BENCH_CONTEXTS)
-QUALIFIER_LATER = ("Qualifiers in the new window come with T176 and T167; this interim route plays your friendlies "
-                   "only.")
+# The bench decisions that keep T166's default answer until T180 (S18, S19) [designed: T167]; every other stop is
+# held for the match day's screens (STOPS_SHOWN).
+DEFAULTED = ("substitution", "pause")
+STOPS_SHOWN = ("half_time", "extra_time", "set_piece", "shootout_order")
 
 
 def suggested_captain(state):
@@ -84,54 +85,55 @@ def best_leader(players, eleven):
 
 
 def engine_fixture(pending):
-    """The engine's fixture of a scheduled one, as today's WatchedController makes it."""
+    """The engine's fixture of a scheduled one, as today's WatchedController makes it (its kind kept)."""
     from goal2.engine.original_match import Fixture
-    return Fixture(pending.side_a, pending.side_b, int(pending.fixture_id.split(":")[1]))
+    return Fixture(pending.side_a, pending.side_b, int(pending.fixture_id.split(":")[1]), pending.kind)
 
 
 class MatchController:
-    """One watched friendly over the bridge: what the screen shows, and the acknowledgements and answers it sends.
+    """One watched match over the match day's bridge: what the screen shows, and the acknowledgements and answers it
+    sends.
 
-    `tick(now)` polls the bridge's events and samples, acknowledges what the pitch drew (`drawn`), answers a bench
-    decision once every sample before it has been shown, and selects the next sample when it is due. It never
-    blocks: every call is the bridge's bounded poll."""
+    `tick(now)` polls the bridge's events and samples, acknowledges what the pitch drew (`drawn`), holds a stop once
+    every sample before it has been shown (`stop`, answered by `answer_stop`), and selects the next sample when it is
+    due. It never blocks: every call is the bridge's bounded poll."""
 
-    def __init__(self, model, pending, *, command=None):
+    def __init__(self, model, pending, bridge, *, quick=False):
         self.model = model
         self.pending = pending
-        self.command = command
         self.display = Display("s17")
         self.events = []          # every event the bridge returned, in order
         self.released = 0         # how many of them the screen shows
         self.drawn = -1           # the last sample the pitch painted
         self.acked = -1           # the last sample acknowledged to the bridge
-        self.quick = False
-        self.answered = []        # the bench decisions answered, by context
+        self.quick = bool(quick)
+        self.answered = []        # the stops answered, by context
+        self.choices = []         # (context, the answer sent) of every stop answered, in order
         self.requests = 0         # the bench requests sent (Esc, Enter)
-        self.note = ""
+        self.note = HANG_ON if quick else ""
+        self.given = bridge       # the match day's bridge: kept open after the match (D3)
         self.bridge = None
         self.token = None
         self.outcome = None
         self.error = None
         self.finished = False
+        self.stop = None          # the decision the match waits on, once every sample before it is shown
 
     def _send(self, kind, value):
         self.display.accept(["s17", self.display.sequence, kind, value])
 
     def start(self):
-        """Kick-off: the bridge plays the fixture with the pitch samples and the bench (T102)."""
+        """Kick-off: the bridge plays the fixture with the pitch samples, the bench and the player prompts."""
         from goal2.desktop.watched import pitch_identity
-        from goal2.game.watched_jobs import WatchedJobs
         self._send("start", pitch_identity(self.model, self.pending))
         self._send("pitch", {"rate": PLAYBACK_RATE})
-        self.bridge = WatchedJobs(self.model, command=self.command)
-        try:
-            self.token = self.bridge.start(engine_fixture(self.pending), delay_byte=0, record_draws=True,
-                                           frames=True, bench=True)
-        except Exception:
-            self.bridge.close()
-            self.bridge = None
-            raise
+        options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True)
+        if self.pending.kind == 1:
+            self.token = self.given.start(engine_fixture(self.pending), **options)
+        else:
+            # [designed: T176] a qualifier is the competitive match on the owner's CompetitiveJobs
+            self.token = self.given.start(**options)
+        self.bridge = self.given
 
     @property
     def running(self):
@@ -174,14 +176,23 @@ class MatchController:
             self.acked = last["sequence"]
             self.released = max(self.released, last["watermark"])
         waiting = bridge.waiting
-        if (waiting is not None and bridge.frames_drained() and not display.frames
+        if (waiting is not None and self.stop is None and bridge.frames_drained() and not display.frames
                 and self.acked == display.frame_sequence):
             context = waiting.data.get("context")
-            bridge.answer(token, ())
-            self.answered.append(context)
-            self.note = f"{STOPS.get(context, context)}: {BENCH_LATER}"
             if self.quick:
                 self.released = len(self.events)
+            if context in DEFAULTED:
+                bridge.answer(token, ())
+                self.answered.append(context)
+                self.choices.append((context, []))
+                self.note = f"{STOPS.get(context, context)}: {BENCH_LATER}"
+            elif context == "set_piece" and self.quick:
+                # [designed: T167; docs/design S17 "R ... still stops at half time, injuries, extra time and the
+                # shoot-out"] a quick result shows no taker card: no key, the current pick stands (F030)
+                self._answer(context, {"taker": None})
+            else:
+                self.released = len(self.events)
+                self.stop = waiting
         changed = False
         if not self.quick and (display.frame is None or self.drawn >= display.frame["sequence"]):
             changed = display.advance(now)
@@ -190,15 +201,31 @@ class MatchController:
         return changed
 
     def _full_time(self):
-        """The bridge has published the match (or failed it): every event is shown and the bridge is closed."""
+        """The bridge has published the match (or failed it): every event is shown; the bridge stays open (D3)."""
         self.outcome = self.bridge.outcome
         if self.outcome is None:
             raise ValueError("the match ended without its publication")
         self.released = len(self.events)
         self.finished = True
-        bridge, self.bridge = self.bridge, None
-        bridge.close()
+        self.bridge = None
         return False
+
+    def _answer(self, context, value):
+        if context in ("set_piece", "shootout_order"):
+            self.bridge.choose(self.token, value)
+        else:
+            self.bridge.answer(self.token, ())
+        self.answered.append(context)
+        self.choices.append((context, value))
+
+    def answer_stop(self, value=None):
+        """The match day's answer to the held stop, sent once: {'taker': word or None} at a set piece,
+        {'shootout_order': [words]} before a shoot-out, nothing at half time and before extra time (play on; the
+        bench comes with T180)."""
+        stop, self.stop = self.stop, None
+        if stop is None or not self.running:
+            return
+        self._answer(stop.data.get("context"), value if value is not None else [])
 
     # The player's keys.
     def painted(self, sequence):
@@ -224,11 +251,11 @@ class MatchController:
         return sent
 
     def cancel(self):
-        """End the match through the bridge, publishing nothing, and close the bridge (and with it the engine)."""
+        """End the match through the bridge, publishing nothing; the bridge stays the match day's."""
         bridge, self.bridge = self.bridge, None
         self.finished = True
-        if bridge is not None:
-            bridge.close()
+        if bridge is not None and bridge.busy and bridge.token == self.token:
+            bridge.cancel_and_reap(self.token)
 
     # What the screen shows.
     def shown(self):
@@ -249,7 +276,7 @@ def commentary_line(event):
     if event["kind"] == "commentary":
         return f"{event['minute']}′ {event['data'].get('text', '')}"
     context = event["data"].get("context")
-    answer = "no substitution, play on (T167)" if context in BENCH else "the original's own answer"
+    answer = "no substitution, play on (T180)" if context in DEFAULTED else "your answer"
     return f"{event['minute']}′ ── {STOPS.get(context, str(context).upper())}: {answer}"
 
 
@@ -257,15 +284,17 @@ class PitchScreen(Screen):
     title = "watching"
     escape_text = "bench"
 
-    def __init__(self, window, model, controller):
+    def __init__(self, window, model, controller, day=None):
         super().__init__(window)
         self.model = model
         self.controller = controller
+        self.day = day            # the match day that shows the stops and full time (goal2/ui/match_day.py)
         self.lines = []           # the commentary's lines, oldest first
         self._seen = 0            # the shown events already made into lines
         self.ended = False
+        self.held = None          # the stop the match day is showing
         names = controller.display.countries
-        self.name_label.setText(f"watching · {names[0]} v {names[1]}")
+        self.name_label.setText(f"watching · {names[HOME]} v {names[1 - HOME]}")
         self._build(names)
         self.bind((Qt.Key.Key_Up,), "", lambda: self.step_marks(-1), shown=False)
         self.bind((Qt.Key.Key_Down,), "", lambda: self.step_marks(1), shown=False)
@@ -282,6 +311,8 @@ class PitchScreen(Screen):
         self.timer.timeout.connect(self.tick)
         self.refresh()
         self.timer.start()
+        if controller.quick:
+            self.quick_result()
 
     # Building. [designed: s17-pitch.html]
     def _build(self, names):
@@ -293,10 +324,11 @@ class PitchScreen(Screen):
         row.setSpacing(30)
         score = QHBoxLayout()
         score.setSpacing(18)
-        self.home = label(names[0], "h1")
-        colour(self.home, side_colour(0))
-        self.away = label(names[1], "h1")
-        colour(self.away, side_colour(1))
+        # [derived: DesktopModel.home, #562] the home side first and light red, as the original's screens
+        self.home = label(names[HOME], "h1")
+        colour(self.home, side_colour(HOME))
+        self.away = label(names[1 - HOME], "h1")
+        colour(self.away, side_colour(1 - HOME))
         self.goals = []
         score.addWidget(self.home)
         for _ in (0, 1):
@@ -337,7 +369,7 @@ class PitchScreen(Screen):
         inner.addWidget(self.commentary, 1)
         self.status = label("", "sub")
         inner.addWidget(self.status)
-        side = "LIGHT RED" if managed == 0 else "WHITE"
+        side = "LIGHT RED" if managed == HOME else "WHITE"
         tag_row = QHBoxLayout()
         self.side_tag = label(f"YOUR SIDE: {side}", "tag")
         tag_row.addWidget(self.side_tag)
@@ -359,6 +391,15 @@ class PitchScreen(Screen):
         self.refresh()
         if controller.finished and not self.ended:
             self.end()
+        elif controller.stop is not None and self.held is None and self.day is not None:
+            self.held = controller.stop
+            self.day.stop(self, controller.stop)
+
+    def resume(self, value=None):
+        """The match day's answer to the stop it showed: sent once, and the match plays on."""
+        self.held = None
+        self.controller.answer_stop(value)
+        self.refresh()
 
     def refresh(self):
         controller = self.controller
@@ -369,7 +410,7 @@ class PitchScreen(Screen):
         self._seen = len(shown)
         minute, score = controller.frame_or_event()
         _set(self.minute, f"{minute}′")
-        for text, goals in zip(self.goals, score):
+        for text, goals in zip(self.goals, (score[HOME], score[1 - HOME])):
             _set(text, str(goals))
         texts = [e["data"].get("text", "") for e in shown if e["kind"] == "commentary"][-2:]
         for widget, text in zip(self.recent, [""] * (2 - len(texts)) + texts):
@@ -426,22 +467,22 @@ class PitchScreen(Screen):
 
     # The end.
     def end(self):
-        """Full time, a failure or a cancel: back to the desk with what happened in its status line."""
+        """Full time: the match day shows the board (S20) and the menu (S15). A failure or a cancel: back to the desk
+        with what happened in its status line."""
         self.ended = True
         self.timer.stop()
         controller = self.controller
-        if controller.outcome is not None:
-            result = self.model.result_text().split("\n", 1)[0]
-            text = f"Full time: {result}. The match board and the round come with T167."
-        elif controller.error is not None:
+        if controller.outcome is not None and self.day is not None:
+            self.day.full_time(self)
+            return
+        if controller.error is not None:
             text = f"The match stopped: {controller.error}"
         else:
             text = "The match was cancelled; nothing was published."
         window = self.window_
-        while window.current() is not self and len(window.stack) > 1:
+        while len(window.stack) > 1:
             window.pop()
-        desk = window.pop()
-        say = getattr(desk, "say", None)
+        say = getattr(window.current(), "say", None)
         if say is not None:
             say(text)
 
@@ -455,35 +496,3 @@ class PitchScreen(Screen):
 def _set(widget, text):
     if widget.text() != text:
         widget.setText(text)
-
-
-def play_next_game(window, model):
-    """The desk's *play next game*, until T167 brings the round, the match menu and the captain: the next friendly
-    on S17, with the original's suggested captain. Returns the screen, or the reason it cannot start.
-    [designed: T166, the interim route]"""
-    campaign = model.state.campaign
-    pending = campaign.next_fixture if campaign is not None else None
-    if pending is None:
-        return "There is no match to play: the stage is complete."
-    if pending.kind != 1:
-        return QUALIFIER_LATER
-    state = model.state
-    captain = suggested_captain(state)
-    if captain is not None:
-        eleven = list(state.starting_eleven or state.managed_squad[:11])
-        try:
-            model.confirm(eleven, captain, state.country_tactics)
-        except ValueError as exc:
-            return f"The match cannot start: {exc}"
-    controller = MatchController(model, pending)
-    try:
-        controller.start()
-    except (OSError, ValueError) as exc:
-        return f"The match cannot start: {exc}"
-    try:
-        screen = PitchScreen(window, model, controller)
-    except BaseException:
-        controller.cancel()
-        raise
-    return window.push(screen)
-

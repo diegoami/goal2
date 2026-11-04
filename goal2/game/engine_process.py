@@ -104,12 +104,15 @@ class EngineProcess:
             else:
                 self._send_open()
 
-    def match(self, kind, fixture, *, options=None, frames=False, bench=False) -> None:
+    def match(self, kind, fixture, *, options=None, frames=False, bench=False, prompts=False) -> None:
         """Start a match on the open game: `kind` watched or competitive; `options` among reference_seed,
         delay_byte and record_draws; `frames` streams the pitch samples; `bench` (with frames) asks the bench's
-        decisions and paces the samples on `ack`."""
+        decisions and paces the samples on `ack`; `prompts` (with the bench) also asks the player prompts
+        (watched_match.PROMPT_CONTEXTS: the set-piece taker, the shoot-out order, the menu before extra time) [designed:
+        T167, #541]."""
         options = dict(options or {})
-        if kind not in KINDS or type(frames) is not bool or type(bench) is not bool:
+        if (kind not in KINDS or type(frames) is not bool or type(bench) is not bool or type(prompts) is not bool
+                or (prompts and not bench)):
             raise ValueError("invalid engine match request")
         if bench and not frames:
             # [designed: #316] the original takes the player's Enter in play at a pitch sample
@@ -128,8 +131,11 @@ class EngineProcess:
             self._match = self._matches
             self._events = []
             self._frame_sequence, self._frame_watermark = 0, 0
-            self._send({"op": "match", "kind": kind, "fixture": asdict(fixture), "options": options,
-                        "frames": frames, "bench": bench})
+            request = {"op": "match", "kind": kind, "fixture": asdict(fixture), "options": options,
+                       "frames": frames, "bench": bench}
+            if prompts:
+                request["prompts"] = True
+            self._send(request)
 
     def ack(self, sample: int) -> bool:
         """The window has shown pitch sample `sample`: the engine may run LEAD samples past it."""
@@ -141,11 +147,14 @@ class EngineProcess:
         """The player's Enter in play."""
         return self._command({"op": "pause"})
 
-    def answer(self, decision: int, substitutions=()) -> bool:
-        """Answer bench decision `decision` with (off, on) pairs; none plays on."""
-        from goal2.game.watched_jobs import _pairs
+    def answer(self, decision: int, substitutions=(), *, choice=None) -> bool:
+        """Answer bench decision `decision` with (off, on) pairs; none plays on. `choice` answers a player prompt
+        instead: {'taker': word or None} or {'shootout_order': [words]} [designed: T167, #541]."""
+        from goal2.game.watched_jobs import _choice, _pairs
         if type(decision) is not int or decision < 0:
             raise ValueError("invalid bench decision number")
+        if choice is not None:
+            return self._command(dict({"op": "answer", "decision": decision}, **_choice(choice)))
         return self._command({"op": "answer", "decision": decision, "substitutions": _pairs(list(substitutions))})
 
     def cancel(self) -> bool:

@@ -11,10 +11,13 @@ career; today's window has *Other games > New standalone friendly* (docs/desktop
 - **The match** [designed: T177]: a private model, `DesktopModel.new_friendly(your country)` (fresh records, no
   campaign ledger, as today's), with the original's suggested captain as the desk's *play next game* sets it
   (`s17_pitch.suggested_captain`, T143's rule) through `DesktopModel.confirm`; then S17 plays it watched through the
-  bridge, on the controller that is on main (`s17_pitch.MatchController`), your country first (the home side, light
+  bridge, on S17's controller (`s17_pitch.MatchController`), your country first (the home side, light
   red). The engine's fixture index is the template's own (`Image.fixture_index`, the friendly the template was set up
   for), so no index is invented.
-- **Back to S02** at full time (or on a cancel), with S17's result line on S02. Nothing is saved: the model is never
+- **No match day** [designed: T167's merge]: the friendly has no S14, S15, S16 or S20 (no round, no career). Its own
+  bridge plays it with S17's controller; at each stop it plays on with the computer's answer (a set piece's taker
+  gets no key, so the original's pick stands, F030; half time plays on), and the bridge closes when the match ends.
+- **Back to S02** at full time (or on a cancel), with the result line on S02. Nothing is saved: the model is never
   the window's career (`window.career`), so no save question follows, and nothing calls a save.
 """
 from __future__ import annotations
@@ -193,13 +196,18 @@ class FriendlyScreen(Screen):
 
     def kick_off(self):
         """S17 over S02 on the friendly; a friendly that cannot start says why here."""
-        from goal2.ui.s17_pitch import MatchController, PitchScreen
+        from goal2.game.watched_jobs import WatchedJobs
+        from goal2.ui.s17_pitch import MatchController
         yours, opponent = self.chosen
+        bridge = None
         try:
             model = new_friendly(self.target, yours)
-            controller = MatchController(model, standalone_fixture(model, opponent))
+            bridge = WatchedJobs(model)
+            controller = MatchController(model, standalone_fixture(model, opponent), bridge)
             controller.start()
         except (OSError, ValueError) as exc:
+            if bridge is not None:
+                bridge.close()
             self.chosen.pop()
             self._show()
             self.say(f"The friendly cannot start: {exc}")
@@ -208,9 +216,10 @@ class FriendlyScreen(Screen):
         window = self.window_
         window.pop()   # back to S02, which S17 returns to at full time
         try:
-            screen = PitchScreen(window, model, controller)
+            screen = friendly_pitch()(window, model, controller, bridge)
         except BaseException:
             controller.cancel()
+            bridge.close()
             raise
         return window.push(screen)
 
@@ -222,6 +231,44 @@ class FriendlyScreen(Screen):
             self._show()
             return
         self.window_.pop()
+
+
+def friendly_pitch():
+    """S17 for the standalone friendly: no match day, so each stop plays on and full time returns to S02."""
+    from goal2.ui.s17_pitch import PitchScreen
+
+    class FriendlyPitch(PitchScreen):
+        def __init__(self, window, model, controller, bridge):
+            self.bridge = bridge
+            super().__init__(window, model, controller, day=SimpleNamespace(stop=self._play_on))
+
+        def _play_on(self, pitch, decision):
+            # [designed: T167's merge] the computer's answer: no key on a taker (F030), play on at half time
+            self.resume({"taker": None} if decision.data.get("context") == "set_piece" else None)
+
+        def end(self):
+            self.ended = True
+            self.timer.stop()
+            self.bridge.close()
+            controller = self.controller
+            if controller.outcome is not None:
+                text = f"Full time: {self.model.result_text().split(chr(10), 1)[0]}."
+            elif controller.error is not None:
+                text = f"The match stopped: {controller.error}"
+            else:
+                text = "The match was cancelled; nothing was published."
+            window = self.window_
+            while len(window.stack) > 1:
+                window.pop()
+            say = getattr(window.current(), "say", None)
+            if say is not None:
+                say(text)
+
+        def closing(self):
+            super().closing()
+            self.bridge.close()
+
+    return FriendlyPitch
 
 
 def open_friendly(window):

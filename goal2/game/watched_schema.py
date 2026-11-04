@@ -170,6 +170,12 @@ def _details(result,*,competitive=False):
     for row in result['decisions']:
         _object(row,{'context','minute','answer'});_text(row['context']);_number(row['minute'])
         answer=row['answer']
+        if row['context']=='set_piece':
+            # [designed: T167, #541] the watching player's set-piece taker (the kit's Match.answer(taker=...)):
+            # a player word, or None for no key (the original's current pick stands, F030)
+            _object(answer,{'taker'})
+            if answer['taker'] is not None:_number(answer['taker'],1,3060)
+            continue
         if competitive and row['context']=='shootout_order':
             _object(answer,{'shootout_order'})
             words=answer['shootout_order']

@@ -207,10 +207,17 @@ MENU_OUTCOMES = ('substitution', 'refused', 'substitution_requested', 'tactics',
 # [designed: T102] The reason of an inferred refusal (_report) with substitutions still left: the
 # original showed nothing goal2 can quote.
 NOT_MADE = 'not made by the original'
+# [confirmed: the kit's Match._on_wait, _order_key and _decide (goal2/engine/original_match/match.py); F030] The
+# decisions where the original waits for one of the managed side's players or for the next period, which a watching
+# player answers when the match is asked with `prompts` (T167, #541): the set-piece taker prompt (0791:CC7B, roles
+# 2-5; the kit asks it only with its `set_piece` opt-in), the shoot-out order (9B93) and the menu before extra time.
+# Without `prompts` the engine keeps its defaults, as before.
+PROMPT_CONTEXTS = ('set_piece', 'shootout_order', 'extra_time')
 
 
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
-                 substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None,policy=None):
+                 substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None,policy=None,
+                 prompts=False):
     """[designed: T51] Shared completed-original driver; no publication or Python tail.
 
     [designed: T102] `policy` answers the bench decisions (BENCH_CONTEXTS) for a watching player;
@@ -224,7 +231,14 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     [confirmed: the kit's Match._on_notice] An empty answer at a `substitution` stoppage that carries
     `requested` pairs still makes them (the default is what was asked for); its report has those
     pairs as `asked`, as if they had been answered (#316).
+    [designed: T167, #541] With `prompts` (which needs a policy) the match is played with the kit's set-piece prompt
+    (`Match(set_piece=True)`) and the policy also answers PROMPT_CONTEXTS: `decide(event)` returns
+    {'taker': word or None} at a `set_piece` decision (None: no key, the original's current pick stands after its
+    wait, F030), {'shootout_order': [words]} at `shootout_order` (empty: the original's Enter for every pick) and
+    nothing at `extra_time` (play on). Each answer is passed to `Match.answer` as it is.
     """
+    if prompts and policy is None:
+        raise ValueError('the player prompts need a policy to answer them')
     if reference_seed is not None:
         _integer(reference_seed,0,65535,'reference seed')
     if delay_byte is not None:
@@ -232,7 +246,7 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     # [designed: owner, 2026-10-31; T151] Every match plays on the sealed port; there is no Unicorn fallback.
     match = Match(sealed(image),fixture,managed=state.managed_country,captain=state.captain or None,
                   seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions,
-                  engine="port")
+                  engine="port",set_piece=bool(prompts))
     if _observe_pitch is not None:
         match.opts['ticks'] = True
     frame_sequence = 0
@@ -262,8 +276,27 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
                 report['requested'] = [list(pair) for pair in ev.data['pending']]
         if ev.kind == 'decision':
             # [designed: T65] Unknown contexts cannot be silently defaulted.
-            if ev.data.get('context') not in ('half_time','substitution','pause','extra_time','shootout_order'):
+            if ev.data.get('context') not in ('half_time','substitution','pause','extra_time','shootout_order',
+                                              'set_piece'):
                 raise RuntimeError('unsupported original decision under default play-on policy')
+            if prompts and ev.data['context'] in PROMPT_CONTEXTS:
+                # [designed: T167] The watching player's answer, passed on as it is; whether it is legal is the kit's.
+                value = policy.decide(copy.deepcopy(ev))
+                context = ev.data['context']
+                if context == 'set_piece':
+                    if not isinstance(value, dict) or set(value) != {'taker'}:
+                        raise ValueError('a set-piece answer names a taker or none')
+                    match.answer(taker=value['taker'])
+                elif context == 'shootout_order':
+                    if not isinstance(value, dict) or set(value) != {'shootout_order'}:
+                        raise ValueError('a shoot-out answer names an order')
+                    match.answer(shootout_order=list(value['shootout_order']))
+                else:
+                    if value:
+                        raise ValueError('the menu before extra time is answered with no change')
+                    match.answer()
+                previous_decision = None
+                continue
             if policy is not None and ev.data['context'] in BENCH_CONTEXTS:
                 # [designed: T102] The watching player answers; a refused eleven is offered again.
                 pairs = [[int(off), int(on)] for off, on in policy.decide(copy.deepcopy(ev))]
