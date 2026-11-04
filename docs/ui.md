@@ -266,10 +266,11 @@ acknowledgements, and the match the player watched is the match the engine publi
   (role codes first), **Space** the whole commentary over the pitch and back, **R** quick result (every sample is
   acknowledged as it arrives; *HANG ON A TICK* stands where *R result* was, `t156-267-quick-hang-on`), **F9** says
   goal2 has no sound and does nothing else, **Esc** / **Enter** request the bench (`pause`).
-- **The stops** [designed: T167]: once every sample before it is shown, the controller holds the decision the match
-  waits on (`stop`) and the match day shows it (below). A substitution opportunity and the pause the bench request
-  asked for keep T166's answer until T180 builds S18 and S19: no substitution, play on (`bench_page.Bench.escape`),
-  noted in the commentary. In a quick result a set-piece taker gets no key (no card). The captain is chosen on S16
+- **The stops** [designed: T167; T180]: once every sample before it is shown, the controller holds the decision the
+  match waits on (`stop`) and the match day shows it (below): no stop keeps a default answer. The other side's
+  substitution (S18's notice) and a bench answer's report that refuses a pair (S19) hold the display until a key; the
+  engine then waits within its pacing. In a quick result a set-piece taker gets no key (no card), and the other
+  side's substitutions show no notice. The captain is chosen on S16
   (the match day), its highlight on the original's suggestion as T143 picks it (`best_leader`, T143's rule over the
   route's player records; the Core's own function needs Unicorn to import).
 - **Closing the window** during the match cancels it through the bridge (`cancel_and_reap`); the desk then closes the
@@ -302,8 +303,8 @@ answer the engine receives, sent once, through the bridge, in the order the engi
   The home side is named first.
 - **S15** shows the score, the kind, the location (the home side), the time and both formations and elevens; the
   options with *play* highlighted first: each side's team tactics and players (yours open S10 and S08 before
-  kick-off, also **T** and **Space**; at a break they open read only, as changing the team then is the bench's,
-  T180), the tournament, the match stats, and *play* ("choose your captain, then kick-off", "second half") or *exit*.
+  kick-off, also **T** and **Space**; at a break *players* opens the bench S19 and team tactics read only, T180),
+  the tournament, the match stats, and *play* ("choose your captain, then kick-off", "second half") or *exit*.
   **Ins** turns the automatic action replay on or off, stored in the data root's `settings.json`; the replay itself
   is T168's. The watch question comes only where the original asks it (`asks_watch`: kinds 8, 200, 201, 203, and
   101, 103 with a manager on side B's continent, F030), with **Y**/**N**; N plays a quick result (S17 with R pressed).
@@ -314,8 +315,8 @@ answer the engine receives, sent once, through the bridge, in the order the engi
 - **S20** shows what the events and the outcome give: the score, the half-time score, the scorers and minutes; at full
   time the original's board as the engine read it (its nine counters, the bars' raw words, the man of the match); at
   half time bookings and red cards from the events, and the rest say *at full time*. After a quick result the QUICK
-  RESULT banner stands in place of the statistics. **Enter** continues; **Esc** (the bench, T180) gives the default
-  answer with a note.
+  RESULT banner stands in place of the statistics. **Enter** continues; **Esc** opens the bench (S19) at half time
+  and before extra time (T180); at full time it continues.
 - **The home side** (#562) is the fixture's side B (`DesktopModel.home`, `venue`): the original's hub writes *away*
   for side A and *home* for side B (F031 "Venue", `000E:724A`); S14, S15, S17 and S20 name it first and draw it light
   red, and the desk says *friendly home* or *friendly away*.
@@ -326,6 +327,38 @@ compares each published career with the same match through the bridge with the s
 `pypy_engine.drive`, and the qualifier's no-key takers with the match played without the prompts; it checks the order
 of the screens, the stored captain, one engine pid and the home side. It needs PyPy 3.11 and the `.cache/` files and
 skips without them. The pictures are in [design/ui-2026-11/T167-screens](design/ui-2026-11/T167-screens/).
+
+## The match stops and the bench: S18, S19, S09's mark line (T180)
+
+[designed: owner, 2026-11-03, #526; T180, #574; confirmed: T156-R1 steps 67–68, 74–81, 124–133, 149–150; E031
+C39–C41k] The stops T167 left on a default answer are the original's screens. The claim: every substitution the
+player makes on S19 is the pair the engine receives, and every refusal the player sees is the engine's.
+
+- **S18** (`goal2/ui/s18_stop.py`) is a box over the pitch (`PitchScreen.stop_box`): *SUBSTITUTION OPPORTUNITY* (your
+  player injured, or the stoppage after a request; the original's refused eleven is said there), any key to S15
+  (phase *stop*), whose *players* opens S19; the other side's substitution (*SUBSTITUTION X on for Y*), any key plays
+  on; the penalty shoot-out's notice before S16's order. T181 adds the goal questions to the same box.
+- **S19** (`goal2/ui/s19_bench.py`) keeps T102's bench rules (`goal2/desktop/bench_page.py`): the card, the eleven and
+  the bench, the mode (*make substitutions now*, *substitution requested*), the counter (the decision's
+  `substitutions_left`, *no more substitutes* at 0). **↑↓** player, **Enter** takes off or puts on (either order;
+  the hint names which), or requests and cancels in request mode; **R**, **C** positions; **T** S09; **Esc** back to
+  S15 at a break, to the pitch at a pause. The view never judges a pair. One answer per bench decision
+  (`BenchAnswer.value`: the pairs, with the positions, marks and own tactics when any changed) goes once through
+  `WatchedJobs.answer(token, pairs, changes)` when S15's *play* is pressed (or S19's Esc at a pause). The engine's
+  report follows: a refused pair shows S19 with its reason until a key; at the stoppage after a pause the request is
+  offered again and Esc says it is still made (#316). Before extra time the route takes no substitution
+  (`PROMPT_CONTEXTS`), so S19 only shows the eleven and says so.
+- **Esc or Enter on S17** requests the bench (`pause`); S19 opens in request mode when the original stops for it.
+- **S09's mark line**: from S19's T, S09 edits the bench's answer, with a fifth line, *mark* (—, nobody, or one of the
+  opponent's outfield players, read from the latest pitch sample); the mark is the engine's `marking`. After the
+  match the answer is gone and S09 has four lines again, as the original clears the marks.
+- **BM-7** [designed: owner, #73]: a watched friendly plays with 255 substitutions a side
+  (`watched_match.FRIENDLY_SUBSTITUTIONS`, the Core's `owner-substitutions-v1`), a qualifier with five.
+
+`goal2/tests/test_ui_bench_t180.py` plays two match days of a 2028 Austria career: the friendly (an injury stop, the
+half-time bench with five pairs, a mark and a refused re-entry, the other side's notice, compared with the same match
+through the bridge) and the qualifier (a request during play made at the next stoppage, the counter five then four).
+The pictures are in [design/ui-2026-11/T180-screens](design/ui-2026-11/T180-screens/).
 
 ## Save and quit: S21 (T168)
 

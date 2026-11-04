@@ -12,7 +12,9 @@ Start. The portable build's launcher and default stay today's window (goal2/desk
 two saves, S03, S04 on Holland with its twenty and the name line, S05 with stand-in pages, S06 the manager's desk,
 S07 team info, S11 fixtures, S12 tournament and S13 history with the new career, the match day of its first friendly
 under PyPy 3.11, on a copy of the career (T167: S14 before and after the match, S15 before kick-off and at half time,
-S16 the captain and a set-piece taker, S17 at kick-off and in play, S20 at half time and full time), S11 and S13 again after its first round (the route's
+S16 the captain and a set-piece taker, S17 at kick-off and in play, S20 at half time and full time; T180: S18's
+substitution opportunity and S19 making substitutions now and showing a refusal, on a 2028 Austria career whose
+friendly has an injury at 3′), S11 and S13 again after its first round (the route's
 quick friendly), S21's save box, quit question and save question over the desk (T168), and T177's extras: S02's
 standalone friendly's country choice, S08's pool search and the desk's manager's name line, when it finds the data
 the new window needs (data_setup.WINDOW_MANIFEST) in the --data-root's data folder or, in a checkout, in `.cache/`. It works in a temporary data folder of its own; the help is a stand-in text it writes there
@@ -160,6 +162,7 @@ def screenshots(out: Path, data_root=None) -> list[Path]:
                 shot(name)
                 key(Qt.Key.Key_Escape)
             pitch_shots(app, window, career, shot)
+            bench_shots(app, window, target, shot)
             # After the first round, played by the route's own quick friendly (goal2/desktop/worker.py `play`): S11's
             # round 2 and S13 with the recorded result. [designed: T178]
             from goal2.desktop import worker
@@ -320,6 +323,97 @@ def pitch_shots(app, window, career, shot, limit=600):
         shot("s14-round-after.png")
     close_window(window)
     window.open_career(career)
+
+
+def bench_shots(app, window, target, shot, limit=600):
+    """[designed: T180] S18 and S19 on a 2028 Austria career (its first friendly, Austria v Bulgaria, stops for an
+    injury at 3′): S18 SUBSTITUTION OPPORTUNITY, S19 making substitutions now (the injured player taken off), then at
+    half time a refused pair (the player taken off put on again) on S19. The career is dropped afterwards."""
+    import time
+    from PySide6.QtCore import QEvent, Qt
+    from PySide6.QtGui import QKeyEvent
+    from goal2.ui.match_day import close_window, play_next_game
+    from goal2.ui.s04_country import new_career
+    from goal2.ui.s14_round import RoundScreen
+    model = new_career(target, 2, 2028, "K Ees")
+    desk = window.open_career(model)
+    opened = play_next_game(window, desk.model)
+    if not isinstance(opened, RoundScreen):
+        print(f"S18 and S19 are not pictured: {opened}", file=sys.stderr)
+        return
+
+    def key(k, text=""):
+        window.keyPressEvent(QKeyEvent(QEvent.Type.KeyPress, k, Qt.KeyboardModifier.NoModifier, text))
+        app.processEvents()
+
+    def until(done):
+        deadline = time.monotonic() + limit
+        while not done() and time.monotonic() < deadline:
+            app.processEvents()
+            time.sleep(.001)
+        return done()
+    until(lambda: not opened.arriving)
+    for _ in range(3):                      # S14, S15 play, S16 the captain
+        key(Qt.Key.Key_Return)
+    state = {"fast": False, "off": None}
+
+    def outfield(answer, words):
+        return [w for w in words if answer.position(w) != 0]
+
+    def select(screen, word):
+        words = screen.answer.words()
+        while words[screen.row] != word:
+            key(Qt.Key.Key_Down if words.index(word) > screen.row else Qt.Key.Key_Up)
+        key(Qt.Key.Key_Return)
+
+    def play_on(menu):
+        while menu.highlighted() is not menu.play:
+            key(Qt.Key.Key_Down)
+        key(Qt.Key.Key_Return)
+
+    def step():
+        screen = window.current()
+        kind = type(screen).__name__
+        if kind == "PitchScreen":
+            if not state["fast"]:
+                state["fast"] = True
+                for _ in range(4):
+                    key(Qt.Key.Key_Right)
+            if screen.stop_box.open:
+                if screen.stop_box.kind == "substitution" and state["off"] is None:
+                    shot("s18-match-stop.png")
+                key(Qt.Key.Key_Space)
+            return False
+        if kind == "MenuScreen":
+            if screen.phase == "stop" and state["off"] is None:
+                key(Qt.Key.Key_Space)       # players: the bench
+            else:
+                play_on(screen)
+            return False
+        if kind == "BenchScreen":
+            answer = screen.answer
+            if screen.mode == "refused":
+                shot("s19-bench-refused.png")
+                return True
+            if answer.context == "substitution" and state["off"] is None:
+                injured = [w for w in answer.eleven if w in answer.injured][0]
+                keeper = answer.position(injured) == 0
+                select(screen, injured)
+                select(screen, next(w for w in answer.bench if (answer.position(w) == 0) == keeper))
+                shot("s19-bench.png")
+                state["off"] = injured
+            elif answer.context == "half_time" and state["off"] in answer.bench:
+                select(screen, outfield(answer, answer.eleven)[1])
+                select(screen, state["off"])
+            key(Qt.Key.Key_Escape)
+            return False
+        if kind == "BoardScreen":
+            key(Qt.Key.Key_Escape if screen.phase == "half" else Qt.Key.Key_Return)
+            return False
+        key(Qt.Key.Key_Return)
+        return isinstance(screen, RoundScreen) and screen.after is not None
+    until(step)
+    close_window(window)
 
 
 def import_data(folder, data_root=None) -> int:

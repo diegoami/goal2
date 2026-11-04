@@ -79,7 +79,8 @@ substitutes"), and the engine's `substitutions_left`; `reports` collects them. `
 the player's Enter in play (`Match.pause`). With pitch samples, each `ack_frames` is forwarded, and
 the engine sends sample k only once sample k − `LEAD` (64) is acknowledged. An engine waiting for an
 answer or an acknowledgement is cancelled like any other (#254). `extra_time` and `shootout_order`
-keep their default answers; without `bench`, and for `run_watched_match`, every decision plays on.
+keep their default answers; without `bench`, and for `run_watched_match`, every decision plays on
+(`run_watched_match(..., substitutions=)` takes a budget, so a reference of a watched friendly gets BM-7's, T180).
 [designed: T167, #541] `start(..., prompts=True)` (with `bench`) also waits on the player prompts
 (`watched_match.PROMPT_CONTEXTS`: `set_piece`, `shootout_order`, `extra_time`): `waiting` holds them as it holds a
 bench decision, `choose(token, {'taker': word or None})` or `choose(token, {'shootout_order': [words]})` answers a
@@ -92,6 +93,10 @@ plays the pending qualifier as the `competitive` match with the pitch samples an
 its `CompetitivePublication` publishes it, once; the friendly publication is never used for it.
 `goal2.desktop.watched.WatchedController` starts a qualifier there (the owner's bridge, the window's, when it has one)
 and a friendly on `WatchedJobs`. The budget is the engine's for a competitive match, five a side (BM-7).
+[designed: owner BM-7, #73; T180] A watched friendly plays with BM-7's 255 a side
+(`watched_match.FRIENDLY_SUBSTITUTIONS`), which the engine server passes; the friendly result profile accepts it
+(`watched_schema.FRIENDLY_BUDGETS`). `answer(token, pairs, changes)` also carries the bench's positions, marks and
+own tactics (`watched_jobs.CHANGES`), passed to `Match.answer` in the same answer.
 Acceptance: `python3 -m unittest goal2.tests.test_watch_qualifiers_t176 -v`.
 
 [designed] Acceptance is `python3 -m unittest goal2.tests.test_watched_jobs -v`.
