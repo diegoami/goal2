@@ -1,7 +1,8 @@
 """[designed: owner, 2026-11-03, T169] The new window (goal2.ui) offscreen, for the packaged smoke (tools/portable/smoke.py):
 its first start on an empty per-user folder shows S01, imports a stand-in for the player's data folder through S01 and
-shows S02 Start; then a new career (Holland, 1992) plays its first friendly on S17 from the desk's *play next game*, its
-worker under GOAL2_ENGINE_PYTHON, to full time (R, the quick result). It writes what it saw.
+shows S02 Start; then a new career (Holland, 1992) plays its first friendly through the match day from the desk's *play
+next game* (S14, S15, S16 with the computer's captain, S17 with R, the quick result, its worker under
+GOAL2_ENGINE_PYTHON, then the boards and menus back to the desk; T167). It writes what it saw.
 
     python smoke_window.py --cache DIR --at DIR --out FILE [--expect-root DIR]
 
@@ -61,7 +62,13 @@ def main(argv=None) -> int:
     from goal2.ui.s01_import import ImportScreen
     from goal2.ui.s02_start import StartScreen
     from goal2.ui.s04_country import new_career
-    from goal2.ui.s17_pitch import PitchScreen, play_next_game
+    from PySide6.QtCore import QEvent, Qt
+    from PySide6.QtGui import QKeyEvent
+    from goal2.ui.match_day import play_next_game
+    from goal2.ui.s06_desk import DeskScreen
+    from goal2.ui.s14_round import RoundScreen
+    from goal2.ui.s16_choose import ChooseScreen
+    from goal2.ui.s17_pitch import PitchScreen
     from goal2.ui.window import Window
     app = QApplication.instance() or QApplication(sys.argv[:1])
     theme.install(app)
@@ -84,23 +91,40 @@ def main(argv=None) -> int:
     if not steps["s01_import_then_s02"]["pass"]:
         return done(1)
 
-    # a new career's first friendly on S17, to full time
+    def key(k, text=""):
+        window.keyPressEvent(QKeyEvent(QEvent.Type.KeyPress, k, Qt.KeyboardModifier.NoModifier, text))
+        app.processEvents()
+
+    # a new career's first friendly through the match day (T167): S14 Enter, S15 Enter (play), S16 C (the computer's
+    # captain), S17 R (the quick result), then the boards, menus and round back to the desk
     model = new_career(target, 20, 1992, "K Ees")
     window.open_career(model)
     started = time.monotonic()
     opened = play_next_game(window, model)
-    if not isinstance(opened, PitchScreen):
+    if not isinstance(opened, RoundScreen):
         steps["match"] = {"pass": False, "not_started": str(opened)}
         return done(1)
-    controller = opened.controller
+    key(Qt.Key.Key_Return)
+    key(Qt.Key.Key_Return)
+    key(Qt.Key.Key_C, "c")
+    pitch = window.current()
+    if not isinstance(pitch, PitchScreen):
+        steps["match"] = {"pass": False, "not_started": type(pitch).__name__}
+        return done(1)
+    controller = pitch.controller
     worker = controller.bridge.interpreter
-    opened.quick_result()
-    while not opened.ended and time.monotonic() - started < args.limit:
+    pitch.quick_result()
+    while not isinstance(window.current(), DeskScreen) and time.monotonic() - started < args.limit:
         app.processEvents()
+        current = window.current()
+        if isinstance(current, ChooseScreen):
+            key(Qt.Key.Key_C, "c")
+        elif current is not pitch and not (isinstance(current, RoundScreen) and current.arriving):
+            key(Qt.Key.Key_Return)
         time.sleep(.005)
     wall = round(time.monotonic() - started, 1)
-    if not opened.ended:
-        opened.closing()
+    if not pitch.ended:
+        pitch.closing()
     outcome = controller.outcome
     steps["match"] = {"pass": outcome is not None and controller.error is None
                       and (args.expect_root is None
