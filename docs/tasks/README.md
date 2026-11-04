@@ -346,6 +346,8 @@ operational status.
 
 - [T181](T181.md): new window, action replay, saved goals and summaries, F3 and F4, m3 Track A (#575).
 
+- [T182](T182.md): split the slowest test modules so the gate's jobs balance (#585).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
