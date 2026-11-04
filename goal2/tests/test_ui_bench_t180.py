@@ -167,7 +167,7 @@ class Walk:
 
     def bench_record(self, screen):
         record = {"mode": screen.mode, "label": screen.mode_label.text(), "counter": screen.counter.text(),
-                  "line": screen.note.text(), "context": screen.answer.context, "left": screen.answer.left,
+                  "line": screen.line(), "context": screen.answer.context, "left": screen.answer.left,
                   "chosen": [list(p) for p in screen.answer.chosen], "eleven": list(screen.answer.eleven),
                   "bench": list(screen.answer.bench), "injured": set(screen.answer.injured)}
         self.benches.append(record)

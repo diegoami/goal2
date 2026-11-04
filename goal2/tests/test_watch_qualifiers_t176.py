@@ -128,7 +128,8 @@ def reference(owner, fixture, mode, *, competitive):
     from goal2.tests import pypy_engine
     publication = (CompetitivePublication if competitive else WatchedPublication)(owner)
     job = publication.begin(fixture)
-    extra = {'substitutions': BUDGET} if competitive else {}
+    from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS   # [T180] BM-7's friendly budget, the server's
+    extra = {'substitutions': BUDGET if competitive else FRIENDLY_SUBSTITUTIONS}
     pending = pypy_engine.start('goal2.tests.pypy_engine:drive', copy.deepcopy(job.state), bytes(owner.template_bytes),
                                 fixture, observer=Samples(), competitive=competitive, policy=Answers(mode),
                                 **extra, **OPTIONS)

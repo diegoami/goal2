@@ -181,17 +181,19 @@ class WatchedOutcome:
 
 def run_watched_match(state: GameState, original: bytes, fixture: Fixture, *,
                       reference_seed: int | None = None, delay_byte: int | None = None,
-                      record_draws: bool = False) -> WatchedOutcome:
+                      record_draws: bool = False, substitutions=None) -> WatchedOutcome:
     """[designed: T63/T65] Complete the original with default play-on answers.
 
     Reference overrides are explicit diagnostics; normal play keeps setup's
     fixture-index * (engine-year + 1) reseed. No live-state mutation or Python
     energy/form update occurs. Events here are a completed diagnostic transcript;
     a future worker must stream directly from Match.events(), never replay this.
+    [designed: T180] `substitutions` is the kit's budget (None: the original's); the engine server gives a
+    watched friendly FRIENDLY_SUBSTITUTIONS, and a reference of it the same.
     """
     image=prepare_watched(state,original,fixture)
     return _drive_match(state,image,fixture,reference_seed=reference_seed,delay_byte=delay_byte,
-                        record_draws=record_draws)
+                        record_draws=record_draws,substitutions=substitutions)
 
 
 # [confirmed: vendored kit goal2/engine/original_match/match.py MENU_CONTEXT/DECIDED_AT_MENU] The

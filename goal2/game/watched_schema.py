@@ -71,15 +71,21 @@ def validate_result(result, *, competitive=False):
     return PORT_ENGINE_ID if port else {'1':LEGACY_ENGINE_ID,'2':KIT2_ENGINE_ID}.get(kit,ENGINE_ID)
 
 
+# [confirmed: F027 §4, the original's five a side; designed: owner BM-7, T180: goal2/core/patches.py OWNER's 255]
+FRIENDLY_BUDGETS = ([5, 5], [255, 255])
+
+
 def _friendly_kit2(result):
-    """[designed: T51a; confirmed: PR255 _competitive] The public friendly profile accepts original default-budget friendlies only.
+    """[designed: T51a; confirmed: PR255 _competitive] The public friendly profile accepts original default-budget friendlies,
+    and [designed: owner BM-7, #73; T180] BM-7's unlimited budget (watched_match.FRIENDLY_SUBSTITUTIONS a side), which
+    the engine server gives every watched friendly since T180.
     [designed: T51] Competitive jobs select a distinct explicit profile.
     """
     score=result['score'];winner=2 if score[0]==score[1] else int(score[1]>score[0])
     if (type(result['kind']) is not int or result['kind']!=1
             or not integer(result['winner'],0,2) or result['winner']!=winner
             or result['score_90'] is not None or result['extra_time'] is not False
-            or result['shootout'] is not None or result['substitution_budget']!=[5,5]
+            or result['shootout'] is not None or result['substitution_budget'] not in FRIENDLY_BUDGETS
             or any(type(v) is not int for v in result['substitution_budget'])):
         raise ValueError('unsupported watched kit2 friendly resolution or budget')
     _players(result)
