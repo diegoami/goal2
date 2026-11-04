@@ -357,6 +357,17 @@ def pitch_shots(app, window, career, shot, limit=600):
     if listing.entries:
         listing.press_enter()
         shot('s15-saved-goal-menu.png')
+        # [designed: T181] Walk the saved goal from F3 through S15 and every recorded pose on S17.
+        key(Qt.Key.Key_Return)
+        saved_pitch = window.current()
+        if not isinstance(saved_pitch, PitchScreen):
+            raise RuntimeError('F3 did not open the saved goal on S17')
+        if not until(lambda: saved_pitch.replay is None or saved_pitch.replay.drawn >= 0):
+            raise RuntimeError('the saved goal did not paint its first pose')
+        shot('s17-saved-goal-replay.png')
+        if not until(lambda: saved_pitch.replay is None):
+            raise RuntimeError('the saved goal did not finish replaying')
+        key(Qt.Key.Key_Escape)
         window.pop()
     window.pop()
     window.current().recordings('summary')
