@@ -509,14 +509,14 @@ we can keep the rest"]
   | bar, empty | `#aa00aa` | t156-014-squad.png (120, 241, 270, 254) | the marking bar's empty part |
   | pitch lines | `#aaaaaa` | t156-045-kick-off.png (18, 100, 22, 350) | the left touchline |
   | pitch surround | `#00aa00` | t156-045-kick-off.png (0, 80, 640, 100) | the band above the pitch |
-  | home side | `#ff5555` | t156-045-kick-off.png (362, 222, 380, 240) | a Norway player's letter at kick-off |
-  | away side | `#ffffff` | t156-045-kick-off.png (170, 222, 188, 240) | a Holland player's letter at kick-off |
 
   [confirmed: `python3 docs/design/ui-2026-11/palette.py` on the captures named in the table]
 - Role codes are coloured by line, as in the original: green goalkeeper, red defence, cyan midfield, yellow
   attack. [confirmed: goal2-archaeology F002 R011; docs/vision-266/role-codes; the table above]
-- On the pitch, the home side is light red and the away side white, as in the original. [confirmed: T156-R1
-  step 45]
+- On the pitch, and in the names of the scoreboard, S15 and S20, each side wears its kit as the original computes
+  it at kick-off from the country's three colour bytes, the keepers in the second colour (`goal2/ui/kits.py`).
+  [confirmed: 0791:1073; t156-045-kick-off.png, where Norway at home and Holland both have light red first, so
+  Holland plays in white; #583: an earlier line here read that capture as "home light red, away white"]
 - **Font**: "PxPlus IBM VGA 8x16" by VileR (The Ultimate Oldschool PC Font Pack v2.2, int10h.org), a blocky
   VGA-style font under CC BY-SA 4.0. It is vendored in [mockups/fonts/](mockups/fonts/PROVENANCE.md) with its
   licence and provenance. It is not the original game's font, and no byte of it comes from GOAL.EXE (CLAUDE.md

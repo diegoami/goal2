@@ -160,6 +160,13 @@ def reference(snapshot, choices, fixture):
     return model, outcome
 
 
+def engine_kits(outcome):
+    """[#583] The kits the engine computed for the match: DS:832E..8331 of its memory (0791:1073)."""
+    from goal2.engine.original_match.image import Image
+    image = Image.from_memory_component(outcome.memory)
+    return (image.rd(0x832E, 1), image.rd(0x832F, 1)), (image.rd(0x8330, 1), image.rd(0x8331, 1))
+
+
 @CAREER
 class SameMatch(unittest.TestCase):
     """One friendly played from the desk to full time on S17, its keys pressed on the way, and the reference."""
@@ -190,6 +197,7 @@ class SameMatch(unittest.TestCase):
             pump(lambda: controller.drawn >= 0, 120, "no kick-off sample drawn", watch)
             out["kick_off_image"] = screen.pitch.grab().toImage()
             out["painted"] = list(screen.pitch.painted)
+            out["kits"] = screen.kits
             out["countries"] = list(controller.display.countries)
             out["home_label"] = screen.home.styleSheet()
             # Painting stalled: the engine stops at the acknowledged sample + LEAD, and stays there.
@@ -300,18 +308,23 @@ class SameMatch(unittest.TestCase):
         self.assertTrue(self.out["hang_on"], "HANG ON A TICK was not shown during the quick result")
         self.assertIsNotNone(self.out["outcome"])
 
-    def test_home_codes_are_light_red_and_away_codes_white(self):
+    def test_each_side_is_drawn_in_the_engine_s_kit(self):
+        """[#583; was T166's 'home light red, away white'] Each mark in its side's kit, the keepers in the second
+        colour, and the kits are the engine's own for this match (DS:832E..8331, 0791:1073)."""
+        from goal2.ui.pitch import KEEPERS
+        kits = self.out["kits"]
+        self.assertEqual((kits.shirt, kits.keeper), engine_kits(self.out["outcome"]))
         from goal2.desktop.watched import pitch_identity  # noqa: F401 - the identity S17 sends
         fixture = self.out["fixture"]
         names = self.model.goaldat.country_names
         self.assertEqual(self.out["countries"], [names[fixture.side_a], names[fixture.side_b]])
-        self.assertIn(theme.HOME_SIDE, self.out["home_label"])
+        self.assertIn(kits.colour(HOME), self.out["home_label"])
         painted = self.out["painted"]
         self.assertEqual({team for _, team, *_ in painted}, {0, 1})
         image = self.out["kick_off_image"]
         for slot, team, text, colour, box in painted:
             with self.subTest(slot=slot):
-                self.assertEqual(colour, theme.HOME_SIDE if team == HOME else theme.AWAY_SIDE)   # [T167, #562]
+                self.assertEqual(colour, kits.colour(team, slot in KEEPERS))
                 want = QColor(colour)
                 pixels = (image.pixelColor(x, y) for x in range(max(0, box.left()), min(image.width(), box.right()))
                           for y in range(max(0, box.top()), min(image.height(), box.bottom())))

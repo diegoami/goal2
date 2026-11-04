@@ -264,7 +264,7 @@ class MatchDay:
         data = board(controller.shown(), phase, controller.quick)
         names = controller.display.countries
         screen = BoardScreen(self.window, self.model, names, self.kind_name.upper(), phase, data,
-                             lambda note: self._after_board(phase, data, note))
+                             lambda note: self._after_board(phase, data, note), pitch.kits)
         return self.window.push(screen)
 
     def _after_board(self, phase, data, note):
@@ -283,7 +283,7 @@ class MatchDay:
         phase = menu.phase
         data = board(controller.shown(), phase, controller.quick)
         screen = BoardScreen(self.window, self.model, controller.display.countries, self.kind_name.upper(), phase,
-                             data, lambda note: self.window.pop())
+                             data, lambda note: self.window.pop(), self.pitch.kits)
         return self.window.push(screen)
 
     def full_time(self, pitch):

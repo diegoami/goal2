@@ -39,6 +39,7 @@ from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
 from goal2.desktop.match_view import MAX_BACKLOG, PLAYBACK_RATE, Display
 from goal2.desktop.pygame_viewer import MARKS
 from goal2.ui import theme
+from goal2.ui.kits import for_fixture
 from goal2.ui.pitch import HOME, PitchWidget, side_colour
 from goal2.ui.screen import Clickable, Screen, label
 from goal2.ui.squad_card import box, colour
@@ -324,11 +325,12 @@ class PitchScreen(Screen):
         row.setSpacing(30)
         score = QHBoxLayout()
         score.setSpacing(18)
-        # [derived: DesktopModel.home, #562] the home side first and light red, as the original's screens
+        # [confirmed: t156-045-kick-off.png; #562, #583] the home side first, each name in its side's kit
+        self.kits = for_fixture(self.model, self.controller.pending)
         self.home = label(names[HOME], "h1")
-        colour(self.home, side_colour(HOME))
+        colour(self.home, side_colour(HOME, self.kits))
         self.away = label(names[1 - HOME], "h1")
-        colour(self.away, side_colour(1 - HOME))
+        colour(self.away, side_colour(1 - HOME, self.kits))
         self.goals = []
         score.addWidget(self.home)
         for _ in (0, 1):
@@ -360,6 +362,7 @@ class PitchScreen(Screen):
         middle = QHBoxLayout()
         middle.setSpacing(18)
         self.pitch = PitchWidget(lambda: self.controller.display, self.controller.painted, self.window_.family)
+        self.pitch.kits = self.kits
         middle.addWidget(self.pitch, 0, Qt.AlignmentFlag.AlignTop)
         commentary, inner = box("Commentary")
         self.commentary = QLabel("")
@@ -369,7 +372,7 @@ class PitchScreen(Screen):
         inner.addWidget(self.commentary, 1)
         self.status = label("", "sub")
         inner.addWidget(self.status)
-        side = "LIGHT RED" if managed == HOME else "WHITE"
+        side = self.kits.name(managed) if managed is not None else "none"
         tag_row = QHBoxLayout()
         self.side_tag = label(f"YOUR SIDE: {side}", "tag")
         tag_row.addWidget(self.side_tag)

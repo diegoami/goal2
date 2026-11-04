@@ -35,8 +35,6 @@ BAR_FILLED = "#aaaaaa"        # bar, filled
 BAR_EMPTY = "#aa00aa"         # bar, empty
 PITCH_LINES = "#aaaaaa"       # pitch lines
 PITCH_SURROUND = "#00aa00"    # pitch surround
-HOME_SIDE = "#ff5555"         # home side
-AWAY_SIDE = "#ffffff"         # away side
 
 # The table as it reads, role name to colour, in the README's order.
 PALETTE = {
@@ -45,7 +43,7 @@ PALETTE = {
     "card labels, brown": CARD_LABEL, "key hints, magenta": KEY_HINT, "highlight bar": HIGHLIGHT,
     "values, yellow": VALUE, "title banner, light red": TITLE_BANNER, "goalkeeper": GOALKEEPER, "defence": DEFENCE,
     "midfield": MIDFIELD, "attack": ATTACK, "bar, filled": BAR_FILLED, "bar, empty": BAR_EMPTY,
-    "pitch lines": PITCH_LINES, "pitch surround": PITCH_SURROUND, "home side": HOME_SIDE, "away side": AWAY_SIDE,
+    "pitch lines": PITCH_LINES, "pitch surround": PITCH_SURROUND,
 }
 
 # What the mockups' style sheet derives from the table. [derived: docs/design/ui-2026-11/mockups/style.css,
