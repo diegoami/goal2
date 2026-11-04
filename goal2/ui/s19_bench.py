@@ -14,9 +14,10 @@ player sees is the engine's. It keeps today's bench's rules (goal2/desktop/bench
 - **The answer** is sent once, through the bridge (`WatchedJobs.answer`), in the order the engine asked: at a break
   when S15's *play* is pressed, at a pause when Esc returns to the pitch. It carries the pairs and the bench's other
   changes (`BenchAnswer.value`): R and C positions, and S09's own tactics and mark (watched_jobs.CHANGES).
-- **The counter** is the decision's `substitutions_left`, the engine's (in a friendly BM-7's budget, 255 there:
-  watched_match.FRIENDLY_SUBSTITUTIONS); with none left it reads "no more substitutes" [confirmed: F027 E544;
-  E015-r0013 state 790].
+- **The counter** is the decision's `substitutions_left`, the engine's; with none left it reads "no more
+  substitutes" [confirmed: F027 E544; E015-r0013 state 790]. In a friendly it reads "unlimited": BM-7's budget is
+  255 in the engine (watched_match.FRIENDLY_SUBSTITUTIONS), a number the player is not meant to count down
+  [designed: owner BM-7, #73].
 - **The engine's report** follows the answer once the original plays on: a refused pair shows here with the
   engine's reason (`mode` "refused") and waits for a key; made and requested pairs are noted on the pitch.
 - **#316**: at the stoppage after a pause the requested pairs are offered again, and Esc says that they are still
@@ -40,6 +41,7 @@ from goal2.ui.screen import Screen, label, para, set_para
 from goal2.ui.squad_card import PlayerCard, Strip, box, colour, full_name, last_on_the_bar
 
 NO_MORE = "no more substitutes"                 # [confirmed: F027 E544; E015-r0013 state 790]
+UNLIMITED = "substitutions: unlimited (friendly)"   # [designed: owner BM-7, #73]
 MAKE_NOW = "MAKE SUBSTITUTIONS NOW"             # [confirmed: t156-124-halftime-bench.png, "make substitutions now"]
 REQUESTED = "SUBSTITUTION REQUESTED"            # [confirmed: t156-074-bench-requested.png]
 REQUEST = "REQUEST A SUBSTITUTION"              # [designed: T180] the request mode before a pair is chosen
@@ -216,6 +218,8 @@ class BenchAnswer:
 
     def counter(self, left=None):
         left = self.left if left is None else left
+        if self.friendly and left != 0:
+            return UNLIMITED
         return NO_MORE if left == 0 else f"substitutions left {left}"
 
 
@@ -304,7 +308,7 @@ class BenchScreen(Screen):
         from goal2.ui.pitch import HOME
         self.context.setText(f"{TIMES.get(answer.context, answer.context)} · {names[HOME]} {answer.score[HOME]}-"
                              f"{answer.score[1 - HOME]} {names[1 - HOME]} · {answer.minute}′"
-                             + (" · friendly: unlimited (BM-7)" if answer.friendly else ""))
+                             )
         table = roles.tables(self.model.state)
         off = {p[0] for p in answer.chosen}
         on = {p[1] for p in answer.chosen}

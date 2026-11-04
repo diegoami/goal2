@@ -17,7 +17,7 @@ Everything shown is what the bridge's events and outcome give (`board`); nothing
 - after a quick result (R on S17, or N to the watch question) a QUICK RESULT banner stands in place of the
   statistics, the scorers kept, as in the original (t156-270, t156-310).
 
-The home side is named first and drawn light red (`DesktopModel.home`, #562). **Enter** continues (to S15); **Esc**
+The home side is named first (`DesktopModel.home`, #562), each name in its side's kit (#583). **Enter** continues (to S15); **Esc**
 the bench (S19) in *make substitutions now* mode, at half time and before extra time [confirmed: T156-R1 step 119,
 "Esc,◄┘-bench"; designed: T180]: its Esc returns to S15, whose *play* sends the bench's answer. At full time, and on
 the board S15's *match stats* opens, there is no bench: Esc continues as Enter does.
@@ -72,9 +72,11 @@ def board(events, phase, quick):
 class BoardScreen(Screen):
     escape_text = "bench"
 
-    def __init__(self, window, model, names, kind, phase, data, onward, bench=None):
+    def __init__(self, window, model, names, kind, phase, data, onward, kits, bench=None):
         """`names`: the countries as [team 0, team 1]; `kind`: FRIENDLY, QUALIFYING…; `phase`: half, extra, full;
-        `bench`: what Esc opens (S19), None where there is no bench (Esc then continues)."""
+        `kits`: the match's kits (goal2/ui/kits.py), each name in its side's shirt, as the original's board
+        [confirmed: t156-192-fulltime-board.png, Norway light red and Holland white; #583]; `bench`: what Esc opens
+        (S19), None where there is no bench (Esc then continues)."""
         self.escape_text = "bench" if bench is not None else "continue"
         super().__init__(window)
         self.model, self.data, self.onward, self.phase, self.bench = model, data, onward, phase, bench
@@ -87,13 +89,13 @@ class BoardScreen(Screen):
         row.setSpacing(24)
         inner.addLayout(row)
         first = label(names[home], "h1")
-        colour(first, theme.HOME_SIDE)
+        colour(first, kits.colour(home))
         row.addWidget(first)
         score = data["score"]
         self.score_label = label(f"{score[home]}  {score[away]}", "h1")
         row.addWidget(self.score_label)
         second = label(names[away], "h1")
-        colour(second, theme.AWAY_SIDE)
+        colour(second, kits.colour(away))
         row.addWidget(second)
         row.addWidget(label(TIMES[phase], "h1"))
         half = data["half_time"]

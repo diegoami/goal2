@@ -257,7 +257,7 @@ acknowledgements, and the match the player watched is the match the engine publi
   `SPEEDS`). The pitch acknowledges a sample (`ack_frames`) only after painting it, so the engine is never more than
   `LEAD` samples ahead of what was drawn; a stalled or hidden pitch stalls the engine. The bridge is the match day's
   and stays open after the match [designed: T167, D3; T166 made one per match].
-- **Shows** (s17-pitch.html): the two sides (home light red, away white), the score, the minute, the match's kind,
+- **Shows** (s17-pitch.html): the two sides, each in its kit as the original computes it (`goal2/ui/kits.py`, #583), the score, the minute, the match's kind,
   the last two events; the pitch (`goal2/ui/pitch.py`: the lines and boxes of the samples' grid, the green surround,
   one character per grid cell in the original's drawing order, keepers as faces, the ball on an empty cell); the
   commentary, the speed, the display and your side's colour. The home side is the fixture's side B, named first

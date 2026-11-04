@@ -43,6 +43,7 @@ from PySide6.QtWidgets import QApplication  # noqa: E402
 
 from goal2.desktop import data_setup, fixed_page  # noqa: E402
 from goal2.desktop.model import DesktopModel  # noqa: E402
+from goal2.ui.s19_bench import UNLIMITED  # noqa: E402
 from goal2.ui import theme  # noqa: E402
 
 CACHE = requires.CACHE
@@ -462,7 +463,7 @@ class Bench(unittest.TestCase):
         self.assertEqual(shown["mode"], "refused")
         self.assertEqual(shown["label"], "SUBSTITUTION NOT MADE")
         self.assertIn(reason, shown["line"])
-        self.assertEqual(shown["counter"], f"substitutions left {report['substitutions_left']}")
+        self.assertEqual(shown["counter"], UNLIMITED, "a friendly's counter reads unlimited (BM-7)")
         at = walk.order.index("BenchScreen:refused")
         self.assertTrue(walk.order[at + 1].startswith("PitchScreen"), "a key goes back to the match")
         side = walk.out["controller"].display.managed
@@ -475,8 +476,10 @@ class Bench(unittest.TestCase):
         from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
         walk = self.friendly
         self.assertEqual(FRIENDLY_SUBSTITUTIONS, 255)
-        self.assertEqual(walk.out["first_stop"]["record"]["counter"], "substitutions left 255")
-        self.assertEqual(walk.out["half"]["record"]["counter"], "substitutions left 254")
+        # the engine's count is BM-7's 255, then 254; the player reads "unlimited"
+        self.assertEqual(walk.out["first_stop"]["record"]["left"], 255)
+        self.assertEqual(walk.out["half"]["record"]["left"], 254)
+        self.assertEqual(walk.out["first_stop"]["record"]["counter"], UNLIMITED)
         side = walk.out["controller"].display.managed
         made = [e for e in walk.out["outcome"].events if e.kind == "substitution" and e.data["team"] == side]
         self.assertEqual(len(made), 6, "the sixth substitution is made")
