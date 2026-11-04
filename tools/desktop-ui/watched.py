@@ -33,9 +33,12 @@ def expected(owner):
     import unittest
     from goal2.tests import pypy_engine
     from goal2.tests.port_parity import assert_same_match
+    # [designed: owner BM-7, #73; T180] today's window plays a watched friendly with BM-7's budget (the engine
+    # server's FRIENDLY_SUBSTITUTIONS): both arms take it, so the comparison still holds seed for seed
+    from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
     pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',job.state,owner.template_bytes,fixture,
-                              delay_byte=0,record_draws=True)
-    result,memory,events=direct(job.state,fixture,seed=None,delay=0)
+                              delay_byte=0,record_draws=True,substitutions=FRIENDLY_SUBSTITUTIONS)
+    result,memory,events=direct(job.state,fixture,seed=None,delay=0,substitutions=FRIENDLY_SUBSTITUTIONS)
     outcome=pending.result()
     assert_same_match(unittest.TestCase(),outcome.result,outcome.memory,outcome.events,result,memory,events)
     publication.complete(job.token,outcome)
