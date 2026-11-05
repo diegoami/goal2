@@ -33,7 +33,7 @@ class ImmediateBench(unittest.TestCase):
             QTest.keyClick(self.window,Qt.Key.Key_Return)
             self.app.processEvents()
 
-    def deliver(self,refused=False):
+    def deliver(self,refused=False,reason="player cannot return"):
         data=copy.deepcopy(self.decision.data)
         data['edited']=True
         if not refused:
@@ -42,7 +42,7 @@ class ImmediateBench(unittest.TestCase):
             data['substitutions_left']=4
             data['injured']=[]
         report=dict(context='half_time',asked=[[self.off,self.on]],made=[] if refused else [[self.off,self.on]],
-            requested=[],refused=[[self.off,self.on,'player cannot return']] if refused else [],
+            requested=[],refused=[[self.off,self.on,reason]] if refused else [],
             substitutions_left=data['substitutions_left'])
         self.bridge.reports.append(report)
         self.controller.stop=SimpleNamespace(data=data,minute=45,score=[0,0])
@@ -169,5 +169,18 @@ class ImmediateBench(unittest.TestCase):
         self.controller.tick(time.monotonic())
         self.assertNotEqual(self.controller.note,REQUESTED)
         self.assertEqual(self.sent,[])
+
+    def test_long_refusal_keeps_all_twenty_players_details_and_controls_visible(self):
+        from goal2.desktop import fixed_page
+        reason=('This player has already been substituted and cannot return; '
+                'choose a different player from the bench before continuing.')
+        self.pair();self.deliver(refused=True,reason=reason)
+        self.assertIn(reason,self.bench.note.text())
+        self.assertEqual(self.bench.answer.left,5)
+        for width,height in ((1440,900),(2110,1213)):
+            self.window.resize(width,height)
+            for _ in range(3):self.app.processEvents()
+            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+            self.assertEqual(len(self.bench.strip.shown_texts()),20)
 
 if __name__=='__main__':unittest.main()
