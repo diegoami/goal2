@@ -350,6 +350,12 @@ operational status.
 
 - [T187](T187.md): continue after the selected captain is substituted (#593).
 
+- [T184](T184.md): logical match-menu rows and country arrows (#596).
+
+- [T185](T185.md): pause/resume while reading commentary (#597).
+
+- [T186](T186.md): readable new-window text and prominent live bench feedback (#598).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
