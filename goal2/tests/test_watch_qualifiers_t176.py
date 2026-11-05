@@ -140,6 +140,9 @@ def reference(owner, fixture, mode, *, competitive):
 class WatchQualifiers(unittest.TestCase):
     """The cases, played once for the class, one at a time (two PyPy processes at once: the engine and the child)."""
 
+    COMPETITIVE = True
+    FRIENDLY = False
+
     @classmethod
     def setUpClass(cls):
         from goal2.desktop.competitive import CompetitiveJobs, pending_fixture
@@ -152,60 +155,62 @@ class WatchQualifiers(unittest.TestCase):
         cls.out = {}
         closing = []
         try:
-            # A watched qualifier: the owner holds a competitive bridge (as the window does) before the controller
-            # starts; a second watched qualifier on an owner without one; and competitive Play.
-            for mode in ('none', 'half1', 'half6'):
-                model = desktop_model(folder, mode, cls.game)
-                window_bridge = CompetitiveJobs(model) if mode == 'none' else None
+            if cls.COMPETITIVE:
+                # A watched qualifier: the owner holds a competitive bridge (as the window does) before the controller
+                # starts; a second watched qualifier on an owner without one; and competitive Play.
+                for mode in ('none', 'half1', 'half6'):
+                    model = desktop_model(folder, mode, cls.game)
+                    window_bridge = CompetitiveJobs(model) if mode == 'none' else None
+                    controller = WatchedController(model, viewer_command=VIEWER)
+                    closing += [controller] + ([window_bridge] if window_bridge else [])
+                    before = copy.deepcopy(model.state)
+                    child, publication, job = reference(desktop_model(folder, f'{mode}-reference', cls.game),
+                                                        cls.fixture, mode, competitive=True)
+                    controller.start()
+                    bridge = controller.engine
+                    case = dict(play(controller, mode), before=before, model=model, bridge=bridge,
+                                window_bridge=window_bridge, friendly_engine=controller.friendly_engine,
+                                kind=bridge.KIND, pending_after=model.match_pending)
+                    drive, samples, _ = child.result(WAIT)
+                    case['reference'] = {'outcome': drive, 'samples': samples.digests}
+                    if mode == 'none':
+                        publication.complete(job.token, drive)
+                        case['reference']['state'] = publication.owner.state
+                    controller.cancel()                           # the viewer stand-in, as the window's poll would
+                    cls.out[mode] = case
+
+                # Competitive Play (no pitch, no bench) of the same game, with the same options.
+                model = desktop_model(folder, 'play', cls.game)
+                jobs = CompetitiveJobs(model)
+                closing.append(jobs)
+                token = jobs.start(**OPTIONS)
+                deadline = time.monotonic() + WAIT
+                while jobs.busy:
+                    if time.monotonic() > deadline:
+                        raise AssertionError('competitive Play did not finish')
+                    jobs.poll(token)
+                    time.sleep(.005)
+                cls.out['play'] = {'outcome': jobs.outcome, 'model': model}
+
+            if cls.FRIENDLY:
+                # A watched friendly, as before: the friendly bridge, the friendly publication.
+                model = desktop_model(folder, 'friendly')
                 controller = WatchedController(model, viewer_command=VIEWER)
-                closing += [controller] + ([window_bridge] if window_bridge else [])
+                closing.append(controller)
+                pending = model.state.campaign.next_fixture
+                from goal2.engine.original_match import Fixture
+                fixture = Fixture(pending.side_a, pending.side_b, int(pending.fixture_id.split(':')[1]))
                 before = copy.deepcopy(model.state)
-                child, publication, job = reference(desktop_model(folder, f'{mode}-reference', cls.game),
-                                                    cls.fixture, mode, competitive=True)
+                child, publication, job = reference(desktop_model(folder, 'friendly-reference'), fixture, 'none',
+                                                    competitive=False)
                 controller.start()
-                bridge = controller.engine
-                case = dict(play(controller, mode), before=before, model=model, bridge=bridge,
-                            window_bridge=window_bridge, friendly_engine=controller.friendly_engine,
-                            kind=bridge.KIND, pending_after=model.match_pending)
+                case = dict(play(controller, 'none'), before=before, model=model, bridge=controller.engine,
+                            friendly_engine=controller.friendly_engine, kind=controller.engine.KIND)
                 drive, samples, _ = child.result(WAIT)
-                case['reference'] = {'outcome': drive, 'samples': samples.digests}
-                if mode == 'none':
-                    publication.complete(job.token, drive)
-                    case['reference']['state'] = publication.owner.state
-                controller.cancel()                           # the viewer stand-in, as the window's poll would
-                cls.out[mode] = case
-
-            # Competitive Play (no pitch, no bench) of the same game, with the same options.
-            model = desktop_model(folder, 'play', cls.game)
-            jobs = CompetitiveJobs(model)
-            closing.append(jobs)
-            token = jobs.start(**OPTIONS)
-            deadline = time.monotonic() + WAIT
-            while jobs.busy:
-                if time.monotonic() > deadline:
-                    raise AssertionError('competitive Play did not finish')
-                jobs.poll(token)
-                time.sleep(.005)
-            cls.out['play'] = {'outcome': jobs.outcome, 'model': model}
-
-            # A watched friendly, as before: the friendly bridge, the friendly publication.
-            model = desktop_model(folder, 'friendly')
-            controller = WatchedController(model, viewer_command=VIEWER)
-            closing.append(controller)
-            pending = model.state.campaign.next_fixture
-            from goal2.engine.original_match import Fixture
-            fixture = Fixture(pending.side_a, pending.side_b, int(pending.fixture_id.split(':')[1]))
-            before = copy.deepcopy(model.state)
-            child, publication, job = reference(desktop_model(folder, 'friendly-reference'), fixture, 'none',
-                                                competitive=False)
-            controller.start()
-            case = dict(play(controller, 'none'), before=before, model=model, bridge=controller.engine,
-                        friendly_engine=controller.friendly_engine, kind=controller.engine.KIND)
-            drive, samples, _ = child.result(WAIT)
-            publication.complete(job.token, drive)
-            case['reference'] = {'outcome': drive, 'samples': samples.digests, 'state': publication.owner.state}
-            controller.cancel()
-            cls.out['friendly'] = case
+                publication.complete(job.token, drive)
+                case['reference'] = {'outcome': drive, 'samples': samples.digests, 'state': publication.owner.state}
+                controller.cancel()
+                cls.out['friendly'] = case
         finally:
             for item in reversed(closing):
                 try:
@@ -333,6 +338,19 @@ class Boundary(unittest.TestCase):
                 controller, _ = self.controller(kind, fixture_id)
                 with self.assertRaisesRegex(ValueError, 'scheduled friendlies and supported qualifiers only'):
                     controller.fixture()
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        WatchQualifiers('test_a_watched_qualifier_is_the_competitive_match_on_the_owner_s_bridge'),
+        WatchQualifiers('test_played_with_default_answers_it_equals_drive_match_on_prepare_competitive'),
+        WatchQualifiers('test_its_published_campaign_state_equals_drive_match_s_and_competitive_play_s'),
+        WatchQualifiers('test_one_substitution_at_half_time_equals_the_same_answer_through_drive'),
+        WatchQualifiers('test_the_bench_offers_the_competition_budget_and_refuses_one_more'),
+        loader.loadTestsFromTestCase(Boundary),
+    ])
+
 
 
 if __name__ == '__main__':

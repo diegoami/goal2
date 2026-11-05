@@ -407,3 +407,12 @@ class OriginalPitchJobsTests(unittest.TestCase):
                 finally:jobs.close()
             self.assertGreater(len(beats),100,'Qt heartbeat must remain live')
         finally:timer.stop()
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        loader.loadTestsFromTestCase(PitchTransportTests),
+        loader.loadTestsFromTestCase(PitchSetupCleanupTests),
+        loader.loadTestsFromTestCase(PitchObservationTests),
+    ])
