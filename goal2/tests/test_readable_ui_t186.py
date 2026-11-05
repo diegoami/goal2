@@ -116,4 +116,20 @@ class Readable(unittest.TestCase):
         self.assertTrue(self.pitch.home.isVisible())
         self.assertTrue(self.pitch.wait_box.isHidden())
 
+    def test_recent_header_excerpts_cannot_push_the_live_pitch_below_the_page(self):
+        from goal2.desktop import fixed_page
+        self.window.pop()
+        text='A player with a long surname scored after an assist from another named player.'
+        for minute in (12,13):
+            event=dict(kind='commentary',minute=minute,score=[0,0],data={'text':text})
+            self.controller._send('event',event);self.controller.events.append(event)
+        self.controller.released=len(self.controller.events)
+        for width,height in ((1440,900),(2110,1213)):
+            self.window.resize(width,height)
+            for _ in range(3):self.app.processEvents();self.pitch.refresh()
+            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+            self.assertIn(text,self.pitch.commentary.text())
+            for label in self.pitch.recent:
+                self.assertLessEqual(label.fontMetrics().horizontalAdvance(label.text()),label.width())
+
 if __name__=='__main__': unittest.main()

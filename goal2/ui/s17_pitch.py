@@ -457,15 +457,14 @@ class PitchScreen(Screen):
         row.addWidget(self.minute)
         self.kind = label(self.controller.display.kind.upper(), "sub")
         row.addWidget(self.kind)
-        row.addStretch(1)
+        from goal2.ui.readable_text import Excerpt
         recent = QVBoxLayout()
         recent.setSpacing(4)
-        self.recent = [label("", "value"), label("", "value")]
+        self.recent = [Excerpt(),Excerpt()]
         for widget in self.recent:
             widget.setAlignment(Qt.AlignmentFlag.AlignRight)
-            widget.setWordWrap(True)
             recent.addWidget(widget)
-        row.addLayout(recent)
+        row.addLayout(recent,1)
         self.score_head = head
         self.body_layout.addWidget(head)
         middle = QHBoxLayout()
