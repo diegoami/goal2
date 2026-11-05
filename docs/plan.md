@@ -53,6 +53,12 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
      [derived: original 000E:70E6; 1771:821B–826A] Retain the final fixtures/post-match effects, then
      return the explicit boundary before stage_end for stage4/8 with rounds=1 and cursor=count.
      Compare Core at that same pause; refusal inside 80DA would leave a partially advanced stage.
+   - [designed: owner, 2026-11-05, #509/#594] **The assistant’s recommended twenty is required for m3.**
+     The previous S08 deferral is superseded. Upstream T125 ports DC7E and its complete finals/tour
+     refusal closure, with original-backed and sealed proofs; T124e reuses its shared predicates.
+     Include T125 in T123’s upstream owner-run milestone before vendoring. T183 then restores the
+     working Ins action through the PyPy engine process on the native career, with atomic publication
+     and no Unicorn fallback. T124t’s legal-eleven harness does not implement this player-facing feature.
    [designed: owner, 2026-11-03, #524-#527] **The rebuilt UI.** The design phase is done:
    - the screens follow the original's flow, in its palette with a blocky VGA font (docs/design/ui-2026-11);
    - the window is PySide6, trimmed to Essentials, with the pitch as a widget in it (docs/design/technology-2026-11);
