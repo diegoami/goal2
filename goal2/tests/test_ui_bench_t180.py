@@ -97,11 +97,17 @@ def go_to(window, screen, word):
 
 
 def enter_on(window, screen, word):
-    pump(lambda: not getattr(screen, "pending", False), WAIT, "previous stopped edit did not finish")
+    controller=getattr(getattr(getattr(screen,"apply",None),"__self__",None),"controller",None)
+    def settled():
+        return not getattr(screen,"pending",False) or (controller is not None and controller.finished)
+    pump(settled,WAIT,"previous stopped edit did not finish")
+    if controller is not None and controller.error: raise AssertionError(controller.error)
     go_to(window, screen, word)
     out = screen.enter_hint_text()
     key(window, Qt.Key.Key_Return)
-    pump(lambda: not getattr(screen, "pending", False), WAIT, "stopped edit was not confirmed")
+    pump(settled,WAIT,"stopped edit was not confirmed")
+    if controller is not None and controller.error: raise AssertionError(controller.error)
+    if getattr(screen,"pending",False): raise AssertionError("the match ended before edit confirmation")
     return out
 
 

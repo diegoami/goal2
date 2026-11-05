@@ -183,4 +183,91 @@ class ImmediateBench(unittest.TestCase):
             self.assertEqual(fixed_page.problems(self.window),[],(width,height))
             self.assertEqual(len(self.bench.strip.shown_texts()),20)
 
+
+@requires.need(modules=('PySide6','pygame','unicorn'),slow=True,**requires.HALFTIME)
+class ActualImmediateBench(unittest.TestCase):
+    def test_injury_and_captain_swaps_are_visible_before_play_and_publish_once(self):
+        import tempfile
+        from pathlib import Path
+        from PySide6.QtCore import Qt
+        from goal2.desktop import data_setup,fixed_page
+        from goal2.ui.window import Window
+        from goal2.tests.test_ui_bench_t180 import (Walk,app,career,key,enter_on,play_on,PLAY_NEXT)
+        from goal2.tests.match_day_policy import play_through_bridge
+        from goal2.ui.s17_pitch import engine_fixture
+        from goal2.tests.test_pypy_worker_t152 import pypy
+        pypy();application=app();test=self
+        class ActualWalk(Walk):
+            def react(self,screen):
+                if type(screen).__name__=='ChooseScreen' and screen.mode=='captain':
+                    self.out['initial_captain']=screen.highlighted()
+                    self.out['captain_off']=False
+                return super().react(screen)
+            def on_menu(self,screen):
+                if screen.phase=='stop' and not self.out.get('injury_done'):
+                    key(self.window,Qt.Key.Key_Space)
+                else:play_on(self.window,screen)
+            def on_board(self,screen):
+                if screen.phase=='half' and not self.out.get('half_done'):
+                    key(self.window,Qt.Key.Key_Escape)
+                else:super().on_board(screen)
+            def on_bench(self,screen):
+                answer=screen.answer;context=answer.context
+                target=None
+                if context=='substitution' and not self.out.get('injury_done'):
+                    target=next(w for w in answer.eleven if w in answer.injured)
+                elif context=='half_time' and not self.out.get('half_done'):
+                    target=(self.out['initial_captain'] if not self.out['captain_off'] else
+                            next(w for w in answer.eleven if w not in answer.injured
+                                 and w not in self.out.get('put_on',[])))
+                if target is not None:
+                    controller=self.out['controller']
+                    before_left=answer.left;before_minute=answer.minute
+                    before_sequence=controller.bridge._frame_sequence
+                    used=set(self.out.get('taken_off',[]))
+                    on=next(w for w in answer.bench if w not in used and
+                            (answer.position(w)==0)==(answer.position(target)==0))
+                    enter_on(self.window,screen,target);enter_on(self.window,screen,on)
+                    fresh=screen.answer
+                    test.assertIn(on,fresh.eleven);test.assertIn(target,fresh.bench)
+                    test.assertEqual(fresh.left,before_left-1)
+                    test.assertEqual(fresh.minute,before_minute)
+                    test.assertEqual(controller.bridge._frame_sequence,before_sequence)
+                    test.assertEqual(fresh.chosen,[])
+                    test.assertTrue(controller.stop.data.get('edited'))
+                    test.assertIn('Made:',screen.note.text())
+                    test.assertEqual(fixed_page.problems(self.window),[])
+                    self.out.setdefault('pairs',[]).append([target,on])
+                    self.out.setdefault('put_on',[]).append(on)
+                    self.out.setdefault('taken_off',[]).append(target)
+                    self.out['captain_off'] |= target==self.out['initial_captain']
+                    self.out['injury_done' if context=='substitution' else 'half_done']=True
+                key(self.window,Qt.Key.Key_Escape)
+        with tempfile.TemporaryDirectory() as folder:
+            owner=career();count=owner.state.match_count
+            window=Window(data_setup.paths(Path(folder)))
+            window.resize(1440,900);window.show()
+            desk=window.open_career(owner)
+            walk=ActualWalk('T188-injury-captain',window,owner)
+            fixture=owner.state.campaign.next_fixture
+            try:
+                desk.highlight(PLAY_NEXT);key(window,Qt.Key.Key_Return)
+                walk.run()
+                self.assertTrue(walk.out.get('injury_done'))
+                self.assertTrue(walk.out.get('half_done'))
+                self.assertTrue(walk.out['captain_off'])
+                controller=walk.out['controller']
+                self.assertIsNone(controller.error)
+                self.assertEqual(owner.state.match_count,count+1)
+                self.assertEqual([p for r in controller.reports for p in r['made']],walk.out['pairs'])
+                self.assertTrue(all(not r['requested'] for r in controller.reports))
+                other=career();other.state=copy.deepcopy(controller.given._snapshot)
+                result=play_through_bridge(other,controller.choices,fixture=engine_fixture(fixture),wait=1500)
+                self.assertEqual(controller.outcome.result,result.result)
+                self.assertEqual(controller.outcome.memory,result.memory)
+                self.assertEqual(controller.outcome.events,result.events)
+                self.assertEqual(owner.state,other.state)
+            finally:
+                window.close();window.deleteLater();application.processEvents()
+
 if __name__=='__main__':unittest.main()
