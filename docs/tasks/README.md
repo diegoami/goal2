@@ -361,3 +361,5 @@ operational status.
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
 
 - [T183](T183.md): restore original assistant best-twenty selection on S08; required m3 parity (#594), after T170 and reviewed upstream T125.
+- [T188a](T188a.md): authoritative edits while the original remains stopped (#599).
+- [T188b](T188b.md): apply stopped substitutions immediately in the squad (#599).
