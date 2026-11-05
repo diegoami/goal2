@@ -131,7 +131,7 @@ class ActualCaptainWithdrawalT187(unittest.TestCase):
                     if not jobs.busy: break
                     jobs.poll_frames(token)
                     if not jobs.busy: break
-                    if jobs._frame_sequence:
+                    if jobs._frame_sequence-1 > jobs._frame_ack:
                         jobs.ack_frames(token,jobs._frame_sequence-1)
                     if jobs.waiting is not None and jobs.frames_drained():
                         decision=jobs.waiting
@@ -149,7 +149,7 @@ class ActualCaptainWithdrawalT187(unittest.TestCase):
                 self.assertEqual(len(made),1)
                 self.assertEqual(owner.state.match_count,before.match_count+1)
                 published=copy.deepcopy(owner.state)
-                jobs.poll(token)
+                with self.assertRaises(ValueError): jobs.poll(token)
                 self.assertEqual(owner.state,published)
                 prepared=campaign_rounds.prepare(before,owner.template_bytes)
                 result,memory,events=original_withdrawal(prepared,fixture,pair)
