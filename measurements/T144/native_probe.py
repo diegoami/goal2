@@ -39,7 +39,9 @@ def capture(window,widget,name,expected):
     raster=shot.toImage();scale=widget.scale()*shot.devicePixelRatio()
     for x,y,width,count,filled in widget.painted_bars:
         for i in range(count):
-            at=(round((x+(i+0.5)*width/count)*scale),round((y-15)*scale))
+            # [derived: T144 compact rendering] Bar coordinates already include widget.factor;
+            # the sample's offset from the baseline must use that same compact transform.
+            at=(round((x+(i+0.5)*width/count)*scale),round((y-15*widget.factor)*scale))
             want='#aaaaaa' if filled is not None and i<filled else '#000000'
             assert raster.pixelColor(*at).name()==want,(name,i,at,'actual bar pixel')
     path=out/(name+'.png');assert window.grab().save(str(path))

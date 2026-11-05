@@ -207,7 +207,9 @@ jobs:
           chmod 700 "$XDG_RUNTIME_DIR"
           xvfb-run --auto-servernum --server-args="-screen 0 3840x2160x24 -nolisten tcp" \
             dbus-run-session -- bash -e -c '
-              xfwm4 --compositor=off --daemon
+              xfwm4 --compositor=off > native-evidence/window-manager.log 2>&1 &
+              wm_pid=$!
+              trap '\''kill "$wm_pid" 2>/dev/null || true'\'' EXIT
               python measurements/T148/run_native.py --factor "${{ matrix.factor }}" --out native-evidence/probe
             ' 2>&1 | tee native-evidence/probe.log
       - name: Keep only rebuilt-window screenshots and receipts

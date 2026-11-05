@@ -3,7 +3,10 @@
 [designed: T148] The `native-scaling` jobs in `ci.yml` and `windows.yml` run
 `measurements/T144/native_probe.py` through `run_native.py`, separately at Qt factors
 1 and 2. Linux uses Xvfb, xfwm4, an isolated D-Bus session and XDG runtime; Windows
-uses the hosted desktop. Both provide a 3840×2160 screen so factor 2 has room.
+uses the hosted desktop. Linux provides a 3840×2160 screen. Windows requests that
+resolution; the receipt records the actual available geometry because the hosted
+display can retain a smaller mode. T144's probe uniformly fits its windows to the
+available viewport and checks their complete native bounds at both Qt factors.
 
 The existing probe checks native focus, visible widget/window bounds, actual bar
 pixels and unchanged Core/fixture state. The wrapper verifies each measured device

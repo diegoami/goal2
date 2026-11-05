@@ -186,7 +186,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: A native desktop large enough for factor two
+      - name: Request hosted desktop resolution (measured geometry is in receipts)
         shell: pwsh
         run: Set-DisplayResolution -Width 3840 -Height 2160 -Force
       - name: Install goal2
