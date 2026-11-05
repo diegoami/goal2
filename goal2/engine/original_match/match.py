@@ -204,7 +204,7 @@ def fresh_state(players_before):
 class Match:
     def __init__(self, image, fixture, *, managed=None, captain=None, seed=None, players=None, countries=None,
                  substitutions=None, ticks=False, record_draws=False, delay_byte=None, timeout_s=60, ports=None,
-                 prove=None, set_piece=False, engine="original"):
+                 prove=None, set_piece=False, engine="original", tail=True):
         """image: an Image of the original (goal2's savestate bytes through Image.from_savestate, e.g. of
         to_savestate(state, template); or GameState.mem through Image.from_memory_component). On the fixture
         tried, the match depended on the image only through its two teams' records (E033 notes, section 2).
@@ -226,7 +226,10 @@ class Match:
         prove: the proof mode (port/prove.py, T59): None, or N, every call of a ported routine from the main RNG's
         N-th draw on (0: from the start; N > 0 needs record_draws) is run side by side with the original's, and the
         first difference raises ProofError; `prover.summary()` counts the proved calls. A proved match cannot be
-        saved."""
+        saved. tail: False ends the match at run_match's return (000E:6F1D), before route_fixture's post-match
+        player update 0791:B7FA, which the kit then does not call (T119a: route.py runs route_fixture itself, and
+        its own call of B7FA at 000E:6FF8 runs as guest code); and the fixture record keeps route_fixture's +1 (a
+        competitive fixture's round) and +3 (T119c, _write_fixture)."""
         if engine not in ("original", "port"):
             raise ValueError("engine: original or port")
         if engine == "port" and prove is not None:
@@ -274,6 +277,10 @@ class Match:
                      "captain": captain, "seed": seed, "ticks": ticks, "record_draws": record_draws,
                      "delay_byte": delay_byte, "kind": fixture.kind, "substitutions": substitutions}
         if engine == "port":self.opts["engine"] = "port"
+        if not isinstance(tail, bool):
+            raise ValueError("tail: a boolean")
+        if not tail:                   # opts unchanged by default: saves of the default match stay as they were
+            self.opts["tail"] = False
         if not isinstance(set_piece, bool):
             raise ValueError("set_piece: a boolean opt-in")
         if set_piece:
@@ -281,7 +288,7 @@ class Match:
         self.side = (0 if managed == fixture.first else 1) if managed in (fixture.first, fixture.second) else None
         if captain is not None and (self.side is None or captain not in self._squad(managed)[:11]):
             raise ValueError(f"captain {captain} is not in the managed eleven")
-        self._write_fixture(index, fixture)
+        self._write_fixture(index, fixture, route=not tail)
         self._declare("delay calibration dword DS:A9FF", self.m.DS * 16 + DELAY_COUNT,
                       DELAY_COUNT_VALUE.to_bytes(4, "little"))
         self.st = fresh_state(self._players_now([fixture.first, fixture.second]))
@@ -384,12 +391,18 @@ class Match:
             if other != managed and self._manager_byte(other) > 0x80:
                 raise ValueError(f"country {other} is another human manager's: two managed sides are not supported")
 
-    def _write_fixture(self, index, fixture):
+    def _write_fixture(self, index, fixture, route=False):
+        """The fixture record `FE 00 kind 00 first second` and the cursor. route (tail=False, T119c, #647): the
+        record's +1 and +3 are kept as route_fixture left them (+1 a competitive fixture's round number, 1..8, 0 in
+        a friendly [confirmed: E040-r0010, r0011; T119b #646]); the default match writes them 0 as before."""
         count = self.m.rd_far(GAME_PTR, 0x28)
         if not 1 <= index <= count:
             raise ValueError(f"fixture index {index} outside the calendar 1..{count}")
         rec = bytes([0xFE, 0, fixture.kind, 0]) + fixture.first.to_bytes(2, "little") + fixture.second.to_bytes(2, "little")
         base = self.m.far(FIXTURES_PTR) + FIXTURE_SIZE * (index - 1)
+        if route:
+            old = self.m.read(base, 4)
+            rec = rec[:1] + old[1:2] + rec[2:3] + old[3:4] + rec[4:]
         self._declare(f"fixture {index} := {fixture.first} v {fixture.second}, kind {fixture.kind}", base, rec)
         self._declare("fixture index [A923]+0x26 (route_fixture's; the set-up seeds from it, 0791:2648)",
                       self.m.far(GAME_PTR) + 0x26, index.to_bytes(2, "little"))
@@ -590,11 +603,12 @@ class Match:
         if self.st["phase"] == "run_match":
             seg, off = self.fixture_ptr
             self.st["fixture_after"] = list(self.m.read(seg * 16 + off, FIXTURE_SIZE))
-            self.st["phase"] = "player_update"
-            self._call(PLAYER_UPDATE, PLAYER_UPDATE_RETURN)
-        else:
-            self.st["phase"] = "done"
-            self._finish()
+            if self.opts.get("tail", True):
+                self.st["phase"] = "player_update"
+                self._call(PLAYER_UPDATE, PLAYER_UPDATE_RETURN)
+                return
+        self.st["phase"] = "done"      # after B7FA, or (tail=False) at run_match's return
+        self._finish()
 
     # -- the hooks -----------------------------------------------------------------------------------------
     def _hooks(self):
@@ -872,7 +886,10 @@ class Match:
             return
         role, side = self.m.stack_word(2) & 0xFF, self.m.stack_word(4) & 0xFF
         if role == 1 and side == self.side:
-            self.st["prompt"] = {"kind": "prompt", "key": S.ENTER, "role": 1, "waited": False}
+            # [derived: #659, F030] Kickoff overrides are initial inputs. A later captain
+            # prompt (for example after a withdrawal) keeps the guest's eligible default.
+            self.st["prompt"] = {"kind": "prompt", "key": S.ENTER, "role": 1, "waited": False,
+                                 "initial": self.st["kickoff_seed"] is None}
         elif self.opts.get("set_piece") and side == self.side and role in (2, 3, 4, 5):
             self.st["prompt"] = {"kind": "prompt", "key": None, "role": role, "waited": False}
 
@@ -893,6 +910,8 @@ class Match:
         if replay or p is None or p.get("role") != 1 or p["waited"] or self.m.stack_word(0) != 0xCED9:
             return
         p["waited"] = True
+        if not p.setdefault("initial", self.st["kickoff_seed"] is None):
+            return
         if self.opts["seed"] is not None:
             self._declare("main seed DS:7B62 at the captain prompt", self.m.DS * 16 + SEED,
                           int(self.opts["seed"]).to_bytes(2, "little"))
@@ -906,7 +925,11 @@ class Match:
         p = self.st["prompt"]
         if p is None:
             self._fail("a key read at the captain prompt the kit did not ask for")
-        want = self.opts["captain"] if p.get("role") == 1 else p.get("target")
+        if p.get("role") == 1:
+            initial = p.get("initial", self.st["kickoff_seed"] is None)
+            want = self.opts["captain"] if initial else None
+        else:
+            want = p.get("target")
         if want is not None:
             slot = self._squad(self.opts["managed"]).index(want) + 1
             here = self.m.frame_word(self.m.reg("bp"), S.PROMPT_SLOT_BP)
