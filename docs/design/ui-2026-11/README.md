@@ -636,8 +636,10 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
 
 15. **S05 waits for the original's news.** Until Track B ports it (U2, #509), a new career goes from S04 to the
     home screen. goal2 writes no bulletin of its own.
-16. **Ins (the assistant's 20) says *coming later*** until the original's assistant (`0791:DC7E`) is ported in
-    Track B's U3. There is no Unicorn and no stand-in rule meanwhile.
+16. **Ins (the assistant's 20) says *coming later*** until the original's assistant (`0791:DC7E`) is ported.
+    [designed: owner, 2026-11-05, #509/#594] This is required within m3: upstream T125 ports the assistant
+    and its refusal closure; T183 restores the native S08 action after T170. The placeholder is an
+    implementation gap, not a deferral from m3. There is no Unicorn fallback or stand-in rule.
 
 **Owner decisions, 2026-11-03** (on the main session's gap audit, #509):
 
