@@ -619,7 +619,7 @@ class PitchScreen(Screen):
             _set(text, str(goals))
         texts = [e["data"].get("text", "") for e in shown if e["kind"] == "commentary"][-2:]
         for widget, text in zip(self.recent, [""] * (2 - len(texts)) + texts):
-            _set(widget, text)
+            widget.setText(text)  # Excerpt owns the full text as well as its visible preview.
         from goal2.ui.readable_text import recent_text
         _set(self.commentary,recent_text(self.lines,self.commentary.fontMetrics(),
                                          self.commentary.width(),self.commentary.height(),COMMENTARY_ROWS))
