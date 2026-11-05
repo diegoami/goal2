@@ -161,4 +161,13 @@ class ImmediateBench(unittest.TestCase):
         self.assertTrue(any(full_name(self.model,self.on)==name for _,name in rows))
         self.assertFalse(any(full_name(self.model,self.off) in name for _,name in rows))
 
+    def test_a_dropped_bench_opening_clears_its_stale_requested_note(self):
+        from goal2.ui.s17_pitch import REQUESTED
+        import time
+        self.controller.note=REQUESTED
+        self.bridge.dropped_pauses=1
+        self.controller.tick(time.monotonic())
+        self.assertNotEqual(self.controller.note,REQUESTED)
+        self.assertEqual(self.sent,[])
+
 if __name__=='__main__':unittest.main()

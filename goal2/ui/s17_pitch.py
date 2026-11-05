@@ -127,6 +127,7 @@ class MatchController:
         self.stop = None          # the decision the match waits on, once every sample before it is shown
         self.notice = None        # the other side's substitution shown on S18, the display held until a key
         self.refusal = None       # an answer's report that refused a pair, shown on S19 until a key
+        self._dropped_pauses = 0
         self.edit_pending = False
         self.edit_report = None
         self._editing = False
@@ -186,6 +187,10 @@ class MatchController:
             self._send("event", value)
             self.events.append(value)
         self._read_report()
+        dropped = getattr(bridge, "dropped_pauses", 0)
+        if dropped > self._dropped_pauses and self.note == REQUESTED:
+            self.note = ""
+        self._dropped_pauses = dropped
         if not bridge.busy:
             return self._full_time()
         if self.held:
