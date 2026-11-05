@@ -415,6 +415,9 @@ def play_saved(window, model, record):
 
         def handle_key(self, key):
             from PySide6.QtCore import Qt
+            if (getattr(self.controller, 'commentary_paused', False)
+                    and key in (Qt.Key.Key_Return, Qt.Key.Key_Enter)):
+                return super().handle_key(key)
             if key in (Qt.Key.Key_Escape, Qt.Key.Key_Return, Qt.Key.Key_Enter):
                 self.escape()
                 return True

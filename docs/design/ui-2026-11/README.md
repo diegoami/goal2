@@ -361,7 +361,7 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 - **Shows**: the score, the minute, the kind of match and the last two events; the pitch with each player's
   role code (home red, away white, as the original draws them) and the ball; the commentary beside it.
 - **Actions**: **↑↓** display (marks), **←→** speed, **R** result (quick result; it still stops at half time,
-  injuries, extra time and the shoot-out), **Space** commentary (enlarges it), **F9** sound, **Esc** / **Enter**
+  injuries, extra time and the shoot-out), **Space** pauses and enlarges commentary; Space/Enter resumes [designed: owner #597], **F9** sound, **Esc** / **Enter**
   bench. A replay shows *REPLAY* where *R result* is.
 - **Replaces**: `match-live`, `match-commentary`, `injury-event`, `t156-045-kick-off`,
   `t156-058-taker-timed-out`, `t156-066-injury-and-booking`, `t156-178-replay-playing`, `t156-247-goal-replay`,
