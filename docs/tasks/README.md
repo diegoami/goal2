@@ -359,3 +359,6 @@ operational status.
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
+
+- [T188a](T188a.md): authoritative edits while the original remains stopped (#599).
+- [T188b](T188b.md): apply stopped substitutions immediately in the squad (#599).
