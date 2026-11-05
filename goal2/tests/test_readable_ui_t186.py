@@ -92,4 +92,28 @@ class Readable(unittest.TestCase):
             self.assertLessEqual(self.pitch.commentary.heightForWidth(self.pitch.commentary.width()),
                                  self.pitch.commentary.height())
 
+    def test_reading_pause_banner_fits_with_long_recent_commentary_and_restores_the_header(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        from goal2.desktop import fixed_page
+        self.window.pop()
+        text='A player with a long surname scored following an assist from another named player.'
+        for minute in (12,13):
+            event=dict(kind='commentary',minute=minute,score=[0,0],data={'text':text})
+            self.controller._send('event',event)
+            self.controller.events.append(event)
+        self.controller.released=len(self.controller.events)
+        self.pitch.refresh()
+        QTest.keyClick(self.window,Qt.Key.Key_Space)
+        for width,height in ((1440,900),(2110,1213)):
+            self.window.resize(width,height)
+            for _ in range(3):self.app.processEvents();self.pitch.refresh()
+            self.assertTrue(self.pitch.wait_head.isVisible())
+            self.assertIn('PAUSED',self.pitch.wait_head.text())
+            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+        QTest.keyClick(self.window,Qt.Key.Key_Space)
+        self.app.processEvents()
+        self.assertTrue(self.pitch.home.isVisible())
+        self.assertTrue(self.pitch.wait_box.isHidden())
+
 if __name__=='__main__': unittest.main()

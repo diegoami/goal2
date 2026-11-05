@@ -466,6 +466,7 @@ class PitchScreen(Screen):
             widget.setWordWrap(True)
             recent.addWidget(widget)
         row.addLayout(recent)
+        self.score_head = head
         self.body_layout.addWidget(head)
         middle = QHBoxLayout()
         middle.setSpacing(18)
@@ -655,10 +656,12 @@ class PitchScreen(Screen):
         self.pitch.enlarged = paused
         self.pitch.commentary = self.lines
         if paused:
+            self.score_head.hide()
             self._commentary_enter_before = self.enter_action
             self.set_enter('Resume match', self.toggle_commentary)
             self.wait_for('PAUSED', 'Reading commentary. Space or Enter resumes the same match.')
         else:
+            self.score_head.show()
             self.set_enter(*self._commentary_enter_before)
             self.wait_for(None)
             # No catch-up burst after time spent reading; the next sample gets a normal interval.
