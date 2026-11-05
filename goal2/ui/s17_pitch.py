@@ -9,8 +9,8 @@ player watched is the match the engine published. It drives nothing: `MatchContr
   score, the minute, the match's kind and the last two events above the pitch (goal2/ui/pitch.py), and the commentary
   beside it with the speed, the display and your side's colour.
 - **Keys** [confirmed: E031 C39-C40, C08; T156-R1 steps 45, 267; the capture's bottom line]: **←→** the speed, the six
-  `SPEEDS` of goal2/desktop/match_view.py; **↑↓** the display (the original's five marks); **Space** enlarges the
-  commentary; **R** quick result; **F9** sound; **Esc** / **Enter** the bench.
+  `SPEEDS` of goal2/desktop/match_view.py; **↑↓** the display (the original's five marks); **Space** pauses and enlarges the
+  commentary (Space/Enter resumes, owner #597); **R** quick result; **F9** sound; **Esc** / **Enter** the bench.
 - **Pacing** [designed: T102, kept by the bridge]: a sample is acknowledged once the pitch has painted it, so the
   engine never runs more than `LEAD` samples ahead of what was drawn. **R** stops the pacing: every sample is
   acknowledged as it arrives and the screen says *HANG ON A TICK* where *R result* was, as the original does
@@ -114,6 +114,7 @@ class MatchController:
         self.drawn = -1           # the last sample the pitch painted
         self.acked = -1           # the last sample acknowledged to the bridge
         self.quick = bool(quick)
+        self.commentary_paused = False   # [designed: owner #597] reading holds polling and frame acknowledgements
         self.answered = []        # the stops answered, by context
         self.choices = []         # (context, the answer sent) of every stop answered, in order
         self.requests = 0         # the bench requests sent (Esc, Enter)
@@ -159,7 +160,7 @@ class MatchController:
     # The poll.
     def tick(self, now):
         """One bounded step; True when the pitch has a new sample to paint."""
-        if not self.running:
+        if not self.running or self.commentary_paused:
             return False
         try:
             return self._tick(now)
@@ -408,7 +409,7 @@ class PitchScreen(Screen):
         self.bind((Qt.Key.Key_Right,), "", lambda: self.step_speed(1), captions=("→",), shown=False)
         self.bind((), "speed", lambda: self.step_speed(1), captions=("←", "→"))
         self.result_binding = self.bind((Qt.Key.Key_R,), "result", self.quick_result)
-        self.bind((Qt.Key.Key_Space,), "commentary", self.toggle_commentary)
+        self.commentary_binding = self.bind((Qt.Key.Key_Space,), "commentary", self.toggle_commentary)
         self.bind((Qt.Key.Key_F9,), "sound", self.sound)
         self.set_enter("Bench", self.request_bench)
         from goal2.ui.s18_stop import StopBox
@@ -517,6 +518,8 @@ class PitchScreen(Screen):
         self.replay_tick(time.monotonic())
 
     def replay_tick(self, now):
+        if getattr(self.controller, 'commentary_paused', False):
+            return
         replay = self.replay
         if replay.advance(now, self.controller.display.pitch_rate):
             self.replay_display.frame = replay.frame
@@ -532,6 +535,8 @@ class PitchScreen(Screen):
             done()
 
     def tick(self):
+        if getattr(self.controller, 'commentary_paused', False):
+            return
         if self.replay is not None:
             self.replay_tick(time.monotonic())
             return
@@ -640,10 +645,34 @@ class PitchScreen(Screen):
         return self.controller.display.speed_name()
 
     def toggle_commentary(self):
-        """Space: recent commentary in a larger reading panel, and back. [confirmed: E031 C08, C39c]"""
-        self.pitch.enlarged = not self.pitch.enlarged
+        """Space: pause for the whole commentary; Space/Enter resumes [designed: owner #597]."""
+        if self.stop_box.open:
+            # Mouse key-bar actions must obey the same question/notice gate as keyboard Space.
+            self.answer_stop_box(Qt.Key.Key_Space)
+            return
+        paused = not getattr(self.controller, 'commentary_paused', False)
+        self.controller.commentary_paused = paused
+        self.pitch.enlarged = paused
         self.pitch.commentary = self.lines
+        if paused:
+            self._commentary_enter_before = self.enter_action
+            self.set_enter('Resume match', self.toggle_commentary)
+            self.wait_for('PAUSED', 'Reading commentary. Space or Enter resumes the same match.')
+        else:
+            self.set_enter(*self._commentary_enter_before)
+            self.wait_for(None)
+            # No catch-up burst after time spent reading; the next sample gets a normal interval.
+            now = time.monotonic()
+            self.controller.display.next_frame = now + 1 / self.controller.display.pitch_rate
+            if self.replay is not None:
+                self.replay.next_frame = now + 1 / self.controller.display.pitch_rate
+        self.commentary_binding.text = 'resume' if paused else 'commentary'
+        for item in self.key_bar.findChildren(Clickable, 'keyItem'):
+            if getattr(item, 'binding', None) is self.commentary_binding:
+                for widget in item.findChildren(QLabel, 'keyLabel'):
+                    widget.setText(self.commentary_binding.text)
         self.pitch.update()
+        self.refresh()
 
     def _result_text(self, text):
         self.result_binding.text = text
@@ -656,7 +685,8 @@ class PitchScreen(Screen):
     def quick_result(self):
         # [designed: T181] Mouse key-bar callbacks do not pass through handle_key. They must hold the same live
         # controls during replay and the goal questions; a click cannot clear a goal or bypass its pacing.
-        if self.replay is not None or self.stop_box.kind in ('replay', 'save-goal'):
+        if (getattr(self.controller, 'commentary_paused', False) or self.replay is not None
+                or self.stop_box.kind in ('replay', 'save-goal')):
             return
         self.controller.quick_result()
         if self.controller.quick:
@@ -668,7 +698,8 @@ class PitchScreen(Screen):
         self.refresh()
 
     def request_bench(self):
-        if self.replay is not None or self.stop_box.kind in ('replay', 'save-goal'):
+        if (getattr(self.controller, 'commentary_paused', False) or self.replay is not None
+                or self.stop_box.kind in ('replay', 'save-goal')):
             return
         self.controller.request_bench()
         self.refresh()
