@@ -151,7 +151,8 @@ class SquadScreen(Screen):
         top.addWidget(self.note)
         column.addLayout(top)
         # [designed: owner, §6 item 18; T177] the pool's search and position filter, tagged as a goal2 addition
-        extras = QHBoxLayout()
+        from goal2.ui.key_flow import KeyFlow
+        extras = KeyFlow()
         extras.setSpacing(10)
         extras.addWidget(label(ADDITION, "tagNew"))
         self.search_button = FilterButton("/", "", self.open_search)
@@ -159,7 +160,6 @@ class SquadScreen(Screen):
         extras.addWidget(self.search_button)
         self.position_button = FilterButton("P", "", lambda: self.step_position(1))
         extras.addWidget(self.position_button)
-        extras.addStretch(1)
         column.addLayout(extras)
         self.card = PlayerCard()
         column.addWidget(self.card, 1)

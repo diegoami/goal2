@@ -64,8 +64,7 @@ from goal2.ui.squad_card import Strip, box, colour, full_name, squad_rows
 from goal2.ui.start_look import LineField, key_value
 
 LEFT_WIDTH = 420   # [designed: s06-hub.html, the left column's `width:420px`]
-HINT = ("Use ↑↓ to find an option, Enter to select it. Your own matches are watched: play next game leads to the "
-        "match menu, the captain and the pitch.")   # [designed: s06-hub.html]
+HINT = ("↑↓ chooses; Enter opens. Play next game opens the match menu, captain and watched pitch.")   # [designed: s06-hub.html]
 
 
 
@@ -177,7 +176,8 @@ class DeskScreen(Screen):
         addition.addStretch(1)
         middle.addLayout(addition)
         # [designed: owner, §6 item 18; T177] today's extras, then the re-import (decision 14), on one row
-        extras = QHBoxLayout()
+        from goal2.ui.key_flow import KeyFlow
+        extras = KeyFlow()
         extras.setSpacing(10)
         extras.addWidget(self.add_option("manager's name", self.rename, enter="New manager's name"))
         extras.addWidget(self.add_option("new career", self.new_career, enter="New career"))
@@ -276,7 +276,7 @@ class DeskScreen(Screen):
         self.name_field.set_active(True)
         self.name_field.show()
         self.manager["name"].hide()
-        self.say("Type the manager's new name (14 characters at most): Enter gives it, Esc keeps the old one.")
+        self.say("New manager: 14 characters maximum. Enter confirms; Esc cancels.")
         self._refresh_hint()
 
     def give_name(self):

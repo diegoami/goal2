@@ -261,7 +261,7 @@ class BenchScreen(Screen):
         main = QHBoxLayout()
         main.setSpacing(18)
         column = QVBoxLayout()
-        column.setSpacing(14)
+        column.setSpacing(8)
         head, inner = box(margins=(16, 12, 16, 12))
         row = QHBoxLayout()
         row.setSpacing(22)

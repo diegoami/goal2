@@ -41,12 +41,41 @@ class Readable(unittest.TestCase):
         self.assertIn('off',self.bench.note.text())
         self.assertIn('on',self.bench.note.text())
 
-    def test_roster_and_key_controls_fit_base_page(self):
-        self.window.resize(1440,900);self.app.processEvents()
-        bounds=self.bench.rect()
-        for widget in [self.bench.strip.rows[-1],self.bench.enter_hint,self.bench.note]:
-            box=widget.rect().translated(widget.mapTo(self.bench,widget.rect().topLeft()))
-            self.assertTrue(bounds.contains(box),(widget.objectName(),box,bounds))
-            self.assertGreaterEqual(widget.height(),widget.minimumSizeHint().height())
+    def test_roster_and_key_controls_fit_base_and_large_pages(self):
+        from goal2.desktop import fixed_page
+        for width,height in ((1440,900),(2110,1213),(2880,1800)):
+            self.window.resize(width,height)
+            for _ in range(3): self.app.processEvents()
+            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+
+    def test_refusal_is_honest_and_names_on_then_off_once(self):
+        from goal2.ui.s19_bench import BenchScreen
+        from goal2.ui.squad_card import full_name
+        report=dict(asked=[[self.off,self.on]],made=[],requested=[],
+                    refused=[[self.off,self.on,'not made by the original']],substitutions_left=5)
+        screen=self.window.push(BenchScreen(self.window,self.model,self.answer,
+            names=('Italy','Poland'),report=report))
+        self.app.processEvents()
+        text=screen.note.text()
+        self.assertLess(text.index(full_name(self.model,self.on)),text.index(full_name(self.model,self.off)))
+        self.assertIn('not confirmed',text)
+        self.assertNotIn('not made by the original',text)
+        self.assertTrue(screen.wait_box.isHidden())
+        self.assertIn('Back to the match',screen.enter_hint_text())
+
+    def test_keyboard_pair_feedback_does_not_claim_acceptance_or_decrement_budget(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        self.bench.row=self.answer.words().index(self.off)
+        self.bench.refresh()
+        QTest.keyClick(self.window,Qt.Key.Key_Return)
+        self.bench.row=self.answer.words().index(self.on)
+        self.bench.refresh()
+        QTest.keyClick(self.window,Qt.Key.Key_Return)
+        self.app.processEvents()
+        self.assertEqual(self.answer.chosen,[[self.off,self.on]])
+        self.assertIn('Chosen:',self.bench.note.text())
+        self.assertNotIn('Made:',self.bench.note.text())
+        self.assertEqual(self.answer.left,5)
 
 if __name__=='__main__': unittest.main()

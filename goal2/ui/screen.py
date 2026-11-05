@@ -89,7 +89,7 @@ class Option(Clickable):
         self.screen, self.handler, self.key = screen, handler, key
         self.enter = enter if enter is not None else text
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(16, 12, 16, 12)
+        layout.setContentsMargins(16, 9, 16, 9)
         layout.setSpacing(12)
         self.text_label = label(text, "optionText")
         layout.addWidget(self.text_label)

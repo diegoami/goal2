@@ -73,6 +73,7 @@ class MenuScreen(Screen):
         row.addWidget(second)
         self.situation = label(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}",
                                "sub")
+        self.situation.setWordWrap(True)
         row.addWidget(self.situation)
         row.addStretch(1)
         self.replay_label = label("", "sub")

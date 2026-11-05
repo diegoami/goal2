@@ -36,7 +36,7 @@ from goal2.ui.screen import Screen, label, para, set_para
 from goal2.ui.start_look import LineField, Row, box, coloured_codes, key_value, refresh
 
 GROUP = 16           # [confirmed: T156-R1 step 3; s04-country.html] the list shows 16 countries at a time
-LIST_WIDTH = 300     # [designed: s04-country.html, the list's `width:300px`]
+LIST_WIDTH = 390     # [designed: s04-country.html, the list's `width:300px`]
 PREVIEW_MS = 120     # [designed: T86, Launch's preview delay] the card follows the highlight after a pause
 NAME_NOTE = "Enter on a country opens this line; Enter again starts the career."
 # [confirmed: F008 DS:699A] a role code's line, by the code itself (goal2/desktop/country_card.py's table)
@@ -124,18 +124,23 @@ class CountryCard(QWidget):
             facts.addWidget(part, 0, Qt.AlignmentFlag.AlignTop)
         facts.addStretch(1)
         inner.addLayout(facts)
+        self.role_codes = label("", "value")
+        self.role_codes.setTextFormat(Qt.TextFormat.RichText)
+        inner.addWidget(self.role_codes)
         layout.addWidget(header)
         panels = QHBoxLayout()
         panels.setSpacing(18)
         skills, inner = box("Skills")
-        self.skills = label(NOT_DECODED, "undecoded")
+        self.skills = para(NOT_DECODED, "undecoded")
         inner.addWidget(self.skills)
         inner.addSpacing(8)
         inner.addWidget(label("PERFORMANCE", "boxHeading"))
-        self.performance = label(NOT_DECODED, "undecoded")
+        self.performance = para(NOT_DECODED, "undecoded")
         inner.addWidget(self.performance)
         inner.addStretch(1)
         tactics, inner = box("Team tactics")
+        inner.setSpacing(4)
+        inner.setContentsMargins(16, 10, 16, 10)
         tactic_rows, self.tactics = key_value((("defence system", "defence system"), ("protection", "protection"),
                                                ("offside", "offside")))
         inner.addWidget(tactic_rows)
@@ -149,11 +154,11 @@ class CountryCard(QWidget):
         traits, inner = box("Characteristics")
         self.averages = label("", "sub")
         inner.addWidget(self.averages)
-        self.characteristics = label(NOT_DECODED, "undecoded")
+        self.characteristics = para(NOT_DECODED, "undecoded")
         inner.addWidget(self.characteristics)
         inner.addStretch(1)
         for part in (skills, tactics, traits):
-            panels.addWidget(part, 1)
+            panels.addWidget(part, 2 if part is tactics else 1)
         layout.addLayout(panels, 1)
 
     def set_card(self, c, average, first=None):
@@ -169,7 +174,8 @@ class CountryCard(QWidget):
         self.ranks["continental"].setText(str(c["continental"]))
         self.ranks["top"].setText(NOT_DECODED)
         self.shape["formation"].setTextFormat(Qt.TextFormat.RichText)
-        self.shape["formation"].setText(f"{c['formation']}  " + coloured_codes(
+        self.shape["formation"].setText(c['formation'])
+        self.role_codes.setText(coloured_codes(
             (code, CODE_LINE.get(code, "unknown")) for code in c["eleven"]))
         self.shape["skill"].setText(c.get("skill", NOT_DECODED) or "")
         self.shape["strips"].setText(NOT_DECODED)
@@ -177,7 +183,8 @@ class CountryCard(QWidget):
             for key, value in pairs:
                 values[key].setText(value)
         for widget in (*self.team.values(), *self.ranks.values(), *self.shape.values()):
-            widget.setObjectName("undecoded" if widget.text() == NOT_DECODED else "value")
+            if widget.text() == NOT_DECODED: widget.setText("unknown")
+            widget.setObjectName("undecoded" if widget.text() in (NOT_DECODED, "unknown") else "value")
         refresh(self)
 
 
