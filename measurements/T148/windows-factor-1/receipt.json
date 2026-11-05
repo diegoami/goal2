@@ -1,0 +1,111 @@
+{
+  "head": "bfd58df8f8634e80a47b09d2c3f38af9adbc4d23",
+  "source_sha256": {
+    "goal2/core/views.py": "936251fec0492903bebe1f400f68c9c61014bf837c855aeaba3d46c7ebd1ed97",
+    "goal2/desktop/country_card.py": "37293973847da69696ce8650c8f34136c5b1a97dae88efa4910fcd1b2f34e836",
+    "goal2/desktop/core_model.py": "82601283ef8f1720e41892ede2b3fd8933e8889d9725bf46991f4d6b2d5873fd",
+    "goal2/desktop/launch.py": "dcdabcba9436054b3dd6764ab69edf51376964be823ac724e497ddc70cb66317",
+    "goal2/desktop/squad_page.py": "e63dbac2efd39284da3af27393c0a13bcc11bda0452f1950d6b467c1b5e4753b",
+    "goal2/tests/test_core_team_panels_t144.py": "2707cfa519f113c5765719ca9b339cb4e0a6346158b92d9cd09d3ed4307b84fa",
+    "measurements/T144/native_probe.py": "d34b3047ebdf44e9e03bcdaec657b3fbeeb50970065ad9cb086ebf48f1b51336",
+    "goal2\\engine\\team_card\\country.py": "d2ab97927ecd7ae269f9351f7244dde9eee56af41ffa774a34f520428c4c7b3a",
+    "goal2\\engine\\team_card\\manager.py": "1d4340eb8ab57c65c7d4186390842d769eaaf954ed7f205ca9ad83a3f1bba5bf",
+    "goal2\\engine\\team_card\\team_bars.py": "4631ccf2c135a151800d0cddd6a84819aaf7ef0ce7b1c646fc746a2bb94582cf",
+    "goal2\\engine\\team_card\\team_characteristics.py": "29ce61b550537fa0e98c31144124b7e1cd07a1bd2767fc8ff3d9c5b1a465efe0",
+    "goal2\\engine\\team_card\\team_performance.py": "cd65009941455e7a0c1bd98a7d920ad3e57782f47e4940ccfe949c1a3e17200a",
+    "goal2\\engine\\team_card\\team_skills.py": "1f530c1f7a9bad85af350343f222f8b702f508244ab7c7abd776da0dac858c6a",
+    "measurements/T148/run_native.py": "373612bf0f46087eebe2b65adbd40a62cdc542703d428055cf36381bdafe5372"
+  },
+  "source_unchanged": true,
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "qt_backend": "windows",
+  "available_geometry": [
+    0,
+    0,
+    1024,
+    720
+  ],
+  "cases": [
+    {
+      "case": "team-info",
+      "native_active": true,
+      "device_pixel_ratio": 1.0,
+      "page_scale": 0.6255555555555555,
+      "window": [
+        901,
+        563
+      ],
+      "bar_cells": [
+        20,
+        23,
+        23,
+        8,
+        null,
+        null,
+        null,
+        null
+      ],
+      "bottom": 473.2326820603908,
+      "right": 249.63687388987572,
+      "screenshot": "team-info.png",
+      "screenshot_sha256": "0593d537c6c2a2cc466486ad370a4d245b6d2c822e08cadeb3417bd310ea213e"
+    },
+    {
+      "case": "selection",
+      "native_active": true,
+      "device_pixel_ratio": 1.0,
+      "page_scale": 0.9445945945945946,
+      "window": [
+        699,
+        605
+      ],
+      "bar_cells": [
+        21,
+        25,
+        25,
+        9,
+        null,
+        null,
+        null,
+        null
+      ],
+      "bottom": 596.0,
+      "right": 715.0,
+      "screenshot": "selection.png",
+      "screenshot_sha256": "b72d85e6458261194a2a3524fe8ddf4c46c428faae82fd9428804f7b38553c08"
+    },
+    {
+      "case": "friendly",
+      "native_active": true,
+      "device_pixel_ratio": 1.0,
+      "page_scale": 0.9445945945945946,
+      "window": [
+        699,
+        605
+      ],
+      "bar_cells": [
+        22,
+        19,
+        20,
+        7,
+        9,
+        12,
+        14,
+        4
+      ],
+      "bottom": 596.0,
+      "right": 716.0,
+      "screenshot": "friendly.png",
+      "screenshot_sha256": "243cacdf41b09af6843c18c9da1cf388dc4d7437c726aee842a8017824dddf2b"
+    }
+  ],
+  "core_save_unchanged": true,
+  "fixture_sha256": {
+    "selection": "4e5c2d51fcfb9140c37ef64046b2a1e62644d76b12242ef01321013a7a0dd55e",
+    "friendly": "e0050208da61a394d690791da72c1201c42214f6ce2f15abd8b194750b191e34",
+    "year_one": "291d0eb3b0dcec348c0e166703f8033f795e2b4f1bc0dd4cd67f0888b8622b99"
+  },
+  "passed": true,
+  "requested_qt_scale_factor": 1,
+  "native_ci_verified": true
+}
