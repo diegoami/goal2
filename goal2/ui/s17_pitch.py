@@ -127,6 +127,9 @@ class MatchController:
         self.stop = None          # the decision the match waits on, once every sample before it is shown
         self.notice = None        # the other side's substitution shown on S18, the display held until a key
         self.refusal = None       # an answer's report that refused a pair, shown on S19 until a key
+        self.edit_pending = False
+        self.edit_report = None
+        self._editing = False
         self.reports = []         # the engine's reports of the bench answers, in order
         self._expected = None     # the report the last bench answer waits for (its index in the bridge's reports)
         self._scanned = 0         # the shown events already looked at for a notice
@@ -252,7 +255,8 @@ class MatchController:
             said.append("Requested: made at the next stoppage.")
         if report["refused"]:
             said.append("Not made: " + ", ".join(f"{name(b)} for {name(a)}" for a, b, _ in report["refused"]) + ".")
-            self.refusal = report
+            if not self._editing: self.refusal = report
+        if self._editing: self.edit_report = report
         self.note = " ".join(said)
 
     def dismiss(self):
@@ -310,6 +314,28 @@ class MatchController:
         if stop is None or not self.running:
             return
         self._answer(stop.data.get("context"), value if value is not None else [], stop.data.get("requested"))
+        if self.note == REQUESTED: self.note = ""
+
+    def edit_bench(self, value):
+        """[designed: owner #599] One stopped edit; the returned decision stays held before Play."""
+        if self.edit_pending:
+            return False
+        if self.stop is None or not self.running:
+            raise ValueError("no stopped bench decision is waiting")
+        changes = dict(value) if isinstance(value, dict) else {"substitutions": list(value)}
+        if len(changes.get("substitutions") or []) != 1:
+            raise ValueError("select one substitution pair")
+        changes["edit_only"] = True
+        self._editing = True
+        try:
+            self._answer(self.stop.data.get("context"), changes)
+        except Exception:
+            self._editing = False
+            raise
+        self.stop = None
+        self.edit_pending = True
+        self.edit_report = None
+        return True
 
     # The player's keys.
     def painted(self, sequence):
@@ -535,6 +561,12 @@ class PitchScreen(Screen):
         if controller.tick(time.monotonic()):
             self.pitch.update()
         self.refresh()
+        if controller.edit_pending and controller.stop is not None and controller.stop.data.get("edited"):
+            self.held = controller.stop
+            controller.edit_pending = False
+            controller._editing = False
+            self.day.edited(self, controller.stop, controller.edit_report)
+            return
         if controller.finished and not self.ended:
             self.end()
         elif self.stop_box.open or self.window_.current() is not self or self.day is None:
