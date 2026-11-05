@@ -488,15 +488,14 @@ class PitchScreen(Screen):
         row.addWidget(self.minute)
         self.kind = label(self.controller.display.kind.upper(), "sub")
         row.addWidget(self.kind)
-        row.addStretch(1)
+        from goal2.ui.readable_text import Excerpt
         recent = QVBoxLayout()
         recent.setSpacing(4)
-        self.recent = [label("", "value"), label("", "value")]
+        self.recent = [Excerpt(),Excerpt()]
         for widget in self.recent:
             widget.setAlignment(Qt.AlignmentFlag.AlignRight)
-            widget.setWordWrap(True)
             recent.addWidget(widget)
-        row.addLayout(recent)
+        row.addLayout(recent,1)
         self.score_head = head
         self.body_layout.addWidget(head)
         middle = QHBoxLayout()
@@ -657,7 +656,7 @@ class PitchScreen(Screen):
             _set(text, str(goals))
         texts = [e["data"].get("text", "") for e in shown if e["kind"] == "commentary"][-2:]
         for widget, text in zip(self.recent, [""] * (2 - len(texts)) + texts):
-            _set(widget, text)
+            widget.setText(text)  # Excerpt owns the full text as well as its visible preview.
         from goal2.ui.readable_text import recent_text
         _set(self.commentary,recent_text(self.lines,self.commentary.fontMetrics(),
                                          self.commentary.width(),self.commentary.height(),COMMENTARY_ROWS))
