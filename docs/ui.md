@@ -337,17 +337,18 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
   player injured, or the stoppage after a request; the original's refused eleven is said there), any key to S15
   (phase *stop*), whose *players* opens S19; the other side's substitution (*SUBSTITUTION X on for Y*), any key plays
   on; the penalty shoot-out's notice before S16's order. T181's goal questions use the same box (below).
-- **S19** (`goal2/ui/s19_bench.py`) keeps T102's bench rules (`goal2/desktop/bench_page.py`): the card, the eleven and
-  the bench, the mode (*make substitutions now*, *substitution requested*), the counter (the decision's
-  `substitutions_left`, *no more substitutes* at 0). **↑↓** player, **Enter** takes off or puts on (either order;
-  the hint names which), or requests and cancels in request mode; **R**, **C** positions; **T** S09; **Esc** back to
-  S15 at a break, to the pitch at a pause. The view never judges a pair. One answer per bench decision
-  (`BenchAnswer.value`: the pairs, with the positions, marks and own tactics when any changed) goes once through
-  `WatchedJobs.answer(token, pairs, changes)` when S15's *play* is pressed (or S19's Esc at a pause). The engine's
-  report follows: a refused pair shows S19 with its reason until a key; at the stoppage after a pause the request is
-  offered again and Esc says it is still made (#316). Before extra time the route takes no substitution
-  (`PROMPT_CONTEXTS`), so S19 only shows the eleven and says so.
-- **Esc or Enter on S17** requests the bench (`pause`); S19 opens in request mode when the original stops for it.
+- **S19** (`goal2/ui/s19_bench.py`) shows the card, live eleven/bench and the engine's remaining budget.
+  [designed: owner playtest2026-11-05, #599; supersedes T180's queued/deferred UI] At a legal stop, **Enter** on
+  two players in either order sends one edit-only answer. The original's returned decision updates the squad
+  and counter immediately, before Play; repeat input is held until that reply. Refused pairs stay at the usable
+  stopped squad with honest on/off feedback. Esc returns to S15; Play solely continues. [confirmed: original
+  T156-R1 steps124–137] Half-time exchanges already appear in SELECT TEAM before Play.
+- **Esc or Enter on S17** opens the bench at an ordinary in-play pause. Substitution pairs cannot be queued
+  there; supported **R**, **C** positions and **T** personal tactics remain available. The obsolete bench-request
+  note is cleared when returning. Before extra time the route continues to show its read-only bench.
+- Accepted personal settings/marks and known live injury labels survive a squad refresh. An already applied
+  pair is cleared and cannot be resubmitted by reopening the screen or pressing Play. The engine kit's older
+  queue behavior is retained for reference clients; the player's new-window route does not request it.
 - **S09's mark line**: from S19's T, S09 edits the bench's answer, with a fifth line, *mark* (—, nobody, or one of the
   opponent's outfield players, read from the latest pitch sample); the mark is the engine's `marking`. After the
   match the answer is gone and S09 has four lines again, as the original clears the marks.
@@ -355,7 +356,7 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
   (`watched_match.FRIENDLY_SUBSTITUTIONS`, the Core's `owner-substitutions-v1`), a qualifier with five.
 
 `goal2/tests/test_ui_bench_t180.py` plays two match days of a 2028 Austria career: the friendly (an injury stop, the
-half-time bench with five pairs, a mark and a refused re-entry, the other side's notice, compared with the same match
+half-time bench with five immediate edits, a mark and a refused re-entry, the other side's notice, compared with the same match
 through the bridge) and the qualifier (a request during play made at the next stoppage, the counter five then four).
 The pictures are in [design/ui-2026-11/T180-screens](design/ui-2026-11/T180-screens/).
 

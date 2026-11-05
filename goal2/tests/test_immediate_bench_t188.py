@@ -140,4 +140,25 @@ class ImmediateBench(unittest.TestCase):
         self.day.play(SimpleNamespace(phase='half'))
         self.assertEqual(self.sent[-1],([],None))
 
+    def test_new_accepted_tactics_override_an_earlier_confirmed_cache(self):
+        self.day.bench.live_own[self.off]=11
+        self.day.bench.live_marking[self.off]=123
+        self.controller.events.append(dict(kind='player_tactics',minute=45,score=[0,0],
+            data=dict(player=self.off,own_set=22,marking=0)))
+        self.day.edited(self.pitch,self.decision,None)
+        self.assertEqual(self.day.bench.record(self.off)[15],22)
+        self.assertEqual(self.day.bench.mark_text(self.off),'nobody')
+
+    def test_match_menu_uses_the_confirmed_eleven_and_live_injury_label(self):
+        from goal2.ui.s15_match_menu import MenuScreen
+        menu=MenuScreen(self.window,self.day,'half')
+        _,rows=menu.lineups[self.model.state.managed_country]
+        self.assertTrue(any('INJURED' in name for _,name in rows))
+        self.pair();self.deliver()
+        menu=MenuScreen(self.window,self.day,'half')
+        _,rows=menu.lineups[self.model.state.managed_country]
+        from goal2.ui.squad_card import full_name
+        self.assertTrue(any(full_name(self.model,self.on)==name for _,name in rows))
+        self.assertFalse(any(full_name(self.model,self.off) in name for _,name in rows))
+
 if __name__=='__main__':unittest.main()

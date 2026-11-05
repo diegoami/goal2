@@ -129,11 +129,12 @@ class MenuScreen(Screen):
         state, model = self.model.state, self.model
         names = model.goaldat.country_names
         info = country_card(state, country, model.goaldat)
+        bench = self.day.bench if country == state.managed_country and self.phase != "before" else None
         if country == state.managed_country:
-            eleven = list(state.starting_eleven or state.managed_squad[:11])
+            eleven = list(bench.eleven if bench is not None else state.starting_eleven or state.managed_squad[:11])
             from goal2.game import roles
             codes, lines = roles.tables(state)
-            positions = [state.players[w][6] for w in eleven]
+            positions = [bench.position(w) if bench is not None else state.players[w][6] for w in eleven]
             formation = "-".join(str(sum(1 for p in positions if p < 14 and lines[p] == line)) for line in (1, 2, 3))
         else:
             eleven, formation = info["players"][:11], info["formation"]
@@ -141,10 +142,13 @@ class MenuScreen(Screen):
         frame.setFixedWidth(300)
         rows = []
         for word in eleven:
-            c = card(state, word, model.goaldat)
+            c = bench.card(word) if bench is not None else card(state, word, model.goaldat)
+            injured = bench is not None and word in bench.injured
             line = Row(-1, (22, 0))
+            line.cells[1].setWordWrap(True)
             from goal2.ui.squad_card import LINE_COLOUR
-            line.set((c["role"], c["full_name"]), (LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL), theme.TEXT_BRIGHT))
+            line.set((c["role"], c["full_name"] + (" · INJURED" if injured else "")),
+                     (LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL), theme.BAD if injured else theme.TEXT_BRIGHT))
             line.setCursor(Qt.CursorShape.ArrowCursor)
             column.addWidget(line)
             rows.append(tuple(line.texts()))

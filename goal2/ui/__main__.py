@@ -416,10 +416,14 @@ def bench_shots(app, window, target, shot, limit=600):
         return [w for w in words if answer.position(w) != 0]
 
     def select(screen, word):
+        if not until(lambda: not getattr(screen,"pending",False)):
+            raise RuntimeError("the previous stopped edit did not finish")
         words = screen.answer.words()
         while words[screen.row] != word:
             key(Qt.Key.Key_Down if words.index(word) > screen.row else Qt.Key.Key_Up)
         key(Qt.Key.Key_Return)
+        if not until(lambda: not getattr(screen,"pending",False)):
+            raise RuntimeError("the stopped substitution was not confirmed")
 
     def play_on(menu):
         while menu.highlighted() is not menu.play:
@@ -447,7 +451,7 @@ def bench_shots(app, window, target, shot, limit=600):
             return False
         if kind == "BenchScreen":
             answer = screen.answer
-            if screen.mode == "refused":
+            if screen.mode == "refused" or (getattr(screen,"feedback_report",None) or {}).get("refused"):
                 shot("s19-bench-refused.png")
                 return True
             if answer.context == "substitution" and state["off"] is None:

@@ -1,28 +1,10 @@
-"""[designed: owner, 2026-11-03, #526; T180, #574] The match stops and the bench in the new window: S18, S19 and
-S09's mark line.
+"""[designed: owner #599; T188b supersedes T180's queue/deferred UI]
 
-The claim it protects: every substitution the player makes on S19 is the pair the engine receives, and every refusal
-the player sees is the engine's. Visited offscreen on a 2028 Austria career (its first fixture the friendly Austria v
-Bulgaria, whose Austrian players are injured at 3′ and later; its second the qualifier Austria v Eire), in one window
-session:
-
-- **The substitution opportunity**: the injury stops the match on S18 (*SUBSTITUTION OPPORTUNITY*), a key opens S15,
-  *players* opens S19 in *make substitutions now* mode, and the injured player is taken off (starter first).
-- **A half-time substitution**: S20's Esc opens S19; the first pair is chosen bench player first, the rest starter
-  first, five in all, so the friendly's sixth substitution is made (BM-7's budget: the counter reads 255, then 254,
-  never the original's five). The published career equals the same match through the bridge with the same answers
-  (`match_day_policy.play_through_bridge`), and the injured player who came off stays off.
-- **A refusal**: at half time the player taken off at the stop is put on again; the engine refuses it, S19 shows its
-  reason and waits for a key, and nothing changes: he does not come on.
-- **The mark line**: T on S19 opens S09 with a fifth line, *mark*, offering the opponent's outfield players; the mark
-  chosen reaches the engine (its `player_tactics` event names him); after the match S09 shows no mark line.
-- **The other side's substitution** shows its notice on S18; a key plays on.
-- **A request during play** (the qualifier): Esc on S17, S19 in request mode at the pause (five substitutions left);
-  a pair requested; at the next stoppage S18, S15, S19 offer it again (#316's line), *play* makes it, as the engine's
-  report says, and the counter reads four at half time.
-
-The careers read GOAL.DAT and the E010 half-time template from the git-ignored `.cache/` and skip without them; the
-engine runs under PyPy 3.11 and the test skips without it. Nothing of the original is in this file (CLAUDE.md rule 14).
+Real friendly/qualifier match days cover an injury swap and five half-time swaps confirmed before Play,
+exact once reports/counters, a refused re-entry with usable continuation, personal tactics/marks and
+original bridge equality. An ordinary pause cannot create a substitution request; a qualifier's legal
+half-time edit still decrements five to four. Every unrelated outcome/event/publication oracle is retained.
+Private original fixtures remain in ignored cache; the actual engine is the PyPy worker.
 """
 import copy
 import os
@@ -115,9 +97,11 @@ def go_to(window, screen, word):
 
 
 def enter_on(window, screen, word):
+    pump(lambda: not getattr(screen, "pending", False), WAIT, "previous stopped edit did not finish")
     go_to(window, screen, word)
     out = screen.enter_hint_text()
     key(window, Qt.Key.Key_Return)
+    pump(lambda: not getattr(screen, "pending", False), WAIT, "stopped edit was not confirmed")
     return out
 
 
@@ -253,7 +237,8 @@ class FriendlyWalk(Walk):
             on = next(w for w in answer.bench if (answer.position(w) == 0) == keeper)
             hints = [enter_on(window, screen, injured[0]), enter_on(window, screen, on)]
             self.out["first_stop"] = {"pair": [injured[0], on], "hints": hints, "record": record,
-                                      "chosen": [list(p) for p in answer.chosen]}
+                                      "chosen": [list(p) for p in screen.answer.chosen],
+                                      "after": self.bench_record(screen)}
             key(window, Qt.Key.Key_Escape)          # S15, whose play sends it
             return
         if answer.context == "half_time" and "half" not in self.out:
@@ -269,11 +254,13 @@ class FriendlyWalk(Walk):
             illegal = [starters[5], off_at_stop]
             enter_on(window, screen, illegal[0])
             enter_on(window, screen, off_at_stop)
+            self.out["refused_screen"] = self.bench_record(screen)
+            self.out["refused_screen"]["can_continue"] = (not screen.pending and self.out["controller"].stop is not None)
             marker = starters[6]
             go_to(window, screen, marker)
             key(window, Qt.Key.Key_T)               # S09 with the mark line
             self.out["half"] = {"pairs": pairs, "illegal": illegal, "hints": hints, "marker": marker,
-                                "record": record, "chosen": [list(p) for p in answer.chosen],
+                                "record": record, "chosen": [list(p) for p in screen.answer.chosen],
                                 "opponents": list(answer.opponents)}
             return
         key(window, Qt.Key.Key_Escape)
@@ -334,6 +321,12 @@ class QualifierWalk(Walk):
             self.out["requested"]["cancel_hint"] = screen.enter_hint_text()
             key(window, Qt.Key.Key_Escape)          # back to the match: the request is sent
             return
+        if answer.context == "half_time" and "half_pair" not in self.out:
+            off = next(w for w in outfield(answer, answer.eleven) if w not in answer.injured)
+            on = outfield(answer, answer.bench)[0]
+            enter_on(window, screen, off)
+            enter_on(window, screen, on)
+            self.out["half_pair"] = {"pair": [off,on], "before": record, "after": self.bench_record(screen)}
         if screen.mode == "refused":
             key(window, Qt.Key.Key_A, "a")
             return
@@ -407,8 +400,11 @@ class Bench(unittest.TestCase):
         stop = walk.out["first_stop"]
         self.assertEqual(stop["record"]["label"], "MAKE SUBSTITUTIONS NOW")
         self.assertEqual(stop["hints"], ["Take off this player", "Put on this player"])
-        self.assertEqual(stop["chosen"], [stop["pair"]])
-        self.assertEqual(next(c for c in walk.out["choices"] if c[0] == "substitution"), ("substitution", [stop["pair"]]))
+        self.assertEqual(stop["chosen"], [])
+        self.assertIn(stop["pair"][1], stop["after"]["eleven"])
+        self.assertIn(stop["pair"][0], stop["after"]["bench"])
+        self.assertEqual(next(c for c in walk.out["choices"] if c[0] == "substitution"),
+                         ("substitution", {"substitutions": [stop["pair"]], "edit_only": True}))
         self.assertEqual(walk.out["reports"][0]["made"], [stop["pair"]])
 
     # A half-time substitution.
@@ -420,15 +416,20 @@ class Bench(unittest.TestCase):
         half = walk.out["half"]
         self.assertEqual(half["record"]["label"], "MAKE SUBSTITUTIONS NOW")
         self.assertEqual(half["hints"], ["Put on this player", "Take off this player"], "the pair in either order")
-        self.assertEqual(half["chosen"], half["pairs"] + [half["illegal"]])
+        self.assertEqual(half["chosen"], [], "confirmed/refused pairs cannot be resubmitted on Play")
 
-    def test_the_half_time_answer_is_the_pairs_the_engine_receives(self):
+    def test_the_half_time_edits_are_each_sent_once_before_play(self):
         walk = self.friendly
         half = walk.out["half"]
-        context, value = next(c for c in walk.out["choices"] if c[0] == "half_time")
-        self.assertEqual(value["substitutions"], half["pairs"] + [half["illegal"]])
-        decided = [d for d in walk.out["outcome"].result["decisions"] if d["context"] == "half_time"]
-        self.assertEqual([list(p) for p in decided[0]["answer"]["substitutions"]], half["pairs"] + [half["illegal"]])
+        values = [value for context,value in walk.out["choices"] if context == "half_time"]
+        edits = [value for value in values if isinstance(value,dict) and value.get("edit_only")]
+        expected = half["pairs"] + [half["illegal"]]
+        self.assertEqual([value["substitutions"] for value in edits],[[pair] for pair in expected])
+        decided = [d["answer"] for d in walk.out["outcome"].result["decisions"]
+                   if d["context"] == "half_time" and d["answer"].get("edit_only")]
+        self.assertEqual([value["substitutions"] for value in decided],[[pair] for pair in expected])
+        self.assertEqual(len(values),len(expected)+1,"only one ordinary continuation follows the edits")
+        self.assertEqual(values[-1].get("substitutions"),[])
 
     def test_the_friendly_s_career_equals_the_same_match_through_the_bridge(self):
         from goal2.tests.match_day_policy import play_through_bridge
@@ -454,18 +455,19 @@ class Bench(unittest.TestCase):
     def test_a_refused_pair_shows_the_engine_s_reason_and_changes_nothing(self):
         walk = self.friendly
         half = walk.out["half"]
-        report = next(r for r in walk.out["reports"] if r["context"] == "half_time")
-        self.assertEqual(report["made"], half["pairs"])
+        half_reports = [r for r in walk.out["reports"] if r["context"] == "half_time"]
+        self.assertEqual([pair for r in half_reports for pair in r["made"]], half["pairs"])
+        report = next(r for r in half_reports if r["refused"])
         self.assertEqual([r[:2] for r in report["refused"]], [half["illegal"]])
         reason = report["refused"][0][2]
         self.assertTrue(reason)
         shown = walk.out["refused_screen"]
-        self.assertEqual(shown["mode"], "refused")
-        self.assertEqual(shown["label"], "SUBSTITUTION NOT MADE")
+        self.assertEqual(shown["mode"], "now")
+        self.assertEqual(shown["label"], "MAKE SUBSTITUTIONS NOW")
         self.assertIn(reason, shown["line"])
         self.assertEqual(shown["counter"], UNLIMITED, "a friendly's counter reads unlimited (BM-7)")
-        at = walk.order.index("BenchScreen:refused")
-        self.assertTrue(walk.order[at + 1].startswith("PitchScreen"), "a key goes back to the match")
+        self.assertTrue(shown["can_continue"],"a refusal keeps a usable stopped decision")
+        self.assertEqual(walk.order[-1],"DeskScreen","the game can continue after the refusal")
         side = walk.out["controller"].display.managed
         starters_off = [e.data["off"] for e in walk.out["outcome"].events
                         if e.kind == "substitution" and e.data["team"] == side]
@@ -490,37 +492,28 @@ class Bench(unittest.TestCase):
         self.assertEqual(walk.out["fixture"].kind, 2)
         self.assertEqual(walk.out["requested"]["record"]["counter"], "substitutions left 5")
         half = [b for b in walk.benches if b["context"] == "half_time"]
-        self.assertEqual(half[0]["counter"], "substitutions left 4")
+        self.assertEqual(half[0]["counter"], "substitutions left 5")
+        self.assertEqual(walk.out["half_pair"]["after"]["counter"],"substitutions left 4")
 
     # A request during play.
-    def test_a_request_during_play_is_made_at_the_next_stoppage(self):
-        from goal2.ui.s19_bench import ESC_KEEPS_REQUESTED
+    def test_a_pause_cannot_queue_a_pair_and_the_half_time_swap_is_immediate(self):
         walk = self.qualifier
-        requested = walk.out["requested"]
-        self.assertEqual(walk.out["requests_after_esc"], 1, "Esc on S17 sends the request")
-        at = walk.order.index("BenchScreen:request")
-        self.assertTrue(walk.order[at - 1].startswith("PitchScreen"), "S19 opens at the pause, from the pitch")
-        self.assertEqual(requested["record"]["label"], "REQUEST A SUBSTITUTION")
-        self.assertEqual(requested["after"]["label"], "SUBSTITUTION REQUESTED")
-        self.assertEqual(requested["hints"], ["Request substitution", "Request substitution"])
-        self.assertEqual(requested["cancel_hint"], "Cancel substitution request")
-        pair = requested["pair"]
-        choices = walk.out["choices"]
-        pause = choices.index(("pause", [pair]))
-        stop = next(i for i, (c, v) in enumerate(choices) if c == "substitution" and i > pause)
-        self.assertEqual(choices[stop], ("substitution", [pair]))
-        reports = walk.out["reports"]
-        self.assertEqual(reports[0]["context"], "pause")
-        self.assertEqual(reports[0]["requested"], [pair])
-        self.assertEqual(reports[1]["context"], "substitution")
-        self.assertEqual(reports[1]["made"], [pair], "made at that stoppage, as the engine's report says")
-        offered = next(b for b in walk.benches if b["context"] == "substitution")
-        self.assertEqual(offered["chosen"], [pair], "the stoppage offers the request again")
-        self.assertIn(ESC_KEEPS_REQUESTED, offered["line"])
-        side = walk.out["controller"].display.managed
-        made = [[e.data["off"], e.data["on"]] for e in walk.out["outcome"].events
-                if e.kind == "substitution" and e.data["team"] == side]
-        self.assertEqual(made[0], pair)
+        attempted = walk.out["requested"]
+        self.assertEqual(walk.out["requests_after_esc"],1,"one request to open the bench")
+        self.assertEqual(attempted["record"]["label"],"SUBSTITUTIONS ONLY AT STOPPAGES")
+        self.assertEqual(attempted["after"]["label"],"SUBSTITUTIONS ONLY AT STOPPAGES")
+        self.assertEqual(attempted["hints"],["Substitutions only at a stoppage"]*2)
+        self.assertEqual(attempted["after"]["chosen"],[])
+        self.assertIn(("pause",[]),walk.out["choices"])
+        self.assertTrue(all(not r["requested"] for r in walk.out["reports"]))
+        pair=walk.out["half_pair"]["pair"]
+        report=next(r for r in walk.out["reports"] if r["context"]=="half_time" and r["made"])
+        self.assertEqual(report["asked"],[pair]);self.assertEqual(report["made"],[pair])
+        self.assertIn(pair[1],walk.out["half_pair"]["after"]["eleven"])
+        self.assertIn(pair[0],walk.out["half_pair"]["after"]["bench"])
+        side=walk.out["controller"].display.managed
+        actual=[e for e in walk.out["outcome"].events if e.kind=="substitution" and e.data["team"]==side]
+        self.assertEqual([[e.data["off"],e.data["on"]] for e in actual],[pair])
 
     # The mark line.
     def test_s09_from_s19_shows_mark_with_the_opponent_s_players(self):

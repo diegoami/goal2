@@ -1,33 +1,17 @@
-"""S19 Bench: substitutions during a match and at its breaks.
+"""S19: authoritative squad edits while a match is legally stopped.
 
-[designed: owner, 2026-11-03, #526; docs/design/ui-2026-11 S19 and its mockup s19-bench.png; T180, #574]
-[confirmed: T156-R1 steps 74-81, 124-133, 279-301; E031 C41-C41k; E015-r0007 states 76, 82, 176;
-images squad-substitution-take-off.png, -put-on.png, -illegal.png, t156-074-bench-requested.png,
-t156-080-bench-request-cancelled.png, t156-124-halftime-bench.png, t156-132-substitution-made.png]
+[designed: owner playtest2026-11-05, #592/#599; T188b] No substitution queue during play. At half-time or an
+original substitution opportunity, two player selections submit one edit-only answer. Until its reply input is
+held; the original's new decision alone updates the eleven, bench and counter. Play later continues. Refusals
+stay at the usable stopped squad with one correctly directed on/off message. Ordinary in-play pauses permit
+supported tactical edits and explain that substitutions require a legal stoppage.
 
-The claim it keeps: every substitution the player makes here is the pair the engine receives, and every refusal the
-player sees is the engine's. It keeps today's bench's rules (goal2/desktop/bench_page.py `Bench`, T102):
-
-- **The pairs** are made with two Enters, in either order (a starter then a bench player, or the other way round,
-  E031 C41e-C41i), and passed to the engine as they are: the view never judges whether one is legal. Enter on a
-  player of a chosen pair, with nobody marked, drops that pair.
-- **The answer** is sent once, through the bridge (`WatchedJobs.answer`), in the order the engine asked: at a break
-  when S15's *play* is pressed, at a pause when Esc returns to the pitch. It carries the pairs and the bench's other
-  changes (`BenchAnswer.value`): R and C positions, and S09's own tactics and mark (watched_jobs.CHANGES).
-- **The counter** is the decision's `substitutions_left`, the engine's; with none left it reads "no more
-  substitutes" [confirmed: F027 E544; E015-r0013 state 790]. In a friendly it reads "unlimited": BM-7's budget is
-  255 in the engine (watched_match.FRIENDLY_SUBSTITUTIONS), a number the player is not meant to count down
-  [designed: owner BM-7, #73].
-- **The engine's report** follows the answer once the original plays on: a refused pair shows here with the
-  engine's reason (`mode` "refused") and waits for a key; made and requested pairs are noted on the pitch.
-- **#316**: at the stoppage after a pause the requested pairs are offered again, and Esc says that they are still
-  made (the engine's default answer there is what was asked for).
-
-The modes, as the original names them: *make substitutions now* (`mode` "now": half time, a substitution
-opportunity) and *substitution requested* (`mode` "request": the pause Esc or Enter asks for on S17, where Enter
-requests or cancels a substitution, made at the next stoppage). Before extra time (`mode` "view") the route takes no
-substitution (watched_match.PROMPT_CONTEXTS: the menu before extra time is answered with no change): the bench shows
-the eleven and the counter and says so. [derived: goal2/game/watched_match.py `_drive_match`]
+[confirmed: original T156-R1 steps124–137, t156-132-substitution-made.png] The half-time squad changes before Play.
+[derived: accepted original injury/player_tactics events] Known match injuries and accepted personal settings
+survive a refresh; pending UI values never masquerade as an accepted swap or get resubmitted on Play.
+[designed: owner BM-7, #73] A friendly displays unlimited substitutions (the bridge's original byte budget255).
+[confirmed: F027 E544; E015-r0013 state790] A zero budget displays no more substitutes.
+The engine kit's legacy queue API remains available to reference clients; this player screen does not create it.
 """
 from __future__ import annotations
 
@@ -366,8 +350,8 @@ class BenchScreen(Screen):
         if self.message:
             parts.append(self.message)
         if not parts:
-            parts.append("Made when the match plays on." if self.mode == "now"
-                         else "Made at the next stoppage, as the original does.")
+            parts.append("Select both players to make the substitution here, before Play." if self.mode == "now"
+                         else "Substitutions require a legal stoppage.")
         return " ".join(parts)
 
     def enter_hint_text(self):
