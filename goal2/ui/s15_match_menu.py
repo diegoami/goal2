@@ -1,23 +1,25 @@
 """S15 Match menu: before kick-off, at half time, before extra time and at full time.
 
 [designed: owner, 2026-11-03, #526, #523; docs/design/ui-2026-11 S15 and its mockup s15-match-menu.html; T167, #541]
-[confirmed: T156-R1 steps 42, 47-49, 193-198, 264; t156-042-match-menu.png, t156-193-fulltime-menu.png; E031 C36,
-C37]
+[confirmed: T156-R1 steps 42, 47-49, 68-73, 193-198, 264; t156-042-match-menu.png, t156-193-fulltime-menu.png; E031
+C36, C37]
 
 - **Shows** the score, the kind of match, the location (the home side's country, `DesktopModel.home`, #562;
   t156-042 "location: Norway"), the time (before kick-off, HALF TIME, EXTRA TIME, FULL TIME), and both sides'
-  formations and elevens, the home side on the left in light red, as the original's menu.
+  formations and elevens, the home side on the left, each name in its side's kit (#583).
 - **The actions**, *play* highlighted first as in the original (step 42): each side's team tactics and players,
   tournament (S12), match stats (S20), and **play** (before and during) or **exit** (after the final whistle).
   *play* names what follows: "choose your captain, then kick-off" before the match, "second half" at half time,
   "extra time" before it [designed: #523].
 - **Your side** before kick-off: team tactics opens S10 (also **T**), players opens S08 (also **Space**), and what they
-  change is the model's, before the engine is asked. During the match the bridge plays the state it was given, so
-  they open read only, with a note: changing the team at a break is the bench's, T180 [designed: T167]. The other side's
-  are read only (E031 C36: "view only").
+  change is the model's, before the engine is asked. At a break of the match (half time, before extra time, a
+  substitution opportunity: phase "stop", after S18's key, T156-R1 step 68) *players* opens the bench, S19, in *make
+  substitutions now* mode, and *play* sends the bench's answer [designed: T180, #574]. Team tactics during the match,
+  and players after the final whistle, open read only: the bridge plays the state it was given [designed: T167]. The
+  other side's are read only (E031 C36: "view only").
 - **Ins** turns the automatic action replay on or off; the label names the state, as the original's (E031 C37). The
   flag is stored in the data folder (`settings.json`, `automatic_action_replay`) [designed: T167]; the replay itself
-  is T168's.
+  is T181's.
 - **The watch question** [confirmed: F030 at 1bd066ca, `0791:E80D`]: where the original asks *Do you want to watch
   this match?* (`match_day.asks_watch`), the menu asks it before kick-off with **Y**/**N**; it has no timeout. N plays
   a quick result: S17 with R pressed (owner decision 3).
@@ -30,11 +32,14 @@ from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 from goal2.ui import theme
 from goal2.ui.pitch import HOME
 from goal2.ui.screen import Screen, label, para
+from goal2.ui.kits import for_fixture
 from goal2.ui.squad_card import Row, box, colour
 
-TIMES = {"before": "before kick-off", "half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME"}
-NEXT = {"before": "next: choose your captain, then kick-off", "half": "next: second half", "extra": "next: extra time"}
-DURING = ("Changing your team at a break comes with the bench (T180); this shows it read only.")
+TIMES = {"before": "before kick-off", "half": "HALF TIME", "extra": "EXTRA TIME", "full": "FULL TIME",
+         "stop": "SUBSTITUTION OPPORTUNITY"}
+NEXT = {"before": "next: choose your captain, then kick-off", "half": "next: second half", "extra": "next: extra time",
+        "stop": "next: play on"}
+DURING = "During the match your team tactics are shown read only; players opens the bench at a break."
 WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do you want to watch this match ?"]
 
 
@@ -56,12 +61,16 @@ class MenuScreen(Screen):
         row = QHBoxLayout()
         row.setSpacing(24)
         inner.addLayout(row)
+        # [confirmed: t156-045, t156-192; #583] each name in its side's kit, as the original's scoreboard
+        kits = for_fixture(model, fixture)
         first = label(names[self.home_country], "h1")
-        colour(first, theme.HOME_SIDE)
+        colour(first, kits.colour(HOME))
         row.addWidget(first)
         self.score_label = label(f"{score[HOME]}  v  {score[1 - HOME]}", "h1")
         row.addWidget(self.score_label)
-        row.addWidget(label(names[self.away_country], "h1"))
+        second = label(names[self.away_country], "h1")
+        colour(second, kits.colour(1 - HOME))
+        row.addWidget(second)
         self.situation = label(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}",
                                "sub")
         row.addWidget(self.situation)
@@ -187,6 +196,8 @@ class MenuScreen(Screen):
         if country == model.state.managed_country and not self.during():
             from goal2.ui.s08_squad import open_squad
             return open_squad(window, model)
+        if country == model.state.managed_country and self.day.bench is not None:
+            return self.day.open_bench()   # S19 at a break [designed: T180]
         from goal2.ui.s07_team_info import TeamPlayersScreen
         if country == model.state.managed_country:
             self.say(DURING)
@@ -205,3 +216,44 @@ class MenuScreen(Screen):
         """Back from S08 or S10 before kick-off: the elevens again (a swap may have changed yours)."""
         if self.phase == "before":
             self.day.refresh_menu(self)
+
+
+class SavedGoalMenu(Screen):
+    """[designed: T181; confirmed: t156-246-goal-replay-menu] S15 before a saved goal's S17 replay.
+
+    The saved lineup display is frozen at kick-off. Live tactics, players and tournament actions are absent:
+    this recording has no career or engine to change [designed: T181, #575].
+    """
+    title = 'match menu · saved goal'
+
+    def __init__(self, window, model, record):
+        super().__init__(window)
+        self.record = record
+        data = record['data']
+        from goal2.ui.kits import Kits
+        kits = Kits(tuple(data['kits']['shirt']), tuple(data['kits']['keeper']))
+        frame, column = box('SAVED GOAL')
+        countries, score = data['countries'], data['score']
+        column.addWidget(label(f'{countries[HOME]}  {score[HOME]} v {score[1 - HOME]}  {countries[1 - HOME]}', 'h1'))
+        column.addWidget(label(f"{data['kind']} · {data['scorer']} · {data['minute']}′", 'sub'))
+        self.body_layout.addWidget(frame)
+        middle = QHBoxLayout()
+        for team in (HOME, 1 - HOME):
+            saved = data.get('menu', {}).get(str(team), ['', []])
+            panel, inner = box(f'{countries[team]} · {saved[0]}')
+            for role, name in saved[1]:
+                text = label(f'{role}  {name}', 'value')
+                colour(text, kits.colour(team))
+                inner.addWidget(text)
+            middle.addWidget(panel)
+        self.body_layout.addLayout(middle)
+        self.play = self.add_option('▶ play', lambda: self.play_goal(window, model), enter='Play')
+        self.body_layout.addWidget(self.play)
+        self.body_layout.addWidget(self.add_option('exit', window.pop, enter='Exit'))
+        self.body_layout.addWidget(para('Saved goal: play the recording, or Esc back to the list.', 'sub'))
+        self.body_layout.addStretch(1)
+        self.highlight(0)
+
+    def play_goal(self, window, model):
+        from goal2.ui.replays import play_saved
+        return play_saved(window, model, self.record)

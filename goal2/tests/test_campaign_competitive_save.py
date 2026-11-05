@@ -225,4 +225,13 @@ print('PASS ordinary quick campaign with optional runtime unavailable')
             self.assertEqual(owner.state,before)
 
 
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        CompetitiveSaveTests('test_no_world_compact_resolution_survives_later_friendly_and_rejects_damage'),
+        CompetitiveSaveTests('test_quick_setup_is_private_and_preserves_strict_template_refusals'),
+    ])
+
+
+
 if __name__=='__main__':unittest.main()

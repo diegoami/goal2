@@ -38,7 +38,7 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | `match` | `kind` (`watched` or `competitive`), `fixture`, `options` (`reference_seed`, `delay_byte`, `record_draws`), `frames`, `bench`, `prompts` (optional) | Plays one match. With `prompts` (which needs `bench`) the player prompts are asked too (below). |
 | `ack` | `sample` | The window has shown this pitch sample. |
 | `pause` | | The player's Enter in play. |
-| `answer` | `decision`, and `substitutions` ((off, on) pairs), or `taker` (a player word or null), or `shootout_order` (player words) | Answers the bench decision or player prompt of that number. |
+| `answer` | `decision`, and `substitutions` ((off, on) pairs) with optional `changes` (`positions`, `marking`, `own_tactics`, T180), or `taker` (a player word or null), or `shootout_order` (player words) | Answers the bench decision or player prompt of that number. |
 | `cancel` | | Ends the running match. |
 | `quit` | | Ends the process. |
 

@@ -7,9 +7,9 @@ many bytes of UTF-8 JSON (an object, the header), then, when the header has `siz
 payload. Requests carry `op`, replies `kind` and `value`.
 
 The match is the file workers' match, never a second driver [designed: T159, the task's hazard; T161 deleted the
-workers]: preparation by prepare_watched, or prepare_competitive with `substitutions=(5, 5)`, the shared
-`_drive_match`, and the bench's answers, pauses and LEAD pacing through BenchPolicy (the workers', moved here by
-T161), fed from the pipe.
+workers]: preparation by prepare_watched, or prepare_competitive with `substitutions=(5, 5)`; a friendly has
+BM-7's unlimited budget (watched_match.FRIENDLY_SUBSTITUTIONS, T180). The shared `_drive_match` and the bench's
+answers, pauses and LEAD pacing use BenchPolicy (the workers', moved here by T161), fed from the pipe.
 
 Commands arrive on a reader thread and wait in a queue; the match reads them at each paced sample and each decision
 wait and, for `cancel`, also at each event and sample, so a match without the bench can be cancelled too. End of stdin (the window gone) ends the process wherever it waits (#417).
@@ -132,10 +132,14 @@ class Commands:
         elif op == "pause":
             self.pauses += 1
         elif op == "answer" and type(header.get("decision")) is int:
-            from goal2.game.watched_jobs import _choice, _pairs
+            from goal2.game.watched_jobs import _changes, _choice, _pairs
             if "taker" in header or "shootout_order" in header:
                 # [designed: T167, #541] the answer to a player prompt (watched_match.PROMPT_CONTEXTS)
                 self.answers.append((header["decision"], _choice(header)))
+            elif header.get("changes"):
+                # [designed: T180] the bench's pairs with its positions, marks and own tactics, in one answer
+                self.answers.append((header["decision"], dict(_changes(header["changes"]),
+                                                              substitutions=_pairs(header.get("substitutions", [])))))
             else:
                 self.answers.append((header["decision"], _pairs(header.get("substitutions", []))))
         else:
@@ -305,9 +309,10 @@ class Server:
                 image = prepare_competitive(state, original, fixture)
                 extra = {"substitutions": (5, 5)}
             else:
-                from goal2.game.watched_match import prepare_watched
+                from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS, prepare_watched
                 image = prepare_watched(state, original, fixture)
-                extra = {}
+                # [designed: owner BM-7, #73; T180] a watched friendly plays with the rebuild's unlimited budget
+                extra = {"substitutions": FRIENDLY_SUBSTITUTIONS} if fixture.kind == 1 else {}
             commands.poll()
             outcome = _drive_match(state, image, fixture, _observe=observe, _observe_pitch=pitch if frames else None,
                                    policy=policy, prompts=prompts, **extra, **options)

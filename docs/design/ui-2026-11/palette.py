@@ -39,8 +39,6 @@ SAMPLES = [
     ("bar, empty", "t156-014-squad.png", (120, 241, 270, 254), "the marking bar's empty part"),
     ("pitch lines", "t156-045-kick-off.png", (18, 100, 22, 350), "the left touchline"),
     ("pitch surround", "t156-045-kick-off.png", (0, 80, 640, 100), "the band above the pitch"),
-    ("home side", "t156-045-kick-off.png", (362, 222, 380, 240), "a Norway player's letter at kick-off"),
-    ("away side", "t156-045-kick-off.png", (170, 222, 188, 240), "a Holland player's letter at kick-off"),
 ]
 
 

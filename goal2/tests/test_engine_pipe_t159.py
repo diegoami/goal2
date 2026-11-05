@@ -24,6 +24,7 @@ from goal2.engine.original_match import Fixture
 from goal2.game import engine_server
 from goal2.game.engine_process import EngineProcess
 from goal2.game.engine_server import ProtocolError, encode_packet, read_packet
+from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS
 from goal2.tests import pypy_engine, requires
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -252,8 +253,11 @@ class SameMatch(unittest.TestCase):
         cstate, craw, cfixture = campaign(42, 200)         # test_pypy_worker_t152's competitive match
         cls.state, cls.raw = copy.deepcopy(state), raw
         refs = {
-            "frames": reference(state, raw, FIXTURE, observer=Frames(), **OPTIONS),
-            "bench": reference(state, raw, FIXTURE, observer=Frames(), policy=Choices(), **OPTIONS),
+            # [T180] the engine server plays a watched friendly with BM-7's budget: the driver is given the same
+            "frames": reference(state, raw, FIXTURE, observer=Frames(), substitutions=FRIENDLY_SUBSTITUTIONS,
+                                **OPTIONS),
+            "bench": reference(state, raw, FIXTURE, observer=Frames(), policy=Choices(),
+                               substitutions=FRIENDLY_SUBSTITUTIONS, **OPTIONS),
             "competitive": reference(cstate, craw, cfixture, competitive=True, substitutions=(5, 5), **OPTIONS),
         }
         with ThreadPoolExecutor(3) as pool:

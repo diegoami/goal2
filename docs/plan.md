@@ -39,6 +39,20 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
      counts it as a key queued before the wait: the tune makes no draws and exactly one animation call runs. The
      Core oracle is driven the same way, so the full-cycle equivalence (T174) holds; neither skipping the draws
      nor counting real time was chosen.
+   - [designed: owner, 2026-11-04, #509] **The route harness picks a legal eleven.** When the original's team menu
+     refuses the managed side's first team (an ineligible player, `0791:EA09`; goal2-archaeology `match.py:787`), the
+     harness answers the original's own team menu as a player would: it replaces each ineligible player with a
+     legal one and records every choice. So every stage of a season is reached from published states, through
+     the original's own code (upstream T124t). Proving later stages on edited states and capturing new states were
+     not chosen.
+   - [designed: owner, 2026-11-04, #509] **In-season ageing is required before the sealed route.**
+     Add upstream T124f before T123 for the ageing, retirement and replacement subtree the original calls
+     at stage 2→3 and 6→7, before its year changes (1771:80DA calls 7FDF for all countries first;
+     goal2-archaeology F016/F017, `code/seg_1771_12.asm` 80EA–811B). T170 includes those effects and
+     proves them against the Core. Year rollover remains deferred; stop before its unsupported boundary.
+     [derived: original 000E:70E6; 1771:821B–826A] Retain the final fixtures/post-match effects, then
+     return the explicit boundary before stage_end for stage4/8 with rounds=1 and cursor=count.
+     Compare Core at that same pause; refusal inside 80DA would leave a partially advanced stage.
    [designed: owner, 2026-11-03, #524-#527] **The rebuilt UI.** The design phase is done:
    - the screens follow the original's flow, in its palette with a blocky VGA font (docs/design/ui-2026-11);
    - the window is PySide6, trimmed to Essentials, with the pitch as a widget in it (docs/design/technology-2026-11);

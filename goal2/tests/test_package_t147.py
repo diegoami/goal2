@@ -3,8 +3,9 @@
 From given inputs (fake interpreter archives served by file:// URLs, a fake goal2 wheel, pip replaced by a fake that
 unpacks what it is asked to install) the build lays out `python/`, `pypy/` and the launcher, records where every file
 came from and zips it; it refuses a download whose SHA-256 differs from the manifest, an unhashed requirement and an
-original-game file; the launcher gives the workers the bundled PyPy and passes its arguments through. The real build
-and its packaged smoke run on Windows in .github/workflows/package.yml."""
+original-game file; the launcher gives the workers the bundled PyPy and passes its arguments through, and
+goal2-new.cmd starts the new window with the same environment (T169). The real build and its packaged smoke run on
+Windows in .github/workflows/package.yml."""
 import hashlib
 import json
 import os
@@ -264,6 +265,81 @@ class Launcher(unittest.TestCase):
         text = (ROOT / "tools/portable/goal2.cmd").read_text()
         self.assertIn('"%~dp0python\\pythonw.exe" "%~dp0goal2_launch.py" %*\n', text)
         self.assertIn("exit /b %ERRORLEVEL%", text)
+
+
+def cmd_arguments(name):
+    """The launcher's own arguments in a tools/portable/*.cmd: what its pythonw.exe line passes to goal2_launch.py
+    before the player's (%*)."""
+    lines = [l for l in (ROOT / "tools/portable" / name).read_text().splitlines() if l.startswith('"%~dp0python')]
+    assert len(lines) == 1, lines
+    head, sep, rest = lines[0].partition('"%~dp0goal2_launch.py"')
+    assert head == '"%~dp0python\\pythonw.exe" ' and sep and rest.endswith(" %*"), lines[0]
+    return rest[:-len(" %*")].split()
+
+
+class NewWindowLauncher(unittest.TestCase):
+    """[designed: owner, 2026-11-03, T169] goal2-new.cmd: the new window (goal2.ui) beside goal2.cmd, which stays
+    today's desktop and the default; the same environment from the same goal2_launch.py."""
+
+    def launch(self, args, env):
+        seen = {}
+
+        def run(module, run_name, alter_sys):
+            seen.update(module=module, run_name=run_name, argv=list(sys.argv), env=dict(os.environ))
+        with patch.dict(os.environ, env, clear=True), patch.object(sys, "argv", ["goal2_launch.py"]):
+            goal2_launch.main(args, root=Path(tempfile.gettempdir()) / "goal2 portable ä", run=run)
+        return seen
+
+    def test_the_new_cmd_starts_the_launcher_under_pythonw_with_window_new_and_every_argument(self):
+        text = (ROOT / "tools/portable/goal2-new.cmd").read_text()
+        self.assertIn('"%~dp0python\\pythonw.exe" "%~dp0goal2_launch.py" --window new %*\n', text)
+        self.assertIn("exit /b %ERRORLEVEL%", text)
+        self.assertEqual(cmd_arguments("goal2-new.cmd"), ["--window", "new"])
+        self.assertEqual(cmd_arguments("goal2.cmd"), [])
+
+    def test_its_module_is_the_new_window_and_goal2_cmd_s_stays_the_desktop(self):
+        for cmd, module in (("goal2-new.cmd", "goal2.ui"), ("goal2.cmd", "goal2.desktop")):
+            with self.subTest(cmd=cmd):
+                seen = self.launch(cmd_arguments(cmd) + ["--data-root", "my data ä", "--help"], {})
+                self.assertEqual((seen["module"], seen["run_name"]), (module, "__main__"))
+                self.assertEqual(seen["argv"], [module, "--data-root", "my data ä", "--help"])
+
+    def test_its_environment_is_goal2_cmd_s(self):
+        outside = {"PYTHONPATH": "elsewhere", "PYTHONHOME": "x", "PYTHONSTARTUP": "s.py", "KEEP": "1", "PATH": "p"}
+        new, old = (self.launch(cmd_arguments(cmd), outside)["env"] for cmd in ("goal2-new.cmd", "goal2.cmd"))
+        self.assertEqual(new, old)
+        self.assertEqual(new["GOAL2_ENGINE_PYTHON"],
+                         str(Path(tempfile.gettempdir()) / "goal2 portable ä" / "pypy" / "pypy.exe"))
+        self.assertEqual((new["PYTHONSAFEPATH"], new["PYTHONNOUSERSITE"], new["KEEP"]), ("1", "1", "1"))
+        for dropped in ("PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP"):
+            self.assertNotIn(dropped, new)
+
+    def test_a_window_it_does_not_know_is_refused(self):
+        for args in (["--window"], ["--window", "old"]):
+            with self.subTest(args=args), self.assertRaisesRegex(SystemExit, "--window takes one of desktop, new"):
+                self.launch(args, {})
+
+    def test_it_runs_the_new_window_with_the_arguments(self):
+        r = subprocess.run([sys.executable, str(ROOT / "tools/portable/goal2_launch.py"), "--window", "new", "--help"],
+                           capture_output=True, text=True, cwd=tempfile.gettempdir(),
+                           env=dict(os.environ, PYTHONPATH=str(ROOT)), timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("goal2's new window", r.stdout)
+        self.assertIn("--data-root", r.stdout)
+
+    def test_it_is_in_the_launchers_the_record_and_the_zip(self):
+        self.assertIn("goal2-new.cmd", bp.LAUNCHER)
+        tmp = Path(tempfile.mkdtemp(prefix="goal2 t169 "))
+        self.addCleanup(__import__("shutil").rmtree, tmp, True)
+        folder, archive, _ = Inputs(tmp).build()
+        data = (folder / "goal2-new.cmd").read_bytes()
+        self.assertEqual(data, (ROOT / "tools/portable/goal2-new.cmd").read_text().replace("\n", "\r\n").encode())
+        record = json.loads((folder / bp.RECORD).read_text())
+        self.assertEqual(record["files"]["goal2-new.cmd"], "launcher")
+        self.assertEqual(record["files"]["goal2.cmd"], "launcher")
+        with zipfile.ZipFile(archive) as zf:
+            self.assertEqual(zf.read("goal2-0.1.0-win64/goal2-new.cmd"), data)
+        bp.check_zip(archive)
 
 
 if __name__ == "__main__":

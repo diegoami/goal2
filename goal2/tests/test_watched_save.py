@@ -189,3 +189,10 @@ class WatchedSaveTests(unittest.TestCase):
             self.assertEqual(target.read_bytes(),b'previous complete save')
             self.assertEqual(list(Path(directory).iterdir()),[target])
         self.assertEqual(owner.state,before)
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        WatchedSaveTests('test_legacy_friendly_and_campaign_history_retain_v1_v2_meaning'),
+    ])

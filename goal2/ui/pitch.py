@@ -12,11 +12,12 @@ it reports it (`drawn`), and only then does the screen acknowledge it to the bri
   face, the one on the ball a filled face [confirmed: 0791:9372, 0791:05C6, 0791:0691; pygame_viewer.py `glyph`,
   `MARKS`]. One character per grid cell, the last drawn in the original's order shows [confirmed: DS:0883,
   pygame_viewer.py `DRAW_ORDER`].
-- **The colours** are the palette's [confirmed: docs/design/ui-2026-11 §3, the table]: pitch lines grey, the surround
-  green, the home side light red and the away side white [confirmed: T156-R1 step 45, t156-045-kick-off.png]. The
-  home side is the fixture's side B, team 1 of the samples (`DesktopModel.home`, #562) [confirmed: F031 "Venue";
-  derived: t156-045, Norway home and light red]. Keepers take their side's colour: the original draws them in the kit's
-  second colour, which the palette has no role for [designed: T166].
+- **The colours** [confirmed: 0791:1073, goal2/ui/kits.py; t156-045-kick-off.png; #583]: pitch lines grey, the
+  surround green [confirmed: docs/design/ui-2026-11 §3, the table], and each side in the kit the original computes at
+  kick-off from its country's colour bytes: the outfield players in the shirt, the keepers (slots 1 and 12) in the
+  second colour [confirmed: 0791:045D/0691; pygame_viewer.py `kit_palette`]. The home side is the fixture's side B,
+  team 1 of the samples (`DesktopModel.home`, #562) [confirmed: F031 "Venue"]; home has no colour of its own (T166
+  drew it light red from one capture, where light red was Norway's kit: #583).
 - **The ball** shows only on an empty cell [confirmed: 0791:8F10 draw_ball], as a small bright square, as the mockup
   draws it [designed: s17-pitch.html].
 - **Space** enlarges the commentary: the whole commentary over the right part of the pitch, as the original's
@@ -41,10 +42,12 @@ SURROUND = 14               # the green band's depth, in page pixels [designed: 
 HOME = 1
 
 
-def side_colour(team: int) -> str:
-    """The colour of a side's marks: the home side (team HOME of the samples) light red, the away side white.
-    [confirmed: docs/design/ui-2026-11 §3, "home side" and "away side"; DesktopModel.home, #562]"""
-    return theme.HOME_SIDE if team == HOME else theme.AWAY_SIDE
+KEEPERS = (1, 12)   # the keepers' slots [confirmed: 0791:045D/0691; pygame_viewer.py `glyph`]
+
+
+def side_colour(team: int, kits, keeper: bool = False) -> str:
+    """The colour of a side's marks: its kit (goal2/ui/kits.py), the keeper in the second colour. [#583]"""
+    return kits.colour(team, keeper)
 
 
 class PitchWidget(QWidget):
@@ -59,6 +62,7 @@ class PitchWidget(QWidget):
         self.on_drawn = on_drawn
         self.family = family
         self.marks = DEFAULT_MARKS
+        self.kits = None                  # the match's kits (goal2/ui/kits.py), set by S17 at kick-off
         self.enlarged = False
         self.commentary = []              # the enlarged commentary's lines, oldest first
         self.painted = []                 # what the last paint drew: (slot, team, text, colour, QRect)
@@ -162,7 +166,7 @@ class PitchWidget(QWidget):
                 continue
             point = self.at(px, py)
             text = glyph(self.marks, slot, display.code(word, number), frame["selector"], holder)
-            occupied[(point.x(), point.y())] = (slot, team, text, side_colour(team))
+            occupied[(point.x(), point.y())] = (slot, team, text, side_colour(team, self.kits, slot in KEEPERS))
         size = round(2 * theme.CELL * self.scale())
         for (x, y), (slot, team, text, colour) in occupied.items():
             box = QRect(x - size // 2, y - size // 2, size, size)

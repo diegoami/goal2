@@ -17,7 +17,7 @@ from unittest.mock import patch
 from goal2.engine.original_match import Fixture, Image
 from goal2.engine.original_match.match import Event
 from goal2.game.watched_jobs import WatchedJobs, REPLY_BUDGET
-from goal2.game.watched_match import _drive_match
+from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS, _drive_match
 from goal2.tests import test_watched_adapter as adapter
 from goal2.tests.test_watched_publication import Owner
 from goal2.tests import requires, pypy_engine
@@ -329,8 +329,10 @@ import goal2.game.watched_jobs,goal2.game.engine_server
             self.owner.state=adapter.WatchedAdapter.state(self)
             self.jobs=WatchedJobs(self.owner)
             # [designed: #500] the synchronous run under engine_python() in a child, beside the job's worker
+            # [T180] the engine server plays a watched friendly with BM-7's budget: the reference is given the same
             pending=pypy_engine.start('goal2.game.watched_match:run_watched_match',self.before,self.raw,Fixture(7,19,21),
-                                      reference_seed=seed,delay_byte=0,record_draws=True)
+                                      reference_seed=seed,delay_byte=0,record_draws=True,
+                                      substitutions=FRIENDLY_SUBSTITUTIONS)
             token=self.jobs.start(Fixture(7,19,21),reference_seed=seed,delay_byte=0,record_draws=True)
             start=time.monotonic()
             events=self.until(token,lambda events:not self.jobs.busy,hang_guard=600)

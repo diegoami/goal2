@@ -20,11 +20,11 @@ made from this build yet.
 | `pypy/` | the PyPy 3.11 Windows release | the match workers, about four times CPython's speed [confirmed: goal2-archaeology #620, CLAUDE.md 2026-10-29] |
 | `pypy/Lib/site-packages/goal2/` | goal2 from the same wheel, nothing else | the workers import only goal2's pure-Python modules; PyPy never sees the UI's packages |
 | `pypy/vcruntime140*.dll` | copied from the CPython | [derived: T147, the pinned archive's file list and `pypy.exe`'s import table] `pypy.exe` imports `VCRUNTIME140.dll` but PyPy does not ship it; without it a machine without the Visual C++ runtime cannot start a match |
-| `goal2.cmd`, `goal2_launch.py` | the launcher | below |
+| `goal2.cmd`, `goal2-new.cmd`, `goal2_launch.py` | the launchers: today's desktop (the default) and the new window | below |
 | `portable-files.json` | every file of the folder and its source: `cpython`, `pypy`, `wheels`, `goal2`, `launcher` | the original-file checks |
 
 pip's console-script launchers (`Scripts/`, `bin/` under each site-packages) are left out: they are bound to the
-building interpreter's path, and the launcher is `goal2.cmd`.
+building interpreter's path, and the launchers are `goal2.cmd` and `goal2-new.cmd`.
 
 ## Pinned downloads
 
@@ -34,7 +34,23 @@ and pypy.org's published digests), the wheels in `tools/portable/requirements-wi
 SHA-256 differs, also a cached one (`--downloads`, default `.cache/portable-downloads/`), and a requirement without a
 version and a hash. Updating an interpreter or a wheel means changing its version and its digest together.
 
-## The launcher
+## The launchers
+
+The folder has two launchers, one per window:
+
+| Launcher | Starts | |
+|---|---|---|
+| `goal2.cmd` | today's desktop, `goal2.desktop` (docs/desktop-management.md) | **the default**: the one this page and the player start with |
+| `goal2-new.cmd` | the new window, `goal2.ui` (docs/ui.md) | beside it, for the owner's playtest |
+
+[designed: owner, 2026-11-03, T169, docs/design/ui-2026-11 §6 item 17] `goal2.cmd` stays the default until the
+Python route plays a whole season (T170): no build plays less than the one before it, and the new window, beside it,
+is there for the playtest. The trim that goes with the switch (PySide6 Essentials only, no pygame-ce, the engine under
+`pypyw.exe`) waits for it too.
+`goal2-new.cmd` is `goal2.cmd` with `--window new` before the player's arguments: the same `goal2_launch.py`, so
+the same environment, then `goal2.ui` instead of `goal2.desktop`. Its first start shows S01, which imports the new
+window's files (GOAL.DAT and the Python route's template `e010-r0008-halftime.sav`, GOAL.HLP when the folder has
+it) into the same data folder as below.
 
 `goal2.cmd` runs `python\pythonw.exe goal2_launch.py` from its own folder (`%~dp0`) with every argument, so it works
 from any working directory and from a path with spaces or non-ASCII letters, and returns the desktop's exit status.
@@ -45,7 +61,8 @@ from any working directory and from a path with spaces or non-ASCII letters, and
   otherwise come first on PyPy's `sys.path` and give PyPy the UI's packages;
 - no `PYTHONPATH`, `PYTHONHOME` or `PYTHONSTARTUP` of the player's machine, and `PYTHONNOUSERSITE=1`;
 
-then runs `goal2.desktop` in its own process (`runpy`), so `sys.executable` is the bundled `pythonw.exe` for the
+then runs `goal2.desktop` (or, after a leading `--window new`, `goal2.ui`; `--window desktop` is the default) in
+its own process (`runpy`), so `sys.executable` is the bundled `pythonw.exe` for the
 quick friendly worker and the pitch viewer.
 
 ## Original-game files
@@ -66,11 +83,16 @@ unpacked in a folder with spaces and a non-ASCII letter, with only `System32` an
    and cannot import PySide6;
 3. one watched match played by the bundled CPython with the launcher's environment, its worker under the bundled
    PyPy, equals the same match played from the source tree (`smoke_match.py`); it uses the original files the
-   workflow pulls into `.cache/`, outside the folder that gets zipped.
+   workflow pulls into `.cache/`, outside the folder that gets zipped;
+4. `goal2-new.cmd --help` exits 0;
+5. the new window (`smoke_window.py`), offscreen under the bundled CPython with the launcher's environment, on a fresh
+   per-user folder: S01 first, a stand-in data folder (GOAL.DAT and the template copied from `.cache/` into the work
+   folder, outside the build) imported through S01, then S02 Start; then a new career's first friendly played on S17
+   to full time, its worker the bundled PyPy.
 
 It also records whether a worker started from `pythonw.exe` gets a console window. Then `check-zip` checks the ZIP
 against `.cache/`, and the ZIP is uploaded as the run artifact `goal2-win64-zip`; the measurements (ZIP size, build
-time, the packaged match's time) as `package-evidence`, kept in `measurements/T147/`.
+time, the packaged matches' times) as `package-evidence`, kept in `measurements/T147/`.
 
 ## Building it yourself
 

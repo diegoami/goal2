@@ -18,10 +18,17 @@ player watched is the match the engine published. It drives nothing: `MatchContr
 - **F9** [designed: T166]: goal2 has no sound; the key says so and does nothing else.
 - **The stops** [designed: T167, #541; docs/design/ui-2026-11 §1, the match day]: the controller holds a stop once every
   sample before it is shown, and the match day (goal2/ui/match_day.py) shows it: half time and the menu before extra
-  time on S20 then S15, a set-piece taker and the shoot-out order on S16. Its answer is the one the engine receives,
-  sent once through the bridge. A substitution opportunity and the pause Esc or Enter asks for keep T166's answer
-  until T180 builds S18 and S19: no substitution, play on (goal2/desktop/bench_page.py `escape`), noted in the
-  commentary.
+  time on S20 then S15, a set-piece taker and the shoot-out order on S16, a substitution opportunity on S18 then
+  S15, the pause Esc or Enter asks for on the bench S19 [designed: T180, #574]. Its answer is the one the engine
+  receives, sent once through the bridge; no stop keeps a default answer.
+- **The notices** [designed: T180; confirmed: t156-149-opponent-substitution.png]: the other side's substitution
+  stops the display on S18 (the box over the pitch) until a key, as the original's notice, while the engine waits
+  within its pacing; a quick result shows none. A bench answer's report (`WatchedJobs.reports`) that refuses a pair
+  holds the display the same way and shows S19 with the engine's reason until a key; made and requested pairs are
+  noted under the commentary.
+- **Goals** [designed: T181, #575; confirmed: T156-R1 175–178]: after the goal's sample is painted, S18 asks for
+  replay and saving. Playback redraws only recorded painted samples, with the live display held; automatic replay
+  skips the first question. Quick result asks neither. The recording's bound and format are in `replays.py`.
 - **Full time** publishes through the bridge, then the match day shows S20 and S15. Closing the window during a match
   cancels it through the bridge (`Window.closeEvent` calls `closing`): nothing is published.
 
@@ -39,6 +46,7 @@ from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
 from goal2.desktop.match_view import MAX_BACKLOG, PLAYBACK_RATE, Display
 from goal2.desktop.pygame_viewer import MARKS
 from goal2.ui import theme
+from goal2.ui.kits import for_fixture
 from goal2.ui.pitch import HOME, PitchWidget, side_colour
 from goal2.ui.screen import Clickable, Screen, label
 from goal2.ui.squad_card import box, colour
@@ -47,14 +55,13 @@ TICK_MS = 4            # the controller's poll; the fastest speed shows 240 samp
 COMMENTARY_ROWS = 15   # the lines the commentary box shows [designed: s17-pitch.png, the box's height]
 HANG_ON = "HANG ON A TICK"   # [confirmed: t156-267-quick-hang-on.png, "HANG ON"; T156-R1 step 2's full words]
 NO_SOUND = "F9: goal2 has no sound, so the key does nothing."
-BENCH_LATER = "The bench comes with T180: the match plays on with no substitution."
+REQUESTED = "Bench requested: the bench opens when the original stops for it."
 # The stops' words. [confirmed: E031 C40-C41, C44-C46b; goal2/desktop/match_view.py `Display.board`]
 STOPS = {"half_time": "HALF TIME", "substitution": "SUBSTITUTION OPPORTUNITY", "pause": "PAUSE",
          "extra_time": "EXTRA TIME", "shootout_order": "PENALTY SHOOT-OUT"}
-# The bench decisions that keep T166's default answer until T180 (S18, S19) [designed: T167]; every other stop is
-# held for the match day's screens (STOPS_SHOWN).
-DEFAULTED = ("substitution", "pause")
-STOPS_SHOWN = ("half_time", "extra_time", "set_piece", "shootout_order")
+# Every decision the match day answers is held for its screens [designed: T167; T180]: S20/S15, S16, S18 and S19.
+STOPS_SHOWN = ("half_time", "extra_time", "set_piece", "shootout_order", "substitution", "pause")
+BENCH = ("half_time", "pause", "substitution")   # [confirmed: watched_match.BENCH_CONTEXTS]
 
 
 def suggested_captain(state):
@@ -118,7 +125,17 @@ class MatchController:
         self.error = None
         self.finished = False
         self.stop = None          # the decision the match waits on, once every sample before it is shown
-
+        self.notice = None        # the other side's substitution shown on S18, the display held until a key
+        self.refusal = None       # an answer's report that refused a pair, shown on S19 until a key
+        self.reports = []         # the engine's reports of the bench answers, in order
+        self._expected = None     # the report the last bench answer waits for (its index in the bridge's reports)
+        self._scanned = 0         # the shown events already looked at for a notice
+        self.lineup = None        # the latest pitch sample's players (the opponents' eleven for S09's mark line)
+        self.lineup_at = 0        # its watermark: the events before it
+        from goal2.ui.replays import GoalWindow
+        self.goal_window = GoalWindow()
+        self.goal = None          # [designed: T181] a goal once its sample has actually been painted
+        self._goal_scanned = 0
     def _send(self, kind, value):
         self.display.accept(["s17", self.display.sequence, kind, value])
 
@@ -152,6 +169,10 @@ class MatchController:
             return False
 
     def _tick(self, now):
+        # [designed: T181] painted() can discover a goal on the last sample. Hold that acknowledgement as well
+        # as polling until its questions finish, so publication cannot overtake the replay/save flow.
+        if self.goal is not None and not self.quick:
+            return False
         bridge, token, display = self.bridge, self.token, self.display
         if self.drawn > self.acked and not self.quick:
             bridge.ack_frames(token, self.drawn)
@@ -161,11 +182,15 @@ class MatchController:
                      "data": copy.deepcopy(event.data)}
             self._send("event", value)
             self.events.append(value)
+        self._read_report()
         if not bridge.busy:
             return self._full_time()
+        if self.held:
+            return False          # S18 or S19 shows a notice: the display waits, so the engine waits (LEAD)
         if len(display.frames) <= MAX_BACKLOG - 32:
             for frame in bridge.poll_frames(token):
                 self._send("frame", frame)
+                self.lineup, self.lineup_at = frame["players"], frame["watermark"]
             if not bridge.busy:
                 return self._full_time()
         if self.quick and display.frames:
@@ -181,12 +206,7 @@ class MatchController:
             context = waiting.data.get("context")
             if self.quick:
                 self.released = len(self.events)
-            if context in DEFAULTED:
-                bridge.answer(token, ())
-                self.answered.append(context)
-                self.choices.append((context, []))
-                self.note = f"{STOPS.get(context, context)}: {BENCH_LATER}"
-            elif context == "set_piece" and self.quick:
+            if context == "set_piece" and self.quick:
                 # [designed: T167; docs/design S17 "R ... still stops at half time, injuries, extra time and the
                 # shoot-out"] a quick result shows no taker card: no key, the current pick stands (F030)
                 self._answer(context, {"taker": None})
@@ -198,7 +218,60 @@ class MatchController:
             changed = display.advance(now)
             if changed:
                 self.released = max(self.released, display.frame["watermark"])
+        self._look_for_notice()
         return changed
+
+    @property
+    def held(self):
+        return self.notice is not None or self.refusal is not None or self.goal is not None
+
+    def _look_for_notice(self):
+        """[confirmed: t156-149] The other side's substitution, once shown, stops the display for its notice
+        (not in a quick result, which shows none)."""
+        managed = self.display.managed
+        while self._scanned < self.released and self.notice is None:
+            event = self.events[self._scanned]
+            self._scanned += 1
+            if (not self.quick and managed is not None and event["kind"] == "substitution"
+                    and event["data"].get("team") == 1 - managed):
+                self.notice = event
+
+    def _read_report(self):
+        """The engine's report of the last bench answer (made, requested, refused with the reason)."""
+        if self._expected is None or len(self.bridge.reports) <= self._expected:
+            return
+        report = copy.deepcopy(self.bridge.reports[self._expected])
+        self._expected = None
+        self.reports.append(report)
+        from goal2.ui.squad_card import full_name
+        name = lambda w: full_name(self.model, w)
+        said = []
+        if report["made"]:
+            said.append("Made: " + ", ".join(f"{name(b)} on for {name(a)}" for a, b in report["made"]) + ".")
+        if report["requested"]:
+            said.append("Requested: made at the next stoppage.")
+        if report["refused"]:
+            said.append("Not made: " + ", ".join(f"{name(b)} for {name(a)}" for a, b, _ in report["refused"]) + ".")
+            self.refusal = report
+        self.note = " ".join(said)
+
+    def dismiss(self):
+        """A key on S18's notice or on S19's refusal: the display plays on."""
+        self.notice = None
+        self.refusal = None
+
+    def opponents(self):
+        """The other side's eleven as the engine has it now, keeper first: the latest pitch sample's players
+        (watched_pitch.snapshot: each slot's current player word, substitutions included [derived: T81]), with the
+        other side's substitutions shown since. [designed: T180] The decision does not carry them."""
+        managed = self.display.managed
+        if self.lineup is None or managed is None:
+            return []
+        words = [p[3] for p in sorted((p for p in self.lineup if p[1] == 1 - managed), key=lambda p: p[2])]
+        for event in self.events[self.lineup_at:]:
+            if event["kind"] == "substitution" and event["data"].get("team") == 1 - managed:
+                words = [event["data"]["on"] if w == event["data"]["off"] else w for w in words]
+        return words
 
     def _full_time(self):
         """The bridge has published the match (or failed it): every event is shown; the bridge stays open (D3)."""
@@ -210,9 +283,20 @@ class MatchController:
         self.bridge = None
         return False
 
-    def _answer(self, context, value):
+    def _answer(self, context, value, requested=()):
         if context in ("set_piece", "shootout_order"):
             self.bridge.choose(self.token, value)
+        elif context in BENCH:
+            # [designed: T180] the bench's answer: the pairs, with its other changes when there are any
+            if isinstance(value, dict):
+                pairs = value.get("substitutions") or []
+                self.bridge.answer(self.token, pairs, {k: v for k, v in value.items() if k != "substitutions"})
+            else:
+                pairs = list(value or [])
+                self.bridge.answer(self.token, pairs)
+            if pairs or (context == "substitution" and requested and not isinstance(value, dict)):
+                # [confirmed: the kit's Match._on_notice; watched_match._drive_match] a report follows
+                self._expected = len(self.bridge.reports)
         else:
             self.bridge.answer(self.token, ())
         self.answered.append(context)
@@ -220,16 +304,32 @@ class MatchController:
 
     def answer_stop(self, value=None):
         """The match day's answer to the held stop, sent once: {'taker': word or None} at a set piece,
-        {'shootout_order': [words]} before a shoot-out, nothing at half time and before extra time (play on; the
-        bench comes with T180)."""
+        {'shootout_order': [words]} before a shoot-out, the bench's (S19, `BenchAnswer.value`) at half time, a
+        substitution opportunity and a pause, nothing before extra time (play on)."""
         stop, self.stop = self.stop, None
         if stop is None or not self.running:
             return
-        self._answer(stop.data.get("context"), value if value is not None else [])
+        self._answer(stop.data.get("context"), value if value is not None else [], stop.data.get("requested"))
 
     # The player's keys.
     def painted(self, sequence):
         self.drawn = max(self.drawn, sequence)
+        frame = self.display.frame
+        if self.quick or frame is None or frame['sequence'] != sequence:
+            return
+        self.goal_window.painted(frame)
+        # [designed: T181] Goals behind the displayed sample's watermark are visible; a future event in a poll
+        # cannot open a question over a pitch that has not yet shown it. A recalled goal has player 0 (T167).
+        while self._goal_scanned < min(frame['watermark'], len(self.events)) and self.goal is None:
+            event = self.events[self._goal_scanned]
+            self._goal_scanned += 1
+            if event['kind'] == 'goal' and event['data'].get('player'):
+                self.goal = event
+
+    def dismiss_goal(self):
+        self.goal = None
+        self.goal_window.clear()
+        self.display.next_frame = time.monotonic()
 
     def step_speed(self, step):
         self.display.step_rate(step)
@@ -238,6 +338,8 @@ class MatchController:
         """R: the engine plays on without pacing."""
         if self.running and not self.quick:
             self.quick = True
+            self.goal = None
+            self.goal_window.clear()
             self.note = HANG_ON
 
     def request_bench(self):
@@ -247,7 +349,7 @@ class MatchController:
         sent = self.bridge.pause(self.token)
         if sent:
             self.requests += 1
-            self.note = "Bench requested. " + BENCH_LATER
+            self.note = REQUESTED
         return sent
 
     def cancel(self):
@@ -276,8 +378,7 @@ def commentary_line(event):
     if event["kind"] == "commentary":
         return f"{event['minute']}′ {event['data'].get('text', '')}"
     context = event["data"].get("context")
-    answer = "no substitution, play on (T180)" if context in DEFAULTED else "your answer"
-    return f"{event['minute']}′ ── {STOPS.get(context, str(context).upper())}: {answer}"
+    return f"{event['minute']}′ ── {STOPS.get(context, str(context).upper())}: your answer"
 
 
 class PitchScreen(Screen):
@@ -293,6 +394,10 @@ class PitchScreen(Screen):
         self._seen = 0            # the shown events already made into lines
         self.ended = False
         self.held = None          # the stop the match day is showing
+        self.replay = None        # [designed: T181] a presentation-only Playback, no bridge acknowledgements
+        self.replay_done = None
+        self.replay_display = None
+        self.goal_record = None
         names = controller.display.countries
         self.name_label.setText(f"watching · {names[HOME]} v {names[1 - HOME]}")
         self._build(names)
@@ -306,6 +411,8 @@ class PitchScreen(Screen):
         self.bind((Qt.Key.Key_Space,), "commentary", self.toggle_commentary)
         self.bind((Qt.Key.Key_F9,), "sound", self.sound)
         self.set_enter("Bench", self.request_bench)
+        from goal2.ui.s18_stop import StopBox
+        self.stop_box = StopBox(self)   # S18, over the pitch [designed: T180]
         self.timer = QTimer(self)
         self.timer.setInterval(TICK_MS)
         self.timer.timeout.connect(self.tick)
@@ -324,11 +431,12 @@ class PitchScreen(Screen):
         row.setSpacing(30)
         score = QHBoxLayout()
         score.setSpacing(18)
-        # [derived: DesktopModel.home, #562] the home side first and light red, as the original's screens
+        # [confirmed: t156-045-kick-off.png; #562, #583] the home side first, each name in its side's kit
+        self.kits = getattr(self.controller, 'kits', None) or for_fixture(self.model, self.controller.pending)
         self.home = label(names[HOME], "h1")
-        colour(self.home, side_colour(HOME))
+        colour(self.home, side_colour(HOME, self.kits))
         self.away = label(names[1 - HOME], "h1")
-        colour(self.away, side_colour(1 - HOME))
+        colour(self.away, side_colour(1 - HOME, self.kits))
         self.goals = []
         score.addWidget(self.home)
         for _ in (0, 1):
@@ -359,7 +467,8 @@ class PitchScreen(Screen):
         self.body_layout.addWidget(head)
         middle = QHBoxLayout()
         middle.setSpacing(18)
-        self.pitch = PitchWidget(lambda: self.controller.display, self.controller.painted, self.window_.family)
+        self.pitch = PitchWidget(self.display, self.painted, self.window_.family)
+        self.pitch.kits = self.kits
         middle.addWidget(self.pitch, 0, Qt.AlignmentFlag.AlignTop)
         commentary, inner = box("Commentary")
         self.commentary = QLabel("")
@@ -369,7 +478,7 @@ class PitchScreen(Screen):
         inner.addWidget(self.commentary, 1)
         self.status = label("", "sub")
         inner.addWidget(self.status)
-        side = "LIGHT RED" if managed == HOME else "WHITE"
+        side = self.kits.name(managed) if managed is not None else "none"
         tag_row = QHBoxLayout()
         self.side_tag = label(f"YOUR SIDE: {side}", "tag")
         tag_row.addWidget(self.side_tag)
@@ -384,16 +493,102 @@ class PitchScreen(Screen):
         self.body_layout.addLayout(middle, 1)
 
     # The poll and what is shown.
+    def display(self):
+        return self.replay_display if self.replay is not None else self.controller.display
+
+    def painted(self, sequence):
+        if self.replay is not None:
+            self.replay.painted(sequence)
+        else:
+            self.controller.painted(sequence)
+
+    def start_replay(self, frames, done):
+        from goal2.ui.replays import Playback
+        self.replay = Playback(frames)
+        self.replay_display = copy.copy(self.controller.display)
+        self.replay_done = done
+        self._replay_enter_before = self.enter_action
+        self.set_enter('Replay playing', lambda: None)
+        self._result_text('REPLAY')
+        self.replay_tick(time.monotonic())
+
+    def replay_tick(self, now):
+        replay = self.replay
+        if replay.advance(now, self.controller.display.pitch_rate):
+            self.replay_display.frame = replay.frame
+            self.pitch.update()
+        self.refresh()
+        if replay.finished:
+            done = self.replay_done
+            self.replay = self.replay_display = self.replay_done = None
+            self.set_enter(*self._replay_enter_before)
+            self._result_text(HANG_ON if self.controller.quick else 'result')
+            self.pitch.update()
+            self.refresh()
+            done()
+
     def tick(self):
+        if self.replay is not None:
+            self.replay_tick(time.monotonic())
+            return
         controller = self.controller
         if controller.tick(time.monotonic()):
             self.pitch.update()
         self.refresh()
         if controller.finished and not self.ended:
             self.end()
-        elif controller.stop is not None and self.held is None and self.day is not None:
+        elif self.stop_box.open or self.window_.current() is not self or self.day is None:
+            return
+        elif controller.goal is not None:
+            self.day.goal(self, controller.goal)
+        elif controller.notice is not None:
+            self.show_notice(controller.notice)
+        elif controller.refusal is not None:
+            self.day.refused(self, controller.refusal)
+        elif controller.stop is not None and self.held is None:
             self.held = controller.stop
             self.day.stop(self, controller.stop)
+
+    def show_notice(self, event):
+        """[confirmed: t156-149] S18: the other side's substitution; any key plays on."""
+        from goal2.ui.s18_stop import NOTICE_OPPONENT, opponent_text, score_line
+        names = self.controller.display.countries
+        country = names[event["data"]["team"]]
+        self.show_stop(NOTICE_OPPONENT, opponent_text(self.model, event),
+                       f"{country}: {score_line(names, event['score'], event['minute'])}. Press any key: play on.",
+                       lambda key: self.dismiss())
+
+    def show_stop(self, kind, headline, detail, handler, answers=None):
+        """S18 over the pitch, answered by any key."""
+        self.stop_box.show_stop(kind, headline, detail, handler, answers)
+        self._enter_before = self.enter_action
+        self.set_enter('Answer Y or N' if answers else 'Continue',
+                       lambda: self.answer_stop_box(Qt.Key.Key_Return))
+        self.refresh()
+
+    def answer_stop_box(self, key):
+        if self.stop_box.answers and key not in self.stop_box.answers:
+            return False
+        self.set_enter(*self._enter_before)
+        return self.stop_box.answer(key)
+
+    def handle_key(self, key):
+        if self.stop_box.open and key != Qt.Key.Key_F1:
+            self.answer_stop_box(key)
+            return True
+        if self.replay is not None and key in (Qt.Key.Key_R, Qt.Key.Key_Escape, Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            return True
+        return super().handle_key(key)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.stop_box.open:
+            self.stop_box.place()
+
+    def dismiss(self):
+        """A key on a notice or a refusal: the display plays on."""
+        self.controller.dismiss()
+        self.refresh()
 
     def resume(self, value=None):
         """The match day's answer to the stop it showed: sent once, and the match plays on."""
@@ -408,7 +603,8 @@ class PitchScreen(Screen):
             if event["kind"] == "commentary" or event["kind"] == "decision":
                 self.lines.append(commentary_line(event))
         self._seen = len(shown)
-        minute, score = controller.frame_or_event()
+        minute, score = ((self.replay.frame['minute'], self.replay.frame['score'])
+                         if self.replay is not None and self.replay.frame is not None else controller.frame_or_event())
         _set(self.minute, f"{minute}′")
         for text, goals in zip(self.goals, (score[HOME], score[1 - HOME])):
             _set(text, str(goals))
@@ -443,15 +639,22 @@ class PitchScreen(Screen):
         self.pitch.commentary = self.lines
         self.pitch.update()
 
+    def _result_text(self, text):
+        self.result_binding.text = text
+        for item in self.key_bar.findChildren(Clickable, 'keyItem'):
+            if getattr(item, 'binding', None) is self.result_binding:
+                for label_ in item.findChildren(QLabel, 'keyLabel'):
+                    label_.setText(text)
+                    colour(label_, theme.VALUE)
+
     def quick_result(self):
+        # [designed: T181] Mouse key-bar callbacks do not pass through handle_key. They must hold the same live
+        # controls during replay and the goal questions; a click cannot clear a goal or bypass its pacing.
+        if self.replay is not None or self.stop_box.kind in ('replay', 'save-goal'):
+            return
         self.controller.quick_result()
         if self.controller.quick:
-            self.result_binding.text = HANG_ON
-            for item in self.key_bar.findChildren(Clickable, "keyItem"):
-                if getattr(item, "binding", None) is self.result_binding:
-                    for text in item.findChildren(QLabel, "keyLabel"):
-                        text.setText(HANG_ON)
-                        colour(text, theme.VALUE)
+            self._result_text(HANG_ON)
         self.refresh()
 
     def sound(self):
@@ -459,6 +662,8 @@ class PitchScreen(Screen):
         self.refresh()
 
     def request_bench(self):
+        if self.replay is not None or self.stop_box.kind in ('replay', 'save-goal'):
+            return
         self.controller.request_bench()
         self.refresh()
 

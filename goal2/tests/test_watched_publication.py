@@ -152,3 +152,10 @@ class WatchedPublicationTests(unittest.TestCase):
         self.assertNotEqual(replacement.token,job.token)
         self.assertEqual(owner.state,before)
         pub.cancel()
+
+
+# [designed: T182, #585] Only this independent setup group runs in this module.
+def load_tests(loader, tests, pattern):
+    return unittest.TestSuite([
+        WatchedPublicationTests('test_cancel_and_wrong_tokens_preserve_active_state'),
+    ])

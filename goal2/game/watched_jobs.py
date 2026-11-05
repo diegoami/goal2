@@ -46,6 +46,42 @@ def _choice(value):
     raise ValueError('invalid prompt answer')
 
 
+# [designed: T180, #574] The other changes a bench answer may carry besides the pairs, passed to the kit's
+# `Match.answer` as they are (goal2/engine/original_match/match.py): positions {player: code 0..13} (R, C on S19),
+# marking {player: opponent word or 0} (S09's mark line, 1771:49B8) and own_tactics {player: {element 1..4: True,
+# False or None}} (S09's four lines, 1771:4B61). Whether the original takes one is its to decide.
+CHANGES = ('positions', 'marking', 'own_tactics')
+
+
+def _changes(value):
+    """[designed: T180] The shape of a bench answer's changes (CHANGES), keys as integers; empty ones dropped."""
+    word = lambda v: type(v) is int and 1 <= v <= 3060
+    if not isinstance(value, dict) or set(value) - set(CHANGES):
+        raise ValueError('invalid bench changes')
+    out = {}
+    for name, items in value.items():
+        if not isinstance(items, dict) or len(items) > MAX_PAIRS:
+            raise ValueError('invalid bench changes')
+        items = {int(k): v for k, v in items.items()} if all(str(k).isdigit() for k in items) else None
+        if items is None or not all(word(k) for k in items):
+            raise ValueError('invalid bench changes')
+        if name == 'positions' and not all(type(v) is int and 0 <= v <= 13 for v in items.values()):
+            raise ValueError('invalid bench positions')
+        if name == 'marking' and not all(v == 0 or word(v) for v in items.values()):
+            raise ValueError('invalid bench marking')
+        if name == 'own_tactics':
+            own = {}
+            for player, elements in items.items():
+                if (not isinstance(elements, dict) or not all(str(e) in ('1', '2', '3', '4') for e in elements)
+                        or not all(v is None or type(v) is bool for v in elements.values())):
+                    raise ValueError('invalid bench own tactics')
+                own[player] = {int(e): v for e, v in elements.items()}
+            items = own
+        if items:
+            out[name] = items
+    return out
+
+
 def _pairs(value):
     """[designed: T102] The shape of an answer: at most MAX_PAIRS (off, on) player words. Whether a
     pair is legal is the original's to decide, never this check's."""
@@ -587,15 +623,20 @@ class WatchedJobs:
         self._pause_pending = True
         return True
 
-    def answer(self, token, substitutions=()):
+    def answer(self, token, substitutions=(), changes=None):
         """[designed: T102] Answer the waiting bench decision with (off, on) pairs; none plays on.
-        The original makes, requests or refuses each pair; `reports` says which."""
+        The original makes, requests or refuses each pair; `reports` says which. [designed: T180] `changes`
+        also carries the bench's positions, marks and own tactics (CHANGES), in the same one answer."""
         self._check_token(token)
         if self.waiting is None:
             raise ValueError('no bench decision is waiting')
         pairs = _pairs(list(substitutions))
+        changes = _changes(changes or {})
         decision = self._decisions
-        self._command(token, lambda engine: engine.answer(decision, pairs))
+        if changes:
+            self._command(token, lambda engine: engine.answer(decision, pairs, changes=changes))
+        else:
+            self._command(token, lambda engine: engine.answer(decision, pairs))
         self._decisions += 1
         self.waiting = None
         # [designed] Publication occurs on the next canonical poll, whose returned

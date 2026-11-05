@@ -127,8 +127,10 @@ class UnderPyPy(unittest.TestCase):
         raw = self.raw();state = from_savestate(raw);state.captain = 0     # as test_watched_adapter's state()
         owner = Owner(state, raw);before = copy.deepcopy(owner.state)
         t = time.monotonic()
+        from goal2.game.watched_match import FRIENDLY_SUBSTITUTIONS   # [T180] the engine server's friendly budget
         direct = pypy_engine.start("goal2.game.watched_match:run_watched_match", before, raw, Fixture(7, 19, 21),
-                                   reference_seed=257, delay_byte=0, record_draws=True)
+                                   reference_seed=257, delay_byte=0, record_draws=True,
+                                   substitutions=FRIENDLY_SUBSTITUTIONS)
         jobs = WatchedJobs(owner);self.addCleanup(jobs.close)
         token = jobs.start(Fixture(7, 19, 21), reference_seed=257, delay_byte=0, record_draws=True)
         self.assertEqual(jobs.interpreter, self.pypy)

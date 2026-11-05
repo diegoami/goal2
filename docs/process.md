@@ -37,6 +37,13 @@ one, `git pull` and take the next free number.
     lets them do at that step. A gap that breaks play is filed and scheduled before the next task is written.
   - **At each milestone**, before handing the owner a build, it plays the build's path end to end
     (offscreen screenshots, or the capture process) and reports the gaps it found itself.
+- **Check the evidence before telling the owner what the original does.** [designed: owner, 2026-11-04: "confidently
+  incorrect anyone ?"; #583] A doc's tag is not proof: the main session told the owner the original draws the home
+  side light red, repeating `docs/design/ui-2026-11` §3, a claim generalised from one capture (Norway at home, in
+  its own red kit). The original computes each country's kit (`0791:1073`). Before answering a question about the
+  original's behaviour, open what the claim cites (the finding, the capture, the port), and say how sure the
+  evidence is. A claim resting on one capture is a guess about the rule until a second case or the code confirms
+  it.
 
 ## 3. The loop
 
