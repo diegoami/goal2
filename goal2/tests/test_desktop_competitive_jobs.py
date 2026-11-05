@@ -300,13 +300,30 @@ class CompetitiveJobsTests(unittest.TestCase):
         # the process's Windows timer resolution, not the window thread: after the earlier replay tests of this class
         # it ticked about every 10 ms (11-12 beats on main, 3 and 8 on CI) while each poll took under 0.1 ms and each
         # processEvents under 1 ms; timeBeginPeriod(1) or a PreciseTimer gave 62-76. The heartbeat is precise, so
-        # only a blocked window thread can starve it.
+        # [designed: T161 diagnosis] Keep the heartbeat threshold unchanged. The timing receipt
+        # distinguishes time inside poll/processEvents from sleep and between-lap scheduling.
         beats=[];timer=QTimer();timer.setTimerType(Qt.TimerType.PreciseTimer);timer.setInterval(1)
         timer.timeout.connect(lambda:beats.append(1));timer.start()
-        deadline=time.monotonic()+.12
+        started=time.monotonic();deadline=started+.12
+        laps=[];previous=time.perf_counter()
         while time.monotonic()<deadline:
-            self.jobs.poll(token);app.processEvents();time.sleep(.001)
+            t0=time.perf_counter();self.jobs.poll(token);t1=time.perf_counter()
+            app.processEvents();t2=time.perf_counter();time.sleep(.001);t3=time.perf_counter()
+            laps.append(dict(poll_ms=(t1-t0)*1000,events_ms=(t2-t1)*1000,
+                             sleep_ms=(t3-t2)*1000,gap_ms=(t0-previous)*1000))
+            previous=t3
         timer.stop()
+        elapsed=time.monotonic()-started
+        report=dict(head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+                    test_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                    platform=sys.platform,python=sys.version,cpus=os.cpu_count(),
+                    timer_type=timer.timerType().name,interval_ms=timer.interval(),
+                    beats=len(beats),elapsed_ms=elapsed*1000,laps_ms=laps)
+        # The existing Windows workflow uploads this directory even when its gate fails.
+        directory='windows-evidence' if os.environ.get('GITHUB_ACTIONS')=='true' and sys.platform=='win32' else '.cache'
+        receipt=ROOT/directory/'T161-heartbeat.json';receipt.parent.mkdir(parents=True,exist_ok=True)
+        receipt.write_text(json.dumps(report,indent=2)+'\n')
+        print('T161 heartbeat receipt:',json.dumps(report),flush=True)
         self.assertGreater(len(beats),10,'Qt heartbeat blocked by competitive worker')
         self.assertTrue(self.jobs.busy);self.assertIsNone(self.jobs.outcome);self.unchanged()
 
