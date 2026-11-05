@@ -78,4 +78,18 @@ class Readable(unittest.TestCase):
         self.assertNotIn('Made:',self.bench.note.text())
         self.assertEqual(self.answer.left,5)
 
+    def test_long_pitch_commentary_keeps_complete_recent_entries_inside_the_page(self):
+        from goal2.desktop import fixed_page
+        self.window.pop()  # S19 back to S17; no match process exists in this declared UI packet fixture.
+        last='19: A Player With A Long Name scored after an assist by Another Long Player Name.'
+        self.pitch.lines=[f'{i}: Earlier Player scored after a long passage of play.' for i in range(19)]+[last]
+        for width,height in ((1440,900),(2110,1213)):
+            self.window.resize(width,height)
+            for _ in range(3):
+                self.app.processEvents();self.pitch.refresh()
+            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+            self.assertIn(last,self.pitch.commentary.text())
+            self.assertLessEqual(self.pitch.commentary.heightForWidth(self.pitch.commentary.width()),
+                                 self.pitch.commentary.height())
+
 if __name__=='__main__': unittest.main()

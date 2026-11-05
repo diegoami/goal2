@@ -189,11 +189,13 @@ class PitchWidget(QWidget):
         pen.setWidth(max(1, round(2 * scale)))
         painter.setPen(pen)
         painter.drawRect(panel)
-        painter.setFont(self.type_at(theme.CELL))
-        line = round(theme.CELL * 1.5 * scale)
+        painter.setFont(self.type_at(theme.TEXT))
+        line = round(theme.TEXT * 1.5 * scale)
         rows = max(1, (panel.height() - 2 * line) // line)
         painter.setPen(QColor(theme.HEADING))
         painter.drawText(panel.left() + line, panel.top() + line, "COMMENTARY")
         painter.setPen(QColor(theme.TEXT_BRIGHT))
-        for n, text in enumerate(self.commentary[-rows:]):
-            painter.drawText(panel.left() + line, panel.top() + 2 * line + n * line + line // 2, text)
+        from goal2.ui.readable_text import recent_text
+        content=panel.adjusted(line,2*line,-line,-line//2)
+        text=recent_text(self.commentary,painter.fontMetrics(),content.width(),content.height(),maximum=100)
+        painter.drawText(content,int(Qt.TextFlag.TextWordWrap),text)
