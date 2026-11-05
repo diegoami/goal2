@@ -50,6 +50,9 @@ The owner's decisions, starting 2026-10-12 (goal2 #2):
      at stage 2→3 and 6→7, before its year changes (1771:80DA calls 7FDF for all countries first;
      goal2-archaeology F016/F017, `code/seg_1771_12.asm` 80EA–811B). T170 includes those effects and
      proves them against the Core. Year rollover remains deferred; stop before its unsupported boundary.
+     [derived: original 000E:70E6; 1771:821B–826A] Retain the final fixtures/post-match effects, then
+     return the explicit boundary before stage_end for stage4/8 with rounds=1 and cursor=count.
+     Compare Core at that same pause; refusal inside 80DA would leave a partially advanced stage.
    [designed: owner, 2026-11-03, #524-#527] **The rebuilt UI.** The design phase is done:
    - the screens follow the original's flow, in its palette with a blocky VGA font (docs/design/ui-2026-11);
    - the window is PySide6, trimmed to Essentials, with the pitch as a widget in it (docs/design/technology-2026-11);
