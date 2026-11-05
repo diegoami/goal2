@@ -297,8 +297,23 @@ def pitch_shots(app, window, career, shot, limit=600):
         """Picture each stop the first time it shows, then answer it as the default (Enter)."""
         screen = window.current()
         if isinstance(screen, PitchScreen):
+            if screen.replay is not None:
+                if 'replay-playing' not in taken:
+                    taken.add('replay-playing')
+                    shot('s17-replay.png')
+                return False
             if screen.stop_box.open:
-                key(Qt.Key.Key_Space)   # [T180] S18's notice (the other side's substitution): any key
+                box = screen.stop_box
+                if box.kind == 'replay' and 'replay-question' not in taken:
+                    taken.add('replay-question')
+                    shot('s18-replay-question.png')
+                    key(Qt.Key.Key_Y)
+                elif box.kind == 'save-goal' and 'saved-goal' not in taken:
+                    taken.add('saved-goal')
+                    shot('s18-save-goal-question.png')
+                    key(Qt.Key.Key_Y)
+                else:
+                    key(Qt.Key.Key_N if box.answers else Qt.Key.Key_Space)
                 return False
             frame = controller.display.frame
             if "s17" not in taken and frame is not None and frame["minute"] >= 17:
@@ -313,10 +328,20 @@ def pitch_shots(app, window, career, shot, limit=600):
         elif isinstance(screen, BoardScreen) and screen.phase not in taken:
             taken.add(screen.phase)
             shot(f"s20-board-{screen.phase}.png")
+            if screen.save_summary:
+                shot('s20-save-summary-question.png')
+                key(Qt.Key.Key_Y)
+                return False
         elif isinstance(screen, MenuScreen) and f"menu-{screen.phase}" not in taken:
             taken.add(f"menu-{screen.phase}")
             if screen.phase == "half":
                 shot("s15-match-menu-half.png")
+        elif getattr(screen, 'record_kind', None):
+            kind = screen.record_kind
+            screen.field.set_text('Holland, first goal' if kind == 'goal' else 'Holland, first match')
+            shot('s21-save-goal.png' if kind == 'goal' else 's21-save-summary.png')
+            key(Qt.Key.Key_Return)
+            return False
         elif isinstance(screen, RoundScreen):
             return True
         key(Qt.Key.Key_Return)
@@ -326,6 +351,33 @@ def pitch_shots(app, window, career, shot, limit=600):
         shot("s14-round-after.png")
     close_window(window)
     window.open_career(career)
+    window.current().recordings('goal')
+    shot('s21-saved-goals.png')
+    listing = window.current()
+    if listing.entries:
+        listing.press_enter()
+        shot('s15-saved-goal-menu.png')
+        # [designed: T181] Walk the saved goal from F3 through S15 and every recorded pose on S17.
+        key(Qt.Key.Key_Return)
+        saved_pitch = window.current()
+        if not isinstance(saved_pitch, PitchScreen):
+            raise RuntimeError('F3 did not open the saved goal on S17')
+        if not until(lambda: saved_pitch.replay is None or saved_pitch.replay.drawn >= 0):
+            raise RuntimeError('the saved goal did not paint its first pose')
+        shot('s17-saved-goal-replay.png')
+        if not until(lambda: saved_pitch.replay is None):
+            raise RuntimeError('the saved goal did not finish replaying')
+        key(Qt.Key.Key_Escape)
+        window.pop()
+    window.pop()
+    window.current().recordings('summary')
+    shot('s21-saved-summaries.png')
+    listing = window.current()
+    if listing.entries:
+        listing.press_enter()
+        shot('s20-saved-summary.png')
+        window.pop()
+    window.pop()
 
 
 def bench_shots(app, window, target, shot, limit=600):
@@ -385,7 +437,7 @@ def bench_shots(app, window, target, shot, limit=600):
             if screen.stop_box.open:
                 if screen.stop_box.kind == "substitution" and state["off"] is None:
                     shot("s18-match-stop.png")
-                key(Qt.Key.Key_Space)
+                key(Qt.Key.Key_N if screen.stop_box.answers else Qt.Key.Key_Space)
             return False
         if kind == "MenuScreen":
             if screen.phase == "stop" and state["off"] is None:
@@ -411,7 +463,7 @@ def bench_shots(app, window, target, shot, limit=600):
             key(Qt.Key.Key_Escape)
             return False
         if kind == "BoardScreen":
-            key(Qt.Key.Key_Escape if screen.phase == "half" else Qt.Key.Key_Return)
+            key(Qt.Key.Key_Escape if screen.phase == 'half' else Qt.Key.Key_N if screen.save_summary else Qt.Key.Key_Return)
             return False
         key(Qt.Key.Key_Return)
         return isinstance(screen, RoundScreen) and screen.after is not None

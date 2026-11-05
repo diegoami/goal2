@@ -14,8 +14,7 @@ docs/original-game/images/t156-013-hub.png]:
 - **T** team tactics (S10), **Space** select squad (S08), **F1** help (S22); **F3** load a saved goal, **F4** load a
   saved summary, **F7** save, **F10** quit [confirmed: t156-013-hub.png, its bottom line].
 
-Placeholders [designed: T164, the task's scope]: F3 comes with T167, F4 with T181. Until then each says which task
-brings it, on the desk, and does nothing else. **F7** saves and **F10** quits through S21 (goal2/ui/s21_save.py), with
+[designed: T181, #575] F3 lists saved goals, F4 saved summaries. **F7** saves and **F10** quits through S21 (goal2/ui/s21_save.py), with
 the save question when anything is unsaved. [designed: T168, #542]
 
 *play next game* [designed: T167, #541]: the match day (goal2/ui/match_day.py), the original's screens in its order:
@@ -67,11 +66,7 @@ from goal2.ui.start_look import LineField, key_value
 LEFT_WIDTH = 420   # [designed: s06-hub.html, the left column's `width:420px`]
 HINT = ("Use ↑↓ to find an option, Enter to select it. Your own matches are watched: play next game leads to the "
         "match menu, the captain and the pitch.")   # [designed: s06-hub.html]
-# What each placeholder says until its task builds it. [designed: T164 scope 1, "each names the task"]
-LATER = {
-    "F3": "F3, load a saved goal, comes with T167.",
-    "F4": "F4, load a saved summary, comes with T181.",
-}
+
 
 
 def next_match(model):
@@ -100,8 +95,8 @@ class DeskScreen(Screen):
         self.model = model
         self.message = ""
         self._banner()
-        for key, caption, text in ((Qt.Key.Key_F3, "F3", "load goal"), (Qt.Key.Key_F4, "F4", "load summary")):
-            self.bind((key,), text, lambda caption=caption: self.later(caption))
+        self.bind((Qt.Key.Key_F3,), 'load goal', lambda: self.recordings('goal'))
+        self.bind((Qt.Key.Key_F4,), 'load summary', lambda: self.recordings('summary'))
         self.bind((Qt.Key.Key_F7,), "save", self.save)
         self.bind((Qt.Key.Key_F10,), "quit", self.quit)
         self.bind((Qt.Key.Key_T,), "team tactics", self.team_tactics)
@@ -317,9 +312,9 @@ class DeskScreen(Screen):
         return to_s03()
 
     # The actions.
-    def later(self, what):
-        """A placeholder: it says which task brings it, and does nothing else."""
-        self.say(LATER[what])
+    def recordings(self, kind):
+        from goal2.ui.replays import open_list
+        return open_list(self.window_, self.model, kind)
 
     def play_next_game(self):
         """The match day (goal2/ui/match_day.py): S14, S15, S16, S17, S20; what stops it is said here."""

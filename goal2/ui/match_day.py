@@ -228,6 +228,9 @@ class MatchDay:
         except (OSError, ValueError) as exc:
             return self._back_to_desk(f"The match cannot start: {exc}")
         self.controller = controller
+        menu = next((screen for screen in reversed(window.stack) if type(screen).__name__ == 'MenuScreen'), None)
+        self.recorded_menu = ({str(t): menu.lineups[c] for t, c in enumerate((self.fixture.side_a, self.fixture.side_b))}
+                              if menu is not None else {})
         while len(window.stack) > 1:
             window.pop()
         self.pitch = window.push(PitchScreen(window, model, controller, day=self))
@@ -268,6 +271,38 @@ class MatchDay:
                                    f"{where}. Press any key: choose the order of your takers.",
                                    lambda key: self._shootout_order(pitch, decision))
         return self._taker(pitch, decision)
+
+    def goal(self, pitch, event):
+        """[designed: T181; confirmed: T156-R1 175–178] The goal's replay and save questions hold the live pitch."""
+        from PySide6.QtCore import Qt
+        from goal2.ui.replays import goal_data
+        from goal2.ui.s18_stop import ACTION_REPLAY, SAVE_GOAL, YES_NO
+        pitch.goal_record = goal_data(pitch, event)
+        detail = f"{pitch.goal_record['scorer']} · {event['minute']}′"
+
+        def save_question():
+            pitch.show_stop('save-goal', SAVE_GOAL, detail, save_answer, YES_NO)
+
+        def save_answer(key):
+            if key == Qt.Key.Key_Y:
+                from goal2.ui.replays import name_recording
+                name_recording(self.window, pitch, 'goal', pitch.goal_record, finished)
+            else:
+                finished()
+
+        def finished():
+            pitch.goal_record = None
+            pitch.controller.dismiss_goal()
+
+        def replay_answer(key):
+            if key == Qt.Key.Key_Y:
+                pitch.start_replay(pitch.goal_record['frames'], save_question)
+            else:
+                save_question()
+        if self.replay_auto:
+            replay_answer(Qt.Key.Key_Y)
+        else:
+            pitch.show_stop('replay', ACTION_REPLAY, detail, replay_answer, YES_NO)
 
     def _taker(self, pitch, decision):
         from goal2.ui.s16_choose import ChooseScreen
@@ -341,7 +376,8 @@ class MatchDay:
         names = controller.display.countries
         bench = (lambda: self._board_bench(phase, data)) if phase != "full" and self.bench is not None else None
         screen = BoardScreen(self.window, self.model, names, self.kind_name.upper(), phase, data,
-                             lambda note: self._after_board(phase, data, note), pitch.kits, bench=bench)
+                             lambda note: self._after_board(phase, data, note), pitch.kits, bench=bench,
+                             save_summary=phase == 'full' and not controller.quick)
         return self.window.push(screen)
 
     def _after_board(self, phase, data, note):

@@ -17,7 +17,7 @@ The notices, each answered by any key, as the original's "press any key":
 
 The box belongs to S17 (`PitchScreen.stop_box`): it is drawn over the pitch, and while it shows every key answers it.
 The goal questions (*action replay?*, *save this goal?*) are T181's: `show(..., answers=...)` takes keys with their
-words for a question, so that T181 adds them here.
+words for a question; T181 asks those questions once the goal's sample has been painted.
 """
 from __future__ import annotations
 
@@ -35,6 +35,10 @@ TAG = "THE MATCH STOPS"                 # [designed: s18-match-stop.png]
 ANY_KEY = "press any key"               # [confirmed: t156-067, t156-149: "press any key"]
 SUBSTITUTION_OPPORTUNITY = "SUBSTITUTION OPPORTUNITY"   # [confirmed: t156-067]
 SHOOTOUT = "PENALTY SHOOT-OUT"          # [confirmed: E031 C44-C46b; s17_pitch.STOPS]
+# [confirmed: T156-R1 steps 175–177] The goal questions; only Y or N answers them.
+ACTION_REPLAY = 'Do you want an action replay?'
+SAVE_GOAL = 'Do you want to save this goal?'
+YES_NO = {Qt.Key.Key_Y: 'Y yes', Qt.Key.Key_N: 'N no'}
 WIDTH = 640
 
 

@@ -4,6 +4,9 @@
 [confirmed: T156-R1 steps 118-119, 191-192, 270, 310; t156-119-halftime-board.png, t156-192-fulltime-board.png,
 t156-270-quick-halftime.png, t156-310-quick-fulltime.png]
 
+[designed: T181, #575; confirmed: T156-R1 198–199] At watched full time the board asks whether to save its summary;
+Y opens S21 for a name, N continues. F4 later shows that frozen board, including its stored names and kits.
+
 Everything shown is what the bridge's events and outcome give (`board`); nothing is invented:
 
 - the score, the half-time score, each side's scorers and minutes (the `goal` events);
@@ -72,7 +75,7 @@ def board(events, phase, quick):
 class BoardScreen(Screen):
     escape_text = "bench"
 
-    def __init__(self, window, model, names, kind, phase, data, onward, kits, bench=None):
+    def __init__(self, window, model, names, kind, phase, data, onward, kits, bench=None, save_summary=False):
         """`names`: the countries as [team 0, team 1]; `kind`: FRIENDLY, QUALIFYING…; `phase`: half, extra, full;
         `kits`: the match's kits (goal2/ui/kits.py), each name in its side's shirt, as the original's board
         [confirmed: t156-192-fulltime-board.png, Norway light red and Holland white; #583]; `bench`: what Esc opens
@@ -80,6 +83,8 @@ class BoardScreen(Screen):
         self.escape_text = "bench" if bench is not None else "continue"
         super().__init__(window)
         self.model, self.data, self.onward, self.phase, self.bench = model, data, onward, phase, bench
+        self.countries, self.kind, self.kits = list(names), kind, kits
+        self.save_summary = save_summary
         home, away = HOME, 1 - HOME
         self.title = f"{names[home]} v {names[away]} · {TIMES[phase].lower()}"
         self.name_label.setText(self.title)
@@ -103,7 +108,8 @@ class BoardScreen(Screen):
         row.addWidget(label(detail, "sub"))
         row.addStretch(1)
         motm = data["man_of_the_match"]
-        self.motm = label(f"MAN OF THE MATCH {full_name(model, motm)}" if motm else "", "value")
+        motm_name = data['motm_name'] if 'motm_name' in data else full_name(model, motm) if motm else ''
+        self.motm = label(f"MAN OF THE MATCH {motm_name}" if motm_name else "", "value")
         colour(self.motm, theme.VALUE)
         row.addWidget(self.motm)
         self.body_layout.addWidget(head)
@@ -114,7 +120,9 @@ class BoardScreen(Screen):
         for team in (home, away):
             frame, column = box(f"{names[team]} scorers")
             frame.setFixedWidth(300)
-            lines = [f"{full_name(model, w) if w else '?'} {m}′" for w, m in data["scorers"][team]] or ["—"]
+            frozen = data.get('scorer_names')
+            lines = [f"{frozen[team][i] if frozen is not None else full_name(model, w) if w else '?'} {m}′"
+                     for i, (w, m) in enumerate(data['scorers'][team])] or ['—']
             self.scorer_texts.append(lines)
             for line in lines:
                 column.addWidget(label(line, "value"))
@@ -160,12 +168,30 @@ class BoardScreen(Screen):
         self.body_layout.addLayout(middle, 1)
         self.note = para("", "sub")
         self.body_layout.addWidget(self.note)
+        if save_summary:
+            from goal2.ui.screen import set_para
+            set_para(self.note, 'Do you want to save the match summary? (Y/N)')
+            self.bind((Qt.Key.Key_Y,), 'save summary', self.save_board)
+            self.bind((Qt.Key.Key_N,), 'continue', self.without_saving)
+            self.set_enter('Answer Y or N', self.go_on)
+
+    def without_saving(self):
+        self.save_summary = False
+        return self.onward(None)
+
+    def save_board(self):
+        if self.save_summary:
+            from goal2.ui.replays import name_recording, summary_data
+            return name_recording(self.window_, self, 'summary', summary_data(self), self.without_saving)
 
     def go_on(self):
-        return self.onward(None)
+        if not self.save_summary:
+            return self.onward(None)
 
     def escape(self):
         """Esc: the bench (S19), else continue."""
+        if self.save_summary:
+            return self.without_saving()
         if self.bench is not None:
             return self.bench()
         return self.onward(None)
