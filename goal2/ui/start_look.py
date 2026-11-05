@@ -1,7 +1,7 @@
 """The look the start and new-game screens (S02–S05) add to the window's style sheet, and the small parts they share.
 
 [designed: owner, 2026-11-03, #526; docs/design/ui-2026-11/mockups/style.css] Colours are `theme`'s, by role only;
-text sizes are whole multiples of the 16 px cell (16, 32, 48 and 64 px, §3 "Text size"). The window appends
+normal text is 24 px after owner correction #598; headings retain 32, 48 and 64 px. The window appends
 `stylesheet()` to `theme.stylesheet`, so the page scales these lengths with the rest (goal2/desktop/fixed_page.py).
 """
 from __future__ import annotations
@@ -82,12 +82,13 @@ def key_value(rows, label_name="cardLabel"):
     grid = QGridLayout(widget)
     grid.setContentsMargins(0, 0, 0, 0)
     grid.setHorizontalSpacing(16)
-    grid.setVerticalSpacing(4)
+    grid.setVerticalSpacing(3)
     values = {}
     for r, (key, caption) in enumerate(rows):
         caption_label = label(caption, label_name)
         grid.addWidget(caption_label, r, 0)
         value = label("", "value")
+        value.setWordWrap(True)
         grid.addWidget(value, r, 1)
         values[key] = value
         values[key].caption = caption_label
@@ -133,7 +134,7 @@ class KeyItem(Clickable):
     def __init__(self, text, caption, handler, name="option"):
         super().__init__(name)
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(16, 12, 16, 12)
+        layout.setContentsMargins(16, 9, 16, 9)
         layout.setSpacing(12)
         self.text_label = label(text, "optionText")
         self.text_label.setWordWrap(True)

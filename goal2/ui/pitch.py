@@ -20,7 +20,7 @@ it reports it (`drawn`), and only then does the screen acknowledge it to the bri
   drew it light red from one capture, where light red was Norway's kit: #583).
 - **The ball** shows only on an empty cell [confirmed: 0791:8F10 draw_ball], as a small bright square, as the mockup
   draws it [designed: s17-pitch.html].
-- **Space** enlarges the commentary: the whole commentary over the right part of the pitch, as the original's
+- **Space** enlarges the commentary: recent commentary in a larger panel over the right part of the pitch, as the original's
   commentary page covers it [confirmed: E031 C08, C39c; match-commentary.png].
 
 The officials are not drawn: the palette has no role for their colour [designed: T166; a design question].
@@ -180,7 +180,7 @@ class PitchWidget(QWidget):
             painter.fillRect(ball.x() - side // 2, ball.y() - side // 2, side, side, QColor(theme.TEXT_BRIGHT))
 
     def _commentary(self, painter, scale):
-        """Space: the whole commentary over the right part of the pitch, newest at the bottom."""
+        """Space: recent commentary in a larger panel over the right part of the pitch, newest at the bottom."""
         field = self.field()
         panel = QRect(round(field.left() + field.width() * 0.45), field.top() + round(6 * scale),
                       round(field.width() * 0.55) - round(6 * scale), field.height() - round(12 * scale))
@@ -189,11 +189,13 @@ class PitchWidget(QWidget):
         pen.setWidth(max(1, round(2 * scale)))
         painter.setPen(pen)
         painter.drawRect(panel)
-        painter.setFont(self.type_at(theme.CELL))
-        line = round(theme.CELL * 1.5 * scale)
+        painter.setFont(self.type_at(theme.TEXT))
+        line = round(theme.TEXT * 1.5 * scale)
         rows = max(1, (panel.height() - 2 * line) // line)
         painter.setPen(QColor(theme.HEADING))
         painter.drawText(panel.left() + line, panel.top() + line, "COMMENTARY")
         painter.setPen(QColor(theme.TEXT_BRIGHT))
-        for n, text in enumerate(self.commentary[-rows:]):
-            painter.drawText(panel.left() + line, panel.top() + 2 * line + n * line + line // 2, text)
+        from goal2.ui.readable_text import recent_text
+        content=panel.adjusted(line,2*line,-line,-line//2)
+        text=recent_text(self.commentary,painter.fontMetrics(),content.width(),content.height(),maximum=100)
+        painter.drawText(content,int(Qt.TextFlag.TextWordWrap),text)

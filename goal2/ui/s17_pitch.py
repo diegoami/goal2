@@ -41,7 +41,7 @@ import copy
 import time
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QSizePolicy
 
 from goal2.desktop.match_view import MAX_BACKLOG, PLAYBACK_RATE, Display
 from goal2.desktop.pygame_viewer import MARKS
@@ -493,6 +493,7 @@ class PitchScreen(Screen):
         self.recent = [label("", "value"), label("", "value")]
         for widget in self.recent:
             widget.setAlignment(Qt.AlignmentFlag.AlignRight)
+            widget.setWordWrap(True)
             recent.addWidget(widget)
         row.addLayout(recent)
         self.body_layout.addWidget(head)
@@ -505,9 +506,12 @@ class PitchScreen(Screen):
         self.commentary = QLabel("")
         self.commentary.setObjectName("value")
         self.commentary.setTextFormat(Qt.TextFormat.PlainText)
+        self.commentary.setWordWrap(True)
+        self.commentary.setSizePolicy(QSizePolicy.Policy.Ignored,QSizePolicy.Policy.Expanding)
         self.commentary.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         inner.addWidget(self.commentary, 1)
         self.status = label("", "sub")
+        self.status.setWordWrap(True)
         inner.addWidget(self.status)
         side = self.kits.name(managed) if managed is not None else "none"
         tag_row = QHBoxLayout()
@@ -648,7 +652,9 @@ class PitchScreen(Screen):
         texts = [e["data"].get("text", "") for e in shown if e["kind"] == "commentary"][-2:]
         for widget, text in zip(self.recent, [""] * (2 - len(texts)) + texts):
             _set(widget, text)
-        _set(self.commentary, "\n".join(self.lines[-COMMENTARY_ROWS:]))
+        from goal2.ui.readable_text import recent_text
+        _set(self.commentary,recent_text(self.lines,self.commentary.fontMetrics(),
+                                         self.commentary.width(),self.commentary.height(),COMMENTARY_ROWS))
         _set(self.status, f"Speed {controller.display.speed_markers()} · {controller.display.speed_name().lower()}"
                           f" · marks: {MARKS[self.pitch.marks].lower()}")
         _set(self.note, controller.note)
@@ -671,7 +677,7 @@ class PitchScreen(Screen):
         return self.controller.display.speed_name()
 
     def toggle_commentary(self):
-        """Space: the whole commentary over the pitch, and back. [confirmed: E031 C08, C39c]"""
+        """Space: recent commentary in a larger reading panel, and back. [confirmed: E031 C08, C39c]"""
         self.pitch.enlarged = not self.pitch.enlarged
         self.pitch.commentary = self.lines
         self.pitch.update()

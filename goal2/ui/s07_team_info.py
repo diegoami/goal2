@@ -81,7 +81,7 @@ class TeamInfoScreen(Screen):
         inner.addSpacing(8)
         self.rows = []
         for i in range(GROUP):
-            r = Row([None, 130], on_click=lambda i=i: self.click_row(i))
+            r = Row([None, 160], on_click=lambda i=i: self.click_row(i))
             r.cells[1].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             inner.addWidget(r)
             self.rows.append(r)
@@ -220,7 +220,7 @@ class CountryTacticsScreen(Screen):
         head_row = QHBoxLayout()
         head_row.setSpacing(28)
         head_row.addWidget(label(c["name"], "h1"))
-        head_row.addWidget(label(f"formation {c['formation']} · read only: only your own tactics are yours to change",
+        head_row.addWidget(para(f"formation {c['formation']} · read only: only your own tactics are yours to change",
                                  "sub"))
         head_row.addStretch(1)
         head_layout.addLayout(head_row)

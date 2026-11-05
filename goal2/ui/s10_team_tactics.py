@@ -77,6 +77,7 @@ class TeamTacticsScreen(Screen):
         table_layout.addSpacing(10)
         header = Row(-1, WIDTHS, margins=(8, 4, 8, 4), underline=True)
         header.set(("LINE", "NOW", "OTHER OPTION"), (theme.HEADING,) * 3)
+        for cell in header.cells: cell.setWordWrap(True)
         header.setCursor(Qt.CursorShape.ArrowCursor)
         table_layout.addWidget(header)
         self.rows = []
@@ -84,6 +85,7 @@ class TeamTacticsScreen(Screen):
             line = Row(i, WIDTHS, margins=(8, 6, 8, 6), underline=True)
             line.chosen.connect(self.click)
             table_layout.addWidget(line)
+            for cell in line.cells: cell.setWordWrap(True)
             self.rows.append(line)
         table_layout.addSpacing(14)
         self.note = para("", "sub")
@@ -92,10 +94,11 @@ class TeamTacticsScreen(Screen):
         table_layout.addStretch(1)
         boxes.addWidget(table, 1)
         right, right_layout = box("Characteristics")
-        right.setFixedWidth(420)
+        right.setFixedWidth(360)
         self.characteristics = KeyValues(CHARACTERISTICS, label_width=110, tone=theme.TEXT_BRIGHT)
         for name in CHARACTERISTICS:
             self.characteristics.set(name, NOT_DECODED)
+        for value in self.characteristics.values.values(): value.setWordWrap(True)
         right_layout.addWidget(self.characteristics)
         right_layout.addStretch(1)
         boxes.addWidget(right)

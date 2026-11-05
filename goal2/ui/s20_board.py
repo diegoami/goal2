@@ -160,7 +160,9 @@ class BoardScreen(Screen):
             for name, values in zip(("possession", "territory"), bars or (None, None)):
                 text = (f"{name}: {values[home]} · {values[away]} (the board's counts; its bar is not decoded)"
                         if values is not None else f"{name}: {NOT_YET}")
-                column.addWidget(label(text, "sub"))
+                text_label=label(text, "sub")
+                text_label.setWordWrap(True)
+                column.addWidget(text_label)
             column.addStretch(1)
         middle.addWidget(scorer_boxes[0])
         middle.addWidget(stats, 1)
