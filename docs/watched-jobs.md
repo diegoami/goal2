@@ -11,7 +11,10 @@ it when leaving that owner. It imports neither Qt nor Pygame and starts no serve
 the game with `open`: once, and again only when the game a match plays (the publication's prepared state and the
 template) differs from the last one sent, or the process is new. It ends when the owner's last bridge closes (#417).
 One match is attached at a time; the engine's reader thread queues that match's replies and the bridge's polls drain
-them, so a reply of a cancelled or replaced match never reaches the next one.
+them, so a reply of a cancelled or replaced match never reaches the next one. [designed: T161] No match runs over
+file journals; the per-match workers and their journals were deleted. Today's window's quick friendly (B2,
+`goal2/desktop/jobs.py`, `worker.py`) is not a bridge here: it plays the Python stand-in in its own worker, belongs
+to today's window and goes with it (T170).
 
 ```python
 jobs = WatchedJobs(owner)
@@ -42,7 +45,7 @@ uses the existing explicit-data session-save encoding; IPC executes no serialize
 Python objects. These bounds limit work per call, not elapsed response time.
 
 [designed] Full time is a presentation event, not completion. Publication waits
-for the engine's `complete` [designed: T160; the old worker's successful exit], an exactly matching complete live
+for the engine's `complete` [designed: T160], an exactly matching complete live
 transcript and T64's complete-result, input, Memory/RNG and tail checks; a reply after `complete` (the engine's
 end included) before the publication fails the match. `outcome` becomes available
 only after successful publication. Repeated reads/actions after consumption fail;

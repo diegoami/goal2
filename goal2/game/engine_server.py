@@ -2,18 +2,17 @@
 window over one pipe, `python -m goal2.game.engine_server` under engine_python() (PyPy 3.11).
 
 The protocol is docs/engine-process.md's; it is the one docs/design/technology-2026-11/README.md §3.4 proposes,
-from the prototype tools/tech_probe/pipe_child.py. Both directions are packets: a 4-byte big-endian length, that
+from T158's prototype (`pipe_child.py`, deleted with tools/tech_probe/ by T161). Both directions are packets: a 4-byte big-endian length, that
 many bytes of UTF-8 JSON (an object, the header), then, when the header has `size`, that many bytes of binary
 payload. Requests carry `op`, replies `kind` and `value`.
 
-The match is today's workers' match, never a second driver [designed: T159, the task's hazard]: the same
-preparation (prepare_watched, or prepare_competitive with `substitutions=(5, 5)`, as goal2.game.watched_worker and
-goal2.desktop.competitive_worker; a friendly with BM-7's unlimited budget, watched_match.FRIENDLY_SUBSTITUTIONS, T180), the same `_drive_match`, and the bench's answers, pauses and LEAD pacing through
-the workers' own BenchPolicy, fed from the pipe instead of the command journal.
+The match is the file workers' match, never a second driver [designed: T159, the task's hazard; T161 deleted the
+workers]: preparation by prepare_watched, or prepare_competitive with `substitutions=(5, 5)`; a friendly has
+BM-7's unlimited budget (watched_match.FRIENDLY_SUBSTITUTIONS, T180). The shared `_drive_match` and the bench's
+answers, pauses and LEAD pacing use BenchPolicy (the workers', moved here by T161), fed from the pipe.
 
-Commands arrive on a reader thread and wait in a queue; the match reads them where the workers read their journal
-(each paced sample and each decision wait) and, for `cancel`, also at each event and sample, so a match without the
-bench can be cancelled too. End of stdin (the window gone) ends the process wherever it waits (#417).
+Commands arrive on a reader thread and wait in a queue; the match reads them at each paced sample and each decision
+wait and, for `cancel`, also at each event and sample, so a match without the bench can be cancelled too. End of stdin (the window gone) ends the process wherever it waits (#417).
 
 Nothing else of this process writes to the protocol's stream: file descriptor 1 is moved to a private descriptor at
 start, and fd 1 and sys.stdout then point at stderr, so a stray print or warning lands in the diagnostics.
@@ -27,12 +26,12 @@ import struct
 import sys
 import threading
 
-# [designed: T159] The bounds of one packet. A header holds at most a completed match's result and events (today's
-# whole completion record is bounded by watched_jobs.MAX_PACKET, 8 MiB, with the memory in it); a payload holds
+# [designed: T159] The bounds of one packet. A header holds at most a completed match's result and events (the file
+# journal bounded its whole completion record at 8 MiB, with the memory in it); a payload holds
 # the encoded game (26.7 MB today, measurements/T158 `open_bytes`) or a completed match's memory.
 MAX_HEADER = 16 * 1024 * 1024
 MAX_PAYLOAD = 64 * 1024 * 1024
-# The options a match request may carry: today's workers pass exactly these to _drive_match (watched_jobs._start).
+# The options a match request may carry: the bridges pass exactly these to _drive_match (watched_jobs._start).
 OPTIONS = ("reference_seed", "delay_byte", "record_draws")
 KINDS = ("watched", "competitive")
 
@@ -110,9 +109,8 @@ _EOF = object()
 
 
 class Commands:
-    """[designed: T159] The match's view of the pipe, with the interface BenchPolicy reads from the workers' command
-    journal (goal2.game.watched_jobs.CommandReader): the latest acknowledged sample, the Enter presses counted, the
-    answers in order, and `wait(ready)`."""
+    """[designed: T159] The match's view of the pipe, the interface BenchPolicy reads: the latest acknowledged
+    sample, the Enter presses counted, the answers in order, and `wait(ready)`."""
 
     def __init__(self, inbox: queue.Queue):
         self.inbox = inbox
@@ -157,23 +155,53 @@ class Commands:
             self._apply(item)
 
     def wait(self, ready):
-        """Read until `ready()`; the commands read at least once, as CommandReader.wait does."""
+        """Read until `ready()`; the commands are read at least once."""
         self.poll()
         while not ready():
             self._apply(self.inbox.get())
 
 
-def _bench_policy(commands, send):
-    from goal2.game.watched_worker import BenchPolicy
+class BenchPolicy:
+    """[designed: T102; T159] The window's answers, pauses and acknowledgements, read from the pipe (Commands). A
+    decision is announced as `decision` before the wait. [designed: T161] The deleted file worker's BenchPolicy, moved
+    here with T159's PipeBench folded in."""
 
-    class PipeBench(BenchPolicy):
-        """[designed: T159] The workers' BenchPolicy; a decision is also announced as `decision` before the wait."""
+    def __init__(self, commands, send):
+        self.commands = commands
+        self.send = send
+        self.asked = 0
+        self.paused = 0
 
-        def decide(self, event):
-            send("decision", {"decision": self.asked, "event": _event_value(event)})
-            return super().decide(event)
+    def decide(self, event):
+        number = self.asked
+        self.send("decision", {"decision": number, "event": _event_value(event)})
+        self.asked += 1
+        self.commands.wait(lambda: bool(self.commands.answers))
+        decision, pairs = self.commands.answers.pop(0)
+        if decision != number:
+            raise ValueError("watched answer is for another decision")
+        return pairs
 
-    return PipeBench(commands, send)
+    def pace(self, sequence):
+        """Send sample `sequence` only within LEAD of the acknowledged one. The wait reads the commands at least
+        once, so an Enter read here is applied after this sample."""
+        from goal2.game.watched_jobs import LEAD
+        self.commands.wait(lambda: sequence <= self.commands.ack + LEAD)
+
+    def pause_now(self, sequence):
+        # [designed: T102] Only Enters read before this sample was sent count, so a pause lands after a definite
+        # sample (the one after the read).
+        if self.commands.pauses > self.paused:
+            self.paused = self.commands.pauses
+            return True
+        return False
+
+    def pause_dropped(self, sequence):
+        # [designed: #316] The window clears its pending pause, so the player's next Enter is sent.
+        self.send("pause_dropped", sequence)
+
+    def answered(self, report):
+        self.send("answered", report)
 
 
 def _event_value(event):
@@ -261,10 +289,10 @@ class Server:
         if not isinstance(options, dict) or set(options) - set(OPTIONS):
             raise ValueError("invalid engine match options")
         fixture = Fixture(**header["fixture"])
-        # [designed: T159] Each match plays the game as opened: the workers load it afresh for every match.
+        # [designed: T159] Each match plays the game as opened, a fresh copy, as the file workers loaded it afresh.
         state, original = copy.deepcopy(self.game[0]), self.game[1]
         commands = Commands(self.inbox)
-        policy = _bench_policy(commands, self.send) if bench else None
+        policy = BenchPolicy(commands, self.send) if bench else None
 
         def observe(event):
             commands.poll()

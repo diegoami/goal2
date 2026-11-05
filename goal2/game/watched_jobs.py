@@ -3,64 +3,32 @@
 [designed: owner, 2026-11-03, #527 D3; T160] The match plays in the owner's one engine process
 (goal2.game.engine_process, docs/engine-process.md), shared by the owner's bridges (MatchEngine). Each poll
 consumes at most 32 of the match's replies. Completion waits for the engine's `complete`, a complete
-transcript and T64 validation.
-
-The file journal below (_write, CommandReader, _PreparingProcess, _remove_folder) is the old per-match
-worker's (goal2.game.watched_worker, goal2.desktop.competitive_worker), unused by the window; T161 removes it.
+transcript and T64 validation. [designed: T161] No match runs over file journals.
 """
-from pathlib import Path
 import collections
 import copy
-import json
-import base64
-import zlib
 from dataclasses import asdict
-from goal2.game.session_save import encode, _json_value, _restore_json_value
-import struct
+from goal2.game.session_save import encode
 import subprocess
-import sys
-import tempfile
 import threading
 import time
 
 from goal2.engine.original_match.match import Event
 from goal2.game.watched_match import WatchedOutcome, BENCH_CONTEXTS, PROMPT_CONTEXTS
 from goal2.game.watched_publication import WatchedPublication
-from goal2.game.watched_pitch import (MAX_FRAME_BYTES, MAX_FRAME_PACKET, FRAME_READ_BUDGET,
-                                      FRAME_POLL_BUDGET, validate)
+from goal2.game.watched_pitch import FRAME_POLL_BUDGET, validate
 
-MAX_MEMORY = 32 * 1024 * 1024
 # [designed: #311] How long a caller that must end a job keeps cancelling it (cancel_and_reap).
 REAP_DEADLINE = 30
-MAX_PACKET = 8 * 1024 * 1024
-READ_BUDGET = 65536
-# [designed: T102] Pacing: the child writes pitch sample k only once the parent has acknowledged
+# [designed: T102] Pacing: the engine sends pitch sample k only once the parent has acknowledged
 # sample k - LEAD as shown, so it is never more than LEAD samples ahead of the player's view. 64 is
-# the viewer's own bounded queue (match_view.MAX_BACKLOG): the child never runs ahead of what the
+# the viewer's own bounded queue (match_view.MAX_BACKLOG): the engine never runs ahead of what the
 # view can hold, and an Enter in play reaches the original within 64 samples of what the player
 # sees (about a second at Normal, 60 per second; 6.4 s at Slowest, 10). It is large enough for the
 # parent's 30 ms polls and the viewer's acknowledgements to keep Fastest (240) fed.
 LEAD = 64
-# [designed: T102] The command journal's bounds: one ack per pitch sample (at most
-# watched_pitch.MAX_FRAMES), a pause and an answer per decision, each packet small.
-MAX_COMMAND_PACKET = 4096
-MAX_COMMANDS = 2 * 1024 * 1024
+# [designed: T102] The most (off, on) pairs one answer carries.
 MAX_PAIRS = 20
-
-
-def _write(stream, token, sequence, kind, value):
-    if isinstance(value, Event):
-        value = asdict(value)
-    elif isinstance(value, WatchedOutcome):
-        value = {'result': value.result, 'memory': base64.b64encode(zlib.compress(value.memory)).decode('ascii'),
-                 'events': [asdict(event) for event in value.events],
-                 'seeds': value.seeds, 'engine_year': value.engine_year}
-    packet = json.dumps(_json_value([token, sequence, kind, value]), allow_nan=False,
-                        separators=(',', ':')).encode('utf8')
-    if len(packet) > MAX_PACKET:
-        raise ValueError('watched IPC packet exceeds limit')
-    stream.write(struct.pack('!I', len(packet)) + packet)
-    stream.flush()
 
 
 def _choice(value):
@@ -124,53 +92,6 @@ def _pairs(value):
     return [[off, on] for off, on in value]
 
 
-class CommandReader:
-    """[designed: T102] The child's side of the command journal: the latest acknowledged sample,
-    the Enter presses and the answers, read in bounded batches."""
-    def __init__(self, path, token):
-        self.stream = open(path, 'rb')
-        self.token = token
-        self.sequence = 0
-        self.buffer = bytearray()
-        self.ack = -1
-        self.pauses = 0
-        self.answers = []
-
-    def read(self):
-        self.buffer.extend(self.stream.read(READ_BUDGET))
-        if self.stream.tell() > MAX_COMMANDS:
-            raise ValueError('watched command journal exceeds limit')
-        while len(self.buffer) >= 4:
-            size = struct.unpack('!I', self.buffer[:4])[0]
-            if size > MAX_COMMAND_PACKET:
-                raise ValueError('watched command packet exceeds limit')
-            if len(self.buffer) < size + 4:
-                break
-            packet = bytes(self.buffer[4:4 + size])
-            del self.buffer[:4 + size]
-            identity, number, kind, value = json.loads(packet)
-            if identity != self.token or type(number) is not int or number != self.sequence:
-                raise ValueError('watched command identity/order differs from the job')
-            self.sequence += 1
-            if kind == 'ack' and type(value) is int and value >= self.ack:
-                self.ack = value
-            elif kind == 'pause' and value is None:
-                self.pauses += 1
-            elif (kind == 'answer' and isinstance(value, dict) and set(value) == {'decision', 'substitutions'}
-                    and type(value['decision']) is int):
-                self.answers.append((value['decision'], _pairs(value['substitutions'])))
-            else:
-                raise ValueError('invalid watched command')
-
-    def wait(self, ready, pause=0.002):
-        """Read until `ready()`; the parent's cancel terminates a child waiting here (#254)."""
-        while True:
-            self.read()
-            if ready():
-                return
-            time.sleep(pause)
-
-
 def _event(value):
     event = Event(**value)
     if (not isinstance(event.kind, str) or type(event.minute) is not int
@@ -192,95 +113,6 @@ def _report(value):
         _pairs(value[name])
     _pairs([r[:2] for r in value['refused']])
     return copy.deepcopy(value)
-
-
-def _memory(value):
-    decoder = zlib.decompressobj()
-    memory = decoder.decompress(base64.b64decode(value, validate=True), MAX_MEMORY + 1)
-    if len(memory) > MAX_MEMORY or not decoder.eof or decoder.unused_data:
-        raise ValueError('invalid or oversized watched memory')
-    return memory
-
-
-def _remove_folder(folder, attempts=40, pause=0.05):
-    """[designed: #309] Remove a job's private folder. Windows can refuse to delete a file for a
-    moment after the process that held it ended (WinError 32, seen on the Windows runner during
-    a cancel at startup), so a refusal is retried for about two seconds. One that persists is
-    raised, keeping the job owned and retryable as #254 requires."""
-    for attempt in range(attempts):
-        try:
-            folder.cleanup()
-            return
-        except PermissionError:
-            if attempt + 1 == attempts:
-                raise
-            time.sleep(pause)
-
-
-class _PreparingProcess:
-    """[designed: #254] Own private input preparation until an owner-thread launch.
-
-    The thread only encodes/writes the captured job, never reads the active owner
-    or launches a child. Popen-compatible lifecycle methods retain ownership when
-    a bounded wait expires; cancelled preparation can never launch a worker.
-    """
-    def __init__(self, state, template, source, command, **options):
-        self.args = command
-        self._options = options
-        self._process = None
-        self._cancelled = False
-        self._error = None
-        def prepare():
-            try:
-                source.write_bytes(encode(state, template))
-            except BaseException as exc:
-                self._error = exc
-        self._thread = threading.Thread(target=prepare, name='goal2-watched-input')
-        self._thread.start()
-
-    @property
-    def pid(self):
-        return self._process.pid if self._process is not None else None
-
-    @property
-    def returncode(self):
-        if self._process is not None:
-            return self._process.returncode
-        return 0 if self._cancelled and not self._thread.is_alive() else None
-
-    def poll(self):
-        if self._thread.is_alive():
-            return None
-        self._thread.join()
-        if self._cancelled:
-            return self._process.poll() if self._process is not None else 0
-        if self._error is not None:
-            raise self._error
-        if self._process is None:
-            self._process = subprocess.Popen(self.args, **self._options)
-        return self._process.poll()
-
-    def terminate(self):
-        self._cancelled = True
-        if self._process is not None:
-            self._process.terminate()
-
-    def kill(self):
-        self._cancelled = True
-        if self._process is not None:
-            self._process.kill()
-
-    def wait(self, timeout=None):
-        started = time.monotonic()
-        self._thread.join(timeout)
-        if self._thread.is_alive():
-            raise subprocess.TimeoutExpired(self.args, timeout)
-        if self._process is None:
-            if self._cancelled:
-                return 0
-            self.poll()
-        remaining = None if timeout is None else max(0, timeout-(time.monotonic()-started))
-        return self._process.wait(timeout=remaining)
 
 
 # --- the bridge on the engine process --------------------------------------------------------------------------

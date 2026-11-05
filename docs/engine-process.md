@@ -4,7 +4,12 @@
 under `engine_python()` (PyPy 3.11, `goal2/game/engine_python.py`), and talks to it over that process's stdin and
 stdout. The choice and its measurements are in
 [design/technology-2026-11/README.md](design/technology-2026-11/README.md) §3.3–3.4 (`measurements/T158/engine-*.json`);
-the bugs of the file journals it replaces are in §3.2.
+the bugs of the file journals it replaced are in §3.2. [designed: T161] No match runs over file journals: the
+watched and competitive workers and their journals were deleted.
+
+[designed: owner, §6 item 17; T161] One file channel is left, and it is not the engine's: today's window plays its
+quick friendly on the Python stand-in in a worker of its own (B2: `goal2/desktop/jobs.py`, `goal2/desktop/worker.py`).
+It belongs to today's window and goes with it (T170).
 
 | Side | Module |
 | --- | --- |
@@ -56,12 +61,12 @@ The window adds one of its own: `death` {`code`, `stderr`, `error`} (below).
 
 ## The match
 
-The engine plays a match exactly as the two file workers do, never with a driver of its own: `prepare_watched`, or
-`prepare_competitive` with `substitutions=(5, 5)` (`goal2/game/watched_worker.py`,
-`goal2/desktop/competitive_worker.py`), then `_drive_match` with the pitch samples when `frames` is set. With `bench`
-(which needs `frames`) the workers' own `BenchPolicy` answers the decisions, places the Enter and paces the samples:
-sample k is sent only once sample k − LEAD has been acknowledged (`watched_jobs.LEAD`). The pipe only replaces the
-command journal it reads.
+The engine plays a match with the shared driver, never with one of its own: `prepare_watched`, or
+`prepare_competitive` with `substitutions=(5, 5)`, then `_drive_match` with the pitch samples when `frames` is set.
+With `bench` (which needs `frames`) `BenchPolicy` (`engine_server.py`) answers the decisions, places the Enter and
+paces the samples: sample k is sent only once sample k − LEAD has been acknowledged (`watched_jobs.LEAD`).
+[designed: T161] These are the deleted file workers' preparation, driver and `BenchPolicy`, unchanged but for the
+channel they read.
 
 [designed: T167, #541] With `prompts` the match is played with the kit's set-piece prompt (`Match(set_piece=True)`)
 and the window also answers `watched_match.PROMPT_CONTEXTS`: the set-piece taker (`set_piece`, answered with `taker`;
@@ -70,10 +75,10 @@ the menu before extra time (`extra_time`, answered with no substitutions). Each 
 bench decision is, numbered in the same sequence, and passed to `Match.answer` as it is. A match whose takers all
 get no key plays as one without the prompts (the same memory and seeds; T167's test).
 
-Commands arrive on a reader thread of the engine and wait in a queue. The match reads them where the workers read
-their journal (each paced sample and each decision wait) and, so that a match without the bench can be cancelled too,
-also before each event and sample. A `cancel` read there ends the match with `cancelled`, and the process waits for
-the next match; commands left over from a match that has ended are ignored.
+Commands arrive on a reader thread of the engine and wait in a queue. The match reads them at each paced sample and
+each decision wait and, so that a match without the bench can be cancelled too, also before each event and sample. A
+`cancel` read there ends the match with `cancelled`, and the process waits for the next match; commands left over
+from a match that has ended are ignored.
 
 ## Lifetimes
 
@@ -89,8 +94,8 @@ the next match; commands left over from a match that has ended are ignored.
 
 ## The window's matches
 
-[designed: T160] The window's watched and competitive matches play here, through the bridge API they had on the
-file journals ([watched-jobs.md](watched-jobs.md)): `WatchedJobs` (the watched Play, under
+[designed: T160] The window's watched and competitive matches play here, through the bridge API
+([watched-jobs.md](watched-jobs.md)): `WatchedJobs` (the watched Play, under
 `goal2/desktop/watched.py`'s `WatchedController`) and `CompetitiveJobs` (`goal2/desktop/competitive.py`; [designed: T176]
 also under `WatchedController` for a watched qualifier, `kind: competitive` with `frames` and `bench`). The owner
 (the window's model) holds one `MatchEngine`, which both bridges share:
