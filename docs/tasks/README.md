@@ -348,6 +348,8 @@ operational status.
 
 - [T182](T182.md): split the slowest test modules so the gate's jobs balance (#585).
 
+- [T183](T183.md): continue after the selected captain is substituted (#593).
+
 - [T165](T165.md): new window, squad, pool and tactics, S08–S10, m3 Track A (#539).
 
 - [T170](T170.md): the native tournament continuation and world turn, the Python route plays a whole season, m3 Track B (#566).
