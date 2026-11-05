@@ -166,7 +166,6 @@ jobs:
     env:
       PYTHONUTF8: '1'
       QT_QPA_PLATFORM: xcb
-      RCLONE_CONFIG: ${{ runner.temp }}/goal2-native-rclone.conf
     steps:
       - uses: actions/checkout@v4
         with:
@@ -185,6 +184,7 @@ jobs:
       - name: Original fixtures for the native probe (never uploaded)
         env:
           GOAL2_RCLONE_TOKEN: ${{ secrets.GOAL2_RCLONE_TOKEN }}
+          RCLONE_CONFIG: ${{ runner.temp }}/goal2-native-rclone.conf
         run: |
           test -n "$GOAL2_RCLONE_TOKEN" || { echo "Missing owner's Drive token: native proof cannot run"; exit 1; }
           version=v1.75.2; zip=rclone-$version-linux-amd64.zip

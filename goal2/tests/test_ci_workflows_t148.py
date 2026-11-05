@@ -32,6 +32,8 @@ class Workflows(unittest.TestCase):
                 self.assertIn('--factor "${{ matrix.factor }}"', job)
                 self.assertIn('measurements/T148/run_native.py', job)
                 self.assertIn('secrets.GOAL2_RCLONE_TOKEN', job)
+                # GitHub's runner context exists in steps, not in job-level env.
+                self.assertNotIn('${{ runner.', job.split('    steps:', 1)[0])
                 self.assertIn('sha256sum -c', job)
                 self.assertIn('check_goaldat.py', job)
                 self.assertIn('T144-E015-snap-0003.sav', job)
