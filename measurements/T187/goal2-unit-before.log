@@ -1,0 +1,45 @@
+test_initial_explicit_captain_is_still_selected (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_initial_explicit_captain_is_still_selected) ... ok
+test_later_captain_choice_uses_the_guests_eligible_default (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_later_captain_choice_uses_the_guests_eligible_default) ... FAIL
+test_set_piece_target_selection_is_preserved (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_set_piece_target_selection_is_preserved) ... ok
+test_withdrawn_captain_is_not_forced_from_bench_slot_fourteen (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_withdrawn_captain_is_not_forced_from_bench_slot_fourteen) ... FAIL
+test_zero_kickoff_seed_and_delay_are_not_reapplied_later (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_zero_kickoff_seed_and_delay_are_not_reapplied_later) ... FAIL
+
+======================================================================
+FAIL: test_later_captain_choice_uses_the_guests_eligible_default (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_later_captain_choice_uses_the_guests_eligible_default)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_captain_replacement_t187.py", line 57, in test_later_captain_choice_uses_the_guests_eligible_default
+    self.assertEqual(match._captain_key(), S.ENTER)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 177 != 13
+
+======================================================================
+FAIL: test_withdrawn_captain_is_not_forced_from_bench_slot_fourteen (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_withdrawn_captain_is_not_forced_from_bench_slot_fourteen)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_captain_replacement_t187.py", line 50, in test_withdrawn_captain_is_not_forced_from_bench_slot_fourteen
+    self.assertEqual(match._captain_key(), S.ENTER)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 177 != 13
+
+======================================================================
+FAIL: test_zero_kickoff_seed_and_delay_are_not_reapplied_later (goal2.tests.test_captain_replacement_t187.CaptainReentryT187.test_zero_kickoff_seed_and_delay_are_not_reapplied_later)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_captain_replacement_t187.py", line 71, in test_zero_kickoff_seed_and_delay_are_not_reapplied_later
+    self.assertEqual(match.declarations, [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('main seed DS:7B62 at the captain prompt[81 chars][0])] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('main seed DS:7B62 at the captain prompt', 97122, b'\x00\x00')
+
++ []
+- [('main seed DS:7B62 at the captain prompt', 97122, b'\x00\x00'),
+-  ('delay byte [A923]+0x3F at the captain prompt', 196671, [0])]
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+FAILED (failures=3)
