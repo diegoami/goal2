@@ -45,4 +45,81 @@ class EditProtocol(unittest.TestCase):
         self.assertEqual(jobs.sent,[])
         self.assertIsNotNone(jobs.waiting)
 
+
+@requires.need(modules=('unicorn',),slow=True,**requires.HALFTIME)
+class ActualStoppedEdits(unittest.TestCase):
+    def test_two_edits_and_one_refusal_stay_stopped_then_publish_once(self):
+        import copy
+        import tempfile
+        import time
+        from pathlib import Path
+        from goal2.tests.test_watched_bench_t102 import model,fixture_of
+        from goal2.game.watched_jobs import WatchedJobs
+        with tempfile.TemporaryDirectory() as folder:
+            owner=model(Path(folder)/'edits.g2save')
+            before=copy.deepcopy(owner.state)
+            fixture=fixture_of(before)
+            team=0 if fixture.first==before.managed_country else 1
+            jobs=WatchedJobs(owner)
+            phase=0; pairs=[]; frozen=None; original_left=None; stopped_minute=None
+            try:
+                token=jobs.start(fixture,delay_byte=0,record_draws=True,frames=True,bench=True)
+                deadline=time.monotonic()+900
+                while jobs.busy:
+                    self.assertLess(time.monotonic(),deadline,'stopped edits did not finish')
+                    jobs.poll(token)
+                    if not jobs.busy:break
+                    jobs.poll_frames(token)
+                    if not jobs.busy:break
+                    if jobs._frame_sequence-1>jobs._frame_ack:
+                        jobs.ack_frames(token,jobs._frame_sequence-1)
+                    if jobs.waiting is None or not jobs.frames_drained():
+                        time.sleep(.002);continue
+                    decision=jobs.waiting;data=decision.data
+                    if data['context']!='half_time':
+                        jobs.answer(token,[]);continue
+                    self.assertLess(phase,4,'Play returned to an unexpected duplicate edit')
+                    self.assertEqual(owner.state,before,'a stopped edit published the unfinished career')
+                    if phase==0:
+                        positions=dict(data['positions'])
+                        off=[w for w in data['eleven'] if positions[w]!=0 and w!=before.captain]
+                        on=[w for w in data['bench'] if positions[w]!=0]
+                        pairs=[[off[i],on[i]] for i in range(2)]
+                        original_left=data['substitutions_left']
+                        frozen=jobs._frame_sequence
+                        stopped_minute=decision.minute
+                        jobs.edit(token,[pairs[0]]);phase=1;continue
+                    self.assertTrue(data.get('edited'))
+                    self.assertEqual(decision.minute,stopped_minute)
+                    self.assertEqual(jobs._frame_sequence,frozen,'the pitch advanced before Play')
+                    self.assertEqual(data['substitutions_left'],original_left-min(phase,2))
+                    self.assertFalse(data.get('requested'))
+                    for off,on in pairs[:min(phase,2)]:
+                        self.assertIn(off,data['bench']);self.assertIn(on,data['eleven'])
+                    if phase in (1,2):
+                        self.assertEqual(jobs.reports[-1]['asked'],[pairs[phase-1]])
+                        self.assertEqual(jobs.reports[-1]['made'],[pairs[phase-1]])
+                        self.assertEqual(jobs.reports[-1]['requested'],[])
+                    if phase==1:jobs.edit(token,[pairs[1]])
+                    elif phase==2:jobs.edit(token,[[pairs[0][1],pairs[0][0]]])
+                    else:
+                        self.assertEqual(jobs.reports[-1]['made'],[])
+                        refused=jobs.reports[-1]['refused']
+                        self.assertEqual(len(refused),1)
+                        self.assertEqual(refused[0][:2],[pairs[0][1],pairs[0][0]])
+                        self.assertTrue(refused[0][2])
+                        jobs.answer(token,[])
+                    phase+=1
+                self.assertEqual(phase,4)
+                self.assertIsNotNone(jobs.outcome)
+                made=[e for e in jobs.outcome.result['substitutions'] if e['team']==team]
+                self.assertEqual([[e['off'],e['on']] for e in made],pairs)
+                self.assertEqual(len(jobs.reports),3)
+                self.assertTrue(all(not report['requested'] for report in jobs.reports))
+                self.assertEqual(owner.state.match_count,before.match_count+1)
+                published=copy.deepcopy(owner.state)
+                with self.assertRaises(ValueError):jobs.answer(token,pairs)
+                self.assertEqual(owner.state,published)
+            finally:jobs.close()
+
 if __name__=='__main__':unittest.main()
