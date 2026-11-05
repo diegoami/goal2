@@ -155,12 +155,14 @@ class Screen(QWidget):
         self.body_layout.setSpacing(14)
         self.main_layout.addWidget(self.body, 1)
         outer.addWidget(main, 1)
-        self.key_bar = QFrame()
+        from goal2.ui.key_flow import KeyBar
+        self.key_bar = KeyBar()
         self.key_bar.setObjectName("keyBar")
-        self.key_bar.setFixedHeight(70)
-        self.key_layout = QHBoxLayout(self.key_bar)
-        self.key_layout.setContentsMargins(24, 0, 24, 0)
-        self.key_layout.setSpacing(22)
+        self.key_bar.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        from goal2.ui.key_flow import KeyFlow
+        self.key_layout = KeyFlow(self.key_bar)
+        self.key_layout.setContentsMargins(24, 8, 24, 8)
+        self.key_layout.setSpacing(12)
         outer.addWidget(self.key_bar)
         self.enter_hint = Clickable("enterHint")
         hint_layout = QHBoxLayout(self.enter_hint)
@@ -312,7 +314,6 @@ class Screen(QWidget):
             if binding.handler is not None:
                 item.clicked.connect(binding.run)
             self.key_layout.addWidget(item)
-        self.key_layout.addStretch(1)
         self.key_layout.addWidget(self.enter_hint)
         self._refresh_hint()
 

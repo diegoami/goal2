@@ -36,7 +36,7 @@ CHECK = {
     "absent": ("not in this folder (optional)", "none"),
     "unchecked": ("not checked yet", "none"),
 }
-BOX_WIDTH = 900   # [designed: s01-import.html, the column's `width:900px`]
+BOX_WIDTH = 1260   # [designed: s01-import.html, the column's `width:900px`]
 INTRO = ("goal2 plays the original's game from your own data files. Choose the folder that holds them; goal2 checks "
          "each file and copies it into its data folder. Your saved careers are never touched.")
 

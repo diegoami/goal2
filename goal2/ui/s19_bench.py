@@ -114,6 +114,9 @@ class BenchAnswer:
         from goal2.game.player_card import card
         state = self.state(word)
         value = card(state, word, self.model.goaldat)
+        if word in self.injured:
+            value["health"] = "INJURED — live match"
+            value["readiness"] = "INJURED — live match"
         if word in self.marking:
             value["mark"] = self.mark_text(word)
         return value
@@ -249,8 +252,7 @@ class BenchScreen(Screen):
             self.set_enter("Back to the match", lambda: self.escape())
         last_on_the_bar(self, self.escape_text)
         if self.mode == "refused":
-            self.wait_for(REFUSED, "The engine did not make it; its reason is below. Press any key: back to the "
-                                   "match.")
+            self.set_enter("Back to the match", self.escape)
         elif self.answer.requested:
             self.message = ESC_KEEPS_REQUESTED
         self.refresh()
@@ -270,15 +272,20 @@ class BenchScreen(Screen):
         self.counter.setStyleSheet(f"border: 1px solid {theme.FRAME}; padding: 6px 14px;")
         row.addWidget(self.counter)
         self.context = label("", "sub")
-        row.addWidget(self.context)
+        inner.addWidget(self.context)
         row.addStretch(1)
         inner.addLayout(row)
         self.note = para("", "sub")
         colour(self.note, theme.VALUE)
-        inner.addWidget(self.note)
         column.addWidget(head)
         self.card = PlayerCard()
         column.addWidget(self.card, 1)
+        feedback, feedback_layout = box("SUBSTITUTION")
+        feedback.setObjectName("benchFeedback")
+        self.note.setObjectName("benchFeedbackText")
+        self.note.setStyleSheet(f"color: {theme.VALUE}; font-size: {theme.TEXT}px;")
+        feedback_layout.addWidget(self.note)
+        column.addWidget(feedback)
         main.addLayout(column, 1)
         self.strip = Strip()
         self.strip.chosen.connect(self.click_row)
@@ -316,9 +323,11 @@ class BenchScreen(Screen):
         for word in answer.words():
             code, line = roles.role(self.model.state, answer.position(word), cache=table)
             mark = OFF if word in off else ON if word in on else MARKED if word == answer.first else ""
-            rows.append((code, line, full_name(self.model, word) + mark))
+            injury = " · INJURED" if word in answer.injured else ""
+            rows.append((code, line, full_name(self.model, word) + mark + injury))
         heading = self.model.goaldat.country_names[self.model.state.managed_country]
-        self.strip.show_rows(heading, rows, self.row, len(answer.eleven) == 11)
+        self.strip.show_rows(heading, rows, self.row, len(answer.eleven) == 11,
+                             injured={i for i,w in enumerate(answer.words()) if w in answer.injured})
         word = self.current()
         if word is not None:
             self.card.set_card(answer.card(word))
@@ -329,7 +338,8 @@ class BenchScreen(Screen):
         """The line under the mode: the refusal's reason, the pairs chosen, or what the screen waits for."""
         answer = self.answer
         if self.mode == "refused":
-            return "Not made: " + "; ".join(f"{full_name(self.model, a)} for {full_name(self.model, b)}: {why}"
+            return "Not made: " + "; ".join(f"{full_name(self.model, b)} on for {full_name(self.model, a)} off: "
+                                            f"{('the change was not confirmed' if why == 'not made by the original' else why)}"
                                             for a, b, why in self.report["refused"]) + "."
         if self.mode == "view":
             return "The route takes no substitution before extra time: play on from the match menu."

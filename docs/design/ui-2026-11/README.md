@@ -521,9 +521,9 @@ we can keep the rest"]
   VGA-style font under CC BY-SA 4.0. It is vendored in [mockups/fonts/](mockups/fonts/PROVENANCE.md) with its
   licence and provenance. It is not the original game's font, and no byte of it comes from GOAL.EXE (CLAUDE.md
   rule 14).
-- **Text size**: designed at 1440×900. Text is 16 px, the font's own 8×16 cell, and headings and names are
-  32 px, twice the cell; larger titles are 48 or 64 px. Only whole multiples are used, so the blocks stay
-  sharp. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
+- **Text size**: designed at 1440×900. [designed: owner playtest #598, 2026-11-05] Normal text is 24 px and headings/names
+  are 32 px. Keyboard actions wrap as complete items, with full-size text. Squad rows and card columns
+  reserve room for the larger lettering. This supersedes the earlier 16 px/whole-cell-multiple choice. At other window sizes the page scales as a whole and keeps its layout, as today's fixed pages do
   (T101).
 - Names, numbers and role codes are never abbreviated beyond the original's own forms.
 - Every colour pairs with text or a symbol, so nothing depends on colour alone.

@@ -96,14 +96,14 @@ class Bars(QWidget):
         grid = QGridLayout(self)
         grid.setContentsMargins(0, 0, 0, 0)
         grid.setHorizontalSpacing(10)
-        grid.setVerticalSpacing(5)
+        grid.setVerticalSpacing(2)
         self.rows = {}
         for r, name in enumerate(names):
             name_label = label(name, "barLabel")
-            name_label.setFixedWidth(110)
+            name_label.setFixedWidth(132)
             bar = Bar()
             word = label("", "barWord")
-            word.setFixedWidth(word_width)
+            word.setFixedWidth(round(word_width * 1.5))
             grid.addWidget(name_label, r, 0)
             grid.addWidget(bar, r, 1)
             grid.addWidget(word, r, 2)
@@ -129,7 +129,7 @@ class KeyValues(QWidget):
         self.values = {}
         for r, name in enumerate(names):
             key = label(name, "kvKey")
-            key.setFixedWidth(label_width)
+            key.setFixedWidth(round(label_width * 1.5))
             colour(key, tone)
             value = label("", "kvValue")
             grid.addWidget(key, r, 0)
@@ -186,7 +186,7 @@ class Row(Clickable):
         else:
             self.setStyleSheet(f"#listRow {{ background: {theme.GROUND}; {rule} }}")
         for cell, tone in zip(self.cells, self.tones):
-            colour(cell, theme.ON_HIGHLIGHT if self.on else tone)
+            colour(cell, theme.BAD if self.property("injured") else theme.ON_HIGHLIGHT if self.on else tone)
 
 
 def full_name(model, word):
@@ -215,7 +215,7 @@ class Strip(QFrame):
     def __init__(self):
         super().__init__()
         self.setObjectName("box")
-        self.setFixedWidth(280)   # [designed: mockups/style.css, `.strip { width: 280px }`]
+        self.setFixedWidth(390)   # [designed: mockups/style.css, `.strip { width: 280px }`]
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 14, 16, 14)
         layout.setSpacing(0)
@@ -226,7 +226,7 @@ class Strip(QFrame):
         self.gap = QWidget()
         self.gap.setFixedHeight(10)   # `.strip .sep { height: 10px }`
         for i in range(self.PAGE):
-            row = Row(i, (22, 0))
+            row = Row(i, (30, 0))
             row.chosen.connect(self.chosen.emit)
             layout.addWidget(row)
             self.rows.append(row)
@@ -234,13 +234,14 @@ class Strip(QFrame):
                 layout.addWidget(self.gap)
         layout.addStretch(1)
 
-    def show_rows(self, heading, rows, current=-1, gap=True):
+    def show_rows(self, heading, rows, current=-1, gap=True, injured=()):
         """`rows`: (code, line, name) for up to twenty rows; `current` the highlighted row (-1: none)."""
         self.heading.setText(heading.upper())
         self.gap.setVisible(gap)
         for i, row in enumerate(self.rows):
             if i < len(rows):
                 code, line, name = rows[i]
+                row.setProperty("injured", i in injured)
                 row.set((code, name), (LINE_COLOUR.get(line, theme.TEXT_NORMAL), theme.TEXT_BRIGHT))
                 row.show()
             else:
@@ -295,7 +296,7 @@ class PlayerCard(QFrame):
         self.setObjectName("box")
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 14, 16, 14)
-        layout.setSpacing(12)
+        layout.setSpacing(6)
         head = QHBoxLayout()
         head.setSpacing(16)
         self.code = code_label("", "unknown")
@@ -304,13 +305,15 @@ class PlayerCard(QFrame):
         self.readiness = label("", "readiness")
         self.name_line = NameLine()
         self.name_line.hide()
-        for widget in (self.code, self.name, self.facts):
+        for widget in (self.code, self.name):
             head.addWidget(widget, 0, Qt.AlignmentFlag.AlignBaseline)
         head.addWidget(self.name_line, 1)
         head.addStretch(1)
         head.addWidget(self.readiness, 0, Qt.AlignmentFlag.AlignBaseline)
         self.head = head
         layout.addLayout(head)
+        self.facts.setWordWrap(True)
+        layout.addWidget(self.facts)
         self.positions = label("", "sub")
         self.positions.setTextFormat(Qt.TextFormat.RichText)
         layout.addWidget(self.positions)
@@ -325,7 +328,7 @@ class PlayerCard(QFrame):
         left.addStretch(1)
         columns.addLayout(left, 1)
         right_widget = QWidget()
-        right_widget.setFixedWidth(380)
+        right_widget.setFixedWidth(430)
         right = QVBoxLayout(right_widget)
         right.setContentsMargins(0, 0, 0, 0)
         right.setSpacing(8)

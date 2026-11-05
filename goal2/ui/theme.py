@@ -4,8 +4,7 @@
 (docs/design/ui-2026-11/README.md §3, read from the original's captures by palette.py); each constant below is one
 row of that table, and the test checks them against the README itself. The font is "PxPlus IBM VGA 8x16" (CC BY-SA
 4.0), vendored in `goal2/ui/fonts/` with its licence and provenance and loaded from there, never from a system
-install. Text is 16 px, the font's own 8x16 cell, and headings are 32 px, twice the cell; only whole multiples of
-the cell are used, and the page scales as a whole with the window (docs/design/ui-2026-11 §3, "Text size").
+install. Text is 24 px (owner #598), with 32 px headings; the page scales as a whole with the window (docs/design/ui-2026-11 §3, "Text size").
 
 Importing this module needs no Qt; `load_font` and `install` do.
 """
@@ -56,7 +55,7 @@ SCRIM_ALPHA = 158   # 0.62 of 255
 
 # The text sizes: the font's 8x16 cell and its whole multiples. [designed: docs/design/ui-2026-11 §3, "Text size"]
 CELL = 16
-TEXT = CELL
+TEXT = 24   # [designed: owner #598] larger reading baseline
 HEADING_SIZE = 2 * CELL
 
 FONT_DIR = Path(__file__).with_name("fonts")
@@ -83,7 +82,7 @@ def font_id() -> int:
 
 
 def install(app) -> str:
-    """Make the vendored font the application's font, at the 16 px cell; returns its family."""
+    """Make the vendored font the application's font, at the owner's 24 px baseline; returns its family."""
     from PySide6.QtGui import QFont
     family = load_font()
     font = QFont(family)
