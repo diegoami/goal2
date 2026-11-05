@@ -13,3 +13,10 @@ startup declarations, result/events/RNG and all DS/accepted memory ranges withou
 Goal2's actual worker reproduction fails before with the bench-slot captain ScreenError; after adoption
 it finishes, publishes once and agrees with an original-driven reference using the existing accepted
 sealed-port comparison projection. The complete final-head gate and CI are recorded on PR603.
+
+The initial full gate stopped five modules at a stale verification manifest, before their affected
+references ran. `tools/watched_evidence.py` and `tools/watched-kit-hashes.json` now declare the same
+accepted per-file9d18a855 override as PROVENANCE. The strict41-file inventory, source-override/byte
+mutation guards and every other base pin remain intact. All10 runtime guards pass; the four blocked
+competitive modules then pass18 tests (one pre-existing missing optional legacy fixture skip).
+The complete final-head gate is rerun after this mechanical adoption correction.
