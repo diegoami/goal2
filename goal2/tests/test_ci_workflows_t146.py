@@ -80,7 +80,10 @@ class LinuxGate(unittest.TestCase):
         keep = self.step("Keep only logs")
         self.assertIn(r"\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$", keep)
         self.assertNotRegex(self.text, r"actions/cache")
-        uploads = re.findall(r"actions/upload-artifact@v\d+\n(?:.*\n)*?\s+path: (\S+)", self.text)
+        # [designed: T148] This contract is for T146's gate; the independent native job
+        # has its own screenshot/receipt filter, checked by test_ci_workflows_t148.
+        gate = self.text.split('\n  linux:\n', 1)[1].split('\n  native-scaling:\n', 1)[0]
+        uploads = re.findall(r"actions/upload-artifact@v\d+\n(?:.*\n)*?\s+path: (\S+)", gate)
         self.assertEqual(uploads, ["upload"])
         self.assertNotRegex(keep, r"cp .*\.cache")
 
