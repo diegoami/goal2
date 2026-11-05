@@ -66,10 +66,12 @@ class PlayerTacticsScreen(Screen):
         self.code = code_label("", "unknown")
         self.name = label("", "h1")
         self.facts = label("", "sub")
-        for widget in (self.code, self.name, self.facts):
+        for widget in (self.code, self.name):
             row.addWidget(widget, 0, Qt.AlignmentFlag.AlignBaseline)
         row.addStretch(1)
         head_layout.addLayout(row)
+        self.facts.setWordWrap(True)
+        head_layout.addWidget(self.facts)
         column.addWidget(head)
         boxes = QHBoxLayout()
         boxes.setSpacing(18)
