@@ -104,5 +104,50 @@ class CommentaryPause(unittest.TestCase):
         self.assertTrue(self.controller.quick)
 
 
+@requires.need(modules=('PySide6', 'pygame'), slow=True, **requires.HALFTIME)
+class ActualMatchPause(unittest.TestCase):
+    def test_reading_pause_preserves_actual_match_state_events_and_rng(self):
+        from PySide6.QtCore import Qt
+        from goal2.tests.test_ui_pitch_t166 import (app, career, open_desk, play_next,
+                                                   pump, key, to_the_desk, reference,
+                                                   as_shown, WAIT, pypy)
+        application = app()
+        pypy()
+        model = career()
+        window, desk = open_desk(model)
+        try:
+            pitch = play_next(window, desk)
+            controller = pitch.controller
+            fixture = model.state.campaign.next_fixture
+            pump(lambda: controller.drawn >= 0, 120, 'no initial sample')
+            for _ in range(2):
+                key(window, Qt.Key.Key_Space)
+                self.assertTrue(controller.commentary_paused)
+                frozen = (controller.drawn, controller.released, controller.acked,
+                          copy.deepcopy(controller.shown()), model.state.match_count)
+                until = time.monotonic() + .1
+                pump(lambda: time.monotonic() >= until, 5, 'reading pause')
+                self.assertEqual((controller.drawn, controller.released, controller.acked,
+                                  controller.shown(), model.state.match_count), frozen)
+                self.assertIn('PAUSED', pitch.wait_head.text())
+                key(window, Qt.Key.Key_Space)
+                self.assertFalse(controller.commentary_paused)
+            key(window, Qt.Key.Key_R)
+            to_the_desk(window, pitch, WAIT)
+            self.assertIsNone(controller.error)
+            outcome = controller.outcome
+            self.assertIsNotNone(outcome)
+            other, uninterrupted = reference(controller.given._snapshot, controller.choices, fixture)
+            self.assertEqual(outcome.result, uninterrupted.result)  # includes recorded RNG draws/digest
+            self.assertEqual(outcome.memory, uninterrupted.memory)
+            self.assertEqual([as_shown(e) for e in outcome.events],
+                             [as_shown(e) for e in uninterrupted.events])
+            self.assertEqual(model.state, other.state)
+        finally:
+            window.close()
+            window.deleteLater()
+            application.processEvents()
+
+
 if __name__ == '__main__':
     unittest.main()

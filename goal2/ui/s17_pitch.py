@@ -9,8 +9,8 @@ player watched is the match the engine published. It drives nothing: `MatchContr
   score, the minute, the match's kind and the last two events above the pitch (goal2/ui/pitch.py), and the commentary
   beside it with the speed, the display and your side's colour.
 - **Keys** [confirmed: E031 C39-C40, C08; T156-R1 steps 45, 267; the capture's bottom line]: **←→** the speed, the six
-  `SPEEDS` of goal2/desktop/match_view.py; **↑↓** the display (the original's five marks); **Space** enlarges the
-  commentary; **R** quick result; **F9** sound; **Esc** / **Enter** the bench.
+  `SPEEDS` of goal2/desktop/match_view.py; **↑↓** the display (the original's five marks); **Space** pauses and enlarges the
+  commentary (Space/Enter resumes, owner #597); **R** quick result; **F9** sound; **Esc** / **Enter** the bench.
 - **Pacing** [designed: T102, kept by the bridge]: a sample is acknowledged once the pitch has painted it, so the
   engine never runs more than `LEAD` samples ahead of what was drawn. **R** stops the pacing: every sample is
   acknowledged as it arrives and the screen says *HANG ON A TICK* where *R result* was, as the original does
