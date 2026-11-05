@@ -29,7 +29,7 @@ from goal2.ui.start_look import KeyItem, Row, box, key_value, refresh
 
 COLUMNS = (("Name", 300), ("Country", 130), ("Year · stage", 360), ("Next", 240), ("Saved", None))
 VISIBLE = 5   # [designed: T163] rows of the list shown at once; the window of rows follows the highlight
-WIDTH = 1360  # [designed: s02-start.html, the column's `width:1040px`]
+WIDTH = 1360  # [designed: owner #598] complete save metadata at 24px
 
 
 def year_stage(model) -> str:

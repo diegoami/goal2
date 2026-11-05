@@ -661,3 +661,7 @@ with some modification for the sake of the UX."
     only for the UX, and is marked `[designed]` with its reason.
     **Scheduled after the first playable version** (owner, 2026-11-03: "the look of the players is fine, an
     improvment with disk is post playable"). T179 (#573) is `post-playable`.
+
+[designed: owner playtest #598, 2026-11-05] At the 24px baseline the fixture window shows fourteen
+rows; arrows still reach the complete list. Recent commentary keeps whole wrapped entries within its
+panel, with more room in the reading view. No engine event is removed from the transcript or recording.

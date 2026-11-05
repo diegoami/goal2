@@ -175,7 +175,7 @@ class DeskScreen(Screen):
         addition.addWidget(label("GOAL2 ADDITION", "tagNew"), 0, Qt.AlignmentFlag.AlignLeft)
         addition.addStretch(1)
         middle.addLayout(addition)
-        # [designed: owner, §6 item 18; T177] today's extras, then the re-import (decision 14), on one row
+        # [designed: owner #598] keep full-size extra actions; wrap when a row is full
         from goal2.ui.key_flow import KeyFlow
         extras = KeyFlow()
         extras.setSpacing(10)

@@ -215,7 +215,7 @@ class Strip(QFrame):
     def __init__(self):
         super().__init__()
         self.setObjectName("box")
-        self.setFixedWidth(390)   # [designed: mockups/style.css, `.strip { width: 280px }`]
+        self.setFixedWidth(390)   # [designed: owner #598] room for 24px names and live injury labels
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 14, 16, 14)
         layout.setSpacing(0)

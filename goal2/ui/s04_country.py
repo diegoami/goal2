@@ -36,7 +36,7 @@ from goal2.ui.screen import Screen, label, para, set_para
 from goal2.ui.start_look import LineField, Row, box, coloured_codes, key_value, refresh
 
 GROUP = 16           # [confirmed: T156-R1 step 3; s04-country.html] the list shows 16 countries at a time
-LIST_WIDTH = 390     # [designed: s04-country.html, the list's `width:300px`]
+LIST_WIDTH = 390     # [designed: owner #598] retain complete country/ranking text at 24px
 PREVIEW_MS = 120     # [designed: T86, Launch's preview delay] the card follows the highlight after a pause
 NAME_NOTE = "Enter on a country opens this line; Enter again starts the career."
 # [confirmed: F008 DS:699A] a role code's line, by the code itself (goal2/desktop/country_card.py's table)

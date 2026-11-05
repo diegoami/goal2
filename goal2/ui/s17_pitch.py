@@ -640,7 +640,7 @@ class PitchScreen(Screen):
         return self.controller.display.speed_name()
 
     def toggle_commentary(self):
-        """Space: the whole commentary over the pitch, and back. [confirmed: E031 C08, C39c]"""
+        """Space: recent commentary in a larger reading panel, and back. [confirmed: E031 C08, C39c]"""
         self.pitch.enlarged = not self.pitch.enlarged
         self.pitch.commentary = self.lines
         self.pitch.update()
