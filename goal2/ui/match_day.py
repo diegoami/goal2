@@ -177,6 +177,7 @@ class MatchDay:
             if self.window.current() is menu:
                 fresh = MenuScreen(self.window, self, "before")
                 if fresh.lineups != menu.lineups:
+                    fresh.restore_navigation(menu)
                     self._replace(fresh)
                 else:
                     fresh.deleteLater()

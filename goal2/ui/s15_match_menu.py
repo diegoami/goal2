@@ -11,6 +11,9 @@ C36, C37]
   tournament (S12), match stats (S20), and **play** (before and during) or **exit** (after the final whistle).
   *play* names what follows: "choose your captain, then kick-off" before the match, "second half" at half time,
   "extra time" before it [designed: #523].
+- **Arrows** follow the visible menu rows and country columns: Up/Down keeps the selected country,
+  initially the managed side; Left/Right selects the corresponding column on tactics/players rows
+  [confirmed: T156-R1 steps69-73; owner playtest #596].
 - **Your side** before kick-off: team tactics opens S10 (also **T**), players opens S08 (also **Space**), and what they
   change is the model's, before the engine is asked. At a break of the match (half time, before extra time, a
   substitution opportunity: phase "stop", after S18's key, T156-R1 step 68) *players* opens the bench, S19, in *make
@@ -55,6 +58,8 @@ class MenuScreen(Screen):
         sides = (fixture.side_a, fixture.side_b)
         self.home_country, self.away_country = sides[HOME], sides[1 - HOME]
         own = model.state.managed_country
+        self.menu_country = own
+        self.country_options = {}
         self.title = f"match menu · {names[self.home_country]} v {names[self.away_country]}"
         self.name_label.setText(self.title)
         head, inner = box(None)
@@ -91,20 +96,37 @@ class MenuScreen(Screen):
             column = QVBoxLayout()
             column.setSpacing(10)
             mine = country == own
-            column.addWidget(self.add_option(f"{names[country]} team tactics",
-                                             (lambda c=country: self.tactics(c)),
-                                             key=Qt.Key.Key_T if mine else None, enter="Team tactics"))
-            column.addWidget(self.add_option(f"{names[country]} players", (lambda c=country: self.players(c)),
-                                             key=Qt.Key.Key_Space if mine else None, enter="Players"))
+            tactics = self.add_option(f"{names[country]} team tactics", (lambda c=country: self.tactics(c)),
+                                      key=Qt.Key.Key_T if mine else None, enter="Team tactics")
+            players = self.add_option(f"{names[country]} players", (lambda c=country: self.players(c)),
+                                      key=Qt.Key.Key_Space if mine else None, enter="Players")
+            self.country_options[country] = (tactics, players)
+            column.addWidget(tactics)
+            column.addWidget(players)
             sides_row.addLayout(column, 1)
         centre.addLayout(sides_row)
-        centre.addWidget(self.add_option("tournament", self.tournament, enter="Tournament"))
-        centre.addWidget(self.add_option("match stats", self.stats, enter="Match stats"))
+        tournament = self.add_option("tournament", self.tournament, enter="Tournament")
+        stats = self.add_option("match stats", self.stats, enter="Match stats")
+        centre.addWidget(tournament)
+        centre.addWidget(stats)
         if phase == "full":
             self.play = self.add_option("exit", day.exit, enter="Exit")
         else:
             self.play = self.add_option(f"▶ play     {NEXT[phase]}", self.press_play, enter="Play")
         centre.addWidget(self.play)
+        self.shared_options = (tournament, stats, self.play)
+        # [confirmed: T156-R1 69-73; T184] Vertical keys follow visible rows. The two
+        # country columns are horizontal alternatives, not extra vertical entries.
+        for binding in self.bindings:
+            if binding.keys == (Qt.Key.Key_Up,):
+                binding.handler = lambda: self.move_row(-1)
+            elif binding.keys == (Qt.Key.Key_Down,):
+                binding.handler = lambda: self.move_row(1)
+        self.bind((Qt.Key.Key_Left,), "", lambda: self.select_country(self.home_country),
+                  captions=("←",), shown=False)
+        self.bind((Qt.Key.Key_Right,), "", lambda: self.select_country(self.away_country),
+                  captions=("→",), shown=False)
+        self.bind((), "country", None, captions=("←", "→"))
         self.note = para("", "sub")
         colour(self.note, theme.VALUE)
         centre.addWidget(self.note)
@@ -151,6 +173,35 @@ class MenuScreen(Screen):
         column.addStretch(1)
         self.lineups[country] = (formation, rows)
         return frame
+
+    def highlight(self, index):
+        super().highlight(index)
+        option = self.highlighted()
+        for country, pair in getattr(self, 'country_options', {}).items():
+            if option in pair:
+                self.menu_country = country
+                break
+
+    def move_row(self, step):
+        rows = (*self.country_options[self.menu_country], *self.shared_options)
+        index = rows.index(self.highlighted())
+        target = rows[max(0, min(index + step, len(rows) - 1))]
+        self.highlight(self.options.index(target))
+
+    def select_country(self, country):
+        current = self.highlighted()
+        pair = self.country_options[self.menu_country]
+        if current in pair:
+            target = self.country_options[country][pair.index(current)]
+            self.highlight(self.options.index(target))
+
+    def restore_navigation(self, previous):
+        """Keep row/country when a changed pre-match lineup rebuilds the menu (T184)."""
+        previous_rows = (*previous.country_options[previous.menu_country], *previous.shared_options)
+        row = previous_rows.index(previous.highlighted())
+        self.menu_country = previous.menu_country
+        rows = (*self.country_options[self.menu_country], *self.shared_options)
+        self.highlight(self.options.index(rows[row]))
 
     def say(self, text):
         from goal2.ui.screen import set_para

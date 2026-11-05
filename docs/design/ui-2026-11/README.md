@@ -361,7 +361,7 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 - **Shows**: the score, the minute, the kind of match and the last two events; the pitch with each player's
   role code (home red, away white, as the original draws them) and the ball; the commentary beside it.
 - **Actions**: **↑↓** display (marks), **←→** speed, **R** result (quick result; it still stops at half time,
-  injuries, extra time and the shoot-out), **Space** commentary (enlarges it), **F9** sound, **Esc** / **Enter**
+  injuries, extra time and the shoot-out), **Space** pauses and enlarges commentary; Space/Enter resumes [designed: owner #597], **F9** sound, **Esc** / **Enter**
   bench. A replay shows *REPLAY* where *R result* is.
 - **Replaces**: `match-live`, `match-commentary`, `injury-event`, `t156-045-kick-off`,
   `t156-058-taker-timed-out`, `t156-066-injury-and-booking`, `t156-178-replay-playing`, `t156-247-goal-replay`,
@@ -637,8 +637,10 @@ The owner answered the design's nine questions on #526 ([owner decisions, 2026-1
 
 15. **S05 waits for the original's news.** Until Track B ports it (U2, #509), a new career goes from S04 to the
     home screen. goal2 writes no bulletin of its own.
-16. **Ins (the assistant's 20) says *coming later*** until the original's assistant (`0791:DC7E`) is ported in
-    Track B's U3. There is no Unicorn and no stand-in rule meanwhile.
+16. **Ins (the assistant's 20) says *coming later*** until the original's assistant (`0791:DC7E`) is ported.
+    [designed: owner, 2026-11-05, #509/#594] This is required within m3: upstream T125 ports the assistant
+    and its refusal closure; T183 restores the native S08 action after T170. The placeholder is an
+    implementation gap, not a deferral from m3. There is no Unicorn fallback or stand-in rule.
 
 **Owner decisions, 2026-11-03** (on the main session's gap audit, #509):
 
