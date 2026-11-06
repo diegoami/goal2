@@ -1,5 +1,5 @@
-"""[designed: owner, 2026-11-01, #493] The Windows and Linux slow workflows run only when needed (a ready PR
-whose push changes what the slow tests guard: tools/ci_changes.py), and run the full gate with --slow on
+"""[designed: owner, 2026-11-07] Manual milestone full suites; no automatic PR or weekly runs.
+The workflows run the full gate with --slow on
 the owner's machines (self-hosted runners, labels goal2-slow and goal2-slow-linux), never for a fork PR,
 without touching the owner's desktop: offscreen Qt, dummy SDL, no display change, no native-window
 scenarios. Windows finds Git Bash by its path (bash on a Windows PATH can be WSL's) and the PC's own Python
@@ -21,54 +21,36 @@ class WindowsSlow(unittest.TestCase):
         self.assertTrue(WORKFLOW.is_file(), "no Windows slow workflow")
         self.text = WORKFLOW.read_text()
 
-    def test_only_when_needed_prs_and_dispatch_never_main_or_drafts(self):
+    def test_full_suites_are_explicit_dispatch_only(self):
         for path in (WORKFLOW, LINUX):
             with self.subTest(workflow=path.name):
                 text = path.read_text()
                 on = re.search(r"^on:\n(.*?)^\S", text, re.M | re.S).group(1)
-                self.assertIn("  pull_request:\n    types: [opened, synchronize, reopened, ready_for_review]\n", on)
                 self.assertRegex(on, r"(?m)^  workflow_dispatch:")
-                self.assertNotRegex(on, r"(?m)^  push:")
-                self.assertIn("!github.event.pull_request.draft", text)
-                self.assertIn("python3 tools/ci_changes.py --kind slow ${since:+--since \"$since\"}", text)
-                self.assertIn('[ "${{ github.event.action }}" = synchronize ] && since="${{ github.event.before }}"', text)
-                job = text.split("\n  changes:\n")[1].split("\n  ", 1)[1]
-                self.assertIn("needs: changes\n    if: needs.changes.outputs.run == 'true'\n", job)
-                self.assertNotRegex(text, r"(?m)^concurrency:")     # job-level: a skipped push cancels nothing
-                self.assertIn("    concurrency:\n      group:", job)
+                for event in ("pull_request", "pull_request_target", "push", "schedule"):
+                    self.assertNotRegex(on, rf"(?m)^  {event}:")
+                self.assertIn("if: github.event_name == 'workflow_dispatch'", text)
+                self.assertNotIn("FULL_DAYS", text)
+                self.assertNotIn("gh workflow run", text)
+                self.assertNotIn("actions: write", text)
+                self.assertNotRegex(text, r"(?m)^concurrency:")
+                self.assertIn("    concurrency:\n      group:", text)
 
-    def test_only_the_owners_runner_and_never_a_fork(self):
+    def test_only_the_owners_runner_and_no_untrusted_pr_event(self):
         self.assertIn("runs-on: [goal2-slow]", self.text)
-        self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", self.text)
         self.assertNotIn("pull_request_target", self.text)
+        self.assertNotIn("pull_request:", self.text)
         self.assertRegex(self.text, r"(?m)^permissions:\n  contents: read$")
 
-    def test_a_pr_plays_the_slow_tests_it_can_reach_a_dispatch_all(self):
-        # [designed: owner, 2026-11-01, #505]
+    def test_dispatch_runs_all_slow_tests_and_cases(self):
         for path in (WORKFLOW, LINUX):
-            with self.subTest(workflow=path.name):
-                text = path.read_text()
-                self.assertIn('[ "${{ github.event_name }}" = pull_request ] || full=--slow\n', text)
-                self.assertIn('python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $full 2>&1', text)
-                self.assertIn('if [ "${{ github.event_name }}" != pull_request ]; then echo "run=true"', text)
-
-    def test_no_schedule_a_pr_dispatches_a_full_run_when_the_last_is_old(self):
-        # [designed: owner, 2026-11-02] the owner's PC is not left on for a schedule
-        for path in (WORKFLOW, LINUX):
-            with self.subTest(workflow=path.name):
-                text = path.read_text()
-                self.assertNotIn("schedule", re.search(r"^on:\n(.*?)^\S", text, re.M | re.S).group(1))
-                step = text.split("- name: A full run on main when the last one is over FULL_DAYS old\n", 1)[1]
-                step = step.split("\n  " + ("windows-slow" if path == WORKFLOW else "linux-slow") + ":", 1)[0]
-                self.assertIn("if: github.event_name == 'pull_request' && steps.decide.outputs.run == 'true'", step)
-                self.assertIn("FULL_DAYS: '7'", step)
-                self.assertIn(f"--workflow {path.name} --event workflow_dispatch --limit 1", step)
-                self.assertIn(f'gh workflow run {path.name} -R "$GITHUB_REPOSITORY" --ref main', step)
-                self.assertIn("      actions: write", text.split("\n  changes:\n")[1].split("\n  " + ("windows-slow" if path == WORKFLOW else "linux-slow") + ":")[0])
-        self.assertNotIn("GOAL2_CASES", self.text)
-        self.assertNotIn("--batch-fast", self.text)
-        minutes = int(re.search(r"timeout-minutes: (\d+)", self.text).group(1))
-        self.assertLessEqual(minutes, 300)
+            text = path.read_text()
+            self.assertIn('python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" --slow 2>&1', text)
+            for forbidden in ("--batch-fast", "--fast", "--affected"):
+                self.assertNotRegex(text, re.escape(forbidden) + r"(?:\s|$)")
+            self.assertIn("unset GOAL2_CASES", text)
+            minutes = int(re.search(r"timeout-minutes: (\d+)", text).group(1))
+            self.assertLessEqual(minutes, 300)
 
     def test_the_owners_desktop_is_left_alone(self):
         for line in ("QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy"):
@@ -98,9 +80,9 @@ class LinuxSlow(unittest.TestCase):
 
     def test_the_same_workflow_on_the_linux_label_with_uvs_python(self):
         windows = WORKFLOW.read_text()
-        for needle in ("  pull_request:", "  workflow_dispatch:",
-                       "github.event.pull_request.head.repo.full_name == github.repository",
-                       "python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" $full",
+        for needle in ("  workflow_dispatch:",
+                       "if: github.event_name == 'workflow_dispatch'",
+                       "python tools/check_premerge.py --expected-head \"$(git rev-parse HEAD)\" --slow",
                        "QT_QPA_PLATFORM: offscreen", "SDL_VIDEODRIVER: dummy", "SDL_AUDIODRIVER: dummy",
                        r"grep -iE '\.(exe|dat|hlp|hil|pif|bat|sav|gl|g2save)$'"):
             with self.subTest(needle=needle):
@@ -111,7 +93,7 @@ class LinuxSlow(unittest.TestCase):
         self.assertIn("uv python install -q pypy3.11", self.text)
         self.assertIn('echo "GOAL2_ENGINE_PYTHON=$(PATH="$HOME/.local/bin:$PATH" uv python find pypy3.11)" >> "$GITHUB_ENV"', self.text)
         self.assertLess(self.text.index("GOAL2_ENGINE_PYTHON="), self.text.index("tools/check_premerge.py"))
-        for absent in ("actions/setup-python", "sudo", "pull_request_target", "--batch-fast", "GOAL2_CASES"):
+        for absent in ("actions/setup-python", "sudo", "pull_request_target", "--batch-fast"):
             self.assertNotIn(absent, self.text)
 
 

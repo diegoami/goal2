@@ -58,8 +58,8 @@ Unicorn performance optimisation is authorised by a resume.
    branch, for every task of that session (process.md §3). Never `git stash`, never force-push,
    never rewrite `main`.
 3. One task, one PR, merged by the main session once its Done-when lines and
-   `python3 tools/check_premerge.py --expected-head <sha>` pass (it runs the slow tests by
-   itself when the change touches what they guard; process.md §3): locally
+   `python3 tools/check_premerge.py --expected-head <sha>` pass (focused task checks plus
+   the fast regression gate; full Linux/Windows suites run on the integrated milestone, process.md §3): locally
    `gh pr merge <pr> --squash --match-head-commit <sha>`; in a cloud session
    `gh pr merge <pr> --merge --match-head-commit <sha>` (never squash), then
    `git pull --ff-only origin main` on the session branch.

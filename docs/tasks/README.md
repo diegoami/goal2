@@ -363,3 +363,5 @@ operational status.
 - [T183](T183.md): restore original assistant best-twenty selection on S08; required m3 parity (#594), after T170 and reviewed upstream T125.
 - [T188a](T188a.md): authoritative edits while the original remains stopped (#599).
 - [T188b](T188b.md): apply stopped substitutions immediately in the squad (#599).
+
+- [T189](T189.md): focused PR checks and full validation at integrated milestones (#606).
