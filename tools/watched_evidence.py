@@ -8,9 +8,9 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = "b519d999673c9458211279fd4da8a8325b9f56fe"
-# [designed: T187] T150's sealed base stays pinned; only the accepted captain coordinator
-# is exported from #659. Verification scripts and every other runtime file stay on SOURCE.
-SOURCE_OVERRIDES = {"runtime/original_match/match.py": "9d18a8552399d57e263448b1f48cc71416d203ff"}
+# [designed: T187/T188a] T150's sealed base stays pinned; the accepted captain and
+# stopped-edit coordinator is exported from #659/#663. All other files stay on SOURCE.
+SOURCE_OVERRIDES = {"runtime/original_match/match.py": "80831d9a1b378d7b4bba78de7a931771f0472669"}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",
     "e0afff6751747233-e006-1000-r0001.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
