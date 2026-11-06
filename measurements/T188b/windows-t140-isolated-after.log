@@ -1,0 +1,17 @@
+Source: ccb8e06b62da44a9e3b4a653bb6b1c4c5ed59d68; isolated Windows full replay module; original timeout and assertions
+test_a_viewer_closed_here_is_replaced_never_written_to (goal2.tests.test_core_replay_t140.Desktop.test_a_viewer_closed_here_is_replaced_never_written_to)
+[designed: owner, 2026-11-02] A pitch viewer goal2 closed is never written to again: the next live ... ok
+test_an_exited_viewer_is_not_replaced_silently (goal2.tests.test_core_replay_t140.Desktop.test_an_exited_viewer_is_not_replaced_silently)
+[designed: T109] At a live stop, a viewer whose process exited is not dropped and replaced: watching ... ok
+test_native_viewer_shows_replay_then_live_in_the_same_owned_process (goal2.tests.test_core_replay_t140.Desktop.test_native_viewer_shows_replay_then_live_in_the_same_owned_process) ... ok
+test_prompt_waits_for_explicit_choice_and_has_native_bounds (goal2.tests.test_core_replay_t140.Desktop.test_prompt_waits_for_explicit_choice_and_has_native_bounds) ... ok
+test_replay_caption_is_causal_to_the_displayed_pose (goal2.tests.test_core_replay_t140.Presentation.test_replay_caption_is_causal_to_the_displayed_pose) ... ok
+test_no_and_watch_without_saving_equal_original_keys (goal2.tests.test_core_replay_t140.Replay.test_no_and_watch_without_saving_equal_original_keys) ... ok
+test_old_watched_stop_configuration_retains_the_next_goal_question (goal2.tests.test_core_replay_t140.Replay.test_old_watched_stop_configuration_retains_the_next_goal_question) ... ok
+test_replay_returns_to_live_without_a_second_goal (goal2.tests.test_core_replay_t140.Replay.test_replay_returns_to_live_without_a_second_goal) ... ok
+test_save_goal_resume_and_invalid_context (goal2.tests.test_core_replay_t140.Replay.test_save_goal_resume_and_invalid_context) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 49.310s
+
+OK
