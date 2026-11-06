@@ -538,8 +538,17 @@ class Bench(unittest.TestCase):
     def test_the_mark_reaches_the_engine(self):
         walk = self.friendly
         marker, mark = walk.out["half"]["marker"], walk.out["mark"]["mark"]
-        context, value = next(c for c in walk.out["choices"] if c[0] == "half_time")
+        # [designed: T188b] The earlier half-time commands are immediate swaps;
+        # S09 is edited afterward, so Play sends the mark in the final command.
+        values = [value for context, value in walk.out["choices"] if context == "half_time"]
+        value = values[-1]
         self.assertEqual(value["marking"], {marker: mark})
+        self.assertFalse(value.get("edit_only", False))
+        self.assertEqual([v["marking"] for v in values if isinstance(v, dict) and v.get("marking")],
+                         [{marker: mark}], "the mark is sent once")
+        decided = [dict(d["answer"]["marking"]) for d in walk.out["outcome"].result["decisions"]
+                   if d["context"] == "half_time" and d["answer"].get("marking")]
+        self.assertEqual(decided, [{marker: mark}], "the engine receives the mark once")
         events = [e for e in walk.out["outcome"].events if e.kind == "player_tactics" and e.data["player"] == marker]
         self.assertTrue(events, "the original's player tactics screen was visited for him")
         self.assertEqual(events[-1].data["marking"], mark)
