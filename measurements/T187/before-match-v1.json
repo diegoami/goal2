@@ -1,0 +1,260 @@
+{
+  "engine": "port",
+  "before": true,
+  "source_sha256": "873975b3d9f793e9929e11b337d2e1b89d9d1c0047bfd2cc7eac409abb15574e",
+  "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+  "elapsed_s": 23.263926821004134,
+  "error": "ScreenError: the captain prompt's highlight does not reach slot 16 (it reads 10)",
+  "withdrawn": true,
+  "captain_slot_after": 16,
+  "prompt_keys": [
+    {
+      "prompt": 1,
+      "slot": 3,
+      "key": 177
+    },
+    {
+      "prompt": 1,
+      "slot": 4,
+      "key": 177
+    },
+    {
+      "prompt": 1,
+      "slot": 5,
+      "key": 177
+    },
+    {
+      "prompt": 1,
+      "slot": 6,
+      "key": 177
+    },
+    {
+      "prompt": 1,
+      "slot": 7,
+      "key": 177
+    },
+    {
+      "prompt": 1,
+      "slot": 8,
+      "key": 177
+    },
+    {
+      "prompt": 1,
+      "slot": 9,
+      "key": 177
+    },
+    {
+      "prompt": 1,
+      "slot": 10,
+      "key": 13
+    },
+    {
+      "prompt": 2,
+      "slot": 3,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 4,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 5,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 6,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 7,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 8,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 9,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 10,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 11,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 1,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 2,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 3,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 4,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 5,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 6,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 7,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 8,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 9,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 10,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 11,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 1,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 2,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 3,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 4,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 5,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 6,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 7,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 8,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 9,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 10,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 11,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 1,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 2,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 3,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 4,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 5,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 6,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 7,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 8,
+      "key": 177
+    },
+    {
+      "prompt": 2,
+      "slot": 9,
+      "key": 177
+    }
+  ],
+  "startup_declarations": [
+    "main seed DS:7B62 at the captain prompt",
+    "delay byte [A923]+0x3F at the captain prompt",
+    "main seed DS:7B62 at the captain prompt",
+    "delay byte [A923]+0x3F at the captain prompt"
+  ],
+  "memory_mask": [],
+  "expected_failure_caught": true
+}
