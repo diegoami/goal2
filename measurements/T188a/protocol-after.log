@@ -1,0 +1,9 @@
+test_edit_flag_round_trips_and_rejects_ambiguous_values (goal2.tests.test_stopped_bench_t188.EditProtocol.test_edit_flag_round_trips_and_rejects_ambiguous_values) ... ok
+test_lower_level_answer_cannot_bypass_stop_requirement (goal2.tests.test_stopped_bench_t188.EditProtocol.test_lower_level_answer_cannot_bypass_stop_requirement) ... ok
+test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it (goal2.tests.test_stopped_bench_t188.EditProtocol.test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it) ... ok
+test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing (goal2.tests.test_stopped_bench_t188.EditProtocol.test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.014s
+
+OK

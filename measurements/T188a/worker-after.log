@@ -1,0 +1,6 @@
+test_two_edits_and_one_refusal_stay_stopped_then_publish_once (goal2.tests.test_stopped_bench_t188.ActualStoppedEdits.test_two_edits_and_one_refusal_stay_stopped_then_publish_once) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 141.302s
+
+OK

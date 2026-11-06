@@ -1,0 +1,10 @@
+{
+  "result_sha256": true,
+  "events_sha256": true,
+  "after": true,
+  "draws": true,
+  "draws_digest": true,
+  "score": true,
+  "substitutions": true,
+  "snapshots": true
+}
