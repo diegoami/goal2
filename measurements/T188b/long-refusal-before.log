@@ -1,0 +1,22 @@
+test_long_refusal_keeps_all_twenty_players_details_and_controls_visible (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_long_refusal_keeps_all_twenty_players_details_and_controls_visible) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_long_refusal_keeps_all_twenty_players_details_and_controls_visible (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_long_refusal_keeps_all_twenty_players_details_and_controls_visible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 183, in test_long_refusal_keeps_all_twenty_players_details_and_controls_visible
+    self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['box 984x454 squeezed below 676x478', 'Ba[1897 chars]x24'] != []
+
+First list contains 49 additional elements.
+First extra element 0:
+'box 984x454 squeezed below 676x478'
+
+Diff is 2096 characters long. Set self.maxDiff to None to see it. : (1440, 900)
+
+----------------------------------------------------------------------
+Ran 1 test in 2.019s
+
+FAILED (failures=1)
