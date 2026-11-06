@@ -120,7 +120,7 @@ class Look(App):
         sizes = [int(s) for s in re.findall(r"font-size:\s*(\d+)px", theme.stylesheet())]
         self.assertIn(24, sizes)
         self.assertIn(32, sizes)
-        self.assertEqual(set(sizes), {24, 32})
+        self.assertEqual(set(sizes), {20, 24, 32})
 
     def test_the_font_is_the_vendored_pxplus_loaded_from_the_package(self):
         package_fonts = Path(theme.__file__).resolve().parent / "fonts"

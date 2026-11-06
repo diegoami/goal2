@@ -43,7 +43,7 @@ class Readable(unittest.TestCase):
 
     def test_roster_and_key_controls_fit_base_and_large_pages(self):
         from goal2.desktop import fixed_page
-        for width,height in ((1440,900),(2110,1213),(2880,1800)):
+        for width,height in ((1440,900),(2110,1213),(2880,1800),(702,439),(720,450)):
             self.window.resize(width,height)
             for _ in range(3): self.app.processEvents()
             self.assertEqual(fixed_page.problems(self.window),[],(width,height))
@@ -131,5 +131,14 @@ class Readable(unittest.TestCase):
             self.assertIn(text,self.pitch.commentary.text())
             for label in self.pitch.recent:
                 self.assertLessEqual(label.fontMetrics().horizontalAdvance(label.text()),label.width())
+
+    def test_import_paragraphs_fit_a_fractionally_scaled_page(self):
+        from goal2.ui.s01_import import ImportScreen
+        from goal2.desktop import fixed_page
+        self.window.push(ImportScreen(self.window,self.window.target))
+        for width,height in ((702,439),(720,450),(1440,900)):
+            self.window.resize(width,height)
+            for _ in range(3):self.app.processEvents()
+            self.assertEqual(fixed_page.problems(self.window),[],(width,height))
 
 if __name__=='__main__': unittest.main()

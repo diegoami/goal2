@@ -112,6 +112,8 @@ def stylesheet(family: str = FONT_FAMILY) -> str:
 #enterHint #kbd {{ color: {ON_HIGHLIGHT}; background: transparent; border: 1px solid {ON_HIGHLIGHT}; }}
 #box {{ background: {GROUND}; border: 1px solid {FRAME_DARK}; }}
 #boxHeading, #th {{ color: {HEADING}; }}
+#benchMetadata {{ font-size: 20px; color: {TEXT_NORMAL}; }}
+#benchCounter {{ border: 1px solid {FRAME}; padding: 6px 14px; }}
 #th {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td {{ border-bottom: 1px solid {FRAME_DARK}; padding: 4px 8px; }}
 #td[check="good"] {{ color: {GOOD}; }}
