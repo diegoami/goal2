@@ -1,0 +1,27 @@
+{
+  "source_commit": "6c6cd1084b2a7752a8dbc0d4eb8912bc4f1c382b",
+  "source_sha256": "1a2b8cceb59937e1c40c75eeaf43f658e436b26c6971dd9a1f8a3a04fabdc995",
+  "image_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+  "memory_mask": [],
+  "equal": {
+    "result_sha256": true,
+    "events_sha256": true,
+    "after": true,
+    "kickoff_seed": true,
+    "draws": true,
+    "draws_digest": true,
+    "score": true,
+    "substitutions": true,
+    "prompt_keys": true,
+    "startup_declarations": true
+  },
+  "reference": "unhooked original under Unicorn",
+  "candidate": "no-instruction port under PyPy3.11",
+  "scope": "existing E006 fixture7v19 index21; kickoff captain130 withdrawn for134 at half-time",
+  "completed": true,
+  "score": [
+    0,
+    1
+  ],
+  "draws": 194119
+}

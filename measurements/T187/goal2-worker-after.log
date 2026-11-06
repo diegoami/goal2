@@ -1,0 +1,6 @@
+test_withdrawn_explicit_captain_finishes_and_publishes_exactly_once (goal2.tests.test_captain_replacement_t187.ActualCaptainWithdrawalT187.test_withdrawn_explicit_captain_finishes_and_publishes_exactly_once) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 76.244s
+
+OK
