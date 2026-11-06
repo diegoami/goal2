@@ -1,0 +1,29 @@
+{
+  "cases": [
+    {
+      "name": "first-start",
+      "window": [
+        1440,
+        900
+      ],
+      "page_scale": 1.0,
+      "device_pixel_ratio": 1.5,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "first-start.png",
+      "sha256": "2aa0ba9cb27044102e2d027810f4f9ddd4ce17f9fbf723d617bfc296e13b7bcc"
+    }
+  ],
+  "passed": false,
+  "kind": "native packaged rendering; declared UI packets",
+  "requested_factor": "1",
+  "goal2": "C:\\Users\\diego\\goal2-playtest\\main-f5703ddb\\goal2-0.1.0-win64\\python\\Lib\\site-packages\\goal2\\__init__.py",
+  "python": "C:\\Users\\diego\\goal2-playtest\\main-f5703ddb\\goal2-0.1.0-win64\\python\\python.exe",
+  "profile_isolated": true,
+  "qpa": "windows",
+  "font_family": "PxPlus IBM VGA 8x16",
+  "font_baseline": 16,
+  "rendered_label_px": 16,
+  "stage": "font_baseline",
+  "error": "AssertionError: ('font baseline', 16, 'expected at least24')"
+}
