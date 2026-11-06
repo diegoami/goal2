@@ -262,7 +262,7 @@ acknowledgements, and the match the player watched is the match the engine publi
   commentary, the speed, the display and your side's colour. The home side is the fixture's side B, named first
   (`DesktopModel.home`, #562; T167).
 - **Keys** [confirmed: E031 C39–C40, C08; T156-R1 steps 45, 267]: **←→** speed, **↑↓** the five display styles
-  (role codes first), **Space** the whole commentary over the pitch and back, **R** quick result (every sample is
+  (role codes first), **Space** a larger commentary reading panel and back, **R** quick result (every sample is
   acknowledged as it arrives; *HANG ON A TICK* stands where *R result* was, `t156-267-quick-hang-on`), **F9** says
   goal2 has no sound and does nothing else, **Esc** / **Enter** request the bench (`pause`).
 - **The stops** [designed: T167; T180]: once every sample before it is shown, the controller holds the decision the

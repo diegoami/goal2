@@ -42,7 +42,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
 
 from goal2.ui import theme
-from goal2.ui.screen import Clickable, Screen, kbd, label
+from goal2.ui.screen import Clickable, Screen, kbd, label, para
 from goal2.ui.squad_card import PlayerCard, Strip, colour, full_name, last_on_the_bar, squad_rows
 
 SEARCH_MAX = 12   # [designed: T177] a surname's length on this route (`rename_player`'s 12 characters)
@@ -145,21 +145,21 @@ class SquadScreen(Screen):
         self.pool_button.clicked.connect(lambda: self.show_side("pool"))
         top.addWidget(self.squad_button)
         top.addWidget(self.pool_button)
-        top.addWidget(label("←→ toggles · Ins: the assistant's recommended 20 (coming later)", "sub"))
+        top.addWidget(label("←→ squad / pool · Ins assistant", "sub"))
         top.addStretch(1)
         self.note = label("", "sub")
         top.addWidget(self.note)
         column.addLayout(top)
         # [designed: owner, §6 item 18; T177] the pool's search and position filter, tagged as a goal2 addition
-        extras = QHBoxLayout()
+        from goal2.ui.key_flow import KeyFlow
+        extras = KeyFlow()
         extras.setSpacing(10)
         extras.addWidget(label(ADDITION, "tagNew"))
         self.search_button = FilterButton("/", "", self.open_search)
-        self.search_button.setFixedWidth(330)
+        self.search_button.setFixedWidth(340)
         extras.addWidget(self.search_button)
         self.position_button = FilterButton("P", "", lambda: self.step_position(1))
         extras.addWidget(self.position_button)
-        extras.addStretch(1)
         column.addLayout(extras)
         self.card = PlayerCard()
         column.addWidget(self.card, 1)

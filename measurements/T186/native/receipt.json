@@ -1,0 +1,15 @@
+{
+  "source": "603f392249f78d5092f72c099d1d40f1d5c8b8fa",
+  "package_run": 42136692826,
+  "zip_sha256": "59ef3504d1e1ec1478c1bca656f73312b9baa3cd7e03f7e5d5893b264f7a9ae1",
+  "unchanged_zip_runtime": true,
+  "native_backend": "windows",
+  "baseline_font": 16,
+  "candidate_font": 24,
+  "requested_scale_factors": [
+    1,
+    2
+  ],
+  "rendering_cases_per_factor": 9,
+  "scope": "Isolated profiles; bytecode writes disabled; explicitly NOACTIVATE native HWND. UI packets are declared rendering fixtures, not original-engine outcomes. Only top-level JSON/PNG/logs copied; original cache/private profiles excluded."
+}

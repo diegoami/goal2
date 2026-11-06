@@ -1,0 +1,132 @@
+{
+  "cases": [
+    {
+      "name": "first-start",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "first-start.png",
+      "sha256": "36985e0112d96824ce0d832538dab599eeba19f6286835d1f215d457d1dd6016"
+    },
+    {
+      "name": "start",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "start.png",
+      "sha256": "0fa81bc3b21c3053ca99e5ebb86f0be65d02d2014e92d79640a0c2f00a89820a"
+    },
+    {
+      "name": "desk",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "desk.png",
+      "sha256": "e0ee9273b7416afc56ef9820c0ed81b06c5db89da03bdf9fa6edb3eb819259df"
+    },
+    {
+      "name": "match-menu",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "match-menu.png",
+      "sha256": "e06a8501d48e41b42697a03d728fe016887dba56481506c2fcd9f3bf35b7af15"
+    },
+    {
+      "name": "packet-pitch",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "packet-pitch.png",
+      "sha256": "c50e724c5a03cbd4e9bac13e8203b6d7b38283485306b990266819888f4d8ea8"
+    },
+    {
+      "name": "packet-paused-reading",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "packet-paused-reading.png",
+      "sha256": "ff255d2432b960d03c1d331d8c2f13a7f6b58bbb27becb3c34edaf5979653f87"
+    },
+    {
+      "name": "packet-injured-bench",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "packet-injured-bench.png",
+      "sha256": "e3c2da7d6cbf5764fd587592cbfef9ce31a91a3c318beb00b2bf5495f644ee4f"
+    },
+    {
+      "name": "packet-chosen-pair",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "packet-chosen-pair.png",
+      "sha256": "fef9d593f975ab76122472fbf89a3c74a48c0cacd91fc7ec56f29071cc804283"
+    },
+    {
+      "name": "packet-refusal-no-more",
+      "window": [
+        813,
+        439
+      ],
+      "page_scale": 0.48777777777777775,
+      "device_pixel_ratio": 3.0,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "packet-refusal-no-more.png",
+      "sha256": "f5e084dda797a04d74a32272f0088c6ccfd79b403e198d9e30851435f973d57e"
+    }
+  ],
+  "passed": true,
+  "kind": "native packaged rendering; declared UI packets",
+  "requested_factor": "2",
+  "goal2": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-T186-20261106\\clean\\goal2-0.1.0-win64\\python\\Lib\\site-packages\\goal2\\__init__.py",
+  "python": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-T186-20261106\\clean\\goal2-0.1.0-win64\\python\\python.exe",
+  "profile_isolated": true,
+  "qpa": "windows",
+  "font_family": "PxPlus IBM VGA 8x16",
+  "font_baseline": 24,
+  "rendered_label_px": 12,
+  "no_activation": true
+}

@@ -78,6 +78,7 @@ class MenuScreen(Screen):
         row.addWidget(second)
         self.situation = label(f"{day.kind_name.upper()} · location: {names[model.home(fixture)]} · {TIMES[phase]}",
                                "sub")
+        self.situation.setWordWrap(True)
         row.addWidget(self.situation)
         row.addStretch(1)
         self.replay_label = label("", "sub")
@@ -292,6 +293,7 @@ class SavedGoalMenu(Screen):
         for team in (HOME, 1 - HOME):
             saved = data.get('menu', {}).get(str(team), ['', []])
             panel, inner = box(f'{countries[team]} · {saved[0]}')
+            inner.setSpacing(4)
             for role, name in saved[1]:
                 text = label(f'{role}  {name}', 'value')
                 colour(text, kits.colour(team))
