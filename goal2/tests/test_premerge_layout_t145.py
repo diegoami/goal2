@@ -58,7 +58,7 @@ class LayoutFirst(unittest.TestCase):
         self.assertFalse(any(slow for _, slow in calls))
 
     def test_batch_fast_keeps_the_layout_slow_tests_and_drops_the_batch_ones(self):
-        # [designed: owner, 2026-11-01] CI's PR and main runs: the local gate plays the matches
+        # [designed: owner, 2026-11-07] PR/main regression scope; full matches belong to focused checks/milestones
         from unittest.mock import patch
         seen = {}
 

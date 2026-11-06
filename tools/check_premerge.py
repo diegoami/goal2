@@ -1,21 +1,19 @@
 """[designed: owner, #127, 2026-10-20] The pre-merge checks of one exact, clean commit.
 
-    python3 tools/check_premerge.py --expected-head <full sha> [--no-tests | --slow | --fast | --batch-fast] [--python PY] [--jobs N]
+    python3 tools/check_premerge.py --expected-head <full sha> [--no-tests | --slow | --affected | --fast | --batch-fast] [--python PY] [--jobs N]
 
 Checks: the checkout is clean at that commit; no original-game file is tracked (CLAUDE.md
 rule 14); Markdown links and JSON parse (tools/check_links.py); every game test module under
 goal2/tests, in parallel, on PY (default: this interpreter). [designed: #275] A test whose
 optional dependency, original-game file or goal2-archaeology checkout is absent skips with its
 reason (goal2/tests/requires.py), so the gate runs anywhere; the skips are counted in the output.
-Slow tests run when it counts: [designed: owner, 2026-10-20] automatically when the commit changes
-a file the slow tests guard since origin/main (SLOW_PATHS: the engine, the core, the watched and competitive
-match, saves, the match view, the dependencies), always with --slow (every milestone candidate, a dispatch
-of the slow workflows), never with --fast. [designed: owner, 2026-11-01, #505] Automatically, only in the test modules
-those files can reach (tools/slow_reach.py: the import graph); every other module runs its fast tests. [designed: owner, 2026-10-29, T145] The cheap layout and page-reserve modules
-(LAYOUT_FIRST) run first, with their slow tests unless --fast, and a failure there ends the gate
-before the full batch. [designed: owner, 2026-11-01] --batch-fast keeps the layout stage's slow tests and never
-runs the full batch's: CI's PR and main runs, whose 4-CPU runners took hours over the port's matches, while the
-local gate plays them all. Task-specific Done-when lines stay separate.
+[designed: owner, 2026-11-07] PRs run task-specific focused checks plus this fast
+regression gate. The default keeps the cheap layout/reserve slow checks, but disables
+slow tests in the full batch (the same scope as --batch-fast). Full suites run with
+--slow on the integrated milestone candidate, every case, on Linux and Windows.
+--affected explicitly selects the prior import-graph scope for a justified investigation;
+--fast also disables the layout slow checks. No game assertion, case or limit changes.
+
 """
 from __future__ import annotations
 
@@ -73,7 +71,7 @@ SLOW_PATHS = re.compile(r"^(goal2/engine/|goal2/core/|goal2/game/(watched|compet
                         r"|core_lineup_t114|core_pause_t115|core_playback_t116|core_shootout_t118|core_walkoff_363|core_extra_t119|core_nice_try_371|core_takers_t120|core_save_t121|core_patches_t122|core_best_place_395|core_congratulations_409|core_cycle_t123))"
                         r"|pyproject\.toml$|tools/(watched_evidence|prove_core_cycle|verify_core_cycle)\.py$|tools/watched-kit-hashes\.json$)")
 # [designed: owner, 2026-11-01, #505] Not the CI plumbing (this gate, tools/ci_changes.py, tools/slow_reach.py, the
-# slow workflows): their own fast tests check them, and a full slow run of them is a dispatch.
+# slow workflows): their own focused tests check them; --affected remains an explicit investigation mode.
 
 
 def slow_changes(base: str = "origin/main") -> list[str] | None:
@@ -203,6 +201,7 @@ def main(argv: list[str] | None = None) -> int:
     tests = parser.add_mutually_exclusive_group()
     tests.add_argument("--no-tests", dest="tests", action="store_false", help="skip the game test modules")
     tests.add_argument("--slow", action="store_true", help="always run the slow tests (milestone candidates)")
+    tests.add_argument("--affected", action="store_true", help="explicitly run reachable slow tests for an investigation")
     tests.add_argument("--fast", action="store_true", help="never run the slow tests")
     tests.add_argument("--batch-fast", action="store_true",
                        help="the layout stage's slow tests only, never the full batch's (CI's PR and main runs)")
@@ -218,8 +217,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.tests:
             slow = args.slow
             if args.batch_fast:
-                print("SKIP the full batch's slow tests (--batch-fast: the local gate plays them)", flush=True)
-            elif not (args.slow or args.fast):
+                print("PR regression scope: cheap layout slow checks; full batch fast (--batch-fast)", flush=True)
+            elif args.affected:
                 changed = slow_changes()
                 if changed is None:
                     slow, why = True, "RUN every slow test (origin/main unreadable)"
@@ -233,6 +232,8 @@ def main(argv: list[str] | None = None) -> int:
                     why = (f"RUN slow tests in {len(slow)} modules they can reach (changed: {', '.join(changed[:5])}"
                            f"{' ...' if len(changed) > 5 else ''}): {' '.join(sorted(slow))}")
                 print(why, flush=True)
+            elif not args.slow:
+                print("PR regression scope: full batch fast; run focused tests explicitly, --slow at milestones", flush=True)
             print(f"game tests: {args.jobs} jobs ({'--jobs' if args.jobs != jobs else jobs_from})", flush=True)
             check_tests(args.jobs, args.python, slow, layout_slow=not args.fast)
         check_checkout(args.expected_head)  # a check that changed tracked files cannot certify it

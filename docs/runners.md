@@ -5,34 +5,29 @@
 | Check | Where | What | When |
 |---|---|---|---|
 | **Linux**, **Windows** (`ci.yml`, `windows.yml`) | GitHub's hosted machines (free: goal2 is public) | the gate with `--batch-fast`: every test module, the layout stage's slow tests, none of the full batch's | a ready PR's push that changes more than docs, measurements and Markdown; main's pushes beyond those; a dispatch |
-| **Linux slow**, **Windows slow** (`linux-slow.yml`, `windows-slow.yml`) | the owner's own machines (self-hosted runners) | on a PR, the gate's own choice: slow tests only in the modules the change can reach (`tools/slow_reach.py`, #505); on a dispatch, `--slow`: every slow test, every case | a ready PR's push that changes what the slow tests guard (`SLOW_PATHS` in `tools/check_premerge.py`; not the CI plumbing); a dispatch, also started by a PR's slow run when the last dispatch is over 7 days old (no schedule: the PC is not left on for it). Never for a fork PR |
+| **Linux slow**, **Windows slow** (`linux-slow.yml`, `windows-slow.yml`) | owner's self-hosted machines | `--slow`: every slow test and case | explicit dispatch for the integrated milestone or a justified investigation; never automatically on PR/push/weekly age |
 
 ## When checks run
 
-- **A draft PR runs nothing.** Work in a draft; mark it ready (`gh pr ready <pr>`) when it should be checked.
-  Marking it ready checks everything the branch changes since `main`.
-- **A later push** is judged on what it changes since the PR's previous push (`tools/ci_changes.py`):
-  - only docs, measurements or Markdown: no check runs;
-  - code outside what the slow tests guard: the hosted Linux and Windows checks;
-  - anything the slow tests guard: the hosted checks and both slow checks.
-  A skipped push does not cancel the run of an earlier push; a push that runs a check cancels that check's
-  earlier run.
-- **A milestone candidate**: Actions tab → each workflow → *Run workflow* on the branch (Linux and Windows with
-  **slow** ticked, Linux slow, Windows slow). A dispatch always runs.
+[designed: owner, 2026-11-07] A ready PR's code push runs hosted Linux/Windows fast regression
+and native scaling checks. Drafts and docs/measurement-only pushes retain the existing selector rules.
+Run task-focused tests separately, including relevant slow cases. A skipped push does not cancel an
+older run; a code push may supersede the same hosted check.
 
-GitHub's own `paths` filters are not used for PRs because they judge the PR's whole diff, not the push.
+Full suites are manual. Dispatch **Linux slow** and **Windows slow** once on the integrated main
+milestone candidate. The hosted workflows also offer an explicit slow dispatch for investigation,
+but do not duplicate the same full validation there. There is no PR-driven or weekly full dispatch.
 
 ## Merging with these checks
 
-A PR merges when its Done-when lines and the local gate pass, and on GitHub:
+A PR merges on its task-focused tests, the fast regression gate and hosted Linux/Windows checks.
+Full self-hosted suites are milestone gates, not mandatory per-PR gates. After a fix rerun affected
+checks; repeat a full suite only when the change or failure invalidates its coverage, explaining why.
+Receipts may be reused for unchanged exercised inputs across metadata/ancestry changes, recording
+both SHAs and identity/scope evidence ([validation.md](validation.md)). Known failures need their
+existing explicit owner exception; a failed run is never reported as a pass.
 
-1. the hosted Linux and Windows checks are green on **the last push that ran them**;
-2. Linux slow and Windows slow are green on **the last push that ran them** (`gh run list --workflow
-   linux-slow.yml --branch <branch>`), when a runner with that label was online;
-3. a skipped check (grey, "skipped") on a later push is fine: that push changed nothing the check covers.
-
-When no runner of a label is online, the slow run waits in the queue. The PR may merge on the other checks;
-say so on the PR ("Windows slow: no runner online; the local gate ran --slow").
+If a runner is offline, milestone validation waits; that does not block unrelated focused PR merges.
 
 ## The runners
 
@@ -146,8 +141,7 @@ Running a script again repairs the start-up and keeps the registration.
 
 ## Security
 
-- goal2 is public. A fork PR never runs the slow workflows (their jobs require the PR's head to be in this
-  repository), and every outside contributor's workflow run waits for the owner's approval (repository
+- goal2 is public. A fork PR never runs the slow workflows (they have no PR event; dispatch requires repository write access), and every outside contributor's workflow run waits for the owner's approval (repository
   setting *Require approval for all outside collaborators*, set 2026-11-01).
 - The runners run as the owner's user, without admin rights. They see the `GOAL2_RCLONE_TOKEN` secret during a
   run; the rclone configuration lives in the job's temp folder, not the user's profile.

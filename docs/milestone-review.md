@@ -26,7 +26,7 @@ example `m3-campaign-ui`) on **exactly the reviewed commit** of `main`.
 
    then the PRs merged since (`gh pr list --state merged --search "merged:>=<date>"`), the checks
    run on the candidate (`python3 tools/check_premerge.py --expected-head <sha> --slow`: every
-   game test, the slow ones included), what changed in plain words, the claims to verify with `file:line`, and the known owner
+   game test, the slow ones included; one full Linux run and one full Windows run), what changed in plain words, the claims to verify with `file:line`, and the known owner
    decisions (not defects). From then on `main` takes only fixes for the milestone's findings.
    [designed: owner, 2026-10-21] The body **ends with the reviewer's prompt**, ready to paste:
 
@@ -74,3 +74,10 @@ example `m3-campaign-ui`) on **exactly the reviewed commit** of `main`.
   check that passes without testing what it claims).
 - **SHOULD**: worth fixing, not blocking.
 - **OUT OF SCOPE**: real, but not caused by this milestone's changes.
+
+[designed: owner, 2026-11-07] Full validation belongs to the integrated milestone, rather than
+being repeated for each stacked PR. After review fixes, run affected checks; repeat full validation
+when those fixes invalidate its coverage. For unchanged exercised code/tests/dependencies/fixtures,
+record receipt reuse across documentation, measurements or ancestry-only SHA changes rather than
+replaying matches solely for the new commit ID (process.md §3, validation.md). Preserve the original
+run's pass/failure/skip status and any explicit owner exception.
