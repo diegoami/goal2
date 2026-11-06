@@ -1,0 +1,24 @@
+test_two_edits_and_one_refusal_stay_stopped_then_publish_once (goal2.tests.test_stopped_bench_t188.ActualStoppedEdits.test_two_edits_and_one_refusal_stay_stopped_then_publish_once) ... ERROR
+
+======================================================================
+ERROR: test_two_edits_and_one_refusal_stay_stopped_then_publish_once (goal2.tests.test_stopped_bench_t188.ActualStoppedEdits.test_two_edits_and_one_refusal_stay_stopped_then_publish_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_jobs.py", line 513, in poll
+    raise _reply_failure(kind, value, False)
+ValueError: Watched worker failed: TypeError: Match.answer() got an unexpected keyword argument 'edit_only'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/tests/test_stopped_bench_t188.py", line 70, in test_two_edits_and_one_refusal_stay_stopped_then_publish_once
+    jobs.poll(token)
+    ~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_jobs.py", line 522, in poll
+    raise ValueError(f'Invalid watched worker IPC: {exc}') from exc
+ValueError: Invalid watched worker IPC: Watched worker failed: TypeError: Match.answer() got an unexpected keyword argument 'edit_only'
+
+----------------------------------------------------------------------
+Ran 1 test in 65.131s
+
+FAILED (errors=1)

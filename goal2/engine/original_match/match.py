@@ -451,8 +451,10 @@ class Match:
             self._advance()
 
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
-               speed=None, shootout_order=None, taker=None):
+               speed=None, shootout_order=None, taker=None, edit_only=False):
         """goal2's answer to the waiting decision; nothing given plays on.
+        edit_only: execute edits at a legal half-time/substitution menu and yield a fresh decision before
+          pressing Play. An ordinary subsequent answer continues; no match tick occurs between edits.
         substitutions: (off, on) player words of the managed squad, made now at half time and at a substitution
           notice; at a pause the original only takes the request and offers it at the next stoppage (a
           `substitution` decision whose default answer is what was asked for).
@@ -468,6 +470,13 @@ class Match:
           Enter (the highlighted player, from the top of the eleven)."""
         if self.st["waiting"] is None:
             raise MatchError("no decision is waiting")
+        # [designed: #663, goal2#599] An edit is a real stopped-menu visit without Play.
+        # Default answers and the legacy in-play request API retain their existing behavior.
+        if edit_only:
+            if (self.st["waiting"]["context"] not in ("half_time", "substitution")
+                    or not self.m.rd(S.SUBS_ALLOWED, 1) or quick or speed is not None
+                    or taker is not None or shootout_order is not None):
+                raise ValueError("edit_only needs a legal stopped bench decision, without play-on inputs")
         if self.st["waiting"]["context"] == "set_piece":
             if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None or shootout_order is not None:
                 raise ValueError("the set-piece prompt takes taker only")
@@ -517,20 +526,23 @@ class Match:
         own = {int(p): {int(e): (None if v is None else bool(v)) for e, v in d.items()} for p, d in (own_tactics or {}).items()}
         if any(p not in squad or any(not 1 <= e <= 4 for e in d) for p, d in own.items()):
             raise ValueError("own_tactics: {player of the managed squad: {element 1..4: True, False or None}}")
+        edit = {"edit_only": True} if edit_only else {}
         self._replay_action("answer", {"substitutions": subs, "tactics": tactics, "positions": positions,
-                                      "marking": marking, "own_tactics": own, "quick": bool(quick), "speed": speed})
+                                      "marking": marking, "own_tactics": own, "quick": bool(quick), "speed": speed, **edit})
         self.st["answer"] = {"substitutions": subs, "tactics": tactics, "positions": positions, "marking": marking,
-                             "own": own, "quick": bool(quick), "speed": speed}
+                             "own": own, "quick": bool(quick), "speed": speed, **edit}
         self.st["decisions"].append({"context": self.st["waiting"]["context"], "minute": self.st["minute"],
                                      "answer": {"substitutions": subs, "tactics": sorted(tactics.items()),
                                                 "positions": sorted(positions.items()), "marking": sorted(marking.items()),
                                                 "own_tactics": sorted((p, sorted(d.items())) for p, d in own.items()),
-                                                "quick": bool(quick), "speed": speed}})
+                                                "quick": bool(quick), "speed": speed, **edit}})
         self.st["waiting"] = None
 
     def _new_plan(self, answer):
-        return S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
+        plan = S.MenuPlan(self.side, tactics=answer.get("tactics"), subs=answer.get("substitutions"),
                           positions=answer.get("positions"), marking=answer.get("marking"), own=answer.get("own"))
+        plan.edit_only = bool(answer.get("edit_only"))
+        return plan
 
     def pause(self):
         """Ask the original for the team menu at its next key poll (as a manager pressing Enter in play): a
@@ -593,9 +605,9 @@ class Match:
     def _advance(self):
         fresh, self.st["fresh"] = self.st["fresh"], False
         stopped = self.m.run(self.end_lin, self.timeout_s, fresh=fresh)
-        # Every stop is outside the original's screens: a decision stops at a menu's first read or at the notice,
-        # before any plan; a tick and the end of a call come after the menus closed. A plan left here is done, so
-        # nothing of a screen survives into the state between events (save() relies on it).
+        # Ordinary decisions stop at a menu/notice before a plan; ticks follow closed menus.
+        # An edit-only decision also permits SELECT TEAM's read: editing_select records that
+        # continuation, with all completed operations flushed and no live MenuPlan retained.
         self._menu = None
         if stopped is not None:
             return
@@ -742,11 +754,35 @@ class Match:
             return S.ENTER
         if site == TABLE_KEY and st["full_time"]:
             return S.ENTER
+        if site == SITE_SELECT and self.st.get("editing_select"):
+            answer = self.st["answer"]
+            if answer is None:
+                self._decide(self.st["menu_context"], substitutions_now=True, edited=True)
+                return None
+            self.st["editing_select"] = False
+            if answer.get("tactics"):
+                # Team tactics need the parent menu; keep the answer for that menu.
+                self.st["editing_menu"] = True
+                return S.ESC
+            self.st["answer"] = None
+            self._extras(answer)
+            self._menu = self._new_plan(answer)
+            self._menu.steps = ["select", "play"]
+            self._menu.in_screen = "select"
         if site == SITE_SELECT and self._menu is not None:
-            return self._menu.select_key({
+            key = self._menu.select_key({
                 "cursor": m.rd(S.SELECT_CURSOR), "squad": self._squad(self.opts["managed"]),
                 "allowed": m.rd(S.SUBS_ALLOWED, 1), "request": m.rd(S.SUBS_REQUEST, 1),
                 "subs_left": m.rd(S.SUBS_LEFT + self.side, 1), "position": lambda p: self._player(p, PLAYER_POSITION)})
+            if key == S.ESC and getattr(self._menu, "edit_only", False):
+                # Keep SELECT TEAM open between edits: leaving/reentering it runs original
+                # housekeeping again. The next answer continues at this same key read.
+                self._close_plan(self._menu)
+                self._menu = None
+                st["editing_select"] = True
+                self._decide(st["menu_context"], substitutions_now=True, edited=True)
+                return None
+            return key
         if site == SITE_MENU:
             bp = m.reg("bp")                                  # 214B:1560's frame (its far return above it)
             caller = m.where(m.frame_word(bp, 4), m.frame_word(bp, 2))
@@ -793,7 +829,7 @@ class Match:
                 # run_match still visits its menu for two computer sides. Keep
                 # its sorting/validation and choose play, with no human answer.
                 self._menu = S.MenuPlan(1)
-            elif context in DECIDED_AT_MENU or (context == "substitution" and st.get("refused")):
+            elif context in DECIDED_AT_MENU or st.get("editing_menu") or (context == "substitution" and st.get("refused")):
                 if st["answer"] is None:
                     self._decide(context, substitutions_now=bool(self.m.rd(S.SUBS_ALLOWED, 1)),
                                  refused=st.get("refused"))
@@ -802,6 +838,7 @@ class Match:
                 self._extras(answer)
                 if not self.m.rd(S.SUBS_ALLOWED, 1) and answer["substitutions"]:
                     st["pending_subs"] = answer["substitutions"]    # the original makes them at the next stoppage
+                st["editing_menu"] = False
                 self._menu = self._new_plan(answer)
             elif context == "substitution":
                 answer, st["notice"] = st["notice"] or {}, None
@@ -809,6 +846,20 @@ class Match:
             else:                                            # before and after the match: play
                 self._menu = S.MenuPlan(self.side)
             plan = self._menu
+        # Normalize the just-returned submenu before asking for the next key. Do not
+        # even navigate toward Play: publish the original's changed squad and stop here.
+        if getattr(plan, "edit_only", False):
+            if plan.in_screen is not None:
+                plan.steps.pop(0)
+                plan.in_screen = None
+            if plan.steps == ["play"]:
+                plan.closed = True
+                self._close_plan(plan)
+                self._menu = None
+                st["editing_menu"] = True
+                self._decide(st["menu_context"], substitutions_now=bool(self.m.rd(S.SUBS_ALLOWED, 1)),
+                             requested=[list(s) for s in st["pending_subs"]], edited=True)
+                return None
         key = plan.menu_key(item)
         if plan.steps[0] == "play" and key == S.ENTER and not getattr(plan, "closed", False):
             plan.closed = True

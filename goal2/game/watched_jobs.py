@@ -50,7 +50,7 @@ def _choice(value):
 # `Match.answer` as they are (goal2/engine/original_match/match.py): positions {player: code 0..13} (R, C on S19),
 # marking {player: opponent word or 0} (S09's mark line, 1771:49B8) and own_tactics {player: {element 1..4: True,
 # False or None}} (S09's four lines, 1771:4B61). Whether the original takes one is its to decide.
-CHANGES = ('positions', 'marking', 'own_tactics')
+CHANGES = ('positions', 'marking', 'own_tactics', 'edit_only')
 
 
 def _changes(value):
@@ -60,6 +60,11 @@ def _changes(value):
         raise ValueError('invalid bench changes')
     out = {}
     for name, items in value.items():
+        if name == 'edit_only':
+            if type(items) is not bool:
+                raise ValueError('edit_only must be a boolean')
+            if items: out[name] = True
+            continue
         if not isinstance(items, dict) or len(items) > MAX_PAIRS:
             raise ValueError('invalid bench changes')
         items = {int(k): v for k, v in items.items()} if all(str(k).isdigit() for k in items) else None
@@ -632,6 +637,10 @@ class WatchedJobs:
             raise ValueError('no bench decision is waiting')
         pairs = _pairs(list(substitutions))
         changes = _changes(changes or {})
+        if changes.get('edit_only'):
+            data = self.waiting.data
+            if data.get('context') not in ('half_time', 'substitution') or not data.get('substitutions_now'):
+                raise ValueError('substitutions can only be edited at a legal stopped bench')
         decision = self._decisions
         if changes:
             self._command(token, lambda engine: engine.answer(decision, pairs, changes=changes))
@@ -641,6 +650,14 @@ class WatchedJobs:
         self.waiting = None
         # [designed] Publication occurs on the next canonical poll, whose returned
         # events must reach the caller rather than disappear inside acknowledgement.
+
+    def edit(self, token, substitutions=(), changes=None):
+        """[designed: owner #599, T188a] Apply one stopped edit, then wait for the original's
+        fresh decision. It reports the actual roster/budget and never presses Play. Duplicate
+        input cannot reuse the consumed decision; ordinary pauses cannot queue pairs here."""
+        changes = dict(changes or {})
+        changes['edit_only'] = True
+        return self.answer(token, substitutions, changes)
 
     def choose(self, token, choice):
         """[designed: T167, #541] Answer the waiting player prompt (`set_piece` or `shootout_order`):
