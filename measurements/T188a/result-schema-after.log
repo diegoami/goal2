@@ -1,0 +1,15 @@
+test_edit_flag_round_trips_and_rejects_ambiguous_values (goal2.tests.test_stopped_bench_t188.EditProtocol.test_edit_flag_round_trips_and_rejects_ambiguous_values) ... ok
+test_lower_level_answer_cannot_bypass_stop_requirement (goal2.tests.test_stopped_bench_t188.EditProtocol.test_lower_level_answer_cannot_bypass_stop_requirement) ... ok
+test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it (goal2.tests.test_stopped_bench_t188.EditProtocol.test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it) ... ok
+test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing (goal2.tests.test_stopped_bench_t188.EditProtocol.test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing) ... ok
+test_completed_stopped_edit_record_roundtrips_without_mutation (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_completed_stopped_edit_record_roundtrips_without_mutation) ... ok
+test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected) ... ok
+test_exact_profiles_keep_actual_engine_identity (goal2.tests.test_watched_kit_identity.KitIdentityTests.test_exact_profiles_keep_actual_engine_identity) ... ok
+test_kit2_remains_friendly_with_exact_default_resolution_and_players (goal2.tests.test_watched_kit_identity.KitIdentityTests.test_kit2_remains_friendly_with_exact_default_resolution_and_players) ... ok
+test_mixed_history_world_preserves_identity_and_strict_quick_rng (goal2.tests.test_watched_kit_identity.KitIdentityTests.test_mixed_history_world_preserves_identity_and_strict_quick_rng) ... ok
+test_publication_uses_actual_result_profile_and_save_rejects_relabeling (goal2.tests.test_watched_kit_identity.KitIdentityTests.test_publication_uses_actual_result_profile_and_save_rejects_relabeling) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.009s
+
+OK

@@ -1,0 +1,8 @@
+{
+  "source": "80831d9a1b378d7b4bba78de7a931771f0472669",
+  "captain_parent": "9d18a8552399d57e263448b1f48cc71416d203ff",
+  "stopped_parent": "6cd335cd185a25f48c96c76ed8a3e8402be7a6ca",
+  "upstream_ci": 42107771277,
+  "vendor_sha256": "1d33ea45e7179ad458b5ab192babd670c6cf457ba76e39abec29326ca975c68d",
+  "worker_after_s": 141.302
+}

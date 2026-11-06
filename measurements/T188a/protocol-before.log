@@ -1,0 +1,38 @@
+test_edit_flag_round_trips_and_rejects_ambiguous_values (goal2.tests.test_stopped_bench_t188.EditProtocol.test_edit_flag_round_trips_and_rejects_ambiguous_values) ... ERROR
+test_lower_level_answer_cannot_bypass_stop_requirement (goal2.tests.test_stopped_bench_t188.EditProtocol.test_lower_level_answer_cannot_bypass_stop_requirement) ... ok
+test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it (goal2.tests.test_stopped_bench_t188.EditProtocol.test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it) ... ERROR
+test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing (goal2.tests.test_stopped_bench_t188.EditProtocol.test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing) ... ERROR
+
+======================================================================
+ERROR: test_edit_flag_round_trips_and_rejects_ambiguous_values (goal2.tests.test_stopped_bench_t188.EditProtocol.test_edit_flag_round_trips_and_rejects_ambiguous_values)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/tests/test_stopped_bench_t188.py", line 19, in test_edit_flag_round_trips_and_rejects_ambiguous_values
+    self.assertEqual(_changes({'edit_only':True}),{'edit_only':True})
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_jobs.py", line 60, in _changes
+    raise ValueError('invalid bench changes')
+ValueError: invalid bench changes
+
+======================================================================
+ERROR: test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it (goal2.tests.test_stopped_bench_t188.EditProtocol.test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/tests/test_stopped_bench_t188.py", line 26, in test_one_stopped_edit_is_one_answer_and_the_consumed_decision_cannot_repeat_it
+    jobs.edit('test',[(105,112)])
+    ^^^^^^^^^
+AttributeError: 'WatchedJobs' object has no attribute 'edit'
+
+======================================================================
+ERROR: test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing (goal2.tests.test_stopped_bench_t188.EditProtocol.test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/tests/test_stopped_bench_t188.py", line 37, in test_pause_or_disallowed_operation_keeps_decision_and_sends_nothing
+    with self.assertRaises(ValueError):jobs.edit('test',[(105,112)])
+                                       ^^^^^^^^^
+AttributeError: 'WatchedJobs' object has no attribute 'edit'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.009s
+
+FAILED (errors=3)

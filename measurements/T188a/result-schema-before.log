@@ -1,0 +1,25 @@
+test_completed_stopped_edit_record_roundtrips_without_mutation (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_completed_stopped_edit_record_roundtrips_without_mutation) ... ERROR
+test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected) ... ok
+
+======================================================================
+ERROR: test_completed_stopped_edit_record_roundtrips_without_mutation (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_completed_stopped_edit_record_roundtrips_without_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/tests/test_stopped_bench_t188.py", line 62, in test_completed_stopped_edit_record_roundtrips_without_mutation
+    validate_result(value)
+    ~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_schema.py", line 68, in validate_result
+    _details(result,competitive=competitive)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_schema.py", line 193, in _details
+    _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'})
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_schema.py", line 117, in _object
+    if not isinstance(value,dict) or set(value)!=set(keys):raise ValueError('invalid watched result record fields')
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid watched result record fields
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.045s
+
+FAILED (errors=1)

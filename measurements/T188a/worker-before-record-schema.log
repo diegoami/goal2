@@ -1,0 +1,45 @@
+test_two_edits_and_one_refusal_stay_stopped_then_publish_once (goal2.tests.test_stopped_bench_t188.ActualStoppedEdits.test_two_edits_and_one_refusal_stay_stopped_then_publish_once) ... ERROR
+
+======================================================================
+ERROR: test_two_edits_and_one_refusal_stay_stopped_then_publish_once (goal2.tests.test_stopped_bench_t188.ActualStoppedEdits.test_two_edits_and_one_refusal_stay_stopped_then_publish_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_jobs.py", line 588, in poll_frames
+    self._maybe_publish(token)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_jobs.py", line 557, in _maybe_publish
+    self.publication.publish_prepared(token, self._completion_work)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_publication.py", line 170, in publish_prepared
+    raise preparation.error
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_publication.py", line 110, in run
+    self.candidate = completed_candidate(*self.inputs, competitive=self.competitive)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_publication.py", line 24, in completed_candidate
+    result=outcome.result;engine=validate_result(result,competitive=competitive)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_schema.py", line 68, in validate_result
+    _details(result,competitive=competitive)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_schema.py", line 193, in _details
+    _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'})
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_schema.py", line 117, in _object
+    if not isinstance(value,dict) or set(value)!=set(keys):raise ValueError('invalid watched result record fields')
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid watched result record fields
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/tmp/goal2-stopped-bench/goal2/tests/test_stopped_bench_t188.py", line 72, in test_two_edits_and_one_refusal_stay_stopped_then_publish_once
+    jobs.poll_frames(token)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-stopped-bench/goal2/game/watched_jobs.py", line 592, in poll_frames
+    raise ValueError(f'Invalid watched pitch IPC: {exc}') from exc
+ValueError: Invalid watched pitch IPC: invalid watched result record fields
+
+----------------------------------------------------------------------
+Ran 1 test in 222.612s
+
+FAILED (errors=1)
