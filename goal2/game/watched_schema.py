@@ -190,7 +190,12 @@ def _details(result,*,competitive=False):
                 raise ValueError('invalid shootout order')
             if result['shootout'] is None:raise ValueError('shootout order without shootout')
             continue
-        _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'})
+        edit={'edit_only'} if isinstance(answer,dict) and 'edit_only' in answer else set()
+        if edit and (result['kit']!='4' or row['context'] not in ('half_time','substitution')
+                     or answer['edit_only'] is not True or answer.get('quick') is not False
+                     or answer.get('speed') is not None):
+            raise ValueError('invalid stopped-edit decision')
+        _object(answer,{'substitutions','tactics','positions','marking','own_tactics','quick','speed'}|edit)
         if type(answer['quick']) is not bool or (answer['speed'] is not None and not integer(answer['speed'],0,255)):
             raise ValueError('invalid watched decision policy')
         for key in ('substitutions','tactics','positions','marking','own_tactics'):

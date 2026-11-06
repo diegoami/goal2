@@ -46,6 +46,34 @@ class EditProtocol(unittest.TestCase):
         self.assertIsNotNone(jobs.waiting)
 
 
+class EditedResultSchema(unittest.TestCase):
+    def result(self,context='half_time'):
+        from goal2.tests.test_watched_kit_identity import result
+        value=result();value['kit']='4'
+        value['decisions']=[dict(context=context,minute=45,answer=dict(substitutions=[[1,12]],
+            tactics=[],positions=[],marking=[],own_tactics=[],quick=False,speed=None,edit_only=True))]
+        return value
+
+    def test_completed_stopped_edit_record_roundtrips_without_mutation(self):
+        import copy
+        from goal2.game.watched_schema import validate_result
+        for context in ('half_time','substitution'):
+            value=self.result(context);before=copy.deepcopy(value)
+            validate_result(value)
+            self.assertEqual(value,before)
+
+    def test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected(self):
+        from goal2.game.watched_schema import validate_result
+        for field,value in [('edit_only',False),('edit_only',1),('edit_only','true'),
+                            ('quick',True),('speed',0),('unknown',True)]:
+            raw=self.result();raw['decisions'][0]['answer'][field]=value
+            with self.subTest(field=field,value=value),self.assertRaises(ValueError):validate_result(raw)
+        raw=self.result('pause')
+        with self.assertRaises(ValueError):validate_result(raw)
+        raw=self.result();raw['kit']='2'
+        with self.assertRaises(ValueError):validate_result(raw)
+
+
 @requires.need(modules=('unicorn',),slow=True,**requires.HALFTIME)
 class ActualStoppedEdits(unittest.TestCase):
     def test_two_edits_and_one_refusal_stay_stopped_then_publish_once(self):
