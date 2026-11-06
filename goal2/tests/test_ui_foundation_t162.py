@@ -116,11 +116,11 @@ class Look(App):
         self.assertTrue(colours)
         self.assertLessEqual({c.lower() for c in colours}, set(theme.PALETTE.values()))
 
-    def test_text_sizes_are_whole_multiples_of_the_cell(self):
+    def test_text_sizes_follow_owner_readability_correction(self):
         sizes = [int(s) for s in re.findall(r"font-size:\s*(\d+)px", theme.stylesheet())]
-        self.assertIn(16, sizes)
+        self.assertIn(24, sizes)
         self.assertIn(32, sizes)
-        self.assertEqual([s for s in sizes if s % 16], [])
+        self.assertEqual(set(sizes), {20, 24, 32})
 
     def test_the_font_is_the_vendored_pxplus_loaded_from_the_package(self):
         package_fonts = Path(theme.__file__).resolve().parent / "fonts"
@@ -132,7 +132,7 @@ class Look(App):
         family = theme.install(self.app)
         self.assertEqual(family, "PxPlus IBM VGA 8x16")
         self.assertEqual(self.app.font().family(), family)
-        self.assertEqual(self.app.font().pixelSize(), 16)
+        self.assertEqual(self.app.font().pixelSize(), 24)
         self.assertEqual(QFontDatabase.applicationFontFamilies(theme.font_id()), [family])
         pyproject = (ROOT / "pyproject.toml").read_text()
         self.assertRegex(pyproject, r'"goal2\.ui" = \[[^\]]*"fonts/\*\.ttf"[^\]]*"fonts/LICENSE\.TXT"')
@@ -144,7 +144,7 @@ class Look(App):
         self.app.processEvents()
         self.assertAlmostEqual(window.frame.scale, 0.5)
         self.assertEqual((window.page.width(), window.page.height()), (720, 450))
-        self.assertIn("font-size: 8px", window.page.styleSheet(), "16 px text at half the page size")
+        self.assertIn("font-size: 12px", window.page.styleSheet(), "24 px text at half the page size")
         window.resize(1440, 900)
         self.app.processEvents()
         self.assertEqual(fixed_page.problems(window), [])
@@ -340,7 +340,7 @@ class Help(App):
         self.assertGreater(bar.maximum(), 0, "the text scrolls")
         self.key(window, Qt.Key.Key_Down)
         line = screen.line_step()
-        self.assertEqual(line, round(16 * 1.35), "a line of 16 px text at the mockups' line height")
+        self.assertEqual(line, round(theme.TEXT * 1.35), "a line of the owner's normal text at the existing line height")
         self.assertEqual(bar.value(), line)
         self.key(window, Qt.Key.Key_PageDown)
         self.assertEqual(bar.value(), line + bar.pageStep())

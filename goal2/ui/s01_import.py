@@ -36,7 +36,7 @@ CHECK = {
     "absent": ("not in this folder (optional)", "none"),
     "unchecked": ("not checked yet", "none"),
 }
-BOX_WIDTH = 900   # [designed: s01-import.html, the column's `width:900px`]
+BOX_WIDTH = 1260   # [designed: s01-import.html, the column's `width:900px`]
 INTRO = ("goal2 plays the original's game from your own data files. Choose the folder that holds them; goal2 checks "
          "each file and copies it into its data folder. Your saved careers are never touched.")
 
@@ -55,6 +55,17 @@ def checks(folder) -> dict:
         else:
             out[name] = "verified"
     return out
+
+
+class FixedWidthBox(QFrame):
+    """[designed: T186] Measure wrapped content at this box's actual fixed width."""
+    def minimumSizeHint(self):
+        hint=super().minimumSizeHint()
+        if self.layout() is not None:
+            needed=self.layout().totalHeightForWidth(self.width())
+            if needed>=0:
+                hint.setHeight(needed)
+        return hint
 
 
 class ImportScreen(Screen):
@@ -76,7 +87,7 @@ class ImportScreen(Screen):
         self.body_layout.addStretch(1)
         row = QHBoxLayout()
         row.addStretch(1)
-        box = QFrame()
+        box = FixedWidthBox()
         box.setObjectName("box")
         box.setFixedWidth(BOX_WIDTH)
         layout = QVBoxLayout(box)
@@ -109,9 +120,10 @@ class ImportScreen(Screen):
         grid.setColumnStretch(2, 26)
         layout.addWidget(table)
         self.error = para("", "error")
-        # The wrapped paragraphs take the box's whole width, so the box's height is measured at its own width.
+        # The fixed outer box supplies paragraph width. A duplicated minimum would
+        # round padding/borders differently at fractional native DPI (T186).
         for paragraph in (intro, self.error):
-            paragraph.setMinimumWidth(BOX_WIDTH - 2 * 34 - 2)   # less the padding and the 1 px border
+            paragraph.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Preferred)
         self.error.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         layout.addSpacing(18)
         layout.addWidget(self.error)

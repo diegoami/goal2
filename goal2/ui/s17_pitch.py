@@ -41,7 +41,7 @@ import copy
 import time
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QSizePolicy
 
 from goal2.desktop.match_view import MAX_BACKLOG, PLAYBACK_RATE, Display
 from goal2.desktop.pygame_viewer import MARKS
@@ -457,14 +457,15 @@ class PitchScreen(Screen):
         row.addWidget(self.minute)
         self.kind = label(self.controller.display.kind.upper(), "sub")
         row.addWidget(self.kind)
-        row.addStretch(1)
+        from goal2.ui.readable_text import Excerpt
         recent = QVBoxLayout()
         recent.setSpacing(4)
-        self.recent = [label("", "value"), label("", "value")]
+        self.recent = [Excerpt(),Excerpt()]
         for widget in self.recent:
             widget.setAlignment(Qt.AlignmentFlag.AlignRight)
             recent.addWidget(widget)
-        row.addLayout(recent)
+        row.addLayout(recent,1)
+        self.score_head = head
         self.body_layout.addWidget(head)
         middle = QHBoxLayout()
         middle.setSpacing(18)
@@ -475,9 +476,12 @@ class PitchScreen(Screen):
         self.commentary = QLabel("")
         self.commentary.setObjectName("value")
         self.commentary.setTextFormat(Qt.TextFormat.PlainText)
+        self.commentary.setWordWrap(True)
+        self.commentary.setSizePolicy(QSizePolicy.Policy.Ignored,QSizePolicy.Policy.Expanding)
         self.commentary.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         inner.addWidget(self.commentary, 1)
         self.status = label("", "sub")
+        self.status.setWordWrap(True)
         inner.addWidget(self.status)
         side = self.kits.name(managed) if managed is not None else "none"
         tag_row = QHBoxLayout()
@@ -615,8 +619,10 @@ class PitchScreen(Screen):
             _set(text, str(goals))
         texts = [e["data"].get("text", "") for e in shown if e["kind"] == "commentary"][-2:]
         for widget, text in zip(self.recent, [""] * (2 - len(texts)) + texts):
-            _set(widget, text)
-        _set(self.commentary, "\n".join(self.lines[-COMMENTARY_ROWS:]))
+            widget.setText(text)  # Excerpt owns the full text as well as its visible preview.
+        from goal2.ui.readable_text import recent_text
+        _set(self.commentary,recent_text(self.lines,self.commentary.fontMetrics(),
+                                         self.commentary.width(),self.commentary.height(),COMMENTARY_ROWS))
         _set(self.status, f"Speed {controller.display.speed_markers()} · {controller.display.speed_name().lower()}"
                           f" · marks: {MARKS[self.pitch.marks].lower()}")
         _set(self.note, controller.note)
@@ -649,10 +655,12 @@ class PitchScreen(Screen):
         self.pitch.enlarged = paused
         self.pitch.commentary = self.lines
         if paused:
+            self.score_head.hide()
             self._commentary_enter_before = self.enter_action
             self.set_enter('Resume match', self.toggle_commentary)
             self.wait_for('PAUSED', 'Reading commentary. Space or Enter resumes the same match.')
         else:
+            self.score_head.show()
             self.set_enter(*self._commentary_enter_before)
             self.wait_for(None)
             # No catch-up burst after time spent reading; the next sample gets a normal interval.

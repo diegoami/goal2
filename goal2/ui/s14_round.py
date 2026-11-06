@@ -67,7 +67,7 @@ class RoundScreen(Screen):
         inner.setSpacing(0)
         self.rows = []
         for i in range(ROWS + 1):
-            row = Row(i, (420, 110, 300, 0), underline=True)
+            row = Row(i, (300, 110, 260, 0), underline=True)
             row.setCursor(Qt.CursorShape.ArrowCursor)
             row.cells[0].setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             row.cells[1].setAlignment(Qt.AlignmentFlag.AlignCenter)

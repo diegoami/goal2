@@ -27,9 +27,9 @@ from goal2.ui import saves
 from goal2.ui.screen import Screen, kbd, label, para, set_para
 from goal2.ui.start_look import KeyItem, Row, box, key_value, refresh
 
-COLUMNS = (("Name", 300), ("Country", 130), ("Year · stage", 270), ("Next", 200), ("Saved", None))
+COLUMNS = (("Name", 300), ("Country", 130), ("Year · stage", 360), ("Next", 240), ("Saved", None))
 VISIBLE = 5   # [designed: T163] rows of the list shown at once; the window of rows follows the highlight
-WIDTH = 1040  # [designed: s02-start.html, the column's `width:1040px`]
+WIDTH = 1360  # [designed: owner #598] complete save metadata at 24px
 
 
 def year_stage(model) -> str:
@@ -124,6 +124,7 @@ class StartScreen(Screen):
         self.rows = []
         for i in range(VISIBLE):
             r = Row([w for _, w in COLUMNS], on_click=lambda i=i: self.click_row(i))
+            r.cells[1].setWordWrap(True)
             inner.addWidget(r)
             self.rows.append(r)
         self.message = para("", "sub")   # what came back to the title: the standalone friendly's result [T177]

@@ -31,7 +31,7 @@ from goal2.ui import theme
 from goal2.ui.screen import Screen, para, set_para
 from goal2.ui.squad_card import Row, box, colour, last_on_the_bar
 
-VISIBLE = 18   # [designed: s11-fixtures.html, the box's height at 1440x900 holds about eighteen rows]
+VISIBLE = 14   # [designed: s11-fixtures.html, the box's height at 1440x900 holds fourteen rows at the owner's 24px baseline (#598)]
 # Watch, the first side, v, the second side, the match's kind, what happens at kick-off. [designed: s11-fixtures.html]
 WIDTHS = (120, 300, 40, 260, 230, 0)
 CHECK = "✓"   # [confirmed: t156-224-fixture-list.png, the mark on the watched row]

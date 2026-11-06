@@ -1,0 +1,83 @@
+{
+  "cases": [
+    {
+      "name": "first-start",
+      "window": [
+        1440,
+        900
+      ],
+      "page_scale": 1.0,
+      "device_pixel_ratio": 1.5,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "first-start.png",
+      "sha256": "d1d08925ca957ee8cb317805761426501ae6b03f66daada58b7bb90cbe2d7cb7"
+    },
+    {
+      "name": "start",
+      "window": [
+        1440,
+        900
+      ],
+      "page_scale": 1.0,
+      "device_pixel_ratio": 1.5,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "start.png",
+      "sha256": "55a3d68db68a4f55915df55ee3b8f44c7a683db57ced8b498a71acfecf8ccacb"
+    },
+    {
+      "name": "desk",
+      "window": [
+        1440,
+        900
+      ],
+      "page_scale": 1.0,
+      "device_pixel_ratio": 1.5,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "desk.png",
+      "sha256": "8a6de1fd43736685ee13992d3d9e2ecb2e6f5186f0d5e65ce371c1b41f81c4d7"
+    },
+    {
+      "name": "match-menu",
+      "window": [
+        1440,
+        900
+      ],
+      "page_scale": 1.0,
+      "device_pixel_ratio": 1.5,
+      "foreground": false,
+      "problems": [],
+      "screenshot": "match-menu.png",
+      "sha256": "572583bb99051f60a0ffab82e2c914d75eb834808b23257cd43c0151f4400d98"
+    },
+    {
+      "name": "packet-pitch",
+      "window": [
+        1440,
+        900
+      ],
+      "page_scale": 1.0,
+      "device_pixel_ratio": 1.5,
+      "foreground": false,
+      "problems": [
+        "pitch (0, 184, 1000, 560) clipped by body (0, 0, 1392, 728)"
+      ],
+      "screenshot": "packet-pitch.png",
+      "sha256": "079dadaf12b9d90d75cf606a85c7b81c04897692490a8b75f5aa7bdd65e5ec85"
+    }
+  ],
+  "passed": false,
+  "kind": "native packaged rendering; declared UI packets",
+  "requested_factor": "1",
+  "goal2": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-T186-20261106\\candidate\\goal2-0.1.0-win64\\python\\Lib\\site-packages\\goal2\\__init__.py",
+  "python": "C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-native-T186-20261106\\candidate\\goal2-0.1.0-win64\\python\\python.exe",
+  "profile_isolated": true,
+  "qpa": "windows",
+  "font_family": "PxPlus IBM VGA 8x16",
+  "font_baseline": 24,
+  "rendered_label_px": 24,
+  "stage": "native_packets",
+  "error": "AssertionError: "
+}
