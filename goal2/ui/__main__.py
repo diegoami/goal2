@@ -464,6 +464,9 @@ def bench_shots(app, window, target, shot, limit=600):
             elif answer.context == "half_time" and state["off"] in answer.bench:
                 select(screen, outfield(answer, answer.eleven)[1])
                 select(screen, state["off"])
+            if (getattr(screen,"feedback_report",None) or {}).get("refused"):
+                shot("s19-bench-refused.png")
+                return True
             key(Qt.Key.Key_Escape)
             return False
         if kind == "BoardScreen":
