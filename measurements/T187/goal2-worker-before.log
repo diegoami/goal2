@@ -1,0 +1,24 @@
+test_withdrawn_explicit_captain_finishes_and_publishes_exactly_once (goal2.tests.test_captain_replacement_t187.ActualCaptainWithdrawalT187.test_withdrawn_explicit_captain_finishes_and_publishes_exactly_once) ... ERROR
+
+======================================================================
+ERROR: test_withdrawn_explicit_captain_finishes_and_publishes_exactly_once (goal2.tests.test_captain_replacement_t187.ActualCaptainWithdrawalT187.test_withdrawn_explicit_captain_finishes_and_publishes_exactly_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/game/watched_jobs.py", line 508, in poll
+    raise _reply_failure(kind, value, False)
+ValueError: Watched worker failed: ScreenError: the captain prompt's highlight does not reach slot 13 (it reads 9)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_captain_replacement_t187.py", line 130, in test_withdrawn_explicit_captain_finishes_and_publishes_exactly_once
+    jobs.poll(token)
+    ~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-captain-adoption/goal2/game/watched_jobs.py", line 517, in poll
+    raise ValueError(f'Invalid watched worker IPC: {exc}') from exc
+ValueError: Invalid watched worker IPC: Watched worker failed: ScreenError: the captain prompt's highlight does not reach slot 13 (it reads 9)
+
+----------------------------------------------------------------------
+Ran 1 test in 32.431s
+
+FAILED (errors=1)

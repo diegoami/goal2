@@ -1,0 +1,326 @@
+PASS original-asset exclusion
+links and JSON ok (1660 files)
+RUN slow tests in 170 modules they can reach (changed: goal2/engine/original_match/match.py): test_both_halves test_bundled_font test_campaign_competitive_match test_campaign_competitive_match_budgets test_campaign_competitive_publication test_campaign_competitive_save test_campaign_competitive_save_opening test_campaign_confidence test_campaign_continental_qualifying test_campaign_cpu test_campaign_eligibility test_campaign_energy test_campaign_friendlies test_campaign_pool test_campaign_pool_flow test_campaign_schedule test_campaign_silent_results test_campaign_standings test_campaign_state test_campaign_substitutions test_captain_replacement_t187 test_ci_slow_runners_493 test_clear_results test_commentary_pause_t185 test_core_best_place_395 test_core_bulletin_t110 test_core_captain_t143 test_core_congratulations_409 test_core_continuation_t111 test_core_cycle_t123 test_core_desktop_t105 test_core_extra_t119 test_core_halftime_t139 test_core_kit_colours_t142 test_core_lineup_t114 test_core_match_window_t138 test_core_new_game_t106 test_core_nice_try_371 test_core_patches_t122 test_core_pause_t115 test_core_playback_t116 test_core_pool_compare_t134 test_core_pool_names_t136 test_core_pool_suggest_t135 test_core_replay_t140 test_core_role_display_424 test_core_round_t108 test_core_round_t108_captain test_core_round_t108_desktop test_core_round_t108_halftime test_core_round_t108_round test_core_round_t108_severalrounds test_core_runner_t100 test_core_save_t121 test_core_screens_t103 test_core_shootout_t118 test_core_takers_t120 test_core_team_back_t141 test_core_team_card_t137 test_core_team_panels_t144 test_core_team_t107 test_core_walkoff_363 test_core_watch_t109 test_core_world_t113 test_country_card test_country_select test_desktop_competitive_jobs test_desktop_entry test_desktop_launch test_desktop_model test_desktop_pages_t91 test_desktop_pool test_desktop_quick_jobs test_desktop_roles test_desktop_save_decisions test_desktop_shell test_desktop_watched_sharing test_eleven_selection test_engine_on_adapted_state test_engine_pipe_t159 test_engine_tables_t150 test_fidelity test_first_run_t153 test_fixed_page_t101 test_friendly_vs_archaeology test_full_match test_identities test_import_help_hlp test_launch_core_save_518 test_main_loop test_match_menu_arrows_t184 test_match_pitch_t94 test_match_prep_t95 test_match_preview test_match_result_t97 test_matches_on_pipe_t160 test_new_game test_p1_fidelity test_package_t147 test_pitch_marks_t96 test_play_next_t155 test_player_card test_player_card_552 test_pool_caps_436 test_pool_names test_port_route_t151 test_pygame_match_view test_pygame_pitch_view test_pypy_engine_500 test_pypy_worker_t152 test_reordered_squad_280 test_repeat_friendlies test_requires test_result test_screen_output test_session_save test_session_save_integration test_skills test_squad_select test_state test_tactics test_team_tactics_t99 test_terminal_display test_terminal_input test_ui_bench_t180 test_ui_boards_t178 test_ui_desk_t164 test_ui_extras_t177 test_ui_foundation_t162 test_ui_kits_583 test_ui_match_day_t167 test_ui_pitch_t166 test_ui_replay_t181 test_ui_save_t168 test_ui_squad_t165 test_ui_start_t163 test_visible_navigation test_watch_qualifiers_t176 test_watch_qualifiers_t176_friendly test_watched_adapter test_watched_adapter_fresh_campaigns test_watched_adapter_reseed test_watched_adapter_squad test_watched_adapter_strict test_watched_bench_t102 test_watched_competitive_runtime test_watched_completion test_watched_jobs test_watched_kit_identity test_watched_legacy_compatibility test_watched_pitch_jobs test_watched_pitch_jobs_cancel test_watched_pitch_jobs_parity test_watched_publication test_watched_publication_campaign test_watched_publication_malformed test_watched_publication_stale test_watched_publication_strict test_watched_publication_tail test_watched_runtime test_watched_save test_watched_save_atomic test_watched_save_campaign test_watched_save_roundtrip test_watched_save_write_failure test_watched_startup test_web_countries test_web_matches test_web_session_save test_web_team_management
+game tests: 8 jobs (GOAL2_GATE_JOBS)
+PASS goal2.tests.test_core_world_t113 (0 s, 3 skipped)
+PASS goal2.tests.test_core_extra_t119 (0 s, 4 skipped)
+PASS goal2.tests.test_core_lineup_t114 (0 s, 6 skipped)
+PASS goal2.tests.test_core_best_place_395 (0 s, 6 skipped)
+PASS goal2.tests.test_core_continuation_t111 (0 s, 4 skipped)
+PASS goal2.tests.test_core_bulletin_t110 (1 s)
+PASS goal2.tests.test_core_team_back_t141 (2 s)
+PASS goal2.tests.test_core_pool_compare_t134 (2 s)
+PASS goal2.tests.test_core_team_t107 (7 s)
+PASS goal2.tests.test_core_takers_t120 (12 s)
+PASS goal2.tests.test_core_desktop_t105 (14 s)
+FAIL goal2.tests.test_campaign_competitive_match_budgets (0 s)
+E
+======================================================================
+ERROR: test_owner_budget_cases_match_independent_execution_and_guest_stamps (goal2.tests.test_campaign_competitive_match.CompetitiveAdapterTests.test_owner_budget_cases_match_independent_execution_and_guest_stamps)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_campaign_competitive_match.py", line 86, in test_owner_budget_cases_match_independent_execution_and_guest_stamps
+    independent,probe=independent_runtime()
+                      ~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_campaign_competitive_match.py", line 59, in independent_runtime
+    folder=stage();package=folder/'runtime/original_match'
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 50, in stage
+    verify_vendor()
+    ~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 44, in verify_vendor
+    raise ValueError(f"vendored kit differs from accepted source: {rel}")
+ValueError: vendored kit differs from accepted source: goal2/engine/original_match/match.py
+
+----------------------------------------------------------------------
+Ran 1 test in 0.030s
+
+FAILED (errors=1)
+
+PASS goal2.tests.test_bundled_font (0 s)
+PASS goal2.tests.test_campaign_competitive_match (1 s)
+PASS goal2.tests.test_both_halves (1 s)
+PASS goal2.tests.test_campaign_cpu (3 s)
+PASS goal2.tests.test_campaign_continental_qualifying (3 s)
+PASS goal2.tests.test_campaign_confidence (4 s)
+PASS goal2.tests.test_campaign_eligibility (5 s)
+PASS goal2.tests.test_campaign_energy (4 s)
+PASS goal2.tests.test_campaign_pool (2 s)
+PASS goal2.tests.test_campaign_standings (1 s)
+PASS goal2.tests.test_campaign_schedule (1 s)
+PASS goal2.tests.test_campaign_pool_flow (2 s)
+PASS goal2.tests.test_campaign_state (1 s)
+PASS goal2.tests.test_campaign_friendlies (6 s)
+PASS goal2.tests.test_ci_slow_runners_493 (1 s)
+PASS goal2.tests.test_ci_workflows_t146 (0 s)
+PASS goal2.tests.test_ci_workflows_t148 (0 s)
+PASS goal2.tests.test_clear_results (0 s)
+PASS goal2.tests.test_cli (0 s)
+PASS goal2.tests.test_campaign_silent_results (7 s)
+PASS goal2.tests.test_campaign_substitutions (9 s)
+PASS goal2.tests.test_core_congratulations_409 (0 s, 5 skipped)
+PASS goal2.tests.test_core_captain_t143 (3 s)
+PASS goal2.tests.test_core_cycle_t123 (1 s, 6 skipped)
+PASS goal2.tests.test_checkpoints_t149 (10 s)
+PASS goal2.tests.test_core_nice_try_371 (0 s, 3 skipped)
+PASS goal2.tests.test_core_kit_colours_t142 (3 s)
+PASS goal2.tests.test_core_pause_t115 (0 s, 6 skipped)
+PASS goal2.tests.test_core_playback_t116 (5 s)
+PASS goal2.tests.test_core_pool_names_t136 (7 s, 1 skipped)
+PASS goal2.tests.test_core_patches_t122 (27 s)
+PASS goal2.tests.test_core_role_display_424 (1 s, 1 skipped)
+PASS goal2.tests.test_core_round_t108 (0 s)
+PASS goal2.tests.test_core_round_t108_captain (1 s)
+PASS goal2.tests.test_core_pool_suggest_t135 (29 s, 1 skipped)
+PASS goal2.tests.test_core_round_t108_halftime (17 s)
+PASS goal2.tests.test_core_round_t108_desktop (64 s)
+FAIL goal2.tests.test_campaign_competitive_publication (135 s, 1 skipped)
+s..E
+======================================================================
+ERROR: test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals (goal2.tests.test_campaign_competitive_publication.CompetitivePublicationTests.test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_campaign_competitive_publication.py", line 114, in test_world_knockout_keeps_original_winner_separate_from_tied_normal_goals
+    independent,probe=independent_runtime()
+                      ~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_campaign_competitive_match.py", line 59, in independent_runtime
+    folder=stage();package=folder/'runtime/original_match'
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 50, in stage
+    verify_vendor()
+    ~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 44, in verify_vendor
+    raise ValueError(f"vendored kit differs from accepted source: {rel}")
+ValueError: vendored kit differs from accepted source: goal2/engine/original_match/match.py
+
+----------------------------------------------------------------------
+Ran 4 tests in 134.663s
+
+FAILED (errors=1, skipped=1)
+
+PASS goal2.tests.test_core_new_game_t106 (122 s)
+PASS goal2.tests.test_captain_replacement_t187 (136 s)
+PASS goal2.tests.test_core_save_t121 (5 s)
+PASS goal2.tests.test_core_shootout_t118 (43 s)
+PASS goal2.tests.test_core_round_t108_round (113 s)
+PASS goal2.tests.test_core_team_card_t137 (3 s)
+PASS goal2.tests.test_core_walkoff_363 (0 s, 4 skipped)
+PASS goal2.tests.test_core_team_panels_t144 (3 s)
+PASS goal2.tests.test_country_card (4 s)
+PASS goal2.tests.test_country_select (0 s)
+PASS goal2.tests.test_cpu (0 s)
+PASS goal2.tests.test_cpu_tactics_change (0 s)
+PASS goal2.tests.test_campaign_competitive_save (236 s)
+PASS goal2.tests.test_desktop_entry (0 s)
+PASS goal2.tests.test_commentary_pause_t185 (227 s)
+PASS goal2.tests.test_desktop_model (3 s)
+PASS goal2.tests.test_desktop_launch (9 s)
+PASS goal2.tests.test_desktop_pool (3 s)
+PASS goal2.tests.test_desktop_pages_t91 (13 s)
+PASS goal2.tests.test_desktop_roles (2 s)
+PASS goal2.tests.test_desktop_quick_jobs (24 s)
+PASS goal2.tests.test_desktop_save_decisions (18 s)
+PASS goal2.tests.test_desktop_watched_sharing (0 s)
+PASS goal2.tests.test_eleven_selection (0 s)
+PASS goal2.tests.test_engine_on_adapted_state (2 s)
+PASS goal2.tests.test_desktop_shell (8 s)
+FAIL goal2.tests.test_campaign_competitive_save_opening (282 s)
+E
+======================================================================
+ERROR: test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues (goal2.tests.test_campaign_competitive_save.CompetitiveSaveTests.test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_campaign_competitive_save.py", line 65, in test_actual_country4_qualifier_after_two_original_friendlies_roundtrips_and_continues
+    independent,probe=independent_runtime()
+                      ~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_campaign_competitive_match.py", line 59, in independent_runtime
+    folder=stage();package=folder/'runtime/original_match'
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 50, in stage
+    verify_vendor()
+    ~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 44, in verify_vendor
+    raise ValueError(f"vendored kit differs from accepted source: {rel}")
+ValueError: vendored kit differs from accepted source: goal2/engine/original_match/match.py
+
+----------------------------------------------------------------------
+Ran 1 test in 281.580s
+
+FAILED (errors=1)
+
+PASS goal2.tests.test_fidelity (0 s)
+PASS goal2.tests.test_first_run_t153 (0 s)
+PASS goal2.tests.test_engine_tables_t150 (4 s)
+PASS goal2.tests.test_friendly_vs_archaeology (1 s)
+PASS goal2.tests.test_full_match (0 s)
+PASS goal2.tests.test_goaldat (0 s)
+PASS goal2.tests.test_grid (0 s)
+PASS goal2.tests.test_identities (19 s)
+PASS goal2.tests.test_import_help_hlp (0 s)
+PASS goal2.tests.test_imports (0 s)
+PASS goal2.tests.test_core_runner_t100 (170 s)
+PASS goal2.tests.test_input (0 s)
+PASS goal2.tests.test_main_loop (0 s)
+PASS goal2.tests.test_launch_core_save_518 (1 s)
+PASS goal2.tests.test_match_menu_arrows_t184 (1 s)
+PASS goal2.tests.test_fixed_page_t101 (27 s)
+PASS goal2.tests.test_match_preview (0 s)
+PASS goal2.tests.test_match_prep_t95 (8 s)
+PASS goal2.tests.test_match_pitch_t94 (81 s)
+PASS goal2.tests.test_new_game (1 s)
+PASS goal2.tests.test_p1_fidelity (0 s)
+PASS goal2.tests.test_package_t147 (1 s)
+PASS goal2.tests.test_pitch_marks_t96 (37 s)
+PASS goal2.tests.test_plain_renderer (0 s)
+PASS goal2.tests.test_play_next_t155 (36 s)
+PASS goal2.tests.test_player_card (4 s)
+PASS goal2.tests.test_player_card_552 (0 s)
+PASS goal2.tests.test_pool_caps_436 (1 s)
+PASS goal2.tests.test_pool_names (2 s)
+PASS goal2.tests.test_engine_pipe_t159 (241 s)
+PASS goal2.tests.test_premerge_jobs_567 (0 s)
+PASS goal2.tests.test_premerge_layout_t145 (1 s)
+PASS goal2.tests.test_provenance (0 s)
+PASS goal2.tests.test_match_result_t97 (229 s)
+PASS goal2.tests.test_pypy_engine_500 (1 s)
+PASS goal2.tests.test_matches_on_pipe_t160 (242 s)
+PASS goal2.tests.test_reordered_squad_280 (6 s)
+PASS goal2.tests.test_repeat_friendlies (1 s)
+PASS goal2.tests.test_requires (0 s)
+PASS goal2.tests.test_result (1 s)
+PASS goal2.tests.test_savestate (0 s)
+PASS goal2.tests.test_screen_output (0 s)
+PASS goal2.tests.test_session_save (0 s)
+PASS goal2.tests.test_session_save_integration (1 s)
+PASS goal2.tests.test_skills (0 s)
+PASS goal2.tests.test_slow_reach_505 (4 s)
+PASS goal2.tests.test_squad_select (0 s)
+PASS goal2.tests.test_state (3 s)
+PASS goal2.tests.test_tactics (0 s)
+PASS goal2.tests.test_core_screens_t103 (459 s)
+PASS goal2.tests.test_terminal_display (0 s)
+PASS goal2.tests.test_team_tactics_t99 (27 s)
+PASS goal2.tests.test_terminal_input (1 s)
+PASS goal2.tests.test_ui_boards_t178 (18 s)
+PASS goal2.tests.test_core_watch_t109 (435 s)
+PASS goal2.tests.test_ui_desk_t164 (46 s)
+PASS goal2.tests.test_ui_foundation_t162 (1 s)
+PASS goal2.tests.test_ui_kits_583 (0 s)
+PASS goal2.tests.test_desktop_competitive_jobs (565 s)
+PASS goal2.tests.test_ui_extras_t177 (185 s)
+PASS goal2.tests.test_port_route_t151 (432 s)
+PASS goal2.tests.test_ui_save_t168 (22 s)
+PASS goal2.tests.test_ui_squad_t165 (61 s)
+PASS goal2.tests.test_core_round_t108_severalrounds (880 s)
+PASS goal2.tests.test_visible_navigation (0 s)
+PASS goal2.tests.test_ui_start_t163 (18 s)
+PASS goal2.tests.test_pypy_worker_t152 (485 s)
+PASS goal2.tests.test_watched_adapter (2 s)
+PASS goal2.tests.test_ui_pitch_t166 (339 s)
+PASS goal2.tests.test_pygame_match_view (626 s)
+PASS goal2.tests.test_ui_replay_t181 (354 s)
+PASS goal2.tests.test_watch_qualifiers_t176_friendly (191 s)
+PASS goal2.tests.test_ui_bench_t180 (639 s)
+FAIL goal2.tests.test_watched_competitive_runtime (0 s)
+E
+======================================================================
+ERROR: goal2.tests.test_watched_competitive_runtime (unittest.loader._FailedTest.goal2.tests.test_watched_competitive_runtime)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: goal2.tests.test_watched_competitive_runtime
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/unittest/loader.py", line 426, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/usr/lib/python3.14/unittest/loader.py", line 367, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_watched_competitive_runtime.py", line 18, in <module>
+    FOLDER = stage()
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 50, in stage
+    verify_vendor()
+    ~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 44, in verify_vendor
+    raise ValueError(f"vendored kit differs from accepted source: {rel}")
+ValueError: vendored kit differs from accepted source: goal2/engine/original_match/match.py
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+
+PASS goal2.tests.test_watched_completion (1 s)
+PASS goal2.tests.test_watched_adapter_fresh_campaigns (388 s)
+PASS goal2.tests.test_watched_kit_identity (0 s)
+PASS goal2.tests.test_watched_legacy_compatibility (0 s, 1 skipped)
+PASS goal2.tests.test_watched_pitch_jobs (13 s)
+PASS goal2.tests.test_watched_bench_t102 (249 s)
+PASS goal2.tests.test_watched_adapter_squad (345 s)
+PASS goal2.tests.test_watched_publication (1 s)
+PASS goal2.tests.test_watched_publication_campaign (129 s)
+PASS goal2.tests.test_watch_qualifiers_t176 (661 s)
+PASS goal2.tests.test_watched_pitch_jobs_cancel (239 s)
+PASS goal2.tests.test_watched_jobs (454 s)
+PASS goal2.tests.test_watched_publication_tail (19 s)
+PASS goal2.tests.test_ui_match_day_t167 (1050 s)
+PASS goal2.tests.test_watched_save (1 s)
+PASS goal2.tests.test_watched_publication_malformed (124 s)
+FAIL goal2.tests.test_watched_runtime (42 s)
+E.E....E..
+======================================================================
+ERROR: test_all_files_are_exact_accepted_source (goal2.tests.test_watched_runtime.RuntimeTests.test_all_files_are_exact_accepted_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_watched_runtime.py", line 34, in test_all_files_are_exact_accepted_source
+    self.assertEqual(verify_vendor(), 41)
+                     ~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 44, in verify_vendor
+    raise ValueError(f"vendored kit differs from accepted source: {rel}")
+ValueError: vendored kit differs from accepted source: goal2/engine/original_match/match.py
+
+======================================================================
+ERROR: test_changed_vendor_bytes_and_added_files_are_rejected (goal2.tests.test_watched_runtime.RuntimeTests.test_changed_vendor_bytes_and_added_files_are_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_watched_runtime.py", line 45, in test_changed_vendor_bytes_and_added_files_are_rejected
+    self.assertEqual(verify_vendor(),41)
+                     ~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 44, in verify_vendor
+    raise ValueError(f"vendored kit differs from accepted source: {rel}")
+ValueError: vendored kit differs from accepted source: goal2/engine/original_match/match.py
+
+======================================================================
+ERROR: test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned (goal2.tests.test_watched_runtime.RuntimeTests.test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-captain-adoption/goal2/tests/test_watched_runtime.py", line 68, in test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned
+    staged=watched_evidence.stage(folder)
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 50, in stage
+    verify_vendor()
+    ~~~~~~~~~~~~~^^
+  File "/tmp/goal2-captain-adoption/tools/watched_evidence.py", line 44, in verify_vendor
+    raise ValueError(f"vendored kit differs from accepted source: {rel}")
+ValueError: vendored kit differs from accepted source: goal2/engine/original_match/match.py
+
+----------------------------------------------------------------------
+Ran 10 tests in 41.374s
+
+FAILED (errors=3)
+
+PASS goal2.tests.test_watched_publication_stale (130 s)
+PASS goal2.tests.test_watched_adapter_reseed (725 s)
+PASS goal2.tests.test_watched_startup (2 s)
+PASS goal2.tests.test_web_countries (1 s)
+PASS goal2.tests.test_web_matches (1 s)
+PASS goal2.tests.test_watched_save_atomic (116 s)
+PASS goal2.tests.test_web_team_management (0 s)
+PASS goal2.tests.test_web_session_save (4 s)
+PASS goal2.tests.test_watched_save_roundtrip (106 s)
+PASS goal2.tests.test_watched_save_write_failure (96 s)
+PASS goal2.tests.test_watched_pitch_jobs_parity (450 s)
+PASS goal2.tests.test_watched_save_campaign (305 s)
+PASS goal2.tests.test_watched_adapter_strict (980 s)
+PASS goal2.tests.test_watched_publication_strict (651 s)
+PASS goal2.tests.test_pitch_observation (2 s)
+PASS goal2.tests.test_pygame_pitch_view (38 s)
+PASS goal2.tests.test_core_match_window_t138 (2 s)
+PASS goal2.tests.test_core_halftime_t139 (1 s)
+PASS goal2.tests.test_core_replay_t140 (28 s)
+game tests: 182/187 modules pass, 52 tests skipped (slow tests in 159 modules)
+FAIL pre-merge validation: failing test modules: test_campaign_competitive_match_budgets, test_campaign_competitive_publication, test_campaign_competitive_save_opening, test_watched_competitive_runtime, test_watched_runtime

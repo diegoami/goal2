@@ -1,0 +1,10 @@
+{
+  "upstream_source": "9d18a8552399d57e263448b1f48cc71416d203ff",
+  "upstream_acceptance": "1bca7fc4fb9866a4f3f5c71f8a67ea25d03372cf",
+  "upstream_ci": 42099062193,
+  "vendor_sha256": "1a2b8cceb59937e1c40c75eeaf43f658e436b26c6971dd9a1f8a3a04fabdc995",
+  "actual_before_seconds": 32.431,
+  "actual_after_seconds": 76.244,
+  "memory_comparison": "Upstream: existing family DS/range digests, empty memory mask. Goal2 sealed worker: existing accepted comparable-memory/result/event projections (screen buffers and port/input identity metadata). No new mask.",
+  "inert_changes": "Previously accepted T119 tail=False option and fixture +1/+3 preservation; default tail=True keeps the ordinary B7FA update and zeroed fixture bytes. No caller here opts into the route/season path."
+}
