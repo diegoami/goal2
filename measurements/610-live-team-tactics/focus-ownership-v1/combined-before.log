@@ -1,0 +1,83 @@
+test_half_time_all_flags_confirm_before_play_and_match_headless_publication (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_half_time_all_flags_confirm_before_play_and_match_headless_publication) ... This plugin does not support propagateSizeHints()
+ACTUAL_UI_TACTICS {"target": "half_time", "edits": 8, "published_once": true, "commands": [["substitution", {"substitutions": [[31, 33]], "edit_only": true}], ["substitution", []], ["half_time", {"tactics": {"5": true}, "edit_only": true}], ["half_time", {"tactics": {"6": true}, "edit_only": true}], ["half_time", {"tactics": {"7": false}, "edit_only": true}], ["half_time", {"tactics": {"1": false}, "edit_only": true}], ["half_time", {"tactics": {"2": false}, "edit_only": true}], ["half_time", {"tactics": {"3": false}, "edit_only": true}], ["half_time", {"tactics": {"4": true}, "edit_only": true}], ["half_time", {"tactics": {"8": true}, "edit_only": true}], ["half_time", []]], "actual": {"initial": 71, "confirmed": 184, "edits": 8, "stop": "half_time", "unchanged": {"minute": 46, "score": [1, 0], "eleven": [21, 22, 23, 24, 33, 25, 26, 27, 28, 29, 30], "bench": [32, 34, 35, 36, 37, 38, 31, 39, 40], "left": 254, "frames": 2098}}, "headless_full_memory_events_result_state_equal": true}
+ok
+test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch) ... This plugin does not support propagateSizeHints()
+ACTUAL_UI_TACTICS {"target": "pause", "edits": 8, "published_once": true, "commands": [["substitution", {"substitutions": [[31, 33]], "edit_only": true}], ["substitution", []], ["pause", {"tactics": {"5": true}, "edit_only": true}], ["pause", {"tactics": {"6": true}, "edit_only": true}], ["pause", {"tactics": {"7": false}, "edit_only": true}], ["pause", {"tactics": {"1": false}, "edit_only": true}], ["pause", {"tactics": {"2": false}, "edit_only": true}], ["pause", {"tactics": {"3": false}, "edit_only": true}], ["pause", {"tactics": {"4": true}, "edit_only": true}], ["pause", {"tactics": {"8": true}, "edit_only": true}], ["pause", []], ["set_piece", {"taker": 23}], ["half_time", []], ["set_piece", {"taker": 23}]], "actual": {"initial": 71, "confirmed": 184, "edits": 8, "stop": "pause", "unchanged": {"minute": 6, "score": [0, 0], "eleven": [21, 22, 23, 24, 33, 25, 26, 27, 28, 29, 30], "bench": [32, 34, 35, 36, 37, 38, 31, 39, 40], "left": 254, "frames": 320}}, "headless_full_memory_events_result_state_equal": true}
+ok
+test_extra_time_tactics_are_editable_without_creating_substitution_pairs (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_extra_time_tactics_are_editable_without_creating_substitution_pairs) ... This plugin does not support propagateSizeHints()
+FAIL
+test_failed_submission_and_unaccepted_reply_never_claim_a_change (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_failed_submission_and_unaccepted_reply_never_claim_a_change) ... This plugin does not support propagateSizeHints()
+ok
+test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_held_escape_cannot_fall_through_screens_and_request_another_pause (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_held_escape_cannot_fall_through_screens_and_request_another_pause) ... This plugin does not support propagateSizeHints()
+ok
+test_managed_tactics_work_from_both_home_and_away_menu_columns (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_managed_tactics_work_from_both_home_and_away_menu_columns) ... This plugin does not support propagateSizeHints()
+ok
+test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard) ... This plugin does not support propagateSizeHints()
+ok
+test_request_note_clears_when_the_engine_stop_arrives (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_request_note_clears_when_the_engine_stop_arrives) ... This plugin does not support propagateSizeHints()
+ok
+test_team_reply_preserves_pending_personal_changes_and_live_roster (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_team_reply_preserves_pending_personal_changes_and_live_roster) ... This plugin does not support propagateSizeHints()
+ok
+test_worker_failure_while_pending_returns_to_the_desk_without_publishing (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_worker_failure_while_pending_returns_to_the_desk_without_publishing) ... This plugin does not support propagateSizeHints()
+ok
+test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes (goal2.tests.test_live_team_tactics_610.TacticTransport.test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes) ... ok
+test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops (goal2.tests.test_live_team_tactics_610.TacticTransport.test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops) ... ok
+test_natural_injury_and_halftime_returns_preserve_the_match (goal2.tests.test_stop_return_t190.ActualReturn.test_natural_injury_and_halftime_returns_preserve_the_match) ... This plugin does not support propagateSizeHints()
+ok
+test_cancel_and_poll_failure_clear_requested_without_publication (goal2.tests.test_stop_return_t190.StopReturn.test_cancel_and_poll_failure_clear_requested_without_publication) ... This plugin does not support propagateSizeHints()
+ok
+test_dropped_request_clears_status (goal2.tests.test_stop_return_t190.StopReturn.test_dropped_request_clears_status) ... This plugin does not support propagateSizeHints()
+ok
+test_failed_request_reports_failure_and_allows_a_later_request (goal2.tests.test_stop_return_t190.StopReturn.test_failed_request_reports_failure_and_allows_a_later_request) ... This plugin does not support propagateSizeHints()
+ok
+test_half_and_injury_returns_resume_once_after_leaving_bench (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_resume_once_after_leaving_bench) ... This plugin does not support propagateSizeHints()
+ok
+test_held_stop_cannot_request_another_stop (goal2.tests.test_stop_return_t190.StopReturn.test_held_stop_cannot_request_another_stop) ... This plugin does not support propagateSizeHints()
+ok
+test_mouse_back_and_play_use_the_same_explicit_return (goal2.tests.test_stop_return_t190.StopReturn.test_mouse_back_and_play_use_the_same_explicit_return) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_confirmed_and_refused_edits_keep_single_submission (goal2.tests.test_stop_return_t190.StopReturn.test_pending_confirmed_and_refused_edits_keep_single_submission) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_plain_pause_returns_once_and_repeat_cannot_request_again (goal2.tests.test_stop_return_t190.StopReturn.test_plain_pause_returns_once_and_repeat_cannot_request_again) ... This plugin does not support propagateSizeHints()
+ok
+test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) ... This plugin does not support propagateSizeHints()
+ok
+test_real_card_exposes_stars_without_changing_raw_rating_or_career (goal2.tests.test_player_performance_t192.CardData.test_real_card_exposes_stars_without_changing_raw_rating_or_career) ... ok
+test_exact_original_guest_routine_agrees_on_all_boundary_words (goal2.tests.test_player_performance_t192.OriginalFunction.test_exact_original_guest_routine_agrees_on_all_boundary_words) ... ok
+test_blank_and_rated_players_render_original_stars_at_readable_sizes (goal2.tests.test_player_performance_t192.PerformanceScreen.test_blank_and_rated_players_render_original_stars_at_readable_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_original_thresholds_substitute_encoding_signed_words_and_blank (goal2.tests.test_player_performance_t192.PerformanceWord.test_original_thresholds_substitute_encoding_signed_words_and_blank) ... ok
+test_rejects_non_word_inputs_instead_of_inventing_a_rating (goal2.tests.test_player_performance_t192.PerformanceWord.test_rejects_non_word_inputs_instead_of_inventing_a_rating) ... ok
+test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness (goal2.tests.test_player_card_table_t193.BenchTable.test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness) ... This plugin does not support propagateSizeHints()
+ok
+test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened (goal2.tests.test_player_card_table_t193.BenchTable.test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened) ... This plugin does not support propagateSizeHints()
+ok
+test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes (goal2.tests.test_player_card_table_t193.CardTable.test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_captain_and_taker_cards_retain_the_table_and_legal_selection (goal2.tests.test_player_card_table_t193.CardTable.test_captain_and_taker_cards_retain_the_table_and_legal_selection) ... This plugin does not support propagateSizeHints()
+ok
+test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels (goal2.tests.test_player_card_table_t193.CardTable.test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels) ... This plugin does not support propagateSizeHints()
+ok
+test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts (goal2.tests.test_player_card_table_t193.CardTable.test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts) ... This plugin does not support propagateSizeHints()
+ok
+
+======================================================================
+FAIL: test_extra_time_tactics_are_editable_without_creating_substitution_pairs (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_extra_time_tactics_are_editable_without_creating_substitution_pairs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 172, in test_extra_time_tactics_are_editable_without_creating_substitution_pairs
+    screen = self.open_tactics()
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 84, in open_tactics
+    self.assertIsInstance(self.window.current(), TeamTacticsScreen)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s15_match_menu.MenuScreen(0x14248a10, name="screen") at 0x72c788a7c9c0> is not an instance of <class 'goal2.ui.s10_team_tactics.TeamTacticsScreen'>
+
+----------------------------------------------------------------------
+Ran 35 tests in 566.521s
+
+FAILED (failures=1)

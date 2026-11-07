@@ -56,7 +56,7 @@ class LiveTeamTactics(unittest.TestCase):
 
     def key(self, key):
         from PySide6.QtTest import QTest
-        QTest.keyClick(self.app.focusWidget() or self.window, key)
+        QTest.keyClick(self.window, key)
         self.app.processEvents()
 
     def prepare(self, context='pause'):
@@ -165,6 +165,20 @@ class LiveTeamTactics(unittest.TestCase):
             self.key(Qt.Key.Key_Escape)
             self.assertIs(self.window.current(), self.menu)
         self.assertEqual(seen, {False, True})
+
+    def test_explicit_window_keys_do_not_type_into_another_window(self):
+        from PySide6.QtWidgets import QLineEdit
+        self.prepare('extra_time')
+        other = QLineEdit()
+        self.addCleanup(other.deleteLater)
+        self.addCleanup(other.close)
+        other.show()
+        other.activateWindow()
+        other.setFocus()
+        self.app.processEvents()
+        self.assertIs(self.app.focusWidget(), other)
+        self.open_tactics()
+        self.assertEqual(other.text(), '', 'a key directed at this match must not leak to another window')
 
     def test_extra_time_tactics_are_editable_without_creating_substitution_pairs(self):
         from PySide6.QtCore import Qt
