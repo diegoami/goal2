@@ -1,0 +1,2 @@
+{"engine": "original", "applied": true, "wanted": 87, "got": 87, "readonly": 0, "side": 0, "managed": 2, "tactics_events": [{"byte": 87}]}
+{"engine": "port", "applied": true, "wanted": 87, "got": 87, "readonly": 0, "side": 0, "managed": 2, "tactics_events": [{"byte": 87}]}

@@ -44,3 +44,9 @@ still requires the owner's explicit scoped exception.
 Existing active task contracts now follow this policy; behavioral Done-when assertions, reference
 inputs, seeds, limits and cases remain unchanged. Already-running suites may finish and their
 results remain useful; the policy prevents scheduling redundant future rounds.
+
+## Original player journeys
+
+[designed: owner,2026-11-07,#611] Passing a scoped task or a packet mock is not evidence that the original player journey is complete. Before a build handoff, compare required actions with the original manual/captures/source and walk them in an isolated real game; record explicit approved differences and concrete gaps. Do not use a pending implementation as installed-build evidence.
+
+Stopped-match controls require the actual client validation, engine worker, returned decision and final result/publication path. A mock can isolate UI behavior, but cannot prove those contracts. Clearing a pending flag can mean submission failed: require a sent command and actual accepted values before claiming confirmation. Retain before/after failures and full memory/event/RNG/publication oracles. This adds no per-PR full-suite rerun; the scheduling policy above remains unchanged.
