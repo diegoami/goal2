@@ -1,0 +1,56 @@
+test_real_card_exposes_stars_without_changing_raw_rating_or_career (goal2.tests.test_player_performance_t192.CardData.test_real_card_exposes_stars_without_changing_raw_rating_or_career) ... ok
+test_blank_and_rated_players_render_original_stars_at_readable_sizes (goal2.tests.test_player_performance_t192.PerformanceScreen.test_blank_and_rated_players_render_original_stars_at_readable_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_original_thresholds_substitute_encoding_signed_words_and_blank (goal2.tests.test_player_performance_t192.PerformanceWord.test_original_thresholds_substitute_encoding_signed_words_and_blank) ... ok
+test_rejects_non_word_inputs_instead_of_inventing_a_rating (goal2.tests.test_player_performance_t192.PerformanceWord.test_rejects_non_word_inputs_instead_of_inventing_a_rating) ... ok
+test_eighty_cards_print_what_the_original_printed (goal2.tests.test_player_card.OriginalScreens.test_eighty_cards_print_what_the_original_printed) ... ok
+test_leadership_halves_below_twenty_one (goal2.tests.test_player_card.OriginalScreens.test_leadership_halves_below_twenty_one) ... ok
+test_out_of_domain_bytes_are_unavailable_not_invented (goal2.tests.test_player_card.OriginalScreens.test_out_of_domain_bytes_are_unavailable_not_invented) ... ok
+test_a_suspended_player_is_not_shown_protecting (goal2.tests.test_player_card_552.ProtectFlag.test_a_suspended_player_is_not_shown_protecting) ... ok
+test_protection_is_0x40 (goal2.tests.test_player_card_552.ProtectFlag.test_protection_is_0x40) ... ok
+test_club_position_copies_plus_7_into_plus_6 (goal2.tests.test_ui_squad_t165.ModelCalls.test_club_position_copies_plus_7_into_plus_6) ... ok
+test_own_tactic_cycles_the_three_states_of_f010 (goal2.tests.test_ui_squad_t165.ModelCalls.test_own_tactic_cycles_the_three_states_of_f010) ... ok
+test_pool_players_change_too_and_bad_requests_change_nothing (goal2.tests.test_ui_squad_t165.ModelCalls.test_pool_players_change_too_and_bad_requests_change_nothing) ... ok
+test_set_position_steps_and_wraps_0_to_13 (goal2.tests.test_ui_squad_t165.ModelCalls.test_set_position_steps_and_wraps_0_to_13) ... ok
+test_set_team_tactic_toggles_one_element (goal2.tests.test_ui_squad_t165.ModelCalls.test_set_team_tactic_toggles_one_element) ... ok
+test_a_click_on_a_row_and_on_a_bar_key_does_what_its_key_does (goal2.tests.test_ui_squad_t165.Screens.test_a_click_on_a_row_and_on_a_bar_key_does_what_its_key_does) ... This plugin does not support propagateSizeHints()
+ok
+test_ins_says_coming_later_and_changes_nothing (goal2.tests.test_ui_squad_t165.Screens.test_ins_says_coming_later_and_changes_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_paging_the_pool_reaches_all_80 (goal2.tests.test_ui_squad_t165.Screens.test_paging_the_pool_reaches_all_80) ... This plugin does not support propagateSizeHints()
+ok
+test_pool_players_take_r_and_c_too (goal2.tests.test_ui_squad_t165.Screens.test_pool_players_take_r_and_c_too) ... This plugin does not support propagateSizeHints()
+ok
+test_r_shift_r_c_and_f2_are_the_models_changes (goal2.tests.test_ui_squad_t165.Screens.test_r_shift_r_c_and_f2_are_the_models_changes) ... This plugin does not support propagateSizeHints()
+ok
+test_s09_shows_four_lines_and_each_alter_is_the_models (goal2.tests.test_ui_squad_t165.Screens.test_s09_shows_four_lines_and_each_alter_is_the_models) ... This plugin does not support propagateSizeHints()
+ok
+test_s10_each_of_the_eight_lines_is_the_models_change (goal2.tests.test_ui_squad_t165.Screens.test_s10_each_of_the_eight_lines_is_the_models_change) ... This plugin does not support propagateSizeHints()
+ok
+test_two_enter_exchange_is_the_models_exchange_with_put_here_between (goal2.tests.test_ui_squad_t165.Screens.test_two_enter_exchange_is_the_models_exchange_with_put_here_between) ... This plugin does not support propagateSizeHints()
+ok
+test_import_paragraphs_fit_a_fractionally_scaled_page (goal2.tests.test_readable_ui_t186.Readable.test_import_paragraphs_fit_a_fractionally_scaled_page) ... This plugin does not support propagateSizeHints()
+ok
+test_keyboard_pair_feedback_does_not_claim_acceptance_or_decrement_budget (goal2.tests.test_readable_ui_t186.Readable.test_keyboard_pair_feedback_does_not_claim_acceptance_or_decrement_budget) ... This plugin does not support propagateSizeHints()
+ok
+test_live_injury_stays_red_when_selected_and_has_a_word_label (goal2.tests.test_readable_ui_t186.Readable.test_live_injury_stays_red_when_selected_and_has_a_word_label) ... This plugin does not support propagateSizeHints()
+ok
+test_long_pitch_commentary_keeps_complete_recent_entries_inside_the_page (goal2.tests.test_readable_ui_t186.Readable.test_long_pitch_commentary_keeps_complete_recent_entries_inside_the_page) ... This plugin does not support propagateSizeHints()
+ok
+test_normal_text_is_materially_larger (goal2.tests.test_readable_ui_t186.Readable.test_normal_text_is_materially_larger) ... This plugin does not support propagateSizeHints()
+ok
+test_pair_feedback_is_large_and_below_the_card (goal2.tests.test_readable_ui_t186.Readable.test_pair_feedback_is_large_and_below_the_card) ... This plugin does not support propagateSizeHints()
+ok
+test_reading_pause_banner_fits_with_long_recent_commentary_and_restores_the_header (goal2.tests.test_readable_ui_t186.Readable.test_reading_pause_banner_fits_with_long_recent_commentary_and_restores_the_header) ... This plugin does not support propagateSizeHints()
+ok
+test_recent_header_excerpts_cannot_push_the_live_pitch_below_the_page (goal2.tests.test_readable_ui_t186.Readable.test_recent_header_excerpts_cannot_push_the_live_pitch_below_the_page) ... This plugin does not support propagateSizeHints()
+ok
+test_refusal_is_honest_and_names_on_then_off_once (goal2.tests.test_readable_ui_t186.Readable.test_refusal_is_honest_and_names_on_then_off_once) ... This plugin does not support propagateSizeHints()
+ok
+test_roster_and_key_controls_fit_base_and_large_pages (goal2.tests.test_readable_ui_t186.Readable.test_roster_and_key_controls_fit_base_and_large_pages) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 42.470s
+
+OK

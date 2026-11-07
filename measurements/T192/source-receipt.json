@@ -1,0 +1,19 @@
+{
+  "baseline": "c5ad5d820a445690b4dbc066116a8f9b0045af58",
+  "source_sha256": {
+    "goal2/game/player_card.py": "b1b4d743631fd35eca35ffa7b1cec4b8fd05a652955ec9f17fc13b100e21924d",
+    "goal2/ui/squad_card.py": "b2569e734027c968da73e9844fdb59f0fc6415ce7d063e6ad167c8e73ee3022c",
+    "goal2/tests/test_player_performance_t192.py": "4fc486c9559dc294d784e0ebe71ac05ae61d146b3e952f17b44af25eecc6194a"
+  },
+  "original": "1771:3827, near-call entry on an isolatedE006 image; all34boundary cases execute original code/callees underUnicorn without body/port hooks",
+  "original_checks": 34,
+  "test_log": "original-function-after.log",
+  "display_fixture": "private template career; explicitly set only performance word; no live data claim",
+  "private_inputs_sha256": {
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+    "e006-r0001-main.sav": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d"
+  },
+  "production_engine_changes": false,
+  "live_record_freshness_fixed": false
+}

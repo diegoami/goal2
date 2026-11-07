@@ -47,7 +47,7 @@ not blanket permission to mark the complete manual covered.
 
 | Screen / original reference | Actions and current source | Exercised evidence and remaining acceptance |
 | --- | --- | --- |
-| S01 Import / rebuild addition | Locate/verify/copy private files; `s01_import.py`. | T153 import/setup and `test_ui_new_game_t163`; fresh package/help completeness must be checked. Original bytes stay private. |
+| S01 Import / rebuild addition | Locate/verify/copy private files; `s01_import.py`. | T153 import/setup and `test_ui_start_t163`; fresh package/help completeness must be checked. Original bytes stay private. |
 | S02 Start / title, load prompt | Continue/load/new, retry corrupt/missing saves; `s02_start.py`, `saves.py`. | T168 persistence tests and original startup/save reference. Complete fresh save/restart/load journey still needed for #611. |
 | S03 Manager count / steps1–3 | Count/year input; `s03_new_game.py`. | Source supports the bounded route, not original1–6 manager parity (#551). |
 | S04 Country/name / steps3–11 | Country/group/ranking browse, inspect players, choose/type/cancel; `s04_country.py`. | T163 tests/captures. Team-card placeholder data remains incomplete even when a country can be selected. |
