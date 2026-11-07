@@ -1,0 +1,34 @@
+test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness (goal2.tests.test_player_card_table_t193.BenchTable.test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness) ... This plugin does not support propagateSizeHints()
+ok
+test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened (goal2.tests.test_player_card_table_t193.BenchTable.test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened) ... This plugin does not support propagateSizeHints()
+FAIL
+test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes (goal2.tests.test_player_card_table_t193.CardTable.test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_captain_and_taker_cards_retain_the_table_and_legal_selection (goal2.tests.test_player_card_table_t193.CardTable.test_captain_and_taker_cards_retain_the_table_and_legal_selection) ... This plugin does not support propagateSizeHints()
+ok
+test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels (goal2.tests.test_player_card_table_t193.CardTable.test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels) ... This plugin does not support propagateSizeHints()
+ok
+test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts (goal2.tests.test_player_card_table_t193.CardTable.test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts) ... This plugin does not support propagateSizeHints()
+ok
+
+======================================================================
+FAIL: test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened (goal2.tests.test_player_card_table_t193.BenchTable.test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-player-card-table-a/goal2/tests/test_player_card_table_t193.py", line 131, in test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened
+    self.assertEqual(fixed_page.problems(self.window),[],(width,height))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['factValue text needs 48 px, has 24', 'be[37 chars] 33'] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+'factValue text needs 48 px, has 24'
+
++ []
+- ['factValue text needs 48 px, has 24',
+-  'benchFeedbackText text needs 65 px, has 33'] : (1440, 900)
+
+----------------------------------------------------------------------
+Ran 6 tests in 18.243s
+
+FAILED (failures=1)
