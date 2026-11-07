@@ -98,9 +98,13 @@ class Bars(QWidget):
         grid.setHorizontalSpacing(10)
         grid.setVerticalSpacing(2)
         self.rows = {}
+        self.labels = {}
         for r, name in enumerate(names):
             name_label = label(name, "barLabel")
             name_label.setFixedWidth(132)
+            # [designed: owner611; T193] Original brown labels remain distinct from values.
+            colour(name_label, theme.CARD_LABEL)
+            self.labels[name] = name_label
             bar = Bar()
             word = label("", "barWord")
             word.setFixedWidth(round(word_width * 1.5))
@@ -110,10 +114,11 @@ class Bars(QWidget):
             self.rows[name] = (bar, word)
         grid.setColumnStretch(1, 1)
 
-    def set(self, name, filled, cells, word=""):
+    def set(self, name, filled, cells, word="", tone=theme.TEXT_BRIGHT):
         bar, word_label = self.rows[name]
         bar.set(filled, cells)
         word_label.setText(word)
+        colour(word_label, tone)
 
 
 class KeyValues(QWidget):
@@ -287,6 +292,42 @@ class NameLine(QFrame):
         self.count.setText(f"{len(self.edit.text())} / {NAME_MAX}")
 
 
+class FactsTable(QWidget):
+    """[designed: owner611; T193] Aligned labelled cells, preserving the readable field values.
+
+    [confirmed: original1771:42BC, T156 initial squad] Six facts and three position/card cells.
+    text()/setWordWrap() retain the card consumers' metadata interface.
+    """
+    def __init__(self, names):
+        super().__init__()
+        grid = QGridLayout(self)
+        grid.setContentsMargins(0, 0, 0, 0)
+        grid.setHorizontalSpacing(10)
+        grid.setVerticalSpacing(0)
+        self.labels, self.values = {}, {}
+        for column, name in enumerate(names):
+            heading = label(name, "factLabel")
+            colour(heading, theme.CARD_HEADING)
+            value = label("", "factValue")
+            value.setWordWrap(True)
+            grid.addWidget(heading, 0, column)
+            grid.addWidget(value, 1, column)
+            grid.setColumnStretch(column, 1)
+            self.labels[name], self.values[name] = heading, value
+
+    def set(self, values, tone):
+        for name, value in values.items():
+            self.values[name].setText(str(value))
+            colour(self.values[name], tone)
+
+    def text(self):
+        return " · ".join(f"{name} {value.text()}" for name, value in self.values.items())
+
+    def setWordWrap(self, on):
+        for value in self.values.values():
+            value.setWordWrap(on)
+
+
 class PlayerCard(QFrame):
     """The S08 card: the name line, the position line, the twelve skills, his tactics and the five
     characteristics, every field today's card shows (goal2.game.player_card.card) in the mockup's layout."""
@@ -301,7 +342,7 @@ class PlayerCard(QFrame):
         head.setSpacing(16)
         self.code = code_label("", "unknown")
         self.name = label("", "h1")
-        self.facts = label("", "sub")
+        self.facts = FactsTable(("age", "caps", "goals", "height", "foot", "performance"))
         self.readiness = label("", "readiness")
         self.name_line = NameLine()
         self.name_line.hide()
@@ -312,18 +353,18 @@ class PlayerCard(QFrame):
         head.addWidget(self.readiness, 0, Qt.AlignmentFlag.AlignBaseline)
         self.head = head
         layout.addLayout(head)
-        self.facts.setWordWrap(True)
         layout.addWidget(self.facts)
-        self.positions = label("", "sub")
-        self.positions.setTextFormat(Qt.TextFormat.RichText)
+        self.positions = FactsTable(("position", "club position", "cards"))
         layout.addWidget(self.positions)
         columns = QHBoxLayout()
         columns.setSpacing(24)
         left = QVBoxLayout()
-        left.setSpacing(8)
+        # [designed: T193] Leave fractional-font rounding room without reducing the24px text.
+        left.setSpacing(4)
         left.addWidget(label("SKILLS", "boxHeading"))
         from goal2.game.player_card import SKILLS, TACTICS
         self.skills = Bars(SKILLS, word_width=24)
+        self.skills.layout().setVerticalSpacing(0)
         left.addWidget(self.skills)
         left.addStretch(1)
         columns.addLayout(left, 1)
@@ -331,13 +372,15 @@ class PlayerCard(QFrame):
         right_widget.setFixedWidth(430)
         right = QVBoxLayout(right_widget)
         right.setContentsMargins(0, 0, 0, 0)
-        right.setSpacing(8)
+        right.setSpacing(4)
         right.addWidget(label("TACTICS", "boxHeading"))
         self.tactics = KeyValues(TACTICS + ("mark",))
+        self.tactics.layout().setVerticalSpacing(2)
         right.addWidget(self.tactics)
-        right.addSpacing(14)
+        right.addSpacing(8)
         right.addWidget(label("CHARACTERISTICS", "boxHeading"))
         self.characteristics = Bars(("hardness", "fitness", "energy", "morale", "leadership"))
+        self.characteristics.layout().setVerticalSpacing(0)
         right.addWidget(self.characteristics)
         right.addStretch(1)
         columns.addWidget(right_widget)
@@ -349,16 +392,16 @@ class PlayerCard(QFrame):
         self.code.setText(card["role"])
         colour(self.code, LINE_COLOUR.get(card["line"], theme.TEXT_NORMAL))
         self.name.setText(card["full_name"])
-        # [designed: T84] The performance word's meaning is not decoded on this route: no stars are invented.
-        performance = ("performance not recorded" if card["performance"] is None
-                       else f"performance raw {card['performance']} (meaning not decoded)")
-        self.facts.setText(f"age {card['age']} · caps {card['caps']} · goals {card['goals']} · {card['height']} · "
-                           f"{card['foot']} · {performance}")
+        # [designed: T193] Display-only compatibility with the existing raw card and T192's stars.
+        stars = card.get("performance_bar")
+        performance = ("*" * stars if stars is not None else "" if card["performance"] is None
+                       else f"raw {card['performance']}")
+        tone = LINE_COLOUR.get(card["line"], theme.TEXT_BRIGHT)
+        self.facts.set({**{name: card[name] for name in ("age", "caps", "goals", "height", "foot")},
+                        "performance": performance}, tone)
         self.readiness.setText(card["readiness"])
-        bright = theme.TEXT_BRIGHT
-        self.positions.setText(rich((("position ", None), (card["position"], bright),
-                                     (" · club position ", None), (card["club_position"], bright),
-                                     (" · cards ", None), (", ".join(card["cards"]) or "none", bright))))
+        self.positions.set({"position": card["position"], "club position": card["club_position"],
+                            "cards": ", ".join(card["cards"]) or "none"}, tone)
         for name, value in card["skills"]:
             # [designed: owner, 2026-10-21, T99 "no numbers when you can have bars"] the bar alone.
             self.skills.set(name, value, SKILL_CELLS, "" if value is not None else "—")
@@ -366,7 +409,7 @@ class PlayerCard(QFrame):
             self.tactics.set(name, word + (" P" if personal else ""))
         self.tactics.set("mark", card["mark"] or "—")
         for name, word, bar, _raw in card["characteristics"]:
-            self.characteristics.set(name, bar, CHARACTERISTIC_CELLS, word)
+            self.characteristics.set(name, bar, CHARACTERISTIC_CELLS, word, tone=tone)
 
     def edit_name(self, on, text=""):
         """Show the name line in place of the name and its facts (F2), or the name again."""

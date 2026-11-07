@@ -1,0 +1,11 @@
+test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness (goal2.tests.test_player_card_table_t193.BenchTable.test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness) ... ok
+test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened (goal2.tests.test_player_card_table_t193.BenchTable.test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened) ... ok
+test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes (goal2.tests.test_player_card_table_t193.CardTable.test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes) ... ok
+test_captain_and_taker_cards_retain_the_table_and_legal_selection (goal2.tests.test_player_card_table_t193.CardTable.test_captain_and_taker_cards_retain_the_table_and_legal_selection) ... ok
+test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels (goal2.tests.test_player_card_table_t193.CardTable.test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels) ... ok
+test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts (goal2.tests.test_player_card_table_t193.CardTable.test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 31.134s
+
+OK

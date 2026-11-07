@@ -279,7 +279,8 @@ class BenchScreen(Screen):
         column.setSpacing(6)
         self.card=PlayerCard()
         self.card.layout().setContentsMargins(16,5,16,5)
-        self.card.layout().setSpacing(4)
+        # [designed: T193] Room for all labelled facts plus long feedback at native fractional font metrics.
+        self.card.layout().setSpacing(1)
         for metadata in (self.card.facts,self.card.positions):
             metadata.setWordWrap(True)
             metadata.setObjectName("benchMetadata")
