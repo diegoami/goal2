@@ -1,7 +1,7 @@
 """[designed: T89; accepted vision #266] The original country card, painted in the accepted style.
 
-Core cards consume the reviewed F034..F038 display projections. The legacy
-Python route retains its explicit missing-field fallback. Space opens players
+Core and career cards consume the reviewed F034..F038 display projections.
+The explicit missing-field fallback remains for older callers. Space opens players
 in the country browser; Team Info keeps its existing tactic controls/Back route.
 """
 from PySide6.QtCore import Qt, QSize, QRectF

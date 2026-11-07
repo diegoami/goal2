@@ -1,0 +1,125 @@
+test_active_snapshot_uses_original_gate_side_and_full_viewport (goal2.tests.test_team_card_panels_t198.Panels.test_active_snapshot_uses_original_gate_side_and_full_viewport) ... This plugin does not support propagateSizeHints()
+ERROR
+test_all128_original_snapshot_cards_render_exact_panels_without_state_write (goal2.tests.test_team_card_panels_t198.Panels.test_all128_original_snapshot_cards_render_exact_panels_without_state_write) ... This plugin does not support propagateSizeHints()
+ERROR
+test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ERROR
+test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers (goal2.tests.test_team_card_panels_t198.Panels.test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_active_snapshot_uses_original_gate_side_and_full_viewport (goal2.tests.test_team_card_panels_t198.Panels.test_active_snapshot_uses_original_gate_side_and_full_viewport)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_team_card_panels_t198.py", line 55, in test_active_snapshot_uses_original_gate_side_and_full_viewport
+    model=self.snapshot('friendly');before=copy.deepcopy(model.state);window,screen=self.team_screen(model)
+                                                                                    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_team_card_panels_t198.py", line 22, in team_screen
+    w=self.window();s=TeamInfoScreen(w,model);w.push(s);self.app.processEvents();w.grab()
+                      ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s07_team_info.py", line 67, in __init__
+    self._build()
+    ~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s07_team_info.py", line 75, in _build
+    self.card_view = CountryCard(family=self.window_.family)
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 140, in __init__
+    colour(inner.itemAt(0).widget(), theme.CARD_HEADING)
+    ^^^^^^
+NameError: name 'colour' is not defined
+
+======================================================================
+ERROR: test_all128_original_snapshot_cards_render_exact_panels_without_state_write (goal2.tests.test_team_card_panels_t198.Panels.test_all128_original_snapshot_cards_render_exact_panels_without_state_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_team_card_panels_t198.py", line 45, in test_all128_original_snapshot_cards_render_exact_panels_without_state_write
+    model=self.snapshot(fixture);before=copy.deepcopy(model.state);window,screen=self.team_screen(model)
+                                                                                 ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_team_card_panels_t198.py", line 22, in team_screen
+    w=self.window();s=TeamInfoScreen(w,model);w.push(s);self.app.processEvents();w.grab()
+                      ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s07_team_info.py", line 67, in __init__
+    self._build()
+    ~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s07_team_info.py", line 75, in _build
+    self.card_view = CountryCard(family=self.window_.family)
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 140, in __init__
+    colour(inner.itemAt(0).widget(), theme.CARD_HEADING)
+    ^^^^^^
+NameError: name 'colour' is not defined
+
+======================================================================
+ERROR: test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_team_card_panels_t198.py", line 84, in test_complete_text_pixels_and_navigation_fit_at_three_sizes
+    self.data();window=self.window();screen=self.to_country_screen(window);screen.settle();window.grab()
+                                            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_ui_start_t163.py", line 117, in to_country_screen
+    self.key(window, Qt.Key.Key_Return)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_ui_start_t163.py", line 81, in key
+    QTest.keyClick(window, key)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/window.py", line 123, in keyPressEvent
+    if screen is not None and screen.handle_key(event.key()):
+                              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/screen.py", line 281, in handle_key
+    self.press_enter()
+    ~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/screen.py", line 268, in press_enter
+    return self.enter_action[1]()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s03_new_game.py", line 214, in accept
+    screen = CountryScreen(self.window_, start)
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 248, in __init__
+    self._build()
+    ~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 259, in _build
+    self.card_view = CountryCard(chooser=True, family=self.window_.family)
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 140, in __init__
+    colour(inner.itemAt(0).widget(), theme.CARD_HEADING)
+    ^^^^^^
+NameError: Error calling Python override of QMainWindow::keyPressEvent(): name 'colour' is not defined
+
+======================================================================
+ERROR: test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers (goal2.tests.test_team_card_panels_t198.Panels.test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_team_card_panels_t198.py", line 67, in test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers
+    self.data();window=self.window();screen=self.to_country_screen(window);screen.settle()
+                                            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_ui_start_t163.py", line 117, in to_country_screen
+    self.key(window, Qt.Key.Key_Return)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/tests/test_ui_start_t163.py", line 81, in key
+    QTest.keyClick(window, key)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/window.py", line 123, in keyPressEvent
+    if screen is not None and screen.handle_key(event.key()):
+                              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/screen.py", line 281, in handle_key
+    self.press_enter()
+    ~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/screen.py", line 268, in press_enter
+    return self.enter_action[1]()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s03_new_game.py", line 214, in accept
+    screen = CountryScreen(self.window_, start)
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 248, in __init__
+    self._build()
+    ~~~~~~~~~~~^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 259, in _build
+    self.card_view = CountryCard(chooser=True, family=self.window_.family)
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-team-card-ui-a/goal2/ui/s04_country.py", line 140, in __init__
+    colour(inner.itemAt(0).widget(), theme.CARD_HEADING)
+    ^^^^^^
+NameError: Error calling Python override of QMainWindow::keyPressEvent(): name 'colour' is not defined
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.417s
+
+FAILED (errors=4)

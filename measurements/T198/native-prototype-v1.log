@@ -1,0 +1,24 @@
+test_active_snapshot_uses_original_gate_side_and_full_viewport (goal2.tests.test_team_card_panels_t198.Panels.test_active_snapshot_uses_original_gate_side_and_full_viewport) ... ok
+test_all128_original_snapshot_cards_render_exact_panels_without_state_write (goal2.tests.test_team_card_panels_t198.Panels.test_all128_original_snapshot_cards_render_exact_panels_without_state_write) ... ok
+test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes) ... FAIL
+test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers (goal2.tests.test_team_card_panels_t198.Panels.test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers) ... ok
+
+======================================================================
+FAIL: test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-team-card-ui-a\goal2\tests\test_team_card_panels_t198.py", line 88, in test_complete_text_pixels_and_navigation_fit_at_three_sizes
+    self.assertEqual(fixed_page.problems(window),[],(width,height))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['CountryCard 1230x683 squeezed below 1172[679 chars]x31'] != []
+
+First list contains 16 additional elements.
+First extra element 0:
+'CountryCard 1230x683 squeezed below 1172x691'
+
+Diff is 785 characters long. Set self.maxDiff to None to see it. : (1800, 1125)
+
+----------------------------------------------------------------------
+Ran 4 tests in 28.022s
+
+FAILED (failures=1)
