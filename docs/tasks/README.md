@@ -380,3 +380,5 @@ operational status.
 - [T196](T196.md): accepted live-record API and bounded worker wire (#619).
 
 - [T197](T197.md): original team panels in the career card data route (#611).
+
+- [T198](T198.md): render delivered original TEAM panels with explicit browser context (#611).
