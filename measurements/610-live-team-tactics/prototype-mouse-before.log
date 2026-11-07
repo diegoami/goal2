@@ -1,0 +1,17 @@
+test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 185, in test_pending_mouse_back_obeys_the_same_wait_as_keyboard
+    self.assertIs(self.window.current(), screen)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s15_match_menu.MenuScreen(0x1a60bf60, name="screen") at 0x7c2f5f39db80> is not <goal2.ui.s10_team_tactics.TeamTacticsScreen(0x1c281f50, name="screen") at 0x7c2f5f0e0880>
+
+----------------------------------------------------------------------
+Ran 1 test in 4.110s
+
+FAILED (failures=1)
+EXPECTED: mouse Esc bypassed the pending keyboard guard

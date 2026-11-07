@@ -1,0 +1,18 @@
+{
+  "parent_commit": "99d759ddf04f6df62485e7e9a3e3c51280aecfe1",
+  "sources": {
+    "goal2/game/watched_jobs.py": "78bc140536d683dd8647838599e161fe9ec206e2755bbc9fa86a1598f61d5a05",
+    "goal2/game/watched_match.py": "3eb918d586f512f79efd993dd899cb251891a0aff685afe7ab10a9e7f499f52d",
+    "goal2/ui/match_day.py": "5f03ab22b6daa815ffce1064336d0fcc7742797f5e6a12456e39540c13db9bb6",
+    "goal2/ui/s10_team_tactics.py": "a31e71e076b6e6abd0a273620b2abadf96c2b354fed0a0073ae26e2467ef070d",
+    "goal2/ui/s15_match_menu.py": "8730e4f9e23c108437b9e7849fd2f2505b2052c56308446859c8bca9b3f5b701",
+    "goal2/ui/s17_pitch.py": "f2793982c16df0ade94bab806ecadbf72da1a5c3d1a7aebb276521444813f223",
+    "goal2/ui/s19_bench.py": "67afd69b8a8539cc37623f5eceab56734157670d6fb44e9a3a9db55ef494d079",
+    "goal2/ui/window.py": "dcfa1535a7a7a1a044d01f02f1d0b9eb59a8819d2bba2f8f60845b88ce069fb9",
+    "goal2/tests/test_live_team_tactics_610.py": "407dbdcf3697665f1e24f2637fda2b0094bea3f2de0f2f501c9218328654c42a",
+    "goal2/tests/test_ui_bench_t180.py": "ffc9f8c0d033ea191d2accee43e5483178c982f87d139f2bd4046af1b5072b9f",
+    "goal2/tests/test_ui_pitch_t166.py": "ff5b804760b0850aaace8cf08799e0a7b85ea04718309dbdad77b62deff71a97"
+  },
+  "accepted_match_source": "80831d9a1b378d7b4bba78de7a931771f0472669",
+  "scope": "real half-time UI/headless comparison; ordinary/extra-time vendor update pending upstream680"
+}

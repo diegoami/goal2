@@ -69,6 +69,9 @@ class LiveTeamTactics(unittest.TestCase):
         expected = not bool(self.original_tactics & 16)
         self.assertEqual(self.sent, [([], {'tactics': {5: expected}, 'edit_only': True})])
         self.assertTrue(screen.pending)
+        self.assertIn("Applying", screen.enter_hint_text())
+        from goal2.desktop import fixed_page
+        self.assertEqual(fixed_page.problems(self.window), [])
         self.assertEqual(self.model.state.country_tactics, self.original_tactics)
         self.key(Qt.Key.Key_Return)
         self.key(Qt.Key.Key_Escape)
@@ -98,6 +101,8 @@ class LiveTeamTactics(unittest.TestCase):
             self.assertTrue(screen.pending)
             self.deliver(byte)
             self.assertEqual(screen.answer.team_tactics, byte)
+            from goal2.desktop import fixed_page
+            self.assertEqual(fixed_page.problems(self.window), [])
             self.assertEqual(len(self.sent), row+1)
         self.key(Qt.Key.Key_Escape)
         reopened = self.open_tactics()
@@ -170,6 +175,24 @@ class LiveTeamTactics(unittest.TestCase):
         self.assertEqual(self.bridge.pauses, 1)
         self.key(Qt.Key.Key_Escape)
         self.assertEqual(self.bridge.pauses, 1, 'coalesce while the original has not acknowledged the stop')
+
+    def test_pending_mouse_back_obeys_the_same_wait_as_keyboard(self):
+        from PySide6.QtCore import Qt
+        from PySide6.QtTest import QTest
+        from PySide6.QtWidgets import QLabel
+        self.prepare('half_time')
+        screen = self.open_tactics()
+        self.key(Qt.Key.Key_Return)
+        esc = next(screen.key_layout.itemAt(i).widget() for i in range(screen.key_layout.count())
+                   if any(label.text() == 'Esc' for label in screen.key_layout.itemAt(i).widget().findChildren(QLabel)))
+        QTest.mouseClick(esc, Qt.MouseButton.LeftButton)
+        self.app.processEvents()
+        self.assertIs(self.window.current(), screen)
+        self.assertTrue(screen.pending)
+        self.deliver(self.original_tactics ^ 16)
+        QTest.mouseClick(esc, Qt.MouseButton.LeftButton)
+        self.app.processEvents()
+        self.assertIs(self.window.current(), self.menu)
 
     def test_worker_failure_while_pending_returns_to_the_desk_without_publishing(self):
         from PySide6.QtCore import Qt

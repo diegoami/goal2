@@ -143,7 +143,8 @@ class TeamTacticsScreen(Screen):
         parts = [(DEFAULTS, None)]
         if self.changed is not None:
             name, before, after = self.changed
-            parts = [(f"Changed just now: {name} {before} → ", None), (after, theme.VALUE), (". " + DEFAULTS, None)]
+            parts = [(f"Changed just now: {name} {before} → ", None), (after, theme.VALUE),
+                     (". Match remains paused." if self.answer is not None else ".", None)]
         if self.pending:
             parts = [("Applying team tactics. Waiting for the game to confirm; the match stays paused.", theme.VALUE)]
         elif self.message:
@@ -151,6 +152,7 @@ class TeamTacticsScreen(Screen):
         self.note.setText(f'<p style="line-height:{LINE_HEIGHT}%">{rich(parts)}</p>')
         self.strip.show_rows(view["country_name"],
                              [(r["role"], r["line"], full_name(model, r["id"])) for r in rows], -1, eleven == 11)
+        self._refresh_hint()
 
     def lines(self):
         """The lines as they read: (line, now, other option)."""
@@ -165,6 +167,16 @@ class TeamTacticsScreen(Screen):
         if index == self.line:
             return self.change()
         return self.choose(index)
+
+    def enter_hint_text(self):
+        if getattr(self, "pending", False):
+            return "Applying..."
+        return super().enter_hint_text()
+
+    def escape(self):
+        if self.pending:
+            return
+        return super().escape()
 
     def handle_key(self, key):
         if self.pending and key != Qt.Key.Key_F1:
