@@ -97,13 +97,16 @@ def _pairs(value):
     return [[off, on] for off, on in value]
 
 
-def _event(value):
+def _event(value, *, live_players=False):
     event = Event(**value)
     if (not isinstance(event.kind, str) or type(event.minute) is not int
             or not isinstance(event.score, tuple) or len(event.score) != 2
             or any(type(score) is not int or score < 0 for score in event.score)
             or not isinstance(event.data, dict)):
         raise ValueError('invalid watched event shape')
+    if event.kind=='decision':
+        from goal2.game.watched_schema import validate_player_records
+        validate_player_records(event.data,required=live_players)
     return event
 
 
@@ -344,7 +347,8 @@ class WatchedJobs:
         return self._handle if self._active else None
 
     def start(self, fixture, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False,
-              bench=False, prompts=False):
+              bench=False, prompts=False, live_players=False):
+        if type(live_players) is not bool:raise ValueError('live_players must be boolean')
         if type(frames) is not bool or type(bench) is not bool or type(prompts) is not bool:
             raise ValueError('frames, bench and prompts must be boolean')
         if prompts and not bench:
@@ -375,6 +379,7 @@ class WatchedJobs:
         # asked and answered so far and the engine's reports.
         self._bench = bench
         self._prompts = prompts
+        self._live_players = live_players
         self.waiting = None
         self._asked = 0
         self._decisions = 0
@@ -413,6 +418,7 @@ class WatchedJobs:
                              prompts=getattr(self, '_prompts', False),
                              options=dict(reference_seed=reference_seed, delay_byte=delay_byte,
                                           record_draws=record_draws))
+        if self._live_players:self._request['live_players']=True
         if shared.needs_open(job.state, self._template):
             self._preparing = _Preparation(shared, job.state, self._template)
         else:
@@ -428,7 +434,8 @@ class WatchedJobs:
         try:
             self.shared.engine.match(self.KIND, request['fixture'], options=request['options'],
                                      frames=request['frames'], bench=request['bench'],
-                                     prompts=request.get('prompts', False))
+                                     prompts=request.get('prompts', False),
+                                     **({'live_players':True} if request.get('live_players') else {}))
         except OSError as exc:
             self._ended_before_match(exc)
         self._handle.bind()
@@ -482,7 +489,7 @@ class WatchedJobs:
                 if self._complete is not None:
                     raise _reply_failure(kind, value, True)
                 if kind == 'event' and isinstance(value, Event):
-                    value = _event(asdict(value))
+                    value = _event(asdict(value),live_players=getattr(self,'_live_players',False))
                     self.events.append(value)
                     new.append(copy.deepcopy(value))
                     if self._bench and value.kind == 'decision' and (
