@@ -1,0 +1,72 @@
+{
+  "scope": "Rebuilt UI from hash-bound original snapshots; explicit test presentation context, not natural live match",
+  "captures": [
+    {
+      "fixture": "selection",
+      "country": 7,
+      "active_display_snapshot": false,
+      "size": [
+        1440,
+        900
+      ],
+      "path": "screenshots/selection-7-1440x900.png",
+      "sha256": "038672aab87c308ae639e1e4191f033879bd063d8636031f4b8a10c8c534db8e"
+    },
+    {
+      "fixture": "selection",
+      "country": 7,
+      "active_display_snapshot": false,
+      "size": [
+        1800,
+        1125
+      ],
+      "path": "screenshots/selection-7-1800x1125.png",
+      "sha256": "f9b6099d200cc41aa7cc20eaf2f6b1f732eb43ff201967d024b9f8b2421bb5ec"
+    },
+    {
+      "fixture": "selection",
+      "country": 7,
+      "active_display_snapshot": false,
+      "size": [
+        2110,
+        1213
+      ],
+      "path": "screenshots/selection-7-2110x1213.png",
+      "sha256": "abed3c6fb002a92bbfc6516f82b275feacebd0cbbbe3de1b4c847695fb249193"
+    },
+    {
+      "fixture": "friendly",
+      "country": 16,
+      "active_display_snapshot": true,
+      "size": [
+        1440,
+        900
+      ],
+      "path": "screenshots/friendly-16-1440x900.png",
+      "sha256": "212929f557d06a9cb045960f373aed6579c5ce9a73df2c6bdc1f3cd4cc69eadb"
+    },
+    {
+      "fixture": "friendly",
+      "country": 16,
+      "active_display_snapshot": true,
+      "size": [
+        1800,
+        1125
+      ],
+      "path": "screenshots/friendly-16-1800x1125.png",
+      "sha256": "9c558dcc78b1b7fc1db12b98b90ee5d23841c46ed3ab68cfccd132da59ff849a"
+    },
+    {
+      "fixture": "friendly",
+      "country": 16,
+      "active_display_snapshot": true,
+      "size": [
+        2110,
+        1213
+      ],
+      "path": "screenshots/friendly-16-2110x1213.png",
+      "sha256": "df43235fc85cb46c68308801152491147caa78691f99584b5573d4350f12f45e"
+    }
+  ],
+  "source_head": "fbfbbd56af7f92fc35e59dbba0d0431063c768d7"
+}
