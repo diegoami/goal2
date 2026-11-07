@@ -453,8 +453,9 @@ class Match:
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
                speed=None, shootout_order=None, taker=None, edit_only=False):
         """goal2's answer to the waiting decision; nothing given plays on.
-        edit_only: execute edits at a legal half-time/substitution menu and yield a fresh decision before
-          pressing Play. An ordinary subsequent answer continues; no match tick occurs between edits.
+        edit_only: execute edits at a legal half-time/substitution menu, or team-tactics-only edits at an
+          ordinary pause/extra-time menu, and yield a fresh decision before Play. An ordinary subsequent answer continues;
+          no match tick occurs between edits. The pause arm never queues a substitution.
         substitutions: (off, on) player words of the managed squad, made now at half time and at a substitution
           notice; at a pause the original only takes the request and offers it at the next stoppage (a
           `substitution` decision whose default answer is what was asked for).
@@ -473,10 +474,15 @@ class Match:
         # [designed: #663, goal2#599] An edit is a real stopped-menu visit without Play.
         # Default answers and the legacy in-play request API retain their existing behavior.
         if edit_only:
-            if (self.st["waiting"]["context"] not in ("half_time", "substitution")
-                    or not self.m.rd(S.SUBS_ALLOWED, 1) or quick or speed is not None
+            context = self.st["waiting"]["context"]
+            # [designed: goal2#610, #679] The original team-tactics menu is available
+            # during a pause even when SELECT TEAM cannot make substitutions.
+            paused_tactics = (context in ("pause", "extra_time") and tactics is not None
+                              and not (substitutions or positions or marking or own_tactics))
+            legal_bench = context in ("half_time", "substitution") and self.m.rd(S.SUBS_ALLOWED, 1)
+            if (not (legal_bench or paused_tactics) or quick or speed is not None
                     or taker is not None or shootout_order is not None):
-                raise ValueError("edit_only needs a legal stopped bench decision, without play-on inputs")
+                raise ValueError("edit_only needs a legal stopped bench or a tactics-only paused menu, without play-on inputs")
         if self.st["waiting"]["context"] == "set_piece":
             if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None or shootout_order is not None:
                 raise ValueError("the set-piece prompt takes taker only")

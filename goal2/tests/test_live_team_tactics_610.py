@@ -121,7 +121,7 @@ class LiveTeamTactics(unittest.TestCase):
         fixture = self.day.fixture
         seen = set()
         byte = self.original_tactics
-        for current in (fixture, replace(fixture, side_a=fixture.side_b, side_b=fixture.side_a)):
+        for current in (fixture, replace(fixture, home_country=fixture.away_country, away_country=fixture.home_country)):
             self.window.pop()
             self.day.fixture = current
             self.menu = self.window.push(MenuScreen(self.window, self.day, 'half'))
@@ -281,8 +281,9 @@ class ActualLiveTeamTactics(unittest.TestCase):
                 frame = pitch.controller.display.frame
                 if (target == 'pause' and frame is not None and frame['minute'] >= 5
                         and not self.out.get('requested')):
-                    self.out['requested'] = True
+                    before_requests = pitch.controller.requests
                     key(self.window, Qt.Key.Key_Escape)
+                    self.out['requested'] = pitch.controller.requests > before_requests
 
             def on_menu(self, screen):
                 wanted = 'pause' if target == 'pause' else 'half'
