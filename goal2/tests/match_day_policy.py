@@ -39,7 +39,7 @@ class Scripted:
         pass
 
 
-def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait=900):
+def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait=900, pause_after=None):
     """The same match through the bridge, headless, with the same answers: `model`'s next fixture on its own
     WatchedJobs (or CompetitiveJobs), with the pitch samples, the bench and the player prompts, every sample
     acknowledged as it arrives, and each decision the bridge waits on answered with the next of `choices` ((context,
@@ -55,6 +55,11 @@ def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait
         jobs = WatchedJobs(model)
     options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True)
     answers = list(choices)
+    # [designed: owner #612, T190] Reproduce a UI pause at a fixed LEAD sample boundary.
+    # The default path is unchanged. Hold acknowledgements until the worker fills that
+    # boundary, send pause, then release it; the command precedes the next sample.
+    from goal2.game.watched_jobs import LEAD
+    paused = pause_after is None
     try:
         token = jobs.start(**options) if competitive else jobs.start(fixture, **options)
         ack = -1
@@ -69,9 +74,17 @@ def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait
             if not jobs.busy:
                 break
             received = jobs._frame_sequence - 1
-            if received > ack:
-                jobs.ack_frames(token, received)
-                ack = received
+            limit = received
+            if not paused:
+                limit = min(received, pause_after - LEAD)
+                if jobs._match.received_frames - 1 == pause_after:
+                    if not jobs.pause(token):
+                        raise AssertionError("reference pause was refused at its recorded sample boundary")
+                    paused = True
+                    limit = received
+            if limit > ack:
+                jobs.ack_frames(token, limit)
+                ack = limit
             if jobs.waiting is not None and jobs.frames_drained():
                 context, value = answers.pop(0)
                 if context != jobs.waiting.data.get("context"):
@@ -85,6 +98,8 @@ def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait
                 else:
                     jobs.answer(token, value)
             time.sleep(.002)
+        if not paused:
+            raise AssertionError("reference never reached the recorded pause boundary")
         if answers:
             raise AssertionError(f"answers left over: {answers}")
         return jobs.outcome

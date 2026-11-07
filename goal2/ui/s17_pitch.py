@@ -222,6 +222,10 @@ class MatchController:
             else:
                 self.released = len(self.events)
                 self.stop = waiting
+                # [designed: owner #612] The requested stop has arrived; it is no
+                # longer an outstanding request, even before the player leaves S19.
+                if context in BENCH and self.note == REQUESTED:
+                    self.note = ""
         changed = False
         if not self.quick and (display.frame is None or self.drawn >= display.frame["sequence"]):
             changed = display.advance(now)
@@ -376,9 +380,13 @@ class MatchController:
 
     def request_bench(self):
         """Esc or Enter: the original's bench request (`Match.pause` through the bridge)."""
-        if not self.running:
+        if not self.running or self.stop is not None or self.edit_pending or self.held:
             return False
-        sent = self.bridge.pause(self.token)
+        try:
+            sent = self.bridge.pause(self.token)
+        except Exception as exc:
+            self.note = f"Bench request failed: {exc}"
+            return False
         if sent:
             self.requests += 1
             self.note = REQUESTED
@@ -388,6 +396,8 @@ class MatchController:
         """End the match through the bridge, publishing nothing; the bridge stays the match day's."""
         bridge, self.bridge = self.bridge, None
         self.finished = True
+        if self.note == REQUESTED:
+            self.note = ""
         if bridge is not None and bridge.busy and bridge.token == self.token:
             bridge.cancel_and_reap(self.token)
 
