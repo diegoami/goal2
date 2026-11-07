@@ -1,0 +1,57 @@
+test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) ... 
+  test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) (energy=0, fitness=25) ... FAIL
+  test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) (energy=0, fitness=32) ... FAIL
+  test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) (energy=0, fitness=200) ... FAIL
+
+======================================================================
+FAIL: test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) (energy=0, fitness=25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-injury-fitness-a/goal2/tests/test_injury_fitness_t195.py", line 35, in test_matches_unhooked_original_energy_zero_and_healthy_cards
+    self.assertEqual(value[1:3],(expected_word,expected_bar))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('very fit', 10) != ('injured', 0)
+
+First differing element 0:
+'very fit'
+'injured'
+
+- ('very fit', 10)
++ ('injured', 0)
+
+======================================================================
+FAIL: test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) (energy=0, fitness=32)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-injury-fitness-a/goal2/tests/test_injury_fitness_t195.py", line 35, in test_matches_unhooked_original_energy_zero_and_healthy_cards
+    self.assertEqual(value[1:3],(expected_word,expected_bar))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('total', 14) != ('injured', 0)
+
+First differing element 0:
+'total'
+'injured'
+
+- ('total', 14)
++ ('injured', 0)
+
+======================================================================
+FAIL: test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) (energy=0, fitness=200)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-injury-fitness-a/goal2/tests/test_injury_fitness_t195.py", line 35, in test_matches_unhooked_original_energy_zero_and_healthy_cards
+    self.assertEqual(value[1:3],(expected_word,expected_bar))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('unavailable', None) != ('injured', 0)
+
+First differing element 0:
+'unavailable'
+'injured'
+
+- ('unavailable', None)
++ ('injured', 0)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.326s
+
+FAILED (failures=3)
