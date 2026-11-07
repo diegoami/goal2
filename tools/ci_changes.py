@@ -1,12 +1,11 @@
-"""[designed: owner, 2026-11-01, #493] Whether a PR push needs a workflow. --kind slow (the default): the
-slow workflows (windows-slow.yml, linux-slow.yml) on the owner's machines, only when the push changes a file
-the slow tests guard (check_premerge.py's SLOW_PATHS). --kind code: the hosted gates (ci.yml, windows.yml),
-only when it changes a file outside docs/, measurements/ and Markdown.
+"""[designed: owner, 2026-11-07] Hosted PR push selector (--kind code), plus an optional
+changed slow-scope query (--kind slow). Full workflows are manual-only; this helper
+never dispatches a suite. The slow query remains available for explicit investigations.
 
     python3 tools/ci_changes.py [--kind slow|code] [--since SHA]
 
 --since is the PR's previous head (the push's github.event.before): when it is an ancestor of HEAD, only
-what changed since it counts, so a small follow-up commit does not start an hour of slow tests. Otherwise
+what changed since it counts, so docs-only follow-up pushes do not restart hosted regression checks. Otherwise
 (the PR's first push, its ready-for-review, a rewritten branch) everything the branch changes since its
 merge base with origin/main counts. Prints the decision; with GITHUB_OUTPUT set, appends run=true|false.
 """

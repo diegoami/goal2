@@ -42,8 +42,14 @@ one comment on the issue and stop.
 
 - The launcher has already checked this checkout out at the candidate. Confirm
   `git rev-parse HEAD` equals the Candidate; if it does not, say so on the issue and stop.
-- Run the checks: `python3 tools/check_premerge.py --expected-head <candidate> --slow` (every
-  game test, the slow ones included). Report the tail of anything failing.
+- [designed: owner, 2026-11-07] Inspect the milestone's full Linux/Windows receipts and logs:
+  verify the candidate/input identity, complete test/case scope, environment, skips, failures and
+  explicit owner exceptions. Do not trust a summary without its supporting receipt.
+- Independently run focused checks and finding reproductions as needed. A review starting does
+  not itself require another full suite. Run `python3 tools/check_premerge.py --expected-head
+  <candidate> --slow` when a required full receipt is missing, invalid or changed coverage warrants
+  it; explain why. Preserve every assertion/case/limit and the per-computer gate rule.
+- Distinguish checks run here from verified reused receipts in the verdict; report failure tails.
 
 ## Review
 

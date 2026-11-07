@@ -1,66 +1,21 @@
 name: Linux slow
 
-# [designed: owner, 2026-11-01, #493] The full gate with every slow test on Linux, on the owner's machines
-# (self-hosted runners labelled goal2-slow-linux, WSL included; tools/runner/setup-linux.sh): the hosted
-# runs skip them (#490). Reported, not required: while no runner is online the run waits. Never for a fork
-# PR. Offscreen Qt and dummy SDL.
-# Nothing of the original game is uploaded, and the Drive token is only read from the secret.
-# [designed: owner, 2026-11-01, #493] Only when needed: never for a draft or a fork PR, nor on a push to main (the PR's
-# head was tested with main merged in); a PR push runs it only when it changes what the slow tests guard
-# since the PR's previous push (tools/ci_changes.py; the first push, ready-for-review or a rewritten
-# branch: since main). A skipped push leaves the earlier push's run going. A dispatch runs every slow test.
-# [designed: owner, 2026-11-02] No schedule (the owner's PC is not left on for it): when a PR starts a slow run
-# and this workflow's last dispatch is over FULL_DAYS old, the changes job also dispatches a full run on main.
+# [designed: owner, 2026-11-07] Full suites run on integrated milestone candidates,
+# or an explicitly justified investigation. No PR/push/periodic dispatch; focused
+# task checks and hosted fast regression gates protect PRs. No case/assertion/limit reduced.
+# Dispatch requires repository write access. Offscreen Qt/dummy SDL; originals stay private.
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  changes:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (!github.event.pull_request.draft && github.event.pull_request.head.repo.full_name == github.repository)
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-      actions: write      # only to dispatch the full run on main below
-    outputs:
-      run: ${{ steps.decide.outputs.run }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
-      - name: Does this push change what the slow tests guard?
-        id: decide
-        run: |
-          if [ "${{ github.event_name }}" != pull_request ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
-          since=
-          [ "${{ github.event.action }}" = synchronize ] && since="${{ github.event.before }}"
-          python3 tools/ci_changes.py --kind slow ${since:+--since "$since"}
-      - name: A full run on main when the last one is over FULL_DAYS old
-        if: github.event_name == 'pull_request' && steps.decide.outputs.run == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          FULL_DAYS: '7'
-        run: |
-          last=$(gh run list -R "$GITHUB_REPOSITORY" --workflow linux-slow.yml --event workflow_dispatch --limit 1 --json createdAt --jq '.[0].createdAt // ""')
-          if [ -z "$last" ] || [ $(( $(date +%s) - $(date -d "$last" +%s) )) -gt $(( FULL_DAYS * 86400 )) ]; then
-            gh workflow run linux-slow.yml -R "$GITHUB_REPOSITORY" --ref main
-            echo "dispatched a full run on main (the last one: ${last:-never})"
-          else
-            echo "the last full run started $last: within $FULL_DAYS days"
-          fi
   linux-slow:
-    needs: changes
-    if: needs.changes.outputs.run == 'true'
-    # job-level, so a skipped push never cancels the run of an earlier one
+    if: github.event_name == 'workflow_dispatch'
+    # A replacement dispatch supersedes only the same ref.
     concurrency:
-      group: linux-slow-${{ github.event.pull_request.number || github.ref }}
+      group: linux-slow-${{ github.ref }}
       cancel-in-progress: true
     runs-on: [goal2-slow-linux]
     timeout-minutes: 300   # [designed: owner, 2026-10-31, #489] as the hosted runs' limit
@@ -76,8 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # check_premerge compares with origin/main and wants the PR's own head, not the merge ref.
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          # Validate the explicitly dispatched ref's exact head.
+          ref: ${{ github.sha }}
           fetch-depth: 0
       - name: Python 3.12 (uv's) in a fresh venv
         # the runner has no root, so no setup-python; setup-linux.sh checks uv is there
@@ -112,13 +67,12 @@ jobs:
           python tools/check_goaldat.py .cache/GOAL.DAT > /dev/null && echo "GOAL.DAT verified"
       - name: goal2-archaeology (full clone; check_provenance needs its pinned commits)
         run: rm -rf "$GOAL2_ARCHAEOLOGY" && git clone -q https://github.com/diegoami/goal2-archaeology.git "$GOAL2_ARCHAEOLOGY"
-      - name: Game tests and pre-merge checks, the slow tests the change can reach (every one on a dispatch)
+      - name: Full milestone game tests and pre-merge checks (every case)
         run: |
           start=$(date +%s)
           status=0
-          full=
-          [ "${{ github.event_name }}" = pull_request ] || full=--slow
-          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" $full 2>&1 | tee linux-slow-premerge.log || status=$?
+          unset GOAL2_CASES  # Milestones always play every case, even with an inherited runner setting.
+          python tools/check_premerge.py --expected-head "$(git rev-parse HEAD)" --slow 2>&1 | tee linux-slow-premerge.log || status=$?
           echo "gate wall time: $(( $(date +%s) - start )) s" | tee -a linux-slow-premerge.log
           exit $status
       - name: Keep only logs
