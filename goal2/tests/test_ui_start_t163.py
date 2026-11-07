@@ -308,10 +308,10 @@ class CountryKeys(App):
         self.click(screen.rows[3])
         self.assertEqual(screen.chosen()[0], 27, "a click highlights a country, as ↑↓ do")
         screen.settle()
-        from goal2.game.player_card import card
-        cards = [card(screen.browser.state, w, screen.browser.goaldat) for w in screen.browser.state.managed_squad]
-        caps, age = (sum(c[k] for c in cards) // 20 for k in ("caps", "age"))   # cut, as the original (#559)
-        self.assertEqual(screen.averages.text(), f"average caps {caps} · age {age}", "from the twenty's cards")
+        # [confirmed: F038; T198] TEAM numbers come from the original XI aggregate,
+        # not an inferred twenty-player mean. T198 separately asserts Denmark29 vs28.
+        numbers = {row["field"]: row["text"] for row in screen.card["characteristics"]["numbers"]}
+        self.assertEqual(screen.averages.text(), f"caps {numbers['caps']} · age {numbers['age']}")
         self.key(window, Qt.Key.Key_Space)
         players = window.current()
         self.assertIsInstance(players, PlayersScreen)

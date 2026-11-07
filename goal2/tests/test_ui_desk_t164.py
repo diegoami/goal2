@@ -578,7 +578,7 @@ class CountryOrder(App):
         self.key(window, Qt.Key.Key_Down, 2)
         screen.settle()
         self.assertEqual(screen.chosen()[1], "Holland")
-        self.assertEqual(screen.averages.text(), "average caps 0 · age 28", "as t156-005-country-holland")
+        self.assertEqual(screen.averages.text(), "caps 0 · age 28", "as t156-005-country-holland")
         from goal2.game.player_card import card
         cards = [card(screen.browser.state, w, screen.browser.goaldat) for w in screen.browser.state.managed_squad]
-        self.assertEqual(sum(c["age"] for c in cards) // 20, 28, "the cards' ages, cut to a whole number")
+        self.assertEqual(sum(c["age"] for c in cards) // 20, 28, "dataset coincidence; original TEAM28 is asserted independently above")
