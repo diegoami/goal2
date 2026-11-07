@@ -349,9 +349,8 @@ class PlayerCard(QFrame):
         self.code.setText(card["role"])
         colour(self.code, LINE_COLOUR.get(card["line"], theme.TEXT_NORMAL))
         self.name.setText(card["full_name"])
-        # [designed: T84] The performance word's meaning is not decoded on this route: no stars are invented.
-        performance = ("performance not recorded" if card["performance"] is None
-                       else f"performance raw {card['performance']} (meaning not decoded)")
+        # [confirmed: original1771:3827; T192] Blank sentinel, otherwise the original's star count.
+        performance = "performance " + "*" * card["performance_bar"]
         self.facts.setText(f"age {card['age']} · caps {card['caps']} · goals {card['goals']} · {card['height']} · "
                            f"{card['foot']} · {performance}")
         self.readiness.setText(card["readiness"])
