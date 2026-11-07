@@ -204,7 +204,7 @@ def fresh_state(players_before):
 class Match:
     def __init__(self, image, fixture, *, managed=None, captain=None, seed=None, players=None, countries=None,
                  substitutions=None, ticks=False, record_draws=False, delay_byte=None, timeout_s=60, ports=None,
-                 prove=None, set_piece=False, engine="original", tail=True):
+                 prove=None, set_piece=False, engine="original", tail=True, live_players=False):
         """image: an Image of the original (goal2's savestate bytes through Image.from_savestate, e.g. of
         to_savestate(state, template); or GameState.mem through Image.from_memory_component). On the fixture
         tried, the match depended on the image only through its two teams' records (E033 notes, section 2).
@@ -216,6 +216,9 @@ class Match:
         per tick. record_draws: keep every main-RNG write from the captain prompt to the full-time board (the
         engine check). delay_byte: the speed byte [A923]+0x3F at the captain prompt (the engine check).
         timeout_s: the most one stretch between two events may take (normally well under a second).
+        live_players: boolean opt-in to current managed squad records at decisions, as
+          player_records [[word,20-byte-record.hex()], ...] in current squad order. False
+          keeps the legacy options/event shape; True changes no guest state or match timing (#682).
         substitutions: the substitution budget, one number for both sides or (team 0, team 1), 0..255, written over
         the set-up's (A4A1: 5 a side for a friendly, kind 1, and 2 for every other kind; F027 section 4) when
         play_match starts; None keeps the original's. The original counts it down (C5DC) and stops both the
@@ -230,6 +233,8 @@ class Match:
         player update 0791:B7FA, which the kit then does not call (T119a: route.py runs route_fixture itself, and
         its own call of B7FA at 000E:6FF8 runs as guest code); and the fixture record keeps route_fixture's +1 (a
         competitive fixture's round) and +3 (T119c, _write_fixture)."""
+        if type(live_players) is not bool:
+            raise ValueError("live_players: a boolean opt-in")
         if engine not in ("original", "port"):
             raise ValueError("engine: original or port")
         if engine == "port" and prove is not None:
@@ -285,6 +290,10 @@ class Match:
             raise ValueError("set_piece: a boolean opt-in")
         if set_piece:
             self.opts["set_piece"] = True
+        # [designed: #682, goal2#611] Read-only live-card data is opt-in; legacy
+        # options/checkpoints/events stay byte-identical when it is not requested.
+        if live_players:
+            self.opts["live_players"] = True
         self.side = (0 if managed == fixture.first else 1) if managed in (fixture.first, fixture.second) else None
         if captain is not None and (self.side is None or captain not in self._squad(managed)[:11]):
             raise ValueError(f"captain {captain} is not in the managed eleven")
@@ -453,8 +462,9 @@ class Match:
     def answer(self, substitutions=(), tactics=None, positions=None, marking=None, own_tactics=None, quick=False,
                speed=None, shootout_order=None, taker=None, edit_only=False):
         """goal2's answer to the waiting decision; nothing given plays on.
-        edit_only: execute edits at a legal half-time/substitution menu and yield a fresh decision before
-          pressing Play. An ordinary subsequent answer continues; no match tick occurs between edits.
+        edit_only: execute edits at a legal half-time/substitution menu, or team-tactics-only edits at an
+          ordinary pause/extra-time menu, and yield a fresh decision before Play. An ordinary subsequent answer continues;
+          no match tick occurs between edits. The pause arm never queues a substitution.
         substitutions: (off, on) player words of the managed squad, made now at half time and at a substitution
           notice; at a pause the original only takes the request and offers it at the next stoppage (a
           `substitution` decision whose default answer is what was asked for).
@@ -473,10 +483,15 @@ class Match:
         # [designed: #663, goal2#599] An edit is a real stopped-menu visit without Play.
         # Default answers and the legacy in-play request API retain their existing behavior.
         if edit_only:
-            if (self.st["waiting"]["context"] not in ("half_time", "substitution")
-                    or not self.m.rd(S.SUBS_ALLOWED, 1) or quick or speed is not None
+            context = self.st["waiting"]["context"]
+            # [designed: goal2#610, #679] The original team-tactics menu is available
+            # during a pause even when SELECT TEAM cannot make substitutions.
+            paused_tactics = (context in ("pause", "extra_time") and tactics is not None
+                              and not (substitutions or positions or marking or own_tactics))
+            legal_bench = context in ("half_time", "substitution") and self.m.rd(S.SUBS_ALLOWED, 1)
+            if (not (legal_bench or paused_tactics) or quick or speed is not None
                     or taker is not None or shootout_order is not None):
-                raise ValueError("edit_only needs a legal stopped bench decision, without play-on inputs")
+                raise ValueError("edit_only needs a legal stopped bench or a tactics-only paused menu, without play-on inputs")
         if self.st["waiting"]["context"] == "set_piece":
             if substitutions or tactics or positions or marking or own_tactics or quick or speed is not None or shootout_order is not None:
                 raise ValueError("the set-piece prompt takes taker only")
@@ -924,6 +939,12 @@ class Match:
         positions = [[w, self.m.read(base + PLAYER_SIZE * w + PLAYER_POSITION, 1)[0]] for w in squad if w]
         data.update(context=context, eleven=squad[:11], bench=squad[11:], injured=injured, positions=positions,
                     substitutions_left=self.m.rd(S.SUBS_LEFT + self.side, 1), tactics=self._tactics())
+        if self.opts.get("live_players", False):
+            # [confirmed: F008, original1771:42BC] The card reads these actual
+            #20-byte records from DS:A91B. Copy every managed slot, including bench
+            #and withdrawn players, without executing another guest instruction.
+            data["player_records"] = [[w, self.m.read(base + PLAYER_SIZE * w, PLAYER_SIZE).hex()]
+                                      for w in squad if w]
         if context == "extra_time":
             data["half"] = self.st.get("menu_half", 1)    # before extra time's first half (1) or its second (2)
         self._emit("decision", **data)
@@ -1468,6 +1489,8 @@ class Match:
             raise ValueError(f"saved by kit version {version}, this is {VERSION} (it loads {', '.join(LOADS)})")
         if engine not in ("original", "port"):
             raise ValueError("unknown checkpoint engine")
+        if "live_players" in opts and type(opts["live_players"]) is not bool:
+            raise ValueError("live_players: a boolean opt-in in a checkpoint")
         if engine == "port":
             from . import port
             specs = opts.get("ports")
