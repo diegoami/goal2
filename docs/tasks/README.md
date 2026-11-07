@@ -382,3 +382,5 @@ operational status.
 - [T197](T197.md): original team panels in the career card data route (#611).
 
 - [T198](T198.md): render delivered original TEAM panels with explicit browser context (#611).
+
+- [T199](T199.md): confirm the completion transaction before publication (#627).
