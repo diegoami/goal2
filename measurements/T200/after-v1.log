@@ -1,0 +1,7 @@
+test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) ... ok
+test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.071s
+
+OK

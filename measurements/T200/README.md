@@ -1,0 +1,7 @@
+# T200 original country-header data
+
+Original1771:157D is executed underUnicorn without routine handlers/ports on an isolated hash-boundE006 image. Its nearRET2 argument/return frame is checked. Three genuine countries and four explicitly synthetic display boundaries cover distinct stored top bytes,0/255, full raw8-bit strip attributes and monochrome1/2. No game/clock/score is played or patched. The current-record/table inputs are mirrored into a separate GameState candidate; all card reads preserve it deeply.
+
+before-v1.log:two tests error135times including all-country subtests because fields are absent. after-v1.log:2testsPASS2.071s. focused-v1.log retains385obsolete missing-field inventory failures; no field/value/behavior assertion failed. Only those two Game-route inventory expectations are updated to the delivered contract. focused-final.log:39testsPASS13.437s, including unchanged Core headers/panels; Core still names its own two gaps through the shared inventory. All128record top bytes/raw table attributes are read exactly. No aggregate/history/collision arithmetic, engine, backend or UI behavior changes.
+
+None means no coloured strip overlay: the original monochrome template retains three glyph2/attribute7 cells. Raw colour-mode attributes remain full bytes, including the declared synthetic background/blink bits; they are not reduced to a foreground palette index. UI consumption is the next independent slice. Original bytes and screens stay private.
