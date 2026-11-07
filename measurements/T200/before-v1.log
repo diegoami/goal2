@@ -1,0 +1,1357 @@
+test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) ... 
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=1) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=2) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=3) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=4) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=5) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=6) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=7) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=8) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=9) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=10) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=11) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=12) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=13) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=14) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=15) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=16) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=17) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=18) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=19) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=20) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=21) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=22) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=23) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=24) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=25) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=26) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=27) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=28) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=29) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=30) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=31) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=32) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=33) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=34) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=35) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=36) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=37) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=38) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=39) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=40) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=41) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=42) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=43) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=44) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=45) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=46) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=47) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=48) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=49) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=50) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=51) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=52) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=53) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=54) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=55) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=56) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=57) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=58) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=59) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=60) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=61) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=62) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=63) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=64) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=65) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=66) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=67) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=68) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=69) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=70) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=71) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=72) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=73) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=74) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=75) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=76) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=77) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=78) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=79) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=80) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=81) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=82) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=83) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=84) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=85) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=86) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=87) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=88) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=89) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=90) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=91) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=92) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=93) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=94) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=95) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=96) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=97) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=98) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=99) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=100) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=101) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=102) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=103) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=104) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=105) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=106) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=107) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=108) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=109) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=110) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=111) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=112) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=113) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=114) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=115) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=116) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=117) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=118) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=119) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=120) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=121) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=122) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=123) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=124) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=125) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=126) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=127) ... ERROR
+  test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=128) ... ERROR
+test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) ... 
+  test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=None, mono=None, attributes=None) ... ERROR
+  test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=20, top=None, mono=None, attributes=None) ... ERROR
+  test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=128, top=None, mono=None, attributes=None) ... ERROR
+  test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(0, 255), mono=0, attributes=(0, 15, 242)) ... ERROR
+  test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(255, 0), mono=0, attributes=(255, 31, 128)) ... ERROR
+  test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(4, 9), mono=1, attributes=(1, 2, 3)) ... ERROR
+  test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(4, 9), mono=2, attributes=(4, 5, 6)) ... ERROR
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=3)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=4)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=8)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=9)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=10)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=11)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=12)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=13)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=14)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=15)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=16)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=17)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=18)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=19)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=20)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=21)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=22)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=23)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=24)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=26)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=27)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=28)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=29)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=30)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=31)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=32)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=33)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=34)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=35)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=36)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=37)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=38)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=39)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=40)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=41)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=42)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=43)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=44)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=45)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=46)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=47)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=48)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=49)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=50)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=51)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=52)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=53)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=54)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=55)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=56)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=57)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=58)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=59)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=60)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=61)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=62)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=63)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=64)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=65)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=66)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=67)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=68)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=69)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=70)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=71)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=72)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=73)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=74)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=75)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=76)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=77)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=78)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=79)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=80)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=81)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=82)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=83)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=84)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=85)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=86)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=87)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=88)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=89)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=90)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=91)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=92)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=93)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=94)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=95)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=96)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=97)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=98)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=99)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=100)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=101)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=102)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=103)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=104)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=105)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=106)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=107)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=108)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=109)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=110)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=111)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=112)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=113)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=114)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=115)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=116)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=117)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=118)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=119)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=120)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=121)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=122)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=123)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=124)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=125)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=126)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=127)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation (goal2.tests.test_country_header_t200.Header.test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation) (country=128)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 60, in test_all128_use_current_record_top_bytes_and_current_raw_table_without_mutation
+    self.assertEqual((shown['top_world'],shown['top_continental']),(state.countries[country][0x29],state.countries[country][0x28]))
+                      ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=None, mono=None, attributes=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 45, in test_matches_unhooked_original_top_text_and_strip_glyph_attributes
+    self.assertEqual([str(shown['top_world']),str(shown['top_continental'])],printed)
+                          ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=20, top=None, mono=None, attributes=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 45, in test_matches_unhooked_original_top_text_and_strip_glyph_attributes
+    self.assertEqual([str(shown['top_world']),str(shown['top_continental'])],printed)
+                          ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=128, top=None, mono=None, attributes=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 45, in test_matches_unhooked_original_top_text_and_strip_glyph_attributes
+    self.assertEqual([str(shown['top_world']),str(shown['top_continental'])],printed)
+                          ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(0, 255), mono=0, attributes=(0, 15, 242))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 45, in test_matches_unhooked_original_top_text_and_strip_glyph_attributes
+    self.assertEqual([str(shown['top_world']),str(shown['top_continental'])],printed)
+                          ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(255, 0), mono=0, attributes=(255, 31, 128))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 45, in test_matches_unhooked_original_top_text_and_strip_glyph_attributes
+    self.assertEqual([str(shown['top_world']),str(shown['top_continental'])],printed)
+                          ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(4, 9), mono=1, attributes=(1, 2, 3))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 45, in test_matches_unhooked_original_top_text_and_strip_glyph_attributes
+    self.assertEqual([str(shown['top_world']),str(shown['top_continental'])],printed)
+                          ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_matches_unhooked_original_top_text_and_strip_glyph_attributes (goal2.tests.test_country_header_t200.Header.test_matches_unhooked_original_top_text_and_strip_glyph_attributes) (country=7, top=(4, 9), mono=2, attributes=(4, 5, 6))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-data-a/goal2/tests/test_country_header_t200.py", line 45, in test_matches_unhooked_original_top_text_and_strip_glyph_attributes
+    self.assertEqual([str(shown['top_world']),str(shown['top_continental'])],printed)
+                          ~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.087s
+
+FAILED (errors=135)
