@@ -30,7 +30,7 @@ and [original reference](../../original-game/README.md) identify the retained or
 | Skills / 357 | Twelve skill categories, with position-dependent use. | `game/skills.py`, `game/player_card.py`, S08/S09; existing80-card original-screen oracle checks displayed skill bars. No aggregate ability number is introduced. |
 | Positioning / 404 | Fourteen roles, left/right/central balance, in-match repositioning. | `game/roles.py`, S08 R/C, S19 R/C, S09 personal settings. T180/T188 actual match receipts cover selected tactical changes, not every formation. |
 | Tactics / 469 | Eight team flags, personal overrides and per-match marking assignments. | S09/S10/S15/S19. Baseline team tactics during play are read-only: #610/#614. Personal tactics/marks already have actual engine tests; all-eight live-team flags need independent acceptance. |
-| Match / 557 | Speed/marks, bench, replay control, commentary, quick result, captain/takers, live ratings. | S15–S20. Baseline Insert toggles replay only on S15; pitch Insert behavior needs original/runtime reconciliation. Performance rendering and live values are confirmed separate gaps. |
+| Match / 557 | Speed/marks, bench, replay control, commentary, quick result, captain/takers, live ratings. | S15–S20. Insert toggles replay on S15; the follow-up original-key probe below confirms the pitch consumes Insert without toggling. Performance rendering and live values are confirmed separate gaps. |
 | Sound / 626 | Optional original PC-speaker effects and quiet mode. | S17 reports sound unavailable. Existing owner sound scope applies; no sound research/model spending is initiated by this audit. |
 | Print / 640 | Screen printing. | F5 replaced by system screenshots in accepted S06 design (#526); retain as a deliberate difference, not a working printer feature. |
 | Displays / 648 | Team identification through alternative pitch marks. | S17 five mark styles and kit/source tests. Native/fractional-DPI acceptance must still cover readable cards and controls. |
@@ -63,7 +63,7 @@ not blanket permission to mark the complete manual covered.
 | S14 Round / steps41,262–263 | Results arriving, pause/speed/continue, watched selections; `s14_round.py`. | T167/T176/T178 round journeys; other-country watch control remains #570. |
 | S15 Match menu / steps42,68–73,193–198 | Both countries, row/country arrows, team/players, stats/tournament, replay toggle, Play/Exit/watch question; `s15_match_menu.py`. | T184 arrows, T190 actual return/reference. Baseline Esc selects/explains Play without advancing; #614 independently restores original0791:ED8A Esc continuation and must reconcile T190 tests. Live team tactics still require #610 acceptance. |
 | S16 Captain/taker/order / steps43–47,56–58;F030 | Choose/computer recommendation, timed takers, undo shoot-out selection; `s16_choose.py`. | T167/T181, captain replacement T187, accepted engine. Full extra-time/shoot-out user journey remains distinct from the friendly T190 proof. |
-| S17 Pitch / steps45–192,247–255,267 | Speed/marks, commentary pause, quick result, stop request, replay display; `s17_pitch.py`. | T166/T185/T190 actual matches and bridge equality. Ins-at-pitch replay-toggle gap is a source observation requiring original-path/runtime confirmation. Sound remains outside current owner scope. |
+| S17 Pitch / steps45–192,247–255,267 | Speed/marks, commentary pause, quick result, stop request, replay display; `s17_pitch.py`. | T166/T185/T190 actual matches and bridge equality. Ins replay toggle belongs to the match menu; the bounded original9372 probe below confirms pitch behavior. Sound remains outside current owner scope. |
 | S18 Stops / steps67–68,149–150,175–178 | Notice acknowledgement, replay/save questions, injury opportunity; `s18_stop.py`, `match_day.py`. | T181 replay packets/actual tests and T190 natural injury stop. Keyboard auto-repeat is covered in T190; every mouse/pending branch must also be reconciled with #614. |
 | S19 Bench / steps124–137;1771:42BC | Twenty/eleven, R/C/T, legal immediate swaps, accepted/refused feedback; `s19_bench.py`. | T188 actual injury/captain, T190 natural swaps/refused re-entry and full memory equality; #609 green cue. Extra-time bench is read-only; live performance/energy snapshot is absent. Both are required #611 gaps, separate from tactics. |
 | S20 Board / steps119,192,198–199,270,310–313 | Stats, quick-result banner, back/continue, saved summaries; `s20_board.py`. | T180/T181 and T190 actual halves/full result. Quick-result stat discard and every recorded category remain part of the complete audit journey. |
@@ -89,8 +89,8 @@ not blanket permission to mark the complete manual covered.
   `edit_only` guard exclude them. Team-tactics-only extra-time support does not supply substitution support.
 - Existing broader parity gaps: assistant #594/T183; multiple managers #551; watch other matches #570; friendly scheduling #571;
   later competitions/news/history/native season continuation T170. Do not close these through an opening-friendly review.
-- Match Insert replay control: the manual describes it during play; source binds it only on S15. Verify the original action before
-  choosing the correction. Do not describe a menu-only toggle as an exercised pitch toggle.
+- Match Insert replay control: the follow-up original9372 probe confirms no replay toggle on the pitch. Keep the S15 menu binding;
+  the broad manual match section does not establish a separate in-play toggle. See the source-bound receipt below.
 
 ## Evidence and explicit differences
 
@@ -116,3 +116,5 @@ in the accepted screen design. No extra-country research, old-career migration o
 ordinary and half-time stops, swaps, complete result, save/quit/reload, commentary/replay and the identified required gaps.
 Record exact application/build head, original evidence, input sequence, outcomes, screenshots and remaining limitations.
 Never operate the owner's live game or call prepared packets natural play. Full suites run on the reconciled integrated milestone.
+
+[confirmed: original0791:9372/ED8A; E031C37; archaeology b0c0fae2] The [Insert probe](../../../measurements/T191/insert-audit/README.md) executes four bounded original pitch-key controls, including positive speed controls, with a declared keyboard-ready service input. Insert leaves the replay setting unchanged on the pitch for both initial settings; ED8A contains the menu toggle. This corrects one suspected gap above without claiming a natural complete match or changing replay behavior.
