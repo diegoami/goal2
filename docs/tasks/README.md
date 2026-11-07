@@ -365,3 +365,5 @@ operational status.
 - [T188b](T188b.md): apply stopped substitutions immediately in the squad (#599).
 
 - [T189](T189.md): focused PR checks and full validation at integrated milestones (#606).
+
+- [T190](T190.md): explicit stopped-match return paths and consumed request status (#612).
