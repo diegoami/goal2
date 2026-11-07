@@ -343,6 +343,7 @@ class QualifierWalk(Walk):
 
 
 @CAREER
+@requires.need(slow=True)
 class Bench(unittest.TestCase):
     """Two match days in one window: the friendly, then the qualifier; the reference meanwhile."""
 

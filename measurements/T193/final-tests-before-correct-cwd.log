@@ -1,0 +1,71 @@
+test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness (goal2.tests.test_player_card_table_t193.BenchTable.test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness) ... This plugin does not support propagateSizeHints()
+ERROR
+test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened (goal2.tests.test_player_card_table_t193.BenchTable.test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened) ... This plugin does not support propagateSizeHints()
+ERROR
+test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes (goal2.tests.test_player_card_table_t193.CardTable.test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ERROR
+test_captain_and_taker_cards_retain_the_table_and_legal_selection (goal2.tests.test_player_card_table_t193.CardTable.test_captain_and_taker_cards_retain_the_table_and_legal_selection) ... This plugin does not support propagateSizeHints()
+ERROR
+test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels (goal2.tests.test_player_card_table_t193.CardTable.test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels) ... This plugin does not support propagateSizeHints()
+ERROR
+test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts (goal2.tests.test_player_card_table_t193.CardTable.test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness (goal2.tests.test_player_card_table_t193.BenchTable.test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-manual-audit-a/goal2/tests/test_player_card_table_t193.py", line 109, in test_bench_table_retains_large_feedback_all_twenty_rows_and_readiness
+    self.assertIn('age',self.bench.card.facts.labels)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PySide6.QtWidgets.QLabel' object has no attribute 'labels'
+
+======================================================================
+ERROR: test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened (goal2.tests.test_player_card_table_t193.BenchTable.test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-manual-audit-a/goal2/tests/test_player_card_table_t193.py", line 128, in test_long_valid_card_values_and_refusal_feedback_are_not_clipped_or_shortened
+    self.assertEqual(self.bench.card.positions.values['cards'].text(),'carried booking, booked, sent off')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PySide6.QtWidgets.QLabel' object has no attribute 'values'
+
+======================================================================
+ERROR: test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes (goal2.tests.test_player_card_table_t193.CardTable.test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-manual-audit-a/goal2/tests/test_player_card_table_t193.py", line 32, in test_all_twenty_keep_aligned_facts_values_and_full_controls_at_three_sizes
+    self.assertEqual(tuple(view.facts.labels),fields)
+                           ^^^^^^^^^^^^^^^^^
+AttributeError: 'PySide6.QtWidgets.QLabel' object has no attribute 'labels'
+
+======================================================================
+ERROR: test_captain_and_taker_cards_retain_the_table_and_legal_selection (goal2.tests.test_player_card_table_t193.CardTable.test_captain_and_taker_cards_retain_the_table_and_legal_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-manual-audit-a/goal2/tests/test_player_card_table_t193.py", line 90, in test_captain_and_taker_cards_retain_the_table_and_legal_selection
+    self.assertIn('performance',screen.card.facts.labels)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PySide6.QtWidgets.QLabel' object has no attribute 'labels'
+
+======================================================================
+ERROR: test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels (goal2.tests.test_player_card_table_t193.CardTable.test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-manual-audit-a/goal2/tests/test_player_card_table_t193.py", line 52, in test_fact_and_characteristic_roles_have_actual_distinct_palette_and_pixels
+    label=view.facts.labels['age'];value=view.facts.values['age']
+          ^^^^^^^^^^^^^^^^^
+AttributeError: 'PySide6.QtWidgets.QLabel' object has no attribute 'labels'
+
+======================================================================
+ERROR: test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts (goal2.tests.test_player_card_table_t193.CardTable.test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-manual-audit-a/goal2/tests/test_player_card_table_t193.py", line 76, in test_keyboard_rename_cancel_and_mouse_player_selection_keep_facts
+    self.assertEqual(self.screen.card.facts.values['age'].text(),str(self.model.state.players[self.screen.current()][1]))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PySide6.QtWidgets.QLabel' object has no attribute 'values'
+
+----------------------------------------------------------------------
+Ran 6 tests in 4.988s
+
+FAILED (errors=6)
