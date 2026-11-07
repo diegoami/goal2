@@ -179,6 +179,24 @@ class ActualReturn(unittest.TestCase):
                 super().playing(pitch)
                 frame = pitch.controller.display.frame
                 if frame is not None and frame['minute'] >= 5 and not self.out.get('plain_requested'):
+                    from goal2.game.watched_jobs import LEAD
+                    # Freeze presentation acknowledgement at an actual rendered frame;
+                    # the worker fills its bounded lead, making this pause reproducible.
+                    controller = pitch.controller
+                    controller.commentary_paused = True
+                    boundary = controller.acked + LEAD
+                    deadline = time.monotonic() + 120
+                    try:
+                        while controller.bridge._match.received_frames - 1 < boundary:
+                            if any(kind == 'decision' for kind, value in controller.bridge._match.replies):
+                                return  # a natural stop arrived first; try after answering it
+                            test.assertLess(time.monotonic(), deadline, 'worker did not fill its sample lead')
+                            application.processEvents()
+                            time.sleep(.001)
+                        test.assertEqual(controller.bridge._match.received_frames - 1, boundary)
+                    finally:
+                        controller.commentary_paused = False
+                    self.out['pause_after'] = boundary
                     self.out['plain_requested'] = True
                     key(self.window, Qt.Key.Key_Escape)
             def on_bench(self, screen):
@@ -243,7 +261,8 @@ class ActualReturn(unittest.TestCase):
                 test.assertTrue(all(not report['requested'] for report in controller.reports))
                 other = career()
                 other.state = copy.deepcopy(controller.given._snapshot)
-                outcome = play_through_bridge(other, controller.choices, fixture=engine_fixture(fixture), wait=1500)
+                outcome = play_through_bridge(other, controller.choices, fixture=engine_fixture(fixture), wait=1500,
+                                              pause_after=walk.out['pause_after'])
                 test.assertEqual(controller.outcome.result, outcome.result)
                 test.assertEqual(controller.outcome.events, outcome.events)
                 test.assertEqual(controller.outcome.memory, outcome.memory)
