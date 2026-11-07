@@ -1,0 +1,29 @@
+{
+  "parent": "e6cc1b227ca73a527104ef759d6b019e0c8605f0",
+  "source_hashes": {
+    "goal2/ui/s19_bench.py": "9c1bfc3db2abd756791aa4b1d34203597fd56925feddbddf6151811d7a7c2b23",
+    "goal2/tests/test_bench_cue.py": "061e69607146dcec16d4d77e1d177b2f6dbbd8aa611c6f742ff335a4500ed9f7",
+    "docs/ui.md": "80a1bce8f8f1690e3e478616995f038a93bd3e88120be0cfe9919a2481137df1"
+  },
+  "new_tests": 4,
+  "before": "all four fail on parent605",
+  "focused_after": "18 tests: 17 pass, one existing slow actual-UI case skipped by the default policy",
+  "seconds": 13.445,
+  "bright_green": "#55ff55",
+  "phase_ms": 500,
+  "original_cadence_claimed": false,
+  "dimensions": {
+    "label": [
+      352,
+      38
+    ],
+    "window": [
+      1440,
+      900
+    ]
+  },
+  "screenshots": {
+    "cue-on.png": "a2bc1271cea11e24a251eba9a2eb480bd2bbde2073e881650ddae7ec2b6b9121",
+    "cue-off.png": "1202fcad3970102ec3fb912c349550eac0b279c0f255296a93dd472a4ef3962f"
+  }
+}

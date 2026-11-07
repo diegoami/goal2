@@ -343,6 +343,7 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
   and counter immediately, before Play; repeat input is held until that reply. Refused pairs stay at the usable
   stopped squad with honest on/off feedback. Esc returns to S15; Play solely continues. [confirmed: original
   T156-R1 steps124–137] Half-time exchanges already appear in SELECT TEAM before Play.
+- **Legal stopped bench cue** [confirmed: owner #608; original `t156-124-halftime-bench.png`]: **MAKE SUBSTITUTIONS NOW** blinks bright green while another immediate swap can be made. The text keeps its space and accessible name during the dark phase. It stops blinking while an edit is awaiting confirmation, with no substitutions left, or when the bench is hidden. [designed: #608] Paint phases are 500 ms; the original cadence has not been measured.
 - **Esc or Enter on S17** opens the bench at an ordinary in-play pause. Substitution pairs cannot be queued
   there; supported **R**, **C** positions and **T** personal tactics remain available. The obsolete bench-request
   note is cleared when returning. Before extra time the route continues to show its read-only bench.
