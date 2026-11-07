@@ -54,6 +54,7 @@ its own thread and keeps its tail (`EngineProcess.stderr`).
 | `answered` | what the engine made of an answer (`watched_match._report`) |
 | `pause_dropped` | the sample after which the original could not take the Enter (#316) |
 | `complete` | the outcome's `result`, `events`, `seeds`, `engine_year`; the payload is its memory |
+| `settled` | no value or payload; closes the preceding completion transaction |
 | `cancelled` | |
 | `error` | its text; the process stays up for the next request |
 
@@ -110,3 +111,16 @@ also under `WatchedController` for a watched qualifier, `kind: competitive` with
 - A `death` is reported through `poll` as the engine's exit (its code, and the error or the tail of its stderr); the
   next match starts a new process.
 - The process is closed when the owner's last bridge closes: the window's close (#417).
+
+## Completion confirmation
+
+[designed: T199, #627] `complete` supplies a candidate result; the following private `settled` frame closes that
+transaction. The client holds the result until this frame, then exposes the existing single `complete` callback.
+Confirmation is not a game event and changes no canonical event, result, RNG or memory. Duplicate completions,
+truncated trailers, bad confirmations and process failure before confirmation cannot become publishable.
+Cancellation at this boundary discards the candidate. The existing cancellation deadline bounds a worker that
+never confirms; a valid confirmation cancels that watchdog. Public busy remains true until confirmation.
+
+A malformed packet after confirmation still ends the worker and cannot complete a second time; an already
+committed valid prior game is not rewritten. Synthetic replay workers emit confirmation only after their
+deliberate fault injections. Original recorded event/result/memory fixture bytes stay unchanged.

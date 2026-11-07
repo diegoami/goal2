@@ -1,0 +1,123 @@
+test_cancellation_discards_a_held_completion (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_cancellation_discards_a_held_completion) ... FAIL
+test_delayed_duplicate_is_rejected_before_any_completion (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_delayed_duplicate_is_rejected_before_any_completion) ... FAIL
+test_duplicate_after_confirmation_cannot_complete_again (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_duplicate_after_confirmation_cannot_complete_again) ... FAIL
+test_malformed_confirmation_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_malformed_confirmation_never_exposes_a_result) ... FAIL
+test_missing_confirmation_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_missing_confirmation_never_exposes_a_result) ... FAIL
+test_nonzero_exit_retains_its_failure_before_publication (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_nonzero_exit_retains_its_failure_before_publication) ... FAIL
+test_truncated_trailer_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_truncated_trailer_never_exposes_a_result) ... FAIL
+test_unconfirmed_live_worker_is_bounded_by_existing_deadline (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_unconfirmed_live_worker_is_bounded_by_existing_deadline) ... FAIL
+test_valid_completion_waits_for_confirmation (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_valid_completion_waits_for_confirmation) ... FAIL
+
+======================================================================
+FAIL: test_cancellation_discards_a_held_completion (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_cancellation_discards_a_held_completion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 13, in test_cancellation_discards_a_held_completion
+    self.assertEqual(probe('cancel')['cancelled'],1)
+                     ~~~~~^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_delayed_duplicate_is_rejected_before_any_completion (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_delayed_duplicate_is_rejected_before_any_completion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 10, in test_delayed_duplicate_is_rejected_before_any_completion
+    self.assertEqual(probe('duplicate')['public_completions'],0)
+                     ~~~~~^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_duplicate_after_confirmation_cannot_complete_again (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_duplicate_after_confirmation_cannot_complete_again)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 31, in test_duplicate_after_confirmation_cannot_complete_again
+    self.assertEqual(probe('late_duplicate')['public_completions'],1)
+                     ~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_malformed_confirmation_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_malformed_confirmation_never_exposes_a_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 28, in test_malformed_confirmation_never_exposes_a_result
+    self.assertEqual(probe('bad_confirmation')['public_completions'],0)
+                     ~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_missing_confirmation_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_missing_confirmation_never_exposes_a_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 16, in test_missing_confirmation_never_exposes_a_result
+    self.assertEqual(probe('missing')['public_completions'],0)
+                     ~~~~~^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_nonzero_exit_retains_its_failure_before_publication (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_nonzero_exit_retains_its_failure_before_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 22, in test_nonzero_exit_retains_its_failure_before_publication
+    self.assertEqual(probe('nonzero')['public_completions'],0)
+                     ~~~~~^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_truncated_trailer_never_exposes_a_result (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_truncated_trailer_never_exposes_a_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 19, in test_truncated_trailer_never_exposes_a_result
+    self.assertEqual(probe('trailing')['public_completions'],0)
+                     ~~~~~^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_unconfirmed_live_worker_is_bounded_by_existing_deadline (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_unconfirmed_live_worker_is_bounded_by_existing_deadline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 25, in test_unconfirmed_live_worker_is_bounded_by_existing_deadline
+    self.assertEqual(probe('unconfirmed')['public_completions'],0)
+                     ~~~~~^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+======================================================================
+FAIL: test_valid_completion_waits_for_confirmation (goal2.tests.test_completion_boundary_t199.CompletionBoundary.test_valid_completion_waits_for_confirmation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_completion_boundary_t199.py", line 7, in test_valid_completion_waits_for_confirmation
+    self.assertEqual(probe('good')['public_completions'],1)
+                     ~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/measurements/T199/completion_probe.py", line 49, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary
+
+----------------------------------------------------------------------
+Ran 9 tests in 1.080s
+
+FAILED (failures=9)
+All9new controls fail on the unchanged original client; no match or port executes.
