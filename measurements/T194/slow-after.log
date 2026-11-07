@@ -1,0 +1,38 @@
+[
+  {
+    "name": "goal2.tests.test_ui_match_day_t167.MatchDay",
+    "count": 15,
+    "active": true,
+    "reason": null
+  },
+  {
+    "name": "goal2.tests.test_ui_bench_t180.Bench",
+    "count": 13,
+    "active": true,
+    "reason": null
+  },
+  {
+    "name": "goal2.tests.test_watch_qualifiers_t176.WatchQualifiers",
+    "count": 6,
+    "active": true,
+    "reason": null
+  },
+  {
+    "name": "goal2.tests.test_watch_qualifiers_t176_friendly.WatchQualifiers",
+    "count": 6,
+    "active": true,
+    "reason": null
+  },
+  {
+    "name": "goal2.tests.test_ui_match_day_t167.HomeSide",
+    "count": 3,
+    "active": true,
+    "reason": null
+  },
+  {
+    "name": "goal2.tests.test_watch_qualifiers_t176.Boundary",
+    "count": 1,
+    "active": true,
+    "reason": null
+  }
+]

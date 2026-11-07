@@ -135,6 +135,7 @@ def without_takers(order):
 
 
 @CAREER
+@requires.need(slow=True)
 class MatchDay(unittest.TestCase):
     """Two match days in one window: the friendly, then the qualifier; the references meanwhile."""
 
