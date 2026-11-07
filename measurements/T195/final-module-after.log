@@ -1,0 +1,8 @@
+test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) ... ok
+test_stopped_card_shows_injury_word_and_empty_fitness_bar_without_state_write (goal2.tests.test_injury_fitness_t195.InjuryFitnessScreen.test_stopped_card_shows_injury_word_and_empty_fitness_bar_without_state_write) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.374s
+
+OK

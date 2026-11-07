@@ -60,7 +60,11 @@ def characteristics(memory, record):
     hardness = (record[5] - (record[3] & 1)) & 255
     out.append(('hardness',) + ((_word(memory, 0x78C4, hardness), hardness * 14 // 16) if hardness <= 16 else (UNAVAILABLE, None)) + (hardness,))
     fitness, energy, morale = record[0x0D], record[0x0E], record[0x0C]
-    out.append(('fitness',) + ((_word(memory, 0x78D5, fitness), fitness * 14 // 32) if fitness <= 32 else (UNAVAILABLE, None)) + (fitness,))
+    # [confirmed: F008, original1771:42BC] Zero energy selects the injury descriptor
+    # and no fitness fill, even if the stored fitness byte is otherwise unavailable.
+    shown_fitness = (_word(memory, 0x78D5, 0), 0) if energy == 0 else (
+        (_word(memory, 0x78D5, fitness), fitness * 14 // 32) if fitness <= 32 else (UNAVAILABLE, None))
+    out.append(('fitness',) + shown_fitness + (fitness,))
     out.append(('energy',) + ((_word(memory, 0x78F6, energy), energy * 14 // 32) if energy <= 32 else (UNAVAILABLE, None)) + (energy,))
     out.append(('morale', _word(memory, 0x78A3, min(morale, 0x20)), morale * 14 // 32 if morale < 0x20 else 0, morale))
     difference = record[3] - record[5]
