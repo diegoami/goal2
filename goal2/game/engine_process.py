@@ -60,6 +60,7 @@ class EngineProcess:
         self._write = threading.Lock()
         self._match = None           # the running match's number
         self._matches = 0
+        self._live_players = False
         self.opens = 0               # `open` requests sent, over every process
         self.ready = None            # the current process's `ready` value
         self.closed = False
@@ -104,7 +105,7 @@ class EngineProcess:
             else:
                 self._send_open()
 
-    def match(self, kind, fixture, *, options=None, frames=False, bench=False, prompts=False) -> None:
+    def match(self, kind, fixture, *, options=None, frames=False, bench=False, prompts=False, live_players=False) -> None:
         """Start a match on the open game: `kind` watched or competitive; `options` among reference_seed,
         delay_byte and record_draws; `frames` streams the pitch samples; `bench` (with frames) asks the bench's
         decisions and paces the samples on `ack`; `prompts` (with the bench) also asks the player prompts
@@ -112,7 +113,7 @@ class EngineProcess:
         T167, #541]."""
         options = dict(options or {})
         if (kind not in KINDS or type(frames) is not bool or type(bench) is not bool or type(prompts) is not bool
-                or (prompts and not bench)):
+                or (prompts and not bench) or type(live_players) is not bool):
             raise ValueError("invalid engine match request")
         if bench and not frames:
             # [designed: #316] the original takes the player's Enter in play at a pitch sample
@@ -129,12 +130,15 @@ class EngineProcess:
                 self._start()
             self._matches += 1
             self._match = self._matches
+            self._live_players = live_players
             self._events = []
             self._frame_sequence, self._frame_watermark = 0, 0
             request = {"op": "match", "kind": kind, "fixture": asdict(fixture), "options": options,
                        "frames": frames, "bench": bench}
             if prompts:
                 request["prompts"] = True
+            if live_players:
+                request["live_players"] = True
             self._send(request)
 
     def ack(self, sample: int) -> bool:
@@ -299,7 +303,7 @@ class EngineProcess:
             elif kind in ("opened",):
                 value = None
             elif kind == "event":
-                value = _event(value)
+                value = _event(value,live_players=getattr(self,"_live_players",False))
                 self._running(kind)
                 self._events.append(value)
             elif kind == "frame":
@@ -312,7 +316,7 @@ class EngineProcess:
                 self._running(kind)
                 if set(value) != {"decision", "event"} or type(value["decision"]) is not int:
                     raise ProtocolError("invalid decision reply")
-                value = {"decision": value["decision"], "event": _event(value["event"])}
+                value = {"decision": value["decision"], "event": _event(value["event"],live_players=getattr(self,"_live_players",False))}
             elif kind == "answered":
                 self._running(kind)
                 value = _report(value)
@@ -325,7 +329,7 @@ class EngineProcess:
                 self._running(kind)
                 if set(value) != {"result", "events", "seeds", "engine_year"}:
                     raise ProtocolError("invalid complete reply")
-                value = WatchedOutcome(value["result"], payload, tuple(_event(e) for e in value["events"]),
+                value = WatchedOutcome(value["result"], payload, tuple(_event(e,live_players=getattr(self,"_live_players",False)) for e in value["events"]),
                                        tuple(value["seeds"]), value["engine_year"])
                 if list(value.events) != self._events:
                     raise ProtocolError("the completed match differs from the events streamed")

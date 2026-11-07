@@ -1,0 +1,243 @@
+test_requested_missing_snapshot_fails_before_event_or_publication (goal2.tests.test_live_record_wire_t196.BridgeFailure.test_requested_missing_snapshot_fails_before_event_or_publication) ... FAIL
+test_default_and_false_have_exact_legacy_request_shape (goal2.tests.test_live_record_wire_t196.Client.test_default_and_false_have_exact_legacy_request_shape) ... ERROR
+test_true_is_a_separate_opt_in_and_invalid_flags_fail (goal2.tests.test_live_record_wire_t196.Client.test_true_is_a_separate_opt_in_and_invalid_flags_fail) ... ERROR
+test_legacy_event_without_records_remains_accepted (goal2.tests.test_live_record_wire_t196.Packets.test_legacy_event_without_records_remains_accepted) ... ok
+test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) ... 
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '00000000000000000000000000000000000000'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '0707070707070707070707070707070707070707'], [101, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[120, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [101, '0707070707070707070707070707070707070707']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[999, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[True, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707'], [121, '0000000000000000000000000000000000000000']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': {101: '0000000000000000000000000000000000000000'}}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '0707070707070707070707070707070707070707', 7], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}}) ... ERROR
+  test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}}) ... ERROR
+test_valid_records_keep_exact_words_and_immutable_values (goal2.tests.test_live_record_wire_t196.Packets.test_valid_records_keep_exact_words_and_immutable_values) ... ERROR
+test_server_forwards_only_the_requested_opt_in_to_shared_driver (goal2.tests.test_live_record_wire_t196.Server.test_server_forwards_only_the_requested_opt_in_to_shared_driver) ... FAIL
+test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) ... 
+  test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=0) ... FAIL
+  test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=1) ... FAIL
+  test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=None) ... FAIL
+  test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag='yes') ... FAIL
+  test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=[]) ... FAIL
+
+======================================================================
+ERROR: test_default_and_false_have_exact_legacy_request_shape (goal2.tests.test_live_record_wire_t196.Client.test_default_and_false_have_exact_legacy_request_shape)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 61, in test_default_and_false_have_exact_legacy_request_shape
+    self.assertEqual(self.request(live_players=False),expected)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 54, in request
+    process.match('watched',Fixture(7,19,21),**options)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: EngineProcess.match() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_true_is_a_separate_opt_in_and_invalid_flags_fail (goal2.tests.test_live_record_wire_t196.Client.test_true_is_a_separate_opt_in_and_invalid_flags_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 64, in test_true_is_a_separate_opt_in_and_invalid_flags_fail
+    self.assertIs(self.request(live_players=True)['live_players'],True)
+                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 54, in request
+    process.match('watched',Fixture(7,19,21),**options)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: EngineProcess.match() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '00000000000000000000000000000000000000'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '0707070707070707070707070707070707070707'], [101, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[120, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [101, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[999, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[True, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '0707070707070707070707070707070707070707'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707'], [121, '0000000000000000000000000000000000000000']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': {101: '0000000000000000000000000000000000000000'}}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, '0707070707070707070707070707070707070707', 7], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_required_reply_rejects_missing_or_malformed_records (goal2.tests.test_live_record_wire_t196.Packets.test_required_reply_rejects_missing_or_malformed_records) (value={'kind': 'decision', 'minute': 45, 'score': (0, 0), 'data': {'context': 'half_time', 'eleven': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111], 'bench': [112, 113, 114, 115, 116, 117, 118, 119, 120], 'player_records': [[101, b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'], [102, '0707070707070707070707070707070707070707'], [103, '0707070707070707070707070707070707070707'], [104, '0707070707070707070707070707070707070707'], [105, '0707070707070707070707070707070707070707'], [106, '0707070707070707070707070707070707070707'], [107, '0707070707070707070707070707070707070707'], [108, '0707070707070707070707070707070707070707'], [109, '0707070707070707070707070707070707070707'], [110, '0707070707070707070707070707070707070707'], [111, '0707070707070707070707070707070707070707'], [112, '0707070707070707070707070707070707070707'], [113, '0707070707070707070707070707070707070707'], [114, '0707070707070707070707070707070707070707'], [115, '0707070707070707070707070707070707070707'], [116, '0707070707070707070707070707070707070707'], [117, '0707070707070707070707070707070707070707'], [118, '0707070707070707070707070707070707070707'], [119, '0707070707070707070707070707070707070707'], [120, '0707070707070707070707070707070707070707']]}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 41, in test_required_reply_rejects_missing_or_malformed_records
+    with self.subTest(value=value),self.assertRaises(ValueError):_event(value,live_players=True)
+                                                                 ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_valid_records_keep_exact_words_and_immutable_values (goal2.tests.test_live_record_wire_t196.Packets.test_valid_records_keep_exact_words_and_immutable_values)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 19, in test_valid_records_keep_exact_words_and_immutable_values
+    result=_event(value,live_players=True)
+TypeError: _event() got an unexpected keyword argument 'live_players'
+
+======================================================================
+FAIL: test_requested_missing_snapshot_fails_before_event_or_publication (goal2.tests.test_live_record_wire_t196.BridgeFailure.test_requested_missing_snapshot_fails_before_event_or_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 105, in test_requested_missing_snapshot_fails_before_event_or_publication
+    with self.assertRaisesRegex(ValueError,'records|snapshot'):job.poll('test-token')
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_server_forwards_only_the_requested_opt_in_to_shared_driver (goal2.tests.test_live_record_wire_t196.Server.test_server_forwards_only_the_requested_opt_in_to_shared_driver)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 85, in test_server_forwards_only_the_requested_opt_in_to_shared_driver
+    if flag:self.assertIs(drive.call_args.kwargs.get('live_players'),True)
+            ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None is not True
+
+======================================================================
+FAIL: test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 93, in test_server_rejects_invalid_opt_in_before_preparation
+    prepare.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 947, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'prepare_watched' to not have been called. Called 1 times.
+Calls: [call(namespace(), b'synthetic', Fixture(first=7, second=19, index=21, kind=1)),
+ call().state(<goal2.engine.original_match.port.tables.Tables object at 0x759120d83770>)].
+
+======================================================================
+FAIL: test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 93, in test_server_rejects_invalid_opt_in_before_preparation
+    prepare.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 947, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'prepare_watched' to not have been called. Called 1 times.
+Calls: [call(namespace(), b'synthetic', Fixture(first=7, second=19, index=21, kind=1)),
+ call().state(<goal2.engine.original_match.port.tables.Tables object at 0x759120d83770>)].
+
+======================================================================
+FAIL: test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 93, in test_server_rejects_invalid_opt_in_before_preparation
+    prepare.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 947, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'prepare_watched' to not have been called. Called 1 times.
+Calls: [call(namespace(), b'synthetic', Fixture(first=7, second=19, index=21, kind=1)),
+ call().state(<goal2.engine.original_match.port.tables.Tables object at 0x759120d83770>)].
+
+======================================================================
+FAIL: test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag='yes')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 93, in test_server_rejects_invalid_opt_in_before_preparation
+    prepare.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 947, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'prepare_watched' to not have been called. Called 1 times.
+Calls: [call(namespace(), b'synthetic', Fixture(first=7, second=19, index=21, kind=1)),
+ call().state(<goal2.engine.original_match.port.tables.Tables object at 0x759120d83770>)].
+
+======================================================================
+FAIL: test_server_rejects_invalid_opt_in_before_preparation (goal2.tests.test_live_record_wire_t196.Server.test_server_rejects_invalid_opt_in_before_preparation) (flag=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-record-wire-a/goal2/tests/test_live_record_wire_t196.py", line 93, in test_server_rejects_invalid_opt_in_before_preparation
+    prepare.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 947, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'prepare_watched' to not have been called. Called 1 times.
+Calls: [call(namespace(), b'synthetic', Fixture(first=7, second=19, index=21, kind=1)),
+ call().state(<goal2.engine.original_match.port.tables.Tables object at 0x759120d83770>)].
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.055s
+
+FAILED (failures=7, errors=14)
