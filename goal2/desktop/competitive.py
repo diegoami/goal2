@@ -41,7 +41,7 @@ class CompetitiveJobs(WatchedJobs):
         self._setup(owner, CompetitivePublication(owner), command)
 
     def start(self, *, reference_seed=None, delay_byte=None, record_draws=False, frames=False, bench=False,
-              prompts=False):
+              prompts=False,live_players=False):
         """[designed: T80] Play the pending qualifier. [designed: T176] With `frames` and `bench` it is watched
         (WatchedController): the same `competitive` match on the engine process with the pitch samples and the
         bench, published by the same CompetitivePublication. [designed: T167, #541] `prompts` also asks the player
@@ -53,7 +53,8 @@ class CompetitiveJobs(WatchedJobs):
         fixture = pending_fixture(self.owner.state)
         try:
             token = super().start(fixture, reference_seed=reference_seed, delay_byte=delay_byte,
-                                  record_draws=record_draws, frames=frames, bench=bench, prompts=prompts)
+                                  record_draws=record_draws, frames=frames, bench=bench, prompts=prompts,
+                                  **({'live_players':live_players} if live_players is not False else {}))
         except (ValueError, OSError, zipfile.BadZipFile, zlib.error, struct.error, IndexError, KeyError) as exc:
             raise ValueError(f'Cannot start competitive Play: {exc}. Check the local game resources and runtime') from exc
         self._owns_pending = True

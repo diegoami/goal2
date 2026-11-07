@@ -79,6 +79,7 @@ for request in requests():
  if mode=='duplicate':send('complete',value,memory)
  if mode=='trailing':out.write(b'\x00\x00');out.flush();sys.exit(0)
  if mode=='nonzero':sys.exit(5)
+ send('settled')
 '''
 
 

@@ -1,0 +1,31 @@
+{
+  "tested_head": "7aa0648f9d9b",
+  "upstream": "b0c0fae2d3771e45c11b025deac047bb5d2de581",
+  "source_sha256": {
+    "goal2/engine/original_match/match.py": "0d7e2986a5947892f66ba10e2732dd22d8e53f1d473e33ac9de75f18bb40878c",
+    "goal2/game/engine_process.py": "f7c6c96af297287c99cada5ad77a8ef8454f2744b0bb06469a2cd9570bffe7bc",
+    "goal2/game/engine_server.py": "e2df76a430f657db7bbb07ff85fb5a4d5fbfea1cb3ab731da191057ec137cb95",
+    "goal2/game/watched_match.py": "110c634c62f42247e26ed89930d84e4bfb131bedadf1dfdf288b4ae3f6d6d85f",
+    "goal2/game/watched_jobs.py": "5080213af6e6868c0fbbf7a683171cf1b97cb7cc9b755c73eb33fe9c131fc23d",
+    "goal2/game/watched_schema.py": "b6ce62ae386afc359c774ad5ee8b070994942bfbfacc93ed65a2d69cddb2c593",
+    "goal2/desktop/competitive.py": "f28019b0ee213e409538adacd1b7e3ab1113e8a51c9b01832b0c2d53f771b494",
+    "goal2/tests/test_live_record_wire_t196.py": "569a77ebf9cc42c85046e91996ac7b3ef752c43fbe8fb0b41824d3df47680716"
+  },
+  "strict_vendor_files": 41,
+  "actual_worker": {
+    "test_methods": 1,
+    "fixture_cases": 2,
+    "seconds": 137.331,
+    "friendly_and_competitive": true,
+    "full_outcome_events_memory_rng_and_career_equal": true,
+    "current_records_per_stop": 20,
+    "natural_energy_performance_changes": true
+  },
+  "focused_controls": {
+    "tests": 17,
+    "passed": 16,
+    "skipped": 1,
+    "seconds": 1.632
+  },
+  "ui_default_or_live_overlay_changed": false
+}

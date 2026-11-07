@@ -400,3 +400,29 @@ def validate_history(row,kind=None):
     elif schema==RESULT_SCHEMA and type(schema) is int:
         if set(row)!=keys or (kind is not None and kind!=1):raise ValueError('invalid friendly history profile')
     else:raise ValueError('invalid watched campaign result schema')
+
+
+def validate_player_records(data, *, required=False):
+    """[designed: T196; accepted upstream682] Bounded immutable record source at a decision.
+    Legacy data omits this field; requested live data must contain every current nonzero squad word.
+    """
+    if 'player_records' not in data:
+        if required:raise ValueError('missing live player records snapshot')
+        return
+    rows=data['player_records']
+    eleven,bench=data.get('eleven'),data.get('bench')
+    if (not isinstance(eleven,(list,tuple)) or not isinstance(bench,(list,tuple))
+            or len(eleven)+len(bench)>20):
+        raise ValueError('invalid live player records roster')
+    words=[*eleven,*bench]
+    if (not isinstance(rows,list) or len(rows)>20 or not words or len(words)>20
+            or any(not integer(w,0,3060) for w in words)):
+        raise ValueError('invalid live player records')
+    expected=[w for w in words if w]
+    if len(set(expected))!=len(expected) or len(rows)!=len(expected):
+        raise ValueError('invalid live player records membership')
+    for expected_word,row in zip(expected,rows):
+        if (not isinstance(row,(list,tuple)) or len(row)!=2 or not integer(row[0],1,3060)
+                or row[0]!=expected_word or not isinstance(row[1],str)
+                or re.fullmatch('[0-9a-f]{40}',row[1]) is None):
+            raise ValueError('invalid live player records snapshot')

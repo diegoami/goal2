@@ -1,0 +1,14 @@
+test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) ... ok
+test_eighty_cards_print_what_the_original_printed (goal2.tests.test_player_card.OriginalScreens.test_eighty_cards_print_what_the_original_printed) ... ok
+test_leadership_halves_below_twenty_one (goal2.tests.test_player_card.OriginalScreens.test_leadership_halves_below_twenty_one) ... ok
+test_out_of_domain_bytes_are_unavailable_not_invented (goal2.tests.test_player_card.OriginalScreens.test_out_of_domain_bytes_are_unavailable_not_invented) ... ok
+test_real_card_exposes_stars_without_changing_raw_rating_or_career (goal2.tests.test_player_performance_t192.CardData.test_real_card_exposes_stars_without_changing_raw_rating_or_career) ... skipped 'original-game file .cache/e010-r0008-halftime.sav absent: python3 tools/artifacts.py pull'
+test_exact_original_guest_routine_agrees_on_all_boundary_words (goal2.tests.test_player_performance_t192.OriginalFunction.test_exact_original_guest_routine_agrees_on_all_boundary_words) ... ok
+test_blank_and_rated_players_render_original_stars_at_readable_sizes (goal2.tests.test_player_performance_t192.PerformanceScreen.test_blank_and_rated_players_render_original_stars_at_readable_sizes) ... skipped 'original-game file .cache/e010-r0008-halftime.sav absent: python3 tools/artifacts.py pull'
+test_original_thresholds_substitute_encoding_signed_words_and_blank (goal2.tests.test_player_performance_t192.PerformanceWord.test_original_thresholds_substitute_encoding_signed_words_and_blank) ... ok
+test_rejects_non_word_inputs_instead_of_inventing_a_rating (goal2.tests.test_player_performance_t192.PerformanceWord.test_rejects_non_word_inputs_instead_of_inventing_a_rating) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 3.371s
+
+OK (skipped=2)

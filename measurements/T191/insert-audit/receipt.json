@@ -1,0 +1,38 @@
+{
+  "fixture_sha256": "e0afff6751747233f6ab8b9ba73dab0790b7509f15257ed7ae24f528b935657d",
+  "scope": "Actual original0791:9372, synthetic pushed-key fixture; only214B:0723 keyboard-ready returns true. Original game dispatch and pushed-key read run unchanged. Not a natural match.",
+  "rows": [
+    {
+      "key": "0xb6",
+      "replay_before": 0,
+      "replay_after": 0,
+      "speed_after": 2,
+      "stack_return": "near ret +2",
+      "consumed": true
+    },
+    {
+      "key": "0xaf",
+      "replay_before": 0,
+      "replay_after": 0,
+      "speed_after": 1,
+      "stack_return": "near ret +2",
+      "consumed": true
+    },
+    {
+      "key": "0xb6",
+      "replay_before": 1,
+      "replay_after": 1,
+      "speed_after": 2,
+      "stack_return": "near ret +2",
+      "consumed": true
+    },
+    {
+      "key": "0xaf",
+      "replay_before": 1,
+      "replay_after": 1,
+      "speed_after": 1,
+      "stack_return": "near ret +2",
+      "consumed": true
+    }
+  ]
+}

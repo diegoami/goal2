@@ -224,7 +224,7 @@ PROMPT_CONTEXTS = ('set_piece', 'shootout_order', 'extra_time')
 
 def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,record_draws=False,
                  substitutions=None,quick_at_half_time=False,_observe=None,_observe_pitch=None,policy=None,
-                 prompts=False):
+                 prompts=False,live_players=False):
     """[designed: T51] Shared completed-original driver; no publication or Python tail.
 
     [designed: T102] `policy` answers the bench decisions (BENCH_CONTEXTS) for a watching player;
@@ -244,6 +244,7 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     wait, F030), {'shootout_order': [words]} at `shootout_order` (empty: the original's Enter for every pick) and
     nothing at `extra_time` (play on). Each answer is passed to `Match.answer` as it is.
     """
+    if type(live_players) is not bool:raise ValueError('live_players must be boolean')
     if prompts and policy is None:
         raise ValueError('the player prompts need a policy to answer them')
     if reference_seed is not None:
@@ -253,7 +254,7 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     # [designed: owner, 2026-10-31; T151] Every match plays on the sealed port; there is no Unicorn fallback.
     match = Match(sealed(image),fixture,managed=state.managed_country,captain=state.captain or None,
                   seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions,
-                  engine="port",set_piece=bool(prompts))
+                  engine="port",set_piece=bool(prompts),**({'live_players':True} if live_players else {}))
     if _observe_pitch is not None:
         match.opts['ticks'] = True
     frame_sequence = 0

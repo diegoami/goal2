@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/tmp/t199-before-controls.py", line 5, in <module>
+    module=importlib.util.module_from_spec(spec);sys.modules[spec.name]=module;goal2.game.engine_process=module;spec.loader.exec_module(module)
+                                                                                                                ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/tmp/t199-original-engine-process.py", line 32, in <module>
+    ROOT = Path(__file__).resolve().parents[2]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 67, in __getitem__
+    raise IndexError(idx)
+IndexError: 2
