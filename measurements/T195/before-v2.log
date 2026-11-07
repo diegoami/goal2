@@ -1,0 +1,20 @@
+test_matches_unhooked_original_energy_zero_and_healthy_cards (goal2.tests.test_injury_fitness_t195.InjuryFitness.test_matches_unhooked_original_energy_zero_and_healthy_cards) ... skipped 'original-game file .cache/e006-r0001-main.sav absent: python3 tools/artifacts.py pull'
+test_stopped_card_shows_injury_word_and_empty_fitness_bar_without_state_write (goal2.tests.test_injury_fitness_t195.InjuryFitnessScreen.test_stopped_card_shows_injury_word_and_empty_fitness_bar_without_state_write) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_stopped_card_shows_injury_word_and_empty_fitness_bar_without_state_write (goal2.tests.test_injury_fitness_t195.InjuryFitnessScreen.test_stopped_card_shows_injury_word_and_empty_fitness_bar_without_state_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-manual-audit-a/goal2/tests/test_injury_fitness_t195.py", line 59, in test_stopped_card_shows_injury_word_and_empty_fitness_bar_without_state_write
+    self.assertEqual(word_label.text(),'injured')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'very fit' != 'injured'
+- very fit
++ injured
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.997s
+
+FAILED (failures=1, skipped=1)
