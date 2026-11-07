@@ -1,0 +1,17 @@
+test_natural_injury_and_halftime_returns_preserve_the_match (goal2.tests.test_stop_return_t190.ActualReturn.test_natural_injury_and_halftime_returns_preserve_the_match) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_natural_injury_and_halftime_returns_preserve_the_match (goal2.tests.test_stop_return_t190.ActualReturn.test_natural_injury_and_halftime_returns_preserve_the_match)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 246, in test_natural_injury_and_halftime_returns_preserve_the_match
+    outcome = play_through_bridge(other, controller.choices, fixture=engine_fixture(fixture), wait=1500)
+  File "/tmp/goal2-stop-return-a/goal2/tests/match_day_policy.py", line 78, in play_through_bridge
+    raise AssertionError(f"the reference waits on {jobs.waiting.data.get('context')}, not {context}")
+AssertionError: the reference waits on half_time, not pause
+
+----------------------------------------------------------------------
+Ran 1 test in 182.901s
+
+FAILED (failures=1)

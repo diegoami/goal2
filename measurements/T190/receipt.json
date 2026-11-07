@@ -1,0 +1,29 @@
+{
+  "tested_head": "2bcdb837ebd8a2c1b27a87c7a3cc7ab601715554",
+  "platform": "Linux WSL, Qt offscreen, CPython UI + PyPy3.11 engine",
+  "actual_test": "GOAL2_SLOW=1 python -B -m unittest goal2.tests.test_stop_return_t190.ActualReturn -v",
+  "actual_seconds": 179.829,
+  "actual_pass": true,
+  "assertions": [
+    "ordinary pause actual return, repeated Esc no new request",
+    "natural injury stop, immediate substitutions and refused reentry continuation",
+    "half-time player tactics -> bench -> menu, explicit Play",
+    "exact full events/result including RNG/full memory/career equality",
+    "exact once career publication"
+  ],
+  "presentation_fixture": "UI acknowledgement held while worker fills LEAD; pause sent before release. Reference repeats identical sample boundary.",
+  "source_sha256": {
+    "goal2/ui/window.py": "256841c07719d6508819c7a54c0c438867b6cf512a89fa37693a1835266c6b72",
+    "goal2/ui/s15_match_menu.py": "2bb8be0c45f24899863e920d18036055c5aaa6fe55e6c27e02a9b55a49f5c570",
+    "goal2/ui/s17_pitch.py": "e1016299a31fd9f06a54f288c3245b5b2dfce48c4881990eef6777ab9b167bf8",
+    "goal2/tests/test_stop_return_t190.py": "6bd41a630ff03bc7e1cef087bb231d2f0284b80811f231e6ec5686942cc870d3",
+    "goal2/tests/match_day_policy.py": "373a6b7e64cee4ae542053163e8ebd25a0b5baecb07d45314fb8a4a6ae3e6633",
+    "pyproject.toml": "7e28f9870aa48a13867f4e272417bcd9b758cef0b5b5487bded2a9fc89038f86"
+  },
+  "private_fixture_sha256": {
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "e010-r0008-halftime.sav": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949"
+  },
+  "engine_diff": "",
+  "full_suite": false
+}
