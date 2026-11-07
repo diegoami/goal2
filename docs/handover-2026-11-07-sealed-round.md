@@ -1,0 +1,26 @@
+# Sealed round delivery for goal2
+
+This process§14 branch changes only the assumptions register and this handover. It records the accepted upstream seam for goal2T170; it does not vendor it, change a backend or implement a season.
+
+## Findings and evidence
+
+[confirmed, coverage-limited] Upstream F039 is corroborated for its declared T119b/T119c/E040 calls, and proposed outside that coverage. Original route_fixture owns results/confidence/news/cursor/finalization effects; a B19D score-only route omits them. F017/F023 retain their own evidence levels. The new register rows identify the reached original comparisons without promoting every static claim to corroborated.
+
+Merged upstream [T123/681](https://github.com/diegoami/goal2-archaeology/pull/681) is95a54045b03717880cb18e9cf3918236fdecbc01, accepted produceraa06d8e94cdbbc6166e17cb34fb3be2b1cc48dd3. Its immutable [acceptance index](https://github.com/diegoami/goal2-archaeology/blob/95a54045b03717880cb18e9cf3918236fdecbc01/experiments/E040-route-fixture-writes/out/T123/acceptance-v1/index.json) hashes to89409fa3cf6cbb0dd252ffd462d22bf75709be7ecb291f58618d5680346d50e8. PR681 records14strict original/sealed pairs, four natural terminal/in-season paths, actual all16 returned registers, queued-key context, news-page order, history purity and a real clean-cache original/denied-PyPy entry proof. Required PR CI42390778571 passed all12groups/security. Main's independent acceptance is recorded on [681](https://github.com/diegoami/goal2-archaeology/pull/681#issuecomment-6709883760); this handover does not claim a fresh rerun on Track A's computer.
+
+[derived] The source-bound delivery also includes T122/T124a–f/T124t/T125/T123a/b and the authorized closure leaves. Existing111registry ABIs/218old function bodies are retained. Mechanical006C test maintenance retains its three original inputs and replaces an obsolete stub expectation with real original effects; the historical T117 profile remains explicit with old result/event/memory assertions unchanged. Calibration failures remain failures. No new physical-memory mask or original fallback is authorized.
+
+## Technical interface and owner design
+
+[designed: accepted upstreamT123 technical interface, within goal2#509 scope] `original_match.route.play_round(state,tables,keys)` returns immutable `RoundStep` with status `match`, `complete` or `deferred-rollover`, state/2, ordered completed fixtures and ordered original05F6 news snapshots. A match step supplies an ordinary port `Match(tail=False)` at the actual F1F6 frame. Drive its existing event/answer/result interface, then call `resume_round` with its own completed object and continuation. The actual16 returned registers/memory are transferred before route-owned updates. Foreign, incomplete or consumed resumes refuse before route mutation. Continuations remain in the same engine process; active-round serialization is unsupported. Production has no harness legal-eleven auto-selection policy, and unsupported pool-list edits refuse.
+
+[designed: owner#509, existingT170 contract] After final fixture/post-match/news/8757 effects, finalized cursor=count/rounds1/stage4or8 returns before70E6 as `deferred-rollover`. Preserve final effects and unchanged stage/rounds; repeat calls are pure. This is an explicit delivery boundary, not a claim that the original stops there or that a whole year has advanced. Required2→3/6→7 ageing/builders still execute. Year rollover, old-career migration and active-round saves remain outside this delivery. Do not replace the match engine/backend or introduce fallback paths.
+
+## What goal2 does
+
+1. Check these rows against `game/campaign_rounds.py`, `silent_results.py`, `campaign.py`, `docs/tasks/T170.md` and the existing source pins. The branch is documentation only; preserve all current UI work and accepted owner differences.
+2. Open the docs-only delivery PR and provide the owner its concrete reviewer prompt under process§14. No session starts a reviewer. Complete the upstream milestone's full validation and owner-run review before T170 adoption. Full upstream candidate validation is [42401572888](https://github.com/diegoami/goal2-archaeology/actions/runs/42401572888), dispatched on exact95a54045; its live result remains authoritative and this document makes no completion claim.
+3. After accepted upstream delivery/review, Track B deliberately vendors the source and implements T170 through the existing PyPy engine process. Announce any minimal `engine_server.py` round wire on#509 and preserve Track A's live-record/tactics changes and newer source overrides.
+4. Compare actual complete rounds/terminal states against Core with identical first-poll keys and match answers: country/player/fixture/game/manager records, both RNG words and ordered news. Keep both natural terminal and in-season cases. T183best-twenty follows T170; it is not supplied by these ports.
+
+The triage issue linked from this PR carries the complete intake prompt. Upstream's next work is the combined milestone validation/review and process§14 delivery; no new archaeology study, model spending, reviewer or implementation is started by this document. Unique private evidence remains in owner keep/main-t123-aa06-v1; original files, memories and saves do not cross into public git.
