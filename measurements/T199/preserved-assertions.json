@@ -1,0 +1,5 @@
+{
+  "all_original_functions_unchanged": true,
+  "original_packet_fixture_builder_unchanged": true,
+  "replay_only_addition": "send('settled') after deliberate faults"
+}

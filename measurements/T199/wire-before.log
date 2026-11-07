@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/completion-boundary-probe.py", line 57, in <module>
+    if __name__=='__main__':print(json.dumps([probe(mode) for mode in ('good','duplicate')]))
+                                              ~~~~~^^^^^^
+  File "/tmp/completion-boundary-probe.py", line 43, in probe
+    assert not early,'completion became publishable before the transaction boundary'
+           ^^^^^^^^^
+AssertionError: completion became publishable before the transaction boundary

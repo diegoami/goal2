@@ -59,6 +59,9 @@ class EngineProcess:
         self._lock = threading.RLock()
         self._write = threading.Lock()
         self._match = None           # the running match's number
+        self._completion = None      # [designed: T199] private until the reply transaction ends
+        self._cancelled_completion = False
+        self._completion_timer = None
         self._matches = 0
         self._live_players = False
         self.opens = 0               # `open` requests sent, over every process
@@ -85,7 +88,7 @@ class EngineProcess:
 
     @property
     def busy(self) -> bool:
-        return self._match is not None
+        return self._match is not None or self._completion is not None
 
     # --- requests ------------------------------------------------------------------------------------------------
 
@@ -171,7 +174,10 @@ class EngineProcess:
         process is killed."""
         with self._lock:
             number = self._match
-            if not self._command({"op": "cancel"}):
+            if self._completion is not None:
+                self._cancelled_completion = True
+                return True
+            elif not self._command({"op": "cancel"}):
                 return False
             timer = threading.Timer(self.cancel_deadline, self._overdue, args=(number,))
             timer.daemon = True
@@ -181,6 +187,8 @@ class EngineProcess:
     def close(self) -> None:
         with self._lock:
             self.closed = True
+            if self._completion is not None:
+                self._cancelled_completion = True
             life = self._life
             if life is None:
                 return
@@ -204,7 +212,7 @@ class EngineProcess:
 
     def _command(self, header) -> bool:
         with self._lock:
-            if not self.busy:
+            if self._match is None:
                 return False
             self._send(header)
             return True
@@ -247,7 +255,8 @@ class EngineProcess:
 
     def _overdue(self, number):
         with self._lock:
-            if self._match == number and self._life is not None:
+            pending = self._completion is not None and self._matches == number
+            if (self._match == number or pending) and self._life is not None:
                 self._life.process.kill()
 
     def _read(self, life):
@@ -257,8 +266,9 @@ class EngineProcess:
                 packet = read_packet(life.process.stdout, max_header=MAX_HEADER, max_payload=MAX_PAYLOAD)
                 if packet is None:
                     break
-                kind, value = self._decode(life, *packet)
-                self._deliver(kind, value)
+                reply = self._decode(life, *packet)
+                if reply is not None:
+                    self._deliver(*reply)
         except (ProtocolError, ValueError, TypeError, KeyError) as exc:
             # [designed: T159] A reply that cannot be read ends the engine: the stream cannot be resynchronised.
             error = f"{type(exc).__name__}: {exc}"
@@ -266,6 +276,11 @@ class EngineProcess:
         except OSError as exc:
             error = f"{type(exc).__name__}: {exc}"
         life.process.wait()
+        with self._lock:
+            unfinished = self._life is life and self._completion is not None
+        if unfinished and error is None:
+            error = (f"engine exited ({life.process.returncode}) after its completion" if life.process.returncode
+                     else "engine ended before confirming its completion")
         life.process.stdout.close()
         if life.drain is not None:
             life.drain.join(2)
@@ -280,6 +295,7 @@ class EngineProcess:
                 return False
             self._life = None
             self._match = None
+            self._take_completion()
             self.ready = None
         for stream in (life.process.stdin,):
             try:
@@ -333,7 +349,22 @@ class EngineProcess:
                                        tuple(value["seeds"]), value["engine_year"])
                 if list(value.events) != self._events:
                     raise ProtocolError("the completed match differs from the events streamed")
+                # [designed: T199, #627] Do not publish before the transcript is confirmed.
+                self._completion = value
                 self._match = None
+                self._completion_timer = threading.Timer(self.cancel_deadline, self._overdue, args=(self._matches,))
+                self._completion_timer.daemon = True
+                self._completion_timer.start()
+                return None
+            elif kind == "settled":
+                if self._completion is None or value is not None or payload:
+                    raise ProtocolError("invalid completion confirmation")
+                cancelled = self._cancelled_completion
+                value = self._take_completion()
+                if cancelled:
+                    kind, value = "cancelled", None
+                else:
+                    kind = "complete"
             elif kind == "cancelled":
                 self._running(kind)
                 value = None
@@ -342,9 +373,19 @@ class EngineProcess:
                 if not isinstance(value, str):
                     raise ProtocolError("invalid error reply")
                 self._match = None
+                self._take_completion()
             else:
                 raise ProtocolError(f"unknown engine reply: {kind!r}")
         return kind, value
+
+    def _take_completion(self):
+        """Called under the lifecycle lock: consume or discard the held result."""
+        value, self._completion = self._completion, None
+        self._cancelled_completion = False
+        timer, self._completion_timer = self._completion_timer, None
+        if timer is not None:
+            timer.cancel()
+        return value
 
     def _running(self, kind):
         if self._match is None:

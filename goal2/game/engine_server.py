@@ -324,6 +324,8 @@ class Server:
         self.send("complete", {"result": outcome.result, "events": [_event_value(e) for e in outcome.events],
                                "seeds": list(outcome.seeds), "engine_year": outcome.engine_year},
                   bytes(outcome.memory))
+        # [designed: T199, #627] The private transaction ends after the completed result.
+        self.send("settled")
 
 
 def main() -> int:
