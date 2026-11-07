@@ -1,33 +1,17 @@
-"""S19 Bench: substitutions during a match and at its breaks.
+"""S19: authoritative squad edits while a match is legally stopped.
 
-[designed: owner, 2026-11-03, #526; docs/design/ui-2026-11 S19 and its mockup s19-bench.png; T180, #574]
-[confirmed: T156-R1 steps 74-81, 124-133, 279-301; E031 C41-C41k; E015-r0007 states 76, 82, 176;
-images squad-substitution-take-off.png, -put-on.png, -illegal.png, t156-074-bench-requested.png,
-t156-080-bench-request-cancelled.png, t156-124-halftime-bench.png, t156-132-substitution-made.png]
+[designed: owner playtest2026-11-05, #592/#599; T188b] No substitution queue during play. At half-time or an
+original substitution opportunity, two player selections submit one edit-only answer. Until its reply input is
+held; the original's new decision alone updates the eleven, bench and counter. Play later continues. Refusals
+stay at the usable stopped squad with one correctly directed on/off message. Ordinary in-play pauses permit
+supported tactical edits and explain that substitutions require a legal stoppage.
 
-The claim it keeps: every substitution the player makes here is the pair the engine receives, and every refusal the
-player sees is the engine's. It keeps today's bench's rules (goal2/desktop/bench_page.py `Bench`, T102):
-
-- **The pairs** are made with two Enters, in either order (a starter then a bench player, or the other way round,
-  E031 C41e-C41i), and passed to the engine as they are: the view never judges whether one is legal. Enter on a
-  player of a chosen pair, with nobody marked, drops that pair.
-- **The answer** is sent once, through the bridge (`WatchedJobs.answer`), in the order the engine asked: at a break
-  when S15's *play* is pressed, at a pause when Esc returns to the pitch. It carries the pairs and the bench's other
-  changes (`BenchAnswer.value`): R and C positions, and S09's own tactics and mark (watched_jobs.CHANGES).
-- **The counter** is the decision's `substitutions_left`, the engine's; with none left it reads "no more
-  substitutes" [confirmed: F027 E544; E015-r0013 state 790]. In a friendly it reads "unlimited": BM-7's budget is
-  255 in the engine (watched_match.FRIENDLY_SUBSTITUTIONS), a number the player is not meant to count down
-  [designed: owner BM-7, #73].
-- **The engine's report** follows the answer once the original plays on: a refused pair shows here with the
-  engine's reason (`mode` "refused") and waits for a key; made and requested pairs are noted on the pitch.
-- **#316**: at the stoppage after a pause the requested pairs are offered again, and Esc says that they are still
-  made (the engine's default answer there is what was asked for).
-
-The modes, as the original names them: *make substitutions now* (`mode` "now": half time, a substitution
-opportunity) and *substitution requested* (`mode` "request": the pause Esc or Enter asks for on S17, where Enter
-requests or cancels a substitution, made at the next stoppage). Before extra time (`mode` "view") the route takes no
-substitution (watched_match.PROMPT_CONTEXTS: the menu before extra time is answered with no change): the bench shows
-the eleven and the counter and says so. [derived: goal2/game/watched_match.py `_drive_match`]
+[confirmed: original T156-R1 steps124–137, t156-132-substitution-made.png] The half-time squad changes before Play.
+[derived: accepted original injury/player_tactics events] Known match injuries and accepted personal settings
+survive a refresh; pending UI values never masquerade as an accepted swap or get resubmitted on Play.
+[designed: owner BM-7, #73] A friendly displays unlimited substitutions (the bridge's original byte budget255).
+[confirmed: F027 E544; E015-r0013 state790] A zero budget displays no more substitutes.
+The engine kit's legacy queue API remains available to reference clients; this player screen does not create it.
 """
 from __future__ import annotations
 
@@ -75,18 +59,20 @@ class BenchAnswer:
         # [confirmed: the kit's Match._on_menu] the original refused the eleven of the last answer (two keepers, …):
         # the decision is offered again with its message, and the view says it as it is
         self.refused = data.get("refused")
-        self.chosen = [list(p) for p in self.requested]
+        self.chosen = []  # [designed: owner #599] earlier requests are not new selections
         self.first = None          # the first Enter of a pair
         self.positions = {}        # word: position code, from R and C
         self.marking = {}          # word: opponent word, or 0 for none, from S09's mark line
         self.own = {}              # word: his own-tactics byte +0xF as S09 left it
+        self.live_own = {}         # confirmed player_tactics events, not pending edits
+        self.live_marking = {}
         self.opponents = list(opponents)
         self.friendly = friendly
 
     # What it holds.
     @property
     def takes_substitutions(self):
-        return self.context in ("half_time", "substitution", "pause")
+        return self.context in ("half_time", "substitution") and self.now
 
     def words(self):
         return self.eleven + self.bench
@@ -98,8 +84,8 @@ class BenchAnswer:
         """His record as the bench shows it: the position and own tactics changed here."""
         record = bytearray(self.model.state.players[word])
         record[6] = self.position(word)
-        if word in self.own:
-            record[15] = self.own[word]
+        if word in self.own or word in self.live_own:
+            record[15] = self.own.get(word, self.live_own.get(word))
         return bytes(record)
 
     def state(self, word):
@@ -117,7 +103,7 @@ class BenchAnswer:
         if word in self.injured:
             value["health"] = "INJURED — live match"
             value["readiness"] = "INJURED — live match"
-        if word in self.marking:
+        if word in self.marking or word in self.live_marking:
             value["mark"] = self.mark_text(word)
         return value
 
@@ -129,6 +115,8 @@ class BenchAnswer:
         """Enter on a player: mark him; Enter on one of the other group makes the pair (either order); Enter on him
         again drops the mark; Enter on a player of a chosen pair with nobody marked drops that pair. Returns what
         happened, for the screen's line."""
+        if not self.takes_substitutions:
+            return "unavailable"
         if self.first is None:
             pair = self.pair_of(word)
             if pair is not None:
@@ -160,7 +148,7 @@ class BenchAnswer:
         """Enter on S09's line `element` 1..4: the original's cycle (DesktopModel.own_tactic, F010 `1771:4B61`):
         the team's -> his own, clear -> his own, set -> the team's."""
         team = self.model.state.country_tactics
-        bit = self.own.get(word, self.model.state.players[word][15])
+        bit = self.own.get(word, self.live_own.get(word, self.model.state.players[word][15]))
         own, value = 1 << (element + 3), 1 << (element - 1)
         if not bit & own:
             bit = (bit | own) & ~value
@@ -185,7 +173,7 @@ class BenchAnswer:
             self.marking[word] = following
 
     def mark_text(self, word):
-        mark = self.marking.get(word)
+        mark = self.marking.get(word, self.live_marking.get(word))
         if mark is None:
             return "—"
         return "nobody" if mark == 0 else full_name(self.model, mark)
@@ -194,7 +182,7 @@ class BenchAnswer:
     def own_tactics(self):
         out = {}
         for word, byte in self.own.items():
-            before = self.model.state.players[word][15]
+            before = self.live_own.get(word, self.model.state.players[word][15])
             changes = {}
             for element in (1, 2, 3, 4):
                 own, value = 1 << (element + 3), 1 << (element - 1)
@@ -209,9 +197,9 @@ class BenchAnswer:
     def value(self):
         """What the engine receives: the pairs, with the other changes when there are any. Before extra time,
         nothing (play on)."""
-        if not self.takes_substitutions:
+        if self.context not in ("half_time", "substitution", "pause"):
             return []
-        pairs = [list(p) for p in self.chosen]
+        pairs = [list(p) for p in self.chosen] if self.takes_substitutions else []
         positions = {w: c for w, c in self.positions.items() if c != self.at_kick.get(w)}
         marking = {w: m for w, m in self.marking.items() if w in self.eleven}
         own = self.own_tactics()
@@ -229,8 +217,8 @@ class BenchAnswer:
 class BenchScreen(Screen):
     """S19. `mode`: "now", "request", "view", or "refused" (the engine's report, shown until a key)."""
 
-    def __init__(self, window, model, answer, *, mode=None, names=("", ""), back=None, report=None):
-        self.mode = mode or ("refused" if report is not None else "view" if not answer.takes_substitutions
+    def __init__(self, window, model, answer, *, mode=None, names=("", ""), back=None, report=None, apply=None):
+        self.mode = mode or ("refused" if report is not None else "view" if answer.context not in ("half_time", "substitution", "pause")
                              else "now" if answer.now else "request")
         self.escape_text = {"now": "match menu", "request": "back to the match", "view": "match menu",
                             "refused": "back to the match"}[self.mode]
@@ -239,6 +227,9 @@ class BenchScreen(Screen):
         self.model, self.answer, self.names, self.back, self.report = model, answer, names, back, report
         self.row = 0
         self.message = ""
+        self.apply = apply
+        self.pending = False
+        self.feedback_report = None
         self._build()
         if self.mode != "refused":
             self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), captions=("",), shown=False)
@@ -318,7 +309,7 @@ class BenchScreen(Screen):
         elif self.mode == "now":
             self.mode_label.setText(MAKE_NOW)
         else:
-            self.mode_label.setText(REQUESTED if answer.chosen else REQUEST)
+            self.mode_label.setText("SUBSTITUTIONS ONLY AT STOPPAGES")
         left = self.report["substitutions_left"] if self.report is not None else None
         self.counter.setText(answer.counter(left))
         names = self.names
@@ -347,6 +338,8 @@ class BenchScreen(Screen):
     def line(self):
         """The line under the mode: the refusal's reason, the pairs chosen, or what the screen waits for."""
         answer = self.answer
+        if self.pending:
+            return "Applying substitution. Waiting for the game to confirm the changed squad."
         if self.mode == "refused":
             return "Not made: " + "; ".join(f"{full_name(self.model, b)} on for {full_name(self.model, a)} off: "
                                             f"{('the change was not confirmed' if why == 'not made by the original' else why)}"
@@ -354,6 +347,17 @@ class BenchScreen(Screen):
         if self.mode == "view":
             return "The route takes no substitution before extra time: play on from the match menu."
         parts = []
+        if self.feedback_report:
+            report = self.feedback_report
+            if report["made"]:
+                parts.append("Made: " + "; ".join(f"{full_name(self.model,b)} on for {full_name(self.model,a)} off"
+                                               for a,b in report["made"]) + ".")
+            if report["refused"]:
+                parts.append("Not made: " + "; ".join(f"{full_name(self.model,b)} on for {full_name(self.model,a)} off: "
+                    + ("change not confirmed" if why == "not made by the original" else why)
+                    for a,b,why in report["refused"]) + ".")
+        if self.mode == "request":
+            parts.append("Substitutions require half-time or an offered stoppage. Tactical changes are available here.")
         if answer.refused:
             parts.append(f"The original refused the eleven: {answer.refused}.")
         if answer.chosen:
@@ -366,13 +370,15 @@ class BenchScreen(Screen):
         if self.message:
             parts.append(self.message)
         if not parts:
-            parts.append("Made when the match plays on." if self.mode == "now"
-                         else "Made at the next stoppage, as the original does.")
+            parts.append("Select both players to make the substitution here, before Play." if self.mode == "now"
+                         else "Substitutions require a legal stoppage.")
         return " ".join(parts)
 
     def enter_hint_text(self):
         if getattr(self, "answer", None) is None:
             return ""             # Screen.__init__ draws the bar before the bench is set
+        if self.pending:
+            return "Applying substitution..."
         if self.mode == "refused":
             return "Back to the match"
         if self.mode == "view":
@@ -386,23 +392,27 @@ class BenchScreen(Screen):
         if answer.first == word:
             return "Unmark this player"
         if self.mode == "request":
-            return "Request substitution"
+            return "Substitutions only at a stoppage"
         # [confirmed: squad-substitution-take-off.png, -put-on.png] the original's prompt
         return "Take off this player" if word in answer.eleven else "Put on this player"
 
     # Keys.
     def handle_key(self, key):
+        if self.pending and key != Qt.Key.Key_F1:
+            return True
         if self.mode == "refused" and key != Qt.Key.Key_F1:
             self.escape()
             return True
         return super().handle_key(key)
 
     def move(self, step):
+        if self.pending: return
         self.row = max(0, min(len(self.answer.words()) - 1, self.row + step))
         self.message = ""
         self.refresh()
 
     def click_row(self, index):
+        if self.pending: return
         if index == self.row:
             return self.press()
         self.row = index
@@ -410,26 +420,39 @@ class BenchScreen(Screen):
 
     def press(self):
         """Enter: take off or put on (a pair once both are chosen), or drop a chosen pair."""
+        if self.pending: return
         word = self.current()
         if word is None or self.mode == "view":
             return
         self.message = ""
-        self.answer.enter(word)
-        self.refresh()
+        if not self.answer.takes_substitutions:
+            self.message = "Substitutions are available only at a legal stoppage."
+            self.refresh()
+            return
+        action = self.answer.enter(word)
+        if action == "paired" and self.apply is not None:
+            self.pending = True
+            self.refresh()
+            self.apply(self)
+        else:
+            self.refresh()
 
     def reposition(self):
+        if self.pending: return
         word = self.current()
         if word is not None and self.mode != "view":
             self.answer.reposition(word)
             self.refresh()
 
     def club_position(self):
+        if self.pending: return
         word = self.current()
         if word is not None and self.mode != "view":
             self.answer.club_position(word)
             self.refresh()
 
     def his_tactics(self):
+        if self.pending: return
         from goal2.ui.s09_player_tactics import PlayerTacticsScreen
         word = self.current()
         if word is not None:
@@ -438,9 +461,18 @@ class BenchScreen(Screen):
     def escape(self):
         """Esc: back to S15 at a break; back to the pitch during play (the answer goes with it); after a refusal,
         back to the match."""
+        if self.pending: return
         if self.back is not None:
             return self.back()
         return self.window_.pop()
+
+    def applied(self, answer, report):
+        """[designed: T188b] Only the engine's new stopped decision changes the list/counter."""
+        self.answer = answer
+        self.pending = False
+        self.feedback_report = report
+        self.message = ""
+        self.refresh()
 
     def shown(self):
         """Back from S09: the card again (his tactics or mark may have changed)."""

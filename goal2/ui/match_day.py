@@ -252,8 +252,8 @@ class MatchDay:
         context = decision.data.get("context")
         if context in ("half_time", "extra_time", "substitution", "pause"):
             from goal2.ui.s19_bench import BenchAnswer
-            self.bench = BenchAnswer(self.model, decision, pitch.controller.opponents(),
-                                     friendly=self.fixture.kind == 1)
+            self.bench = self.live_bench(pitch, decision)
+            self._bench_feedback = None
         if context in ("half_time", "extra_time"):
             return self.show_board(pitch, "half" if context == "half_time" else "extra")
         names = pitch.controller.display.countries
@@ -339,7 +339,48 @@ class MatchDay:
         from goal2.ui.s19_bench import BenchScreen
         if self.bench is None:
             return None
-        return self.window.push(BenchScreen(self.window, self.model, self.bench, names=self._names(), back=back))
+        screen = BenchScreen(self.window, self.model, self.bench, names=self._names(), back=back, apply=self.edit_bench)
+        screen.feedback_report = getattr(self, "_bench_feedback", None)
+        return self.window.push(screen)
+
+    def live_bench(self, pitch, decision):
+        """[derived: original injury/player_tactics events] Display live accepted data without mutating a career."""
+        from goal2.ui.s19_bench import BenchAnswer
+        answer = BenchAnswer(self.model, decision, pitch.controller.opponents(), friendly=self.fixture.kind == 1)
+        for event in self.controller.events:
+            data = event["data"]
+            if event["kind"] == "injury" and data.get("team") == self.controller.display.managed:
+                if data.get("player") in answer.words(): answer.injured.add(data["player"])
+            elif event["kind"] == "player_tactics":
+                answer.live_own[data["player"]] = data["own_set"]
+                answer.live_marking[data["player"]] = data["marking"]
+        return answer
+
+    def edit_bench(self, screen):
+        """[designed: T188b] A completed pair is one operation, without continuing Play."""
+        self._editing_screen = screen
+        try:
+            self.controller.edit_bench(screen.answer.value())
+        except Exception as exc:
+            self._editing_screen = None
+            screen.pending = False
+            screen.message = f"Substitution not submitted: {exc}"
+            screen.refresh()
+
+    def edited(self, pitch, decision, report):
+        from goal2.ui.s19_bench import BenchAnswer
+        previous = self.bench
+        answer = self.live_bench(pitch, decision)
+        if previous is not None:
+            answer.injured.update(previous.injured)
+            answer.live_own = {**previous.live_own, **answer.live_own}
+            answer.live_marking = {**previous.live_marking, **answer.live_marking}
+        self.bench = answer
+        self._bench_feedback = report
+        screen = getattr(self, "_editing_screen", None)
+        self._editing_screen = None
+        if screen is not None:
+            screen.applied(answer, report)
 
     def _bench_played(self, pitch):
         """S19's Esc at a pause: the bench's answer is sent once and the match plays on."""

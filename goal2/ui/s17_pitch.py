@@ -128,6 +128,10 @@ class MatchController:
         self.stop = None          # the decision the match waits on, once every sample before it is shown
         self.notice = None        # the other side's substitution shown on S18, the display held until a key
         self.refusal = None       # an answer's report that refused a pair, shown on S19 until a key
+        self._dropped_pauses = 0
+        self.edit_pending = False
+        self.edit_report = None
+        self._editing = False
         self.reports = []         # the engine's reports of the bench answers, in order
         self._expected = None     # the report the last bench answer waits for (its index in the bridge's reports)
         self._scanned = 0         # the shown events already looked at for a notice
@@ -184,6 +188,10 @@ class MatchController:
             self._send("event", value)
             self.events.append(value)
         self._read_report()
+        dropped = getattr(bridge, "dropped_pauses", 0)
+        if dropped > self._dropped_pauses and self.note == REQUESTED:
+            self.note = ""
+        self._dropped_pauses = dropped
         if not bridge.busy:
             return self._full_time()
         if self.held:
@@ -253,7 +261,8 @@ class MatchController:
             said.append("Requested: made at the next stoppage.")
         if report["refused"]:
             said.append("Not made: " + ", ".join(f"{name(b)} for {name(a)}" for a, b, _ in report["refused"]) + ".")
-            self.refusal = report
+            if not self._editing: self.refusal = report
+        if self._editing: self.edit_report = report
         self.note = " ".join(said)
 
     def dismiss(self):
@@ -311,6 +320,28 @@ class MatchController:
         if stop is None or not self.running:
             return
         self._answer(stop.data.get("context"), value if value is not None else [], stop.data.get("requested"))
+        if self.note == REQUESTED: self.note = ""
+
+    def edit_bench(self, value):
+        """[designed: owner #599] One stopped edit; the returned decision stays held before Play."""
+        if self.edit_pending:
+            return False
+        if self.stop is None or not self.running:
+            raise ValueError("no stopped bench decision is waiting")
+        changes = dict(value) if isinstance(value, dict) else {"substitutions": list(value)}
+        if len(changes.get("substitutions") or []) != 1:
+            raise ValueError("select one substitution pair")
+        changes["edit_only"] = True
+        self._editing = True
+        try:
+            self._answer(self.stop.data.get("context"), changes)
+        except Exception:
+            self._editing = False
+            raise
+        self.stop = None
+        self.edit_pending = True
+        self.edit_report = None
+        return True
 
     # The player's keys.
     def painted(self, sequence):
@@ -544,6 +575,12 @@ class PitchScreen(Screen):
         if controller.tick(time.monotonic()):
             self.pitch.update()
         self.refresh()
+        if controller.edit_pending and controller.stop is not None and controller.stop.data.get("edited"):
+            self.held = controller.stop
+            controller.edit_pending = False
+            controller._editing = False
+            self.day.edited(self, controller.stop, controller.edit_report)
+            return
         if controller.finished and not self.ended:
             self.end()
         elif self.stop_box.open or self.window_.current() is not self or self.day is None:
@@ -645,7 +682,7 @@ class PitchScreen(Screen):
         return self.controller.display.speed_name()
 
     def toggle_commentary(self):
-        """Space: pause for the whole commentary; Space/Enter resumes [designed: owner #597]."""
+        """Space: pause for the larger commentary reading view; Space/Enter resumes [designed: owner #597]."""
         if self.stop_box.open:
             # Mouse key-bar actions must obey the same question/notice gate as keyboard Space.
             self.answer_stop_box(Qt.Key.Key_Space)

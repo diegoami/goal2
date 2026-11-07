@@ -1,0 +1,39 @@
+test_injury_and_captain_swaps_are_visible_before_play_and_publish_once (goal2.tests.test_immediate_bench_t188.ActualImmediateBench.test_injury_and_captain_swaps_are_visible_before_play_and_publish_once) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_injury_and_captain_swaps_are_visible_before_play_and_publish_once (goal2.tests.test_immediate_bench_t188.ActualImmediateBench.test_injury_and_captain_swaps_are_visible_before_play_and_publish_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 255, in test_injury_and_captain_swaps_are_visible_before_play_and_publish_once
+    walk.run()
+    ~~~~~~~~^^
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 205, in react
+    return super().react(screen)
+           ~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_ui_bench_t180.py", line 184, in react
+    self.on_bench(screen)
+    ~~~~~~~~~~~~~^^^^^^^^
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_immediate_bench_t188.py", line 230, in on_bench
+    enter_on(self.window,screen,target);enter_on(self.window,screen,on)
+                                        ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/goal2-immediate-bench/goal2/tests/test_ui_bench_t180.py", line 109, in enter_on
+    if controller is not None and controller.error: raise AssertionError(controller.error)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Invalid watched worker IPC: Watched worker failed: TypeError: Match.answer() got an unexpected keyword argument 'edit_only'
+
+----------------------------------------------------------------------
+Ran 1 test in 10.446s
+
+FAILED (failures=1)

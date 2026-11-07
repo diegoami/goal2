@@ -1,0 +1,55 @@
+{
+  "validated_source": "ccb8e06b62da44a9e3b4a653bb6b1c4c5ed59d68",
+  "integration_source": "9d85e4e2163ce2dde96df7a0b192b8d211874e42",
+  "unchanged": [
+    {
+      "path": "goal2",
+      "object": "6dcd87677e5de8dfa9f5c5144d333d76a52ef3c9",
+      "identical": true
+    },
+    {
+      "path": "tools",
+      "object": "f073c26a565302a0e153e99e6cd6694fd364e8ba",
+      "identical": true
+    },
+    {
+      "path": "PROVENANCE.md",
+      "object": "016d26e8a180de54d929dcbd2d96f30793f6a8b4",
+      "identical": true
+    }
+  ],
+  "full_linux": {
+    "run": 42187507108,
+    "modules_passed": 190,
+    "modules_total": 190,
+    "skipped": 0,
+    "seconds": 3365,
+    "passed": true
+  },
+  "full_windows": {
+    "run": 42187515318,
+    "modules_passed": 189,
+    "modules_total": 190,
+    "skipped": 16,
+    "seconds": 5294,
+    "passed": false,
+    "only_failure": "test_core_replay_t140.Desktop.test_native_viewer_shows_replay_then_live_in_the_same_owned_process",
+    "owner_exception": "https://github.com/diegoami/goal2/issues/520#issuecomment-6611425600"
+  },
+  "hosted_pass": [
+    42185973905,
+    42185973859
+  ],
+  "marking_regression": {
+    "tests": 13,
+    "seconds": 566.692,
+    "passed": true
+  },
+  "windows_replay_isolated": {
+    "tests": 9,
+    "skipped": 0,
+    "seconds": 49.31,
+    "passed": true,
+    "fixtures": "existing owner cache; source checkout unchanged; offscreen Qt/dummy SDL; isolated temporary profile; original timeout/assertions"
+  }
+}

@@ -390,16 +390,15 @@ does ("◄┘-move player", "Hit ◄┘ to watch match").
 
 ### S19 Bench
 
-- **Purpose**: substitutions, during a match and at its breaks.
-- **Shows**: the card of the highlighted player; the mode, as the original names it ("make substitutions
-  now", or "substitution requested" during play); substitutions left; the eleven and the bench.
-- **Actions**: **↑↓** player, **Enter** take off / put on (in either order; the hint names which), or
-  request / cancel a substitution in request mode; **R**, **C** positions; **T** his tactics (S09); **Esc**
-  match menu. A refused substitution says why and waits for a key.
-- **Replaces**: `squad-substitution-take-off`, `squad-substitution-put-on`, `squad-substitution-illegal`,
-  `t156-074-bench-requested`, `t156-080-bench-request-cancelled`, `t156-124-halftime-bench`,
-  `t156-132-substitution-made`, `t156-279-quick-bench`, `t156-301-quick-substitution-made`.
-  [confirmed: T156-R1 steps 74–81, 124–133, 279–301; E031 C41–C41k; E015-r0007 states 76, 82, 176]
+- **Purpose**: substitutions at legal stops, with the live squad and its player cards.
+- **Shows**: the engine's eleven/bench and remaining budget, live red injury labels, and prominent on/off feedback.
+- **Actions**: **↑↓** player; **Enter** marks the first and completes the pair with the second selection. At a legal
+  stop that sends one edit, waits for the engine, and shows the confirmed exchange immediately. Esc returns to
+  the match menu; Play only continues. **R**, **C**, **T** retain supported tactical edits.
+- [designed: owner playtest2026-11-05, #599] Ordinary in-play pauses cannot queue substitution pairs. This
+  supersedes the earlier new-window request/cancel flow. Refusals stay usable at the stopped squad; reopening
+  or continuing does not repeat a completed operation. Earlier engine queue behavior remains a reference API.
+- [confirmed: original T156-R1 steps124–137] A half-time swap is visible in SELECT TEAM before Play.
 
 ![S19 Bench](images/s19-bench.png)
 

@@ -1,0 +1,19 @@
+This plugin does not support propagateSizeHints()
+test_a_pause_cannot_queue_a_pair_and_the_half_time_swap_is_immediate (goal2.tests.test_ui_bench_t180.Bench.test_a_pause_cannot_queue_a_pair_and_the_half_time_swap_is_immediate) ... ok
+test_a_refused_pair_shows_the_engine_s_reason_and_changes_nothing (goal2.tests.test_ui_bench_t180.Bench.test_a_refused_pair_shows_the_engine_s_reason_and_changes_nothing) ... ok
+test_after_the_match_s09_shows_no_mark (goal2.tests.test_ui_bench_t180.Bench.test_after_the_match_s09_shows_no_mark) ... ok
+test_an_injury_stops_on_s18_then_s15_then_s19 (goal2.tests.test_ui_bench_t180.Bench.test_an_injury_stops_on_s18_then_s15_then_s19) ... ok
+test_s09_from_s19_shows_mark_with_the_opponent_s_players (goal2.tests.test_ui_bench_t180.Bench.test_s09_from_s19_shows_mark_with_the_opponent_s_players) ... ok
+test_s20_esc_opens_the_bench_in_make_substitutions_now_mode (goal2.tests.test_ui_bench_t180.Bench.test_s20_esc_opens_the_bench_in_make_substitutions_now_mode) ... ok
+test_the_friendly_s_career_equals_the_same_match_through_the_bridge (goal2.tests.test_ui_bench_t180.Bench.test_the_friendly_s_career_equals_the_same_match_through_the_bridge) ... ok
+test_the_friendly_s_counter_is_bm7_s_and_a_sixth_substitution_is_made (goal2.tests.test_ui_bench_t180.Bench.test_the_friendly_s_counter_is_bm7_s_and_a_sixth_substitution_is_made) ... ok
+test_the_half_time_edits_are_each_sent_once_before_play (goal2.tests.test_ui_bench_t180.Bench.test_the_half_time_edits_are_each_sent_once_before_play) ... ok
+test_the_mark_reaches_the_engine (goal2.tests.test_ui_bench_t180.Bench.test_the_mark_reaches_the_engine) ... ok
+test_the_other_side_s_substitution_shows_its_notice_and_plays_on (goal2.tests.test_ui_bench_t180.Bench.test_the_other_side_s_substitution_shows_its_notice_and_plays_on) ... ok
+test_the_player_who_came_off_stays_off (goal2.tests.test_ui_bench_t180.Bench.test_the_player_who_came_off_stays_off) ... ok
+test_the_qualifier_s_counter_is_five_and_decreases (goal2.tests.test_ui_bench_t180.Bench.test_the_qualifier_s_counter_is_five_and_decreases) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 566.692s
+
+OK
