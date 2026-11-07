@@ -1,0 +1,20 @@
+[
+  {
+    "file": "goal2/tests/test_ui_match_day_t167.py",
+    "before_sha256": "4730dfd10c8ba0baca0a66d24bab4178305774c94b52e9870ae2ead6783ca6ad",
+    "after_sha256": "03a3624796fb6b39ffc03d127f147d879cdfb49e8b4013169d26b9c5b3cc8ee8",
+    "all_bodies_unchanged": true
+  },
+  {
+    "file": "goal2/tests/test_ui_bench_t180.py",
+    "before_sha256": "b85fddc1d31e8478a3e903ec665bf12491624d6ac36477bc4a0682dd812c77c5",
+    "after_sha256": "b02d430d57404deac76e0ba31531ef6531e8f9cd99596371eb2060eb68f93424",
+    "all_bodies_unchanged": true
+  },
+  {
+    "file": "goal2/tests/test_watch_qualifiers_t176.py",
+    "before_sha256": "f9a104cde00864017eaabbf80920c043b600ffbacce1192e20bc57fd38862bd5",
+    "after_sha256": "b22f2eb83840cf04ef55310eec56cdb4c477e0b4440fb6e1fcef1eb1415de6cf",
+    "all_bodies_unchanged": true
+  }
+]

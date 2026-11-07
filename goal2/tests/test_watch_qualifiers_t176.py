@@ -137,6 +137,7 @@ def reference(owner, fixture, mode, *, competitive):
 
 
 @requires.need(modules=('pygame',), files=(requires.WATCHED['files'][0], 'GOAL.DAT', 'e010-r0008-halftime.sav'))
+@requires.need(slow=True)
 class WatchQualifiers(unittest.TestCase):
     """The cases, played once for the class, one at a time (two PyPy processes at once: the engine and the child)."""
 
