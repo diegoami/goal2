@@ -2,12 +2,11 @@
 
 Choosing a country shows its card and, with Space, its players (goal2.game.player_card), as the
 original's country selection does (screenshots `country-select`, `m244-team-info-2030`).
-Decoded fields carry their evidence. [designed: T144] This legacy Python route names unavailable
-fields with NOT_DECODED (gap G05). The Core route separately consumes the delivered
-F034..F038 decoders; its display data is never invented from this route's placeholders.
+Decoded fields carry their evidence. [derived: F034–F038; T197] Both career and
+Core routes consume the delivered TEAM readers. Ranking-top and strips remain
+explicit unavailable fields; no replacement aggregate is invented.
 """
 from goal2.game import roles
-from goal2.game.player_card import _Memory
 
 NOT_DECODED = 'not decoded yet (G05)'
 CONTINENTS = {1: 'Europe', 2: 'America', 3: 'Africa', 4: 'Asia'}
@@ -30,8 +29,10 @@ def card(state, country, goaldat):
     """The country card of `country` in this state."""
     if type(country) is not int or not 1 <= country <= 128:
         raise ValueError('country must be 1..128')
-    record = state.countries[country]
-    memory = _Memory(state)
+    from goal2.game.team_card import TeamMemory
+    memory = TeamMemory(state)
+    record = memory.country_record(country)
+    panels = memory.panels(country)
     words = [int.from_bytes(record[2 * i:2 * i + 2], 'little') for i in range(20)]
     # [confirmed: F008 squad list] the country's 20 player numbers at +0..+0x27; slots 1..11 are
     # the stored eleven (F024). [derived: F028 DS:0D5C line classes; screenshots country-select
@@ -45,13 +46,14 @@ def card(state, country, goaldat):
         return [(name, tactic_word(memory, element, tactics >> (element - 1) & 1)) for name, element in rows]
     initial = goaldat.manager_initials[country] if country < len(goaldat.manager_initials) else ''
     return {
-        'country': country, 'name': goaldat.country_names[country],
+        'country': country, 'name': goaldat.country_names[country], **panels,
         # [confirmed: F002 R001 manager names by country; F024 computer managers' names]
         'manager': (initial + ' ' if initial else '') + goaldat.manager_names[country],
         # [confirmed: F007] world rank +0x2B, continent +0x2C, rank within it +0x2A.
         'world': record[0x2B], 'continent': CONTINENTS.get(record[0x2C], NOT_DECODED), 'continental': record[0x2A],
         'formation': formation, 'eleven': [codes[p] if p < 14 else '?' for p in eleven],
         'team_tactics': group(TEAM_TACTICS), 'player_defaults': group(PLAYER_DEFAULTS),
-        'players': words, 'not_decoded': UNDECODED,
+        'players': words, 'not_decoded': tuple(name for name in UNDECODED
+            if name not in {'status', 'skill', 'team skills', 'performance', 'characteristics'}),
     }
 
