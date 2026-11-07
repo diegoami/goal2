@@ -457,3 +457,7 @@ named-goal F3 playback, atomic replacement, damaged-file refusal and F4's frozen
 watched match with replay and compares the published career and result to the same bridge match with the same
 answers. `python -m goal2.ui --screenshot DIR` adds the goal questions, replay, name boxes, summary question,
 saved-goal menu and F3/F4 lists.
+
+### Returning from a stopped match
+
+[designed: owner2026-11-07, #612; T190] Esc returns from player tactics to the squad, and from the squad to the match menu at half-time or a substitution opportunity. At that menu Esc selects Play and explains that Enter or a click continues; Esc alone never starts a half. At an ordinary in-play pause the squad's Back returns to the pitch and submits its tactical answer once. A held Esc/Enter does not repeat across these transitions; directional repeats and later discrete key presses remain usable. Stop arrival consumes the outstanding “bench requested” status; dropped/failed requests and match cancellation cannot retain that obsolete note. Pending swaps keep their screen until the engine confirms or refuses them. Team tactics during play (#610) and the manual/player-card audit (#611) remain separate required work.

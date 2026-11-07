@@ -1,0 +1,115 @@
+test_cancel_and_poll_failure_clear_requested_without_publication (goal2.tests.test_stop_return_t190.StopReturn.test_cancel_and_poll_failure_clear_requested_without_publication) ... This plugin does not support propagateSizeHints()
+FAIL
+test_dropped_request_clears_status (goal2.tests.test_stop_return_t190.StopReturn.test_dropped_request_clears_status) ... This plugin does not support propagateSizeHints()
+ok
+test_failed_request_reports_failure_and_allows_a_later_request (goal2.tests.test_stop_return_t190.StopReturn.test_failed_request_reports_failure_and_allows_a_later_request) ... This plugin does not support propagateSizeHints()
+ERROR
+test_half_and_injury_returns_explain_play_without_advancing (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_explain_play_without_advancing) ... This plugin does not support propagateSizeHints()
+
+  test_half_and_injury_returns_explain_play_without_advancing (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_explain_play_without_advancing) (context='half_time') ... FAIL
+  test_half_and_injury_returns_explain_play_without_advancing (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_explain_play_without_advancing) (context='substitution') ... FAIL
+test_held_stop_cannot_request_another_stop (goal2.tests.test_stop_return_t190.StopReturn.test_held_stop_cannot_request_another_stop) ... This plugin does not support propagateSizeHints()
+FAIL
+test_mouse_back_and_play_use_the_same_explicit_return (goal2.tests.test_stop_return_t190.StopReturn.test_mouse_back_and_play_use_the_same_explicit_return) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_confirmed_and_refused_edits_keep_single_submission (goal2.tests.test_stop_return_t190.StopReturn.test_pending_confirmed_and_refused_edits_keep_single_submission) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_plain_pause_returns_once_and_repeat_cannot_request_again (goal2.tests.test_stop_return_t190.StopReturn.test_plain_pause_returns_once_and_repeat_cannot_request_again) ... This plugin does not support propagateSizeHints()
+FAIL
+test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) ... This plugin does not support propagateSizeHints()
+
+  test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) (context='pause') ... FAIL
+  test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) (context='half_time') ... FAIL
+  test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) (context='substitution') ... FAIL
+
+======================================================================
+ERROR: test_failed_request_reports_failure_and_allows_a_later_request (goal2.tests.test_stop_return_t190.StopReturn.test_failed_request_reports_failure_and_allows_a_later_request)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 63, in test_failed_request_reports_failure_and_allows_a_later_request
+    self.assertFalse(self.controller.request_bench())
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/goal2-stop-return-a/goal2/ui/s17_pitch.py", line 381, in request_bench
+    sent = self.bridge.pause(self.token)
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 61, in fail
+    def fail(token): raise ValueError('worker unavailable')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: worker unavailable
+
+======================================================================
+FAIL: test_cancel_and_poll_failure_clear_requested_without_publication (goal2.tests.test_stop_return_t190.StopReturn.test_cancel_and_poll_failure_clear_requested_without_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 78, in test_cancel_and_poll_failure_clear_requested_without_publication
+    self.assertNotEqual(self.controller.note, REQUESTED)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Bench requested: the bench opens when the original stops for it.' == 'Bench requested: the bench opens when the original stops for it.'
+
+======================================================================
+FAIL: test_half_and_injury_returns_explain_play_without_advancing (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_explain_play_without_advancing) (context='half_time')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 91, in test_half_and_injury_returns_explain_play_without_advancing
+    self.assertIs(self.window.current(), bench, 'held Esc must not traverse another screen')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s15_match_menu.MenuScreen(0xcff0b90, name="screen") at 0x7e744b2210c0> is not <goal2.ui.s19_bench.BenchScreen object at 0x7e744b1bb7c0> : held Esc must not traverse another screen
+
+======================================================================
+FAIL: test_half_and_injury_returns_explain_play_without_advancing (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_explain_play_without_advancing) (context='substitution')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 91, in test_half_and_injury_returns_explain_play_without_advancing
+    self.assertIs(self.window.current(), bench, 'held Esc must not traverse another screen')
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <goal2.ui.s15_match_menu.MenuScreen(0x10512590, name="screen") at 0x7e744b255840> is not <goal2.ui.s19_bench.BenchScreen object at 0x7e744aeb4140> : held Esc must not traverse another screen
+
+======================================================================
+FAIL: test_held_stop_cannot_request_another_stop (goal2.tests.test_stop_return_t190.StopReturn.test_held_stop_cannot_request_another_stop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 56, in test_held_stop_cannot_request_another_stop
+    self.assertFalse(self.controller.request_bench())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_plain_pause_returns_once_and_repeat_cannot_request_again (goal2.tests.test_stop_return_t190.StopReturn.test_plain_pause_returns_once_and_repeat_cannot_request_again)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 114, in test_plain_pause_returns_once_and_repeat_cannot_request_again
+    self.assertEqual(self.bridge.pauses, 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) (context='pause')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 52, in test_stop_arrival_consumes_requested_status_at_pause_half_and_injury
+    self.assertNotEqual(self.controller.note, REQUESTED)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Bench requested: the bench opens when the original stops for it.' == 'Bench requested: the bench opens when the original stops for it.'
+
+======================================================================
+FAIL: test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) (context='half_time')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 52, in test_stop_arrival_consumes_requested_status_at_pause_half_and_injury
+    self.assertNotEqual(self.controller.note, REQUESTED)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Bench requested: the bench opens when the original stops for it.' == 'Bench requested: the bench opens when the original stops for it.'
+
+======================================================================
+FAIL: test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) (context='substitution')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-stop-return-a/goal2/tests/test_stop_return_t190.py", line 52, in test_stop_arrival_consumes_requested_status_at_pause_half_and_injury
+    self.assertNotEqual(self.controller.note, REQUESTED)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Bench requested: the bench opens when the original stops for it.' == 'Bench requested: the bench opens when the original stops for it.'
+
+----------------------------------------------------------------------
+Ran 9 tests in 9.498s
+
+FAILED (failures=8, errors=1)

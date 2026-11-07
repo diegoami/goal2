@@ -47,7 +47,7 @@ WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do y
 
 
 class MenuScreen(Screen):
-    escape_text = None
+    escape_text = "select Play / Exit"
 
     def __init__(self, window, day, phase, score=(0, 0)):
         super().__init__(window)
@@ -226,6 +226,15 @@ class MenuScreen(Screen):
         self.bindings = [b for b in self.bindings if b.keys not in ((Qt.Key.Key_Y,), (Qt.Key.Key_N,))]
         self._refresh_bar()
         self.say("You watch this match." if watch else "A quick result: the pitch shows HANG ON A TICK.")
+
+    def escape(self):
+        # [designed: owner #612; confirmed: T156-R1 steps134–137] Returning from
+        # the squad reaches this menu. Play explicitly continues the held match.
+        self.highlight(self.options.index(self.play))
+        action = "Exit" if self.phase == "full" else "Play"
+        self.say(f"Choose {action} or press Enter to " +
+                 ("return to the desk." if self.phase == "full" else
+                  "continue. The match stays stopped until you choose Play."))
 
     def press_play(self):
         if self.phase == "before" and self.day.watch is None and self.day.asks_watch(self.model, self.day.fixture):
