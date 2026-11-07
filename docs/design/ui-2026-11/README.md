@@ -666,3 +666,5 @@ with some modification for the sake of the UX."
 [designed: owner playtest #598, 2026-11-05] At the 24px baseline the fixture window shows fourteen
 rows; arrows still reach the complete list. Recent commentary keeps whole wrapped entries within its
 panel, with more room in the reading view. No engine event is removed from the transcript or recording.
+
+The owner-requested [manual-to-build fidelity audit](manual-fidelity.md) maps each manual section and S01–S22 action to source, exercised evidence, explicit differences and outstanding acceptance.
