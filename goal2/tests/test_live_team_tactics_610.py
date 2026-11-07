@@ -171,6 +171,21 @@ class LiveTeamTactics(unittest.TestCase):
         self.key(Qt.Key.Key_Escape)
         self.assertEqual(self.bridge.pauses, 1, 'coalesce while the original has not acknowledged the stop')
 
+    def test_worker_failure_while_pending_returns_to_the_desk_without_publishing(self):
+        from PySide6.QtCore import Qt
+        self.prepare()
+        screen = self.open_tactics()
+        count = self.model.state.match_count
+        self.key(Qt.Key.Key_Return)
+        self.assertTrue(screen.pending)
+        def fail(token): raise RuntimeError('authored worker failure')
+        self.bridge.poll = fail
+        self.pitch.tick()
+        self.app.processEvents()
+        self.assertEqual(type(self.window.current()).__name__, 'DeskScreen')
+        self.assertEqual(self.model.state.match_count, count)
+        self.assertIn('authored worker failure', self.controller.error)
+
     def test_request_note_clears_when_the_engine_stop_arrives(self):
         from goal2.ui.s17_pitch import REQUESTED
         self.prepare()
@@ -186,8 +201,7 @@ class LiveTeamTactics(unittest.TestCase):
 
 
 
-@requires.need(modules=('PySide6', 'pygame'), **requires.HALFTIME)
-@requires.slow
+@requires.need(modules=('PySide6', 'pygame', 'unicorn'), slow=True, **requires.HALFTIME)
 class ActualLiveTeamTactics(unittest.TestCase):
     """Real window/worker journey; packet tests above make no original-outcome claim."""
 
