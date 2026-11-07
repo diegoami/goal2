@@ -184,4 +184,152 @@ class LiveTeamTactics(unittest.TestCase):
         self.assertNotEqual(self.controller.note, REQUESTED)
 
 
+
+
+@requires.need(modules=('PySide6', 'pygame'), **requires.HALFTIME)
+@requires.slow
+class ActualLiveTeamTactics(unittest.TestCase):
+    """Real window/worker journey; packet tests above make no original-outcome claim."""
+
+    def run_journey(self, target):
+        import json
+        import os
+        import tempfile
+        from pathlib import Path
+        from PySide6.QtCore import Qt
+        from goal2.desktop import data_setup, fixed_page
+        from goal2.ui.window import Window
+        from goal2.ui.s17_pitch import engine_fixture, REQUESTED
+        from goal2.ui.s10_team_tactics import LINES
+        from goal2.tests.test_ui_bench_t180 import Walk, app, career, key, enter_on, play_on, PLAY_NEXT, pump
+        from goal2.tests.match_day_policy import play_through_bridge
+        from goal2.tests.test_pypy_worker_t152 import pypy
+        pypy()
+        application = app()
+        test = self
+        evidence = os.environ.get('GOAL2_TACTICS_EVIDENCE')
+        def shot(window, name):
+            if evidence:
+                folder = Path(evidence)
+                folder.mkdir(parents=True, exist_ok=True)
+                path = folder / (target + '-' + name + '.png')
+                if path.exists(): raise AssertionError('refuse to overwrite prior screenshot')
+                window.grab().save(str(path))
+
+        class TacticsWalk(Walk):
+            def playing(self, pitch):
+                super().playing(pitch)
+                frame = pitch.controller.display.frame
+                if (target == 'pause' and frame is not None and frame['minute'] >= 5
+                        and not self.out.get('requested')):
+                    self.out['requested'] = True
+                    key(self.window, Qt.Key.Key_Escape)
+
+            def on_menu(self, screen):
+                wanted = 'pause' if target == 'pause' else 'half'
+                if screen.phase == wanted and not self.out.get('tactics_done'):
+                    controller = self.out['controller']
+                    test.assertNotEqual(controller.note, REQUESTED)
+                    before = self.day_state()
+                    shot(self.window, 'menu')
+                    key(self.window, Qt.Key.Key_T)
+                    editor = self.window.current()
+                    test.assertEqual(type(editor).__name__, 'TeamTacticsScreen')
+                    original = editor.answer.team_tactics
+                    byte = original
+                    choices = len(controller.choices)
+                    for row, (_, element) in enumerate(LINES):
+                        test.assertEqual(editor.line, row)
+                        key(self.window, Qt.Key.Key_Return)
+                        if row == 0 and editor.pending: shot(self.window, 'pending')
+                        pump(lambda: not editor.pending or controller.error, 60, 'original did not confirm team tactic')
+                        test.assertIsNone(controller.error)
+                        byte ^= 1 << (element - 1)
+                        test.assertEqual(editor.answer.team_tactics, byte)
+                        test.assertEqual(controller.stop.data['tactics'], byte)
+                        test.assertTrue(controller.stop.data['edited'])
+                        test.assertEqual(before, self.day_state())
+                        test.assertEqual(len(controller.choices), choices + row + 1)
+                        test.assertEqual(fixed_page.problems(self.window), [])
+                        if row != len(LINES)-1: key(self.window, Qt.Key.Key_Down)
+                    shot(self.window, 'confirmed')
+                    key(self.window, Qt.Key.Key_Escape)
+                    test.assertIs(self.window.current(), screen)
+                    key(self.window, Qt.Key.Key_T)
+                    test.assertEqual(self.window.current().answer.team_tactics, byte)
+                    key(self.window, Qt.Key.Key_Escape)
+                    self.out['tactics_done'] = True
+                    self.out['actual'] = dict(initial=original, confirmed=byte, edits=8, stop=target, unchanged=before)
+                    key(self.window, Qt.Key.Key_Escape)
+                    test.assertEqual(type(self.window.current()).__name__, 'PitchScreen')
+                    test.assertIsNone(controller.stop)
+                    test.assertNotEqual(controller.note, REQUESTED)
+                    test.assertEqual(len(controller.choices), choices + 9)
+                    return
+                if screen.phase == 'stop':
+                    key(self.window, Qt.Key.Key_Space)
+                else:
+                    play_on(self.window, screen)
+
+            def day_state(self):
+                controller = self.out['controller']
+                answer = self.window.match_day.bench
+                return dict(minute=answer.minute, score=answer.score, eleven=answer.eleven,
+                            bench=answer.bench, left=answer.left, frames=controller.bridge._frame_sequence)
+
+            def on_bench(self, screen):
+                answer = screen.answer
+                injured = [w for w in answer.eleven if w in answer.injured]
+                if answer.takes_substitutions and answer.left and injured:
+                    off = injured[0]
+                    used = set(self.out.get('taken_off', []))
+                    on = next(w for w in answer.bench if w not in used and
+                              (answer.position(w) == 0) == (answer.position(off) == 0))
+                    enter_on(self.window, screen, off)
+                    enter_on(self.window, screen, on)
+                    test.assertIn(on, screen.answer.eleven)
+                    self.out.setdefault('taken_off', []).append(off)
+                key(self.window, Qt.Key.Key_Escape)
+
+        with tempfile.TemporaryDirectory() as folder:
+            owner = career()
+            count = owner.state.match_count
+            window = Window(data_setup.paths(Path(folder)))
+            window.resize(1440, 900)
+            window.show()
+            desk = window.open_career(owner)
+            walk = TacticsWalk('live-team-tactics-' + target, window, owner)
+            fixture = owner.state.campaign.next_fixture
+            try:
+                desk.highlight(PLAY_NEXT)
+                key(window, Qt.Key.Key_Return)
+                walk.run()
+                controller = walk.out['controller']
+                test.assertTrue(walk.out.get('tactics_done'))
+                test.assertIsNone(controller.error)
+                test.assertEqual(owner.state.match_count, count + 1)
+                test.assertTrue(all(not r['requested'] for r in controller.reports))
+                if target == 'half_time':
+                    other = career()
+                    other.state = copy.deepcopy(controller.given._snapshot)
+                    result = play_through_bridge(other, controller.choices, fixture=engine_fixture(fixture), wait=1500)
+                    test.assertEqual(controller.outcome.result, result.result)
+                    test.assertEqual(controller.outcome.memory, result.memory)
+                    test.assertEqual(controller.outcome.events, result.events)
+                    test.assertEqual(owner.state, other.state)
+                print('ACTUAL_UI_TACTICS ' + json.dumps(dict(target=target, edits=8, published_once=True,
+                    commands=controller.choices, actual=walk.out['actual'],
+                    headless_full_memory_events_result_state_equal=target == 'half_time')), flush=True)
+            finally:
+                window.close()
+                window.deleteLater()
+                application.processEvents()
+
+    def test_half_time_all_flags_confirm_before_play_and_match_headless_publication(self):
+        self.run_journey('half_time')
+
+    def test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch(self):
+        self.run_journey('pause')
+
+
 if __name__ == '__main__': unittest.main()
