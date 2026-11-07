@@ -370,3 +370,5 @@ operational status.
 
 - [T191](T191.md): manual-to-build screen/action fidelity matrix (#611).
 - [T192](T192.md): original player-performance stars, preserving raw data (#611).
+
+- [T193](T193.md): aligned player facts and semantic label/value colours (#611).
