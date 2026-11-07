@@ -302,6 +302,9 @@ class QualifierWalk(Walk):
             self.out["requests_after_esc"] = controller.requests
 
     def on_menu(self, screen):
+        if screen.phase == "pause" and "requested" not in self.out:
+            key(self.window, Qt.Key.Key_Space)
+            return
         if screen.phase == "stop" and "made_stop" not in self.out and "requested" in self.out:
             self.out["made_stop"] = {"situation": screen.situation.text()}
             key(self.window, Qt.Key.Key_Space)
