@@ -374,3 +374,5 @@ operational status.
 - [T193](T193.md): aligned player facts and semantic label/value colours (#611).
 
 - [T194](T194.md): classify long actual-match scenarios under the approved slow-suite policy (#606).
+
+- [T195](T195.md): original energy-zero injury fitness word/bar (#619).
