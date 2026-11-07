@@ -1,0 +1,18 @@
+test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops (goal2.tests.test_live_team_tactics_610.TacticTransport.test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops) ... ERROR
+
+======================================================================
+ERROR: test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops (goal2.tests.test_live_team_tactics_610.TacticTransport.test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_live_team_tactics_610.py", line 31, in test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops
+    jobs.answer('token', [], changes)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_jobs.py", line 650, in answer
+    raise ValueError('substitutions can only be edited at a legal stopped bench')
+ValueError: substitutions can only be edited at a legal stopped bench
+
+----------------------------------------------------------------------
+Ran 1 test in 0.011s
+
+FAILED (errors=1)
+EXPECTED: actual bridge rejects paused tactics before any send

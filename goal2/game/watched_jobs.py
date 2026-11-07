@@ -646,8 +646,12 @@ class WatchedJobs:
         changes = _changes(changes or {})
         if changes.get('edit_only'):
             data = self.waiting.data
-            if data.get('context') not in ('half_time', 'substitution') or not data.get('substitutions_now'):
-                raise ValueError('substitutions can only be edited at a legal stopped bench')
+            legal_bench = data.get('context') in ('half_time', 'substitution') and data.get('substitutions_now')
+            paused_tactics = (data.get('context') in ('pause', 'extra_time') and not pairs
+                              and bool(changes.get('tactics'))
+                              and not (set(changes) - {'tactics', 'edit_only'}))
+            if not (legal_bench or paused_tactics):
+                raise ValueError('only team tactics can be edited here; substitutions need a legal stopped bench')
         decision = self._decisions
         if changes:
             self._command(token, lambda engine: engine.answer(decision, pairs, changes=changes))

@@ -14,6 +14,37 @@ class TacticTransport(unittest.TestCase):
                 _changes({'tactics': value})
 
 
+    def test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops(self):
+        from goal2.game.watched_jobs import WatchedJobs
+        def prepared(context, allowed):
+            jobs = object.__new__(WatchedJobs)
+            jobs.waiting = SimpleNamespace(data={'context': context, 'substitutions_now': allowed})
+            jobs._decisions = 7
+            jobs._check_token = lambda token: None
+            calls = []
+            engine = SimpleNamespace(answer=lambda number, pairs, changes=None: calls.append((number, pairs, changes)))
+            jobs._command = lambda token, send: send(engine)
+            return jobs, calls
+        for context, allowed in [('pause', False), ('extra_time', False), ('half_time', True)]:
+            jobs, calls = prepared(context, allowed)
+            changes = {'tactics': {5: False, 8: True}, 'edit_only': True}
+            jobs.answer('token', [], changes)
+            self.assertEqual(calls, [(7, [], changes)])
+            self.assertIsNone(jobs.waiting)
+            self.assertEqual(jobs._decisions, 8)
+            with self.assertRaises(ValueError): jobs.answer('token', [], changes)
+        for context in ('pause', 'extra_time'):
+            for pairs, extra in [([(11, 12)], {}), ([], {'positions': {11: 2}}),
+                                  ([], {'own_tactics': {11: {1: True}}}), ([], {'marking': {11: 12}})]:
+                jobs, calls = prepared(context, False)
+                waiting = jobs.waiting
+                with self.assertRaises(ValueError):
+                    jobs.answer('token', pairs, dict(tactics={5: True}, edit_only=True, **extra))
+                self.assertIs(jobs.waiting, waiting)
+                self.assertEqual(jobs._decisions, 7)
+                self.assertEqual(calls, [])
+
+
 @requires.need(modules=('PySide6', 'pygame'), **requires.HALFTIME)
 class LiveTeamTactics(unittest.TestCase):
     def setUp(self):
@@ -304,6 +335,8 @@ class ActualLiveTeamTactics(unittest.TestCase):
                         if row == 0 and editor.pending: shot(self.window, 'pending')
                         pump(lambda: not editor.pending or controller.error, 60, 'original did not confirm team tactic')
                         test.assertIsNone(controller.error)
+                        test.assertEqual(len(controller.choices), choices + row + 1, editor.message)
+                        test.assertEqual(editor.message, '')
                         byte ^= 1 << (element - 1)
                         test.assertEqual(editor.answer.team_tactics, byte)
                         test.assertEqual(controller.stop.data['tactics'], byte)
