@@ -1,0 +1,21 @@
+test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation) ... ERROR
+
+======================================================================
+ERROR: test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation (goal2.tests.test_stopped_bench_t188.EditedResultSchema.test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_stopped_bench_t188.py", line 72, in test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation
+    validate_result(value)
+    ~~~~~~~~~~~~~~~^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_schema.py", line 68, in validate_result
+    _details(result,competitive=competitive)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2/goal2/game/watched_schema.py", line 197, in _details
+    raise ValueError('invalid stopped-edit decision')
+ValueError: invalid stopped-edit decision
+
+----------------------------------------------------------------------
+Ran 1 test in 0.025s
+
+FAILED (errors=1)
+EXPECTED: completed paused tactical history rejected before publication

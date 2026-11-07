@@ -191,7 +191,12 @@ def _details(result,*,competitive=False):
             if result['shootout'] is None:raise ValueError('shootout order without shootout')
             continue
         edit={'edit_only'} if isinstance(answer,dict) and 'edit_only' in answer else set()
-        if edit and (result['kit']!='4' or row['context'] not in ('half_time','substitution')
+        paused_tactics = (isinstance(answer,dict) and row['context'] in ('pause','extra_time')
+            and isinstance(answer.get('tactics'),list) and 1 <= len(answer['tactics']) <= 8
+            and all(isinstance(e,(list,tuple)) and len(e)==2 and integer(e[0],1,8)
+                    and type(e[1]) is bool for e in answer['tactics'])
+            and all(answer.get(k)==[] for k in ('substitutions','positions','marking','own_tactics')))
+        if edit and (result['kit']!='4' or not (row['context'] in ('half_time','substitution') or paused_tactics)
                      or answer['edit_only'] is not True or answer.get('quick') is not False
                      or answer.get('speed') is not None):
             raise ValueError('invalid stopped-edit decision')

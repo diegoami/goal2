@@ -62,6 +62,25 @@ class EditedResultSchema(unittest.TestCase):
             validate_result(value)
             self.assertEqual(value,before)
 
+    def test_tactics_only_pause_and_extra_time_edits_roundtrip_without_mutation(self):
+        import copy
+        from goal2.game.watched_schema import validate_result
+        for context in ('pause', 'extra_time'):
+            value = self.result(context)
+            value['decisions'][0]['answer'].update(substitutions=[], tactics=[[5, False], [8, True]])
+            before = copy.deepcopy(value)
+            validate_result(value)
+            self.assertEqual(value, before)
+            for field, entries in [('substitutions', [[1, 12]]), ('positions', [[1, 2]]),
+                                    ('marking', [[1, 12]]), ('own_tactics', [[1, [[1, True]]]])]:
+                bad = copy.deepcopy(before)
+                bad['decisions'][0]['answer'][field] = entries
+                with self.assertRaises(ValueError): validate_result(bad)
+            for entries in ([], [[9, True]], [[5, 1]]):
+                bad = copy.deepcopy(before)
+                bad['decisions'][0]['answer']['tactics'] = entries
+                with self.assertRaises(ValueError): validate_result(bad)
+
     def test_malformed_or_in_play_flags_and_other_unknown_fields_are_rejected(self):
         from goal2.game.watched_schema import validate_result
         for field,value in [('edit_only',False),('edit_only',1),('edit_only','true'),
