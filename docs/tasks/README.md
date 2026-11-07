@@ -367,3 +367,6 @@ operational status.
 - [T189](T189.md): focused PR checks and full validation at integrated milestones (#606).
 
 - [T190](T190.md): explicit stopped-match return paths and consumed request status (#612).
+
+- [T191](T191.md): manual-to-build screen/action fidelity matrix (#611).
+- [T192](T192.md): original player-performance stars, preserving raw data (#611).

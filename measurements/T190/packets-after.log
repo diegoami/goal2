@@ -1,0 +1,24 @@
+test_cancel_and_poll_failure_clear_requested_without_publication (goal2.tests.test_stop_return_t190.StopReturn.test_cancel_and_poll_failure_clear_requested_without_publication) ... This plugin does not support propagateSizeHints()
+ok
+test_dropped_request_clears_status (goal2.tests.test_stop_return_t190.StopReturn.test_dropped_request_clears_status) ... This plugin does not support propagateSizeHints()
+ok
+test_failed_request_reports_failure_and_allows_a_later_request (goal2.tests.test_stop_return_t190.StopReturn.test_failed_request_reports_failure_and_allows_a_later_request) ... This plugin does not support propagateSizeHints()
+ok
+test_half_and_injury_returns_explain_play_without_advancing (goal2.tests.test_stop_return_t190.StopReturn.test_half_and_injury_returns_explain_play_without_advancing) ... This plugin does not support propagateSizeHints()
+ok
+test_held_stop_cannot_request_another_stop (goal2.tests.test_stop_return_t190.StopReturn.test_held_stop_cannot_request_another_stop) ... This plugin does not support propagateSizeHints()
+ok
+test_mouse_back_and_play_use_the_same_explicit_return (goal2.tests.test_stop_return_t190.StopReturn.test_mouse_back_and_play_use_the_same_explicit_return) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_confirmed_and_refused_edits_keep_single_submission (goal2.tests.test_stop_return_t190.StopReturn.test_pending_confirmed_and_refused_edits_keep_single_submission) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_plain_pause_returns_once_and_repeat_cannot_request_again (goal2.tests.test_stop_return_t190.StopReturn.test_plain_pause_returns_once_and_repeat_cannot_request_again) ... This plugin does not support propagateSizeHints()
+ok
+test_stop_arrival_consumes_requested_status_at_pause_half_and_injury (goal2.tests.test_stop_return_t190.StopReturn.test_stop_arrival_consumes_requested_status_at_pause_half_and_injury) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 8.706s
+
+OK

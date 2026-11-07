@@ -312,9 +312,26 @@ class ActualLiveTeamTactics(unittest.TestCase):
                 frame = pitch.controller.display.frame
                 if (target == 'pause' and frame is not None and frame['minute'] >= 5
                         and not self.out.get('requested')):
-                    before_requests = pitch.controller.requests
+                    import time
+                    from goal2.game.watched_jobs import LEAD
+                    controller = pitch.controller
+                    controller.commentary_paused = True
+                    boundary = controller.acked + LEAD
+                    deadline = time.monotonic() + 120
+                    try:
+                        while controller.bridge._match.received_frames - 1 < boundary:
+                            if any(kind == 'decision' for kind, value in controller.bridge._match.replies):
+                                return  # answer the natural stop before requesting a pause
+                            test.assertLess(time.monotonic(), deadline, 'worker did not fill sample lead')
+                            application.processEvents()
+                            time.sleep(.001)
+                        test.assertEqual(controller.bridge._match.received_frames - 1, boundary)
+                    finally:
+                        controller.commentary_paused = False
+                    before_requests = controller.requests
                     key(self.window, Qt.Key.Key_Escape)
-                    self.out['requested'] = pitch.controller.requests > before_requests
+                    self.out['requested'] = controller.requests > before_requests
+                    self.out['pause_after'] = boundary
 
             def on_menu(self, screen):
                 wanted = 'pause' if target == 'pause' else 'half'
@@ -402,17 +419,17 @@ class ActualLiveTeamTactics(unittest.TestCase):
                 test.assertIsNone(controller.error)
                 test.assertEqual(owner.state.match_count, count + 1)
                 test.assertTrue(all(not r['requested'] for r in controller.reports))
-                if target == 'half_time':
-                    other = career()
-                    other.state = copy.deepcopy(controller.given._snapshot)
-                    result = play_through_bridge(other, controller.choices, fixture=engine_fixture(fixture), wait=1500)
-                    test.assertEqual(controller.outcome.result, result.result)
-                    test.assertEqual(controller.outcome.memory, result.memory)
-                    test.assertEqual(controller.outcome.events, result.events)
-                    test.assertEqual(owner.state, other.state)
+                other = career()
+                other.state = copy.deepcopy(controller.given._snapshot)
+                result = play_through_bridge(other, controller.choices, fixture=engine_fixture(fixture), wait=1500,
+                                             pause_after=walk.out.get('pause_after'))
+                test.assertEqual(controller.outcome.result, result.result)
+                test.assertEqual(controller.outcome.memory, result.memory)
+                test.assertEqual(controller.outcome.events, result.events)
+                test.assertEqual(owner.state, other.state)
                 print('ACTUAL_UI_TACTICS ' + json.dumps(dict(target=target, edits=8, published_once=True,
                     commands=controller.choices, actual=walk.out['actual'],
-                    headless_full_memory_events_result_state_equal=target == 'half_time')), flush=True)
+                    headless_full_memory_events_result_state_equal=True)), flush=True)
             finally:
                 window.close()
                 window.deleteLater()

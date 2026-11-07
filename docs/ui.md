@@ -341,7 +341,7 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
   [designed: owner playtest2026-11-05, #599; supersedes T180's queued/deferred UI] At a legal stop, **Enter** on
   two players in either order sends one edit-only answer. The original's returned decision updates the squad
   and counter immediately, before Play; repeat input is held until that reply. Refused pairs stay at the usable
-  stopped squad with honest on/off feedback. Esc returns to S15; Play solely continues. [confirmed: original
+  stopped squad with honest on/off feedback. Esc returns to S15; Play or a further Esc continues. [confirmed: original
   T156-R1 steps124–137] Half-time exchanges already appear in SELECT TEAM before Play.
 - **Legal stopped bench cue** [confirmed: owner #608; original `t156-124-halftime-bench.png`]: **MAKE SUBSTITUTIONS NOW** blinks bright green while another immediate swap can be made. The text keeps its space and accessible name during the dark phase. It stops blinking while an edit is awaiting confirmation, with no substitutions left, or when the bench is hidden. [designed: #608] Paint phases are 500 ms; the original cadence has not been measured.
 - **Esc or Enter on S17** requests an ordinary in-play pause, then opens the match menu with team tactics and players [designed: owner #610/#612]. Substitution pairs cannot be queued at that pause; supported **R**, **C** positions and **T** personal tactics remain available. The obsolete bench-request
@@ -456,3 +456,7 @@ named-goal F3 playback, atomic replacement, damaged-file refusal and F4's frozen
 watched match with replay and compares the published career and result to the same bridge match with the same
 answers. `python -m goal2.ui --screenshot DIR` adds the goal questions, replay, name boxes, summary question,
 saved-goal menu and F3/F4 lists.
+
+### Returning from a stopped match
+
+[confirmed: original0791:ED8A; measurements/610-live-team-tactics/original-esc-v1; owner #610/#612] Esc returns from player tactics to the squad, and from the squad to the match menu. At an active pause, half-time, substitution or extra-time menu, Esc resumes through the same XI validation as Play. Before kick-off and after full time, Esc selects and explains Play/Exit. A held Esc/Enter does not repeat across these transitions; directional repeats and later discrete key presses remain usable. Stop arrival consumes the outstanding “bench requested” status; dropped/failed requests and match cancellation cannot retain that obsolete note. Pending edits keep their screen until the engine confirms or refuses them. The manual/player-card audit (#611) remains separate required work.

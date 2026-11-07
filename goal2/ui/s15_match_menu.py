@@ -48,10 +48,10 @@ WATCH = "Do you want to watch this match? (Y/N)"   # [confirmed: E031 C35, "Do y
 
 
 class MenuScreen(Screen):
-    escape_text = None
+    escape_text = "select Play / Exit"
 
     def __init__(self, window, day, phase, score=(0, 0)):
-        self.escape_text = "resume match" if phase in ("pause", "half", "stop", "extra") else None
+        self.escape_text = "resume match" if phase in ("pause", "half", "stop", "extra") else "select Play / Exit"
         super().__init__(window)
         self.day, self.phase = day, phase
         model, fixture = day.model, day.fixture
@@ -229,16 +229,22 @@ class MenuScreen(Screen):
         self._refresh_bar()
         self.say("You watch this match." if watch else "A quick result: the pitch shows HANG ON A TICK.")
 
+    def escape(self):
+        # [confirmed: original 0791:ED8A; measurements/610-live-team-tactics/original-esc-v1]
+        # Active-menu Esc resumes through the same XI validation as Play.
+        if self.phase in ("pause", "half", "stop", "extra"):
+            return self.press_play()
+        self.highlight(self.options.index(self.play))
+        action = "Exit" if self.phase == "full" else "Play"
+        self.say(f"Choose {action} or press Enter to " +
+                 ("return to the desk." if self.phase == "full" else
+                  "continue. The match stays stopped until you choose Play."))
+
     def press_play(self):
         if self.phase == "before" and self.day.watch is None and self.day.asks_watch(self.model, self.day.fixture):
             self.say("Answer the question first: Y to watch, N for a quick result.")
             return None
         return self.day.play(self)
-
-    def escape(self):
-        # [confirmed: original 0791:ED8A] Esc leaves an in-match menu via original XI validation.
-        if self.phase in ("pause", "half", "stop", "extra"):
-            return self.press_play()
 
     # The actions.
     def during(self):

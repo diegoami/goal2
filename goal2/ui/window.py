@@ -110,8 +110,8 @@ class Window(QMainWindow):
 
     # Keys go to the current screen; a screen with a typed line (S03's year, S04's name) sees the key's text first.
     def keyPressEvent(self, event):
-        # [designed: owner #612] One held Esc must not cross screens and reopen the bench.
-        if event.key() == Qt.Key.Key_Escape and event.isAutoRepeat():
+        # [designed: owner #612] A held key must not cross screen boundaries.
+        if event.isAutoRepeat() and event.key() in (Qt.Key.Key_Escape, Qt.Key.Key_Return, Qt.Key.Key_Enter):
             event.accept()
             return
         screen = self.current()
