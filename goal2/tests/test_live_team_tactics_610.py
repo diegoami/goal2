@@ -113,6 +113,28 @@ class LiveTeamTactics(unittest.TestCase):
         self.assertIs(self.window.current(), self.pitch)
         self.assertEqual(self.sent[-1], ([], None))
 
+    def test_managed_tactics_work_from_both_home_and_away_menu_columns(self):
+        from dataclasses import replace
+        from PySide6.QtCore import Qt
+        from goal2.ui.s15_match_menu import MenuScreen
+        self.prepare('half_time')
+        fixture = self.day.fixture
+        seen = set()
+        byte = self.original_tactics
+        for current in (fixture, replace(fixture, side_a=fixture.side_b, side_b=fixture.side_a)):
+            self.window.pop()
+            self.day.fixture = current
+            self.menu = self.window.push(MenuScreen(self.window, self.day, 'half'))
+            seen.add(self.model.state.managed_country == self.menu.away_country)
+            screen = self.open_tactics()
+            self.key(Qt.Key.Key_Return)
+            byte ^= 16
+            self.deliver(byte)
+            self.assertEqual(screen.answer.team_tactics, byte)
+            self.key(Qt.Key.Key_Escape)
+            self.assertIs(self.window.current(), self.menu)
+        self.assertEqual(seen, {False, True})
+
     def test_extra_time_tactics_are_editable_without_creating_substitution_pairs(self):
         from PySide6.QtCore import Qt
         self.prepare('extra_time')
@@ -303,7 +325,7 @@ class ActualLiveTeamTactics(unittest.TestCase):
                     test.assertNotEqual(controller.note, REQUESTED)
                     test.assertEqual(len(controller.choices), choices + 9)
                     return
-                if screen.phase == 'stop':
+                if screen.phase == 'stop' and any(w in self.window.match_day.bench.injured for w in self.window.match_day.bench.eleven):
                     key(self.window, Qt.Key.Key_Space)
                 else:
                     play_on(self.window, screen)
