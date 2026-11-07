@@ -372,3 +372,5 @@ operational status.
 - [T192](T192.md): original player-performance stars, preserving raw data (#611).
 
 - [T193](T193.md): aligned player facts and semantic label/value colours (#611).
+
+- [T194](T194.md): classify long actual-match scenarios under the approved slow-suite policy (#606).
