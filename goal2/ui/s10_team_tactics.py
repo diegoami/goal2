@@ -4,7 +4,9 @@
 line with its value now and the other option, in the original's order: defence system, protection, offside, then
 the player defaults positioning, possession, passing, tackling and marking [confirmed: F010, the team tactics
 screen 1771:1981 lists element DS:6BBF[row]: 5, 6, 7, 1, 2, 3, 4, 8; the words from goal2.game.country_card,
-F008]. ↑↓ choose a line, Enter changes it through `DesktopModel.set_team_tactic`, Esc returns. A click on a line
+F008]. ↑↓ choose a line; before a match Enter uses `DesktopModel.set_team_tactic`.
+[designed: owner #610] At a match stop Enter submits a team-tactics-only original menu edit; the returned
+decision confirms the actual flag before further input. Career state is published only at full time. Esc returns. A click on a line
 moves the cursor to it, a click on the highlighted line is Enter [designed: T165].
 
 The formation is counted from the eleven's lines [derived: goal2/game/country_card.py; today's Team tactics]. The
@@ -38,12 +40,18 @@ def words(state, element):
 
 
 class TeamTacticsScreen(Screen):
+    preserve_player_edits = True
     title = "team tactics"
     escape_text = "desk"
 
-    def __init__(self, window, model):
+    def __init__(self, window, model, *, answer=None, apply=None):
+        self.escape_text = "match menu" if answer is not None else "desk"
         super().__init__(window)
         self.model = model
+        self.answer, self.apply = answer, apply
+        self.pending = False
+        self.message = ""
+        self._requested = None
         self.line = 0
         self.changed = None
         self._build()
@@ -112,6 +120,9 @@ class TeamTacticsScreen(Screen):
         model, state = self.model, self.model.state
         view = model.view()
         rows, eleven = squad_rows(model)
+        if self.answer is not None:
+            rows = [self.answer.card(w) for w in self.answer.words()]
+            eleven = len(self.answer.eleven)
         lineup = rows[:eleven]
         formation = "-".join(str(sum(1 for r in lineup if r["line"] == line))
                              for line in ("defence", "midfield", "attack"))
@@ -124,7 +135,8 @@ class TeamTacticsScreen(Screen):
         self.facts.setText(rich(facts))
         for i, ((name, element), line) in enumerate(zip(LINES, self.rows)):
             clear, set_ = words(state, element)
-            now = state.country_tactics >> (element - 1) & 1
+            byte = state.country_tactics if self.answer is None else self.answer.team_tactics
+            now = byte >> (element - 1) & 1
             line.set((name, set_ if now else clear, clear if now else set_),
                      (theme.TEXT_BRIGHT, theme.TEXT_BRIGHT, theme.TEXT_NORMAL))
             line.set_on(i == self.line)
@@ -132,6 +144,10 @@ class TeamTacticsScreen(Screen):
         if self.changed is not None:
             name, before, after = self.changed
             parts = [(f"Changed just now: {name} {before} → ", None), (after, theme.VALUE), (". " + DEFAULTS, None)]
+        if self.pending:
+            parts = [("Applying team tactics. Waiting for the game to confirm; the match stays paused.", theme.VALUE)]
+        elif self.message:
+            parts = [(self.message, theme.VALUE)]
         self.note.setText(f'<p style="line-height:{LINE_HEIGHT}%">{rich(parts)}</p>')
         self.strip.show_rows(view["country_name"],
                              [(r["role"], r["line"], full_name(model, r["id"])) for r in rows], -1, eleven == 11)
@@ -141,6 +157,7 @@ class TeamTacticsScreen(Screen):
         return [tuple(line.texts()) for line in self.rows]
 
     def choose(self, index):
+        if self.pending: return
         self.line = max(0, min(len(LINES) - 1, index))
         self.refresh()
 
@@ -149,11 +166,39 @@ class TeamTacticsScreen(Screen):
             return self.change()
         return self.choose(index)
 
+    def handle_key(self, key):
+        if self.pending and key != Qt.Key.Key_F1:
+            return True
+        return super().handle_key(key)
+
     def change(self):
+        if self.pending: return
         name, element = LINES[self.line]
         _, before, after = self.lines()[self.line]
-        self.model.set_team_tactic(element)
-        self.changed = (name, before, after)
+        self.message = ""
+        if self.answer is not None:
+            self._requested = (element, not bool(self.answer.team_tactics & (1 << (element - 1))), name, before, after)
+            self.pending = True
+            self.refresh()
+            self.apply(self, self._requested[0], self._requested[1])
+        else:
+            self.model.set_team_tactic(element)
+            self.changed = (name, before, after)
+            self.refresh()
+
+    def applied(self, answer, report):
+        self.answer = answer
+        self.pending = False
+        element, wanted, name, before, after = self._requested
+        if bool(answer.team_tactics & (1 << (element - 1))) == wanted:
+            self.changed = (name, before, after)
+        else:
+            self.changed = None
+            self.message = "The game did not accept that tactic change. The current value is shown."
+        self._requested = None
+        self.refresh()
+
+    def shown(self):
         self.refresh()
 
 

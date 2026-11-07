@@ -1,0 +1,16 @@
+test_extra_time_tactics_are_editable_without_creating_substitution_pairs (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_extra_time_tactics_are_editable_without_creating_substitution_pairs) ... This plugin does not support propagateSizeHints()
+ok
+test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_held_escape_cannot_fall_through_screens_and_request_another_pause (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_held_escape_cannot_fall_through_screens_and_request_another_pause) ... This plugin does not support propagateSizeHints()
+ok
+test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission) ... This plugin does not support propagateSizeHints()
+ok
+test_request_note_clears_when_the_engine_stop_arrives (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_request_note_clears_when_the_engine_stop_arrives) ... This plugin does not support propagateSizeHints()
+ok
+test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes (goal2.tests.test_live_team_tactics_610.TacticTransport.test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 34.736s
+
+OK

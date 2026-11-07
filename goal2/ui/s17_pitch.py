@@ -117,6 +117,7 @@ class MatchController:
         self.commentary_paused = False   # [designed: owner #597] reading holds polling and frame acknowledgements
         self.answered = []        # the stops answered, by context
         self.choices = []         # (context, the answer sent) of every stop answered, in order
+        self._bench_requested = False
         self.requests = 0         # the bench requests sent (Esc, Enter)
         self.note = HANG_ON if quick else ""
         self.given = bridge       # the match day's bridge: kept open after the match (D3)
@@ -191,6 +192,8 @@ class MatchController:
         dropped = getattr(bridge, "dropped_pauses", 0)
         if dropped > self._dropped_pauses and self.note == REQUESTED:
             self.note = ""
+        if dropped > self._dropped_pauses:
+            self._bench_requested = False
         self._dropped_pauses = dropped
         if not bridge.busy:
             return self._full_time()
@@ -222,6 +225,9 @@ class MatchController:
             else:
                 self.released = len(self.events)
                 self.stop = waiting
+                if context in BENCH or context == "extra_time":
+                    self._bench_requested = False
+                    if self.note == REQUESTED: self.note = ""
         changed = False
         if not self.quick and (display.frame is None or self.drawn >= display.frame["sequence"]):
             changed = display.advance(now)
@@ -296,7 +302,7 @@ class MatchController:
     def _answer(self, context, value, requested=()):
         if context in ("set_piece", "shootout_order"):
             self.bridge.choose(self.token, value)
-        elif context in BENCH:
+        elif context in BENCH or context == "extra_time":
             # [designed: T180] the bench's answer: the pairs, with its other changes when there are any
             if isinstance(value, dict):
                 pairs = value.get("substitutions") or []
@@ -321,6 +327,7 @@ class MatchController:
             return
         self._answer(stop.data.get("context"), value if value is not None else [], stop.data.get("requested"))
         if self.note == REQUESTED: self.note = ""
+        self._bench_requested = False
 
     def edit_bench(self, value):
         """[designed: owner #599] One stopped edit; the returned decision stays held before Play."""
@@ -331,6 +338,18 @@ class MatchController:
         changes = dict(value) if isinstance(value, dict) else {"substitutions": list(value)}
         if len(changes.get("substitutions") or []) != 1:
             raise ValueError("select one substitution pair")
+        return self._edit_stopped(changes)
+
+    def edit_tactics(self, elements):
+        """Apply team flags through the original menu and keep its decision stopped."""
+        return self._edit_stopped({"tactics": elements})
+
+    def _edit_stopped(self, changes):
+        if self.edit_pending:
+            return False
+        if self.stop is None or not self.running:
+            raise ValueError("no stopped decision is waiting")
+        changes = dict(changes)
         changes["edit_only"] = True
         self._editing = True
         try:
@@ -376,11 +395,12 @@ class MatchController:
 
     def request_bench(self):
         """Esc or Enter: the original's bench request (`Match.pause` through the bridge)."""
-        if not self.running:
+        if not self.running or self.stop is not None or self.edit_pending or self._bench_requested:
             return False
         sent = self.bridge.pause(self.token)
         if sent:
             self.requests += 1
+            self._bench_requested = True
             self.note = REQUESTED
         return sent
 

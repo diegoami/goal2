@@ -300,8 +300,12 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
                     match.answer(shootout_order=list(value['shootout_order']))
                 else:
                     if value:
-                        raise ValueError('the menu before extra time is answered with no change')
-                    match.answer()
+                        if (not isinstance(value, dict) or set(value) - {'tactics', 'edit_only'}
+                                or not value.get('tactics')):
+                            raise ValueError('the extra-time menu takes team tactics or play on')
+                        match.answer(**value)
+                    else:
+                        match.answer()
                 previous_decision = None
                 continue
             if policy is not None and ev.data['context'] in BENCH_CONTEXTS:

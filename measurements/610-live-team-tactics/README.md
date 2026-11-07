@@ -1,0 +1,11 @@
+# Live team tactics and stop navigation (owner610/612)
+
+Before71cc8170: managed team tactics open read-only at match stops, an ordinary pause goes straight to the player bench, menu Esc is disabled and the stop-request note survives the engine's acknowledgement. Original GOAL.HLP (tactics/the match) allows team edits; original0791:ED8A explicitly accepts Esc when in_match_menu_used, then validates the XI throughEA09 before leaving. Upstream679/PR680 supplies the missing tactics-only edit_only guard at ordinary/extra-time pauses without permitting substitution queueing.
+
+`before.log`: initial six new regressions all fail on untouched main. `before-v2.log`: all eight fail using exact parent stop/tactics handlers and the parent transport schema; no uncommitted source was reset. `after-v1.log`: first six pass. `after-v2.log`:32 focused tests,31pass and one existing slow actual-engine UI test excluded by default,62.690s. Real Qt key focus, mouse-ready handlers, authoritative packet replies, all8flags, reopen/continue once, heldEsc, request coalescing/acknowledgement, pending failures/refusals and personal-draft retention are covered. These packet tests do NOT prove original engine outcomes. Existing physical-memory/RNG/event/publication oracles remain for the real engine proof.
+
+Legacy actual journeys now navigate pause menu→players→menu→pitch while retaining every original outcome assertion. No engine file is edited here; accepted upstream vendor update and real UI/bridge proof are still pending. Full suites remain final-milestone checks. Owner's live Windows Preview and saves remain untouched.
+
+Known additional original gap, discovered proactively: extra-time player substitutions are offered by the original example/engine but the current new window keeps that bench read-only. Team-tactics extra-time edits are included here; do not claim this closes the required611 whole-game fidelity pass or the separate extra-time substitution gap. Further audit also covers performance data, player-card tables and colour roles.
+
+Model inherited Codex GPT-6 family; exact variant unavailable.

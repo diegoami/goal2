@@ -50,7 +50,7 @@ def _choice(value):
 # `Match.answer` as they are (goal2/engine/original_match/match.py): positions {player: code 0..13} (R, C on S19),
 # marking {player: opponent word or 0} (S09's mark line, 1771:49B8) and own_tactics {player: {element 1..4: True,
 # False or None}} (S09's four lines, 1771:4B61). Whether the original takes one is its to decide.
-CHANGES = ('positions', 'marking', 'own_tactics', 'edit_only')
+CHANGES = ('positions', 'marking', 'own_tactics', 'tactics', 'edit_only')
 
 
 def _changes(value):
@@ -60,6 +60,13 @@ def _changes(value):
         raise ValueError('invalid bench changes')
     out = {}
     for name, items in value.items():
+        if name == 'tactics':
+            if (not isinstance(items, dict) or len(items) > 8
+                    or not all(str(e) in tuple(str(n) for n in range(1, 9)) for e in items)
+                    or not all(type(v) is bool for v in items.values())):
+                raise ValueError('invalid bench team tactics')
+            if items: out[name] = {int(e): v for e, v in items.items()}
+            continue
         if name == 'edit_only':
             if type(items) is not bool:
                 raise ValueError('edit_only must be a boolean')

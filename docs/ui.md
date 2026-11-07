@@ -302,7 +302,7 @@ answer the engine receives, sent once, through the bridge, in the order the engi
   The home side is named first.
 - **S15** shows the score, the kind, the location (the home side), the time and both formations and elevens; the
   options with *play* highlighted first: each side's team tactics and players (yours open S10 and S08 before
-  kick-off, also **T** and **Space**; at a break *players* opens the bench S19 and team tactics read only, T180),
+  kick-off, also **T** and **Space**; at a break *players* opens S19 and managed team tactics remain editable, owner #610),
   the tournament, the match stats, and *play* ("choose your captain, then kick-off", "second half") or *exit*.
   **Ins** turns the automatic action replay on or off, stored in the data root's `settings.json`; the replay itself
   is T181's. The watch question comes only where the original asks it (`asks_watch`: kinds 8, 200, 201, 203, and
@@ -344,9 +344,8 @@ player makes on S19 is the pair the engine receives, and every refusal the playe
   stopped squad with honest on/off feedback. Esc returns to S15; Play solely continues. [confirmed: original
   T156-R1 steps124–137] Half-time exchanges already appear in SELECT TEAM before Play.
 - **Legal stopped bench cue** [confirmed: owner #608; original `t156-124-halftime-bench.png`]: **MAKE SUBSTITUTIONS NOW** blinks bright green while another immediate swap can be made. The text keeps its space and accessible name during the dark phase. It stops blinking while an edit is awaiting confirmation, with no substitutions left, or when the bench is hidden. [designed: #608] Paint phases are 500 ms; the original cadence has not been measured.
-- **Esc or Enter on S17** opens the bench at an ordinary in-play pause. Substitution pairs cannot be queued
-  there; supported **R**, **C** positions and **T** personal tactics remain available. The obsolete bench-request
-  note is cleared when returning. Before extra time the route continues to show its read-only bench.
+- **Esc or Enter on S17** requests an ordinary in-play pause, then opens the match menu with team tactics and players [designed: owner #610/#612]. Substitution pairs cannot be queued at that pause; supported **R**, **C** positions and **T** personal tactics remain available. The obsolete bench-request
+  note clears as soon as the engine acknowledges the stop (or drops it). At pause, half-time, substitution and extra-time menus, managed team tactics confirm each changed flag through the original before Play. Esc on an in-match menu follows original0791:ED8A, validating the XI and resuming; a held key cannot fall through screens and request another pause. Extra-time substitution availability remains separately tracked in the required fidelity audit611.
 - Accepted personal settings/marks and known live injury labels survive a squad refresh. An already applied
   pair is cleared and cannot be resubmitted by reopening the screen or pressing Play. The engine kit's older
   queue behavior is retained for reference clients; the player's new-window route does not request it.
