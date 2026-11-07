@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import copy
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 from goal2.ui import theme
@@ -27,6 +27,10 @@ from goal2.ui.squad_card import PlayerCard, Strip, box, colour, full_name, last_
 NO_MORE = "no more substitutes"                 # [confirmed: F027 E544; E015-r0013 state 790]
 UNLIMITED = "substitutions: unlimited (friendly)"   # [designed: owner BM-7, #73]
 MAKE_NOW = "MAKE SUBSTITUTIONS NOW"             # [confirmed: t156-124-halftime-bench.png, "make substitutions now"]
+# [confirmed: original t156-124-halftime-bench.png; owner #608] VGA bright green.
+MAKE_NOW_GREEN = "#55ff55"
+# [designed: #608] Half-second paint phases; the original cadence has not been measured.
+CUE_PHASE_MS = 500
 REQUESTED = "SUBSTITUTION REQUESTED"            # [confirmed: t156-074-bench-requested.png]
 REQUEST = "REQUEST A SUBSTITUTION"              # [designed: T180] the request mode before a pair is chosen
 REFUSED = "SUBSTITUTION NOT MADE"               # [designed: T180] the engine's refusal (squad-substitution-illegal)
@@ -230,6 +234,10 @@ class BenchScreen(Screen):
         self.apply = apply
         self.pending = False
         self.feedback_report = None
+        self.cue_timer = QTimer(self)
+        self.cue_timer.setInterval(CUE_PHASE_MS)
+        self.cue_timer.timeout.connect(self._blink_cue)
+        self._cue_lit = True
         self._build()
         if self.mode != "refused":
             self.bind((Qt.Key.Key_Up,), "", lambda: self.move(-1), captions=("",), shown=False)
@@ -334,6 +342,37 @@ class BenchScreen(Screen):
             self.card.set_card(answer.card(word))
         set_para(self.note, self.line())
         self._refresh_hint()
+        self._sync_cue()
+
+    def _sync_cue(self):
+        """Blink only when this visible squad can make another immediate swap."""
+        available = (self.mode == "now" and self.answer.takes_substitutions
+                     and self.answer.left > 0 and not self.pending)
+        if available and self.isVisible():
+            if not self.cue_timer.isActive():
+                self._cue_lit = True
+                self.cue_timer.start()
+        else:
+            self.cue_timer.stop()
+            self._cue_lit = True
+        colour(self.mode_label, MAKE_NOW_GREEN if available and self._cue_lit
+               else "transparent" if available else theme.VALUE)
+
+    def _blink_cue(self):
+        self._cue_lit = not self._cue_lit
+        self._sync_cue()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self._sync_cue()
+
+    def hideEvent(self, event):
+        self.cue_timer.stop()
+        super().hideEvent(event)
+
+    def closeEvent(self, event):
+        self.cue_timer.stop()
+        super().closeEvent(event)
 
     def line(self):
         """The line under the mode: the refusal's reason, the pairs chosen, or what the screen waits for."""

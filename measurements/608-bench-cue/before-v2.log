@@ -1,0 +1,50 @@
+test_hide_close_and_non_actionable_contexts_have_no_cue_timer (goal2.tests.test_bench_cue.BenchCue.test_hide_close_and_non_actionable_contexts_have_no_cue_timer) ... This plugin does not support propagateSizeHints()
+ERROR
+test_pending_swap_stops_cue_and_confirmed_reply_restores_it (goal2.tests.test_bench_cue.BenchCue.test_pending_swap_stops_cue_and_confirmed_reply_restores_it) ... This plugin does not support propagateSizeHints()
+ERROR
+test_real_timer_blinks_green_without_losing_text_or_moving_roster (goal2.tests.test_bench_cue.BenchCue.test_real_timer_blinks_green_without_losing_text_or_moving_roster) ... This plugin does not support propagateSizeHints()
+FAIL
+test_refused_swap_restores_the_cue_at_the_still_legal_stop (goal2.tests.test_bench_cue.BenchCue.test_refused_swap_restores_the_cue_at_the_still_legal_stop) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_hide_close_and_non_actionable_contexts_have_no_cue_timer (goal2.tests.test_bench_cue.BenchCue.test_hide_close_and_non_actionable_contexts_have_no_cue_timer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_bench_cue.py", line 34, in test_hide_close_and_non_actionable_contexts_have_no_cue_timer
+    self.assertTrue(self.bench.cue_timer.isActive())
+                    ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchScreen' object has no attribute 'cue_timer'
+
+======================================================================
+ERROR: test_pending_swap_stops_cue_and_confirmed_reply_restores_it (goal2.tests.test_bench_cue.BenchCue.test_pending_swap_stops_cue_and_confirmed_reply_restores_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_bench_cue.py", line 63, in test_pending_swap_stops_cue_and_confirmed_reply_restores_it
+    self.assertFalse(self.bench.cue_timer.isActive())
+                     ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchScreen' object has no attribute 'cue_timer'
+
+======================================================================
+ERROR: test_refused_swap_restores_the_cue_at_the_still_legal_stop (goal2.tests.test_bench_cue.BenchCue.test_refused_swap_restores_the_cue_at_the_still_legal_stop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_bench_cue.py", line 74, in test_refused_swap_restores_the_cue_at_the_still_legal_stop
+    self.assertFalse(self.bench.cue_timer.isActive())
+                     ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchScreen' object has no attribute 'cue_timer'
+
+======================================================================
+FAIL: test_real_timer_blinks_green_without_losing_text_or_moving_roster (goal2.tests.test_bench_cue.BenchCue.test_real_timer_blinks_green_without_losing_text_or_moving_roster)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_bench_cue.py", line 23, in test_real_timer_blinks_green_without_losing_text_or_moving_roster
+    self.assertGreater(self.green_pixels(), 0, 'the original legal-stop cue is bright green')
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 0 : the original legal-stop cue is bright green
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.466s
+
+FAILED (failures=1, errors=3)
+EXPECTED: all four new cue regressions fail on parent605
