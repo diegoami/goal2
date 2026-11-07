@@ -49,8 +49,8 @@ class CountryCard(unittest.TestCase):
             self.assertEqual(sum(int(n) for n in c['formation'].split('-')), 10, c['name'])
             self.assertEqual(len(c['eleven']), 11)
             self.assertTrue(c['manager'].strip())
-        self.assertEqual(set(c['not_decoded']), {'status', 'skill', 'ranking top', 'strips', 'team skills',
-                                                 'performance', 'characteristics'})
+        # [derived: T197/F034–F038] Delivered panel fields are now supplied by the career route.
+        self.assertEqual(set(c['not_decoded']), {'ranking top', 'strips'})
         self.assertEqual(NOT_DECODED, 'not decoded yet (G05)')
         with self.assertRaises(ValueError):
             card(self.model.state, 0, self.model.goaldat)
