@@ -55,7 +55,7 @@ class FreshStoppedRoles(unittest.TestCase):
         from goal2.ui.s19_bench import BenchAnswer
         from goal2.ui.s10_team_tactics import LINES, words
         from goal2.game import roles
-        from goal2.game.player_card import _Memory
+        from goal2.game.player_card import _wrap_raw
         from unittest.mock import patch
         LiveTeamTactics.setUp(self)
         LiveTeamTactics.prepare(self, 'half_time')
@@ -77,9 +77,9 @@ class FreshStoppedRoles(unittest.TestCase):
             screen.answer=answer
             with patch.object(answer,'card',side_effect=AssertionError('full card redecoded')),patch.object(
                     self.model,'view',side_effect=AssertionError('full career view redecoded')),patch(
-                    'goal2.game.player_card._Memory',wraps=_Memory) as memory:
+                    'goal2.game.player_card._wrap_raw',wraps=_wrap_raw) as memory:
                 screen.refresh()
-            self.assertEqual(memory.call_count,1,'one reader serves all eight tactic word pairs')
+            self.assertEqual(memory.call_count,1,'exactly one actual shared image read serves this live refresh')
             self.assertEqual(screen.strip.rows[slot].texts()[0],roles.role(self.model.state,position,cache=table)[0])
             lines=[roles.role(self.model.state,answer.position(w),cache=table)[1] for w in answer.eleven]
             formation='-'.join(str(lines.count(line)) for line in ('defence','midfield','attack'))
