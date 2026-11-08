@@ -17,7 +17,7 @@ The engine kit's legacy queue API remains available to reference clients; this p
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QSizePolicy, QPushButton
 
 from goal2.ui import theme
 from goal2.ui.live_cards import player_snapshot, card_state
@@ -69,6 +69,8 @@ class BenchAnswer:
         self.team_tactics = data.get("tactics", model.state.country_tactics)
         self.substitution_requested = data.get("request_substitution")
         self.now = bool(data.get("substitutions_now", self.context != "pause"))
+        # Presentation lifecycle, independent of guest legality/request state.
+        self.opportunity_visible = self.context == "substitution"
         self.injured = set(data.get("injured") or [])
         self.injured.difference_update(self.live_records)
         self.injured.update(w for w,record in self.live_records.items() if record[14] == 0)
@@ -256,7 +258,7 @@ class BenchScreen(Screen):
     def __init__(self, window, model, answer, *, mode=None, names=("", ""), back=None, report=None, apply=None, request=None):
         self.mode = mode or ("refused" if report is not None else "view" if answer.context not in ("half_time", "substitution", "pause")
                              else "now" if answer.now else "request")
-        self.escape_text = {"now": "match menu", "request": "back to the match", "view": "match menu",
+        self.escape_text = {"now": "match menu", "request": "match menu", "view": "match menu",
                             "refused": "back to the match"}[self.mode]
         self.title = f"{names[0]} v {names[1]} · players"
         super().__init__(window)
@@ -302,6 +304,9 @@ class BenchScreen(Screen):
         self.mode_label.setSizePolicy(QSizePolicy.Policy.Fixed,QSizePolicy.Policy.Preferred)
         colour(self.mode_label,theme.VALUE)
         row.addWidget(self.mode_label)
+        self.request_button = QPushButton()
+        self.request_button.clicked.connect(self.toggle_request)
+        row.addWidget(self.request_button)
         self.counter=label("","benchCounter")
         row.addWidget(self.counter)
         self.context=label("","benchMetadata")
@@ -354,11 +359,16 @@ class BenchScreen(Screen):
         elif self.mode == "view":
             self.mode_label.setText(VIEW)
         elif self.mode == "now":
-            self.mode_label.setText(MAKE_NOW)
+            self.mode_label.setText(MAKE_NOW if answer.context == "half_time" else
+                                    "SUBSTITUTION OPPORTUNITY" if answer.opportunity_visible else
+                                    "SUBSTITUTION CONFIRMED")
         elif answer.can_request_substitution:
             self.mode_label.setText("SUBSTITUTION REQUESTED" if answer.substitution_requested else "REQUEST SUBSTITUTION")
         else:
             self.mode_label.setText("SUBSTITUTIONS ONLY AT STOPPAGES")
+        self.request_button.setVisible(answer.can_request_substitution)
+        self.request_button.setEnabled(answer.can_request_substitution and not self.pending)
+        self.request_button.setText("Cancel request" if answer.substitution_requested else "Request substitution")
         left = self.report["substitutions_left"] if self.report is not None else None
         self.counter.setText(answer.counter(left))
         names = self.names
@@ -395,7 +405,8 @@ class BenchScreen(Screen):
     def _sync_cue(self):
         """Blink only when this visible squad can make another immediate swap."""
         available = (self.mode == "now" and self.answer.takes_substitutions
-                     and self.answer.left > 0 and not self.pending)
+                     and self.answer.left > 0 and not self.pending
+                     and (self.answer.context == "half_time" or self.answer.opportunity_visible))
         if available and self.isVisible():
             if not self.cue_timer.isActive():
                 self._cue_lit = True
@@ -522,11 +533,7 @@ class BenchScreen(Screen):
             return
         self.message = ""
         if self.answer.can_request_substitution and self.request is not None:
-            self._request_desired = not self.answer.substitution_requested
-            self.pending = True
-            self.refresh()
-            self.request(self, self._request_desired)
-            return
+            return self.toggle_request()
         if not self.answer.takes_substitutions:
             self.message = "Substitutions are available only at a legal stoppage."
             self.refresh()
@@ -538,6 +545,15 @@ class BenchScreen(Screen):
             self.apply(self)
         else:
             self.refresh()
+
+    def toggle_request(self):
+        """[designed: T203/#662] Player Enter and explicit button share one latch edit."""
+        if self.pending or not self.answer.can_request_substitution or self.request is None:
+            return
+        self._request_desired = not self.answer.substitution_requested
+        self.pending = True
+        self.refresh()
+        self.request(self, self._request_desired)
 
     def reposition(self):
         if self.pending: return

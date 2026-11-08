@@ -280,7 +280,8 @@ class MatchDay:
                                    lambda key: self._stop_menu())
         if context == "pause":
             from goal2.ui.s15_match_menu import MenuScreen
-            return self.window.push(MenuScreen(self.window, self, "pause", decision.score))
+            self.window.push(MenuScreen(self.window, self, "pause", decision.score))
+            return self.open_bench()
         if context == "shootout_order":
             # [confirmed: e031-shootout-start.png] the shoot-out's notice before its order
             return pitch.show_stop(s18_stop.NOTICE_SHOOTOUT, s18_stop.SHOOTOUT,
@@ -429,6 +430,10 @@ class MatchDay:
                 answer.first = previous.first
             answer.live_own = {**previous.live_own, **answer.live_own}
             answer.live_marking = {**previous.live_marking, **answer.live_marking}
+        # [designed: T203/#662] Presentation clears only on a confirmed swap;
+        # guest permission and the independent request latch remain authoritative.
+        if previous is not None:
+            answer.opportunity_visible = previous.opportunity_visible and not bool(report and report.get("made"))
         self.bench = answer
         self._bench_feedback = report
         screen = getattr(self, "_editing_screen", None)
@@ -436,6 +441,10 @@ class MatchDay:
         self._editing_operation = None
         if screen is not None:
             screen.applied(answer, report)
+        for menu in self.window.stack:
+            if type(menu).__name__ == "MenuScreen":
+                menu.refresh_accepted()
+        pitch.refresh()
 
     def _bench_played(self, pitch):
         """S19's Esc at a pause: the bench's answer is sent once and the match plays on."""

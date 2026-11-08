@@ -183,6 +183,11 @@ class TeamTacticsScreen(Screen):
             facts += [(" · next ", None), (model.goaldat.country_names[opponent], theme.TEXT_BRIGHT)]
         card = {**card, 'formation':formation, 'eleven':[r['role'] for r in lineup]}
         self.team_header.set_card(card)
+        if self.answer is not None:
+            if getattr(self.answer, "opportunity_visible", False):
+                facts += [(" · SUBSTITUTION OPPORTUNITY", theme.VALUE)]
+            elif getattr(self.answer, "substitution_requested", False):
+                facts += [(" · SUBSTITUTION REQUESTED", theme.VALUE)]
         self.facts.setText(rich(facts))
         for i, ((name, element), line) in enumerate(zip(LINES, self.rows)):
             clear, set_ = words(state, element, memory=memory)
