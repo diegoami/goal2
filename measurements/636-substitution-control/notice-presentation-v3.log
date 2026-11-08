@@ -1,0 +1,23 @@
+test_old_timers_cannot_answer_the_next_notice_and_generic_detail_style_is_restored (goal2.tests.test_substitution_ui_636.Lifecycle.test_old_timers_cannot_answer_the_next_notice_and_generic_detail_style_is_restored) ... This plugin does not support propagateSizeHints()
+ok
+test_timeout_closes_only_the_notice_and_does_not_invent_request_cancellation (goal2.tests.test_substitution_ui_636.Lifecycle.test_timeout_closes_only_the_notice_and_does_not_invent_request_cancellation) ... This plugin does not support propagateSizeHints()
+ok
+test_heading_scales_with_the_page_and_the_notice_stays_inside_the_lower_pitch (goal2.tests.test_substitution_ui_636.OpportunityScaling.test_heading_scales_with_the_page_and_the_notice_stays_inside_the_lower_pitch) ... This plugin does not support propagateSizeHints()
+ok
+test_cancel_preserves_false_and_personal_drafts_across_both_acknowledgements (goal2.tests.test_substitution_ui_636.RequestUI.test_cancel_preserves_false_and_personal_drafts_across_both_acknowledgements) ... This plugin does not support propagateSizeHints()
+ok
+test_enter_requests_without_choosing_a_player_or_advancing (goal2.tests.test_substitution_ui_636.RequestUI.test_enter_requests_without_choosing_a_player_or_advancing) ... This plugin does not support propagateSizeHints()
+ok
+test_opportunity_escape_opens_legal_bench_then_escape_leaves_a_play_menu (goal2.tests.test_substitution_ui_636.RequestUI.test_opportunity_escape_opens_legal_bench_then_escape_leaves_a_play_menu) ... This plugin does not support propagateSizeHints()
+ok
+test_zero_budget_acknowledges_actual_false_without_inventing_acceptance (goal2.tests.test_substitution_ui_636.RequestUI.test_zero_budget_acknowledges_actual_false_without_inventing_acceptance) ... This plugin does not support propagateSizeHints()
+ok
+test_keeper_uses_its_own_deadline_and_closed_notice_cannot_fire (goal2.tests.test_substitution_ui_636.TimedOpportunity.test_keeper_uses_its_own_deadline_and_closed_notice_cannot_fire) ... This plugin does not support propagateSizeHints()
+ok
+test_timer_metadata_blink_colours_and_exactly_once_timeout (goal2.tests.test_substitution_ui_636.TimedOpportunity.test_timer_metadata_blink_colours_and_exactly_once_timeout) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 7.978s
+
+OK

@@ -139,11 +139,27 @@ The historical matrix above predates several independently verified corrections.
 | Screens | Later evidence and remaining limit |
 | --- | --- |
 | S04/S07 | T197/T198 supply the original-backed status, skill, line skills/performance and characteristic panels, including original XI caps/age. T200/T201 supply stored Now/Top rank columns and raw strip attributes/monochrome presentation. Their all-country/original-snapshot and rendered/native receipts do not prove an entire season or live-card freshness. |
-| S08/S09/S16/S19 cards | T192 decodes original signed16 performance stars/sentinel behavior; T193 restores aligned facts and label/value contrast; T195 supplies the original energy-zero injury fitness display. T196 transports opt-in current records, but wire acceptance alone is not proof that every UI card requests and consumes them. Issue619 owns that remaining UI acceptance. |
+| S08/S09/S16/S19 cards | T192 decodes original signed16 performance stars/sentinel behavior; T193 restores aligned facts and label/value contrast; T195 supplies the original energy-zero injury fitness display. T196 transports opt-in current records. [The bounded619 UI proofs](../../../measurements/619-live-cards/README.md) now cover explicit UI requests, current immutable20-record S19/S09 views, encountered S16 takers, natural energy/performance changes, swaps and accepted/pending personal settings. Original-opcode replay compares complete decisions; exact sealed UI/PyPy result/events/RNG/memory/career comparisons are retained. S16 order input has a constructed packet/Qt control; a complete extra-time/shoot-out manual journey remains separate. |
 | S10/S15/S17/S19 | PR614's actual original/PyPy/Qt journeys cover live team tactics, pending confirmation and Esc continuation. Source-bound captures and equality receipts are under [610-live-team-tactics](../../../measurements/610-live-team-tactics/README.md). S10's separate characteristic panel still uses explicit placeholders; S04/S07 panel acceptance does not cover it. |
 | S02/S03/S04/S06/S08/S09/S10/S21 | The [fresh management/save audit](../../../measurements/T191/fresh-management/README.md) starts a career through ordinary UI inputs, browses the80-player pool, exchanges players, changes positions and personal/team tactics, saves and quits, then checks complete-career reload/discard in separate processes. The audit does not inject a prepared state or patch model services. It does not play a watched match or certify an original DOS UI/save-format comparison. |
 
-[derived: source and exercised paths above] Remaining required acceptance includes current live-card UI619,
+[derived: source and exercised paths above] Remaining required acceptance includes the complete cross-screen manual journey,
 original extra-time edit capability685 and its consumer adoption, the assistant594/T183, native continuationT170,
 and the complete match/result/replay/season journeys. Broader gaps551/570/571 remain separately identified.
 The original whole-journey requirement on611 is not closed by these management/save receipts.
+
+
+## Original roster colour comparison
+
+[confirmed: original t156-014-squad.png and t156-013-hub.png] Full player initials and surnames, as well as
+role codes, carry the position colour: green goalkeeper, red defence, cyan midfield and yellow attack.
+The palette's existing samples are taken from name initials; the former design wording restricted their
+use to role letters incorrectly. Shared squad/pool/bench/choice strips and S15 elevens must both follow
+this rule. Selected-row contrast and explicit injury feedback remain deliberate readability choices.
+
+[designed: owner2026-11-08, #611/#637] Reproduce the original visual structure while polishing readability.
+Acceptance compares actual rendered name pixels and full screens against retained original references,
+including native Windows and fractional scales. A CSS constant or a screenshot of a different build does
+not establish integrated fidelity. The separate timed substitution request/opportunity path (#636), live
+paused team-characteristic projection and measured tactics-refresh delay remain required checks; this
+colour comparison establishes none of those behaviors or whole-game completion.

@@ -402,7 +402,7 @@ class MatchDay(unittest.TestCase):
         drive, _, _ = pypy_engine.call("goal2.tests.pypy_engine:drive", copy.deepcopy(job.state),
                                        bytes(owner.template_bytes), engine_fixture(out["fixture"]), pitch=True,
                                        policy=Scripted(answers), prompts=True, delay_byte=0, record_draws=True,
-                                       substitutions=FRIENDLY_SUBSTITUTIONS)
+                                       substitutions=FRIENDLY_SUBSTITUTIONS, live_players=True, substitution_control=True)
         self.assertEqual([as_shown(e) for e in out["outcome"].events], [as_shown(e) for e in drive.events])
         self.assertEqual(out["outcome"].result, drive.result)
         self.assertEqual(out["outcome"].memory, drive.memory)
@@ -414,6 +414,7 @@ class MatchDay(unittest.TestCase):
         played without the prompts, so no answer changed the original's pick."""
         from goal2.desktop.competitive import pending_fixture
         from goal2.game.watched_publication import CompetitivePublication
+        from goal2.tests.match_day_policy import Scripted
         from goal2.tests import pypy_engine
         out = self.out["qualifier"]
         self.assertTrue(any(c == "set_piece" for c, _ in out["choices"]), "the qualifier had a set piece")
@@ -424,7 +425,8 @@ class MatchDay(unittest.TestCase):
         job = CompetitivePublication(owner).begin(fixture)
         plain, _, _ = pypy_engine.call("goal2.tests.pypy_engine:drive", copy.deepcopy(job.state),
                                        bytes(owner.template_bytes), fixture, competitive=True, substitutions=(5, 5),
-                                       delay_byte=0, record_draws=True)
+                                       delay_byte=0, record_draws=True, live_players=True, substitution_control=True,
+                                       pitch=True, policy=Scripted())
         self.assertEqual(out["outcome"].memory, plain.memory)
         self.assertEqual(out["outcome"].seeds, plain.seeds)
         kept = [as_shown(e) for e in out["outcome"].events

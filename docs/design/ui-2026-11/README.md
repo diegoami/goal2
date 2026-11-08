@@ -510,8 +510,14 @@ we can keep the rest"]
   | pitch surround | `#00aa00` | t156-045-kick-off.png (0, 80, 640, 100) | the band above the pitch |
 
   [confirmed: `python3 docs/design/ui-2026-11/palette.py` on the captures named in the table]
-- Role codes are coloured by line, as in the original: green goalkeeper, red defence, cyan midfield, yellow
-  attack. [confirmed: goal2-archaeology F002 R011; docs/vision-266/role-codes; the table above]
+- Role codes and full roster names are coloured by line, as in the original: green goalkeeper, red defence,
+  cyan midfield, yellow attack. This applies to squad, pool, bench and match-menu elevens, not only the role
+  letter. [confirmed: goal2-archaeology F002 R011; t156-014-squad.png; the name-initial samples above]
+  [designed: owner #637] Keep readable selected-row contrast and explicit injury feedback.
+- [designed: owner, 2026-11-08, #611] Original screenshots are the visual acceptance baseline: compare rendered
+  layout, colours, typography, table alignment, bars and prompts alongside the exercised keyboard flow.
+  Readability polish preserves the original visual structure and the explicitly accepted scalable24px text;
+  palette constants alone do not establish screen fidelity.
 - On the pitch, and in the names of the scoreboard, S15 and S20, each side wears its kit as the original computes
   it at kick-off from the country's three colour bytes, the keepers in the second colour (`goal2/ui/kits.py`).
   [confirmed: 0791:1073; t156-045-kick-off.png, where Norway at home and Holland both have light red first, so

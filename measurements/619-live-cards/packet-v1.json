@@ -1,0 +1,23 @@
+{
+  "base": "d56e793beebb72f3d7418db0d4bf764d1a4c4091",
+  "model": "Inherited Codex GPT-6 family; exact variant unavailable",
+  "scope": "10 synthetic packet/Qt projection controls; no natural-engine fidelity claim",
+  "before": {
+    "tests": 10,
+    "failures": 7,
+    "errors": 3
+  },
+  "after": {
+    "tests": 10,
+    "pass": 10
+  },
+  "source_sha256": {
+    "goal2/ui/live_cards.py": "9dbe4fe0d8f0cc57770cd847a7e43150125790e082298d17fa6db3909581144b",
+    "goal2/ui/match_day.py": "a604445da8849c7404dc55571c051beebd949b5561cfcf0265348c8a6cc9efe1",
+    "goal2/ui/s16_choose.py": "58a722d3e0edcb6fc7fe6a60540b4c05f974e0d3ca127fd2d04161e6e801a4c6",
+    "goal2/ui/s17_pitch.py": "987348348170a33fcc17f390a222934e3e8de1db8d09915cb14f6dd2ce0b1b83",
+    "goal2/ui/s19_bench.py": "b84ba4d6795cd9cefc8b7ab081888cbc894017adb8fcc0c8b14752a433f50532",
+    "goal2/tests/match_day_policy.py": "b9818601c0392e3243931838c064d831c06dccb180e239beb9ccdf1d019ab6ae",
+    "goal2/tests/test_live_card_overlay_619.py": "17cd1c3c5499e0b9a8c77e1ed72e41fe3d530e4b30df7490ab47d17c33b1c81d"
+  }
+}

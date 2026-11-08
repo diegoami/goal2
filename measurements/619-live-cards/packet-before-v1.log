@@ -1,0 +1,106 @@
+test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit (__main__.LiveOverlayPackets.test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit) ... FAIL
+test_controller_opt_in_and_legacy_default_do_not_change_packet_callers (__main__.LiveOverlayPackets.test_controller_opt_in_and_legacy_default_do_not_change_packet_callers) ... ERROR
+test_fresh_position_club_and_own_precede_stale_events_then_pending_edits (__main__.LiveOverlayPackets.test_fresh_position_club_and_own_precede_stale_events_then_pending_edits) ... FAIL
+test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper (__main__.LiveOverlayPackets.test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper) ... FAIL
+test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path (__main__.LiveOverlayPackets.test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path) ... FAIL
+test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission (__main__.LiveOverlayPackets.test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission) ... FAIL
+test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events (__main__.LiveOverlayPackets.test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events) ... FAIL
+test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career (__main__.LiveOverlayPackets.test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career) ... ERROR
+test_same_choices_reference_explicitly_requests_live_metadata (__main__.LiveOverlayPackets.test_same_choices_reference_explicitly_requests_live_metadata) ... FAIL
+test_twenty_current_records_are_copied_immutable_and_leave_career_untouched (__main__.LiveOverlayPackets.test_twenty_current_records_are_copied_immutable_and_leave_career_untouched) ... ERROR
+
+======================================================================
+ERROR: test_controller_opt_in_and_legacy_default_do_not_change_packet_callers (__main__.LiveOverlayPackets.test_controller_opt_in_and_legacy_default_do_not_change_packet_callers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 112, in test_controller_opt_in_and_legacy_default_do_not_change_packet_callers
+    controller=MatchController(model,pending,bridge,**({'live_players':True} if enabled else {}));controller._send=lambda *args:None
+TypeError: MatchController.__init__() got an unexpected keyword argument 'live_players'
+
+======================================================================
+ERROR: test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career (__main__.LiveOverlayPackets.test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 154, in test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career
+    running=ChooseScreen(window,model,'taker',list(range(1,12)),1,lambda value:None,decision_data=decision.data);running.timer.stop()
+TypeError: ChooseScreen.__init__() got an unexpected keyword argument 'decision_data'
+
+======================================================================
+ERROR: test_twenty_current_records_are_copied_immutable_and_leave_career_untouched (__main__.LiveOverlayPackets.test_twenty_current_records_are_copied_immutable_and_leave_career_untouched)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 43, in test_twenty_current_records_are_copied_immutable_and_leave_career_untouched
+    self.assertEqual(len(answer.live_records),20)
+                         ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchAnswer' object has no attribute 'live_records'
+
+======================================================================
+FAIL: test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit (__main__.LiveOverlayPackets.test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 55, in test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit
+    with self.assertRaises(ValueError):BenchAnswer(model,decision)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_fresh_position_club_and_own_precede_stale_events_then_pending_edits (__main__.LiveOverlayPackets.test_fresh_position_club_and_own_precede_stale_events_then_pending_edits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 62, in test_fresh_position_club_and_own_precede_stale_events_then_pending_edits
+    answer.live_own[1]=0;self.assertEqual(answer.record(1)[15],0x11)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 17
+
+======================================================================
+FAIL: test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper (__main__.LiveOverlayPackets.test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 85, in test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper
+    self.assertEqual(zone.card(1)['mark'],'zone-from-record');self.assertEqual(zone.mark_text(1),'zone-from-record')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'P25' != 'zone-from-record'
+- P25
++ zone-from-record
+
+
+======================================================================
+FAIL: test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path (__main__.LiveOverlayPackets.test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 127, in test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path
+    day.kick_off(None);self.assertIs(constructor.call_args.kwargs.get('live_players'),True)
+                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None is not True
+
+======================================================================
+FAIL: test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission (__main__.LiveOverlayPackets.test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 76, in test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission
+    answer.own_tactic(1,1);self.assertEqual(answer.record(1)[15],expected)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events (__main__.LiveOverlayPackets.test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 98, in test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events
+    answer=day.live_bench(pitch,decision);self.assertNotIn(1,answer.injured);self.assertEqual(answer.record(1)[15],0x11)
+                                          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 1 unexpectedly found in {1}
+
+======================================================================
+FAIL: test_same_choices_reference_explicitly_requests_live_metadata (__main__.LiveOverlayPackets.test_same_choices_reference_explicitly_requests_live_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-live-overlay-draft/test_live_card_overlay_draft.py", line 145, in test_same_choices_reference_explicitly_requests_live_metadata
+    self.assertIs(sent[0].get('live_players'),True)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None is not True
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.534s
+
+FAILED (failures=7, errors=3)

@@ -1,0 +1,152 @@
+This plugin does not support propagateSizeHints()
+FFFFFFFFFFFThis plugin does not support propagateSizeHints()
+FFFFThis plugin does not support propagateSizeHints()
+F
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='goalkeeper')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='defence')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='midfield')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='attack')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='goalkeeper')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='defence')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='midfield')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='attack')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='goalkeeper')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='defence')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_match_menu_eleven_colours_the_full_names (__main__.RosterColour.test_match_menu_eleven_colours_the_full_names) (line='midfield')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 66, in test_match_menu_eleven_colours_the_full_names
+    with self.subTest(line=card['line']):self.assertGreater(pixels,10)
+                                         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+======================================================================
+FAIL: test_rendered_names_have_all_four_original_colours (__main__.RosterColour.test_rendered_names_have_all_four_original_colours) (line='goalkeeper')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 27, in test_rendered_names_have_all_four_original_colours
+    with self.subTest(line=line):self.assertGreater(pixels,10,'full name, not just role letter, must carry original colour')
+                                 ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 10 : full name, not just role letter, must carry original colour
+
+======================================================================
+FAIL: test_rendered_names_have_all_four_original_colours (__main__.RosterColour.test_rendered_names_have_all_four_original_colours) (line='defence')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 27, in test_rendered_names_have_all_four_original_colours
+    with self.subTest(line=line):self.assertGreater(pixels,10,'full name, not just role letter, must carry original colour')
+                                 ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 10 : full name, not just role letter, must carry original colour
+
+======================================================================
+FAIL: test_rendered_names_have_all_four_original_colours (__main__.RosterColour.test_rendered_names_have_all_four_original_colours) (line='midfield')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 27, in test_rendered_names_have_all_four_original_colours
+    with self.subTest(line=line):self.assertGreater(pixels,10,'full name, not just role letter, must carry original colour')
+                                 ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 10 : full name, not just role letter, must carry original colour
+
+======================================================================
+FAIL: test_rendered_names_have_all_four_original_colours (__main__.RosterColour.test_rendered_names_have_all_four_original_colours) (line='attack')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 27, in test_rendered_names_have_all_four_original_colours
+    with self.subTest(line=line):self.assertGreater(pixels,10,'full name, not just role letter, must carry original colour')
+                                 ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 not greater than 10 : full name, not just role letter, must carry original colour
+
+======================================================================
+FAIL: test_selection_injury_and_unknown_role_stay_readable (__main__.RosterColour.test_selection_injury_and_unknown_role_stay_readable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-roster-colours/test_roster_colour_637_final.py", line 38, in test_selection_injury_and_unknown_role_stay_readable
+    self.assertGreater(pixels,10)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: 0 not greater than 10
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.089s
+
+FAILED (failures=16)

@@ -197,8 +197,12 @@ class ActualImmediateBench(unittest.TestCase):
         from goal2.ui.s17_pitch import engine_fixture
         from goal2.tests.test_pypy_worker_t152 import pypy
         pypy();application=app();test=self
+        from goal2.tests.live_card_assertions_619 import verify_bench, verify_choose, report
+        card_receipts=[]
         class ActualWalk(Walk):
             def react(self,screen):
+                if type(screen).__name__=='ChooseScreen' and screen.mode!='captain':
+                    verify_choose(test,screen,self.model,self.out['controller'].stop.data,card_receipts)
                 if type(screen).__name__=='ChooseScreen' and screen.mode=='captain':
                     self.out['initial_captain']=screen.highlighted()
                     self.out['captain_off']=False
@@ -212,6 +216,7 @@ class ActualImmediateBench(unittest.TestCase):
                     key(self.window,Qt.Key.Key_Escape)
                 else:super().on_board(screen)
             def on_bench(self,screen):
+                verify_bench(test,screen,self.out['controller'],card_receipts,'before-stop')
                 answer=screen.answer;context=answer.context
                 target=None
                 if context=='substitution' and not self.out.get('injury_done'):
@@ -236,6 +241,7 @@ class ActualImmediateBench(unittest.TestCase):
                     test.assertEqual(fresh.chosen,[])
                     test.assertTrue(controller.stop.data.get('edited'))
                     test.assertIn('Made:',screen.note.text())
+                    verify_bench(test,screen,controller,card_receipts,'after-swap')
                     test.assertEqual(fixed_page.problems(self.window),[])
                     self.out.setdefault('pairs',[]).append([target,on])
                     self.out.setdefault('put_on',[]).append(on)
@@ -267,6 +273,7 @@ class ActualImmediateBench(unittest.TestCase):
                 self.assertEqual(controller.outcome.memory,result.memory)
                 self.assertEqual(controller.outcome.events,result.events)
                 self.assertEqual(owner.state,other.state)
+                report(self,card_receipts,'injury-captain-swaps')
             finally:
                 window.close();window.deleteLater();application.processEvents()
 

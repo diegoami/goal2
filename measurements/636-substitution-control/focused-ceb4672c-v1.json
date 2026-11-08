@@ -1,0 +1,9 @@
+{
+  "source_commit": "ceb4672c196a9c114100dd9b126ffb15a4cf6699",
+  "scope": "focused packet/widget and retained legacy T196/T188/T610/T202 controls; no natural-match or native-Windows acceptance",
+  "tests": 56,
+  "skipped": 2,
+  "skip_reason": "marked slow original engine scenarios reserved for after accepted upstream adoption",
+  "result": "PASS",
+  "log_sha256": "f7a77d17045409c4a8632976419599e4ab338710f760d148450de326cba8bde3"
+}
