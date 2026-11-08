@@ -153,6 +153,7 @@ print("quick-only PASS")
         self.assertNotEqual(state,before)
         self.assertEqual(Image.from_savestate(self.raw).build_problems(),[])
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_disallowed_goal_save_preserves_complete_match_and_closes_coverage(self):
         # [derived: accepted check.goals seed70 policy and README public-event list at3656a2d]
         report = json.loads((ROOT / "docs/evidence/T62-watched-kit.json").read_text())

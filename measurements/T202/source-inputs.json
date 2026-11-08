@@ -1,0 +1,14 @@
+{
+  "source_sha256": {
+    "goal2/ui/s10_team_tactics.py": "c662ce2070dbd6c0fb0165af831c15c3c273e711fc08c7d33ee8db4f3e85742c",
+    "goal2/tests/test_tactics_characteristics_t202.py": "2a023acf373f00f4211e9d552f4044b307e9b285267cc90d41af6f93efc89c49",
+    "goal2/tests/test_ui_squad_t165.py": "a2a1a5f66abcede4912d3c8d38ade9c61135501d3c3ef50002b611de627a03cb"
+  },
+  "fixture_sha256": {
+    "GOAL.DAT": "bc5e5c04434d31f350eb7803afc3810333393e049d50dde559797a5b068c60ca",
+    "T144-E015-snap-0003.sav": "4e5c2d51fcfb9140c37ef64046b2a1e62644d76b12242ef01321013a7a0dd55e",
+    "T144-E015-snap-0120.sav": "e0050208da61a394d690791da72c1201c42214f6ce2f15abd8b194750b191e34",
+    "T144-E014-year-one.sav": "291d0eb3b0dcec348c0e166703f8033f795e2b4f1bc0dd4cd67f0888b8622b99"
+  },
+  "scope": "pre-match S10 current-record descriptors only; no runtime/protocol/formula/live-overlay change"
+}

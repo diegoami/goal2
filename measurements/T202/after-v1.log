@@ -1,0 +1,11 @@
+test_genuine_snapshots_and_current_inputs_match_original_backed_panel_without_state_write (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_genuine_snapshots_and_current_inputs_match_original_backed_panel_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_readable_cells_pixels_and_bounds_fit_three_sizes_while_all_eight_tactics_and_mouse_return_work (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_readable_cells_pixels_and_bounds_fit_three_sizes_while_all_eight_tactics_and_mouse_return_work) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.866s
+
+OK

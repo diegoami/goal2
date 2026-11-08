@@ -1,0 +1,21 @@
+{
+  "baseline": "a93b4e3fda3edcfbc845ac0f6ed7f126e46363a6",
+  "definitions": 23,
+  "files": [
+    "goal2/tests/test_campaign_competitive_publication.py",
+    "goal2/tests/test_campaign_competitive_save.py",
+    "goal2/tests/test_engine_pipe_t159.py",
+    "goal2/tests/test_match_result_t97.py",
+    "goal2/tests/test_matches_on_pipe_t160.py",
+    "goal2/tests/test_port_route_t151.py",
+    "goal2/tests/test_ui_extras_t177.py",
+    "goal2/tests/test_ui_pitch_t166.py",
+    "goal2/tests/test_watched_adapter.py",
+    "goal2/tests/test_watched_legacy_compatibility.py",
+    "goal2/tests/test_watched_publication.py",
+    "goal2/tests/test_watched_runtime.py",
+    "goal2/tests/test_watched_save.py"
+  ],
+  "only_approved_decorators_changed": true,
+  "all_existing_bodies_assertions_fixtures_seeds_cases_thresholds_deadlines_identical": true
+}

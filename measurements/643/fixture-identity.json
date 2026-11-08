@@ -1,0 +1,38 @@
+{
+  "baseline": "320c595cf5333a68c5d3f96347465c087b1a324b",
+  "files": [
+    {
+      "file": "goal2/tests/test_checkpoints_t149.py",
+      "old_ast_sha256": "fa37f0179477ad2597fb8b739712ce51e1decab3d6d3d38c68f12c7172561f87",
+      "new_ast_sha256": "8e1594207e5d2615c3eefb0d728319dc5067bd758a00b6131a25f45ae8b94312",
+      "old_assertion_count": 45,
+      "all_old_assertions_identical": true,
+      "all_existing_functions_identical_except": [
+        "Jobs.stop: wrapper-before-child cleanup order",
+        "Jobs.test_a_killed_job_is_vanished_not_running_or_finished: wrapper-before-child fixture kill order"
+      ],
+      "new_test_helpers": [
+        "Jobs.test_child_only_death_is_a_recorded_finished_negative_exit"
+      ]
+    },
+    {
+      "file": "goal2/tests/test_desktop_competitive_jobs.py",
+      "old_ast_sha256": "455fc33997c919685b959fd03813a523a6c5e4d8e11c80fc66e945e5a5691eec",
+      "new_ast_sha256": "88f99d40310d34779bf72838336b0fdd7d0516c54f7473fb108d36b214ffc8bb",
+      "old_assertion_count": 60,
+      "all_old_assertions_identical": true,
+      "all_existing_functions_identical_except": [
+        "CompetitiveJobsTests.test_qt_heartbeat_while_worker_full_time_tail_is_blocked: observation wrapped in balanced Windows precision scope"
+      ],
+      "new_test_helpers": [
+        "HeartbeatClockTests.exercise_guard",
+        "HeartbeatClockTests.test_original_guard_accepts_a_responsive_controlled_poll",
+        "HeartbeatClockTests.test_original_guard_rejects_a_deliberately_blocked_poll",
+        "HeartbeatClockTests.test_windows_period_failure_is_not_silently_accepted",
+        "HeartbeatClockTests.test_windows_period_is_balanced_even_when_observation_raises"
+      ]
+    }
+  ],
+  "jobs_production_source_identical": true,
+  "heartbeat_original_guarded_calls_timer_period_observation_threshold_and_worker_assertions_identical": true
+}

@@ -171,6 +171,7 @@ def engine_kits(outcome):
     return (image.rd(0x832E, 1), image.rd(0x832F, 1)), (image.rd(0x8330, 1), image.rd(0x8331, 1))
 
 
+@requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
 @CAREER
 class SameMatch(unittest.TestCase):
     """One friendly played from the desk to full time on S17, its keys pressed on the way, and the reference."""

@@ -100,6 +100,7 @@ class WatchedAdapter(unittest.TestCase):
               f'decisions={[d["context"] for d in got.result["decisions"]]} PASS', flush=True)
         return got
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_ten_strict_t62_inputs(self):
         for seed, want in requires.cases(EXPECTED_FAMILY.items()):  # [designed: #275] all ten with GOAL2_SLOW=1
             with self.subTest(seed=hex(seed)):
