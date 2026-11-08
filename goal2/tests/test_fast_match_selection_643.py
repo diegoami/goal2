@@ -19,7 +19,7 @@ CONTROLS = {
     'test_ui_extras_t177': ('SearchAndFilter', 'Rename', 'NewCareer'),
     'test_watched_legacy_compatibility': ('LegacyCompatibilityTests.test_real_legacy_saves_roundtrip_without_relabeling_or_memory_rng_changes',),
     'test_watched_save': ('WatchedSaveTests.test_legacy_friendly_and_campaign_history_retain_v1_v2_meaning',),
-    'test_desktop_competitive_jobs': ('CompetitiveJobsTests',),
+    'test_desktop_competitive_jobs': ('CompetitiveJobsTests', 'HeartbeatClockTests'),
     'test_ui_match_day_t167': ('HomeSide',),
     'test_watch_qualifiers_t176': ('Boundary',),
     'test_watched_bench_t102': ('BenchView', 'DroppedPause', 'PitchFreeze', 'EnterInPlay'),
