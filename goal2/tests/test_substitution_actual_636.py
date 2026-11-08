@@ -13,6 +13,7 @@ from goal2.tests import requires
 
 def run_journey(test, mode):
     import tempfile
+    import subprocess
     from PySide6.QtCore import Qt
     from goal2.desktop import data_setup
     from goal2.ui.window import Window
@@ -45,7 +46,8 @@ def run_journey(test, mode):
             super().playing(pitch)
             controller=pitch.controller
             frame=controller.display.frame
-            if (not self.out.get('pause_sent') and frame is not None and frame['minute']>=5
+            if (not self.out.get('pause_sent') and frame is not None and frame['minute']>=(50 if mode=='zero' else 5)
+                    and (mode!='zero' or self.out.get('exhausted'))
                     and controller.stop is None and not controller.held):
                 boundary=pause_at_lead_boundary(self.window,pitch)
                 if boundary is not None:
@@ -69,7 +71,7 @@ def run_journey(test, mode):
                 self.out['tactic_done']=True
                 key(self.window,Qt.Key.Key_Escape)
             play_on(self.window,screen)
-            if screen.phase=='pause' and mode!='cancel' and self.out.get('request_done'):
+            if screen.phase=='pause' and mode in ('accept','timeout') and self.out.get('request_done'):
                 test.assertTrue(self.out['controller'].substitution_requested)
                 test.assertTrue(self.window.current().request_badge.isVisible())
                 shot(self.window,'request-on-pitch')
@@ -99,10 +101,30 @@ def run_journey(test, mode):
                 self.out['opportunity']=data
                 shot(self.window,'legal-bench-before-swap')
 
+        def on_board(self,screen):
+            if mode=='zero' and screen.phase=='half' and not self.out.get('exhausted'):
+                key(self.window,Qt.Key.Key_Escape)
+                return
+            return super().on_board(screen)
+
         def on_bench(self,screen):
             controller=self.out['controller']
+            if mode=='zero' and screen.answer.context=='half_time' and not self.out.get('exhausted'):
+                test.assertLessEqual(screen.answer.left,5)
+                while screen.answer.left:
+                    used=set(self.out.get('taken_off',()))
+                    off=next(w for w in screen.answer.eleven if screen.answer.position(w)!=0 and w not in screen.answer.injured)
+                    on=next(w for w in screen.answer.bench if screen.answer.position(w)!=0 and w not in used and w not in screen.answer.injured)
+                    before=screen.answer.left
+                    enter_on(self.window,screen,off);enter_on(self.window,screen,on)
+                    test.assertEqual(screen.answer.left,before-1)
+                    self.out.setdefault('taken_off',[]).append(off)
+                self.out['exhausted']=True
+                shot(self.window,'zero-budget-before-play')
+                key(self.window,Qt.Key.Key_Escape)
+                return
             if screen.answer.context=='pause' and not self.out.get('request_done'):
-                self.out['request_ack']=request_from_bench(self.window,screen,True,capture=shot)
+                self.out['request_ack']=request_from_bench(self.window,screen,True,expected=False if mode=='zero' else True,capture=shot)
                 if mode=='cancel':
                     self.out['cancel_ack']=request_from_bench(self.window,screen,False,capture=shot)
                 self.out['request_done']=True
@@ -152,7 +174,26 @@ def run_journey(test, mode):
     with tempfile.TemporaryDirectory(prefix='goal2-636-') as folder:
         owner=career();count=owner.state.match_count
         window=Window(data_setup.paths(Path(folder)));window.resize(1440,900);window.show()
-        desk=window.open_career(owner);fixture=owner.state.campaign.next_fixture
+        desk=window.open_career(owner)
+        if mode=='zero':
+            # Reach the competitive fixture through an actual fresh friendly,
+            # never by writing an allowance or constructing a waiting decision.
+            class Warmup(Walk):
+                def on_bench(self,screen):
+                    injured=[w for w in screen.answer.eleven if w in screen.answer.injured]
+                    if screen.answer.takes_substitutions and screen.answer.left and injured:
+                        off=injured[0];used=set(self.out.get('taken_off',()))
+                        on=next(w for w in screen.answer.bench if w not in used
+                                and (screen.answer.position(w)==0)==(screen.answer.position(off)==0))
+                        enter_on(self.window,screen,off);enter_on(self.window,screen,on)
+                        self.out.setdefault('taken_off',[]).append(off)
+                    key(self.window,Qt.Key.Key_Escape)
+            warmup=Warmup('zero-budget-setup-friendly',window,owner)
+            desk.highlight(PLAY_NEXT);key(window,Qt.Key.Key_Return);warmup.run()
+            test.assertIsNone(warmup.out['controller'].error)
+            desk=window.current();count=owner.state.match_count
+        fixture=owner.state.campaign.next_fixture
+        if mode=='zero':test.assertEqual(fixture.kind,2)
         walk=RequestWalk('request-'+mode,window,owner)
         try:
             desk.highlight(PLAY_NEXT);key(window,Qt.Key.Key_Return);walk.run()
@@ -163,17 +204,20 @@ def run_journey(test, mode):
             request_choices=[value for context,value in controller.choices if isinstance(value,dict) and 'request_substitution' in value]
             test.assertEqual([v['request_substitution'] for v in request_choices],[True,False] if mode=='cancel' else [True])
             test.assertTrue(all(not v.get('substitutions') for v in request_choices))
-            if mode!='cancel':
+            if mode in ('accept','timeout'):
                 test.assertTrue(walk.out.get('swap_done'))
                 off,on=walk.out['pair']
                 made=[e for e in controller.events if e['kind']=='substitution'
                       and e['data'].get('team')==controller.display.managed
                       and e['data'].get('off')==off and e['data'].get('on')==on]
                 test.assertEqual(len(made),1)
+            if mode=='zero':
+                test.assertTrue(walk.out.get('exhausted'))
+                test.assertIs(walk.out['request_ack']['acknowledged'],False)
             if mode=='accept':test.assertTrue(walk.out.get('tactic_done'));test.assertTrue(walk.out.get('refusal_checked'))
             if mode=='timeout':test.assertTrue(walk.out.get('timeout_checked'))
             other=career();other.state=copy.deepcopy(controller.given._snapshot)
-            expected=play_through_bridge(other,controller.choices,fixture=engine_fixture(fixture),wait=1500,
+            expected=play_through_bridge(other,controller.choices,fixture=engine_fixture(fixture),competitive=fixture.kind!=1,wait=1500,
                                          pause_after=walk.out['pause_after'])
             test.assertEqual(controller.outcome.result,expected.result)
             test.assertEqual(controller.outcome.events,expected.events)
@@ -182,9 +226,20 @@ def run_journey(test, mode):
             test.assertEqual(controller.outcome.seeds,expected.seeds)
             root=Path(__file__).resolve().parents[2]
             files=('goal2/ui/s17_pitch.py','goal2/ui/s18_stop.py','goal2/ui/s19_bench.py','goal2/ui/s10_team_tactics.py',
-                   'goal2/game/watched_match.py','goal2/engine/original_match/match.py','goal2/engine/original_match/screens.py')
+                   'goal2/ui/match_day.py','goal2/ui/live_cards.py','goal2/ui/squad_card.py',
+                   'goal2/game/watched_match.py','goal2/game/watched_jobs.py','goal2/game/engine_process.py',
+                   'goal2/game/engine_server.py','goal2/game/watched_schema.py','goal2/desktop/competitive.py',
+                   'goal2/tests/match_day_policy.py','goal2/tests/substitution_selectors_636.py',
+                   'goal2/tests/test_substitution_actual_636.py','tools/watched-kit-hashes.json','PROVENANCE.md',
+                   'goal2/engine/original_match/match.py','goal2/engine/original_match/screens.py')
             digest=lambda value:hashlib.sha256(json.dumps(value,sort_keys=True).encode()).hexdigest()
-            report=dict(mode=mode,source_commit=os.environ.get('GOAL2_SOURCE_COMMIT'),
+            source_commit=os.environ.get('GOAL2_SOURCE_COMMIT')
+            if source_commit is None:
+                source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
+            test.assertRegex(source_commit,r'^[0-9a-f]{40}$')
+            report=dict(mode=mode,source_commit=source_commit,
+                input_template_sha256=hashlib.sha256(bytes(owner.template_bytes)).hexdigest(),
+                fixture={'id':fixture.fixture_id,'kind':fixture.kind,'sides':[fixture.side_a,fixture.side_b]},
                 source_hashes={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in files},
                 flags={'live_players':True,'substitution_control':True},choices=controller.choices,
                 requested=len(request_choices),published_once=True,result_sha256=digest(controller.outcome.result),
@@ -197,7 +252,7 @@ def run_journey(test, mode):
             window.leaving=True;window.leave();application.processEvents()
 
 
-@requires.need(modules=('PySide6','pygame','unicorn'),slow=True, **requires.HALFTIME)
+@requires.need(modules=('PySide6','pygame'),slow=True, **requires.HALFTIME)
 class ActualRequestJourney(unittest.TestCase):
     def test_natural_request_opportunity_escape_immediate_swap_refusal_tactics_and_play(self):
         run_journey(self,'accept')
@@ -207,3 +262,6 @@ class ActualRequestJourney(unittest.TestCase):
 
     def test_ignored_timed_opportunity_spends_no_allowance_then_next_guest_opportunity_can_be_accepted(self):
         run_journey(self,'timeout')
+
+    def test_zero_budget_request_refusal_uses_actual_competitive_allowance_and_ui(self):
+        run_journey(self,'zero')
