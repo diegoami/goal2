@@ -162,6 +162,15 @@ in a competitive fixture also `extra_time` (extra time begins: the clock set bac
 shoot-out begins; `score_120`) and `shootout_kick` (team, player, name, scored, round, `shootout_score`).
 `m.pitch()` gives the 22 players' and the ball's positions at any moment (for drawing).
 
+**Stopped edits** [designed: #663; goal2 owner #599]: `answer(substitutions=[(off,on)], edit_only=True)`
+executes the original's operation at a legal half-time/substitution stop and yields a fresh `decision` with
+`edited=True`, the actual eleven/bench, injuries and remaining budget. The actual made/refused events precede it.
+It keeps SELECT TEAM open between pairs; an ordinary `answer()` subsequently leaves the screen and selects Play.
+No pitch tick occurs while editing. At an ordinary in-play pause this opt-in is refused before consuming the
+waiting decision. Legacy answers retain their queue-at-pause behavior. Reopening SELECT TEAM between individual
+pairs is deliberately avoided: the original does housekeeping on that path and its records can differ from a
+single visit (fix663 comparison-v3); retaining the open screen restores exact original memory (comparison-v4).
+
 **Goals**: a `goal` is a goal the original commits. Watched, that is the score byte's `inc` at 0791:685C; a
 `goal_disallowed` is its `dec` at 68B3 (DS:830E set: no scorer row), which comes after the `goal` and after whatever
 the original wrote in between (its commentary), never in the goal's place. In a quick result (`answer(quick=True)`,
@@ -383,6 +392,41 @@ changed or stopped; a step a port stops FAILs and the next steps still run).
   `m.uc._engine` before the `Prover` is built is accepted); and `m.uc.ctl_get_arch.__self__` is the engine, through
   which a kit handler could `reg_read` unchecked. A port or a kit handler must never use any of them.
 
+## The route harness (T119a): route_fixture itself, recorded
+
+`route.py` runs one call of the original's route_fixture 000E:6CA7 on a kit `Machine`, as play_round's call at
+000E:70D1 makes it, and records every write, every step of the RNG words DS:7B62 and DS:8336 and every visit to a
+key site, in order (goal2-archaeology #427; the ground truth the ports of the round are proven against):
+
+```python
+from goal2.engine.original_match.route import Route, DEFAULT_KEYS
+r = Route(image)                     # keys=DEFAULT_KEYS: a key at the first poll (the owner, 2026-11-03)
+record = r.call()                    # returns after a fixture with a managed side
+assert r.replay(r.origin) == r.m.read(0, 0x110000)
+```
+
+At route_fixture's own `call far 0791:F1F6` (000E:6F18) it plays the match with `Match(..., tail=False)` on a
+machine of Match's own (whose set-up must find its bytes there already), writes back what the match changed and
+resumes at 000E:6F1D; the rest (the news 4E0E, the player update B7FA, the cursor) runs as guest code.
+`tail=False` ends a `Match` at run_match's return, before the post-match player update the kit otherwise calls, and
+keeps the fixture record's +1 (a competitive fixture's round) and +3 as route_fixture left them (T119c); the default
+is unchanged, writing `FE 00 kind 00 first second`. The key sites route_fixture reaches (`route.READS`,
+`route.POLLS`, the group-table reads of 0791:E929 among them, Enter as `Match` answers them) are answered from the
+policy; one it does not name raises. The machine takes no foreign hook, so a `Prover` installs on it; a proof with
+ports needs `Route(image, record_writes=False)`, which drops only the all-memory write listener (it reads the pc at
+the ports' stack writes, `214B:0000`, which the Prover refuses), keeps the seed watches, key sites and the 6F18 stop,
+and makes `replay()` refuse the run (T119c).
+
+`Route(image, entry="play_round")` (T124a) calls play_round 000E:70B9 instead, as main_menu_loop's 77BF does (its
+return 77C2 at SP 0x3EEC, 7439's BP 0x3FF6): one call is one route_fixture in the same frame and, when the cursor
+then reaches the count, the round's end (stage_end 1771:8208, run_stage 1771:76B1, and announce_stage_to_manager
+000E:60CB per manager when the new stage is 2, 3, 5 or 7), recorded as `("round_end", {...})` at 70E6.
+`r.round()` makes play_round calls until one reaches the round's end. 60CB's page waits at the news page's sites,
+which the policy answers already. The managed matches still go through `Match`, so a run stops with `MatchError`
+when the squad has no legal eleven under T124t's comparison policy. The harness explicitly chooses a legal eleven through the original DEA6 menu swaps; ordinary Match callers retain their own team decisions.
+The round's end's ports are `port/stages.py`; `experiments/E040-route-fixture-writes/out/T124a/prove.py` proves them
+in this harness.
+
 ## Limits and costs
 
 A kind no builder writes (4 included) is refused with a `ValueError`. Not run, because route_fixture runs them
@@ -460,3 +504,52 @@ shared polynomial evaluation. These reuse the integer Real operations and read
 the source coefficient tables from the input image. No host math approximation
 or native instruction fallback is used. Standalone inputs remain image-backed
 until T80's separate derived-table extraction and records-only delivery.
+
+### Completed news pages (T122e)
+
+The pure reader lives inside this vendorable package:
+
+    from original_match.news import NewsPageMemory, capture_news_page, news_pages
+
+A memory view has `DS` and `read(linear, n)`. `capture_news_page(view)` copies the
+completed 4000-byte character/attribute back buffer at `[DS:A96E]` into an immutable
+`NewsPageMemory`. `news_pages(view_or_snapshot)` returns a tuple containing that one
+page, itself a tuple of 25 exact 80-column Unicode strings. It preserves trailing
+spaces and uses standard IBM PC glyph names (NUL blank, low glyphs, DEL house,
+CP437); original custom-font appearance is not inferred. Attributes remain in
+`snapshot.cells`. This module has only standard-library dependencies.
+
+`Route` captures each actual `000E:05F6` entry by default, before the front-buffer
+copy and celebration. `route.news_history` retains frozen page cells and scalar
+caller/manager/side/flag/seed/key provenance in actual order; `route.news_pages`
+aggregates their decoded lines. No content deduplication occurs, and muted Prover
+replay/resume does not create another actual page. A route object retains history
+across its calls; recreating a route from guest memory alone does not reconstruct
+previously overwritten pages. Callers can retain the immutable snapshots separately.
+`capture_news=False` is available for the observational control test.
+
+Captured cells are private original screen memory. Proof receipts publish hashes
+and semantic scalar provenance, not raw cell/name/guest bytes. They must not be
+mistaken for the later final buffer or reconstructed from it.
+
+
+## Sealed round calls (T123)
+
+`original_match.route.play_round(state, tables, keys)` starts the ported70B9
+call from real state/2 and verified tables. Its immutable `RoundStep` reports
+`match`, `complete` or `deferred-rollover`, current state, completed fixtures and
+every ordered actual05F6 news capture. A managed step supplies an ordinary
+`Match(engine="port", tail=False)` at its existing F1F6 frame, preserving all
+incoming memory, RNG, manager tags and CPU registers without repeating setup.
+Drive that Match with `events()`/`answer()`, then call
+`resume_round(step.continuation, step.match)` after completion. The continuation
+is held in the same engine process; invalid, incomplete or consumed resumes
+refuse before route-visible changes.
+
+Finalized cursor=count/rounds1/stage4or8 returns the explicit annual boundary
+before70E6/stage_end. Fresh requests on that state preserve it before route/kit
+writes. Supported2→3 and6→7 transitions run in-season ageing and builders.
+Production installs no legal-eleven policy. Annual rollover and pool-list
+operations remain outside the supported route. See
+[the consumer handover](../../docs/requests/427-route.md) for the pinned fields,
+key queue, page history and caller responsibilities.

@@ -30,8 +30,8 @@ class RuntimeTests(unittest.TestCase):
 
     @requires.need(archaeology=True)
     def test_all_files_are_exact_accepted_source(self):
-        # [designed: T150] the re-vendored kit: ten top-level files, fileopts.py and the port's 30
-        self.assertEqual(verify_vendor(), 41)
+        # [designed: T170a] Exact50-file reviewed route closure; no public assistant wrapper.
+        self.assertEqual(verify_vendor(), 50)
 
     @requires.need(archaeology=True)
     def test_changed_vendor_bytes_and_added_files_are_rejected(self):
@@ -42,7 +42,7 @@ class RuntimeTests(unittest.TestCase):
             shutil.copytree(ROOT / "goal2/engine/original_match",root / "goal2/engine/original_match",
                             ignore=shutil.ignore_patterns("__pycache__"))
             with patch.object(watched_evidence,"ROOT",root):
-                self.assertEqual(verify_vendor(),41)
+                self.assertEqual(verify_vendor(),50)
                 for name in ('README.md','build.py'):
                     source = root / "goal2/engine/original_match" / name
                     original = source.read_bytes()

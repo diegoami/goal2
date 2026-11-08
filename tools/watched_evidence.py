@@ -7,10 +7,10 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = "b519d999673c9458211279fd4da8a8325b9f56fe"
-# [designed: #636] T150 sealed base and all port bodies stay pinned. The two
-# facade files are byte-copies of accepted upstream696 (including inherited
-# optional T123 facade factoring, unused here); no T170/route/season adoption.
+SOURCE = "0f9f87f405282ce2a0461679ac71395d35e76e3a"
+# [designed: T170a] Reviewed m10 route closure, without public assistant wrapper
+# or campaign activation. Preserve the two accepted696facades as overrides;
+# all source/export/hash/ancestry guards remain unchanged.
 SOURCE_OVERRIDES = {'runtime/original_match/match.py': 'c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4', 'runtime/original_match/screens.py': 'c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4'}
 IMAGES = {
     "d68e48c734a742a6-E011-r0001-watchstart.sav": "d68e48c734a742a63e707a8c451b9011ef03b452ebd91f239d86f875464e07a9",

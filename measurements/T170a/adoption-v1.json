@@ -1,0 +1,95 @@
+{
+  "reviewed_source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+  "preserved_facade_source": "c6a5e1134cf7b9e3796fb9a3c48b1d3ac59b6af4",
+  "byte_copies": [
+    {
+      "path": "goal2/engine/original_match/README.md",
+      "action": "replace",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "17d652fd9a164ad60c09a6f22982a6d06acf9c650fe49e9f95ee4a1b40ff12d3"
+    },
+    {
+      "path": "goal2/engine/original_match/news.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "dde07e302270d1360e6cbc46511ace0502044419a427949801f1d42cb31fc97c"
+    },
+    {
+      "path": "goal2/engine/original_match/port/ageing.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "5f076abe6787b9100fb1a9ca34e4e1508925eb4afd9d3412197e144630d14d9f"
+    },
+    {
+      "path": "goal2/engine/original_match/port/assistant.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "32fe1f315f1a8cce5375b2cc9fdc07ec78a5461a0e275c99ebd06f9cad5db514"
+    },
+    {
+      "path": "goal2/engine/original_match/port/display.py",
+      "action": "replace",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "cffb3a2bde6759cc4993a77d8adc3f458bbf326d8045e4a95a398821a69ce84d"
+    },
+    {
+      "path": "goal2/engine/original_match/port/entrypoints.py",
+      "action": "replace",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "cb46f9fc71bd728951da550c848b6cf4dd4e0a7f2422304621215e412dc0c705"
+    },
+    {
+      "path": "goal2/engine/original_match/port/news.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "c8aec06208f0ef2bf2591b8b8a74aff1e4e161b774e45da8225dec6bd159fc4e"
+    },
+    {
+      "path": "goal2/engine/original_match/port/route.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "856d18518950fad8e0f6b831d6c33c71edf95f1bd56e2b369166774905b9bb1b"
+    },
+    {
+      "path": "goal2/engine/original_match/port/selection.py",
+      "action": "replace",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "d2e0bb9f97a0a3e8f93f0c3a5bada95220272c8739d1814b6eed5f9ed8a3d620"
+    },
+    {
+      "path": "goal2/engine/original_match/port/silent.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "0df68171c3f5e3c54a43359eecbac3f71aa192f413cbac792dabf238461d6ba1"
+    },
+    {
+      "path": "goal2/engine/original_match/port/stages.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "27947c3368fc8b5618c76452e2be2d295fd64d2fec4b107dd325de0a7745b7e7"
+    },
+    {
+      "path": "goal2/engine/original_match/route.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "2d0336fd2c35d1baea20aff974f28b8b51a78434f3a0d84be660fbf6b178e0bb"
+    },
+    {
+      "path": "goal2/engine/original_match/route_team.py",
+      "action": "add",
+      "source": "0f9f87f405282ce2a0461679ac71395d35e76e3a",
+      "sha256": "0ce2f8ac578476670a518c32e0a7ad2fb9f279fc96bfa98b996db40fbb5baf4d"
+    }
+  ],
+  "preserved_bytes_sha256": {
+    "goal2/engine/original_match/match.py": "e949159c9cc77f4d195bc9b150c67dfd913ba447417375122bc58db1bca97f92",
+    "goal2/engine/original_match/screens.py": "8ce9b0d6c4c9f75da469c728a9ed03787e413aeb5f98693ba38c914ed36d143e",
+    "goal2/engine/tables/ds.hex": "6610d3e7a17e867c26e385796c9ed8776608094a8b5d204a8c7f9b2573f5378b",
+    "goal2/engine/tables/code_data.hex": "e62742c496f9dd5b80d832c9df99a4fcc343e7ae4fe46aee2d68345ccfac37ea",
+    "goal2/engine/tables/manifest.json": "8beaca4724b04038b2b5bfc835a103c45d385f06250ac0c3f7e5ec861119a78e"
+  },
+  "public_assistant_included": false,
+  "engine_or_campaign_execution": false,
+  "legacy_result_ids_changed": false,
+  "model": "Inherited Codex GPT-6 family; exact variant unavailable"
+}
