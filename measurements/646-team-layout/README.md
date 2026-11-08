@@ -107,3 +107,17 @@ base, per-file facade pins, registry/ABI/import/Unicorn-denial and legacy-ID
 assertions remain. No assertion or test removed. Focused integration10PASS4.884s;
 65provenance/50strictkitfilesPASS. The combined runtime needs fresh actual/full
 fast/platform acceptance; earlier6d0a receipts remain scoped to their source.
+
+Combined final source27e485c0: actualLinux163.529s and nativeWindows232.084s
+full journeysPASS, preserving all existing controls and named human assertion.
+451native source bindings verify. LocaldefaultFAST220/220PASS,237declared slow
+exclusions. Actual hostedLinux42488340853 andWindows42488340836PASS all six
+regression/scaling jobs; no runtime skip counted. Per-job identities/times are
+in actual-ci-27e4-v1.json. Raw datasets stay private.
+
+The combined native console relay inserted unittest stderr's `ok`+newline inside
+one SHA string in the stdout TEAM JSON. Raw log stays unchanged. The filtered
+structured extraction removes only those three known status bytes and verifies
+EVERY observation against the separately written private JSONL journal. This
+console-only extraction note is explicit; no test/game assertion, input or result
+field was altered and no retry supplies acceptance.
