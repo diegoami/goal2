@@ -3,6 +3,7 @@ import copy
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+from goal2.tests import requires
 
 
 def record(*,position=3,club=9,own=0,status=0,energy=5):
@@ -32,6 +33,7 @@ def decoded(view,word,goaldat):
         mark='' if raw[6]<2 else 'zone-from-record' if raw[16]&0x40 else 'default-from-record')
 
 
+@requires.need(modules=("PySide6",))
 class LiveOverlayPackets(unittest.TestCase):
     def answer(self,**changes):
         from goal2.ui.s19_bench import BenchAnswer
