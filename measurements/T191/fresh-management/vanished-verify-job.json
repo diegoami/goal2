@@ -1,0 +1,13 @@
+{
+  "name": "fresh-management-audit-verify",
+  "command": [
+    "bash",
+    "-c",
+    "source /home/diego/projects/goal2/.cache/cloud.env && exec /home/diego/projects/goal2/.cache/venv/bin/python -B /tmp/goal2-fresh-management-audit.py /tmp/goal2-track-a /tmp/goal2-fresh-management-audit verify"
+  ],
+  "cwd": "/tmp/goal2-track-a",
+  "head": "d56e793beebb72f3d7418db0d4bf764d1a4c4091",
+  "started_utc": "2026-11-08T03:56:16+00:00",
+  "log": "/tmp/goal2-track-a/.cache/jobs/fresh-management-audit-verify.log",
+  "wrapper_pid": 147
+}

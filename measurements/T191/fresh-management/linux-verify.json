@@ -1,0 +1,11 @@
+{
+  "mode": "verify",
+  "head": "d56e793beebb72f3d7418db0d4bf764d1a4c4091",
+  "python": "3.14.4",
+  "scope": "fresh management UI and separate-process named-save lifecycle; no watched match/season/original DOS UI parity claim",
+  "events": [
+    "separate process Start/Continue reload equals complete saved career",
+    "third-process reload proves discarded edit was not saved"
+  ],
+  "private_expected_sha256": "93413688b932875443ef977cb2dd320e17c519b5eafe64f90e74fc215ffb1903"
+}
