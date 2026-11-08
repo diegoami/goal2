@@ -96,6 +96,7 @@ class StopBox(QFrame):
         self.setFixedWidth(WIDTH)
         self.setStyleSheet(f"#stopBox {{ background: {theme.GROUND}; border: 2px solid {theme.HEADING}; }}")
         self.headline.setStyleSheet("")
+        self.detail.setStyleSheet("")
         self.headline.setAlignment(Qt.AlignmentFlag.AlignLeft)
         colour(self.key_hint, theme.KEY_HINT)
         self.tag.show(); self.detail.show()

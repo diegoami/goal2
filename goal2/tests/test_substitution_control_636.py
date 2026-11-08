@@ -160,3 +160,24 @@ class StrictBoundaries(unittest.TestCase):
 
 
 if __name__ == "__main__": unittest.main(verbosity=2)
+
+
+class CompositeDecoder(unittest.TestCase):
+    def test_missing_authoritative_flag_fails_before_event_delivery(self):
+        from goal2.game.engine_process import EngineProcess
+        from goal2.tests.test_live_record_wire_t196 import event
+        process=EngineProcess(lambda *args:None);process._game=b'synthetic';process._life=object()
+        process._send=lambda packet:None
+        process.match('watched',Fixture(7,19,21),frames=True,bench=True,live_players=True,substitution_control=True)
+        with self.assertRaisesRegex(ValueError,'request'):
+            process._decode(process._life,{'kind':'event','value':event()},b'')
+        self.assertEqual(process._events,[])
+
+    def test_server_rejects_missing_interactive_mode_before_game_preparation(self):
+        from goal2.tests.test_live_record_wire_t196 import Server
+        from unittest.mock import patch
+        helper=Server()
+        for fields in ({'substitution_control':True},{'substitution_control':1,'frames':True,'bench':True}):
+            with patch('goal2.game.watched_match.prepare_watched') as prepare:
+                with self.assertRaises(ValueError):helper.server()._match(helper.request(**fields))
+                prepare.assert_not_called()

@@ -686,6 +686,12 @@ class PitchScreen(Screen):
             # literal original Esc remains the upstream 'dismiss' operation.
             self.resume({"opportunity": "timeout" if key is None else "accept"})
         self.stop_box.show_opportunity(decision.data, respond)
+        from goal2.ui.s18_stop import substitution_text
+        from goal2.ui.screen import set_para
+        set_para(self.stop_box.detail, substitution_text(self.model, decision))
+        colour(self.stop_box.detail, "#000000")
+        self.stop_box.detail.show()
+        self.stop_box.place()
         self.set_enter("Open the bench", lambda: self.answer_stop_box(Qt.Key.Key_Return))
         self.refresh()
 

@@ -23,6 +23,8 @@ class Scripted:
         self.asked.append((context, event.minute))
         if number in self.answers:
             return self.answers[number]
+        if context == "substitution_opportunity":
+            return {"opportunity": "accept"}
         if context == "set_piece":
             return {"taker": None}
         if context == "shootout_order":

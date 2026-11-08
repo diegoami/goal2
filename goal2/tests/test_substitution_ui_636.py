@@ -131,3 +131,38 @@ class TimedOpportunity(unittest.TestCase):
         box._expire_opportunity()
         self.assertEqual(self.responses,[])
         self.assertFalse(box.open)
+
+
+@requires.need(modules=('PySide6','pygame'), **requires.HALFTIME)
+class Lifecycle(unittest.TestCase):
+    def setUp(self):
+        from goal2.tests.test_ui_replay_t181 import ReplayScreens
+        ReplayScreens.setUp(self)
+        self.bridge.reports=[];self.sent=[]
+        self.bridge.answer=lambda token,pairs,changes=None:self.sent.append((list(pairs),changes))
+
+    def test_timeout_closes_only_the_notice_and_does_not_invent_request_cancellation(self):
+        data=dict(context='substitution_opportunity',request_substitution=True,keeper_unavailable=False,
+                  timeout_polls=400,poll_ms=10,eleven=[],bench=[],substitutions_left=5,substitutions_now=True)
+        decision=SimpleNamespace(data=data,minute=5,score=[0,0])
+        self.controller.stop=decision;self.controller.substitution_requested=True
+        self.pitch.held=decision;self.pitch.show_opportunity(decision)
+        self.pitch.stop_box._expire_opportunity()
+        self.assertEqual(self.sent,[([],{'opportunity':'timeout'})])
+        self.assertFalse(self.pitch.stop_box.open)
+        self.assertIsNone(self.controller.stop)
+        self.assertTrue(self.controller.substitution_requested)
+        self.assertTrue(self.pitch.request_badge.isVisible())
+        self.pitch.stop_box._expire_opportunity()
+        self.assertEqual(len(self.sent),1)
+
+    def test_old_timers_cannot_answer_the_next_notice_and_generic_detail_style_is_restored(self):
+        box=self.pitch.stop_box;answers=[]
+        box.show_opportunity(dict(keeper_unavailable=False,timeout_polls=400,poll_ms=10),answers.append)
+        box.cancel()
+        box.show_stop('test','other notice','normal detail',answers.append)
+        box._expire_opportunity()
+        self.assertEqual(answers,[])
+        self.assertTrue(box.open)
+        self.assertFalse(box.timed)
+        self.assertNotIn('#000000',box.detail.styleSheet().lower())

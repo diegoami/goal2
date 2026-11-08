@@ -2,7 +2,7 @@
 
 Real friendly/qualifier match days cover an injury swap and five half-time swaps confirmed before Play,
 exact once reports/counters, a refused re-entry with usable continuation, personal tactics/marks and
-original bridge equality. An ordinary pause cannot create a substitution request; a qualifier's legal
+original bridge equality. An ordinary pause requests/cancels without queuing a player pair; a qualifier's legal
 half-time edit still decrements five to four. Every unrelated outcome/event/publication oracle is retained.
 Private original fixtures remain in ignored cache; the actual engine is the PyPy worker.
 """
@@ -160,7 +160,8 @@ class Walk:
         record = {"mode": screen.mode, "label": screen.mode_label.text(), "counter": screen.counter.text(),
                   "line": screen.line(), "context": screen.answer.context, "left": screen.answer.left,
                   "chosen": [list(p) for p in screen.answer.chosen], "eleven": list(screen.answer.eleven),
-                  "bench": list(screen.answer.bench), "injured": set(screen.answer.injured)}
+                  "bench": list(screen.answer.bench), "injured": set(screen.answer.injured),
+                  "menu_below": (getattr(self.window.stack[-2], "phase", None) if len(self.window.stack)>1 else None)}
         self.benches.append(record)
         return record
 
@@ -170,7 +171,8 @@ class Walk:
         if kind == "PitchScreen":
             box = screen.stop_box
             if box.open:
-                self.boxes.append({"kind": box.kind, "texts": box.texts(), "minute": screen.controller.frame_or_event()[0]})
+                self.boxes.append({"kind": box.kind, "texts": box.texts(), "minute": screen.controller.frame_or_event()[0],
+                                   "timeout_ms": box.opportunity_timer.interval() if box.timed else None})
                 self.on_box(screen, box)
                 return
             self.playing(screen)
@@ -244,7 +246,7 @@ class FriendlyWalk(Walk):
             hints = [enter_on(window, screen, injured[0]), enter_on(window, screen, on)]
             self.out["first_stop"] = {"pair": [injured[0], on], "hints": hints, "record": record,
                                       "chosen": [list(p) for p in screen.answer.chosen],
-                                      "after": self.bench_record(screen)}
+                                      "after": self.bench_record(screen), "keeper_unavailable": keeper}
             key(window, Qt.Key.Key_Escape)          # S15, whose play sends it
             return
         if answer.context == "half_time" and "half" not in self.out:
@@ -397,15 +399,17 @@ class Bench(unittest.TestCase):
         return out
 
     # The substitution opportunity.
-    def test_an_injury_stops_on_s18_then_s15_then_s19(self):
+    def test_an_injury_timed_notice_opens_legal_bench_with_a_play_menu_below(self):
         walk = self.friendly
         first = walk.boxes[0]
         self.assertEqual(first["kind"], "substitution")
         self.assertEqual(first["texts"][0], "SUBSTITUTION OPPORTUNITY")
         self.assertIn("injured", first["texts"][1])
-        self.assertEqual(first["texts"][2], "press any key")
+        self.assertEqual(first["texts"][2], "Esc / Enter: open the bench")
+        self.assertEqual(first["timeout_ms"],10000 if walk.out["first_stop"]["keeper_unavailable"] else 4000)
         at = walk.order.index("PitchScreen+S18:substitution")
-        self.assertEqual(walk.order[at + 1:at + 3], ["MenuScreen:stop", "BenchScreen:now"])
+        self.assertEqual(walk.order[at + 1:at + 3], ["BenchScreen:now", "MenuScreen:stop"])
+        self.assertEqual(walk.out["first_stop"]["record"]["menu_below"],"stop")
         self.assertIn("SUBSTITUTION OPPORTUNITY", walk.out["stop_menu"]["situation"])
         stop = walk.out["first_stop"]
         self.assertEqual(stop["record"]["label"], "MAKE SUBSTITUTIONS NOW")
@@ -510,9 +514,12 @@ class Bench(unittest.TestCase):
         walk = self.qualifier
         attempted = walk.out["requested"]
         self.assertEqual(walk.out["requests_after_esc"],1,"one request to open the bench")
-        self.assertEqual(attempted["record"]["label"],"SUBSTITUTIONS ONLY AT STOPPAGES")
-        self.assertEqual(attempted["after"]["label"],"SUBSTITUTIONS ONLY AT STOPPAGES")
-        self.assertEqual(attempted["hints"],["Substitutions only at a stoppage"]*2)
+        self.assertEqual(attempted["record"]["label"],"REQUEST SUBSTITUTION")
+        self.assertEqual(attempted["after"]["label"],"REQUEST SUBSTITUTION")
+        self.assertEqual(attempted["hints"],["Request substitution","Cancel substitution request"])
+        requests=[v for c,v in walk.out["choices"] if isinstance(v,dict) and "request_substitution" in v]
+        self.assertEqual([v["request_substitution"] for v in requests],[True,False])
+        self.assertTrue(all(v["edit_only"] is True and not v.get("substitutions") for v in requests))
         self.assertEqual(attempted["after"]["chosen"],[])
         self.assertIn(("pause",[]),walk.out["choices"])
         self.assertTrue(all(not r["requested"] for r in walk.out["reports"]))
