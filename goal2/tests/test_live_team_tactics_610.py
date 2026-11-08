@@ -71,6 +71,9 @@ class LiveTeamTactics(unittest.TestCase):
         self.pitch.held = self.decision
         if context == 'pause':
             self.day.stop(self.pitch, self.decision)
+            self.assertEqual(type(self.window.current()).__name__, "BenchScreen")
+            from PySide6.QtCore import Qt
+            self.key(Qt.Key.Key_Escape)
         else:
             self.day.bench = BenchAnswer(self.model, self.decision)
             self.window.push(MenuScreen(self.window, self.day, 'half' if context == 'half_time' else 'extra'))

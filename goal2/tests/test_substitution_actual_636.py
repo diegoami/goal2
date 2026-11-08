@@ -12,7 +12,7 @@ from pathlib import Path
 from goal2.tests import requires
 
 
-def run_journey(test, mode):
+def run_journey(test, mode, *, owner_flow=False):
     import tempfile
     import subprocess
     from PySide6.QtCore import Qt
@@ -75,6 +75,16 @@ def run_journey(test, mode):
 
         def on_menu(self,screen):
             if screen.phase=='pause' and self.out.get('pause_sent') and not self.out.get('request_done'):
+                if owner_flow:
+                    # Exact owner keys: Esc reached this screen; Enter must act on a player,
+                    # never silently select the menu's initially highlighted Play.
+                    key(self.window,Qt.Key.Key_Return)
+                    print('T203_EXACT_ENTRY '+json.dumps(dict(after_escape=type(screen).__name__,
+                        after_enter=type(self.window.current()).__name__,request=controller.substitution_requested
+                        if (controller:=self.out['controller']) else None,preparatory_space=False)),flush=True)
+                    test.assertTrue(controller.substitution_requested,
+                        'owner Esc→Enter resumed Play without opening own players/requesting')
+                    return
                 key(self.window,Qt.Key.Key_Space)
                 return
             if screen.phase=='pause' and self.out.get('request_done') and mode=='accept' and not self.out.get('tactic_done'):
@@ -122,6 +132,9 @@ def run_journey(test, mode):
                 shot(self.window,'legal-bench-before-swap')
 
         def on_board(self,screen):
+            if owner_flow and screen.phase=='half':
+                key(self.window,Qt.Key.Key_Escape)
+                return
             if mode=='zero' and screen.phase=='half' and not self.out.get('exhausted'):
                 key(self.window,Qt.Key.Key_Escape)
                 return
@@ -141,8 +154,29 @@ def run_journey(test, mode):
                 shot(self.window,'zero-budget-before-play')
                 key(self.window,Qt.Key.Key_Escape)
                 return
+            if owner_flow and screen.answer.context=='half_time' and not self.out.get('half_swap'):
+                pair=compatible_pair(screen.answer,taken_off=self.out.get('taken_off',()),injured_first=True)
+                before=(screen.answer.minute,list(screen.answer.score),screen.answer.left)
+                enter_on(self.window,screen,pair[0]);enter_on(self.window,screen,pair[1])
+                test.assertIn(pair[1],screen.answer.eleven);test.assertIn(pair[0],screen.answer.bench)
+                test.assertEqual((screen.answer.minute,screen.answer.score,screen.answer.left),(before[0],before[1],before[2]-1))
+                test.assertFalse(screen.pending);test.assertIs(self.window.current(),screen)
+                self.out.setdefault('taken_off',[]).append(pair[0]);self.out['half_swap']=True
+                key(self.window,Qt.Key.Key_Escape)
+                return
             if screen.answer.context=='pause' and not self.out.get('request_done'):
+                if owner_flow:
+                    test.assertEqual(type(self.window.current()).__name__,'BenchScreen')
+                    test.assertFalse(controller.substitution_requested)
+                    self.out['exact_owner_entry']=True
                 self.out['request_ack']=request_from_bench(self.window,screen,True,expected=False if mode=='zero' else True,capture=shot)
+                if owner_flow:
+                    request_from_bench(self.window,screen,False)
+                    # A bench player uses the same Enter operation: no pair or permission is invented.
+                    from goal2.tests.test_ui_bench_t180 import go_to
+                    go_to(self.window,screen,screen.answer.bench[-1])
+                    request_from_bench(self.window,screen,True)
+                    self.out['true_false_true']=True
                 if mode=='cancel':
                     self.out['cancel_ack']=request_from_bench(self.window,screen,False,capture=shot)
                 self.out['request_done']=True
@@ -153,6 +187,17 @@ def run_journey(test, mode):
                 self.out['pair']=list(pair);self.out['swap_answer']=swap_immediately(self.window,screen,pair)
                 self.out.setdefault('taken_off',[]).append(pair[0])
                 self.out['swap_done']=True;shot(self.window,'swap-confirmed-before-play')
+                if owner_flow:
+                    test.assertFalse(screen.answer.opportunity_visible)
+                    test.assertTrue(screen.answer.takes_substitutions)
+                    test.assertFalse(screen.cue_timer.isActive())
+                    test.assertNotIn('substitution opportunity',screen.mode_label.text().lower())
+                    test.assertNotIn('substitution opportunity',screen.context.text().lower())
+                    test.assertNotIn('substitution opportunity',self.window.match_day.pitch.request_badge.text().lower())
+                    menu=next(v for v in reversed(self.window.stack) if type(v).__name__=='MenuScreen')
+                    test.assertIn(pair[1],menu.lineup_words[menu.model.state.managed_country])
+                    test.assertNotIn('substitution opportunity',menu.situation.text().lower())
+                    self.out['indicators_cleared']=True
                 if mode=='accept':
                     before=screen.answer.left;choices=len(controller.choices)
                     other=next(w for w in screen.answer.eleven if w!=pair[1] and screen.answer.position(w)!=0)
@@ -166,6 +211,15 @@ def run_journey(test, mode):
                 choices=len(controller.choices)
                 key(self.window,Qt.Key.Key_Escape)
                 menu=self.window.current();test.assertEqual(type(menu).__name__,'MenuScreen');test.assertEqual(menu.phase,'stop')
+                if owner_flow:
+                    test.assertNotIn('substitution opportunity',menu.situation.text().lower())
+                    key(self.window,Qt.Key.Key_T)
+                    team=self.window.current();test.assertEqual(type(team).__name__,'TeamTacticsScreen')
+                    test.assertNotIn('substitution opportunity',team.facts.text().lower())
+                    test.assertIn(pair[1],team.answer.eleven);test.assertNotIn(pair[0],team.answer.eleven)
+                    key(self.window,Qt.Key.Key_Escape)
+                    test.assertIs(self.window.current(),menu)
+                    self.out['team_cue_checked']=True
                 play_on(self.window,menu)
                 test.assertEqual(type(self.window.current()).__name__,'PitchScreen')
                 test.assertIsNone(controller.stop)
@@ -209,7 +263,7 @@ def run_journey(test, mode):
             test.assertTrue(walk.out.get('request_done'))
             test.assertEqual(owner.state.match_count,count+1)
             request_choices=[value for context,value in controller.choices if isinstance(value,dict) and 'request_substitution' in value]
-            test.assertEqual([v['request_substitution'] for v in request_choices],[True,False] if mode=='cancel' else [True])
+            test.assertEqual([v['request_substitution'] for v in request_choices],[True,False,True] if owner_flow else [True,False] if mode=='cancel' else [True])
             test.assertTrue(all(not v.get('substitutions') for v in request_choices))
             if mode in ('accept','timeout'):
                 test.assertTrue(walk.out.get('swap_done'))
@@ -222,6 +276,8 @@ def run_journey(test, mode):
                 test.assertTrue(walk.out.get('exhausted'))
                 test.assertIs(walk.out['request_ack']['acknowledged'],False)
             if mode=='accept':test.assertTrue(walk.out.get('tactic_done'));test.assertTrue(walk.out.get('refusal_checked'))
+            if owner_flow:
+                for field in ('exact_owner_entry','true_false_true','indicators_cleared','team_cue_checked','half_swap'):test.assertTrue(walk.out.get(field),field)
             if mode=='timeout':test.assertTrue(walk.out.get('timeout_checked'))
             other=career();other.state=copy.deepcopy(controller.given._snapshot)
             expected=play_through_bridge(other,controller.choices,fixture=engine_fixture(fixture),competitive=fixture.kind!=1,wait=1500,
@@ -233,7 +289,7 @@ def run_journey(test, mode):
             test.assertEqual(controller.outcome.seeds,expected.seeds)
             root=Path(__file__).resolve().parents[2]
             files=('goal2/ui/s17_pitch.py','goal2/ui/s18_stop.py','goal2/ui/s19_bench.py','goal2/ui/s10_team_tactics.py',
-                   'goal2/ui/match_day.py','goal2/ui/live_cards.py','goal2/ui/squad_card.py',
+                   'goal2/ui/match_day.py','goal2/ui/s15_match_menu.py','goal2/ui/live_cards.py','goal2/ui/squad_card.py',
                    'goal2/game/watched_match.py','goal2/game/watched_jobs.py','goal2/game/engine_process.py',
                    'goal2/game/engine_server.py','goal2/game/watched_schema.py','goal2/desktop/competitive.py',
                    'goal2/tests/match_day_policy.py','goal2/tests/substitution_selectors_636.py',
@@ -244,7 +300,7 @@ def run_journey(test, mode):
             if source_commit is None:
                 source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
             test.assertRegex(source_commit,r'^[0-9a-f]{40}$')
-            report=dict(mode=mode,source_commit=source_commit,
+            report=dict(mode=mode,owner_flow=owner_flow,source_commit=source_commit,
                 input_template_sha256=hashlib.sha256(bytes(owner.template_bytes)).hexdigest(),
                 fixture={'id':fixture.fixture_id,'kind':fixture.kind,'sides':[fixture.side_a,fixture.side_b]},
                 source_hashes={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in files},

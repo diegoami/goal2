@@ -1,0 +1,61 @@
+{
+  "current_maps": {
+    "public_evidence_sha256": {
+      "bindings": 30,
+      "mismatches": [
+        {
+          "committed_CRLF_count": 0,
+          "committed_sha256": "f47f5e97cb3bcac500235a70615073f0e9225b831acbb29587a20b9574eb7a75",
+          "expected": "876c3aced2846e351d9e0d8a39f735ef553a037f20f0081b661763fc2fdb74a5",
+          "normalization_only": true,
+          "path": "measurements/T203/final-v2/native-result-v2.json",
+          "working_CRLF_count": 476,
+          "working_sha256": "876c3aced2846e351d9e0d8a39f735ef553a037f20f0081b661763fc2fdb74a5"
+        }
+      ]
+    },
+    "source_sha256": {
+      "bindings": 457,
+      "mismatches": []
+    }
+  },
+  "head": "7091d33020ea802fe6cbbdee0af7f6a385163bb3",
+  "native_historical_maps": {
+    "against_final7091": {
+      "bindings": 455,
+      "mismatches": [
+        {
+          "committed_sha256": "584cb59dde0f54262ad51d884e6d70c57e4cf0844cae1e3e4d46d76dc1a79b6a",
+          "path": "goal2/tests/test_live_card_overlay_619.py",
+          "recorded": "77d1407b12ce069a6a368d203b72d51e928fadd6b259b26961ddef6cf7f0fd22"
+        },
+        {
+          "committed_sha256": "84e3656d353df5b39ac4002f7356cfce007d26babe2513e44d3775d3f9a8d768",
+          "path": "goal2/tests/test_match_menu_arrows_t184.py",
+          "recorded": "c3a5629f3dcb6debc8d6de631d77c80898c07212f7ebb22ae3693dddbb9ffa86"
+        },
+        {
+          "committed_sha256": "517e08dcee868d3ac3f95554c173b4def2fad1a7564dbb298c31399886bf1cff",
+          "path": "goal2/tests/test_roster_colours_637.py",
+          "recorded": "ef3c7498b37e192a778eea98f70c1e465846e58258ea34074b599240e12715de"
+        },
+        {
+          "committed_sha256": "4836d4fb81b0b629587a959cc43de7e96369b707dcf47e29ca66195bfb1b80e1",
+          "path": "goal2/tests/test_ui_pitch_t166.py",
+          "recorded": "139fb050c0c9227ece34e753d52bf2fa6c78b09f058cf2e0b5efbf396956a0e9"
+        }
+      ]
+    },
+    "against_measured7b85": {
+      "bindings": 455,
+      "mismatches": []
+    }
+  },
+  "native_owner_report_current_app_map": {
+    "bindings": 21,
+    "mismatches": []
+  },
+  "normalization_only": [
+    "measurements/T203/final-v2/native-result-v2.json"
+  ]
+}

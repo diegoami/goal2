@@ -1,0 +1,29 @@
+{
+  "keeper_index_sha256": "344c8383ac4602e4ced0717f16da09a618418222a8d809e4b3429148c9a7c5ab",
+  "keeper_root": "/home/diego/projects/goal2-keep/m3-trackb-2026-11-05/t203-native-7b85-v2",
+  "original_records_and_full_captures_remain_private": true,
+  "retained_files_sha256": {
+    "captures/accept/breadcrumb.jsonl": "4669df8546d54e340195b21fe76087ba8efd2de2fe732cd79b3546b0d699a185",
+    "captures/accept/legal-bench-before-swap.png": "208a91f702ad2e707570c704aef43bfda62127558b3947bddf0512d2061688df",
+    "captures/accept/opportunity-blink-first.png": "f5a1da09f679480de6fe198da0835e40e188062e7fb6916c44983256f3fbe4b1",
+    "captures/accept/opportunity-blink-second.png": "461f7f7ca5718a0be99f7754000fc26c18a0e5db66d0918b96f296bcb03d5e89",
+    "captures/accept/request-confirmed.png": "14c44784b5cc1b369b201b5862df7e788afc15458888bfde242547e1a0532f78",
+    "captures/accept/request-on-pitch.png": "c7ee494ec6744b6b8b5ce90fab468126c3fc9df3b721d30a723babc26ff45d62",
+    "captures/accept/request-pending.png": "9d4eec8f137b524fe95349d38227debf51eff51589c5e5384749a1479deab847",
+    "captures/accept/swap-confirmed-before-play.png": "e063f7fb93e24cfae0c766eef006a6a05f5caeec9917f95b5ba7847680542dc0",
+    "extract.py": "ea95c753ec45e5ba6c157e4bfa7e0f0a44fa12c7fc6d1a6b3d2fb0fb317c4b93",
+    "manifest.json": "bb8e94a0f8e72451ec66b13b0f060bdbf1322647a7f27cd42e4ee20970d78c61",
+    "native_test.py": "75c2079f70f08d56a7660c6c7c019153d1211e6a91bfdac082e3373a2d48396d",
+    "result.json": "876c3aced2846e351d9e0d8a39f735ef553a037f20f0081b661763fc2fdb74a5",
+    "run-v2.ps1": "4a4b0f2e2d7087b1e6759f199574c3efa387cfde602b4e0f8c9cac874ddaafa0",
+    "run.ps1": "3b8250aa433ba9271800beec30d040828f6e41524dab5a3ca81ccb6d1f5d827d",
+    "t203-native-windows-7b85-v2.exit.json": "535896253251d70d4aa48b6d4dd3ebe4230855c59940cdb532f2c6e1ecd74ab3",
+    "t203-native-windows-7b85-v2.json": "29c234d09e31e37e58bcd3c75649777d1adc1e5b8e4f65983f4dc207961a221d",
+    "t203-native-windows-7b85-v2.log": "eda72b6824742748283c295a90777f975c6c91454dded67e1044c50ec159644a",
+    "t203-native-windows-7b85-v2.pids.json": "f1ef3fe1f98b2809adbd56c82660edf0763d32a5a5876e73c8dbb052f1e73408",
+    "t203-native-windows-7b85.exit.json": "194d955a6aa3dfee7d2c821c6b815dd20abaa56fc29a70fbaf37046c4fd9b986",
+    "t203-native-windows-7b85.json": "a3b42ab1558511a9e37557fe87adde6d0cf6163b99cae99285730f1f90785008",
+    "t203-native-windows-7b85.log": "10fbfde39a11375da6dc66b966761ad61f7875f1dd13ed09fa89421c6c797699",
+    "t203-native-windows-7b85.pids.json": "619e0744a2214f232f3a900f086a665fda0364c87f8644b13ab9621cd91286cc"
+  }
+}

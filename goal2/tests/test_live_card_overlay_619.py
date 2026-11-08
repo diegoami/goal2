@@ -93,10 +93,11 @@ class LiveOverlayPackets(unittest.TestCase):
         from goal2.ui.match_day import MatchDay
         model,decision=fixture(own=0x11,energy=5)
         day=MatchDay.__new__(MatchDay);day.model=model;day.fixture=SimpleNamespace(kind=1)
+        day.window=SimpleNamespace(stack=[])
         day.controller=SimpleNamespace(display=SimpleNamespace(managed=0),events=[
             {'kind':'injury','data':{'team':0,'player':1}},
             {'kind':'player_tactics','data':{'player':1,'own_set':0,'marking':25}}])
-        pitch=SimpleNamespace(controller=SimpleNamespace(opponents=lambda:list(range(21,32))))
+        pitch=SimpleNamespace(controller=SimpleNamespace(opponents=lambda:list(range(21,32))),refresh=lambda:None)
         answer=day.live_bench(pitch,decision);self.assertNotIn(1,answer.injured);self.assertEqual(answer.record(1)[15],0x11)
         self.assertEqual(answer.live_marking[1],25)
         previous=answer;previous.injured.add(1);previous.own[1]=0x10;previous.positions[1]=4;previous.marking[1]=26

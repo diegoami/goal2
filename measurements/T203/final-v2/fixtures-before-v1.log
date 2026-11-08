@@ -1,0 +1,272 @@
+test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once (goal2.tests.test_live_card_overlay_619.ActualLiveCards.test_personal_pending_team_reply_swap_reopen_and_play_use_current_records_once) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit) ... ok
+test_controller_opt_in_and_legacy_default_do_not_change_packet_callers (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_controller_opt_in_and_legacy_default_do_not_change_packet_callers) ... ok
+test_fresh_position_club_and_own_precede_stale_events_then_pending_edits (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_fresh_position_club_and_own_precede_stale_events_then_pending_edits) ... ok
+test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper) ... ok
+test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path) ... ok
+test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission) ... ok
+test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events) ... ERROR
+test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career) ... ok
+test_same_choices_reference_explicitly_requests_live_metadata (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_same_choices_reference_explicitly_requests_live_metadata) ... ok
+test_twenty_current_records_are_copied_immutable_and_leave_career_untouched (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_twenty_current_records_are_copied_immutable_and_leave_career_untouched) ... ok
+test_enter_and_escape_keep_the_chosen_country_and_option (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_enter_and_escape_keep_the_chosen_country_and_option) ... ERROR
+test_left_and_right_select_visible_country_without_changing_row (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_left_and_right_select_visible_country_without_changing_row) ... ERROR
+test_lineup_rebuild_preserves_the_country_and_row (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_lineup_rebuild_preserves_the_country_and_row) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_mouse_and_own_shortcuts_keep_their_targets (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_mouse_and_own_shortcuts_keep_their_targets) ... 
+  test_mouse_and_own_shortcuts_keep_their_targets (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_mouse_and_own_shortcuts_keep_their_targets) (own=1) ... ERROR
+  test_mouse_and_own_shortcuts_keep_their_targets (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_mouse_and_own_shortcuts_keep_their_targets) (own=2) ... ERROR
+test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows) ... 
+  test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows) (country='Italy') ... ERROR
+  test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows) (country='Poland') ... ERROR
+test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) ... This plugin does not support propagateSizeHints()
+
+  test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=1, phase='half') ... ERROR
+  test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=1, phase='stop') ... ERROR
+This plugin does not support propagateSizeHints()
+  test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=2, phase='half') ... ERROR
+  test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=2, phase='stop') ... ERROR
+test_match_menu_eleven_colours_the_full_names (goal2.tests.test_roster_colours_637.RosterColour.test_match_menu_eleven_colours_the_full_names) ... ERROR
+test_rendered_names_have_all_four_original_colours (goal2.tests.test_roster_colours_637.RosterColour.test_rendered_names_have_all_four_original_colours) ... This plugin does not support propagateSizeHints()
+ok
+test_selection_injury_and_unknown_role_stay_readable (goal2.tests.test_roster_colours_637.RosterColour.test_selection_injury_and_unknown_role_stay_readable) ... This plugin does not support propagateSizeHints()
+ok
+
+======================================================================
+ERROR: test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_card_overlay_619.py", line 104, in test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events
+    day.edited(pitch,decision,{'made':[]});self.assertNotIn(1,day.bench.injured)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/match_day.py", line 446, in edited
+    for menu in self.window.stack:
+                ^^^^^^^^^^^
+AttributeError: 'MatchDay' object has no attribute 'window'
+
+======================================================================
+ERROR: test_enter_and_escape_keep_the_chosen_country_and_option (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_enter_and_escape_keep_the_chosen_country_and_option)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 103, in test_enter_and_escape_keep_the_chosen_country_and_option
+    window, screen = self.menu()
+                     ~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_left_and_right_select_visible_country_without_changing_row (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_left_and_right_select_visible_country_without_changing_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 82, in test_left_and_right_select_visible_country_without_changing_row
+    window, screen = self.menu()
+                     ~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_mouse_and_own_shortcuts_keep_their_targets (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_mouse_and_own_shortcuts_keep_their_targets) (own=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 116, in test_mouse_and_own_shortcuts_keep_their_targets
+    window, screen = self.menu(own)
+                     ~~~~~~~~~^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_mouse_and_own_shortcuts_keep_their_targets (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_mouse_and_own_shortcuts_keep_their_targets) (own=2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 116, in test_mouse_and_own_shortcuts_keep_their_targets
+    window, screen = self.menu(own)
+                     ~~~~~~~~~^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows) (country='Italy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 94, in test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows
+    window, screen = self.menu()
+                     ~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows) (country='Poland')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 94, in test_rows_do_not_visit_the_other_column_and_remember_it_after_shared_rows
+    window, screen = self.menu()
+                     ~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=1, phase='half')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 77, in test_up_from_play_reaches_managed_players_for_either_side_and_phase
+    window, screen = self.menu(own, phase)
+                     ~~~~~~~~~^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=1, phase='stop')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 77, in test_up_from_play_reaches_managed_players_for_either_side_and_phase
+    window, screen = self.menu(own, phase)
+                     ~~~~~~~~~^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=2, phase='half')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 77, in test_up_from_play_reaches_managed_players_for_either_side_and_phase
+    window, screen = self.menu(own, phase)
+                     ~~~~~~~~~^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_up_from_play_reaches_managed_players_for_either_side_and_phase (goal2.tests.test_match_menu_arrows_t184.MenuArrows.test_up_from_play_reaches_managed_players_for_either_side_and_phase) (own=2, phase='stop')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 77, in test_up_from_play_reaches_managed_players_for_either_side_and_phase
+    window, screen = self.menu(own, phase)
+                     ~~~~~~~~~^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_match_menu_arrows_t184.py", line 51, in menu
+    window.push(screen)
+    ~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/window.py", line 63, in push
+    screen.shown()
+    ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 336, in shown
+    self.refresh_accepted()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 204, in refresh_accepted
+    bench = self.day.bench
+            ^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'bench'
+
+======================================================================
+ERROR: test_match_menu_eleven_colours_the_full_names (goal2.tests.test_roster_colours_637.RosterColour.test_match_menu_eleven_colours_the_full_names)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_roster_colours_637.py", line 56, in test_match_menu_eleven_colours_the_full_names
+    frame=MenuScreen._lineup(menu,7)
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/ui/s15_match_menu.py", line 189, in _lineup
+    self.lineup_words[country] = list(eleven)
+    ^^^^^^^^^^^^^^^^^
+AttributeError: 'types.SimpleNamespace' object has no attribute 'lineup_words'
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.697s
+
+FAILED (errors=12, skipped=1)

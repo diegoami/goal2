@@ -1,0 +1,16 @@
+test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states (goal2.tests.test_substitution_flow_t203.Flow.test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states) ... This plugin does not support propagateSizeHints()
+T203_BUTTON {"size": [1440, 900], "state": "normal", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [1440, 900], "state": "disabled", "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397}
+T203_BUTTON {"size": [1440, 900], "state": "focus", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [1800, 1125], "state": "normal", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [1800, 1125], "state": "disabled", "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397}
+T203_BUTTON {"size": [1800, 1125], "state": "focus", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [2110, 1213], "state": "normal", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+T203_BUTTON {"size": [2110, 1213], "state": "disabled", "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397}
+T203_BUTTON {"size": [2110, 1213], "state": "focus", "foreground": "#ffffff", "background": "#000000", "contrast": 21.0}
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 5.294s
+
+OK

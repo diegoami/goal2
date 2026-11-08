@@ -39,7 +39,7 @@ class MenuArrows(unittest.TestCase):
         model = SimpleNamespace(state=SimpleNamespace(managed_country=own),
                                 goaldat=SimpleNamespace(country_names=names), home=lambda fixture: 1)
         day = SimpleNamespace(model=model, fixture=SimpleNamespace(side_a=1, side_b=2),
-                              kind_name='friendly', replay_auto=False, watch=True,
+                              kind_name='friendly', replay_auto=False, watch=True, bench=None,
                               asks_watch=lambda *args: False, exit=lambda: None,
                               set_replay_auto=lambda *args: None, refresh_menu=lambda *args: None)
         def lineup(screen, country):

@@ -1,0 +1,54 @@
+test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs (goal2.tests.test_substitution_flow_t203.Flow.test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs) ... This plugin does not support propagateSizeHints()
+ERROR
+test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission (goal2.tests.test_substitution_flow_t203.Flow.test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission) ... This plugin does not support propagateSizeHints()
+FAIL
+test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu) ... This plugin does not support propagateSizeHints()
+FAIL
+test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity) ... This plugin does not support propagateSizeHints()
+ERROR
+
+======================================================================
+ERROR: test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs (goal2.tests.test_substitution_flow_t203.Flow.test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 28, in test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs
+    if use_button:self.screen.request_button.click()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchScreen' object has no attribute 'request_button'
+
+======================================================================
+ERROR: test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 76, in test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity
+    self.assertTrue(self.bench.answer.opportunity_visible)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchAnswer' object has no attribute 'opportunity_visible'
+
+======================================================================
+FAIL: test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission (goal2.tests.test_substitution_flow_t203.Flow.test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 21, in test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission
+    self.assertEqual(type(self.window.current()).__name__,'BenchScreen')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'MenuScreen' != 'BenchScreen'
+- MenuScreen
+? ^  ^
++ BenchScreen
+? ^  ^^
+
+
+======================================================================
+FAIL: test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 68, in test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu
+    self.assertNotIn('MAKE SUBSTITUTIONS NOW',self.bench.mode_label.text())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'MAKE SUBSTITUTIONS NOW' unexpectedly found in 'MAKE SUBSTITUTIONS NOW'
+
+----------------------------------------------------------------------
+Ran 4 tests in 8.306s
+
+FAILED (failures=2, errors=2)

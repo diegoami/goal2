@@ -1,0 +1,117 @@
+test_both_opportunity_accept_keys_open_a_legal_bench (goal2.tests.test_substitution_flow_t203.Flow.test_both_opportunity_accept_keys_open_a_legal_bench) ... This plugin does not support propagateSizeHints()
+ok
+test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs (goal2.tests.test_substitution_flow_t203.Flow.test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs) ... This plugin does not support propagateSizeHints()
+ok
+test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission (goal2.tests.test_substitution_flow_t203.Flow.test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission) ... This plugin does not support propagateSizeHints()
+ok
+test_request_button_and_full_cue_fit_three_sizes (goal2.tests.test_substitution_flow_t203.Flow.test_request_button_and_full_cue_fit_three_sizes) ... This plugin does not support propagateSizeHints()
+T203_HEADER {"size": [1440, 900], "cue_width": 322, "cue_text_width": 320, "button_bounds": [361, 13, 268, 40], "context_bounds": [955, 13, 420, 40], "header_width": 1392}
+T203_HEADER {"size": [1800, 1125], "cue_width": 402, "cue_text_width": 400, "button_bounds": [451, 17, 328, 46], "context_bounds": [1188, 16, 531, 48], "header_width": 1740}
+T203_HEADER {"size": [2110, 1213], "cue_width": 432, "cue_text_width": 430, "button_bounds": [485, 18, 348, 48], "context_bounds": [1269, 17, 585, 50], "header_width": 1877}
+ok
+test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states (goal2.tests.test_substitution_flow_t203.Flow.test_request_button_has_readable_contrast_in_normal_disabled_and_focus_states) ... This plugin does not support propagateSizeHints()
+T203_BUTTON {"size": [1440, 900], "state": "normal", "actual_focus": false, "foreground": "#ffffff", "background": "#000000", "contrast": 21.0, "foreground_pixels": 320, "background_pixels": 7327}
+T203_BUTTON {"size": [1440, 900], "state": "disabled", "actual_focus": false, "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397, "foreground_pixels": 320, "background_pixels": 8543}
+T203_BUTTON {"size": [1440, 900], "state": "focus", "actual_focus": true, "foreground": "#000000", "background": "#aaaaaa", "contrast": 9.039556127853002, "foreground_pixels": 320, "background_pixels": 7327}
+T203_BUTTON {"size": [1800, 1125], "state": "normal", "actual_focus": false, "foreground": "#ffffff", "background": "#000000", "contrast": 21.0, "foreground_pixels": 652, "background_pixels": 10706}
+T203_BUTTON {"size": [1800, 1125], "state": "disabled", "actual_focus": false, "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397, "foreground_pixels": 652, "background_pixels": 12186}
+T203_BUTTON {"size": [1800, 1125], "state": "focus", "actual_focus": true, "foreground": "#000000", "background": "#aaaaaa", "contrast": 9.039556127853002, "foreground_pixels": 652, "background_pixels": 10706}
+T203_BUTTON {"size": [2110, 1213], "state": "normal", "actual_focus": false, "foreground": "#ffffff", "background": "#000000", "contrast": 21.0, "foreground_pixels": 1276, "background_pixels": 12068}
+T203_BUTTON {"size": [2110, 1213], "state": "disabled", "actual_focus": false, "foreground": "#ffffff", "background": "#555555", "contrast": 7.455177515226397, "foreground_pixels": 1276, "background_pixels": 13636}
+T203_BUTTON {"size": [2110, 1213], "state": "focus", "actual_focus": true, "foreground": "#000000", "background": "#aaaaaa", "contrast": 9.039556127853002, "foreground_pixels": 1276, "background_pixels": 12068}
+ok
+test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards (goal2.tests.test_substitution_flow_t203.Flow.test_unchanged_menu_request_and_tactic_refresh_do_not_decode_eleven_cards) ... This plugin does not support propagateSizeHints()
+T203_UNCHANGED_MENU {"card_decodes": 0, "elapsed_s": 0.00023842600057832897}
+ok
+test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_confirmed_swap_clears_opportunity_but_keeps_guest_permission_and_refreshes_menu) ... This plugin does not support propagateSizeHints()
+ok
+test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_refusal_or_pending_edit_does_not_clear_an_offered_opportunity) ... This plugin does not support propagateSizeHints()
+ok
+test_returned_menu_shows_the_acknowledged_current_xi (goal2.tests.test_substitution_flow_t203.Acknowledgement.test_returned_menu_shows_the_acknowledged_current_xi) ... This plugin does not support propagateSizeHints()
+ok
+test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes (goal2.tests.test_substitution_ui_636.FullRequestCue.test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_old_timers_cannot_answer_the_next_notice_and_generic_detail_style_is_restored (goal2.tests.test_substitution_ui_636.Lifecycle.test_old_timers_cannot_answer_the_next_notice_and_generic_detail_style_is_restored) ... This plugin does not support propagateSizeHints()
+ok
+test_timeout_closes_only_the_notice_and_does_not_invent_request_cancellation (goal2.tests.test_substitution_ui_636.Lifecycle.test_timeout_closes_only_the_notice_and_does_not_invent_request_cancellation) ... This plugin does not support propagateSizeHints()
+ok
+test_heading_scales_with_the_page_and_the_notice_stays_inside_the_lower_pitch (goal2.tests.test_substitution_ui_636.OpportunityScaling.test_heading_scales_with_the_page_and_the_notice_stays_inside_the_lower_pitch) ... This plugin does not support propagateSizeHints()
+ok
+test_cancel_preserves_false_and_personal_drafts_across_both_acknowledgements (goal2.tests.test_substitution_ui_636.RequestUI.test_cancel_preserves_false_and_personal_drafts_across_both_acknowledgements) ... This plugin does not support propagateSizeHints()
+ok
+test_enter_requests_without_choosing_a_player_or_advancing (goal2.tests.test_substitution_ui_636.RequestUI.test_enter_requests_without_choosing_a_player_or_advancing) ... This plugin does not support propagateSizeHints()
+ok
+test_opportunity_escape_opens_legal_bench_then_escape_leaves_a_play_menu (goal2.tests.test_substitution_ui_636.RequestUI.test_opportunity_escape_opens_legal_bench_then_escape_leaves_a_play_menu) ... This plugin does not support propagateSizeHints()
+ok
+test_zero_budget_acknowledges_actual_false_without_inventing_acceptance (goal2.tests.test_substitution_ui_636.RequestUI.test_zero_budget_acknowledges_actual_false_without_inventing_acceptance) ... This plugin does not support propagateSizeHints()
+ok
+test_keeper_uses_its_own_deadline_and_closed_notice_cannot_fire (goal2.tests.test_substitution_ui_636.TimedOpportunity.test_keeper_uses_its_own_deadline_and_closed_notice_cannot_fire) ... This plugin does not support propagateSizeHints()
+ok
+test_timer_metadata_blink_colours_and_exactly_once_timeout (goal2.tests.test_substitution_ui_636.TimedOpportunity.test_timer_metadata_blink_colours_and_exactly_once_timeout) ... This plugin does not support propagateSizeHints()
+ok
+test_hide_close_and_non_actionable_contexts_have_no_cue_timer (goal2.tests.test_bench_cue.BenchCue.test_hide_close_and_non_actionable_contexts_have_no_cue_timer) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_swap_stops_cue_and_confirmed_reply_restores_it (goal2.tests.test_bench_cue.BenchCue.test_pending_swap_stops_cue_and_confirmed_reply_restores_it) ... This plugin does not support propagateSizeHints()
+ok
+test_real_timer_blinks_green_without_losing_text_or_moving_roster (goal2.tests.test_bench_cue.BenchCue.test_real_timer_blinks_green_without_losing_text_or_moving_roster) ... This plugin does not support propagateSizeHints()
+ok
+test_refused_swap_restores_the_cue_at_the_still_legal_stop (goal2.tests.test_bench_cue.BenchCue.test_refused_swap_restores_the_cue_at_the_still_legal_stop) ... This plugin does not support propagateSizeHints()
+ok
+test_injury_and_captain_swaps_are_visible_before_play_and_publish_once (goal2.tests.test_immediate_bench_t188.ActualImmediateBench.test_injury_and_captain_swaps_are_visible_before_play_and_publish_once) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_a_dropped_bench_opening_clears_its_stale_requested_note (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_a_dropped_bench_opening_clears_its_stale_requested_note) ... This plugin does not support propagateSizeHints()
+ok
+test_actual_roster_and_budget_refresh_before_play_without_a_second_command (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_actual_roster_and_budget_refresh_before_play_without_a_second_command) ... This plugin does not support propagateSizeHints()
+ok
+test_clicked_pair_uses_the_same_consumed_once_path (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_clicked_pair_uses_the_same_consumed_once_path) ... This plugin does not support propagateSizeHints()
+ok
+test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_confirmed_tactical_byte_is_displayed_without_resubmitting_it_on_play) ... This plugin does not support propagateSizeHints()
+ok
+test_injured_withdrawn_player_keeps_the_actual_match_injury_marker (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_injured_withdrawn_player_keeps_the_actual_match_injury_marker) ... This plugin does not support propagateSizeHints()
+ok
+test_long_refusal_keeps_all_twenty_players_details_and_controls_visible (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_long_refusal_keeps_all_twenty_players_details_and_controls_visible) ... This plugin does not support propagateSizeHints()
+ok
+test_match_menu_uses_the_confirmed_eleven_and_live_injury_label (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_match_menu_uses_the_confirmed_eleven_and_live_injury_label) ... This plugin does not support propagateSizeHints()
+ok
+test_new_accepted_tactics_override_an_earlier_confirmed_cache (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_new_accepted_tactics_override_an_earlier_confirmed_cache) ... This plugin does not support propagateSizeHints()
+ok
+test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_ordinary_pause_cannot_queue_a_pair_but_preserves_tactical_changes) ... This plugin does not support propagateSizeHints()
+ok
+test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_refused_pair_stays_at_the_legal_stop_and_continuation_is_available) ... This plugin does not support propagateSizeHints()
+ok
+test_reopening_and_playing_do_not_resubmit_the_applied_pair (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_reopening_and_playing_do_not_resubmit_the_applied_pair) ... This plugin does not support propagateSizeHints()
+ok
+test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_returning_from_a_plain_pause_clears_obsolete_bench_requested_note) ... This plugin does not support propagateSizeHints()
+ok
+test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it (goal2.tests.test_immediate_bench_t188.ImmediateBench.test_second_selection_sends_one_edit_and_repeated_input_cannot_repeat_it) ... This plugin does not support propagateSizeHints()
+ok
+test_half_time_all_flags_confirm_before_play_and_match_headless_publication (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_half_time_all_flags_confirm_before_play_and_match_headless_publication) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch (goal2.tests.test_live_team_tactics_610.ActualLiveTeamTactics.test_requested_pause_all_flags_confirm_and_esc_returns_to_the_pitch) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_explicit_window_keys_do_not_type_into_another_window (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_explicit_window_keys_do_not_type_into_another_window) ... This plugin does not support propagateSizeHints()
+ok
+test_extra_time_tactics_are_editable_without_creating_substitution_pairs (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_extra_time_tactics_are_editable_without_creating_substitution_pairs) ... This plugin does not support propagateSizeHints()
+ok
+test_failed_submission_and_unaccepted_reply_never_claim_a_change (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_failed_submission_and_unaccepted_reply_never_claim_a_change) ... This plugin does not support propagateSizeHints()
+ok
+test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_held_escape_cannot_fall_through_screens_and_request_another_pause (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_held_escape_cannot_fall_through_screens_and_request_another_pause) ... This plugin does not support propagateSizeHints()
+ok
+test_managed_tactics_work_from_both_home_and_away_menu_columns (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_managed_tactics_work_from_both_home_and_away_menu_columns) ... This plugin does not support propagateSizeHints()
+ok
+test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard) ... This plugin does not support propagateSizeHints()
+ok
+test_request_note_clears_when_the_engine_stop_arrives (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_request_note_clears_when_the_engine_stop_arrives) ... This plugin does not support propagateSizeHints()
+ok
+test_team_reply_preserves_pending_personal_changes_and_live_roster (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_team_reply_preserves_pending_personal_changes_and_live_roster) ... This plugin does not support propagateSizeHints()
+ok
+test_worker_failure_while_pending_returns_to_the_desk_without_publishing (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_worker_failure_while_pending_returns_to_the_desk_without_publishing) ... This plugin does not support propagateSizeHints()
+ok
+test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes (goal2.tests.test_live_team_tactics_610.TacticTransport.test_all_eight_flag_changes_retain_false_and_reject_invalid_shapes) ... ok
+test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops (goal2.tests.test_live_team_tactics_610.TacticTransport.test_real_bridge_admits_only_tactical_edits_at_non_substitution_stops) ... ok
+
+----------------------------------------------------------------------
+Ran 52 tests in 244.828s
+
+OK (skipped=3)
