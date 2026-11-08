@@ -17,7 +17,7 @@ The engine kit's legacy queue API remains available to reference clients; this p
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QSizePolicy
 
 from goal2.ui import theme
 from goal2.ui.live_cards import player_snapshot, card_state
@@ -289,12 +289,15 @@ class BenchScreen(Screen):
         row=QHBoxLayout()
         row.setSpacing(22)
         self.mode_label=label("","h1")
+        self.mode_label.setSizePolicy(QSizePolicy.Policy.Fixed,QSizePolicy.Policy.Preferred)
         colour(self.mode_label,theme.VALUE)
         row.addWidget(self.mode_label)
         self.counter=label("","benchCounter")
         row.addWidget(self.counter)
         self.context=label("","benchMetadata")
         self.context.setWordWrap(True)
+        self.context.setMinimumWidth(0)
+        self.context.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Preferred)
         row.addWidget(self.context,1)
         inner.addLayout(row)
         self.body_layout.addWidget(head)

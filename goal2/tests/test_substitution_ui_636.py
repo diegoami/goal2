@@ -189,3 +189,34 @@ class OpportunityScaling(unittest.TestCase):
             self.assertGreaterEqual(box.headline.font().pixelSize(),round(32*self.window.frame.scale)-1)
             self.assertFalse(box.headline.text().strip()=='')
             box.cancel()
+
+
+@requires.need(modules=('PySide6','pygame'), **requires.HALFTIME)
+class FullRequestCue(unittest.TestCase):
+    def test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes(self):
+        from goal2.tests.test_ui_replay_t181 import ReplayScreens
+        from goal2.ui.s19_bench import BenchAnswer
+        from goal2.ui import theme
+        ReplayScreens.setUp(self)
+        words=self.model.state.managed_squad
+        decision=SimpleNamespace(minute=30,score=[0,0],data=dict(context='pause',eleven=words[:11],bench=words[11:],
+            substitutions_now=False,substitutions_left=255,request_substitution=False,tactics=self.model.state.country_tactics,
+            positions=[[w,self.model.state.players[w][6]] for w in words]))
+        self.day.bench=BenchAnswer(self.model,decision,friendly=True)
+        screen=self.day.open_bench()
+        self.app.processEvents()
+        decision.data["request_substitution"]=True
+        screen._request_desired=True
+        screen.applied(BenchAnswer(self.model,decision,friendly=True),None)
+        for width,height in ((1440,900),(1800,1125),(2110,1213)):
+            self.window.resize(width,height);self.app.processEvents();screen.refresh();self.app.processEvents()
+            label=screen.mode_label;text='SUBSTITUTION REQUESTED';metrics=label.fontMetrics()
+            self.assertEqual(label.text(),text)
+            self.assertGreaterEqual(label.font().pixelSize(),round(theme.HEADING_SIZE*self.window.frame.scale)-1)
+            self.assertLessEqual(metrics.horizontalAdvance(text),label.contentsRect().width()+1)
+            image=label.grab().toImage();dpr=image.devicePixelRatio()
+            start=max(0,int((label.contentsRect().left()+metrics.horizontalAdvance(text[:-1]))*dpr))
+            foreground=label.palette().color(label.foregroundRole()).rgb()
+            self.assertTrue(any(image.pixelColor(x,y).rgb()==foreground
+                for x in range(start,image.width()) for y in range(image.height())),
+                'the final D must have actual foreground pixels inside the label bounds')

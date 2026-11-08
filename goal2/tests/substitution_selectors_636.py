@@ -108,6 +108,8 @@ def request_from_bench(window, screen, desired, *, expected=None, capture=None):
     assert context == 'pause' and body['edit_only'] is True
     assert body['request_substitution'] is desired and not body.get('substitutions')
     assert not any(body.get(k) for k in ('positions', 'marking', 'own_tactics'))
+    cue=screen.mode_label
+    assert cue.fontMetrics().horizontalAdvance(cue.text()) <= cue.contentsRect().width()+1, 'live request cue is clipped'
     if capture: capture(window, 'request-confirmed' if desired else 'cancel-confirmed')
     return dict(before=before, desired=desired, acknowledged=expected,
                 answer=copy.deepcopy(controller.choices[-1]))
@@ -139,14 +141,30 @@ def accept_opportunity_with_escape(window, pitch, *, capture=None):
     return screen, data
 
 
+def compatible_pair(answer, *, taken_off=(), injured_first=False):
+    """Positive input only: preserve original EA09's one keeper/max3 played-role rule.
+    [confirmed: F029/upstream substitutions.md] This does not validate or modify
+    the game; the original still owns actual acceptance and explicit refusal tests.
+    """
+    from collections import Counter
+    assert answer.context in ('half_time','substitution') and answer.takes_substitutions and answer.left > 0
+    injured=[w for w in answer.eleven if w in answer.injured]
+    starters=injured if injured_first and injured else [w for w in answer.eleven if w not in answer.injured and answer.position(w)!=0]
+    bench=[w for w in answer.bench if w not in answer.injured and w not in taken_off]
+    counts=Counter(answer.position(w) for w in answer.eleven)
+    for off in starters:
+        ordered=sorted(bench,key=lambda w:answer.position(w)!=answer.position(off))
+        for on in ordered:
+            off_role,on_role=answer.position(off),answer.position(on)
+            if (off_role==0)!=(on_role==0):continue
+            after=counts.copy();after[off_role]-=1;after[on_role]+=1
+            if after[0]==1 and all(after[r]<=3 for r in range(1,14)):
+                return off,on
+    raise AssertionError('no compatible positive UI substitution input; do not bypass original legality')
+
+
 def outfield_pair(answer, *, taken_off=()):
-    """Existing outfield selector; the engine remains responsible for legal acceptance."""
-    from goal2.tests.test_ui_bench_t180 import outfield
-    assert answer.context == 'substitution' and answer.takes_substitutions and answer.left > 0
-    starters = outfield(answer, [w for w in answer.eleven if w not in answer.injured])
-    bench = outfield(answer, [w for w in answer.bench if w not in answer.injured and w not in taken_off])
-    assert starters and bench
-    return starters[0], bench[0]
+    return compatible_pair(answer,taken_off=taken_off)
 
 
 def swap_immediately(window, screen, pair):

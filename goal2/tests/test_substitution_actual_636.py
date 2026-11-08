@@ -5,6 +5,7 @@ import copy
 import hashlib
 import json
 import os
+import time
 import unittest
 from dataclasses import asdict
 from pathlib import Path
@@ -22,7 +23,7 @@ def run_journey(test, mode):
     from goal2.tests.match_day_policy import play_through_bridge
     from goal2.tests.substitution_selectors_636 import (
         real_worker, source_capture, pause_at_lead_boundary, request_from_bench,
-        accept_opportunity_with_escape, outfield_pair, swap_immediately)
+        accept_opportunity_with_escape, outfield_pair, compatible_pair, swap_immediately)
     from goal2.tests.test_pypy_worker_t152 import pypy
     pypy();application=app()
     evidence=os.environ.get('GOAL2_636_EVIDENCE')
@@ -34,6 +35,23 @@ def run_journey(test, mode):
 
     class RequestWalk(Walk):
         def each(self):
+            now=time.monotonic()
+            if evidence and now-getattr(self,'_breadcrumb_at',0)>=2:
+                self._breadcrumb_at=now
+                current=self.window.current();controller=getattr(self.window.match_day,'controller',None)
+                stop=getattr(controller,'stop',None);data=getattr(stop,'data',{})
+                bridge=getattr(controller,'bridge',None);display=getattr(controller,'display',None)
+                frame=getattr(display,'frame',None)
+                value=dict(mode=mode,monotonic=now,current=type(current).__name__,phase=getattr(current,'phase',None),
+                    screen_mode=getattr(current,'mode',None),stack=[(type(v).__name__,getattr(v,'phase',None)) for v in self.window.stack],
+                    order=self.order[-6:],steps={k:v for k,v in self.out.items() if type(v) is bool},
+                    error=getattr(controller,'error',None),stop=data.get('context'),refused=data.get('refused'),
+                    edit_pending=getattr(controller,'edit_pending',None),choices=len(getattr(controller,'choices',[])),
+                    waiting=getattr(getattr(bridge,'waiting',None),'data',{}).get('context'),
+                    frames=getattr(bridge,'_frame_sequence',None),drawn=getattr(controller,'drawn',None),acked=getattr(controller,'acked',None),
+                    frame={k:frame.get(k) for k in ('minute','sequence','watermark')} if frame else None)
+                path=Path(evidence)/mode/'breadcrumb.jsonl';path.parent.mkdir(parents=True,exist_ok=True)
+                with path.open('a') as out:out.write(json.dumps(value,sort_keys=True)+'\n')
             screen=self.window.current()
             if type(screen).__name__=='PitchScreen' and screen.stop_box.open and screen.stop_box.timed:
                 if screen.controller.stop is not getattr(self,'_seen_opportunity',None):
@@ -114,9 +132,7 @@ def run_journey(test, mode):
             if mode=='zero' and screen.answer.context=='half_time' and not self.out.get('exhausted'):
                 test.assertLessEqual(screen.answer.left,5)
                 while screen.answer.left:
-                    used=set(self.out.get('taken_off',()))
-                    off=next(w for w in screen.answer.eleven if screen.answer.position(w)!=0 and w not in screen.answer.injured)
-                    on=next(w for w in screen.answer.bench if screen.answer.position(w)!=0 and w not in used and w not in screen.answer.injured)
+                    off,on=compatible_pair(screen.answer,taken_off=self.out.get('taken_off',()),injured_first=True)
                     before=screen.answer.left
                     enter_on(self.window,screen,off);enter_on(self.window,screen,on)
                     test.assertEqual(screen.answer.left,before-1)
@@ -133,14 +149,7 @@ def run_journey(test, mode):
                 key(self.window,Qt.Key.Key_Escape)
                 return
             if controller.stop is self.out.get('target_legal') and not self.out.get('swap_done'):
-                injured=[w for w in screen.answer.eleven if w in screen.answer.injured]
-                if injured:
-                    off=injured[0];used=set(self.out.get('taken_off',()))
-                    on=next(w for w in screen.answer.bench if w not in used
-                            and (screen.answer.position(w)==0)==(screen.answer.position(off)==0))
-                    pair=(off,on)
-                else:
-                    pair=outfield_pair(screen.answer,taken_off=self.out.get('taken_off',()))
+                pair=compatible_pair(screen.answer,taken_off=self.out.get('taken_off',()),injured_first=True)
                 self.out['pair']=list(pair);self.out['swap_answer']=swap_immediately(self.window,screen,pair)
                 self.out.setdefault('taken_off',[]).append(pair[0])
                 self.out['swap_done']=True;shot(self.window,'swap-confirmed-before-play')
@@ -166,9 +175,7 @@ def run_journey(test, mode):
             # Existing T180/T610 injury policy, using actual legal stopped data.
             injured=[w for w in screen.answer.eleven if w in screen.answer.injured]
             if screen.answer.takes_substitutions and screen.answer.left and injured:
-                off=injured[0];used=set(self.out.get('taken_off',()))
-                on=next(w for w in screen.answer.bench if w not in used
-                        and (screen.answer.position(w)==0)==(screen.answer.position(off)==0))
+                off,on=compatible_pair(screen.answer,taken_off=self.out.get('taken_off',()),injured_first=True)
                 enter_on(self.window,screen,off);enter_on(self.window,screen,on)
                 self.out.setdefault('taken_off',[]).append(off)
             key(self.window,Qt.Key.Key_Escape)
@@ -184,9 +191,7 @@ def run_journey(test, mode):
                 def on_bench(self,screen):
                     injured=[w for w in screen.answer.eleven if w in screen.answer.injured]
                     if screen.answer.takes_substitutions and screen.answer.left and injured:
-                        off=injured[0];used=set(self.out.get('taken_off',()))
-                        on=next(w for w in screen.answer.bench if w not in used
-                                and (screen.answer.position(w)==0)==(screen.answer.position(off)==0))
+                        off,on=compatible_pair(screen.answer,taken_off=self.out.get('taken_off',()),injured_first=True)
                         enter_on(self.window,screen,off);enter_on(self.window,screen,on)
                         self.out.setdefault('taken_off',[]).append(off)
                     key(self.window,Qt.Key.Key_Escape)
