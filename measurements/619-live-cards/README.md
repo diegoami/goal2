@@ -51,8 +51,23 @@ bounded LayoutRequest flush yields no problems. The observer now uses the same
 bounded settling as FixedPage.fit, with no key/timer/engine advance. No production
 layout exemption was added. The initial Qt window-attribute calibration is kept.
 
-Two T167 direct reference calls also need explicit live_players=True, in addition
-to match_day_policy: their affected real set-piece/default-taker cases are being
-verified. No event field is stripped from an equality comparison.
+Two T167 direct reference calls also explicitly request live_players=True. Their
+affected real set-piece/default-taker cases pass2/2 in366.109s, retaining every
+original comparison. Final-source packet controls pass10/10 in0.234s. The old
+T610/T188/T167 assertion ASTs remain identical (97/68/77 assertions). No new event
+field is stripped from any equality comparison.
+
+acceptance-v1.json records exact measured source heads, all current source/table
+hashes, public evidence hashes and proof counts. Run `python3
+measurements/619-live-cards/verify.py` for static current-source binding checks;
+this performs no engine execution and is not a replacement for the focused
+journeys or main's broad/platform checks. Historical packet-v1.json and older
+calibration/source receipts remain unchanged.
+
+The running immutable snapshot is reused by S16 order cards as well as actual
+takers; order-card input is covered by the authored packet/Qt control. The
+actual new journeys are friendly/injury/half/pause/swap paths, not a complete
+extra-time/shoot-out manual journey or entire season. Original-opcode replay
+is independent of the retained exact sealed UI/PyPy full-outcome comparisons.
 Broad gate/platform CI, merge and preview remain with main; this implementer runs
 focused proofs only. Raw natural records/saves remain private.
