@@ -506,7 +506,7 @@ class PitchScreen(Screen):
         self.stop_box = StopBox(self)   # S18, over the pitch [designed: T180]
         self.request_badge = QLabel("SUBSTITUTION REQUESTED", self.pitch)
         self.request_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.request_badge.setStyleSheet("color:#000000;background:#aaaaaa;font-size:24px;font-weight:700;padding:6px;")
+        self.request_badge.setStyleSheet("color:#000000;background:#aaaaaa;font-weight:700;padding:6px;")
         self.request_badge.hide()
         self.timer = QTimer(self)
         self.timer.setInterval(TICK_MS)
@@ -689,7 +689,7 @@ class PitchScreen(Screen):
         from goal2.ui.s18_stop import substitution_text
         from goal2.ui.screen import set_para
         set_para(self.stop_box.detail, substitution_text(self.model, decision))
-        colour(self.stop_box.detail, "#000000")
+        colour(self.stop_box.detail, "#55ffff" if decision.data["keeper_unavailable"] else "#000000")
         self.stop_box.detail.show()
         self.stop_box.place()
         self.set_enter("Open the bench", lambda: self.answer_stop_box(Qt.Key.Key_Return))
@@ -750,7 +750,7 @@ class PitchScreen(Screen):
         requested = bool(getattr(controller, "substitution_requested", False)) and not controller.finished
         self.request_badge.setVisible(requested and not self.stop_box.open)
         if requested:
-            self.request_badge.setGeometry(12, 12, max(1,self.pitch.width()-24), 48)
+            self.request_badge.setGeometry(12, 12, max(1,self.pitch.width()-24), max(48,self.request_badge.sizeHint().height()))
             self.request_badge.raise_()
         if self.pitch.enlarged:
             self.pitch.commentary = self.lines

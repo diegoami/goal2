@@ -127,6 +127,9 @@ class TimedOpportunity(unittest.TestCase):
         self.show(keeper=True)
         box=self.pitch.stop_box
         self.assertEqual(box.opportunity_timer.interval(),10000)
+        from PySide6.QtGui import QColor
+        self.assertEqual(box.headline.text(),"HAS NO GOALKEEPER")
+        self.assertEqual(box.headline.palette().color(box.headline.foregroundRole()),QColor("#55ffff"))
         box.cancel()
         box._expire_opportunity()
         self.assertEqual(self.responses,[])
@@ -166,3 +169,23 @@ class Lifecycle(unittest.TestCase):
         self.assertTrue(box.open)
         self.assertFalse(box.timed)
         self.assertNotIn('#000000',box.detail.styleSheet().lower())
+
+
+@requires.need(modules=('PySide6','pygame'), **requires.HALFTIME)
+class OpportunityScaling(unittest.TestCase):
+    def test_heading_scales_with_the_page_and_the_notice_stays_inside_the_lower_pitch(self):
+        from goal2.tests.test_ui_replay_t181 import ReplayScreens
+        from PySide6.QtCore import QPoint
+        ReplayScreens.setUp(self)
+        box=self.pitch.stop_box
+        for width,height in ((1440,900),(1800,1125),(2110,1213)):
+            box.cancel();self.window.resize(width,height);self.app.processEvents()
+            box.show_opportunity(dict(keeper_unavailable=False,timeout_polls=400,poll_ms=10),lambda key:None)
+            self.app.processEvents();box.place()
+            top=self.pitch.pitch.mapFromGlobal(box.mapToGlobal(QPoint(0,0)))
+            self.assertGreaterEqual(top.x(),0);self.assertGreaterEqual(top.y(),0)
+            self.assertLessEqual(top.x()+box.width(),self.pitch.pitch.width())
+            self.assertLessEqual(top.y()+box.height(),self.pitch.pitch.height())
+            self.assertGreaterEqual(box.headline.font().pixelSize(),round(32*self.window.frame.scale)-1)
+            self.assertFalse(box.headline.text().strip()=='')
+            box.cancel()

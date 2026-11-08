@@ -39,6 +39,7 @@ NOTICE_SHOOTOUT = "shootout"
 TAG = "THE MATCH STOPS"                 # [designed: s18-match-stop.png]
 ANY_KEY = "press any key"               # [confirmed: t156-067, t156-149: "press any key"]
 SUBSTITUTION_OPPORTUNITY = "SUBSTITUTION OPPORTUNITY"   # [confirmed: t156-067]
+NO_GOALKEEPER = "HAS NO GOALKEEPER"  # [confirmed: upstream695 keeper notice template0x0B]
 SHOOTOUT = "PENALTY SHOOT-OUT"          # [confirmed: E031 C44-C46b; s17_pitch.STOPS]
 # [confirmed: T156-R1 steps 175–177] The goal questions; only Y or N answers them.
 ACTION_REPLAY = 'Do you want an action replay?'
@@ -111,7 +112,8 @@ class StopBox(QFrame):
     def show_opportunity(self, data, handler):
         """[confirmed: original7FCF/CC2E; #695]400/1000 polls,10 nominal ms.
         [designed: owner #636] Large lower-pitch flashing heading; UI Esc accepts.
-        Source headline0x70 is black on gray; source hint0x8D is blinking magenta.
+        Ordinary source headline0x70 is black on gray; keeper source0x0B is
+        light cyan on black (HAS NO GOALKEEPER). Both hints use blinking magenta0x8D.
         The headline blink is the owner's presentation adaptation.
         """
         # Full packets are validated before the view. This method also supports
@@ -120,11 +122,13 @@ class StopBox(QFrame):
         polls, ms = data['timeout_polls'], data['poll_ms']
         if type(keeper) is not bool or type(polls) is not int or type(ms) is not int or polls != (1000 if keeper else 400) or ms != 10:
             raise ValueError('invalid original opportunity timing')
-        self.show_stop(NOTICE_SUBSTITUTION, SUBSTITUTION_OPPORTUNITY, '', handler)
+        self.show_stop(NOTICE_SUBSTITUTION, NO_GOALKEEPER if keeper else SUBSTITUTION_OPPORTUNITY, '', handler)
         self.timed = True
+        self._opportunity_keeper = keeper
         self.tag.hide();self.detail.hide()
         self.setFixedWidth(min(740,max(380,getattr(self.parentWidget(),'pitch',self.parentWidget()).width()-24)))
-        self.setStyleSheet('#stopBox { background:#aaaaaa; border:0; }')
+        background = '#000000' if keeper else '#aaaaaa'
+        self.setStyleSheet(f'#stopBox {{ background:{background}; border:0; }}')
         self.headline.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.key_hint.setText('Esc / Enter: open the bench')
         self._opportunity_lit = True
@@ -134,8 +138,8 @@ class StopBox(QFrame):
         self.opportunity_timer.start(polls * ms)
 
     def _opportunity_colours(self):
-        foreground = '#000000' if self._opportunity_lit else '#aaaaaa'
-        self.headline.setStyleSheet(f'color:{foreground};font-size:30px;font-weight:700;')
+        foreground = ('#55ffff' if self._opportunity_keeper else '#000000') if self._opportunity_lit else ('#000000' if self._opportunity_keeper else '#aaaaaa')
+        self.headline.setStyleSheet(f'color:{foreground};font-weight:700;')
         self.key_hint.setStyleSheet(f"color:{'#ff55ff' if self._opportunity_lit else '#000000'};background:#000000;")
 
     def _blink_opportunity(self):

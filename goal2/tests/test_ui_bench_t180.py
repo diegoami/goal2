@@ -403,7 +403,7 @@ class Bench(unittest.TestCase):
         walk = self.friendly
         first = walk.boxes[0]
         self.assertEqual(first["kind"], "substitution")
-        self.assertEqual(first["texts"][0], "SUBSTITUTION OPPORTUNITY")
+        self.assertEqual(first["texts"][0], "HAS NO GOALKEEPER" if walk.out["first_stop"]["keeper_unavailable"] else "SUBSTITUTION OPPORTUNITY")
         self.assertIn("injured", first["texts"][1])
         self.assertEqual(first["texts"][2], "Esc / Enter: open the bench")
         self.assertEqual(first["timeout_ms"],10000 if walk.out["first_stop"]["keeper_unavailable"] else 4000)
