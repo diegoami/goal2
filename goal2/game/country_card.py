@@ -3,8 +3,9 @@
 Choosing a country shows its card and, with Space, its players (goal2.game.player_card), as the
 original's country selection does (screenshots `country-select`, `m244-team-info-2030`).
 Decoded fields carry their evidence. [derived: F034–F038; T197] Both career and
-Core routes consume the delivered TEAM readers. Ranking-top and strips remain
-explicit unavailable fields; no replacement aggregate is invented.
+Core routes consume the delivered TEAM readers. [confirmed: original157D; T200]
+This career route also exposes stored top-rank bytes and raw strip attributes;
+monochrome leaves the original template's neutral strip glyphs without a colour overlay.
 """
 from goal2.game import roles
 
@@ -51,9 +52,13 @@ def card(state, country, goaldat):
         'manager': (initial + ' ' if initial else '') + goaldat.manager_names[country],
         # [confirmed: F007] world rank +0x2B, continent +0x2C, rank within it +0x2A.
         'world': record[0x2B], 'continent': CONTINENTS.get(record[0x2C], NOT_DECODED), 'continental': record[0x2A],
+        # [confirmed: F008/F002, original1771:157D; T200] Stored top ranks, not new history arithmetic.
+        'top_world': record[0x29], 'top_continental': record[0x28],
+        # Raw attributes are full bytes. None means no coloured overlay, not missing evidence.
+        'strips': None if memory.byte(0xA964) else tuple(memory.read_ds(0x9D80 + 3 * country, 3)),
         'formation': formation, 'eleven': [codes[p] if p < 14 else '?' for p in eleven],
         'team_tactics': group(TEAM_TACTICS), 'player_defaults': group(PLAYER_DEFAULTS),
         'players': words, 'not_decoded': tuple(name for name in UNDECODED
-            if name not in {'status', 'skill', 'team skills', 'performance', 'characteristics'}),
+            if name not in {'status', 'skill', 'team skills', 'performance', 'characteristics', 'ranking top', 'strips'}),
     }
 
