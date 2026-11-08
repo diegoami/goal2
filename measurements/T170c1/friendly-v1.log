@@ -1,0 +1,7 @@
+test_a_watched_friendly_with_bench_answers_and_a_pause (goal2.tests.test_port_route_t151.PortRoute.test_a_watched_friendly_with_bench_answers_and_a_pause) ... port (engine child) 146.8 s wall, original 42.0 s cpu, score [2, 1]
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 146.990s
+
+OK

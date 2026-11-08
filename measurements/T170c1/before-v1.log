@@ -1,0 +1,78 @@
+test_false_cancellation_opportunity_and_prompt_answers (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_false_cancellation_opportunity_and_prompt_answers) ... ERROR
+test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail) ... ERROR
+test_refusal_unknown_context_and_invalid_answers_remain_errors (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_refusal_unknown_context_and_invalid_answers_remain_errors) ... ERROR
+test_same_object_detached_order_and_single_edit_report (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_same_object_detached_order_and_single_edit_report) ... ERROR
+test_tick_sequence_pause_drop_and_event_watermarks (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_tick_sequence_pause_drop_and_event_watermarks) ... ERROR
+
+======================================================================
+ERROR: test_false_cancellation_opportunity_and_prompt_answers (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_false_cancellation_opportunity_and_prompt_answers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 55, in test_false_cancellation_opportunity_and_prompt_answers
+    self.consume(match,policy=policy,substitution_control=True,prompts=True,_observe_pitch=lambda x:None)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 39, in consume
+    return W.consume_match(match,**options)
+           ^^^^^^^^^^^^^^^
+AttributeError: module 'goal2.game.watched_match' has no attribute 'consume_match'
+
+======================================================================
+ERROR: test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 82, in test_legacy_wrapper_configures_ticks_in_constructor_and_assembles_after_tail
+    with patch.object(W,'Match',return_value=match) as factory,patch.object(W,'sealed',return_value='sealed'),patch.object(W,'consume_match',return_value=()) as consumer,patch.object(W,'_complete_memory',return_value=b'complete'),patch.object(W,'Image',return_value=after):
+                                                                                                              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 1510, in __enter__
+    original, local = self.get_original()
+                      ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 1480, in get_original
+    raise AttributeError(
+        "%s does not have the attribute %r" % (target, name)
+    )
+AttributeError: <module 'goal2.game.watched_match' from '/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/game/watched_match.py'> does not have the attribute 'consume_match'
+
+======================================================================
+ERROR: test_refusal_unknown_context_and_invalid_answers_remain_errors (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_refusal_unknown_context_and_invalid_answers_remain_errors)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 69, in test_refusal_unknown_context_and_invalid_answers_remain_errors
+    self.assertRaises(RuntimeError,self.consume,Owned(source))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/case.py", line 813, in assertRaises
+    return context.handle('assertRaises', args, kwargs)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/case.py", line 247, in handle
+    callable_obj(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 39, in consume
+    return W.consume_match(match,**options)
+           ^^^^^^^^^^^^^^^
+AttributeError: module 'goal2.game.watched_match' has no attribute 'consume_match'
+
+======================================================================
+ERROR: test_same_object_detached_order_and_single_edit_report (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_same_object_detached_order_and_single_edit_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 46, in test_same_object_detached_order_and_single_edit_report
+    result=self.consume(match,policy=policy,_observe=observer)
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 39, in consume
+    return W.consume_match(match,**options)
+           ^^^^^^^^^^^^^^^
+AttributeError: module 'goal2.game.watched_match' has no attribute 'consume_match'
+
+======================================================================
+ERROR: test_tick_sequence_pause_drop_and_event_watermarks (goal2.tests.test_owned_match_driver_t170c1.OwnedConsumer.test_tick_sequence_pause_drop_and_event_watermarks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 62, in test_tick_sequence_pause_drop_and_event_watermarks
+    result=self.consume(match,policy=policy,_observe_pitch=frames.append)
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_owned_match_driver_t170c1.py", line 39, in consume
+    return W.consume_match(match,**options)
+           ^^^^^^^^^^^^^^^
+AttributeError: module 'goal2.game.watched_match' has no attribute 'consume_match'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.022s
+
+FAILED (errors=5)
