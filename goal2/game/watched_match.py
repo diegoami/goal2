@@ -257,10 +257,32 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
     # [designed: owner, 2026-10-31; T151] Every match plays on the sealed port; there is no Unicorn fallback.
     match = Match(sealed(image),fixture,managed=state.managed_country,captain=state.captain or None,
                   seed=reference_seed,delay_byte=delay_byte,record_draws=record_draws,substitutions=substitutions,
-                  engine="port",set_piece=bool(prompts),**({'live_players':True} if live_players else {}),
+                  engine="port",ticks=_observe_pitch is not None,set_piece=bool(prompts),**({'live_players':True} if live_players else {}),
                   **({'substitution_control':True} if substitution_control else {}))
-    if _observe_pitch is not None:
-        match.opts['ticks'] = True
+    events = consume_match(match,quick_at_half_time=quick_at_half_time,_observe=_observe,
+                           _observe_pitch=_observe_pitch,policy=policy,prompts=prompts,
+                           substitution_control=substitution_control)
+    # [confirmed: E033] result() requires completion after the B7FA player-update tail.
+    result = copy.deepcopy(match.result())
+    memory = _complete_memory(match.memory_component(), image)
+    after = Image(memory)
+    return WatchedOutcome(result,memory,tuple(events),(after.rd(0x7B62),after.rd(0x8336)),image.year())
+
+
+def consume_match(match,*,quick_at_half_time=False,_observe=None,_observe_pitch=None,
+                  policy=None,prompts=False,substitution_control=False):
+    """[designed: T170c1/#655] Consume events on the caller's configured Match.
+
+    The caller owns setup, tick/prompt options and the tail choice. This helper
+    only observes and answers the same object; it returns detached canonical
+    events, never a result projection or published state. In particular a
+    tail=False route Match remains at its actual return for the route owner.
+    """
+    if type(substitution_control) is not bool:raise ValueError('substitution_control must be boolean')
+    if substitution_control and (policy is None or _observe_pitch is None):
+        raise ValueError('substitution control needs an interactive pitch/bench policy')
+    if prompts and policy is None:
+        raise ValueError('the player prompts need a policy to answer them')
     frame_sequence = 0
     events = []
     previous_decision = None
@@ -356,11 +378,7 @@ def _drive_match(state,image,fixture,*,reference_seed=None,delay_byte=None,recor
             previous_decision = None
     if report is not None:
         policy.answered(_report(match, report))
-    # [confirmed: E033] result() requires completion after the B7FA player-update tail.
-    result = copy.deepcopy(match.result())
-    memory = _complete_memory(match.memory_component(), image)
-    after = Image(memory)
-    return WatchedOutcome(result,memory,tuple(events),(after.rd(0x7B62),after.rd(0x8336)),image.year())
+    return tuple(events)
 
 
 def _pause(match):
