@@ -5,7 +5,8 @@ The key adapter supplies keys; these bodies retain the original frames and calls
 from . import Registry
 from .contests import ss16, ss8
 from .geometry import cbw, mul
-from .runtime import Regs
+from .runtime import Regs, sub_flags
+from .mem import PortError
 from .restarts import _end
 from .setup import guest, farg, rb, rw, w8, w16, squad_of, player_of, ss_w16
 
@@ -13,6 +14,8 @@ PORTS=Registry('selection', 'SELECT TEAM, substitutions and first-eleven checks 
 PORTS.variant('request-not-set','E6A9 omits the substitution request')
 PORTS.variant('form-not-swapped','E20B omits the match-form swap')
 PORTS.variant('keeper-check-inverted','EB89 rejects one keeper instead of two')
+PORTS.variant('squad-word-swap-omitted','DF24 omits the pre-match squad word swap')
+PORTS.variant('squad-mark-clear-omitted','DEDE omits clearing the parent mark before the swap')
 M16=0xFFFF
 
 
@@ -64,6 +67,65 @@ def selected_pointer(mem,variant):
         r.di=r.di+r.ax;r.ax=r.di;r.dx=r.es
     r.local16(-4,r.ax);r.local16(-2,r.dx)
     r.ax=ss16(mem,r,r.bp-4);r.es=ss16(mem,r,r.bp-2);r.dx=r.es
+    return _end(r)
+
+
+@PORTS.port('0791:DEA6',ret='ret 2')
+def swap_pre_match_squad(mem,variant):
+    """T123b bounded DEA6: squad pane only, C1F clear; both original C1E re-sorts.
+
+    named/seg_0791_12.c, then code/seg_0791_22.asm DEA6-DFDC. Unsupported
+    current/marked pool panes and in-match substitution mode fail before any
+    write. A stale marked pane is irrelevant while no mark is active.
+    """
+    outer=mem.arg(0)
+    if (mem.ds8(0xC1F) or mem.u16(mem.ss_lin(outer-5))!=1 or
+            (mem.u8(mem.ss_lin(outer-1)) and mem.u16(mem.ss_lin(outer-7))!=1)):
+        raise PortError('0791:DEA6 supports only pre-match squad-to-squad selection')
+    r=Regs(mem);r.enter(4)
+    r.di,r.es=mem.ds16(0xA923),mem.ds16(0xA925)
+    r.local16(-4,r.di);r.local16(-2,r.es)
+    # DEB9's pool gate is outside this bounded entry; supported pane is one.
+    r.arith(sub_flags(pword(mem,r,-5),2,16))
+    marked=pbyte(mem,r,-1);r.arith(sub_flags(marked,0,8))
+    if marked:
+        if variant!='squad-mark-clear-omitted':putp(r,parent(mem,r)-1,0,byte=True)  # DEDE
+        r.di=parent(mem,r);r.ax=0;r.arith(sub_flags(0,0,16));putp(r,r.di-11,r.ax)  # DEE8
+        side=pword(mem,r,-5);r.push(side)
+        r=yield from guest(mem,r,'DE27',ss16(mem,r,r.bp+4),ret='DEF9',far=False)
+        # The retained pane word already occupies DE51's third argument slot.
+        # Reassemble the call API at the same physical SP/addresses; no extra
+        # native argument or cleanup is introduced at the helper boundary.
+        r.sp+=2
+        r=yield from guest(mem,r,'DE51',side,r.ax,ss16(mem,r,r.bp+4),ret='DF00',far=False)
+        r.di=r.ax;r.es=r.dx;current=r.es,r.di;r.push(r.es);r.push(r.di)
+        side=pword(mem,r,-7);index=pword(mem,r,-9)
+        r=yield from guest(mem,r,'DE51',side,index,ss16(mem,r,r.bp+4),ret='DF1A',far=False)
+        r.di=r.ax;r.es=r.dx;previous=r.es,r.di
+        r.sp+=4;r.ax=2
+        if variant!='squad-word-swap-omitted':
+            r=yield from guest(mem,r,'214B:007B',*current,*previous,r.ax,ret='DF29')
+        setup=mem.ds8(0xC1E);r.arith(sub_flags(setup,0,8))
+        if setup:
+            # DF30's printed target1230C wraps to the existing near230C.
+            r=yield from guest(mem,r,'230C',ret='DF33',far=False)
+        else:
+            country=pword(mem,r,6)
+            r=yield from guest(mem,r,'1771:52CC',country,ret='DF41')
+    else:
+        r.arith(sub_flags(pbyte(mem,r,-1),0,8))             # DF47
+        side=pword(mem,r,-5);r.push(side)
+        r=yield from guest(mem,r,'DE27',ss16(mem,r,r.bp+4),ret='DF5E',far=False)
+        r.sp+=2
+        r=yield from guest(mem,r,'DE51',side,r.ax,ss16(mem,r,r.bp+4),ret='DF65',far=False)
+        r.di=r.ax;r.es=r.dx;word=rw(mem,r,0);r.arith(sub_flags(word,0,16))
+        if word:
+            r=yield from guest(mem,r,'DE27',ss16(mem,r,r.bp+4),ret='DF75',far=False)
+            putp(r,parent(mem,r)-9,r.ax)
+            r.ax=pword(mem,r,-5);putp(r,parent(mem,r)-7,r.ax)
+            r.arith(sub_flags(pword(mem,r,-5),2,16))
+            r.di=parent(mem,r);r.ax=0;r.arith(sub_flags(0,0,16));putp(r,r.di-11,r.ax)
+            putp(r,parent(mem,r)-1,1,byte=True)
     return _end(r)
 
 

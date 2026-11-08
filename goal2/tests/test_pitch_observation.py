@@ -112,7 +112,12 @@ class ReportTests(unittest.TestCase):
         report = json.loads((EVIDENCE / 'runtime-04.json').read_text())
         self.assertEqual(report['source']['pin'], 'b519d999673c9458211279fd4da8a8325b9f56fe')
         self.assertEqual(report['source']['observer_sha256'], hashlib.sha256(Path(probe.__file__).read_bytes()).hexdigest())
-        kit_manifest = json.loads((ROOT / 'tools/watched-kit-hashes.json').read_text())
+        # Historical runtime-04 remains bound to its byte-exact T150 manifest,
+        # not the current T170a inventory. No measured report is relabelled.
+        historical = (EVIDENCE / 'runtime-04-kit-manifest.json').read_bytes()
+        self.assertEqual(hashlib.sha256(historical).hexdigest(), '3067f9846e4d5588bfce827ed07e2c6337fa76e86542d9ae3df346238d88ccdc')
+        kit_manifest = json.loads(historical)
+        self.assertEqual(len(kit_manifest['files']), 41)
         self.assertEqual(report['source']['pin'], kit_manifest['source'])
         self.assertEqual(report['source']['vendor_files_verified'], len(kit_manifest['files']))
         self.assertEqual(report['inputs']['seeds'], [257, 4660])
