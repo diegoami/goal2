@@ -63,12 +63,14 @@ class LiveTacticsCharacteristics(App):
         for swapped,injured in ((False,False),(True,False),(True,True)):
             model=self.model();decision=self.decision(model,swapped=swapped,injured=injured)
             before=copy.deepcopy(model.state);packet=copy.deepcopy(decision.data)
+            identities=tuple(id(value) for value in (model.state,model.state.players,model.state.countries,model.state.mem))
             window,screen=self.screen(model,decision)
             expected=expected_panel(model,decision.data)
             self.assertNotIn('not decoded',shown_traits(screen))
             self.assertEqual(screen.characteristics.panel,expected)
             self.assertEqual(screen.characteristics.cells.grid,characteristic_view(expected['descriptors']))
             self.assertEqual(model.state,before);self.assertEqual(decision.data,packet)
+            self.assertEqual(tuple(id(value) for value in (model.state,model.state.players,model.state.countries,model.state.mem)),identities)
             window.leave();self.app.processEvents()
 
     def test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel(self):
@@ -98,6 +100,28 @@ class LiveTacticsCharacteristics(App):
         self.assertEqual(screen.characteristics.panel,expected)
         self.assertEqual(answer.positions,draft);self.assertEqual(model.state,before)
         self.assertEqual(answer.position(word),draft[word])
+        window.leave()
+
+    def test_live_panel_cells_and_labels_fit_three_native_fractional_sizes(self):
+        from PySide6.QtGui import QColor
+        from goal2.desktop import fixed_page
+        from goal2.ui import theme
+        from goal2.desktop.country_card import characteristic_view
+        model=self.model();decision=self.decision(model,swapped=True,injured=True)
+        window,screen=self.screen(model,decision);expected=expected_panel(model,decision.data)
+        self.assertNotIn('not decoded',shown_traits(screen))
+        for width,height in ((1440,900),(1800,1125),(2110,1213)):
+            window.resize(width,height);self.app.processEvents();window.grab()
+            self.assertEqual(fixed_page.problems(window),[],(width,height))
+            cells=screen.characteristics.cells
+            self.assertEqual(cells.grid,characteristic_view(expected['descriptors']))
+            self.assertGreaterEqual(cells.width()+1,cells.content_size().width())
+            self.assertGreaterEqual(cells.height()+1,cells.content_size().height())
+            self.assertGreaterEqual(cells.font().pixelSize(),round(24*window.frame.scale))
+            self.assertEqual(len(screen.strip.shown_texts()),20)
+            for label in cells.labels.values():self.assertEqual(label.palette().color(label.foregroundRole()),QColor(theme.CARD_LABEL))
+            image=cells.grab().toImage();colors={image.pixelColor(x,y).name() for y in range(image.height()) for x in range(image.width())}
+            self.assertIn(theme.BAR_FILLED,colors);self.assertIn(theme.BAR_EMPTY,colors)
         window.leave()
 
     def test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards(self):
