@@ -36,6 +36,7 @@ def played_model():
     return model
 
 
+@requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
 class Report(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -75,6 +76,7 @@ class Report(unittest.TestCase):
         self.assertIn('Renamed', [n for side in value['scorers'] for n, _ in side])
 
 
+@requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
 class Window(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

@@ -1,0 +1,26 @@
+{
+  "baseline": "a93b4e3fda3edcfbc845ac0f6ed7f126e46363a6",
+  "definitions": 23,
+  "scenario_methods": 47,
+  "fast_scenarios_active": 0,
+  "slow_scenarios_active": 47,
+  "fast_controls_active": 85,
+  "controls_total": 85,
+  "layout_modules": 11,
+  "t182_wrappers": [
+    "test_watched_adapter_strict",
+    "test_watched_publication_campaign",
+    "test_watched_publication_malformed",
+    "test_watched_publication_stale",
+    "test_watched_publication_strict",
+    "test_watched_publication_tail",
+    "test_watched_save_atomic",
+    "test_watched_save_roundtrip",
+    "test_watched_save_write_failure"
+  ],
+  "slow_case_count": 10,
+  "before": "Selection regression FAILED (actual full-match cases active in default fast)",
+  "after": "Selection regression PASS; focused policy controls60 tests PASS,7.264s",
+  "matches_executed": 0,
+  "model": "Inherited Codex; exact variant unavailable"
+}
