@@ -1,0 +1,9 @@
+test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding (goal2.tests.test_tactics_refresh_636.FreshStoppedRoles.test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_selection_keeps_all_rows_and_sends_no_change (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_pending_selection_keeps_all_rows_and_sends_no_change) ... ok
+test_selection_only_changes_highlight_and_hint (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_selection_only_changes_highlight_and_hint) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.083s
+
+OK

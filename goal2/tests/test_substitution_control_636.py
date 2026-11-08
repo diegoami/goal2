@@ -181,3 +181,29 @@ class CompositeDecoder(unittest.TestCase):
             with patch('goal2.game.watched_match.prepare_watched') as prepare:
                 with self.assertRaises(ValueError):helper.server()._match(helper.request(**fields))
                 prepare.assert_not_called()
+
+
+class DriverCancellation(unittest.TestCase):
+    def test_shared_driver_keeps_explicit_false_through_its_change_filter(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from goal2.game.watched_match import _drive_match
+        from goal2.engine.original_match.match import Event
+        calls=[]
+        class Sent(Exception):pass
+        class WireOnlyMatch:
+            def __init__(self,*args,**kwargs):self.opts={}
+            def events(self):
+                yield Event('decision',30,(0,0),{'context':'pause'})
+            def answer(self,**kwargs):
+                calls.append(kwargs)
+                raise Sent()
+        policy=SimpleNamespace(decide=lambda event:{'request_substitution':False,'edit_only':True})
+        state=SimpleNamespace(managed_country=7,captain=0)
+        # Stop at answer dispatch. This executes the real adapter's filter,
+        # with no match engine, fabricated result, memory or fidelity claim.
+        with patch('goal2.game.watched_match.Match',WireOnlyMatch),patch('goal2.game.watched_match.sealed',lambda image:image):
+            with self.assertRaises(Sent):
+                _drive_match(state,object(),Fixture(7,19,21),policy=policy,
+                             _observe_pitch=lambda frame:None,substitution_control=True)
+        self.assertEqual(calls,[{'substitutions':[],'request_substitution':False,'edit_only':True}])

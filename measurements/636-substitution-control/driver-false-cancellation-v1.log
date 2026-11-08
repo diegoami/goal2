@@ -1,0 +1,6 @@
+test_shared_driver_keeps_explicit_false_through_its_change_filter (goal2.tests.test_substitution_control_636.DriverCancellation.test_shared_driver_keeps_explicit_false_through_its_change_filter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.018s
+
+OK
