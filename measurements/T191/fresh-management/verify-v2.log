@@ -1,0 +1,4 @@
+This plugin does not support propagateSizeHints()
+verify separate process Start/Continue reload equals complete saved career
+verify third-process reload proves discarded edit was not saved
+PASS verify

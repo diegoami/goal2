@@ -1,0 +1,15 @@
+{
+  "mode": "create",
+  "head": "d56e793beebb72f3d7418db0d4bf764d1a4c4091",
+  "python": "3.13.15",
+  "scope": "fresh management UI and separate-process named-save lifecycle; no watched match/season/original DOS UI parity claim",
+  "events": [
+    "fresh UI-created career; no template-state injection",
+    "all80pool players reached with arrows",
+    "two-Enter pool/squad exchange updates membership",
+    "position/club position, four personal and eight team tactics via keys",
+    "named save reload equals complete changed career state",
+    "quit-cancel and saved quit succeed"
+  ],
+  "private_expected_sha256": "93413688b932875443ef977cb2dd320e17c519b5eafe64f90e74fc215ffb1903"
+}
