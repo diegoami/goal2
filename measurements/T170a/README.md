@@ -47,3 +47,11 @@ T170 parent still requires fresh1992/1994trajectories, every round/record/news/R
 and explicit deferred terminal comparisons, including in-season ageing. The
 reviewed milestone's164CI skips and historical AA06 evidence stay disclosed;
 no terminal, ageing or multi-match case is invented for v4.
+
+
+The retained T81 runtime-04 pitch report remains HISTORICAL atb519/41files. Its
+byte-exact original T150 manifest is now explicitly captured from goal2commit
+0f6f92fb72790bc47fabcf1a13314e7b724e95bd, with a fixedSHA+41count guard. Every
+old source/observer/case/result/memory/RNG assertion remains unchanged; the old
+report bytes/SHA are unchanged. It is not current0f9f/50execution. The current
+T170a50-file strict guards remain independent and do not weaken the old report.

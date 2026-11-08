@@ -1,0 +1,54 @@
+test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_complete_route_registry_imports_on_verified_pypy_with_unicorn_denied) ... T170A_IMPORT {"engine_or_match_executed": false, "entries": 533, "implementation": "pypy", "public_assistant_included": false, "registry_modules": ["ageing", "assistant", "attributes", "ball", "contests", "discipline", "display", "duels", "entrypoints", "frame", "geometry", "menus", "motion", "news", "pilot", "positioning", "postmatch", "quick", "rare", "real", "restarts", "route", "runtime", "selection", "setup", "silent", "stages", "takers", "update"], "required_real_entries": 23, "route_exports": true, "unicorn_import_denied": true, "version": "3.11.16 (78565394c9b5, Sep 18 2026, 08:00:14)\n[PyPy 8.0.0 with GCC 14.2.1 20250110 (Red Hat 14.2.1-11)]"}
+ok
+test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids (goal2.tests.test_season_vendor_t170a.SeasonVendor.test_exact_reviewed_inventory_preserves_facades_tables_and_legacy_ids) ... ok
+test_all_files_are_exact_accepted_source (goal2.tests.test_watched_runtime.RuntimeTests.test_all_files_are_exact_accepted_source) ... ok
+test_build_refuses_meaningful_code_and_data_changes (goal2.tests.test_watched_runtime.RuntimeTests.test_build_refuses_meaningful_code_and_data_changes) ... ok
+test_changed_vendor_bytes_and_added_files_are_rejected (goal2.tests.test_watched_runtime.RuntimeTests.test_changed_vendor_bytes_and_added_files_are_rejected) ... ok
+test_disallowed_goal_save_preserves_complete_match_and_closes_coverage (goal2.tests.test_watched_runtime.RuntimeTests.test_disallowed_goal_save_preserves_complete_match_and_closes_coverage) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_entry_probe_false_or_incomplete_evidence_is_rejected (goal2.tests.test_watched_runtime.RuntimeTests.test_entry_probe_false_or_incomplete_evidence_is_rejected) ... ok
+test_missing_asset_and_wrong_hash_are_actionable (goal2.tests.test_watched_runtime.RuntimeTests.test_missing_asset_and_wrong_hash_are_actionable) ... ok
+test_optional_dependency_failure_and_actual_quick_play (goal2.tests.test_watched_runtime.RuntimeTests.test_optional_dependency_failure_and_actual_quick_play) ... ok
+test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned (goal2.tests.test_watched_runtime.RuntimeTests.test_staged_guard_uses_its_declared_source_and_other_runtime_remains_pinned) ... ok
+test_supported_adapted_records_pass_guard_without_mutating_original (goal2.tests.test_watched_runtime.RuntimeTests.test_supported_adapted_records_pass_guard_without_mutating_original) ... ok
+test_unsupported_fixtures_refuse_without_changing_image (goal2.tests.test_watched_runtime.RuntimeTests.test_unsupported_fixtures_refuse_without_changing_image) ... ok
+test_competitive_stream_is_in_the_originals_write_order (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_competitive_stream_is_in_the_originals_write_order) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_consequences_of_a_sending_off (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_consequences_of_a_sending_off) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_extra_time_goal_marked (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_extra_time_goal_marked) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_goal2s_shootout_order (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_goal2s_shootout_order) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_kinds_and_budget_arguments (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_kinds_and_budget_arguments) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_penalties_after_extra_time (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_penalties_after_extra_time) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_qualifier (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_qualifier) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_selection_port_substitution_budget_per_side (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_selection_port_substitution_budget_per_side) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_substitution_budget_is_settable_per_side (goal2.tests.test_watched_competitive_runtime.CompetitiveTests.test_substitution_budget_is_settable_per_side) ... skipped 'slow test: set GOAL2_SLOW=1 to run it'
+test_all_builder_kinds_accept_and_impossible_kinds_refuse (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_all_builder_kinds_accept_and_impossible_kinds_refuse) ... ok
+test_exact_source_and_scenario_selector (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_exact_source_and_scenario_selector) ... FAIL
+test_result_shape_matches_independent_guest_execution (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_result_shape_matches_independent_guest_execution) ... ok
+test_dot_prefix_bypass_blocks (goal2.tests.test_provenance.ProvenanceCheck.test_dot_prefix_bypass_blocks)
+A row whose path normalises to a vendored file's path is rejected ... ok
+test_outside_engine_dir_blocks (goal2.tests.test_provenance.ProvenanceCheck.test_outside_engine_dir_blocks)
+A row whose path is outside `goal2/engine/` is rejected even if it ... ok
+test_row_for_missing_file_blocks (goal2.tests.test_provenance.ProvenanceCheck.test_row_for_missing_file_blocks)
+A PROVENANCE row with no file under `goal2/engine/` is reported as orphaned. ... ok
+test_same_basename_under_different_path_blocks (goal2.tests.test_provenance.ProvenanceCheck.test_same_basename_under_different_path_blocks)
+A row naming `other/quick_engine.py` cannot cover `goal2/engine/quick_engine.py`. ... ok
+test_unlisted_nested_file_blocks (goal2.tests.test_provenance.ProvenanceCheck.test_unlisted_nested_file_blocks)
+A vendored file under a subdirectory without a row fails the check. ... ok
+test_well_known_three_rows_pass (goal2.tests.test_provenance.ProvenanceCheck.test_well_known_three_rows_pass)
+The three well-known rows pass file-matching and path checks. The ... ok
+
+======================================================================
+FAIL: test_exact_source_and_scenario_selector (goal2.tests.test_watched_competitive_runtime.ConsumerAcceptanceTests.test_exact_source_and_scenario_selector)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2/goal2/tests/test_watched_competitive_runtime.py", line 47, in test_exact_source_and_scenario_selector
+    self.assertEqual(SOURCE, "b519d999673c9458211279fd4da8a8325b9f56fe")     # [designed: T150] the re-vendored kit
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '0f9f87f405282ce2a0461679ac71395d35e76e3a' != 'b519d999673c9458211279fd4da8a8325b9f56fe'
+- 0f9f87f405282ce2a0461679ac71395d35e76e3a
++ b519d999673c9458211279fd4da8a8325b9f56fe
+
+
+----------------------------------------------------------------------
+Ran 30 tests in 38.793s
+
+FAILED (failures=1, skipped=10)
