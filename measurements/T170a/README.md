@@ -55,3 +55,18 @@ byte-exact original T150 manifest is now explicitly captured from goal2commit
 old source/observer/case/result/memory/RNG assertion remains unchanged; the old
 report bytes/SHA are unchanged. It is not current0f9f/50execution. The current
 T170a50-file strict guards remain independent and do not weaken the old report.
+
+Final focused checks:20 tests in1.545s, PASS with1 existing declared slow
+exclusion (focused-final-v1). Main independently ran the unchanged complete T151
+friendly/bench/pause test:1test,0skips, PASS71.597s, score2:1, preserving full
+result/events/physical-memory/seeds and state-immutability assertions. Its
+main-friendly-v1 receipt binds executed37c3 and every exercised source hash;
+those inputs also match final77a (implementation8a plus docs/historical guard).
+The legacy full competitive original-only test passed in the calibration wave;
+that wave failed only its obsolete SOURCE literal, corrected without game edits.
+
+The reviewed README retains its inherited relative route-handover link. A small
+goal2/docs redirect resolves it to the pinned upstream request and existing
+consumer handover without editing reviewed vendor bytes. Link-check failure is
+retained as links-before-v1; the final static check is recorded separately.
+These import and regression results do not claim a completed T170 season.
