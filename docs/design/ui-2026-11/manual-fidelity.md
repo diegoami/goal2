@@ -147,3 +147,19 @@ The historical matrix above predates several independently verified corrections.
 original extra-time edit capability685 and its consumer adoption, the assistant594/T183, native continuationT170,
 and the complete match/result/replay/season journeys. Broader gaps551/570/571 remain separately identified.
 The original whole-journey requirement on611 is not closed by these management/save receipts.
+
+
+## Original roster colour comparison
+
+[confirmed: original t156-014-squad.png and t156-013-hub.png] Full player initials and surnames, as well as
+role codes, carry the position colour: green goalkeeper, red defence, cyan midfield and yellow attack.
+The palette's existing samples are taken from name initials; the former design wording restricted their
+use to role letters incorrectly. Shared squad/pool/bench/choice strips and S15 elevens must both follow
+this rule. Selected-row contrast and explicit injury feedback remain deliberate readability choices.
+
+[designed: owner2026-11-08, #611/#637] Reproduce the original visual structure while polishing readability.
+Acceptance compares actual rendered name pixels and full screens against retained original references,
+including native Windows and fractional scales. A CSS constant or a screenshot of a different build does
+not establish integrated fidelity. The separate timed substitution request/opportunity path (#636), live
+paused team-characteristic projection and measured tactics-refresh delay remain required checks; this
+colour comparison establishes none of those behaviors or whole-game completion.

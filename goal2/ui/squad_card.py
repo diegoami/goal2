@@ -247,7 +247,9 @@ class Strip(QFrame):
             if i < len(rows):
                 code, line, name = rows[i]
                 row.setProperty("injured", i in injured)
-                row.set((code, name), (LINE_COLOUR.get(line, theme.TEXT_NORMAL), theme.TEXT_BRIGHT))
+                # [confirmed: t156-014-squad; owner #637] The full name shares the role colour.
+                tone = LINE_COLOUR.get(line, theme.TEXT_NORMAL)
+                row.set((code, name), (tone, tone))
                 row.show()
             else:
                 row.set(("", ""))
