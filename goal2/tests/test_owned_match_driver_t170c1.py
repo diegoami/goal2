@@ -107,7 +107,7 @@ def actual_owned_route(raw):
     steps=[route.play_round(state,tables,key) for key in keys]
     assert all(v.status=='match' and type(v.match) is Match and not v.match.opts['tail'] for v in steps)
     assert steps[0].match.m.read(0,MEM_SIZE)==steps[1].match.m.read(0,MEM_SIZE)
-    outputs=[];returned=[];input_matches=[]
+    outputs=[];returned=[];input_matches=[];match_rng=[]
     for index,step in enumerate(steps):
         match=step.match;parent=step.continuation
         parent_before=parent.m.read(0,MEM_SIZE);parent_regs={n:parent.m.reg(n) for n in REGS}
@@ -122,12 +122,17 @@ def actual_owned_route(raw):
                 if ev.kind=='decision':match.answer()
             events=tuple(observed)
         assert match.over and parent.pending is match and not parent.finished
-        assert parent.m.read(0,MEM_SIZE)==parent_before and parent.record==record_before
+        assert parent.m.read(0,MEM_SIZE)==parent_before
+        assert parent.record[:len(record_before)]==record_before
+        suffix=parent.record[len(record_before):]
+        assert suffix and all(len(row)==6 and row[0]=='rng' and row[-1]=='match' for row in suffix)
+        match_rng.append(copy.deepcopy(suffix))
         assert {n:parent.m.reg(n) for n in REGS}==parent_regs
         regs={n:match.m.reg(n) for n in REGS};returned.append(regs)
         assert match.m.pc()==match.m.lin(RUN_MATCH_RETURN) and match.m.reg('sp')==0x3EC8
         outputs.append((match.result(),events,match.m.read(0,MEM_SIZE),tuple(match.m.rd(off) for off in route.SEEDS.values())))
     assert outputs[0]==outputs[1] and returned[0]==returned[1]
+    assert match_rng[0]==match_rng[1]
     resumed=[];transferred=[]
     for step in steps:
         seen=[];parent=step.continuation
@@ -138,7 +143,8 @@ def actual_owned_route(raw):
     assert resumed[0].news_pages==resumed[1].news_pages and resumed[0].record==resumed[1].record
     assert keys[0].waiting==keys[1].waiting
     return {'input_sha256':sha(raw),'input_match_memory_sha256':input_matches,'fixture_edits':[],
-            'host_xi_edits':[],'answers':'original default empty answer at every actual decision',
+            'match_rng_trace_equal':True,'match_rng_count':len(match_rng[0]),'match_rng_sha256':digest(match_rng[0]),
+            'parent_record_prefix_unchanged':True,'host_xi_edits':[],'answers':'original default empty answer at every actual decision',
             'result_equal':True,'result_sha256':digest(outputs[0][0]),'events_equal':True,
             'event_count':len(outputs[0][1]),'events_sha256':digest(outputs[0][1]),
             'full_memory_equal':True,'full_memory_sha256':sha(outputs[0][2]),
