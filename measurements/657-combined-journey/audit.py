@@ -28,7 +28,7 @@ def key(value):send(w,value)
 def text(value):QTest.keyClicks(w,value);app.processEvents()
 def current(name):assert type(w.current()).__name__==name,(name,type(w.current()).__name__);return w.current()
 def snap(name):
- app.processEvents();assert not fixed_page.problems(w),(name,fixed_page.problems(w))
+ app.processEvents();QTest.qWait(50);app.processEvents();assert not fixed_page.problems(w),(name,fixed_page.problems(w))
  file=captures/(MODE+'-'+name+'.png');assert not file.exists();assert w.grab().save(str(file))
 def name_box(value):
  box=w.current()

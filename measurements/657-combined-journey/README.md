@@ -14,3 +14,9 @@ state and exact retirement receipt stay in /tmp/goal2-audit657-run-v1. The log i
 retained. The corrected driver handles its own same-label return explicitly,
 without application/test/oracle/fixture/deadline changes. New target required
 for each attempt. No acceptance or full22-screen/season claim.
+
+v2 reaches a natural goal but snapshots query pending dynamic hint layout too
+early. Tentative659 is disproved as a persistent defect: unchanged main settles
+cleanly after20ms and its painted question fits, with focused three-size controls
+passing before any patch. No production patch retained. v2 stays FAIL; v3 waits
+50ms normal Qt layout before the same unchanged bounds assertion.
