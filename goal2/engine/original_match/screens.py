@@ -46,7 +46,7 @@ class MenuPlan:
     tactics: {element 1..8: bool}. subs: [(off, on)]. positions: {player: code 0..13}. marking: {player: opponent
     player word or 0}. own: {player: {element 1..4: True, False or None (no override)}}."""
 
-    def __init__(self, side, tactics=None, subs=None, positions=None, marking=None, own=None):
+    def __init__(self, side, tactics=None, subs=None, positions=None, marking=None, own=None, request_substitution=None):
         self.side = side
         self.tactics = {int(e): bool(v) for e, v in (tactics or {}).items()}   # keys may be JSON strings
         self.jobs = [("sub", int(a), int(b)) for a, b in (subs or [])]
@@ -55,7 +55,11 @@ class MenuPlan:
         for p in sorted(players):
             self.jobs.append(("own", p, {int(e): v for e, v in ((own or {}).get(p) or (own or {}).get(str(p)) or {}).items()},
                               (marking or {}).get(p, (marking or {}).get(str(p)))))
-        self.steps = (["tactics"] if self.tactics else []) + (["select"] if self.jobs else []) + ["play"]
+        if request_substitution is not None and type(request_substitution) is not bool:
+            raise ValueError("request_substitution: a desired boolean")
+        self.request_goal = request_substitution
+        self.request_attempted = False
+        self.steps = (["tactics"] if self.tactics else []) + (["select"] if self.jobs or request_substitution is not None else []) + ["play"]
         self.in_screen = None             # "tactics" or "select" while that screen is open
         self.job = 0
         self.sub_marked = False
@@ -122,6 +126,17 @@ class MenuPlan:
 
     def select_key(self, s):
         """s: the screen state: cursor, squad (20 words), allowed, request, subs_left, position(player)."""
+        if self.request_goal is not None:
+            # [confirmed: original E66B-E6B0] Enter toggles the independent latch
+            # when swaps are disallowed. Never create a player pair or write it.
+            if s["allowed"]:
+                raise ScreenError("standalone request reached a substitution-enabled SELECT TEAM")
+            if not self.request_attempted and bool(s["request"]) != self.request_goal:
+                self.request_attempted = True
+                return self.act(ENTER)
+            # One real Enter also bounds a zero-budget refusal. The subsequent
+            # stopped decision reports the actual byte, including unchanged0.
+            self.request_goal = None
         if self.pending_check is not None:        # the swap Enter was pressed: did the original make it?
             job = self.pending_check
             self.pending_check = None

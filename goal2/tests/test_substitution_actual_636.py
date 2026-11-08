@@ -35,10 +35,12 @@ def run_journey(test, mode):
     class RequestWalk(Walk):
         def each(self):
             screen=self.window.current()
-            if (type(screen).__name__=='PitchScreen' and screen.stop_box.open and screen.stop_box.timed
-                    and screen.controller.stop is not getattr(self,'_seen_opportunity',None)):
-                self._seen_opportunity=screen.controller.stop
-                self.on_box(screen,screen.stop_box)
+            if type(screen).__name__=='PitchScreen' and screen.stop_box.open and screen.stop_box.timed:
+                if screen.controller.stop is not getattr(self,'_seen_opportunity',None):
+                    self._seen_opportunity=screen.controller.stop
+                    self.on_box(screen,screen.stop_box)
+                # Do not let the base react() process the same ignored notice
+                # a second time before its real Qt deadline has expired.
                 return
             return super().each()
 
