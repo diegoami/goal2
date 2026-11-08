@@ -1,0 +1,69 @@
+test_exact_owner_keys_request_cancel_natural_opportunity_swap_and_half_time (goal2.tests.test_substitution_flow_t203.ActualOwnerFlow.test_exact_owner_keys_request_cancel_natural_opportunity_swap_and_half_time) ... This plugin does not support propagateSizeHints()
+T203_EXACT_ENTRY {"after_escape": "MenuScreen", "after_enter": "PitchScreen", "request": false, "preparatory_space": false}
+FAIL
+test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs (goal2.tests.test_substitution_flow_t203.Flow.test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs) ... This plugin does not support propagateSizeHints()
+ERROR
+test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission (goal2.tests.test_substitution_flow_t203.Flow.test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+ERROR: test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs (goal2.tests.test_substitution_flow_t203.Flow.test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 28, in test_explicit_button_and_player_enter_share_true_false_true_with_no_pairs
+    if use_button:self.screen.request_button.click()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BenchScreen' object has no attribute 'request_button'
+
+======================================================================
+FAIL: test_exact_owner_keys_request_cancel_natural_opportunity_swap_and_half_time (goal2.tests.test_substitution_flow_t203.ActualOwnerFlow.test_exact_owner_keys_request_cancel_natural_opportunity_swap_and_half_time)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 41, in test_exact_owner_keys_request_cancel_natural_opportunity_swap_and_half_time
+    run_journey(self,'accept',owner_flow=True)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_actual_636.py", line 216, in run_journey
+    desk.highlight(PLAY_NEXT);key(window,Qt.Key.Key_Return);walk.run()
+                                                            ~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_ui_bench_t180.py", line 156, in run
+    pump(lambda: name(self.window.current()) == "DeskScreen" and self.order and self.order[-1] == "DeskScreen",
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         WAIT, f"the {self.case} match day did not return to the desk", self.each)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_ui_bench_t180.py", line 73, in pump
+    each()
+    ~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_actual_636.py", line 63, in each
+    return super().each()
+           ~~~~~~~~~~~~^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_ui_bench_t180.py", line 153, in each
+    self.react(screen)
+    ~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_ui_bench_t180.py", line 184, in react
+    self.on_menu(screen)
+    ~~~~~~~~~~~~^^^^^^^^
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_actual_636.py", line 85, in on_menu
+    test.assertTrue(controller.substitution_requested,
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'owner Esc→Enter resumed Play without opening own players/requesting')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : owner Esc→Enter resumed Play without opening own players/requesting
+
+======================================================================
+FAIL: test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission (goal2.tests.test_substitution_flow_t203.Flow.test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_substitution_flow_t203.py", line 21, in test_ordinary_pause_opens_own_bench_without_inventing_request_or_permission
+    self.assertEqual(type(self.window.current()).__name__,'BenchScreen')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'MenuScreen' != 'BenchScreen'
+- MenuScreen
+? ^  ^
++ BenchScreen
+? ^  ^^
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 22.220s
+
+FAILED (failures=2, errors=1)

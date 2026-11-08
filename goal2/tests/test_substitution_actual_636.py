@@ -12,7 +12,7 @@ from pathlib import Path
 from goal2.tests import requires
 
 
-def run_journey(test, mode):
+def run_journey(test, mode, *, owner_flow=False):
     import tempfile
     import subprocess
     from PySide6.QtCore import Qt
@@ -75,6 +75,16 @@ def run_journey(test, mode):
 
         def on_menu(self,screen):
             if screen.phase=='pause' and self.out.get('pause_sent') and not self.out.get('request_done'):
+                if owner_flow:
+                    # Exact owner keys: Esc reached this screen; Enter must act on a player,
+                    # never silently select the menu's initially highlighted Play.
+                    key(self.window,Qt.Key.Key_Return)
+                    print('T203_EXACT_ENTRY '+json.dumps(dict(after_escape=type(screen).__name__,
+                        after_enter=type(self.window.current()).__name__,request=controller.substitution_requested
+                        if (controller:=self.out['controller']) else None,preparatory_space=False)),flush=True)
+                    test.assertTrue(controller.substitution_requested,
+                        'owner Esc→Enter resumed Play without opening own players/requesting')
+                    return
                 key(self.window,Qt.Key.Key_Space)
                 return
             if screen.phase=='pause' and self.out.get('request_done') and mode=='accept' and not self.out.get('tactic_done'):
