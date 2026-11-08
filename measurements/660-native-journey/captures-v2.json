@@ -1,0 +1,41 @@
+{
+  "platform": "WindowsCPython3.13/PySide6 QtOFFSCREEN; actual UI, no owner input",
+  "images": [
+    {
+      "file": "create-desk-new.png",
+      "sha256": "5e32bfbb1955e58849c9b11cf6b58e1708687e89697b2a8dc0b6e5f2e4fb09a6"
+    },
+    {
+      "file": "create-pre-match-team.png",
+      "sha256": "40130f33bc932eb227dcde3022c6c1bb0be7040f4bfbcf47892bef06880a660d"
+    },
+    {
+      "file": "create-replay-question.png",
+      "sha256": "e7822001f0e831462a86016d5d1ea15fa642da31bcbf84146a667184cd8423b4"
+    },
+    {
+      "file": "create-live-team-ack.png",
+      "sha256": "d401cd558c1f29f487b0f2d64774eee0083a589c06710706d89663004252b377"
+    },
+    {
+      "file": "create-half-time.png",
+      "sha256": "fe9a9173ff25ab9783096305f9005018dc940827bb1b52c767b952c3e4396e9e"
+    },
+    {
+      "file": "create-full-time.png",
+      "sha256": "c15f790325405cdd755ed7ac70e26295f3e060afef997ae656a46f1800fe429b"
+    },
+    {
+      "file": "create-summary-reopened.png",
+      "sha256": "1ecdabdefbea23fd9213f00dd8c2cb231edf628e9df23100c17ababf9c823eb3"
+    },
+    {
+      "file": "reload-separate-process-reload.png",
+      "sha256": "e69fc46b1804f70df05f40d0c9ec2800fe17377655d9811cd2b205bf6aea902b"
+    },
+    {
+      "file": "reload-saved-goal-played.png",
+      "sha256": "dd161351cbfc1215f03c5354e73dae81c428c55c3fab79c942c3440959d520bc"
+    }
+  ]
+}
