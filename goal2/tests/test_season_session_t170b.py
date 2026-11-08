@@ -98,9 +98,13 @@ def actual_boundaries(raw,waiting=None,expected='match'):
     image=Image.from_bytes(raw);tables=engine_tables.load();value=image.state(tables)
     keys=Keys(route.DEFAULT_KEYS);keys.waiting=waiting
     reference_keys=Keys(route.DEFAULT_KEYS);reference_keys.waiting=waiting
-    reference=route.play_round(value,tables,reference_keys)
-    session=SeasonSession(value,tables,keys)
-    transition=session.advance();assert transition.status==expected==reference.status
+    from contextlib import nullcontext
+    guard=patch('goal2.engine.original_match.port.engine.PortMachine',side_effect=AssertionError('terminal backend forbidden')) if expected=='deferred-rollover' else nullcontext()
+    with guard:
+        reference=route.play_round(value,tables,reference_keys)
+        session=SeasonSession(value,tables,keys)
+        transition=session.advance()
+    assert transition.status==expected==reference.status
     assert session.state==reference.state
     assert transition.played_fixtures==reference.played_fixtures
     assert transition.news_pages==reference.news_pages
