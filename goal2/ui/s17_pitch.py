@@ -105,7 +105,10 @@ class MatchController:
     every sample before it has been shown (`stop`, answered by `answer_stop`), and selects the next sample when it is
     due. It never blocks: every call is the bridge's bounded poll."""
 
-    def __init__(self, model, pending, bridge, *, quick=False):
+    def __init__(self, model, pending, bridge, *, quick=False, live_players=False):
+        if type(live_players) is not bool:
+            raise ValueError("live_players must be boolean")
+        self.live_players = live_players
         self.model = model
         self.pending = pending
         self.display = Display("s17")
@@ -151,6 +154,8 @@ class MatchController:
         self._send("start", pitch_identity(self.model, self.pending))
         self._send("pitch", {"rate": PLAYBACK_RATE})
         options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True)
+        if self.live_players:
+            options["live_players"] = True
         if self.pending.kind == 1:
             self.token = self.given.start(engine_fixture(self.pending), **options)
         else:

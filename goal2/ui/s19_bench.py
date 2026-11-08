@@ -15,12 +15,11 @@ The engine kit's legacy queue API remains available to reference clients; this p
 """
 from __future__ import annotations
 
-import copy
-
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 from goal2.ui import theme
+from goal2.ui.live_cards import player_snapshot, card_state
 from goal2.ui.screen import Screen, label, para, set_para
 from goal2.ui.squad_card import PlayerCard, Strip, box, colour, full_name, last_on_the_bar
 
@@ -49,6 +48,7 @@ class BenchAnswer:
 
     def __init__(self, model, decision, opponents=(), friendly=False):
         data = decision.data
+        self.live_records = player_snapshot(data)
         self.model = model
         self.context = data.get("context")
         self.minute = decision.minute
@@ -59,6 +59,8 @@ class BenchAnswer:
         self.team_tactics = data.get("tactics", model.state.country_tactics)
         self.now = bool(data.get("substitutions_now", self.context != "pause"))
         self.injured = set(data.get("injured") or [])
+        self.injured.difference_update(self.live_records)
+        self.injured.update(w for w,record in self.live_records.items() if record[14] == 0)
         self.at_kick = {int(w): int(code) for w, code in data.get("positions") or []}
         self.requested = [list(p) for p in data.get("requested") or []] if self.context == "substitution" else []
         # [confirmed: the kit's Match._on_menu] the original refused the eleven of the last answer (two keepers, …):
@@ -82,21 +84,26 @@ class BenchAnswer:
     def words(self):
         return self.eleven + self.bench
 
+    def _base_record(self, word):
+        return self.live_records.get(word, self.model.state.players[word])
+
     def position(self, word):
-        return self.positions.get(word, self.at_kick.get(word, self.model.state.players[word][6]))
+        current = self._base_record(word)[6] if word in self.live_records else self.at_kick.get(word, self._base_record(word)[6])
+        return self.positions.get(word, current)
 
     def record(self, word):
         """His record as the bench shows it: the position and own tactics changed here."""
-        record = bytearray(self.model.state.players[word])
+        record = bytearray(self._base_record(word))
         record[6] = self.position(word)
-        if word in self.own or word in self.live_own:
-            record[15] = self.own.get(word, self.live_own.get(word))
+        if word in self.own:
+            record[15] = self.own[word]
+        elif word not in self.live_records and word in self.live_own:
+            record[15] = self.live_own[word]
         return bytes(record)
 
     def state(self, word):
         """The model's state with his record as the bench shows it (a shallow copy; nothing is written back)."""
-        state = copy.copy(self.model.state)
-        state.country_tactics = self.team_tactics
+        state = card_state(self.model.state, self.live_records, self.team_tactics)
         players = list(state.players)
         players[word] = self.record(word)
         state.players = players
@@ -106,7 +113,7 @@ class BenchAnswer:
         from goal2.game.player_card import card
         state = self.state(word)
         value = card(state, word, self.model.goaldat)
-        if word in self.injured:
+        if word not in self.live_records and word in self.injured:
             value["health"] = "INJURED — live match"
             value["readiness"] = "INJURED — live match"
         if word in self.marking or word in self.live_marking:
@@ -148,13 +155,13 @@ class BenchAnswer:
 
     def club_position(self, word):
         """C: his club position +7 (as S08's `club_position`), sent with the answer."""
-        self.positions[word] = self.model.state.players[word][7]
+        self.positions[word] = self._base_record(word)[7]
 
     def own_tactic(self, word, element):
         """Enter on S09's line `element` 1..4: the original's cycle (DesktopModel.own_tactic, F010 `1771:4B61`):
         the team's -> his own, clear -> his own, set -> the team's."""
-        team = self.model.state.country_tactics
-        bit = self.own.get(word, self.live_own.get(word, self.model.state.players[word][15]))
+        team = self.team_tactics
+        bit = self.record(word)[15]
         own, value = 1 << (element + 3), 1 << (element - 1)
         if not bit & own:
             bit = (bit | own) & ~value
@@ -179,6 +186,12 @@ class BenchAnswer:
             self.marking[word] = following
 
     def mark_text(self, word):
+        # Targets live in S.MARKING, not the20-byte record. Retain their event
+        # cache, but stale target labels cannot override a fresh keeper/zone state.
+        if word in self.live_records and (self.position(word) < 2 or
+                (word not in self.marking and self._base_record(word)[16] & 0x40)):
+            from goal2.game.player_card import card
+            return card(self.state(word), word, self.model.goaldat)["mark"]
         mark = self.marking.get(word, self.live_marking.get(word))
         if mark is None:
             return "—"
@@ -188,7 +201,8 @@ class BenchAnswer:
     def own_tactics(self):
         out = {}
         for word, byte in self.own.items():
-            before = self.live_own.get(word, self.model.state.players[word][15])
+            before = (self._base_record(word)[15] if word in self.live_records else
+                      self.live_own.get(word, self._base_record(word)[15]))
             changes = {}
             for element in (1, 2, 3, 4):
                 own, value = 1 << (element + 3), 1 << (element - 1)
@@ -206,7 +220,8 @@ class BenchAnswer:
         if self.context not in ("half_time", "substitution", "pause"):
             return []
         pairs = [list(p) for p in self.chosen] if self.takes_substitutions else []
-        positions = {w: c for w, c in self.positions.items() if c != self.at_kick.get(w)}
+        positions = {w: c for w, c in self.positions.items()
+                     if c != (self._base_record(w)[6] if w in self.live_records else self.at_kick.get(w))}
         marking = {w: m for w, m in self.marking.items() if w in self.eleven}
         own = self.own_tactics()
         if not (positions or marking or own):

@@ -1,0 +1,15 @@
+{
+  "base": "d56e793beebb72f3d7418db0d4bf764d1a4c4091",
+  "head": "c928e07ad7be8817a3b00e1efc0c07b88efbaeae",
+  "files": {
+    "goal2/tests/test_live_team_tactics_610.py": {
+      "all_old_assertions_ast_identical": 97
+    },
+    "goal2/tests/test_immediate_bench_t188.py": {
+      "all_old_assertions_ast_identical": 68
+    },
+    "goal2/tests/test_ui_match_day_t167.py": {
+      "all_old_assertions_ast_identical": 77
+    }
+  }
+}

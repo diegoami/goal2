@@ -224,7 +224,7 @@ class MatchDay:
             except ValueError as exc:
                 return self._back_to_desk(f"The match cannot start: {exc}")
         controller = MatchController(model, self.fixture, self.bridge(self.fixture.kind != 1),
-                                     quick=self.watch is False)
+                                     quick=self.watch is False, live_players=True)
         try:
             controller.start()
         except (OSError, ValueError) as exc:
@@ -313,7 +313,8 @@ class MatchDay:
         eleven = list(data.get("eleven") or [])
         screen = ChooseScreen(self.window, self.model, "taker", eleven, data.get("current"),
                               lambda word: self._chosen(pitch, {"taker": word}),
-                              available=data.get("available"), role=data.get("role"), match=self._match_name())
+                              available=data.get("available"), role=data.get("role"), match=self._match_name(),
+                              decision_data=data)
         return self.window.push(screen)
 
     def _shootout_order(self, pitch, decision):
@@ -323,7 +324,7 @@ class MatchDay:
         screen = ChooseScreen(self.window, self.model, "order", eleven, eleven[0] if eleven else None,
                               lambda order: self._chosen(pitch, {"shootout_order": list(order)}),
                               available=data.get("available"), takers=data.get("takers") or 0,
-                              match=self._match_name())
+                              match=self._match_name(), decision_data=data)
         return self.window.push(screen)
 
     def _stop_menu(self):
@@ -368,7 +369,8 @@ class MatchDay:
         for event in self.controller.events:
             data = event["data"]
             if event["kind"] == "injury" and data.get("team") == self.controller.display.managed:
-                if data.get("player") in answer.words(): answer.injured.add(data["player"])
+                if data.get("player") in answer.words() and data["player"] not in answer.live_records:
+                    answer.injured.add(data["player"])
             elif event["kind"] == "player_tactics":
                 answer.live_own[data["player"]] = data["own_set"]
                 answer.live_marking[data["player"]] = data["marking"]
@@ -390,7 +392,7 @@ class MatchDay:
         previous = self.bench
         answer = self.live_bench(pitch, decision)
         if previous is not None:
-            answer.injured.update(previous.injured)
+            answer.injured.update(w for w in previous.injured if w not in answer.live_records)
             if getattr(getattr(self, "_editing_screen", None), "preserve_player_edits", False):
                 answer.positions = dict(previous.positions)
                 answer.marking = dict(previous.marking)

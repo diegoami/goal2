@@ -53,7 +53,9 @@ def play_through_bridge(model, choices, *, competitive=False, fixture=None, wait
     else:
         from goal2.game.watched_jobs import WatchedJobs
         jobs = WatchedJobs(model)
-    options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True)
+    # UI MatchDay explicitly requests this metadata. The same-choices oracle
+    # requests it too; no event field is removed to make equality pass.
+    options = dict(delay_byte=0, record_draws=True, frames=True, bench=True, prompts=True, live_players=True)
     answers = list(choices)
     # [designed: owner #612, T190] Reproduce a UI pause at a fixed LEAD sample boundary.
     # The default path is unchanged. Hold acknowledgements until the worker fills that

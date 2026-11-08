@@ -1,0 +1,15 @@
+test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_bad_present_snapshots_refuse_and_legacy_missing_snapshot_remains_explicit) ... ok
+test_controller_opt_in_and_legacy_default_do_not_change_packet_callers (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_controller_opt_in_and_legacy_default_do_not_change_packet_callers) ... ok
+test_fresh_position_club_and_own_precede_stale_events_then_pending_edits (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_fresh_position_club_and_own_precede_stale_events_then_pending_edits) ... ok
+test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_mark_targets_survive_but_stale_labels_cannot_hide_fresh_zone_or_keeper) ... ok
+test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_match_day_explicit_opt_in_and_prompt_packet_route_preserve_captain_path) ... ok
+test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_personal_cycle_uses_actual_packet_team_default_and_no_resubmission) ... ok
+test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_refresh_keeps_fresh_records_ahead_of_old_injury_and_tactic_events) ... ok
+test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_s16_running_cards_use_snapshot_while_pre_kickoff_keeps_career) ... ok
+test_same_choices_reference_explicitly_requests_live_metadata (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_same_choices_reference_explicitly_requests_live_metadata) ... ok
+test_twenty_current_records_are_copied_immutable_and_leave_career_untouched (goal2.tests.test_live_card_overlay_619.LiveOverlayPackets.test_twenty_current_records_are_copied_immutable_and_leave_career_untouched) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.234s
+
+OK
