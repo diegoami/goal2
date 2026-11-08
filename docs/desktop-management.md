@@ -1,5 +1,7 @@
 # Desktop country management
 
+[designed: owner, 2026-11-08; T176] Every screen this guide describes is pictured in [docs/current-game](current-game/README.md), the build's own manual.
+
 [designed: owner #148, T69] The primary desktop interface uses PySide6. Install
 its optional dependency in a virtual environment (tested Python3.12/PySide6 6.12.0):
 

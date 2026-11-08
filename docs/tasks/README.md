@@ -319,3 +319,5 @@ operational status.
 - [T159](T159.md): the engine process and its pipe protocol, m3 Track A (#533).
 
 - [T162](T162.md): the new window's foundation: look, screen stack, import and help, m3 Track A (#536).
+
+- [T176](T176.md): a manual of the build as it ships, with its own screenshots (#664).
