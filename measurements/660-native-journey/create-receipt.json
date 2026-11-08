@@ -1,0 +1,148 @@
+{
+  "source": "8e1e0ec375ad987e305787ca1b1c96ca939a86d7",
+  "actions": [
+    "fresh Austria career through S02/S03/S04 UI",
+    "commentary Space holds and resumes",
+    "replay observation actual paints 248 polling 248",
+    "saved goal through S21 keys",
+    "immediate legal swap substitution",
+    "immediate legal swap half_time",
+    "saved summary through S21 keys",
+    "whole same-choice result/events/memory/seeds/career equal"
+  ],
+  "screen_order": [
+    "RoundScreen:before",
+    "MenuScreen:before",
+    "ChooseScreen:captain",
+    "PitchScreen",
+    "PitchScreen+S18:replay",
+    "PitchScreen",
+    "PitchScreen+S18:save-goal",
+    "PitchScreen",
+    "MenuScreen:pause",
+    "PitchScreen",
+    "PitchScreen+S18:substitution",
+    "BenchScreen:now",
+    "MenuScreen:stop",
+    "PitchScreen",
+    "ChooseScreen:taker",
+    "PitchScreen",
+    "ChooseScreen:taker",
+    "PitchScreen",
+    "ChooseScreen:taker",
+    "PitchScreen",
+    "ChooseScreen:taker",
+    "PitchScreen",
+    "BoardScreen:half",
+    "BenchScreen:now",
+    "MenuScreen:half",
+    "PitchScreen",
+    "PitchScreen+S18:replay",
+    "PitchScreen+S18:save-goal",
+    "PitchScreen",
+    "PitchScreen+S18:opponent",
+    "PitchScreen",
+    "PitchScreen+S18:opponent",
+    "PitchScreen",
+    "BoardScreen:full",
+    "MenuScreen:full",
+    "RoundScreen:after",
+    "DeskScreen"
+  ],
+  "choices": [
+    [
+      "pause",
+      {
+        "tactics": {
+          "5": true
+        },
+        "edit_only": true
+      }
+    ],
+    [
+      "pause",
+      {
+        "request_substitution": true,
+        "edit_only": true
+      }
+    ],
+    [
+      "pause",
+      []
+    ],
+    [
+      "substitution_opportunity",
+      {
+        "opportunity": "accept"
+      }
+    ],
+    [
+      "substitution",
+      {
+        "substitutions": [
+          [
+            2565,
+            33
+          ]
+        ],
+        "edit_only": true
+      }
+    ],
+    [
+      "substitution",
+      []
+    ],
+    [
+      "set_piece",
+      {
+        "taker": 23
+      }
+    ],
+    [
+      "set_piece",
+      {
+        "taker": 23
+      }
+    ],
+    [
+      "set_piece",
+      {
+        "taker": 23
+      }
+    ],
+    [
+      "set_piece",
+      {
+        "taker": 23
+      }
+    ],
+    [
+      "half_time",
+      {
+        "substitutions": [
+          [
+            33,
+            34
+          ]
+        ],
+        "edit_only": true
+      }
+    ],
+    [
+      "half_time",
+      []
+    ]
+  ],
+  "pause_after": 285,
+  "full_same_choice_equal": true,
+  "match_count": 1,
+  "saved_goal": true,
+  "saved_summary": true,
+  "unvisited": [
+    "extra_time",
+    "shootout",
+    "season_continuation",
+    "all22screens"
+  ],
+  "scope": "Fresh GUI-created career + one watched friendly, recording/save lifecycle; no forced outcomes/state insertion"
+}

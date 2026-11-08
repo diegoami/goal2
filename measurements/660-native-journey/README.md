@@ -23,3 +23,18 @@ defect. v1source/log/rawprivateTemp remain unchanged; new label/target required.
 The first public console copy uses Git text normalization (CRLF→LF). Its exact
 raw byte copy is separately preserved as replay-polling-failure-v1-raw.log with
 -text, and in private keep; no measured values/game output are changed.
+
+Windowsv2source8e1e0ec3: createPASS320.471s, separateOS-processreloadPASS19.391s,
+456sourcebindings reverified. Actual goal248paint callbacks equal EVERYoriginal
+goal sample; this run'spoll ledger also248. v1 has no paint ledger, so its exact
+mismatch cause remains unproven; no v1pass or production correction is claimed.
+Both whole arms compare COMPLETEresultINCLUDINGports diagnostics,1200events,
+allphysicalmemory,bothseeds and completecareer. Namedgoal/summary/savequit,
+separate reload/savedgoalplayback+explicitreturn/frozenboard and no career
+mutationPASS. Source/input/runtime/exit receipts retained, nineownUIcaptures.
+
+This is WindowsOS/process/path/save/replay evidence with QtOFFSCREEN, not a real
+visible desktop focus probe. Originalhelp ishashverified/viewed privately; help
+text/image/session/templates/rawoutcomes are excluded frompublicGit. Fullsuite/
+defaultgate not repeated for evidence-only workT189; exactheadno-tests and
+metadata/security required. Broader integration/milestone limits remain.

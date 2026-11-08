@@ -1,0 +1,27 @@
+{
+  "source": "8e1e0ec375ad987e305787ca1b1c96ca939a86d7",
+  "application_base": "703b32f9a6f8dac7ed91f2ef69e3f78ce75ebec1",
+  "platform": "Windows nt / CPython3.13.15 / PySide6 / shippedPyPy3.11 / QtOFFSCREEN",
+  "create_seconds": 320.47129700000005,
+  "reload_seconds": 19.391454799999337,
+  "sources_bound": 456,
+  "full_result_including_ports_equal": true,
+  "events_count": 1200,
+  "all_events_memory_seeds_career_equal": true,
+  "memory_sha256": "a0db3d1ee512602a8e747726d88c5759f48219e41df13233e31fd070edb781ab",
+  "separate_windows_process_reload_equal": true,
+  "saved_goal_actual_paints_exact": 248,
+  "polling_samples_this_run": 248,
+  "saved_goal_summary_data_equal": true,
+  "recording_view_career_unchanged": true,
+  "v1_status": "FAIL poll comparison; no actual-paint ledger exists there, so precise cause unproven. v2 uses stronger actual-paint observation, not a relabelled v1pass.",
+  "not_proved": [
+    "visible desktop focus",
+    "all22screens",
+    "season/activation",
+    "extra-time/shootout",
+    "best20",
+    "whole milestone"
+  ],
+  "original_assets_published": false
+}
