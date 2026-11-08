@@ -1,0 +1,49 @@
+test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel) ... This plugin does not support propagateSizeHints()
+FAIL
+test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write) ... This plugin does not support propagateSizeHints()
+FAIL
+test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs) ... This plugin does not support propagateSizeHints()
+FAIL
+test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 79, in test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+======================================================================
+FAIL: test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 68, in test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+======================================================================
+FAIL: test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 97, in test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+======================================================================
+FAIL: test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/diego/projects/m3-trackb/goal2-ci-policy/goal2/tests/test_live_tactics_characteristics_641.py", line 107, in test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.025s
+
+FAILED (failures=4)
