@@ -24,7 +24,7 @@ class TeamPanels(unittest.TestCase):
                     expected={**original.country_labels(country),**original.country_panels(country)}
                     shown=card(state,country,names)
                     self.assertEqual({f:shown[f] for f in FIELDS},expected)
-                    self.assertEqual(set(shown['not_decoded']),{'ranking top','strips'})
+                    self.assertEqual(shown['not_decoded'],())  # T200 delivers the final header fields on this route
             self.assertEqual(state,before)
 
     def test_managed_current_twenty_tactics_and_player_records_override_stale_raw_copies(self):

@@ -72,7 +72,7 @@ class TeamInfoScreen(Screen):
     def _build(self):
         row = QHBoxLayout()
         row.setSpacing(18)
-        self.card_view = CountryCard()
+        self.card_view = CountryCard(family=self.window_.family)
         row.addWidget(self.card_view, 1)
         countries, inner = box()
         countries.setFixedWidth(LIST_WIDTH)

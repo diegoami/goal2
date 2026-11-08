@@ -1,0 +1,26 @@
+test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write (goal2.tests.test_country_header_render_t201.HeaderViews.test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write) ... This plugin does not support propagateSizeHints()
+ERROR
+test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback (goal2.tests.test_country_header_render_t201.HeaderViews.test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback) ... ERROR
+
+======================================================================
+ERROR: test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write (goal2.tests.test_country_header_render_t201.HeaderViews.test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-ui-a/goal2/tests/test_country_header_render_t201.py", line 20, in test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write
+    self.assertEqual(view.ranks['top_world'].text(),str(data['top_world']))
+                     ~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'top_world'
+
+======================================================================
+ERROR: test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback (goal2.tests.test_country_header_render_t201.HeaderViews.test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-country-header-ui-a/goal2/tests/test_country_header_render_t201.py", line 52, in test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback
+    self.assertEqual(view.painted_top,(data['top_world'],data['top_continental']))
+                     ^^^^^^^^^^^^^^^^
+AttributeError: 'CountryCardView' object has no attribute 'painted_top'. Did you mean: 'painted_bars'?
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.469s
+
+FAILED (errors=2)

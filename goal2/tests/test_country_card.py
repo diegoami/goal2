@@ -49,8 +49,8 @@ class CountryCard(unittest.TestCase):
             self.assertEqual(sum(int(n) for n in c['formation'].split('-')), 10, c['name'])
             self.assertEqual(len(c['eleven']), 11)
             self.assertTrue(c['manager'].strip())
-        # [derived: T197/F034–F038] Delivered panel fields are now supplied by the career route.
-        self.assertEqual(set(c['not_decoded']), {'ranking top', 'strips'})
+        # [confirmed: T197/T200] Every listed country-card field is supplied on this route.
+        self.assertEqual(c['not_decoded'], ())
         self.assertEqual(NOT_DECODED, 'not decoded yet (G05)')
         with self.assertRaises(ValueError):
             card(self.model.state, 0, self.model.goaldat)
@@ -67,8 +67,9 @@ class CountryCard(unittest.TestCase):
             view.text = lambda painter, x, y, value, *a, drawn=drawn, **k: drawn.append((x, str(value)))
             view.grab();app.processEvents()
             texts = ' '.join(t for _, t in drawn)
-            for value in ('DENMARK', 'R Nielsen', '5-4-1', 'half pitch', 'man to man', 'not decoded yet (G05)', 'SPACE: PLAYERS'):
+            for value in ('DENMARK', 'R Nielsen', '5-4-1', 'half pitch', 'man to man', 'SPACE: PLAYERS'):
                 self.assertIn(value, texts, (width, value))
+            self.assertNotIn('not decoded yet (G05)', texts, 'T201 consumes every delivered Game-route header field')
             self.assertNotIn('ability', texts.lower())
             self.assertEqual(view.narrow, width < 740)
 

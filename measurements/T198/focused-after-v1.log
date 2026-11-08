@@ -1,0 +1,100 @@
+test_active_snapshot_uses_original_gate_side_and_full_viewport (goal2.tests.test_team_card_panels_t198.Panels.test_active_snapshot_uses_original_gate_side_and_full_viewport) ... This plugin does not support propagateSizeHints()
+ok
+test_all128_original_snapshot_cards_render_exact_panels_without_state_write (goal2.tests.test_team_card_panels_t198.Panels.test_all128_original_snapshot_cards_render_exact_panels_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers (goal2.tests.test_team_card_panels_t198.Panels.test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers) ... This plugin does not support propagateSizeHints()
+ok
+test_a_career_with_pages_shows_them_before_home (goal2.tests.test_ui_start_t163.Bulletin.test_a_career_with_pages_shows_them_before_home) ... This plugin does not support propagateSizeHints()
+ok
+test_three_pages_n_of_m_then_on (goal2.tests.test_ui_start_t163.Bulletin.test_three_pages_n_of_m_then_on) ... This plugin does not support propagateSizeHints()
+ok
+test_groups_ranking_players_and_the_name_line (goal2.tests.test_ui_start_t163.CountryKeys.test_groups_ranking_players_and_the_name_line) ... This plugin does not support propagateSizeHints()
+ok
+test_the_help_box_fills_most_of_the_page (goal2.tests.test_ui_start_t163.Help.test_the_help_box_fills_most_of_the_page) ... This plugin does not support propagateSizeHints()
+ok
+test_the_no_help_text_names_the_new_windows_import_and_it_works (goal2.tests.test_ui_start_t163.HelpImport.test_the_no_help_text_names_the_new_windows_import_and_it_works) ... This plugin does not support propagateSizeHints()
+GOAL.DAT is missing: it is not in /tmp/goal2-t163-1n3azc7d/with-help.
+ok
+test_s01_needs_the_template_and_not_the_boot_state (goal2.tests.test_ui_start_t163.ImportManifest.test_s01_needs_the_template_and_not_the_boot_state) ... This plugin does not support propagateSizeHints()
+ok
+test_a_file_that_is_no_save_is_listed_with_its_reason (goal2.tests.test_ui_start_t163.Load.test_a_file_that_is_no_save_is_listed_with_its_reason) ... This plugin does not support propagateSizeHints()
+ok
+test_a_save_that_cannot_be_opened_says_why_with_y_and_n (goal2.tests.test_ui_start_t163.Load.test_a_save_that_cannot_be_opened_says_why_with_y_and_n) ... This plugin does not support propagateSizeHints()
+ok
+test_two_named_saves_continue_and_load (goal2.tests.test_ui_start_t163.Load.test_two_named_saves_continue_and_load) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_ng9_start_years (goal2.tests.test_ui_start_t163.Look.test_ng9_start_years) ... ok
+test_the_added_sheet_uses_the_palette_and_whole_cells (goal2.tests.test_ui_start_t163.Look.test_the_added_sheet_uses_the_palette_and_whole_cells) ... ok
+test_a_year_out_of_dos_range_is_refused (goal2.tests.test_ui_start_t163.NewGame.test_a_year_out_of_dos_range_is_refused) ... This plugin does not support propagateSizeHints()
+ok
+test_the_default_year_starts_a_2028_career (goal2.tests.test_ui_start_t163.NewGame.test_the_default_year_starts_a_2028_career) ... This plugin does not support propagateSizeHints()
+ok
+test_the_year_by_ng9_is_shown_before_enter (goal2.tests.test_ui_start_t163.NewGame.test_the_year_by_ng9_is_shown_before_enter) ... This plugin does not support propagateSizeHints()
+ok
+test_through_new_game_the_career_is_the_models (goal2.tests.test_ui_start_t163.NewGame.test_through_new_game_the_career_is_the_models) ... This plugin does not support propagateSizeHints()
+ok
+test_two_to_six_managers_come_later (goal2.tests.test_ui_start_t163.NewGame.test_two_to_six_managers_come_later) ... This plugin does not support propagateSizeHints()
+ok
+test_file_names_are_derived_safely_and_the_name_is_stored (goal2.tests.test_ui_start_t163.SaveFormat.test_file_names_are_derived_safely_and_the_name_is_stored) ... ok
+test_when_reads_as_the_mockup (goal2.tests.test_ui_start_t163.SaveFormat.test_when_reads_as_the_mockup) ... ok
+test_esc_on_s02_quits (goal2.tests.test_ui_start_t163.StartAndBusy.test_esc_on_s02_quits) ... This plugin does not support propagateSizeHints()
+ok
+test_s03_shows_its_busy_line_while_the_game_is_prepared (goal2.tests.test_ui_start_t163.StartAndBusy.test_s03_shows_its_busy_line_while_the_game_is_prepared) ... This plugin does not support propagateSizeHints()
+ok
+test_continental_then_world_as_the_capture (goal2.tests.test_ui_desk_t164.CountryOrder.test_continental_then_world_as_the_capture) ... This plugin does not support propagateSizeHints()
+ok
+test_hollands_average_age_is_28_in_the_captures_start_year (goal2.tests.test_ui_desk_t164.CountryOrder.test_hollands_average_age_is_28_in_the_captures_start_year) ... This plugin does not support propagateSizeHints()
+ok
+test_a_loaded_save_lands_on_the_desk (goal2.tests.test_ui_desk_t164.Landing.test_a_loaded_save_lands_on_the_desk) ... This plugin does not support propagateSizeHints()
+ok
+test_a_new_career_lands_on_the_desk (goal2.tests.test_ui_desk_t164.Landing.test_a_new_career_lands_on_the_desk) ... This plugin does not support propagateSizeHints()
+ok
+test_each_option_opens_its_screen_or_names_its_task (goal2.tests.test_ui_desk_t164.Options.test_each_option_opens_its_screen_or_names_its_task) ... This plugin does not support propagateSizeHints()
+ok
+test_reimport_opens_s01_over_the_data_folder_and_esc_returns (goal2.tests.test_ui_desk_t164.Options.test_reimport_opens_s01_over_the_data_folder_and_esc_returns) ... This plugin does not support propagateSizeHints()
+ok
+test_the_mouse_does_what_the_keys_do (goal2.tests.test_ui_desk_t164.Options.test_the_mouse_does_what_the_keys_do) ... This plugin does not support propagateSizeHints()
+ok
+test_an_injured_starter_goes_to_the_bench_and_the_eleven_is_playable (goal2.tests.test_ui_desk_t164.SquadSwap.test_an_injured_starter_goes_to_the_bench_and_the_eleven_is_playable) ... This plugin does not support propagateSizeHints()
+ok
+test_enter_enter_on_a_starter_and_a_bench_player_is_todays_team_swap (goal2.tests.test_ui_desk_t164.SquadSwap.test_enter_enter_on_a_starter_and_a_bench_player_is_todays_team_swap) ... This plugin does not support propagateSizeHints()
+ok
+test_two_bench_players_say_why_and_a_click_swaps_as_enter_does (goal2.tests.test_ui_desk_t164.SquadSwap.test_two_bench_players_say_why_and_a_click_swaps_as_enter_does) ... This plugin does not support propagateSizeHints()
+ok
+test_a_starter_and_a_bench_player_swap_in_place (goal2.tests.test_ui_desk_t164.Swap.test_a_starter_and_a_bench_player_swap_in_place) ... ok
+test_bad_requests_change_nothing (goal2.tests.test_ui_desk_t164.Swap.test_bad_requests_change_nothing) ... ok
+test_injured_starters_go_to_the_bench_one_swap_at_a_time (goal2.tests.test_ui_desk_t164.Swap.test_injured_starters_go_to_the_bench_one_swap_at_a_time) ... ok
+test_two_starters_change_places_and_the_captain_follows_the_incoming_player (goal2.tests.test_ui_desk_t164.Swap.test_two_starters_change_places_and_the_captain_follows_the_incoming_player) ... ok
+test_a_country_card_the_next_opponent_ins_space_and_t (goal2.tests.test_ui_desk_t164.TeamInfo.test_a_country_card_the_next_opponent_ins_space_and_t) ... This plugin does not support propagateSizeHints()
+ok
+test_import_paragraphs_fit_a_fractionally_scaled_page (goal2.tests.test_readable_ui_t186.Readable.test_import_paragraphs_fit_a_fractionally_scaled_page) ... This plugin does not support propagateSizeHints()
+ok
+test_keyboard_pair_feedback_does_not_claim_acceptance_or_decrement_budget (goal2.tests.test_readable_ui_t186.Readable.test_keyboard_pair_feedback_does_not_claim_acceptance_or_decrement_budget) ... This plugin does not support propagateSizeHints()
+ok
+test_live_injury_stays_red_when_selected_and_has_a_word_label (goal2.tests.test_readable_ui_t186.Readable.test_live_injury_stays_red_when_selected_and_has_a_word_label) ... This plugin does not support propagateSizeHints()
+ok
+test_long_pitch_commentary_keeps_complete_recent_entries_inside_the_page (goal2.tests.test_readable_ui_t186.Readable.test_long_pitch_commentary_keeps_complete_recent_entries_inside_the_page) ... This plugin does not support propagateSizeHints()
+ok
+test_normal_text_is_materially_larger (goal2.tests.test_readable_ui_t186.Readable.test_normal_text_is_materially_larger) ... This plugin does not support propagateSizeHints()
+ok
+test_pair_feedback_is_large_and_below_the_card (goal2.tests.test_readable_ui_t186.Readable.test_pair_feedback_is_large_and_below_the_card) ... This plugin does not support propagateSizeHints()
+ok
+test_reading_pause_banner_fits_with_long_recent_commentary_and_restores_the_header (goal2.tests.test_readable_ui_t186.Readable.test_reading_pause_banner_fits_with_long_recent_commentary_and_restores_the_header) ... This plugin does not support propagateSizeHints()
+ok
+test_recent_header_excerpts_cannot_push_the_live_pitch_below_the_page (goal2.tests.test_readable_ui_t186.Readable.test_recent_header_excerpts_cannot_push_the_live_pitch_below_the_page) ... This plugin does not support propagateSizeHints()
+ok
+test_refusal_is_honest_and_names_on_then_off_once (goal2.tests.test_readable_ui_t186.Readable.test_refusal_is_honest_and_names_on_then_off_once) ... This plugin does not support propagateSizeHints()
+ok
+test_roster_and_key_controls_fit_base_and_large_pages (goal2.tests.test_readable_ui_t186.Readable.test_roster_and_key_controls_fit_base_and_large_pages) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 49 tests in 50.590s
+
+OK
+Imported GOAL.DAT, e010-r0008-halftime.sav, GOAL.HLP into /tmp/goal2-t163-1n3azc7d/goal2/data.

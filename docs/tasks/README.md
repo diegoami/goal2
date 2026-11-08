@@ -384,3 +384,7 @@ operational status.
 - [T198](T198.md): render delivered original TEAM panels with explicit browser context (#611).
 
 - [T199](T199.md): confirm the completion transaction before publication (#627).
+
+- [T200](T200.md): original country-header top ranks and strip attributes as data (#611).
+
+- [T201](T201.md): render stored country-header top ranks and strip glyphs (#611).

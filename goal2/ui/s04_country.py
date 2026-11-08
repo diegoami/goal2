@@ -31,8 +31,9 @@ from goal2.desktop import data_setup
 from goal2.desktop.model import CONTINENTS, DesktopModel
 from goal2.game.country_card import NOT_DECODED, card as country_card
 from goal2.game.identities import MANAGER_MAX
-from goal2.ui import saves
+from goal2.ui import saves, theme
 from goal2.ui.screen import Screen, label, para, set_para
+from goal2.ui.squad_card import colour
 from goal2.ui.start_look import LineField, Row, box, coloured_codes, key_value, refresh
 
 GROUP = 16           # [confirmed: T156-R1 step 3; s04-country.html] the list shows 16 countries at a time
@@ -60,14 +61,13 @@ def new_career(target, country, start_year, name):
 
 
 def averages(state, words=None):
-    """The twenty's average caps and age, as whole numbers, as the S04 mockup shows them ("average caps 0 · age 28").
-    [designed: T163 6a; design S04 "average caps and age"] They are the cards' own `age` and `caps`
-    (goal2.game.player_card.card: record byte 1, and the word at 8): read here from the same record bytes, because a
-    whole card costs about a tenth of a second (it reads the emulator memory), and the test checks them against the
-    cards. `words` are the twenty (default: the managed squad).
-    [derived: #559, from docs/original-game/images/t156-005-country-holland.png and t156-014-squad.png] The mean is
-    cut to a whole number, not rounded: Holland's twenty in the 2028 start sum to 572 years, 28.6 on average, and the
-    original shows "age 28", while the one age both captures show agrees (V Breuklen, 33)."""
+    """[designed: T163] Legacy twenty-player mean retained for existing callers.
+
+    [confirmed: F038; T198] The TEAM view consumes the delivered XI aggregate,
+    including its original seed/divisor and availability rules. Holland's28
+    happens to agree with this helper; Denmark's original29 differs from28 here.
+    This helper is not an original TEAM-panel oracle and supplies no displayed value.
+    """
     words = list(state.managed_squad) if words is None else list(words)
     records = [state.players[word] for word in words]
     values = {"age": [r[1] for r in records], "caps": [r[8] | r[9] << 8 for r in records]}
@@ -85,17 +85,23 @@ def ordered(countries, continental):
 class CountryCard(QWidget):
     """The country card, S04's and S07's: the header (name, status, manager, world and continental ranking, top,
     formation and its eleven role codes, skill, strips), then skills and performance, team tactics and player
-    defaults, characteristics with the twenty's average caps and age. `chooser` adds S04's own parts: "Player 1 ·
+    defaults, characteristics with the original XI caps and age. `chooser` adds S04's own parts: "Player 1 ·
     choose your country", the first match and the level of difficulty. [designed: s04-country.html,
     s07-team-info.html; T163, T164]"""
 
-    def __init__(self, chooser=False):
+    def __init__(self, chooser=False, *, match_context=False, family=None):
         super().__init__()
+        if type(match_context) is not bool:
+            raise ValueError("match_context must be a boolean")
+        self.match_context = match_context
+        self.family = family or theme.FONT_FAMILY
         self.chooser = chooser
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(14)
+        layout.setSpacing(6)
         header, inner = box()
+        inner.setContentsMargins(16, 8, 16, 8)
+        inner.setSpacing(2)
         top = QHBoxLayout()
         who = QVBoxLayout()
         who.setSpacing(2)
@@ -118,8 +124,15 @@ class CountryCard(QWidget):
         facts = QHBoxLayout()
         facts.setSpacing(28)
         team, self.team = key_value((("status", "status"), ("manager", "manager")))
-        ranks, self.ranks = key_value((("world", "world"), ("continental", "continent"), ("top", "top")))
+        from goal2.ui.country_header import RankColumns, StripGlyphs
+        ranks = RankColumns(); self.ranks = ranks.values
         shape, self.shape = key_value((("formation", "formation"), ("skill", "skill"), ("strips", "strips")))
+        old_strips = self.shape["strips"]
+        shape.layout().removeWidget(old_strips)
+        self.strip_view = StripGlyphs(self.family)
+        self.strip_view.caption = old_strips.caption
+        shape.layout().addWidget(self.strip_view, 2, 1)
+        old_strips.hide(); old_strips.deleteLater(); self.shape["strips"] = self.strip_view
         for part in (team, ranks, shape):
             facts.addWidget(part, 0, Qt.AlignmentFlag.AlignTop)
         facts.addStretch(1)
@@ -131,11 +144,14 @@ class CountryCard(QWidget):
         panels = QHBoxLayout()
         panels.setSpacing(18)
         skills, inner = box("Skills")
-        self.skills = para(NOT_DECODED, "undecoded")
+        from goal2.ui.team_card import LineBars, CharacteristicPanel
+        from goal2.ui.squad_card import FactsTable
+        self.skills = LineBars()
         inner.addWidget(self.skills)
         inner.addSpacing(8)
-        inner.addWidget(label("PERFORMANCE", "boxHeading"))
-        self.performance = para(NOT_DECODED, "undecoded")
+        self.performance_heading = label("PERFORMANCE", "boxHeading")
+        inner.addWidget(self.performance_heading)
+        self.performance = LineBars()
         inner.addWidget(self.performance)
         inner.addStretch(1)
         tactics, inner = box("Team tactics")
@@ -145,16 +161,19 @@ class CountryCard(QWidget):
                                                ("offside", "offside")))
         inner.addWidget(tactic_rows)
         inner.addSpacing(8)
-        inner.addWidget(label("PLAYER DEFAULTS", "boxHeading"))
+        defaults_heading = label("PLAYER DEFAULTS", "boxHeading")
+        inner.addWidget(defaults_heading)
         default_rows, self.defaults = key_value((("positioning", "positioning"), ("possession", "possession"),
                                                  ("passing", "passing"), ("tackling", "tackling"),
                                                  ("marking", "marking")))
         inner.addWidget(default_rows)
         inner.addStretch(1)
         traits, inner = box("Characteristics")
-        self.averages = label("", "sub")
+        self.averages = FactsTable(("caps", "age"))
+        for heading in self.averages.labels.values():
+            colour(heading, theme.CARD_LABEL)
         inner.addWidget(self.averages)
-        self.characteristics = para(NOT_DECODED, "undecoded")
+        self.characteristics = CharacteristicPanel(self.family)
         inner.addWidget(self.characteristics)
         inner.addStretch(1)
         for part in (skills, tactics, traits):
@@ -162,9 +181,18 @@ class CountryCard(QWidget):
         layout.addLayout(panels, 1)
 
     def set_card(self, c, average, first=None):
-        """Show the card `c` (goal2.game.country_card.card) with the twenty's `average` caps and age."""
+        """Show decoded card fields. `average` remains accepted for existing callers; original numbers take precedence."""
         self.name.setText(c["name"])
-        self.averages.setText("average caps {caps} · age {age}".format(**average))
+        # [confirmed: F036–F038; T198] Consume original panels; the old twenty
+        # mean is not the TEAM number. Browser context cannot inherit match flags.
+        self.skills.set_panel(c["team_skills"])
+        performance = c["performance"] if self.match_context else None
+        self.performance.set_panel(performance)
+        self.performance.setVisible(performance is not None)
+        self.performance_heading.setVisible(performance is not None)
+        traits = c["characteristics"]
+        self.averages.set({n["field"]: n["text"] for n in traits["numbers"]}, theme.VALUE)
+        self.characteristics.set_panel(traits)
         if first is not None:
             self.first.setText("first: " + first)
         self.team["status"].setText(c.get("status", NOT_DECODED))
@@ -172,17 +200,20 @@ class CountryCard(QWidget):
         self.ranks["world"].setText(str(c["world"]))
         self.ranks["continental"].caption.setText(c["continent"])
         self.ranks["continental"].setText(str(c["continental"]))
-        self.ranks["top"].setText(NOT_DECODED)
+        self.ranks["top_world"].setText(str(c["top_world"]) if "top_world" in c else NOT_DECODED)
+        self.ranks["top_continental"].setText(str(c["top_continental"]) if "top_continental" in c else NOT_DECODED)
         self.shape["formation"].setTextFormat(Qt.TextFormat.RichText)
         self.shape["formation"].setText(c['formation'])
         self.role_codes.setText(coloured_codes(
             (code, CODE_LINE.get(code, "unknown")) for code in c["eleven"]))
         self.shape["skill"].setText(c.get("skill", NOT_DECODED) or "")
-        self.shape["strips"].setText(NOT_DECODED)
+        if "strips" in c: self.strip_view.set_strips(c["strips"])
+        else: self.strip_view.set_unknown()
         for values, pairs in ((self.tactics, c["team_tactics"]), (self.defaults, c["player_defaults"])):
             for key, value in pairs:
                 values[key].setText(value)
         for widget in (*self.team.values(), *self.ranks.values(), *self.shape.values()):
+            if widget is self.strip_view: continue
             if widget.text() == NOT_DECODED: widget.setText("unknown")
             widget.setObjectName("undecoded" if widget.text() in (NOT_DECODED, "unknown") else "value")
         refresh(self)
@@ -232,7 +263,7 @@ class CountryScreen(Screen):
         row.setSpacing(18)
         left = QVBoxLayout()
         left.setSpacing(14)
-        self.card_view = CountryCard(chooser=True)
+        self.card_view = CountryCard(chooser=True, family=self.window_.family)
         for name in ("name", "first", "team", "ranks", "shape", "skills", "performance", "tactics", "defaults",
                      "averages", "characteristics"):
             setattr(self, name, getattr(self.card_view, name))

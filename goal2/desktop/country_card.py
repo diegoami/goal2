@@ -1,7 +1,7 @@
 """[designed: T89; accepted vision #266] The original country card, painted in the accepted style.
 
-Core cards consume the reviewed F034..F038 display projections. The legacy
-Python route retains its explicit missing-field fallback. Space opens players
+Core and career cards consume the reviewed F034..F038 display projections.
+The explicit missing-field fallback remains for older callers. Space opens players
 in the country browser; Team Info keeps its existing tactic controls/Back route.
 """
 from PySide6.QtCore import Qt, QSize, QRectF
@@ -231,20 +231,29 @@ class CountryCardView(QWidget):
         team = [('manager', c['manager']), ('status', c.get('status', NOT_DECODED)),
                 ('skill', c.get('skill', NOT_DECODED))]
         y = self.rows(painter, 16, 92, 'TEAM', team, 130)
-        # Ranking now / top: the original's two columns; top is not decoded yet.
+        # [confirmed: original157D; T201] Stored top values when supplied; Core fallback remains explicit.
+        self.painted_top = (c.get('top_world'), c.get('top_continental'))
+        self.painted_strips = c.get('strips')
         self.text(painter, 16, y, 'RANKING', RED, 20, True)
         self.text(painter, 150, y, 'NOW', WHITE, 19);self.text(painter, 220, y, 'TOP', WHITE, 19)
-        for label, now in (('World', c['world']), (c['continent'], c['continental'])):
+        for label, now, top in (('World', c['world'], c.get('top_world')), (c['continent'], c['continental'], c.get('top_continental'))):
             y += 27
             self.text(painter, 16, y, label, GOLD, 19);self.text(painter, 150, y, f'{now:>3}', CYAN, 19)
-            self.text(painter, 230, y, '—', GREY, 19)
-        y += 22;self.text(painter, 16, y, 'Top: ' + NOT_DECODED, GREY, 15)
+            self.text(painter, 230, y, str(top) if top is not None else '—', CYAN if top is not None else GREY, 19)
+        y += 22
+        if 'top_world' not in c or 'top_continental' not in c:self.text(painter, 16, y, 'Top: ' + NOT_DECODED, GREY, 15)
         y += 36;self.text(painter, 16, y, 'FORMATION', RED, 20, True);self.text(painter, 150, y, c['formation'], CYAN, 22, True)
         y += 30
         for i, code in enumerate(c['eleven']):
             self.text(painter, 16 + i * 24, y, code, LINE[CODE_LINE.get(code, 'unknown')], 20, True)
         y += 34;self.text(painter, 16, y, 'STRIPS', RED, 20, True)
-        y += 22;self.text(painter, 32, y, NOT_DECODED, GREY, 15)
+        y += 22
+        if 'strips' not in c:self.text(painter, 32, y, NOT_DECODED, GREY, 15)
+        else:
+            from goal2.ui.kits import DOS
+            for index,attribute in enumerate((7,7,7) if c['strips'] is None else c['strips']):
+                painter.fillRect(QRectF(32+28*index,y-18,24,24),QColor(DOS[(attribute>>4)&7]))
+                self.text(painter,32+28*index,y,'☻',DOS[attribute&15],19)
         left_bottom = y
         decoded = all(key in c for key in ('team_skills', 'performance', 'characteristics'))
         x, y = (16, y + 44) if narrow else (400, 92)
