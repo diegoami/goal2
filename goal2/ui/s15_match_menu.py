@@ -173,7 +173,7 @@ class MenuScreen(Screen):
             line.cells[1].setWordWrap(True)
             from goal2.ui.squad_card import LINE_COLOUR
             line.set((c["role"], c["full_name"] + (" · INJURED" if injured else "")),
-                     (LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL), theme.BAD if injured else theme.TEXT_BRIGHT))
+                     (LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL), theme.BAD if injured else LINE_COLOUR.get(c["line"], theme.TEXT_NORMAL)))
             line.setCursor(Qt.CursorShape.ArrowCursor)
             column.addWidget(line)
             rows.append(tuple(line.texts()))
