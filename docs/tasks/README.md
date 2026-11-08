@@ -398,3 +398,5 @@ operational status.
 - [T170c1](T170c1.md): consume events on an already-owned Match while preserving the legacy driver (#655).
 
 - [T203](T203.md): distinguish the ordinary bench/request toggle from natural substitution opportunities and immediate swaps (#662).
+
+- [T205](T205.md): show the original's layout grammar as a drawn proposal (#666).
