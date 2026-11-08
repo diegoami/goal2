@@ -1,0 +1,20 @@
+Isolated native target: C:\Users\diego\AppData\Local\Temp\goal2-track-a-management-audit-ap3srziw
+Traceback (most recent call last):
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-fresh-management-audit.py", line 36, in <module>
+    src=ROOT/'.cache'/name;assert hashlib.sha256(src.read_bytes()).hexdigest()==digest;shutil.copy2(src,paths.data/name)
+                                                 ~~~~~~~~~~~~~~^^
+  File "C:\Users\diego\AppData\Local\Programs\Python\Python313\Lib\pathlib\_abc.py", line 625, in read_bytes
+    with self.open(mode='rb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\diego\AppData\Local\Programs\Python\Python313\Lib\pathlib\_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '\\\\wsl.localhost\\Ubuntu\\tmp\\goal2-track-a\\.cache\\GOAL.DAT'
+Traceback (most recent call last):
+  File "\\wsl.localhost\Ubuntu\tmp\goal2-native-fresh-management.py", line 9, in <module>
+    subprocess.run([sys.executable,'-X','utf8','-B',script,root,str(target),mode,'d56e793beebb72f3d7418db0d4bf764d1a4c4091'],check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\diego\AppData\Local\Programs\Python\Python313\Lib\subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['C:\\Users\\diego\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', '-X', 'utf8', '-B', '\\\\wsl.localhost\\Ubuntu\\tmp\\goal2-fresh-management-audit.py', '\\\\wsl.localhost\\Ubuntu\\tmp\\goal2-track-a', 'C:\\Users\\diego\\AppData\\Local\\Temp\\goal2-track-a-management-audit-ap3srziw', 'create', 'd56e793beebb72f3d7418db0d4bf764d1a4c4091']' returned non-zero exit status 1.

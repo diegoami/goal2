@@ -4,7 +4,9 @@
 explicit owner differences and unverified journeys. Its inspected application baseline is
 `ecdd2ee1676ee977c61faa9b6daa7573a3b78edd`. A screen being implemented is not evidence that every
 original action works. The complete fresh-game/manual acceptance journey remains required by #611.
-GitHub issues/PRs carry current task status; this document records the evidence and gaps at that baseline.
+GitHub issues/PRs carry current task status; the original tables record evidence and gaps at that baseline.
+The dated addendum below records later source-bound corrections; baseline gaps must not be read as claims
+that those corrections are still absent.
 
 [confirmed] The original private `GOAL.HLP` was read in full: 32,569 bytes, 703 lines,
 SHA-256 `2f3be8648a52045b6f7af1f41cba020d6a662229e5db499e203c5d0957308f60`.
@@ -118,3 +120,21 @@ Record exact application/build head, original evidence, input sequence, outcomes
 Never operate the owner's live game or call prepared packets natural play. Full suites run on the reconciled integrated milestone.
 
 [confirmed: original0791:9372/ED8A; E031C37; archaeology b0c0fae2] The [Insert probe](../../../measurements/T191/insert-audit/README.md) executes four bounded original pitch-key controls, including positive speed controls, with a declared keyboard-ready service input. Insert leaves the replay setting unchanged on the pitch for both initial settings; ED8A contains the menu toggle. This corrects one suspected gap above without claiming a natural complete match or changing replay behavior.
+
+## Integrated evidence after the baseline
+
+[confirmed: accepted T192/616, T193/618, T195/621, T197/623, T198/628,
+T200/630, T201/631, live wire622 and tactics614; application d56e793beebb72f3d7418db0d4bf764d1a4c4091]
+The historical matrix above predates several independently verified corrections. Their scopes remain separate:
+
+| Screens | Later evidence and remaining limit |
+| --- | --- |
+| S04/S07 | T197/T198 supply the original-backed status, skill, line skills/performance and characteristic panels, including original XI caps/age. T200/T201 supply stored Now/Top rank columns and raw strip attributes/monochrome presentation. Their all-country/original-snapshot and rendered/native receipts do not prove an entire season or live-card freshness. |
+| S08/S09/S16/S19 cards | T192 decodes original signed16 performance stars/sentinel behavior; T193 restores aligned facts and label/value contrast; T195 supplies the original energy-zero injury fitness display. T196 transports opt-in current records, but wire acceptance alone is not proof that every UI card requests and consumes them. Issue619 owns that remaining UI acceptance. |
+| S10/S15/S17/S19 | PR614's actual original/PyPy/Qt journeys cover live team tactics, pending confirmation and Esc continuation. Source-bound captures and equality receipts are under [610-live-team-tactics](../../../measurements/610-live-team-tactics/README.md). S10's separate characteristic panel still uses explicit placeholders; S04/S07 panel acceptance does not cover it. |
+| S02/S03/S04/S06/S08/S09/S10/S21 | The [fresh management/save audit](../../../measurements/T191/fresh-management/README.md) starts a career through ordinary UI inputs, browses the80-player pool, exchanges players, changes positions and personal/team tactics, saves and quits, then checks complete-career reload/discard in separate processes. The audit does not inject a prepared state or patch model services. It does not play a watched match or certify an original DOS UI/save-format comparison. |
+
+[derived: source and exercised paths above] Remaining required acceptance includes current live-card UI619,
+original extra-time edit capability685 and its consumer adoption, the assistant594/T183, native continuationT170,
+and the complete match/result/replay/season journeys. Broader gaps551/570/571 remain separately identified.
+The original whole-journey requirement on611 is not closed by these management/save receipts.
