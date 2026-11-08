@@ -160,7 +160,12 @@ try:
   assert model.state.match_count==before.match_count+1
   assert walk.out.get('commentary') and walk.out.get('pause_done') and walk.out.get('half') and walk.out.get('first_swap')
   reference=DesktopModel(model._goaldat,model.template_bytes,TARGET/'reference-never-saved.g2save');reference.state=copy.deepcopy(before)
-  outcome=play_through_bridge(reference,controller.choices,pause_after=walk.out['pause_after'])
+  # Preserve this actual completed UI case privately before the independent arm.
+  (TARGET/'completed-ui-private.pickle').write_bytes(pickle.dumps(dict(before=before,after=model.state,
+   result=controller.outcome.result,events=controller.outcome.events,memory=controller.outcome.memory,
+   seeds=controller.outcome.seeds,choices=controller.choices,pause_after=walk.out['pause_after']),protocol=5))
+  from goal2.ui.s17_pitch import engine_fixture
+  outcome=play_through_bridge(reference,controller.choices,fixture=engine_fixture(before.campaign.next_fixture),pause_after=walk.out['pause_after'])
   assert outcome.result==controller.outcome.result and outcome.events==controller.outcome.events
   assert outcome.memory==controller.outcome.memory and outcome.seeds==controller.outcome.seeds
   assert reference.state==model.state;note('whole same-choice result/events/memory/seeds/career equal')

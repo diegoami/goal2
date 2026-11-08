@@ -27,3 +27,11 @@ substitution-only helper; its context precondition rejects BEFORE half-time
 input. This is not a product refusal. Corrected audit uses existing generic
 two-Enter UI action with immediate-ack/context/choice-count checks for half-time.
 No production/helper/assertion/deadline/fixture changed; v3 retained FAIL.
+
+v4 completes the actual UI match, natural exact-sample goal replay/goal save,
+legal opportunity+half-time swaps, summary save and desk return. The oracle
+caller omitted the required Fixture argument; preparation rejects before playing
+the reference. Not a product failure or equality result. Corrected call passes
+the actual pre-match campaign fixture through the accepted engine_fixture adapter.
+The completed UI state/outcome/choices are now privately checkpointed before
+comparison. No app/helper/oracle/deadline/fixture values changed. v4 stays FAIL.
