@@ -194,8 +194,9 @@ try:
      assert current('BoardScreen').data==stored['data']['board'];snap('summary-reloaded');key(Qt.Key.Key_Escape)
     else:
      current('SavedGoalMenu');key(Qt.Key.Key_Return)
-     pump(lambda:type(w.current()).__name__=='SavedGoalMenu',60,'657 saved goal playback completion')
-     snap('saved-goal-played');key(Qt.Key.Key_Escape)
+     current('SavedPitchScreen')
+     pump(lambda:w.current().replay is None,60,'657 saved goal playback completion')
+     snap('saved-goal-played');key(Qt.Key.Key_Escape);current('SavedGoalMenu');key(Qt.Key.Key_Escape)
     current('RecordingsScreen');key(Qt.Key.Key_Escape);current('DeskScreen')
     assert w.career.state==before_record
   key(Qt.Key.Key_F10);key(Qt.Key.Key_Y);assert not w.isVisible()

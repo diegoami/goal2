@@ -60,3 +60,9 @@ is not relabelled process acceptance. Only reload/cleanup changes: getattr for
 the optional lazy controller and actual F3saved-goal playback/F4summary reopening
 with whole-career nonmutation. Create/exercised production/fixtures unchanged, so
 the successful whole match need not repeat underT189. New child output prefix.
+
+Reloadv8 reopens full summary and starts saved goal playback, then incorrectly
+waits for automatic menu return. Actual T181SavedPitch.completed deliberately
+freezes the last frame and stops its timer; Enter/Esc returns. Corrected child
+waits for replay=None, then sends real Esc to the menu and list. The60s deadline
+and all full-career/data comparisons remain; no application change. v8 retainedFAIL.
