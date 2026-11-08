@@ -1,0 +1,27 @@
+test_full_original_team_fields_and_xi_panels_remain_visible_while_editing (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_full_original_team_fields_and_xi_panels_remain_visible_while_editing) ... This plugin does not support propagateSizeHints()
+FAIL
+test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_full_original_team_fields_and_xi_panels_remain_visible_while_editing (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_full_original_team_fields_and_xi_panels_remain_visible_while_editing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_team_tactics_layout_646.py", line 24, in test_full_original_team_fields_and_xi_panels_remain_visible_while_editing
+    self.assertTrue(hasattr(screen,'team_header'),'S10 omits original TEAM header')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : S10 omits original TEAM header
+
+======================================================================
+FAIL: test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/goal2-team-layout-a/goal2/tests/test_team_tactics_layout_646.py", line 43, in test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order
+    self.assertIn('PLAYER DEFAULTS',headings)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[private assertion list omitted: PLAYER DEFAULTS heading absent]
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.584s
+
+FAILED (failures=2)

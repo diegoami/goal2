@@ -220,6 +220,9 @@ class Match:
         live_players: boolean opt-in to current managed squad records at decisions, as
           player_records [[word,20-byte-record.hex()], ...] in current squad order. False
           keeps the legacy options/event shape; True changes no guest state or match timing (#682).
+          Also emits team_context with raw match_set_up/in_match_menu_used bytes and
+          the two side country words, for original TEAM performance visibility (#697).
+          Older saved waiting decisions can omit this new display context.
         substitutions: the substitution budget, one number for both sides or (team 0, team 1), 0..255, written over
         the set-up's (A4A1: 5 a side for a friendly, kind 1, and 2 for every other kind; F027 section 4) when
         play_match starts; None keeps the original's. The original counts it down (C5DC) and stops both the
@@ -1060,6 +1063,14 @@ class Match:
             #and withdrawn players, without executing another guest instruction.
             data["player_records"] = [[w, self.m.read(base + PLAYER_SIZE * w, PLAYER_SIZE).hex()]
                                       for w in squad if w]
+            # [confirmed: F037, original1771:157D 1892-18AE] Both flags gate
+            # performance; the second side word chooses its side. Preserve raw
+            # bytes, not a guessed truth value derived from the menu context.
+            data["team_context"] = {
+                "match_set_up": self.m.rd(0x0C1E, 1),
+                "in_match_menu_used": self.m.rd(0x0C1F, 1),
+                "sides": [self.m.rd(0x9B34, 2), self.m.rd(0x9B36, 2)],
+            }
         if context == "extra_time":
             data["half"] = self.st.get("menu_half", 1)    # before extra time's first half (1) or its second (2)
         self._emit("decision", **data)

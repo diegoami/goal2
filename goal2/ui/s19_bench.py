@@ -50,6 +50,15 @@ class BenchAnswer:
     def __init__(self, model, decision, opponents=(), friendly=False):
         data = decision.data
         self.live_records = player_snapshot(data)
+        # Validated with the record snapshot; copy mutable transport containers.
+        # Older waiting decisions omit this authoritative display observation.
+        from types import MappingProxyType
+        context = data.get('team_context')
+        self.team_context = None if context is None else MappingProxyType({
+            'match_set_up': context['match_set_up'],
+            'in_match_menu_used': context['in_match_menu_used'],
+            'sides': tuple(context['sides']),
+        })
         self.model = model
         self.context = data.get("context")
         self.minute = decision.minute

@@ -177,3 +177,18 @@ acceptance is claimed. [Issue646](https://github.com/diegoami/goal2/issues/646) 
 required complete layout correction after the independent request/current-trait fixes.
 It preserves readable24px text, accepted roster colours, current-record semantics and the
 pending/confirmation/return lifecycle. Trait-only acceptance does not close this layout gap.
+
+### Complete TEAM editor projection
+
+[confirmed: original1771:1981→157D; F036–F038; source6d0a8c57]
+The [646 receipts](../../../measurements/646-team-layout/README.md) cover the shared
+TEAM header, original line skills, current context-gated performance, XI caps/age,
+3+5editable tactic grouping and full coloured roster. The actual current20-record
+projection uses accepted698raw visibility/sides observations; no-snapshot clients
+retain their explicit fallback. Fresh Linux and Windows/PyPy request/swap/tactic
+journeys retain all original640/641 state/event/result/RNG/memory/career oracles.
+The Windows captures show actual pending and acknowledged values; the three-size
+packet replays are separately labelled as replays. The active named human identity
+is checked independently of other countries (#653); the existing unnamed preview
+default remains, without an imported-human-name migration claim. These bounded
+receipts do not certify every other manual row or the complete milestone.

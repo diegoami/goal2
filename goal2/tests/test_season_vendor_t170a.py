@@ -9,7 +9,7 @@ from goal2.game.engine_python import engine_python,_is_pypy311
 from goal2.game.watched_schema import ENGINE_ID,PORT_ENGINE_ID
 
 ROOT=Path(__file__).resolve().parents[2]
-EXPECTED=json.loads((ROOT/'measurements/T170a/expected-reviewed-runtime-v1.json').read_text())
+EXPECTED=json.loads((ROOT/'measurements/646-team-layout/expected-reviewed-runtime-698-v2.json').read_text())
 
 CHILD=r'''
 import builtins,json,sys
@@ -66,7 +66,7 @@ class SeasonVendor(unittest.TestCase):
         manifest=json.loads((ROOT/'tools/watched-kit-hashes.json').read_text())
         self.assertEqual(manifest['source'],EXPECTED['reviewed_source'])
         self.assertEqual(manifest['files'],EXPECTED['files'])
-        self.assertEqual(manifest['source_overrides'],{f'runtime/original_match/{name}.py':EXPECTED['facade_source'] for name in ('match','screens')})
+        self.assertEqual(manifest['source_overrides'],EXPECTED['facade_sources'])
         self.assertEqual(ENGINE_ID,'original-match:b519d999673c9458211279fd4da8a8325b9f56fe:4')
         self.assertEqual(PORT_ENGINE_ID,'original-match-port:b519d999673c9458211279fd4da8a8325b9f56fe:4')
 

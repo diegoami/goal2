@@ -1,0 +1,22 @@
+{
+  "source_commit": "d8f4fcc97a27ecd05aed9dc15266e9fb50bf37a9",
+  "source_sha256": {
+    "goal2/game/country_card.py": "ee7f01748623948419341d790ccc00ed5a34de118dc77b0d5267bf06ade249bb",
+    "goal2/game/team_card.py": "b3db6372096b421ab4047403ae11cd436074c28a1b381c86c8bcc1b4043f1825",
+    "goal2/game/watched_schema.py": "4f88b46738dd79af3878e91748a937cab4fd6eeeaef1d1e282467cc8e3bba05a",
+    "goal2/ui/country_header.py": "591e5e45f7a068b05a0763a887a8a7246f521a55c6dc9332e177dac258477f5c",
+    "goal2/ui/s04_country.py": "33cb048d7112e1151d103b283d564a4a6ec645fc3ddc52d253477834c0079761",
+    "goal2/ui/s10_team_tactics.py": "f3f36093c65c6ce7fe2c95ec3cfa020704e462cbf7d434853355553417852d25",
+    "goal2/ui/s19_bench.py": "91790e14873e6311c5b7afb0aa9b685f58ff6408eabb07b3dbf851922a4dfc76",
+    "goal2/tests/test_team_tactics_layout_646.py": "034223b41aa49af2504c4ddee9c3b97586bcb291698d32f6d46da9affd438abc",
+    "goal2/tests/test_live_team_context_646.py": "ff75b6793754a8c592b8bfd2d71bac2704d7a573ea0899fc8f7706c4a228eae3"
+  },
+  "tests": 21,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "seconds": 49.378224300000056,
+  "qt_platform": "offscreen",
+  "interpreter": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+  "passed": true
+}

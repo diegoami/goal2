@@ -1,0 +1,62 @@
+test_computer_manager_selection_uses_its_record_index_instead_of_country (goal2.tests.test_team_manager_653.TeamManager.test_computer_manager_selection_uses_its_record_index_instead_of_country) ... ok
+test_named_human_manager_is_current_and_other_country_never_inherits_it (goal2.tests.test_team_manager_653.TeamManager.test_named_human_manager_is_current_and_other_country_never_inherits_it) ... ok
+test_tactics_header_uses_renamed_human_without_changing_career_or_other_fields (goal2.tests.test_team_manager_653.TeamManager.test_tactics_header_uses_renamed_human_without_changing_career_or_other_fields) ... This plugin does not support propagateSizeHints()
+ok
+test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write (goal2.tests.test_country_header_render_t201.HeaderViews.test_current_top_and_strip_pixels_fit_all_countries_and_three_sizes_without_state_write) ... This plugin does not support propagateSizeHints()
+ok
+test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback (goal2.tests.test_country_header_render_t201.HeaderViews.test_legacy_game_consumes_fields_and_unsupported_core_card_retains_explicit_fallback) ... ok
+test_active_snapshot_uses_original_gate_side_and_full_viewport (goal2.tests.test_team_card_panels_t198.Panels.test_active_snapshot_uses_original_gate_side_and_full_viewport) ... This plugin does not support propagateSizeHints()
+ok
+test_all128_original_snapshot_cards_render_exact_panels_without_state_write (goal2.tests.test_team_card_panels_t198.Panels.test_all128_original_snapshot_cards_render_exact_panels_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers (goal2.tests.test_team_card_panels_t198.Panels.test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers) ... This plugin does not support propagateSizeHints()
+ok
+test_full_original_team_fields_and_xi_panels_remain_visible_while_editing (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_full_original_team_fields_and_xi_panels_remain_visible_while_editing) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order (goal2.tests.test_team_tactics_layout_646.TeamTacticsLayout.test_team_tactics_and_player_defaults_have_separate_visible_groups_in_original_order) ... This plugin does not support propagateSizeHints()
+ok
+test_invalid_context_fails_before_snapshot_consumption (goal2.tests.test_live_team_context_646.ContextSchema.test_invalid_context_fails_before_snapshot_consumption) ... ok
+test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides (goal2.tests.test_live_team_context_646.LiveTeamContext.test_current_skills_performance_and_xi_numbers_equal_independent_original_for_all_gates_and_sides) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_genuine_snapshots_and_current_inputs_match_original_backed_panel_without_state_write (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_genuine_snapshots_and_current_inputs_match_original_backed_panel_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_live_stop_retains_explicit_fallback_and_pending_confirmation_without_career_write (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_live_stop_retains_explicit_fallback_and_pending_confirmation_without_career_write) ... This plugin does not support propagateSizeHints()
+ok
+test_readable_cells_pixels_and_bounds_fit_three_sizes_while_all_eight_tactics_and_mouse_return_work (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_readable_cells_pixels_and_bounds_fit_three_sizes_while_all_eight_tactics_and_mouse_return_work) ... This plugin does not support propagateSizeHints()
+ok
+test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel) ... This plugin does not support propagateSizeHints()
+ok
+test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_live_panel_cells_and_labels_fit_three_native_fractional_sizes (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_live_panel_cells_and_labels_fit_three_native_fractional_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs) ... This plugin does not support propagateSizeHints()
+ok
+test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards) ... This plugin does not support propagateSizeHints()
+ok
+test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding (goal2.tests.test_tactics_refresh_636.FreshStoppedRoles.test_refresh_reads_new_snapshot_positions_and_flags_without_full_card_or_view_decoding) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_selection_keeps_all_rows_and_sends_no_change (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_pending_selection_keeps_all_rows_and_sends_no_change) ... ok
+test_selection_only_changes_highlight_and_hint (goal2.tests.test_tactics_refresh_636.SelectionDoesNotDecode.test_selection_only_changes_highlight_and_hint) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 34.473s
+
+OK
