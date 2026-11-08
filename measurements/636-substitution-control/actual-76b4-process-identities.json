@@ -1,0 +1,162 @@
+{
+  "accept": {
+    "command": {
+      "pid": 1443555,
+      "ppid": 1443553,
+      "starttime": 8275432,
+      "cwd": "/home/diego/projects/m3-trackb/goal2",
+      "argv": [
+        ".cache/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_substitution_actual_636.ActualRequestJourney.test_natural_request_opportunity_escape_immediate_swap_refusal_tactics_and_play",
+        "-v",
+        ""
+      ]
+    },
+    "engine_children": [
+      {
+        "pid": 1443636,
+        "ppid": 1443555,
+        "starttime": 8275940,
+        "cwd": "/home/diego/projects/m3-trackb/goal2",
+        "argv": [
+          "/home/diego/.local/bin/pypy3.11",
+          "-m",
+          "goal2.game.engine_server",
+          ""
+        ]
+      },
+      {
+        "pid": 1447956,
+        "ppid": 1443555,
+        "starttime": 8298297,
+        "cwd": "/home/diego/projects/m3-trackb/goal2",
+        "argv": [
+          "/home/diego/.local/bin/pypy3.11",
+          "-m",
+          "goal2.game.engine_server",
+          ""
+        ]
+      }
+    ]
+  },
+  "cancel": {
+    "command": {
+      "pid": 1443568,
+      "ppid": 1443566,
+      "starttime": 8275438,
+      "cwd": "/home/diego/projects/m3-trackb/goal2",
+      "argv": [
+        ".cache/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_substitution_actual_636.ActualRequestJourney.test_natural_request_then_cancel_resumes_with_the_same_exact_outcome",
+        "-v",
+        ""
+      ]
+    },
+    "engine_children": [
+      {
+        "pid": 1443641,
+        "ppid": 1443568,
+        "starttime": 8275960,
+        "cwd": "/home/diego/projects/m3-trackb/goal2",
+        "argv": [
+          "/home/diego/.local/bin/pypy3.11",
+          "-m",
+          "goal2.game.engine_server",
+          ""
+        ]
+      },
+      {
+        "pid": 1447720,
+        "ppid": 1443568,
+        "starttime": 8297566,
+        "cwd": "/home/diego/projects/m3-trackb/goal2",
+        "argv": [
+          "/home/diego/.local/bin/pypy3.11",
+          "-m",
+          "goal2.game.engine_server",
+          ""
+        ]
+      }
+    ]
+  },
+  "timeout": {
+    "command": {
+      "pid": 1443582,
+      "ppid": 1443580,
+      "starttime": 8275445,
+      "cwd": "/home/diego/projects/m3-trackb/goal2",
+      "argv": [
+        ".cache/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_substitution_actual_636.ActualRequestJourney.test_ignored_timed_opportunity_spends_no_allowance_then_next_guest_opportunity_can_be_accepted",
+        "-v",
+        ""
+      ]
+    },
+    "engine_children": [
+      {
+        "pid": 1443640,
+        "ppid": 1443582,
+        "starttime": 8275960,
+        "cwd": "/home/diego/projects/m3-trackb/goal2",
+        "argv": [
+          "/home/diego/.local/bin/pypy3.11",
+          "-m",
+          "goal2.game.engine_server",
+          ""
+        ]
+      },
+      {
+        "pid": 1448026,
+        "ppid": 1443582,
+        "starttime": 8298967,
+        "cwd": "/home/diego/projects/m3-trackb/goal2",
+        "argv": [
+          "/home/diego/.local/bin/pypy3.11",
+          "-m",
+          "goal2.game.engine_server",
+          ""
+        ]
+      }
+    ]
+  },
+  "zero": {
+    "command": {
+      "pid": 1443597,
+      "ppid": 1443594,
+      "starttime": 8275452,
+      "cwd": "/home/diego/projects/m3-trackb/goal2",
+      "argv": [
+        ".cache/venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "goal2.tests.test_substitution_actual_636.ActualRequestJourney.test_zero_budget_request_refusal_uses_actual_competitive_allowance_and_ui",
+        "-v",
+        ""
+      ]
+    },
+    "engine_children": [
+      {
+        "pid": 1443646,
+        "ppid": 1443597,
+        "starttime": 8275977,
+        "cwd": "/home/diego/projects/m3-trackb/goal2",
+        "argv": [
+          "/home/diego/.local/bin/pypy3.11",
+          "-m",
+          "goal2.game.engine_server",
+          ""
+        ]
+      }
+    ]
+  }
+}

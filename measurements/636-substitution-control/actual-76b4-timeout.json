@@ -1,0 +1,202 @@
+{
+  "captures": [
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/request-pending.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    },
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/request-confirmed.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    },
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/request-on-pitch.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    },
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/opportunity-before-timeout.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    },
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/opportunity-blink-first.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    },
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/opportunity-blink-second.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    },
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/legal-bench-before-swap.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    },
+    {
+      "device_pixel_ratio": 1.0,
+      "path": "/home/diego/projects/m3-trackb/goal2/.cache/fix636-private/20261108t112940z/timeout/timeout/swap-confirmed-before-play.png",
+      "qt_platform": "offscreen",
+      "screen": ""
+    }
+  ],
+  "career_equal": true,
+  "choices": [
+    [
+      "substitution_opportunity",
+      {
+        "opportunity": "accept"
+      }
+    ],
+    [
+      "substitution",
+      {
+        "edit_only": true,
+        "substitutions": [
+          [
+            31,
+            39
+          ]
+        ]
+      }
+    ],
+    [
+      "substitution",
+      []
+    ],
+    [
+      "pause",
+      {
+        "edit_only": true,
+        "request_substitution": true
+      }
+    ],
+    [
+      "pause",
+      []
+    ],
+    [
+      "substitution_opportunity",
+      {
+        "opportunity": "timeout"
+      }
+    ],
+    [
+      "substitution_opportunity",
+      {
+        "opportunity": "accept"
+      }
+    ],
+    [
+      "substitution",
+      {
+        "edit_only": true,
+        "substitutions": [
+          [
+            22,
+            33
+          ]
+        ]
+      }
+    ],
+    [
+      "substitution",
+      []
+    ],
+    [
+      "substitution_opportunity",
+      {
+        "opportunity": "accept"
+      }
+    ],
+    [
+      "substitution",
+      {
+        "edit_only": true,
+        "substitutions": [
+          [
+            24,
+            34
+          ]
+        ]
+      }
+    ],
+    [
+      "substitution",
+      []
+    ],
+    [
+      "half_time",
+      []
+    ],
+    [
+      "set_piece",
+      {
+        "taker": 29
+      }
+    ],
+    [
+      "set_piece",
+      {
+        "taker": 23
+      }
+    ]
+  ],
+  "events_equal": true,
+  "fixture": {
+    "id": "original:1",
+    "kind": 1,
+    "sides": [
+      2,
+      7
+    ]
+  },
+  "flags": {
+    "live_players": true,
+    "substitution_control": true
+  },
+  "input_template_sha256": "ae2935b9c490745450462b981eb133e611bc72de4abfb11aba3e850caf4e9949",
+  "memory_equal": true,
+  "memory_sha256": "138010959387f86a49b295809bbfdd1983991a487c9b867514984b478bb4ff84",
+  "mode": "timeout",
+  "published_once": true,
+  "requested": 1,
+  "result_equal": true,
+  "result_sha256": "9a103fbf96c1c90e9210dd4f174d861eb3da6fd974aecbecc7df14c6dc0e6ee0",
+  "seeds": [
+    36395,
+    3084
+  ],
+  "source_commit": "76b4db404ec970773576bca9910edb6b31bd88f5",
+  "source_hashes": {
+    "PROVENANCE.md": "8b4e07d09305ce9c334786325b4c7263861e10071667574d2d1c6d7b29047b09",
+    "goal2/desktop/competitive.py": "6a9050364b8f0be13658dd443a16193f3ce2448c372c01a1e3e39392c17df9d6",
+    "goal2/engine/original_match/match.py": "e949159c9cc77f4d195bc9b150c67dfd913ba447417375122bc58db1bca97f92",
+    "goal2/engine/original_match/screens.py": "8ce9b0d6c4c9f75da469c728a9ed03787e413aeb5f98693ba38c914ed36d143e",
+    "goal2/game/engine_process.py": "0ffa86b76381e498345e31824aa04a5899b9e6dc43f29ac1549f22efe764ae09",
+    "goal2/game/engine_server.py": "1567bd91bd199df724817f32f28d980d5f28166b79f88b99d3658c99605569aa",
+    "goal2/game/watched_jobs.py": "7ec2c6f153101d72b6bff0d65c3ebf0657346a1faf5771723b4561f8c90f9305",
+    "goal2/game/watched_match.py": "95c32a981069e3acf9ccfa7cb03cacbaa5f9baa93963434bc175ba9b530a1200",
+    "goal2/game/watched_schema.py": "c0fcb60752f338708b683ab3de8b05a127d28f3b3f44bd4cb3de233304db427b",
+    "goal2/tests/match_day_policy.py": "8da842ccfa4833df7ffce1a52e6ad280b1b3f2ae28321688473091a1acd4408b",
+    "goal2/tests/substitution_selectors_636.py": "712202ca957547181521fe60f873c45a693e4be95685912ee61cceb5160bdc93",
+    "goal2/tests/test_substitution_actual_636.py": "9c0aaadeadd0e065c0d36780acd09414dee747511e10b071ec3cdcf7bdae8473",
+    "goal2/ui/live_cards.py": "d3681164dc7da398ea0e3b82df8bf22da34b77860fcbd241d674721bd05b5d53",
+    "goal2/ui/match_day.py": "a399bfcc9083e10b5c6b49ed5a680b1290d5b6678c99bcc41fcc29bfb0d33854",
+    "goal2/ui/s10_team_tactics.py": "d857522ed61a4ae7224ee8de7b150e4ed48c747399a7da53fb4a7adc6ac181fc",
+    "goal2/ui/s17_pitch.py": "fc997af2bdf00e9fa24d8c43c1690a65f3ca365aae368cbe197b0adc68feca9b",
+    "goal2/ui/s18_stop.py": "1de904bbbc1d775c3cd47388274a4fdd81410eeecb564a4cc7470d0b947ac454",
+    "goal2/ui/s19_bench.py": "76fa80c34fc21ebe38aef8f547df0daafadac61d440bdff8e1033cea488ec360",
+    "goal2/ui/squad_card.py": "f191ef041aa32e1f0ee3ad57a5e4cac05adce7665ceb8a20ebd8aeff70f629e7",
+    "tools/watched-kit-hashes.json": "93a5bcd01b0bafc7273738a697c559950392cd7d9fff531f7f94a67db6d63c16"
+  }
+}
