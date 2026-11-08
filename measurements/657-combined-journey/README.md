@@ -66,3 +66,27 @@ waits for automatic menu return. Actual T181SavedPitch.completed deliberately
 freezes the last frame and stops its timer; Enter/Esc returns. Corrected child
 waits for replay=None, then sends real Esc to the menu and list. The60s deadline
 and all full-career/data comparisons remain; no application change. v8 retainedFAIL.
+
+Accepted scoped audit: createv7at86ba14dc (applicatione51ee2ab, accepted656)
+PASS including exact resultWITHports diagnostics, every event, physical memory,
+both seeds and complete post-publicationcareer against the same-input bridge.
+The UI-created Austria2028 managerAuditA visits all80pool players, an exchange,
+R/C and personal/team tactics/help, commentary Space hold/resume, real pause
+tactic/request confirmation, natural goal/exact-sample replay/named goal save,
+legal immediate opportunity and half-time swaps, board/summarysave/desk/recording
+reopen/named career save/quit. All original eligibility remains guest-owned.
+
+Separate-process reload3atb002371bPASS: entire career equals the private expected
+state, summary board equals stored data, saved goal plays to its frozen last
+frame and actualEsc returns through menu/list; recording views do not change
+any career field. Later harness changes affect only reload/cleanup, not create
+application/input/body, so the successful match is retained underT189. All
+production files equal accepted applicatione51; no app/engine/source activation
+change is part of this PR. Every earlier calibration remains explicitly FAIL.
+
+This is LinuxQtOFFSCREEN, not nativeWindows combined-journey acceptance, an
+original DOS UI pixel/value equivalence, all22screens, whole-season, ET/shootout
+or best20 proof. The original help hash is verified and scrolls in the private
+viewer; no original help text or screenshot is published. Scores were natural,
+not forced; actual input/reference states and raw outcomes remain private.
+Before milestone review, retain required native/remaining integration proofs.
