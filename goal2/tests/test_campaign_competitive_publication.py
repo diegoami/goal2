@@ -42,6 +42,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         except ValueError as exc:self.fail('competitive job blocked: '+str(exc))
         return pub,job
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_original_winner_and_full_tail_publish_once_without_quick_effects(self):
         s,raw,f=campaign();owner=Owner(s,raw);before=copy.deepcopy(s)
         pub,job=self.begin(owner,f);out=copy.deepcopy(completed())
@@ -61,6 +62,7 @@ class CompetitivePublicationTests(unittest.TestCase):
         with self.assertRaises(ValueError):pub.complete(job.token,out)
         self.assertEqual(owner.state,saved)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_stale_options_kind_budget_incomplete_and_view_failures_are_atomic(self):
         s,raw,f=campaign()
         for damage in ('kind','budget','kit1','end','full_time','seeds','year','image','players','view','stale'):
@@ -85,6 +87,7 @@ class CompetitivePublicationTests(unittest.TestCase):
                 self.assertEqual(owner.state,before)
                 with self.assertRaises(ValueError):pub.complete(job.token,out)
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_genuine_kit1_friendly_cannot_complete_same_image_competitive_job(self):
         from goal2.game import session_save
         s,raw,f=campaign(21,2);owner=Owner(s,raw);pub,job=self.begin(owner,f)

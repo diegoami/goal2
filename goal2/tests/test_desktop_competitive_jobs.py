@@ -1,5 +1,6 @@
 """[designed: T80] Real competitive subprocess parity plus explicit synthetic faults."""
 import copy
+from contextlib import contextmanager
 from dataclasses import asdict, replace
 from functools import lru_cache
 import hashlib
@@ -12,7 +13,7 @@ import sys
 import tempfile
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from goal2.desktop.competitive import CompetitiveJobs, pending_fixture
 from goal2.desktop.model import DesktopModel
 from goal2.game.session_save import encode
@@ -81,6 +82,27 @@ for request in requests():
  if mode=='nonzero':sys.exit(5)
  send('settled')
 '''
+
+
+@contextmanager
+def _precise_heartbeat_clock():
+    """[designed: #642] Scope Windows sleep precision to this timing fixture only."""
+    if sys.platform != 'win32':
+        yield
+        return
+    import ctypes
+    winmm = ctypes.WinDLL('winmm')
+    for name in ('timeBeginPeriod', 'timeEndPeriod'):
+        function = getattr(winmm, name)
+        function.argtypes = [ctypes.c_uint]
+        function.restype = ctypes.c_uint
+    if winmm.timeBeginPeriod(1) != 0:
+        raise OSError('timeBeginPeriod(1) failed for heartbeat fixture')
+    try:
+        yield
+    finally:
+        if winmm.timeEndPeriod(1) != 0:
+            raise OSError('timeEndPeriod(1) failed for heartbeat fixture')
 
 
 class CompetitiveJobsTests(unittest.TestCase):
@@ -303,18 +325,21 @@ class CompetitiveJobsTests(unittest.TestCase):
         # processEvents under 1 ms; timeBeginPeriod(1) or a PreciseTimer gave 62-76. The heartbeat is precise, so
         # [designed: T161 diagnosis] Keep the heartbeat threshold unchanged. The timing receipt
         # distinguishes time inside poll/processEvents from sleep and between-lap scheduling.
-        beats=[];timer=QTimer();timer.setTimerType(Qt.TimerType.PreciseTimer);timer.setInterval(1)
-        timer.timeout.connect(lambda:beats.append(1));timer.start()
-        started=time.monotonic();deadline=started+.12
-        laps=[];previous=time.perf_counter()
-        while time.monotonic()<deadline:
-            t0=time.perf_counter();self.jobs.poll(token);t1=time.perf_counter()
-            app.processEvents();t2=time.perf_counter();time.sleep(.001);t3=time.perf_counter()
-            laps.append(dict(poll_ms=(t1-t0)*1000,events_ms=(t2-t1)*1000,
-                             sleep_ms=(t3-t2)*1000,gap_ms=(t0-previous)*1000))
-            previous=t3
-        timer.stop()
-        elapsed=time.monotonic()-started
+        # [derived: #642, failed hosted receipts635/638] sleep(.001) took32ms despite cheap poll/events.
+        # Scope timeBeginPeriod(1) so the unchanged120ms/>10 guard measures event-loop responsiveness.
+        with _precise_heartbeat_clock():
+            beats=[];timer=QTimer();timer.setTimerType(Qt.TimerType.PreciseTimer);timer.setInterval(1)
+            timer.timeout.connect(lambda:beats.append(1));timer.start()
+            started=time.monotonic();deadline=started+.12
+            laps=[];previous=time.perf_counter()
+            while time.monotonic()<deadline:
+                t0=time.perf_counter();self.jobs.poll(token);t1=time.perf_counter()
+                app.processEvents();t2=time.perf_counter();time.sleep(.001);t3=time.perf_counter()
+                laps.append(dict(poll_ms=(t1-t0)*1000,events_ms=(t2-t1)*1000,
+                                 sleep_ms=(t3-t2)*1000,gap_ms=(t0-previous)*1000))
+                previous=t3
+            timer.stop()
+            elapsed=time.monotonic()-started
         report=dict(head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
                     test_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                     platform=sys.platform,python=sys.version,cpus=os.cpu_count(),
@@ -345,6 +370,53 @@ class CompetitiveJobsTests(unittest.TestCase):
             bad=copy.deepcopy(self.owner.state)
             bad.campaign.fixtures=(dc_replace(bad.campaign.fixtures[0],fixture_id=fid,kind=kind),)
             with self.assertRaises(ValueError):pending_fixture(bad)
+
+
+@requires.need(modules=('PySide6',))
+class HeartbeatClockTests(unittest.TestCase):
+    """[designed: #642] Controlled clock inputs; no real match or replay fixture setup."""
+    def test_windows_period_is_balanced_even_when_observation_raises(self):
+        winmm = Mock()
+        winmm.timeBeginPeriod.return_value = winmm.timeEndPeriod.return_value = 0
+        with patch.object(sys, 'platform', 'win32'), patch('ctypes.WinDLL', return_value=winmm, create=True):
+            with self.assertRaisesRegex(RuntimeError, 'observation failed'):
+                with _precise_heartbeat_clock():
+                    raise RuntimeError('observation failed')
+        winmm.timeBeginPeriod.assert_called_once_with(1)
+        winmm.timeEndPeriod.assert_called_once_with(1)
+
+    def test_windows_period_failure_is_not_silently_accepted(self):
+        winmm = Mock()
+        winmm.timeBeginPeriod.return_value = 1
+        with patch.object(sys, 'platform', 'win32'), patch('ctypes.WinDLL', return_value=winmm, create=True):
+            with self.assertRaisesRegex(OSError, 'timeBeginPeriod'):
+                with _precise_heartbeat_clock():
+                    self.fail('failed clock setup reached observation')
+        winmm.timeEndPeriod.assert_not_called()
+
+    def exercise_guard(self, blocked):
+        case = CompetitiveJobsTests('test_qt_heartbeat_while_worker_full_time_tail_is_blocked')
+        case.jobs = Mock(busy=True, outcome=None)
+        if blocked:
+            case.jobs.poll.side_effect = lambda token: time.sleep(.14)
+        case.bridge = Mock(return_value='controlled-token')
+        case.until = Mock()
+        case.unchanged = Mock()
+        with tempfile.TemporaryDirectory() as folder, patch(__name__ + '.ROOT', Path(folder)), \
+                patch.object(subprocess, 'check_output', return_value='controlled-clock-fixture\n'):
+            try:
+                case.test_qt_heartbeat_while_worker_full_time_tail_is_blocked()
+            finally:
+                case.doCleanups()
+        case.jobs.poll.assert_called()
+        case.unchanged.assert_called_once_with()
+
+    def test_original_guard_accepts_a_responsive_controlled_poll(self):
+        self.exercise_guard(False)
+
+    def test_original_guard_rejects_a_deliberately_blocked_poll(self):
+        with self.assertRaisesRegex(AssertionError, 'Qt heartbeat blocked by competitive worker'):
+            self.exercise_guard(True)
 
 
 if __name__=='__main__':unittest.main()

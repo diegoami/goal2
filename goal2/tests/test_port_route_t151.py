@@ -90,6 +90,7 @@ class PortRoute(unittest.TestCase):
               flush=True)
         return port
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_a_watched_friendly_with_bench_answers_and_a_pause(self):
         s = self.state();before = copy.deepcopy(s);fixture = Fixture(7, 19, 21)
         port = self.both("goal2.tests.pypy_engine:drive", s, self.raw, fixture, delay_byte=0, record_draws=True,
@@ -103,6 +104,7 @@ class PortRoute(unittest.TestCase):
         port = self.both("goal2.game.competitive_match:run_competitive_match", s, self.raw, fixture, record_draws=True)
         self.assertTrue(port.result["extra_time"]);self.assertIsNotNone(port.result["shootout"])
 
+    @requires.need(slow=True)  # [designed: #643] Complete-match checks run at milestones.
     def test_the_route_needs_no_unicorn(self):
         code = ("import builtins,sys\n"
                 "real=builtins.__import__\n"
