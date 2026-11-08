@@ -1,0 +1,18 @@
+test_first_outfield_pair_does_not_create_a_fourth_played_c_role (goal2.tests.test_substitution_input_636.LegalPositiveInputs.test_first_outfield_pair_does_not_create_a_fourth_played_c_role) ... ok
+test_incidental_injury_and_keeper_inputs_keep_original_role_counts (goal2.tests.test_substitution_input_636.LegalPositiveInputs.test_incidental_injury_and_keeper_inputs_keep_original_role_counts) ... ok
+test_zero_budget_half_time_inputs_do_not_select_an_already_withdrawn_player (goal2.tests.test_substitution_input_636.LegalPositiveInputs.test_zero_budget_half_time_inputs_do_not_select_an_already_withdrawn_player) ... ok
+test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes (goal2.tests.test_substitution_ui_636.FullRequestCue.test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_cancel_preserves_false_and_personal_drafts_across_both_acknowledgements (goal2.tests.test_substitution_ui_636.RequestUI.test_cancel_preserves_false_and_personal_drafts_across_both_acknowledgements) ... This plugin does not support propagateSizeHints()
+ok
+test_enter_requests_without_choosing_a_player_or_advancing (goal2.tests.test_substitution_ui_636.RequestUI.test_enter_requests_without_choosing_a_player_or_advancing) ... This plugin does not support propagateSizeHints()
+ok
+test_opportunity_escape_opens_legal_bench_then_escape_leaves_a_play_menu (goal2.tests.test_substitution_ui_636.RequestUI.test_opportunity_escape_opens_legal_bench_then_escape_leaves_a_play_menu) ... This plugin does not support propagateSizeHints()
+ok
+test_zero_budget_acknowledges_actual_false_without_inventing_acceptance (goal2.tests.test_substitution_ui_636.RequestUI.test_zero_budget_acknowledges_actual_false_without_inventing_acceptance) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 7.267s
+
+OK

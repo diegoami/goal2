@@ -1,0 +1,7 @@
+test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes (goal2.tests.test_substitution_ui_636.FullRequestCue.test_full_request_cue_fits_real_font_and_last_glyph_pixels_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.066s
+
+OK
