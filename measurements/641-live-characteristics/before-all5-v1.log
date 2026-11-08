@@ -1,0 +1,60 @@
+test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel) ... This plugin does not support propagateSizeHints()
+FAIL
+test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write) ... This plugin does not support propagateSizeHints()
+FAIL
+test_live_panel_cells_and_labels_fit_three_native_fractional_sizes (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_live_panel_cells_and_labels_fit_three_native_fractional_sizes) ... This plugin does not support propagateSizeHints()
+FAIL
+test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs) ... This plugin does not support propagateSizeHints()
+FAIL
+test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards) ... This plugin does not support propagateSizeHints()
+FAIL
+
+======================================================================
+FAIL: test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/641-before-b097/goal2/tests/test_live_tactics_characteristics_641.py", line 81, in test_acknowledgement_refresh_replaces_records_order_flags_without_new_widgets_or_stale_panel
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+======================================================================
+FAIL: test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/641-before-b097/goal2/tests/test_live_tactics_characteristics_641.py", line 69, in test_complete_current_twenty_and_accepted_xi_match_original_projection_without_state_write
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+======================================================================
+FAIL: test_live_panel_cells_and_labels_fit_three_native_fractional_sizes (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_live_panel_cells_and_labels_fit_three_native_fractional_sizes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/641-before-b097/goal2/tests/test_live_tactics_characteristics_641.py", line 112, in test_live_panel_cells_and_labels_fit_three_native_fractional_sizes
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+======================================================================
+FAIL: test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/641-before-b097/goal2/tests/test_live_tactics_characteristics_641.py", line 99, in test_pending_position_formation_semantics_remain_separate_from_accepted_trait_inputs
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+======================================================================
+FAIL: test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards (goal2.tests.test_live_tactics_characteristics_641.LiveTacticsCharacteristics.test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/641-before-b097/goal2/tests/test_live_tactics_characteristics_641.py", line 131, in test_trait_refresh_and_cursor_navigation_never_decode_full_player_cards
+    self.assertNotIn('not decoded',shown_traits(screen))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not decoded' unexpectedly found in 'not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05) · not decoded yet (G05)'
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.278s
+
+FAILED (failures=5)
