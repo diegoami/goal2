@@ -14,6 +14,15 @@ Only section references and paraphrases appear here. The private original help, 
 are not copied into this public tree. The [image provenance](../../original-game/image-provenance.tsv)
 and [original reference](../../original-game/README.md) identify the retained original captures.
 
+## Pre-match tactics characteristic evidence
+
+[confirmed: original1771:1981→157D; F038; T202] The later pre-match S10 correction consumes the
+same accepted current-record characteristic projection as the TEAM country card. Its
+[source-bound evidence](../../../measurements/T202/README.md) covers the three original snapshots,
+current-squad boundaries, pixel/bounds controls and retained eight-tactic behavior. This supplements
+the historical baseline below. Live-stop characteristics retain their separate explicit fallback;
+this correction does not establish current live-card freshness619 or complete match/season acceptance.
+
 ## Manual sections
 
 [confirmed: original help, section/line references below] Requirements are paraphrased, not new game rules.

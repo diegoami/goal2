@@ -1,0 +1,70 @@
+test_genuine_snapshots_and_current_inputs_match_original_backed_panel_without_state_write (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_genuine_snapshots_and_current_inputs_match_original_backed_panel_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_live_stop_retains_explicit_fallback_and_pending_confirmation_without_career_write (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_live_stop_retains_explicit_fallback_and_pending_confirmation_without_career_write) ... This plugin does not support propagateSizeHints()
+ok
+test_readable_cells_pixels_and_bounds_fit_three_sizes_while_all_eight_tactics_and_mouse_return_work (goal2.tests.test_tactics_characteristics_t202.TacticsCharacteristics.test_readable_cells_pixels_and_bounds_fit_three_sizes_while_all_eight_tactics_and_mouse_return_work) ... This plugin does not support propagateSizeHints()
+ok
+test_club_position_copies_plus_7_into_plus_6 (goal2.tests.test_ui_squad_t165.ModelCalls.test_club_position_copies_plus_7_into_plus_6) ... ok
+test_own_tactic_cycles_the_three_states_of_f010 (goal2.tests.test_ui_squad_t165.ModelCalls.test_own_tactic_cycles_the_three_states_of_f010) ... ok
+test_pool_players_change_too_and_bad_requests_change_nothing (goal2.tests.test_ui_squad_t165.ModelCalls.test_pool_players_change_too_and_bad_requests_change_nothing) ... ok
+test_set_position_steps_and_wraps_0_to_13 (goal2.tests.test_ui_squad_t165.ModelCalls.test_set_position_steps_and_wraps_0_to_13) ... ok
+test_set_team_tactic_toggles_one_element (goal2.tests.test_ui_squad_t165.ModelCalls.test_set_team_tactic_toggles_one_element) ... ok
+test_a_click_on_a_row_and_on_a_bar_key_does_what_its_key_does (goal2.tests.test_ui_squad_t165.Screens.test_a_click_on_a_row_and_on_a_bar_key_does_what_its_key_does) ... This plugin does not support propagateSizeHints()
+ok
+test_ins_says_coming_later_and_changes_nothing (goal2.tests.test_ui_squad_t165.Screens.test_ins_says_coming_later_and_changes_nothing) ... This plugin does not support propagateSizeHints()
+ok
+test_paging_the_pool_reaches_all_80 (goal2.tests.test_ui_squad_t165.Screens.test_paging_the_pool_reaches_all_80) ... This plugin does not support propagateSizeHints()
+ok
+test_pool_players_take_r_and_c_too (goal2.tests.test_ui_squad_t165.Screens.test_pool_players_take_r_and_c_too) ... This plugin does not support propagateSizeHints()
+ok
+test_r_shift_r_c_and_f2_are_the_models_changes (goal2.tests.test_ui_squad_t165.Screens.test_r_shift_r_c_and_f2_are_the_models_changes) ... This plugin does not support propagateSizeHints()
+ok
+test_s09_shows_four_lines_and_each_alter_is_the_models (goal2.tests.test_ui_squad_t165.Screens.test_s09_shows_four_lines_and_each_alter_is_the_models) ... This plugin does not support propagateSizeHints()
+ok
+test_s10_each_of_the_eight_lines_is_the_models_change (goal2.tests.test_ui_squad_t165.Screens.test_s10_each_of_the_eight_lines_is_the_models_change) ... This plugin does not support propagateSizeHints()
+ok
+test_two_enter_exchange_is_the_models_exchange_with_put_here_between (goal2.tests.test_ui_squad_t165.Screens.test_two_enter_exchange_is_the_models_exchange_with_put_here_between) ... This plugin does not support propagateSizeHints()
+ok
+test_explicit_window_keys_do_not_type_into_another_window (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_explicit_window_keys_do_not_type_into_another_window) ... This plugin does not support propagateSizeHints()
+ok
+test_extra_time_tactics_are_editable_without_creating_substitution_pairs (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_extra_time_tactics_are_editable_without_creating_substitution_pairs) ... This plugin does not support propagateSizeHints()
+ok
+test_failed_submission_and_unaccepted_reply_never_claim_a_change (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_failed_submission_and_unaccepted_reply_never_claim_a_change) ... This plugin does not support propagateSizeHints()
+ok
+test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_half_time_all_eight_flags_apply_and_reopen_from_actual_reply) ... This plugin does not support propagateSizeHints()
+ok
+test_held_escape_cannot_fall_through_screens_and_request_another_pause (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_held_escape_cannot_fall_through_screens_and_request_another_pause) ... This plugin does not support propagateSizeHints()
+ok
+test_managed_tactics_work_from_both_home_and_away_menu_columns (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_managed_tactics_work_from_both_home_and_away_menu_columns) ... This plugin does not support propagateSizeHints()
+ok
+test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pause_edits_are_confirmed_before_esc_resumes_without_resubmission) ... This plugin does not support propagateSizeHints()
+ok
+test_pending_mouse_back_obeys_the_same_wait_as_keyboard (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_pending_mouse_back_obeys_the_same_wait_as_keyboard) ... This plugin does not support propagateSizeHints()
+ok
+test_request_note_clears_when_the_engine_stop_arrives (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_request_note_clears_when_the_engine_stop_arrives) ... This plugin does not support propagateSizeHints()
+ok
+test_team_reply_preserves_pending_personal_changes_and_live_roster (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_team_reply_preserves_pending_personal_changes_and_live_roster) ... This plugin does not support propagateSizeHints()
+ok
+test_worker_failure_while_pending_returns_to_the_desk_without_publishing (goal2.tests.test_live_team_tactics_610.LiveTeamTactics.test_worker_failure_while_pending_returns_to_the_desk_without_publishing) ... This plugin does not support propagateSizeHints()
+ok
+test_bounded_adapter_rejects_wrong_width_indices_and_memory_ranges (goal2.tests.test_country_panels_t197.TeamPanels.test_bounded_adapter_rejects_wrong_width_indices_and_memory_ranges) ... ok
+test_genuine_panels_match_delivered_original_backed_projection_for_all_countries (goal2.tests.test_country_panels_t197.TeamPanels.test_genuine_panels_match_delivered_original_backed_projection_for_all_countries) ... ok
+test_managed_current_twenty_tactics_and_player_records_override_stale_raw_copies (goal2.tests.test_country_panels_t197.TeamPanels.test_managed_current_twenty_tactics_and_player_records_override_stale_raw_copies) ... ok
+test_performance_visibility_retains_both_original_gates_and_actual_selected_side (goal2.tests.test_country_panels_t197.TeamPanels.test_performance_visibility_retains_both_original_gates_and_actual_selected_side) ... ok
+test_active_snapshot_uses_original_gate_side_and_full_viewport (goal2.tests.test_team_card_panels_t198.Panels.test_active_snapshot_uses_original_gate_side_and_full_viewport) ... This plugin does not support propagateSizeHints()
+ok
+test_all128_original_snapshot_cards_render_exact_panels_without_state_write (goal2.tests.test_team_card_panels_t198.Panels.test_all128_original_snapshot_cards_render_exact_panels_without_state_write) ... This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+ok
+test_complete_text_pixels_and_navigation_fit_at_three_sizes (goal2.tests.test_team_card_panels_t198.Panels.test_complete_text_pixels_and_navigation_fit_at_three_sizes) ... This plugin does not support propagateSizeHints()
+ok
+test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers (goal2.tests.test_team_card_panels_t198.Panels.test_fresh_browser_ignores_template_performance_and_uses_original_xi_numbers) ... This plugin does not support propagateSizeHints()
+ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 118.135s
+
+OK
