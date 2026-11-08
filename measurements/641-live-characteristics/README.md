@@ -68,3 +68,42 @@ memory/career assertion remains. That test requires the accepted696two-file
 adoption by a normal640merge; a prepared widget replay alone cannot satisfy it.
 No independent vendor/provenance copy is part of this task. Broader gates/platform
 checks and merge remain main's responsibility; full suites stay with CI/milestone.
+
+
+Accepted-source completion at8dee0728f682360ae3ab990606164da15e23e797:
+actual-accepted-v3 passes373.078s with22panel checks/440record slots across
+pause, legal substitution and half-time. These include repeated views of8
+distinct accepted input observations, not22distinct physics stops. Accepted XI
+order and descriptor/cells change after real updates; natural energy and traits
+differ from the declared kickoff input. The complete corrected640accept recipe
+is unchanged by the read-only observer, and all result/events/RNG/seeds/full
+physical memory/once-published career comparisons pass without field removal.
+
+Main's actual Windows Qt backend/bundled-PyPy run on the same source passes1test
+in456.464s with no skips, both flags and every complete equality oracle retained.
+It exercises the real new S10 during the request/tactic/swap/refusal flow; it
+does not include the641Core observer. The separate prepared Windows740-record
+Core/pixel replay supplies that panel coverage. The no-activation bootstrap and
+direct-target test keys are explicit native presentation fixtures, with source
+and bootstrap hashes. No owner app/save is touched.
+
+Main's exact default fast gate passes215/215modules, with236declared slow
+exclusions; actual task slow paths above were run separately. Main owns fresh
+final-head/platform/security guards and merge. The following metadata commit
+changes no runtime/test/provenance/fixture byte, and does not claim full TEAM
+layout, original DOS screen identity, whole UI, season, review or publication.
+
+All earlier worker failures remain calibration: df5703's outfield-only selector
+created an original-illegal4C XI and hit the unchanged1500s deadline naturally,
+without a signal/stop; 6aff's actual cue clipping failed before the separate640
+immediate scaled-font/layout fix. The corrected compatible-role choices retain
+the explicit withdrawn re-entry refusal and all old equality/limit assertions.
+The observer explicitly drains only its own unshown DeferredDelete receiver.
+These corrections do not change engine rules or641trait formulas.
+
+Run `python3 measurements/641-live-characteristics/verify-v1.py --private` to
+check the final public/source/private bindings without a game. A fresh full
+observer reproduction is the focused slow selector
+`goal2.tests.test_live_tactics_worker_641.ActualLiveTraits`, under the accepted
+composite runtime and the registered heavy-slot mechanism. Main's default gate
+and native receipts are source-bound; no implementer full suite/local gate ran.
